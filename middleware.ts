@@ -1,28 +1,26 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
-import { checkRateLimit, createRateLimitHeaders, RATE_LIMITS } from "@/lib/security/rate-limiter";
 import { getCookieDomain } from "@/lib/supabase/cookie-domain";
 
 export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({ request });
+  console.log("MIDDLEWARE HIT:", request.nextUrl.pathname);
+  try {
+    let response = NextResponse.next({ request });
 
-  const pathname = request.nextUrl.pathname;
-  const clientIp = request.headers.get("x-forwarded-for") || 
-                   request.headers.get("x-real-ip") || 
-                   "unknown";
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-  const safeUrl = (value?: string) => {
-    if (!value) return null;
-    try {
-      return new URL(value);
-    } catch {
-      return null;
-    }
-  };
-  const appOrigin = safeUrl(appUrl);
-  const siteOrigin = safeUrl(siteUrl);
-  const host = request.nextUrl.hostname;
+    const pathname = request.nextUrl.pathname;
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+    const safeUrl = (value?: string) => {
+      if (!value) return null;
+      try {
+        return new URL(value);
+      } catch {
+        return null;
+      }
+    };
+    const appOrigin = safeUrl(appUrl);
+    const siteOrigin = safeUrl(siteUrl);
+    const host = request.nextUrl.hostname;
 
   if (appOrigin && siteOrigin && appOrigin.hostname !== siteOrigin.hostname) {
     const appPaths = ["/app", "/auth", "/onboarding", "/accept-invite", "/submit", "/signin", "/api"];
@@ -50,204 +48,156 @@ export async function middleware(request: NextRequest) {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   const hasSupabaseEnv = Boolean(supabaseUrl && supabaseAnonKey);
 
-  if (!hasSupabaseEnv) {
-    if (pathname.startsWith("/app")) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/auth/signin";
-      return NextResponse.redirect(url);
+    if (!hasSupabaseEnv) {
+      if (pathname.startsWith("/app")) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/auth/signin";
+        return NextResponse.redirect(url);
+      }
+      return response;
     }
-    return response;
-  }
 
   let user: { id: string } | null = null;
   let supabase: ReturnType<typeof createServerClient> | null = null;
 
-  if (hasSupabaseEnv) {
-    try {
-      supabase = createServerClient(supabaseUrl!, supabaseAnonKey!, {
-        cookies: {
-          getAll: () => request.cookies.getAll(),
-          setAll: (cookiesToSet) => {
-            try {
-              cookiesToSet.forEach(({ name, value, options }) => {
-                const cookieOptions = cookieDomain ? { ...options, domain: cookieDomain } : options;
-                request.cookies.set(name, value);
-                response.cookies.set(name, value, cookieOptions);
-              });
-            } catch {
-              // Ignore cookie set errors in middleware
-            }
+    if (hasSupabaseEnv) {
+      try {
+        supabase = createServerClient(supabaseUrl!, supabaseAnonKey!, {
+          cookies: {
+            getAll: () => request.cookies.getAll(),
+            setAll: (cookiesToSet) => {
+              try {
+                cookiesToSet.forEach(({ name, value, options }) => {
+                  const cookieOptions = cookieDomain ? { ...options, domain: cookieDomain } : options;
+                  request.cookies.set(name, value);
+                  response.cookies.set(name, value, cookieOptions);
+                });
+              } catch {
+                // Ignore cookie set errors in middleware
+              }
+            },
           },
-        },
-      });
+        });
 
-      const { data, error } = await supabase.auth.getUser();
-      if (!error) {
-        user = data.user ?? null;
-      }
-    } catch (error) {
-      console.error("[Middleware] Supabase init failed:", error);
-      supabase = null;
-      user = null;
-    }
-  }
-
-  // -------------------------------
-  // RATE LIMITING
-  // -------------------------------
-  
-  // Apply stricter rate limits to auth endpoints
-  if (pathname.startsWith("/auth")) {
-    const rateLimitResult = await checkRateLimit(RATE_LIMITS.AUTH, clientIp);
-    
-    // Add rate limit headers to response
-    const rlHeaders = createRateLimitHeaders(rateLimitResult);
-    Object.entries(rlHeaders).forEach(([key, value]) => {
-      response.headers.set(key, value);
-    });
-    
-    if (!rateLimitResult.success) {
-      return new NextResponse(
-        JSON.stringify({ error: "Too many requests. Please try again later." }),
-        {
-          status: 429,
-          headers: {
-            "Content-Type": "application/json",
-            ...rlHeaders,
-          },
+        const { data, error } = await supabase.auth.getUser();
+        if (!error) {
+          user = data.user ?? null;
         }
-      );
-    }
-  }
-
-  // Apply general rate limits to API routes
-  if (pathname.startsWith("/app/api") || pathname.startsWith("/api")) {
-    const userId = user?.id || null;
-    const rateLimitResult = await checkRateLimit(RATE_LIMITS.API, clientIp, userId);
-    
-    const rlHeaders = createRateLimitHeaders(rateLimitResult);
-    Object.entries(rlHeaders).forEach(([key, value]) => {
-      response.headers.set(key, value);
-    });
-    
-    if (!rateLimitResult.success) {
-      return new NextResponse(
-        JSON.stringify({ error: "Rate limit exceeded" }),
-        {
-          status: 429,
-          headers: {
-            "Content-Type": "application/json",
-            ...rlHeaders,
-          },
-        }
-      );
-    }
-  }
-
-  // -------------------------------
-  // 1. BLOCK PROTECTED ROUTES IF NOT LOGGED IN
-  // -------------------------------
-  if (!user && pathname.startsWith("/app")) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/auth/signin";
-    return NextResponse.redirect(url);
-  }
-
-  // -------------------------------
-  // 2. BLOCK AUTH PAGES IF LOGGED IN
-  // -------------------------------
-  if (user && pathname.startsWith("/auth")) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/app";
-    return NextResponse.redirect(url);
-  }
-
-  // -------------------------------
-  // 2b. ROLE-BASED DASHBOARD GUARD
-  // -------------------------------
-  if (user && supabase && pathname.startsWith("/app") && !pathname.startsWith("/app/api")) {
-    const { data: membership } = await supabase
-      .from("org_members")
-      .select("organization_id, role")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    const role = (membership?.role ?? "").toLowerCase();
-    const isStaff = role === "staff" || role === "member";
-    const orgId = membership?.organization_id ?? null;
-
-    if (isStaff) {
-      const allowedPrefixes = [
-        "/app/staff",
-        "/app/tasks",
-        "/app/patients",
-        "/app/progress-notes",
-        "/app/vault",
-        "/app/evidence",
-        "/app/accept-invite",
-      ];
-
-      const allowed = allowedPrefixes.some(
-        (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
-      );
-
-      if (!allowed) {
-        const url = request.nextUrl.clone();
-        url.pathname = "/app/staff";
-        return NextResponse.redirect(url);
+      } catch (error) {
+        console.error("[Middleware] Supabase init failed:", error);
+        supabase = null;
+        user = null;
       }
     }
 
-    const billingAllowed =
-      pathname.startsWith("/app/billing") || pathname.startsWith("/app/accept-invite");
+    // -------------------------------
+    // 1. BLOCK PROTECTED ROUTES IF NOT LOGGED IN
+    // -------------------------------
+    if (!user && pathname.startsWith("/app")) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/auth/signin";
+      return NextResponse.redirect(url);
+    }
 
-    if (orgId && !billingAllowed) {
-      const { data: subscription, error: subscriptionError } = await supabase
-        .from("org_subscriptions")
-        .select("status, current_period_end")
-        .eq("organization_id", orgId)
+    // -------------------------------
+    // 2. BLOCK AUTH PAGES IF LOGGED IN
+    // -------------------------------
+    if (user && pathname.startsWith("/auth")) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/app";
+      return NextResponse.redirect(url);
+    }
+
+    // -------------------------------
+    // 2b. ROLE-BASED DASHBOARD GUARD
+    // -------------------------------
+    if (user && supabase && pathname.startsWith("/app") && !pathname.startsWith("/app/api")) {
+      const { data: membership } = await supabase
+        .from("org_members")
+        .select("organization_id, role")
+        .eq("user_id", user.id)
         .maybeSingle();
 
-      let subscriptionActive = false;
+      const role = (membership?.role ?? "").toLowerCase();
+      const isStaff = role === "staff" || role === "member";
+      const orgId = membership?.organization_id ?? null;
 
-      if (!subscriptionError && subscription?.status) {
-        if (subscription.status === "active") {
-          subscriptionActive = true;
-        } else if (subscription.status === "trialing") {
-          if (subscription.current_period_end) {
-            const trialEnd = new Date(subscription.current_period_end).getTime();
-            subscriptionActive = !Number.isNaN(trialEnd) && Date.now() <= trialEnd;
-          }
+      if (isStaff) {
+        const allowedPrefixes = [
+          "/app/staff",
+          "/app/tasks",
+          "/app/patients",
+          "/app/progress-notes",
+          "/app/vault",
+          "/app/evidence",
+          "/app/accept-invite",
+        ];
+
+        const allowed = allowedPrefixes.some(
+          (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+        );
+
+        if (!allowed) {
+          const url = request.nextUrl.clone();
+          url.pathname = "/app/staff";
+          return NextResponse.redirect(url);
         }
       }
 
-      if (!subscriptionActive) {
-        const url = request.nextUrl.clone();
-        url.pathname = "/app/billing";
-        url.searchParams.set("status", "blocked");
-        return NextResponse.redirect(url);
+      const billingAllowed =
+        pathname.startsWith("/app/billing") || pathname.startsWith("/app/accept-invite");
+
+      if (orgId && !billingAllowed) {
+        const { data: subscription, error: subscriptionError } = await supabase
+          .from("org_subscriptions")
+          .select("status, current_period_end")
+          .eq("organization_id", orgId)
+          .maybeSingle();
+
+        let subscriptionActive = false;
+
+        if (!subscriptionError && subscription?.status) {
+          if (subscription.status === "active") {
+            subscriptionActive = true;
+          } else if (subscription.status === "trialing") {
+            if (subscription.current_period_end) {
+              const trialEnd = new Date(subscription.current_period_end).getTime();
+              subscriptionActive = !Number.isNaN(trialEnd) && Date.now() <= trialEnd;
+            }
+          }
+        }
+
+        if (!subscriptionActive) {
+          const url = request.nextUrl.clone();
+          url.pathname = "/app/billing";
+          url.searchParams.set("status", "blocked");
+          return NextResponse.redirect(url);
+        }
       }
     }
+
+    // -------------------------------
+    // 3. SECURITY HEADERS
+    // -------------------------------
+    // Add security headers to all responses
+    response.headers.set("X-Frame-Options", "DENY");
+    response.headers.set("X-Content-Type-Options", "nosniff");
+    response.headers.set("X-XSS-Protection", "1; mode=block");
+    response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+    response.headers.set(
+      "Content-Security-Policy",
+      "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co;"
+    );
+
+    // -------------------------------
+    // 5. ALLOW ONBOARDING ALWAYS
+    // -------------------------------
+    // No redirects here. Onboarding is handled inside the app.
+    return response;
+  } catch (err) {
+    console.error("Middleware runtime error:", err);
+    return NextResponse.next();
   }
-
-  // -------------------------------
-  // 3. SECURITY HEADERS
-  // -------------------------------
-  // Add security headers to all responses
-  response.headers.set("X-Frame-Options", "DENY");
-  response.headers.set("X-Content-Type-Options", "nosniff");
-  response.headers.set("X-XSS-Protection", "1; mode=block");
-  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  response.headers.set(
-    "Content-Security-Policy",
-    "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co;"
-  );
-
-  // -------------------------------
-  // 5. ALLOW ONBOARDING ALWAYS
-  // -------------------------------
-  // No redirects here. Onboarding is handled inside the app.
-  return response;
 }
 
 export const config = {
