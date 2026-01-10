@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { checkRateLimit, createRateLimitHeaders, RATE_LIMITS } from "@/lib/security/rate-limiter";
-import { needsRotation, rotateSession } from "@/lib/security/session-rotator";
 import { getCookieDomain } from "@/lib/supabase/cookie-domain";
 
 export async function middleware(request: NextRequest) {
@@ -13,11 +12,19 @@ export async function middleware(request: NextRequest) {
                    "unknown";
   const appUrl = process.env.NEXT_PUBLIC_APP_URL;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-  const appOrigin = appUrl ? new URL(appUrl) : null;
-  const siteOrigin = siteUrl ? new URL(siteUrl) : null;
+  const safeUrl = (value?: string) => {
+    if (!value) return null;
+    try {
+      return new URL(value);
+    } catch {
+      return null;
+    }
+  };
+  const appOrigin = safeUrl(appUrl);
+  const siteOrigin = safeUrl(siteUrl);
   const host = request.nextUrl.hostname;
 
-  if (appOrigin && siteOrigin) {
+  if (appOrigin && siteOrigin && appOrigin.hostname !== siteOrigin.hostname) {
     const appPaths = ["/app", "/auth", "/onboarding", "/accept-invite", "/submit", "/signin", "/api"];
     const isAppPath = appPaths.some(
       (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
@@ -39,27 +46,42 @@ export async function middleware(request: NextRequest) {
   }
 
   const cookieDomain = getCookieDomain();
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const hasSupabaseEnv = Boolean(supabaseUrl && supabaseAnonKey);
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll: () => request.cookies.getAll(),
-        setAll: (cookiesToSet) => {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            const cookieOptions = cookieDomain ? { ...options, domain: cookieDomain } : options;
-            request.cookies.set(name, value);
-            response.cookies.set(name, value, cookieOptions);
-          });
+  let user: { id: string } | null = null;
+  let supabase: ReturnType<typeof createServerClient> | null = null;
+
+  if (hasSupabaseEnv) {
+    try {
+      supabase = createServerClient(supabaseUrl!, supabaseAnonKey!, {
+        cookies: {
+          getAll: () => request.cookies.getAll(),
+          setAll: (cookiesToSet) => {
+            try {
+              cookiesToSet.forEach(({ name, value, options }) => {
+                const cookieOptions = cookieDomain ? { ...options, domain: cookieDomain } : options;
+                request.cookies.set(name, value);
+                response.cookies.set(name, value, cookieOptions);
+              });
+            } catch {
+              // Ignore cookie set errors in middleware
+            }
+          },
         },
-      },
-    }
-  );
+      });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+      const { data, error } = await supabase.auth.getUser();
+      if (!error) {
+        user = data.user ?? null;
+      }
+    } catch (error) {
+      console.error("[Middleware] Supabase init failed:", error);
+      supabase = null;
+      user = null;
+    }
+  }
 
   // -------------------------------
   // RATE LIMITING
@@ -134,7 +156,7 @@ export async function middleware(request: NextRequest) {
   // -------------------------------
   // 2b. ROLE-BASED DASHBOARD GUARD
   // -------------------------------
-  if (user && pathname.startsWith("/app") && !pathname.startsWith("/app/api")) {
+  if (user && supabase && pathname.startsWith("/app") && !pathname.startsWith("/app/api")) {
     const { data: membership } = await supabase
       .from("org_members")
       .select("organization_id, role")
@@ -200,27 +222,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // -------------------------------
-  // 3. SESSION ROTATION
-  // -------------------------------
-  // Rotate session tokens for authenticated users on app routes
-  if (user && (pathname.startsWith("/app") || pathname.startsWith("/app/api"))) {
-    try {
-      const shouldRotate = await needsRotation();
-      if (shouldRotate) {
-        const rotationResult = await rotateSession();
-        if (rotationResult.success && rotationResult.newSession) {
-          // Tokens are automatically refreshed by Supabase
-          // The cookies will be updated in the response
-        }
-      }
-    } catch (error) {
-      // Log but don't block - session rotation should never break the app
-      console.error("[Middleware] Session rotation error:", error);
-    }
-  }
-
-  // -------------------------------
-  // 4. SECURITY HEADERS
+  // 3. SECURITY HEADERS
   // -------------------------------
   // Add security headers to all responses
   response.headers.set("X-Frame-Options", "DENY");
