@@ -34,6 +34,7 @@ export default async function MarketingLayout({ children }: { children: ReactNod
               <Link href="/industries" className="hover:text-slate-100">Industries</Link>
               <Link href="/security" className="hover:text-slate-100">Security</Link>
               <Link href="/pricing" className="hover:text-slate-100">Pricing</Link>
+              <Link href="/our-story" className="hover:text-slate-100">Our Story</Link>
               <Link href="/contact" className="hover:text-slate-100">Contact</Link>
             </nav>
             <details className="relative md:hidden">
@@ -47,6 +48,7 @@ export default async function MarketingLayout({ children }: { children: ReactNod
                 <Link href="/industries" className="block rounded-lg px-3 py-2 hover:bg-white/10">Industries</Link>
                 <Link href="/security" className="block rounded-lg px-3 py-2 hover:bg-white/10">Security</Link>
                 <Link href="/pricing" className="block rounded-lg px-3 py-2 hover:bg-white/10">Pricing</Link>
+                <Link href="/our-story" className="block rounded-lg px-3 py-2 hover:bg-white/10">Our Story</Link>
                 <Link href="/contact" className="block rounded-lg px-3 py-2 hover:bg-white/10">Contact</Link>
                 <Link href="/auth/signin" className="block rounded-lg px-3 py-2 hover:bg-white/10">Login</Link>
               </div>
@@ -125,6 +127,7 @@ export default async function MarketingLayout({ children }: { children: ReactNod
             <div className="space-y-3 text-sm text-slate-300">
               <div className="text-xs uppercase tracking-[0.2em] text-slate-500">Company</div>
               <Link href="/about" className="block hover:text-slate-100">About</Link>
+              <Link href="/our-story" className="block hover:text-slate-100">Our Story</Link>
               <Link href="/contact" className="block hover:text-slate-100">Contact</Link>
               <Link href="/legal/privacy" className="block hover:text-slate-100">Privacy</Link>
               <Link href="/legal/terms" className="block hover:text-slate-100">Terms</Link>

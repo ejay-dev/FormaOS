@@ -21,11 +21,17 @@ export default function PeoplePage() {
   const [members, setMembers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [orgId, setOrgId] = useState<string | null>(null)
-  const supabase = createSupabaseClient()
 
   useEffect(() => {
     async function getPersonnelData() {
+      const supabase = createSupabaseClient()
       const { data: { user } } = await supabase.auth.getUser()
+      if (!user?.id) {
+        setOrgId(null)
+        setMembers([])
+        setLoading(false)
+        return
+      }
       
       const { data: membership } = await supabase
         .from("org_members")
@@ -33,7 +39,7 @@ export default function PeoplePage() {
         .eq("user_id", user?.id)
         .single()
 
-      if (membership) {
+      if (membership?.organization_id) {
         setOrgId(membership.organization_id)
         // Fetch Members including Phase 1 metadata: department, start_date, and compliance_status
         const { data: membersList } = await supabase
@@ -58,6 +64,9 @@ export default function PeoplePage() {
         }))
 
         setMembers(enrichedMembers)
+      } else {
+        setOrgId(null)
+        setMembers([])
       }
       setLoading(false)
     }
@@ -66,7 +75,11 @@ export default function PeoplePage() {
 
   return (
     <div className="space-y-8 pb-12">
-      <InviteModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} orgId={orgId} />
+      <InviteModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        orgId={orgId ?? null}
+      />
 
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div>

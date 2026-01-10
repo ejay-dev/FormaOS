@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { ProfileEditor } from "@/components/profile/profile-editor";
 import { 
   User, 
   Calendar, 
@@ -17,11 +18,23 @@ export default async function EmployeeProfilePage() {
   // Fetch individual profile metadata and organization name
   const { data: profile } = await supabase
     .from("org_members")
-    .select("*, organizations(name)")
+    .select("*, organizations(name, domain, registration_number)")
     .eq("user_id", user?.id)
     .single();
 
+  const { data: userProfile } = await supabase
+    .from("user_profiles")
+    .select("full_name, phone, avatar_path")
+    .eq("user_id", user?.id)
+    .maybeSingle();
+
   if (!profile) return null;
+
+  const avatarPath = userProfile?.avatar_path ?? null;
+  const avatarSigned = avatarPath
+    ? await supabase.storage.from("user-avatars").createSignedUrl(avatarPath, 60 * 60 * 12)
+    : { data: null };
+  const avatarUrl = avatarSigned?.data?.signedUrl ?? null;
 
   const statusColors = {
     active: "bg-emerald-400/10 text-emerald-700 border-emerald-400/30",
@@ -49,6 +62,18 @@ export default async function EmployeeProfilePage() {
           System Status: {profile.compliance_status || 'Active'}
         </div>
       </header>
+
+      <ProfileEditor
+        userId={user?.id ?? ""}
+        orgId={profile.organization_id}
+        role={profile.role}
+        userEmail={user?.email ?? ""}
+        orgName={profile.organizations.name}
+        orgDomain={profile.organizations.domain ?? null}
+        orgRegistrationNumber={profile.organizations.registration_number ?? null}
+        profile={userProfile ?? null}
+        avatarUrl={avatarUrl}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Personal Governance Card */}

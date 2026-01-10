@@ -157,6 +157,7 @@ export default async function AppLayout({
                 <TopBar
                   orgName={orgName || "My Organization"}
                   userEmail={user.email || ""}
+                  userId={user.id}
                   orgId={membership.organization_id}
                   role={roleKey}
                 />
