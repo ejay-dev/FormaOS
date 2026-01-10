@@ -137,12 +137,13 @@ export async function middleware(request: NextRequest) {
   if (user && pathname.startsWith("/app") && !pathname.startsWith("/app/api")) {
     const { data: membership } = await supabase
       .from("org_members")
-      .select("role")
+      .select("organization_id, role")
       .eq("user_id", user.id)
       .maybeSingle();
 
     const role = (membership?.role ?? "").toLowerCase();
     const isStaff = role === "staff" || role === "member";
+    const orgId = membership?.organization_id ?? null;
 
     if (isStaff) {
       const allowedPrefixes = [
@@ -162,6 +163,37 @@ export async function middleware(request: NextRequest) {
       if (!allowed) {
         const url = request.nextUrl.clone();
         url.pathname = "/app/staff";
+        return NextResponse.redirect(url);
+      }
+    }
+
+    const billingAllowed =
+      pathname.startsWith("/app/billing") || pathname.startsWith("/app/accept-invite");
+
+    if (orgId && !billingAllowed) {
+      const { data: subscription, error: subscriptionError } = await supabase
+        .from("org_subscriptions")
+        .select("status, current_period_end")
+        .eq("organization_id", orgId)
+        .maybeSingle();
+
+      let subscriptionActive = false;
+
+      if (!subscriptionError && subscription?.status) {
+        if (subscription.status === "active") {
+          subscriptionActive = true;
+        } else if (subscription.status === "trialing") {
+          if (subscription.current_period_end) {
+            const trialEnd = new Date(subscription.current_period_end).getTime();
+            subscriptionActive = !Number.isNaN(trialEnd) && Date.now() <= trialEnd;
+          }
+        }
+      }
+
+      if (!subscriptionActive) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/app/billing";
+        url.searchParams.set("status", "blocked");
         return NextResponse.redirect(url);
       }
     }

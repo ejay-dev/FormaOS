@@ -1,11 +1,11 @@
 "use client";
 
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import { PLAN_CATALOG, resolvePlanKey } from "@/lib/plans";
 
-export default function SignUpPage() {
+function SignUpContent() {
   const searchParams = useSearchParams();
   const planParam = resolvePlanKey(searchParams.get("plan"));
   const siteBase = (process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin).replace(/\/$/, "");
@@ -94,5 +94,21 @@ export default function SignUpPage() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-[#05080f] text-slate-100">
+          <div className="rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-sm text-slate-300">
+            Loading signup...
+          </div>
+        </div>
+      }
+    >
+      <SignUpContent />
+    </Suspense>
   );
 }

@@ -4,7 +4,14 @@ import { ShieldCheck, FileText, User, Calendar } from "lucide-react";
 import { requirePermission } from "@/app/app/actions/rbac";
 import PrintPackButton from "@/components/audit/print-pack-button";
 
-export default async function AuditExportPage({ params }: { params: { userId: string } }) {
+export default async function AuditExportPage({
+  params,
+}: {
+  params?: Promise<{ userId: string }>;
+}) {
+  const resolvedParams = await params;
+  const userId = resolvedParams?.userId ?? "";
+  if (!userId) return notFound();
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -21,7 +28,7 @@ export default async function AuditExportPage({ params }: { params: { userId: st
         org_audit_logs!actor_id (*)
     `)
     .eq("organization_id", permissionCtx.orgId)
-    .eq("user_id", params.userId)
+    .eq("user_id", userId)
     .maybeSingle();
 
   if (error || !staffMember) {
@@ -46,7 +53,7 @@ export default async function AuditExportPage({ params }: { params: { userId: st
                 <div className="flex items-center gap-3 text-slate-400">
                     <User className="h-4 w-4" />
                     <p className="font-bold uppercase tracking-widest text-xs">
-                        ID: {params.userId}
+                        ID: {userId}
                     </p>
                 </div>
             </div>

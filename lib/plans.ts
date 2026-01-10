@@ -60,7 +60,8 @@ export const PLAN_CATALOG: Record<PlanKey, PlanConfig> = {
 };
 
 export function isPlanKey(value: string | null | undefined): value is PlanKey {
-  return Boolean(value) && Object.prototype.hasOwnProperty.call(PLAN_CATALOG, value);
+  if (!value) return false;
+  return Object.prototype.hasOwnProperty.call(PLAN_CATALOG, value);
 }
 
 export function resolvePlanKey(value: string | null | undefined): PlanKey | null {

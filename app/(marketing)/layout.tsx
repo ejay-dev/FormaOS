@@ -2,22 +2,9 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Menu } from "lucide-react";
-import { Space_Grotesk, IBM_Plex_Sans } from "next/font/google";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import "./marketing.css";
 import { ParallaxMotion } from "./parallax-motion";
-
-const display = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-display",
-});
-
-const body = IBM_Plex_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-body",
-});
 
 export default async function MarketingLayout({ children }: { children: ReactNode }) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://formaos.com.au";
@@ -29,7 +16,7 @@ export default async function MarketingLayout({ children }: { children: ReactNod
   if (user) redirect(`${appUrl.replace(/\/$/, "")}/app`);
 
   return (
-    <div className={`${display.variable} ${body.variable} mk-shell font-[var(--font-body)]`}>
+    <div className="mk-shell font-[var(--font-body)]">
       <div className="relative min-h-screen overflow-hidden">
         <ParallaxMotion />
         <div className="mk-scene">

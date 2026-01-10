@@ -115,11 +115,18 @@ export default async function AcceptInvitePage({ params }: PageProps) {
     );
   }
 
-  await logActivity(invitation.organization_id, "ACCEPT_INVITATION", {
-    email: user.email,
-    role: invitation.role,
-    organization: invitation.organization_name,
-  });
+  await logActivity(
+    invitation.organization_id,
+    "ACCEPT_INVITATION",
+    invitation.email ?? "invitation",
+    {
+      metadata: {
+        email: user.email,
+        role: invitation.role,
+        organization: invitation.organization_name,
+      },
+    }
+  );
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#05080f] p-6">
@@ -151,4 +158,3 @@ function ArrowRight({ className }: { className?: string }) {
     </svg>
   );
 }
-

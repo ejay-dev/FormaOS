@@ -352,14 +352,15 @@ async function completeFirstAction(formData: FormData) {
 }
 
 type OnboardingPageProps = {
-  searchParams?: {
+  searchParams?: Promise<{
     step?: string;
     plan?: string;
     error?: string;
-  };
+  }>;
 };
 
 export default async function OnboardingPage({ searchParams }: OnboardingPageProps) {
+  const resolvedSearchParams = await searchParams;
   const { orgId, orgRecord, supabase } = await getOrgContext();
   const status = await getOnboardingStatus(supabase, orgId);
 
@@ -368,13 +369,13 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
   }
 
   const planKey =
-    resolvePlanKey(orgRecord?.plan_key ?? "") || resolvePlanKey(searchParams?.plan ?? "");
+    resolvePlanKey(orgRecord?.plan_key ?? "") || resolvePlanKey(resolvedSearchParams?.plan ?? "");
 
   if (!planKey) {
     redirect(`${SITE_URL}/pricing`);
   }
 
-  const rawStep = Number.parseInt(searchParams?.step ?? "", 10);
+  const rawStep = Number.parseInt(resolvedSearchParams?.step ?? "", 10);
   const step = Number.isNaN(rawStep) ? status.current_step : rawStep;
   const safeStep = Math.min(Math.max(step, 1), TOTAL_STEPS);
 
@@ -382,7 +383,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
     redirect(`/onboarding?step=${status.current_step}`);
   }
 
-  const errorState = Boolean(searchParams?.error);
+  const errorState = Boolean(resolvedSearchParams?.error);
   const planLabel = planKey ? PLAN_CATALOG[planKey].name : "Plan not selected";
 
   return (

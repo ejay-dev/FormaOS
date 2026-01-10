@@ -11,7 +11,14 @@ import Link from "next/link";
 import { updatePolicy } from "@/app/app/actions/policies";
 import { ArtifactSidebar } from "@/components/policies/artifact-sidebar"; 
 
-export default async function PolicyDetailPage({ params }: { params: { id: string } }) {
+export default async function PolicyDetailPage({
+  params,
+}: {
+  params?: Promise<{ id: string }>;
+}) {
+  const resolvedParams = await params;
+  const policyId = resolvedParams?.id ?? "";
+  if (!policyId) return notFound();
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -32,7 +39,7 @@ export default async function PolicyDetailPage({ params }: { params: { id: strin
       *,
       evidence:org_evidence(*) 
     `)
-    .eq("id", params.id)
+    .eq("id", policyId)
     .eq("organization_id", membership.organization_id)
     .single();
 

@@ -14,7 +14,7 @@ import {
   ArrowRight,
 } from "lucide-react"
 // FIX: Removed curly braces for default import
-import CredentialInspectorModal from "@/components/vault/credential-inspector-modal"
+import { CredentialInspectorModal } from "@/components/vault/credential-inspector-modal"
 
 export default function CredentialReviewPage() {
   const [selectedDoc, setSelectedDoc] = useState<any>(null)

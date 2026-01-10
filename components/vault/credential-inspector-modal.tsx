@@ -19,6 +19,7 @@ export function CredentialInspectorModal({
   const [blocked, setBlocked] = useState(false)
   const [reason, setReason] = useState("")
   const [signedUrl, setSignedUrl] = useState<string | null>(null)
+  const publicUrl = signedUrl ?? ""
 
   if (!isOpen || !credential) return null
 

@@ -100,7 +100,7 @@ export async function createTask(formData: FormData) {
   });
 
   revalidatePath("/app/tasks");
-  return { success: true };
+  return;
 }
 
 async function completeTaskCore(supabase: any, taskId: string, user: any) {

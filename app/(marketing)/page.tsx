@@ -83,7 +83,7 @@ const pricingPreview = [
   },
   {
     title: "Pro",
-    price: "$239 AUD",
+    price: "$230 AUD",
     detail: "Advanced reporting and governance controls.",
     href: "/auth/signup?plan=pro",
   },

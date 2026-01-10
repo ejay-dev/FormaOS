@@ -36,7 +36,7 @@ const tiers = [
   },
   {
     name: "Pro",
-    price: "$239 AUD",
+    price: "$230 AUD",
     cadence: "/month",
     summary: "For growing organizations operating across sites and teams.",
     features: [
@@ -62,7 +62,7 @@ const tiers = [
       "Dedicated support",
     ],
     cta: "Contact Sales",
-    href: "/auth/signup?plan=enterprise",
+    href: "/contact",
   },
 ];
 

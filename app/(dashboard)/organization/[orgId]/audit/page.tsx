@@ -1,13 +1,15 @@
 import { getAuditLogs } from "@/lib/data/audit-logs";
 
 interface PageProps {
-  params: {
+  params?: Promise<{
     orgId: string;
-  };
+  }>;
 }
 
 export default async function AuditPage({ params }: PageProps) {
-  const logs = await getAuditLogs(params.orgId);
+  const resolvedParams = await params;
+  const orgId = resolvedParams?.orgId ?? "";
+  const logs = orgId ? await getAuditLogs(orgId) : [];
 
   return (
     <div className="space-y-6">

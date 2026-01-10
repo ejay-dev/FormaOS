@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,9 +8,9 @@
 :root {
   --radius: 16px;
 
-  --font-inter: system-ui, sans-serif;
-  --font-inter-tight: system-ui, sans-serif;
-  --font-geist-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-inter: "Inter", system-ui, sans-serif;
+  --font-inter-tight: "Inter Tight", "Inter", system-ui, sans-serif;
+  --font-geist-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
   /* Dark enterprise tokens (phase 3) */
   --bg: 220 18% 8%;          /* App background */

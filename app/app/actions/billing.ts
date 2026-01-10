@@ -71,17 +71,27 @@ export async function startCheckout(formData: FormData) {
   const priceId = getStripePriceId(planKey);
   const siteBase = siteUrl.replace(/\/$/, "");
   const appBase = appUrl.replace(/\/$/, "");
+  const isTrialEligible = planKey === "basic" || planKey === "pro";
 
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
     customer: customerId,
     line_items: [{ price: priceId, quantity: 1 }],
+    subscription_data: {
+      trial_period_days: isTrialEligible ? 14 : undefined,
+      metadata: {
+        organization_id: orgId,
+        plan_key: planKey,
+      },
+    },
+    automatic_tax: { enabled: true },
     allow_promotion_codes: true,
     success_url: `${appBase}/app`,
     cancel_url: `${siteBase}/pricing`,
     metadata: {
       organization_id: orgId,
       plan_key: planKey,
+      price_id: priceId,
     },
   });
 
@@ -91,6 +101,7 @@ export async function startCheckout(formData: FormData) {
     status: "pending",
     stripe_customer_id: customerId,
     stripe_subscription_id: null,
+    price_id: priceId,
     updated_at: new Date().toISOString(),
   });
 
@@ -99,4 +110,52 @@ export async function startCheckout(formData: FormData) {
   }
 
   redirect(session.url);
+}
+
+export async function openCustomerPortal() {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/auth/signin");
+  }
+
+  const { data: membership } = await supabase
+    .from("org_members")
+    .select("organization_id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (!membership?.organization_id) {
+    redirect("/onboarding");
+  }
+
+  const orgId = membership.organization_id as string;
+  const admin = createSupabaseAdminClient();
+  const { data: subscription } = await admin
+    .from("org_subscriptions")
+    .select("stripe_customer_id")
+    .eq("organization_id", orgId)
+    .maybeSingle();
+
+  if (!subscription?.stripe_customer_id) {
+    redirect("/app/billing?status=missing_customer");
+  }
+
+  const stripe = getStripeClient();
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "";
+  const returnUrl = appUrl ? `${appUrl.replace(/\/$/, "")}/app/billing` : "/app/billing";
+
+  const portalSession = await stripe.billingPortal.sessions.create({
+    customer: subscription.stripe_customer_id,
+    return_url: returnUrl,
+  });
+
+  if (!portalSession.url) {
+    throw new Error("Stripe portal session missing url");
+  }
+
+  redirect(portalSession.url);
 }

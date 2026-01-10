@@ -1,13 +1,14 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { startCheckout } from "@/app/app/actions/billing";
+import { openCustomerPortal, startCheckout } from "@/app/app/actions/billing";
 import { resolvePlanKey, PLAN_CATALOG } from "@/lib/plans";
 import { CreditCard, ShieldCheck } from "lucide-react";
 
 export default async function BillingPage({
   searchParams,
 }: {
-  searchParams?: { status?: string };
+  searchParams?: Promise<{ status?: string }>;
 }) {
+  const resolvedSearchParams = await searchParams;
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -36,7 +37,7 @@ export default async function BillingPage({
 
   const { data: subscription } = await supabase
     .from("org_subscriptions")
-    .select("status, current_period_end")
+    .select("status, current_period_end, stripe_customer_id")
     .eq("organization_id", orgId)
     .maybeSingle();
 
@@ -45,12 +46,14 @@ export default async function BillingPage({
     .select("feature_key, enabled, limit_value")
     .eq("organization_id", orgId);
 
-  const status = searchParams?.status;
+  const status = resolvedSearchParams?.status;
   const trialEndsAt =
     subscription?.status === "trialing" ? subscription.current_period_end : null;
   const trialExpired =
     subscription?.status === "trialing" &&
     (!trialEndsAt || Date.now() > new Date(trialEndsAt).getTime());
+  const canManagePortal = Boolean(subscription?.stripe_customer_id);
+  const canSelfServe = subscription?.status === "active" || subscription?.status === "trialing";
 
   return (
     <div className="space-y-8">
@@ -73,6 +76,16 @@ export default async function BillingPage({
       {status === "cancelled" ? (
         <div className="rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
           Checkout cancelled. Your subscription remains inactive.
+        </div>
+      ) : null}
+      {status === "blocked" ? (
+        <div className="rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+          Your subscription is inactive. Activate billing to access the dashboard.
+        </div>
+      ) : null}
+      {status === "missing_customer" ? (
+        <div className="rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+          No billing profile found. Activate a subscription to continue.
         </div>
       ) : null}
       {status === "contact" ? (
@@ -108,15 +121,29 @@ export default async function BillingPage({
             </a>
           </div>
         ) : (
-          <form action={startCheckout} className="mt-6">
-            <input type="hidden" name="plan" value={planKey ?? ""} />
-            <button
-              type="submit"
-              className="rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950"
-            >
-              {subscription?.status === "active" ? "Manage subscription" : "Activate subscription"}
-            </button>
-          </form>
+          <div className="mt-6 flex flex-wrap gap-3">
+            {!canSelfServe ? (
+              <form action={startCheckout}>
+                <input type="hidden" name="plan" value={planKey ?? ""} />
+                <button
+                  type="submit"
+                  className="rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950"
+                >
+                  Activate subscription
+                </button>
+              </form>
+            ) : null}
+            {canManagePortal ? (
+              <form action={openCustomerPortal}>
+                <button
+                  type="submit"
+                  className="rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-slate-100"
+                >
+                  Manage billing
+                </button>
+              </form>
+            ) : null}
+          </div>
         )}
         {trialEndsAt && !trialExpired ? (
           <div className="mt-4 text-xs text-slate-400">

@@ -107,8 +107,7 @@ export const PLAN_OPTIONS = [
  * Validate industry selection
  */
 export function validateIndustry(industry: string): { valid: boolean; error?: string } {
-  const validIds = INDUSTRY_OPTIONS.map((i) => i.id);
-  if (!validIds.includes(industry)) {
+  if (!INDUSTRY_OPTIONS.some((option) => option.id === industry)) {
     return { valid: false, error: "Please select a valid industry" };
   }
   return { valid: true };
@@ -118,8 +117,7 @@ export function validateIndustry(industry: string): { valid: boolean; error?: st
  * Validate team size selection
  */
 export function validateTeamSize(teamSize: string): { valid: boolean; error?: string } {
-  const validIds = TEAM_SIZE_OPTIONS.map((t) => t.id);
-  if (!validIds.includes(teamSize)) {
+  if (!TEAM_SIZE_OPTIONS.some((option) => option.id === teamSize)) {
     return { valid: false, error: "Please select a valid team size" };
   }
   return { valid: true };
@@ -129,8 +127,7 @@ export function validateTeamSize(teamSize: string): { valid: boolean; error?: st
  * Validate plan selection
  */
 export function validatePlan(plan: string): { valid: boolean; error?: string } {
-  const validIds = PLAN_OPTIONS.map((p) => p.id);
-  if (!validIds.includes(plan)) {
+  if (!PLAN_OPTIONS.some((option) => option.id === plan)) {
     return { valid: false, error: "Please select a valid plan" };
   }
   return { valid: true };
@@ -144,8 +141,9 @@ export function validateFrameworks(frameworks: string[]): { valid: boolean; erro
     return { valid: false, error: "Please select at least one framework" };
   }
   
-  const validIds = FRAMEWORK_OPTIONS.map((f) => f.id);
-  const invalidFrameworks = frameworks.filter((f) => !validIds.includes(f));
+  const invalidFrameworks = frameworks.filter(
+    (framework) => !FRAMEWORK_OPTIONS.some((option) => option.id === framework)
+  );
   
   if (invalidFrameworks.length > 0) {
     return { valid: false, error: "Invalid framework selection" };

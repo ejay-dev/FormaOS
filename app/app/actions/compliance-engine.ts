@@ -10,6 +10,13 @@ type ControlStatus = "compliant" | "at_risk" | "non_compliant" | "not_applicable
 
 type EvidenceStatus = "pending" | "approved" | "rejected";
 
+type FrameworkRow = {
+  id: string;
+  code: string;
+  title?: string | null;
+  description?: string | null;
+};
+
 type FrameworkScore = {
   frameworkId: string;
   frameworkCode: string;
@@ -165,7 +172,10 @@ async function safeLogActivity(orgId: string, action: string, description: strin
   }
 }
 
-async function safeSelectFrameworks(supabase: any, strict: boolean = false) {
+async function safeSelectFrameworks(
+  supabase: any,
+  strict: boolean = false
+): Promise<FrameworkRow[]> {
   try {
     const { data, error } = await supabase
       .from("compliance_frameworks")

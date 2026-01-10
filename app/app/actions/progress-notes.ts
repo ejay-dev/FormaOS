@@ -62,7 +62,7 @@ export async function createProgressNote(formData: FormData) {
     reason: "progress_note_create",
   });
 
-  return { success: true, noteId: note?.id ?? null };
+  return;
 }
 
 export async function signOffProgressNote(input: FormData | string) {
@@ -83,7 +83,7 @@ export async function signOffProgressNote(input: FormData | string) {
 
   if (noteError || !note) throw new Error("Note not found");
   if (note.signed_off_by) {
-    return { success: true };
+    return;
   }
 
   const { error } = await supabase
@@ -105,5 +105,5 @@ export async function signOffProgressNote(input: FormData | string) {
     reason: "progress_note_signoff",
   });
 
-  return { success: true };
+  return;
 }

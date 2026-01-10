@@ -12,7 +12,7 @@ where key = 'basic';
 
 update public.plans
 set name = 'Pro',
-    price_cents = 23900,
+    price_cents = 23000,
     currency = 'aud',
     features = jsonb_build_array(
       'Everything in Starter',

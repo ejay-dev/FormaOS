@@ -60,7 +60,7 @@ export async function createPatient(formData: FormData) {
     reason: "patient_create",
   });
 
-  return { success: true, patientId: patient?.id ?? null };
+  return;
 }
 
 export async function updatePatient(formData: FormData) {
@@ -123,7 +123,7 @@ export async function updatePatient(formData: FormData) {
     reason: "patient_update",
   });
 
-  return { success: true };
+  return;
 }
 
 export async function createIncident(formData: FormData) {
@@ -179,7 +179,7 @@ export async function createIncident(formData: FormData) {
     reason: "incident_reported",
   });
 
-  return { success: true, incidentId: incident?.id ?? null };
+  return;
 }
 
 export async function resolveIncident(input: FormData | string) {
@@ -221,7 +221,7 @@ export async function resolveIncident(input: FormData | string) {
     reason: "incident_resolved",
   });
 
-  return { success: true };
+  return;
 }
 
 export async function startShift(input?: FormData | string | null) {
@@ -271,7 +271,7 @@ export async function startShift(input?: FormData | string | null) {
     reason: "shift_start",
   });
 
-  return { success: true, shiftId: shift?.id ?? null };
+  return;
 }
 
 export async function endShift(input: FormData | string) {
@@ -316,5 +316,5 @@ export async function endShift(input: FormData | string) {
     reason: "shift_complete",
   });
 
-  return { success: true };
+  return;
 }

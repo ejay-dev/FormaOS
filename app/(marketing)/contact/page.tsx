@@ -19,14 +19,15 @@ export const metadata: Metadata = {
 };
 
 type ContactPageProps = {
-  searchParams?: {
+  searchParams?: Promise<{
     success?: string;
     error?: string;
-  };
+  }>;
 };
 
-export default function ContactPage({ searchParams }: ContactPageProps) {
-  const status = searchParams?.success ? "success" : searchParams?.error ? "error" : null;
+export default async function ContactPage({ searchParams }: ContactPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const status = resolvedSearchParams?.success ? "success" : resolvedSearchParams?.error ? "error" : null;
 
   return (
     <div className="mx-auto max-w-6xl px-6 pb-20 pt-16 md:pt-24">

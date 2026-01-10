@@ -32,7 +32,13 @@ const NOTE_TAGS = [
   { value: "risk", label: "Risk" },
 ];
 
-export default async function PatientDetailPage({ params }: { params: { id: string } }) {
+export default async function PatientDetailPage({
+  params,
+}: {
+  params?: Promise<{ id: string }>;
+}) {
+  const resolvedParams = await params;
+  const patientId = resolvedParams?.id ?? "";
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/signin");
@@ -49,7 +55,9 @@ export default async function PatientDetailPage({ params }: { params: { id: stri
   const canWrite = ["OWNER", "COMPLIANCE_OFFICER", "MANAGER", "STAFF"].includes(roleKey);
   const canAdmin = ["OWNER", "COMPLIANCE_OFFICER", "MANAGER"].includes(roleKey);
 
-  const patientId = params.id;
+  if (!patientId) {
+    redirect("/app/patients");
+  }
 
   const [
     { data: patient },
