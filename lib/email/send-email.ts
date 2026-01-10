@@ -183,6 +183,10 @@ export async function sendEmail(data: EmailData) {
 
     // 3. Execution: Send via Resend
     const resend = getResendClient();
+    if (!resend) {
+      throw new Error("Resend is not configured.");
+    }
+
     const result = await resend.emails.send({
       from: getFromEmail(),
       to: data.to,

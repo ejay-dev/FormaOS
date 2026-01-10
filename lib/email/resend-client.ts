@@ -6,7 +6,8 @@ export function getResendClient() {
   if (resendClient) return resendClient;
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    throw new Error("RESEND_API_KEY is not defined in environment variables");
+    console.error("[Resend] Missing RESEND_API_KEY.");
+    return null;
   }
   resendClient = new Resend(apiKey);
   return resendClient;

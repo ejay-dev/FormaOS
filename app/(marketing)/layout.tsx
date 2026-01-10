@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { Menu } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import "./marketing.css";
-import { ParallaxMotion } from "./parallax-motion";
 
 export default async function MarketingLayout({ children }: { children: ReactNode }) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://formaos.com.au";
@@ -18,22 +17,7 @@ export default async function MarketingLayout({ children }: { children: ReactNod
   return (
     <div className="mk-shell font-[var(--font-body)]">
       <div className="relative min-h-screen overflow-hidden">
-        <ParallaxMotion />
-        <div className="mk-scene">
-          <div className="mk-plane mk-plane--back" />
-          <div className="mk-plane mk-plane--mid" />
-          <div className="mk-plane mk-plane--front" />
-          <div className="mk-scene__layer" />
-          <div className="mk-scene__mesh" />
-          <div className="mk-orb mk-orb--1" />
-          <div className="mk-orb mk-orb--2" />
-          <div className="mk-orb mk-orb--3" />
-          <div className="pointer-events-none absolute inset-0 mk-ambient" />
-          <div className="pointer-events-none absolute inset-0 mk-gridline" />
-        </div>
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(5,7,12,0)_0%,rgba(5,7,12,0.6)_65%,rgba(5,7,12,1)_100%)]" />
-
-        <header className="sticky top-0 z-40 border-b border-white/10 bg-[#05070c]/80 backdrop-blur">
+        <header className="sticky top-0 z-40 border-b border-white/10 bg-[#05070c]">
           <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
             <Link href="/" className="flex items-center gap-3 text-slate-100">
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-sm font-semibold">

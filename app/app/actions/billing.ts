@@ -47,6 +47,9 @@ export async function startCheckout(formData: FormData) {
   }
 
   const stripe = getStripeClient();
+  if (!stripe) {
+    redirect("/app/billing?status=stripe_unavailable");
+  }
   const admin = createSupabaseAdminClient();
 
   const { data: subscriptionRow } = await admin
@@ -69,6 +72,9 @@ export async function startCheckout(formData: FormData) {
   }
 
   const priceId = getStripePriceId(planKey);
+  if (!priceId) {
+    redirect("/app/billing?status=missing_price");
+  }
   const siteBase = siteUrl.replace(/\/$/, "");
   const appBase = appUrl.replace(/\/$/, "");
   const isTrialEligible = planKey === "basic" || planKey === "pro";
@@ -147,6 +153,10 @@ export async function openCustomerPortal() {
   const stripe = getStripeClient();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "";
   const returnUrl = appUrl ? `${appUrl.replace(/\/$/, "")}/app/billing` : "/app/billing";
+
+  if (!stripe) {
+    redirect("/app/billing?status=stripe_unavailable");
+  }
 
   const portalSession = await stripe.billingPortal.sessions.create({
     customer: subscription.stripe_customer_id,

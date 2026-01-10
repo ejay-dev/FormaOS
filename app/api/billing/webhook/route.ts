@@ -15,6 +15,9 @@ export async function POST(request: Request) {
 
   const rawBody = await request.text();
   const stripe = getStripeClient();
+  if (!stripe) {
+    return NextResponse.json({ error: "Stripe is not configured" }, { status: 503 });
+  }
   let event: Stripe.Event;
 
   try {

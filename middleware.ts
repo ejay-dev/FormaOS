@@ -50,6 +50,15 @@ export async function middleware(request: NextRequest) {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   const hasSupabaseEnv = Boolean(supabaseUrl && supabaseAnonKey);
 
+  if (!hasSupabaseEnv) {
+    if (pathname.startsWith("/app")) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/auth/signin";
+      return NextResponse.redirect(url);
+    }
+    return response;
+  }
+
   let user: { id: string } | null = null;
   let supabase: ReturnType<typeof createServerClient> | null = null;
 

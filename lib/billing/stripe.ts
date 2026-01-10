@@ -8,12 +8,13 @@ const DEFAULT_PRICE_IDS: Record<Exclude<PlanKey, "enterprise">, string> = {
   pro: "price_1So1VmAHrAKKo3OlP6k9TMn4",
 };
 
-export function getStripeClient() {
+export function getStripeClient(): Stripe | null {
   if (stripeClient) return stripeClient;
 
   const secretKey = process.env.STRIPE_SECRET_KEY;
   if (!secretKey) {
-    throw new Error("Missing STRIPE_SECRET_KEY");
+    console.error("[Stripe] Missing STRIPE_SECRET_KEY.");
+    return null;
   }
 
   stripeClient = new Stripe(secretKey, {
@@ -23,7 +24,7 @@ export function getStripeClient() {
   return stripeClient;
 }
 
-export function getStripePriceId(planKey: string) {
+export function getStripePriceId(planKey: string): string | null {
   const priceMap: Record<string, string | undefined> = {
     basic: process.env.STRIPE_PRICE_BASIC ?? DEFAULT_PRICE_IDS.basic,
     pro: process.env.STRIPE_PRICE_PRO ?? DEFAULT_PRICE_IDS.pro,
@@ -32,7 +33,8 @@ export function getStripePriceId(planKey: string) {
 
   const priceId = priceMap[planKey];
   if (!priceId) {
-    throw new Error(`Missing Stripe price ID for plan ${planKey}`);
+    console.error(`[Stripe] Missing price ID for plan ${planKey}.`);
+    return null;
   }
 
   return priceId;
