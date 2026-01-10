@@ -1,4 +1,4 @@
-import { resend, FROM_EMAIL } from './resend-client';
+import { getResendClient, getFromEmail } from "./resend-client";
 import { ReactElement } from 'react';
 import WelcomeEmail from '@/emails/welcome-email';
 import InviteEmail from '@/emails/invite-email';
@@ -182,8 +182,9 @@ export async function sendEmail(data: EmailData) {
     }
 
     // 3. Execution: Send via Resend
+    const resend = getResendClient();
     const result = await resend.emails.send({
-      from: FROM_EMAIL,
+      from: getFromEmail(),
       to: data.to,
       subject,
       react,
