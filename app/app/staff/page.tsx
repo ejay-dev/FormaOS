@@ -4,6 +4,44 @@ import { redirect } from "next/navigation";
 import { ClipboardCheck, AlertTriangle, FileText, Users, ArrowRight, CalendarDays } from "lucide-react";
 import { normalizeRole } from "@/app/app/actions/rbac";
 
+type TaskRow = {
+  id: string;
+  title: string;
+  status: string;
+  due_date: string | null;
+  patient_id: string | null;
+};
+
+type PatientRow = {
+  id: string;
+  full_name: string;
+  care_status: string;
+  risk_level: string;
+  emergency_flag: boolean;
+};
+
+type NoteRow = {
+  id: string;
+  patient_id: string;
+  status_tag: string;
+  created_at: string;
+};
+
+type IncidentRow = {
+  id: string;
+  severity: string;
+  status: string;
+  occurred_at: string;
+  patient_id: string | null;
+};
+
+type ShiftRow = {
+  id: string;
+  status: string;
+  started_at: string;
+  patient_id: string | null;
+};
+
 function fmtDate(d?: string | null) {
   if (!d) return "—";
   try {
@@ -36,8 +74,13 @@ export default async function StaffDashboardPage() {
   const orgId = membership.organization_id;
   const nowIso = new Date().toISOString();
 
-  const [{ data: tasks }, { data: patients }, { data: notes }, { data: incidents }, { data: shifts }] =
-    await Promise.all([
+  const [
+    { data: tasksData },
+    { data: patientsData },
+    { data: notesData },
+    { data: incidentsData },
+    { data: shiftsData },
+  ] = await Promise.all([
       supabase
         .from("org_tasks")
         .select("id,title,status,due_date,patient_id")
@@ -74,7 +117,13 @@ export default async function StaffDashboardPage() {
         .limit(4),
     ]);
 
-  const overdueTasks = (tasks ?? []).filter(
+  const tasks: TaskRow[] = tasksData ?? [];
+  const patients: PatientRow[] = patientsData ?? [];
+  const notes: NoteRow[] = notesData ?? [];
+  const incidents: IncidentRow[] = incidentsData ?? [];
+  const shifts: ShiftRow[] = shiftsData ?? [];
+
+  const overdueTasks = tasks.filter(
     (task) => task.due_date && task.status !== "completed" && task.due_date < nowIso
   );
 

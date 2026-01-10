@@ -3,6 +3,24 @@ import { InviteButton } from "@/components/team/invite-button"; // ✅ Using our
 import { Users, Mail, Clock, ShieldCheck, Trash2 } from "lucide-react";
 import Link from "next/link";
 
+type EntitlementRow = {
+  feature_key: string;
+  enabled: boolean;
+  limit_value: number | null;
+};
+
+type MemberRow = {
+  id: string;
+  user_id: string | null;
+  role: string | null;
+};
+
+type InviteRow = {
+  id: string;
+  email: string;
+  role: string;
+};
+
 export default async function TeamPage() {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -30,9 +48,13 @@ export default async function TeamPage() {
   ]);
 
   const hasSubscription = subscription?.status === "active" || subscription?.status === "trialing";
-  const teamLimit = (entitlements ?? []).find((e) => e.feature_key === "team_limit" && e.enabled)?.limit_value ?? null;
-  const memberCount = members?.length ?? 0;
-  const inviteCount = invites?.length ?? 0;
+  const entitlementRows: EntitlementRow[] = entitlements ?? [];
+  const memberRows: MemberRow[] = members ?? [];
+  const inviteRows: InviteRow[] = invites ?? [];
+  const teamLimit =
+    entitlementRows.find((e) => e.feature_key === "team_limit" && e.enabled)?.limit_value ?? null;
+  const memberCount = memberRows.length;
+  const inviteCount = inviteRows.length;
   const reachedLimit = teamLimit !== null && memberCount + inviteCount >= teamLimit;
 
   return (
@@ -81,7 +103,7 @@ export default async function TeamPage() {
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10">
-                {members?.map((member) => (
+                {memberRows.map((member) => (
                     <tr key={member.id} className="hover:bg-white/5 transition-colors group">
                     <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
@@ -116,7 +138,7 @@ export default async function TeamPage() {
         </div>
 
         {/* SECTION 2: Pending Invites (Conditional) */}
-        {invites && invites.length > 0 && (
+        {inviteRows.length > 0 && (
           <div className="bg-white/5 border border-white/10 rounded-3xl shadow-sm overflow-hidden">
             <div className="p-6 border-b border-white/10 flex items-center gap-2 bg-amber-400/10">
                <div className="h-8 w-8 rounded-full bg-amber-400/10 text-amber-300 flex items-center justify-center">
@@ -130,7 +152,7 @@ export default async function TeamPage() {
             
             <table className="w-full text-left text-sm">
               <tbody className="divide-y divide-white/10">
-                {invites.map((invite) => (
+                {inviteRows.map((invite) => (
                   <tr key={invite.id} className="group hover:bg-amber-400/10 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">

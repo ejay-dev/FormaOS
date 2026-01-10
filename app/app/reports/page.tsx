@@ -21,6 +21,11 @@ import {
 } from "@/app/app/actions/control-evaluations";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
+type EntitlementRow = {
+  feature_key: string;
+  enabled: boolean;
+};
+
 export default async function ReportsPage() {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -49,8 +54,9 @@ export default async function ReportsPage() {
         .select("feature_key, enabled")
         .eq("organization_id", orgId);
 
+      const entitlementRows: EntitlementRow[] = entitlements ?? [];
       const entitlementSet = new Set(
-        (entitlements ?? []).filter((e) => e.enabled).map((e) => e.feature_key)
+        entitlementRows.filter((e) => e.enabled).map((e) => e.feature_key)
       );
       hasAuditExport = entitlementSet.has("audit_export");
       hasFrameworkEval = entitlementSet.has("framework_evaluations");

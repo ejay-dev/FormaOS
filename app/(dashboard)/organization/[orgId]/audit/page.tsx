@@ -6,10 +6,18 @@ interface PageProps {
   }>;
 }
 
+type AuditLog = {
+  id: string;
+  action: string;
+  target_resource: string | null;
+  created_at: string;
+  metadata: unknown;
+};
+
 export default async function AuditPage({ params }: PageProps) {
   const resolvedParams = await params;
   const orgId = resolvedParams?.orgId ?? "";
-  const logs = orgId ? await getAuditLogs(orgId) : [];
+  const logs: AuditLog[] = orgId ? await getAuditLogs(orgId) : [];
 
   return (
     <div className="space-y-6">

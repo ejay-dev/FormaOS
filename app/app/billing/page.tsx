@@ -3,6 +3,12 @@ import { openCustomerPortal, startCheckout } from "@/app/app/actions/billing";
 import { resolvePlanKey, PLAN_CATALOG } from "@/lib/plans";
 import { CreditCard, ShieldCheck } from "lucide-react";
 
+type EntitlementRow = {
+  feature_key: string;
+  enabled: boolean;
+  limit_value: number | null;
+};
+
 export default async function BillingPage({
   searchParams,
 }: {
@@ -45,6 +51,7 @@ export default async function BillingPage({
     .from("org_entitlements")
     .select("feature_key, enabled, limit_value")
     .eq("organization_id", orgId);
+  const entitlementRows: EntitlementRow[] = entitlements ?? [];
 
   const status = resolvedSearchParams?.status;
   const trialEndsAt =
@@ -155,7 +162,7 @@ export default async function BillingPage({
       <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
         <div className="text-sm uppercase tracking-[0.3em] text-slate-400">Entitlements</div>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
-          {(entitlements ?? []).map((entitlement) => (
+          {entitlementRows.map((entitlement) => (
             <div
               key={entitlement.feature_key}
               className="rounded-xl border border-white/10 bg-[#05080f] px-4 py-3 text-sm text-slate-200"
@@ -167,7 +174,7 @@ export default async function BillingPage({
               </div>
             </div>
           ))}
-          {entitlements && entitlements.length === 0 ? (
+          {entitlementRows.length === 0 ? (
             <div className="text-sm text-slate-400">No entitlements active yet.</div>
           ) : null}
         </div>

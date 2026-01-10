@@ -4,6 +4,14 @@ import { normalizeRole } from "@/app/app/actions/rbac";
 import Link from "next/link";
 import { Users, AlertTriangle, Plus } from "lucide-react";
 
+type PatientRow = {
+  id: string;
+  full_name: string;
+  care_status: string;
+  risk_level: string;
+  emergency_flag: boolean;
+};
+
 export default async function PatientsPage() {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -25,6 +33,7 @@ export default async function PatientsPage() {
     .select("id, full_name, care_status, risk_level, emergency_flag")
     .eq("organization_id", membership.organization_id)
     .order("full_name", { ascending: true });
+  const patientRows: PatientRow[] = patients ?? [];
 
   return (
     <div className="space-y-8 pb-12">
@@ -59,10 +68,10 @@ export default async function PatientsPage() {
           Active Patients
         </div>
         <div className="divide-y divide-white/10">
-          {(patients ?? []).length === 0 ? (
+          {patientRows.length === 0 ? (
             <div className="px-6 py-10 text-sm text-slate-400">No patients created yet.</div>
           ) : (
-            (patients ?? []).map((patient) => (
+            patientRows.map((patient) => (
               <Link
                 key={patient.id}
                 href={`/app/patients/${patient.id}`}

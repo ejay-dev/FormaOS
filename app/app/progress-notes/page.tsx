@@ -5,6 +5,21 @@ import { NotebookPen, UserCircle2, BadgeCheck } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+type PatientRow = {
+  id: string;
+  full_name: string;
+};
+
+type NoteRow = {
+  id: string;
+  patient_id: string;
+  note_text: string;
+  status_tag: string;
+  created_at: string;
+  signed_off_by: string | null;
+  signed_off_at: string | null;
+};
+
 function fmtDate(value?: string | null) {
   if (!value) return "—";
   try {
@@ -38,7 +53,7 @@ export default async function ProgressNotesPage() {
   const canWrite = ["OWNER", "COMPLIANCE_OFFICER", "MANAGER", "STAFF"].includes(roleKey);
   const canSignOff = ["OWNER", "COMPLIANCE_OFFICER", "MANAGER"].includes(roleKey);
 
-  const [{ data: notes }, { data: patients }] = await Promise.all([
+  const [{ data: notesData }, { data: patientsData }] = await Promise.all([
     supabase
       .from("org_progress_notes")
       .select("id, patient_id, note_text, status_tag, created_at, signed_off_by, signed_off_at")
@@ -52,7 +67,9 @@ export default async function ProgressNotesPage() {
       .order("full_name", { ascending: true }),
   ]);
 
-  const patientMap = new Map((patients ?? []).map((patient) => [patient.id, patient.full_name]));
+  const notes: NoteRow[] = notesData ?? [];
+  const patients: PatientRow[] = patientsData ?? [];
+  const patientMap = new Map(patients.map((patient) => [patient.id, patient.full_name]));
 
   return (
     <div className="space-y-8 pb-12">

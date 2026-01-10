@@ -23,10 +23,10 @@ export function createSupabaseAdminClient() {
 
 function createFallbackAdminClient() {
   const error = { message: "Supabase admin client is not configured." };
-  const emptyResult = { data: null, error };
-  const emptyListResult = { data: [], error };
+  const emptyResult: { data: unknown; error: { message: string } } = { data: null, error };
+  const emptyListResult: { data: unknown[]; error: { message: string } } = { data: [], error };
 
-  const buildQuery = (result = emptyListResult) => {
+  const buildQuery = (result: { data: unknown; error: { message: string } } = emptyListResult) => {
     const builder: any = {
       select: () => buildQuery(emptyListResult),
       insert: () => buildQuery(emptyResult),

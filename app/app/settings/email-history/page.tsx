@@ -2,6 +2,18 @@ import { getOrganizationEmailLogs } from "@/lib/data/emails";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
+type EmailLog = {
+  id: string;
+  email_type: string;
+  recipient_email: string;
+  subject: string;
+  status: string;
+  error_message: string | null;
+  created_at: string;
+  resend_id: string | null;
+  user_id: string | null;
+};
+
 export default async function EmailHistoryPage() {
   const supabase = await createSupabaseServerClient();
   
@@ -22,7 +34,7 @@ export default async function EmailHistoryPage() {
   );
 
   // 2. Fetch upgraded logs (now includes error_message and tracking IDs)
-  const logs = await getOrganizationEmailLogs(membership.organization_id);
+  const logs: EmailLog[] = await getOrganizationEmailLogs(membership.organization_id);
 
   return (
     <div className="p-6 max-w-6xl mx-auto">

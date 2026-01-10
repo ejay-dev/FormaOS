@@ -2,6 +2,14 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { Plus, FileText, Search, Filter, ChevronRight, ShieldCheck, Clock } from "lucide-react";
 
+type PolicyRow = {
+  id: string;
+  title: string;
+  status: string;
+  version: string | null;
+  created_at: string;
+};
+
 export default async function PoliciesPage() {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -24,8 +32,8 @@ export default async function PoliciesPage() {
     .eq("organization_id", orgId)
     .order("created_at", { ascending: false });
 
-  const allPolicies = policies || [];
-  const publishedCount = allPolicies.filter(p => p.status === 'published').length;
+  const allPolicies: PolicyRow[] = policies || [];
+  const publishedCount = allPolicies.filter((p) => p.status === "published").length;
 
   return (
     <div className="space-y-8 pb-12">

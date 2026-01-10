@@ -4,6 +4,14 @@ import {
   Calendar, User, ArrowDown 
 } from "lucide-react";
 
+type AuditLog = {
+  id: string;
+  action: string;
+  created_at: string;
+  target: string | null;
+  actor_email: string | null;
+};
+
 export default async function HistoryPage() {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -22,6 +30,7 @@ export default async function HistoryPage() {
     .eq("organization_id", membership?.organization_id)
     .order("created_at", { ascending: false })
     .limit(100);
+  const auditLogs: AuditLog[] = logs ?? [];
 
   // Helper to determine icon based on action type
   const getEventStyle = (action: string) => {
@@ -39,7 +48,7 @@ export default async function HistoryPage() {
       </div>
 
       <div className="relative border-l-2 border-white/10 ml-4 space-y-8 pb-12">
-        {logs?.map((log, index) => {
+        {auditLogs.map((log, index) => {
            const style = getEventStyle(log.action);
            return (
             <div key={log.id} className="relative pl-8 group">
@@ -63,15 +72,15 @@ export default async function HistoryPage() {
                     </div>
 
                     <h3 className="text-sm font-bold text-slate-100 mb-1">
-                        {log.target}
+                        {log.target ?? "System update"}
                     </h3>
                     
                     <div className="flex items-center gap-2 mt-3 pt-3 border-t border-white/10">
                         <div className="h-5 w-5 rounded-full bg-white/10 text-slate-100 flex items-center justify-center text-[8px] font-bold">
-                            {log.actor_email[0].toUpperCase()}
+                            {(log.actor_email ?? "?")[0].toUpperCase()}
                         </div>
                         <span className="text-xs text-slate-400">
-                            Action performed by <span className="font-medium text-slate-100">{log.actor_email}</span>
+                            Action performed by <span className="font-medium text-slate-100">{log.actor_email ?? "System"}</span>
                         </span>
                     </div>
                 </div>

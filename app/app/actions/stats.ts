@@ -2,6 +2,12 @@
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
+type TaskRow = {
+  status: string | null;
+  priority: string | null;
+  evidence?: Array<{ count: number }> | null;
+};
+
 export async function getComplianceStats() {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -26,17 +32,17 @@ export async function getComplianceStats() {
     `)
     .eq("organization_id", orgId);
 
-  const allTasks = tasks || [];
+  const allTasks: TaskRow[] = tasks || [];
   const total = allTasks.length;
   
   if (total === 0) return { score: 0, total: 0, completed: 0, verified: 0 };
 
   // 2. Calculate Advanced Metrics
-  const completed = allTasks.filter(t => t.status === 'completed').length;
+  const completed = allTasks.filter((t) => t.status === "completed").length;
   
   // "Verified" means a task is completed AND has at least 1 evidence file
   const verified = allTasks.filter(
-    t => t.status === 'completed' && (t.evidence?.[0]?.count || 0) > 0
+    (t) => t.status === "completed" && (t.evidence?.[0]?.count || 0) > 0
   ).length;
 
   // 3. Weighted Score Logic (Critical tasks are worth more)
@@ -47,6 +53,8 @@ export async function getComplianceStats() {
     total,
     completed,
     verified,
-    criticalPending: allTasks.filter(t => t.priority === 'critical' && t.status !== 'completed').length
+    criticalPending: allTasks.filter(
+      (t) => t.priority === "critical" && t.status !== "completed"
+    ).length,
   };
 }

@@ -12,6 +12,16 @@ import {
 import Link from "next/link";
 import { EvidenceButton } from "@/components/tasks/evidence-button";
 
+type TaskRow = {
+  id: string;
+  title: string;
+  description: string | null;
+  status: string;
+  priority: string | null;
+  due_date: string | null;
+  evidence?: Array<{ count: number }> | null;
+};
+
 export default async function TasksPage() {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -37,8 +47,8 @@ export default async function TasksPage() {
     .order("status", { ascending: false })
     .order("due_date", { ascending: true });
 
-  const allTasks = tasks || [];
-  const completed = allTasks.filter(t => t.status === 'completed');
+  const allTasks: TaskRow[] = tasks || [];
+  const completed = allTasks.filter((t) => t.status === "completed");
 
   return (
     <div className="space-y-8 pb-12">
@@ -122,14 +132,17 @@ export default async function TasksPage() {
 
                 <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                        {task.evidence?.[0]?.count > 0 ? (
-                           <div className="flex items-center gap-1.5 text-emerald-200 bg-emerald-400/10 px-3 py-1 rounded-lg border border-emerald-400/30">
-                               <ShieldCheck className="h-3.5 w-3.5" />
-                               <span className="text-[10px] font-black">{task.evidence[0].count} FILES</span>
-                           </div>
-                        ) : (
-                           <EvidenceButton taskId={task.id} taskTitle={task.title} />
-                        )}
+                        {(() => {
+                          const evidenceCount = task.evidence?.[0]?.count ?? 0;
+                          return evidenceCount > 0 ? (
+                            <div className="flex items-center gap-1.5 text-emerald-200 bg-emerald-400/10 px-3 py-1 rounded-lg border border-emerald-400/30">
+                              <ShieldCheck className="h-3.5 w-3.5" />
+                              <span className="text-[10px] font-black">{evidenceCount} FILES</span>
+                            </div>
+                          ) : (
+                            <EvidenceButton taskId={task.id} taskTitle={task.title} />
+                          );
+                        })()}
                     </div>
                 </td>
 

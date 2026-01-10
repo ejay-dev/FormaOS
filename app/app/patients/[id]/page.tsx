@@ -16,6 +16,60 @@ import { createProgressNote, signOffProgressNote } from "@/app/app/actions/progr
 import { createIncident, resolveIncident, startShift, endShift, updatePatient } from "@/app/app/actions/patients";
 import { createTask } from "@/app/app/actions/tasks";
 
+type PatientRow = {
+  id: string;
+  full_name: string;
+  external_id: string | null;
+  date_of_birth: string | null;
+  care_status: string;
+  risk_level: string;
+  emergency_flag: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+type TaskRow = {
+  id: string;
+  title: string;
+  status: string;
+  due_date: string | null;
+  priority: string | null;
+};
+
+type NoteRow = {
+  id: string;
+  note_text: string;
+  status_tag: string;
+  created_at: string;
+  signed_off_by: string | null;
+  signed_off_at: string | null;
+};
+
+type IncidentRow = {
+  id: string;
+  severity: string;
+  status: string;
+  description: string;
+  occurred_at: string;
+  resolved_at: string | null;
+};
+
+type ShiftRow = {
+  id: string;
+  status: string;
+  started_at: string;
+  ended_at: string | null;
+  staff_user_id: string;
+};
+
+type EvidenceRow = {
+  id: string;
+  file_name: string;
+  verification_status: string | null;
+  created_at: string;
+  task_id: string | null;
+};
+
 function fmtDate(value?: string | null) {
   if (!value) return "—";
   try {
@@ -60,12 +114,12 @@ export default async function PatientDetailPage({
   }
 
   const [
-    { data: patient },
-    { data: tasks },
-    { data: notes },
-    { data: incidents },
-    { data: shifts },
-    { data: evidence },
+    { data: patientData },
+    { data: tasksData },
+    { data: notesData },
+    { data: incidentsData },
+    { data: shiftsData },
+    { data: evidenceData },
   ] = await Promise.all([
     supabase
       .from("org_patients")
@@ -111,6 +165,13 @@ export default async function PatientDetailPage({
       .order("created_at", { ascending: false })
       .limit(10),
   ]);
+
+  const patient = patientData as PatientRow | null;
+  const tasks = tasksData as TaskRow[] | null;
+  const notes = notesData as NoteRow[] | null;
+  const incidents = incidentsData as IncidentRow[] | null;
+  const shifts = shiftsData as ShiftRow[] | null;
+  const evidence = evidenceData as EvidenceRow[] | null;
 
   if (!patient) {
     redirect("/app/patients");
