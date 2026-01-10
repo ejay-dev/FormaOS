@@ -44,9 +44,24 @@ export async function middleware(request: NextRequest) {
   }
 
   const cookieDomain = getCookieDomain();
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  const hasSupabaseEnv = Boolean(supabaseUrl && supabaseAnonKey);
+    const isPresent = (value?: string | null) =>
+      Boolean(value && value !== "undefined" && value !== "null");
+    const supabaseUrl = isPresent(process.env.NEXT_PUBLIC_SUPABASE_URL)
+      ? process.env.NEXT_PUBLIC_SUPABASE_URL
+      : "";
+    const supabaseAnonKey = isPresent(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+      ? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+      : "";
+    const hasValidSupabaseUrl = (() => {
+      if (!supabaseUrl) return false;
+      try {
+        new URL(supabaseUrl);
+        return true;
+      } catch {
+        return false;
+      }
+    })();
+    const hasSupabaseEnv = Boolean(hasValidSupabaseUrl && supabaseAnonKey);
 
     if (!hasSupabaseEnv) {
       if (pathname.startsWith("/app")) {

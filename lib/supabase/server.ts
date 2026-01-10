@@ -7,10 +7,25 @@ export async function createSupabaseServerClient() {
   const cookieStore = await cookies();
   const cookieDomain = getCookieDomain();
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const isPresent = (value?: string | null) =>
+    Boolean(value && value !== "undefined" && value !== "null");
+  const supabaseUrl = isPresent(process.env.NEXT_PUBLIC_SUPABASE_URL)
+    ? process.env.NEXT_PUBLIC_SUPABASE_URL!
+    : "";
+  const supabaseKey = isPresent(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+    ? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    : "";
+  const hasValidUrl = (() => {
+    if (!supabaseUrl) return false;
+    try {
+      new URL(supabaseUrl);
+      return true;
+    } catch {
+      return false;
+    }
+  })();
 
-  if (!supabaseUrl || !supabaseKey) {
+  if (!hasValidUrl || !supabaseKey) {
     console.error("[Supabase] Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY.");
     return createFallbackSupabaseClient();
   }

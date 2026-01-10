@@ -1,10 +1,25 @@
 import { createClient } from "@supabase/supabase-js";
 
 export function createSupabaseAdminClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const isPresent = (value?: string | null) =>
+    Boolean(value && value !== "undefined" && value !== "null");
+  const url = isPresent(process.env.NEXT_PUBLIC_SUPABASE_URL)
+    ? process.env.NEXT_PUBLIC_SUPABASE_URL!
+    : "";
+  const serviceKey = isPresent(process.env.SUPABASE_SERVICE_ROLE_KEY)
+    ? process.env.SUPABASE_SERVICE_ROLE_KEY!
+    : "";
+  const hasValidUrl = (() => {
+    if (!url) return false;
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  })();
 
-  if (!url || !serviceKey) {
+  if (!hasValidUrl || !serviceKey) {
     console.error("[Supabase] Missing service role configuration.");
     return createFallbackAdminClient();
   }

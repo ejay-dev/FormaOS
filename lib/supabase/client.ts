@@ -65,10 +65,24 @@ function createFallbackClient() {
 
 export function createSupabaseClient() {
   if (cachedClient) return cachedClient;
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-  const key = getSupabaseKey();
+  const isPresent = (value?: string | null) =>
+    Boolean(value && value !== "undefined" && value !== "null");
+  const url = isPresent(process.env.NEXT_PUBLIC_SUPABASE_URL)
+    ? process.env.NEXT_PUBLIC_SUPABASE_URL!
+    : "";
+  const keyRaw = getSupabaseKey();
+  const key = isPresent(keyRaw) ? keyRaw : "";
+  const hasValidUrl = (() => {
+    if (!url) return false;
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  })();
 
-  if (!url || !key) {
+  if (!hasValidUrl || !key) {
     console.error("[Supabase] Missing NEXT_PUBLIC_SUPABASE_URL or public key.");
     cachedClient = createFallbackClient();
     return cachedClient;
