@@ -1,0 +1,175 @@
+import type { ReactNode } from "react";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { Menu } from "lucide-react";
+import { Space_Grotesk, IBM_Plex_Sans } from "next/font/google";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import "./marketing.css";
+import { ParallaxMotion } from "./parallax-motion";
+
+const display = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-display",
+});
+
+const body = IBM_Plex_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-body",
+});
+
+export default async function MarketingLayout({ children }: { children: ReactNode }) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://formaos.com.au";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? siteUrl;
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user) redirect(`${appUrl.replace(/\/$/, "")}/app`);
+
+  return (
+    <div className={`${display.variable} ${body.variable} mk-shell font-[var(--font-body)]`}>
+      <div className="relative min-h-screen overflow-hidden">
+        <ParallaxMotion />
+        <div className="mk-scene">
+          <div className="mk-plane mk-plane--back" />
+          <div className="mk-plane mk-plane--mid" />
+          <div className="mk-plane mk-plane--front" />
+          <div className="mk-scene__layer" />
+          <div className="mk-scene__mesh" />
+          <div className="mk-orb mk-orb--1" />
+          <div className="mk-orb mk-orb--2" />
+          <div className="mk-orb mk-orb--3" />
+          <div className="pointer-events-none absolute inset-0 mk-ambient" />
+          <div className="pointer-events-none absolute inset-0 mk-gridline" />
+        </div>
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(5,7,12,0)_0%,rgba(5,7,12,0.6)_65%,rgba(5,7,12,1)_100%)]" />
+
+        <header className="sticky top-0 z-40 border-b border-white/10 bg-[#05070c]/80 backdrop-blur">
+          <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
+            <Link href="/" className="flex items-center gap-3 text-slate-100">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-sm font-semibold">
+                FO
+              </span>
+              <div>
+                <div className="text-sm font-semibold tracking-tight font-[var(--font-display)]">FormaOS</div>
+                <div className="text-[10px] uppercase tracking-[0.3em] text-slate-400">Compliance OS</div>
+              </div>
+            </Link>
+            <nav className="hidden items-center gap-6 text-sm text-slate-300 md:flex">
+              <Link href="/" className="hover:text-slate-100">Home</Link>
+              <Link href="/product" className="hover:text-slate-100">Product</Link>
+              <Link href="/industries" className="hover:text-slate-100">Industries</Link>
+              <Link href="/security" className="hover:text-slate-100">Security</Link>
+              <Link href="/pricing" className="hover:text-slate-100">Pricing</Link>
+              <Link href="/contact" className="hover:text-slate-100">Contact</Link>
+            </nav>
+            <details className="relative md:hidden">
+              <summary className="flex cursor-pointer list-none items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-slate-200">
+                <Menu className="h-4 w-4" />
+                Menu
+              </summary>
+              <div className="absolute right-0 mt-2 w-48 rounded-xl border border-white/10 bg-[#0b1220] p-2 text-sm text-slate-300 shadow-xl">
+                <Link href="/" className="block rounded-lg px-3 py-2 hover:bg-white/10">Home</Link>
+                <Link href="/product" className="block rounded-lg px-3 py-2 hover:bg-white/10">Product</Link>
+                <Link href="/industries" className="block rounded-lg px-3 py-2 hover:bg-white/10">Industries</Link>
+                <Link href="/security" className="block rounded-lg px-3 py-2 hover:bg-white/10">Security</Link>
+                <Link href="/pricing" className="block rounded-lg px-3 py-2 hover:bg-white/10">Pricing</Link>
+                <Link href="/contact" className="block rounded-lg px-3 py-2 hover:bg-white/10">Contact</Link>
+                <Link href="/auth/signin" className="block rounded-lg px-3 py-2 hover:bg-white/10">Login</Link>
+              </div>
+            </details>
+            <div className="flex items-center gap-3 text-sm">
+              <Link
+                href="/auth/signin"
+                className="hidden rounded-lg border border-white/10 px-4 py-2 text-slate-300 transition hover:border-white/20 hover:text-slate-100 md:inline-flex"
+              >
+                Login
+              </Link>
+              <Link
+                href="/pricing"
+                className="rounded-lg bg-white/10 px-4 py-2 text-slate-100 transition hover:bg-white/15"
+              >
+                Plans
+              </Link>
+              <Link
+                href="/contact"
+                className="rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-4 py-2 text-slate-950 font-semibold shadow-[0_10px_30px_rgba(56,189,248,0.35)]"
+              >
+                Request Demo
+              </Link>
+            </div>
+          </div>
+        </header>
+
+        <main className="relative z-10 mk-stage">{children}</main>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([
+              {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                name: "FormaOS",
+                url: siteUrl,
+                contactPoint: [
+                  {
+                    "@type": "ContactPoint",
+                    contactType: "sales",
+                    email: "sales@formaos.com",
+                  },
+                ],
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "SoftwareApplication",
+                name: "FormaOS",
+                applicationCategory: "BusinessApplication",
+                operatingSystem: "Web",
+                url: siteUrl,
+                description:
+                  "Compliance and governance operating system for regulated industries.",
+              },
+            ]),
+          }}
+        />
+
+        <footer className="border-t border-white/10 bg-[#05070c]">
+          <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 px-6 py-12 md:grid-cols-4">
+            <div className="space-y-4">
+              <div className="text-lg font-semibold font-[var(--font-display)]">FormaOS</div>
+              <p className="text-sm text-slate-400">
+                Compliance and governance operating system for regulated organizations.
+              </p>
+              <div className="text-xs uppercase tracking-[0.2em] text-slate-500">Audit ready.</div>
+            </div>
+            <div className="space-y-3 text-sm text-slate-300">
+              <div className="text-xs uppercase tracking-[0.2em] text-slate-500">Platform</div>
+              <Link href="/product" className="block hover:text-slate-100">How it works</Link>
+              <Link href="/industries" className="block hover:text-slate-100">Industries</Link>
+              <Link href="/security" className="block hover:text-slate-100">Security</Link>
+              <Link href="/pricing" className="block hover:text-slate-100">Pricing</Link>
+            </div>
+            <div className="space-y-3 text-sm text-slate-300">
+              <div className="text-xs uppercase tracking-[0.2em] text-slate-500">Company</div>
+              <Link href="/about" className="block hover:text-slate-100">About</Link>
+              <Link href="/contact" className="block hover:text-slate-100">Contact</Link>
+              <Link href="/legal/privacy" className="block hover:text-slate-100">Privacy</Link>
+              <Link href="/legal/terms" className="block hover:text-slate-100">Terms</Link>
+            </div>
+            <div className="space-y-3 text-sm text-slate-300">
+              <div className="text-xs uppercase tracking-[0.2em] text-slate-500">Access</div>
+              <Link href="/auth/signin" className="block hover:text-slate-100">Login</Link>
+              <Link href="/pricing" className="block hover:text-slate-100">Plans</Link>
+              <Link href="/contact" className="block hover:text-slate-100">Request Demo</Link>
+            </div>
+          </div>
+          <div className="border-t border-white/5 py-6 text-center text-xs text-slate-500">
+            FormaOS. Operational compliance for regulated industries.
+          </div>
+        </footer>
+      </div>
+    </div>
+  );
+}

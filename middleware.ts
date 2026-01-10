@@ -1,0 +1,222 @@
+import { NextResponse, type NextRequest } from "next/server";
+import { createServerClient } from "@supabase/ssr";
+import { checkRateLimit, createRateLimitHeaders, RATE_LIMITS } from "@/lib/security/rate-limiter";
+import { needsRotation, rotateSession } from "@/lib/security/session-rotator";
+import { getCookieDomain } from "@/lib/supabase/cookie-domain";
+
+export async function middleware(request: NextRequest) {
+  let response = NextResponse.next({ request });
+
+  const pathname = request.nextUrl.pathname;
+  const clientIp = request.headers.get("x-forwarded-for") || 
+                   request.headers.get("x-real-ip") || 
+                   "unknown";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  const appOrigin = appUrl ? new URL(appUrl) : null;
+  const siteOrigin = siteUrl ? new URL(siteUrl) : null;
+  const host = request.nextUrl.hostname;
+
+  if (appOrigin && siteOrigin) {
+    const appPaths = ["/app", "/auth", "/onboarding", "/accept-invite", "/submit", "/signin", "/api"];
+    const isAppPath = appPaths.some(
+      (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+    );
+
+    if (host === siteOrigin.hostname && isAppPath) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.protocol = appOrigin.protocol;
+      redirectUrl.host = appOrigin.host;
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    if (host === appOrigin.hostname && !isAppPath && !pathname.startsWith("/api")) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.protocol = siteOrigin.protocol;
+      redirectUrl.host = siteOrigin.host;
+      return NextResponse.redirect(redirectUrl);
+    }
+  }
+
+  const cookieDomain = getCookieDomain();
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll: () => request.cookies.getAll(),
+        setAll: (cookiesToSet) => {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            const cookieOptions = cookieDomain ? { ...options, domain: cookieDomain } : options;
+            request.cookies.set(name, value);
+            response.cookies.set(name, value, cookieOptions);
+          });
+        },
+      },
+    }
+  );
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // -------------------------------
+  // RATE LIMITING
+  // -------------------------------
+  
+  // Apply stricter rate limits to auth endpoints
+  if (pathname.startsWith("/auth")) {
+    const rateLimitResult = await checkRateLimit(RATE_LIMITS.AUTH, clientIp);
+    
+    // Add rate limit headers to response
+    const rlHeaders = createRateLimitHeaders(rateLimitResult);
+    Object.entries(rlHeaders).forEach(([key, value]) => {
+      response.headers.set(key, value);
+    });
+    
+    if (!rateLimitResult.success) {
+      return new NextResponse(
+        JSON.stringify({ error: "Too many requests. Please try again later." }),
+        {
+          status: 429,
+          headers: {
+            "Content-Type": "application/json",
+            ...rlHeaders,
+          },
+        }
+      );
+    }
+  }
+
+  // Apply general rate limits to API routes
+  if (pathname.startsWith("/app/api") || pathname.startsWith("/api")) {
+    const userId = user?.id || null;
+    const rateLimitResult = await checkRateLimit(RATE_LIMITS.API, clientIp, userId);
+    
+    const rlHeaders = createRateLimitHeaders(rateLimitResult);
+    Object.entries(rlHeaders).forEach(([key, value]) => {
+      response.headers.set(key, value);
+    });
+    
+    if (!rateLimitResult.success) {
+      return new NextResponse(
+        JSON.stringify({ error: "Rate limit exceeded" }),
+        {
+          status: 429,
+          headers: {
+            "Content-Type": "application/json",
+            ...rlHeaders,
+          },
+        }
+      );
+    }
+  }
+
+  // -------------------------------
+  // 1. BLOCK PROTECTED ROUTES IF NOT LOGGED IN
+  // -------------------------------
+  if (!user && pathname.startsWith("/app")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/auth/signin";
+    return NextResponse.redirect(url);
+  }
+
+  // -------------------------------
+  // 2. BLOCK AUTH PAGES IF LOGGED IN
+  // -------------------------------
+  if (user && pathname.startsWith("/auth")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/app";
+    return NextResponse.redirect(url);
+  }
+
+  // -------------------------------
+  // 2b. ROLE-BASED DASHBOARD GUARD
+  // -------------------------------
+  if (user && pathname.startsWith("/app") && !pathname.startsWith("/app/api")) {
+    const { data: membership } = await supabase
+      .from("org_members")
+      .select("role")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    const role = (membership?.role ?? "").toLowerCase();
+    const isStaff = role === "staff" || role === "member";
+
+    if (isStaff) {
+      const allowedPrefixes = [
+        "/app/staff",
+        "/app/tasks",
+        "/app/patients",
+        "/app/progress-notes",
+        "/app/vault",
+        "/app/evidence",
+        "/app/accept-invite",
+      ];
+
+      const allowed = allowedPrefixes.some(
+        (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+      );
+
+      if (!allowed) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/app/staff";
+        return NextResponse.redirect(url);
+      }
+    }
+  }
+
+  // -------------------------------
+  // 3. SESSION ROTATION
+  // -------------------------------
+  // Rotate session tokens for authenticated users on app routes
+  if (user && (pathname.startsWith("/app") || pathname.startsWith("/app/api"))) {
+    try {
+      const shouldRotate = await needsRotation();
+      if (shouldRotate) {
+        const rotationResult = await rotateSession();
+        if (rotationResult.success && rotationResult.newSession) {
+          // Tokens are automatically refreshed by Supabase
+          // The cookies will be updated in the response
+        }
+      }
+    } catch (error) {
+      // Log but don't block - session rotation should never break the app
+      console.error("[Middleware] Session rotation error:", error);
+    }
+  }
+
+  // -------------------------------
+  // 4. SECURITY HEADERS
+  // -------------------------------
+  // Add security headers to all responses
+  response.headers.set("X-Frame-Options", "DENY");
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("X-XSS-Protection", "1; mode=block");
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.headers.set(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co;"
+  );
+
+  // -------------------------------
+  // 5. ALLOW ONBOARDING ALWAYS
+  // -------------------------------
+  // No redirects here. Onboarding is handled inside the app.
+  return response;
+}
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder
+     * - api routes that are explicitly public
+     */
+    "/((?!_next/static|_next/image|favicon.ico|public/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|woff|woff2)$).*)",
+  ],
+};
