@@ -55,8 +55,8 @@ export function TopbarSearch() {
       ])
 
       const combined = [
-        ...(policies.data?.map(p => ({ id: p.id, title: p.title, type: 'policy' as const })) || []),
-        ...(tasks.data?.map(t => ({ id: t.id, title: t.title, type: 'task' as const })) || [])
+        ...(policies.data?.map((p: { id: string; title: string }) => ({ id: p.id, title: p.title, type: 'policy' as const })) || []),
+        ...(tasks.data?.map((t: { id: string; title: string }) => ({ id: t.id, title: t.title, type: 'task' as const })) || [])
       ]
 
       setResults(combined)

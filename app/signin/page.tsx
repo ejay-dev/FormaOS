@@ -1,12 +1,13 @@
 "use client";
 
-import { supabase } from "@/lib/supabase/client";
+import { createSupabaseClient } from "@/lib/supabase/client";
 
 export default function SignInPage() {
   const signIn = async () => {
     const base =
       (process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin).replace(/\/$/, "");
 
+    const supabase = createSupabaseClient();
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {

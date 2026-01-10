@@ -52,7 +52,7 @@ export function NotificationCenter({ orgId }: { orgId: string }) {
             table: "org_notifications",
             filter: `user_id=eq.${userId},organization_id=eq.${orgId}`,
           },
-          (payload) => {
+          (payload: { new: Notif }) => {
             const n = payload.new as Notif;
             setItems(prev => [n, ...prev].slice(0, 30));
           }

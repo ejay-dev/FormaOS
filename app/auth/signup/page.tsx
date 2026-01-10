@@ -2,7 +2,7 @@
 
 import { Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import { supabase } from "@/lib/supabase/client";
+import { createSupabaseClient } from "@/lib/supabase/client";
 import { PLAN_CATALOG, resolvePlanKey } from "@/lib/plans";
 
 function SignUpContent() {
@@ -21,6 +21,7 @@ function SignUpContent() {
     const base =
       (process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin).replace(/\/$/, "");
 
+    const supabase = createSupabaseClient();
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {

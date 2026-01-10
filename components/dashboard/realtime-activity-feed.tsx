@@ -40,7 +40,7 @@ export function RealtimeActivityFeed({ orgId }: { orgId: string }) {
           table: "org_audit_logs",
           filter: `organization_id=eq.${orgId}`,
         },
-        (payload) => {
+        (payload: { new: any }) => {
           const newItem = mapAuditToActivity(payload.new);
           setItems((prev) => [newItem, ...prev].slice(0, 50));
         }

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { supabase } from "@/lib/supabase/client"
+import { createSupabaseClient } from "@/lib/supabase/client"
 import { UserPlus, Loader2, Mail } from "lucide-react"
 import {
   Sheet,
@@ -26,6 +26,7 @@ export function InviteMemberSheet() {
     const role = formData.get("role") as string
 
     try {
+      const supabase = createSupabaseClient()
       // 1. Get current user's organization
       const { data: membership } = await supabase
         .from("org_members")

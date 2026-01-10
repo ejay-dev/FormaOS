@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase/client";
+import { createSupabaseClient } from "@/lib/supabase/client";
 import { CreateAssetSheet } from "@/components/registers/create-asset-sheet";
 import { DeleteButton } from "@/components/delete-button";
 import { exportRegistersToPDF } from "@/lib/utils/export-helper";
@@ -17,6 +17,7 @@ export default function RegistersPage() {
 
   async function fetchRegisters() {
     try {
+      const supabase = createSupabaseClient();
       const { data, error } = await supabase
         .from('org_registers')
         .select('*')

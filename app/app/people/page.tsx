@@ -41,7 +41,7 @@ export default function PeoplePage() {
           .select("*")
           .eq("organization_id", membership.organization_id)
 
-        const enrichedMembers = await Promise.all((membersList || []).map(async (m) => {
+        const enrichedMembers = await Promise.all((membersList || []).map(async (m: { user_id: string }) => {
           const { count: taskCount } = await supabase
             .from("org_tasks")
             .select('*', { count: 'exact', head: true })

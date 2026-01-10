@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import { supabase } from "@/lib/supabase/client";
+import { createSupabaseClient } from "@/lib/supabase/client";
 import { FormField, Form } from "@/lib/forms/types";
 import { FIELD_TEMPLATES } from "@/lib/forms/field-templates";
 import { Plus, Trash2, GripVertical, Settings, Eye, Save } from "lucide-react";
@@ -27,6 +27,7 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
 
   async function loadForm() {
     try {
+      const supabase = createSupabaseClient();
       const { data: auth } = await supabase.auth.getUser();
       if (!auth?.user?.id) {
         router.push("/auth/signin");
@@ -69,6 +70,7 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
 
     setSaving(true);
     try {
+      const supabase = createSupabaseClient();
       const { error } = await supabase
         .from("forms")
         .update({ fields, updated_at: new Date().toISOString() })

@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { supabase } from "@/lib/supabase/client"
+import { createSupabaseClient } from "@/lib/supabase/client"
 import { Trash2, Loader2 } from "lucide-react"
 import { logActivity } from "@/lib/actions/audit"
 
@@ -21,6 +21,7 @@ export function DeleteButton({ id, tableName, onDelete }: DeleteButtonProps) {
     setLoading(true)
     
     // 1. Execute the deletion
+    const supabase = createSupabaseClient()
     const { error } = await supabase.from(tableName).delete().eq('id', id)
 
     if (error) {

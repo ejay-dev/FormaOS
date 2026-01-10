@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { supabase } from "@/lib/supabase/client"
+import { createSupabaseClient } from "@/lib/supabase/client"
 import { CheckCircle2, Circle, Loader2 } from "lucide-react"
 import { fetchRequiredNonCompliantCount } from "@/app/app/actions/control-evaluations"
 
@@ -32,6 +32,7 @@ export function CompleteTaskButton({ taskId, initialStatus }: { taskId: string, 
     if (isCompleted || blocked) return // Don't do anything if already done or blocked
     
     setLoading(true)
+    const supabase = createSupabaseClient()
     const { error } = await supabase
       .from('org_tasks')
       .update({ status: 'completed' })

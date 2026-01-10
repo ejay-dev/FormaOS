@@ -44,7 +44,7 @@ export function DashboardAuditStream({ orgId }: { orgId: string }) {
           table: "org_audit_logs",
           filter: `organization_id=eq.${orgId}`,
         },
-        (payload) => {
+        (payload: { new: AuditEntry }) => {
           setLogs((prev) => [payload.new as AuditEntry, ...prev].slice(0, 10))
         }
       )

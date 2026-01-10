@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { supabase } from "@/lib/supabase/client"
+import { createSupabaseClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { LogOut, User, Settings, CreditCard, ChevronDown } from "lucide-react"
 
@@ -23,6 +23,7 @@ export function UserNav({ userEmail }: { userEmail: string }) {
   }, [])
 
   const handleLogout = async () => {
+    const supabase = createSupabaseClient()
     await supabase.auth.signOut()
     router.push("/signin")
     router.refresh()

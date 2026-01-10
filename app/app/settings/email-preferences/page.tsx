@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase/client';
+import { createSupabaseClient } from "@/lib/supabase/client";
 
 interface EmailPreferences {
   welcome_emails: boolean;
@@ -24,6 +24,7 @@ export default function EmailPreferencesPage() {
 
   async function loadPreferences() {
     try {
+      const supabase = createSupabaseClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
@@ -67,6 +68,7 @@ export default function EmailPreferencesPage() {
     setMessage('');
 
     try {
+      const supabase = createSupabaseClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
