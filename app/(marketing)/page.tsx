@@ -103,15 +103,17 @@ export default function MarketingHomePage() {
         <div className="pointer-events-none absolute -left-10 top-32 h-56 w-56 rounded-full bg-indigo-500/15 blur-3xl" />
         <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="space-y-8 mk-fade-up">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] uppercase tracking-[0.25em] text-slate-400">
+            <div className="inline-flex items-center gap-2 rounded-full border border-card-foreground/8 bg-card/5 px-4 py-2 text-[11px] uppercase tracking-[0.25em] text-muted">
               <Sparkles className="h-4 w-4 text-sky-300" />
               Enterprise compliance operating system
             </div>
             <h1 className="text-4xl font-semibold leading-tight text-slate-100 md:text-5xl font-[var(--font-display)]">
-              FormaOS keeps regulated teams audit-ready, every day.
+              FormaOS – Enterprise Compliance Operating System
             </h1>
-            <p className="text-lg text-slate-300">
-              Align controls, evidence, and operational tasks in a single system of record built for NDIS,
+            <p className="text-lg text-muted">
+              FormaOS keeps regulated teams{" "}
+              <span className="text-gradient text-glow-subtle">audit-ready</span>, every day. Align
+              controls, evidence, and operational tasks in a single system of record built for NDIS,
               healthcare, and multi-site services.
             </p>
             <div className="flex flex-wrap items-center gap-4">
@@ -119,11 +121,11 @@ export default function MarketingHomePage() {
                 href="/pricing"
                 className="mk-cta rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950"
               >
-                Start Trial
+                Start Trial / View Plans
               </Link>
               <Link
                 href="/contact"
-                className="mk-cta rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-slate-100 hover:border-white/30"
+                className="mk-cta rounded-lg border border-card-foreground/8 px-6 py-3 text-sm font-semibold text-card-foreground hover:border-card-foreground/20"
               >
                 Request Demo
               </Link>
@@ -131,41 +133,41 @@ export default function MarketingHomePage() {
                 View Platform
               </Link>
             </div>
-            <div className="flex flex-wrap gap-3 text-xs text-slate-400">
-              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-2">14-day free trial</span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-2">Audit-ready evidence</span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-2">Compliance gates</span>
+            <div className="flex flex-wrap gap-3 text-xs text-muted">
+              <span className="rounded-full border border-card-foreground/8 bg-card/5 px-3 py-2">14-day free trial</span>
+              <span className="rounded-full border border-card-foreground/8 bg-card/5 px-3 py-2">Audit-ready evidence</span>
+              <span className="rounded-full border border-card-foreground/8 bg-card/5 px-3 py-2">Compliance gates</span>
             </div>
           </div>
 
           <div className="mk-card mk-hero-frame mk-tilt mk-depth-3 rounded-2xl p-6 mk-fade-up">
             <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Command center preview</div>
             <div className="mt-6 space-y-4">
-              <div className="mk-card mk-tilt mk-depth-2 rounded-xl p-5">
-                <div className="text-sm font-semibold text-slate-200">Compliance posture</div>
-                <div className="mt-3 h-2 rounded-full bg-white/10">
+              <div className="mk-panel rounded-xl p-5 bg-card">
+                  <div className="text-sm font-semibold text-card-foreground">Compliance posture</div>
+                  <div className="mt-3 h-2 rounded-full bg-card/8">
                   <div className="h-2 w-[78%] rounded-full bg-gradient-to-r from-emerald-400 via-sky-400 to-indigo-400" />
                 </div>
                 <div className="mt-4 grid grid-cols-3 gap-3 text-[11px] text-slate-300">
-                  <div className="rounded-lg border border-white/10 bg-white/5 p-3">Compliant</div>
-                  <div className="rounded-lg border border-white/10 bg-white/5 p-3">At risk</div>
-                  <div className="rounded-lg border border-white/10 bg-white/5 p-3">Non-compliant</div>
+                    <div className="rounded-lg border border-card-foreground/8 bg-card p-3">Compliant</div>
+                    <div className="rounded-lg border border-card-foreground/8 bg-card p-3">At risk</div>
+                    <div className="rounded-lg border border-card-foreground/8 bg-card p-3">Non-compliant</div>
                 </div>
               </div>
-              <div className="mk-card mk-tilt mk-depth-2 rounded-xl p-5">
-                <div className="text-sm font-semibold text-slate-200">Evidence pipeline</div>
-                <div className="mt-4 space-y-3 text-xs text-slate-300">
-                  <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 p-3">
+              <div className="mk-panel rounded-xl p-5">
+                  <div className="text-sm font-semibold text-card-foreground">Evidence pipeline</div>
+                  <div className="mt-4 space-y-3 text-xs text-muted">
+                    <div className="flex items-center justify-between rounded-lg border border-card-foreground/8 bg-card p-3">
                     <span>Incident management policy</span>
                     <span>Approved</span>
                   </div>
-                  <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 p-3">
+                    <div className="flex items-center justify-between rounded-lg border border-card-foreground/8 bg-card p-3">
                     <span>Credential verification</span>
                     <span>Pending</span>
                   </div>
                 </div>
               </div>
-              <div className="mk-card mk-tilt mk-depth-1 rounded-xl p-4 text-xs text-slate-400">
+                <div className="mk-panel rounded-xl p-4 text-xs text-muted bg-card/5">
                 Built for operational governance, audit defense, and executive visibility.
               </div>
             </div>
@@ -304,19 +306,19 @@ export default function MarketingHomePage() {
           <div className="mk-card mk-tilt mk-depth-2 rounded-2xl p-6 mk-fade-up">
             <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Audit readiness</div>
             <div className="mt-6 space-y-4">
-              <div className="mk-card mk-tilt mk-depth-1 rounded-xl p-4">
+              <div className="mk-panel rounded-xl p-4">
                 <div className="text-sm font-semibold text-slate-100">Compliance gates</div>
                 <p className="mt-2 text-xs text-slate-400">
                   Export and certification actions are blocked unless controls are compliant.
                 </p>
               </div>
-              <div className="mk-card mk-tilt mk-depth-1 rounded-xl p-4">
+              <div className="mk-panel rounded-xl p-4">
                 <div className="text-sm font-semibold text-slate-100">Evidence traceability</div>
                 <p className="mt-2 text-xs text-slate-400">
                   Every artifact is linked to a control, reviewer, and timestamp.
                 </p>
               </div>
-              <div className="mk-card mk-tilt mk-depth-1 rounded-xl p-4">
+              <div className="mk-panel rounded-xl p-4">
                 <div className="text-sm font-semibold text-slate-100">Audit bundle exports</div>
                 <p className="mt-2 text-xs text-slate-400">
                   Generate structured audit packs with logs, evidence, and compliance snapshots.

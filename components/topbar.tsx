@@ -142,13 +142,13 @@ export function TopBar({
     <div className="flex h-full w-full items-center justify-between">
       
       {/* Left: Breadcrumbs */}
-      <div className="flex items-center gap-2 text-sm text-slate-300">
+      <div className="flex items-center gap-2 text-sm text-sidebar-foreground">
         <MobileSidebar role={role} />
-        <span className="hidden sm:inline font-semibold text-slate-50 uppercase text-[11px] tracking-[0.2em]">
+        <span className="hidden sm:inline font-semibold text-sidebar-primary-foreground uppercase text-[11px] tracking-[0.2em]">
           Organization
         </span>
         <ChevronRight className="h-4 w-4 text-slate-400" />
-        <span className="max-w-[160px] truncate px-3 py-1 rounded-md bg-white/10 text-slate-100 text-sm font-semibold border border-white/10">
+        <span className="max-w-[160px] truncate px-3 py-1 rounded-md bg-card/70 text-card-foreground text-sm font-semibold border border-card-foreground/8">
           {orgName}
         </span>
       </div>
@@ -165,7 +165,7 @@ export function TopBar({
         <div className="relative" ref={notifRef}>
           <button
             onClick={() => setShowNotifications((v) => !v)}
-            className="relative rounded-full p-2.5 text-slate-400 hover:bg-white/10 hover:text-slate-100 transition-colors"
+            className="relative rounded-full p-2.5 text-sidebar-foreground/80 hover:bg-card/8 hover:text-card-foreground transition-colors"
           >
             <Bell className="h-5 w-5" />
           </button>
@@ -184,7 +184,7 @@ export function TopBar({
             onClick={() => setShowUserMenu(!showUserMenu)}
             aria-haspopup="menu"
             aria-expanded={showUserMenu}
-            className="flex items-center gap-2 rounded-full border border-white/10 bg-white/10 pl-1 pr-3 py-1.5 hover:bg-white/15 transition-all shadow-sm"
+            className="flex items-center gap-2 rounded-full border border-card-foreground/8 bg-card/70 pl-1 pr-3 py-1.5 hover:bg-card/80 transition-all shadow-sm"
           >
             <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-white/10 text-[10px] font-bold text-slate-100">
               {avatarUrl ? (
@@ -203,7 +203,7 @@ export function TopBar({
 
           {showUserMenu && (
             <div
-              className="absolute right-0 mt-2 w-64 rounded-2xl border border-white/10 bg-[#0B1220] p-2 shadow-xl animate-in fade-in slide-in-from-top-2 duration-200 z-50"
+              className="absolute right-0 mt-2 w-64 rounded-2xl border border-card-foreground/8 bg-card p-2 shadow-xl animate-in fade-in slide-in-from-top-2 duration-200 z-50"
               role="menu"
               onKeyDown={(event) => {
                 if (event.key === "Escape") setShowUserMenu(false);

@@ -14,7 +14,7 @@ export function MobileSidebar({ role }: { role: RoleKey }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="rounded-full border border-white/10 bg-white/10 p-2 text-slate-100"
+        className="rounded-full border border-card-foreground/8 bg-card/70 p-2 text-card-foreground"
         aria-label="Open navigation"
       >
         <Menu className="h-4 w-4" />
@@ -33,7 +33,7 @@ export function MobileSidebar({ role }: { role: RoleKey }) {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="absolute right-3 top-3 rounded-full border border-white/10 bg-white/10 p-2 text-slate-100"
+              className="absolute right-3 top-3 rounded-full border border-card-foreground/8 bg-card/70 p-2 text-card-foreground"
             >
               <X className="h-4 w-4" />
             </button>

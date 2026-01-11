@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 export default function OurStoryPage() {
   return (
     <div className="mx-auto w-full max-w-5xl px-6 py-16 md:py-20">
-      <div className="mk-card rounded-3xl p-8 md:p-12">
+      <div className="mk-card rounded-3xl p-8 md:p-12 mk-fade-up">
         <div className="space-y-6">
           <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Our Story</div>
           <h1 className="text-4xl font-semibold text-slate-100 font-[var(--font-display)]">
@@ -39,7 +39,7 @@ export default function OurStoryPage() {
           </p>
         </div>
 
-        <div className="mt-10 space-y-8">
+        <div className="mt-10 space-y-8 mk-stagger">
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold text-slate-100 font-[var(--font-display)]">
               Where It Started

@@ -118,7 +118,7 @@ export default function ProductPage() {
           <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Compliance lifecycle</div>
           <div className="mt-6 space-y-4">
             {lifecycle.map((step, index) => (
-              <div key={step.title} className="mk-card mk-tilt mk-depth-1 rounded-xl p-4">
+              <div key={step.title} className="mk-panel rounded-xl p-4">
                 <div className="text-xs text-slate-400">Step {index + 1}</div>
                 <div className="text-sm font-semibold text-slate-100">{step.title}</div>
                 <p className="mt-1 text-xs text-slate-400">{step.description}</p>

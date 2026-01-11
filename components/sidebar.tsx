@@ -56,11 +56,11 @@ export function Sidebar({ role = "OWNER" }: { role?: RoleKey }) {
   );
 
   return (
-    <div className="flex h-screen w-64 flex-col justify-between border-r border-white/10 bg-gradient-to-b from-[#0B1220] to-[#0A101C] px-4 py-5">
+    <div className="flex h-screen w-64 flex-col justify-between border-r border-sidebar-border bg-sidebar px-4 py-5">
       <div className="space-y-7 overflow-y-auto no-scrollbar">
         {/* Logo Area */}
         <div className="flex items-center gap-3 px-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-slate-100 shadow-[0_0_18px_rgba(56,189,248,0.2)]">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-sidebar-primary text-sidebar-primary-foreground shadow-[0_0_18px_rgba(56,189,248,0.08)]">
             <ShieldCheck className="h-4 w-4" />
           </div>
           <div className="flex flex-col">
@@ -77,7 +77,7 @@ export function Sidebar({ role = "OWNER" }: { role?: RoleKey }) {
         <nav className="space-y-5">
           {categories.map((cat) => (
             <div key={cat} className="space-y-1.5">
-              <h3 className="px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400 mb-2">
+              <h3 className="px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-sidebar-foreground/70 mb-2">
                 {cat}
               </h3>
 
@@ -99,11 +99,10 @@ export function Sidebar({ role = "OWNER" }: { role?: RoleKey }) {
                       key={item.name}
                       href={item.href}
                       className={`group flex items-center justify-between rounded-xl px-3 py-2 text-[13px] font-semibold transition-all ${
-                        isActive
-                          ? "bg-white/10 text-slate-100 ring-1 ring-white/20 shadow-[0_0_20px_rgba(59,130,246,0.15)]"
-                          : "text-slate-400 hover:bg-white/10 hover:text-slate-100"
-                      }`}
-                    >
+                          isActive
+                            ? "bg-sidebar-primary text-sidebar-primary-foreground ring-1 ring-sidebar-ring shadow-[0_0_20px_rgba(59,130,246,0.06)]"
+                            : "text-sidebar-foreground/80 hover:bg-card/8 hover:text-sidebar-foreground"
+                        }`}>
                       <div className="flex items-center gap-3">
                         <item.icon
                           className={`h-4 w-4 transition-colors ${
@@ -127,9 +126,9 @@ export function Sidebar({ role = "OWNER" }: { role?: RoleKey }) {
       {/* Bottom: Quick Search + Logout */}
       <div className="space-y-3 border-t border-white/10 pt-4 mt-4">
         {/* Quick Search Hint (ties into CommandPalette) */}
-        <button
+            <button
           type="button"
-          className="group flex w-full items-center justify-between rounded-xl px-3 py-3 text-xs font-semibold text-slate-300 bg-white/10 border border-white/10 hover:text-slate-100 transition-all"
+          className="group flex w-full items-center justify-between rounded-xl px-3 py-3 text-xs font-semibold text-sidebar-foreground bg-card/8 border border-card-foreground/8 hover:text-sidebar-foreground transition-all"
         >
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 transition-colors">
@@ -146,7 +145,7 @@ export function Sidebar({ role = "OWNER" }: { role?: RoleKey }) {
         <form action={signOut}>
           <button
             type="submit"
-            className="group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-xs font-semibold text-slate-300 hover:bg-rose-500/10 hover:text-rose-300 transition-all"
+            className="group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-xs font-semibold text-sidebar-foreground hover:bg-rose-500/10 hover:text-rose-300 transition-all"
           >
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 transition-colors">
               <LogOut className="h-4 w-4 text-slate-400 transition-colors group-hover:text-rose-300" />

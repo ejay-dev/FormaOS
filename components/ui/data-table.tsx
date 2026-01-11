@@ -60,14 +60,14 @@ export function DataTable<TData, TValue>({
       </div>
 
       {/* Table */}
-      <div className="rounded-md border border-white/10 bg-white/10 shadow-sm overflow-hidden">
+        <div className="rounded-md border border-card-foreground/8 bg-card p-0 shadow-sm overflow-hidden">
         <table className="w-full text-sm text-left">
-          <thead className="bg-white/10 text-slate-400 font-medium">
+            <thead className="bg-card text-muted font-medium">
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="border-b border-white/10">
+              <tr key={headerGroup.id} className="border-b border-card-foreground/8">
                 {headerGroup.headers.map((header) => {
                   return (
-                    <th key={header.id} className="h-10 px-4 text-left align-middle font-medium text-slate-400">
+                    <th key={header.id} className="h-10 px-4 text-left align-middle font-medium text-muted">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -85,7 +85,7 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="border-b border-white/10 transition-colors hover:bg-white/10 data-[state=selected]:bg-white/10"
+                  className="border-b border-card-foreground/8 transition-colors hover:bg-card/8 data-[state=selected]:bg-card/8"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="p-4 align-middle">
@@ -96,7 +96,7 @@ export function DataTable<TData, TValue>({
               ))
             ) : (
               <tr>
-                <td colSpan={columns.length} className="h-24 text-center text-slate-400">
+                <td colSpan={columns.length} className="h-24 text-center text-muted">
                   No results found.
                 </td>
               </tr>

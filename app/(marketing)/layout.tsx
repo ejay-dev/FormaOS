@@ -17,10 +17,11 @@ export default async function MarketingLayout({ children }: { children: ReactNod
   return (
     <div className="mk-shell font-[var(--font-body)]">
       <div className="relative min-h-screen overflow-hidden">
-        <header className="sticky top-0 z-40 border-b border-white/10 bg-[#05070c]">
+        <header className="sticky top-0 z-40 border-b border-white/10 bg-[#05070c] glass-panel-elite backdrop-blur-xl">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/40 to-transparent" />
           <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
             <Link href="/" className="flex items-center gap-3 text-slate-100">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-sm font-semibold">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400/80 via-indigo-400/70 to-cyan-300/80 text-sm font-semibold text-[#050711] shadow-[0_0_18px_rgba(56,189,248,0.35)]">
                 FO
               </span>
               <div>
@@ -29,13 +30,13 @@ export default async function MarketingLayout({ children }: { children: ReactNod
               </div>
             </Link>
             <nav className="hidden items-center gap-6 text-sm text-slate-300 md:flex">
-              <Link href="/" className="hover:text-slate-100">Home</Link>
-              <Link href="/product" className="hover:text-slate-100">Product</Link>
-              <Link href="/industries" className="hover:text-slate-100">Industries</Link>
-              <Link href="/security" className="hover:text-slate-100">Security</Link>
-              <Link href="/pricing" className="hover:text-slate-100">Pricing</Link>
-              <Link href="/our-story" className="hover:text-slate-100">Our Story</Link>
-              <Link href="/contact" className="hover:text-slate-100">Contact</Link>
+              <Link href="/" className="hover:text-slate-100 transition-colors">Home</Link>
+              <Link href="/product" className="hover:text-slate-100 transition-colors">Product</Link>
+              <Link href="/industries" className="hover:text-slate-100 transition-colors">Industries</Link>
+              <Link href="/security" className="hover:text-slate-100 transition-colors">Security</Link>
+              <Link href="/pricing" className="hover:text-slate-100 transition-colors">Pricing</Link>
+              <Link href="/our-story" className="hover:text-slate-100 transition-colors">Our Story</Link>
+              <Link href="/contact" className="hover:text-slate-100 transition-colors">Contact</Link>
             </nav>
             <details className="relative md:hidden">
               <summary className="flex cursor-pointer list-none items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-slate-200">
@@ -108,7 +109,7 @@ export default async function MarketingLayout({ children }: { children: ReactNod
           }}
         />
 
-        <footer className="border-t border-white/10 bg-[#05070c]">
+        <footer className="border-t border-white/10 bg-[#05070c] glass-panel-elite">
           <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 px-6 py-12 md:grid-cols-4">
             <div className="space-y-4">
               <div className="text-lg font-semibold font-[var(--font-display)]">FormaOS</div>

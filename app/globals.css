@@ -6,23 +6,57 @@
 
 /* Design tokens */
 :root {
-  --radius: 16px;
+  --radius: 12px;
 
   --font-inter: "Inter", system-ui, sans-serif;
   --font-inter-tight: "Inter Tight", "Inter", system-ui, sans-serif;
   --font-geist-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  /* Dark enterprise tokens (phase 3) */
-  --bg: 220 18% 8%;          /* App background */
-  --panel: 220 18% 12%;     /* Cards, surfaces */
-  --panel-2: 220 18% 15%;   /* Secondary surfaces */
+  /* Core design tokens (H S% L%) used by Tailwind theme */
+  --background: 220 18% 8%;          /* page background */
+  --foreground: 210 40% 96%;         /* default text */
+
+  --card: 220 18% 12%;                /* primary surface */
+  --card-foreground: 210 40% 96%;
+
+  --popover: 220 18% 15%;
+  --popover-foreground: 210 40% 96%;
+
+  --primary: 217 91% 60%;             /* brand blue */
+  --primary-foreground: 210 100% 100%;
+
+  --secondary: 220 12% 20%;
+  --secondary-foreground: 210 40% 96%;
+
+  --muted: 215 16% 14%;
+  --muted-foreground: 215 15% 65%;
+
+  --accent: 217 91% 60%;
+  --accent-foreground: 210 40% 98%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
+
   --border: 220 14% 22%;
-  --text: 210 40% 96%;
+  --input: 220 18% 12%;
+  --ring: 217 91% 60%;
+
+  /* Sidebar tokens (used by components) */
+  --sidebar: 220 18% 10%;
+  --sidebar-foreground: 210 40% 96%;
+  --sidebar-primary: 217 91% 60%;
+  --sidebar-primary-foreground: 210 40% 98%;
+  --sidebar-accent: 210 40% 96%;
+  --sidebar-accent-foreground: 220 18% 8%;
+  --sidebar-border: 220 14% 22%;
+  --sidebar-ring: 217 91% 60%;
+
+  /* legacy tokens (kept for compatibility) */
+  --bg: var(--background);
+  --panel: var(--card);
+  --panel-2: 220 18% 15%;
+  --text: hsl(var(--foreground));
   --text-muted: 215 15% 65%;
-  --accent: 217 91% 60%;    /* Primary blue */
-  --success: 142 71% 45%;
-  --warning: 38 92% 50%;
-  --danger: 0 84% 60%;
 }
 
 @layer base {
@@ -31,13 +65,21 @@
   }
 
   body {
-    background: #05080f;
-    color: #f8fafc;
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
     font-family: var(--font-inter);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
+    line-height: 1.5;
   }
 
   h1, h2, h3, h4, h5, h6 {
     letter-spacing: -0.025em;
+    color: hsl(var(--foreground));
+    font-family: var(--font-inter-tight);
+    margin-top: 0;
+    margin-bottom: 0.5rem;
   }
 }
 
@@ -46,10 +88,38 @@
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
   .card {
-    background: #0b1220;
-    color: #f8fafc;
+    background: hsl(var(--card));
+    color: hsl(var(--card-foreground));
     border-radius: 0.75rem; /* 12px */
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid hsl(var(--border) / 0.12);
+    padding: 1rem;
+    box-shadow: 0 6px 18px rgba(2,6,23,0.45);
+  }
+
+  /* Accessible focus outlines for interactive elements */
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px hsl(var(--ring) / 0.14);
+    border-radius: calc(var(--radius) - 2px);
+  }
+
+  /* Responsive container utility (safe to include for layout consistency) */
+  .container {
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Slightly improved scrollbar for non-hidden scroll areas */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+    border-radius: 999px;
   }
 }
 
