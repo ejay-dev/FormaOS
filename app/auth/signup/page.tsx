@@ -39,24 +39,38 @@ export default function SignUpPage() {
 
     setIsLoading(true);
     try {
-      const supabase = createSupabaseClient();
-      const redirectTo = plan ? `${base}/auth/callback?plan=${encodeURIComponent(plan)}` : `${base}/auth/callback`;
-      const options = { emailRedirectTo: redirectTo } as any;
-      const { data, error } = await supabase.auth.signUp({ email, password, options });
-      if (error) {
-        setErrorMessage(error.message ?? "Sign up failed.");
+      const resp = await fetch(`/api/auth/signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, plan }),
+      });
+      const json = await resp.json();
+      console.log("[signup] server signup result:", json);
+      if (!resp.ok || !json?.ok) {
+        const msg = (json?.error?.message ?? json?.error ?? "Sign up failed.").toString();
+        setErrorMessage(msg);
+        try {
+          await fetch(`/api/debug/log`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ context: "signup_server", message: msg, detail: json }),
+          });
+        } catch {}
         setIsLoading(false);
         return;
       }
 
-      const hasSession = Boolean(data?.user);
-      if (hasSession) {
-        router.push("/auth/plan-select");
-      } else {
-        router.push("/auth/plan-select");
-      }
-    } catch (err) {
-      setErrorMessage("Unexpected error. Please try again.");
+      router.push("/auth/plan-select");
+    } catch (err: any) {
+      const msg = String(err?.message ?? err ?? "Unexpected error. Please try again.");
+      setErrorMessage(msg);
+      try {
+        await fetch(`/api/debug/log`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ context: "signup_exception", message: msg, error: String(err) }),
+        });
+      } catch {}
       setIsLoading(false);
     }
   };

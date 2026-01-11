@@ -9,6 +9,28 @@ export function createSupabaseAdminClient() {
   const serviceKey = isPresent(process.env.SUPABASE_SERVICE_ROLE_KEY)
     ? process.env.SUPABASE_SERVICE_ROLE_KEY!
     : "";
+  // Dev fallback: try to read .env.local if the process env var isn't set (helps local dev)
+  if (!serviceKey) {
+    try {
+      const fs = require("fs");
+      const path = require("path");
+      const envPath = path.resolve(process.cwd(), ".env.local");
+      if (fs.existsSync(envPath)) {
+        const content = fs.readFileSync(envPath, "utf8");
+        const m = content.match(/^SUPABASE_SERVICE_ROLE_KEY=(.+)$/m);
+        if (m && m[1]) {
+          // strip optional quotes
+          const extracted = m[1].trim().replace(/^"|"$/g, "");
+          // assign to serviceKey variable for subsequent checks
+          // (not assigning to process.env to avoid side-effects)
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          (global as any).__DEV_SUPABASE_SERVICE_ROLE_KEY = extracted;
+        }
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
   const hasValidUrl = (() => {
     if (!url) return false;
     try {
@@ -19,13 +41,21 @@ export function createSupabaseAdminClient() {
     }
   })();
 
-  if (!hasValidUrl || !serviceKey) {
+  // Debug: log presence of env values to help diagnose missing-service-role issues
+  try {
+    const present = Boolean(serviceKey) || Boolean((global as any).__DEV_SUPABASE_SERVICE_ROLE_KEY);
+    console.log(`[Supabase DEBUG] hasValidUrl=${hasValidUrl}, serviceKeyPresent=${present}`);
+  } catch (e) {}
+
+  const finalServiceKey = serviceKey || (global as any).__DEV_SUPABASE_SERVICE_ROLE_KEY || "";
+
+  if (!hasValidUrl || !finalServiceKey) {
     console.error("[Supabase] Missing service role configuration.");
     return createFallbackAdminClient();
   }
 
   try {
-    return createClient(url, serviceKey, {
+    return createClient(url, finalServiceKey, {
       auth: {
         persistSession: false,
       },

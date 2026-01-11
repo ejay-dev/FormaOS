@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+
+export const runtime = "nodejs";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { resolvePlanKey } from "@/lib/plans";
@@ -17,6 +19,23 @@ export async function GET(request: Request) {
 
   const supabase = await createSupabaseServerClient();
   const admin = createSupabaseAdminClient();
+
+  // Debug: confirm whether the service-role env is visible in this runtime
+  try {
+    console.debug(
+      "[auth/callback] serviceKeyPresent=",
+      Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY)
+    );
+  } catch (e) {}
+
+  // Ensure admin/service-role key is configured before attempting bootstrap writes
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    console.error(
+      "[auth/callback] SUPABASE_SERVICE_ROLE_KEY not configured; skipping admin bootstrap writes."
+    );
+    const planQuery = plan ? `?plan=${encodeURIComponent(plan)}&missing_admin=1` : `?missing_admin=1`;
+    return NextResponse.redirect(`${appBase}/onboarding${planQuery}`);
+  }
 
   // 1. Exchange the code for a session
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
@@ -59,7 +78,7 @@ export async function GET(request: Request) {
         .from("organizations")
         .insert({
           name: fallbackName,
-          created_by: data.user.id,
+          created_by: null,
           plan_key: plan ?? null,
           plan_selected_at: plan ? now : null,
           onboarding_completed: false,
