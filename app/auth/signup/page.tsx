@@ -67,13 +67,17 @@ export default function SignUpPage() {
     try {
       const supabase = createSupabaseClient();
       const redirectTo = plan ? `${base}/auth/callback?plan=${encodeURIComponent(plan)}` : `${base}/auth/callback`;
+      console.log("[signup] Starting Google OAuth", { redirectTo });
       const { data, error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo } });
       if (error) {
         setErrorMessage(error.message ?? "OAuth failed.");
         setIsLoading(false);
         return;
       }
-      if (data?.url) window.location.href = data.url;
+      if (data?.url) {
+        console.log("[signup] OAuth redirect URL (from Supabase):", data.url);
+        window.location.href = data.url;
+      }
     } catch (err) {
       setErrorMessage("Unexpected error. Please try again.");
       setIsLoading(false);

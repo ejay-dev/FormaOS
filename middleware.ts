@@ -83,7 +83,7 @@ export async function middleware(request: NextRequest) {
       return response;
     }
 
-  let user: { id: string } | null = null;
+  let user: { id: string; email?: string | null } | null = null;
   let supabase: ReturnType<typeof createServerClient> | null = null;
 
     if (hasSupabaseEnv) {
@@ -195,6 +195,26 @@ export async function middleware(request: NextRequest) {
         pathname.startsWith("/app/billing") || pathname.startsWith("/app/accept-invite");
 
       if (orgId && !billingAllowed) {
+            // Allow founders (listed via env) to bypass billing/trial gating
+            const parseEnvList = (value?: string | null) =>
+              new Set(
+                (value ?? "")
+                  .split(",")
+                  .map((entry) => entry.trim().toLowerCase())
+                  .filter(Boolean)
+              );
+
+            const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);
+            const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
+            const userEmail = (user.email ?? "").toLowerCase();
+            const isFounder = Boolean(
+              (userEmail && founderEmails.has(userEmail)) || founderIds.has(user.id.toLowerCase())
+            );
+
+            if (isFounder) {
+              console.log("[middleware] founder bypass for user:", { id: user.id, email: userEmail });
+              // skip subscription gating for founders
+            } else {
         const { data: subscription, error: subscriptionError } = await supabase
           .from("org_subscriptions")
           .select("status, current_period_end")
@@ -214,11 +234,12 @@ export async function middleware(request: NextRequest) {
           }
         }
 
-        if (!subscriptionActive) {
+        if (!isFounder && !subscriptionActive) {
           const url = request.nextUrl.clone();
           url.pathname = "/app/billing";
           url.searchParams.set("status", "blocked");
           return NextResponse.redirect(url);
+        }
         }
       }
     }

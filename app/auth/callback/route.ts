@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { resolvePlanKey } from "@/lib/plans";
 import { ensureSubscription } from "@/lib/billing/subscriptions";
 
@@ -15,6 +16,7 @@ export async function GET(request: Request) {
   }
 
   const supabase = await createSupabaseServerClient();
+  const admin = createSupabaseAdminClient();
 
   // 1. Exchange the code for a session
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
@@ -51,7 +53,9 @@ export async function GET(request: Request) {
 
     try {
       const now = new Date().toISOString();
-      const { data: organization, error: orgError } = await supabase
+
+      // Use the admin (service-role) client for bootstrap writes so RLS doesn't block
+      const { data: organization, error: orgError } = await admin
         .from("organizations")
         .insert({
           name: fallbackName,
@@ -64,30 +68,38 @@ export async function GET(request: Request) {
         .single();
 
       if (orgError || !organization?.id) {
-        console.error("Organization bootstrap failed:", orgError);
+        console.error("[auth/callback] Organization bootstrap failed:", orgError?.message ?? orgError, orgError?.details ?? null, orgError);
         const planQuery = plan ? `?plan=${encodeURIComponent(plan)}` : "";
         return NextResponse.redirect(`${appBase}/onboarding${planQuery}`);
       }
 
-      const { error: memberError } = await supabase.from("org_members").insert({
+      const { error: memberError } = await admin.from("org_members").insert({
         organization_id: organization.id,
         user_id: data.user.id,
         role: "owner",
       });
 
       if (memberError) {
-        console.error("Membership bootstrap failed:", memberError);
+        console.error("[auth/callback] Membership bootstrap failed:", memberError?.message ?? memberError, memberError?.details ?? null, memberError);
       }
 
-      await supabase.from("org_onboarding_status").insert({
+      const { error: onboardingError } = await admin.from("org_onboarding_status").insert({
         organization_id: organization.id,
         current_step: plan ? 1 : 2,
         completed_steps: [],
       });
 
-      await ensureSubscription(organization.id, plan);
+      if (onboardingError) {
+        console.error("[auth/callback] org_onboarding_status insert failed:", onboardingError?.message ?? onboardingError, onboardingError?.details ?? null, onboardingError);
+      }
+
+      try {
+        await ensureSubscription(organization.id, plan);
+      } catch (subErr) {
+        console.error("[auth/callback] ensureSubscription failed:", subErr);
+      }
     } catch (err) {
-      console.error("Organization bootstrap failed:", err);
+      console.error("[auth/callback] Organization bootstrap failed (unexpected):", err);
     }
 
     const planQuery = plan ? `?plan=${encodeURIComponent(plan)}` : "";

@@ -78,7 +78,6 @@ export default function PeoplePage() {
       <InviteModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        orgId={orgId ?? null}
       />
 
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
