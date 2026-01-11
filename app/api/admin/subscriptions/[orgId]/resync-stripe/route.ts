@@ -35,12 +35,14 @@ export async function POST(request: Request, { params }: Params) {
     const currentPeriodEnd = stripeSub.current_period_end
       ? new Date(stripeSub.current_period_end * 1000).toISOString()
       : null;
+    const trialExpiresAt = stripeSub.status === "trialing" ? currentPeriodEnd : null;
 
     await admin
       .from("org_subscriptions")
       .update({
         status: stripeSub.status === "canceled" ? "cancelled" : stripeSub.status,
         current_period_end: currentPeriodEnd,
+        trial_expires_at: trialExpiresAt,
         plan_key: planKey ?? undefined,
         updated_at: new Date().toISOString(),
       })

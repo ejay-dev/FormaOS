@@ -1,4 +1,4 @@
-import { getAdminApiBase } from "@/app/admin/lib";
+import { getAdminFetchConfig } from "@/app/admin/lib";
 
 type UserRow = {
   id: string;
@@ -18,11 +18,14 @@ function formatDate(value?: string | null) {
 }
 
 async function fetchUsers(query?: string, page?: string) {
-  const base = await getAdminApiBase();
+  const { base, headers } = await getAdminFetchConfig();
   const params = new URLSearchParams();
   if (query) params.set("query", query);
   if (page) params.set("page", page);
-  const res = await fetch(`${base}/api/admin/users?${params.toString()}`, { cache: "no-store" });
+  const res = await fetch(`${base}/api/admin/users?${params.toString()}`, {
+    cache: "no-store",
+    headers,
+  });
   if (!res.ok) return null;
   return res.json();
 }

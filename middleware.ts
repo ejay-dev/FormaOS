@@ -3,7 +3,6 @@ import { createServerClient } from "@supabase/ssr";
 import { getCookieDomain } from "@/lib/supabase/cookie-domain";
 
 export async function middleware(request: NextRequest) {
-  console.log("MIDDLEWARE HIT:", request.nextUrl.pathname);
   try {
     let response = NextResponse.next({ request });
 

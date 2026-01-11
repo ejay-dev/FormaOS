@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getAdminApiBase } from "@/app/admin/lib";
+import { getAdminFetchConfig } from "@/app/admin/lib";
 
 type OrgRow = {
   id: string;
@@ -12,12 +12,15 @@ type OrgRow = {
 };
 
 async function fetchOrganizations(query?: string, page?: string) {
-  const base = await getAdminApiBase();
+  const { base, headers } = await getAdminFetchConfig();
   const params = new URLSearchParams();
   if (query) params.set("query", query);
   if (page) params.set("page", page);
 
-  const res = await fetch(`${base}/api/admin/orgs?${params.toString()}`, { cache: "no-store" });
+  const res = await fetch(`${base}/api/admin/orgs?${params.toString()}`, {
+    cache: "no-store",
+    headers,
+  });
   if (!res.ok) return null;
   return res.json();
 }

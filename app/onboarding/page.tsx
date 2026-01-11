@@ -341,17 +341,18 @@ async function completeFirstAction(formData: FormData) {
 
   const { data: subscription } = await supabase
     .from("org_subscriptions")
-    .select("status, current_period_end")
+    .select("status, current_period_end, trial_expires_at")
     .eq("organization_id", orgId)
     .maybeSingle();
 
   const subscriptionActive =
     subscription?.status && ["active", "trialing"].includes(subscription.status);
+  const trialEndValue = subscription?.trial_expires_at ?? subscription?.current_period_end;
   const trialExpired =
     subscription?.status === "trialing" &&
-    (!subscription.current_period_end ||
-      Number.isNaN(new Date(subscription.current_period_end).getTime()) ||
-      Date.now() > new Date(subscription.current_period_end).getTime());
+    (!trialEndValue ||
+      Number.isNaN(new Date(trialEndValue).getTime()) ||
+      Date.now() > new Date(trialEndValue).getTime());
 
   if (!subscriptionActive || trialExpired) {
     redirect("/app/billing");

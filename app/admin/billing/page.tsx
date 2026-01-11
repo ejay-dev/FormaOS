@@ -1,4 +1,4 @@
-import { getAdminApiBase } from "@/app/admin/lib";
+import { getAdminFetchConfig } from "@/app/admin/lib";
 
 type SubscriptionRow = {
   organization_id: string;
@@ -18,12 +18,13 @@ function formatDate(value?: string | null) {
 }
 
 async function fetchSubscriptions(status?: string, page?: string) {
-  const base = await getAdminApiBase();
+  const { base, headers } = await getAdminFetchConfig();
   const params = new URLSearchParams();
   if (status) params.set("status", status);
   if (page) params.set("page", page);
   const res = await fetch(`${base}/api/admin/subscriptions?${params.toString()}`, {
     cache: "no-store",
+    headers,
   });
   if (!res.ok) return null;
   return res.json();

@@ -32,7 +32,7 @@ export async function requireActiveSubscription(orgId: string) {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("org_subscriptions")
-    .select("plan_key, status, current_period_end")
+    .select("plan_key, status, current_period_end, trial_expires_at")
     .eq("organization_id", orgId)
     .maybeSingle();
 
@@ -45,10 +45,13 @@ export async function requireActiveSubscription(orgId: string) {
   }
 
   if (data.status === "trialing") {
-    if (!data.current_period_end) {
+    const trialEndValue =
+      (data as { trial_expires_at?: string | null }).trial_expires_at ??
+      data.current_period_end;
+    if (!trialEndValue) {
       throw new Error("Trial expired");
     }
-    const trialEnd = new Date(data.current_period_end).getTime();
+    const trialEnd = new Date(trialEndValue).getTime();
     if (Number.isNaN(trialEnd) || Date.now() > trialEnd) {
       throw new Error("Trial expired");
     }

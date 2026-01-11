@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getAdminApiBase } from "@/app/admin/lib";
+import { getAdminFetchConfig } from "@/app/admin/lib";
 
 type OrgDetailProps = {
   params: Promise<{ orgId: string }>;
@@ -13,8 +13,8 @@ function formatDate(value?: string | null) {
 }
 
 async function fetchOrgDetail(orgId: string) {
-  const base = await getAdminApiBase();
-  const res = await fetch(`${base}/api/admin/orgs/${orgId}`, { cache: "no-store" });
+  const { base, headers } = await getAdminFetchConfig();
+  const res = await fetch(`${base}/api/admin/orgs/${orgId}`, { cache: "no-store", headers });
   if (!res.ok) return null;
   return res.json();
 }

@@ -1,8 +1,8 @@
-import { getAdminApiBase } from "@/app/admin/lib";
+import { getAdminFetchConfig } from "@/app/admin/lib";
 
 async function fetchOverview() {
-  const base = await getAdminApiBase();
-  const res = await fetch(`${base}/api/admin/overview`, { cache: "no-store" });
+  const { base, headers } = await getAdminFetchConfig();
+  const res = await fetch(`${base}/api/admin/overview`, { cache: "no-store", headers });
   if (!res.ok) {
     return null;
   }

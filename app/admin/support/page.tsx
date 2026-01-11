@@ -1,4 +1,4 @@
-import { getAdminApiBase } from "@/app/admin/lib";
+import { getAdminFetchConfig } from "@/app/admin/lib";
 
 type SupportRow = {
   id: string;
@@ -18,10 +18,13 @@ function formatDate(value?: string | null) {
 }
 
 async function fetchSupport(status?: string) {
-  const base = await getAdminApiBase();
+  const { base, headers } = await getAdminFetchConfig();
   const params = new URLSearchParams();
   if (status) params.set("status", status);
-  const res = await fetch(`${base}/api/admin/support?${params.toString()}`, { cache: "no-store" });
+  const res = await fetch(`${base}/api/admin/support?${params.toString()}`, {
+    cache: "no-store",
+    headers,
+  });
   if (!res.ok) return null;
   return res.json();
 }

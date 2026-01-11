@@ -43,7 +43,7 @@ export default async function BillingPage({
 
   const { data: subscription } = await supabase
     .from("org_subscriptions")
-    .select("status, current_period_end, stripe_customer_id")
+    .select("status, current_period_end, trial_expires_at, stripe_customer_id")
     .eq("organization_id", orgId)
     .maybeSingle();
 
@@ -55,7 +55,9 @@ export default async function BillingPage({
 
   const status = resolvedSearchParams?.status;
   const trialEndsAt =
-    subscription?.status === "trialing" ? subscription.current_period_end : null;
+    subscription?.status === "trialing"
+      ? subscription.trial_expires_at ?? subscription.current_period_end
+      : null;
   const trialExpired =
     subscription?.status === "trialing" &&
     (!trialEndsAt || Date.now() > new Date(trialEndsAt).getTime());

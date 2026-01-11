@@ -5,7 +5,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  console.log("APP BOOT: Layout rendered");
   return (
     <html lang="en" data-theme="dark">
       <body>{children}</body>
