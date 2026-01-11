@@ -23,7 +23,8 @@ export default function SignUpPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const base = (typeof window !== "undefined" ? window.location.origin : process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "");
+  // Prefer configured canonical app URL in env for redirects (avoid vercel preview URLs)
+  const base = (process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? (typeof window !== "undefined" ? window.location.origin : "")).replace(/\/$/, "");
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,6 +59,18 @@ export default function SignUpPage() {
         } catch {}
         setIsLoading(false);
         return;
+      }
+
+      // After server-side user creation, sign in client-side to establish session
+      try {
+        const supabase = createSupabaseClient();
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        if (signInError) {
+          console.warn("[signup] client sign-in after server signup failed:", signInError);
+          // Still allow proceeding to plan-select; server created the user
+        }
+      } catch (e) {
+        console.warn("[signup] client sign-in exception:", e);
       }
 
       router.push("/auth/plan-select");

@@ -12,7 +12,7 @@ export default function AuthRedirectPage() {
     
     if (code) {
       // Redirect to the proper callback route with the code
-      const appBase = (process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin).replace(/\/$/, "");
+      const appBase = (process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin).replace(/\/$/, "");
       const planParam = plan ? `&plan=${encodeURIComponent(plan)}` : "";
       window.location.href = `${appBase}/auth/callback?code=${encodeURIComponent(code)}${planParam}`;
     }
