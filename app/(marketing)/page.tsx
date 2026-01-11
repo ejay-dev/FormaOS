@@ -118,10 +118,16 @@ export default function MarketingHomePage() {
             </p>
             <div className="flex flex-wrap items-center gap-4">
               <Link
-                href="/pricing"
+                href="/auth/signup"
                 className="mk-cta rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950"
               >
-                Start Trial / View Plans
+                Sign up
+              </Link>
+              <Link
+                href="/pricing"
+                className="mk-cta rounded-lg border border-card-foreground/8 px-6 py-3 text-sm font-semibold text-card-foreground hover:border-card-foreground/20"
+              >
+                View Plans
               </Link>
               <Link
                 href="/contact"

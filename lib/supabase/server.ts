@@ -5,7 +5,8 @@ import { getCookieDomain } from "@/lib/supabase/cookie-domain";
 // REVERTED: Kept your original function name
 export async function createSupabaseServerClient() {
   const cookieStore = await cookies();
-  const cookieDomain = getCookieDomain();
+  // In development, avoid forcing a cookie domain so localhost flows keep working.
+  const cookieDomain = process.env.NODE_ENV === "development" ? undefined : getCookieDomain();
 
   const isPresent = (value?: string | null) =>
     Boolean(value && value !== "undefined" && value !== "null");

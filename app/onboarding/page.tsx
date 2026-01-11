@@ -4,6 +4,7 @@ import { Building2, ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
 import { applyIndustryPack } from "@/app/app/onboarding/actions";
 import { createInvitation } from "@/lib/invitations/create-invitation";
 import { resolvePlanKey, PLAN_CATALOG } from "@/lib/plans";
+import { ensureSubscription } from "@/lib/billing/subscriptions";
 import {
   FRAMEWORK_OPTIONS,
   INDUSTRY_OPTIONS,
@@ -22,6 +23,7 @@ import { evaluateFrameworkControls } from "@/app/app/actions/compliance-engine";
 
 const TOTAL_STEPS = 7;
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://formaos.com.au").replace(/\/$/, "");
+const PLAN_CHOICES = [PLAN_CATALOG.basic, PLAN_CATALOG.pro, PLAN_CATALOG.enterprise];
 
 const ROLE_OPTIONS = [
   { id: "employer", label: "Employer / Organization admin", role: "owner" },
@@ -139,28 +141,35 @@ async function saveOrgDetails(formData: FormData) {
 
   const nameCheck = validateOrganizationName(nameRaw);
   const teamCheck = validateTeamSize(teamSize);
-  const planCheck = validatePlan(planInput);
-
-  if (!planCheck.valid) {
-    redirect(`${SITE_URL}/pricing`);
-  }
+  const planCandidate = planInput || orgRecord?.plan_key || "";
+  const planCheck = validatePlan(planCandidate);
 
   if (!nameCheck.valid || !teamCheck.valid) {
     redirect("/onboarding?step=2&error=1");
   }
 
+  if (!planCheck.valid) {
+    redirect("/onboarding?step=2&error=1");
+  }
+
   const sanitizedName = sanitizeOrganizationName(nameRaw);
-  const resolvedPlan = resolvePlanKey(planInput);
+  const resolvedPlan = resolvePlanKey(planCandidate);
+
+  if (!resolvedPlan) {
+    redirect("/onboarding?step=2&error=1");
+  }
 
   await supabase
     .from("organizations")
     .update({
       name: sanitizedName,
       team_size: teamSize,
-      plan_key: resolvedPlan ?? orgRecord?.plan_key ?? null,
+      plan_key: resolvedPlan,
       plan_selected_at: new Date().toISOString(),
     })
     .eq("id", orgId);
+
+  await ensureSubscription(orgId, resolvedPlan);
 
   await markStepComplete(orgId, 2, 3);
   redirect("/onboarding?step=3");
@@ -371,10 +380,6 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
   const planKey =
     resolvePlanKey(orgRecord?.plan_key ?? "") || resolvePlanKey(resolvedSearchParams?.plan ?? "");
 
-  if (!planKey) {
-    redirect(`${SITE_URL}/pricing`);
-  }
-
   const rawStep = Number.parseInt(resolvedSearchParams?.step ?? "", 10);
   const step = Number.isNaN(rawStep) ? status.current_step : rawStep;
   const safeStep = Math.min(Math.max(step, 1), TOTAL_STEPS);
@@ -433,7 +438,6 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
 
           {safeStep === 2 ? (
             <form action={saveOrgDetails} className="space-y-8">
-              <input type="hidden" name="plan" value={planKey ?? ""} />
               <div className="space-y-4">
                 <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
                   Organization name
@@ -471,8 +475,31 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-[#05080f] p-4 text-xs text-slate-400">
-                Selected plan: <span className="text-slate-200">{planLabel}</span>
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
+                  Plan
+                </label>
+                <div className="grid gap-3 md:grid-cols-3">
+                  {PLAN_CHOICES.map((option) => (
+                    <label
+                      key={option.key}
+                      className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-[#05080f] px-4 py-4 text-sm text-slate-200"
+                    >
+                      <div className="flex items-center gap-3">
+                        <input
+                          required
+                          type="radio"
+                          name="plan"
+                          value={option.key}
+                          defaultChecked={planKey === option.key}
+                          className="h-4 w-4 border-white/20 bg-[#05080f] text-sky-400"
+                        />
+                        <span className="text-sm font-semibold text-slate-100">{option.name}</span>
+                      </div>
+                      <span className="text-xs text-slate-400">{option.summary}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
 
               <button

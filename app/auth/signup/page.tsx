@@ -1,115 +1,110 @@
 "use client";
 
-import { Suspense, useMemo } from "react";
-import { useSearchParams } from "next/navigation";
+import React, { useState } from "react";
 import { createSupabaseClient } from "@/lib/supabase/client";
-import { PLAN_CATALOG, resolvePlanKey } from "@/lib/plans";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-function SignUpContent() {
-  const searchParams = useSearchParams();
-  const planParam = resolvePlanKey(searchParams.get("plan"));
-  const siteBase = (process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin).replace(/\/$/, "");
+export default function SignUpPage() {
+  const router = useRouter();
+  const [plan, setPlan] = useState<string | undefined>(undefined);
+  useEffect(() => {
+    try {
+      const p = new URLSearchParams(window.location.search).get("plan") ?? undefined;
+      setPlan(p);
+    } catch (e) {
+      setPlan(undefined);
+    }
+  }, []);
 
-  const plan = useMemo(() => (planParam ? PLAN_CATALOG[planParam] : null), [planParam]);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const signUp = async () => {
-    if (!plan) {
-      window.location.assign(`${siteBase}/pricing`);
+  const base = (typeof window !== "undefined" ? window.location.origin : process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "");
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage(null);
+    if (!email || !password) {
+      setErrorMessage("Please provide email and password.");
+      return;
+    }
+    if (password !== confirm) {
+      setErrorMessage("Passwords do not match.");
       return;
     }
 
-    const base =
-      (process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin).replace(/\/$/, "");
+    setIsLoading(true);
+    try {
+      const supabase = createSupabaseClient();
+      const redirectTo = plan ? `${base}/auth/callback?plan=${encodeURIComponent(plan)}` : `${base}/auth/callback`;
+      const options = { emailRedirectTo: redirectTo } as any;
+      const { data, error } = await supabase.auth.signUp({ email, password, options });
+      if (error) {
+        setErrorMessage(error.message ?? "Sign up failed.");
+        setIsLoading(false);
+        return;
+      }
 
-    const supabase = createSupabaseClient();
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${base}/auth/callback?plan=${encodeURIComponent(plan.key)}`,
-      },
-    });
-
-    if (error) {
-      alert(error.message);
-      return;
-    }
-
-    if (data?.url) {
-      window.location.href = data.url;
+      const hasSession = Boolean(data?.user);
+      if (hasSession) {
+        router.push("/auth/plan-select");
+      } else {
+        router.push("/auth/plan-select");
+      }
+    } catch (err) {
+      setErrorMessage("Unexpected error. Please try again.");
+      setIsLoading(false);
     }
   };
 
-  if (!plan) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#05080f] text-slate-100">
-        <div className="max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 text-center">
-          <h1 className="text-2xl font-semibold">Choose a plan to continue</h1>
-          <p className="mt-3 text-sm text-slate-400">
-            Select the plan that matches your organization and return here to create an account.
-          </p>
-          <button
-            onClick={() => window.location.assign(`${siteBase}/pricing`)}
-            className="mt-6 rounded-lg bg-white/10 px-5 py-2 text-sm font-semibold text-slate-100"
-          >
-            View Plans
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const signUpWithGoogle = async () => {
+    setErrorMessage(null);
+    setIsLoading(true);
+    try {
+      const supabase = createSupabaseClient();
+      const redirectTo = plan ? `${base}/auth/callback?plan=${encodeURIComponent(plan)}` : `${base}/auth/callback`;
+      const { data, error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo } });
+      if (error) {
+        setErrorMessage(error.message ?? "OAuth failed.");
+        setIsLoading(false);
+        return;
+      }
+      if (data?.url) window.location.href = data.url;
+    } catch (err) {
+      setErrorMessage("Unexpected error. Please try again.");
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#05080f] text-slate-100">
+    <div className="min-h-screen flex items-center justify-center bg-[#05080f] text-slate-100 p-6">
       <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-white/5 p-10">
-        <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Plan selected</div>
-        <h1 className="mt-3 text-3xl font-semibold">{plan.name}</h1>
-        <p className="mt-3 text-sm text-slate-300">{plan.summary}</p>
-        {plan.key !== "enterprise" ? (
-          <p className="mt-2 text-xs text-slate-400">
-            14-day free trial. No payment details required at signup.
-          </p>
-        ) : (
-          <p className="mt-2 text-xs text-slate-400">
-            Enterprise onboarding is sales-led. We will confirm pricing and rollout after signup.
-          </p>
-        )}
-        <ul className="mt-6 space-y-2 text-sm text-slate-300">
-          {plan.features.map((item) => (
-            <li key={item} className="flex items-start gap-2">
-              <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-400" />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-        <button
-          onClick={signUp}
-          className="mt-8 w-full rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950"
-        >
-          Create account with Google
-        </button>
-        <button
-          onClick={() => window.location.assign(`${siteBase}/pricing`)}
-          className="mt-4 w-full rounded-lg border border-white/10 px-6 py-3 text-sm font-semibold text-slate-100"
-        >
-          Change plan
-        </button>
+        <h1 className="text-2xl font-semibold">Create your account</h1>
+        <p className="text-sm text-slate-400 mt-2">Sign up with email or Google.</p>
+
+        {errorMessage && <div className="mt-4 text-sm text-rose-300">{errorMessage}</div>}
+
+        <form onSubmit={handleSignUp} className="mt-6 space-y-4">
+          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-100" required />
+          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-100" required minLength={8} />
+          <input type="password" placeholder="Confirm password" value={confirm} onChange={(e) => setConfirm(e.target.value)} className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-100" required />
+          <button type="submit" disabled={isLoading} className="w-full rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950">{isLoading ? "Creating..." : "Create account"}</button>
+        </form>
+
+        <div className="mt-4 flex items-center gap-4">
+          <div className="flex-1 border-t border-white/10" />
+          <span className="text-xs text-slate-500">OR</span>
+          <div className="flex-1 border-t border-white/10" />
+        </div>
+
+        <button onClick={signUpWithGoogle} disabled={isLoading} className="mt-4 w-full rounded-lg border border-white/10 bg-white/5 px-6 py-3 text-sm font-semibold text-slate-100">Continue with Google</button>
+
+        <p className="mt-6 text-center text-sm text-slate-400">Already have an account? <a href="/auth/signin" className="font-semibold text-sky-400">Sign in</a></p>
       </div>
     </div>
-  );
-}
-
-export default function SignUpPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen flex items-center justify-center bg-[#05080f] text-slate-100">
-          <div className="rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-sm text-slate-300">
-            Loading signup...
-          </div>
-        </div>
-      }
-    >
-      <SignUpContent />
-    </Suspense>
   );
 }

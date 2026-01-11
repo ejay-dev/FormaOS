@@ -1,55 +1,14 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { resolvePlanKey } from "@/lib/plans";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { syncEntitlementsForPlan } from "@/lib/billing/entitlements";
-
-const TRIAL_DAYS = 14;
-
-function getTrialEndIso() {
-  const end = new Date();
-  end.setDate(end.getDate() + TRIAL_DAYS);
-  return end.toISOString();
-}
-
-async function ensureSubscription(orgId: string, planKey: string | null) {
-  if (!planKey) return;
-
-  const admin = createSupabaseAdminClient();
-  const { data: existing } = await admin
-    .from("org_subscriptions")
-    .select("status")
-    .eq("organization_id", orgId)
-    .maybeSingle();
-
-  if (existing?.status) {
-    return;
-  }
-
-  const isTrialEligible = planKey === "basic" || planKey === "pro";
-  const nowIso = new Date().toISOString();
-
-  await admin.from("org_subscriptions").upsert({
-    organization_id: orgId,
-    plan_key: planKey,
-    status: isTrialEligible ? "trialing" : "pending",
-    current_period_end: isTrialEligible ? getTrialEndIso() : null,
-    updated_at: nowIso,
-  });
-
-  if (isTrialEligible) {
-    await syncEntitlementsForPlan(orgId, planKey as "basic" | "pro");
-  }
-}
+import { ensureSubscription } from "@/lib/billing/subscriptions";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const plan = resolvePlanKey(searchParams.get("plan"));
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? origin;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? origin;
   const appBase = appUrl.replace(/\/$/, "");
-  const siteBase = siteUrl.replace(/\/$/, "");
 
   if (!code) {
     return NextResponse.redirect(`${appBase}/auth/signin`);
@@ -84,10 +43,6 @@ export async function GET(request: Request) {
   }
 
   if (!membership?.organization_id) {
-    if (!plan) {
-      return NextResponse.redirect(`${siteBase}/pricing`);
-    }
-
     const fallbackName =
       data.user.user_metadata?.full_name ||
       data.user.user_metadata?.name ||
@@ -101,8 +56,8 @@ export async function GET(request: Request) {
         .insert({
           name: fallbackName,
           created_by: data.user.id,
-          plan_key: plan,
-          plan_selected_at: now,
+          plan_key: plan ?? null,
+          plan_selected_at: plan ? now : null,
           onboarding_completed: false,
         })
         .select("id")
@@ -110,7 +65,8 @@ export async function GET(request: Request) {
 
       if (orgError || !organization?.id) {
         console.error("Organization bootstrap failed:", orgError);
-        return NextResponse.redirect(`${appBase}/onboarding?plan=${encodeURIComponent(plan)}`);
+        const planQuery = plan ? `?plan=${encodeURIComponent(plan)}` : "";
+        return NextResponse.redirect(`${appBase}/onboarding${planQuery}`);
       }
 
       const { error: memberError } = await supabase.from("org_members").insert({
@@ -125,7 +81,7 @@ export async function GET(request: Request) {
 
       await supabase.from("org_onboarding_status").insert({
         organization_id: organization.id,
-        current_step: 1,
+        current_step: plan ? 1 : 2,
         completed_steps: [],
       });
 
@@ -134,7 +90,8 @@ export async function GET(request: Request) {
       console.error("Organization bootstrap failed:", err);
     }
 
-    return NextResponse.redirect(`${appBase}/onboarding?plan=${encodeURIComponent(plan)}`);
+    const planQuery = plan ? `?plan=${encodeURIComponent(plan)}` : "";
+    return NextResponse.redirect(`${appBase}/onboarding${planQuery}`);
   }
 
   const { data: organization, error: orgError } = await supabase

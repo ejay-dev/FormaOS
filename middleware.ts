@@ -22,6 +22,17 @@ export async function middleware(request: NextRequest) {
     const siteOrigin = safeUrl(siteUrl);
     const host = request.nextUrl.hostname;
 
+    const oauthCode = request.nextUrl.searchParams.get("code");
+    if (oauthCode && pathname === "/") {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/auth/callback";
+      if (appOrigin) {
+        redirectUrl.protocol = appOrigin.protocol;
+        redirectUrl.host = appOrigin.host;
+      }
+      return NextResponse.redirect(redirectUrl);
+    }
+
   if (appOrigin && siteOrigin && appOrigin.hostname !== siteOrigin.hostname) {
     const appPaths = ["/app", "/auth", "/onboarding", "/accept-invite", "/submit", "/signin", "/api"];
     const isAppPath = appPaths.some(
@@ -115,10 +126,31 @@ export async function middleware(request: NextRequest) {
     }
 
     // -------------------------------
-    // 2. BLOCK AUTH PAGES IF LOGGED IN
+    // 2. BLOCK AUTH PAGES IF LOGGED IN (with onboarding check)
     // -------------------------------
     if (user && pathname.startsWith("/auth")) {
+      // Check if user has completed onboarding
+      const { data: membership } = await supabase
+        .from("org_members")
+        .select("organization_id, organizations(onboarding_completed)")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      const orgRecord = Array.isArray(membership?.organizations)
+        ? membership.organizations[0]
+        : membership?.organizations;
+
+      const onboardingCompleted = Boolean(orgRecord?.onboarding_completed);
+
       const url = request.nextUrl.clone();
+      
+      // If onboarding is not completed, redirect to onboarding
+      if (!onboardingCompleted && membership?.organization_id) {
+        url.pathname = "/onboarding";
+        return NextResponse.redirect(url);
+      }
+      
+      // Otherwise, redirect to app
       url.pathname = "/app";
       return NextResponse.redirect(url);
     }

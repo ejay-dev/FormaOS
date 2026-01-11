@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Menu } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { OAuthRedirectWrapper } from "./components/oauth-redirect-wrapper";
 import "./marketing.css";
 
 export default async function MarketingLayout({ children }: { children: ReactNode }) {
@@ -68,6 +69,12 @@ export default async function MarketingLayout({ children }: { children: ReactNod
                 Plans
               </Link>
               <Link
+                href="/auth/signup"
+                className="rounded-lg border border-white/10 px-4 py-2 text-slate-100 transition hover:border-white/20 hover:text-slate-100"
+              >
+                Sign up
+              </Link>
+              <Link
                 href="/contact"
                 className="rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-4 py-2 text-slate-950 font-semibold shadow-[0_10px_30px_rgba(56,189,248,0.35)]"
               >
@@ -77,7 +84,10 @@ export default async function MarketingLayout({ children }: { children: ReactNod
           </div>
         </header>
 
-        <main className="relative z-10 mk-stage">{children}</main>
+        <main className="relative z-10 mk-stage">
+          <OAuthRedirectWrapper />
+          {children}
+        </main>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
