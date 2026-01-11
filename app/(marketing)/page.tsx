@@ -10,6 +10,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { MarketingAnchor } from "./components/marketing-anchor";
+import { HomeClientMarker } from "./components/home-client-marker";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://formaos.com.au";
 
@@ -98,6 +99,7 @@ const pricingPreview = [
 export default function MarketingHomePage() {
   return (
     <div>
+      <HomeClientMarker />
       <section className="relative mx-auto max-w-6xl px-6 pb-16 pt-16 md:pt-24 mk-parallax-slow">
         <div className="pointer-events-none absolute -right-20 top-10 h-72 w-72 rounded-full bg-sky-500/10 blur-3xl" />
         <div className="pointer-events-none absolute -left-10 top-32 h-56 w-56 rounded-full bg-indigo-500/15 blur-3xl" />
