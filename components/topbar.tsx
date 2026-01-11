@@ -20,6 +20,8 @@ import {
 } from "lucide-react";
 import { MobileSidebar } from "@/components/mobile-sidebar";
 
+import Button from "./ui/button";
+
 // ✅ Notification Center Component
 import { NotificationCenter } from "@/components/notifications/notification-center";
 
@@ -163,12 +165,14 @@ export function TopBar({
 
         {/* 🔔 NOTIFICATIONS */}
         <div className="relative" ref={notifRef}>
-          <button
+          <Button
+            variant="ghost"
             onClick={() => setShowNotifications((v) => !v)}
-            className="relative rounded-full p-2.5 text-sidebar-foreground/80 hover:bg-card/8 hover:text-card-foreground transition-colors"
+            className="relative rounded-full p-2.5 text-sidebar-foreground/90 hover:bg-card/8 transition-colors"
+            aria-label="Notifications"
           >
             <Bell className="h-5 w-5" />
-          </button>
+          </Button>
 
           {/* DROPDOWN PANEL (only when open) */}
           {showNotifications && (
@@ -180,13 +184,14 @@ export function TopBar({
 
         {/* USER DROPDOWN */}
         <div className="relative" ref={userMenuRef}>
-          <button
+          <Button
+            variant="ghost"
             onClick={() => setShowUserMenu(!showUserMenu)}
             aria-haspopup="menu"
             aria-expanded={showUserMenu}
-            className="flex items-center gap-2 rounded-full border border-card-foreground/8 bg-card/70 pl-1 pr-3 py-1.5 hover:bg-card/80 transition-all shadow-sm"
+            className="flex items-center gap-2 rounded-full pl-1 pr-3 py-1.5"
           >
-            <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-white/10 text-[10px] font-bold text-slate-100">
+            <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-white/8 text-[10px] font-bold text-card-foreground">
               {avatarUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={avatarUrl} alt="User avatar" className="h-full w-full object-cover" />
@@ -195,23 +200,23 @@ export function TopBar({
               )}
             </div>
             <ChevronDown
-              className={`h-3 w-3 text-slate-400 transition-transform ${
+              className={`h-3 w-3 text-card-foreground/70 transition-transform ${
                 showUserMenu ? "rotate-180" : ""
               }`}
             />
-          </button>
+          </Button>
 
           {showUserMenu && (
             <div
-              className="absolute right-0 mt-2 w-64 rounded-2xl border border-card-foreground/8 bg-card p-2 shadow-xl animate-in fade-in slide-in-from-top-2 duration-200 z-50"
+              className="absolute right-0 mt-2 w-64 rounded-2xl border border-card-foreground/8 bg-card p-2 shadow-xl z-50"
               role="menu"
               onKeyDown={(event) => {
                 if (event.key === "Escape") setShowUserMenu(false);
               }}
             >
-              <div className="px-3 py-2 border-b border-white/10 mb-1">
-                <p className="text-xs font-bold text-slate-100">Signed in as</p>
-                <p className="text-xs text-slate-400 truncate">{userEmail}</p>
+              <div className="px-3 py-2 border-b border-card-foreground/8 mb-1">
+                <p className="text-xs font-bold text-card-foreground">Signed in as</p>
+                <p className="text-xs text-muted truncate">{userEmail}</p>
               </div>
 
               <div className="space-y-1">
@@ -222,7 +227,7 @@ export function TopBar({
                       router.push(item.href);
                       setShowUserMenu(false);
                     }}
-                    className="w-full flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-slate-100 transition-colors text-left"
+                    className="w-full flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-card-foreground hover:bg-card/8 transition-colors text-left"
                     role="menuitem"
                   >
                     <item.icon className="h-4 w-4" />
@@ -231,11 +236,11 @@ export function TopBar({
                 ))}
               </div>
 
-              <div className="my-1 border-t border-white/10" />
+              <div className="my-1 border-t border-card-foreground/8" />
 
               <button
                 onClick={handleSignOut}
-                className="w-full flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-rose-300 hover:bg-rose-500/10 transition-colors text-left"
+                className="w-full flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-destructive hover:bg-rose-500/10 transition-colors text-left"
                 role="menuitem"
               >
                 <LogOut className="h-4 w-4" />

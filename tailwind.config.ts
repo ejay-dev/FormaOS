@@ -13,11 +13,16 @@ const config: Config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        "surface-md": "12px",
       },
+
+      // semantic color tokens map to CSS variables defined in globals.css
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
 
+        surface: "hsl(var(--surface))",
+        "surface-muted": "hsl(var(--surface-muted))",
         card: "hsl(var(--card))",
         "card-foreground": "hsl(var(--card-foreground))",
 
@@ -43,20 +48,24 @@ const config: Config = {
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
 
+        // specific UI areas
         sidebar: "hsl(var(--sidebar))",
         "sidebar-foreground": "hsl(var(--sidebar-foreground))",
-        "sidebar-primary": "hsl(var(--sidebar-primary))",
-        "sidebar-primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-        "sidebar-accent": "hsl(var(--sidebar-accent))",
-        "sidebar-accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-        "sidebar-border": "hsl(var(--sidebar-border))",
-        "sidebar-ring": "hsl(var(--sidebar-ring))",
       },
+
+      boxShadow: {
+        'surface-sm': '0 1px 3px rgba(2,6,23,0.6)',
+        'surface-md': '0 6px 20px rgba(2,6,23,0.55)',
+        'surface-lg': '0 20px 60px rgba(2,6,23,0.5)',
+      },
+
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        display: ["var(--font-inter-tight)", "system-ui", "sans-serif"],
-        mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        display: ["Inter", "system-ui", "sans-serif"],
+        mono: ["SFMono-Regular", "ui-monospace", "monospace"],
       },
+
+      
     },
   },
   plugins: [],

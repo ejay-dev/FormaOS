@@ -1,7 +1,11 @@
-import { NextResponse } from 'next/server'
-import { createSupabaseAdminClient } from '../../../../lib/supabase/admin'
+import { NextResponse } from "next/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { ensureDebugAccess } from "@/app/api/debug/_guard";
 
 export async function GET() {
+  const guard = await ensureDebugAccess();
+  if (guard) return guard;
+
   try {
     const admin = createSupabaseAdminClient()
 
@@ -12,11 +16,11 @@ export async function GET() {
       .ilike('routine_definition', '%auth.users%')
 
     if (error) {
-      return NextResponse.json({ error: error.message || error }, { status: 500 })
+      return NextResponse.json({ error: error.message || error }, { status: 500 });
     }
 
-    return NextResponse.json({ data })
+    return NextResponse.json({ data });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message || String(err) }, { status: 500 })
+    return NextResponse.json({ error: err.message || String(err) }, { status: 500 });
   }
 }

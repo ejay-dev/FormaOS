@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
+import { ensureDebugAccess } from "@/app/api/debug/_guard";
 
 export async function POST(request: Request) {
+  const guard = await ensureDebugAccess();
+  if (guard) return guard;
+
   try {
     const payload = await request.json().catch(() => null);
     console.error("[debug/log] client debug:", payload);

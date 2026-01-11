@@ -75,6 +75,14 @@ export async function POST(request: Request) {
 
     if (createUserError) {
       console.error("[api/auth/signup] createUser failed:", createUserError);
+      // include full diagnostic info when returning error to client (sanitized)
+      const diag = {
+        message: createUserError.message,
+        code: (createUserError as any)?.code ?? null,
+        status: (createUserError as any)?.status ?? null,
+        hint: (createUserError as any)?.hint ?? null,
+        details: (createUserError as any)?.details ?? null,
+      };
       // attempt cleanup
       try {
         await admin.from("org_members").delete().match({ organization_id: organizationId, user_id: userId });
@@ -82,7 +90,7 @@ export async function POST(request: Request) {
       } catch (cleanupErr) {
         console.error("[api/auth/signup] cleanup failed:", cleanupErr);
       }
-      return NextResponse.json({ ok: false, error: { message: createUserError.message, code: (createUserError as any)?.code } }, { status: 500 });
+      return NextResponse.json({ ok: false, error: diag }, { status: 500 });
     }
 
     try {

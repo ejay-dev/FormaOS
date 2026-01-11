@@ -47,7 +47,7 @@ export default async function PublicFormPage({
   // 4. Show Success State if redirected
   if (success === 'true') {
     return (
-      <div className="min-h-screen bg-[#05080f] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[hsl(var(--background))] flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white/5 rounded-2xl border border-white/10 shadow-sm p-8 text-center space-y-4">
           <div className="mx-auto w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center">
             <CheckCircle2 className="w-6 h-6" />
@@ -66,7 +66,7 @@ export default async function PublicFormPage({
 
   // Render Form
   return (
-    <div className="min-h-screen bg-[#05080f] py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[hsl(var(--background))] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto bg-white/5 rounded-2xl border border-white/10 shadow-sm overflow-hidden">
         
         {/* Header */}

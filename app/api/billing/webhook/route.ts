@@ -73,6 +73,12 @@ export async function POST(request: Request) {
       const targetOrgId = row?.organization_id ?? orgId;
       if (!targetOrgId || !planKey) return null;
 
+      const currentPeriodEnd = subscription.current_period_end
+        ? new Date(subscription.current_period_end * 1000).toISOString()
+        : null;
+      const trialExpiresAt =
+        subscription.status === "trialing" ? currentPeriodEnd : null;
+
       await admin
         .from("org_subscriptions")
         .upsert({
@@ -82,12 +88,12 @@ export async function POST(request: Request) {
           stripe_customer_id: customerId,
           stripe_subscription_id: subscriptionId,
           price_id: priceId,
-          current_period_end: subscription.current_period_end
-            ? new Date(subscription.current_period_end * 1000).toISOString()
-            : null,
+          current_period_end: currentPeriodEnd,
           cancel_at: subscription.cancel_at
             ? new Date(subscription.cancel_at * 1000).toISOString()
             : null,
+          trial_started_at: subscription.status === "trialing" ? new Date().toISOString() : null,
+          trial_expires_at: trialExpiresAt,
           updated_at: new Date().toISOString(),
         });
 
@@ -120,6 +126,7 @@ export async function POST(request: Request) {
       }
 
       if (orgId && planKey) {
+        const trialExpiresAt = status === "trialing" ? currentPeriodEnd : null;
         await admin
           .from("org_subscriptions")
           .upsert({
@@ -130,6 +137,8 @@ export async function POST(request: Request) {
             stripe_subscription_id: subscriptionId,
             price_id: priceId,
             current_period_end: currentPeriodEnd,
+            trial_started_at: status === "trialing" ? new Date().toISOString() : null,
+            trial_expires_at: trialExpiresAt,
             updated_at: new Date().toISOString(),
           });
 
@@ -174,6 +183,8 @@ export async function POST(request: Request) {
           .from("org_subscriptions")
           .update({
             status: "active",
+            trial_started_at: null,
+            trial_expires_at: null,
             updated_at: new Date().toISOString(),
           })
           .match(

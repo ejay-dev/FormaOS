@@ -21,6 +21,7 @@ import {
   HeartPulse,
   NotebookPen,
 } from "lucide-react";
+import Button from "./ui/button";
 
 type RoleKey = "OWNER" | "COMPLIANCE_OFFICER" | "MANAGER" | "STAFF" | "VIEWER" | "AUDITOR";
 
@@ -60,14 +61,14 @@ export function Sidebar({ role = "OWNER" }: { role?: RoleKey }) {
       <div className="space-y-7 overflow-y-auto no-scrollbar">
         {/* Logo Area */}
         <div className="flex items-center gap-3 px-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-sidebar-primary text-sidebar-primary-foreground shadow-[0_0_18px_rgba(56,189,248,0.08)]">
-            <ShieldCheck className="h-4 w-4" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground shadow-[0_6px_24px_rgba(59,130,246,0.08)]">
+            <ShieldCheck className="h-5 w-5" />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-bold tracking-tight text-slate-100 leading-none">
+            <span className="text-sm font-bold tracking-tight text-card-foreground leading-none">
               FormaOS
             </span>
-            <span className="text-[10px] font-semibold text-sky-300 uppercase tracking-[0.2em] mt-1">
+            <span className="text-[10px] font-semibold text-sidebar-primary-foreground uppercase tracking-[0.2em] mt-1">
               Enterprise
             </span>
           </div>
@@ -99,17 +100,17 @@ export function Sidebar({ role = "OWNER" }: { role?: RoleKey }) {
                       key={item.name}
                       href={item.href}
                       className={`group flex items-center justify-between rounded-xl px-3 py-2 text-[13px] font-semibold transition-all ${
-                          isActive
-                            ? "bg-sidebar-primary text-sidebar-primary-foreground ring-1 ring-sidebar-ring shadow-[0_0_20px_rgba(59,130,246,0.06)]"
-                            : "text-sidebar-foreground/80 hover:bg-card/8 hover:text-sidebar-foreground"
-                        }`}>
+                            isActive
+                              ? "bg-sidebar-primary text-sidebar-primary-foreground ring-1 ring-sidebar-ring shadow-[0_0_20px_rgba(59,130,246,0.06)]"
+                              : "text-sidebar-foreground/80 hover:bg-card/8 hover:text-sidebar-foreground"
+                          }`}>
                       <div className="flex items-center gap-3">
                         <item.icon
                           className={`h-4 w-4 transition-colors ${
                             isActive
                               ? "text-slate-100"
                               : "text-slate-400 group-hover:text-slate-100"
-                          }`}
+                            }`}
                         />
                         {item.name}
                       </div>
@@ -126,32 +127,26 @@ export function Sidebar({ role = "OWNER" }: { role?: RoleKey }) {
       {/* Bottom: Quick Search + Logout */}
       <div className="space-y-3 border-t border-white/10 pt-4 mt-4">
         {/* Quick Search Hint (ties into CommandPalette) */}
-            <button
-          type="button"
-          className="group flex w-full items-center justify-between rounded-xl px-3 py-3 text-xs font-semibold text-sidebar-foreground bg-card/8 border border-card-foreground/8 hover:text-sidebar-foreground transition-all"
-        >
-          <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 transition-colors">
-              <Command className="h-4 w-4 text-slate-400" />
-            </div>
-            Quick Search
-          </div>
-          <kbd className="px-2 py-1 text-[10px] font-mono bg-white/10 border border-white/10 rounded-md text-slate-400">
-            ⌘K
-          </kbd>
-        </button>
+            <Button variant="ghost" className="group flex w-full items-center justify-between rounded-xl px-3 py-3 text-xs font-semibold text-sidebar-foreground bg-card/8 border border-card-foreground/8">
+              <div className="flex items-center gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/8">
+                  <Command className="h-4 w-4 text-slate-300" />
+                </div>
+                Quick Search
+              </div>
+              <kbd className="px-2 py-1 text-[10px] font-mono bg-white/10 border border-white/10 rounded-md text-slate-400">
+                ⌘K
+              </kbd>
+            </Button>
 
         {/* Logout */}
         <form action={signOut}>
-          <button
-            type="submit"
-            className="group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-xs font-semibold text-sidebar-foreground hover:bg-rose-500/10 hover:text-rose-300 transition-all"
-          >
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 transition-colors">
-              <LogOut className="h-4 w-4 text-slate-400 transition-colors group-hover:text-rose-300" />
+          <Button type="submit" variant="ghost" className="group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-xs font-semibold text-sidebar-foreground">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/8">
+              <LogOut className="h-4 w-4 text-slate-300" />
             </div>
             Sign Out
-          </button>
+          </Button>
         </form>
       </div>
     </div>

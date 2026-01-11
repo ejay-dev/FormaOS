@@ -29,3 +29,5 @@ export function CardContent({ className, ...props }: React.HTMLAttributes<HTMLDi
 export function CardFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return <div className={cn("flex items-center justify-end gap-2", className)} {...props} />;
 }
+
+export default Card

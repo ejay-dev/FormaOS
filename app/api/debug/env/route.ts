@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { getCookieDomain } from "@/lib/supabase/cookie-domain";
+import { ensureDebugAccess } from "@/app/api/debug/_guard";
 
 export async function GET(request: Request) {
+  const guard = await ensureDebugAccess();
+  if (guard) return guard;
+
   try {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? null;
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? null;

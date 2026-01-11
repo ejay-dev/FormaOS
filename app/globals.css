@@ -59,6 +59,46 @@
   --text-muted: 215 15% 65%;
 }
 
+/* Dark-mode by default for an executive command-center look
+   Switch to [data-theme="light"] for a light variant (kept readable). */
+
+[data-theme="dark"] {
+  /* keep existing root tokens as authoritative for dark */
+}
+
+[data-theme="light"] {
+  --background: 210 20% 98%;
+  --foreground: 220 12% 12%;
+
+  --card: 210 26% 100%;
+  --card-foreground: 220 12% 12%;
+
+  --popover: 210 26% 100%;
+  --popover-foreground: 220 12% 12%;
+
+  --primary: 217 80% 45%;
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 220 12% 94%;
+  --secondary-foreground: 210 40% 12%;
+
+  --muted: 215 10% 92%;
+  --muted-foreground: 215 10% 48%;
+
+  --accent: 200 90% 50%;
+  --accent-foreground: 210 40% 12%;
+
+  --destructive: 0 84% 50%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 220 12% 92%;
+  --input: 210 26% 100%;
+  --ring: 217 91% 40%;
+
+  --sidebar: 210 26% 100%;
+  --sidebar-foreground: 220 12% 12%;
+}
+
 @layer base {
   * {
     /* avoid applying invalid token classes */
@@ -93,8 +133,73 @@
     border-radius: 0.75rem; /* 12px */
     border: 1px solid hsl(var(--border) / 0.12);
     padding: 1rem;
-    box-shadow: 0 6px 18px rgba(2,6,23,0.45);
+    box-shadow: 0 8px 30px rgba(2,6,23,0.55);
   }
+
+  /* Generic surface utility */
+  .surface {
+    background: hsl(var(--surface, var(--card)));
+    color: hsl(var(--card-foreground));
+    border-radius: 12px;
+    border: 1px solid hsl(var(--border) / 0.14);
+    box-shadow: 0 6px 20px rgba(2,6,23,0.45);
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-family: var(--font-inter);
+    border: 1px solid transparent;
+    transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+    line-height: 1;
+  }
+
+  .btn:active { transform: translateY(1px); }
+
+  .btn-primary {
+    background: linear-gradient(180deg, hsl(var(--primary)) 0%, color-mix(in srgb, hsl(var(--primary)) 88%, black 12%) 100%);
+    color: hsl(var(--primary-foreground));
+    box-shadow: 0 6px 18px rgba(21,55,90,0.35);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: hsl(var(--secondary-foreground));
+    border: 1px solid hsl(var(--border) / 0.2);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: hsl(var(--card-foreground));
+  }
+
+  /* Inputs */
+  input[type="text"], input[type="email"], input[type="password"], textarea, select {
+    background: hsl(var(--input));
+    color: hsl(var(--foreground));
+    border: 1px solid hsl(var(--border) / 0.12);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-family: var(--font-inter);
+  }
+
+  input:disabled, textarea:disabled, select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* Labels and muted text */
+  .label { color: hsl(var(--muted-foreground)); font-size: 0.9rem; }
+  .muted { color: hsl(var(--muted-foreground)); }
+
+  /* Card header / section header */
+  .card-header { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:0.75rem; }
 
   /* Accessible focus outlines for interactive elements */
   :focus-visible {

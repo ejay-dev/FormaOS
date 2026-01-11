@@ -60,7 +60,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
               <input
                 name="name"
                 required
-                className="w-full rounded-lg border border-white/10 bg-[#0b1220] px-4 py-3 text-sm text-slate-100"
+                className="w-full rounded-lg border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-100"
               />
             </div>
             <div className="space-y-2">
@@ -69,7 +69,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
                 type="email"
                 name="email"
                 required
-                className="w-full rounded-lg border border-white/10 bg-[#0b1220] px-4 py-3 text-sm text-slate-100"
+                className="w-full rounded-lg border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-100"
               />
             </div>
             <div className="space-y-2">
@@ -77,25 +77,25 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
               <input
                 name="organization"
                 required
-                className="w-full rounded-lg border border-white/10 bg-[#0b1220] px-4 py-3 text-sm text-slate-100"
+                className="w-full rounded-lg border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-100"
               />
             </div>
             <div className="space-y-2">
               <label className="text-xs uppercase tracking-[0.3em] text-slate-400">Industry</label>
               <input
                 name="industry"
-                className="w-full rounded-lg border border-white/10 bg-[#0b1220] px-4 py-3 text-sm text-slate-100"
+                className="w-full rounded-lg border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-100"
               />
             </div>
           </div>
           <div className="mt-6 space-y-2">
             <label className="text-xs uppercase tracking-[0.3em] text-slate-400">What do you need help with?</label>
-            <textarea
-              name="message"
-              rows={5}
-              required
-              className="w-full rounded-lg border border-white/10 bg-[#0b1220] px-4 py-3 text-sm text-slate-100"
-            />
+              <textarea
+                name="message"
+                rows={5}
+                required
+                className="w-full rounded-lg border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-100"
+              />
           </div>
           <button
             type="submit"

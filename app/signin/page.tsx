@@ -73,7 +73,7 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#05080f] text-slate-100 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-[hsl(var(--background))] text-slate-100 p-6">
       <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-10">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-semibold">Welcome back</h1>

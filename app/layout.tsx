@@ -7,7 +7,7 @@ export default function RootLayout({
 }) {
   console.log("APP BOOT: Layout rendered");
   return (
-    <html lang="en">
+    <html lang="en" data-theme="dark">
       <body>{children}</body>
     </html>
   );

@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
+import { ensureDebugAccess } from "@/app/api/debug/_guard";
 
 // Safe debug endpoint: returns boolean flags indicating presence of Supabase env vars
 // Do NOT return actual secret values.
 export async function GET() {
+  const guard = await ensureDebugAccess();
+  if (guard) return guard;
+
   try {
     const hasUrl = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL);
     const hasAnon = Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);

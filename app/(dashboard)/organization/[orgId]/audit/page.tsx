@@ -34,7 +34,7 @@ export default async function AuditPage({ params }: PageProps) {
         <div className="relative w-full overflow-auto">
           <table className="w-full caption-bottom text-sm text-left">
             <thead className="border-b border-white/10">
-              <tr className="border-b border-white/10 transition-colors hover:bg-[#05080f]">
+              <tr className="border-b border-white/10 transition-colors hover:bg-[hsl(var(--card))]">
                 <th className="h-12 px-4 align-middle font-medium text-slate-400">
                   Action
                 </th>
@@ -60,7 +60,7 @@ export default async function AuditPage({ params }: PageProps) {
                 logs.map((log) => (
                   <tr
                     key={log.id}
-                    className="border-b border-white/10 transition-colors hover:bg-[#05080f]"
+                    className="border-b border-white/10 transition-colors hover:bg-[hsl(var(--card))]"
                   >
                     <td className="p-4 align-middle font-medium">
                       <span className="inline-flex items-center rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-200">

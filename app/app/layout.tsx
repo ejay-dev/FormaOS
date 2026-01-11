@@ -76,7 +76,7 @@ export default async function AppLayout({
    * ----------------------------------------------------- */
   return (
     <CommandProvider>
-      <div className="relative flex h-screen w-full overflow-hidden bg-[#05080f] text-slate-100">
+      <div className="relative flex h-screen w-full overflow-hidden bg-background text-foreground">
         <div className="pointer-events-none absolute inset-x-0 -top-24 h-48 bg-gradient-to-r from-blue-500/10 via-indigo-500/5 to-cyan-500/10 blur-3xl" />
         <div className="pointer-events-none absolute -right-32 top-32 h-80 w-80 rounded-full bg-cyan-500/5 blur-3xl" />
         {/* =====================================================
@@ -87,23 +87,7 @@ export default async function AppLayout({
           {/* =====================================================
               SIDEBAR ZONE
               ===================================================== */}
-          <aside
-            className="
-              relative
-              z-30
-              hidden
-              md:flex
-              h-full
-              w-[260px]
-              shrink-0
-              flex-col
-              border-r
-              border-white/10
-              bg-gradient-to-b
-              from-[#0B1220]
-              to-[#0A101C]
-            "
-          >
+          <aside className="relative z-30 hidden md:flex h-full w-[260px] shrink-0 flex-col border-r border-sidebar-border bg-sidebar">
             {/* Sidebar Header Slot */}
             <div className="flex h-16 items-center border-b border-white/10 px-6">
               <div className="flex items-center gap-2">
@@ -136,23 +120,7 @@ export default async function AppLayout({
             {/* =====================================================
                 TOP BAR ZONE
                 ===================================================== */}
-            <header
-              className="
-                sticky
-                top-0
-                z-40
-                flex
-                h-16
-                w-full
-                items-center
-                border-b
-                border-white/10
-                bg-gradient-to-r
-                from-[#0B1220]
-                via-[#0E1526]
-                to-[#0B1220]
-              "
-            >
+            <header className="sticky top-0 z-40 flex h-16 w-full items-center border-b border-sidebar-border bg-surface">
               <div className="flex h-full w-full items-center px-6">
                 <TopBar
                   orgName={orgName || "My Organization"}
@@ -185,40 +153,14 @@ export default async function AppLayout({
             {/* =====================================================
                 MAIN CONTENT ZONE
                 ===================================================== */}
-            <main
-              className="
-                relative
-                flex
-                flex-1
-                flex-col
-                overflow-y-auto
-                bg-[#05080f]
-              "
-            >
+            <main className="relative flex flex-1 flex-col overflow-y-auto bg-background">
               {/* Page Container */}
               <div className="mx-auto w-full max-w-7xl px-8 py-8">
 
                 {/* =================================================
                     PAGE FRAME
                     ================================================= */}
-                <div
-                  className="
-                    relative
-                    flex
-                    w-full
-                    flex-col
-                    gap-6
-                    rounded-lg
-                    border
-                    border-white/10
-                    bg-gradient-to-br
-                    from-[#0B1220]
-                    via-[#0E1526]
-                    to-[#0A101C]
-                    p-6
-                    shadow-sm
-                  "
-                >
+                <div className="relative flex w-full flex-col gap-6 rounded-lg border border-card-foreground/8 bg-card p-6 shadow-surface-md">
                   {/* -------------------------------------------------
                       PAGE HEADER SLOT
                       ------------------------------------------------- */}

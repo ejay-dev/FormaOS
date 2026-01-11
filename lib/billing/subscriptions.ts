@@ -26,13 +26,17 @@ export async function ensureSubscription(orgId: string, planKey: string | null) 
   }
 
   const isTrialEligible = resolvedPlan === "basic" || resolvedPlan === "pro";
-  const nowIso = new Date().toISOString();
+  const now = new Date();
+  const nowIso = now.toISOString();
+  const trialEndIso = isTrialEligible ? getTrialEndIso() : null;
 
   await admin.from("org_subscriptions").upsert({
     organization_id: orgId,
     plan_key: resolvedPlan,
     status: isTrialEligible ? "trialing" : "pending",
-    current_period_end: isTrialEligible ? getTrialEndIso() : null,
+    current_period_end: trialEndIso,
+    trial_started_at: isTrialEligible ? nowIso : null,
+    trial_expires_at: trialEndIso,
     updated_at: nowIso,
   });
 

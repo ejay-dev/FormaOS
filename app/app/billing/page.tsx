@@ -165,7 +165,7 @@ export default async function BillingPage({
           {entitlementRows.map((entitlement) => (
             <div
               key={entitlement.feature_key}
-              className="rounded-xl border border-white/10 bg-[#05080f] px-4 py-3 text-sm text-slate-200"
+              className="rounded-xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
             >
               <div className="font-semibold">{entitlement.feature_key}</div>
               <div className="text-xs text-slate-400">

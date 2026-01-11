@@ -129,7 +129,7 @@ function SectionTitle({
       <div className="absolute inset-x-0 -top-6 h-20 rounded-2xl bg-gradient-to-r from-blue-600/15 via-indigo-600/10 to-cyan-500/15 blur-2xl" />
       <div className="relative flex items-start gap-4">
         {icon ? (
-          <div className="mt-0.5 flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-gradient-to-br from-[#0B1220] to-[#0F172A] shadow-[0_0_18px_rgba(56,189,248,0.15)]">
+          <div className="mt-0.5 flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] to-[hsl(var(--panel-2))] shadow-[0_0_18px_rgba(56,189,248,0.15)]">
             {icon}
           </div>
         ) : null}
@@ -191,7 +191,7 @@ function CardShell({
   children: React.ReactNode;
 }) {
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#0B1220] via-[#0E1526] to-[#0A101C] shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+    <section className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-r from-blue-600/10 via-transparent to-cyan-500/10" />
       <div className="relative flex items-start justify-between gap-4 border-b border-white/10 px-6 py-5">
         <div className="min-w-0">
@@ -321,7 +321,7 @@ function ProgressBar({
   };
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#0B1220] via-[#0E1526] to-[#0A101C] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
+    <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
       <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-sky-500/10 blur-3xl" />
       <div className="relative flex items-start justify-between gap-4">
         <div className="min-w-0">
@@ -376,7 +376,7 @@ function TableShell({
   empty: React.ReactNode;
 }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-[#0B1220] to-[#0A101C]">
+    <div className="overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-[hsl(var(--card))] to-[hsl(var(--panel-2))]">
       <div className="relative w-full overflow-auto">
         <table className="w-full text-left text-sm">
           <thead className="bg-gradient-to-r from-white/5 via-white/0 to-white/5">
@@ -496,7 +496,7 @@ export default async function DashboardPage() {
   if (!user) {
     // Layout should redirect first, but on edge cases we still guard.
     return (
-      <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[#0B1220] via-[#0E1526] to-[#0A101C] p-6">
+      <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6">
         <EmptyState
           title="Session expired"
           description="Please sign in again to continue."
@@ -724,7 +724,7 @@ export default async function DashboardPage() {
       {/* =====================================================
           CONTEXT STRIP
           ===================================================== */}
-      <div className="relative flex flex-col gap-3 rounded-2xl border border-white/10 bg-gradient-to-r from-[#0B1220] via-[#0C1324] to-[#0B1220] px-6 py-4 shadow-[0_20px_50px_rgba(0,0,0,0.35)] sm:flex-row sm:items-center sm:justify-between">
+      <div className="relative flex flex-col gap-3 rounded-2xl border border-white/10 bg-gradient-to-r from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--card))] px-6 py-4 shadow-[0_20px_50px_rgba(0,0,0,0.35)] sm:flex-row sm:items-center sm:justify-between">
         <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/10 via-transparent to-cyan-500/10" />
         <div className="flex flex-wrap items-center gap-2">
           <Pill
@@ -775,7 +775,7 @@ export default async function DashboardPage() {
       {/* =====================================================
           COMPLIANCE GATES SUMMARY (NEW)
           ===================================================== */}
-      <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[#0B1220] via-[#0E1526] to-[#0A101C] px-6 py-4 shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
+      <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] px-6 py-4 shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
         <div className="flex items-center justify-between gap-4">
           <div>
             <div className="text-xs font-semibold uppercase tracking-widest text-slate-400">Compliance gates</div>

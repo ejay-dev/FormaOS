@@ -58,7 +58,7 @@ export default function PlanSelectPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#05080f] text-slate-100 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-[hsl(var(--background))] text-slate-100 p-6">
       <div className="w-full max-w-4xl rounded-2xl border border-white/10 bg-white/5 p-8">
         <h2 className="text-2xl font-semibold mb-4">Choose a plan</h2>
         <p className="text-sm text-slate-400 mb-6">Select a plan to continue into the app.</p>

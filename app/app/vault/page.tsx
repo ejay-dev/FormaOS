@@ -219,7 +219,7 @@ export default async function VaultPage() {
           </h2>
         </div>
 
-        <div className="bg-gradient-to-br from-[#0B1220] via-[#0E1526] to-[#0A101C] border border-white/10 rounded-[2.5rem] shadow-[0_24px_70px_rgba(0,0,0,0.45)] overflow-hidden">
+        <div className="bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] border border-white/10 rounded-[2.5rem] shadow-[0_24px_70px_rgba(0,0,0,0.45)] overflow-hidden">
           {verified.length === 0 ? (
             <div className="p-12 text-center text-slate-400 text-sm font-bold">
               No verified evidence yet.

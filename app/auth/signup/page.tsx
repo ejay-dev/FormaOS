@@ -112,7 +112,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#05080f] text-slate-100 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-[hsl(var(--background))] text-slate-100 p-6">
       <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-white/5 p-10">
         <h1 className="text-2xl font-semibold">Create your account</h1>
         <p className="text-sm text-slate-400 mt-2">Sign up with email or Google.</p>

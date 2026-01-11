@@ -47,7 +47,7 @@ export default async function AcceptInvitePage({ params }: PageProps) {
     }
 
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#05080f] p-6">
+      <div className="min-h-screen flex items-center justify-center bg-[hsl(var(--background))] p-6">
         <div className="max-w-md w-full">
           <div className="bg-white/5 rounded-2xl p-8 border border-white/10 text-center">
             <div className={`mx-auto w-20 h-20 rounded-full ${iconBg} flex items-center justify-center mb-6`}>
@@ -56,7 +56,7 @@ export default async function AcceptInvitePage({ params }: PageProps) {
             <h1 className="text-2xl font-bold text-slate-100 mb-4">{errorTitle}</h1>
             <p className="text-slate-400 mb-8">{errorDescription}</p>
             <div className="flex flex-col gap-3">
-              <Link href="/app" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#05080f] text-white rounded-xl font-semibold hover:brightness-110 transition-all">
+              <Link href="/app" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[hsl(var(--card))] text-white rounded-xl font-semibold hover:brightness-110 transition-all">
                 Go to Dashboard
               </Link>
               <Link href="/auth/signout" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/5 text-slate-200 rounded-xl font-semibold hover:bg-white/10 transition-all">
@@ -73,7 +73,7 @@ export default async function AcceptInvitePage({ params }: PageProps) {
 
   if (invitation.email.toLowerCase() !== user.email?.toLowerCase()) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#05080f] p-6">
+      <div className="min-h-screen flex items-center justify-center bg-[hsl(var(--background))] p-6">
         <div className="max-w-md w-full">
           <div className="bg-white/5 rounded-2xl p-8 border border-white/10 text-center">
             <div className="mx-auto w-20 h-20 rounded-full bg-amber-500/10 flex items-center justify-center mb-6">
@@ -104,7 +104,7 @@ export default async function AcceptInvitePage({ params }: PageProps) {
 
   if (!acceptResult.success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#05080f]">
+      <div className="min-h-screen flex items-center justify-center bg-[hsl(var(--background))]">
         <div className="max-w-md w-full bg-white/5 p-8 rounded-lg shadow-sm text-center">
           <h1 className="text-2xl font-bold text-red-600 mb-4">Error</h1>
           <p className="text-slate-400 mb-6">
@@ -129,7 +129,7 @@ export default async function AcceptInvitePage({ params }: PageProps) {
   );
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#05080f] p-6">
+  <div className="min-h-screen flex items-center justify-center bg-[hsl(var(--background))] p-6">
       <div className="max-w-md w-full">
         <div className="bg-white/5 rounded-2xl p-8 border border-white/10 text-center">
           <div className="mx-auto w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center mb-6">

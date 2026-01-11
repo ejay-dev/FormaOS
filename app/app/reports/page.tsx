@@ -172,7 +172,7 @@ export default async function ReportsPage() {
       {/* =========================
           REGULATORY SUMMARY PANEL
          ========================= */}
-      <div className="bg-gradient-to-br from-[#0B1220] via-[#0E1526] to-[#0A101C] border border-white/10 rounded-[2rem] p-8 relative overflow-hidden shadow-[0_24px_70px_rgba(0,0,0,0.45)]">
+      <div className="bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] border border-white/10 rounded-[2rem] p-8 relative overflow-hidden shadow-[0_24px_70px_rgba(0,0,0,0.45)]">
         <div className="absolute top-0 right-0 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl -mr-32 -mt-32 -z-10 opacity-60" />
 
         <div className="flex flex-col lg:flex-row justify-between gap-8 relative z-10">
@@ -277,7 +277,7 @@ export default async function ReportsPage() {
       {/* =========================
           PRIMARY ACTION
          ========================= */}
-      <div className="bg-gradient-to-br from-[#0B1220] via-[#0E1526] to-[#0A101C] rounded-[2rem] p-8 text-slate-100 relative overflow-hidden group border border-white/10 shadow-[0_24px_70px_rgba(0,0,0,0.45)]">
+      <div className="bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] rounded-[2rem] p-8 text-slate-100 relative overflow-hidden group border border-white/10 shadow-[0_24px_70px_rgba(0,0,0,0.45)]">
         <div className="absolute top-0 right-0 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl -mr-20 -mt-20 transition-all" />
         
         <div className="relative z-10 max-w-lg">

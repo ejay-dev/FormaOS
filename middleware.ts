@@ -34,7 +34,7 @@ export async function middleware(request: NextRequest) {
     }
 
   if (appOrigin && siteOrigin && appOrigin.hostname !== siteOrigin.hostname) {
-    const appPaths = ["/app", "/auth", "/onboarding", "/accept-invite", "/submit", "/signin", "/api"];
+    const appPaths = ["/app", "/admin", "/auth", "/onboarding", "/accept-invite", "/submit", "/signin", "/api"];
     const isAppPath = appPaths.some(
       (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
     );
@@ -212,12 +212,11 @@ export async function middleware(request: NextRequest) {
             );
 
             if (isFounder) {
-              console.log("[middleware] founder bypass for user:", { id: user.id, email: userEmail });
               // skip subscription gating for founders
             } else {
         const { data: subscription, error: subscriptionError } = await supabase
           .from("org_subscriptions")
-          .select("status, current_period_end")
+          .select("status, current_period_end, trial_expires_at")
           .eq("organization_id", orgId)
           .maybeSingle();
 
@@ -227,8 +226,9 @@ export async function middleware(request: NextRequest) {
           if (subscription.status === "active") {
             subscriptionActive = true;
           } else if (subscription.status === "trialing") {
-            if (subscription.current_period_end) {
-              const trialEnd = new Date(subscription.current_period_end).getTime();
+            const trialEndValue = subscription.trial_expires_at ?? subscription.current_period_end;
+            if (trialEndValue) {
+              const trialEnd = new Date(trialEndValue).getTime();
               subscriptionActive = !Number.isNaN(trialEnd) && Date.now() <= trialEnd;
             }
           }

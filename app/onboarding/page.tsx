@@ -12,10 +12,10 @@ import {
   parseInviteEmails,
   validateFrameworks,
   validateIndustry,
-  validateOrganizationName,
   validatePlan,
   validateTeamSize,
   validateInviteEmails,
+  validateOrganizationName,
   sanitizeOrganizationName,
 } from "@/lib/validators/organization";
 import { INDUSTRY_PACKS } from "@/lib/industry-packs";
@@ -392,13 +392,13 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
   const planLabel = planKey ? PLAN_CATALOG[planKey].name : "Plan not selected";
 
   return (
-    <div className="min-h-screen bg-[#0B1220] flex items-center justify-center p-6 font-sans">
+    <div className="min-h-screen bg-[hsl(var(--background))] flex items-center justify-center p-6 font-sans">
       <div className="w-full max-w-2xl">
         <div className="bg-white/5 rounded-[2rem] p-10 shadow-2xl border border-white/10 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-1.5 bg-[#05080f]" />
+          <div className="absolute top-0 left-0 w-full h-1.5 bg-[hsl(var(--card))]" />
 
           <div className="mb-8 text-center md:text-left">
-            <div className="h-14 w-14 rounded-2xl bg-[#05080f] text-white flex items-center justify-center mb-6 shadow-xl mx-auto md:mx-0">
+            <div className="h-14 w-14 rounded-2xl bg-[hsl(var(--card))] text-white flex items-center justify-center mb-6 shadow-xl mx-auto md:mx-0">
               <Building2 className="h-7 w-7" />
             </div>
             <h1 className="text-3xl font-black text-slate-100 tracking-tight">FormaOS onboarding</h1>
@@ -414,7 +414,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
 
           {safeStep === 1 ? (
             <form action={advanceWelcome} className="space-y-6">
-              <div className="rounded-2xl border border-white/10 bg-[#05080f] p-6 text-sm text-slate-300">
+              <div className="rounded-2xl border border-white/10 bg-[hsl(var(--card))] p-6 text-sm text-slate-300">
                 <div className="flex items-start gap-3">
                   <Sparkles className="h-5 w-5 text-sky-400" />
                   <div>
@@ -428,7 +428,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
               </div>
               <button
                 type="submit"
-                className="w-full py-5 bg-[#05080f] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
+                className="w-full py-5 bg-[hsl(var(--card))] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
               >
                 Continue
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -447,7 +447,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                   name="organizationName"
                   defaultValue={orgRecord?.name ?? ""}
                   placeholder="e.g. Acme Corp"
-                  className="w-full p-4 rounded-2xl border border-white/10 bg-[#05080f] focus:bg-white/5 focus:outline-white/20 text-sm font-semibold transition-all shadow-inner"
+                  className="w-full p-4 rounded-2xl border border-white/10 bg-[hsl(var(--card))] focus:bg-white/5 focus:outline-white/20 text-sm font-semibold transition-all shadow-inner"
                 />
               </div>
 
@@ -459,7 +459,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                   {TEAM_SIZE_OPTIONS.map((option) => (
                     <label
                       key={option.id}
-                      className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[#05080f] px-4 py-3 text-sm text-slate-200"
+                      className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
                     >
                       <input
                         required
@@ -467,7 +467,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                         name="teamSize"
                         value={option.id}
                         defaultChecked={orgRecord?.team_size === option.id}
-                        className="h-4 w-4 border-white/20 bg-[#05080f] text-sky-400"
+                        className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
                       />
                       <span>{option.label} people</span>
                     </label>
@@ -483,7 +483,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                   {PLAN_CHOICES.map((option) => (
                     <label
                       key={option.key}
-                      className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-[#05080f] px-4 py-4 text-sm text-slate-200"
+                      className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-4 text-sm text-slate-200"
                     >
                       <div className="flex items-center gap-3">
                         <input
@@ -492,7 +492,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                           name="plan"
                           value={option.key}
                           defaultChecked={planKey === option.key}
-                          className="h-4 w-4 border-white/20 bg-[#05080f] text-sky-400"
+                          className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
                         />
                         <span className="text-sm font-semibold text-slate-100">{option.name}</span>
                       </div>
@@ -504,7 +504,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
 
               <button
                 type="submit"
-                className="w-full py-5 bg-[#05080f] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
+                className="w-full py-5 bg-[hsl(var(--card))] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
               >
                 Continue
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -522,7 +522,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                   {INDUSTRY_OPTIONS.map((option) => (
                     <label
                       key={option.id}
-                      className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[#05080f] px-4 py-3 text-sm text-slate-200"
+                      className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
                     >
                       <input
                         required
@@ -530,7 +530,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                         name="industry"
                         value={option.id}
                         defaultChecked={orgRecord?.industry === option.id}
-                        className="h-4 w-4 border-white/20 bg-[#05080f] text-sky-400"
+                        className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
                       />
                       <span>{option.label}</span>
                     </label>
@@ -539,7 +539,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
               </div>
               <button
                 type="submit"
-                className="w-full py-5 bg-[#05080f] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
+                className="w-full py-5 bg-[hsl(var(--card))] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
               >
                 Continue
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -557,7 +557,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                   {ROLE_OPTIONS.map((option) => (
                     <label
                       key={option.id}
-                      className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[#05080f] px-4 py-3 text-sm text-slate-200"
+                      className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
                     >
                       <input
                         required
@@ -565,7 +565,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                         name="role"
                         value={option.id}
                         defaultChecked={option.role === "owner"}
-                        className="h-4 w-4 border-white/20 bg-[#05080f] text-sky-400"
+                        className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
                       />
                       <span>{option.label}</span>
                     </label>
@@ -574,7 +574,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
               </div>
               <button
                 type="submit"
-                className="w-full py-5 bg-[#05080f] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
+                className="w-full py-5 bg-[hsl(var(--card))] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
               >
                 Continue
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -596,14 +596,14 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                     return (
                       <label
                         key={framework.id}
-                        className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[#05080f] px-4 py-3 text-sm text-slate-200"
+                        className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
                       >
                         <input
                           type="checkbox"
                           name="frameworks"
                           value={framework.id}
                           defaultChecked={checked}
-                          className="h-4 w-4 rounded border-white/20 bg-[#05080f] text-sky-400"
+                          className="h-4 w-4 rounded border-white/20 bg-[hsl(var(--card))] text-sky-400"
                         />
                         <span>{framework.label}</span>
                       </label>
@@ -613,7 +613,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
               </div>
               <button
                 type="submit"
-                className="w-full py-5 bg-[#05080f] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
+                className="w-full py-5 bg-[hsl(var(--card))] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
               >
                 Continue
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -631,12 +631,12 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                   name="inviteEmails"
                   rows={4}
                   placeholder="Add emails separated by commas or new lines"
-                  className="w-full p-4 rounded-2xl border border-white/10 bg-[#05080f] text-sm font-semibold text-slate-100"
+                  className="w-full p-4 rounded-2xl border border-white/10 bg-[hsl(var(--card))] text-sm font-semibold text-slate-100"
                 />
               </div>
               <button
                 type="submit"
-                className="w-full py-5 bg-[#05080f] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
+                className="w-full py-5 bg-[hsl(var(--card))] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
               >
                 Continue
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -651,31 +651,31 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                   First system action
                 </div>
                 <div className="space-y-3">
-                  <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[#05080f] px-4 py-3 text-sm text-slate-200">
+                  <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
                     <input
                       type="radio"
                       name="firstAction"
                       value="create_task"
-                      className="h-4 w-4 border-white/20 bg-[#05080f] text-sky-400"
+                      className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
                       required
                     />
                     <span>Create a kickoff compliance task</span>
                   </label>
-                  <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[#05080f] px-4 py-3 text-sm text-slate-200">
+                  <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
                     <input
                       type="radio"
                       name="firstAction"
                       value="upload_evidence"
-                      className="h-4 w-4 border-white/20 bg-[#05080f] text-sky-400"
+                      className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
                     />
                     <span>Prepare an evidence upload task</span>
                   </label>
-                  <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[#05080f] px-4 py-3 text-sm text-slate-200">
+                  <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
                     <input
                       type="radio"
                       name="firstAction"
                       value="run_evaluation"
-                      className="h-4 w-4 border-white/20 bg-[#05080f] text-sky-400"
+                      className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
                     />
                     <span>Run the first compliance evaluation</span>
                   </label>
@@ -683,7 +683,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
               </div>
               <button
                 type="submit"
-                className="w-full py-5 bg-[#05080f] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
+                className="w-full py-5 bg-[hsl(var(--card))] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
               >
                 Complete setup
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

@@ -2,10 +2,14 @@ import { NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { resolvePlanKey } from "@/lib/plans";
 import { ensureSubscription } from "@/lib/billing/subscriptions";
+import { ensureDebugAccess } from "@/app/api/debug/_guard";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
+  const guard = await ensureDebugAccess();
+  if (guard) return guard;
+
   const admin = createSupabaseAdminClient();
 
   try {

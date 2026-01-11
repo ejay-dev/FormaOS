@@ -86,7 +86,7 @@ export default async function TasksPage() {
       </div>
 
       {/* 3. The Roadmap Master Table */}
-      <div className="bg-gradient-to-br from-[#0B1220] via-[#0E1526] to-[#0A101C] border border-white/10 rounded-3xl shadow-[0_24px_70px_rgba(0,0,0,0.45)] overflow-hidden">
+      <div className="bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] border border-white/10 rounded-3xl shadow-[0_24px_70px_rgba(0,0,0,0.45)] overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-white/5 border-b border-white/10 text-[10px] font-bold uppercase text-slate-400 tracking-widest">

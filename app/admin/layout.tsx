@@ -1,17 +1,14 @@
-export const dynamic = 'force-dynamic';
+import { redirect } from "next/navigation";
+import { AdminShell } from "@/app/admin/components/admin-shell";
+import { requireFounderAccess } from "@/app/app/admin/access";
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="min-h-screen bg-[#05080f] text-white">
-      <header className="h-14 border-b border-white/10 px-6 flex items-center">
-        FormaOS Admin
-      </header>
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  try {
+    await requireFounderAccess();
+  } catch (error) {
+    console.error("Admin access denied:", error);
+    redirect("/app");
+  }
 
-      <main className="p-6">{children}</main>
-    </div>
-  );
+  return <AdminShell>{children}</AdminShell>;
 }

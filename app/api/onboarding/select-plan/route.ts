@@ -1,44 +1,7 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { resolvePlanKey } from "@/lib/plans";
-import { syncEntitlementsForPlan } from "@/lib/billing/entitlements";
-
-const TRIAL_DAYS = 14;
-
-function getTrialEndIso() {
-  const end = new Date();
-  end.setDate(end.getDate() + TRIAL_DAYS);
-  return end.toISOString();
-}
-
-async function ensureSubscription(orgId: string, planKey: string | null) {
-  if (!planKey) return;
-
-  const admin = createSupabaseAdminClient();
-  const { data: existing } = await admin
-    .from("org_subscriptions")
-    .select("status")
-    .eq("organization_id", orgId)
-    .maybeSingle();
-
-  if (existing?.status) return;
-
-  const isTrialEligible = planKey === "basic" || planKey === "pro";
-  const nowIso = new Date().toISOString();
-
-  await admin.from("org_subscriptions").upsert({
-    organization_id: orgId,
-    plan_key: planKey,
-    status: isTrialEligible ? "trialing" : "pending",
-    current_period_end: isTrialEligible ? getTrialEndIso() : null,
-    updated_at: nowIso,
-  });
-
-  if (isTrialEligible) {
-    await syncEntitlementsForPlan(orgId, planKey as "basic" | "pro");
-  }
-}
+import { ensureSubscription } from "@/lib/billing/subscriptions";
 
 export async function POST(request: Request) {
   try {
