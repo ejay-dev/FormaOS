@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { MarketingAnchor } from "../components/marketing-anchor";
+import { SecurityContent } from "./SecurityContent";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://formaos.com.au";
 
@@ -92,71 +93,7 @@ export default function SecurityPage() {
       </section>
 
       {/* Safeguards Grid */}
-      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
-        <div className="mb-16 text-center max-w-3xl mx-auto">
-          <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-4">
-            Security Safeguards
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold font-display mb-6">
-            Protection at every layer
-          </h2>
-          <p className="text-lg text-foreground/70">
-            Eight security controls built into the platform foundation
-          </p>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {safeguards.map((item) => (
-            <div key={item.title} className="card-hover glass-panel rounded-2xl p-6">
-              <h3 className="text-base font-semibold text-foreground mb-2 font-display">{item.title}</h3>
-              <p className="text-sm text-foreground/70 leading-relaxed">{item.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Access Control Philosophy */}
-      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
-        <div className="mb-8">
-          <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Access control philosophy</div>
-        </div>
-        <div className="grid gap-6 md:grid-cols-2">
-          <div className="card-hover glass-panel-strong rounded-2xl p-8">
-            <h3 className="text-xl font-semibold text-foreground mb-3 font-display">Segregation of duties</h3>
-            <p className="text-[15px] text-foreground/70 leading-relaxed">
-              Users cannot approve their own evidence or resolve their own compliance blocks. Approval workflows are
-              enforced server-side and logged.
-            </p>
-          </div>
-          <div className="card-hover glass-panel-strong rounded-2xl p-8">
-            <h3 className="text-xl font-semibold text-foreground mb-3 font-display">Audit-first design</h3>
-            <p className="text-[15px] text-foreground/70 leading-relaxed">
-              Every sensitive action records actor, role, entity scope, and evidence context to support regulator review.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Trust and Assurance CTA */}
-      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
-        <div className="card-hover glass-panel-strong rounded-2xl p-10">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-3">Trust and assurance</div>
-              <h2 className="text-2xl md:text-3xl font-semibold font-display mb-3">Need a formal security review?</h2>
-              <p className="text-[15px] text-foreground/70 leading-relaxed">
-                We provide architecture briefings, audit evidence exports, and compliance documentation on request.
-              </p>
-            </div>
-            <Link
-              href="/contact"
-              className="btn btn-primary text-base px-8 py-4 whitespace-nowrap"
-            >
-              Contact Security Team
-            </Link>
-          </div>
-        </div>
-      </section>
+      <SecurityContent />
     </div>
   );
 }

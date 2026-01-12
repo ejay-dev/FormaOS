@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ProductContent } from "./ProductContent";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://formaos.com.au";
 
@@ -128,109 +129,7 @@ export default function ProductPage() {
         </div>
       </section>
 
-      {/* Lifecycle Section */}
-      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
-        <div className="mb-16 text-center max-w-3xl mx-auto">
-          <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-4">
-            Compliance Lifecycle
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold font-display mb-6">
-            A system you can run daily
-          </h2>
-          <p className="text-lg text-foreground/70">
-            FormaOS transforms compliance from a quarterly burden into an operational rhythm
-          </p>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {lifecycle.map((step, index) => (
-            <div key={step.title} className="card-hover glass-panel rounded-2xl p-7">
-              <div className="inline-flex glass-panel rounded-lg px-3 py-1.5 text-xs font-bold text-primary mb-5">
-                Step {index + 1}
-              </div>
-              <h3 className="text-xl font-semibold mb-3 font-display">{step.title}</h3>
-              <p className="text-[15px] text-foreground/70 leading-relaxed">{step.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Modules Section */}
-      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
-        <div className="mb-16 text-center max-w-3xl mx-auto">
-          <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-4">
-            Platform Modules
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold font-display mb-6">
-            Everything you need to stay audit-ready
-          </h2>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {modules.map((module) => (
-            <div key={module.title} className="card-hover glass-panel-strong rounded-2xl p-7">
-              <h3 className="text-xl font-semibold mb-3 font-display">{module.title}</h3>
-              <p className="text-[15px] text-foreground/70 leading-relaxed">{module.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Workflows Section */}
-      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
-        <div className="mb-16 text-center max-w-3xl mx-auto">
-          <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-4">
-            Example Workflows
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold font-display mb-6">
-            Real-world compliance operations
-          </h2>
-        </div>
-
-        <div className="grid gap-8 lg:grid-cols-2">
-          {workflows.map((workflow) => (
-            <div key={workflow.title} className="card-hover glass-panel rounded-2xl p-8">
-              <h3 className="text-2xl font-semibold mb-6 font-display">{workflow.title}</h3>
-              <div className="space-y-4">
-                {workflow.steps.map((step, index) => (
-                  <div key={index} className="flex items-start gap-4">
-                    <div className="flex-shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-full glass-panel text-xs font-bold text-primary">
-                      {index + 1}
-                    </div>
-                    <p className="text-[15px] text-foreground/80 leading-relaxed">{step}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
-        <div className="card-hover glass-panel-strong rounded-2xl p-10 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold font-display mb-6">
-            Ready to transform your compliance operations?
-          </h2>
-          <p className="text-lg text-foreground/70 mb-8 max-w-2xl mx-auto">
-            Start your 14-day free trial today. No payment details required.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link
-              href="/auth/signup"
-              className="btn btn-primary text-base px-8 py-4 shadow-premium-lg"
-            >
-              Start Free Trial
-            </Link>
-            <Link
-              href="/contact"
-              className="btn btn-secondary text-base px-8 py-4"
-            >
-              Request Demo
-            </Link>
-          </div>
-        </div>
-      </section>
+      <ProductContent />
     </div>
   );
 }

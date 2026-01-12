@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { MarketingAnchor } from "../components/marketing-anchor";
+import { IndustriesContent } from "./IndustriesContent";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://formaos.com.au";
 
@@ -103,56 +104,7 @@ export default function IndustriesPage() {
       </section>
 
       {/* Industries Grid */}
-      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
-        <div className="mb-16 text-center max-w-3xl mx-auto">
-          <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-4">
-            Industry Packs
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold font-display mb-6">
-            Compliance frameworks tailored to your sector
-          </h2>
-          <p className="text-lg text-foreground/70">
-            Each industry pack maps to real compliance obligations, not generic workflows
-          </p>
-        </div>
-
-        <div className="grid gap-6 lg:grid-cols-2">
-          {industries.map((industry) => (
-            <div key={industry.title} className="card-hover glass-panel rounded-2xl p-8">
-              <h3 className="text-xl font-semibold text-foreground mb-4 font-display">{industry.title}</h3>
-              <div className="space-y-4">
-                <div>
-                  <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-2">Pain points</div>
-                  <p className="text-sm text-foreground/80 leading-relaxed">{industry.pain}</p>
-                </div>
-                <div>
-                  <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-2">FormaOS response</div>
-                  <p className="text-sm text-foreground leading-relaxed">{industry.solution}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Custom Framework CTA */}
-      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
-        <div className="card-hover glass-panel-strong rounded-2xl p-10">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-3">Need a tailored framework?</div>
-              <h2 className="text-2xl md:text-3xl font-semibold font-display mb-3">We configure FormaOS for your obligations</h2>
-              <p className="text-[15px] text-foreground/70 leading-relaxed">Tell us your framework requirements and we map controls, evidence, and reports.</p>
-            </div>
-            <Link
-              href="/pricing"
-              className="btn btn-primary text-base px-8 py-4 whitespace-nowrap"
-            >
-              View Plans
-            </Link>
-          </div>
-        </div>
-      </section>
+      <IndustriesContent />
     </div>
   );
 }
