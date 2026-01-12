@@ -16,6 +16,7 @@ export async function requireFounderAccess() {
   } = await supabase.auth.getUser();
 
   if (!user) {
+    console.log("[requireFounderAccess] ❌ No user found");
     throw new Error("Unauthorized");
   }
 
@@ -23,16 +24,28 @@ export async function requireFounderAccess() {
   const allowedIds = parseEnvList(process.env.FOUNDER_USER_IDS);
 
   if (!allowedEmails.size && !allowedIds.size) {
+    console.log("[requireFounderAccess] ⚠️ No founder emails or IDs configured");
     throw new Error("Founder access not configured");
   }
 
-  const email = user.email?.toLowerCase() ?? "";
+  const email = user.email?.trim().toLowerCase() ?? "";
   const hasEmailAccess = email ? allowedEmails.has(email) : false;
   const hasIdAccess = allowedIds.has(user.id.toLowerCase());
 
+  console.log("[requireFounderAccess] Checking founder access", {
+    email,
+    userId: user.id.substring(0, 8),
+    hasEmailAccess,
+    hasIdAccess,
+    allowedEmailsCount: allowedEmails.size,
+    allowedIdsCount: allowedIds.size,
+  });
+
   if (!hasEmailAccess && !hasIdAccess) {
+    console.log("[requireFounderAccess] ❌ Access denied - not a founder");
     throw new Error("Forbidden");
   }
 
+  console.log("[requireFounderAccess] ✅ Founder access granted", { email });
   return { user };
 }

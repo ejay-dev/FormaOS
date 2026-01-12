@@ -145,11 +145,24 @@ export async function middleware(request: NextRequest) {
 
     const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);
     const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
-    const userEmail = (user?.email ?? "").toLowerCase();
-    const userId = (user?.id ?? "").toLowerCase();
+    const userEmail = (user?.email ?? "").trim().toLowerCase();
+    const userId = (user?.id ?? "").trim().toLowerCase();
     const isFounder = Boolean(
       user && ((userEmail && founderEmails.has(userEmail)) || founderIds.has(userId))
     );
+
+    // 🔍 DEBUG LOGGING for founder detection
+    if (pathname.startsWith("/admin")) {
+      console.log("[Middleware] ADMIN ACCESS CHECK", {
+        pathname,
+        userEmail,
+        userId: userId.substring(0, 8),
+        isFounder,
+        founderEmailsCount: founderEmails.size,
+        founderIdsCount: founderIds.size,
+        hasUser: !!user,
+      });
+    }
 
     // -------------------------------
     // 3. BLOCK AUTH PAGES IF LOGGED IN (with founder/onboarding check)
@@ -191,8 +204,17 @@ export async function middleware(request: NextRequest) {
     // 4. ALLOW FOUNDERS TO ACCESS /admin WITHOUT RESTRICTIONS
     // -------------------------------
     if (user && isFounder && pathname.startsWith("/admin")) {
+      console.log("[Middleware] ✅ FOUNDER ACCESS GRANTED to /admin", { email: userEmail });
       // Founders can access admin - no further checks needed
       return response;
+    }
+
+    // 🚨 BLOCK NON-FOUNDERS FROM ACCESSING /admin
+    if (user && !isFounder && pathname.startsWith("/admin")) {
+      console.log("[Middleware] ❌ NON-FOUNDER blocked from /admin", { email: userEmail });
+      const url = request.nextUrl.clone();
+      url.pathname = "/auth/signin";
+      return NextResponse.redirect(url);
     }
 
     // -------------------------------

@@ -26,11 +26,18 @@ export default async function MarketingLayout({ children }: { children: ReactNod
     
     const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);
     const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
-    const userEmail = (user?.email ?? "").toLowerCase();
-    const userId = (user?.id ?? "").toLowerCase();
+    const userEmail = (user?.email ?? "").trim().toLowerCase();
+    const userId = (user?.id ?? "").trim().toLowerCase();
     const isFounder = Boolean(
       user && ((userEmail && founderEmails.has(userEmail)) || founderIds.has(userId))
     );
+    
+    // 🔍 DEBUG LOGGING
+    console.log("[marketing/layout] Authenticated user redirect", {
+      email: userEmail,
+      isFounder,
+      destination: isFounder ? "/admin" : "/app",
+    });
     
     // Founders go to admin, regular users go to app
     const destination = isFounder ? "/admin" : "/app";

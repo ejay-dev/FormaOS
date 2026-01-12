@@ -55,14 +55,22 @@ export default async function AppLayout({
 
   const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);
   const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
-  const userEmail = (user?.email ?? "").toLowerCase();
-  const userId = (user?.id ?? "").toLowerCase();
+  const userEmail = (user?.email ?? "").trim().toLowerCase();
+  const userId = (user?.id ?? "").trim().toLowerCase();
   const isFounder = Boolean(
     user && ((userEmail && founderEmails.has(userEmail)) || founderIds.has(userId))
   );
 
+  // 🔍 DEBUG LOGGING
+  console.log("[app/layout] Founder check", {
+    email: userEmail,
+    isFounder,
+    founderEmailsConfigured: founderEmails.size > 0,
+  });
+
   // Founders should not be in the app layout - redirect to admin
   if (isFounder) {
+    console.log("[app/layout] ✅ FOUNDER redirecting to /admin", { email: userEmail });
     redirect("/admin");
   }
 
