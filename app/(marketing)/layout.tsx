@@ -13,7 +13,29 @@ export default async function MarketingLayout({ children }: { children: ReactNod
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (user) redirect(`${appUrl.replace(/\/$/, "")}/app`);
+  
+  if (user) {
+    // Check if user is a founder
+    const parseEnvList = (value?: string | null) =>
+      new Set(
+        (value ?? "")
+          .split(",")
+          .map((entry) => entry.trim().toLowerCase())
+          .filter(Boolean)
+      );
+    
+    const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);
+    const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
+    const userEmail = (user?.email ?? "").toLowerCase();
+    const userId = (user?.id ?? "").toLowerCase();
+    const isFounder = Boolean(
+      user && ((userEmail && founderEmails.has(userEmail)) || founderIds.has(userId))
+    );
+    
+    // Founders go to admin, regular users go to app
+    const destination = isFounder ? "/admin" : "/app";
+    redirect(`${appUrl.replace(/\/$/, "")}${destination}`);
+  }
 
   return (
     <div className="mk-shell font-[var(--font-body)]">

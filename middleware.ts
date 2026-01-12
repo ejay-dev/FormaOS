@@ -125,9 +125,36 @@ export async function middleware(request: NextRequest) {
     }
 
     // -------------------------------
-    // 2. BLOCK AUTH PAGES IF LOGGED IN (with onboarding check)
+    // 2. CHECK IF USER IS A FOUNDER
+    // -------------------------------
+    const parseEnvList = (value?: string | null) =>
+      new Set(
+        (value ?? "")
+          .split(",")
+          .map((entry) => entry.trim().toLowerCase())
+          .filter(Boolean)
+      );
+
+    const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);
+    const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
+    const userEmail = (user?.email ?? "").toLowerCase();
+    const userId = (user?.id ?? "").toLowerCase();
+    const isFounder = Boolean(
+      user && ((userEmail && founderEmails.has(userEmail)) || founderIds.has(userId))
+    );
+
+    // -------------------------------
+    // 3. BLOCK AUTH PAGES IF LOGGED IN (with founder/onboarding check)
     // -------------------------------
     if (user && pathname.startsWith("/auth")) {
+      const url = request.nextUrl.clone();
+      
+      // Founders go directly to admin
+      if (isFounder) {
+        url.pathname = "/admin";
+        return NextResponse.redirect(url);
+      }
+
       // Check if user has completed onboarding
       const { data: membership } = await supabase
         .from("org_members")
@@ -140,8 +167,6 @@ export async function middleware(request: NextRequest) {
         : membership?.organizations;
 
       const onboardingCompleted = Boolean(orgRecord?.onboarding_completed);
-
-      const url = request.nextUrl.clone();
       
       // If onboarding is not completed, redirect to onboarding
       if (!onboardingCompleted && membership?.organization_id) {
@@ -155,7 +180,15 @@ export async function middleware(request: NextRequest) {
     }
 
     // -------------------------------
-    // 2b. ROLE-BASED DASHBOARD GUARD
+    // 4. ALLOW FOUNDERS TO ACCESS /admin WITHOUT RESTRICTIONS
+    // -------------------------------
+    if (user && isFounder && pathname.startsWith("/admin")) {
+      // Founders can access admin - no further checks needed
+      return response;
+    }
+
+    // -------------------------------
+    // 5. ROLE-BASED DASHBOARD GUARD
     // -------------------------------
     if (user && supabase && pathname.startsWith("/app") && !pathname.startsWith("/app/api")) {
       const { data: membership } = await supabase
@@ -193,26 +226,8 @@ export async function middleware(request: NextRequest) {
       const billingAllowed =
         pathname.startsWith("/app/billing") || pathname.startsWith("/app/accept-invite");
 
-      if (orgId && !billingAllowed) {
-            // Allow founders (listed via env) to bypass billing/trial gating
-            const parseEnvList = (value?: string | null) =>
-              new Set(
-                (value ?? "")
-                  .split(",")
-                  .map((entry) => entry.trim().toLowerCase())
-                  .filter(Boolean)
-              );
-
-            const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);
-            const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
-            const userEmail = (user.email ?? "").toLowerCase();
-            const isFounder = Boolean(
-              (userEmail && founderEmails.has(userEmail)) || founderIds.has(user.id.toLowerCase())
-            );
-
-            if (isFounder) {
-              // skip subscription gating for founders
-            } else {
+      if (orgId && !billingAllowed && !isFounder) {
+        // Founders bypass subscription gating
         const { data: subscription, error: subscriptionError } = await supabase
           .from("org_subscriptions")
           .select("status, current_period_end, trial_expires_at")
@@ -233,18 +248,17 @@ export async function middleware(request: NextRequest) {
           }
         }
 
-        if (!isFounder && !subscriptionActive) {
+        if (!subscriptionActive) {
           const url = request.nextUrl.clone();
           url.pathname = "/app/billing";
           url.searchParams.set("status", "blocked");
           return NextResponse.redirect(url);
         }
-        }
       }
     }
 
     // -------------------------------
-    // 3. SECURITY HEADERS
+    // 6. SECURITY HEADERS
     // -------------------------------
     // Add security headers to all responses
     response.headers.set("X-Frame-Options", "DENY");
@@ -257,7 +271,7 @@ export async function middleware(request: NextRequest) {
     );
 
     // -------------------------------
-    // 5. ALLOW ONBOARDING ALWAYS
+    // 7. ALLOW ONBOARDING ALWAYS
     // -------------------------------
     // No redirects here. Onboarding is handled inside the app.
     return response;

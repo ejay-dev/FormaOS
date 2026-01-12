@@ -6,6 +6,27 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { resolvePlanKey } from "@/lib/plans";
 import { ensureSubscription } from "@/lib/billing/subscriptions";
 
+// Helper to check if user is a founder
+function isFounder(email: string | undefined, userId: string): boolean {
+  if (!email) return false;
+  
+  const parseEnvList = (value?: string | null) =>
+    new Set(
+      (value ?? "")
+        .split(",")
+        .map((entry) => entry.trim().toLowerCase())
+        .filter(Boolean)
+    );
+
+  const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);
+  const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
+  
+  const normalizedEmail = email.toLowerCase();
+  const normalizedId = userId.toLowerCase();
+  
+  return founderEmails.has(normalizedEmail) || founderIds.has(normalizedId);
+}
+
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
@@ -40,6 +61,12 @@ export async function GET(request: Request) {
   if (error || !data?.user) {
     console.error("OAuth exchange failed:", error);
     return NextResponse.redirect(`${appBase}/auth/signin`);
+  }
+
+  // 2. CHECK IF USER IS A FOUNDER - Redirect to admin immediately
+  if (isFounder(data.user.email, data.user.id)) {
+    console.log(`[auth/callback] Founder detected: ${data.user.email}, redirecting to /admin`);
+    return NextResponse.redirect(`${appBase}/admin`);
   }
 
   if (plan) {

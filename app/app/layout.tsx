@@ -43,6 +43,30 @@ export default async function AppLayout({
   }
 
   /* -------------------------------------------------------
+   * 1.5) CHECK IF USER IS A FOUNDER - Redirect to admin
+   * ----------------------------------------------------- */
+  const parseEnvList = (value?: string | null) =>
+    new Set(
+      (value ?? "")
+        .split(",")
+        .map((entry) => entry.trim().toLowerCase())
+        .filter(Boolean)
+    );
+
+  const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);
+  const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
+  const userEmail = (user?.email ?? "").toLowerCase();
+  const userId = (user?.id ?? "").toLowerCase();
+  const isFounder = Boolean(
+    user && ((userEmail && founderEmails.has(userEmail)) || founderIds.has(userId))
+  );
+
+  // Founders should not be in the app layout - redirect to admin
+  if (isFounder) {
+    redirect("/admin");
+  }
+
+  /* -------------------------------------------------------
    * 2) ORGANIZATION CONTEXT
    * ----------------------------------------------------- */
   const { data: membership } = await supabase

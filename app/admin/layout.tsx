@@ -9,7 +9,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     await requireFounderAccess();
   } catch (error) {
     console.error("Admin access denied:", error);
-    redirect("/app");
+    redirect("/auth/signin");
   }
 
   return <AdminShell>{children}</AdminShell>;
