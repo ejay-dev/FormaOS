@@ -6,65 +6,126 @@
 
 /* Design tokens */
 :root {
-  --radius: 12px;
+  --radius: 14px;
 
   --font-inter: "Inter", system-ui, sans-serif;
   --font-inter-tight: "Inter Tight", "Inter", system-ui, sans-serif;
   --font-geist-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  /* Core design tokens (H S% L%) used by Tailwind theme */
-  --background: 220 18% 8%;          /* page background */
-  --foreground: 210 40% 96%;         /* default text */
+  /* FormaOS Elite Design System */
+  --color-space-950: #050711;
+  --color-space-900: #0a0d1a;
+  --color-space-850: #0c0f1e;
+  --color-space-800: #0f1320;
+  --color-space-700: #151b2e;
+  --color-space-600: #1a223a;
+  --color-space-500: #1f2947;
 
-  --card: 220 18% 12%;                /* primary surface */
+  --color-cyan-300: #22e8ff;
+  --color-cyan-400: #00d9ff;
+  --color-cyan-500: #00b8d9;
+  --color-cyan-600: #0099b8;
+  --color-blue-300: #5dadff;
+  --color-blue-400: #4d9fff;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-violet-300: #b899ff;
+  --color-violet-400: #a78bfa;
+  --color-violet-500: #8b5cf6;
+  --color-violet-600: #7c3aed;
+
+  --gradient-primary: linear-gradient(135deg, #22e8ff 0%, #4d9fff 50%, #a78bfa 100%);
+  --gradient-accent: linear-gradient(90deg, #00d9ff 0%, #3b82f6 100%);
+  --gradient-surface: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+  --gradient-mesh: radial-gradient(ellipse at top, rgba(0,217,255,0.15) 0%, transparent 60%),
+                   radial-gradient(ellipse at bottom right, rgba(167,139,250,0.12) 0%, transparent 50%);
+  --gradient-light-field: radial-gradient(circle at 50% 0%, rgba(0,217,255,0.2) 0%, transparent 50%);
+  --gradient-depth: linear-gradient(180deg, rgba(0,217,255,0.03) 0%, rgba(77,159,255,0.01) 50%, rgba(167,139,250,0.02) 100%);
+
+  --light-cyan-soft: radial-gradient(circle at center, rgba(0,217,255,0.2) 0%, transparent 70%);
+  --light-blue-soft: radial-gradient(circle at center, rgba(77,159,255,0.15) 0%, transparent 70%);
+  --light-violet-soft: radial-gradient(circle at center, rgba(167,139,250,0.15) 0%, transparent 70%);
+  --ambient-light: radial-gradient(ellipse at center, rgba(255,255,255,0.03) 0%, transparent 70%);
+
+  --glow-cyan-sm: 0 0 10px rgba(0, 217, 255, 0.4), 0 0 20px rgba(0, 217, 255, 0.2);
+  --glow-cyan: 0 0 20px rgba(0, 217, 255, 0.5), 0 0 40px rgba(0, 217, 255, 0.2), 0 0 60px rgba(0, 217, 255, 0.1);
+  --glow-cyan-lg: 0 0 30px rgba(0, 217, 255, 0.6), 0 0 60px rgba(0, 217, 255, 0.3), 0 0 90px rgba(0, 217, 255, 0.15);
+  --glow-blue-sm: 0 0 10px rgba(77, 159, 255, 0.4), 0 0 20px rgba(77, 159, 255, 0.2);
+  --glow-blue: 0 0 20px rgba(77, 159, 255, 0.5), 0 0 40px rgba(77, 159, 255, 0.2), 0 0 60px rgba(77, 159, 255, 0.1);
+  --glow-violet: 0 0 20px rgba(167, 139, 250, 0.5), 0 0 40px rgba(167, 139, 250, 0.2), 0 0 60px rgba(167, 139, 250, 0.1);
+
+  --rim-light-top: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  --rim-light-subtle: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --rim-light-cyan: inset 0 1px 0 rgba(0, 217, 255, 0.3), inset 0 -1px 0 rgba(0, 217, 255, 0.1);
+
+  --glass-background: rgba(255, 255, 255, 0.03);
+  --glass-background-strong: rgba(255, 255, 255, 0.06);
+  --glass-background-elite: rgba(255, 255, 255, 0.09);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-strong: rgba(255, 255, 255, 0.12);
+  --glass-border-elite: rgba(255, 255, 255, 0.18);
+  --glass-blur: blur(24px);
+  --glass-blur-strong: blur(32px);
+
+  --shadow-depth-1: 0 2px 8px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-depth-2: 0 4px 16px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.4);
+  --shadow-depth-3: 0 8px 32px rgba(0, 0, 0, 0.6), 0 4px 8px rgba(0, 0, 0, 0.5);
+  --shadow-depth-4: 0 16px 64px rgba(0, 0, 0, 0.7), 0 8px 16px rgba(0, 0, 0, 0.6);
+  --shadow-depth-5: 0 24px 96px rgba(0, 0, 0, 0.8), 0 12px 24px rgba(0, 0, 0, 0.7);
+
+  --elevation-float-1: 0 4px 12px rgba(0, 217, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.4);
+  --elevation-float-2: 0 8px 24px rgba(0, 217, 255, 0.15), 0 4px 8px rgba(0, 0, 0, 0.5);
+  --elevation-float-3: 0 12px 36px rgba(0, 217, 255, 0.2), 0 6px 12px rgba(0, 0, 0, 0.6);
+
+  /* Core design tokens (H S% L%) used by Tailwind theme */
+  --background: 230 45% 7%;
+  --foreground: 210 40% 96%;
+
+  --card: 228 32% 12%;
   --card-foreground: 210 40% 96%;
 
-  --popover: 220 18% 15%;
+  --popover: 228 32% 14%;
   --popover-foreground: 210 40% 96%;
 
-  --primary: 217 91% 60%;             /* brand blue */
-  --primary-foreground: 210 100% 100%;
+  --primary: 191 100% 50%;
+  --primary-foreground: 230 45% 7%;
 
-  --secondary: 220 12% 20%;
+  --secondary: 215 48% 60%;
   --secondary-foreground: 210 40% 96%;
 
-  --muted: 215 16% 14%;
-  --muted-foreground: 215 15% 65%;
+  --muted: 225 30% 18%;
+  --muted-foreground: 215 15% 70%;
 
-  --accent: 217 91% 60%;
-  --accent-foreground: 210 40% 98%;
+  --accent: 255 88% 72%;
+  --accent-foreground: 210 40% 96%;
 
   --destructive: 0 84% 60%;
   --destructive-foreground: 210 40% 98%;
 
   --border: 220 14% 22%;
-  --input: 220 18% 12%;
-  --ring: 217 91% 60%;
+  --input: 228 32% 12%;
+  --ring: 191 100% 50%;
 
-  /* Sidebar tokens (used by components) */
-  --sidebar: 220 18% 10%;
+  --sidebar: 228 32% 10%;
   --sidebar-foreground: 210 40% 96%;
-  --sidebar-primary: 217 91% 60%;
-  --sidebar-primary-foreground: 210 40% 98%;
-  --sidebar-accent: 210 40% 96%;
-  --sidebar-accent-foreground: 220 18% 8%;
+  --sidebar-primary: 191 100% 50%;
+  --sidebar-primary-foreground: 230 45% 7%;
+  --sidebar-accent: 228 32% 14%;
+  --sidebar-accent-foreground: 210 40% 96%;
   --sidebar-border: 220 14% 22%;
-  --sidebar-ring: 217 91% 60%;
+  --sidebar-ring: 191 100% 50%;
 
   /* legacy tokens (kept for compatibility) */
   --bg: var(--background);
   --panel: var(--card);
-  --panel-2: 220 18% 15%;
+  --panel-2: 228 32% 14%;
   --text: hsl(var(--foreground));
-  --text-muted: 215 15% 65%;
+  --text-muted: 215 15% 70%;
 }
 
-/* Dark-mode by default for an executive command-center look
-   Switch to [data-theme="light"] for a light variant (kept readable). */
 
-[data-theme="dark"] {
-  /* keep existing root tokens as authoritative for dark */
-}
+/* dark-mode example omitted */
+
 
 [data-theme="light"] {
   --background: 210 20% 98%;
@@ -235,5 +296,191 @@
   }
   html {
     /* no-op: visual mode handled by vars */
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    background: var(--glass-background);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+  }
+
+  .glass-panel-strong {
+    background: var(--glass-background-strong);
+    border: 1px solid var(--glass-border-strong);
+    backdrop-filter: var(--glass-blur-strong);
+    -webkit-backdrop-filter: var(--glass-blur-strong);
+  }
+
+  .glass-panel-elite {
+    background: var(--glass-background-elite);
+    border: 1px solid var(--glass-border-elite);
+    backdrop-filter: var(--glass-blur-strong);
+    -webkit-backdrop-filter: var(--glass-blur-strong);
+    box-shadow: var(--rim-light-top), var(--shadow-depth-2);
+  }
+
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .gradient-accent {
+    background: var(--gradient-accent);
+  }
+
+  .gradient-surface {
+    background: var(--gradient-surface);
+  }
+
+  .gradient-mesh {
+    background: var(--gradient-mesh);
+  }
+
+  .gradient-depth {
+    background: var(--gradient-depth);
+  }
+
+  .glow-cyan-sm {
+    box-shadow: var(--glow-cyan-sm);
+  }
+
+  .glow-cyan {
+    box-shadow: var(--glow-cyan);
+  }
+
+  .glow-cyan-lg {
+    box-shadow: var(--glow-cyan-lg);
+  }
+
+  .glow-blue-sm {
+    box-shadow: var(--glow-blue-sm);
+  }
+
+  .glow-blue {
+    box-shadow: var(--glow-blue);
+  }
+
+  .glow-violet {
+    box-shadow: var(--glow-violet);
+  }
+
+  .text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-glow {
+    text-shadow: 0 0 20px rgba(0, 217, 255, 0.5), 0 0 40px rgba(0, 217, 255, 0.2);
+  }
+
+  .text-glow-subtle {
+    text-shadow: 0 0 30px rgba(0, 217, 255, 0.3);
+  }
+
+  .shadow-depth-1 {
+    box-shadow: var(--shadow-depth-1);
+  }
+
+  .shadow-depth-2 {
+    box-shadow: var(--shadow-depth-2);
+  }
+
+  .shadow-depth-3 {
+    box-shadow: var(--shadow-depth-3);
+  }
+
+  .shadow-depth-4 {
+    box-shadow: var(--shadow-depth-4);
+  }
+
+  .shadow-depth-5 {
+    box-shadow: var(--shadow-depth-5);
+  }
+
+  .elevation-float-1 {
+    box-shadow: var(--elevation-float-1);
+  }
+
+  .elevation-float-2 {
+    box-shadow: var(--elevation-float-2);
+  }
+
+  .elevation-float-3 {
+    box-shadow: var(--elevation-float-3);
+  }
+
+  .rim-light {
+    box-shadow: var(--rim-light-top);
+  }
+
+  .rim-light-cyan {
+    box-shadow: var(--rim-light-cyan);
+  }
+
+  .security-grid {
+    background-image:
+      linear-gradient(to right, rgba(0, 217, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 217, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .security-scanline {
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 217, 255, 0.03) 2px,
+      rgba(0, 217, 255, 0.03) 4px
+    );
+  }
+
+  .perspective-card {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+
+  .transform-3d {
+    transform: translateZ(20px);
+  }
+
+  .hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-8px) scale(1.02);
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .compliance-badge {
+    position: relative;
+  }
+
+  .compliance-badge::after {
+    content: "";
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background: linear-gradient(135deg, #00d9ff 0%, #4d9fff 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 217, 255, 0.8);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.4), 0 0 40px rgba(0, 217, 255, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(0, 217, 255, 0.6), 0 0 60px rgba(0, 217, 255, 0.2);
   }
 }

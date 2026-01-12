@@ -17,17 +17,22 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${appBase}/auth/signin`);
   }
 
-  const supabase = await createSupabaseServerClient();
-  const admin = createSupabaseAdminClient();
-
-  // Ensure admin/service-role key is configured before attempting bootstrap writes
+  // CRITICAL: Validate service role key is configured
+  // Without this, user creation will fail and create orphaned auth users
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
     console.error(
-      "[auth/callback] SUPABASE_SERVICE_ROLE_KEY not configured; skipping admin bootstrap writes."
+      "[auth/callback] CRITICAL: SUPABASE_SERVICE_ROLE_KEY not configured. Cannot create user records."
     );
-    const planQuery = plan ? `?plan=${encodeURIComponent(plan)}&missing_admin=1` : `?missing_admin=1`;
-    return NextResponse.redirect(`${appBase}/onboarding${planQuery}`);
+    // Redirect to error page with clear message
+    return NextResponse.redirect(
+      `${appBase}/auth/signin?error=configuration_error&message=${encodeURIComponent(
+        "Server configuration error. Please contact support."
+      )}`
+    );
   }
+
+  const supabase = await createSupabaseServerClient();
+  const admin = createSupabaseAdminClient();
 
   // 1. Exchange the code for a session
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);

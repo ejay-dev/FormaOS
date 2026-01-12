@@ -1,14 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { createSupabaseClient } from "@/lib/supabase/client";
 import Link from "next/link";
+import { Suspense } from "react";
 
-export default function SignInPage() {
+function SignInContent() {
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Check for error messages from URL params (e.g., from auth callback)
+  useEffect(() => {
+    const error = searchParams.get("error");
+    const message = searchParams.get("message");
+    
+    if (error === "configuration_error" && message) {
+      setErrorMessage(decodeURIComponent(message));
+    }
+  }, [searchParams]);
 
   const signInWithGoogle = async () => {
     setErrorMessage(null);
@@ -156,5 +169,21 @@ export default function SignInPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-[hsl(var(--background))] text-slate-100">
+          <div className="rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-sm text-slate-300">
+            Loading...
+          </div>
+        </div>
+      }
+    >
+      <SignInContent />
+    </Suspense>
   );
 }
