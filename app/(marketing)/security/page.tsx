@@ -55,66 +55,106 @@ const safeguards = [
 
 export default function SecurityPage() {
   return (
-    <div className="mx-auto max-w-6xl px-6 pb-20 pt-16 md:pt-24">
-      <section className="grid gap-10 lg:grid-cols-[1fr_1.1fr] mk-fade-up mk-parallax-slow">
-        <div className="space-y-6">
-          <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Security</div>
-          <h1 className="text-4xl font-semibold font-[var(--font-display)]">Security and compliance built in.</h1>
-          <p className="text-lg text-slate-300">
-            FormaOS is designed for regulated environments where audit integrity and data isolation are mandatory.
+    <div>
+      {/* Hero Section */}
+      <section className="relative mx-auto max-w-7xl px-6 lg:px-8 pb-24 pt-20 md:pt-32">
+        {/* Ambient effects */}
+        <div className="pointer-events-none absolute -right-32 top-20 h-96 w-96 rounded-full bg-primary/8 blur-3xl" />
+        <div className="pointer-events-none absolute -left-20 top-40 h-80 w-80 rounded-full bg-secondary/6 blur-3xl" />
+        
+        <div className="relative mx-auto max-w-4xl text-center">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2.5 rounded-full glass-panel px-5 py-2.5 text-xs font-semibold uppercase tracking-wider mb-8">
+            Security & Compliance
+          </div>
+
+          {/* Hero heading */}
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] font-display tracking-tight mb-6">
+            Built for<br />
+            <span className="text-gradient">regulated environments</span>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-10">
+            Audit-grade logging, tenant isolation, and compliance gates designed for organizations where security and data integrity are mandatory.
+          </p>
+
+          {/* CTA buttons */}
+          <div className="flex flex-wrap justify-center items-center gap-4">
+            <Link href="/auth/signup" className="btn btn-primary text-base px-8 py-4 shadow-premium-lg">
+              Start Free Trial
+            </Link>
+            <Link href="/contact" className="btn btn-secondary text-base px-8 py-4">
+              Security Briefing
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Safeguards Grid */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
+        <div className="mb-16 text-center max-w-3xl mx-auto">
+          <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-4">
+            Security Safeguards
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold font-display mb-6">
+            Protection at every layer
+          </h2>
+          <p className="text-lg text-foreground/70">
+            Eight security controls built into the platform foundation
           </p>
         </div>
-        <MarketingAnchor
-          title="Security Control Plane"
-          subtitle="Segregation of duties, compliance gates, and evidence immutability."
-          badge="Security core"
-          accent="56 189 248"
-        />
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {safeguards.map((item) => (
+            <div key={item.title} className="card-hover glass-panel rounded-2xl p-6">
+              <h3 className="text-base font-semibold text-foreground mb-2 font-display">{item.title}</h3>
+              <p className="text-sm text-foreground/70 leading-relaxed">{item.description}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
-      <section className="mt-12 grid gap-6 md:grid-cols-2 mk-stagger mk-parallax-slow">
-        {safeguards.map((item) => (
-          <div key={item.title} className="mk-card mk-tilt mk-depth-1 rounded-2xl p-6">
-            <h2 className="text-lg font-semibold text-slate-100">{item.title}</h2>
-            <p className="mt-2 text-sm text-slate-400">{item.description}</p>
-          </div>
-        ))}
-      </section>
-
-      <section className="mt-16 mk-parallax-fast">
-        <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Access control philosophy</div>
-        <div className="mt-4 grid gap-6 md:grid-cols-2">
-          <div className="mk-card mk-tilt mk-depth-2 rounded-2xl p-6">
-            <h2 className="text-lg font-semibold text-slate-100">Segregation of duties</h2>
-            <p className="mt-2 text-sm text-slate-400">
+      {/* Access Control Philosophy */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
+        <div className="mb-8">
+          <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Access control philosophy</div>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="card-hover glass-panel-strong rounded-2xl p-8">
+            <h3 className="text-xl font-semibold text-foreground mb-3 font-display">Segregation of duties</h3>
+            <p className="text-[15px] text-foreground/70 leading-relaxed">
               Users cannot approve their own evidence or resolve their own compliance blocks. Approval workflows are
               enforced server-side and logged.
             </p>
           </div>
-          <div className="mk-card mk-tilt mk-depth-2 rounded-2xl p-6">
-            <h2 className="text-lg font-semibold text-slate-100">Audit-first design</h2>
-            <p className="mt-2 text-sm text-slate-400">
+          <div className="card-hover glass-panel-strong rounded-2xl p-8">
+            <h3 className="text-xl font-semibold text-foreground mb-3 font-display">Audit-first design</h3>
+            <p className="text-[15px] text-foreground/70 leading-relaxed">
               Every sensitive action records actor, role, entity scope, and evidence context to support regulator review.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="mt-16 mk-card mk-tilt mk-depth-2 rounded-2xl p-10">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Trust and assurance</div>
-            <h2 className="mt-3 text-2xl font-semibold font-[var(--font-display)]">Need a formal security review?</h2>
-            <p className="mt-2 text-sm text-slate-300">
-              We provide architecture briefings, audit evidence exports, and compliance documentation on request.
-            </p>
+      {/* Trust and Assurance CTA */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
+        <div className="card-hover glass-panel-strong rounded-2xl p-10">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-3">Trust and assurance</div>
+              <h2 className="text-2xl md:text-3xl font-semibold font-display mb-3">Need a formal security review?</h2>
+              <p className="text-[15px] text-foreground/70 leading-relaxed">
+                We provide architecture briefings, audit evidence exports, and compliance documentation on request.
+              </p>
+            </div>
+            <Link
+              href="/contact"
+              className="btn btn-primary text-base px-8 py-4 whitespace-nowrap"
+            >
+              Contact Security Team
+            </Link>
           </div>
-          <Link
-            href="/pricing"
-            className="mk-cta inline-flex rounded-lg bg-white/10 px-6 py-3 text-sm font-semibold text-slate-100"
-          >
-            View Plans
-          </Link>
         </div>
       </section>
     </div>

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MarketingAnchor } from "../components/marketing-anchor";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://formaos.com.au";
 
@@ -90,129 +89,146 @@ const workflows = [
 
 export default function ProductPage() {
   return (
-    <div className="mx-auto max-w-6xl px-6 pb-20 pt-16 md:pt-24">
-      <section className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] mk-fade-up mk-parallax-slow">
-        <div className="space-y-6">
-          <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Platform overview</div>
-          <h1 className="text-4xl font-semibold font-[var(--font-display)]">How FormaOS works end-to-end.</h1>
-          <p className="text-lg text-slate-300">
-            FormaOS is designed for compliance operations teams who need a structured, auditable workflow. Every task,
-            evidence item, and decision connects back to a control and a framework.
+    <div>
+      {/* Hero Section */}
+      <section className="relative mx-auto max-w-7xl px-6 lg:px-8 pb-24 pt-20 md:pt-32">
+        {/* Ambient effects */}
+        <div className="pointer-events-none absolute -right-32 top-20 h-96 w-96 rounded-full bg-primary/8 blur-3xl" />
+        <div className="pointer-events-none absolute -left-20 top-40 h-80 w-80 rounded-full bg-secondary/6 blur-3xl" />
+        
+        <div className="relative mx-auto max-w-4xl text-center">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2.5 rounded-full glass-panel px-5 py-2.5 text-xs font-semibold uppercase tracking-wider mb-8">
+            Platform Overview
+          </div>
+
+          {/* Hero heading */}
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] font-display tracking-tight mb-6">
+            How FormaOS works<br />
+            <span className="text-gradient">end-to-end</span>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-10">
+            A structured, auditable workflow where every task, evidence item, and decision connects back to a control and a framework.
           </p>
-          <div className="flex flex-wrap gap-4">
+
+          {/* CTA buttons */}
+          <div className="flex flex-wrap justify-center items-center gap-4">
+            <Link href="/auth/signup" className="btn btn-primary text-base px-8 py-4 shadow-premium-lg">
+              Start Free Trial
+            </Link>
+            <Link href="/contact" className="btn btn-secondary text-base px-8 py-4">
+              Request Demo
+            </Link>
+            <Link href="/pricing" className="btn btn-ghost text-base px-6 py-4">
+              View Pricing
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Lifecycle Section */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
+        <div className="mb-16 text-center max-w-3xl mx-auto">
+          <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-4">
+            Compliance Lifecycle
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold font-display mb-6">
+            A system you can run daily
+          </h2>
+          <p className="text-lg text-foreground/70">
+            FormaOS transforms compliance from a quarterly burden into an operational rhythm
+          </p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {lifecycle.map((step, index) => (
+            <div key={step.title} className="card-hover glass-panel rounded-2xl p-7">
+              <div className="inline-flex glass-panel rounded-lg px-3 py-1.5 text-xs font-bold text-primary mb-5">
+                Step {index + 1}
+              </div>
+              <h3 className="text-xl font-semibold mb-3 font-display">{step.title}</h3>
+              <p className="text-[15px] text-foreground/70 leading-relaxed">{step.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Modules Section */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
+        <div className="mb-16 text-center max-w-3xl mx-auto">
+          <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-4">
+            Platform Modules
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold font-display mb-6">
+            Everything you need to stay audit-ready
+          </h2>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {modules.map((module) => (
+            <div key={module.title} className="card-hover glass-panel-strong rounded-2xl p-7">
+              <h3 className="text-xl font-semibold mb-3 font-display">{module.title}</h3>
+              <p className="text-[15px] text-foreground/70 leading-relaxed">{module.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Workflows Section */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
+        <div className="mb-16 text-center max-w-3xl mx-auto">
+          <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-4">
+            Example Workflows
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold font-display mb-6">
+            Real-world compliance operations
+          </h2>
+        </div>
+
+        <div className="grid gap-8 lg:grid-cols-2">
+          {workflows.map((workflow) => (
+            <div key={workflow.title} className="card-hover glass-panel rounded-2xl p-8">
+              <h3 className="text-2xl font-semibold mb-6 font-display">{workflow.title}</h3>
+              <div className="space-y-4">
+                {workflow.steps.map((step, index) => (
+                  <div key={index} className="flex items-start gap-4">
+                    <div className="flex-shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-full glass-panel text-xs font-bold text-primary">
+                      {index + 1}
+                    </div>
+                    <p className="text-[15px] text-foreground/80 leading-relaxed">{step}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
+        <div className="card-hover glass-panel-strong rounded-2xl p-10 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold font-display mb-6">
+            Ready to transform your compliance operations?
+          </h2>
+          <p className="text-lg text-foreground/70 mb-8 max-w-2xl mx-auto">
+            Start your 14-day free trial today. No payment details required.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link
+              href="/auth/signup"
+              className="btn btn-primary text-base px-8 py-4 shadow-premium-lg"
+            >
+              Start Free Trial
+            </Link>
             <Link
               href="/contact"
-              className="mk-cta rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950"
+              className="btn btn-secondary text-base px-8 py-4"
             >
               Request Demo
             </Link>
-            <Link
-              href="/pricing"
-              className="mk-cta rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-slate-100"
-            >
-              Continue to Plans
-            </Link>
           </div>
-        </div>
-        <div className="mk-card mk-tilt mk-depth-3 rounded-2xl p-6">
-          <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Compliance lifecycle</div>
-          <div className="mt-6 space-y-4">
-            {lifecycle.map((step, index) => (
-              <div key={step.title} className="mk-panel rounded-xl p-4">
-                <div className="text-xs text-slate-400">Step {index + 1}</div>
-                <div className="text-sm font-semibold text-slate-100">{step.title}</div>
-                <p className="mt-1 text-xs text-slate-400">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="mt-16 grid gap-10 lg:grid-cols-[0.9fr_1.1fr] mk-parallax-slow">
-        <div className="mk-fade-up">
-          <div className="text-xs uppercase tracking-[0.3em] text-slate-400">System stack</div>
-          <h2 className="mt-3 text-2xl font-semibold font-[var(--font-display)]">
-            A layered compliance engine with depth and traceability.
-          </h2>
-          <p className="mt-3 text-sm text-slate-400">
-            Every module is designed as a surface in the command center, giving teams immediate visibility into
-            obligations, evidence, and audit readiness.
-          </p>
-        </div>
-        <div className="mk-fade-up">
-          <MarketingAnchor
-            title="Compliance Stack"
-            subtitle="Policies, tasks, evidence, and audit snapshots in one view."
-            badge="Module stack"
-            accent="129 140 248"
-          />
-        </div>
-      </section>
-
-      <section className="mt-16 mk-parallax-fast">
-        <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Operational structure</div>
-        <div className="mt-4 grid gap-6 md:grid-cols-2">
-          <div className="mk-card mk-tilt mk-depth-2 rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-slate-100">Multi-entity governance</h2>
-            <p className="mt-2 text-sm text-slate-400">
-              Track compliance by organization, business unit, site, or team. Executives can see rollups while managers
-              focus on their operational scope.
-            </p>
-          </div>
-          <div className="mk-card mk-tilt mk-depth-2 rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-slate-100">Evidence to audit chain</h2>
-            <p className="mt-2 text-sm text-slate-400">
-              Every artifact has a source, approval history, and control mapping. Audit exports reference immutable
-              events for legal defensibility.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="mt-16 mk-parallax-slow">
-        <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Platform modules</div>
-        <div className="mt-4 grid gap-6 md:grid-cols-2">
-          {modules.map((module) => (
-            <div key={module.title} className="mk-card mk-tilt mk-depth-1 rounded-2xl p-6">
-              <h2 className="text-lg font-semibold text-slate-100">{module.title}</h2>
-              <p className="mt-2 text-sm text-slate-400">{module.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mt-16 mk-parallax-fast">
-        <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Example workflows</div>
-        <div className="mt-4 grid gap-6 lg:grid-cols-2">
-          {workflows.map((workflow) => (
-            <div key={workflow.title} className="mk-card mk-tilt mk-depth-2 rounded-2xl p-6">
-              <h3 className="text-lg font-semibold text-slate-100">{workflow.title}</h3>
-              <ul className="mt-4 space-y-2 text-sm text-slate-300">
-                {workflow.steps.map((step) => (
-                  <li key={step} className="flex items-start gap-2">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-400" />
-                    <span>{step}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="mt-16 mk-card mk-tilt mk-depth-2 rounded-2xl p-10">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Next step</div>
-            <h2 className="mt-3 text-2xl font-semibold font-[var(--font-display)]">See your compliance lifecycle mapped end-to-end.</h2>
-            <p className="mt-2 text-sm text-slate-300">We will map your current obligations to controls and evidence workflows.</p>
-          </div>
-          <Link
-            href="/pricing"
-            className="mk-cta inline-flex rounded-lg bg-white/10 px-6 py-3 text-sm font-semibold text-slate-100"
-          >
-            View Plans
-          </Link>
         </div>
       </section>
     </div>

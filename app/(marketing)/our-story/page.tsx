@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://formaos.com.au";
 
@@ -20,156 +21,173 @@ export const metadata: Metadata = {
 
 export default function OurStoryPage() {
   return (
-    <div className="mx-auto w-full max-w-5xl px-6 py-16 md:py-20">
-      <div className="mk-card rounded-3xl p-8 md:p-12 mk-fade-up">
-        <div className="space-y-6">
-          <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Our Story</div>
-          <h1 className="text-4xl font-semibold text-slate-100 font-[var(--font-display)]">
+    <div>
+      {/* Hero Section */}
+      <section className="relative mx-auto max-w-7xl px-6 lg:px-8 pb-24 pt-20 md:pt-32">
+        {/* Ambient effects */}
+        <div className="pointer-events-none absolute -right-32 top-20 h-96 w-96 rounded-full bg-primary/8 blur-3xl" />
+        <div className="pointer-events-none absolute -left-20 top-40 h-80 w-80 rounded-full bg-secondary/6 blur-3xl" />
+        
+        <div className="relative mx-auto max-w-4xl text-center">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2.5 rounded-full glass-panel px-5 py-2.5 text-xs font-semibold uppercase tracking-wider mb-8">
             Our Story
+          </div>
+
+          {/* Hero heading */}
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] font-display tracking-tight mb-6">
+            Building infrastructure<br />
+            <span className="text-gradient">for operational trust</span>
           </h1>
-          <p className="text-base text-slate-300">
-            FormaOS was not built to be another software platform.
-          </p>
-          <p className="text-base text-slate-300">
-            It was built to solve a problem that too many regulated teams quietly live with every day:
-          </p>
-          <p className="text-base text-slate-300">
-            fragmented systems, manual audits, compliance anxiety, and operational chaos hidden behind
-            spreadsheets.
+
+          {/* Subtitle */}
+          <p className="text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-10">
+            FormaOS was built to solve a problem that too many regulated teams quietly live with every day: fragmented systems, manual audits, and operational chaos hidden behind spreadsheets.
           </p>
         </div>
+      </section>
 
-        <div className="mt-10 space-y-8 mk-stagger">
-          <section className="space-y-4">
-            <h2 className="text-2xl font-semibold text-slate-100 font-[var(--font-display)]">
+      {/* Story Content */}
+      <section className="mx-auto max-w-4xl px-6 lg:px-8 pb-24">
+        <div className="space-y-16">
+          {/* Where It Started */}
+          <div className="glass-panel rounded-2xl p-8 md:p-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground font-display mb-6">
               Where It Started
             </h2>
-            <p className="text-base text-slate-300">
-              FormaOS began in Adelaide, South Australia, not in a boardroom—but inside real operational
-              workflows.
-            </p>
-            <p className="text-base text-slate-300">
-              Healthcare providers, disability services, compliance-driven organizations and multi-site
-              teams were drowning in:
-            </p>
-            <div className="space-y-2 text-base text-slate-300">
-              <div>disconnected tools,</div>
-              <div>duplicated reporting,</div>
-              <div>audit preparation that stole weeks of productivity, and</div>
-              <div>risk that only surfaced when it was already too late.</div>
+            <div className="space-y-4 text-[15px] md:text-base text-foreground/80 leading-relaxed">
+              <p>
+                FormaOS began in Adelaide, South Australia, not in a boardroom—but inside real operational workflows.
+              </p>
+              <p>
+                Healthcare providers, disability services, compliance-driven organizations and multi-site teams were drowning in:
+              </p>
+              <ul className="space-y-2 pl-6 list-disc text-foreground/70">
+                <li>disconnected tools,</li>
+                <li>duplicated reporting,</li>
+                <li>audit preparation that stole weeks of productivity, and</li>
+                <li>risk that only surfaced when it was already too late.</li>
+              </ul>
+              <p className="font-semibold text-foreground pt-4">Compliance was being treated as paperwork.</p>
+              <p className="font-semibold text-foreground">But in reality, it is infrastructure.</p>
+              <p className="text-lg text-foreground">So we set out to rebuild it properly.</p>
             </div>
-            <p className="text-base text-slate-300">Compliance was being treated as paperwork.</p>
-            <p className="text-base text-slate-300">But in reality, it is infrastructure.</p>
-            <p className="text-base text-slate-300">So we set out to rebuild it properly.</p>
-          </section>
+          </div>
 
-          <section className="space-y-4">
-            <h2 className="text-2xl font-semibold text-slate-100 font-[var(--font-display)]">
+          {/* The Vision */}
+          <div className="glass-panel rounded-2xl p-8 md:p-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground font-display mb-6">
               The Vision
             </h2>
-            <p className="text-base text-slate-300">We asked one fundamental question:</p>
-            <p className="text-base text-slate-300">
-              What if compliance wasn’t something you prepared for… but something you lived inside every
-              day?
-            </p>
-            <p className="text-base text-slate-300">
-              FormaOS was designed as a true Compliance Operating System:
-            </p>
-            <div className="space-y-2 text-base text-slate-300">
-              <div>not reminders,</div>
-              <div>not document storage,</div>
-              <div>
-                but a system that aligns controls, evidence, tasks, governance, and accountability in
-                one connected environment.
-              </div>
+            <div className="space-y-4 text-[15px] md:text-base text-foreground/80 leading-relaxed">
+              <p className="text-lg text-foreground font-medium">We asked one fundamental question:</p>
+              <p className="text-xl text-foreground font-semibold">
+                What if compliance wasn't something you prepared for… but something you lived inside every day?
+              </p>
+              <p>FormaOS was designed as a true Compliance Operating System:</p>
+              <ul className="space-y-2 pl-6 list-disc text-foreground/70">
+                <li>not reminders,</li>
+                <li>not document storage,</li>
+                <li>but a system that aligns controls, evidence, tasks, governance, and accountability in one connected environment.</li>
+              </ul>
+              <p className="font-semibold text-foreground pt-4">An OS for regulated operations.</p>
+              <p className="font-semibold text-foreground">A command center for audit-ready teams.</p>
             </div>
-            <p className="text-base text-slate-300">An OS for regulated operations.</p>
-            <p className="text-base text-slate-300">A command center for audit-ready teams.</p>
-          </section>
+          </div>
 
-          <section className="space-y-4">
-            <h2 className="text-2xl font-semibold text-slate-100 font-[var(--font-display)]">
+          {/* What Makes FormaOS Different */}
+          <div className="glass-panel rounded-2xl p-8 md:p-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground font-display mb-6">
               What Makes FormaOS Different
             </h2>
-            <p className="text-base text-slate-300">FormaOS unifies what used to live in silos:</p>
-            <div className="space-y-2 text-base text-slate-300">
-              <div>Operational tasks</div>
-              <div>Evidence & documentation</div>
-              <div>Governance controls</div>
-              <div>Audit readiness</div>
-              <div>Executive oversight</div>
+            <div className="space-y-4 text-[15px] md:text-base text-foreground/80 leading-relaxed">
+              <p>FormaOS unifies what used to live in silos:</p>
+              <ul className="space-y-2 pl-6 list-disc text-foreground/70">
+                <li>Operational tasks</li>
+                <li>Evidence & documentation</li>
+                <li>Governance controls</li>
+                <li>Audit readiness</li>
+                <li>Executive oversight</li>
+              </ul>
+              <p className="pt-4">All inside a single, traceable, accountable system of record.</p>
+              <div className="pt-4 space-y-2">
+                <p className="text-foreground">No scattered tools.</p>
+                <p className="text-foreground">No last-minute audit scrambles.</p>
+                <p className="text-foreground">No blind spots.</p>
+              </div>
+              <p className="text-lg text-foreground font-semibold pt-4">Just clarity, structure, and confidence.</p>
             </div>
-            <p className="text-base text-slate-300">
-              All inside a single, traceable, accountable system of record.
-            </p>
-            <p className="text-base text-slate-300">No scattered tools.</p>
-            <p className="text-base text-slate-300">No last-minute audit scrambles.</p>
-            <p className="text-base text-slate-300">No blind spots.</p>
-            <p className="text-base text-slate-300">Just clarity, structure, and confidence.</p>
-          </section>
+          </div>
 
-          <section className="space-y-4">
-            <h2 className="text-2xl font-semibold text-slate-100 font-[var(--font-display)]">
+          {/* Built for People Who Carry Responsibility */}
+          <div className="glass-panel rounded-2xl p-8 md:p-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground font-display mb-6">
               Built for People Who Carry Responsibility
             </h2>
-            <p className="text-base text-slate-300">We don’t build for “users.”</p>
-            <p className="text-base text-slate-300">We build for people who are responsible for:</p>
-            <div className="space-y-2 text-base text-slate-300">
-              <div>safety,</div>
-              <div>compliance,</div>
-              <div>outcomes,</div>
-              <div>and trust.</div>
+            <div className="space-y-4 text-[15px] md:text-base text-foreground/80 leading-relaxed">
+              <p>We don't build for "users."</p>
+              <p>We build for people who are responsible for:</p>
+              <ul className="space-y-2 pl-6 list-disc text-foreground/70">
+                <li>safety,</li>
+                <li>compliance,</li>
+                <li>outcomes,</li>
+                <li>and trust.</li>
+              </ul>
+              <p className="pt-4">
+                From NDIS providers to healthcare operators, multi-site organizations, and governance-driven enterprises — FormaOS is for teams who cannot afford mistakes.
+              </p>
             </div>
-            <p className="text-base text-slate-300">
-              From NDIS providers to healthcare operators, multi-site organizations, and
-              governance-driven enterprises — FormaOS is for teams who cannot afford mistakes.
-            </p>
-          </section>
+          </div>
 
-          <section className="space-y-4">
-            <h2 className="text-2xl font-semibold text-slate-100 font-[var(--font-display)]">
+          {/* Leadership */}
+          <div className="glass-panel rounded-2xl p-8 md:p-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground font-display mb-6">
               Leadership
             </h2>
-            <p className="text-base text-slate-300">Ejaz Hussain</p>
-            <p className="text-base text-slate-300">Chief Engineer, FormaOS</p>
-            <p className="text-base text-slate-300">Adelaide, South Australia</p>
-            <p className="text-base text-slate-300">
-              FormaOS is engineered with one guiding principle:
-            </p>
-            <p className="text-base text-slate-300">
-              If systems shape behavior, then compliance systems must shape accountability.
-            </p>
-            <p className="text-base text-slate-300">
-              Every feature, workflow, and control inside FormaOS exists to make regulated operations
-              not just compliant — but resilient, transparent, and future-proof.
-            </p>
-          </section>
+            <div className="space-y-4 text-[15px] md:text-base text-foreground/80 leading-relaxed">
+              <div className="mb-6">
+                <p className="text-lg font-semibold text-foreground">Ejaz Hussain</p>
+                <p className="text-muted-foreground">Chief Engineer, FormaOS</p>
+                <p className="text-muted-foreground">Adelaide, South Australia</p>
+              </div>
+              <p className="text-foreground font-medium">FormaOS is engineered with one guiding principle:</p>
+              <p className="text-lg text-foreground font-semibold">
+                If systems shape behavior, then compliance systems must shape accountability.
+              </p>
+              <p className="pt-4">
+                Every feature, workflow, and control inside FormaOS exists to make regulated operations not just compliant — but resilient, transparent, and future-proof.
+              </p>
+            </div>
+          </div>
 
-          <section className="space-y-4">
-            <h2 className="text-2xl font-semibold text-slate-100 font-[var(--font-display)]">
+          {/* Our Commitment */}
+          <div className="glass-panel-strong rounded-2xl p-8 md:p-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground font-display mb-6">
               Our Commitment
             </h2>
-            <p className="text-base text-slate-300">
-              We are not here to build software that looks impressive.
-            </p>
-            <p className="text-base text-slate-300">
-              We are here to build infrastructure that stands up in audits, scales with complexity, and
-              protects the people who rely on it.
-            </p>
-            <p className="text-base text-slate-300">FormaOS is not just a product.</p>
-            <p className="text-base text-slate-300">It is a framework for operational trust.</p>
-          </section>
+            <div className="space-y-4 text-[15px] md:text-base text-foreground/80 leading-relaxed">
+              <p>We are not here to build software that looks impressive.</p>
+              <p>
+                We are here to build infrastructure that stands up in audits, scales with complexity, and protects the people who rely on it.
+              </p>
+              <p className="text-lg text-foreground font-semibold pt-4">FormaOS is not just a product.</p>
+              <p className="text-lg text-foreground font-semibold">It is a framework for operational trust.</p>
+            </div>
+          </div>
 
-          <section className="space-y-4">
-            <h2 className="text-2xl font-semibold text-slate-100 font-[var(--font-display)]">
+          {/* Contact */}
+          <div className="glass-panel rounded-2xl p-8 md:p-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground font-display mb-6">
               Contact
             </h2>
-            <p className="text-base text-slate-300">📧 formaos.team@gmail.com</p>
-            <p className="text-base text-slate-300">📞 +61 469 715 062</p>
-            <p className="text-base text-slate-300">📍 Adelaide, South Australia</p>
-          </section>
+            <div className="space-y-3 text-[15px] md:text-base text-foreground/80">
+              <p>📧 formaos.team@gmail.com</p>
+              <p>📞 +61 469 715 062</p>
+              <p>📍 Adelaide, South Australia</p>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

@@ -67,48 +67,90 @@ const industries = [
 export default function IndustriesPage() {
   return (
     <div className="mx-auto max-w-6xl px-6 pb-20 pt-16 md:pt-24">
-      <section className="grid gap-10 lg:grid-cols-[1fr_1.1fr] mk-fade-up mk-parallax-slow">
-        <div className="space-y-6">
-          <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Industries</div>
-          <h1 className="text-4xl font-semibold font-[var(--font-display)]">Built for regulated operations.</h1>
-          <p className="text-lg text-slate-300">
-            FormaOS supports organizations that operate under formal standards and audits. Each industry pack maps to
-            real compliance obligations, not generic workflows.
+      {/* Hero Section */}
+      <section className="relative mx-auto max-w-7xl px-6 lg:px-8 pb-24 pt-20 md:pt-32">
+        {/* Ambient effects */}
+        <div className="pointer-events-none absolute -right-32 top-20 h-96 w-96 rounded-full bg-primary/8 blur-3xl" />
+        <div className="pointer-events-none absolute -left-20 top-40 h-80 w-80 rounded-full bg-secondary/6 blur-3xl" />
+        
+        <div className="relative mx-auto max-w-4xl text-center">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2.5 rounded-full glass-panel px-5 py-2.5 text-xs font-semibold uppercase tracking-wider mb-8">
+            Industry Frameworks
+          </div>
+
+          {/* Hero heading */}
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] font-display tracking-tight mb-6">
+            Built for your sector,<br />
+            <span className="text-gradient">ready from day one</span>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-10">
+            Pre-configured compliance frameworks for Australian health, disability, aged care, and community services. Get audit-ready faster with industry-specific controls.
+          </p>
+
+          {/* CTA buttons */}
+          <div className="flex flex-wrap justify-center items-center gap-4">
+            <Link href="/auth/signup" className="btn btn-primary text-base px-8 py-4 shadow-premium-lg">
+              Start Free Trial
+            </Link>
+            <Link href="/contact" className="btn btn-secondary text-base px-8 py-4">
+              Talk to Specialist
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Industries Grid */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
+        <div className="mb-16 text-center max-w-3xl mx-auto">
+          <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-4">
+            Industry Packs
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold font-display mb-6">
+            Compliance frameworks tailored to your sector
+          </h2>
+          <p className="text-lg text-foreground/70">
+            Each industry pack maps to real compliance obligations, not generic workflows
           </p>
         </div>
-        <MarketingAnchor
-          title="Industry Pack Layers"
-          subtitle="Frameworks, evidence, and controls mapped per sector."
-          badge="Sector readiness"
-          accent="16 185 129"
-        />
+
+        <div className="grid gap-6 lg:grid-cols-2">
+          {industries.map((industry) => (
+            <div key={industry.title} className="card-hover glass-panel rounded-2xl p-8">
+              <h3 className="text-xl font-semibold text-foreground mb-4 font-display">{industry.title}</h3>
+              <div className="space-y-4">
+                <div>
+                  <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-2">Pain points</div>
+                  <p className="text-sm text-foreground/80 leading-relaxed">{industry.pain}</p>
+                </div>
+                <div>
+                  <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-2">FormaOS response</div>
+                  <p className="text-sm text-foreground leading-relaxed">{industry.solution}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
-      <section className="mt-12 grid gap-6 lg:grid-cols-2 mk-stagger mk-parallax-slow">
-        {industries.map((industry) => (
-          <div key={industry.title} className="mk-card mk-tilt mk-depth-1 rounded-2xl p-6">
-            <h2 className="text-lg font-semibold text-slate-100">{industry.title}</h2>
-            <div className="mt-3 text-xs uppercase tracking-[0.3em] text-slate-500">Pain points</div>
-            <p className="mt-2 text-sm text-slate-400">{industry.pain}</p>
-            <div className="mt-4 text-xs uppercase tracking-[0.3em] text-slate-500">FormaOS response</div>
-            <p className="mt-2 text-sm text-slate-300">{industry.solution}</p>
+      {/* Custom Framework CTA */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
+        <div className="card-hover glass-panel-strong rounded-2xl p-10">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-3">Need a tailored framework?</div>
+              <h2 className="text-2xl md:text-3xl font-semibold font-display mb-3">We configure FormaOS for your obligations</h2>
+              <p className="text-[15px] text-foreground/70 leading-relaxed">Tell us your framework requirements and we map controls, evidence, and reports.</p>
+            </div>
+            <Link
+              href="/pricing"
+              className="btn btn-primary text-base px-8 py-4 whitespace-nowrap"
+            >
+              View Plans
+            </Link>
           </div>
-        ))}
-      </section>
-
-      <section className="mt-16 mk-card mk-tilt mk-depth-2 rounded-2xl p-10">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Need a tailored framework?</div>
-            <h2 className="mt-3 text-2xl font-semibold font-[var(--font-display)]">We configure FormaOS for your obligations.</h2>
-            <p className="mt-2 text-sm text-slate-300">Tell us your framework requirements and we map controls, evidence, and reports.</p>
-          </div>
-          <Link
-            href="/pricing"
-            className="mk-cta inline-flex rounded-lg bg-white/10 px-6 py-3 text-sm font-semibold text-slate-100"
-          >
-            View Plans
-          </Link>
         </div>
       </section>
     </div>
