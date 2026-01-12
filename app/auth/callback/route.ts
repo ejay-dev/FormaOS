@@ -8,8 +8,6 @@ import { ensureSubscription } from "@/lib/billing/subscriptions";
 
 // Helper to check if user is a founder
 function isFounder(email: string | undefined, userId: string): boolean {
-  if (!email) return false;
-  
   const parseEnvList = (value?: string | null) =>
     new Set(
       (value ?? "")
@@ -21,10 +19,14 @@ function isFounder(email: string | undefined, userId: string): boolean {
   const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);
   const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
   
-  const normalizedEmail = email.toLowerCase();
-  const normalizedId = userId.toLowerCase();
+  const normalizedEmail = (email ?? "").trim().toLowerCase();
+  const normalizedId = (userId ?? "").trim().toLowerCase();
   
-  return founderEmails.has(normalizedEmail) || founderIds.has(normalizedId);
+  // Check both email and ID
+  const emailMatch = normalizedEmail ? founderEmails.has(normalizedEmail) : false;
+  const idMatch = normalizedId ? founderIds.has(normalizedId) : false;
+  
+  return emailMatch || idMatch;
 }
 
 export async function GET(request: Request) {
@@ -64,10 +66,21 @@ export async function GET(request: Request) {
   }
 
   // 2. CHECK IF USER IS A FOUNDER - Redirect to admin immediately
-  if (isFounder(data.user.email, data.user.id)) {
-    console.log(`[auth/callback] Founder detected: ${data.user.email}, redirecting to /admin`);
+  const founderCheck = isFounder(data.user.email, data.user.id);
+  console.log(`[auth/callback] 🔍 Founder check:`, {
+    email: data.user.email,
+    userId: data.user.id.substring(0, 8) + "...",
+    isFounder: founderCheck,
+    FOUNDER_EMAILS_RAW: process.env.FOUNDER_EMAILS,
+    FOUNDER_USER_IDS_RAW: process.env.FOUNDER_USER_IDS,
+  });
+  
+  if (founderCheck) {
+    console.log(`[auth/callback] ✅ FOUNDER DETECTED: ${data.user.email}, redirecting to /admin`);
     return NextResponse.redirect(`${appBase}/admin`);
   }
+  
+  console.log(`[auth/callback] ℹ️  Regular user (not founder), proceeding with org setup`);
 
   if (plan) {
     try {

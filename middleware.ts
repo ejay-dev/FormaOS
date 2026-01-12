@@ -163,10 +163,14 @@ export async function middleware(request: NextRequest) {
         userId: userId ? userId.substring(0, 8) + "..." : "none",
         isFounder,
         founderEmailsRaw: process.env.FOUNDER_EMAILS,
+        founderUserIdsRaw: process.env.FOUNDER_USER_IDS,
         founderEmailsSet: Array.from(founderEmails),
+        founderIdsSet: Array.from(founderIds).map(id => id ? id.substring(0, 8) + "..." : "empty"),
         hasUser: !!user,
         emailMatch: founderEmails.has(userEmail),
         idMatch: founderIds.has(userId),
+        emailLower: userEmail,
+        idLower: userId ? userId.substring(0, 8) + "..." : "none",
       });
     }
 
