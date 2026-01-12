@@ -38,6 +38,14 @@ export async function middleware(request: NextRequest) {
       (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
     );
 
+    // Ensure /admin always stays on app domain
+    if (pathname.startsWith("/admin") && host === siteOrigin.hostname) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.protocol = appOrigin.protocol;
+      redirectUrl.host = appOrigin.host;
+      return NextResponse.redirect(redirectUrl);
+    }
+
     if (host === siteOrigin.hostname && isAppPath) {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.protocol = appOrigin.protocol;
@@ -74,7 +82,7 @@ export async function middleware(request: NextRequest) {
     const hasSupabaseEnv = Boolean(hasValidSupabaseUrl && supabaseAnonKey);
 
     if (!hasSupabaseEnv) {
-      if (pathname.startsWith("/app")) {
+      if (pathname.startsWith("/app") || pathname.startsWith("/admin")) {
         const url = request.nextUrl.clone();
         url.pathname = "/auth/signin";
         return NextResponse.redirect(url);
