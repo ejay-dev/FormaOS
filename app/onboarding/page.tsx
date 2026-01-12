@@ -46,6 +46,28 @@ async function getOrgContext() {
 
   if (!user) redirect("/auth/signin");
 
+  // 🚨 FOUNDER BYPASS: Founders should never be in onboarding
+  const parseEnvList = (value?: string | null) =>
+    new Set(
+      (value ?? "")
+        .split(",")
+        .map((entry) => entry.trim().toLowerCase())
+        .filter(Boolean)
+    );
+
+  const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);
+  const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
+  const userEmail = (user?.email ?? "").trim().toLowerCase();
+  const userId = (user?.id ?? "").trim().toLowerCase();
+  const isFounder = Boolean(
+    user && ((userEmail && founderEmails.has(userEmail)) || founderIds.has(userId))
+  );
+
+  if (isFounder) {
+    console.log("[onboarding] 🚫 FOUNDER blocked from onboarding - redirecting to /admin", { email: userEmail });
+    redirect("/admin");
+  }
+
   const { data: membership } = await supabase
     .from("org_members")
     .select("organization_id, organizations(name, plan_key, industry, team_size, frameworks, onboarding_completed)")
