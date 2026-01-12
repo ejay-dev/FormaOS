@@ -118,7 +118,7 @@ export async function middleware(request: NextRequest) {
     // -------------------------------
     // 1. BLOCK PROTECTED ROUTES IF NOT LOGGED IN
     // -------------------------------
-    if (!user && pathname.startsWith("/app")) {
+    if (!user && (pathname.startsWith("/app") || pathname.startsWith("/admin"))) {
       const url = request.nextUrl.clone();
       url.pathname = "/auth/signin";
       return NextResponse.redirect(url);
