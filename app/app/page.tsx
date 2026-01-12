@@ -125,26 +125,25 @@ function SectionTitle({
   right?: React.ReactNode;
 }) {
   return (
-    <div className="relative flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-      <div className="absolute inset-x-0 -top-6 h-20 rounded-2xl bg-gradient-to-r from-blue-600/15 via-indigo-600/10 to-cyan-500/15 blur-2xl" />
+    <div className="relative flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
       <div className="relative flex items-start gap-4">
         {icon ? (
-          <div className="mt-0.5 flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] to-[hsl(var(--panel-2))] shadow-[0_0_18px_rgba(56,189,248,0.15)]">
+          <div className="mt-0.5 flex h-12 w-12 items-center justify-center rounded-xl glass-panel shadow-premium-md">
             {icon}
           </div>
         ) : null}
         <div className="min-w-0">
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-50">
+          <h1 className="text-4xl font-bold tracking-tight font-display">
             {title}
           </h1>
           {subtitle ? (
-            <p className="mt-1 text-sm leading-6 text-slate-300">
+            <p className="mt-2 text-base leading-relaxed text-foreground/70">
               {subtitle}
             </p>
           ) : null}
         </div>
       </div>
-      {right ? <div className="flex items-center gap-2">{right}</div> : null}
+      {right ? <div className="flex items-center gap-3">{right}</div> : null}
     </div>
   );
 }
