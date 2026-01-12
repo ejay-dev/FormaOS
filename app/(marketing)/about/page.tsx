@@ -20,54 +20,76 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-6xl px-6 pb-20 pt-16 md:pt-24">
-      <section className="grid gap-10 lg:grid-cols-[1fr_1.1fr] mk-fade-up mk-parallax-slow">
-        <div className="space-y-6">
-          <div className="text-xs uppercase tracking-[0.3em] text-slate-400">About</div>
-          <h1 className="text-4xl font-semibold font-[var(--font-display)]">Built for teams accountable to regulators.</h1>
-          <p className="text-lg text-slate-300">
-            FormaOS exists to help regulated organizations operate with confidence. Compliance teams need more than
-            spreadsheets and shared drives. They need a defensible system that proves governance, evidence, and oversight.
-          </p>
-        </div>
-        <MarketingAnchor
-          title="Governance Mission"
-          subtitle="Operational clarity that stands up to audits and regulator scrutiny."
-          badge="Our purpose"
-          accent="56 189 248"
-        />
-      </section>
-
-      <section className="mt-12 grid gap-6 md:grid-cols-2 mk-stagger mk-parallax-fast">
-        <div className="mk-card mk-tilt mk-depth-1 rounded-2xl p-6">
-          <h2 className="text-lg font-semibold text-slate-100">Mission</h2>
-          <p className="mt-2 text-sm text-slate-400">
-            Deliver operational clarity for regulated industries by connecting controls, evidence, and accountability in
-            a single compliance operating system.
-          </p>
-        </div>
-        <div className="mk-card mk-tilt mk-depth-1 rounded-2xl p-6">
-          <h2 className="text-lg font-semibold text-slate-100">Why it matters</h2>
-          <p className="mt-2 text-sm text-slate-400">
-            Regulators expect defensible evidence, not just documentation. FormaOS provides the audit trail and proof
-            required to protect leadership teams and their organizations.
-          </p>
-        </div>
-      </section>
-
-      <section className="mt-16 mk-card mk-tilt mk-depth-2 rounded-2xl p-10">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Ready to talk?</div>
-            <h2 className="mt-3 text-2xl font-semibold font-[var(--font-display)]">Let us show you the FormaOS command center.</h2>
-            <p className="mt-2 text-sm text-slate-300">We work with regulated operators who need certainty and speed.</p>
+    <div>
+      {/* Hero Section */}
+      <section className="relative mx-auto max-w-7xl px-6 lg:px-8 pb-24 pt-20 md:pt-32">
+        {/* Ambient effects */}
+        <div className="pointer-events-none absolute -right-32 top-20 h-96 w-96 rounded-full bg-primary/8 blur-3xl" />
+        <div className="pointer-events-none absolute -left-20 top-40 h-80 w-80 rounded-full bg-secondary/6 blur-3xl" />
+        
+        <div className="relative mx-auto max-w-4xl text-center">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2.5 rounded-full glass-panel px-5 py-2.5 text-xs font-semibold uppercase tracking-wider mb-8">
+            About FormaOS
           </div>
-          <Link
-            href="/pricing"
-            className="mk-cta inline-flex rounded-lg bg-white/10 px-6 py-3 text-sm font-semibold text-slate-100"
-          >
-            View Plans
-          </Link>
+
+          {/* Hero heading */}
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] font-display tracking-tight mb-6">
+            Built for teams<br />
+            <span className="text-gradient">accountable to regulators</span>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-10">
+            FormaOS exists to help regulated organizations operate with confidence. Compliance teams need more than spreadsheets—they need a defensible system that proves governance, evidence, and oversight.
+          </p>
+
+          {/* CTA buttons */}
+          <div className="flex flex-wrap justify-center items-center gap-4">
+            <Link href="/our-story" className="btn btn-primary text-base px-8 py-4 shadow-premium-lg">
+              Read Our Story
+            </Link>
+            <Link href="/product" className="btn btn-secondary text-base px-8 py-4">
+              See How It Works
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Mission & Purpose */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
+        <div className="grid gap-8 md:grid-cols-2">
+          <div className="card-hover glass-panel-strong rounded-2xl p-8">
+            <h2 className="text-2xl font-semibold text-foreground mb-4 font-display">Mission</h2>
+            <p className="text-[15px] text-foreground/80 leading-relaxed">
+              Deliver operational clarity for regulated industries by connecting controls, evidence, and accountability in a single compliance operating system.
+            </p>
+          </div>
+          <div className="card-hover glass-panel-strong rounded-2xl p-8">
+            <h2 className="text-2xl font-semibold text-foreground mb-4 font-display">Why it matters</h2>
+            <p className="text-[15px] text-foreground/80 leading-relaxed">
+              Regulators expect defensible evidence, not just documentation. FormaOS provides the audit trail and proof required to protect leadership teams and their organizations.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
+        <div className="card-hover glass-panel-strong rounded-2xl p-10">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-3">Ready to talk?</div>
+              <h2 className="text-2xl md:text-3xl font-semibold font-display mb-3">Let us show you the FormaOS command center</h2>
+              <p className="text-[15px] text-foreground/70 leading-relaxed">We work with regulated operators who need certainty and speed.</p>
+            </div>
+            <Link
+              href="/contact"
+              className="btn btn-primary text-base px-8 py-4 whitespace-nowrap"
+            >
+              Get Started
+            </Link>
+          </div>
         </div>
       </section>
     </div>
