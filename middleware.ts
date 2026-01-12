@@ -137,8 +137,22 @@ export async function middleware(request: NextRequest) {
     // 🚨 STEP 1: DETECT FOUNDER - ABSOLUTE TOP PRIORITY
     // This MUST run before ANY other routing logic
     // ============================================================
+    
+    // 🔍 DEBUG: Log ALL environment variables related to founder detection
+    console.log("[Middleware] 🔧 ENV VARIABLE CHECK", {
+      FOUNDER_EMAILS_typeof: typeof process.env.FOUNDER_EMAILS,
+      FOUNDER_EMAILS_value: process.env.FOUNDER_EMAILS,
+      FOUNDER_EMAILS_length: process.env.FOUNDER_EMAILS?.length,
+      FOUNDER_USER_IDS_typeof: typeof process.env.FOUNDER_USER_IDS,
+      FOUNDER_USER_IDS_value: process.env.FOUNDER_USER_IDS,
+      NODE_ENV: process.env.NODE_ENV,
+      VERCEL_ENV: process.env.VERCEL_ENV,
+      all_env_keys: Object.keys(process.env).filter(k => k.includes('FOUNDER')),
+    });
+    
     const parseEnvList = (value?: string | null) => {
       const raw = value ?? "";
+      console.log("[Middleware] parseEnvList debug:", { input: raw, type: typeof raw, length: raw.length });
       return new Set(
         raw
           .split(",")
@@ -151,9 +165,28 @@ export async function middleware(request: NextRequest) {
     const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
     const userEmail = (user?.email ?? "").trim().toLowerCase();
     const userId = (user?.id ?? "").trim().toLowerCase();
+    
+    console.log("[Middleware] 🔍 PARSED FOUNDER DATA", {
+      founderEmailsSize: founderEmails.size,
+      founderEmailsArray: Array.from(founderEmails),
+      founderIdsSize: founderIds.size,
+      userEmail: userEmail,
+      userEmailLength: userEmail.length,
+      emailExistsInSet: founderEmails.has(userEmail),
+      exactMatch: userEmail === 'ejazhussaini313@gmail.com',
+    });
+    
     const isFounder = Boolean(
       user && ((userEmail && founderEmails.has(userEmail)) || founderIds.has(userId))
     );
+    
+    console.log("[Middleware] 🎯 FINAL FOUNDER DECISION", {
+      isFounder,
+      hasUser: !!user,
+      hasEmail: !!userEmail,
+      emailInSet: founderEmails.has(userEmail),
+      idInSet: founderIds.has(userId),
+    });
 
     // 🔍 FOUNDER DETECTION LOGGING (for /admin paths only)
     if (pathname.startsWith("/admin")) {

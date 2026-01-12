@@ -45,6 +45,14 @@ export default async function AppLayout({
   /* -------------------------------------------------------
    * 1.5) CHECK IF USER IS A FOUNDER - Redirect to admin
    * ----------------------------------------------------- */
+  console.log("[app/layout] 🔧 ENV CHECK", {
+    FOUNDER_EMAILS_raw: process.env.FOUNDER_EMAILS,
+    FOUNDER_EMAILS_type: typeof process.env.FOUNDER_EMAILS,
+    FOUNDER_USER_IDS_raw: process.env.FOUNDER_USER_IDS,
+    NODE_ENV: process.env.NODE_ENV,
+    VERCEL_ENV: process.env.VERCEL_ENV,
+  });
+  
   const parseEnvList = (value?: string | null) =>
     new Set(
       (value ?? "")
@@ -66,6 +74,9 @@ export default async function AppLayout({
     email: userEmail,
     isFounder,
     founderEmailsConfigured: founderEmails.size > 0,
+    founderEmailsSize: founderEmails.size,
+    founderEmailsArray: Array.from(founderEmails),
+    emailMatch: founderEmails.has(userEmail),
   });
 
   // Founders should not be in the app layout - redirect to admin

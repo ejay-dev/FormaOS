@@ -66,6 +66,17 @@ export async function GET(request: Request) {
   }
 
   // 2. CHECK IF USER IS A FOUNDER - Redirect to admin immediately
+  console.log(`[auth/callback] 🔧 ENV CHECK:`, {
+    FOUNDER_EMAILS_raw: process.env.FOUNDER_EMAILS,
+    FOUNDER_EMAILS_type: typeof process.env.FOUNDER_EMAILS,
+    FOUNDER_EMAILS_length: process.env.FOUNDER_EMAILS?.length,
+    FOUNDER_USER_IDS_raw: process.env.FOUNDER_USER_IDS,
+    NODE_ENV: process.env.NODE_ENV,
+    VERCEL_ENV: process.env.VERCEL_ENV,
+    userEmail: data.user.email,
+    userId: data.user.id.substring(0, 8) + "...",
+  });
+  
   const founderCheck = isFounder(data.user.email, data.user.id);
   console.log(`[auth/callback] 🔍 Founder check:`, {
     email: data.user.email,
