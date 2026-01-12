@@ -98,237 +98,258 @@ const pricingPreview = [
 
 export default function MarketingHomePage() {
   return (
-    <div>
+    <div className="relative">
       <HomeClientMarker />
-      <section className="relative mx-auto max-w-6xl px-6 pb-16 pt-16 md:pt-24 mk-parallax-slow">
-        <div className="pointer-events-none absolute -right-20 top-10 h-72 w-72 rounded-full bg-sky-500/10 blur-3xl" />
-        <div className="pointer-events-none absolute -left-10 top-32 h-56 w-56 rounded-full bg-indigo-500/15 blur-3xl" />
-        <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="space-y-8 mk-fade-up">
-            <div className="inline-flex items-center gap-2 rounded-full border border-card-foreground/8 bg-card/5 px-4 py-2 text-[11px] uppercase tracking-[0.25em] text-muted">
-              <Sparkles className="h-4 w-4 text-sky-300" />
-              Enterprise compliance operating system
+
+      {/* Hero section */}
+      <section className="relative mx-auto max-w-7xl px-6 lg:px-8 pb-24 pt-20 md:pt-32">
+        {/* Ambient glow effects */}
+        <div className="pointer-events-none absolute -right-32 top-20 h-96 w-96 rounded-full bg-primary/8 blur-3xl" />
+        <div className="pointer-events-none absolute -left-20 top-40 h-80 w-80 rounded-full bg-accent/6 blur-3xl" />
+        
+        <div className="grid gap-16 lg:grid-cols-[1.15fr_0.85fr] items-center">
+          {/* Hero content */}
+          <div className="space-y-8">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2.5 rounded-full glass-panel px-5 py-2.5 text-xs font-semibold uppercase tracking-wider">
+              <Sparkles className="h-4 w-4 text-primary" />
+              Enterprise Compliance OS
             </div>
-            <h1 className="text-4xl font-semibold leading-tight text-slate-100 md:text-5xl font-[var(--font-display)]">
-              FormaOS – Enterprise Compliance Operating System
+
+            {/* Heading */}
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] font-display tracking-tight">
+              FormaOS<span className="text-primary">.</span>
             </h1>
-            <p className="text-lg text-muted">
+            <h2 className="text-2xl md:text-3xl font-semibold text-muted-foreground leading-snug">
+              Enterprise Compliance Operating System
+            </h2>
+
+            {/* Description */}
+            <p className="text-lg text-foreground/70 leading-relaxed max-w-2xl">
               FormaOS keeps regulated teams{" "}
-              <span className="text-gradient text-glow-subtle">audit-ready</span>, every day. Align
-              controls, evidence, and operational tasks in a single system of record built for NDIS,
-              healthcare, and multi-site services.
+              <span className="text-gradient font-semibold">audit-ready</span>, every day. 
+              Align controls, evidence, and operational tasks in a single system of record 
+              built for NDIS, healthcare, and multi-site services.
             </p>
-            <div className="flex flex-wrap items-center gap-4">
-              <Link
-                href="/auth/signup"
-                className="mk-cta rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950"
-              >
-                Sign up
+
+            {/* CTA buttons */}
+            <div className="flex flex-wrap items-center gap-4 pt-4">
+              <Link href="/auth/signup" className="btn btn-primary text-base px-8 py-4 shadow-premium-lg">
+                Start Free Trial
               </Link>
-              <Link
-                href="/pricing"
-                className="mk-cta rounded-lg border border-card-foreground/8 px-6 py-3 text-sm font-semibold text-card-foreground hover:border-card-foreground/20"
-              >
-                View Plans
+              <Link href="/pricing" className="btn btn-secondary text-base px-8 py-4">
+                View Pricing
               </Link>
-              <Link
-                href="/contact"
-                className="mk-cta rounded-lg border border-card-foreground/8 px-6 py-3 text-sm font-semibold text-card-foreground hover:border-card-foreground/20"
-              >
+              <Link href="/contact" className="btn btn-ghost text-base px-6 py-4">
                 Request Demo
               </Link>
-              <Link href="/product" className="text-sm font-semibold text-slate-300 hover:text-slate-100">
-                View Platform
-              </Link>
             </div>
-            <div className="flex flex-wrap gap-3 text-xs text-muted">
-              <span className="rounded-full border border-card-foreground/8 bg-card/5 px-3 py-2">14-day free trial</span>
-              <span className="rounded-full border border-card-foreground/8 bg-card/5 px-3 py-2">Audit-ready evidence</span>
-              <span className="rounded-full border border-card-foreground/8 bg-card/5 px-3 py-2">Compliance gates</span>
+
+            {/* Trust badges */}
+            <div className="flex flex-wrap gap-3 pt-2">
+              <span className="glass-panel rounded-full px-4 py-2 text-sm font-medium">14-day free trial</span>
+              <span className="glass-panel rounded-full px-4 py-2 text-sm font-medium">Audit-ready evidence</span>
+              <span className="glass-panel rounded-full px-4 py-2 text-sm font-medium">Compliance gates</span>
             </div>
           </div>
 
-          <div className="mk-card mk-hero-frame mk-tilt mk-depth-3 rounded-2xl p-6 mk-fade-up">
-            <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Command center preview</div>
-            <div className="mt-6 space-y-4">
-              <div className="mk-panel rounded-xl p-5 bg-card">
-                  <div className="text-sm font-semibold text-card-foreground">Compliance posture</div>
-                  <div className="mt-3 h-2 rounded-full bg-card/8">
-                  <div className="h-2 w-[78%] rounded-full bg-gradient-to-r from-emerald-400 via-sky-400 to-indigo-400" />
+          {/* Hero visual */}
+          <div className="card-hover glass-panel-strong rounded-2xl p-8 shadow-premium-xl">
+            <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-6">
+              Command Center Preview
+            </div>
+            
+            <div className="space-y-5">
+              {/* Compliance posture */}
+              <div className="glass-panel rounded-xl p-6">
+                <div className="text-sm font-semibold mb-4">Compliance Posture</div>
+                <div className="h-2.5 rounded-full bg-muted/30 overflow-hidden">
+                  <div className="h-2.5 w-[82%] rounded-full gradient-primary" />
                 </div>
-                <div className="mt-4 grid grid-cols-3 gap-3 text-[11px] text-slate-300">
-                    <div className="rounded-lg border border-card-foreground/8 bg-card p-3">Compliant</div>
-                    <div className="rounded-lg border border-card-foreground/8 bg-card p-3">At risk</div>
-                    <div className="rounded-lg border border-card-foreground/8 bg-card p-3">Non-compliant</div>
+                <div className="grid grid-cols-3 gap-3 mt-5 text-xs">
+                  <div className="glass-panel rounded-lg p-3 text-center font-medium">Compliant</div>
+                  <div className="glass-panel rounded-lg p-3 text-center font-medium">At Risk</div>
+                  <div className="glass-panel rounded-lg p-3 text-center font-medium">Non-Compliant</div>
                 </div>
               </div>
-              <div className="mk-panel rounded-xl p-5">
-                  <div className="text-sm font-semibold text-card-foreground">Evidence pipeline</div>
-                  <div className="mt-4 space-y-3 text-xs text-muted">
-                    <div className="flex items-center justify-between rounded-lg border border-card-foreground/8 bg-card p-3">
-                    <span>Incident management policy</span>
-                    <span>Approved</span>
+
+              {/* Evidence pipeline */}
+              <div className="glass-panel rounded-xl p-6">
+                <div className="text-sm font-semibold mb-4">Evidence Pipeline</div>
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-center justify-between glass-panel rounded-lg p-3">
+                    <span>Incident policy</span>
+                    <span className="text-primary font-medium">Approved</span>
                   </div>
-                    <div className="flex items-center justify-between rounded-lg border border-card-foreground/8 bg-card p-3">
+                  <div className="flex items-center justify-between glass-panel rounded-lg p-3">
                     <span>Credential verification</span>
-                    <span>Pending</span>
+                    <span className="text-muted-foreground font-medium">Pending</span>
                   </div>
                 </div>
               </div>
-                <div className="mk-panel rounded-xl p-4 text-xs text-muted bg-card/5">
-                Built for operational governance, audit defense, and executive visibility.
+
+              {/* Footer note */}
+              <div className="glass-panel rounded-lg p-4 text-sm text-muted-foreground text-center">
+                Built for operational governance & audit defense
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-16 mk-parallax-slow">
-        <div className="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr]">
-          <div className="mk-fade-up">
-            <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Command center</div>
-            <h2 className="mt-3 text-3xl font-semibold font-[var(--font-display)]">
-              A spatial compliance console built for regulated teams.
-            </h2>
-            <p className="mt-3 text-sm text-slate-400">
-              Visualize controls, evidence, and audit posture in a single operational surface. Every layer is
-              connected to an accountable workflow.
-            </p>
+      {/* Platform features */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
+        <div className="mb-16 text-center max-w-3xl mx-auto">
+          <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-4">
+            Platform Overview
           </div>
-          <div className="mk-fade-up">
-            <MarketingAnchor
-              title="FormaOS Command Center"
-              subtitle="Layered governance panels with real-time control status."
-              badge="Live posture"
-              accent="56 189 248"
-            />
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-6 pb-16">
-        <div className="mb-10 mk-fade-up">
-          <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Platform overview</div>
-          <h2 className="mt-3 text-3xl font-semibold font-[var(--font-display)]">
-            A structured compliance engine, not a task list.
+          <h2 className="text-4xl md:text-5xl font-bold font-display mb-6">
+            A structured compliance engine,<br />not a task list
           </h2>
+          <p className="text-lg text-foreground/70">
+            FormaOS transforms obligations into enforceable controls with clear ownership and audit visibility
+          </p>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 mk-stagger mk-parallax-fast">
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {[
             {
-              title: "Control intelligence",
-              description:
-                "Map obligations to controls, policies, and evidence with clear owners and review cadence.",
+              title: "Control Intelligence",
+              description: "Map obligations to controls, policies, and evidence with clear owners and review cadence.",
               icon: Layers,
             },
             {
-              title: "Operational governance",
-              description:
-                "Turn requirements into tasks with due dates, escalation paths, and audit visibility.",
+              title: "Operational Governance",
+              description: "Turn requirements into tasks with due dates, escalation paths, and audit visibility.",
               icon: ClipboardCheck,
             },
             {
-              title: "Evidence chain of custody",
-              description:
-                "Centralize artifacts, approvals, and verification history with immutable logs.",
+              title: "Evidence Chain of Custody",
+              description: "Centralize artifacts, approvals, and verification history with immutable logs.",
               icon: Lock,
             },
             {
-              title: "Executive readiness",
-              description:
-                "Surface posture, gaps, and risk drivers across every site and team.",
+              title: "Executive Readiness",
+              description: "Surface posture, gaps, and risk drivers across every site and team.",
               icon: Activity,
             },
           ].map((card) => (
-            <div key={card.title} className="mk-card mk-tilt mk-depth-1 rounded-2xl p-6">
-              <div className="flex items-center gap-3 text-slate-200">
-                <card.icon className="h-5 w-5 text-sky-300" />
-                <h3 className="text-lg font-semibold">{card.title}</h3>
+            <div key={card.title} className="card-hover glass-panel-strong rounded-2xl p-7">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="glass-panel rounded-lg p-2.5">
+                  <card.icon className="h-5 w-5 text-primary" />
+                </div>
               </div>
-              <p className="mt-3 text-sm text-slate-400">{card.description}</p>
+              <h3 className="text-xl font-semibold mb-3 font-display">{card.title}</h3>
+              <p className="text-[15px] text-foreground/70 leading-relaxed">{card.description}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-16">
-        <div className="mb-10 mk-fade-up">
-          <div className="text-xs uppercase tracking-[0.3em] text-slate-400">How it works</div>
-          <h2 className="mt-3 text-3xl font-semibold font-[var(--font-display)]">
-            A compliance lifecycle you can run daily.
+      {/* Compliance lifecycle */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
+        <div className="mb-16 text-center max-w-3xl mx-auto">
+          <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-4">
+            How It Works
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold font-display mb-6">
+            A compliance lifecycle you can run daily
           </h2>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mk-stagger mk-parallax-fast">
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {lifecycle.map((step, index) => (
-            <div key={step.title} className="mk-card mk-tilt mk-depth-1 rounded-2xl p-6">
-              <div className="text-xs text-slate-500">Step {index + 1}</div>
-              <h3 className="mt-2 text-lg font-semibold text-slate-100">{step.title}</h3>
-              <p className="mt-2 text-sm text-slate-400">{step.description}</p>
+            <div key={step.title} className="card-hover glass-panel rounded-2xl p-7">
+              <div className="inline-flex glass-panel rounded-lg px-3 py-1.5 text-xs font-bold text-primary mb-5">
+                Step {index + 1}
+              </div>
+              <h3 className="text-xl font-semibold mb-3 font-display">{step.title}</h3>
+              <p className="text-[15px] text-foreground/70 leading-relaxed">{step.description}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-16">
-        <div className="mb-10 mk-fade-up">
-          <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Industries served</div>
-          <h2 className="mt-3 text-3xl font-semibold font-[var(--font-display)]">
-            Built for regulated industries with complex obligations.
+      {/* Industries */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
+        <div className="mb-16 text-center max-w-3xl mx-auto">
+          <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-4">
+            Industries Served
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold font-display mb-6">
+            Built for regulated industries<br />with complex obligations
           </h2>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 mk-stagger mk-parallax-slow">
+
+        <div className="grid gap-6 md:grid-cols-2">
           {industries.map((industry) => (
-            <div key={industry.title} className="mk-card mk-tilt mk-depth-1 rounded-2xl p-6">
-              <h3 className="text-lg font-semibold text-slate-100">{industry.title}</h3>
-              <p className="mt-2 text-sm text-slate-400">{industry.description}</p>
+            <div key={industry.title} className="card-hover glass-panel-strong rounded-2xl p-8">
+              <h3 className="text-2xl font-semibold mb-4 font-display">{industry.title}</h3>
+              <p className="text-[15px] text-foreground/70 leading-relaxed">{industry.description}</p>
             </div>
           ))}
         </div>
-        <div className="mt-8">
-          <Link href="/industries" className="inline-flex items-center gap-2 text-sm text-slate-300 hover:text-slate-100">
-            Explore industry packs <ArrowUpRight className="h-4 w-4" />
+
+        <div className="mt-10 text-center">
+          <Link href="/industries" className="inline-flex items-center gap-2 text-base text-primary hover:text-primary/80 transition-colors font-medium">
+            Explore industry packs <ArrowUpRight className="h-5 w-5" />
           </Link>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-16">
-        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="mk-fade-up">
-            <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Security posture</div>
-            <h2 className="mt-3 text-3xl font-semibold font-[var(--font-display)]">
-              Compliance enforcement you can defend.
+      {/* Security section */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
+        <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] items-center">
+          {/* Content */}
+          <div>
+            <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-4">
+              Security Posture
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold font-display mb-6">
+              Compliance enforcement you can defend
             </h2>
-            <p className="mt-4 text-sm text-slate-400">
+            <p className="text-lg text-foreground/70 mb-8">
               FormaOS is designed to stand up to audits and regulatory scrutiny with immutable logs,
               permissions, and traceable evidence.
             </p>
-            <ul className="mt-6 space-y-3 text-sm text-slate-300">
+
+            <ul className="space-y-4">
               {securityPoints.map((point) => (
-                <li key={point} className="flex items-start gap-2">
-                  <ShieldCheck className="mt-0.5 h-4 w-4 text-emerald-300" />
-                  <span>{point}</span>
+                <li key={point} className="flex items-start gap-3">
+                  <div className="glass-panel rounded-lg p-2 mt-0.5">
+                    <ShieldCheck className="h-5 w-5 text-primary" />
+                  </div>
+                  <span className="text-[15px] leading-relaxed pt-1">{point}</span>
                 </li>
               ))}
             </ul>
           </div>
-          <div className="mk-card mk-tilt mk-depth-2 rounded-2xl p-6 mk-fade-up">
-            <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Audit readiness</div>
-            <div className="mt-6 space-y-4">
-              <div className="mk-panel rounded-xl p-4">
-                <div className="text-sm font-semibold text-slate-100">Compliance gates</div>
-                <p className="mt-2 text-xs text-slate-400">
+
+          {/* Visual */}
+          <div className="card-hover glass-panel-strong rounded-2xl p-8 shadow-premium-xl">
+            <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-6">
+              Audit Readiness
+            </div>
+
+            <div className="space-y-5">
+              <div className="glass-panel rounded-xl p-6">
+                <div className="text-base font-semibold mb-3">Compliance Gates</div>
+                <p className="text-sm text-foreground/70">
                   Export and certification actions are blocked unless controls are compliant.
                 </p>
               </div>
-              <div className="mk-panel rounded-xl p-4">
-                <div className="text-sm font-semibold text-slate-100">Evidence traceability</div>
-                <p className="mt-2 text-xs text-slate-400">
+
+              <div className="glass-panel rounded-xl p-6">
+                <div className="text-base font-semibold mb-3">Evidence Traceability</div>
+                <p className="text-sm text-foreground/70">
                   Every artifact is linked to a control, reviewer, and timestamp.
                 </p>
               </div>
-              <div className="mk-panel rounded-xl p-4">
-                <div className="text-sm font-semibold text-slate-100">Audit bundle exports</div>
-                <p className="mt-2 text-xs text-slate-400">
+
+              <div className="glass-panel rounded-xl p-6">
+                <div className="text-base font-semibold mb-3">Audit Bundle Exports</div>
+                <p className="text-sm text-foreground/70">
                   Generate structured audit packs with logs, evidence, and compliance snapshots.
                 </p>
               </div>
@@ -337,54 +358,58 @@ export default function MarketingHomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-16">
-        <div className="mb-10 mk-fade-up">
-          <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Pricing preview</div>
-          <h2 className="mt-3 text-3xl font-semibold font-[var(--font-display)]">
-            Start with a 14-day trial.
+      {/* Pricing preview */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24">
+        <div className="mb-16 text-center max-w-3xl mx-auto">
+          <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-4">
+            Pricing Preview
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold font-display mb-6">
+            Start with a 14-day trial
           </h2>
+          <p className="text-lg text-foreground/70">
+            No payment details required to begin
+          </p>
         </div>
-        <div className="grid gap-6 md:grid-cols-3 mk-stagger mk-parallax-fast">
+
+        <div className="grid gap-6 md:grid-cols-3">
           {pricingPreview.map((plan) => (
-            <div key={plan.title} className="mk-card mk-tilt mk-depth-2 rounded-2xl p-6">
-              <div className="text-sm uppercase tracking-[0.3em] text-slate-400">{plan.title}</div>
-              <div className="mt-4 text-3xl font-semibold text-slate-100">{plan.price}</div>
-              <p className="mt-3 text-sm text-slate-400">{plan.detail}</p>
+            <div key={plan.title} className="card-hover glass-panel-strong rounded-2xl p-8 flex flex-col">
+              <div className="text-sm uppercase tracking-wider text-muted-foreground font-semibold mb-6">
+                {plan.title}
+              </div>
+              <div className="text-5xl font-bold mb-4 font-display">{plan.price}</div>
+              <p className="text-[15px] text-foreground/70 mb-8 flex-grow">{plan.detail}</p>
               <Link
                 href={plan.href}
-                className="mt-6 inline-flex w-full justify-center rounded-lg bg-white/10 px-4 py-3 text-sm font-semibold text-slate-100 hover:bg-white/15"
+                className={plan.title === "Pro" ? "btn btn-primary w-full text-base py-4" : "btn btn-secondary w-full text-base py-4"}
               >
                 {plan.title === "Enterprise" ? "Contact Sales" : "Start Trial"}
               </Link>
             </div>
           ))}
         </div>
-        <div className="mt-6 text-xs text-slate-400">No payment details required to begin a trial.</div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-20 mk-parallax-slow">
-        <div className="mk-card mk-tilt mk-depth-2 rounded-3xl p-10 mk-fade-up">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Ready to activate</div>
-              <h2 className="mt-3 text-2xl font-semibold font-[var(--font-display)]">
-                Move from compliance tracking to compliance enforcement.
-              </h2>
-              <p className="mt-2 text-sm text-slate-300">
-                Start a trial or request a demo to see FormaOS in action for your organization.
-              </p>
+      {/* Final CTA */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-32">
+        <div className="card glass-panel-strong rounded-3xl p-12 lg:p-16 text-center">
+          <div className="max-w-3xl mx-auto space-y-8">
+            <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
+              Ready to Activate
             </div>
-            <div className="flex flex-wrap gap-3">
-              <Link
-                href="/pricing"
-                className="mk-cta rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950"
-              >
+            <h2 className="text-4xl md:text-5xl font-bold font-display">
+              Move from compliance tracking<br />to compliance enforcement
+            </h2>
+            <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
+              Start a trial or request a demo to see FormaOS in action for your organization
+            </p>
+
+            <div className="flex flex-wrap justify-center gap-4 pt-4">
+              <Link href="/pricing" className="btn btn-primary text-base px-10 py-4 shadow-premium-lg">
                 View Plans
               </Link>
-              <Link
-                href="/contact"
-                className="mk-cta rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-slate-100"
-              >
+              <Link href="/contact" className="btn btn-secondary text-base px-10 py-4">
                 Request Demo
               </Link>
             </div>
