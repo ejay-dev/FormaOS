@@ -16,6 +16,28 @@ export async function startCheckout(formData: FormData) {
     redirect("/auth/signin");
   }
 
+  // 🚨 FOUNDER BYPASS - Founders should not use billing checkout
+  const parseEnvList = (value?: string | null) =>
+    new Set(
+      (value ?? "")
+        .split(",")
+        .map((entry) => entry.trim().toLowerCase())
+        .filter(Boolean)
+    );
+  
+  const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);
+  const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
+  const userEmail = (user?.email ?? "").trim().toLowerCase();
+  const userId = (user?.id ?? "").trim().toLowerCase();
+  const isFounder = Boolean(
+    user && ((userEmail && founderEmails.has(userEmail)) || founderIds.has(userId))
+  );
+  
+  if (isFounder) {
+    console.log("[billing.ts] 🚫 FOUNDER attempted checkout - redirecting to admin", { email: userEmail });
+    redirect("/admin");
+  }
+
   const { data: membership } = await supabase
     .from("org_members")
     .select("organization_id")

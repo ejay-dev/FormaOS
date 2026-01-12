@@ -7,6 +7,16 @@ export async function middleware(request: NextRequest) {
     let response = NextResponse.next({ request });
 
     const pathname = request.nextUrl.pathname;
+    
+    // 🚨 CRITICAL: Verify FOUNDER_EMAILS is loaded (log ONCE per deployment)
+    if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+      console.log("[Middleware] 🔧 ENV CHECK", {
+        FOUNDER_EMAILS_RAW: process.env.FOUNDER_EMAILS,
+        FOUNDER_USER_IDS_RAW: process.env.FOUNDER_USER_IDS,
+        NODE_ENV: process.env.NODE_ENV,
+      });
+    }
+    
     const appUrl = process.env.NEXT_PUBLIC_APP_URL;
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
     const safeUrl = (value?: string) => {
@@ -133,15 +143,18 @@ export async function middleware(request: NextRequest) {
     }
 
     // -------------------------------
-    // 2. CHECK IF USER IS A FOUNDER
+    // 2. CHECK IF USER IS A FOUNDER (HIGHEST PRIORITY)
     // -------------------------------
-    const parseEnvList = (value?: string | null) =>
-      new Set(
-        (value ?? "")
+    const parseEnvList = (value?: string | null) => {
+      const raw = value ?? "";
+      console.log("[Middleware] parseEnvList input:", { raw, length: raw.length });
+      return new Set(
+        raw
           .split(",")
           .map((entry) => entry.trim().toLowerCase())
           .filter(Boolean)
       );
+    };
 
     const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);
     const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
@@ -151,17 +164,37 @@ export async function middleware(request: NextRequest) {
       user && ((userEmail && founderEmails.has(userEmail)) || founderIds.has(userId))
     );
 
-    // 🔍 DEBUG LOGGING for founder detection
-    if (pathname.startsWith("/admin")) {
-      console.log("[Middleware] ADMIN ACCESS CHECK", {
-        pathname,
-        userEmail,
-        userId: userId.substring(0, 8),
-        isFounder,
-        founderEmailsCount: founderEmails.size,
-        founderIdsCount: founderIds.size,
-        hasUser: !!user,
-      });
+    // 🔍 COMPREHENSIVE DEBUG LOGGING
+    console.log("[Middleware] FOUNDER DETECTION", {
+      pathname,
+      userEmail,
+      userId: userId ? userId.substring(0, 8) + "..." : "none",
+      isFounder,
+      founderEmailsRaw: process.env.FOUNDER_EMAILS,
+      founderEmailsSet: Array.from(founderEmails),
+      founderIdsSet: Array.from(founderIds).map(id => id.substring(0, 8) + "..."),
+      hasUser: !!user,
+      emailMatch: founderEmails.has(userEmail),
+      idMatch: founderIds.has(userId),
+    });
+
+    // 🚨 ABSOLUTE FOUNDER OVERRIDE - MUST HAPPEN BEFORE ALL OTHER CHECKS
+    if (user && pathname.startsWith("/admin")) {
+      if (isFounder) {
+        console.log("[Middleware] 🟢 FOUNDER ACCESS GRANTED - BYPASSING ALL CHECKS", {
+          email: userEmail,
+          path: pathname,
+        });
+        return response;
+      } else {
+        console.log("[Middleware] 🔴 NON-FOUNDER BLOCKED FROM /admin", {
+          email: userEmail,
+          path: pathname,
+        });
+        const url = request.nextUrl.clone();
+        url.pathname = "/auth/signin";
+        return NextResponse.redirect(url);
+      }
     }
 
     // -------------------------------
@@ -201,24 +234,7 @@ export async function middleware(request: NextRequest) {
     }
 
     // -------------------------------
-    // 4. ALLOW FOUNDERS TO ACCESS /admin WITHOUT RESTRICTIONS
-    // -------------------------------
-    if (user && isFounder && pathname.startsWith("/admin")) {
-      console.log("[Middleware] ✅ FOUNDER ACCESS GRANTED to /admin", { email: userEmail });
-      // Founders can access admin - no further checks needed
-      return response;
-    }
-
-    // 🚨 BLOCK NON-FOUNDERS FROM ACCESSING /admin
-    if (user && !isFounder && pathname.startsWith("/admin")) {
-      console.log("[Middleware] ❌ NON-FOUNDER blocked from /admin", { email: userEmail });
-      const url = request.nextUrl.clone();
-      url.pathname = "/auth/signin";
-      return NextResponse.redirect(url);
-    }
-
-    // -------------------------------
-    // 5. ROLE-BASED DASHBOARD GUARD
+    // 4. ROLE-BASED DASHBOARD GUARD
     // -------------------------------
     if (user && supabase && pathname.startsWith("/app") && !pathname.startsWith("/app/api")) {
       const { data: membership } = await supabase
