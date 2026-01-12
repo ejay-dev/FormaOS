@@ -133,21 +133,12 @@ export async function middleware(request: NextRequest) {
       }
     }
 
-    // -------------------------------
-    // 1. BLOCK PROTECTED ROUTES IF NOT LOGGED IN
-    // -------------------------------
-    if (!user && (pathname.startsWith("/app") || pathname.startsWith("/admin"))) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/auth/signin";
-      return NextResponse.redirect(url);
-    }
-
-    // -------------------------------
-    // 2. CHECK IF USER IS A FOUNDER (HIGHEST PRIORITY)
-    // -------------------------------
+    // ============================================================
+    // 🚨 STEP 1: DETECT FOUNDER - ABSOLUTE TOP PRIORITY
+    // This MUST run before ANY other routing logic
+    // ============================================================
     const parseEnvList = (value?: string | null) => {
       const raw = value ?? "";
-      console.log("[Middleware] parseEnvList input:", { raw, length: raw.length });
       return new Set(
         raw
           .split(",")
@@ -164,47 +155,70 @@ export async function middleware(request: NextRequest) {
       user && ((userEmail && founderEmails.has(userEmail)) || founderIds.has(userId))
     );
 
-    // 🔍 COMPREHENSIVE DEBUG LOGGING
-    console.log("[Middleware] FOUNDER DETECTION", {
-      pathname,
-      userEmail,
-      userId: userId ? userId.substring(0, 8) + "..." : "none",
-      isFounder,
-      founderEmailsRaw: process.env.FOUNDER_EMAILS,
-      founderEmailsSet: Array.from(founderEmails),
-      founderIdsSet: Array.from(founderIds).map(id => id.substring(0, 8) + "..."),
-      hasUser: !!user,
-      emailMatch: founderEmails.has(userEmail),
-      idMatch: founderIds.has(userId),
-    });
+    // 🔍 FOUNDER DETECTION LOGGING (for /admin paths only)
+    if (pathname.startsWith("/admin")) {
+      console.log("[Middleware] 🔍 FOUNDER CHECK", {
+        pathname,
+        userEmail,
+        userId: userId ? userId.substring(0, 8) + "..." : "none",
+        isFounder,
+        founderEmailsRaw: process.env.FOUNDER_EMAILS,
+        founderEmailsSet: Array.from(founderEmails),
+        hasUser: !!user,
+        emailMatch: founderEmails.has(userEmail),
+        idMatch: founderIds.has(userId),
+      });
+    }
 
-    // 🚨 ABSOLUTE FOUNDER OVERRIDE - MUST HAPPEN BEFORE ALL OTHER CHECKS
-    if (user && pathname.startsWith("/admin")) {
+    // ============================================================
+    // 🚨 STEP 2: SHORT-CIRCUIT /admin FOR FOUNDERS
+    // If founder accessing /admin → ALLOW IMMEDIATELY, bypass ALL guards
+    // ============================================================
+    if (pathname.startsWith("/admin")) {
+      if (!user) {
+        // Not authenticated → redirect to signin
+        console.log("[Middleware] ❌ /admin requires authentication");
+        const url = request.nextUrl.clone();
+        url.pathname = "/auth/signin";
+        return NextResponse.redirect(url);
+      }
+      
       if (isFounder) {
-        console.log("[Middleware] 🟢 FOUNDER ACCESS GRANTED - BYPASSING ALL CHECKS", {
+        // ✅ FOUNDER → ALLOW ACCESS, bypass everything
+        console.log("[Middleware] ✅ FOUNDER ACCESS GRANTED", {
           email: userEmail,
           path: pathname,
         });
         return response;
       } else {
-        console.log("[Middleware] 🔴 NON-FOUNDER BLOCKED FROM /admin", {
+        // ❌ NOT A FOUNDER → DENY ACCESS
+        console.log("[Middleware] ❌ NON-FOUNDER BLOCKED FROM /admin", {
           email: userEmail,
-          path: pathname,
         });
         const url = request.nextUrl.clone();
-        url.pathname = "/auth/signin";
+        url.pathname = "/pricing";
         return NextResponse.redirect(url);
       }
     }
 
-    // -------------------------------
-    // 3. BLOCK AUTH PAGES IF LOGGED IN (with founder/onboarding check)
-    // -------------------------------
+    // ============================================================
+    // STEP 3: BLOCK OTHER PROTECTED ROUTES IF NOT LOGGED IN
+    // ============================================================
+    if (!user && pathname.startsWith("/app")) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/auth/signin";
+      return NextResponse.redirect(url);
+    }
+
+    // ============================================================
+    // STEP 4: HANDLE AUTH PAGES FOR LOGGED-IN USERS
+    // ============================================================
     if (user && pathname.startsWith("/auth")) {
       const url = request.nextUrl.clone();
       
       // Founders go directly to admin
       if (isFounder) {
+        console.log("[Middleware] 👤 Founder on /auth → redirecting to /admin");
         url.pathname = "/admin";
         return NextResponse.redirect(url);
       }
@@ -233,10 +247,11 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
 
-    // -------------------------------
-    // 4. ROLE-BASED DASHBOARD GUARD
-    // -------------------------------
-    if (user && supabase && pathname.startsWith("/app") && !pathname.startsWith("/app/api")) {
+    // ============================================================
+    // STEP 5: ROLE-BASED DASHBOARD GUARD (for /app paths)
+    // Founders are already handled above, this is for regular users
+    // ============================================================
+    if (user && supabase && pathname.startsWith("/app") && !pathname.startsWith("/app/api") && !isFounder) {
       const { data: membership } = await supabase
         .from("org_members")
         .select("organization_id, role")
