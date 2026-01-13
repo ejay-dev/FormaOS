@@ -54,6 +54,38 @@
   z-index: 1;
 }
 
+/* Header nav micro-motion */
+.mk-nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.mk-nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(0,217,255,0), rgba(0,217,255,0.6), rgba(167,139,250,0));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 220ms ease;
+}
+
+.mk-nav-link:hover::after,
+.mk-nav-link[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+.mk-nav-link:hover {
+  color: hsl(var(--mk-ink));
+}
+
 /* Cards + depth */
 .mk-card {
   position: relative;
@@ -214,6 +246,27 @@
   opacity: 0;
   transform: translateY(14px);
   animation: mk-fade-up 0.7s ease forwards;
+}
+
+/* CTA glow enhancements inside marketing shell */
+.mk-shell .btn {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.mk-shell .btn:hover {
+  transform: translateY(-2px);
+}
+
+.mk-shell .btn-primary:hover {
+  box-shadow: 0 16px 38px rgba(0, 217, 255, 0.28);
+}
+
+.mk-shell .btn-secondary:hover {
+  box-shadow: 0 12px 28px rgba(77, 159, 255, 0.22);
+}
+
+.mk-shell .btn-ghost:hover {
+  box-shadow: 0 10px 22px rgba(167, 139, 250, 0.18);
 }
 
 .mk-cta {

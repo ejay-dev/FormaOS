@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { Menu } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { OAuthRedirectWrapper } from "./components/oauth-redirect-wrapper";
+import { NavLinks } from "./components/NavLinks";
 import "./marketing.css";
 
 export default async function MarketingLayout({ children }: { children: ReactNode }) {
@@ -64,15 +65,7 @@ export default async function MarketingLayout({ children }: { children: ReactNod
             </Link>
 
             {/* Desktop nav */}
-            <nav className="hidden items-center gap-8 text-[15px] text-foreground/80 md:flex font-medium">
-              <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
-              <Link href="/product" className="hover:text-foreground transition-colors">Product</Link>
-              <Link href="/industries" className="hover:text-foreground transition-colors">Industries</Link>
-              <Link href="/security" className="hover:text-foreground transition-colors">Security</Link>
-              <Link href="/pricing" className="hover:text-foreground transition-colors">Pricing</Link>
-              <Link href="/our-story" className="hover:text-foreground transition-colors">Our Story</Link>
-              <Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link>
-            </nav>
+            <NavLinks variant="desktop" />
 
             {/* Mobile menu (overlay to avoid hero overlap) */}
             <details className="relative md:hidden">
@@ -86,13 +79,7 @@ export default async function MarketingLayout({ children }: { children: ReactNod
                 <div className="absolute inset-0 bg-black/60" />
                 {/* Panel */}
                 <div className="absolute right-4 top-20 w-[calc(100%-2rem)] max-w-sm rounded-2xl glass-panel-strong p-2 text-sm shadow-premium-xl border border-white/10">
-                  <Link href="/" className="block rounded-lg px-4 py-2.5 hover:bg-white/10 transition-colors">Home</Link>
-                  <Link href="/product" className="block rounded-lg px-4 py-2.5 hover:bg-white/10 transition-colors">Product</Link>
-                  <Link href="/industries" className="block rounded-lg px-4 py-2.5 hover:bg-white/10 transition-colors">Industries</Link>
-                  <Link href="/security" className="block rounded-lg px-4 py-2.5 hover:bg-white/10 transition-colors">Security</Link>
-                  <Link href="/pricing" className="block rounded-lg px-4 py-2.5 hover:bg-white/10 transition-colors">Pricing</Link>
-                  <Link href="/our-story" className="block rounded-lg px-4 py-2.5 hover:bg-white/10 transition-colors">Our Story</Link>
-                  <Link href="/contact" className="block rounded-lg px-4 py-2.5 hover:bg-white/10 transition-colors">Contact</Link>
+                  <NavLinks variant="mobile" />
                   <div className="my-2 h-px bg-white/10" />
                   <Link href="/auth/signin" className="block rounded-lg px-4 py-2.5 hover:bg-white/10 transition-colors">Login</Link>
                 </div>
@@ -101,13 +88,13 @@ export default async function MarketingLayout({ children }: { children: ReactNod
 
             {/* CTA buttons */}
             <div className="hidden md:flex items-center gap-3 text-[15px]">
-              <Link href="/auth/signin" className="btn btn-secondary">
+              <Link href="/auth/signin" className="btn btn-secondary mk-cta">
                 Login
               </Link>
-              <Link href="/pricing" className="btn btn-ghost">
+              <Link href="/pricing" className="btn btn-ghost mk-cta">
                 Plans
               </Link>
-              <Link href="/auth/signup" className="btn btn-primary">
+              <Link href="/auth/signup" className="btn btn-primary mk-cta">
                 Sign up
               </Link>
             </div>
@@ -146,49 +133,80 @@ export default async function MarketingLayout({ children }: { children: ReactNod
           }}
         />
 
-        <footer className="border-t border-white/8 glass-panel backdrop-blur-xl">
-          <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 px-6 lg:px-8 py-16 md:grid-cols-4">
-            <div className="space-y-5">
-              <div className="text-xl font-bold font-display">FormaOS</div>
-              <p className="text-[15px] text-muted-foreground leading-relaxed">
-                Compliance and governance operating system for regulated organizations.
-              </p>
-              <div className="text-xs uppercase tracking-[0.3em] text-primary font-semibold">Audit Ready</div>
-            </div>
+        <footer className="relative overflow-hidden">
+          {/* Ambient gradient glows */}
+          <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-[520px] w-[520px] rounded-full bg-primary/18 blur-[120px]" />
+          <div className="pointer-events-none absolute -bottom-24 left-1/4 h-[460px] w-[460px] rounded-full bg-secondary/14 blur-[100px]" />
+          <div className="pointer-events-none absolute top-1/2 right-1/4 h-[380px] w-[380px] rounded-full bg-accent/10 blur-[80px]" />
 
-            <div className="space-y-4 text-[15px]">
-              <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground font-semibold">Platform</div>
-              <div className="space-y-3">
-                <Link href="/product" className="block text-foreground/70 hover:text-foreground transition-colors">How it works</Link>
-                <Link href="/industries" className="block text-foreground/70 hover:text-foreground transition-colors">Industries</Link>
-                <Link href="/security" className="block text-foreground/70 hover:text-foreground transition-colors">Security</Link>
-                <Link href="/pricing" className="block text-foreground/70 hover:text-foreground transition-colors">Pricing</Link>
+          <div className="relative border-t border-white/8 glass-panel-elite backdrop-blur-xl">
+            <div className="mx-auto w-full max-w-7xl px-6 lg:px-8 py-16 grid grid-cols-1 md:grid-cols-4 gap-12">
+              {/* Brand column */}
+              <div className="space-y-5">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary/70 via-secondary/60 to-accent/60 text-sm font-bold text-primary-foreground shadow-depth-3">
+                    FO
+                  </div>
+                  <div>
+                    <div className="text-xl font-bold font-display tracking-tight">FormaOS</div>
+                    <div className="text-[10px] uppercase tracking-[0.28em] text-muted-foreground font-semibold">Compliance OS</div>
+                  </div>
+                </div>
+                <p className="text-[15px] text-foreground/70 leading-relaxed max-w-sm">
+                  Compliance and governance operating system for regulated organizations.
+                </p>
+                <div className="inline-flex items-center gap-2 rounded-full glass-panel px-4 py-2 text-[10px] uppercase tracking-[0.26em] font-semibold text-foreground/80">
+                  <span className="h-2 w-2 rounded-full bg-primary shadow-depth-2" /> Audit Ready
+                </div>
+              </div>
+
+              {/* Platform */}
+              <div className="space-y-4 text-[15px]">
+                <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground font-semibold">Platform</div>
+                <div className="space-y-3">
+                  <Link href="/product" className="mk-nav-link text-foreground/70">How it works</Link>
+                  <Link href="/industries" className="mk-nav-link text-foreground/70">Industries</Link>
+                  <Link href="/security" className="mk-nav-link text-foreground/70">Security</Link>
+                  <Link href="/pricing" className="mk-nav-link text-foreground/70">Pricing</Link>
+                </div>
+              </div>
+
+              {/* Company */}
+              <div className="space-y-4 text-[15px]">
+                <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground font-semibold">Company</div>
+                <div className="space-y-3">
+                  <Link href="/about" className="mk-nav-link text-foreground/70">About</Link>
+                  <Link href="/our-story" className="mk-nav-link text-foreground/70">Our Story</Link>
+                  <Link href="/contact" className="mk-nav-link text-foreground/70">Contact</Link>
+                </div>
+              </div>
+
+              {/* Trust & Compliance */}
+              <div className="space-y-4 text-[15px]">
+                <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground font-semibold">Trust & Compliance</div>
+                <div className="space-y-3">
+                  <Link href="/security" className="mk-nav-link text-foreground/70">Security</Link>
+                  <Link href="/legal/privacy" className="mk-nav-link text-foreground/70">Privacy</Link>
+                  <Link href="/legal/terms" className="mk-nav-link text-foreground/70">Terms</Link>
+                </div>
+                <div className="mt-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                <div className="space-y-2 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" /> Immutable audit logs
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-secondary" /> Evidence encryption
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Tenant isolation
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="space-y-4 text-[15px]">
-              <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground font-semibold">Company</div>
-              <div className="space-y-3">
-                <Link href="/about" className="block text-foreground/70 hover:text-foreground transition-colors">About</Link>
-                <Link href="/our-story" className="block text-foreground/70 hover:text-foreground transition-colors">Our Story</Link>
-                <Link href="/contact" className="block text-foreground/70 hover:text-foreground transition-colors">Contact</Link>
-                <Link href="/legal/privacy" className="block text-foreground/70 hover:text-foreground transition-colors">Privacy</Link>
-                <Link href="/legal/terms" className="block text-foreground/70 hover:text-foreground transition-colors">Terms</Link>
-              </div>
+            <div className="border-t border-white/5 py-8 text-center text-sm text-muted-foreground">
+              <p>© 2026 FormaOS. Operational compliance for regulated industries.</p>
             </div>
-
-            <div className="space-y-4 text-[15px]">
-              <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground font-semibold">Access</div>
-              <div className="space-y-3">
-                <Link href="/auth/signin" className="block text-foreground/70 hover:text-foreground transition-colors">Login</Link>
-                <Link href="/pricing" className="block text-foreground/70 hover:text-foreground transition-colors">Plans</Link>
-                <Link href="/contact" className="block text-foreground/70 hover:text-foreground transition-colors">Request Demo</Link>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-white/5 py-8 text-center text-sm text-muted-foreground">
-            <p>© 2026 FormaOS. Operational compliance for regulated industries.</p>
           </div>
         </footer>
       </div>
