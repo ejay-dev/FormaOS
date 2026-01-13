@@ -1,9 +1,8 @@
 "use client";
 
-import { Mail, MapPin, Clock, Phone } from "lucide-react";
+import { Mail } from "lucide-react";
 import { motion } from "framer-motion";
 import { 
-  CinematicSection,
   SectionHeader,
   ExecutiveContactForm,
   ContactOptionsGrid,
@@ -12,9 +11,9 @@ import {
   AnimatedSystemGrid,
   PulsingNode,
   ParallaxLayer,
-  ParticleField,
-  GradientMesh,
-  InteractiveCard,
+  SystemBackground,
+  GlassCard,
+  SectionGlow,
 } from "@/components/motion";
 
 export function ContactHero({ status }: { status: "success" | "error" | null }) {
@@ -51,7 +50,7 @@ export function ContactHero({ status }: { status: "success" | "error" | null }) 
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="inline-flex items-center gap-2 sm:gap-2.5 glass-intense rounded-full px-4 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs font-semibold uppercase tracking-wider mb-6 sm:mb-8 border border-accent/30"
+              className="inline-flex items-center gap-2 sm:gap-2.5 glass-system rounded-full px-4 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs font-semibold uppercase tracking-wider mb-6 sm:mb-8 border border-accent/30"
             >
               <motion.div
                 animate={{ y: [0, -3, 0] }}
@@ -70,12 +69,12 @@ export function ContactHero({ status }: { status: "success" | "error" | null }) 
             >
               Let's discuss<br />
               <span className="relative">
-                <span className="text-gradient">your compliance needs</span>
+                <span className="text-gradient-system-animated">your compliance needs</span>
                 <motion.div
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{ delay: 0.8, duration: 0.8 }}
-                  className="absolute -bottom-1 sm:-bottom-2 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-accent via-primary to-secondary rounded-full origin-left"
+                  className="absolute -bottom-1 sm:-bottom-2 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-[rgb(139,92,246)] via-[rgb(0,180,220)] to-[rgb(59,130,246)] rounded-full origin-left"
                 />
               </span>
             </motion.h1>
@@ -116,66 +115,66 @@ export function ContactHero({ status }: { status: "success" | "error" | null }) 
   );
 }
 
+// System-themed divider
+function SystemDivider() {
+  return (
+    <motion.div 
+      initial={{ opacity: 0, scaleX: 0 }}
+      whileInView={{ opacity: 1, scaleX: 1 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.8 }}
+      className="relative h-px w-full"
+      style={{
+        background: "linear-gradient(90deg, transparent, rgba(0, 180, 220, 0.3), rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.3), transparent)"
+      }}
+    >
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-8 bg-[rgba(0,180,220,0.2)] blur-xl" />
+    </motion.div>
+  );
+}
+
 export function ContactContent({ action }: { action: any }) {
   return (
-    <>
-      {/* Contact options grid */}
-      <CinematicSection 
-        backgroundType="gradient" 
-        ambientColor="primary"
-        className="py-16 sm:py-20 lg:py-32 relative"
-      >
-        {/* Premium background */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <GradientMesh 
-            colors={["rgba(0, 212, 251, 0.06)", "rgba(139, 92, 246, 0.04)", "rgba(20, 184, 166, 0.03)"]}
-            className="opacity-50"
-          />
-        </div>
+    <div className="relative">
+      {/* Contact options grid - Metrics variant */}
+      <SystemBackground variant="metrics" className="py-20 sm:py-24 lg:py-32">
+        <SectionGlow color="cyan" intensity="medium" position="top" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
             badge="Contact Options"
-            title={<>Multiple ways to<br className="hidden sm:inline" /><span className="text-gradient">reach our team</span></>}
+            title={<>Multiple ways to<br className="hidden sm:inline" /><span className="text-gradient-system">reach our team</span></>}
             subtitle="Choose the contact method that works best for you"
             alignment="center"
           />
 
           <ContactOptionsGrid />
         </div>
-      </CinematicSection>
+      </SystemBackground>
 
-      {/* Contact form section */}
-      <CinematicSection 
-        backgroundType="nodes" 
-        ambientColor="secondary"
-        className="py-16 sm:py-20 lg:py-32"
-      >
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <SystemDivider />
+
+      {/* Contact form section - Process variant */}
+      <SystemBackground variant="process" className="py-20 sm:py-24 lg:py-32">
+        <SectionGlow color="blue" intensity="high" position="center" />
+        
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
             badge="Send us a message"
-            title={<>Request a demo or<br className="hidden sm:inline" /><span className="text-gradient">schedule a consultation</span></>}
+            title={<>Request a demo or<br className="hidden sm:inline" /><span className="text-gradient-system">schedule a consultation</span></>}
             subtitle="Fill out the form below and we'll get back to you within one business day"
             alignment="center"
           />
 
           <ExecutiveContactForm action={action} />
         </div>
-      </CinematicSection>
+      </SystemBackground>
 
-      {/* Additional info */}
-      <CinematicSection 
-        backgroundType="flow" 
-        ambientColor="accent"
-        className="py-16 sm:py-20 lg:py-32 relative"
-      >
-        {/* Premium background overlay */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <ParticleField 
-            particleCount={20} 
-            colors={["rgba(20, 184, 166, 0.3)", "rgba(0, 212, 251, 0.25)"]}
-          />
-        </div>
+      <SystemDivider />
+
+      {/* Additional info - Info variant */}
+      <SystemBackground variant="info" className="py-20 sm:py-24 lg:py-32">
+        <SectionGlow color="purple" intensity="low" position="center" />
         
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
@@ -185,44 +184,65 @@ export function ContactContent({ action }: { action: any }) {
           />
 
           <div className="grid md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-            <InteractiveCard glowColor="rgba(0, 212, 251, 0.2)">
-              <div className="text-center">
-                <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-full glass-intense flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                  <span className="text-xl sm:text-2xl font-bold text-primary">1</span>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              <GlassCard variant="default" glow glowColor="cyan" className="p-6 sm:p-8 h-full">
+                <div className="text-center">
+                  <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-full glass-system flex items-center justify-center mx-auto mb-4 sm:mb-6 glow-system-cyan">
+                    <span className="text-xl sm:text-2xl font-bold text-primary">1</span>
+                  </div>
+                  <h3 className="text-base sm:text-lg font-semibold font-display mb-2 sm:mb-3">Submit your request</h3>
+                  <p className="text-xs sm:text-sm text-foreground/70 leading-relaxed">
+                    Fill out the contact form with your organization details and compliance needs
+                  </p>
                 </div>
-                <h3 className="text-base sm:text-lg font-semibold font-display mb-2 sm:mb-3">Submit your request</h3>
-                <p className="text-xs sm:text-sm text-foreground/70 leading-relaxed">
-                  Fill out the contact form with your organization details and compliance needs
-                </p>
-              </div>
-            </InteractiveCard>
+              </GlassCard>
+            </motion.div>
 
-            <InteractiveCard glowColor="rgba(139, 92, 246, 0.2)" delay={0.1}>
-              <div className="text-center">
-                <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-full glass-intense flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                  <span className="text-xl sm:text-2xl font-bold text-primary">2</span>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <GlassCard variant="default" glow glowColor="blue" className="p-6 sm:p-8 h-full">
+                <div className="text-center">
+                  <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-full glass-system flex items-center justify-center mx-auto mb-4 sm:mb-6 glow-system-blue">
+                    <span className="text-xl sm:text-2xl font-bold text-secondary">2</span>
+                  </div>
+                  <h3 className="text-base sm:text-lg font-semibold font-display mb-2 sm:mb-3">Review & response</h3>
+                  <p className="text-xs sm:text-sm text-foreground/70 leading-relaxed">
+                    Our compliance specialists review your requirements and prepare a tailored response
+                  </p>
                 </div>
-                <h3 className="text-base sm:text-lg font-semibold font-display mb-2 sm:mb-3">We review and respond</h3>
-                <p className="text-xs sm:text-sm text-foreground/70 leading-relaxed">
-                  A compliance specialist reviews your request and responds within one business day
-                </p>
-              </div>
-            </InteractiveCard>
+              </GlassCard>
+            </motion.div>
 
-            <InteractiveCard glowColor="rgba(20, 184, 166, 0.2)" delay={0.2}>
-              <div className="text-center">
-                <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-full glass-intense flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                  <span className="text-xl sm:text-2xl font-bold text-primary">3</span>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <GlassCard variant="default" glow glowColor="purple" className="p-6 sm:p-8 h-full">
+                <div className="text-center">
+                  <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-full glass-system flex items-center justify-center mx-auto mb-4 sm:mb-6 glow-system-purple">
+                    <span className="text-xl sm:text-2xl font-bold text-accent">3</span>
+                  </div>
+                  <h3 className="text-base sm:text-lg font-semibold font-display mb-2 sm:mb-3">Schedule a call</h3>
+                  <p className="text-xs sm:text-sm text-foreground/70 leading-relaxed">
+                    We'll schedule a demo call to walk through FormaOS and answer your questions
+                  </p>
                 </div>
-                <h3 className="text-base sm:text-lg font-semibold font-display mb-2 sm:mb-3">Schedule a demo</h3>
-                <p className="text-xs sm:text-sm text-foreground/70 leading-relaxed">
-                  If qualified, we'll schedule a live platform demo tailored to your requirements
-                </p>
-              </div>
-            </InteractiveCard>
+              </GlassCard>
+            </motion.div>
           </div>
         </div>
-      </CinematicSection>
-    </>
+      </SystemBackground>
+    </div>
   );
 }

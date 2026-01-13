@@ -15,3 +15,7 @@ export { NodeWireSystem, NodeWireShowcase } from "./NodeWireSystem";
 export { InteractiveButton, ProgressWire, ToastItem, Skeleton, PulseDot, InteractiveCard, NodeStateTransition } from "./InteractionFeedback";
 export { ParticleField, GradientMesh, NoiseOverlay, Constellation, CinematicBackground, ParallaxSection } from "./PremiumBackgrounds";
 
+// SystemBackground - Premium visual layer system (replaces wire networks)
+export { SystemBackground, GlassCard, SectionGlow } from "./SystemBackground";
+export type { SystemBackgroundVariant } from "./SystemBackground";
+

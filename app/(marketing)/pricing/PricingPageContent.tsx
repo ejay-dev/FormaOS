@@ -6,15 +6,14 @@ import { motion } from "framer-motion";
 import { 
   PricingTierCard,
   EnterprisePricingCard,
-  CinematicSection,
   SectionHeader,
-  VisualDivider,
   AnimatedSystemGrid,
   PulsingNode,
   ParallaxLayer,
-  ParticleField,
   GradientMesh,
-  InteractiveCard,
+  SystemBackground,
+  GlassCard,
+  SectionGlow,
 } from "@/components/motion";
 
 export function PricingHero() {
@@ -70,12 +69,12 @@ export function PricingHero() {
             >
               Plans built for<br />
               <span className="relative">
-                <span className="text-gradient">growing compliance teams</span>
+                <span className="text-gradient-system-animated">growing compliance teams</span>
                 <motion.div
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{ delay: 0.8, duration: 0.8 }}
-                  className="absolute -bottom-1 sm:-bottom-2 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-primary via-secondary to-accent rounded-full origin-left"
+                  className="absolute -bottom-1 sm:-bottom-2 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-[rgb(0,180,220)] via-[rgb(59,130,246)] to-[rgb(139,92,246)] rounded-full origin-left"
                 />
               </span>
             </motion.h1>
@@ -161,68 +160,80 @@ const tiers = [
   }
 ];
 
+// System-themed divider
+function SystemDivider() {
+  return (
+    <motion.div 
+      initial={{ opacity: 0, scaleX: 0 }}
+      whileInView={{ opacity: 1, scaleX: 1 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.8 }}
+      className="relative h-px w-full"
+      style={{
+        background: "linear-gradient(90deg, transparent, rgba(0, 180, 220, 0.3), rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.3), transparent)"
+      }}
+    >
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-8 bg-[rgba(0,180,220,0.2)] blur-xl" />
+    </motion.div>
+  );
+}
+
 export function PricingContent() {
   return (
-    <>
-      {/* Pricing tiers */}
-      <CinematicSection 
-        backgroundType="gradient" 
-        ambientColor="primary"
-        className="py-16 sm:py-20 lg:py-32 relative"
-      >
-        {/* Premium background */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <GradientMesh 
-            colors={["rgba(0, 212, 251, 0.08)", "rgba(139, 92, 246, 0.06)", "rgba(20, 184, 166, 0.04)"]}
-            className="opacity-50"
-          />
-        </div>
+    <div className="relative">
+      {/* Pricing tiers - Metrics variant */}
+      <SystemBackground variant="metrics" className="py-20 sm:py-24 lg:py-32">
+        <SectionGlow color="cyan" intensity="medium" position="top" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
             {tiers.map((tier, idx) => (
-              <PricingTierCard
+              <motion.div
                 key={tier.name}
-                name={tier.name}
-                price={tier.price}
-                cadence={tier.cadence}
-                description={tier.description}
-                features={tier.features}
-                cta={tier.cta}
-                href={tier.href}
-                featured={tier.featured}
-                delay={idx * 0.15}
-              />
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: idx * 0.15 }}
+                className="card-radial-glow section-metrics"
+              >
+                <PricingTierCard
+                  name={tier.name}
+                  price={tier.price}
+                  cadence={tier.cadence}
+                  description={tier.description}
+                  features={tier.features}
+                  cta={tier.cta}
+                  href={tier.href}
+                  featured={tier.featured}
+                  delay={0}
+                />
+              </motion.div>
             ))}
           </div>
         </div>
-      </CinematicSection>
+      </SystemBackground>
 
-      <VisualDivider />
+      <SystemDivider />
 
-      {/* Enterprise CTA */}
-      <CinematicSection 
-        backgroundType="nodes" 
-        ambientColor="secondary"
-        className="py-16 sm:py-20 lg:py-32"
-      >
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      {/* Enterprise CTA - Process variant */}
+      <SystemBackground variant="process" className="py-20 sm:py-24 lg:py-32">
+        <SectionGlow color="blue" intensity="high" position="center" />
+        
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative">
           <EnterprisePricingCard delay={0} />
         </div>
-      </CinematicSection>
+      </SystemBackground>
 
-      <VisualDivider />
+      <SystemDivider />
 
-      {/* Value props */}
-      <CinematicSection 
-        backgroundType="flow" 
-        ambientColor="accent"
-        className="py-16 sm:py-20 lg:py-32"
-      >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      {/* Value props - Info variant */}
+      <SystemBackground variant="info" className="py-20 sm:py-24 lg:py-32">
+        <SectionGlow color="purple" intensity="low" position="center" />
+        
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
             badge="Included in All Plans"
-            title={<>Enterprise-grade infrastructure<br className="hidden sm:inline" /><span className="text-gradient">from day one</span></>}
+            title={<>Enterprise-grade infrastructure<br className="hidden sm:inline" /><span className="text-gradient-system">from day one</span></>}
             subtitle="Every plan includes the core platform capabilities needed for audit-ready operations"
             alignment="center"
           />
@@ -245,38 +256,40 @@ export function PricingContent() {
                 items: ["Knowledge base access", "Video tutorials", "Email support", "Community forum"]
               }
             ].map((group, idx) => (
-              <InteractiveCard 
-                key={group.title} 
-                delay={idx * 0.1}
-                glowColor="rgba(20, 184, 166, 0.2)"
+              <motion.div
+                key={group.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
               >
-                <div className="rounded-xl bg-primary/10 p-3 w-fit mb-4 sm:mb-6">
-                  <group.icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
-                </div>
-                <h3 className="text-lg sm:text-xl font-semibold font-display mb-3 sm:mb-4">{group.title}</h3>
-                <ul className="space-y-2 sm:space-y-3">
-                  {group.items.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-foreground/70">
-                      <div className="h-1.5 w-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </InteractiveCard>
+                <GlassCard variant="default" className="p-6 sm:p-8 h-full">
+                  <div className="rounded-xl bg-primary/10 p-3 w-fit mb-4 sm:mb-6">
+                    <group.icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-semibold font-display mb-3 sm:mb-4">{group.title}</h3>
+                  <ul className="space-y-2 sm:space-y-3">
+                    {group.items.map((item, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-foreground/70">
+                        <div className="h-1.5 w-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </GlassCard>
+              </motion.div>
             ))}
           </div>
         </div>
-      </CinematicSection>
+      </SystemBackground>
 
-      <VisualDivider />
+      <SystemDivider />
 
-      {/* FAQ Section */}
-      <CinematicSection 
-        backgroundType="grid" 
-        ambientColor="primary"
-        className="py-16 sm:py-20 lg:py-32"
-      >
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      {/* FAQ Section - Metrics variant */}
+      <SystemBackground variant="metrics" className="py-20 sm:py-24 lg:py-32">
+        <SectionGlow color="cyan" intensity="low" position="center" />
+        
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
             badge="Frequently Asked Questions"
             title={<>Pricing questions</>}
@@ -306,14 +319,18 @@ export function PricingContent() {
                 a: "Yes. Cancel anytime from your billing settings. No long-term contracts required for Starter or Pro plans."
               }
             ].map((faq, idx) => (
-              <InteractiveCard 
+              <motion.div
                 key={idx}
-                delay={idx * 0.05}
-                glowColor="rgba(0, 212, 251, 0.15)"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: idx * 0.05 }}
               >
-                <h3 className="text-base sm:text-lg font-semibold font-display mb-2 sm:mb-3">{faq.q}</h3>
-                <p className="text-sm sm:text-base text-foreground/70 leading-relaxed">{faq.a}</p>
-              </InteractiveCard>
+                <GlassCard variant="default" className="p-6 sm:p-8">
+                  <h3 className="text-base sm:text-lg font-semibold font-display mb-2 sm:mb-3">{faq.q}</h3>
+                  <p className="text-sm sm:text-base text-foreground/70 leading-relaxed">{faq.a}</p>
+                </GlassCard>
+              </motion.div>
             ))}
           </div>
 
@@ -321,14 +338,14 @@ export function PricingContent() {
             <p className="text-foreground/70 mb-4 sm:mb-6">Still have questions?</p>
             <Link 
               href="/contact" 
-              className="group inline-flex items-center gap-2 btn btn-primary text-base sm:text-lg px-8 sm:px-10 py-4 sm:py-5"
+              className="group inline-flex items-center gap-2 btn btn-primary btn-premium text-base sm:text-lg px-8 sm:px-10 py-4 sm:py-5"
             >
               Contact Sales
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
         </div>
-      </CinematicSection>
-    </>
+      </SystemBackground>
+    </div>
   );
 }

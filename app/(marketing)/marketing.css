@@ -1138,3 +1138,267 @@ html, body {
     animation: none;
   }
 }
+
+/* =========================================================
+   SYSTEM BACKGROUND INTEGRATION
+   Premium visual layer system styles
+   ========================================================= */
+
+/* System section base - works with SystemBackground component */
+.system-section {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Enhanced glass cards for SystemBackground */
+.glass-system {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.04) 50%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-system:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 16px 48px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 0 60px rgba(0, 180, 220, 0.08);
+  transform: translateY(-4px);
+}
+
+.glass-system-elevated {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 
+    0 16px 56px rgba(0, 0, 0, 0.5),
+    inset 0 2px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1),
+    0 0 80px rgba(0, 180, 220, 0.06);
+}
+
+/* System-themed glow effects */
+.glow-system-cyan {
+  box-shadow: 
+    0 0 20px rgba(0, 180, 220, 0.2),
+    0 0 40px rgba(0, 180, 220, 0.1),
+    0 0 60px rgba(0, 180, 220, 0.05);
+}
+
+.glow-system-blue {
+  box-shadow: 
+    0 0 20px rgba(59, 130, 246, 0.2),
+    0 0 40px rgba(59, 130, 246, 0.1),
+    0 0 60px rgba(59, 130, 246, 0.05);
+}
+
+.glow-system-purple {
+  box-shadow: 
+    0 0 20px rgba(139, 92, 246, 0.2),
+    0 0 40px rgba(139, 92, 246, 0.1),
+    0 0 60px rgba(139, 92, 246, 0.05);
+}
+
+/* Section variant indicators */
+.section-info {
+  --section-accent: rgba(0, 180, 220, 0.8);
+  --section-glow: rgba(0, 180, 220, 0.15);
+}
+
+.section-metrics {
+  --section-accent: rgba(59, 130, 246, 0.8);
+  --section-glow: rgba(59, 130, 246, 0.15);
+}
+
+.section-process {
+  --section-accent: rgba(139, 92, 246, 0.8);
+  --section-glow: rgba(139, 92, 246, 0.15);
+}
+
+/* Radial glow behind cards (metrics variant) */
+.card-radial-glow {
+  position: relative;
+}
+
+.card-radial-glow::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(
+    ellipse at center,
+    var(--section-glow, rgba(0, 180, 220, 0.12)) 0%,
+    transparent 70%
+  );
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  filter: blur(20px);
+}
+
+.card-radial-glow:hover::before {
+  opacity: 1;
+}
+
+/* System divider with glow */
+.system-divider {
+  position: relative;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 180, 220, 0.3) 20%,
+    rgba(59, 130, 246, 0.4) 50%,
+    rgba(139, 92, 246, 0.3) 80%,
+    transparent 100%
+  );
+}
+
+.system-divider::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 30px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 180, 220, 0.25) 0%,
+    transparent 70%
+  );
+  filter: blur(10px);
+}
+
+/* Breathing animation for system elements */
+@keyframes system-breathe {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+.system-breathe {
+  animation: system-breathe 4s ease-in-out infinite;
+}
+
+/* Floating effect for system cards */
+@keyframes system-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.system-float {
+  animation: system-float 6s ease-in-out infinite;
+}
+
+/* Data flow line animation */
+@keyframes data-flow {
+  0% { 
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  20%, 80% { 
+    opacity: 0.6;
+  }
+  100% { 
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.data-flow-line {
+  position: absolute;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 180, 220, 0.5),
+    rgba(59, 130, 246, 0.4),
+    transparent
+  );
+  animation: data-flow 4s ease-in-out infinite;
+}
+
+/* Enhanced text gradients for system theme */
+.text-gradient-system {
+  background: linear-gradient(
+    135deg,
+    #00b4dc 0%,
+    #3b82f6 40%,
+    #8b5cf6 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text-gradient-system-animated {
+  background: linear-gradient(
+    135deg,
+    #00b4dc 0%,
+    #3b82f6 25%,
+    #8b5cf6 50%,
+    #3b82f6 75%,
+    #00b4dc 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-shift 8s ease-in-out infinite;
+}
+
+/* Mobile optimizations for system background */
+@media (max-width: 767px) {
+  .glass-system,
+  .glass-system-elevated {
+    backdrop-filter: blur(12px);
+  }
+  
+  .glow-system-cyan,
+  .glow-system-blue,
+  .glow-system-purple {
+    box-shadow: 0 0 15px rgba(0, 180, 220, 0.15);
+  }
+  
+  .system-float {
+    animation: none;
+  }
+  
+  .system-breathe {
+    animation: none;
+    opacity: 0.8;
+  }
+  
+  .card-radial-glow::before {
+    display: none;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .system-float,
+  .system-breathe,
+  .data-flow-line,
+  .text-gradient-system-animated {
+    animation: none;
+  }
+  
+  .glass-system:hover,
+  .glass-system-elevated:hover {
+    transform: none;
+  }
+}
+
