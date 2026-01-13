@@ -139,38 +139,131 @@ export function HomePageClient() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-16 sm:py-20 lg:py-32 relative"
+        className="py-16 sm:py-24 lg:py-32 relative"
       >
-        {/* Clean gradient background - NO motion elements */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-background to-secondary/3" />
+        {/* Premium layered background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-50/20 via-background to-slate-100/10" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-primary/[0.02] via-transparent to-secondary/[0.02]" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-          <SectionHeader
-            badge="Value Statement"
-            title={<>From framework alignment to audit export,<br className="hidden sm:inline" /><span className="text-gradient">every compliance activity is connected</span></>}
-            subtitle="FormaOS replaces fragmented spreadsheets, disconnected policy tools, and manual audits with a structured operating layer for governance."
-            alignment="center"
-          />
+          {/* Enterprise Section Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16 sm:mb-20"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6 text-primary/80">
+              <Database className="h-3 w-3" />
+              Value Statement
+            </div>
+            
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6 max-w-4xl mx-auto">
+              From framework alignment to audit export,<br className="hidden sm:inline" />
+              <span className="text-gradient">every compliance activity is connected</span>
+            </h2>
+            
+            <div className="w-16 h-0.5 bg-gradient-to-r from-secondary via-primary to-accent mx-auto rounded-full mb-6" />
+            
+            <p className="text-lg text-foreground/70 max-w-3xl mx-auto leading-relaxed">
+              FormaOS replaces fragmented spreadsheets, disconnected policy tools, and manual audits with a structured operating layer for governance.
+            </p>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-            <ValueProp
-              icon={<Target className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
-              title="Model Obligations"
-              description="Convert regulations into structured policies and controls."
-              delay={0}
-            />
-            <ValueProp
-              icon={<Zap className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
-              title="Execute Tasks"
-              description="Assign ownership, due dates, and accountability across teams."
-              delay={0.1}
-            />
-            <ValueProp
-              icon={<Shield className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
-              title="Prove Readiness"
-              description="Generate audit-ready evidence and reports in minutes."
-              delay={0.2}
-            />
+          {/* Premium Feature Cards Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.7 }}
+              whileHover={{ y: -8, transition: { duration: 0.3 } }}
+              className="group"
+            >
+              <div className="relative h-full">
+                {/* Premium Card Container */}
+                <div className="relative h-full backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-xl hover:shadow-2xl transition-all duration-500 p-8 sm:p-10">
+                  {/* Floating Icon */}
+                  <div className="relative mb-8">
+                    <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                      <Target className="h-10 w-10 text-primary" />
+                    </div>
+                    <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-br from-primary to-secondary opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
+                  </div>
+                  
+                  <div className="text-center">
+                    <h3 className="text-xl font-bold mb-4 group-hover:text-primary transition-colors duration-300">
+                      Model Obligations
+                    </h3>
+                    <p className="text-foreground/70 leading-relaxed">
+                      Convert regulations into structured policies and controls.
+                    </p>
+                  </div>
+                  
+                  {/* Subtle accent line */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20 rounded-b-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.7 }}
+              whileHover={{ y: -8, transition: { duration: 0.3 } }}
+              className="group"
+            >
+              <div className="relative h-full">
+                <div className="relative h-full backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-xl hover:shadow-2xl transition-all duration-500 p-8 sm:p-10">
+                  <div className="relative mb-8">
+                    <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-secondary/20 to-secondary/10 border border-secondary/20 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                      <Zap className="h-10 w-10 text-secondary" />
+                    </div>
+                    <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-br from-secondary to-accent opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
+                  </div>
+                  
+                  <div className="text-center">
+                    <h3 className="text-xl font-bold mb-4 group-hover:text-secondary transition-colors duration-300">
+                      Execute Tasks
+                    </h3>
+                    <p className="text-foreground/70 leading-relaxed">
+                      Assign ownership, due dates, and accountability across teams.
+                    </p>
+                  </div>
+                  
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-secondary/20 via-secondary/40 to-secondary/20 rounded-b-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.7 }}
+              whileHover={{ y: -8, transition: { duration: 0.3 } }}
+              className="group"
+            >
+              <div className="relative h-full">
+                <div className="relative h-full backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-xl hover:shadow-2xl transition-all duration-500 p-8 sm:p-10">
+                  <div className="relative mb-8">
+                    <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-accent/20 to-accent/10 border border-accent/20 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                      <Shield className="h-10 w-10 text-accent" />
+                    </div>
+                    <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-br from-accent to-primary opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
+                  </div>
+                  
+                  <div className="text-center">
+                    <h3 className="text-xl font-bold mb-4 group-hover:text-accent transition-colors duration-300">
+                      Prove Readiness
+                    </h3>
+                    <p className="text-foreground/70 leading-relaxed">
+                      Generate audit-ready evidence and reports in minutes.
+                    </p>
+                  </div>
+                  
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-accent/20 via-accent/40 to-accent/20 rounded-b-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </CinematicSection>
@@ -181,35 +274,163 @@ export function HomePageClient() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="secondary"
-        className="py-16 sm:py-20 lg:py-32"
+        className="py-16 sm:py-24 lg:py-32 relative"
       >
-        {/* Clean gradient background - NO motion elements */}
-        <div className="absolute inset-0 bg-gradient-to-br from-secondary/3 via-background to-primary/3" />
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeader
-            badge="Live Platform Metrics"
-            title={<>Real-Time Compliance<br className="hidden sm:inline" /><span className="text-gradient">Intelligence</span></>}
-            subtitle="FormaOS continuously measures your organization's compliance posture — across teams, frameworks, and operational controls — without manual tracking."
-            alignment="center"
-          />
+        {/* Premium analytics background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/5 via-background to-slate-800/5" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-secondary/[0.03] via-transparent to-primary/[0.03]" />
+        
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+          {/* Enterprise Analytics Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16 sm:mb-20"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6 text-secondary/80">
+              <TrendingUp className="h-3 w-3" />
+              Live Platform Metrics
+            </div>
+            
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6 max-w-4xl mx-auto">
+              Real-Time Compliance<br className="hidden sm:inline" />
+              <span className="text-gradient">Intelligence</span>
+            </h2>
+            
+            <div className="w-16 h-0.5 bg-gradient-to-r from-secondary via-primary to-accent mx-auto rounded-full mb-6" />
+            
+            <p className="text-lg text-foreground/70 max-w-3xl mx-auto leading-relaxed">
+              FormaOS continuously measures your organization's compliance posture — across teams, frameworks, and operational controls — without manual tracking.
+            </p>
+          </motion.div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mt-12">
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gradient mb-2">94%</div>
-              <div className="text-sm sm:text-base text-foreground/70">Average Compliance Posture</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gradient mb-2">127</div>
-              <div className="text-sm sm:text-base text-foreground/70">Active Controls</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gradient mb-2">&lt; 2 min</div>
-              <div className="text-sm sm:text-base text-foreground/70">Audit Export Time</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gradient mb-2">98%</div>
-              <div className="text-sm sm:text-base text-foreground/70">Task Completion Rate</div>
-            </div>
+          {/* Premium Analytics Grid */}
+          <div className="relative">
+            {/* Analytics Dashboard Container */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 shadow-2xl overflow-hidden"
+            >
+              {/* Dashboard Header */}
+              <div className="bg-gradient-to-r from-white/[0.05] to-white/[0.02] border-b border-white/5 px-8 py-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
+                    <span className="text-sm font-semibold text-foreground/80">Live Compliance Dashboard</span>
+                  </div>
+                  <div className="text-xs text-foreground/60">
+                    Updated in real-time
+                  </div>
+                </div>
+              </div>
+              
+              {/* Metrics Grid */}
+              <div className="p-8 sm:p-12">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.2, duration: 0.6 }}
+                    whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+                    className="group text-center"
+                  >
+                    <div className="relative mb-4">
+                      <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gradient mb-2 group-hover:scale-110 transition-transform duration-300">
+                        94%
+                      </div>
+                      <div className="absolute -inset-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl" />
+                    </div>
+                    <div className="text-sm sm:text-base text-foreground/70 font-medium">
+                      Average Compliance Posture
+                    </div>
+                    <div className="mt-2 w-full h-1 bg-foreground/10 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        whileInView={{ width: "94%" }}
+                        transition={{ delay: 0.5, duration: 1 }}
+                        className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
+                      />
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.4, duration: 0.6 }}
+                    whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+                    className="group text-center"
+                  >
+                    <div className="relative mb-4">
+                      <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gradient mb-2 group-hover:scale-110 transition-transform duration-300">
+                        127
+                      </div>
+                      <div className="absolute -inset-4 bg-gradient-to-r from-secondary/10 via-accent/10 to-primary/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl" />
+                    </div>
+                    <div className="text-sm sm:text-base text-foreground/70 font-medium">
+                      Active Controls
+                    </div>
+                    <div className="mt-2 flex items-center justify-center gap-1">
+                      <div className="w-2 h-2 bg-secondary rounded-full animate-pulse" />
+                      <div className="w-2 h-2 bg-primary rounded-full animate-pulse" style={{animationDelay: '0.2s'}} />
+                      <div className="w-2 h-2 bg-accent rounded-full animate-pulse" style={{animationDelay: '0.4s'}} />
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.6, duration: 0.6 }}
+                    whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+                    className="group text-center"
+                  >
+                    <div className="relative mb-4">
+                      <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gradient mb-2 group-hover:scale-110 transition-transform duration-300">
+                        &lt;2min
+                      </div>
+                      <div className="absolute -inset-4 bg-gradient-to-r from-accent/10 via-primary/10 to-secondary/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl" />
+                    </div>
+                    <div className="text-sm sm:text-base text-foreground/70 font-medium">
+                      Audit Export Time
+                    </div>
+                    <div className="mt-2">
+                      <div className="inline-flex items-center gap-1 text-xs text-green-600 font-medium">
+                        <div className="w-1.5 h-1.5 bg-green-400 rounded-full" />
+                        Instant generation
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.8, duration: 0.6 }}
+                    whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+                    className="group text-center"
+                  >
+                    <div className="relative mb-4">
+                      <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gradient mb-2 group-hover:scale-110 transition-transform duration-300">
+                        98%
+                      </div>
+                      <div className="absolute -inset-4 bg-gradient-to-r from-primary/10 via-accent/10 to-secondary/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl" />
+                    </div>
+                    <div className="text-sm sm:text-base text-foreground/70 font-medium">
+                      Task Completion Rate
+                    </div>
+                    <div className="mt-2 w-full h-1 bg-foreground/10 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        whileInView={{ width: "98%" }}
+                        transition={{ delay: 1, duration: 1 }}
+                        className="h-full bg-gradient-to-r from-accent to-primary rounded-full"
+                      />
+                    </div>
+                  </motion.div>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </CinematicSection>
@@ -450,50 +671,160 @@ export function HomePageClient() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="secondary"
-        className="py-16 sm:py-20 lg:py-32"
+        className="py-16 sm:py-24 lg:py-32 relative"
       >
-        {/* Soft gradient background instead of node motion */}
-        <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 via-transparent to-primary/5" />
+        {/* Premium contrast background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-100/10 via-background to-slate-50/5" />
+        <div className="absolute inset-0 bg-gradient-to-tl from-secondary/[0.02] via-transparent to-primary/[0.02]" />
         
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeader
-            badge="Why FormaOS"
-            title={<>Built for governance,<br className="hidden sm:inline" /><span className="text-gradient">not checklists</span></>}
-            subtitle="FormaOS is not a document repository or a task manager. It is an operating layer for compliance and risk."
-            alignment="center"
-          />
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 mt-12">
-            <div className="space-y-6">
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2" />
-                <div>
-                  <h4 className="font-semibold text-base">Controls mapped directly to obligations</h4>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2" />
-                <div>
-                  <h4 className="font-semibold text-base">Actions tied to accountable owners</h4>
-                </div>
-              </div>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+          {/* Enterprise Section Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16 sm:mb-20"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6 text-secondary/80">
+              <Shield className="h-3 w-3" />
+              Why FormaOS
             </div>
             
-            <div className="space-y-6">
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2" />
-                <div>
-                  <h4 className="font-semibold text-base">Evidence stored in a verifiable chain</h4>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6 max-w-4xl mx-auto">
+              Built for governance,<br className="hidden sm:inline" />
+              <span className="text-gradient">not checklists</span>
+            </h2>
+            
+            <div className="w-16 h-0.5 bg-gradient-to-r from-secondary via-primary to-accent mx-auto rounded-full mb-6" />
+            
+            <p className="text-lg text-foreground/70 max-w-3xl mx-auto leading-relaxed">
+              FormaOS is not a document repository or a task manager. It is an operating layer for compliance and risk.
+            </p>
+          </motion.div>
+
+          {/* Premium Capability Grid */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="relative"
+          >
+            {/* Governance Framework Container */}
+            <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+              {/* Framework Header */}
+              <div className="bg-gradient-to-r from-white/[0.05] to-white/[0.02] border-b border-white/5 px-8 py-6">
+                <div className="text-center">
+                  <h3 className="text-xl font-bold text-foreground/90">
+                    Governance Architecture
+                  </h3>
+                  <p className="text-sm text-foreground/60 mt-2">
+                    Every component connects to provide complete operational visibility
+                  </p>
                 </div>
               </div>
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2" />
-                <div>
-                  <h4 className="font-semibold text-base">Continuous audit readiness</h4>
+              
+              {/* Capabilities Grid */}
+              <div className="p-8 sm:p-12">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
+                  {/* Left Column */}
+                  <div className="space-y-8">
+                    <motion.div
+                      initial={{ opacity: 0, x: -30 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2, duration: 0.6 }}
+                      className="group flex items-start gap-4"
+                    >
+                      <div className="flex-shrink-0">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <Target className="h-6 w-6 text-primary" />
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-base mb-2 group-hover:text-primary transition-colors duration-300">
+                          Controls mapped directly to obligations
+                        </h4>
+                        <p className="text-sm text-foreground/70 leading-relaxed">
+                          Every control traces back to its regulatory requirement with full lineage
+                        </p>
+                      </div>
+                    </motion.div>
+
+                    <motion.div
+                      initial={{ opacity: 0, x: -30 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.4, duration: 0.6 }}
+                      className="group flex items-start gap-4"
+                    >
+                      <div className="flex-shrink-0">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-secondary/20 to-secondary/10 border border-secondary/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <Users className="h-6 w-6 text-secondary" />
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-base mb-2 group-hover:text-secondary transition-colors duration-300">
+                          Actions tied to accountable owners
+                        </h4>
+                        <p className="text-sm text-foreground/70 leading-relaxed">
+                          Clear responsibility chains with automated escalation and oversight
+                        </p>
+                      </div>
+                    </motion.div>
+                  </div>
+                  
+                  {/* Right Column */}
+                  <div className="space-y-8">
+                    <motion.div
+                      initial={{ opacity: 0, x: 30 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.6, duration: 0.6 }}
+                      className="group flex items-start gap-4"
+                    >
+                      <div className="flex-shrink-0">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/10 border border-accent/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <Database className="h-6 w-6 text-accent" />
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-base mb-2 group-hover:text-accent transition-colors duration-300">
+                          Evidence stored in a verifiable chain
+                        </h4>
+                        <p className="text-sm text-foreground/70 leading-relaxed">
+                          Immutable audit trails with cryptographic integrity and timestamps
+                        </p>
+                      </div>
+                    </motion.div>
+
+                    <motion.div
+                      initial={{ opacity: 0, x: 30 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.8, duration: 0.6 }}
+                      className="group flex items-start gap-4"
+                    >
+                      <div className="flex-shrink-0">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/10 border border-primary/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <TrendingUp className="h-6 w-6 text-primary" />
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-base mb-2 group-hover:text-primary transition-colors duration-300">
+                          Continuous audit readiness
+                        </h4>
+                        <p className="text-sm text-foreground/70 leading-relaxed">
+                          Real-time compliance posture with instant export capabilities
+                        </p>
+                      </div>
+                    </motion.div>
+                  </div>
+                </div>
+                
+                {/* Connection Indicators */}
+                <div className="hidden lg:block absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                  <div className="w-px h-24 bg-gradient-to-b from-transparent via-primary/20 to-transparent" />
+                  <div className="w-24 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent absolute top-12 left-1/2 transform -translate-x-1/2 -translate-y-px" />
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </CinematicSection>
 
@@ -503,15 +834,153 @@ export function HomePageClient() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-16 sm:py-20 lg:py-32"
+        className="py-16 sm:py-24 lg:py-32 relative"
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeader
-            badge="Capabilities"
-            title={<>Model obligations. Execute tasks.<br className="hidden sm:inline" /><span className="text-gradient">Prove readiness.</span></>}
-            subtitle="FormaOS unifies compliance into a single operational system."
-            alignment="center"
-          />
+        {/* Premium layered background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/10 via-background to-violet-50/10" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-primary/[0.02] via-transparent to-accent/[0.02]" />
+        
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+          {/* Enterprise Capabilities Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16 sm:mb-20"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6 text-primary/80">
+              <Zap className="h-3 w-3" />
+              Capabilities
+            </div>
+            
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6 max-w-4xl mx-auto">
+              Model obligations. Execute tasks.<br className="hidden sm:inline" />
+              <span className="text-gradient">Prove readiness.</span>
+            </h2>
+            
+            <div className="w-16 h-0.5 bg-gradient-to-r from-primary via-secondary to-accent mx-auto rounded-full mb-6" />
+            
+            <p className="text-lg text-foreground/70 max-w-3xl mx-auto leading-relaxed">
+              FormaOS unifies compliance into a single operational system.
+            </p>
+          </motion.div>
+
+          {/* Premium Capability Showcase */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="relative"
+          >
+            {/* Unified System Container */}
+            <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+              {/* System Overview Header */}
+              <div className="bg-gradient-to-r from-white/[0.05] to-white/[0.02] border-b border-white/5 px-8 py-8">
+                <div className="text-center max-w-4xl mx-auto">
+                  <h3 className="text-2xl font-bold mb-4">
+                    Complete Compliance Operating System
+                  </h3>
+                  <p className="text-foreground/70 leading-relaxed">
+                    From regulatory mapping to audit export, every compliance function operates within a single, integrated platform designed for enterprise-grade governance.
+                  </p>
+                </div>
+              </div>
+              
+              {/* Capability Flow Visualization */}
+              <div className="p-8 sm:p-12">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 lg:gap-12">
+                  {/* Model Stage */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.2, duration: 0.6 }}
+                    className="group relative"
+                  >
+                    <div className="text-center">
+                      <div className="relative mb-6">
+                        <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20 flex items-center justify-center group-hover:scale-105 transition-all duration-300">
+                          <Database className="h-10 w-10 text-primary" />
+                        </div>
+                        <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-br from-primary to-secondary text-white text-xs font-bold flex items-center justify-center">
+                          1
+                        </div>
+                      </div>
+                      
+                      <h4 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors duration-300">
+                        Model
+                      </h4>
+                      <p className="text-foreground/70 leading-relaxed text-sm">
+                        Transform regulations into structured policies, controls, and organizational accountability frameworks.
+                      </p>
+                    </div>
+                  </motion.div>
+
+                  {/* Execute Stage */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4, duration: 0.6 }}
+                    className="group relative"
+                  >
+                    <div className="text-center">
+                      <div className="relative mb-6">
+                        <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-secondary/20 to-secondary/10 border border-secondary/20 flex items-center justify-center group-hover:scale-105 transition-all duration-300">
+                          <Target className="h-10 w-10 text-secondary" />
+                        </div>
+                        <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-br from-secondary to-accent text-white text-xs font-bold flex items-center justify-center">
+                          2
+                        </div>
+                      </div>
+                      
+                      <h4 className="text-xl font-bold mb-3 group-hover:text-secondary transition-colors duration-300">
+                        Execute
+                      </h4>
+                      <p className="text-foreground/70 leading-relaxed text-sm">
+                        Convert controls into actionable tasks with clear ownership, deadlines, and evidence requirements.
+                      </p>
+                    </div>
+                  </motion.div>
+
+                  {/* Prove Stage */}
+                  <motion.div
+                    initial={{ opacity: 0, x: 30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.6, duration: 0.6 }}
+                    className="group relative"
+                  >
+                    <div className="text-center">
+                      <div className="relative mb-6">
+                        <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-accent/20 to-accent/10 border border-accent/20 flex items-center justify-center group-hover:scale-105 transition-all duration-300">
+                          <Shield className="h-10 w-10 text-accent" />
+                        </div>
+                        <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-br from-accent to-primary text-white text-xs font-bold flex items-center justify-center">
+                          3
+                        </div>
+                      </div>
+                      
+                      <h4 className="text-xl font-bold mb-3 group-hover:text-accent transition-colors duration-300">
+                        Prove
+                      </h4>
+                      <p className="text-foreground/70 leading-relaxed text-sm">
+                        Generate verifiable evidence and export audit-ready reports with complete compliance traceability.
+                      </p>
+                    </div>
+                  </motion.div>
+                </div>
+                
+                {/* Process Flow Connectors (Desktop only) */}
+                <div className="hidden sm:block absolute top-1/2 left-0 right-0 transform -translate-y-1/2 px-12">
+                  <div className="flex items-center justify-between">
+                    <div className="w-0 h-0" />
+                    <div className="flex-1 h-px bg-gradient-to-r from-primary/30 via-secondary/30 to-accent/30 mx-8" />
+                    <div className="w-0 h-0" />
+                    <div className="flex-1 h-px bg-gradient-to-r from-secondary/30 via-accent/30 to-primary/30 mx-8" />
+                    <div className="w-0 h-0" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </CinematicSection>
 
@@ -521,34 +990,144 @@ export function HomePageClient() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="secondary"
-        className="py-16 sm:py-20 lg:py-32"
+        className="py-16 sm:py-24 lg:py-32 relative"
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeader
-            badge="Who It Is For"
-            title={<>Built for organizations that cannot<br className="hidden sm:inline" /><span className="text-gradient">afford ambiguity in compliance</span></>}
-            subtitle=""
-            alignment="center"
-          />
+        {/* Premium targeting background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/10 via-background to-indigo-50/10" />
+        <div className="absolute inset-0 bg-gradient-to-bl from-secondary/[0.02] via-transparent to-accent/[0.02]" />
+        
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+          {/* Enterprise Targeting Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16 sm:mb-20"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6 text-secondary/80">
+              <Users className="h-3 w-3" />
+              Who It Is For
+            </div>
+            
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6 max-w-5xl mx-auto">
+              Built for organizations that cannot<br className="hidden sm:inline" />
+              <span className="text-gradient">afford ambiguity in compliance</span>
+            </h2>
+            
+            <div className="w-16 h-0.5 bg-gradient-to-r from-secondary via-primary to-accent mx-auto rounded-full mb-6" />
+          </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
-            <div className="text-center">
-              <Users className="h-8 w-8 text-primary mx-auto mb-4" />
-              <h4 className="font-semibold text-base mb-2">Compliance and governance teams</h4>
+          {/* Premium Audience Grid */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="relative"
+          >
+            {/* Professional Roles Showcase */}
+            <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+              {/* Roles Header */}
+              <div className="bg-gradient-to-r from-white/[0.05] to-white/[0.02] border-b border-white/5 px-8 py-6">
+                <div className="text-center">
+                  <h3 className="text-xl font-bold">
+                    Enterprise Compliance Professionals
+                  </h3>
+                  <p className="text-sm text-foreground/60 mt-2">
+                    Designed for senior leaders who require operational certainty
+                  </p>
+                </div>
+              </div>
+              
+              {/* Professional Roles Grid */}
+              <div className="p-8 sm:p-12">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2, duration: 0.6 }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                    className="group text-center"
+                  >
+                    <div className="relative mb-6">
+                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                        <Users className="h-8 w-8 text-primary" />
+                      </div>
+                      <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-primary to-secondary opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+                    <h4 className="font-bold text-base mb-3 group-hover:text-primary transition-colors duration-300">
+                      Compliance & Governance Teams
+                    </h4>
+                    <p className="text-sm text-foreground/70 leading-relaxed">
+                      Directors and managers responsible for enterprise compliance programs
+                    </p>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4, duration: 0.6 }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                    className="group text-center"
+                  >
+                    <div className="relative mb-6">
+                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-secondary/20 to-secondary/10 border border-secondary/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                        <Shield className="h-8 w-8 text-secondary" />
+                      </div>
+                      <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-secondary to-accent opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+                    <h4 className="font-bold text-base mb-3 group-hover:text-secondary transition-colors duration-300">
+                      Risk & Audit Leaders
+                    </h4>
+                    <p className="text-sm text-foreground/70 leading-relaxed">
+                      Chief Risk Officers and audit executives requiring defensible evidence
+                    </p>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6, duration: 0.6 }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                    className="group text-center"
+                  >
+                    <div className="relative mb-6">
+                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-accent/20 to-accent/10 border border-accent/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                        <Target className="h-8 w-8 text-accent" />
+                      </div>
+                      <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-accent to-primary opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+                    <h4 className="font-bold text-base mb-3 group-hover:text-accent transition-colors duration-300">
+                      Regulated Operations
+                    </h4>
+                    <p className="text-sm text-foreground/70 leading-relaxed">
+                      Operations directors in healthcare, finance, and regulated industries
+                    </p>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8, duration: 0.6 }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                    className="group text-center"
+                  >
+                    <div className="relative mb-6">
+                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-primary/20 to-accent/10 border border-primary/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                        <Database className="h-8 w-8 text-primary" />
+                      </div>
+                      <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-primary to-secondary opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
+                    </div>
+                    <h4 className="font-bold text-base mb-3 group-hover:text-primary transition-colors duration-300">
+                      Multi-Entity Organizations
+                    </h4>
+                    <p className="text-sm text-foreground/70 leading-relaxed">
+                      Executives managing compliance across multiple sites and entities
+                    </p>
+                  </motion.div>
+                </div>
+              </div>
             </div>
-            <div className="text-center">
-              <Shield className="h-8 w-8 text-primary mx-auto mb-4" />
-              <h4 className="font-semibold text-base mb-2">Risk and audit leaders</h4>
-            </div>
-            <div className="text-center">
-              <Target className="h-8 w-8 text-primary mx-auto mb-4" />
-              <h4 className="font-semibold text-base mb-2">Regulated operations</h4>
-            </div>
-            <div className="text-center">
-              <Database className="h-8 w-8 text-primary mx-auto mb-4" />
-              <h4 className="font-semibold text-base mb-2">Multi-entity and multi-site organizations</h4>
-            </div>
-          </div>
+          </motion.div>
         </div>
       </CinematicSection>
 
@@ -558,74 +1137,280 @@ export function HomePageClient() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="accent"
-        className="py-16 sm:py-20 lg:py-32"
+        className="py-16 sm:py-24 lg:py-32 relative"
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeader
-            badge="Security"
-            title={<>Designed for<br className="hidden sm:inline" /><span className="text-gradient">regulated environments</span></>}
-            subtitle=""
-            alignment="center"
-          />
+        {/* Premium security background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/10 via-background to-teal-50/10" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-accent/[0.02] via-transparent to-primary/[0.02]" />
+        
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+          {/* Enterprise Security Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16 sm:mb-20"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6 text-accent/80">
+              <Shield className="h-3 w-3" />
+              Security
+            </div>
+            
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6 max-w-4xl mx-auto">
+              Designed for<br className="hidden sm:inline" />
+              <span className="text-gradient">regulated environments</span>
+            </h2>
+            
+            <div className="w-16 h-0.5 bg-gradient-to-r from-accent via-primary to-secondary mx-auto rounded-full mb-6" />
+          </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
-            <div className="text-center">
-              <Shield className="h-8 w-8 text-primary mx-auto mb-4" />
-              <h4 className="font-semibold text-base mb-2">Immutable audit logs</h4>
+          {/* Premium Security Grid */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="relative"
+          >
+            {/* Security Framework Container */}
+            <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+              {/* Security Header */}
+              <div className="bg-gradient-to-r from-white/[0.05] to-white/[0.02] border-b border-white/5 px-8 py-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
+                    <span className="text-sm font-semibold text-foreground/80">Enterprise Security Framework</span>
+                  </div>
+                  <div className="text-xs text-foreground/60">
+                    ISO 27001 Aligned
+                  </div>
+                </div>
+              </div>
+              
+              {/* Security Features Grid */}
+              <div className="p-8 sm:p-12">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2, duration: 0.6 }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                    className="group text-center"
+                  >
+                    <div className="relative mb-6">
+                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/10 border border-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                        <Shield className="h-8 w-8 text-emerald-600" />
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-green-400 opacity-60 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
+                    </div>
+                    <h4 className="font-bold text-base mb-3 group-hover:text-emerald-600 transition-colors duration-300">
+                      Immutable Audit Logs
+                    </h4>
+                    <p className="text-sm text-foreground/70 leading-relaxed">
+                      Cryptographically sealed evidence with tamper detection
+                    </p>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4, duration: 0.6 }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                    className="group text-center"
+                  >
+                    <div className="relative mb-6">
+                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-500/10 border border-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                        <Database className="h-8 w-8 text-blue-600" />
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-blue-400 opacity-60 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
+                    </div>
+                    <h4 className="font-bold text-base mb-3 group-hover:text-blue-600 transition-colors duration-300">
+                      Encrypted Evidence Storage
+                    </h4>
+                    <p className="text-sm text-foreground/70 leading-relaxed">
+                      End-to-end encryption with Australian data sovereignty
+                    </p>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6, duration: 0.6 }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                    className="group text-center"
+                  >
+                    <div className="relative mb-6">
+                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-500/10 border border-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                        <Users className="h-8 w-8 text-purple-600" />
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-purple-400 opacity-60 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
+                    </div>
+                    <h4 className="font-bold text-base mb-3 group-hover:text-purple-600 transition-colors duration-300">
+                      Role-Based Access Control
+                    </h4>
+                    <p className="text-sm text-foreground/70 leading-relaxed">
+                      Granular permissions with segregation of duties
+                    </p>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8, duration: 0.6 }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                    className="group text-center"
+                  >
+                    <div className="relative mb-6">
+                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-orange-500/20 to-orange-500/10 border border-orange-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                        <Target className="h-8 w-8 text-orange-600" />
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-orange-400 opacity-60 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
+                    </div>
+                    <h4 className="font-bold text-base mb-3 group-hover:text-orange-600 transition-colors duration-300">
+                      Tenant Isolation
+                    </h4>
+                    <p className="text-sm text-foreground/70 leading-relaxed">
+                      Complete organizational separation with zero data bleed
+                    </p>
+                  </motion.div>
+                </div>
+                
+                {/* Security Badge */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 1, duration: 0.6 }}
+                  className="mt-12 text-center"
+                >
+                  <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border border-emerald-500/20">
+                    <Shield className="h-5 w-5 text-emerald-600" />
+                    <span className="text-sm font-semibold text-foreground/80">
+                      SOC 2 Type II Compliant
+                    </span>
+                  </div>
+                </motion.div>
+              </div>
             </div>
-            <div className="text-center">
-              <Database className="h-8 w-8 text-primary mx-auto mb-4" />
-              <h4 className="font-semibold text-base mb-2">Encrypted evidence storage</h4>
-            </div>
-            <div className="text-center">
-              <Users className="h-8 w-8 text-primary mx-auto mb-4" />
-              <h4 className="font-semibold text-base mb-2">Role-based access control</h4>
-            </div>
-            <div className="text-center">
-              <Target className="h-8 w-8 text-primary mx-auto mb-4" />
-              <h4 className="font-semibold text-base mb-2">Tenant isolation</h4>
-            </div>
-          </div>
+          </motion.div>
         </div>
       </CinematicSection>
 
       <VisualDivider />
 
-      {/* Final CTA with gradient mesh */}
+      {/* Final CTA */}
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="accent"
-        className="py-16 sm:py-20 lg:py-32 relative"
+        className="py-16 sm:py-24 lg:py-32 relative"
       >
+        {/* Premium CTA background with subtle mesh */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/10 via-background to-indigo-900/10" />
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <GradientMesh 
             colors={["rgba(139, 92, 246, 0.08)", "rgba(0, 212, 251, 0.06)", "rgba(20, 184, 166, 0.04)"]}
-            className="opacity-50"
+            className="opacity-30"
           />
         </div>
         
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative text-center">
-          <div className="inline-flex items-center gap-2 glass-intense rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wider mb-6 border border-secondary/30">
-            Closing
-          </div>
-          
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight font-display tracking-tight mb-6">
-            Move from tracking to governance.<br />
-            <span className="text-gradient">Run compliance as a system.</span>
-          </h2>
-          
-          <p className="text-lg sm:text-xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-8">
-            
-          </p>
-          
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
-            <Link href="/auth/signup" className="w-full sm:w-auto rounded-md bg-primary px-8 py-4 text-base font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors">
-              Start Free Trial
-            </Link>
-            <Link href="/contact" className="w-full sm:w-auto text-base font-semibold leading-6 text-foreground hover:text-primary transition-colors flex items-center justify-center sm:justify-start">
-              Request a Demo <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </div>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+          {/* Premium CTA Container */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="relative"
+          >
+            {/* Executive CTA Panel */}
+            <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+              {/* CTA Header */}
+              <div className="bg-gradient-to-r from-white/[0.08] to-white/[0.04] border-b border-white/10 px-8 sm:px-12 py-8 sm:py-10">
+                <div className="text-center">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.2, duration: 0.6 }}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.12] border border-white/20 text-xs font-semibold uppercase tracking-wider mb-6 text-accent/80"
+                  >
+                    <ArrowRight className="h-3 w-3" />
+                    Ready to Begin
+                  </motion.div>
+                  
+                  <motion.h2
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.8 }}
+                    className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 max-w-4xl mx-auto"
+                  >
+                    Move from tracking to governance.<br className="hidden sm:inline" />
+                    <span className="text-gradient">Run compliance as a system.</span>
+                  </motion.h2>
+                  
+                  <motion.div
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    transition={{ delay: 0.8, duration: 0.8 }}
+                    className="w-24 h-1 bg-gradient-to-r from-primary via-secondary to-accent mx-auto rounded-full mb-8"
+                  />
+                </div>
+              </div>
+              
+              {/* CTA Content */}
+              <div className="px-8 sm:px-12 py-10 sm:py-12 text-center">
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, duration: 0.8 }}
+                  className="text-lg sm:text-xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-10"
+                >
+                  Join the organizations that have transformed compliance from reactive burden to proactive competitive advantage. Experience operational certainty with FormaOS.
+                </motion.p>
+                
+                {/* Premium CTA Buttons */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6, duration: 0.8 }}
+                  className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-8"
+                >
+                  <Link 
+                    href="/auth/signup" 
+                    className="group w-full sm:w-auto relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary to-secondary px-8 py-4 text-base font-semibold text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+                  >
+                    <span className="relative z-10">Start Free Trial</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-secondary/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </Link>
+                  
+                  <Link 
+                    href="/contact" 
+                    className="group w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-2xl border-2 border-white/20 text-base font-semibold text-foreground/90 hover:bg-white/[0.08] hover:border-white/30 transition-all duration-300 backdrop-blur-sm"
+                  >
+                    <span>Request a Demo</span>
+                    <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+                  </Link>
+                </motion.div>
+                
+                {/* Trust Indicators */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8, duration: 0.8 }}
+                  className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 text-sm text-foreground/60"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-green-400" />
+                    <span>14-day free trial</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-blue-400" />
+                    <span>No credit card required</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-purple-400" />
+                    <span>Australian-hosted</span>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </CinematicSection>
     </div>
