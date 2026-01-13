@@ -50,7 +50,7 @@ export function CinematicHero() {
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="space-y-8"
+              className="space-y-10 max-w-xl"
             >
               {/* Badge */}
               <motion.div
@@ -73,21 +73,19 @@ export function CinematicHero() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.8 }}
-                className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-[1.05] font-display tracking-tight"
+                className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-[1.12] font-display tracking-tight space-y-3"
               >
-                Operational
-                <br />
-                <span className="relative">
+                <div className="mb-3">Operational</div>
+                <span className="relative block mb-6">
                   <span className="text-gradient">Compliance</span>
                   <motion.div
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
                     transition={{ delay: 0.8, duration: 0.8 }}
-                    className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent rounded-full origin-left"
+                    className="absolute -bottom-3 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent rounded-full origin-left"
                   />
                 </span>
-                <br />
-                Operating System
+                <div>Operating System</div>
               </motion.h1>
               
               {/* Subtitle */}
@@ -95,7 +93,7 @@ export function CinematicHero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.8 }}
-                className="text-xl md:text-2xl text-foreground/80 leading-relaxed max-w-2xl"
+                className="text-xl md:text-2xl text-foreground/80 leading-relaxed pt-4"
               >
                 Transform regulatory obligations into{" "}
                 <span className="font-semibold text-primary">executable controls</span>,{" "}
@@ -108,7 +106,7 @@ export function CinematicHero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.8 }}
-                className="flex flex-wrap gap-6"
+                className="flex flex-wrap gap-5 pt-6 pb-6"
               >
                 {[
                   { icon: Activity, value: "94%", label: "Avg. Posture" },
@@ -138,7 +136,7 @@ export function CinematicHero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8, duration: 0.8 }}
-                className="flex flex-col sm:flex-row gap-4 pt-4"
+                className="flex flex-col sm:flex-row gap-4 pt-8"
               >
                 <Link
                   href="/auth/signup"
@@ -180,7 +178,7 @@ export function CinematicHero() {
           
           {/* Right: 3D floating modules */}
           <ParallaxLayer speed={0.5}>
-            <div className="relative h-[600px]">
+            <div className="relative h-[650px]">
               {/* Connection lines between modules */}
               <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ filter: "drop-shadow(0 0 8px rgba(56, 189, 248, 0.3))" }}>
                 <motion.path
@@ -211,16 +209,16 @@ export function CinematicHero() {
                 </defs>
               </svg>
               
-              {/* Floating 3D modules */}
-              <FloatingUIPanel delay={0.5} className="absolute top-0 right-0 w-80">
+              {/* Floating 3D modules - vertically rebalanced */}
+              <FloatingUIPanel delay={0.5} className="absolute top-8 right-0 w-80">
                 <Floating3DPanel delay={0.5} />
               </FloatingUIPanel>
               
-              <FloatingUIPanel delay={0.7} className="absolute top-1/3 left-0 w-72">
+              <FloatingUIPanel delay={0.7} className="absolute top-[42%] left-0 w-72">
                 <FloatingWorkflowDiagram delay={0.7} />
               </FloatingUIPanel>
               
-              <FloatingUIPanel delay={0.9} className="absolute bottom-0 right-10 w-64">
+              <FloatingUIPanel delay={0.9} className="absolute bottom-12 right-10 w-64">
                 <FloatingSecurityModule delay={0.9} />
               </FloatingUIPanel>
             </div>
