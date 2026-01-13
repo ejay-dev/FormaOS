@@ -28,12 +28,12 @@ export function ContactHero({ status }: { status: "success" | "error" | null }) 
       </div>
       
       {/* Pulsing nodes - hidden on mobile */}
-      <div className="hidden sm:block">
+      {/* <div className="hidden sm:block">
         <PulsingNode x="8%" y="18%" delay={0} color="rgb(6, 182, 212)" />
         <PulsingNode x="92%" y="28%" delay={0.5} />
         <PulsingNode x="14%" y="72%" delay={1} />
         <PulsingNode x="86%" y="82%" delay={1.5} color="rgb(139, 92, 246)" />
-      </div>
+      </div> */}
       
       {/* Radial gradient overlays - reduced on mobile */}
       <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[300px] sm:h-[600px] w-[300px] sm:w-[600px] rounded-full bg-accent/20 blur-[60px] sm:blur-[120px]" />

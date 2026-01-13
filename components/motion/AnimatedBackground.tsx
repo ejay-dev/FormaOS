@@ -10,6 +10,9 @@ export function AnimatedSystemGrid() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     
+    // Only run on client side and if canvas context is supported
+    if (typeof window === 'undefined') return;
+    
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     

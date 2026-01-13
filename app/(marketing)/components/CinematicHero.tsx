@@ -26,12 +26,11 @@ export function CinematicHero() {
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
       
       {/* Animated system grid layer */}
-      <div className="absolute inset-0 md:opacity-60 opacity-30 hidden md:block">
+      <div className="absolute inset-0 md:opacity-60 opacity-30">
         <AnimatedSystemGrid />
       </div>
       
       {/* Pulsing nodes */}
-      {/* Hide pulsing nodes on mobile to prevent drift */}
       <div className="hidden md:block">
         <PulsingNode x="10%" y="20%" delay={0} />
         <PulsingNode x="90%" y="30%" delay={0.5} color="rgb(139, 92, 246)" />
@@ -40,7 +39,6 @@ export function CinematicHero() {
       </div>
       
       {/* Radial gradient overlays */}
-      {/* Ambient glows disabled on mobile to avoid bleed */}
       <div className="pointer-events-none absolute md:-top-40 md:left-1/2 md:-translate-x-1/2 md:h-[600px] md:w-[600px] md:blur-[120px] hidden md:block rounded-full bg-primary/20" />
       <div className="pointer-events-none absolute md:-bottom-40 md:left-1/4 md:h-[500px] md:w-[500px] md:blur-[100px] hidden md:block rounded-full bg-secondary/15" />
       <div className="pointer-events-none absolute md:top-1/2 md:right-1/4 md:h-[400px] md:w-[400px] md:blur-[80px] hidden md:block rounded-full bg-accent/10" />
@@ -216,7 +214,13 @@ export function CinematicHero() {
           <ParallaxLayer speed={0.5}>
             <div className="w-full max-w-xs sm:max-w-sm md:max-w-none mx-auto md:mx-0 flex justify-center md:block">
               <div className="w-full" style={{ maxWidth: '500px' }}>
-                <ComplianceCoreVisualization />
+                {/* <ComplianceCoreVisualization /> */}
+                <div className="w-full h-[400px] bg-gradient-to-br from-primary/20 to-secondary/20 rounded-lg flex items-center justify-center">
+                  <div className="text-center text-muted-foreground">
+                    <div className="text-2xl font-bold mb-2">Compliance OS</div>
+                    <div className="text-sm">Interactive visualization</div>
+                  </div>
+                </div>
               </div>
             </div>
           </ParallaxLayer>

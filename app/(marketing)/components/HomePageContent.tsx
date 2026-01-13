@@ -195,7 +195,28 @@ export function HomePageContent() {
           <FadeInView delay={0.3}>
             <div className="flex justify-center">
               <GlassCard variant="elevated" glow glowColor="cyan" className="p-6 sm:p-8 lg:p-12 max-w-4xl w-full">
-                <NodeWireShowcase className="py-4" />
+                <div className="py-4 text-center">
+                  <div className="text-2xl font-bold mb-4">Connected Compliance System</div>
+                  <div className="text-muted-foreground">A connected platform where policies, controls, evidence, and audits work as one intelligent network</div>
+                  <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="p-4 rounded-lg bg-background/50 border border-border/50">
+                      <div className="text-sm font-semibold">Policies</div>
+                      <div className="text-xs text-muted-foreground">Framework alignment</div>
+                    </div>
+                    <div className="p-4 rounded-lg bg-background/50 border border-border/50">
+                      <div className="text-sm font-semibold">Controls</div>
+                      <div className="text-xs text-muted-foreground">Risk mitigation</div>
+                    </div>
+                    <div className="p-4 rounded-lg bg-background/50 border border-border/50">
+                      <div className="text-sm font-semibold">Evidence</div>
+                      <div className="text-xs text-muted-foreground">Audit trail</div>
+                    </div>
+                    <div className="p-4 rounded-lg bg-background/50 border border-border/50">
+                      <div className="text-sm font-semibold">Reports</div>
+                      <div className="text-xs text-muted-foreground">Compliance posture</div>
+                    </div>
+                  </div>
+                </div>
               </GlassCard>
             </div>
           </FadeInView>

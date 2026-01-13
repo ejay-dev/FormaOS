@@ -1,7 +1,8 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { Suspense, Component, ErrorInfo, ReactNode, useState, useEffect } from "react";
+import { CinematicHero } from "./CinematicHero";
+import { HomePageContent } from "./HomePageContent";
 
 // Error boundary to catch and display errors in dynamic components
 class ComponentErrorBoundary extends Component<
@@ -112,70 +113,17 @@ function SimpleContent() {
   );
 }
 
-// Dynamic imports with SSR disabled for animation-heavy components
-const CinematicHero = dynamic(
-  () => import("./CinematicHero").then(mod => mod.CinematicHero),
-  { 
-    ssr: false,
-    loading: () => (
-      <div className="min-h-[100svh] md:min-h-[90vh] flex items-center justify-center bg-background">
-        <div className="animate-pulse text-muted-foreground">Loading...</div>
-      </div>
-    )
-  }
-);
-
-const HomePageContent = dynamic(
-  () => import("./HomePageContent").then(mod => mod.HomePageContent),
-  { 
-    ssr: false,
-    loading: () => (
-      <div className="py-20 flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">Loading content...</div>
-      </div>
-    )
-  }
-);
-
 export function HomePageClient() {
-  const [isClient, setIsClient] = useState(false);
-  
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  // Only render on client side
-  if (!isClient) {
-    return (
-      <>
-        <SimpleHero />
-        <SimpleContent />
-      </>
-    );
-  }
-
   return (
     <>
-      {/* Cinematic Hero with 3D modules */}
+      {/* Cinematic Hero */}
       <ComponentErrorBoundary name="Hero" fallback={<SimpleHero />}>
-        <Suspense fallback={
-          <div className="min-h-[100svh] md:min-h-[90vh] flex items-center justify-center bg-background">
-            <div className="animate-pulse text-muted-foreground">Loading...</div>
-          </div>
-        }>
-          <CinematicHero />
-        </Suspense>
+        <CinematicHero />
       </ComponentErrorBoundary>
 
       {/* Rest of the content with motion */}
       <ComponentErrorBoundary name="Content" fallback={<SimpleContent />}>
-        <Suspense fallback={
-          <div className="py-20 flex items-center justify-center">
-            <div className="animate-pulse text-muted-foreground">Loading content...</div>
-          </div>
-        }>
-          <HomePageContent />
-        </Suspense>
+        <HomePageContent />
       </ComponentErrorBoundary>
     </>
   );

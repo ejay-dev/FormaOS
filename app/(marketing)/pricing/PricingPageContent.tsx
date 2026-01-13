@@ -28,12 +28,12 @@ export function PricingHero() {
       </div>
       
       {/* Pulsing nodes - hidden on mobile */}
-      <div className="hidden sm:block">
+      {/* <div className="hidden sm:block">
         <PulsingNode x="10%" y="20%" delay={0} />
         <PulsingNode x="90%" y="30%" delay={0.5} color="rgb(139, 92, 246)" />
         <PulsingNode x="15%" y="70%" delay={1} color="rgb(6, 182, 212)" />
         <PulsingNode x="85%" y="80%" delay={1.5} />
-      </div>
+      </div> */}
       
       {/* Radial gradient overlays - reduced on mobile */}
       <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[300px] sm:h-[600px] w-[300px] sm:w-[600px] rounded-full bg-primary/20 blur-[60px] sm:blur-[120px]" />
