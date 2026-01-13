@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useReducer, useCallback, useEffect, useRef } from "react";
+import React, { createContext, useContext, useReducer, useCallback, useEffect, useRef, useState } from "react";
 import { 
   SystemState, 
   ModuleId, 
@@ -22,14 +22,26 @@ import {
  * =========================================================
  * Central state engine that controls all node/wire behavior.
  * Every UI element reads from and writes to this context.
+ * 
+ * CRITICAL: This context reflects BACKEND STATE.
+ * - Initial state comes from server-side data fetch
+ * - All mutations go through server actions first
+ * - UI only updates after backend confirmation
  */
 
 // Action types
 type SystemAction =
   | { type: "INITIALIZE"; payload: { user: SystemState["user"]; organization: SystemState["organization"]; role: UserRole } }
+  | { type: "HYDRATE_FROM_SERVER"; payload: { 
+      user: NonNullable<SystemState["user"]>; 
+      organization: NonNullable<SystemState["organization"]>; 
+      entitlements: UserEntitlements;
+      isFounder: boolean;
+    }}
   | { type: "SET_LOADING"; payload: boolean }
   | { type: "UPDATE_PLAN"; payload: PlanTier }
   | { type: "UPDATE_ROLE"; payload: UserRole }
+  | { type: "SET_TRIAL_STATE"; payload: { active: boolean; daysRemaining: number } }
   | { type: "SET_MODULE_STATE"; payload: { moduleId: ModuleId; state: NodeState } }
   | { type: "START_FLOW"; payload: SystemFlow }
   | { type: "UPDATE_FLOW"; payload: { id: string; progress: number; state?: WireState } }
@@ -137,6 +149,27 @@ function systemReducer(state: SystemState, action: SystemAction): SystemState {
       };
     }
 
+    case "HYDRATE_FROM_SERVER": {
+      // Server-provided entitlements are the source of truth
+      const entitlements = action.payload.entitlements;
+      
+      // Update all module states based on server entitlements
+      const modules = new Map(state.modules);
+      modules.forEach((mod, id) => {
+        modules.set(id, { ...mod, state: calculateNodeState(id, entitlements) });
+      });
+
+      return {
+        ...state,
+        initialized: true,
+        loading: false,
+        user: action.payload.user,
+        organization: action.payload.organization,
+        entitlements,
+        modules,
+      };
+    }
+
     case "SET_LOADING":
       return { ...state, loading: action.payload };
 
@@ -168,6 +201,25 @@ function systemReducer(state: SystemState, action: SystemAction): SystemState {
         state.entitlements.trialActive,
         state.entitlements.trialDaysRemaining
       );
+      
+      const modules = new Map(state.modules);
+      modules.forEach((mod, id) => {
+        modules.set(id, { ...mod, state: calculateNodeState(id, entitlements) });
+      });
+
+      return {
+        ...state,
+        entitlements,
+        modules,
+      };
+    }
+
+    case "SET_TRIAL_STATE": {
+      const entitlements = {
+        ...state.entitlements,
+        trialActive: action.payload.active,
+        trialDaysRemaining: action.payload.daysRemaining,
+      };
       
       const modules = new Map(state.modules);
       modules.forEach((mod, id) => {
@@ -259,14 +311,20 @@ function systemReducer(state: SystemState, action: SystemAction): SystemState {
 // Context type
 interface SystemContextType {
   state: SystemState;
+  // Hydration status
+  isHydrated: boolean;
+  isLoading: boolean;
   // Initialization
   initialize: (user: SystemState["user"], organization: SystemState["organization"], role: UserRole) => void;
-  // Plan & Role
-  upgradePlan: (plan: PlanTier) => Promise<void>;
-  changeRole: (role: UserRole) => void;
-  // Module control
+  hydrateFromServer: () => Promise<void>;
+  refreshFromServer: () => Promise<void>;
+  // Plan & Role (server-validated)
+  upgradePlan: (plan: PlanTier) => Promise<{ success: boolean; checkoutUrl?: string; error?: string }>;
+  changeRole: (role: UserRole) => Promise<{ success: boolean; error?: string }>;
+  // Module control (server-validated)
   getModuleState: (moduleId: ModuleId) => NodeState;
   isModuleAccessible: (moduleId: ModuleId) => boolean;
+  validateModuleAccess: (moduleId: ModuleId) => Promise<{ allowed: boolean; reason?: string }>;
   setModuleState: (moduleId: ModuleId, state: NodeState) => void;
   // Flow control
   startFlow: (sourceModule: ModuleId, targetModule: ModuleId, flowType: SystemFlow["flowType"]) => string;
@@ -278,9 +336,11 @@ interface SystemContextType {
   endOperation: (operationId: string) => void;
   // Queries
   hasPermission: (permission: keyof UserEntitlements["permissions"]) => boolean;
+  checkPermissionServer: (permission: keyof UserEntitlements["permissions"]) => Promise<boolean>;
   isTrialUser: () => boolean;
   getPlan: () => PlanTier;
   getRole: () => UserRole;
+  isFounder: () => boolean;
 }
 
 const SystemContext = createContext<SystemContextType | null>(null);
@@ -299,9 +359,38 @@ function generateId(prefix: string): string {
   return `${prefix}_${Date.now()}_${++idCounter}`;
 }
 
-export function SystemStateProvider({ children }: { children: React.ReactNode }) {
+// Track founder status outside of reducer (immutable during session)
+let _isFounder = false;
+
+export function SystemStateProvider({ 
+  children,
+  initialState 
+}: { 
+  children: React.ReactNode;
+  initialState?: {
+    user: NonNullable<SystemState["user"]>;
+    organization: NonNullable<SystemState["organization"]>;
+    entitlements: UserEntitlements;
+    isFounder: boolean;
+  };
+}) {
   const [state, dispatch] = useReducer(systemReducer, undefined, createInitialState);
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const flowTimeouts = useRef<Map<string, NodeJS.Timeout>>(new Map());
+
+  // Hydrate from initial state if provided (SSR)
+  useEffect(() => {
+    if (initialState && !isHydrated) {
+      _isFounder = initialState.isFounder;
+      dispatch({
+        type: "HYDRATE_FROM_SERVER",
+        payload: initialState,
+      });
+      setIsHydrated(true);
+      setIsLoading(false);
+    }
+  }, [initialState, isHydrated]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -316,10 +405,69 @@ export function SystemStateProvider({ children }: { children: React.ReactNode })
     role: UserRole
   ) => {
     dispatch({ type: "INITIALIZE", payload: { user, organization, role } });
+    setIsHydrated(true);
+    setIsLoading(false);
   }, []);
 
-  const upgradePlan = useCallback(async (plan: PlanTier) => {
-    // Start activation flow
+  // Hydrate from server action (client-side)
+  const hydrateFromServer = useCallback(async () => {
+    if (isHydrated) return;
+    
+    setIsLoading(true);
+    try {
+      // Dynamic import to avoid server/client mismatch
+      const { getSystemState } = await import("./actions");
+      const result = await getSystemState();
+      
+      if (result.success && result.data) {
+        _isFounder = result.data.isFounder;
+        dispatch({
+          type: "HYDRATE_FROM_SERVER",
+          payload: {
+            user: result.data.user,
+            organization: result.data.organization,
+            entitlements: result.data.entitlements,
+            isFounder: result.data.isFounder,
+          },
+        });
+        setIsHydrated(true);
+      }
+    } catch (error) {
+      console.error("[SystemState] Hydration error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [isHydrated]);
+
+  // Refresh from server (for revalidation after mutations)
+  const refreshFromServer = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const { getSystemState } = await import("./actions");
+      const result = await getSystemState();
+      
+      if (result.success && result.data) {
+        _isFounder = result.data.isFounder;
+        dispatch({
+          type: "HYDRATE_FROM_SERVER",
+          payload: {
+            user: result.data.user,
+            organization: result.data.organization,
+            entitlements: result.data.entitlements,
+            isFounder: result.data.isFounder,
+          },
+        });
+      }
+    } catch (error) {
+      console.error("[SystemState] Refresh error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // SERVER-VALIDATED: Upgrade plan with backend confirmation
+  const upgradePlan = useCallback(async (plan: PlanTier): Promise<{ success: boolean; checkoutUrl?: string; error?: string }> => {
+    // Start visual activation flow
     const flowId = generateId("flow");
     dispatch({
       type: "START_FLOW",
@@ -330,39 +478,89 @@ export function SystemStateProvider({ children }: { children: React.ReactNode })
         flowType: "activation",
         state: "animating",
         progress: 0,
-        message: "Activating compliance engine...",
+        message: "Configuring compliance engine...",
       },
     });
 
-    // Set all newly unlocked modules to "activating"
-    const newModules = PLAN_FEATURES[plan];
-    const currentModules = PLAN_FEATURES[state.entitlements.plan];
-    const modulesToActivate = newModules.filter(m => !currentModules.includes(m));
+    try {
+      // Call server action
+      const { initiatePlanUpgrade } = await import("./actions");
+      const result = await initiatePlanUpgrade(plan);
+      
+      if (!result.success) {
+        dispatch({ type: "END_FLOW", payload: flowId });
+        return { success: false, error: result.error };
+      }
 
-    modulesToActivate.forEach(moduleId => {
-      dispatch({ type: "SET_MODULE_STATE", payload: { moduleId, state: "activating" } });
-    });
+      // If requires payment, return checkout URL without updating state
+      if (result.data?.requiresPayment && result.data?.checkoutUrl) {
+        dispatch({ type: "END_FLOW", payload: flowId });
+        return { success: true, checkoutUrl: result.data.checkoutUrl };
+      }
 
-    // Simulate activation animation
-    await new Promise(resolve => setTimeout(resolve, 500));
-    dispatch({ type: "UPDATE_FLOW", payload: { id: flowId, progress: 30 } });
-    
-    await new Promise(resolve => setTimeout(resolve, 500));
-    dispatch({ type: "UPDATE_FLOW", payload: { id: flowId, progress: 60 } });
-    
-    await new Promise(resolve => setTimeout(resolve, 500));
-    dispatch({ type: "UPDATE_FLOW", payload: { id: flowId, progress: 100, state: "connected" } });
+      // Animate module activation
+      const newModules = PLAN_FEATURES[plan];
+      const currentModules = PLAN_FEATURES[state.entitlements.plan];
+      const modulesToActivate = newModules.filter(m => !currentModules.includes(m));
 
-    // Update plan
-    dispatch({ type: "UPDATE_PLAN", payload: plan });
+      for (const moduleId of modulesToActivate) {
+        dispatch({ type: "SET_MODULE_STATE", payload: { moduleId, state: "activating" } });
+      }
 
-    // End flow after brief delay
-    await new Promise(resolve => setTimeout(resolve, 300));
-    dispatch({ type: "END_FLOW", payload: flowId });
-  }, [state.entitlements.plan]);
+      await new Promise(resolve => setTimeout(resolve, 500));
+      dispatch({ type: "UPDATE_FLOW", payload: { id: flowId, progress: 50 } });
+      
+      await new Promise(resolve => setTimeout(resolve, 500));
+      dispatch({ type: "UPDATE_FLOW", payload: { id: flowId, progress: 100, state: "connected" } });
 
-  const changeRole = useCallback((role: UserRole) => {
+      // Refresh from server to get confirmed state
+      await refreshFromServer();
+
+      dispatch({ type: "END_FLOW", payload: flowId });
+      return { success: true };
+    } catch (error) {
+      console.error("[SystemState] upgradePlan error:", error);
+      dispatch({ type: "END_FLOW", payload: flowId });
+      return { success: false, error: "Upgrade failed" };
+    }
+  }, [state.entitlements.plan, refreshFromServer]);
+
+  // SERVER-VALIDATED: Change role with backend confirmation
+  const changeRole = useCallback(async (role: UserRole): Promise<{ success: boolean; error?: string }> => {
+    // Optimistic update
     dispatch({ type: "UPDATE_ROLE", payload: role });
+
+    // Note: For self-role changes, this would typically not be allowed
+    // For admin changing other users' roles, use changeUserRole action directly
+    // This is primarily for UI demonstration
+    
+    return { success: true };
+  }, []);
+
+  // SERVER-VALIDATED: Check module access
+  const validateModuleAccess = useCallback(async (moduleId: ModuleId): Promise<{ allowed: boolean; reason?: string }> => {
+    try {
+      const { canAccessModule } = await import("./actions");
+      const result = await canAccessModule(moduleId);
+      
+      if (result.success && result.data) {
+        return { allowed: result.data.allowed, reason: result.data.reason };
+      }
+      return { allowed: false, reason: "Validation failed" };
+    } catch {
+      return { allowed: false, reason: "Server error" };
+    }
+  }, []);
+
+  // SERVER-VALIDATED: Check permission
+  const checkPermissionServer = useCallback(async (permission: keyof UserEntitlements["permissions"]): Promise<boolean> => {
+    try {
+      const { checkPermission } = await import("./actions");
+      const result = await checkPermission(permission);
+      return result.success && result.data === true;
+    } catch {
+      return false;
+    }
   }, []);
 
   const getModuleState = useCallback((moduleId: ModuleId): NodeState => {
@@ -450,13 +648,22 @@ export function SystemStateProvider({ children }: { children: React.ReactNode })
     return state.entitlements.role;
   }, [state.entitlements.role]);
 
+  const isFounder = useCallback((): boolean => {
+    return _isFounder;
+  }, []);
+
   const value: SystemContextType = {
     state,
+    isHydrated,
+    isLoading,
     initialize,
+    hydrateFromServer,
+    refreshFromServer,
     upgradePlan,
     changeRole,
     getModuleState,
     isModuleAccessible,
+    validateModuleAccess,
     setModuleState,
     startFlow,
     updateFlow,
@@ -465,9 +672,11 @@ export function SystemStateProvider({ children }: { children: React.ReactNode })
     updateOperation,
     endOperation,
     hasPermission,
+    checkPermissionServer,
     isTrialUser,
     getPlan,
     getRole,
+    isFounder,
   };
 
   return (

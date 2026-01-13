@@ -5,6 +5,7 @@ import { TopBar } from "@/components/topbar";
 import { CommandMenu } from "@/components/command-menu";
 import { CommandProvider } from "@/components/ui/command-provider";
 import { ComplianceSystemProvider } from "@/components/compliance-system/provider";
+import { SystemStateHydrator } from "@/lib/system-state/hydrator";
 import { resolvePlanKey } from "@/lib/plans";
 import { normalizeRole } from "@/app/app/actions/rbac";
 
@@ -119,70 +120,72 @@ export default async function AppLayout({
    * 3) APPLICATION FRAME
    * ----------------------------------------------------- */
   return (
-    <CommandProvider>
-      <ComplianceSystemProvider>
-        <div className="relative flex h-screen w-full overflow-hidden bg-background text-foreground">
-          {/* Ambient background effects */}
-          <div className="pointer-events-none absolute inset-x-0 -top-32 h-64 bg-gradient-glow blur-3xl opacity-40" />
-          
-          {/* App shell grid */}
-          <div className="flex h-full w-full">
+    <SystemStateHydrator>
+      <CommandProvider>
+        <ComplianceSystemProvider>
+          <div className="relative flex h-screen w-full overflow-hidden bg-background text-foreground">
+            {/* Ambient background effects */}
+            <div className="pointer-events-none absolute inset-x-0 -top-32 h-64 bg-gradient-glow blur-3xl opacity-40" />
+            
+            {/* App shell grid */}
+            <div className="flex h-full w-full">
 
-            {/* Sidebar */}
-            <aside className="relative z-30 hidden md:flex h-full w-[280px] shrink-0 flex-col glass-panel-strong border-r border-white/8">
-              {/* Sidebar header */}
-              <div className="flex h-20 items-center border-b border-white/8 px-6">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-primary text-sm font-bold text-primary-foreground shadow-premium-lg glow-cyan">
-                    FO
-                  </div>
-                  <div>
-                    <div className="text-base font-bold font-display">FormaOS</div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider">Enterprise</div>
+              {/* Sidebar */}
+              <aside className="relative z-30 hidden md:flex h-full w-[280px] shrink-0 flex-col glass-panel-strong border-r border-white/8">
+                {/* Sidebar header */}
+                <div className="flex h-20 items-center border-b border-white/8 px-6">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-primary text-sm font-bold text-primary-foreground shadow-premium-lg glow-cyan">
+                      FO
+                    </div>
+                    <div>
+                      <div className="text-base font-bold font-display">FormaOS</div>
+                      <div className="text-xs text-muted-foreground uppercase tracking-wider">Enterprise</div>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Sidebar navigation */}
-              <div className="flex flex-1 overflow-y-auto">
-                <Sidebar role={roleKey} />
-              </div>
-
-              {/* Sidebar footer */}
-              <div className="border-t border-white/8 px-6 py-5 text-xs text-muted-foreground">
-                <div className="font-medium">© {new Date().getFullYear()} FormaOS</div>
-                <div className="mt-1.5">Compliance Operating System</div>
-              </div>
-            </aside>
-
-            {/* Main application area */}
-            <section className="relative flex h-full flex-1 flex-col overflow-hidden">
-
-              {/* Top bar */}
-              <header className="sticky top-0 z-40 flex h-20 w-full items-center glass-panel-strong border-b border-white/8">
-                <div className="flex h-full w-full items-center px-8">
-                  <TopBar
-                    orgName={orgName || "My Organization"}
-                    userEmail={user.email || ""}
-                    userId={user.id}
-                    orgId={membership.organization_id}
-                    role={roleKey}
-                  />
+                {/* Sidebar navigation */}
+                <div className="flex flex-1 overflow-y-auto">
+                  <Sidebar role={roleKey} />
                 </div>
-              </header>
 
-              {/* Main content */}
-              <main className="relative flex flex-1 flex-col overflow-y-auto bg-background">
-                {/* Page container with better spacing */}
-                <div className="mx-auto w-full max-w-[1600px] px-8 py-10">{children}</div>
-              </main>
-            </section>
+                {/* Sidebar footer */}
+                <div className="border-t border-white/8 px-6 py-5 text-xs text-muted-foreground">
+                  <div className="font-medium">© {new Date().getFullYear()} FormaOS</div>
+                  <div className="mt-1.5">Compliance Operating System</div>
+                </div>
+              </aside>
+
+              {/* Main application area */}
+              <section className="relative flex h-full flex-1 flex-col overflow-hidden">
+
+                {/* Top bar */}
+                <header className="sticky top-0 z-40 flex h-20 w-full items-center glass-panel-strong border-b border-white/8">
+                  <div className="flex h-full w-full items-center px-8">
+                    <TopBar
+                      orgName={orgName || "My Organization"}
+                      userEmail={user.email || ""}
+                      userId={user.id}
+                      orgId={membership.organization_id}
+                      role={roleKey}
+                    />
+                  </div>
+                </header>
+
+                {/* Main content */}
+                <main className="relative flex flex-1 flex-col overflow-y-auto bg-background">
+                  {/* Page container with better spacing */}
+                  <div className="mx-auto w-full max-w-[1600px] px-8 py-10">{children}</div>
+                </main>
+              </section>
+            </div>
+
+            {/* Command palette */}
+            <CommandMenu />
           </div>
-
-          {/* Command palette */}
-          <CommandMenu />
-        </div>
-      </ComplianceSystemProvider>
-    </CommandProvider>
+        </ComplianceSystemProvider>
+      </CommandProvider>
+    </SystemStateHydrator>
   );
 }
