@@ -1,9 +1,10 @@
 "use client";
 
+import { Suspense } from "react";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function AuthRedirectPage() {
+function AuthRedirectContent() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -25,5 +26,20 @@ export default function AuthRedirectPage() {
         <p className="mt-4 text-sm text-slate-400">Completing sign in...</p>
       </div>
     </div>
+  );
+}
+
+export default function AuthRedirectPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-[hsl(var(--background))] text-slate-100">
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-sky-400 border-r-transparent"></div>
+          <p className="mt-4 text-sm text-slate-400">Loading...</p>
+        </div>
+      </div>
+    }>
+      <AuthRedirectContent />
+    </Suspense>
   );
 }

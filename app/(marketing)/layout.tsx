@@ -10,10 +10,17 @@ import "./marketing.css";
 export default async function MarketingLayout({ children }: { children: ReactNode }) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://formaos.com.au";
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? siteUrl;
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  
+  // Wrap Supabase call in try-catch to prevent layout crash
+  let user = null;
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data } = await supabase.auth.getUser();
+    user = data?.user ?? null;
+  } catch (error) {
+    console.error("[marketing/layout] Supabase error:", error);
+    // Continue without user - show public marketing page
+  }
   
   if (user) {
     // Check if user is a founder
