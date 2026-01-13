@@ -10,7 +10,6 @@ import {
   VisualDivider,
   GradientMesh,
   InteractiveCard,
-  ParticleField,
 } from "@/components/motion";
 import { PulsingNode, ParallaxLayer } from "@/components/motion/CleanBackground";
 import { MarketingAnchor } from "./marketing-anchor";
@@ -132,12 +131,8 @@ export function HomePageClient() {
         ambientColor="primary"
         className="py-16 sm:py-20 lg:py-32 relative"
       >
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <ParticleField 
-            particleCount={25} 
-            colors={["rgba(0, 212, 251, 0.3)", "rgba(139, 92, 246, 0.25)"]}
-          />
-        </div>
+        {/* Clean gradient background - NO motion elements */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-background to-secondary/3" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
@@ -174,10 +169,12 @@ export function HomePageClient() {
 
       {/* Live Platform Metrics */}
       <CinematicSection 
-        backgroundType="nodes" 
+        backgroundType="gradient" 
         ambientColor="secondary"
         className="py-16 sm:py-20 lg:py-32"
       >
+        {/* Clean gradient background - NO motion elements */}
+        <div className="absolute inset-0 bg-gradient-to-br from-secondary/3 via-background to-primary/3" />
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
             badge="Live Platform Metrics"
@@ -209,49 +206,231 @@ export function HomePageClient() {
 
       <VisualDivider />
 
-      {/* How It Works */}
+      {/* How It Works - System Interface Design */}
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
         className="py-16 sm:py-20 lg:py-32 relative"
       >
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <ParticleField 
-            particleCount={25} 
-            colors={["rgba(0, 212, 251, 0.3)", "rgba(139, 92, 246, 0.25)"]}
-          />
-        </div>
+        {/* Clean gradient background - NO motion elements */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-secondary/5" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-          <SectionHeader
-            badge="How It Works"
-            title={<>A System Designed for<br className="hidden sm:inline" /><span className="text-gradient">Daily Operations</span></>}
-            subtitle="Compliance shouldn't be a quarterly fire drill. FormaOS embeds governance directly into everyday workflows — making compliance part of how your organization runs."
-            alignment="center"
-          />
+          {/* Main System Panel Container */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 shadow-2xl overflow-hidden"
+          >
+            {/* System Header Block */}
+            <div className="bg-gradient-to-r from-white/[0.05] to-white/[0.02] border-b border-white/5 px-8 py-6">
+              <div className="text-center">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.2, duration: 0.6 }}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-4"
+                >
+                  <Target className="h-3 w-3 text-primary" />
+                  How It Works
+                </motion.div>
+                
+                <motion.h2
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.8 }}
+                  className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-2"
+                >
+                  A System Designed for<br className="hidden sm:inline" />
+                  <span className="text-gradient">Daily Operations</span>
+                </motion.h2>
+                
+                <motion.div
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  transition={{ delay: 0.8, duration: 0.8 }}
+                  className="mx-auto mt-3 h-1 w-24 bg-gradient-to-r from-secondary via-primary to-accent rounded-full"
+                />
+                
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, duration: 0.8 }}
+                  className="mt-4 text-lg text-foreground/70 max-w-3xl mx-auto"
+                >
+                  Compliance shouldn't be a quarterly fire drill. FormaOS embeds governance directly into everyday workflows — making compliance part of how your organization runs.
+                </motion.p>
+              </div>
+            </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mt-12">
-            <div className="text-center">
-              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">1</div>
-              <h3 className="text-lg font-semibold mb-2">Structure</h3>
-              <p className="text-sm text-foreground/80">Model your organization, sites, and teams with clear ownership and framework alignment.</p>
+            {/* System Module Grid */}
+            <div className="p-8 sm:p-12">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+                
+                {/* STRUCTURE Module */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5, duration: 0.6 }}
+                  whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                  className="group relative"
+                >
+                  <div className="relative backdrop-blur-lg bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-2xl p-6 border border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-primary/30 hover:from-primary/[0.08] hover:to-primary/[0.02]">
+                    {/* System Status Badge */}
+                    <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-xs font-bold text-white shadow-lg border-2 border-white/20">
+                      1
+                    </div>
+                    
+                    {/* System Icon Node */}
+                    <div className="relative w-16 h-16 mx-auto mb-6">
+                      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20" />
+                      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Database className="h-8 w-8 text-primary group-hover:scale-110 transition-transform duration-300" />
+                      </div>
+                    </div>
+                    
+                    {/* Module Info */}
+                    <div className="text-center">
+                      <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors duration-300">
+                        Structure
+                      </h3>
+                      <p className="text-sm text-foreground/80 leading-relaxed">
+                        Model your organization, sites, and teams with clear ownership and framework alignment.
+                      </p>
+                    </div>
+                    
+                    {/* System Connection Indicator */}
+                    <div className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-primary/60 group-hover:bg-primary animate-pulse" />
+                  </div>
+                </motion.div>
+
+                {/* EXECUTE Module */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6, duration: 0.6 }}
+                  whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                  className="group relative"
+                >
+                  <div className="relative backdrop-blur-lg bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-2xl p-6 border border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-secondary/30 hover:from-secondary/[0.08] hover:to-secondary/[0.02]">
+                    {/* System Status Badge */}
+                    <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-xs font-bold text-white shadow-lg border-2 border-white/20">
+                      2
+                    </div>
+                    
+                    {/* System Icon Node */}
+                    <div className="relative w-16 h-16 mx-auto mb-6">
+                      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-secondary/20 to-secondary/10 border border-secondary/20" />
+                      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-secondary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Target className="h-8 w-8 text-secondary group-hover:scale-110 transition-transform duration-300" />
+                      </div>
+                    </div>
+                    
+                    {/* Module Info */}
+                    <div className="text-center">
+                      <h3 className="text-xl font-bold mb-3 group-hover:text-secondary transition-colors duration-300">
+                        Execute
+                      </h3>
+                      <p className="text-sm text-foreground/80 leading-relaxed">
+                        Turn controls into operational tasks with due dates, assignees, and accountability chains.
+                      </p>
+                    </div>
+                    
+                    {/* System Connection Indicator */}
+                    <div className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-secondary/60 group-hover:bg-secondary animate-pulse" />
+                  </div>
+                </motion.div>
+
+                {/* VERIFY Module */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7, duration: 0.6 }}
+                  whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                  className="group relative"
+                >
+                  <div className="relative backdrop-blur-lg bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-2xl p-6 border border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-accent/30 hover:from-accent/[0.08] hover:to-accent/[0.02]">
+                    {/* System Status Badge */}
+                    <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-gradient-to-br from-accent to-primary flex items-center justify-center text-xs font-bold text-white shadow-lg border-2 border-white/20">
+                      3
+                    </div>
+                    
+                    {/* System Icon Node */}
+                    <div className="relative w-16 h-16 mx-auto mb-6">
+                      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-accent/20 to-accent/10 border border-accent/20" />
+                      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Shield className="h-8 w-8 text-accent group-hover:scale-110 transition-transform duration-300" />
+                      </div>
+                    </div>
+                    
+                    {/* Module Info */}
+                    <div className="text-center">
+                      <h3 className="text-xl font-bold mb-3 group-hover:text-accent transition-colors duration-300">
+                        Verify
+                      </h3>
+                      <p className="text-sm text-foreground/80 leading-relaxed">
+                        Capture evidence automatically and monitor completion in real time.
+                      </p>
+                    </div>
+                    
+                    {/* System Connection Indicator */}
+                    <div className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-accent/60 group-hover:bg-accent animate-pulse" />
+                  </div>
+                </motion.div>
+
+                {/* AUDIT Module */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8, duration: 0.6 }}
+                  whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                  className="group relative"
+                >
+                  <div className="relative backdrop-blur-lg bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-2xl p-6 border border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-primary/30 hover:from-primary/[0.08] hover:to-primary/[0.02]">
+                    {/* System Status Badge */}
+                    <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center text-xs font-bold text-white shadow-lg border-2 border-white/20">
+                      4
+                    </div>
+                    
+                    {/* System Icon Node */}
+                    <div className="relative w-16 h-16 mx-auto mb-6">
+                      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20" />
+                      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <TrendingUp className="h-8 w-8 text-primary group-hover:scale-110 transition-transform duration-300" />
+                      </div>
+                    </div>
+                    
+                    {/* Module Info */}
+                    <div className="text-center">
+                      <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors duration-300">
+                        Audit
+                      </h3>
+                      <p className="text-sm text-foreground/80 leading-relaxed">
+                        Export defensible reports in minutes — not weeks.
+                      </p>
+                    </div>
+                    
+                    {/* System Connection Indicator */}
+                    <div className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-primary/60 group-hover:bg-primary animate-pulse" />
+                  </div>
+                </motion.div>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">2</div>
-              <h3 className="text-lg font-semibold mb-2">Execute</h3>
-              <p className="text-sm text-foreground/80">Turn controls into operational tasks with due dates, assignees, and accountability chains.</p>
+
+            {/* System Footer Status */}
+            <div className="bg-gradient-to-r from-white/[0.02] to-white/[0.01] border-t border-white/5 px-8 py-4">
+              <div className="flex items-center justify-center gap-2 text-xs text-foreground/60">
+                <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                System Status: All modules operational
+              </div>
             </div>
-            <div className="text-center">
-              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">3</div>
-              <h3 className="text-lg font-semibold mb-2">Verify</h3>
-              <p className="text-sm text-foreground/80">Capture evidence automatically and monitor completion in real time.</p>
-            </div>
-            <div className="text-center">
-              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">4</div>
-              <h3 className="text-lg font-semibold mb-2">Audit</h3>
-              <p className="text-sm text-foreground/80">Export defensible reports in minutes — not weeks.</p>
-            </div>
-          </div>
+          </motion.div>
         </div>
       </CinematicSection>
 
