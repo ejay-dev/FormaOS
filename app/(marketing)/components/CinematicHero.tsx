@@ -206,27 +206,27 @@ export function CinematicHero() {
           
           {/* Right: 3D floating modules with hierarchy */}
           <ParallaxLayer speed={0.5}>
-            <div className="relative h-[650px]">
+            <div className="relative h-[700px]">
               {/* Connection lines between modules */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-40" style={{ filter: "drop-shadow(0 0 8px rgba(56, 189, 248, 0.25))" }}>
+              <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-30" style={{ filter: "drop-shadow(0 0 6px rgba(56, 189, 248, 0.2))" }}>
                 <motion.path
-                  d="M 280 140 Q 200 280 180 420"
+                  d="M 320 160 Q 200 320 120 480"
                   stroke="url(#moduleGradient)"
                   strokeWidth="1.5"
                   fill="none"
                   strokeDasharray="4,6"
                   initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 0.4 }}
+                  animate={{ pathLength: 1, opacity: 0.35 }}
                   transition={{ delay: 1.5, duration: 2 }}
                 />
                 <motion.path
-                  d="M 300 180 L 280 480"
+                  d="M 340 200 L 280 540"
                   stroke="url(#moduleGradient)"
                   strokeWidth="1.5"
                   fill="none"
                   strokeDasharray="4,6"
                   initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 0.4 }}
+                  animate={{ pathLength: 1, opacity: 0.35 }}
                   transition={{ delay: 1.7, duration: 2 }}
                 />
                 <defs>
@@ -250,7 +250,7 @@ export function CinematicHero() {
                   scale: { delay: 0.5, duration: 1 },
                   y: { delay: 2, duration: 6, repeat: Infinity, ease: "easeInOut" }
                 }}
-                className="absolute top-12 right-4 w-[380px] z-30"
+                className="absolute top-8 right-0 w-[360px] z-30"
               >
                 <FloatingUIPanel 
                   delay={0.5} 
@@ -264,8 +264,8 @@ export function CinematicHero() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.85 }}
                 animate={{ 
-                  opacity: 0.92, 
-                  scale: 0.95,
+                  opacity: 0.9, 
+                  scale: 0.93,
                   y: [0, -6, 0]
                 }}
                 transition={{ 
@@ -273,7 +273,7 @@ export function CinematicHero() {
                   scale: { delay: 0.7, duration: 1 },
                   y: { delay: 2.5, duration: 7, repeat: Infinity, ease: "easeInOut" }
                 }}
-                className="absolute top-[46%] -translate-y-1/2 -left-4 w-[300px] z-20"
+                className="absolute top-[52%] -translate-y-1/2 left-4 w-[280px] z-20"
               >
                 <FloatingUIPanel 
                   delay={0.7} 
@@ -283,12 +283,12 @@ export function CinematicHero() {
                 </FloatingUIPanel>
               </motion.div>
               
-              {/* SECONDARY CARD - Security Status (smaller, bottom right) */}
+              {/* SECONDARY CARD - Security Status (smaller, bottom right, well-separated) */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.85 }}
                 animate={{ 
-                  opacity: 0.88, 
-                  scale: 0.92,
+                  opacity: 0.85, 
+                  scale: 0.9,
                   y: [0, -5, 0]
                 }}
                 transition={{ 
@@ -296,7 +296,7 @@ export function CinematicHero() {
                   scale: { delay: 0.9, duration: 1 },
                   y: { delay: 3, duration: 6.5, repeat: Infinity, ease: "easeInOut" }
                 }}
-                className="absolute bottom-16 right-20 w-[285px] z-10"
+                className="absolute bottom-4 right-12 w-[270px] z-10"
               >
                 <FloatingUIPanel 
                   delay={0.9} 
