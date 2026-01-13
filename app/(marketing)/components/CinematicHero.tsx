@@ -37,8 +37,8 @@ export function CinematicHero() {
       <div className="absolute inset-0 vignette pointer-events-none" />
       
       {/* Content container */}
-      <div className="relative z-10 mx-auto max-w-7xl px-6 sm:px-8 lg:px-12 py-28">
-        <div className="grid lg:grid-cols-[0.9fr_1fr] gap-16 items-center">
+      <div className="relative z-10 mx-auto max-w-7xl px-6 sm:px-8 lg:px-12 py-16 md:py-28">
+        <div className="flex flex-col md:grid md:grid-cols-[0.9fr_1fr] gap-8 md:gap-16 items-center md:items-center">
           
           {/* Left: Text content */}
           <ParallaxLayer speed={0.3}>
@@ -46,14 +46,14 @@ export function CinematicHero() {
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="space-y-10 max-w-lg"
+              className="space-y-10 max-w-lg w-full mx-auto md:mx-0 md:max-w-lg text-center md:text-left"
             >
               {/* Badge */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
-                className="inline-flex items-center gap-2.5 rounded-full glass-intense px-5 py-2.5 text-xs font-bold uppercase tracking-wider border border-primary/30"
+                className="inline-flex items-center gap-2.5 rounded-full glass-intense px-5 py-2.5 text-xs font-bold uppercase tracking-wider border border-primary/30 mx-auto md:mx-0"
               >
                 <motion.div
                   animate={{ rotate: 360 }}
@@ -130,7 +130,7 @@ export function CinematicHero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.8 }}
-                className="flex flex-wrap gap-5 pt-6 pb-6"
+                className="flex flex-col sm:flex-row gap-3 md:gap-5 pt-4 md:pt-6 pb-4 md:pb-6"
               >
                 {[
                   { icon: Activity, value: "94%", label: "Avg. Posture" },
@@ -142,7 +142,7 @@ export function CinematicHero() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.7 + i * 0.1, duration: 0.5 }}
-                    className="glass-panel rounded-xl px-4 py-3 flex items-center gap-3 hover:glass-intense transition-all group"
+                    className="glass-panel rounded-xl px-4 py-3 flex items-center gap-3 hover:glass-intense transition-all group flex-1 sm:flex-initial justify-center sm:justify-start"
                   >
                     <div className="rounded-lg bg-primary/10 p-2 group-hover:scale-110 transition-transform">
                       <stat.icon className="h-4 w-4 text-primary" />
@@ -160,18 +160,18 @@ export function CinematicHero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8, duration: 0.8 }}
-                className="flex flex-col sm:flex-row gap-4 pt-8"
+                className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-6 md:pt-8 w-full sm:w-auto"
               >
                 <Link
                   href="/auth/signup"
-                  className="btn btn-primary text-lg px-8 py-5 shadow-premium-2xl hover:shadow-[0_0_40px_rgba(56,189,248,0.4)] transition-all group"
+                  className="btn btn-primary text-base md:text-lg px-6 md:px-8 py-4 md:py-5 shadow-premium-2xl hover:shadow-[0_0_40px_rgba(56,189,248,0.4)] transition-all group w-full sm:w-auto text-center"
                 >
                   <span>Start Free Trial</span>
                   <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link
                   href="/contact"
-                  className="btn btn-secondary text-lg px-8 py-5"
+                  className="btn btn-secondary text-base md:text-lg px-6 md:px-8 py-4 md:py-5 w-full sm:w-auto text-center"
                 >
                   Request Demo
                 </Link>
@@ -182,7 +182,7 @@ export function CinematicHero() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1, duration: 0.8 }}
-                className="flex flex-wrap gap-3 text-sm text-foreground/60"
+                className="flex flex-col sm:flex-row flex-wrap justify-center md:justify-start gap-3 text-xs md:text-sm text-foreground/60"
               >
                 <span className="flex items-center gap-2">
                   <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
@@ -202,7 +202,11 @@ export function CinematicHero() {
           
           {/* Right: Compliance Core Visualization */}
           <ParallaxLayer speed={0.5}>
-            <ComplianceCoreVisualization />
+            <div className="w-full max-w-md md:max-w-none mx-auto md:mx-0 flex justify-center md:block">
+              <div className="w-full" style={{ maxWidth: '500px' }}>
+                <ComplianceCoreVisualization />
+              </div>
+            </div>
           </ParallaxLayer>
         </div>
       </div>

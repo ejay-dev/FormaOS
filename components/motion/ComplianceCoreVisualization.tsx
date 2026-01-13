@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Shield, FileCheck, BarChart3, Lock, Zap } from "lucide-react";
 
 interface ModuleConfig {
@@ -14,6 +14,15 @@ interface ModuleConfig {
 export function ComplianceCoreVisualization() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(true);
+
+  // Detect screen size for responsive orbital radius
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   
   // 5 orbiting modules with perfect 72° angular distribution
   const modules: ModuleConfig[] = [
@@ -24,11 +33,11 @@ export function ComplianceCoreVisualization() {
     { icon: <Zap className="h-6 w-6" />, label: "Policies", color: "rgb(34, 197, 94)", angle: 288 },
   ];
 
-  // Larger orbital radius (increased from 140px)
-  const orbitRadius = 200;
+  // Responsive orbital radius
+  const orbitRadius = isMobile ? 110 : 200;
 
   return (
-    <div ref={containerRef} className="relative w-full h-[700px] flex items-center justify-center">
+    <div ref={containerRef} className="relative w-full h-[400px] md:h-[700px] flex items-center justify-center">
       {/* Background glow layers - refined for cinema */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Primary central glow - subtle, premium */}
@@ -61,7 +70,7 @@ export function ComplianceCoreVisualization() {
       </div>
 
       {/* Orbital container - larger size */}
-      <div className="relative w-[600px] h-[600px]">
+      <div className="relative w-[350px] h-[350px] md:w-[600px] md:h-[600px]">
         {/* Orbital paths (SVG) - properly aligned */}
         <svg
           className="absolute inset-0 w-full h-full pointer-events-none opacity-20"
