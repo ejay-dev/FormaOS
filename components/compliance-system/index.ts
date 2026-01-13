@@ -47,5 +47,14 @@ export { NodeBadge, StatusBadge } from './node-badge';
 export { ComplianceToast, ComplianceToastProvider, useComplianceToast } from './compliance-toast';
 export { useComplianceAction } from './use-compliance-action';
 
+// System State Components
+export { SystemNode, SystemNodeGrid } from './system-node';
+export { SystemWire, WireCanvas } from './system-wire';
+
+// Flow Components
+export { PlanActivationFlow } from './plan-activation-flow';
+export { FeatureEnableFlow } from './feature-enable-flow';
+export { AdminPermissionFlow } from './admin-permission-flow';
+
 // Provider
 export { ComplianceSystemProvider } from './provider';

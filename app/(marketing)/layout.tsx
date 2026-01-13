@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Menu } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { OAuthRedirectWrapper } from "./components/oauth-redirect-wrapper";
 import { NavLinks } from "./components/NavLinks";
+import { MobileNav } from "./components/MobileNav";
 import "./marketing.css";
 
 export default async function MarketingLayout({ children }: { children: ReactNode }) {
@@ -67,24 +67,8 @@ export default async function MarketingLayout({ children }: { children: ReactNod
             {/* Desktop nav */}
             <NavLinks variant="desktop" />
 
-            {/* Mobile menu (overlay to avoid hero overlap) */}
-            <details className="relative md:hidden">
-              <summary className="flex cursor-pointer list-none items-center gap-2 rounded-lg glass-panel px-3 py-2 text-sm text-foreground font-medium">
-                <Menu className="h-4 w-4" />
-                Menu
-              </summary>
-              {/* Full-screen overlay with isolated z-index */}
-              <div className="fixed inset-0 z-[60]">
-                {/* Backdrop */}
-                <div className="absolute inset-0 bg-black/60" />
-                {/* Panel */}
-                <div className="absolute right-4 top-20 w-[calc(100%-2rem)] max-w-sm rounded-2xl glass-panel-strong p-2 text-sm shadow-premium-xl border border-white/10">
-                  <NavLinks variant="mobile" />
-                  <div className="my-2 h-px bg-white/10" />
-                  <Link href="/auth/signin" className="block rounded-lg px-4 py-2.5 hover:bg-white/10 transition-colors">Login</Link>
-                </div>
-              </div>
-            </details>
+            {/* Mobile menu */}
+            <MobileNav />
 
             {/* CTA buttons */}
             <div className="hidden md:flex items-center gap-3 text-[15px]">

@@ -14,21 +14,29 @@ const links = [
   { href: "/contact", label: "Contact" },
 ];
 
-export function NavLinks({ variant = "desktop" }: { variant?: "desktop" | "mobile" }) {
+interface NavLinksProps {
+  variant?: "desktop" | "mobile";
+  onLinkClick?: () => void;
+}
+
+export function NavLinks({ variant = "desktop", onLinkClick }: NavLinksProps) {
   const pathname = usePathname() || "/";
 
   if (variant === "mobile") {
     return (
-      <div className="text-sm">
+      <div className="text-sm space-y-1">
         {links.map((l) => {
           const isActive = pathname === l.href;
           return (
             <Link
               key={l.href}
               href={l.href}
+              onClick={onLinkClick}
               className={clsx(
-                "block rounded-lg px-4 py-2.5 transition-colors",
-                isActive ? "bg-white/12 text-foreground" : "hover:bg-white/10 text-foreground/80"
+                "block rounded-xl px-4 py-3 transition-all",
+                isActive 
+                  ? "bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20" 
+                  : "hover:bg-white/5 text-slate-300 hover:text-white"
               )}
               aria-current={isActive ? "page" : undefined}
             >

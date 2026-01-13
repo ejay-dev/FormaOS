@@ -353,6 +353,70 @@
   }
 }
 
+/* =========================================================
+   MOBILE FIXES
+   Prevent horizontal overflow and hero layout issues
+   ========================================================= */
+
+/* Prevent horizontal scroll */
+html, body {
+  overflow-x: hidden;
+}
+
+.mk-shell {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
+/* Mobile-specific fixes */
+@media (max-width: 767px) {
+  /* Reduce ambient effects on mobile for performance */
+  .mk-shell::before,
+  .mk-shell::after {
+    opacity: 0.3;
+    animation: none;
+  }
+  
+  /* Hero section mobile adjustments */
+  .home-hero {
+    min-height: 100svh;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+  }
+  
+  /* Prevent any fixed elements from causing scroll */
+  .mk-shell > * {
+    max-width: 100vw;
+  }
+  
+  /* Ensure header doesn't cause overflow */
+  header {
+    max-width: 100vw;
+  }
+  
+  /* Reduce card shadows on mobile */
+  .mk-card {
+    box-shadow: 0 12px 30px rgba(2, 6, 23, 0.5);
+  }
+  
+  /* Smaller text sizes on mobile */
+  .text-gradient {
+    background-size: 200% auto;
+  }
+}
+
+/* Small mobile (< 375px) */
+@media (max-width: 374px) {
+  .mk-shell {
+    font-size: 14px;
+  }
+  
+  .home-hero h1 {
+    font-size: 1.75rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mk-shell::before,
   .mk-shell::after {
