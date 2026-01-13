@@ -21,7 +21,7 @@ export function CinematicHero() {
     return () => window.removeEventListener("resize", check);
   }, []);
   return (
-    <section className="home-hero relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+    <section className="home-hero relative min-h-[100svh] md:min-h-[90vh] flex items-center justify-center overflow-hidden pt-20 md:pt-0">
       {/* Multi-layer animated background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
       
@@ -49,8 +49,8 @@ export function CinematicHero() {
       <div className="absolute inset-0 vignette pointer-events-none" />
       
       {/* Content container */}
-      <div className="relative z-10 mx-auto max-w-7xl px-6 sm:px-8 lg:px-12 py-16 md:py-28">
-        <div className="flex flex-col md:grid md:grid-cols-[0.9fr_1fr] gap-8 md:gap-16 items-center md:items-center">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-12 py-8 md:py-28">
+        <div className="flex flex-col md:grid md:grid-cols-[0.9fr_1fr] gap-12 md:gap-16 items-center md:items-center">
           
           {/* Left: Text content */}
           <ParallaxLayer speed={0.3}>
@@ -58,7 +58,7 @@ export function CinematicHero() {
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="space-y-10 max-w-lg w-full mx-auto md:mx-0 md:max-w-lg text-center md:text-left"
+              className="space-y-6 md:space-y-10 max-w-lg w-full mx-auto md:mx-0 md:max-w-lg text-center md:text-left"
             >
               {/* Badge */}
               <motion.div
@@ -81,13 +81,13 @@ export function CinematicHero() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.8 }}
-                className="space-y-3"
+                className="space-y-2 md:space-y-3"
               >
-                <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] font-hero tracking-[-0.02em]">
+                <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-[1.08] font-hero tracking-[-0.02em]">
                   Operational
                 </div>
-                <span className="relative block pb-4">
-                  <span className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-extrabold leading-[1.02] font-hero tracking-[-0.025em] text-gradient">
+                <span className="relative block pb-3 md:pb-4">
+                  <span className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.5rem] font-extrabold leading-[1.02] font-hero tracking-[-0.025em] text-gradient">
                     Compliance
                   </span>
                   {/* Animated shimmer divider */}
@@ -119,7 +119,7 @@ export function CinematicHero() {
                     />
                   </motion.div>
                 </span>
-                <div className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold leading-[1.12] font-hero tracking-[-0.02em] text-foreground/90 pt-1">
+                <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[3.5rem] font-bold leading-[1.12] font-hero tracking-[-0.02em] text-foreground/90 pt-1">
                   Operating System
                 </div>
               </motion.h1>
@@ -129,7 +129,7 @@ export function CinematicHero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.8 }}
-                className="text-xl md:text-2xl text-foreground/80 leading-relaxed pt-4"
+                className="text-base sm:text-lg md:text-xl lg:text-2xl text-foreground/80 leading-relaxed pt-2 md:pt-4"
               >
                 Transform regulatory obligations into{" "}
                 <span className="font-semibold text-primary">executable controls</span>,{" "}
@@ -142,7 +142,7 @@ export function CinematicHero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.8 }}
-                className="flex flex-col sm:flex-row gap-3 md:gap-5 pt-4 md:pt-6 pb-4 md:pb-6"
+                className="flex flex-wrap justify-center md:justify-start gap-2 sm:gap-3 pt-2 md:pt-6 pb-2 md:pb-6"
               >
                 {[
                   { icon: Activity, value: "94%", label: "Avg. Posture" },
@@ -154,14 +154,14 @@ export function CinematicHero() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.7 + i * 0.1, duration: 0.5 }}
-                    className="glass-panel rounded-xl px-4 py-3 flex items-center gap-3 hover:glass-intense transition-all group flex-1 sm:flex-initial justify-center sm:justify-start"
+                    className="glass-panel rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 sm:py-3 flex items-center gap-2 sm:gap-3 hover:glass-intense transition-all group"
                   >
-                    <div className="rounded-lg bg-primary/10 p-2 group-hover:scale-110 transition-transform">
-                      <stat.icon className="h-4 w-4 text-primary" />
+                    <div className="rounded-md sm:rounded-lg bg-primary/10 p-1.5 sm:p-2 group-hover:scale-110 transition-transform">
+                      <stat.icon className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                     </div>
                     <div>
-                      <div className="text-lg font-bold font-display">{stat.value}</div>
-                      <div className="text-xs text-muted-foreground">{stat.label}</div>
+                      <div className="text-sm sm:text-lg font-bold font-display">{stat.value}</div>
+                      <div className="text-[10px] sm:text-xs text-muted-foreground">{stat.label}</div>
                     </div>
                   </motion.div>
                 ))}
@@ -172,18 +172,18 @@ export function CinematicHero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8, duration: 0.8 }}
-                className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-6 md:pt-8 w-full sm:w-auto"
+                className="flex flex-col sm:flex-row gap-3 pt-4 md:pt-8 w-full sm:w-auto"
               >
                 <Link
                   href="/auth/signup"
-                  className="btn btn-primary text-base md:text-lg px-6 md:px-8 py-4 md:py-5 shadow-premium-2xl hover:shadow-[0_0_40px_rgba(56,189,248,0.4)] transition-all group w-full sm:w-auto text-center"
+                  className="btn btn-primary text-sm sm:text-base md:text-lg px-5 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 shadow-premium-2xl hover:shadow-[0_0_40px_rgba(56,189,248,0.4)] transition-all group w-full sm:w-auto text-center"
                 >
                   <span>Start Free Trial</span>
                   <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link
                   href="/contact"
-                  className="btn btn-secondary text-base md:text-lg px-6 md:px-8 py-4 md:py-5 w-full sm:w-auto text-center"
+                  className="btn btn-secondary text-sm sm:text-base md:text-lg px-5 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 w-full sm:w-auto text-center"
                 >
                   Request Demo
                 </Link>
@@ -194,7 +194,7 @@ export function CinematicHero() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1, duration: 0.8 }}
-                className="flex flex-col sm:flex-row flex-wrap justify-center md:justify-start gap-3 text-xs md:text-sm text-foreground/60"
+                className="flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-2 text-[11px] sm:text-xs md:text-sm text-foreground/60"
               >
                 <span className="flex items-center gap-2">
                   <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
@@ -214,7 +214,7 @@ export function CinematicHero() {
           
           {/* Right: Compliance Core Visualization */}
           <ParallaxLayer speed={0.5}>
-            <div className="w-full max-w-md md:max-w-none mx-auto md:mx-0 flex justify-center md:block">
+            <div className="w-full max-w-xs sm:max-w-sm md:max-w-none mx-auto md:mx-0 flex justify-center md:block">
               <div className="w-full" style={{ maxWidth: '500px' }}>
                 <ComplianceCoreVisualization />
               </div>
