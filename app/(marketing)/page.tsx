@@ -1,18 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import {
-  ShieldCheck,
-  Sparkles,
-  Layers,
-  Lock,
-  Activity,
-  ClipboardCheck,
-  ArrowUpRight,
-} from "lucide-react";
 import { MarketingAnchor } from "./components/marketing-anchor";
 import { HomeClientMarker } from "./components/home-client-marker";
-import { HomePageContent } from "./components/HomePageContent";
-import { CinematicHero } from "./components/CinematicHero";
+import { HomePageClient } from "./components/home-page-client";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://formaos.com.au";
 
@@ -36,12 +25,9 @@ export default function HomePage() {
   return (
     <div className="relative">
       <HomeClientMarker />
-
-      {/* Cinematic Hero with 3D modules */}
-      <CinematicHero />
-
-      {/* Rest of the content with motion */}
-      <HomePageContent />
+      
+      {/* Client-side rendered content with animations */}
+      <HomePageClient />
 
       <MarketingAnchor 
         title="Start your compliance transformation"
