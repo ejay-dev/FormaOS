@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Layers, ArrowRight } from "lucide-react";
+import { DollarSign, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { 
   AnimatedSystemGrid,
@@ -9,7 +9,7 @@ import {
   ParallaxLayer,
 } from "@/components/motion";
 
-export function ProductHero() {
+export function PricingHero() {
   return (
     <section className="relative min-h-[70vh] sm:min-h-[80vh] lg:min-h-[90vh] flex items-center overflow-hidden">
       {/* Multi-layer animated background */}
@@ -49,9 +49,9 @@ export function ProductHero() {
                 animate={{ rotate: [0, 5, -5, 0] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               >
-                <Layers className="h-3 w-3 sm:h-4 sm:w-4 text-secondary" />
+                <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-secondary" />
               </motion.div>
-              Platform Architecture
+              Transparent Pricing
             </motion.div>
 
             <motion.h1
@@ -60,9 +60,9 @@ export function ProductHero() {
               transition={{ delay: 0.3, duration: 0.8 }}
               className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] sm:leading-[1.08] font-display tracking-tight mb-4 sm:mb-6"
             >
-              Compliance Infrastructure<br />
+              Simple pricing that<br />
               <span className="relative">
-                <span className="text-gradient">Built for Audit Defense</span>
+                <span className="text-gradient">scales with your team</span>
                 <motion.div
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
@@ -76,24 +76,10 @@ export function ProductHero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
-              className="text-base sm:text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-8 sm:mb-10"
+              className="text-base sm:text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto"
             >
-              Connect policies, tasks, evidence, and audit trails into a defensible compliance workflow. Built for organizations that answer to regulators.
+              Start your compliance journey with a free trial. No setup fees, no long-term contracts, cancel anytime.
             </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.8 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6"
-            >
-              <Link href="/auth/signup" className="w-full sm:w-auto rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors">
-                Start Free Trial
-              </Link>
-              <Link href="/contact" className="w-full sm:w-auto text-sm font-semibold leading-6 text-foreground hover:text-primary transition-colors flex items-center justify-center sm:justify-start">
-                Request Demo <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </motion.div>
           </div>
         </ParallaxLayer>
       </div>
