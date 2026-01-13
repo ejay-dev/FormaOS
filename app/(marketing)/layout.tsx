@@ -1,56 +1,15 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { OAuthRedirectWrapper } from "./components/oauth-redirect-wrapper";
 import { NavLinks } from "./components/NavLinks";
 import { MobileNav } from "./components/MobileNav";
 import "./marketing.css";
 
-export default async function MarketingLayout({ children }: { children: ReactNode }) {
+// Force static rendering for all marketing pages
+export const dynamic = "force-static";
+
+export default function MarketingLayout({ children }: { children: ReactNode }) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://formaos.com.au";
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? siteUrl;
-  
-  // Wrap Supabase call in try-catch to prevent layout crash
-  let user = null;
-  try {
-    const supabase = await createSupabaseServerClient();
-    const { data } = await supabase.auth.getUser();
-    user = data?.user ?? null;
-  } catch (error) {
-    console.error("[marketing/layout] Supabase error:", error);
-    // Continue without user - show public marketing page
-  }
-  
-  if (user) {
-    // Check if user is a founder
-    const parseEnvList = (value?: string | null) =>
-      new Set(
-        (value ?? "")
-          .split(",")
-          .map((entry) => entry.trim().toLowerCase())
-          .filter(Boolean)
-      );
-    
-    const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);
-    const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
-    const userEmail = (user?.email ?? "").trim().toLowerCase();
-    const userId = (user?.id ?? "").trim().toLowerCase();
-    const isFounder = Boolean(
-      user && ((userEmail && founderEmails.has(userEmail)) || founderIds.has(userId))
-    );
-    
-    // 🔍 DEBUG LOGGING
-    console.log("[marketing/layout] Authenticated user redirect", {
-      email: userEmail,
-      isFounder,
-      destination: isFounder ? "/admin" : "/app",
-    });
-    
-    // Founders go to admin, regular users go to app
-    const destination = isFounder ? "/admin" : "/app";
-    redirect(`${appUrl.replace(/\/$/, "")}${destination}`);
-  }
 
   return (
     <div className="mk-shell font-[var(--font-body)]">
