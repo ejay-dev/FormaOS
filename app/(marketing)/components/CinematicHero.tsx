@@ -254,7 +254,7 @@ export function CinematicHero() {
               >
                 <FloatingUIPanel 
                   delay={0.5} 
-                  className="shadow-[0_10px_70px_rgba(56,189,248,0.4),0_0_90px_rgba(56,189,248,0.18)] ring-1 ring-primary/25"
+                  className="shadow-[0_10px_70px_rgba(56,189,248,0.4),0_0_90px_rgba(56,189,248,0.18)]"
                 >
                   <Floating3DPanel delay={0.5} />
                 </FloatingUIPanel>
@@ -273,7 +273,7 @@ export function CinematicHero() {
                   scale: { delay: 0.7, duration: 1 },
                   y: { delay: 2.5, duration: 7, repeat: Infinity, ease: "easeInOut" }
                 }}
-                className="absolute top-[38%] left-0 w-[300px] z-20"
+                className="absolute top-[42%] left-4 w-[300px] z-20"
               >
                 <FloatingUIPanel 
                   delay={0.7} 
@@ -283,7 +283,7 @@ export function CinematicHero() {
                 </FloatingUIPanel>
               </motion.div>
               
-              {/* SECONDARY CARD - Security Status (smaller, bottom-right, furthest back) */}
+              {/* SECONDARY CARD - Security Status (smaller, moved up and right) */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.82 }}
                 animate={{ 
@@ -296,7 +296,7 @@ export function CinematicHero() {
                   scale: { delay: 0.9, duration: 1 },
                   y: { delay: 3, duration: 6.5, repeat: Infinity, ease: "easeInOut" }
                 }}
-                className="absolute bottom-8 right-16 w-[280px] z-10"
+                className="absolute bottom-[22%] right-4 w-[280px] z-10"
               >
                 <FloatingUIPanel 
                   delay={0.9} 

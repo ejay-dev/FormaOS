@@ -31,7 +31,7 @@ export function Floating3DPanel({ delay = 0 }: { delay?: number }) {
           repeat: Infinity,
           ease: "easeInOut"
         }}
-        className="glass-intense rounded-2xl p-6 shadow-premium-2xl border border-white/10"
+        className="glass-intense rounded-2xl p-6 shadow-premium-2xl"
         style={{ transformStyle: "preserve-3d" }}
       >
         <div className="flex items-center justify-between mb-4">
@@ -101,7 +101,7 @@ export function FloatingWorkflowDiagram({ delay = 0 }: { delay?: number }) {
           rotateX: [0, -3, 0],
         }}
         transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-        className="glass-frosted rounded-2xl p-6 shadow-premium-2xl border border-white/10"
+        className="glass-frosted rounded-2xl p-6 shadow-premium-2xl"
         style={{ transformStyle: "preserve-3d" }}
       >
         <div className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mb-4">
@@ -161,7 +161,7 @@ export function FloatingSecurityModule({ delay = 0 }: { delay?: number }) {
           rotateZ: [0, 1, 0],
         }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="glass-panel-strong rounded-2xl p-6 shadow-premium-2xl border border-accent/20 relative overflow-hidden"
+        className="glass-frosted rounded-2xl p-6 shadow-premium-2xl relative overflow-hidden"
       >
         {/* Animated scan line */}
         <motion.div
