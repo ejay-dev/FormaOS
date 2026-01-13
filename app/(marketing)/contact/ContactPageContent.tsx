@@ -11,49 +11,53 @@ import {
   ErrorMessage,
   AnimatedSystemGrid,
   PulsingNode,
-  ParallaxLayer
+  ParallaxLayer,
+  ParticleField,
+  GradientMesh,
+  InteractiveCard,
 } from "@/components/motion";
 
 export function ContactHero({ status }: { status: "success" | "error" | null }) {
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+    <section className="relative min-h-[70vh] sm:min-h-[80vh] lg:min-h-[90vh] flex items-center overflow-hidden">
       {/* Multi-layer animated background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
       
       {/* Animated system grid layer */}
-      <div className="absolute inset-0 opacity-60">
+      <div className="absolute inset-0 opacity-40 sm:opacity-60">
         <AnimatedSystemGrid />
       </div>
       
-      {/* Pulsing nodes */}
-      <PulsingNode x="8%" y="18%" delay={0} color="rgb(6, 182, 212)" />
-      <PulsingNode x="92%" y="28%" delay={0.5} />
-      <PulsingNode x="14%" y="72%" delay={1} />
-      <PulsingNode x="86%" y="82%" delay={1.5} color="rgb(139, 92, 246)" />
+      {/* Pulsing nodes - hidden on mobile */}
+      <div className="hidden sm:block">
+        <PulsingNode x="8%" y="18%" delay={0} color="rgb(6, 182, 212)" />
+        <PulsingNode x="92%" y="28%" delay={0.5} />
+        <PulsingNode x="14%" y="72%" delay={1} />
+        <PulsingNode x="86%" y="82%" delay={1.5} color="rgb(139, 92, 246)" />
+      </div>
       
-      {/* Radial gradient overlays */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[600px] w-[600px] rounded-full bg-accent/20 blur-[120px]" />
-      <div className="pointer-events-none absolute -bottom-40 left-1/4 h-[500px] w-[500px] rounded-full bg-primary/15 blur-[100px]" />
-      <div className="pointer-events-none absolute top-1/2 right-1/4 h-[400px] w-[400px] rounded-full bg-secondary/10 blur-[80px]" />
+      {/* Radial gradient overlays - reduced on mobile */}
+      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[300px] sm:h-[600px] w-[300px] sm:w-[600px] rounded-full bg-accent/20 blur-[60px] sm:blur-[120px]" />
+      <div className="pointer-events-none absolute -bottom-40 left-1/4 h-[250px] sm:h-[500px] w-[250px] sm:w-[500px] rounded-full bg-primary/15 blur-[50px] sm:blur-[100px]" />
       
       {/* Vignette */}
       <div className="absolute inset-0 vignette pointer-events-none" />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8 py-24 w-full">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24 w-full">
         <ParallaxLayer speed={0.3}>
           <div className="mx-auto max-w-4xl text-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="inline-flex items-center gap-2.5 glass-intense rounded-full px-6 py-3 text-xs font-semibold uppercase tracking-wider mb-8 border border-accent/30"
+              className="inline-flex items-center gap-2 sm:gap-2.5 glass-intense rounded-full px-4 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs font-semibold uppercase tracking-wider mb-6 sm:mb-8 border border-accent/30"
             >
               <motion.div
                 animate={{ y: [0, -3, 0] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               >
-                <Mail className="h-4 w-4 text-accent" />
+                <Mail className="h-3 w-3 sm:h-4 sm:w-4 text-accent" />
               </motion.div>
               Get in Touch
             </motion.div>
@@ -62,7 +66,7 @@ export function ContactHero({ status }: { status: "success" | "error" | null }) 
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
-              className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] font-display tracking-tight mb-6"
+              className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] sm:leading-[1.08] font-display tracking-tight mb-4 sm:mb-6"
             >
               Let's discuss<br />
               <span className="relative">
@@ -71,7 +75,7 @@ export function ContactHero({ status }: { status: "success" | "error" | null }) 
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{ delay: 0.8, duration: 0.8 }}
-                  className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-accent via-primary to-secondary rounded-full origin-left"
+                  className="absolute -bottom-1 sm:-bottom-2 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-accent via-primary to-secondary rounded-full origin-left"
                 />
               </span>
             </motion.h1>
@@ -80,7 +84,7 @@ export function ContactHero({ status }: { status: "success" | "error" | null }) 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
-              className="text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-8"
+              className="text-base sm:text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-6 sm:mb-8"
             >
               Tell us about your organization, regulatory requirements, and audit timeline. 
               A compliance specialist will respond within one business day.
@@ -119,12 +123,20 @@ export function ContactContent({ action }: { action: any }) {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-20 lg:py-32"
+        className="py-16 sm:py-20 lg:py-32 relative"
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Premium background */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <GradientMesh 
+            colors={["rgba(0, 212, 251, 0.06)", "rgba(139, 92, 246, 0.04)", "rgba(20, 184, 166, 0.03)"]}
+            className="opacity-50"
+          />
+        </div>
+        
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
             badge="Contact Options"
-            title={<>Multiple ways to<br /><span className="text-gradient">reach our team</span></>}
+            title={<>Multiple ways to<br className="hidden sm:inline" /><span className="text-gradient">reach our team</span></>}
             subtitle="Choose the contact method that works best for you"
             alignment="center"
           />
@@ -137,12 +149,12 @@ export function ContactContent({ action }: { action: any }) {
       <CinematicSection 
         backgroundType="nodes" 
         ambientColor="secondary"
-        className="py-20 lg:py-32"
+        className="py-16 sm:py-20 lg:py-32"
       >
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
             badge="Send us a message"
-            title={<>Request a demo or<br /><span className="text-gradient">schedule a consultation</span></>}
+            title={<>Request a demo or<br className="hidden sm:inline" /><span className="text-gradient">schedule a consultation</span></>}
             subtitle="Fill out the form below and we'll get back to you within one business day"
             alignment="center"
           />
@@ -155,45 +167,59 @@ export function ContactContent({ action }: { action: any }) {
       <CinematicSection 
         backgroundType="flow" 
         ambientColor="accent"
-        className="py-20 lg:py-32"
+        className="py-16 sm:py-20 lg:py-32 relative"
       >
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        {/* Premium background overlay */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <ParticleField 
+            particleCount={20} 
+            colors={["rgba(20, 184, 166, 0.3)", "rgba(0, 212, 251, 0.25)"]}
+          />
+        </div>
+        
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
             badge="What to Expect"
             title={<>Our response process</>}
             alignment="center"
           />
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="glass-panel rounded-2xl p-8 text-center">
-              <div className="h-16 w-16 rounded-full glass-intense flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-primary">1</span>
+          <div className="grid md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+            <InteractiveCard glowColor="rgba(0, 212, 251, 0.2)">
+              <div className="text-center">
+                <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-full glass-intense flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                  <span className="text-xl sm:text-2xl font-bold text-primary">1</span>
+                </div>
+                <h3 className="text-base sm:text-lg font-semibold font-display mb-2 sm:mb-3">Submit your request</h3>
+                <p className="text-xs sm:text-sm text-foreground/70 leading-relaxed">
+                  Fill out the contact form with your organization details and compliance needs
+                </p>
               </div>
-              <h3 className="text-lg font-semibold font-display mb-3">Submit your request</h3>
-              <p className="text-sm text-foreground/70 leading-relaxed">
-                Fill out the contact form with your organization details and compliance needs
-              </p>
-            </div>
+            </InteractiveCard>
 
-            <div className="glass-panel rounded-2xl p-8 text-center">
-              <div className="h-16 w-16 rounded-full glass-intense flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-primary">2</span>
+            <InteractiveCard glowColor="rgba(139, 92, 246, 0.2)" delay={0.1}>
+              <div className="text-center">
+                <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-full glass-intense flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                  <span className="text-xl sm:text-2xl font-bold text-primary">2</span>
+                </div>
+                <h3 className="text-base sm:text-lg font-semibold font-display mb-2 sm:mb-3">We review and respond</h3>
+                <p className="text-xs sm:text-sm text-foreground/70 leading-relaxed">
+                  A compliance specialist reviews your request and responds within one business day
+                </p>
               </div>
-              <h3 className="text-lg font-semibold font-display mb-3">We review and respond</h3>
-              <p className="text-sm text-foreground/70 leading-relaxed">
-                A compliance specialist reviews your request and responds within one business day
-              </p>
-            </div>
+            </InteractiveCard>
 
-            <div className="glass-panel rounded-2xl p-8 text-center">
-              <div className="h-16 w-16 rounded-full glass-intense flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl font-bold text-primary">3</span>
+            <InteractiveCard glowColor="rgba(20, 184, 166, 0.2)" delay={0.2}>
+              <div className="text-center">
+                <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-full glass-intense flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                  <span className="text-xl sm:text-2xl font-bold text-primary">3</span>
+                </div>
+                <h3 className="text-base sm:text-lg font-semibold font-display mb-2 sm:mb-3">Schedule a demo</h3>
+                <p className="text-xs sm:text-sm text-foreground/70 leading-relaxed">
+                  If qualified, we'll schedule a live platform demo tailored to your requirements
+                </p>
               </div>
-              <h3 className="text-lg font-semibold font-display mb-3">Schedule a demo</h3>
-              <p className="text-sm text-foreground/70 leading-relaxed">
-                If qualified, we'll schedule a live platform demo tailored to your requirements
-              </p>
-            </div>
+            </InteractiveCard>
           </div>
         </div>
       </CinematicSection>

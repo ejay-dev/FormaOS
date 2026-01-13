@@ -10,3 +10,8 @@ export { TimelineItem, NarrativeBlock, ValueProp, MissionStatement, TeamMember }
 export { ExecutiveContactForm, ContactInfoCard, ContactOptionsGrid, SuccessMessage, ErrorMessage } from "./ContactComponents";
 export { ComplianceCoreVisualization } from "./ComplianceCoreVisualization";
 
+// New premium components
+export { NodeWireSystem, NodeWireShowcase } from "./NodeWireSystem";
+export { InteractiveButton, ProgressWire, ToastItem, Skeleton, PulseDot, InteractiveCard, NodeStateTransition } from "./InteractionFeedback";
+export { ParticleField, GradientMesh, NoiseOverlay, Constellation, CinematicBackground, ParallaxSection } from "./PremiumBackgrounds";
+

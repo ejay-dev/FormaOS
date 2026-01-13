@@ -1,12 +1,15 @@
 "use client";
 
-import { Shield, Lock, Eye, FileCheck, Activity, Database, UserCheck, Key } from "lucide-react";
+import { Shield, Lock, Eye, FileCheck, Activity, Database, UserCheck, Key, ArrowRight } from "lucide-react";
 import {
   CinematicSection,
   SectionHeader,
   FeatureCard,
   ArchitectureCard,
   VisualDivider,
+  ParticleField,
+  GradientMesh,
+  InteractiveCard,
 } from "@/components/motion";
 import { FadeInView } from "@/components/motion";
 import Link from "next/link";
@@ -78,28 +81,40 @@ export function SecurityContent() {
       <CinematicSection 
         backgroundType="grid" 
         ambientColor="accent"
-        className="py-20 lg:py-32"
+        className="py-16 sm:py-20 lg:py-32 relative"
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Premium background overlay */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <ParticleField 
+            particleCount={25} 
+            colors={["rgba(20, 184, 166, 0.4)", "rgba(0, 212, 251, 0.3)"]}
+          />
+        </div>
+        
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
             badge="Security Safeguards"
             badgeIcon={<Shield className="h-4 w-4 text-accent" />}
-            title={<>Built for organizations<br /><span className="text-gradient">that answer to regulators</span></>}
+            title={<>Built for organizations<br className="hidden sm:inline" /><span className="text-gradient">that answer to regulators</span></>}
             subtitle="Enterprise-grade security architecture from day one"
             alignment="center"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {safeguards.map((safeguard, idx) => (
-              <FeatureCard
+              <InteractiveCard
                 key={safeguard.title}
-                icon={safeguard.icon}
-                title={safeguard.title}
-                description={safeguard.description}
                 delay={idx * 0.1}
-                variant="frosted"
-                accentColor="accent"
-              />
+                glowColor="rgba(20, 184, 166, 0.3)"
+              >
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-14 h-14 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center mb-4">
+                    <safeguard.icon className="h-7 w-7 text-accent" />
+                  </div>
+                  <h3 className="font-bold text-white text-lg mb-2">{safeguard.title}</h3>
+                  <p className="text-foreground/70 text-sm leading-relaxed">{safeguard.description}</p>
+                </div>
+              </InteractiveCard>
             ))}
           </div>
         </div>
@@ -111,18 +126,18 @@ export function SecurityContent() {
       <CinematicSection 
         backgroundType="nodes" 
         ambientColor="primary"
-        className="py-20 lg:py-32"
+        className="py-16 sm:py-20 lg:py-32"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
             badge="Security Architecture"
             badgeIcon={<Lock className="h-4 w-4 text-primary" />}
-            title={<>Defense in depth<br /><span className="text-gradient">across every layer</span></>}
+            title={<>Defense in depth<br className="hidden sm:inline" /><span className="text-gradient">across every layer</span></>}
             subtitle="Multi-layered security architecture protecting compliance data"
             alignment="center"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
             {Object.entries(securityLayers).map(([title, components], idx) => (
               <ArchitectureCard
                 key={title}
@@ -147,19 +162,19 @@ export function SecurityContent() {
       <CinematicSection 
         backgroundType="flow" 
         ambientColor="secondary"
-        className="py-20 lg:py-32"
+        className="py-16 sm:py-20 lg:py-32"
       >
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
             badge="Evidence Chain"
             badgeIcon={<Eye className="h-4 w-4 text-secondary" />}
-            title={<>Every action traced<br /><span className="text-gradient">from creation to export</span></>}
+            title={<>Every action traced<br className="hidden sm:inline" /><span className="text-gradient">from creation to export</span></>}
             subtitle="Immutable audit trail for legal defensibility"
             alignment="center"
           />
 
-          <div className="glass-panel-strong rounded-2xl p-10 lg:p-12 shadow-premium-lg">
-            <div className="space-y-8">
+          <div className="glass-panel-strong rounded-xl sm:rounded-2xl p-6 sm:p-10 lg:p-12 shadow-premium-lg">
+            <div className="space-y-6 sm:space-y-8">
               <FadeInView delay={0}>
                 <div className="flex items-start gap-6">
                   <div className="flex-shrink-0 h-12 w-12 rounded-xl glass-intense flex items-center justify-center">
@@ -212,28 +227,43 @@ export function SecurityContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="accent"
-        className="py-20 lg:py-32"
+        className="py-16 sm:py-20 lg:py-32 relative"
       >
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        {/* Premium gradient mesh overlay */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <GradientMesh 
+            colors={["rgba(20, 184, 166, 0.1)", "rgba(0, 212, 251, 0.08)", "rgba(139, 92, 246, 0.06)"]}
+            className="opacity-60"
+          />
+        </div>
+        
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">
           <FadeInView>
-            <div className="glass-intense rounded-3xl p-12 sm:p-16 text-center shadow-premium-2xl relative overflow-hidden">
+            <div className="glass-intense rounded-2xl sm:rounded-3xl p-8 sm:p-12 lg:p-16 text-center shadow-premium-2xl relative overflow-hidden">
               <div className="absolute inset-0 shimmer" />
               
               <div className="relative">
-                <h2 className="text-4xl sm:text-5xl font-bold font-display mb-6">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display mb-4 sm:mb-6">
                   Security questions?<br />
                   <span className="text-gradient">We're here to answer</span>
                 </h2>
                 
-                <p className="text-xl text-foreground/70 mb-10 max-w-2xl mx-auto">
+                <p className="text-lg sm:text-xl text-foreground/70 mb-8 sm:mb-10 max-w-2xl mx-auto">
                   Request detailed security documentation or schedule a technical deep-dive with our team.
                 </p>
                 
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                  <Link href="/contact" className="btn btn-primary text-lg px-12 py-6 shadow-premium-xl">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+                  <Link 
+                    href="/contact" 
+                    className="group inline-flex items-center gap-2 btn btn-primary text-base sm:text-lg px-8 sm:px-12 py-4 sm:py-6 shadow-premium-xl w-full sm:w-auto justify-center"
+                  >
                     Contact Security Team
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Link>
-                  <Link href="/auth/signup" className="btn btn-secondary text-lg px-12 py-6">
+                  <Link 
+                    href="/auth/signup" 
+                    className="btn btn-secondary text-base sm:text-lg px-8 sm:px-12 py-4 sm:py-6 w-full sm:w-auto text-center"
+                  >
                     Start Free Trial
                   </Link>
                 </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Sparkles, Zap, Shield, Crown } from "lucide-react";
+import { Sparkles, Zap, Shield, Crown, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { 
   PricingTierCard,
@@ -11,49 +11,53 @@ import {
   VisualDivider,
   AnimatedSystemGrid,
   PulsingNode,
-  ParallaxLayer
+  ParallaxLayer,
+  ParticleField,
+  GradientMesh,
+  InteractiveCard,
 } from "@/components/motion";
 
 export function PricingHero() {
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+    <section className="relative min-h-[70vh] sm:min-h-[80vh] lg:min-h-[90vh] flex items-center overflow-hidden">
       {/* Multi-layer animated background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
       
       {/* Animated system grid layer */}
-      <div className="absolute inset-0 opacity-60">
+      <div className="absolute inset-0 opacity-40 sm:opacity-60">
         <AnimatedSystemGrid />
       </div>
       
-      {/* Pulsing nodes */}
-      <PulsingNode x="10%" y="20%" delay={0} />
-      <PulsingNode x="90%" y="30%" delay={0.5} color="rgb(139, 92, 246)" />
-      <PulsingNode x="15%" y="70%" delay={1} color="rgb(6, 182, 212)" />
-      <PulsingNode x="85%" y="80%" delay={1.5} />
+      {/* Pulsing nodes - hidden on mobile */}
+      <div className="hidden sm:block">
+        <PulsingNode x="10%" y="20%" delay={0} />
+        <PulsingNode x="90%" y="30%" delay={0.5} color="rgb(139, 92, 246)" />
+        <PulsingNode x="15%" y="70%" delay={1} color="rgb(6, 182, 212)" />
+        <PulsingNode x="85%" y="80%" delay={1.5} />
+      </div>
       
-      {/* Radial gradient overlays */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[600px] w-[600px] rounded-full bg-primary/20 blur-[120px]" />
-      <div className="pointer-events-none absolute -bottom-40 left-1/4 h-[500px] w-[500px] rounded-full bg-secondary/15 blur-[100px]" />
-      <div className="pointer-events-none absolute top-1/2 right-1/4 h-[400px] w-[400px] rounded-full bg-accent/10 blur-[80px]" />
+      {/* Radial gradient overlays - reduced on mobile */}
+      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[300px] sm:h-[600px] w-[300px] sm:w-[600px] rounded-full bg-primary/20 blur-[60px] sm:blur-[120px]" />
+      <div className="pointer-events-none absolute -bottom-40 left-1/4 h-[250px] sm:h-[500px] w-[250px] sm:w-[500px] rounded-full bg-secondary/15 blur-[50px] sm:blur-[100px]" />
       
       {/* Vignette */}
       <div className="absolute inset-0 vignette pointer-events-none" />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8 py-24 w-full">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24 w-full">
         <ParallaxLayer speed={0.3}>
           <div className="mx-auto max-w-4xl text-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="inline-flex items-center gap-2.5 glass-intense rounded-full px-6 py-3 text-xs font-semibold uppercase tracking-wider mb-8 border border-primary/30"
+              className="inline-flex items-center gap-2 sm:gap-2.5 glass-intense rounded-full px-4 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs font-semibold uppercase tracking-wider mb-6 sm:mb-8 border border-primary/30"
             >
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
               >
-                <Sparkles className="h-4 w-4 text-primary" />
+                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
               </motion.div>
               Simple, Transparent Pricing
             </motion.div>
@@ -62,7 +66,7 @@ export function PricingHero() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
-              className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] font-display tracking-tight mb-6"
+              className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] sm:leading-[1.08] font-display tracking-tight mb-4 sm:mb-6"
             >
               Plans built for<br />
               <span className="relative">
@@ -71,7 +75,7 @@ export function PricingHero() {
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{ delay: 0.8, duration: 0.8 }}
-                  className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent rounded-full origin-left"
+                  className="absolute -bottom-1 sm:-bottom-2 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-primary via-secondary to-accent rounded-full origin-left"
                 />
               </span>
             </motion.h1>
@@ -80,7 +84,7 @@ export function PricingHero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
-              className="text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-8"
+              className="text-base sm:text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-6 sm:mb-8"
             >
               Choose the level of governance and support your organization requires. 
               Start with a 14-day free trial—no payment details needed.
@@ -90,7 +94,7 @@ export function PricingHero() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7, duration: 0.8 }}
-              className="text-sm text-muted-foreground"
+              className="text-xs sm:text-sm text-muted-foreground"
             >
               All pricing in AUD · Billed monthly · Cancel anytime
             </motion.p>
@@ -164,10 +168,18 @@ export function PricingContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-20 lg:py-32"
+        className="py-16 sm:py-20 lg:py-32 relative"
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        {/* Premium background */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <GradientMesh 
+            colors={["rgba(0, 212, 251, 0.08)", "rgba(139, 92, 246, 0.06)", "rgba(20, 184, 166, 0.04)"]}
+            className="opacity-50"
+          />
+        </div>
+        
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
             {tiers.map((tier, idx) => (
               <PricingTierCard
                 key={tier.name}
@@ -192,7 +204,7 @@ export function PricingContent() {
       <CinematicSection 
         backgroundType="nodes" 
         ambientColor="secondary"
-        className="py-20 lg:py-32"
+        className="py-16 sm:py-20 lg:py-32"
       >
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <EnterprisePricingCard delay={0} />
@@ -205,17 +217,17 @@ export function PricingContent() {
       <CinematicSection 
         backgroundType="flow" 
         ambientColor="accent"
-        className="py-20 lg:py-32"
+        className="py-16 sm:py-20 lg:py-32"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
             badge="Included in All Plans"
-            title={<>Enterprise-grade infrastructure<br /><span className="text-gradient">from day one</span></>}
+            title={<>Enterprise-grade infrastructure<br className="hidden sm:inline" /><span className="text-gradient">from day one</span></>}
             subtitle="Every plan includes the core platform capabilities needed for audit-ready operations"
             alignment="center"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {[
               {
                 icon: Shield,
@@ -233,12 +245,16 @@ export function PricingContent() {
                 items: ["Knowledge base access", "Video tutorials", "Email support", "Community forum"]
               }
             ].map((group, idx) => (
-              <div key={group.title} className="glass-panel rounded-2xl p-8">
-                <div className="rounded-xl bg-primary/10 p-3 w-fit mb-6">
-                  <group.icon className="h-6 w-6 text-primary" />
+              <InteractiveCard 
+                key={group.title} 
+                delay={idx * 0.1}
+                glowColor="rgba(20, 184, 166, 0.2)"
+              >
+                <div className="rounded-xl bg-primary/10 p-3 w-fit mb-4 sm:mb-6">
+                  <group.icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold font-display mb-4">{group.title}</h3>
-                <ul className="space-y-3">
+                <h3 className="text-lg sm:text-xl font-semibold font-display mb-3 sm:mb-4">{group.title}</h3>
+                <ul className="space-y-2 sm:space-y-3">
                   {group.items.map((item, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-foreground/70">
                       <div className="h-1.5 w-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
@@ -246,7 +262,7 @@ export function PricingContent() {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </InteractiveCard>
             ))}
           </div>
         </div>
@@ -258,7 +274,7 @@ export function PricingContent() {
       <CinematicSection 
         backgroundType="grid" 
         ambientColor="primary"
-        className="py-20 lg:py-32"
+        className="py-16 sm:py-20 lg:py-32"
       >
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
@@ -267,7 +283,7 @@ export function PricingContent() {
             alignment="center"
           />
 
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {[
               {
                 q: "Can I change plans later?",
@@ -290,17 +306,25 @@ export function PricingContent() {
                 a: "Yes. Cancel anytime from your billing settings. No long-term contracts required for Starter or Pro plans."
               }
             ].map((faq, idx) => (
-              <div key={idx} className="glass-panel rounded-2xl p-8">
-                <h3 className="text-lg font-semibold font-display mb-3">{faq.q}</h3>
-                <p className="text-foreground/70 leading-relaxed">{faq.a}</p>
-              </div>
+              <InteractiveCard 
+                key={idx}
+                delay={idx * 0.05}
+                glowColor="rgba(0, 212, 251, 0.15)"
+              >
+                <h3 className="text-base sm:text-lg font-semibold font-display mb-2 sm:mb-3">{faq.q}</h3>
+                <p className="text-sm sm:text-base text-foreground/70 leading-relaxed">{faq.a}</p>
+              </InteractiveCard>
             ))}
           </div>
 
-          <div className="text-center mt-12">
-            <p className="text-foreground/70 mb-6">Still have questions?</p>
-            <Link href="/contact" className="btn btn-primary text-lg px-10 py-5">
+          <div className="text-center mt-10 sm:mt-12">
+            <p className="text-foreground/70 mb-4 sm:mb-6">Still have questions?</p>
+            <Link 
+              href="/contact" 
+              className="group inline-flex items-center gap-2 btn btn-primary text-base sm:text-lg px-8 sm:px-10 py-4 sm:py-5"
+            >
               Contact Sales
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
         </div>

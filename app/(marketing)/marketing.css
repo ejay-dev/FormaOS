@@ -374,7 +374,7 @@ html, body {
   /* Reduce ambient effects on mobile for performance */
   .mk-shell::before,
   .mk-shell::after {
-    opacity: 0.3;
+    opacity: 0.2;
     animation: none;
   }
   
@@ -404,6 +404,20 @@ html, body {
   .text-gradient {
     background-size: 200% auto;
   }
+  
+  /* Reduce glow intensity on mobile */
+  .glass-intense,
+  .glass-panel-strong,
+  .glass-panel {
+    backdrop-filter: blur(12px);
+  }
+  
+  /* Simplify animations on mobile */
+  .animate-float,
+  .mk-parallax-slow,
+  .mk-parallax-fast {
+    animation: none;
+  }
 }
 
 /* Small mobile (< 375px) */
@@ -415,6 +429,182 @@ html, body {
   .home-hero h1 {
     font-size: 1.75rem;
   }
+}
+
+/* =========================================================
+   PREMIUM HEADER ENHANCEMENTS
+   Glass nav bar with depth and micro-motion
+   ========================================================= */
+
+.mk-header-premium {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(5, 7, 17, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
+}
+
+.mk-header-premium.scrolled {
+  background: rgba(5, 7, 17, 0.95);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Header top accent line */
+.mk-header-premium::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 217, 255, 0.4), rgba(167, 139, 250, 0.4), transparent);
+}
+
+/* Logo hover effect */
+.mk-logo-container {
+  transition: transform 0.3s ease;
+}
+
+.mk-logo-container:hover {
+  transform: scale(1.02);
+}
+
+.mk-logo-container:hover .mk-logo-badge {
+  box-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
+}
+
+/* =========================================================
+   PREMIUM FOOTER ENHANCEMENTS
+   Node-wire background with light motion
+   ========================================================= */
+
+.mk-footer-premium {
+  position: relative;
+  overflow: hidden;
+}
+
+.mk-footer-premium::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(0, 217, 255, 0.08), transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(167, 139, 250, 0.06), transparent 50%);
+  pointer-events: none;
+}
+
+/* Footer link enhancements */
+.mk-footer-link {
+  position: relative;
+  display: inline-flex;
+  padding: 4px 0;
+  transition: color 0.2s ease;
+}
+
+.mk-footer-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(0, 217, 255, 0.6), rgba(167, 139, 250, 0.6));
+  transition: width 0.3s ease;
+}
+
+.mk-footer-link:hover::after {
+  width: 100%;
+}
+
+.mk-footer-link:hover {
+  color: #f8fafc;
+}
+
+/* =========================================================
+   SECTION ENHANCEMENTS
+   Premium visual language for all sections
+   ========================================================= */
+
+.mk-section-premium {
+  position: relative;
+  overflow: hidden;
+}
+
+.mk-section-premium::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(0, 217, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 217, 255, 0.03) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none;
+}
+
+/* Gradient mesh overlay */
+.mk-gradient-mesh {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse at 30% 20%, rgba(0, 217, 255, 0.12), transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(167, 139, 250, 0.08), transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(77, 159, 255, 0.05), transparent 60%);
+  pointer-events: none;
+  animation: mesh-drift 30s ease-in-out infinite;
+}
+
+@keyframes mesh-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-2%, 2%) scale(1.05); }
+}
+
+/* Constellation overlay */
+.mk-constellation {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+/* =========================================================
+   INTERACTIVE CARD ENHANCEMENTS
+   ========================================================= */
+
+.mk-card-interactive {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mk-card-interactive::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0), rgba(0, 217, 255, 0.3), rgba(167, 139, 250, 0.3), rgba(167, 139, 250, 0));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mk-card-interactive:hover::before {
+  opacity: 1;
+}
+
+.mk-card-interactive:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 40px rgba(0, 217, 255, 0.1);
+}
+
+/* Glow on focus for accessibility */
+.mk-card-interactive:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.4);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -430,11 +620,13 @@ html, body {
   }
   .mk-card:hover,
   .mk-tilt:hover,
-  .mk-cta:hover {
+  .mk-cta:hover,
+  .mk-card-interactive:hover {
     transform: none;
   }
   .mk-parallax-slow,
-  .mk-parallax-fast {
+  .mk-parallax-fast,
+  .mk-gradient-mesh {
     animation: none;
   }
 }
