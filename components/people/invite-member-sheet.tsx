@@ -64,7 +64,7 @@ export function InviteMemberSheet() {
       
       // Report to compliance system
       nodeCreated("entity", email)
-      reportInfo(`Invitation sent to ${email}`)
+      reportInfo({ title: "Invitation sent", message: `Sent to ${email}` })
       
       // Close after animation
       setTimeout(() => {
@@ -73,7 +73,7 @@ export function InviteMemberSheet() {
       }, 1500)
       
     } catch (err: any) {
-      reportError(`Failed to send invitation: ${err.message}`)
+      reportError({ title: "Invitation failed", message: err.message || "Could not send invitation" })
     } finally {
       setLoading(false)
     }

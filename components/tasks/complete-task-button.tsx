@@ -54,7 +54,7 @@ export function CompleteTaskButton({
     if (isCompleted) return
     
     if (blocked) {
-      reportWarning("Cannot complete: Non-compliant controls exist")
+      reportWarning({ title: "Cannot complete", message: "Non-compliant controls exist" })
       return
     }
     
@@ -66,7 +66,7 @@ export function CompleteTaskButton({
       .eq('id', taskId)
 
     if (error) {
-      reportError(`Failed to complete task: ${error.message}`)
+      reportError({ title: "Completion failed", message: error.message })
     } else {
       // Show success animation
       setShowSuccess(true)

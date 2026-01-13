@@ -64,7 +64,7 @@ export function ArtifactSidebar({
       );
     } catch (err: any) {
       console.error("Linking failed", err);
-      reportError(`Failed to link artifact: ${err.message || 'Unknown error'}`);
+      reportError({ title: "Link failed", message: err.message || "Unknown error" });
     } finally {
       setIsLinking(null);
     }

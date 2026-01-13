@@ -82,7 +82,7 @@ export function PolicyEditor({
       setTimeout(() => setShowSuccess(false), 2000)
     } catch (error: any) {
       console.error("Save Error:", error)
-      reportError(`Failed to sync policy: ${error.message || 'Unknown error'}`)
+      reportError({ title: "Sync failed", message: error.message || "Unknown error" })
     } finally {
       setIsSaving(false)
     }

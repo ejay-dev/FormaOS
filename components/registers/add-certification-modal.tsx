@@ -53,7 +53,7 @@ export function AddCertificationModal({
         onClose()
       }, 2000)
     } catch (error: any) {
-      reportError(`Failed to record certification: ${error.message}`)
+      reportError({ title: "Certification failed", message: error.message || "Unknown error" })
     } finally {
       setLoading(false)
     }

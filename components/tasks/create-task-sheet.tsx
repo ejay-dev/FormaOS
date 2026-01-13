@@ -53,7 +53,7 @@ export function CreateTaskSheet() {
         }, 1000)
         
     } catch (err: any) {
-        reportError(`Failed to create task: ${err.message || 'Unknown error'}`)
+        reportError({ title: "Task creation failed", message: err.message || "Unknown error" })
     } finally {
         setLoading(false)
     }

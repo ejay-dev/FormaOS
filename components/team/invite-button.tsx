@@ -49,7 +49,7 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
     
     // Report to compliance system
     nodeCreated("entity", email)
-    reportInfo(`Invitation sent to ${email}`)
+    reportInfo({ title: "Invitation sent", message: `Sent to ${email}` })
     
     // Close after animation
     setTimeout(() => {

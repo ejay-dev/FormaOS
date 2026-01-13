@@ -69,7 +69,7 @@ export function EvidenceButton({ taskId, taskTitle }: { taskId: string, taskTitl
       nodesLinked("control", taskTitle, "evidence", file.name)
 
     } catch (error: any) {
-      reportError(`Failed to upload evidence: ${error.message}`)
+      reportError({ title: "Upload failed", message: error.message || "Unknown error" })
     } finally {
       setUploading(false)
       setUploadProgress(0)

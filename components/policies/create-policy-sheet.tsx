@@ -41,7 +41,7 @@ export function CreatePolicySheet() {
         }, 1000)
         
     } catch (error: any) {
-        reportError(`Failed to create policy: ${error.message}`)
+        reportError({ title: "Policy creation failed", message: error.message || "Unknown error" })
     } finally {
         setLoading(false)
     }

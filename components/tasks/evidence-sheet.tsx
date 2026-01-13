@@ -46,7 +46,7 @@ export function EvidenceSheet({ task, evidenceCount = 0 }: { task: any, evidence
       // Reset success state after animation
       setTimeout(() => setShowSuccess(false), 2000)
     } catch (error: any) {
-      reportError(`Upload failed: ${error.message || 'Unknown error'}`)
+      reportError({ title: "Upload failed", message: error.message || "Unknown error" })
     } finally {
       setUploading(false)
     }

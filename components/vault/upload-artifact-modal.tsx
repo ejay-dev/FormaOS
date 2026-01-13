@@ -112,7 +112,7 @@ export function UploadArtifactModal({ isOpen, onClose }: { isOpen: boolean; onCl
       
     } catch (error: any) {
       clearInterval(progressInterval)
-      reportError(`Upload failed: ${error.message}`)
+      reportError({ title: "Upload failed", message: error.message || "Unknown error" })
     } finally {
       setUploading(false)
     }

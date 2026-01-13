@@ -51,7 +51,7 @@ export function CreateAssetSheet() {
       }, 1000)
       
     } catch (error: any) {
-      reportError(`Failed to create asset: ${error.message}`)
+      reportError({ title: "Asset creation failed", message: error.message || "Unknown error" })
     } finally {
       setLoading(false)
     }
