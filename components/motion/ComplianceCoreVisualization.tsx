@@ -25,19 +25,127 @@ export function ComplianceCoreVisualization() {
   }, []);
   
   // 5 orbiting modules with perfect 72° angular distribution
+  // Reordered for mobile grid: Row 1 (Security, Policies, Controls), Row 2 (Audits, Evidence)
   const modules: ModuleConfig[] = [
-    { icon: <Shield className="h-6 w-6" />, label: "Controls", color: "rgb(56, 189, 248)", angle: 0 },
-    { icon: <FileCheck className="h-6 w-6" />, label: "Evidence", color: "rgb(139, 92, 246)", angle: 72 },
-    { icon: <BarChart3 className="h-6 w-6" />, label: "Audits", color: "rgb(6, 182, 212)", angle: 144 },
-    { icon: <Lock className="h-6 w-6" />, label: "Security", color: "rgb(236, 72, 153)", angle: 216 },
-    { icon: <Zap className="h-6 w-6" />, label: "Policies", color: "rgb(34, 197, 94)", angle: 288 },
+    { icon: <Shield className="h-5 w-5 md:h-6 md:w-6" />, label: "Controls", color: "rgb(56, 189, 248)", angle: 0 },
+    { icon: <FileCheck className="h-5 w-5 md:h-6 md:w-6" />, label: "Evidence", color: "rgb(139, 92, 246)", angle: 72 },
+    { icon: <BarChart3 className="h-5 w-5 md:h-6 md:w-6" />, label: "Audits", color: "rgb(6, 182, 212)", angle: 144 },
+    { icon: <Lock className="h-5 w-5 md:h-6 md:w-6" />, label: "Security", color: "rgb(236, 72, 153)", angle: 216 },
+    { icon: <Zap className="h-5 w-5 md:h-6 md:w-6" />, label: "Policies", color: "rgb(34, 197, 94)", angle: 288 },
   ];
 
-  // Responsive orbital radius
-  const orbitRadius = isMobile ? 110 : 200;
+  // Mobile grid order: Security, Policies, Controls (top row), Audits, Evidence (bottom row)
+  const mobileOrderedModules = [modules[3], modules[4], modules[0], modules[2], modules[1]];
 
+  // Responsive orbital radius
+  const orbitRadius = 200;
+
+  // Mobile layout - clean grid
+  if (isMobile) {
+    return (
+      <div ref={containerRef} className="relative w-full py-8 px-4">
+        {/* Subtle center accent - thin ring only */}
+        <div className="flex justify-center mb-6">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            className="relative w-12 h-12"
+          >
+            {/* Simple pulsing ring - no heavy glow */}
+            <motion.div
+              animate={{ scale: [1, 1.1, 1], opacity: [0.4, 0.6, 0.4] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute inset-0 rounded-full border-2 border-primary/40"
+            />
+            {/* Subtle inner dot */}
+            <div className="absolute inset-3 rounded-full bg-primary/20" />
+          </motion.div>
+        </div>
+
+        {/* Grid layout for mobile circles */}
+        <div className="grid grid-cols-3 gap-x-4 gap-y-6 justify-items-center max-w-xs mx-auto">
+          {/* Row 1: Security, Policies, Controls */}
+          {mobileOrderedModules.slice(0, 3).map((module, i) => (
+            <motion.div
+              key={`mobile-module-${i}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
+              className="flex flex-col items-center"
+            >
+              {/* Circle */}
+              <motion.div
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.95 }}
+                className="relative w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/15 transition-all"
+                style={{ backgroundColor: `${module.color}15` }}
+              >
+                {/* Subtle glow - reduced by 60% */}
+                <div 
+                  className="absolute -inset-1 rounded-full blur-sm opacity-20"
+                  style={{ backgroundColor: module.color }}
+                />
+                {/* Icon */}
+                <div style={{ color: module.color }} className="relative z-10">
+                  {module.icon}
+                </div>
+              </motion.div>
+              {/* Label */}
+              <span 
+                className="mt-2 text-xs font-semibold"
+                style={{ color: module.color }}
+              >
+                {module.label}
+              </span>
+            </motion.div>
+          ))}
+          
+          {/* Row 2: Audits, Evidence (centered) */}
+          <div className="col-span-3 flex justify-center gap-8">
+            {mobileOrderedModules.slice(3, 5).map((module, i) => (
+              <motion.div
+                key={`mobile-module-row2-${i}`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 + i * 0.1, duration: 0.5 }}
+                className="flex flex-col items-center"
+              >
+                {/* Circle */}
+                <motion.div
+                  whileHover={{ scale: 1.08 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="relative w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/15 transition-all"
+                  style={{ backgroundColor: `${module.color}15` }}
+                >
+                  {/* Subtle glow - reduced by 60% */}
+                  <div 
+                    className="absolute -inset-1 rounded-full blur-sm opacity-20"
+                    style={{ backgroundColor: module.color }}
+                  />
+                  {/* Icon */}
+                  <div style={{ color: module.color }} className="relative z-10">
+                    {module.icon}
+                  </div>
+                </motion.div>
+                {/* Label */}
+                <span 
+                  className="mt-2 text-xs font-semibold"
+                  style={{ color: module.color }}
+                >
+                  {module.label}
+                </span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop layout - orbital system (unchanged)
   return (
-    <div ref={containerRef} className="relative w-full h-[400px] md:h-[700px] flex items-center justify-center">
+    <div ref={containerRef} className="relative w-full h-[700px] flex items-center justify-center">
       {/* Background glow layers - refined for cinema */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Primary central glow - subtle, premium */}
@@ -51,7 +159,7 @@ export function ComplianceCoreVisualization() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] md:w-[240px] md:h-[240px] rounded-full bg-primary/20 blur-xl md:blur-2xl"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[240px] h-[240px] rounded-full bg-primary/20 blur-2xl"
         />
         {/* Secondary glow layer - minimal */}
         <motion.div
@@ -65,15 +173,15 @@ export function ComplianceCoreVisualization() {
             ease: "easeInOut",
             delay: 0.7,
           }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[350px] md:h-[350px] rounded-full bg-secondary/10 blur-xl md:blur-2xl"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full bg-secondary/10 blur-2xl"
         />
       </div>
 
       {/* Orbital container - larger size */}
-      <div className="relative w-[320px] h-[320px] md:w-[600px] md:h-[600px]">
+      <div className="relative w-[600px] h-[600px]">
         {/* Orbital paths (SVG) - properly aligned */}
         <svg
-          className="absolute inset-0 w-full h-full pointer-events-none opacity-15 md:opacity-20"
+          className="absolute inset-0 w-full h-full pointer-events-none opacity-20"
           viewBox="0 0 600 600"
         >
           {/* Outer orbit circle - soft, atmospheric */}
@@ -130,8 +238,8 @@ export function ComplianceCoreVisualization() {
             );
           })}
 
-          {/* Data flow animation - subtle accent only (disabled on mobile) */}
-          {!isMobile && modules.map((module, i) => {
+          {/* Data flow animation - subtle accent only */}
+          {modules.map((module, i) => {
             const rad = (module.angle * Math.PI) / 180;
             const x = 300 + orbitRadius * Math.cos(rad);
             const y = 300 + orbitRadius * Math.sin(rad);
@@ -176,14 +284,14 @@ export function ComplianceCoreVisualization() {
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20"
         >
           <motion.div
-            animate={{ rotateZ: isMobile ? 0 : 360 }}
-            transition={{ duration: 20, repeat: isMobile ? 0 : Infinity, ease: "linear" }}
+            animate={{ rotateZ: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
             className="relative w-32 h-32"
           >
             {/* Outer energy ring - subtle pulse */}
             <motion.div
-              animate={isMobile ? {} : { opacity: [0.2, 0.4, 0.2], scale: [0.95, 1.05, 0.95] }}
-              transition={{ duration: 4, repeat: isMobile ? 0 : Infinity, ease: "easeInOut" }}
+              animate={{ opacity: [0.2, 0.4, 0.2], scale: [0.95, 1.05, 0.95] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               className="absolute inset-0 rounded-full border border-primary/30"
             />
 
@@ -191,32 +299,30 @@ export function ComplianceCoreVisualization() {
             <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400/40 via-blue-500/35 to-purple-600/40 backdrop-blur-sm shadow-[0_0_30px_rgba(34,211,238,0.35)] border border-white/20" />
             
             {/* Soft internal light sweep - minimal */}
-            {!isMobile && (
-              <motion.div
-                animate={{
-                  background: [
-                    "conic-gradient(from 0deg, transparent, rgba(255,255,255,0.2), transparent)",
-                    "conic-gradient(from 180deg, transparent, rgba(255,255,255,0.2), transparent)",
-                    "conic-gradient(from 360deg, transparent, rgba(255,255,255,0.2), transparent)"
-                  ]
-                }}
-                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0 rounded-full"
-              />
-            )}
+            <motion.div
+              animate={{
+                background: [
+                  "conic-gradient(from 0deg, transparent, rgba(255,255,255,0.2), transparent)",
+                  "conic-gradient(from 180deg, transparent, rgba(255,255,255,0.2), transparent)",
+                  "conic-gradient(from 360deg, transparent, rgba(255,255,255,0.2), transparent)"
+                ]
+              }}
+              transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-0 rounded-full"
+            />
 
             {/* Inner pulsing glow - soft */}
             <motion.div
-              animate={isMobile ? {} : { scale: [1, 1.15, 1], opacity: [0.4, 0.6, 0.4] }}
-              transition={{ duration: 3, repeat: isMobile ? 0 : Infinity, ease: "easeInOut" }}
-              className="absolute inset-4 rounded-full bg-blue-300/20 blur-sm md:blur-md"
+              animate={{ scale: [1, 1.15, 1], opacity: [0.4, 0.6, 0.4] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute inset-4 rounded-full bg-blue-300/20 blur-md"
             />
 
             {/* Center highlight - subtle */}
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/15 to-transparent opacity-40" />
 
             {/* Subtle particle halo */}
-            {!isMobile && [...Array(4)].map((_, i) => (
+            {[...Array(4)].map((_, i) => (
               <motion.div
                 key={`particle-${i}`}
                 animate={{ y: [0, -12, 0], opacity: [0, 0.6, 0] }}
@@ -253,15 +359,15 @@ export function ComplianceCoreVisualization() {
             >
               {/* Module container with hover interaction */}
               <motion.div
-                animate={isMobile ? { y: 0, scale: 1 } : { y: hoveredIndex === i ? -8 : [0, -8, 0], scale: hoveredIndex === i ? 1.12 : 1 }}
-                transition={isMobile ? {} : { y: hoveredIndex === i ? { duration: 0.3 } : { duration: 3.5 + i * 0.2, repeat: Infinity, ease: "easeInOut" }, scale: { duration: 0.3 } }}
+                animate={{ y: hoveredIndex === i ? -8 : [0, -8, 0], scale: hoveredIndex === i ? 1.12 : 1 }}
+                transition={{ y: hoveredIndex === i ? { duration: 0.3 } : { duration: 3.5 + i * 0.2, repeat: Infinity, ease: "easeInOut" }, scale: { duration: 0.3 } }}
                 className="relative"
               >
               {/* Module glow - subtle, soft, premium */}
                 <motion.div
-                  animate={isMobile ? {} : { scale: hoveredIndex === i ? [1.2, 1.35, 1.2] : [0.9, 1.1, 0.9], opacity: hoveredIndex === i ? [0.25, 0.4, 0.25] : [0.1, 0.2, 0.1] }}
-                  transition={{ duration: 2.5, repeat: isMobile ? 0 : Infinity, ease: "easeInOut", delay: i * 0.2 }}
-                  className="absolute -inset-4 rounded-full blur-sm md:blur-md"
+                  animate={{ scale: hoveredIndex === i ? [1.2, 1.35, 1.2] : [0.9, 1.1, 0.9], opacity: hoveredIndex === i ? [0.25, 0.4, 0.25] : [0.1, 0.2, 0.1] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.2 }}
+                  className="absolute -inset-4 rounded-full blur-md"
                   style={{ backgroundColor: module.color, opacity: hoveredIndex === i ? 0.2 : 0.08 }}
                 />
 
@@ -273,7 +379,7 @@ export function ComplianceCoreVisualization() {
                       : `0 0 10px ${module.color}25, inset 0 0 4px ${module.color}10`
                   }}
                   transition={{ duration: 0.3 }}
-                  className="relative w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center backdrop-blur-sm md:backdrop-blur-md border border-white/20 md:border-white/15 transition-all"
+                  className="relative w-20 h-20 rounded-full flex items-center justify-center backdrop-blur-md border border-white/15 transition-all"
                   style={{
                     backgroundColor: `${module.color}12`,
                   }}
@@ -285,9 +391,9 @@ export function ComplianceCoreVisualization() {
 
                   {/* Pulsing indicator ring - subtle */}
                   <motion.div
-                    animate={isMobile ? {} : { scale: [1, 1.3, 1], opacity: [0.5, 0.2, 0.5] }}
-                    transition={{ duration: 2.2, repeat: isMobile ? 0 : Infinity, ease: "easeInOut", delay: i * 0.3 }}
-                    className="absolute inset-0 rounded-full border border-white/20 md:border-white/25"
+                    animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0.2, 0.5] }}
+                    transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }}
+                    className="absolute inset-0 rounded-full border border-white/25"
                   />
 
                   {/* Hover highlight inner ring */}
@@ -328,8 +434,6 @@ export function ComplianceCoreVisualization() {
           );
         })}
       </div>
-
-
     </div>
   );
 }
