@@ -162,6 +162,12 @@ function MicroParticles({
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  // Ensure component only runs on client
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const particleConfig = useMemo(() => ({
     count: variant === "info" ? 20 : variant === "metrics" ? 40 : 60,
@@ -175,7 +181,7 @@ function MicroParticles({
   }), [variant]);
 
   useEffect(() => {
-    if (reducedMotion) return;
+    if (reducedMotion || !mounted) return;
     
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -183,12 +189,19 @@ function MicroParticles({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Safely access window APIs
+    if (typeof window === "undefined") return;
+
     const resizeCanvas = () => {
-      const rect = canvas.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      ctx.scale(dpr, dpr);
+      try {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+      } catch {
+        // Ignore resize errors
+      }
     };
 
     resizeCanvas();
@@ -268,9 +281,10 @@ function MicroParticles({
       window.removeEventListener("resize", resizeCanvas);
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
-  }, [variant, reducedMotion, particleConfig]);
+  }, [variant, reducedMotion, particleConfig, mounted]);
 
-  if (reducedMotion) return null;
+  // Don't render until mounted (avoid SSR issues)
+  if (!mounted || reducedMotion) return null;
 
   return (
     <canvas
