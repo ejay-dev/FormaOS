@@ -216,7 +216,7 @@ export function ComplianceCoreVisualization() {
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/15 to-transparent opacity-40" />
 
             {/* Subtle particle halo */}
-            {!isMobile && ([...Array(4)].map((_, i) => (
+            {!isMobile && [...Array(4)].map((_, i) => (
               <motion.div
                 key={`particle-${i}`}
                 animate={{ y: [0, -12, 0], opacity: [0, 0.6, 0] }}

@@ -139,7 +139,7 @@ export function CinematicHero() {
               
               {/* Stats row */}
               <motion.div
-                        className="space-y-10 max-w-lg w-full mx-auto md:mx-0 md:max-w-lg text-center md:text-left"
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.8 }}
                 className="flex flex-col sm:flex-row gap-3 md:gap-5 pt-4 md:pt-6 pb-4 md:pb-6"
