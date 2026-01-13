@@ -57,7 +57,7 @@ function HomeHero() {
               >
                 <Database className="h-3 w-3 sm:h-4 sm:w-4 text-secondary" />
               </motion.div>
-              Compliance OS
+              Enterprise Compliance OS
             </motion.div>
 
             <motion.h1
@@ -66,9 +66,9 @@ function HomeHero() {
               transition={{ delay: 0.3, duration: 0.8 }}
               className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] sm:leading-[1.08] font-display tracking-tight mb-4 sm:mb-6"
             >
-              Compliance infrastructure<br />
+              Operational Compliance<br />
               <span className="relative">
-                <span className="text-gradient">built for audit defense</span>
+                <span className="text-gradient">Built for Real Teams</span>
                 <motion.div
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
@@ -84,14 +84,14 @@ function HomeHero() {
               transition={{ delay: 0.5, duration: 0.8 }}
               className="text-base sm:text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-8 sm:mb-10"
             >
-              Turn compliance chaos into defensible workflows. Connect policies, evidence, and audit trails into a single platform designed for regulated teams.
+              Transform regulatory obligations into executable controls, traceable evidence, and audit-ready governance — all inside one system of record.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7, duration: 0.8 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6"
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6 mb-8"
             >
               <Link href="/auth/signup" className="w-full sm:w-auto rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors">
                 Start Free Trial
@@ -99,6 +99,17 @@ function HomeHero() {
               <Link href="/contact" className="w-full sm:w-auto text-sm font-semibold leading-6 text-foreground hover:text-primary transition-colors flex items-center justify-center sm:justify-start">
                 Request Demo <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9, duration: 0.8 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-foreground/60"
+            >
+              <span>• 14-day free trial</span>
+              <span>• No credit card required</span>
+              <span>• Australian-hosted</span>
             </motion.div>
           </div>
         </ParallaxLayer>
@@ -129,68 +140,38 @@ export function HomePageClient() {
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
-            badge="Complete Platform"
-            title={<>End-to-end compliance<br className="hidden sm:inline" /><span className="text-gradient">management system</span></>}
-            subtitle="FormaOS unifies policies, tasks, evidence, and audit trails into a single defensible workflow"
+            badge="From Compliance Work to Compliance Infrastructure"
+            title={<>Replace fragmented spreadsheets,<br className="hidden sm:inline" /><span className="text-gradient">document silos, and manual audits</span></>}
+            subtitle="FormaOS replaces fragmented spreadsheets, document silos, and manual audits with a single operational layer for governance. Every policy, control, task, and piece of evidence is connected, monitored, and defensible — by design."
             alignment="center"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             <ValueProp
               icon={<Target className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
-              title="Policy Engine"
-              description="Version-controlled policies with review cadence, ownership, and staff acknowledgement tracking"
+              title="Model Obligations"
+              description="Convert regulations into structured policies and controls."
               delay={0}
             />
             <ValueProp
               icon={<Zap className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
-              title="Task Management"
-              description="Turn controls into tasks with due dates, assignees, and accountability chains"
+              title="Execute Tasks"
+              description="Assign ownership, due dates, and accountability across teams."
               delay={0.1}
             />
             <ValueProp
               icon={<Shield className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
-              title="Evidence Vault"
-              description="Store artifacts with approval history, mapped controls, and audit-ready context"
+              title="Prove Readiness"
+              description="Generate audit-ready evidence and reports in minutes."
               delay={0.2}
             />
-            <ValueProp
-              icon={<Database className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
-              title="Audit Trail"
-              description="Immutable logs of evidence decisions, task completion, and control evaluations"
-              delay={0.3}
-            />
-            <ValueProp
-              icon={<TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
-              title="Compliance Frameworks"
-              description="Align requirements to frameworks, score posture, and generate audit exports"
-              delay={0.4}
-            />
-            <ValueProp
-              icon={<Users className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
-              title="Reporting Engine"
-              description="Executive dashboards, risk summaries, and readiness reports in minutes"
-              delay={0.5}
-            />
           </div>
-
-          <InteractiveCard 
-            className="mt-12 sm:mt-16 text-center"
-            glowColor="rgba(139, 92, 246, 0.2)"
-          >
-            <p className="text-lg sm:text-xl md:text-2xl font-semibold font-display mb-3 sm:mb-4">
-              No scattered tools. No last-minute audit scrambles. No blind spots.
-            </p>
-            <p className="text-base sm:text-lg text-foreground/70">
-              Just clarity, structure, and confidence.
-            </p>
-          </InteractiveCard>
         </div>
       </CinematicSection>
 
       <VisualDivider />
 
-      {/* For Regulated Teams */}
+      {/* Live Platform Metrics */}
       <CinematicSection 
         backgroundType="nodes" 
         ambientColor="secondary"
@@ -198,51 +179,133 @@ export function HomePageClient() {
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
-            badge="Built for Regulated Teams"
-            title={<>Infrastructure for<br className="hidden sm:inline" /><span className="text-gradient">operational trust</span></>}
-            subtitle="Designed for teams responsible for safety, compliance, outcomes, and trust"
+            badge="Live Platform Metrics"
+            title={<>Real-Time Compliance<br className="hidden sm:inline" /><span className="text-gradient">Intelligence</span></>}
+            subtitle="FormaOS continuously measures your organization's compliance posture — across teams, frameworks, and operational controls — without manual tracking."
             alignment="center"
           />
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
-            <div className="space-y-6 sm:space-y-8">
-              <div>
-                <h3 className="text-xl sm:text-2xl font-bold mb-4">NDIS Service Providers</h3>
-                <p className="text-foreground/80">
-                  Pre-built practice standards workflows with automated evidence collection and audit-ready reporting.
-                </p>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mt-12">
+            <div className="text-center">
+              <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gradient mb-2">94%</div>
+              <div className="text-sm sm:text-base text-foreground/70">Average Compliance Posture</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gradient mb-2">127</div>
+              <div className="text-sm sm:text-base text-foreground/70">Active Controls</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gradient mb-2">&lt; 2 min</div>
+              <div className="text-sm sm:text-base text-foreground/70">Audit Export Time</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gradient mb-2">98%</div>
+              <div className="text-sm sm:text-base text-foreground/70">Task Completion Rate</div>
+            </div>
+          </div>
+        </div>
+      </CinematicSection>
+
+      <VisualDivider />
+
+      {/* How It Works */}
+      <CinematicSection 
+        backgroundType="gradient" 
+        ambientColor="primary"
+        className="py-16 sm:py-20 lg:py-32 relative"
+      >
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <ParticleField 
+            particleCount={25} 
+            colors={["rgba(0, 212, 251, 0.3)", "rgba(139, 92, 246, 0.25)"]}
+          />
+        </div>
+        
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+          <SectionHeader
+            badge="How It Works"
+            title={<>A System Designed for<br className="hidden sm:inline" /><span className="text-gradient">Daily Operations</span></>}
+            subtitle="Compliance shouldn't be a quarterly fire drill. FormaOS embeds governance directly into everyday workflows — making compliance part of how your organization runs."
+            alignment="center"
+          />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mt-12">
+            <div className="text-center">
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">1</div>
+              <h3 className="text-lg font-semibold mb-2">Structure</h3>
+              <p className="text-sm text-foreground/80">Model your organization, sites, and teams with clear ownership and framework alignment.</p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">2</div>
+              <h3 className="text-lg font-semibold mb-2">Execute</h3>
+              <p className="text-sm text-foreground/80">Turn controls into operational tasks with due dates, assignees, and accountability chains.</p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">3</div>
+              <h3 className="text-lg font-semibold mb-2">Verify</h3>
+              <p className="text-sm text-foreground/80">Capture evidence automatically and monitor completion in real time.</p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">4</div>
+              <h3 className="text-lg font-semibold mb-2">Audit</h3>
+              <p className="text-sm text-foreground/80">Export defensible reports in minutes — not weeks.</p>
+            </div>
+          </div>
+        </div>
+      </CinematicSection>
+
+      <VisualDivider />
+
+      {/* Why FormaOS */}
+      <CinematicSection 
+        backgroundType="nodes" 
+        ambientColor="secondary"
+        className="py-16 sm:py-20 lg:py-32"
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="Why FormaOS"
+            title={<>Compliance That<br className="hidden sm:inline" /><span className="text-gradient">Actually Operates</span></>}
+            subtitle=""
+            alignment="center"
+          />
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 mt-12">
+            <div className="space-y-6">
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2" />
+                <div>
+                  <h4 className="font-semibold text-base">Built for regulated industries</h4>
+                </div>
               </div>
-              <div>
-                <h3 className="text-xl sm:text-2xl font-bold mb-4">Healthcare & Allied Health</h3>
-                <p className="text-foreground/80">
-                  Integrated health service frameworks covering AHPRA registration, governance, and safety requirements.
-                </p>
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2" />
+                <div>
+                  <h4 className="font-semibold text-base">Framework-driven by design</h4>
+                </div>
               </div>
-              <div>
-                <h3 className="text-xl sm:text-2xl font-bold mb-4">Community Services</h3>
-                <p className="text-foreground/80">
-                  Standardize controls across programs while maintaining evidence traceability and governance reporting.
-                </p>
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2" />
+                <div>
+                  <h4 className="font-semibold text-base">Evidence is generated, not hunted</h4>
+                </div>
               </div>
             </div>
             
-            <InteractiveCard 
-              glowColor="rgba(0, 212, 251, 0.15)"
-              className="h-fit"
-            >
-              <div className="text-center">
-                <h4 className="text-lg sm:text-xl font-bold mb-4">Ready to transform compliance?</h4>
-                <p className="text-foreground/80 mb-6">
-                  See how FormaOS works for your industry with a personalized demo.
-                </p>
-                <Link 
-                  href="/contact" 
-                  className="inline-flex items-center justify-center w-full px-6 py-3 rounded-md bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
-                >
-                  Request Demo <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
+            <div className="space-y-6">
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2" />
+                <div>
+                  <h4 className="font-semibold text-base">Governance without administrative overhead</h4>
+                </div>
               </div>
-            </InteractiveCard>
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2" />
+                <div>
+                  <h4 className="font-semibold text-base">Scales from small teams to enterprise operations</h4>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </CinematicSection>
@@ -262,11 +325,28 @@ export function HomePageClient() {
           />
         </div>
         
-        <MarketingAnchor 
-          title="Ready to transform compliance?"
-          subtitle="Start your free trial and see FormaOS in action"
-          badge="Get Started"
-        />
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative text-center">
+          <div className="inline-flex items-center gap-2 glass-intense rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wider mb-6 border border-secondary/30">
+            Start Your Compliance Transformation
+          </div>
+          
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight font-display tracking-tight mb-6">
+            Start Your Compliance Transformation
+          </h2>
+          
+          <p className="text-lg sm:text-xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-8">
+            Move from tracking compliance to operationalizing it. FormaOS gives your organization a single system of record for governance, risk, and accountability.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+            <Link href="/auth/signup" className="w-full sm:w-auto rounded-md bg-primary px-8 py-4 text-base font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors">
+              Start Free Trial
+            </Link>
+            <Link href="/contact" className="w-full sm:w-auto text-base font-semibold leading-6 text-foreground hover:text-primary transition-colors flex items-center justify-center sm:justify-start">
+              Talk to a Specialist <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
+          </div>
+        </div>
       </CinematicSection>
     </div>
   );
