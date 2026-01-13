@@ -65,9 +65,9 @@ function IndustriesHero() {
               transition={{ delay: 0.3, duration: 0.8 }}
               className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] sm:leading-[1.08] font-display tracking-tight mb-4 sm:mb-6"
             >
-              Compliance built for<br />
+              Compliance Infrastructure for<br />
               <span className="relative">
-                <span className="text-gradient">regulated industries</span>
+                <span className="text-gradient">Regulated Industries</span>
                 <motion.div
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
@@ -83,7 +83,7 @@ function IndustriesHero() {
               transition={{ delay: 0.5, duration: 0.8 }}
               className="text-base sm:text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-8 sm:mb-10"
             >
-              Pre-built frameworks and workflows for NDIS providers, healthcare, and community services. Ready-to-deploy compliance infrastructure.
+              FormaOS provides a unified governance platform for organizations operating under strict regulatory and contractual obligations.
             </motion.p>
 
             <motion.div
@@ -113,7 +113,116 @@ export default function IndustriesPageContent() {
 
       <VisualDivider />
 
-      {/* NDIS Service Providers */}
+      {/* Industry Use Section */}
+      <CinematicSection 
+        backgroundType="gradient" 
+        ambientColor="secondary"
+        className="py-16 sm:py-20 lg:py-32"
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="Industry Use"
+            title={<>FormaOS is built for environments where<br className="hidden sm:inline" /><span className="text-gradient">accountability, traceability, and audit readiness are not optional</span></>}
+            subtitle=""
+            alignment="center"
+          />
+        </div>
+      </CinematicSection>
+
+      <VisualDivider />
+
+      {/* Example Verticals */}
+      <CinematicSection 
+        backgroundType="gradient" 
+        ambientColor="primary"
+        className="py-16 sm:py-20 lg:py-32 relative"
+      >
+        {/* Clean gradient background - NO motion elements */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-background to-secondary/3" />
+        
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+          <SectionHeader
+            badge="Example Verticals"
+            title={<>Compliance infrastructure<br className="hidden sm:inline" /><span className="text-gradient">across regulated industries</span></>}
+            subtitle=""
+            alignment="center"
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            <ValueProp
+              icon={<Heart className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
+              title="Disability and Aged Care"
+              description="Operationalize NDIS, quality standards, safeguarding, incident management, and audits."
+              delay={0}
+            />
+            <ValueProp
+              icon={<Shield className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
+              title="Healthcare and Allied Health"
+              description="Manage accreditation, clinical governance, compliance workflows, and evidence tracking."
+              delay={0.1}
+            />
+            <ValueProp
+              icon={<TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
+              title="Financial Services"
+              description="Track regulatory obligations, risk controls, internal audits, and compliance reporting."
+              delay={0.2}
+            />
+            <ValueProp
+              icon={<Building2 className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
+              title="Construction and Infrastructure"
+              description="Manage safety systems, contractor compliance, incident reporting, and regulatory audits."
+              delay={0.3}
+            />
+            <ValueProp
+              icon={<Users className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
+              title="Education and Childcare"
+              description="Control policy adherence, staff compliance, risk management, and inspection readiness."
+              delay={0.4}
+            />
+          </div>
+        </div>
+      </CinematicSection>
+
+      <VisualDivider />
+
+      {/* Why It Works Section */}
+      <CinematicSection 
+        backgroundType="gradient" 
+        ambientColor="accent"
+        className="py-16 sm:py-20 lg:py-32"
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="Why It Works Across Industries"
+            title={<>Universal compliance<br className="hidden sm:inline" /><span className="text-gradient">design principles</span></>}
+            subtitle=""
+            alignment="center"
+          />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+            <div className="text-center">
+              <FileCheck className="h-8 w-8 text-primary mx-auto mb-4" />
+              <h4 className="font-semibold text-base mb-2">Obligations are structured as system logic</h4>
+            </div>
+            <div className="text-center">
+              <Shield className="h-8 w-8 text-primary mx-auto mb-4" />
+              <h4 className="font-semibold text-base mb-2">Controls are enforced operationally</h4>
+            </div>
+            <div className="text-center">
+              <Building2 className="h-8 w-8 text-primary mx-auto mb-4" />
+              <h4 className="font-semibold text-base mb-2">Evidence is captured continuously</h4>
+            </div>
+            <div className="text-center">
+              <TrendingUp className="h-8 w-8 text-primary mx-auto mb-4" />
+              <h4 className="font-semibold text-base mb-2">Audits become reporting, not reconstruction</h4>
+            </div>
+          </div>
+        </div>
+      </CinematicSection>
+
+      <VisualDivider />
+
+      {/* Legacy NDIS Section - Remove or keep for reference */}
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
@@ -386,11 +495,28 @@ export default function IndustriesPageContent() {
         ambientColor="primary"
         className="py-16 sm:py-20 lg:py-32 relative"
       >
-        <MarketingAnchor 
-          title="Ready for industry-specific compliance?"
-          subtitle="Choose your framework and start with pre-built controls designed for your sector"
-          badge="Get Started"
-        />
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center relative">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-8"
+          >
+            <Building2 className="h-3 w-3 text-primary" />
+            Closing
+          </motion.div>
+          
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight font-display tracking-tight mb-6">
+            If your organization operates under regulation,<br />
+            <span className="text-gradient">FormaOS provides the system to run compliance as part of daily operations.</span>
+          </h2>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+            <Link href="/contact" className="w-full sm:w-auto rounded-md bg-primary px-8 py-4 text-base font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors">
+              Request a Demo
+            </Link>
+          </div>
+        </div>
       </CinematicSection>
     </div>
   );

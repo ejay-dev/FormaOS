@@ -66,9 +66,9 @@ function HomeHero() {
               transition={{ delay: 0.3, duration: 0.8 }}
               className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] sm:leading-[1.08] font-display tracking-tight mb-4 sm:mb-6"
             >
-              Operational Compliance<br />
+              Operational Compliance,<br />
               <span className="relative">
-                <span className="text-gradient">Built for Real Teams</span>
+                <span className="text-gradient">Built for Real Organizations</span>
                 <motion.div
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
@@ -82,10 +82,20 @@ function HomeHero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
-              className="text-base sm:text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-8 sm:mb-10"
+              className="text-base sm:text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-6 sm:mb-8"
             >
-              Transform regulatory obligations into executable controls, traceable evidence, and audit-ready governance — all inside one system of record.
+              FormaOS is a compliance operating system for regulated teams. It turns obligations into structured controls, tracked actions, and audit-ready evidence.
             </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+              className="text-sm sm:text-lg text-foreground/60 leading-relaxed max-w-2xl mx-auto mb-8 sm:mb-10"
+            >
+              <p>Most compliance tools store documents. FormaOS runs compliance.</p>
+              <p className="mt-2">It gives organizations a single system to model governance, assign accountability, verify execution, and prove outcomes.</p>
+            </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -136,9 +146,9 @@ export function HomePageClient() {
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
-            badge="From Compliance Work to Compliance Infrastructure"
-            title={<>Replace fragmented spreadsheets,<br className="hidden sm:inline" /><span className="text-gradient">document silos, and manual audits</span></>}
-            subtitle="FormaOS replaces fragmented spreadsheets, document silos, and manual audits with a single operational layer for governance. Every policy, control, task, and piece of evidence is connected, monitored, and defensible — by design."
+            badge="Value Statement"
+            title={<>From framework alignment to audit export,<br className="hidden sm:inline" /><span className="text-gradient">every compliance activity is connected</span></>}
+            subtitle="FormaOS replaces fragmented spreadsheets, disconnected policy tools, and manual audits with a structured operating layer for governance."
             alignment="center"
           />
 
@@ -243,7 +253,7 @@ export function HomePageClient() {
                   transition={{ delay: 0.3, duration: 0.8 }}
                   className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-2"
                 >
-                  A System Designed for<br className="hidden sm:inline" />
+                  A Compliance System Designed for<br className="hidden sm:inline" />
                   <span className="text-gradient">Daily Operations</span>
                 </motion.h2>
                 
@@ -260,7 +270,7 @@ export function HomePageClient() {
                   transition={{ delay: 0.4, duration: 0.8 }}
                   className="mt-4 text-lg text-foreground/70 max-w-3xl mx-auto"
                 >
-                  Compliance shouldn't be a quarterly fire drill. FormaOS embeds governance directly into everyday workflows — making compliance part of how your organization runs.
+                  Compliance should not live in quarterly reviews. FormaOS embeds governance directly into operational workflows so compliance becomes part of how the organization runs.
                 </motion.p>
               </div>
             </div>
@@ -298,7 +308,7 @@ export function HomePageClient() {
                         Structure
                       </h3>
                       <p className="text-sm text-foreground/80 leading-relaxed">
-                        Model your organization, sites, and teams with clear ownership and framework alignment.
+                        Define ownership and accountability. Model your organization, sites, and teams. Assign control ownership and map obligations to responsible roles.
                       </p>
                     </div>
                     
@@ -336,7 +346,7 @@ export function HomePageClient() {
                         Execute
                       </h3>
                       <p className="text-sm text-foreground/80 leading-relaxed">
-                        Turn controls into operational tasks with due dates, assignees, and accountability chains.
+                        Turn controls into actions. Convert requirements into tasks with due dates, assignees, and evidence requirements.
                       </p>
                     </div>
                     
@@ -374,7 +384,7 @@ export function HomePageClient() {
                         Verify
                       </h3>
                       <p className="text-sm text-foreground/80 leading-relaxed">
-                        Capture evidence automatically and monitor completion in real time.
+                        Track completion with evidence. Capture proof automatically or manually. Monitor status in real time with a complete audit trail.
                       </p>
                     </div>
                     
@@ -412,7 +422,7 @@ export function HomePageClient() {
                         Audit
                       </h3>
                       <p className="text-sm text-foreground/80 leading-relaxed">
-                        Export defensible reports in minutes — not weeks.
+                        Prove compliance without disruption. Export defensible reports in minutes with every control linked to verifiable evidence.
                       </p>
                     </div>
                     
@@ -448,8 +458,8 @@ export function HomePageClient() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
             badge="Why FormaOS"
-            title={<>Compliance That<br className="hidden sm:inline" /><span className="text-gradient">Actually Operates</span></>}
-            subtitle=""
+            title={<>Built for governance,<br className="hidden sm:inline" /><span className="text-gradient">not checklists</span></>}
+            subtitle="FormaOS is not a document repository or a task manager. It is an operating layer for compliance and risk."
             alignment="center"
           />
 
@@ -458,19 +468,13 @@ export function HomePageClient() {
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2" />
                 <div>
-                  <h4 className="font-semibold text-base">Built for regulated industries</h4>
+                  <h4 className="font-semibold text-base">Controls mapped directly to obligations</h4>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2" />
                 <div>
-                  <h4 className="font-semibold text-base">Framework-driven by design</h4>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2" />
-                <div>
-                  <h4 className="font-semibold text-base">Evidence is generated, not hunted</h4>
+                  <h4 className="font-semibold text-base">Actions tied to accountable owners</h4>
                 </div>
               </div>
             </div>
@@ -479,15 +483,107 @@ export function HomePageClient() {
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2" />
                 <div>
-                  <h4 className="font-semibold text-base">Governance without administrative overhead</h4>
+                  <h4 className="font-semibold text-base">Evidence stored in a verifiable chain</h4>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2" />
                 <div>
-                  <h4 className="font-semibold text-base">Scales from small teams to enterprise operations</h4>
+                  <h4 className="font-semibold text-base">Continuous audit readiness</h4>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </CinematicSection>
+
+      <VisualDivider />
+
+      {/* Capabilities Section */}
+      <CinematicSection 
+        backgroundType="gradient" 
+        ambientColor="primary"
+        className="py-16 sm:py-20 lg:py-32"
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="Capabilities"
+            title={<>Model obligations. Execute tasks.<br className="hidden sm:inline" /><span className="text-gradient">Prove readiness.</span></>}
+            subtitle="FormaOS unifies compliance into a single operational system."
+            alignment="center"
+          />
+        </div>
+      </CinematicSection>
+
+      <VisualDivider />
+
+      {/* Who It Is For Section */}
+      <CinematicSection 
+        backgroundType="gradient" 
+        ambientColor="secondary"
+        className="py-16 sm:py-20 lg:py-32"
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="Who It Is For"
+            title={<>Built for organizations that cannot<br className="hidden sm:inline" /><span className="text-gradient">afford ambiguity in compliance</span></>}
+            subtitle=""
+            alignment="center"
+          />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+            <div className="text-center">
+              <Users className="h-8 w-8 text-primary mx-auto mb-4" />
+              <h4 className="font-semibold text-base mb-2">Compliance and governance teams</h4>
+            </div>
+            <div className="text-center">
+              <Shield className="h-8 w-8 text-primary mx-auto mb-4" />
+              <h4 className="font-semibold text-base mb-2">Risk and audit leaders</h4>
+            </div>
+            <div className="text-center">
+              <Target className="h-8 w-8 text-primary mx-auto mb-4" />
+              <h4 className="font-semibold text-base mb-2">Regulated operations</h4>
+            </div>
+            <div className="text-center">
+              <Database className="h-8 w-8 text-primary mx-auto mb-4" />
+              <h4 className="font-semibold text-base mb-2">Multi-entity and multi-site organizations</h4>
+            </div>
+          </div>
+        </div>
+      </CinematicSection>
+
+      <VisualDivider />
+
+      {/* Security Section */}
+      <CinematicSection 
+        backgroundType="gradient" 
+        ambientColor="accent"
+        className="py-16 sm:py-20 lg:py-32"
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="Security"
+            title={<>Designed for<br className="hidden sm:inline" /><span className="text-gradient">regulated environments</span></>}
+            subtitle=""
+            alignment="center"
+          />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+            <div className="text-center">
+              <Shield className="h-8 w-8 text-primary mx-auto mb-4" />
+              <h4 className="font-semibold text-base mb-2">Immutable audit logs</h4>
+            </div>
+            <div className="text-center">
+              <Database className="h-8 w-8 text-primary mx-auto mb-4" />
+              <h4 className="font-semibold text-base mb-2">Encrypted evidence storage</h4>
+            </div>
+            <div className="text-center">
+              <Users className="h-8 w-8 text-primary mx-auto mb-4" />
+              <h4 className="font-semibold text-base mb-2">Role-based access control</h4>
+            </div>
+            <div className="text-center">
+              <Target className="h-8 w-8 text-primary mx-auto mb-4" />
+              <h4 className="font-semibold text-base mb-2">Tenant isolation</h4>
             </div>
           </div>
         </div>
@@ -510,15 +606,16 @@ export function HomePageClient() {
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative text-center">
           <div className="inline-flex items-center gap-2 glass-intense rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wider mb-6 border border-secondary/30">
-            Start Your Compliance Transformation
+            Closing
           </div>
           
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight font-display tracking-tight mb-6">
-            Start Your Compliance Transformation
+            Move from tracking to governance.<br />
+            <span className="text-gradient">Run compliance as a system.</span>
           </h2>
           
           <p className="text-lg sm:text-xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-8">
-            Move from tracking compliance to operationalizing it. FormaOS gives your organization a single system of record for governance, risk, and accountability.
+            
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
@@ -526,7 +623,7 @@ export function HomePageClient() {
               Start Free Trial
             </Link>
             <Link href="/contact" className="w-full sm:w-auto text-base font-semibold leading-6 text-foreground hover:text-primary transition-colors flex items-center justify-center sm:justify-start">
-              Talk to a Specialist <ArrowRight className="ml-2 h-5 w-5" />
+              Request a Demo <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </div>
         </div>
