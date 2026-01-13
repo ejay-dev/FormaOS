@@ -122,12 +122,12 @@ export function useComplianceAction() {
     });
   }, [reportSuccess]);
 
-  const evidenceAdded = useCallback((evidenceName: string, controlName: string) => {
+  const evidenceAdded = useCallback((evidenceName: string, controlName?: string) => {
     reportSuccess({
       title: "Evidence added",
-      message: `${evidenceName} linked to ${controlName}`,
+      message: controlName ? `${evidenceName} linked to ${controlName}` : evidenceName,
       nodeType: "evidence",
-      nodeAction: "linked",
+      nodeAction: controlName ? "linked" : "created",
       wireFrom: evidenceName,
       wireTo: controlName,
       impactArea: "Audit readiness",
