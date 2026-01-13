@@ -17,19 +17,28 @@ import { useRef, useEffect, useState, ReactNode } from "react";
 // Ambient particle system
 interface ParticleFieldProps {
   count?: number;
+  particleCount?: number; // Alias for count
   color?: string;
+  colors?: string[]; // Array of colors to pick from
   speed?: number;
   className?: string;
 }
 
 export function ParticleField({ 
-  count = 50, 
+  count = 50,
+  particleCount,
   color = "rgb(56, 189, 248)",
+  colors,
   speed = 1,
   className = "" 
 }: ParticleFieldProps) {
+  // Use particleCount if provided, otherwise fall back to count
+  const actualCount = particleCount ?? count;
+  // Use first color from colors array if provided, otherwise fall back to color
+  const actualColor = colors?.[0] ?? color;
+  
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -55,12 +64,14 @@ export function ParticleField({
       vy: number;
       size: number;
       opacity: number;
+      colorIndex: number;
     }
 
     const particles: Particle[] = [];
+    const colorList = colors ?? [actualColor];
 
     // Initialize particles
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < actualCount; i++) {
       particles.push({
         x: Math.random() * canvas.offsetWidth,
         y: Math.random() * canvas.offsetHeight,
@@ -68,6 +79,7 @@ export function ParticleField({
         vy: (Math.random() - 0.5) * speed * 0.5,
         size: Math.random() * 2 + 1,
         opacity: Math.random() * 0.5 + 0.2,
+        colorIndex: Math.floor(Math.random() * colorList.length),
       });
     }
 
@@ -85,10 +97,13 @@ export function ParticleField({
         if (particle.y < 0) particle.y = canvas.offsetHeight;
         if (particle.y > canvas.offsetHeight) particle.y = 0;
 
+        // Get particle color
+        const particleColor = colorList[particle.colorIndex] || actualColor;
+        
         // Draw particle
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fillStyle = color.replace("rgb", "rgba").replace(")", `,${particle.opacity})`);
+        ctx.fillStyle = particleColor.replace("rgb", "rgba").replace(")", `,${particle.opacity})`);
         ctx.fill();
 
         // Draw connections to nearby particles
@@ -102,7 +117,7 @@ export function ParticleField({
             ctx.beginPath();
             ctx.moveTo(particle.x, particle.y);
             ctx.lineTo(other.x, other.y);
-            ctx.strokeStyle = color.replace("rgb", "rgba").replace(")", `,${opacity})`);
+            ctx.strokeStyle = particleColor.replace("rgb", "rgba").replace(")", `,${opacity})`);
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }

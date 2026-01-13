@@ -335,6 +335,8 @@ interface InteractiveCardProps {
   onClick?: () => void;
   className?: string;
   hoverEffect?: "lift" | "glow" | "border";
+  glowColor?: string;
+  delay?: number;
 }
 
 export function InteractiveCard({
@@ -342,6 +344,8 @@ export function InteractiveCard({
   onClick,
   className = "",
   hoverEffect = "lift",
+  glowColor = "rgba(56,189,248,0.1)",
+  delay = 0,
 }: InteractiveCardProps) {
   const hoverStyles = {
     lift: "hover:-translate-y-2 hover:shadow-premium-xl",
@@ -351,11 +355,15 @@ export function InteractiveCard({
 
   return (
     <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay, duration: 0.5 }}
       whileHover={{ scale: hoverEffect === "lift" ? 1.02 : 1 }}
       whileTap={onClick ? { scale: 0.98 } : undefined}
       onClick={onClick}
       className={`
-        glass-panel rounded-2xl p-6 transition-all duration-300
+        glass-panel rounded-2xl p-6 transition-all duration-300 relative overflow-hidden
         ${onClick ? "cursor-pointer" : ""}
         ${hoverStyles[hoverEffect]}
         ${className}
@@ -367,7 +375,7 @@ export function InteractiveCard({
         whileHover={{ opacity: 1 }}
         className="absolute inset-0 rounded-2xl pointer-events-none"
         style={{
-          background: "radial-gradient(circle at center, rgba(56,189,248,0.1) 0%, transparent 70%)",
+          background: `radial-gradient(circle at center, ${glowColor} 0%, transparent 70%)`,
         }}
       />
       <div className="relative z-10">{children}</div>

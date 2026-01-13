@@ -27,7 +27,7 @@ export interface ModuleNode {
   name: string;
   icon: React.ComponentType<{ className?: string }>;
   color: string;
-  status: NodeStatus;
+  status?: NodeStatus; // Optional - computed dynamically based on plan
   requiredPlan: PlanTier;
   description: string;
 }
@@ -153,7 +153,9 @@ function AnimatedNode({
           />
         )}
         
-        <Icon className={`${iconSize} relative z-10`} style={{ color: module.color }} />
+        <div className={`${iconSize} relative z-10`} style={{ color: module.color }}>
+          <Icon className="w-full h-full" />
+        </div>
         
         {/* Status indicator */}
         {statusIcons[status]}
