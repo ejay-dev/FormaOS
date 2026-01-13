@@ -66,9 +66,9 @@ function PricingHero() {
               transition={{ delay: 0.3, duration: 0.8 }}
               className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] sm:leading-[1.08] font-display tracking-tight mb-4 sm:mb-6"
             >
-              Simple pricing for<br />
+              Start strong. Scale with<br />
               <span className="relative">
-                <span className="text-gradient">compliance teams</span>
+                <span className="text-gradient">confidence.</span>
                 <motion.div
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
@@ -84,7 +84,7 @@ function PricingHero() {
               transition={{ delay: 0.5, duration: 0.8 }}
               className="text-base sm:text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-8 sm:mb-10"
             >
-              Start free, scale as you grow. No setup fees, no hidden costs, cancel anytime. Built for teams serious about compliance.
+              All plans include the FormaOS compliance engine — transparent monthly pricing with no hidden costs.
             </motion.p>
 
             <motion.div
@@ -130,8 +130,8 @@ export default function PricingPageContent() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
             badge="Choose Your Plan"
-            title={<>Start free, upgrade<br className="hidden sm:inline" /><span className="text-gradient">when you're ready</span></>}
-            subtitle="All plans include core compliance features with transparent, per-user pricing"
+            title={<>Start strong, scale<br className="hidden sm:inline" /><span className="text-gradient">with confidence</span></>}
+            subtitle="All plans include the FormaOS compliance engine with transparent monthly pricing"
             alignment="center"
           />
 
@@ -141,30 +141,36 @@ export default function PricingPageContent() {
               glowColor="rgba(139, 92, 246, 0.1)"
               className="p-8 text-center"
             >
-              <h3 className="text-2xl font-bold mb-2">Starter</h3>
-              <div className="text-4xl font-bold mb-1">Free</div>
-              <p className="text-sm text-foreground/70 mb-6">Up to 3 users</p>
+              <h3 className="text-2xl font-bold mb-2">FormaOS Starter</h3>
+              <div className="text-4xl font-bold mb-1">$159</div>
+              <p className="text-sm text-foreground/70 mb-6">/ month</p>
+              
+              <p className="text-sm text-foreground/80 mb-6">For small teams building structured compliance foundations</p>
               
               <div className="space-y-3 mb-8 text-left">
                 <div className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Policy management with version control</span>
+                  <span>Core policy & control management</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Task management and assignment</span>
+                  <span>Task assignment & accountability tracking</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Evidence storage (1GB)</span>
+                  <span>Evidence capture with audit trail</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Basic audit trails</span>
+                  <span>Single organization workspace</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Community support</span>
+                  <span>Standard reporting dashboard</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                  <span>Email support</span>
                 </div>
               </div>
               
@@ -172,7 +178,7 @@ export default function PricingPageContent() {
                 href="/auth/signup" 
                 className="w-full inline-flex items-center justify-center px-6 py-3 rounded-md border border-primary text-primary font-semibold hover:bg-primary/5 transition-colors"
               >
-                Get Started Free
+                Get Started
               </Link>
             </InteractiveCard>
 
@@ -187,9 +193,11 @@ export default function PricingPageContent() {
                 </span>
               </div>
               
-              <h3 className="text-2xl font-bold mb-2">Professional</h3>
-              <div className="text-4xl font-bold mb-1">$49</div>
-              <p className="text-sm text-foreground/70 mb-6">Per user per month</p>
+              <h3 className="text-2xl font-bold mb-2">FormaOS Pro</h3>
+              <div className="text-4xl font-bold mb-1">$239</div>
+              <p className="text-sm text-foreground/70 mb-6">/ month</p>
+              
+              <p className="text-sm text-foreground/80 mb-6">For organizations operationalizing compliance across teams</p>
               
               <div className="space-y-3 mb-8 text-left">
                 <div className="flex items-center gap-2 text-sm">
@@ -198,23 +206,23 @@ export default function PricingPageContent() {
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Unlimited users</span>
+                  <span>Multi-user team management</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Advanced evidence storage (50GB)</span>
+                  <span>Advanced evidence management</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Framework alignment (NDIS, ISO 27001)</span>
+                  <span>Framework alignment (NDIS, ISO, internal governance)</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Custom reporting dashboard</span>
+                  <span>Operational dashboards & compliance metrics</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Priority email support</span>
+                  <span>Priority support</span>
                 </div>
               </div>
               
@@ -222,7 +230,7 @@ export default function PricingPageContent() {
                 href="/auth/signup" 
                 className="w-full inline-flex items-center justify-center px-6 py-3 rounded-md bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
               >
-                Start 14-Day Trial
+                Upgrade to Pro
               </Link>
             </InteractiveCard>
 
@@ -231,34 +239,34 @@ export default function PricingPageContent() {
               glowColor="rgba(20, 184, 166, 0.1)"
               className="p-8 text-center"
             >
-              <h3 className="text-2xl font-bold mb-2">Enterprise</h3>
+              <h3 className="text-2xl font-bold mb-2">FormaOS Enterprise</h3>
               <div className="text-4xl font-bold mb-1">Custom</div>
               <p className="text-sm text-foreground/70 mb-6">Contact for pricing</p>
               
               <div className="space-y-3 mb-8 text-left">
                 <div className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Everything in Professional</span>
+                  <span>Everything in Pro</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Unlimited evidence storage</span>
+                  <span>Multi-tenant architecture</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Custom integrations & API</span>
+                  <span>Custom frameworks & policy mapping</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Multi-tenant organization management</span>
+                  <span>Advanced integrations & API access</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Dedicated customer success manager</span>
+                  <span>Dedicated compliance success manager</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>24/7 phone & chat support</span>
+                  <span>SLA-backed support</span>
                 </div>
               </div>
               
@@ -266,7 +274,7 @@ export default function PricingPageContent() {
                 href="/contact" 
                 className="w-full inline-flex items-center justify-center px-6 py-3 rounded-md border border-primary text-primary font-semibold hover:bg-primary/5 transition-colors"
               >
-                Contact Sales <ArrowRight className="ml-2 h-4 w-4" />
+                Talk to Sales <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </InteractiveCard>
           </div>
@@ -284,28 +292,28 @@ export default function PricingPageContent() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
             badge="All Plans Include"
-            title={<>Security and compliance<br className="hidden sm:inline" /><span className="text-gradient">built into every tier</span></>}
-            subtitle="Enterprise-grade features included from day one"
+            title={<>Enterprise-grade<br className="hidden sm:inline" /><span className="text-gradient">foundation features</span></>}
+            subtitle="Security, compliance, and operational excellence built into every tier"
             alignment="center"
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             <ValueProp
               icon={<Shield className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
-              title="Enterprise Security"
-              description="AES-256 encryption, SOC 2 compliance, and multi-factor authentication for all users"
+              title="Australian-hosted infrastructure"
+              description="Data sovereignty and compliance with local privacy laws, hosted in secure Australian data centers"
               delay={0}
             />
             <ValueProp
               icon={<Users className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
-              title="Role-Based Access"
-              description="Granular permissions system with audit trails for every access and modification"
+              title="Audit-ready by design"
+              description="Immutable evidence trails, automated reporting, and regulatory examination support built-in"
               delay={0.1}
             />
             <ValueProp
               icon={<Target className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
-              title="Audit Readiness"
-              description="Immutable audit trails and evidence management designed for regulatory examinations"
+              title="Upgrade or cancel anytime"
+              description="Flexible billing with no long-term commitments. Scale up or down as your organization evolves"
               delay={0.2}
             />
           </div>
@@ -315,11 +323,11 @@ export default function PricingPageContent() {
             glowColor="rgba(139, 92, 246, 0.2)"
           >
             <h3 className="text-xl sm:text-2xl font-bold mb-4">
-              No surprises, no hidden fees
+              Transparent pricing, no surprises
             </h3>
             <p className="text-base sm:text-lg text-foreground/70 max-w-2xl mx-auto">
-              Transparent pricing that scales with your team. All security, compliance, 
-              and core features included in every plan.
+              All plans include the FormaOS compliance engine with transparent monthly pricing. 
+              No setup fees, no hidden costs, no long-term contracts.
             </p>
           </InteractiveCard>
         </div>
