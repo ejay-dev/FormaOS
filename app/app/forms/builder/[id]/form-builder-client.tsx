@@ -97,7 +97,7 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
       setTimeout(() => setShowSaveSuccess(false), 2000);
     } catch (error: any) {
       console.error("Error saving form:", error);
-      reportError(`Failed to save form: ${error.message || 'Unknown error'}`);
+      reportError({ title: "Save failed", message: error.message || "Unknown error" });
     } finally {
       setSaving(false);
     }
