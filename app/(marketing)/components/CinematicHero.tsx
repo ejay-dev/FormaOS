@@ -41,8 +41,8 @@ export function CinematicHero() {
       <div className="absolute inset-0 vignette pointer-events-none" />
       
       {/* Content container */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="relative z-10 mx-auto max-w-7xl px-6 sm:px-8 lg:px-12 py-24">
+        <div className="grid lg:grid-cols-[1fr_1.1fr] gap-20 items-center">
           
           {/* Left: Text content */}
           <ParallaxLayer speed={0.3}>
@@ -50,7 +50,7 @@ export function CinematicHero() {
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="space-y-10 max-w-xl"
+              className="space-y-10 max-w-lg"
             >
               {/* Badge */}
               <motion.div
@@ -73,19 +73,25 @@ export function CinematicHero() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.8 }}
-                className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-[1.12] font-display tracking-tight space-y-3"
+                className="space-y-4"
               >
-                <div className="mb-3">Operational</div>
-                <span className="relative block mb-6">
-                  <span className="text-gradient">Compliance</span>
+                <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] font-display tracking-tight">
+                  Operational
+                </div>
+                <span className="relative block">
+                  <span className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-[1.15] font-display tracking-tight text-gradient">
+                    Compliance
+                  </span>
                   <motion.div
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
                     transition={{ delay: 0.8, duration: 0.8 }}
-                    className="absolute -bottom-3 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent rounded-full origin-left"
+                    className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent rounded-full origin-left"
                   />
                 </span>
-                <div>Operating System</div>
+                <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.2] font-display tracking-tight text-foreground/90 pt-2">
+                  Operating System
+                </div>
               </motion.h1>
               
               {/* Subtitle */}
@@ -178,49 +184,67 @@ export function CinematicHero() {
           
           {/* Right: 3D floating modules */}
           <ParallaxLayer speed={0.5}>
-            <div className="relative h-[650px]">
+            <div className="relative h-[700px]">
               {/* Connection lines between modules */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ filter: "drop-shadow(0 0 8px rgba(56, 189, 248, 0.3))" }}>
+              <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ filter: "drop-shadow(0 0 12px rgba(56, 189, 248, 0.4))" }}>
                 <motion.path
-                  d="M 200 150 Q 300 250 200 350"
+                  d="M 180 120 Q 280 240 180 360"
                   stroke="url(#moduleGradient)"
                   strokeWidth="2"
                   fill="none"
                   strokeDasharray="5,5"
                   initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 0.5 }}
+                  animate={{ pathLength: 1, opacity: 0.6 }}
                   transition={{ delay: 1.5, duration: 1.5 }}
                 />
                 <motion.path
-                  d="M 250 200 L 350 400"
+                  d="M 240 180 L 320 440"
                   stroke="url(#moduleGradient)"
                   strokeWidth="2"
                   fill="none"
                   strokeDasharray="5,5"
                   initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 0.5 }}
+                  animate={{ pathLength: 1, opacity: 0.6 }}
                   transition={{ delay: 1.7, duration: 1.5 }}
                 />
                 <defs>
                   <linearGradient id="moduleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="rgb(56, 189, 248)" stopOpacity="0.3" />
-                    <stop offset="100%" stopColor="rgb(139, 92, 246)" stopOpacity="0.3" />
+                    <stop offset="0%" stopColor="rgb(56, 189, 248)" stopOpacity="0.4" />
+                    <stop offset="100%" stopColor="rgb(139, 92, 246)" stopOpacity="0.4" />
                   </linearGradient>
                 </defs>
               </svg>
               
-              {/* Floating 3D modules - vertically rebalanced */}
-              <FloatingUIPanel delay={0.5} className="absolute top-8 right-0 w-80">
-                <Floating3DPanel delay={0.5} />
-              </FloatingUIPanel>
+              {/* Floating 3D modules - asymmetric, spaced out, larger */}
+              <motion.div
+                initial={{ opacity: 0, x: 50, y: -20 }}
+                animate={{ opacity: 1, x: 0, y: 0 }}
+                transition={{ delay: 0.5, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <FloatingUIPanel delay={0.5} className="absolute top-0 -right-8 w-[360px] shadow-[0_0_60px_rgba(56,189,248,0.25)]">
+                  <Floating3DPanel delay={0.5} />
+                </FloatingUIPanel>
+              </motion.div>
               
-              <FloatingUIPanel delay={0.7} className="absolute top-[42%] left-0 w-72">
-                <FloatingWorkflowDiagram delay={0.7} />
-              </FloatingUIPanel>
+              <motion.div
+                initial={{ opacity: 0, x: -50, y: 20 }}
+                animate={{ opacity: 1, x: 0, y: 0 }}
+                transition={{ delay: 0.7, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <FloatingUIPanel delay={0.7} className="absolute top-[48%] -left-12 w-[340px] shadow-[0_0_50px_rgba(139,92,246,0.25)]">
+                  <FloatingWorkflowDiagram delay={0.7} />
+                </FloatingUIPanel>
+              </motion.div>
               
-              <FloatingUIPanel delay={0.9} className="absolute bottom-12 right-10 w-64">
-                <FloatingSecurityModule delay={0.9} />
-              </FloatingUIPanel>
+              <motion.div
+                initial={{ opacity: 0, x: 30, y: 30 }}
+                animate={{ opacity: 1, x: 0, y: 0 }}
+                transition={{ delay: 0.9, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <FloatingUIPanel delay={0.9} className="absolute bottom-4 right-16 w-[320px] shadow-[0_0_55px_rgba(6,182,212,0.25)]">
+                  <FloatingSecurityModule delay={0.9} />
+                </FloatingUIPanel>
+              </motion.div>
             </div>
           </ParallaxLayer>
         </div>
