@@ -40,69 +40,54 @@ export function ComplianceCoreVisualization() {
   // Responsive orbital radius
   const orbitRadius = 200;
 
-  // Mobile layout - clean grid
+  // Mobile layout - clean compact grid with NO center glow
   if (isMobile) {
     return (
-      <div ref={containerRef} className="relative w-full py-8 px-4">
-        {/* Subtle center accent - thin ring only */}
-        <div className="flex justify-center mb-6">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-            className="relative w-12 h-12"
-          >
-            {/* Simple pulsing ring - no heavy glow */}
-            <motion.div
-              animate={{ scale: [1, 1.1, 1], opacity: [0.4, 0.6, 0.4] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute inset-0 rounded-full border-2 border-primary/40"
-            />
-            {/* Subtle inner dot */}
-            <div className="absolute inset-3 rounded-full bg-primary/20" />
-          </motion.div>
-        </div>
-
-        {/* Grid layout for mobile circles */}
-        <div className="grid grid-cols-3 gap-x-4 gap-y-6 justify-items-center max-w-xs mx-auto">
-          {/* Row 1: Security, Policies, Controls */}
-          {mobileOrderedModules.slice(0, 3).map((module, i) => (
-            <motion.div
-              key={`mobile-module-${i}`}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
-              className="flex flex-col items-center"
-            >
-              {/* Circle */}
+      <div ref={containerRef} className="relative w-full py-6 px-2">
+        {/* Grid layout for mobile circles - compact 2 rows */}
+        <div className="flex flex-col gap-6">
+          {/* Row 1: 3 modules - Security, Policies, Controls */}
+          <div className="flex justify-center gap-6">
+            {mobileOrderedModules.slice(0, 3).map((module, i) => (
               <motion.div
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.95 }}
-                className="relative w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/15 transition-all"
-                style={{ backgroundColor: `${module.color}15` }}
+                key={`mobile-module-${i}`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
+                className="flex flex-col items-center"
               >
-                {/* Subtle glow - reduced by 60% */}
-                <div 
-                  className="absolute -inset-1 rounded-full blur-sm opacity-20"
-                  style={{ backgroundColor: module.color }}
-                />
-                {/* Icon */}
-                <div style={{ color: module.color }} className="relative z-10">
-                  {module.icon}
-                </div>
+                {/* Circle - smaller size for mobile */}
+                <motion.div
+                  whileHover={{ scale: 1.08 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="relative w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/15 transition-all"
+                  style={{ backgroundColor: `${module.color}15` }}
+                >
+                  {/* Very subtle glow ring */}
+                  <div 
+                    className="absolute -inset-0.5 rounded-full opacity-30"
+                    style={{ 
+                      border: `1px solid ${module.color}`,
+                    }}
+                  />
+                  {/* Icon */}
+                  <div style={{ color: module.color }} className="relative z-10">
+                    {module.icon}
+                  </div>
+                </motion.div>
+                {/* Label */}
+                <span 
+                  className="mt-1.5 text-[10px] font-semibold"
+                  style={{ color: module.color }}
+                >
+                  {module.label}
+                </span>
               </motion.div>
-              {/* Label */}
-              <span 
-                className="mt-2 text-xs font-semibold"
-                style={{ color: module.color }}
-              >
-                {module.label}
-              </span>
-            </motion.div>
-          ))}
+            ))}
+          </div>
           
-          {/* Row 2: Audits, Evidence (centered) */}
-          <div className="col-span-3 flex justify-center gap-8">
+          {/* Row 2: 2 modules - Audits, Evidence (centered) */}
+          <div className="flex justify-center gap-8">
             {mobileOrderedModules.slice(3, 5).map((module, i) => (
               <motion.div
                 key={`mobile-module-row2-${i}`}
@@ -115,13 +100,15 @@ export function ComplianceCoreVisualization() {
                 <motion.div
                   whileHover={{ scale: 1.08 }}
                   whileTap={{ scale: 0.95 }}
-                  className="relative w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/15 transition-all"
+                  className="relative w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/15 transition-all"
                   style={{ backgroundColor: `${module.color}15` }}
                 >
-                  {/* Subtle glow - reduced by 60% */}
+                  {/* Very subtle glow ring */}
                   <div 
-                    className="absolute -inset-1 rounded-full blur-sm opacity-20"
-                    style={{ backgroundColor: module.color }}
+                    className="absolute -inset-0.5 rounded-full opacity-30"
+                    style={{ 
+                      border: `1px solid ${module.color}`,
+                    }}
                   />
                   {/* Icon */}
                   <div style={{ color: module.color }} className="relative z-10">
@@ -130,7 +117,7 @@ export function ComplianceCoreVisualization() {
                 </motion.div>
                 {/* Label */}
                 <span 
-                  className="mt-2 text-xs font-semibold"
+                  className="mt-1.5 text-[10px] font-semibold"
                   style={{ color: module.color }}
                 >
                   {module.label}
@@ -138,6 +125,33 @@ export function ComplianceCoreVisualization() {
               </motion.div>
             ))}
           </div>
+          
+          {/* Connecting wire accents - subtle lines between modules */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.3 }}
+            transition={{ delay: 0.8 }}
+            className="absolute inset-0 pointer-events-none"
+          >
+            <svg className="w-full h-full" style={{ position: 'absolute', top: 0, left: 0 }}>
+              {/* Subtle connecting arcs */}
+              <path
+                d="M 50% 25% Q 50% 40%, 50% 55%"
+                fill="none"
+                stroke="url(#mobileWireGradient)"
+                strokeWidth="1"
+                strokeDasharray="4,4"
+                opacity="0.4"
+              />
+              <defs>
+                <linearGradient id="mobileWireGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="rgb(56, 189, 248)" stopOpacity="0.5" />
+                  <stop offset="50%" stopColor="rgb(139, 92, 246)" stopOpacity="0.5" />
+                  <stop offset="100%" stopColor="rgb(6, 182, 212)" stopOpacity="0.5" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </motion.div>
         </div>
       </div>
     );
