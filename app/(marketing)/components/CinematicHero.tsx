@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { Sparkles, ArrowRight, Zap, Shield, Activity } from "lucide-react";
 import { 
   AnimatedSystemGrid, 
@@ -12,26 +13,37 @@ import {
 } from "@/components/motion";
 
 export function CinematicHero() {
+  const [isMobile, setIsMobile] = useState(true);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+    <section className="home-hero relative min-h-[90vh] flex items-center justify-center overflow-hidden">
       {/* Multi-layer animated background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
       
       {/* Animated system grid layer */}
-      <div className="absolute inset-0 opacity-60">
+      <div className="absolute inset-0 md:opacity-60 opacity-30 hidden md:block">
         <AnimatedSystemGrid />
       </div>
       
       {/* Pulsing nodes */}
-      <PulsingNode x="10%" y="20%" delay={0} />
-      <PulsingNode x="90%" y="30%" delay={0.5} color="rgb(139, 92, 246)" />
-      <PulsingNode x="15%" y="70%" delay={1} color="rgb(6, 182, 212)" />
-      <PulsingNode x="85%" y="80%" delay={1.5} />
+      {/* Hide pulsing nodes on mobile to prevent drift */}
+      <div className="hidden md:block">
+        <PulsingNode x="10%" y="20%" delay={0} />
+        <PulsingNode x="90%" y="30%" delay={0.5} color="rgb(139, 92, 246)" />
+        <PulsingNode x="15%" y="70%" delay={1} color="rgb(6, 182, 212)" />
+        <PulsingNode x="85%" y="80%" delay={1.5} />
+      </div>
       
       {/* Radial gradient overlays */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[600px] w-[600px] rounded-full bg-primary/20 blur-[120px]" />
-      <div className="pointer-events-none absolute -bottom-40 left-1/4 h-[500px] w-[500px] rounded-full bg-secondary/15 blur-[100px]" />
-      <div className="pointer-events-none absolute top-1/2 right-1/4 h-[400px] w-[400px] rounded-full bg-accent/10 blur-[80px]" />
+      {/* Ambient glows disabled on mobile to avoid bleed */}
+      <div className="pointer-events-none absolute md:-top-40 md:left-1/2 md:-translate-x-1/2 md:h-[600px] md:w-[600px] md:blur-[120px] hidden md:block rounded-full bg-primary/20" />
+      <div className="pointer-events-none absolute md:-bottom-40 md:left-1/4 md:h-[500px] md:w-[500px] md:blur-[100px] hidden md:block rounded-full bg-secondary/15" />
+      <div className="pointer-events-none absolute md:top-1/2 md:right-1/4 md:h-[400px] md:w-[400px] md:blur-[80px] hidden md:block rounded-full bg-accent/10" />
       
       {/* Vignette */}
       <div className="absolute inset-0 vignette pointer-events-none" />
@@ -127,7 +139,7 @@ export function CinematicHero() {
               
               {/* Stats row */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                        className="space-y-10 max-w-lg w-full mx-auto md:mx-0 md:max-w-lg text-center md:text-left"
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.8 }}
                 className="flex flex-col sm:flex-row gap-3 md:gap-5 pt-4 md:pt-6 pb-4 md:pb-6"

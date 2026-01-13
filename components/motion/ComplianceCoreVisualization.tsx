@@ -51,7 +51,7 @@ export function ComplianceCoreVisualization() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[240px] h-[240px] rounded-full bg-primary/20 blur-2xl"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] md:w-[240px] md:h-[240px] rounded-full bg-primary/20 blur-xl md:blur-2xl"
         />
         {/* Secondary glow layer - minimal */}
         <motion.div
@@ -65,15 +65,15 @@ export function ComplianceCoreVisualization() {
             ease: "easeInOut",
             delay: 0.7,
           }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full bg-secondary/10 blur-2xl"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[350px] md:h-[350px] rounded-full bg-secondary/10 blur-xl md:blur-2xl"
         />
       </div>
 
       {/* Orbital container - larger size */}
-      <div className="relative w-[350px] h-[350px] md:w-[600px] md:h-[600px]">
+      <div className="relative w-[320px] h-[320px] md:w-[600px] md:h-[600px]">
         {/* Orbital paths (SVG) - properly aligned */}
         <svg
-          className="absolute inset-0 w-full h-full pointer-events-none opacity-20"
+          className="absolute inset-0 w-full h-full pointer-events-none opacity-15 md:opacity-20"
           viewBox="0 0 600 600"
         >
           {/* Outer orbit circle - soft, atmospheric */}
@@ -130,8 +130,8 @@ export function ComplianceCoreVisualization() {
             );
           })}
 
-          {/* Data flow animation - subtle accent only */}
-          {modules.map((module, i) => {
+          {/* Data flow animation - subtle accent only (disabled on mobile) */}
+          {!isMobile && modules.map((module, i) => {
             const rad = (module.angle * Math.PI) / 180;
             const x = 300 + orbitRadius * Math.cos(rad);
             const y = 300 + orbitRadius * Math.sin(rad);
@@ -176,27 +176,14 @@ export function ComplianceCoreVisualization() {
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20"
         >
           <motion.div
-            animate={{
-              rotateZ: 360,
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: "linear",
-            }}
+            animate={{ rotateZ: isMobile ? 0 : 360 }}
+            transition={{ duration: 20, repeat: isMobile ? 0 : Infinity, ease: "linear" }}
             className="relative w-32 h-32"
           >
             {/* Outer energy ring - subtle pulse */}
             <motion.div
-              animate={{
-                opacity: [0.2, 0.4, 0.2],
-                scale: [0.95, 1.05, 0.95],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
+              animate={isMobile ? {} : { opacity: [0.2, 0.4, 0.2], scale: [0.95, 1.05, 0.95] }}
+              transition={{ duration: 4, repeat: isMobile ? 0 : Infinity, ease: "easeInOut" }}
               className="absolute inset-0 rounded-full border border-primary/30"
             />
 
@@ -204,57 +191,38 @@ export function ComplianceCoreVisualization() {
             <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400/40 via-blue-500/35 to-purple-600/40 backdrop-blur-sm shadow-[0_0_30px_rgba(34,211,238,0.35)] border border-white/20" />
             
             {/* Soft internal light sweep - minimal */}
-            <motion.div
-              animate={{
-                background: [
-                  "conic-gradient(from 0deg, transparent, rgba(255,255,255,0.2), transparent)",
-                  "conic-gradient(from 180deg, transparent, rgba(255,255,255,0.2), transparent)",
-                  "conic-gradient(from 360deg, transparent, rgba(255,255,255,0.2), transparent)"
-                ]
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-              className="absolute inset-0 rounded-full"
-            />
+            {!isMobile && (
+              <motion.div
+                animate={{
+                  background: [
+                    "conic-gradient(from 0deg, transparent, rgba(255,255,255,0.2), transparent)",
+                    "conic-gradient(from 180deg, transparent, rgba(255,255,255,0.2), transparent)",
+                    "conic-gradient(from 360deg, transparent, rgba(255,255,255,0.2), transparent)"
+                  ]
+                }}
+                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 rounded-full"
+              />
+            )}
 
             {/* Inner pulsing glow - soft */}
             <motion.div
-              animate={{
-                scale: [1, 1.15, 1],
-                opacity: [0.4, 0.6, 0.4],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="absolute inset-4 rounded-full bg-blue-300/20 blur-md"
+              animate={isMobile ? {} : { scale: [1, 1.15, 1], opacity: [0.4, 0.6, 0.4] }}
+              transition={{ duration: 3, repeat: isMobile ? 0 : Infinity, ease: "easeInOut" }}
+              className="absolute inset-4 rounded-full bg-blue-300/20 blur-sm md:blur-md"
             />
 
             {/* Center highlight - subtle */}
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/15 to-transparent opacity-40" />
 
             {/* Subtle particle halo */}
-            {[...Array(4)].map((_, i) => (
+            {!isMobile && ([...Array(4)].map((_, i) => (
               <motion.div
                 key={`particle-${i}`}
-                animate={{
-                  y: [0, -12, 0],
-                  opacity: [0, 0.6, 0],
-                }}
-                transition={{
-                  duration: 2.5,
-                  repeat: Infinity,
-                  delay: i * 0.625,
-                }}
+                animate={{ y: [0, -12, 0], opacity: [0, 0.6, 0] }}
+                transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.625 }}
                 className="absolute left-1/2 -translate-x-1/2 w-0.5 h-0.5 rounded-full bg-cyan-300"
-                style={{
-                  top: "-10px",
-                  transform: `translateX(-50%) rotate(${(i * 90)}deg) translateY(-14px)`,
-                }}
+                style={{ top: "-10px", transform: `translateX(-50%) rotate(${(i * 90)}deg) translateY(-14px)` }}
               />
             ))}
           </motion.div>
@@ -285,43 +253,27 @@ export function ComplianceCoreVisualization() {
             >
               {/* Module container with hover interaction */}
               <motion.div
-                animate={{
-                  y: hoveredIndex === i ? -8 : [0, -8, 0],
-                  scale: hoveredIndex === i ? 1.12 : 1,
-                }}
-                transition={{
-                  y: hoveredIndex === i 
-                    ? { duration: 0.3 }
-                    : { duration: 3.5 + i * 0.2, repeat: Infinity, ease: "easeInOut" },
-                  scale: { duration: 0.3 },
-                }}
+                animate={isMobile ? { y: 0, scale: 1 } : { y: hoveredIndex === i ? -8 : [0, -8, 0], scale: hoveredIndex === i ? 1.12 : 1 }}
+                transition={isMobile ? {} : { y: hoveredIndex === i ? { duration: 0.3 } : { duration: 3.5 + i * 0.2, repeat: Infinity, ease: "easeInOut" }, scale: { duration: 0.3 } }}
                 className="relative"
               >
               {/* Module glow - subtle, soft, premium */}
                 <motion.div
-                  animate={{
-                    scale: hoveredIndex === i ? [1.3, 1.5, 1.3] : [0.9, 1.2, 0.9],
-                    opacity: hoveredIndex === i ? [0.3, 0.5, 0.3] : [0.12, 0.25, 0.12],
-                  }}
-                  transition={{
-                    duration: 2.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: i * 0.2,
-                  }}
-                  className="absolute -inset-5 rounded-full blur-md"
-                  style={{ backgroundColor: module.color, opacity: hoveredIndex === i ? 0.25 : 0.08 }}
+                  animate={isMobile ? {} : { scale: hoveredIndex === i ? [1.2, 1.35, 1.2] : [0.9, 1.1, 0.9], opacity: hoveredIndex === i ? [0.25, 0.4, 0.25] : [0.1, 0.2, 0.1] }}
+                  transition={{ duration: 2.5, repeat: isMobile ? 0 : Infinity, ease: "easeInOut", delay: i * 0.2 }}
+                  className="absolute -inset-4 rounded-full blur-sm md:blur-md"
+                  style={{ backgroundColor: module.color, opacity: hoveredIndex === i ? 0.2 : 0.08 }}
                 />
 
                 {/* Module circle - soft glass aesthetic */}
                 <motion.div
                   animate={{
                     boxShadow: hoveredIndex === i 
-                      ? `0 0 20px ${module.color}50, inset 0 0 8px ${module.color}25`
-                      : `0 0 12px ${module.color}30, inset 0 0 5px ${module.color}12`
+                      ? `0 0 16px ${module.color}40, inset 0 0 6px ${module.color}20`
+                      : `0 0 10px ${module.color}25, inset 0 0 4px ${module.color}10`
                   }}
                   transition={{ duration: 0.3 }}
-                  className="relative w-20 h-20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/15 transition-all"
+                  className="relative w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center backdrop-blur-sm md:backdrop-blur-md border border-white/20 md:border-white/15 transition-all"
                   style={{
                     backgroundColor: `${module.color}12`,
                   }}
@@ -333,17 +285,9 @@ export function ComplianceCoreVisualization() {
 
                   {/* Pulsing indicator ring - subtle */}
                   <motion.div
-                    animate={{
-                      scale: [1, 1.4, 1],
-                      opacity: [0.6, 0.2, 0.6],
-                    }}
-                    transition={{
-                      duration: 2.2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                      delay: i * 0.3,
-                    }}
-                    className="absolute inset-0 rounded-full border border-white/25"
+                    animate={isMobile ? {} : { scale: [1, 1.3, 1], opacity: [0.5, 0.2, 0.5] }}
+                    transition={{ duration: 2.2, repeat: isMobile ? 0 : Infinity, ease: "easeInOut", delay: i * 0.3 }}
+                    className="absolute inset-0 rounded-full border border-white/20 md:border-white/25"
                   />
 
                   {/* Hover highlight inner ring */}
