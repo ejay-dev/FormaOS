@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ProductContent } from "./ProductContent";
-import { ProductHero } from "./ProductHero";
+import { MarketingAnchor } from "../components/marketing-anchor";
+import { Target, Zap, Shield, TrendingUp, FileCheck, Database, ArrowRight } from "lucide-react";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://formaos.com.au";
 
@@ -23,48 +23,51 @@ export const metadata: Metadata = {
 
 const lifecycle = [
   {
+    icon: Target,
     title: "Structure",
-    description: "Model your organization, sites, and teams with clear control ownership.",
+    description: "Model your organization, sites, and teams with clear control ownership and framework alignment.",
   },
   {
+    icon: Zap,
     title: "Execute",
-    description: "Turn controls into tasks with due dates, assignees, and accountability.",
+    description: "Turn controls into tasks with due dates, assignees, and accountability chains.",
   },
   {
+    icon: Shield,
     title: "Prove",
-    description: "Collect evidence and approvals with immutable audit logs and traceability.",
+    description: "Collect evidence and approvals with immutable audit logs and complete traceability.",
   },
   {
+    icon: TrendingUp,
     title: "Report",
-    description: "Export audit bundles, readiness reports, and executive risk summaries.",
+    description: "Export audit bundles, readiness reports, and executive risk summaries in minutes.",
   },
 ];
 
 const modules = [
   {
-    title: "Policies",
-    description:
-      "Maintain approved policies with review cadence, ownership, and evidence that staff acknowledgements are current.",
+    title: "Policy Engine",
+    features: ["Version-controlled policy library", "Review cadence automation", "Staff acknowledgement tracking", "Approval workflow management"],
   },
   {
-    title: "Tasks",
-    description:
-      "Operationalize controls into tasks with due dates, assignees, and remediation tracking.",
+    title: "Task Management", 
+    features: ["Control-to-task mapping", "Due date enforcement", "Assignee accountability", "Progress tracking"],
   },
   {
     title: "Evidence Vault",
-    description:
-      "Store artifacts with approval history, mapped controls, and audit-ready context.",
+    features: ["Document storage & versioning", "Approval workflow history", "Control mapping", "Audit-ready exports"],
   },
   {
     title: "Audit Trail",
-    description:
-      "Immutable logs of evidence decisions, task completion, and control evaluations.",
+    features: ["Immutable event logging", "Evidence decisions", "Task completion records", "Control evaluations"],
   },
   {
     title: "Compliance Frameworks",
-    description:
-      "Align requirements to frameworks, score posture, and generate audit exports.",
+    features: ["Framework alignment", "Posture scoring", "Gap identification", "Audit bundle generation"],
+  },
+  {
+    title: "Reporting Engine",
+    features: ["Executive dashboards", "Risk summaries", "Readiness reports", "Custom exports"],
   },
 ];
 
@@ -73,7 +76,7 @@ const workflows = [
     title: "NDIS audit preparation",
     steps: [
       "Map NDIS practice standards to controls",
-      "Assign remediation tasks and due dates",
+      "Assign remediation tasks and due dates", 
       "Collect evidence from service delivery teams",
       "Generate an audit bundle for certification",
     ],
@@ -83,7 +86,7 @@ const workflows = [
     steps: [
       "Capture credential requirements per role",
       "Collect documents and approvals",
-      "Flag missing or expiring credentials",
+      "Flag missing or expiring credentials", 
       "Provide auditor-ready access logs",
     ],
   },
@@ -92,10 +95,123 @@ const workflows = [
 export default function ProductPage() {
   return (
     <div>
-      {/* Cinematic Hero */}
-      <ProductHero />
+      {/* Hero Section */}
+      <section className="py-20 sm:py-24 lg:py-32">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="inline-flex items-center gap-2.5 rounded-full bg-background border border-primary/30 px-5 py-2.5 text-xs font-bold uppercase tracking-wider mb-8">
+              <Database className="h-4 w-4 text-primary" />
+              Platform Architecture
+            </div>
+            <h1 className="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
+              Compliance Infrastructure<br />
+              <span className="text-primary">Built for Audit Defense</span>
+            </h1>
+            <p className="mt-6 text-lg leading-8 text-muted-foreground max-w-3xl mx-auto">
+              Connect policies, tasks, evidence, and audit trails into a defensible compliance workflow. Built for organizations that answer to regulators.
+            </p>
+            <div className="mt-10 flex items-center justify-center gap-x-6">
+              <Link href="/auth/signup" className="rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90">
+                Start Free Trial
+              </Link>
+              <Link href="/contact" className="text-sm font-semibold leading-6 text-foreground hover:text-primary">
+                Request Demo <ArrowRight className="ml-2 h-4 w-4 inline" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      <ProductContent />
+      {/* Compliance Lifecycle */}
+      <section className="py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold mb-4">The Compliance Lifecycle</h2>
+            <p className="text-lg text-muted-foreground">
+              From framework mapping to audit defense - a complete workflow
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {lifecycle.map((step, idx) => {
+              const IconComponent = step.icon;
+              return (
+                <div key={idx} className="text-center">
+                  <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                    <IconComponent className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">{step.title}</h3>
+                  <p className="text-sm text-muted-foreground">{step.description}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Platform Modules */}
+      <section className="py-16 bg-background/50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold mb-4">Platform Modules</h2>
+            <p className="text-lg text-muted-foreground">
+              Integrated tools for end-to-end compliance management
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {modules.map((module, idx) => (
+              <div key={idx} className="bg-background border border-border rounded-xl p-6">
+                <h3 className="text-lg font-semibold mb-4">{module.title}</h3>
+                <ul className="space-y-2">
+                  {module.features.map((feature, featureIdx) => (
+                    <li key={featureIdx} className="text-sm text-foreground/80 flex items-center">
+                      <span className="w-1.5 h-1.5 bg-primary rounded-full mr-2" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Use Cases */}
+      <section className="py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold mb-4">Common Workflows</h2>
+            <p className="text-lg text-muted-foreground">
+              Real-world scenarios for regulated organizations
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {workflows.map((workflow, idx) => (
+              <div key={idx} className="bg-background border border-border rounded-xl p-8">
+                <h3 className="text-xl font-bold mb-6">{workflow.title}</h3>
+                <div className="space-y-4">
+                  {workflow.steps.map((step, stepIdx) => (
+                    <div key={stepIdx} className="flex items-start gap-3">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
+                        {stepIdx + 1}
+                      </span>
+                      <p className="text-sm text-foreground/80">{step}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <MarketingAnchor 
+        title="Ready to see FormaOS in action?"
+        subtitle="Request a demo tailored to your compliance requirements"
+        badge="Platform Demo"
+      />
     </div>
   );
 }
