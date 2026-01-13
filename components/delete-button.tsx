@@ -52,7 +52,7 @@ export function DeleteButton({ id, tableName, itemTitle, onDelete }: DeleteButto
     const { error } = await supabase.from(tableName).delete().eq('id', id)
 
     if (error) {
-      reportError(`Failed to delete ${nodeLabel.toLowerCase()}: ${error.message}`)
+      reportError({ title: "Delete failed", message: `Failed to delete ${nodeLabel.toLowerCase()}: ${error.message}` })
       setLoading(false)
       setConfirm(false)
       return
