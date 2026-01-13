@@ -376,24 +376,7 @@ export function ComplianceCoreVisualization() {
         })}
       </div>
 
-      {/* Status indicator - enhanced */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 2.2, duration: 0.6 }}
-        className="absolute bottom-12 left-1/2 -translate-x-1/2 text-center"
-      >
-        <div className="text-sm font-semibold text-foreground/70">
-          <span className="inline-flex items-center gap-2.5">
-            <motion.span
-              animate={{ opacity: [0.4, 1, 0.4], scale: [0.8, 1, 0.8] }}
-              transition={{ duration: 2.5, repeat: Infinity }}
-              className="h-2.5 w-2.5 rounded-full bg-primary"
-            />
-            Enterprise Compliance Engine
-          </span>
-        </div>
-      </motion.div>
+
     </div>
   );
 }
