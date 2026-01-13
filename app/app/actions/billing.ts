@@ -5,6 +5,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { getStripeClient, getStripePriceId } from "@/lib/billing/stripe";
 import { resolvePlanKey } from "@/lib/plans";
+import { isFounder } from "@/lib/utils/founder";
 
 export async function startCheckout(formData: FormData) {
   const supabase = await createSupabaseServerClient();
@@ -17,23 +18,19 @@ export async function startCheckout(formData: FormData) {
   }
 
   // 🚨 FOUNDER BYPASS - Founders should not use billing checkout
-  const parseEnvList = (value?: string | null) =>
-    new Set(
-      (value ?? "")
-        .split(",")
-        .map((entry) => entry.trim().toLowerCase())
-        .filter(Boolean)
-    );
+  const userEmail = user?.email ?? "";
+  const userId = user?.id ?? "";
+  const isUserFounder = isFounder(userEmail, userId);
   
-  const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);
-  const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
-  const userEmail = (user?.email ?? "").trim().toLowerCase();
-  const userId = (user?.id ?? "").trim().toLowerCase();
-  const isFounder = Boolean(
-    user && ((userEmail && founderEmails.has(userEmail)) || founderIds.has(userId))
-  );
+  // Add detailed logging for debugging billing issues
+  console.log("[billing.ts] 🔍 BILLING CHECKOUT ATTEMPT", {
+    userEmail: userEmail ? userEmail.substring(0, 3) + "***" : "none",
+    userId: userId ? userId.substring(0, 8) + "..." : "none",
+    isFounder: isUserFounder,
+    timestamp: new Date().toISOString(),
+  });
   
-  if (isFounder) {
+  if (isUserFounder) {
     console.log("[billing.ts] 🚫 FOUNDER attempted checkout - redirecting to admin", { email: userEmail });
     redirect("/admin");
   }
@@ -137,7 +134,8 @@ export async function startCheckout(formData: FormData) {
     throw new Error("Stripe checkout session missing url");
   }
 
-  redirect(session.url);
+  // Return the URL instead of redirecting for client-side handling
+  return session.url;
 }
 
 export async function openCustomerPortal() {
@@ -189,5 +187,6 @@ export async function openCustomerPortal() {
     throw new Error("Stripe portal session missing url");
   }
 
-  redirect(portalSession.url);
+  // Return the URL instead of redirecting for client-side handling  
+  return portalSession.url;
 }

@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { getCookieDomain } from "@/lib/supabase/cookie-domain";
+import { isFounder } from "@/lib/utils/founder";
 
 export async function middleware(request: NextRequest) {
   try {
@@ -138,72 +139,18 @@ export async function middleware(request: NextRequest) {
     // This MUST run before ANY other routing logic
     // ============================================================
     
-    // 🔍 DEBUG: Log ALL environment variables related to founder detection
-    console.log("[Middleware] 🔧 ENV VARIABLE CHECK", {
-      FOUNDER_EMAILS_typeof: typeof process.env.FOUNDER_EMAILS,
-      FOUNDER_EMAILS_value: process.env.FOUNDER_EMAILS,
-      FOUNDER_EMAILS_length: process.env.FOUNDER_EMAILS?.length,
-      FOUNDER_USER_IDS_typeof: typeof process.env.FOUNDER_USER_IDS,
-      FOUNDER_USER_IDS_value: process.env.FOUNDER_USER_IDS,
-      NODE_ENV: process.env.NODE_ENV,
-      VERCEL_ENV: process.env.VERCEL_ENV,
-      all_env_keys: Object.keys(process.env).filter(k => k.includes('FOUNDER')),
-    });
+    const userEmail = user?.email ?? "";
+    const userId = user?.id ?? "";
+    const isUserFounder = isFounder(userEmail, userId);
     
-    const parseEnvList = (value?: string | null) => {
-      const raw = value ?? "";
-      console.log("[Middleware] parseEnvList debug:", { input: raw, type: typeof raw, length: raw.length });
-      return new Set(
-        raw
-          .split(",")
-          .map((entry) => entry.trim().toLowerCase())
-          .filter(Boolean)
-      );
-    };
-
-    const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);
-    const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
-    const userEmail = (user?.email ?? "").trim().toLowerCase();
-    const userId = (user?.id ?? "").trim().toLowerCase();
-    
-    console.log("[Middleware] 🔍 PARSED FOUNDER DATA", {
-      founderEmailsSize: founderEmails.size,
-      founderEmailsArray: Array.from(founderEmails),
-      founderIdsSize: founderIds.size,
-      userEmail: userEmail,
-      userEmailLength: userEmail.length,
-      emailExistsInSet: founderEmails.has(userEmail),
-      exactMatch: userEmail === 'ejazhussaini313@gmail.com',
-    });
-    
-    const isFounder = Boolean(
-      user && ((userEmail && founderEmails.has(userEmail)) || founderIds.has(userId))
-    );
-    
-    console.log("[Middleware] 🎯 FINAL FOUNDER DECISION", {
-      isFounder,
-      hasUser: !!user,
-      hasEmail: !!userEmail,
-      emailInSet: founderEmails.has(userEmail),
-      idInSet: founderIds.has(userId),
-    });
-
     // 🔍 FOUNDER DETECTION LOGGING (for /admin paths only)
     if (pathname.startsWith("/admin")) {
       console.log("[Middleware] 🔍 FOUNDER CHECK", {
         pathname,
-        userEmail,
+        userEmail: userEmail ? userEmail.substring(0, 3) + "***" : "none",
         userId: userId ? userId.substring(0, 8) + "..." : "none",
-        isFounder,
-        founderEmailsRaw: process.env.FOUNDER_EMAILS,
-        founderUserIdsRaw: process.env.FOUNDER_USER_IDS,
-        founderEmailsSet: Array.from(founderEmails),
-        founderIdsSet: Array.from(founderIds).map(id => id ? id.substring(0, 8) + "..." : "empty"),
+        isFounder: isUserFounder,
         hasUser: !!user,
-        emailMatch: founderEmails.has(userEmail),
-        idMatch: founderIds.has(userId),
-        emailLower: userEmail,
-        idLower: userId ? userId.substring(0, 8) + "..." : "none",
       });
     }
 
@@ -220,17 +167,17 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(url);
       }
       
-      if (isFounder) {
+      if (isUserFounder) {
         // ✅ FOUNDER → ALLOW ACCESS, bypass everything
         console.log("[Middleware] ✅ FOUNDER ACCESS GRANTED", {
-          email: userEmail,
+          email: userEmail ? userEmail.substring(0, 3) + "***" : "none",
           path: pathname,
         });
         return response;
       } else {
         // ❌ NOT A FOUNDER → DENY ACCESS
         console.log("[Middleware] ❌ NON-FOUNDER BLOCKED FROM /admin", {
-          email: userEmail,
+          email: userEmail ? userEmail.substring(0, 3) + "***" : "none",
         });
         const url = request.nextUrl.clone();
         url.pathname = "/pricing";
@@ -254,7 +201,7 @@ export async function middleware(request: NextRequest) {
       const url = request.nextUrl.clone();
       
       // Founders go directly to admin
-      if (isFounder) {
+      if (isUserFounder) {
         console.log("[Middleware] 👤 Founder on /auth → redirecting to /admin");
         url.pathname = "/admin";
         return NextResponse.redirect(url);
@@ -324,7 +271,7 @@ export async function middleware(request: NextRequest) {
       const billingAllowed =
         pathname.startsWith("/app/billing") || pathname.startsWith("/app/accept-invite");
 
-      if (orgId && !billingAllowed && !isFounder) {
+      if (orgId && !billingAllowed && !isUserFounder) {
         // Founders bypass subscription gating
         const { data: subscription, error: subscriptionError } = await supabase
           .from("org_subscriptions")

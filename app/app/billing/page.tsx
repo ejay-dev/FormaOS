@@ -1,7 +1,7 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { openCustomerPortal, startCheckout } from "@/app/app/actions/billing";
 import { resolvePlanKey, PLAN_CATALOG } from "@/lib/plans";
 import { CreditCard, ShieldCheck } from "lucide-react";
+import { BillingActionButtons } from "@/components/billing/BillingActionButtons";
 
 type EntitlementRow = {
   feature_key: string;
@@ -130,29 +130,11 @@ export default async function BillingPage({
             </a>
           </div>
         ) : (
-          <div className="mt-6 flex flex-wrap gap-3">
-            {!canSelfServe ? (
-              <form action={startCheckout}>
-                <input type="hidden" name="plan" value={planKey ?? ""} />
-                <button
-                  type="submit"
-                  className="rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950"
-                >
-                  Activate subscription
-                </button>
-              </form>
-            ) : null}
-            {canManagePortal ? (
-              <form action={openCustomerPortal}>
-                <button
-                  type="submit"
-                  className="rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-slate-100"
-                >
-                  Manage billing
-                </button>
-              </form>
-            ) : null}
-          </div>
+          <BillingActionButtons
+            planKey={planKey}
+            canSelfServe={canSelfServe}
+            canManagePortal={canManagePortal}
+          />
         )}
         {trialEndsAt && !trialExpired ? (
           <div className="mt-4 text-xs text-slate-400">
