@@ -352,12 +352,14 @@ export default function SecurityPageContent() {
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
                   >
-                    <div className="relative mb-6">
-                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-500/10 border border-amber-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
-                        <FileCheck className="h-8 w-8 text-amber-600" />
-                      </div>
-                      <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 text-white text-xs font-bold flex items-center justify-center">
-                        1
+                    <div className="flex flex-col items-center mb-6">
+                      <div className="relative">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-500/10 border border-amber-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                          <FileCheck className="h-8 w-8 text-amber-600" />
+                        </div>
+                        <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 text-white text-xs font-bold flex items-center justify-center">
+                          1
+                        </div>
                       </div>
                     </div>
                     <h4 className="font-bold text-base mb-3 group-hover:text-amber-600 transition-colors duration-300">
@@ -375,12 +377,14 @@ export default function SecurityPageContent() {
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
                   >
-                    <div className="relative mb-6">
-                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-teal-500/20 to-teal-500/10 border border-teal-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
-                        <Users className="h-8 w-8 text-teal-600" />
-                      </div>
-                      <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-br from-teal-500 to-cyan-500 text-white text-xs font-bold flex items-center justify-center">
-                        2
+                    <div className="flex flex-col items-center mb-6">
+                      <div className="relative">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500/20 to-teal-500/10 border border-teal-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                          <Users className="h-8 w-8 text-teal-600" />
+                        </div>
+                        <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-teal-500 to-cyan-500 text-white text-xs font-bold flex items-center justify-center">
+                          2
+                        </div>
                       </div>
                     </div>
                     <h4 className="font-bold text-base mb-3 group-hover:text-teal-600 transition-colors duration-300">
@@ -398,12 +402,14 @@ export default function SecurityPageContent() {
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
                   >
-                    <div className="relative mb-6">
-                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-indigo-500/20 to-indigo-500/10 border border-indigo-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
-                        <Database className="h-8 w-8 text-indigo-600" />
-                      </div>
-                      <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-white text-xs font-bold flex items-center justify-center">
-                        3
+                    <div className="flex flex-col items-center mb-6">
+                      <div className="relative">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-indigo-500/10 border border-indigo-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                          <Database className="h-8 w-8 text-indigo-600" />
+                        </div>
+                        <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-white text-xs font-bold flex items-center justify-center">
+                          3
+                        </div>
                       </div>
                     </div>
                     <h4 className="font-bold text-base mb-3 group-hover:text-indigo-600 transition-colors duration-300">
@@ -421,12 +427,14 @@ export default function SecurityPageContent() {
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
                   >
-                    <div className="relative mb-6">
-                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/10 border border-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
-                        <Shield className="h-8 w-8 text-emerald-600" />
-                      </div>
-                      <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-br from-emerald-500 to-green-500 text-white text-xs font-bold flex items-center justify-center">
-                        4
+                    <div className="flex flex-col items-center mb-6">
+                      <div className="relative">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/10 border border-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                          <Shield className="h-8 w-8 text-emerald-600" />
+                        </div>
+                        <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-emerald-500 to-green-500 text-white text-xs font-bold flex items-center justify-center">
+                          4
+                        </div>
                       </div>
                     </div>
                     <h4 className="font-bold text-base mb-3 group-hover:text-emerald-600 transition-colors duration-300">

@@ -1196,11 +1196,13 @@ export function HomePageClient() {
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
                   >
-                    <div className="relative mb-6">
-                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/10 border border-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
-                        <Shield className="h-8 w-8 text-emerald-600" />
+                    <div className="flex flex-col items-center mb-6">
+                      <div className="relative">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/10 border border-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                          <Shield className="h-8 w-8 text-emerald-600" />
+                        </div>
+                        <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-green-400 opacity-60 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
                       </div>
-                      <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-green-400 opacity-60 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
                     </div>
                     <h4 className="font-bold text-base mb-3 group-hover:text-emerald-600 transition-colors duration-300">
                       Immutable Audit Logs
@@ -1217,11 +1219,13 @@ export function HomePageClient() {
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
                   >
-                    <div className="relative mb-6">
-                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-500/10 border border-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
-                        <Database className="h-8 w-8 text-blue-600" />
+                    <div className="flex flex-col items-center mb-6">
+                      <div className="relative">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-500/10 border border-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                          <Database className="h-8 w-8 text-blue-600" />
+                        </div>
+                        <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-blue-400 opacity-60 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
                       </div>
-                      <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-blue-400 opacity-60 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
                     </div>
                     <h4 className="font-bold text-base mb-3 group-hover:text-blue-600 transition-colors duration-300">
                       Encrypted Evidence Storage
@@ -1238,11 +1242,13 @@ export function HomePageClient() {
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
                   >
-                    <div className="relative mb-6">
-                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-500/10 border border-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
-                        <Users className="h-8 w-8 text-purple-600" />
+                    <div className="flex flex-col items-center mb-6">
+                      <div className="relative">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-500/10 border border-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                          <Users className="h-8 w-8 text-purple-600" />
+                        </div>
+                        <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-purple-400 opacity-60 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
                       </div>
-                      <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-purple-400 opacity-60 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
                     </div>
                     <h4 className="font-bold text-base mb-3 group-hover:text-purple-600 transition-colors duration-300">
                       Role-Based Access Control
@@ -1259,11 +1265,13 @@ export function HomePageClient() {
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
                   >
-                    <div className="relative mb-6">
-                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-orange-500/20 to-orange-500/10 border border-orange-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
-                        <Target className="h-8 w-8 text-orange-600" />
+                    <div className="flex flex-col items-center mb-6">
+                      <div className="relative">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500/20 to-orange-500/10 border border-orange-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                          <Target className="h-8 w-8 text-orange-600" />
+                        </div>
+                        <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-orange-400 opacity-60 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
                       </div>
-                      <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-orange-400 opacity-60 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
                     </div>
                     <h4 className="font-bold text-base mb-3 group-hover:text-orange-600 transition-colors duration-300">
                       Tenant Isolation

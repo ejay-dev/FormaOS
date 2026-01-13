@@ -12,7 +12,7 @@ import {
   InteractiveCard,
   GradientMesh,
 } from "@/components/motion";
-import { CleanSystemGrid, PulsingNode, ParallaxLayer } from "@/components/motion/CleanBackground";
+import { ParallaxLayer } from "@/components/motion/CleanBackground";
 import { MarketingAnchor } from "../components/marketing-anchor";
 
 function ContactHero() {
@@ -21,17 +21,18 @@ function ContactHero() {
       {/* Multi-layer animated background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
       
-      {/* Clean system grid layer */}
-      <div className="absolute inset-0 opacity-40 sm:opacity-60">
-        <CleanSystemGrid />
-      </div>
-      
-      {/* Pulsing nodes - hidden on mobile */}
-      <div className="hidden sm:block">
-        <PulsingNode x="10%" y="20%" delay={0} color="rgb(139, 92, 246)" />
-        <PulsingNode x="90%" y="30%" delay={0.5} />
-        <PulsingNode x="15%" y="80%" delay={1} />
-        <PulsingNode x="85%" y="90%" delay={1.5} color="rgb(6, 182, 212)" />
+      {/* Subtle background only - no motion elements */}
+      <div className="absolute inset-0 opacity-30">
+        <div 
+          className="absolute inset-0 opacity-[0.03]" 
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)
+            `,
+            backgroundSize: '50px 50px',
+          }}
+        />
       </div>
       
       {/* Radial gradient overlays - reduced on mobile */}
@@ -381,10 +382,10 @@ export default function ContactPageContent({ searchParams, submitAction }: Conta
               <h3 className="text-lg font-bold mb-2">Email</h3>
               <p className="text-sm text-foreground/80 mb-4">For detailed inquiries</p>
               <Link 
-                href="mailto:hello@formaos.com.au" 
+                href="mailto:formaos.team@gmail.com" 
                 className="text-primary hover:text-primary/80 font-medium text-sm"
               >
-                hello@formaos.com.au
+                formaos.team@gmail.com
               </Link>
             </InteractiveCard>
             
@@ -394,12 +395,12 @@ export default function ContactPageContent({ searchParams, submitAction }: Conta
             >
               <Phone className="h-12 w-12 mx-auto mb-4 text-primary" />
               <h3 className="text-lg font-bold mb-2">Phone</h3>
-              <p className="text-sm text-foreground/80 mb-4">Business hours: 9 AM - 5 PM AEST</p>
+              <p className="text-sm text-foreground/80 mb-4">Business hours: 9 AM - 5 PM ACST</p>
               <Link 
-                href="tel:+61-2-8123-4567" 
+                href="tel:+61469715062" 
                 className="text-primary hover:text-primary/80 font-medium text-sm"
               >
-                +61 2 8123 4567
+                +61 469 715 062
               </Link>
             </InteractiveCard>
             
@@ -408,10 +409,10 @@ export default function ContactPageContent({ searchParams, submitAction }: Conta
               className="p-6 text-center"
             >
               <MapPin className="h-12 w-12 mx-auto mb-4 text-primary" />
-              <h3 className="text-lg font-bold mb-2">Office</h3>
+              <h3 className="text-lg font-bold mb-2">Location</h3>
               <p className="text-sm text-foreground/80">
-                Level 12, 1 Bligh Street<br />
-                Sydney NSW 2000<br />
+                Adelaide<br />
+                South Australia<br />
                 Australia
               </p>
             </InteractiveCard>

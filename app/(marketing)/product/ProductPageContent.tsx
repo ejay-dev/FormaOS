@@ -408,12 +408,14 @@ export default function ProductPageContent() {
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
                   >
-                    <div className="relative mb-6">
-                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-500/10 border border-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
-                        <Target className="h-8 w-8 text-blue-600" />
-                      </div>
-                      <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 text-white text-xs font-bold flex items-center justify-center">
-                        1
+                    <div className="flex flex-col items-center mb-6">
+                      <div className="relative">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-500/10 border border-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                          <Target className="h-8 w-8 text-blue-600" />
+                        </div>
+                        <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 text-white text-xs font-bold flex items-center justify-center">
+                          1
+                        </div>
                       </div>
                     </div>
                     <h4 className="font-bold text-base mb-3 group-hover:text-blue-600 transition-colors duration-300">
@@ -431,12 +433,14 @@ export default function ProductPageContent() {
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
                   >
-                    <div className="relative mb-6">
-                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-green-500/20 to-green-500/10 border border-green-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
-                        <Users className="h-8 w-8 text-green-600" />
-                      </div>
-                      <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 text-white text-xs font-bold flex items-center justify-center">
-                        2
+                    <div className="flex flex-col items-center mb-6">
+                      <div className="relative">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500/20 to-green-500/10 border border-green-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                          <Users className="h-8 w-8 text-green-600" />
+                        </div>
+                        <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 text-white text-xs font-bold flex items-center justify-center">
+                          2
+                        </div>
                       </div>
                     </div>
                     <h4 className="font-bold text-base mb-3 group-hover:text-green-600 transition-colors duration-300">
@@ -454,12 +458,14 @@ export default function ProductPageContent() {
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
                   >
-                    <div className="relative mb-6">
-                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-500/10 border border-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
-                        <CheckCircle className="h-8 w-8 text-purple-600" />
-                      </div>
-                      <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-violet-500 text-white text-xs font-bold flex items-center justify-center">
-                        3
+                    <div className="flex flex-col items-center mb-6">
+                      <div className="relative">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-500/10 border border-purple-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                          <CheckCircle className="h-8 w-8 text-purple-600" />
+                        </div>
+                        <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-purple-500 to-violet-500 text-white text-xs font-bold flex items-center justify-center">
+                          3
+                        </div>
                       </div>
                     </div>
                     <h4 className="font-bold text-base mb-3 group-hover:text-purple-600 transition-colors duration-300">
@@ -477,12 +483,14 @@ export default function ProductPageContent() {
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
                   >
-                    <div className="relative mb-6">
-                      <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-orange-500/20 to-orange-500/10 border border-orange-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
-                        <Database className="h-8 w-8 text-orange-600" />
-                      </div>
-                      <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-br from-orange-500 to-red-500 text-white text-xs font-bold flex items-center justify-center">
-                        4
+                    <div className="flex flex-col items-center mb-6">
+                      <div className="relative">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500/20 to-orange-500/10 border border-orange-500/20 flex items-center justify-center group-hover:scale-110 transition-all duration-300">
+                          <Database className="h-8 w-8 text-orange-600" />
+                        </div>
+                        <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br from-orange-500 to-red-500 text-white text-xs font-bold flex items-center justify-center">
+                          4
+                        </div>
                       </div>
                     </div>
                     <h4 className="font-bold text-base mb-3 group-hover:text-orange-600 transition-colors duration-300">
