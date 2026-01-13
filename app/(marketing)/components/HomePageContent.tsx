@@ -8,12 +8,25 @@ import {
   Lock,
   Activity,
   ClipboardCheck,
-  ArrowUpRight,
   Zap,
   Target,
   TrendingUp,
+  FileCheck,
+  Eye,
+  Users,
+  BarChart3,
 } from "lucide-react";
-import { FadeInView, StaggerContainer, StaggerItem, FloatingCard } from "@/components/motion";
+import { 
+  CinematicSection,
+  SectionHeader,
+  FeatureCard,
+  MetricCard,
+  ArchitectureCard,
+  VisualDivider,
+  ProcessStep
+} from "@/components/motion";
+import { FadeInView, StaggerContainer, StaggerItem } from "@/components/motion";
+import { motion } from "framer-motion";
 
 const lifecycle = [
   {
@@ -61,285 +74,297 @@ const industries = [
   },
 ];
 
-const securityPoints = [
-  {
-    icon: Lock,
-    title: "Role-based access",
-    description: "Segregation of duties enforced at every level",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Immutable logs",
-    description: "Evidence traceability for audit defense",
-  },
-  {
-    icon: Layers,
-    title: "Org-scoped isolation",
-    description: "Data isolation for every tenant",
-  },
-  {
-    icon: Activity,
-    title: "Compliance gates",
-    description: "Block unsafe actions automatically",
-  },
-];
+const platformArchitecture = {
+  "Compliance Engine": [
+    "Framework modeling",
+    "Control libraries",
+    "Risk assessment",
+    "Gap analysis"
+  ],
+  "Task System": [
+    "Workflow automation",
+    "Assignment routing",
+    "Deadline tracking",
+    "Remediation management"
+  ],
+  "Evidence Vault": [
+    "Immutable storage",
+    "Approval chains",
+    "Artifact versioning",
+    "Audit trails"
+  ],
+  "Reporting Engine": [
+    "Executive dashboards",
+    "Audit export bundles",
+    "Posture scoring",
+    "Compliance metrics"
+  ]
+};
 
-const pricingPreview = [
-  {
-    title: "Starter",
-    price: "$159 AUD",
-    detail: "Core compliance engine for small teams.",
-    href: "/auth/signup?plan=basic",
-  },
-  {
-    title: "Pro",
-    price: "$230 AUD",
-    detail: "Advanced reporting and governance controls.",
-    href: "/auth/signup?plan=pro",
-    featured: true,
-  },
-  {
-    title: "Enterprise",
-    price: "Custom",
-    detail: "White-glove onboarding and custom frameworks.",
-    href: "/contact",
-  },
+const metrics = [
+  { icon: ShieldCheck, value: "94%", label: "Avg. Posture Score", trend: "up" as const },
+  { icon: Target, value: "127", label: "Active Controls", trend: "neutral" as const },
+  { icon: Zap, value: "<2min", label: "Audit Export Time", trend: "neutral" as const },
+  { icon: TrendingUp, value: "98%", label: "Task Completion", trend: "up" as const },
 ];
 
 export function HomePageContent() {
   return (
     <>
-      {/* Platform features - Cinematic layout */}
-      <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 sm:py-24 lg:py-32 overflow-hidden">
-        {/* Background effects */}
-        <div className="absolute inset-0 command-grid opacity-30" />
-        <div className="absolute inset-0 vignette" />
-        
-        <div className="relative">
-          <FadeInView className="text-center mb-16 sm:mb-20">
-            <div className="inline-flex items-center gap-2 glass-panel rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wider mb-6">
-              <Sparkles className="h-4 w-4 text-primary" />
-              The Complete System
-            </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display mb-6">
-              Compliance lifecycle,<br className="hidden sm:block" />
-              <span className="text-gradient">engineered end-to-end</span>
-            </h2>
-            <p className="text-base sm:text-lg text-foreground/70 max-w-2xl mx-auto">
-              From framework alignment to audit export—every step connected, traced, and defensible.
-            </p>
-          </FadeInView>
+      {/* Platform metrics showcase */}
+      <CinematicSection 
+        backgroundType="gradient" 
+        ambientColor="primary"
+        className="py-20 lg:py-32"
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="Live Platform Metrics"
+            badgeIcon={<BarChart3 className="h-4 w-4 text-primary" />}
+            title={<>Real-time compliance intelligence</>}
+            subtitle="FormaOS tracks compliance posture across your entire organization in real-time"
+            alignment="center"
+          />
 
-          <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-            {lifecycle.map((step, index) => {
-              const Icon = step.icon;
-              return (
-                <StaggerItem key={step.title}>
-                  <FloatingCard
-                    className="glass-intense rounded-2xl p-6 sm:p-8 h-full shadow-premium-lg signal-pulse group"
-                    delay={index * 0.1}
-                  >
-                    <div className="rounded-xl bg-primary/10 p-3 w-fit mb-6 group-hover:scale-110 transition-transform duration-300">
-                      <Icon className="h-6 w-6 text-primary" />
-                    </div>
-                    <h3 className="text-xl font-semibold font-display mb-3">{step.title}</h3>
-                    <p className="text-sm text-foreground/70 leading-relaxed">{step.description}</p>
-                  </FloatingCard>
-                </StaggerItem>
-              );
-            })}
-          </StaggerContainer>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {metrics.map((metric, idx) => (
+              <MetricCard
+                key={metric.label}
+                icon={metric.icon}
+                value={metric.value}
+                label={metric.label}
+                trend={metric.trend}
+                delay={idx * 0.1}
+              />
+            ))}
+          </div>
         </div>
-      </section>
+      </CinematicSection>
 
-      {/* Industries section - Layered design */}
-      <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 sm:py-24 lg:py-32">
-        <div className="absolute inset-0 flow-lines opacity-20" />
-        
-        <div className="relative">
-          <FadeInView className="text-center mb-16 sm:mb-20">
-            <div className="inline-flex items-center gap-2 glass-panel rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wider mb-6">
-              <Layers className="h-4 w-4 text-secondary" />
-              Built for Regulated Industries
-            </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display mb-6">
-              Compliance frameworks<br className="hidden sm:block" />
-              <span className="text-gradient">that match your obligations</span>
-            </h2>
-            <p className="text-base sm:text-lg text-foreground/70 max-w-2xl mx-auto">
-              Pre-configured for Australian health, disability, and community services.
-            </p>
+      <VisualDivider />
+
+      {/* Platform lifecycle - Process steps */}
+      <CinematicSection 
+        backgroundType="grid" 
+        ambientColor="secondary"
+        className="py-20 lg:py-32"
+      >
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="The Complete System"
+            badgeIcon={<Sparkles className="h-4 w-4 text-primary" />}
+            title={<>Compliance lifecycle,<br /><span className="text-gradient">engineered end-to-end</span></>}
+            subtitle="From framework alignment to audit export—every step connected, traced, and defensible"
+            alignment="center"
+          />
+
+          <div className="space-y-6">
+            {lifecycle.map((step, idx) => (
+              <ProcessStep
+                key={step.title}
+                number={idx + 1}
+                title={step.title}
+                description={step.description}
+                icon={step.icon}
+                delay={idx * 0.15}
+                showConnector={idx < lifecycle.length - 1}
+              />
+            ))}
+          </div>
+
+          <FadeInView delay={0.8} className="text-center mt-12">
+            <Link href="/product" className="btn btn-primary text-lg px-10 py-5 shadow-premium-lg">
+              Explore Platform Architecture
+            </Link>
           </FadeInView>
+        </div>
+      </CinematicSection>
 
-          <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
-            {industries.map((industry, index) => {
-              const Icon = industry.icon;
-              return (
-                <StaggerItem key={industry.title}>
-                  <FloatingCard
-                    className="glass-panel-strong rounded-2xl p-6 sm:p-8 shadow-premium-md holo-border group"
-                    delay={index * 0.15}
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="rounded-xl bg-secondary/10 p-3 flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                        <Icon className="h-6 w-6 text-secondary" />
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-semibold font-display mb-2">{industry.title}</h3>
-                        <p className="text-sm text-foreground/70 leading-relaxed">{industry.description}</p>
-                      </div>
-                    </div>
-                  </FloatingCard>
-                </StaggerItem>
-              );
-            })}
-          </StaggerContainer>
+      <VisualDivider />
+
+      {/* Platform architecture - System components */}
+      <CinematicSection 
+        backgroundType="nodes" 
+        ambientColor="accent"
+        className="py-20 lg:py-32"
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="System Architecture"
+            badgeIcon={<Layers className="h-4 w-4 text-secondary" />}
+            title={<>Built as infrastructure,<br /><span className="text-gradient">not a document manager</span></>}
+            subtitle="FormaOS is a true operating system for compliance—with interconnected modules working as one platform"
+            alignment="center"
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {Object.entries(platformArchitecture).map(([title, components], idx) => (
+              <ArchitectureCard
+                key={title}
+                title={title}
+                components={components}
+                icon={
+                  idx === 0 ? Target : 
+                  idx === 1 ? Zap : 
+                  idx === 2 ? FileCheck : 
+                  TrendingUp
+                }
+                delay={idx * 0.15}
+              />
+            ))}
+          </div>
+        </div>
+      </CinematicSection>
+
+      <VisualDivider />
+
+      {/* Industries section - Feature cards */}
+      <CinematicSection 
+        backgroundType="flow" 
+        ambientColor="secondary"
+        className="py-20 lg:py-32"
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="Built for Regulated Industries"
+            badgeIcon={<Layers className="h-4 w-4 text-secondary" />}
+            title={<>Compliance frameworks<br /><span className="text-gradient">that match your obligations</span></>}
+            subtitle="Pre-configured for Australian health, disability, and community services"
+            alignment="center"
+          />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {industries.map((industry, idx) => (
+              <FeatureCard
+                key={industry.title}
+                icon={industry.icon}
+                title={industry.title}
+                description={industry.description}
+                delay={idx * 0.1}
+                variant="default"
+                accentColor="secondary"
+              />
+            ))}
+          </div>
 
           <FadeInView delay={0.6} className="text-center mt-12">
-            <Link href="/industries" className="btn btn-secondary text-base px-8 py-4">
+            <Link href="/industries" className="btn btn-secondary text-lg px-10 py-5">
               Explore All Industries
             </Link>
           </FadeInView>
         </div>
-      </section>
+      </CinematicSection>
 
-      {/* Security section - Dark mode emphasis */}
-      <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 sm:py-24 lg:py-32 overflow-hidden">
-        <div className="absolute inset-0 security-grid opacity-40" />
-        <div className="pointer-events-none absolute -right-32 top-20 h-96 w-96 rounded-full bg-primary/5 blur-3xl" />
-        
-        <div className="relative">
-          <FadeInView className="text-center mb-16 sm:mb-20">
-            <div className="inline-flex items-center gap-2 glass-panel rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wider mb-6">
-              <Lock className="h-4 w-4 text-accent" />
-              Enterprise Security
-            </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display mb-6">
-              Built for<br className="hidden sm:block" />
-              <span className="text-gradient">regulated environments</span>
-            </h2>
-            <p className="text-base sm:text-lg text-foreground/70 max-w-2xl mx-auto">
-              Security architecture designed for organizations that answer to regulators.
-            </p>
-          </FadeInView>
+      <VisualDivider />
 
-          <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {securityPoints.map((point, index) => {
-              const Icon = point.icon;
-              return (
-                <StaggerItem key={point.title}>
-                  <FloatingCard
-                    className="glass-frosted rounded-2xl p-6 text-center shadow-premium-md group"
-                    delay={index * 0.1}
-                  >
-                    <div className="rounded-xl bg-accent/10 p-3 w-fit mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                      <Icon className="h-5 w-5 text-accent" />
-                    </div>
-                    <h3 className="text-sm font-semibold font-display mb-2">{point.title}</h3>
-                    <p className="text-xs text-foreground/60">{point.description}</p>
-                  </FloatingCard>
-                </StaggerItem>
-              );
-            })}
-          </StaggerContainer>
+      {/* Security section - Feature cards */}
+      <CinematicSection 
+        backgroundType="grid" 
+        ambientColor="accent"
+        className="py-20 lg:py-32"
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="Enterprise Security"
+            badgeIcon={<Lock className="h-4 w-4 text-accent" />}
+            title={<>Built for<br /><span className="text-gradient">regulated environments</span></>}
+            subtitle="Security architecture designed for organizations that answer to regulators"
+            alignment="center"
+          />
 
-          <FadeInView delay={0.5} className="text-center mt-12">
-            <Link href="/security" className="btn btn-ghost text-base px-8 py-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { icon: Lock, title: "Role-based access", description: "Segregation of duties enforced at every level" },
+              { icon: ShieldCheck, title: "Immutable logs", description: "Evidence traceability for audit defense" },
+              { icon: Layers, title: "Org-scoped isolation", description: "Data isolation for every tenant" },
+              { icon: Activity, title: "Compliance gates", description: "Block unsafe actions automatically" },
+              { icon: Eye, title: "Audit trails", description: "Complete history of all compliance actions" },
+              { icon: FileCheck, title: "Evidence chain", description: "Verifiable custody from creation to export" },
+            ].map((point, idx) => (
+              <FeatureCard
+                key={point.title}
+                icon={point.icon}
+                title={point.title}
+                description={point.description}
+                delay={idx * 0.1}
+                variant="frosted"
+                accentColor="accent"
+              />
+            ))}
+          </div>
+
+          <FadeInView delay={0.7} className="text-center mt-12">
+            <Link href="/security" className="btn btn-ghost text-lg px-10 py-5">
               Security Architecture →
             </Link>
           </FadeInView>
         </div>
-      </section>
+      </CinematicSection>
 
-      {/* Pricing preview - Premium cards */}
-      <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 sm:py-24 lg:py-32">
-        <div className="absolute inset-0 gradient-glow opacity-30" />
-        
-        <div className="relative">
-          <FadeInView className="text-center mb-16 sm:mb-20">
-            <div className="inline-flex items-center gap-2 glass-panel rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wider mb-6">
-              <TrendingUp className="h-4 w-4 text-primary" />
-              Simple Pricing
-            </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display mb-6">
-              Plans for every<br className="hidden sm:block" />
-              <span className="text-gradient">stage of growth</span>
-            </h2>
-            <p className="text-base sm:text-lg text-foreground/70 max-w-2xl mx-auto">
-              Start with a 14-day free trial. No credit card required.
-            </p>
-          </FadeInView>
+      <VisualDivider />
 
-          <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
-            {pricingPreview.map((plan, index) => (
-              <StaggerItem key={plan.title}>
-                <FloatingCard
-                  className={`glass-panel-strong rounded-2xl p-8 shadow-premium-lg ${
-                    plan.featured ? 'ring-2 ring-primary/30 scale-105' : ''
-                  }`}
-                  delay={index * 0.15}
-                  yOffset={plan.featured ? 15 : 10}
+      {/* Final CTA section */}
+      <CinematicSection 
+        backgroundType="gradient" 
+        ambientColor="primary"
+        className="py-20 lg:py-32"
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <FadeInView>
+            <div className="glass-intense rounded-3xl p-12 sm:p-16 lg:p-20 text-center shadow-premium-2xl relative overflow-hidden">
+              <div className="absolute inset-0 command-grid opacity-20" />
+              <div className="absolute inset-0 shimmer" />
+              
+              <div className="relative">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                  className="inline-flex items-center gap-2 glass-panel rounded-full px-6 py-3 text-sm font-semibold uppercase tracking-wider mb-8"
                 >
-                  {plan.featured && (
-                    <div className="inline-flex glass-panel rounded-full px-3 py-1 text-xs font-bold text-primary mb-4">
-                      Most Popular
-                    </div>
-                  )}
-                  <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-2">
-                    {plan.title}
-                  </div>
-                  <div className="text-4xl font-bold font-display mb-4">{plan.price}</div>
-                  <p className="text-sm text-foreground/70 mb-8">{plan.detail}</p>
-                  <Link
-                    href={plan.href}
-                    className={`block text-center rounded-xl px-6 py-3.5 font-semibold transition-all ${
-                      plan.featured
-                        ? 'btn btn-primary'
-                        : 'btn btn-secondary'
-                    }`}
-                  >
-                    {plan.title === "Enterprise" ? "Contact Sales" : "Start Trial"}
+                  <Sparkles className="h-5 w-5 text-primary" />
+                  Start Your Trial
+                </motion.div>
+
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-display mb-6">
+                  Ready to operate with<br className="hidden sm:block" />
+                  <span className="text-gradient">complete governance clarity?</span>
+                </h2>
+                
+                <p className="text-xl text-foreground/70 mb-12 max-w-3xl mx-auto">
+                  Start your 14-day free trial. No credit card required. Full platform access.
+                </p>
+                
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <Link href="/auth/signup" className="btn btn-primary text-lg px-12 py-6 shadow-premium-xl">
+                    Start Free Trial
                   </Link>
-                </FloatingCard>
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
+                  <Link href="/contact" className="btn btn-secondary text-lg px-12 py-6">
+                    Request Demo
+                  </Link>
+                </div>
 
-          <FadeInView delay={0.5} className="text-center mt-12">
-            <Link href="/pricing" className="text-primary font-semibold hover:underline">
-              View detailed pricing →
-            </Link>
-          </FadeInView>
-        </div>
-      </section>
-
-      {/* Final CTA - Cinematic */}
-      <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 sm:py-24 lg:py-32">
-        <FadeInView>
-          <div className="glass-intense rounded-3xl p-12 sm:p-16 text-center shadow-premium-2xl relative overflow-hidden">
-            <div className="absolute inset-0 command-grid opacity-20" />
-            <div className="absolute inset-0 shimmer" />
-            
-            <div className="relative">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display mb-6">
-                Ready to operate with<br className="hidden sm:block" />
-                <span className="text-gradient">complete governance clarity?</span>
-              </h2>
-              <p className="text-lg text-foreground/70 mb-10 max-w-2xl mx-auto">
-                Start your 14-day free trial. No credit card required. Full platform access.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link href="/auth/signup" className="btn btn-primary text-lg px-10 py-5 shadow-premium-xl">
-                  Start Free Trial
-                </Link>
-                <Link href="/contact" className="btn btn-secondary text-lg px-10 py-5">
-                  Request Demo
-                </Link>
+                <div className="flex items-center justify-center gap-8 mt-12 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-primary" />
+                    <span>14-day free trial</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-primary" />
+                    <span>No credit card</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-primary" />
+                    <span>Full access</span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </FadeInView>
-      </section>
+          </FadeInView>
+        </div>
+      </CinematicSection>
     </>
   );
 }
+

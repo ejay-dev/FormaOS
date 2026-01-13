@@ -1,50 +1,78 @@
 "use client";
 
+import { Activity, Shield, Heart, Users, Building, GraduationCap, Briefcase } from "lucide-react";
+import {
+  CinematicSection,
+  SectionHeader,
+  FeatureCard,
+  VisualDivider,
+} from "@/components/motion";
+import { FadeInView } from "@/components/motion";
 import Link from "next/link";
-import { FadeInView, StaggerContainer, StaggerItem, FloatingCard } from "@/components/motion";
 
 const industries = [
   {
-    title: "NDIS and disability services",
-    pain: "Audit preparation, incident management, worker screening, and evidence of service delivery.",
-    solution:
-      "FormaOS aligns practice standards to operational controls and builds an auditable evidence trail for certification.",
+    icon: Activity,
+    title: "NDIS & disability services",
+    description: "Practice standards alignment, incident management, worker screening, and service delivery evidence tracking",
+    color: "primary" as const
   },
   {
-    title: "Healthcare and allied health",
-    pain: "Credential oversight, privacy obligations, and quality assurance processes across clinicians.",
-    solution:
-      "Centralize credential evidence, policy sign-off, and audit readiness for healthcare compliance teams.",
+    icon: Heart,
+    title: "Healthcare providers",
+    description: "Credential oversight, privacy obligations, clinical governance, and quality assurance across practitioners",
+    color: "secondary" as const
   },
   {
-    title: "Aged care",
-    pain: "Continuous compliance against quality standards, documentation of care, and incident response proof.",
-    solution:
-      "Map aged care standards to tasks and evidence so governance teams can demonstrate compliance quickly.",
+    icon: Users,
+    title: "Aged care operators",
+    description: "Continuous compliance with quality standards, documentation of care, and incident response proof",
+    color: "accent" as const
   },
   {
-    title: "Childcare and early learning",
-    pain: "Safeguarding requirements, staff clearance tracking, and evidence for regulatory reviews.",
-    solution:
-      "Track clearances, training, and incident evidence with audit-ready reporting for childcare regulators.",
+    icon: GraduationCap,
+    title: "Childcare & early learning",
+    description: "Safeguarding requirements, staff clearance tracking, and evidence for regulatory reviews",
+    color: "primary" as const
   },
   {
+    icon: Building,
     title: "Community services",
-    pain: "Multiple program obligations, shared evidence, and funding compliance documentation.",
-    solution:
-      "Standardize controls across programs while maintaining evidence traceability and governance reporting.",
+    description: "Multiple program obligations, shared evidence, and funding compliance documentation",
+    color: "secondary" as const
   },
   {
-    title: "Regulated professional services",
-    pain: "Multi-site governance, professional accreditation, and audit requirements with limited staff.",
-    solution:
-      "Provide a single compliance system across locations with clear accountability and reporting.",
+    icon: Briefcase,
+    title: "Professional services",
+    description: "Multi-site governance, professional accreditation, and audit requirements with limited staff",
+    color: "accent" as const
+  },
+];
+
+const solutions = [
+  {
+    problem: "Audit preparation chaos",
+    solution: "FormaOS aligns practice standards to operational controls and builds an auditable evidence trail for certification"
   },
   {
-    title: "Custom frameworks",
-    pain: "Non-standard obligations or internal governance requirements with no clear tooling.",
-    solution:
-      "Configure custom control libraries, evidence types, and reporting outputs inside FormaOS.",
+    problem: "Credential oversight complexity",
+    solution: "Centralize credential evidence, policy sign-off, and audit readiness for healthcare compliance teams"
+  },
+  {
+    problem: "Multi-site governance gaps",
+    solution: "Map standards to tasks and evidence so governance teams can demonstrate compliance quickly"
+  },
+  {
+    problem: "Safeguarding blind spots",
+    solution: "Track clearances, training, and incident evidence with audit-ready reporting for regulators"
+  },
+  {
+    problem: "Program compliance fragmentation",
+    solution: "Standardize controls across programs while maintaining evidence traceability and governance reporting"
+  },
+  {
+    problem: "Professional accreditation tracking",
+    solution: "Provide a single compliance system across locations with clear accountability and reporting"
   },
 ];
 
@@ -52,72 +80,129 @@ export function IndustriesContent() {
   return (
     <>
       {/* Industries Grid */}
-      <section className="relative mx-auto max-w-7xl px-6 lg:px-8 pb-24 overflow-hidden">
-        <div className="absolute inset-0 command-grid opacity-30" />
-        <div className="absolute inset-0 vignette" />
-        
-        <div className="relative">
-          <FadeInView className="mb-16 text-center max-w-3xl mx-auto">
-            <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-4">
-              Industry Packs
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold font-display mb-6">
-              Compliance frameworks<br />
-              <span className="text-gradient">tailored to your sector</span>
-            </h2>
-            <p className="text-lg text-foreground/70">
-              Each industry pack maps to real compliance obligations, not generic workflows
-            </p>
-          </FadeInView>
+      <CinematicSection 
+        backgroundType="grid" 
+        ambientColor="primary"
+        className="py-20 lg:py-32"
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="Regulated Industries"
+            badgeIcon={<Shield className="h-4 w-4 text-primary" />}
+            title={<>Pre-configured frameworks<br /><span className="text-gradient">for your sector</span></>}
+            subtitle="FormaOS includes compliance frameworks tailored for Australian regulated industries"
+            alignment="center"
+          />
 
-          <StaggerContainer className="grid gap-6 lg:grid-cols-2">
-            {industries.map((industry, index) => (
-              <StaggerItem key={industry.title}>
-                <FloatingCard className="glass-panel-strong rounded-2xl p-8 shadow-premium-lg signal-pulse group">
-                  <h3 className="text-xl font-semibold text-foreground mb-4 font-display group-hover:text-primary transition-colors">{industry.title}</h3>
-                  <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {industries.map((industry, idx) => (
+              <FeatureCard
+                key={industry.title}
+                icon={industry.icon}
+                title={industry.title}
+                description={industry.description}
+                delay={idx * 0.1}
+                variant="intense"
+                accentColor={industry.color}
+              />
+            ))}
+          </div>
+        </div>
+      </CinematicSection>
+
+      <VisualDivider />
+
+      {/* Problems & Solutions */}
+      <CinematicSection 
+        backgroundType="nodes" 
+        ambientColor="secondary"
+        className="py-20 lg:py-32"
+      >
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            badge="How FormaOS Helps"
+            title={<>From operational chaos<br /><span className="text-gradient">to audit-ready clarity</span></>}
+            subtitle="See how FormaOS solves real compliance challenges across regulated industries"
+            alignment="center"
+          />
+
+          <div className="space-y-8">
+            {solutions.map((item, idx) => (
+              <FadeInView key={idx} delay={idx * 0.1}>
+                <div className="glass-panel-strong rounded-2xl p-8 lg:p-10 shadow-premium-lg">
+                  <div className="grid lg:grid-cols-[1fr_auto_1fr] gap-8 items-center">
                     <div>
-                      <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-2">Pain points</div>
-                      <p className="text-sm text-foreground/80 leading-relaxed">{industry.pain}</p>
+                      <div className="text-xs uppercase tracking-wider text-rose-400 font-semibold mb-3">
+                        Problem
+                      </div>
+                      <p className="text-lg text-foreground/80 leading-relaxed">
+                        {item.problem}
+                      </p>
                     </div>
-                    <div className="glass-panel rounded-xl p-4">
-                      <div className="text-xs uppercase tracking-wider text-primary font-semibold mb-2">FormaOS response</div>
-                      <p className="text-sm text-foreground leading-relaxed">{industry.solution}</p>
+
+                    <div className="hidden lg:flex items-center justify-center">
+                      <div className="h-12 w-12 rounded-full glass-intense flex items-center justify-center">
+                        <span className="text-2xl">→</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="text-xs uppercase tracking-wider text-emerald-400 font-semibold mb-3">
+                        FormaOS Solution
+                      </div>
+                      <p className="text-lg text-foreground/90 leading-relaxed font-medium">
+                        {item.solution}
+                      </p>
                     </div>
                   </div>
-                </FloatingCard>
-              </StaggerItem>
+                </div>
+              </FadeInView>
             ))}
-          </StaggerContainer>
-        </div>
-      </section>
-
-      {/* Custom Framework CTA */}
-      <section className="relative mx-auto max-w-7xl px-6 lg:px-8 pb-24">
-        <FadeInView delay={0.3}>
-          <div className="glass-intense rounded-3xl p-10 shadow-premium-2xl relative overflow-hidden">
-            <div className="absolute inset-0 flow-lines opacity-20" />
-            <div className="absolute inset-0 shimmer" />
-            
-            <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-3">Need a tailored framework?</div>
-                <h2 className="text-2xl md:text-3xl font-semibold font-display mb-3">
-                  We configure FormaOS<br />
-                  <span className="text-gradient">for your obligations</span>
-                </h2>
-                <p className="text-[15px] text-foreground/70 leading-relaxed">Tell us your framework requirements and we map controls, evidence, and reports.</p>
-              </div>
-              <Link
-                href="/pricing"
-                className="btn btn-primary text-base px-8 py-4 whitespace-nowrap shadow-premium-xl"
-              >
-                Enterprise Plans
-              </Link>
-            </div>
           </div>
-        </FadeInView>
-      </section>
+        </div>
+      </CinematicSection>
+
+      <VisualDivider />
+
+      {/* Custom Frameworks */}
+      <CinematicSection 
+        backgroundType="flow" 
+        ambientColor="accent"
+        className="py-20 lg:py-32"
+      >
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <FadeInView>
+            <div className="glass-intense rounded-3xl p-12 sm:p-16 text-center shadow-premium-2xl relative overflow-hidden">
+              <div className="absolute inset-0 shimmer" />
+              
+              <div className="relative">
+                <div className="inline-flex items-center gap-2 glass-panel rounded-full px-6 py-3 text-sm font-semibold uppercase tracking-wider mb-8">
+                  <Briefcase className="h-5 w-5 text-accent" />
+                  Custom Frameworks
+                </div>
+
+                <h2 className="text-4xl sm:text-5xl font-bold font-display mb-6">
+                  Non-standard obligations or<br />
+                  <span className="text-gradient">internal governance requirements?</span>
+                </h2>
+                
+                <p className="text-xl text-foreground/70 mb-10 max-w-2xl mx-auto">
+                  Configure custom control libraries, evidence types, and reporting outputs inside FormaOS.
+                </p>
+                
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <Link href="/contact" className="btn btn-primary text-lg px-12 py-6 shadow-premium-xl">
+                    Contact Sales
+                  </Link>
+                  <Link href="/product" className="btn btn-secondary text-lg px-12 py-6">
+                    View Platform
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </FadeInView>
+        </div>
+      </CinematicSection>
     </>
   );
 }
