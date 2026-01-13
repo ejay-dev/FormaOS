@@ -220,7 +220,7 @@ export function CinematicHero() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.6, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute top-8 right-0 w-[340px]"
+                className="absolute top-4 right-8 w-[340px]"
               >
                 <FloatingUIPanel delay={0.6} className="shadow-[0_0_50px_rgba(56,189,248,0.2)]">
                   <Floating3DPanel delay={0.6} />
@@ -231,7 +231,7 @@ export function CinematicHero() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.8, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute top-[42%] -left-8 w-[320px]"
+                className="absolute top-[48%] -translate-y-1/2 left-0 w-[320px]"
               >
                 <FloatingUIPanel delay={0.8} className="shadow-[0_0_45px_rgba(139,92,246,0.2)]">
                   <FloatingWorkflowDiagram delay={0.8} />
@@ -242,7 +242,7 @@ export function CinematicHero() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 1.0, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute bottom-4 right-16 w-[310px]"
+                className="absolute bottom-8 right-4 w-[310px]"
               >
                 <FloatingUIPanel delay={1.0} className="shadow-[0_0_48px_rgba(6,182,212,0.2)]">
                   <FloatingSecurityModule delay={1.0} />
