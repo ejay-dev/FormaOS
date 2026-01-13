@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getAdminFetchConfig } from "@/app/admin/lib";
+import { OrgActionButtons } from "@/app/admin/components/org-action-buttons";
 
 type OrgRow = {
   id: string;
@@ -87,55 +88,14 @@ export default async function AdminOrgsPage({
                   <td className="py-3">{formatDate(org.trial_expires_at)}</td>
                   <td className="py-3">
                     <div className="flex flex-col gap-2">
-                      <Link href={`/admin/orgs/${org.id}`} className="text-xs text-sky-300">
+                      <Link href={`/admin/orgs/${org.id}`} className="text-xs text-sky-300 hover:text-sky-200 transition-colors">
                         View org
                       </Link>
-                      <form method="post" action={`/api/admin/orgs/${org.id}/plan`} className="flex items-center gap-2">
-                        <select
-                          name="plan"
-                          defaultValue={org.plan_key ?? "basic"}
-                          className="rounded-lg border border-white/10 bg-[hsl(var(--card))] px-2 py-1 text-xs text-slate-200"
-                        >
-                          <option value="basic">Starter</option>
-                          <option value="pro">Pro</option>
-                          <option value="enterprise">Enterprise</option>
-                        </select>
-                        <button
-                          type="submit"
-                          className="rounded-lg border border-white/10 px-2 py-1 text-xs text-slate-200 hover:bg-white/5"
-                        >
-                          Update plan
-                        </button>
-                      </form>
-                      <form
-                        method="post"
-                        action={`/api/admin/orgs/${org.id}/trial/extend`}
-                        className="flex items-center gap-2"
-                      >
-                        <input
-                          type="number"
-                          name="days"
-                          min={1}
-                          max={90}
-                          defaultValue={14}
-                          className="w-16 rounded-lg border border-white/10 bg-[hsl(var(--card))] px-2 py-1 text-xs text-slate-200"
-                        />
-                        <button
-                          type="submit"
-                          className="rounded-lg border border-white/10 px-2 py-1 text-xs text-slate-200 hover:bg-white/5"
-                        >
-                          Extend trial
-                        </button>
-                      </form>
-                      <form method="post" action={`/api/admin/orgs/${org.id}/lock`}>
-                        <input type="hidden" name="locked" value={org.status !== "blocked" ? "true" : "false"} />
-                        <button
-                          type="submit"
-                          className="rounded-lg border border-white/10 px-2 py-1 text-xs text-slate-200 hover:bg-white/5"
-                        >
-                          {org.status === "blocked" ? "Unblock" : "Block"}
-                        </button>
-                      </form>
+                      <OrgActionButtons
+                        orgId={org.id}
+                        currentPlan={org.plan_key}
+                        currentStatus={org.status}
+                      />
                     </div>
                   </td>
                 </tr>

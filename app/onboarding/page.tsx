@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { Building2, ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
+import { Building2, ShieldCheck, Sparkles } from "lucide-react";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { applyIndustryPack } from "@/app/app/onboarding/actions";
 import { createInvitation } from "@/lib/invitations/create-invitation";
 import { resolvePlanKey, PLAN_CATALOG } from "@/lib/plans";
@@ -449,13 +450,9 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                   </div>
                 </div>
               </div>
-              <button
-                type="submit"
-                className="w-full py-5 bg-[hsl(var(--card))] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
-              >
+              <SubmitButton loadingText="Starting...">
                 Continue
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </button>
+              </SubmitButton>
             </form>
           ) : null}
 
@@ -525,13 +522,9 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                 </div>
               </div>
 
-              <button
-                type="submit"
-                className="w-full py-5 bg-[hsl(var(--card))] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
-              >
+              <SubmitButton loadingText="Saving...">
                 Continue
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </button>
+              </SubmitButton>
             </form>
           ) : null}
 
@@ -560,13 +553,9 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                   ))}
                 </div>
               </div>
-              <button
-                type="submit"
-                className="w-full py-5 bg-[hsl(var(--card))] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
-              >
+              <SubmitButton loadingText="Configuring industry...">
                 Continue
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </button>
+              </SubmitButton>
             </form>
           ) : null}
 
@@ -595,13 +584,9 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                   ))}
                 </div>
               </div>
-              <button
-                type="submit"
-                className="w-full py-5 bg-[hsl(var(--card))] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
-              >
+              <SubmitButton loadingText="Setting role...">
                 Continue
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </button>
+              </SubmitButton>
             </form>
           ) : null}
 
@@ -634,13 +619,9 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                   })}
                 </div>
               </div>
-              <button
-                type="submit"
-                className="w-full py-5 bg-[hsl(var(--card))] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
-              >
+              <SubmitButton loadingText="Configuring frameworks...">
                 Continue
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </button>
+              </SubmitButton>
             </form>
           ) : null}
 
@@ -657,13 +638,9 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                   className="w-full p-4 rounded-2xl border border-white/10 bg-[hsl(var(--card))] text-sm font-semibold text-slate-100"
                 />
               </div>
-              <button
-                type="submit"
-                className="w-full py-5 bg-[hsl(var(--card))] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
-              >
+              <SubmitButton loadingText="Sending invites...">
                 Continue
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </button>
+              </SubmitButton>
             </form>
           ) : null}
 
@@ -704,13 +681,9 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                   </label>
                 </div>
               </div>
-              <button
-                type="submit"
-                className="w-full py-5 bg-[hsl(var(--card))] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:brightness-110 transition-all shadow-xl active:scale-95 group"
-              >
+              <SubmitButton loadingText="Completing setup...">
                 Complete setup
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </button>
+              </SubmitButton>
             </form>
           ) : null}
 

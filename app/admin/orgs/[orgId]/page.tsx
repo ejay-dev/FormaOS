@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getAdminFetchConfig } from "@/app/admin/lib";
+import { AddNoteForm } from "@/app/admin/components/add-note-form";
 
 type OrgDetailProps = {
   params: Promise<{ orgId: string }>;
@@ -98,20 +99,7 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
 
       <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
         <h2 className="text-xl font-semibold text-slate-100">Internal Notes</h2>
-          <form method="post" action={`/api/admin/orgs/${orgId}/notes`} className="mt-4 flex gap-3">
-          <input
-            name="note"
-            placeholder="Add a note for the team"
-            className="flex-1 rounded-lg border border-white/10 bg-[hsl(var(--card))] px-3 py-2 text-sm text-slate-200"
-            required
-          />
-          <button
-            type="submit"
-            className="rounded-lg border border-white/10 px-4 py-2 text-sm text-slate-200 hover:bg-white/5"
-          >
-            Add note
-          </button>
-        </form>
+        <AddNoteForm orgId={orgId} />
         <div className="mt-6 space-y-3 text-sm text-slate-300">
           {notes.map((note: any) => (
             <div key={note.id} className="rounded-xl border border-white/10 bg-[hsl(var(--card))] p-4">

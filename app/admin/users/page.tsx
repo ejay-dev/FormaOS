@@ -1,4 +1,5 @@
 import { getAdminFetchConfig } from "@/app/admin/lib";
+import { UserActionButtons } from "@/app/admin/components/user-action-buttons";
 
 type UserRow = {
   id: string;
@@ -86,34 +87,7 @@ export default async function AdminUsersPage({
                   <td className="py-3">{formatDate(user.last_sign_in_at)}</td>
                   <td className="py-3">{user.email_confirmed ? "confirmed" : "pending"}</td>
                   <td className="py-3">
-                    <div className="flex flex-col gap-2">
-                      <form method="post" action={`/api/admin/users/${user.id}/lock`}>
-                        <input type="hidden" name="locked" value="true" />
-                        <button
-                          type="submit"
-                          className="rounded-lg border border-white/10 px-2 py-1 text-xs text-slate-200 hover:bg-white/5"
-                        >
-                          Lock
-                        </button>
-                      </form>
-                      <form method="post" action={`/api/admin/users/${user.id}/lock`}>
-                        <input type="hidden" name="locked" value="false" />
-                        <button
-                          type="submit"
-                          className="rounded-lg border border-white/10 px-2 py-1 text-xs text-slate-200 hover:bg-white/5"
-                        >
-                          Unlock
-                        </button>
-                      </form>
-                      <form method="post" action={`/api/admin/users/${user.id}/resend-confirmation`}>
-                        <button
-                          type="submit"
-                          className="rounded-lg border border-white/10 px-2 py-1 text-xs text-slate-200 hover:bg-white/5"
-                        >
-                          Resend confirmation
-                        </button>
-                      </form>
-                    </div>
+                    <UserActionButtons userId={user.id} />
                   </td>
                 </tr>
               ))}

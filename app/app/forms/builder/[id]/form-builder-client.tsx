@@ -5,8 +5,16 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { createSupabaseClient } from "@/lib/supabase/client";
 import { FormField, Form } from "@/lib/forms/types";
 import { FIELD_TEMPLATES } from "@/lib/forms/field-templates";
-import { Plus, Trash2, GripVertical, Settings, Eye, Save } from "lucide-react";
+import { Plus, Trash2, GripVertical, Settings, Eye, Save, CheckCircle2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useComplianceAction } from "@/components/compliance-system";
+
+/**
+ * =========================================================
+ * FORM BUILDER CLIENT
+ * Node Type: Control (teal) - Forms for data collection
+ * =========================================================
+ */
 
 type FormBuilderClientProps = {
   formId: string;
@@ -19,7 +27,9 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
   const [selectedField, setSelectedField] = useState<FormField | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showSaveSuccess, setShowSaveSuccess] = useState(false);
   const [orgId, setOrgId] = useState<string | null>(null);
+  const { nodeUpdated, reportError } = useComplianceAction();
 
   useEffect(() => {
     loadForm();
@@ -78,10 +88,16 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
         .eq("organization_id", orgId);
 
       if (error) throw error;
-      alert("Form saved successfully!");
-    } catch (error) {
+      
+      // Show success state
+      setShowSaveSuccess(true);
+      nodeUpdated("control", form.title || "Form");
+      
+      // Reset success state
+      setTimeout(() => setShowSaveSuccess(false), 2000);
+    } catch (error: any) {
       console.error("Error saving form:", error);
-      alert("Failed to save form");
+      reportError(`Failed to save form: ${error.message || 'Unknown error'}`);
     } finally {
       setSaving(false);
     }

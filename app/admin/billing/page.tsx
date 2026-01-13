@@ -1,4 +1,5 @@
 import { getAdminFetchConfig } from "@/app/admin/lib";
+import { BillingActionButtons } from "@/app/admin/components/billing-action-buttons";
 
 type SubscriptionRow = {
   organization_id: string;
@@ -68,47 +69,7 @@ export default async function AdminBillingPage({
                   <td className="py-3">{formatDate(row.trial_expires_at)}</td>
                   <td className="py-3">{row.stripe_subscription_id ?? "—"}</td>
                   <td className="py-3">
-                    <div className="flex flex-col gap-2">
-                      <form
-                        method="post"
-                        action={`/api/admin/orgs/${row.organization_id}/trial/extend`}
-                        className="flex items-center gap-2"
-                      >
-                        <input
-                          type="number"
-                          name="days"
-                          min={1}
-                          max={90}
-                          defaultValue={14}
-                          className="w-16 rounded-lg border border-white/10 bg-[hsl(var(--card))] px-2 py-1 text-xs text-slate-200"
-                        />
-                        <button
-                          type="submit"
-                          className="rounded-lg border border-white/10 px-2 py-1 text-xs text-slate-200 hover:bg-white/5"
-                        >
-                          Extend trial
-                        </button>
-                      </form>
-                      <form method="post" action={`/api/admin/orgs/${row.organization_id}/trial/reset`}>
-                        <button
-                          type="submit"
-                          className="rounded-lg border border-white/10 px-2 py-1 text-xs text-slate-200 hover:bg-white/5"
-                        >
-                          Reset trial
-                        </button>
-                      </form>
-                      <form
-                        method="post"
-                        action={`/api/admin/subscriptions/${row.organization_id}/resync-stripe`}
-                      >
-                        <button
-                          type="submit"
-                          className="rounded-lg border border-white/10 px-2 py-1 text-xs text-slate-200 hover:bg-white/5"
-                        >
-                          Resync Stripe
-                        </button>
-                      </form>
-                    </div>
+                    <BillingActionButtons orgId={row.organization_id} />
                   </td>
                 </tr>
               ))}

@@ -3,6 +3,15 @@
 import { useState } from "react"
 import { addTrainingRecord } from "@/app/app/actions/registers"
 import { GraduationCap, Loader2, X, Calendar, User, CheckCircle2 } from "lucide-react"
+import { useComplianceAction } from "@/components/compliance-system"
+
+/**
+ * =========================================================
+ * ADD CERTIFICATION MODAL
+ * Node Type: Evidence (violet) - Training certification
+ * Creates a new certification record in the compliance graph
+ * =========================================================
+ */
 
 export function AddCertificationModal({ 
   isOpen, 
@@ -20,6 +29,7 @@ export function AddCertificationModal({
   const [title, setTitle] = useState("")
   const [completionDate, setCompletionDate] = useState("")
   const [expiryDate, setExpiryDate] = useState("")
+  const { evidenceAdded, reportError } = useComplianceAction()
 
   if (!isOpen) return null
 
@@ -33,13 +43,17 @@ export function AddCertificationModal({
         completionDate,
         expiryDate: expiryDate || undefined
       })
+      
+      // Report to compliance system
+      evidenceAdded(title)
+      
       setSuccess(true)
       setTimeout(() => {
         setSuccess(false)
         onClose()
       }, 2000)
     } catch (error: any) {
-      alert(error.message)
+      reportError(`Failed to record certification: ${error.message}`)
     } finally {
       setLoading(false)
     }

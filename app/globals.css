@@ -368,6 +368,32 @@
   }
 }
 
+/* =========================================================
+ * FORMAOS NODE / WIRE VISUAL SYSTEM
+ * Graph-based compliance operating system styling
+ * ======================================================== */
+
+/* Node type colors */
+:root {
+  --node-policy: 193 100% 49%;      /* Cyan */
+  --node-control: 168 64% 42%;      /* Teal */
+  --node-evidence: 270 70% 72%;     /* Violet */
+  --node-audit: 38 92% 50%;         /* Amber */
+  --node-risk: 350 89% 60%;         /* Rose */
+  --node-task: 158 64% 52%;         /* Emerald */
+  --node-entity: 215 16% 47%;       /* Slate */
+}
+
+/* Wire colors */
+:root {
+  --wire-policy-control: #00d4fb;
+  --wire-control-evidence: #14b8a6;
+  --wire-evidence-audit: #a78bfa;
+  --wire-audit-risk: #f59e0b;
+  --wire-risk-task: #f43f5e;
+  --wire-task-control: #10b981;
+}
+
 @layer utilities {
   /* Premium gradient utilities */
   .gradient-primary { background: var(--gradient-primary); }
@@ -602,3 +628,110 @@
     color-scheme: dark;
   }
 }
+
+/* =========================================================
+ * NODE / WIRE ANIMATION SYSTEM
+ * Compliance graph visual feedback
+ * ======================================================== */
+
+@keyframes node-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 rgba(0, 212, 251, 0.4);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 20px 4px rgba(0, 212, 251, 0.2);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes node-verified {
+  0% { 
+    background-position: 200% center;
+  }
+  100% { 
+    background-position: -200% center;
+  }
+}
+
+@keyframes wire-flow {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -20; }
+}
+
+@keyframes wire-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+@keyframes node-at-risk {
+  0%, 100% { 
+    border-color: rgba(244, 63, 94, 0.4);
+    box-shadow: 0 0 0 0 rgba(244, 63, 94, 0);
+  }
+  50% { 
+    border-color: rgba(244, 63, 94, 0.8);
+    box-shadow: 0 0 16px 2px rgba(244, 63, 94, 0.3);
+  }
+}
+
+@keyframes shrink {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+/* Node state classes */
+.node-active {
+  animation: node-pulse 2s ease-in-out infinite;
+}
+
+.node-verified {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(16, 185, 129, 0.15),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: node-verified 2s ease-in-out infinite;
+}
+
+.node-at-risk {
+  animation: node-at-risk 1.5s ease-in-out infinite;
+}
+
+/* Wire animation classes */
+.wire-flowing {
+  animation: wire-flow 1s linear infinite;
+}
+
+.wire-pulsing {
+  animation: wire-pulse 1.5s ease-in-out infinite;
+}
+
+/* Compliance impact indicators */
+.impact-positive {
+  @apply bg-emerald-500/10 border-emerald-400/30 text-emerald-300;
+}
+
+.impact-negative {
+  @apply bg-rose-500/10 border-rose-400/30 text-rose-300;
+}
+
+.impact-neutral {
+  @apply bg-slate-500/10 border-slate-400/30 text-slate-400;
+}
+
+/* System feedback toast animations */
+.toast-enter {
+  animation: slide-in-right 0.3s ease-out;
+}
+
+.toast-exit {
+  animation: fade-out 0.2s ease-in forwards;
+}
+
+@keyframes fade-out {
+  to { opacity: 0; transform: translateX(100%); }
+}
+

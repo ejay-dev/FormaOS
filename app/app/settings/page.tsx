@@ -2,7 +2,6 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import {
   Building2,
-  Save,
   Fingerprint,
   CreditCard,
   ShieldCheck,
@@ -16,6 +15,7 @@ import {
 // ✅ Verify this path matches your project structure
 import { updateOrganization } from "@/app/app/actions/org";
 import { ExpiryAlertWidget } from "@/components/dashboard/expiry-alert-widget";
+import { SaveButton } from "@/components/ui/submit-button";
 
 /**
  * ✅ GOVERNANCE UPDATE ACTION (UPGRADED)
@@ -266,13 +266,7 @@ export default async function SettingsPage() {
               </div>
 
               {isAdmin && (
-                <button
-                  type="submit"
-                  className="w-full bg-white/5 text-slate-100 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-white/10 transition-all shadow-xl active:scale-95 relative z-10 group/btn"
-                >
-                  <Save className="h-4 w-4 transition-transform group-hover/btn:scale-110" />
-                  Commit Profile
-                </button>
+                <SaveButton />
               )}
             </div>
 

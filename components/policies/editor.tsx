@@ -5,7 +5,16 @@ import StarterKit from "@tiptap/starter-kit"
 import Placeholder from "@tiptap/extension-placeholder"
 import Link from "@tiptap/extension-link"
 import { useState } from "react"
-import { Save, Loader2, Bold, Italic, Heading1, Heading2 } from "lucide-react"
+import { Save, Loader2, Bold, Italic, Heading1, Heading2, CheckCircle2 } from "lucide-react"
+import { useComplianceAction } from "@/components/compliance-system"
+
+/**
+ * =========================================================
+ * POLICY EDITOR
+ * Node Type: Policy (cyan)
+ * Updates policy content in the compliance graph
+ * =========================================================
+ */
 
 export function PolicyEditor({
   initialContent,
@@ -18,6 +27,8 @@ export function PolicyEditor({
 }) {
   const [isSaving, setIsSaving] = useState(false)
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
+  const [showSuccess, setShowSuccess] = useState(false)
+  const { nodeUpdated, reportError } = useComplianceAction()
 
   const editor = useEditor({
     extensions: [
@@ -62,9 +73,16 @@ export function PolicyEditor({
       }
 
       setLastSaved(new Date())
-    } catch (error) {
+      setShowSuccess(true)
+      
+      // Report to compliance system
+      nodeUpdated("policy", title)
+      
+      // Reset success state
+      setTimeout(() => setShowSuccess(false), 2000)
+    } catch (error: any) {
       console.error("Save Error:", error)
-      alert("Critical: Failed to sync policy to cloud.")
+      reportError(`Failed to sync policy: ${error.message || 'Unknown error'}`)
     } finally {
       setIsSaving(false)
     }
