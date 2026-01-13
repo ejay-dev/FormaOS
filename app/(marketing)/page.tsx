@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { MarketingAnchor } from "./components/marketing-anchor";
 import { HomeClientMarker } from "./components/home-client-marker";
-import { HomePageClient } from "./components/home-page-client";
+import { HomePageClient } from "./components/home-page-client-complete";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://formaos.com.au";
 

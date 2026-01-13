@@ -12,13 +12,11 @@ import {
   TeamMember,
   VisualDivider,
   ValueProp,
-  AnimatedSystemGrid,
-  PulsingNode,
-  ParallaxLayer,
   ParticleField,
   GradientMesh,
   InteractiveCard,
 } from "@/components/motion";
+import { CleanSystemGrid, PulsingNode, ParallaxLayer } from "@/components/motion/CleanBackground";
 
 export function StoryHero() {
   return (
@@ -26,9 +24,9 @@ export function StoryHero() {
       {/* Multi-layer animated background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
       
-      {/* Animated system grid layer */}
+      {/* Clean system grid layer */}
       <div className="absolute inset-0 opacity-40 sm:opacity-60">
-        <AnimatedSystemGrid />
+        <CleanSystemGrid />
       </div>
       
       {/* Pulsing nodes - hidden on mobile */}
