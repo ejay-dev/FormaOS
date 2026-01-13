@@ -2,49 +2,100 @@
 
 import Link from "next/link";
 import { Sparkles, Zap, Shield, Crown } from "lucide-react";
+import { motion } from "framer-motion";
 import { 
   PricingTierCard,
   EnterprisePricingCard,
   CinematicSection,
   SectionHeader,
-  VisualDivider
+  VisualDivider,
+  AnimatedSystemGrid,
+  PulsingNode,
+  ParallaxLayer
 } from "@/components/motion";
 
 export function PricingHero() {
   return (
-    <section className="relative min-h-[70vh] flex items-center overflow-hidden">
-      {/* Multi-layer background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 command-grid opacity-30" />
-        <div className="absolute inset-0 vignette" />
+    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+      {/* Multi-layer animated background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
+      
+      {/* Animated system grid layer */}
+      <div className="absolute inset-0 opacity-60">
+        <AnimatedSystemGrid />
       </div>
-
-      {/* Ambient lights */}
-      <div className="pointer-events-none absolute right-1/4 top-20 h-[600px] w-[600px] rounded-full bg-primary/8 blur-3xl" />
-      <div className="pointer-events-none absolute left-1/4 bottom-20 h-[500px] w-[500px] rounded-full bg-secondary/6 blur-3xl" />
+      
+      {/* Pulsing nodes */}
+      <PulsingNode x="10%" y="20%" delay={0} />
+      <PulsingNode x="90%" y="30%" delay={0.5} color="rgb(139, 92, 246)" />
+      <PulsingNode x="15%" y="70%" delay={1} color="rgb(6, 182, 212)" />
+      <PulsingNode x="85%" y="80%" delay={1.5} />
+      
+      {/* Radial gradient overlays */}
+      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[600px] w-[600px] rounded-full bg-primary/20 blur-[120px]" />
+      <div className="pointer-events-none absolute -bottom-40 left-1/4 h-[500px] w-[500px] rounded-full bg-secondary/15 blur-[100px]" />
+      <div className="pointer-events-none absolute top-1/2 right-1/4 h-[400px] w-[400px] rounded-full bg-accent/10 blur-[80px]" />
+      
+      {/* Vignette */}
+      <div className="absolute inset-0 vignette pointer-events-none" />
 
       {/* Content */}
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-8 py-24 w-full">
-        <div className="mx-auto max-w-4xl text-center">
-          <div className="inline-flex items-center gap-2.5 glass-panel rounded-full px-6 py-3 text-xs font-semibold uppercase tracking-wider mb-8">
-            <Sparkles className="h-4 w-4 text-primary" />
-            Simple, Transparent Pricing
+      <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8 py-24 w-full">
+        <ParallaxLayer speed={0.3}>
+          <div className="mx-auto max-w-4xl text-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="inline-flex items-center gap-2.5 glass-intense rounded-full px-6 py-3 text-xs font-semibold uppercase tracking-wider mb-8 border border-primary/30"
+            >
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+              >
+                <Sparkles className="h-4 w-4 text-primary" />
+              </motion.div>
+              Simple, Transparent Pricing
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+              className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] font-display tracking-tight mb-6"
+            >
+              Plans built for<br />
+              <span className="relative">
+                <span className="text-gradient">growing compliance teams</span>
+                <motion.div
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ delay: 0.8, duration: 0.8 }}
+                  className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent rounded-full origin-left"
+                />
+              </span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.8 }}
+              className="text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-8"
+            >
+              Choose the level of governance and support your organization requires. 
+              Start with a 14-day free trial—no payment details needed.
+            </motion.p>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7, duration: 0.8 }}
+              className="text-sm text-muted-foreground"
+            >
+              All pricing in AUD · Billed monthly · Cancel anytime
+            </motion.p>
           </div>
-
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] font-display tracking-tight mb-6">
-            Plans built for<br />
-            <span className="text-gradient">growing compliance teams</span>
-          </h1>
-
-          <p className="text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-8">
-            Choose the level of governance and support your organization requires. 
-            Start with a 14-day free trial—no payment details needed.
-          </p>
-
-          <p className="text-sm text-muted-foreground">
-            All pricing in AUD · Billed monthly · Cancel anytime
-          </p>
-        </div>
+        </ParallaxLayer>
       </div>
     </section>
   );
