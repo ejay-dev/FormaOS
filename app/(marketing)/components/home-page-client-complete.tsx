@@ -12,7 +12,7 @@ import {
   InteractiveCard,
   ParticleField,
 } from "@/components/motion";
-import { CleanSystemGrid, PulsingNode, ParallaxLayer } from "@/components/motion/CleanBackground";
+import { PulsingNode, ParallaxLayer } from "@/components/motion/CleanBackground";
 import { MarketingAnchor } from "./marketing-anchor";
 
 function HomeHero() {
@@ -21,12 +21,13 @@ function HomeHero() {
       {/* Multi-layer animated background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
       
-      {/* Clean system grid layer */}
-      <div className="absolute inset-0 opacity-40 sm:opacity-60">
-        <CleanSystemGrid />
+      {/* Soft gradient overlays instead of motion lines */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10" />
+        <div className="absolute inset-0 bg-gradient-to-tl from-accent/5 via-transparent to-primary/5" />
       </div>
       
-      {/* Pulsing nodes - hidden on mobile */}
+      {/* Subtle pulsing nodes - hidden on mobile */}
       <div className="hidden sm:block">
         <PulsingNode x="12%" y="25%" delay={0} color="rgb(139, 92, 246)" />
         <PulsingNode x="88%" y="35%" delay={0.5} />
@@ -258,10 +259,13 @@ export function HomePageClient() {
 
       {/* Why FormaOS */}
       <CinematicSection 
-        backgroundType="nodes" 
+        backgroundType="gradient" 
         ambientColor="secondary"
         className="py-16 sm:py-20 lg:py-32"
       >
+        {/* Soft gradient background instead of node motion */}
+        <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 via-transparent to-primary/5" />
+        
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
             badge="Why FormaOS"
