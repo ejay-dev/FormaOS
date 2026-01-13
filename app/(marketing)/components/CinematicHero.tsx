@@ -206,27 +206,27 @@ export function CinematicHero() {
           
           {/* Right: 3D floating modules with hierarchy */}
           <ParallaxLayer speed={0.5}>
-            <div className="relative h-[700px]">
+            <div className="relative h-[750px]">
               {/* Connection lines between modules */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-30" style={{ filter: "drop-shadow(0 0 6px rgba(56, 189, 248, 0.2))" }}>
+              <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-25" style={{ filter: "drop-shadow(0 0 6px rgba(56, 189, 248, 0.2))" }}>
                 <motion.path
-                  d="M 320 160 Q 200 320 120 480"
+                  d="M 340 140 Q 180 340 80 560"
                   stroke="url(#moduleGradient)"
                   strokeWidth="1.5"
                   fill="none"
                   strokeDasharray="4,6"
                   initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 0.35 }}
+                  animate={{ pathLength: 1, opacity: 0.3 }}
                   transition={{ delay: 1.5, duration: 2 }}
                 />
                 <motion.path
-                  d="M 340 200 L 280 540"
+                  d="M 360 180 L 300 600"
                   stroke="url(#moduleGradient)"
                   strokeWidth="1.5"
                   fill="none"
                   strokeDasharray="4,6"
                   initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 0.35 }}
+                  animate={{ pathLength: 1, opacity: 0.3 }}
                   transition={{ delay: 1.7, duration: 2 }}
                 />
                 <defs>
@@ -237,7 +237,7 @@ export function CinematicHero() {
                 </defs>
               </svg>
               
-              {/* PRIMARY HERO CARD - Compliance Posture (largest, most prominent) */}
+              {/* PRIMARY HERO CARD - Compliance Posture (largest, foreground, most prominent) */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ 
@@ -250,22 +250,22 @@ export function CinematicHero() {
                   scale: { delay: 0.5, duration: 1 },
                   y: { delay: 2, duration: 6, repeat: Infinity, ease: "easeInOut" }
                 }}
-                className="absolute top-8 right-0 w-[360px] z-30"
+                className="absolute top-4 right-8 w-[370px] z-30"
               >
                 <FloatingUIPanel 
                   delay={0.5} 
-                  className="shadow-[0_8px_60px_rgba(56,189,248,0.35),0_0_80px_rgba(56,189,248,0.15)] ring-1 ring-primary/20"
+                  className="shadow-[0_10px_70px_rgba(56,189,248,0.4),0_0_90px_rgba(56,189,248,0.18)] ring-1 ring-primary/25"
                 >
                   <Floating3DPanel delay={0.5} />
                 </FloatingUIPanel>
               </motion.div>
               
-              {/* SECONDARY CARD - Compliance Lifecycle (medium, left offset) */}
+              {/* SECONDARY CARD - Compliance Lifecycle (medium, left-center, behind) */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.85 }}
                 animate={{ 
-                  opacity: 0.9, 
-                  scale: 0.93,
+                  opacity: 0.88, 
+                  scale: 0.92,
                   y: [0, -6, 0]
                 }}
                 transition={{ 
@@ -273,22 +273,22 @@ export function CinematicHero() {
                   scale: { delay: 0.7, duration: 1 },
                   y: { delay: 2.5, duration: 7, repeat: Infinity, ease: "easeInOut" }
                 }}
-                className="absolute top-[52%] -translate-y-1/2 left-4 w-[280px] z-20"
+                className="absolute top-[38%] left-0 w-[300px] z-20"
               >
                 <FloatingUIPanel 
                   delay={0.7} 
-                  className="shadow-[0_6px_45px_rgba(139,92,246,0.28),0_0_60px_rgba(139,92,246,0.12)]"
+                  className="shadow-[0_6px_45px_rgba(139,92,246,0.25),0_0_60px_rgba(139,92,246,0.1)]"
                 >
                   <FloatingWorkflowDiagram delay={0.7} />
                 </FloatingUIPanel>
               </motion.div>
               
-              {/* SECONDARY CARD - Security Status (smaller, bottom right, well-separated) */}
+              {/* SECONDARY CARD - Security Status (smaller, bottom-right, furthest back) */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.85 }}
+                initial={{ opacity: 0, scale: 0.82 }}
                 animate={{ 
-                  opacity: 0.85, 
-                  scale: 0.9,
+                  opacity: 0.82, 
+                  scale: 0.88,
                   y: [0, -5, 0]
                 }}
                 transition={{ 
@@ -296,11 +296,11 @@ export function CinematicHero() {
                   scale: { delay: 0.9, duration: 1 },
                   y: { delay: 3, duration: 6.5, repeat: Infinity, ease: "easeInOut" }
                 }}
-                className="absolute bottom-4 right-12 w-[270px] z-10"
+                className="absolute bottom-8 right-16 w-[280px] z-10"
               >
                 <FloatingUIPanel 
                   delay={0.9} 
-                  className="shadow-[0_5px_40px_rgba(6,182,212,0.25),0_0_55px_rgba(6,182,212,0.1)]"
+                  className="shadow-[0_4px_35px_rgba(6,182,212,0.22),0_0_50px_rgba(6,182,212,0.08)]"
                 >
                   <FloatingSecurityModule delay={0.9} />
                 </FloatingUIPanel>
