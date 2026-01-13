@@ -15,7 +15,6 @@ import {
   AnimatedSystemGrid,
   PulsingNode,
   ParallaxLayer,
-  ParticleField,
   GradientMesh,
   InteractiveCard,
 } from "@/components/motion";

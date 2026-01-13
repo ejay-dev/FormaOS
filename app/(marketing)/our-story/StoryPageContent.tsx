@@ -12,7 +12,6 @@ import {
   TeamMember,
   VisualDivider,
   ValueProp,
-  ParticleField,
   GradientMesh,
   InteractiveCard,
 } from "@/components/motion";
@@ -106,13 +105,8 @@ export function StoryContent() {
         ambientColor="primary"
         className="py-16 sm:py-20 lg:py-32 relative"
       >
-        {/* Premium background overlay */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <ParticleField 
-            particleCount={25} 
-            colors={["rgba(0, 212, 251, 0.3)", "rgba(139, 92, 246, 0.25)"]}
-          />
-        </div>
+        {/* Clean gradient background - NO motion elements */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-background to-secondary/3" />
         
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader

@@ -8,8 +8,6 @@ import {
   SectionHeader,
   ValueProp,
   VisualDivider,
-  InteractiveCard,
-  ParticleField,
   GradientMesh,
 } from "@/components/motion";
 import { CleanSystemGrid, PulsingNode, ParallaxLayer } from "@/components/motion/CleanBackground";
@@ -120,12 +118,8 @@ export default function PricingPageContent() {
         ambientColor="primary"
         className="py-16 sm:py-20 lg:py-32 relative"
       >
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <ParticleField 
-            particleCount={25} 
-            colors={["rgba(0, 212, 251, 0.3)", "rgba(139, 92, 246, 0.25)"]}
-          />
-        </div>
+        {/* Clean gradient background - NO motion elements */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-background to-secondary/3" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
@@ -135,148 +129,230 @@ export default function PricingPageContent() {
             alignment="center"
           />
 
+          {/* Enhanced Pricing Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {/* Starter Plan */}
-            <InteractiveCard 
-              glowColor="rgba(139, 92, 246, 0.1)"
-              className="p-8 text-center"
+            {/* FormaOS Starter */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              whileHover={{ y: -8, transition: { duration: 0.3 } }}
+              className="group relative"
             >
-              <h3 className="text-2xl font-bold mb-2">FormaOS Starter</h3>
-              <div className="text-4xl font-bold mb-1">$159</div>
-              <p className="text-sm text-foreground/70 mb-6">/ month</p>
-              
-              <p className="text-sm text-foreground/80 mb-6">For small teams building structured compliance foundations</p>
-              
-              <div className="space-y-3 mb-8 text-left">
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Core policy & control management</span>
+              <div className="relative backdrop-blur-xl bg-gradient-to-br from-white/[0.10] to-white/[0.02] rounded-3xl p-8 border border-white/10 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:border-primary/30 hover:from-primary/[0.05] hover:to-primary/[0.01] text-center">
+                {/* Plan Header */}
+                <div className="mb-8">
+                  <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors duration-300">FormaOS Starter</h3>
+                  <div className="flex items-baseline justify-center mb-2">
+                    <span className="text-5xl font-bold text-gradient">$159</span>
+                    <span className="text-lg text-foreground/70 ml-2">/ month</span>
+                  </div>
+                  <p className="text-sm text-foreground/60 px-4 py-2 rounded-full bg-white/[0.05] border border-white/10">
+                    For small teams building structured compliance foundations
+                  </p>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Task assignment & accountability tracking</span>
+                
+                {/* Feature List */}
+                <div className="space-y-4 mb-8 text-left">
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3 text-primary" />
+                    </div>
+                    <span>Core policy & control management</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3 text-primary" />
+                    </div>
+                    <span>Task assignment & accountability tracking</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3 text-primary" />
+                    </div>
+                    <span>Evidence capture with audit trail</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3 text-primary" />
+                    </div>
+                    <span>Single organization workspace</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3 text-primary" />
+                    </div>
+                    <span>Standard reporting dashboard</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3 text-primary" />
+                    </div>
+                    <span>Email support</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Evidence capture with audit trail</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Single organization workspace</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Standard reporting dashboard</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Email support</span>
-                </div>
+                
+                <Link 
+                  href="/auth/signup" 
+                  className="w-full inline-flex items-center justify-center px-6 py-3 rounded-2xl border-2 border-primary/30 text-primary font-semibold hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 backdrop-blur-sm bg-white/[0.02]"
+                >
+                  Get Started
+                </Link>
               </div>
-              
-              <Link 
-                href="/auth/signup" 
-                className="w-full inline-flex items-center justify-center px-6 py-3 rounded-md border border-primary text-primary font-semibold hover:bg-primary/5 transition-colors"
-              >
-                Get Started
-              </Link>
-            </InteractiveCard>
+            </motion.div>
 
-            {/* Professional Plan */}
-            <InteractiveCard 
-              glowColor="rgba(0, 212, 251, 0.2)"
-              className="p-8 text-center border-2 border-primary"
+            {/* FormaOS Pro - Most Popular */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+              whileHover={{ y: -12, transition: { duration: 0.3 } }}
+              className="group relative"
             >
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <span className="bg-primary text-primary-foreground px-4 py-1 rounded-full text-xs font-semibold">
-                  Most Popular
-                </span>
+              <div className="relative backdrop-blur-xl bg-gradient-to-br from-white/[0.15] to-white/[0.05] rounded-3xl p-8 border-2 border-primary/30 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:border-primary/50 hover:from-primary/[0.08] hover:to-primary/[0.02] text-center">
+                {/* Most Popular Badge */}
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <div className="backdrop-blur-xl bg-gradient-to-r from-primary to-secondary px-6 py-2 rounded-full text-xs font-bold text-white shadow-lg border border-white/20">
+                    Most Popular
+                  </div>
+                </div>
+                
+                {/* Plan Header */}
+                <div className="mb-8 pt-4">
+                  <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors duration-300">FormaOS Pro</h3>
+                  <div className="flex items-baseline justify-center mb-2">
+                    <span className="text-5xl font-bold text-gradient">$239</span>
+                    <span className="text-lg text-foreground/70 ml-2">/ month</span>
+                  </div>
+                  <p className="text-sm text-foreground/60 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10">
+                    For organizations operationalizing compliance across teams
+                  </p>
+                </div>
+                
+                {/* Feature List */}
+                <div className="space-y-4 mb-8 text-left">
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-primary/30 flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3 text-primary" />
+                    </div>
+                    <span>Everything in Starter</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-primary/30 flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3 text-primary" />
+                    </div>
+                    <span>Multi-user team management</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-primary/30 flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3 text-primary" />
+                    </div>
+                    <span>Advanced evidence management</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-primary/30 flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3 text-primary" />
+                    </div>
+                    <span>Framework alignment (NDIS, ISO, internal governance)</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-primary/30 flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3 text-primary" />
+                    </div>
+                    <span>Operational dashboards & compliance metrics</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-primary/30 flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3 text-primary" />
+                    </div>
+                    <span>Priority support</span>
+                  </div>
+                </div>
+                
+                <Link 
+                  href="/auth/signup" 
+                  className="w-full inline-flex items-center justify-center px-6 py-4 rounded-2xl bg-gradient-to-r from-primary to-secondary text-white font-bold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                  Upgrade to Pro
+                </Link>
               </div>
-              
-              <h3 className="text-2xl font-bold mb-2">FormaOS Pro</h3>
-              <div className="text-4xl font-bold mb-1">$239</div>
-              <p className="text-sm text-foreground/70 mb-6">/ month</p>
-              
-              <p className="text-sm text-foreground/80 mb-6">For organizations operationalizing compliance across teams</p>
-              
-              <div className="space-y-3 mb-8 text-left">
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Everything in Starter</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Multi-user team management</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Advanced evidence management</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Framework alignment (NDIS, ISO, internal governance)</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Operational dashboards & compliance metrics</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Priority support</span>
-                </div>
-              </div>
-              
-              <Link 
-                href="/auth/signup" 
-                className="w-full inline-flex items-center justify-center px-6 py-3 rounded-md bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
-              >
-                Upgrade to Pro
-              </Link>
-            </InteractiveCard>
+            </motion.div>
 
-            {/* Enterprise Plan */}
-            <InteractiveCard 
-              glowColor="rgba(20, 184, 166, 0.1)"
-              className="p-8 text-center"
+            {/* FormaOS Enterprise */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              whileHover={{ y: -8, transition: { duration: 0.3 } }}
+              className="group relative"
             >
-              <h3 className="text-2xl font-bold mb-2">FormaOS Enterprise</h3>
-              <div className="text-4xl font-bold mb-1">Custom</div>
-              <p className="text-sm text-foreground/70 mb-6">Contact for pricing</p>
-              
-              <div className="space-y-3 mb-8 text-left">
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Everything in Pro</span>
+              <div className="relative backdrop-blur-xl bg-gradient-to-br from-white/[0.10] to-white/[0.02] rounded-3xl p-8 border border-white/10 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:border-accent/30 hover:from-accent/[0.05] hover:to-accent/[0.01] text-center">
+                {/* Enterprise Badge */}
+                <div className="absolute top-4 right-4">
+                  <div className="backdrop-blur-xl bg-gradient-to-r from-accent/20 to-accent/10 px-3 py-1 rounded-full text-xs font-semibold text-accent border border-accent/20">
+                    Enterprise
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Multi-tenant architecture</span>
+                
+                {/* Plan Header */}
+                <div className="mb-8">
+                  <h3 className="text-2xl font-bold mb-3 group-hover:text-accent transition-colors duration-300">FormaOS Enterprise</h3>
+                  <div className="flex items-baseline justify-center mb-2">
+                    <span className="text-5xl font-bold text-gradient">Custom</span>
+                  </div>
+                  <p className="text-sm text-foreground/60 px-4 py-2 rounded-full bg-white/[0.05] border border-white/10">
+                    Contact for pricing
+                  </p>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Custom frameworks & policy mapping</span>
+                
+                {/* Feature List */}
+                <div className="space-y-4 mb-8 text-left">
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3 text-accent" />
+                    </div>
+                    <span>Everything in Pro</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3 text-accent" />
+                    </div>
+                    <span>Multi-tenant architecture</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3 text-accent" />
+                    </div>
+                    <span>Custom frameworks & policy mapping</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3 text-accent" />
+                    </div>
+                    <span>Advanced integrations & API access</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3 text-accent" />
+                    </div>
+                    <span>Dedicated compliance success manager</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+                      <Check className="h-3 w-3 text-accent" />
+                    </div>
+                    <span>SLA-backed support</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Advanced integrations & API access</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>Dedicated compliance success manager</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>SLA-backed support</span>
-                </div>
+                
+                <Link 
+                  href="/contact" 
+                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl border-2 border-accent/30 text-accent font-semibold hover:bg-accent/10 hover:border-accent/50 transition-all duration-300 backdrop-blur-sm bg-white/[0.02]"
+                >
+                  Talk to Sales <ArrowRight className="h-4 w-4" />
+                </Link>
               </div>
-              
-              <Link 
-                href="/contact" 
-                className="w-full inline-flex items-center justify-center px-6 py-3 rounded-md border border-primary text-primary font-semibold hover:bg-primary/5 transition-colors"
-              >
-                Talk to Sales <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </InteractiveCard>
+            </motion.div>
           </div>
         </div>
       </CinematicSection>
@@ -318,18 +394,22 @@ export default function PricingPageContent() {
             />
           </div>
 
-          <InteractiveCard 
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
             className="mt-12 sm:mt-16 text-center"
-            glowColor="rgba(139, 92, 246, 0.2)"
           >
-            <h3 className="text-xl sm:text-2xl font-bold mb-4">
-              Transparent pricing, no surprises
-            </h3>
-            <p className="text-base sm:text-lg text-foreground/70 max-w-2xl mx-auto">
-              All plans include the FormaOS compliance engine with transparent monthly pricing. 
-              No setup fees, no hidden costs, no long-term contracts.
-            </p>
-          </InteractiveCard>
+            <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.10] to-white/[0.02] rounded-3xl p-8 sm:p-12 border border-white/10 shadow-2xl">
+              <h3 className="text-xl sm:text-2xl font-bold mb-4 text-gradient">
+                Transparent pricing, no surprises
+              </h3>
+              <p className="text-base sm:text-lg text-foreground/70 max-w-2xl mx-auto">
+                All plans include the FormaOS compliance engine with transparent monthly pricing. 
+                No setup fees, no hidden costs, no long-term contracts.
+              </p>
+            </div>
+          </motion.div>
         </div>
       </CinematicSection>
 
