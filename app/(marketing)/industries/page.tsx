@@ -1,21 +1,17 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { MarketingAnchor } from "../components/marketing-anchor";
-import { IndustriesContent } from "./IndustriesContent";
-import { IndustriesHero } from "./IndustriesHero";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://formaos.com.au";
 
 export const metadata: Metadata = {
-  title: "FormaOS | Industries",
-  description: "Compliance workflows tailored for regulated industries: NDIS, healthcare, aged care, and professional services.",
+  title: "FormaOS | Industry Solutions",
+  description: "Compliance frameworks for health, disability, community services, and regulated industries.",
   alternates: {
     canonical: `${siteUrl}/industries`,
   },
   openGraph: {
-    title: "FormaOS | Industries",
-    description:
-      "Compliance workflows tailored for NDIS, healthcare, aged care, childcare, and regulated services.",
+    title: "FormaOS | Industry Solutions", 
+    description: "Pre-configured compliance frameworks for Australian health, disability, and community services.",
     type: "website",
     url: `${siteUrl}/industries`,
   },
@@ -23,28 +19,16 @@ export const metadata: Metadata = {
 
 const industries = [
   {
-    title: "NDIS and disability services",
-    pain: "Audit preparation, incident management, worker screening, and evidence of service delivery.",
+    title: "Disability service providers",
+    pain: "NDIS audits, worker screening, complex incident reporting, and continuous improvement obligations.",
     solution:
-      "FormaOS aligns practice standards to operational controls and builds an auditable evidence trail for certification.",
+      "Pre-built NDIS compliance workflows with automated evidence collection and audit-ready reporting.",
   },
   {
-    title: "Healthcare and allied health",
-    pain: "Credential oversight, privacy obligations, and quality assurance processes across clinicians.",
+    title: "Healthcare & allied health",
+    pain: "AHPRA registration, clinical governance, patient safety, and multi-jurisdictional compliance.",
     solution:
-      "Centralize credential evidence, policy sign-off, and audit readiness for healthcare compliance teams.",
-  },
-  {
-    title: "Aged care",
-    pain: "Continuous compliance against quality standards, documentation of care, and incident response proof.",
-    solution:
-      "Map aged care standards to tasks and evidence so governance teams can demonstrate compliance quickly.",
-  },
-  {
-    title: "Childcare and early learning",
-    pain: "Safeguarding requirements, staff clearance tracking, and evidence for regulatory reviews.",
-    solution:
-      "Track clearances, training, and incident evidence with audit-ready reporting for childcare regulators.",
+      "Integrated health service frameworks covering registration, governance, and safety requirements.",
   },
   {
     title: "Community services",
@@ -69,11 +53,53 @@ const industries = [
 export default function IndustriesPage() {
   return (
     <div>
-      {/* Cinematic Hero */}
-      <IndustriesHero />
+      {/* Hero Section */}
+      <section className="py-20 sm:py-24 lg:py-32">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
+              Compliance workflows tailored for<br />
+              <span className="text-primary">regulated industries</span>
+            </h1>
+            <p className="mt-6 text-lg leading-8 text-muted-foreground max-w-3xl mx-auto">
+              Pre-configured frameworks, controls, and audit processes designed for Australian health, disability, and community services.
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* Industries Grid */}
-      <IndustriesContent />
+      <section className="py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {industries.map((industry, idx) => (
+              <div key={idx} className="bg-background border border-border rounded-xl p-8">
+                <h3 className="text-xl font-bold mb-4">{industry.title}</h3>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider mb-2">
+                      The Challenge
+                    </h4>
+                    <p className="text-foreground/80">{industry.pain}</p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider mb-2">
+                      Our Solution
+                    </h4>
+                    <p className="text-foreground/80">{industry.solution}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <MarketingAnchor 
+        title="Transform your industry compliance"
+        subtitle="See how FormaOS works for your sector"
+        badge="Request Demo"
+      />
     </div>
   );
 }

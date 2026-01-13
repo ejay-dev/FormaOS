@@ -1,69 +1,15 @@
 "use client";
 
-import { Suspense, Component, ErrorInfo, ReactNode, useState, useEffect } from "react";
-import { CinematicHero } from "./CinematicHero";
-import { HomePageContent } from "./HomePageContent";
+import { useState, useEffect } from "react";
 
-// Error boundary to catch and display errors in dynamic components
-class ComponentErrorBoundary extends Component<
-  { name: string; children: ReactNode; fallback?: ReactNode },
-  { hasError: boolean; error: Error | null }
-> {
-  constructor(props: { name: string; children: ReactNode; fallback?: ReactNode }) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
-
-  static getDerivedStateFromError(error: Error) {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error(`[${this.props.name}] Error:`, error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      if (this.props.fallback) {
-        return this.props.fallback;
-      }
-      return (
-        <div className="min-h-[50vh] flex items-center justify-center bg-background/50 px-4">
-          <div className="text-center max-w-md">
-            <h2 className="text-lg font-semibold text-foreground mb-2">
-              Failed to load {this.props.name}
-            </h2>
-            <p className="text-sm text-muted-foreground mb-4">
-              {this.state.error?.message || "An unknown error occurred"}
-            </p>
-            <button
-              onClick={() => {
-                this.setState({ hasError: false, error: null });
-                window.location.reload();
-              }}
-              className="btn btn-secondary text-sm px-4 py-2"
-            >
-              Reload page
-            </button>
-          </div>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
-}
-
-// Simple fallback hero for when animations fail
+// Minimal fallback components for testing
 function SimpleHero() {
   return (
     <section className="min-h-[100svh] md:min-h-[90vh] flex items-center justify-center bg-background px-4">
       <div className="text-center max-w-4xl mx-auto">
-        <div className="inline-flex items-center gap-2 rounded-full glass-panel px-4 py-2 text-xs font-bold uppercase tracking-wider mb-6">
-          Enterprise Compliance OS
-        </div>
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-6">
           <span className="block">Operational</span>
-          <span className="block text-gradient">Compliance</span>
+          <span className="block text-primary">Compliance</span>
           <span className="block text-3xl md:text-5xl lg:text-6xl text-foreground/90">Operating System</span>
         </h1>
         <p className="text-lg md:text-xl text-foreground/80 max-w-2xl mx-auto mb-8">
@@ -82,31 +28,78 @@ function SimpleHero() {
   );
 }
 
-// Simple fallback content
 function SimpleContent() {
   return (
     <section className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Real-time compliance intelligence
+            Complete Compliance Platform
           </h2>
           <p className="text-lg text-foreground/70">
-            FormaOS tracks compliance posture across your entire organization
+            FormaOS provides end-to-end compliance management
           </p>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        
+        {/* Metrics Section */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
           {[
             { value: "94%", label: "Avg. Posture Score" },
             { value: "127", label: "Active Controls" },
             { value: "<2min", label: "Audit Export Time" },
             { value: "98%", label: "Task Completion" },
           ].map((metric) => (
-            <div key={metric.label} className="glass-panel rounded-xl p-6 text-center">
+            <div key={metric.label} className="bg-background/50 border border-border/50 rounded-xl p-6 text-center">
               <div className="text-3xl font-bold text-primary mb-2">{metric.value}</div>
               <div className="text-sm text-muted-foreground">{metric.label}</div>
             </div>
           ))}
+        </div>
+
+        {/* Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          {[
+            { title: "Model obligations", description: "Align frameworks, policies, and controls across every site and team." },
+            { title: "Execute tasks", description: "Assign remediation work with owners, deadlines, and evidence requirements." },
+            { title: "Capture evidence", description: "Store approvals, artifacts, and audit history in a single chain of custody." },
+            { title: "Prove readiness", description: "Generate audit bundles, reports, and compliance posture in minutes." }
+          ].map((feature, idx) => (
+            <div key={idx} className="bg-background/50 border border-border/50 rounded-xl p-6">
+              <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+              <p className="text-sm text-foreground/70">{feature.description}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Industries */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          {[
+            { title: "NDIS & disability services", description: "Track practice standards, provider obligations, and incident reporting." },
+            { title: "Healthcare providers", description: "Manage credentials, clinical governance, and audit readiness." },
+            { title: "Aged care operators", description: "Keep evidence and policy reviews current across multiple sites." },
+            { title: "Community services", description: "Prove service quality and compliance across programs and teams." }
+          ].map((industry, idx) => (
+            <div key={idx} className="bg-background/50 border border-border/50 rounded-xl p-6">
+              <h3 className="text-lg font-semibold mb-2">{industry.title}</h3>
+              <p className="text-sm text-foreground/70">{industry.description}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Final CTA */}
+        <div className="text-center bg-background/50 border border-border/50 rounded-xl p-8">
+          <h2 className="text-3xl font-bold mb-4">Ready to start?</h2>
+          <p className="text-lg text-foreground/70 mb-6">
+            Start your 14-day free trial. No credit card required.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="/auth/signup" className="btn btn-primary text-lg px-8 py-4">
+              Start Free Trial
+            </a>
+            <a href="/contact" className="btn btn-secondary text-lg px-8 py-4">
+              Request Demo
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -116,15 +109,8 @@ function SimpleContent() {
 export function HomePageClient() {
   return (
     <>
-      {/* Cinematic Hero */}
-      <ComponentErrorBoundary name="Hero" fallback={<SimpleHero />}>
-        <CinematicHero />
-      </ComponentErrorBoundary>
-
-      {/* Rest of the content with motion */}
-      <ComponentErrorBoundary name="Content" fallback={<SimpleContent />}>
-        <HomePageContent />
-      </ComponentErrorBoundary>
+      <SimpleHero />
+      <SimpleContent />
     </>
   );
 }
