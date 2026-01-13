@@ -43,6 +43,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-body)"],
         display: ["var(--font-display)"],
+        hero: ["var(--font-hero)"],
         mono: ["var(--font-mono)"],
       },
 

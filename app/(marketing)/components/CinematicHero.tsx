@@ -75,21 +75,43 @@ export function CinematicHero() {
                 transition={{ delay: 0.3, duration: 0.8 }}
                 className="space-y-3"
               >
-                <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] font-display tracking-tight">
+                <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] font-hero tracking-[-0.02em]">
                   Operational
                 </div>
-                <span className="relative block">
-                  <span className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-extrabold leading-[1.05] font-display tracking-tight text-gradient">
+                <span className="relative block pb-4">
+                  <span className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-extrabold leading-[1.02] font-hero tracking-[-0.025em] text-gradient">
                     Compliance
                   </span>
+                  {/* Animated shimmer divider */}
                   <motion.div
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
                     transition={{ delay: 0.8, duration: 0.8 }}
-                    className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent rounded-full origin-left"
-                  />
+                    className="absolute -bottom-1 left-0 right-0 h-[2px] rounded-full origin-left overflow-hidden"
+                    style={{
+                      background: 'linear-gradient(90deg, rgb(56, 189, 248), rgb(139, 92, 246), rgb(6, 182, 212))'
+                    }}
+                  >
+                    {/* Shimmer sweep effect */}
+                    <motion.div
+                      animate={{
+                        x: ['-100%', '200%']
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        repeatDelay: 1
+                      }}
+                      className="absolute inset-0 w-1/3"
+                      style={{
+                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)',
+                        filter: 'blur(8px)'
+                      }}
+                    />
+                  </motion.div>
                 </span>
-                <div className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold leading-[1.15] font-display tracking-tight text-foreground/90 pt-1">
+                <div className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold leading-[1.12] font-hero tracking-[-0.02em] text-foreground/90 pt-1">
                   Operating System
                 </div>
               </motion.h1>
@@ -182,70 +204,105 @@ export function CinematicHero() {
             </motion.div>
           </ParallaxLayer>
           
-          {/* Right: 3D floating modules */}
+          {/* Right: 3D floating modules with hierarchy */}
           <ParallaxLayer speed={0.5}>
             <div className="relative h-[650px]">
               {/* Connection lines between modules */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ filter: "drop-shadow(0 0 10px rgba(56, 189, 248, 0.35))" }}>
+              <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-40" style={{ filter: "drop-shadow(0 0 8px rgba(56, 189, 248, 0.25))" }}>
                 <motion.path
-                  d="M 200 120 Q 280 220 200 340"
+                  d="M 280 140 Q 200 280 180 420"
                   stroke="url(#moduleGradient)"
-                  strokeWidth="2"
+                  strokeWidth="1.5"
                   fill="none"
-                  strokeDasharray="5,5"
+                  strokeDasharray="4,6"
                   initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 0.5 }}
-                  transition={{ delay: 1.5, duration: 1.5 }}
+                  animate={{ pathLength: 1, opacity: 0.4 }}
+                  transition={{ delay: 1.5, duration: 2 }}
                 />
                 <motion.path
-                  d="M 240 160 L 300 420"
+                  d="M 300 180 L 280 480"
                   stroke="url(#moduleGradient)"
-                  strokeWidth="2"
+                  strokeWidth="1.5"
                   fill="none"
-                  strokeDasharray="5,5"
+                  strokeDasharray="4,6"
                   initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 0.5 }}
-                  transition={{ delay: 1.7, duration: 1.5 }}
+                  animate={{ pathLength: 1, opacity: 0.4 }}
+                  transition={{ delay: 1.7, duration: 2 }}
                 />
                 <defs>
                   <linearGradient id="moduleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="rgb(56, 189, 248)" stopOpacity="0.4" />
-                    <stop offset="100%" stopColor="rgb(139, 92, 246)" stopOpacity="0.4" />
+                    <stop offset="0%" stopColor="rgb(56, 189, 248)" stopOpacity="0.3" />
+                    <stop offset="100%" stopColor="rgb(139, 92, 246)" stopOpacity="0.3" />
                   </linearGradient>
                 </defs>
               </svg>
               
-              {/* Floating 3D modules - fixed positioning, opacity-only animation */}
+              {/* PRIMARY HERO CARD - Compliance Posture (largest, most prominent) */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.6, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute top-4 right-8 w-[340px]"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ 
+                  opacity: 1, 
+                  scale: 1,
+                  y: [0, -8, 0]
+                }}
+                transition={{ 
+                  opacity: { delay: 0.5, duration: 1 },
+                  scale: { delay: 0.5, duration: 1 },
+                  y: { delay: 2, duration: 6, repeat: Infinity, ease: "easeInOut" }
+                }}
+                className="absolute top-12 right-4 w-[380px] z-30"
               >
-                <FloatingUIPanel delay={0.6} className="shadow-[0_0_50px_rgba(56,189,248,0.2)]">
-                  <Floating3DPanel delay={0.6} />
+                <FloatingUIPanel 
+                  delay={0.5} 
+                  className="shadow-[0_8px_60px_rgba(56,189,248,0.35),0_0_80px_rgba(56,189,248,0.15)] ring-1 ring-primary/20"
+                >
+                  <Floating3DPanel delay={0.5} />
                 </FloatingUIPanel>
               </motion.div>
               
+              {/* SECONDARY CARD - Compliance Lifecycle (medium, left offset) */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.8, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute top-[48%] -translate-y-1/2 left-0 w-[320px]"
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{ 
+                  opacity: 0.92, 
+                  scale: 0.95,
+                  y: [0, -6, 0]
+                }}
+                transition={{ 
+                  opacity: { delay: 0.7, duration: 1 },
+                  scale: { delay: 0.7, duration: 1 },
+                  y: { delay: 2.5, duration: 7, repeat: Infinity, ease: "easeInOut" }
+                }}
+                className="absolute top-[46%] -translate-y-1/2 -left-4 w-[300px] z-20"
               >
-                <FloatingUIPanel delay={0.8} className="shadow-[0_0_45px_rgba(139,92,246,0.2)]">
-                  <FloatingWorkflowDiagram delay={0.8} />
+                <FloatingUIPanel 
+                  delay={0.7} 
+                  className="shadow-[0_6px_45px_rgba(139,92,246,0.28),0_0_60px_rgba(139,92,246,0.12)]"
+                >
+                  <FloatingWorkflowDiagram delay={0.7} />
                 </FloatingUIPanel>
               </motion.div>
               
+              {/* SECONDARY CARD - Security Status (smaller, bottom right) */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1.0, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute bottom-8 right-4 w-[310px]"
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{ 
+                  opacity: 0.88, 
+                  scale: 0.92,
+                  y: [0, -5, 0]
+                }}
+                transition={{ 
+                  opacity: { delay: 0.9, duration: 1 },
+                  scale: { delay: 0.9, duration: 1 },
+                  y: { delay: 3, duration: 6.5, repeat: Infinity, ease: "easeInOut" }
+                }}
+                className="absolute bottom-16 right-20 w-[285px] z-10"
               >
-                <FloatingUIPanel delay={1.0} className="shadow-[0_0_48px_rgba(6,182,212,0.2)]">
-                  <FloatingSecurityModule delay={1.0} />
+                <FloatingUIPanel 
+                  delay={0.9} 
+                  className="shadow-[0_5px_40px_rgba(6,182,212,0.25),0_0_55px_rgba(6,182,212,0.1)]"
+                >
+                  <FloatingSecurityModule delay={0.9} />
                 </FloatingUIPanel>
               </motion.div>
             </div>
