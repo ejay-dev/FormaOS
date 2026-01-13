@@ -7,12 +7,8 @@ import {
   AnimatedSystemGrid, 
   FloatingUIPanel, 
   ParallaxLayer,
-  PulsingNode 
-} from "@/components/motion";
-import { 
-  Floating3DPanel, 
-  FloatingWorkflowDiagram, 
-  FloatingSecurityModule 
+  PulsingNode,
+  ComplianceCoreVisualization 
 } from "@/components/motion";
 
 export function CinematicHero() {
@@ -204,108 +200,9 @@ export function CinematicHero() {
             </motion.div>
           </ParallaxLayer>
           
-          {/* Right: 3D floating modules with hierarchy */}
+          {/* Right: Compliance Core Visualization */}
           <ParallaxLayer speed={0.5}>
-            <div className="relative h-[750px]">
-              {/* Connection lines between modules */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-25" style={{ filter: "drop-shadow(0 0 6px rgba(56, 189, 248, 0.2))" }}>
-                <motion.path
-                  d="M 340 140 Q 180 340 80 560"
-                  stroke="url(#moduleGradient)"
-                  strokeWidth="1.5"
-                  fill="none"
-                  strokeDasharray="4,6"
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 0.3 }}
-                  transition={{ delay: 1.5, duration: 2 }}
-                />
-                <motion.path
-                  d="M 360 180 L 300 600"
-                  stroke="url(#moduleGradient)"
-                  strokeWidth="1.5"
-                  fill="none"
-                  strokeDasharray="4,6"
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 0.3 }}
-                  transition={{ delay: 1.7, duration: 2 }}
-                />
-                <defs>
-                  <linearGradient id="moduleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="rgb(56, 189, 248)" stopOpacity="0.3" />
-                    <stop offset="100%" stopColor="rgb(139, 92, 246)" stopOpacity="0.3" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              
-              {/* PRIMARY HERO CARD - Compliance Posture (largest, foreground, most prominent) */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ 
-                  opacity: 1, 
-                  scale: 1,
-                  y: [0, -8, 0]
-                }}
-                transition={{ 
-                  opacity: { delay: 0.5, duration: 1 },
-                  scale: { delay: 0.5, duration: 1 },
-                  y: { delay: 2, duration: 6, repeat: Infinity, ease: "easeInOut" }
-                }}
-                className="absolute top-4 right-8 w-[370px] z-30"
-              >
-                <FloatingUIPanel 
-                  delay={0.5} 
-                  className="shadow-[0_10px_70px_rgba(56,189,248,0.4),0_0_90px_rgba(56,189,248,0.18)]"
-                >
-                  <Floating3DPanel delay={0.5} />
-                </FloatingUIPanel>
-              </motion.div>
-              
-              {/* SECONDARY CARD - Compliance Lifecycle (medium, left-center, behind) */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.85 }}
-                animate={{ 
-                  opacity: 0.88, 
-                  scale: 0.92,
-                  y: [0, -6, 0]
-                }}
-                transition={{ 
-                  opacity: { delay: 0.7, duration: 1 },
-                  scale: { delay: 0.7, duration: 1 },
-                  y: { delay: 2.5, duration: 7, repeat: Infinity, ease: "easeInOut" }
-                }}
-                className="absolute top-[42%] left-4 w-[300px] z-20"
-              >
-                <FloatingUIPanel 
-                  delay={0.7} 
-                  className="shadow-[0_6px_45px_rgba(139,92,246,0.25),0_0_60px_rgba(139,92,246,0.1)]"
-                >
-                  <FloatingWorkflowDiagram delay={0.7} />
-                </FloatingUIPanel>
-              </motion.div>
-              
-              {/* SECONDARY CARD - Security Status (smaller, moved up and right) */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.82 }}
-                animate={{ 
-                  opacity: 0.82, 
-                  scale: 0.88,
-                  y: [0, -5, 0]
-                }}
-                transition={{ 
-                  opacity: { delay: 0.9, duration: 1 },
-                  scale: { delay: 0.9, duration: 1 },
-                  y: { delay: 3, duration: 6.5, repeat: Infinity, ease: "easeInOut" }
-                }}
-                className="absolute bottom-[22%] right-4 w-[280px] z-10"
-              >
-                <FloatingUIPanel 
-                  delay={0.9} 
-                  className="shadow-[0_4px_35px_rgba(6,182,212,0.22),0_0_50px_rgba(6,182,212,0.08)]"
-                >
-                  <FloatingSecurityModule delay={0.9} />
-                </FloatingUIPanel>
-              </motion.div>
-            </div>
+            <ComplianceCoreVisualization />
           </ParallaxLayer>
         </div>
       </div>

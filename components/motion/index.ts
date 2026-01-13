@@ -8,4 +8,5 @@ export { FeatureCard, MetricCard, ProcessStep, QuoteCard, ArchitectureCard } fro
 export { PricingTierCard, ComparisonFeature, EnterprisePricingCard, AddOnCard } from "./PricingComponents";
 export { TimelineItem, NarrativeBlock, ValueProp, MissionStatement, TeamMember } from "./StoryComponents";
 export { ExecutiveContactForm, ContactInfoCard, ContactOptionsGrid, SuccessMessage, ErrorMessage } from "./ContactComponents";
+export { ComplianceCoreVisualization } from "./ComplianceCoreVisualization";
 
