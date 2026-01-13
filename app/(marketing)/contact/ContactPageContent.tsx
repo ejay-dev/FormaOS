@@ -67,9 +67,9 @@ export function ContactHero({ status }: { status: "success" | "error" | null }) 
               transition={{ delay: 0.3, duration: 0.8 }}
               className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] sm:leading-[1.08] font-display tracking-tight mb-4 sm:mb-6"
             >
-              Let's discuss<br />
+              Ready to build<br />
               <span className="relative">
-                <span className="text-gradient-system-animated">your compliance needs</span>
+                <span className="text-gradient-system-animated">operational trust?</span>
                 <motion.div
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
@@ -85,8 +85,7 @@ export function ContactHero({ status }: { status: "success" | "error" | null }) 
               transition={{ delay: 0.5, duration: 0.8 }}
               className="text-base sm:text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-6 sm:mb-8"
             >
-              Tell us about your organization, regulatory requirements, and audit timeline. 
-              A compliance specialist will respond within one business day.
+              Whether you're a compliance leader, operations director, or CEO, let's discuss how FormaOS can help your team move from reactive compliance to proactive operational trust.
             </motion.p>
 
             {/* Status messages */}

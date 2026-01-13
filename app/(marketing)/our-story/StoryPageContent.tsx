@@ -68,9 +68,9 @@ export function StoryHero() {
               transition={{ delay: 0.3, duration: 0.8 }}
               className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] sm:leading-[1.08] font-display tracking-tight mb-4 sm:mb-6"
             >
-              Building infrastructure<br />
+              We believe that every<br />
               <span className="relative">
-                <span className="text-gradient">for operational trust</span>
+                <span className="text-gradient">regulated organization</span>
                 <motion.div
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
@@ -78,6 +78,7 @@ export function StoryHero() {
                   className="absolute -bottom-1 sm:-bottom-2 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-secondary via-primary to-accent rounded-full origin-left"
                 />
               </span>
+              <br />deserves operational trust
             </motion.h1>
 
             <motion.p
@@ -86,8 +87,7 @@ export function StoryHero() {
               transition={{ delay: 0.5, duration: 0.8 }}
               className="text-base sm:text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto"
             >
-              FormaOS was built to solve a problem that too many regulated teams quietly live with every day: 
-              fragmented systems, manual audits, and operational chaos hidden behind spreadsheets.
+              Too many organizations struggle with fragmented compliance systems, manual processes, and the constant fear of audit findings. We built FormaOS as operational infrastructure that organizations actually trust.
             </motion.p>
           </div>
         </ParallaxLayer>

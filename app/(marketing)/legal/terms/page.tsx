@@ -24,8 +24,7 @@ export default function TermsPage() {
         <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Legal</div>
         <h1 className="text-4xl font-semibold font-[var(--font-display)]">Terms of Service</h1>
         <p className="text-sm text-slate-300">
-          These terms govern access to the FormaOS platform. By using the service, you agree to comply with all
-          applicable laws and regulatory obligations.
+          FormaOS is a compliance operating system designed for regulated organizations. These terms establish the framework for responsible platform usage, data integrity, and shared accountability between FormaOS and your organization.
         </p>
         <MarketingAnchor
           title="Usage Governance Layer"

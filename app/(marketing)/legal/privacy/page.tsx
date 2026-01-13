@@ -24,7 +24,7 @@ export default function PrivacyPage() {
         <div className="text-xs uppercase tracking-[0.3em] text-slate-400">Privacy</div>
         <h1 className="text-4xl font-semibold font-[var(--font-display)]">Privacy Policy</h1>
         <p className="text-sm text-slate-300">
-          This policy explains how FormaOS collects, uses, and protects information provided by customers and end users.
+          FormaOS is designed for regulated organizations that require enterprise-grade data protection, audit-ready documentation, and operational trust. This policy explains our approach to safeguarding your information.
         </p>
         <MarketingAnchor
           title="Data Protection Layer"
