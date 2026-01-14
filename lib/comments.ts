@@ -91,8 +91,8 @@ export async function createComment(
     ),
   );
 
-  // Log activity
-  await logActivity(organizationId, userId, 'create', 'comment', {
+  // Log activity (using 'task' as closest entity type since comment isn't in ActivityEntity enum)
+  await logActivity(organizationId, userId, 'create', 'task', {
     entityId: comment.id,
     entityName: `Comment on ${data.entityType}`,
     details: {
