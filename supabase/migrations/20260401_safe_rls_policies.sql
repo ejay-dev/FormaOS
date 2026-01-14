@@ -52,9 +52,9 @@ BEGIN
   
   IF EXISTS (
     SELECT 1 FROM information_schema.tables 
-    WHERE table_schema = 'public' AND table_name = 'org_audit_log'
+    WHERE table_schema = 'public' AND table_name = 'org_audit_logs'
   ) THEN
-    ALTER TABLE IF EXISTS public.org_audit_log ENABLE ROW LEVEL SECURITY;
+    ALTER TABLE IF EXISTS public.org_audit_logs ENABLE ROW LEVEL SECURITY;
   END IF;
   
   IF EXISTS (
@@ -277,23 +277,23 @@ END
 $$;
 
 -- =====================================================
--- ORG_AUDIT_LOG TABLE POLICIES
+-- ORG_AUDIT_LOGS TABLE POLICIES
 -- =====================================================
 DO $$
 BEGIN
-  DROP POLICY IF EXISTS "audit_log_org_isolation" ON public.org_audit_log;
+  DROP POLICY IF EXISTS "audit_log_org_isolation" ON public.org_audit_logs;
   
   IF EXISTS (
     SELECT 1 FROM information_schema.tables 
-    WHERE table_schema = 'public' AND table_name = 'org_audit_log'
+    WHERE table_schema = 'public' AND table_name = 'org_audit_logs'
     AND EXISTS (
       SELECT 1 FROM information_schema.columns 
-      WHERE table_schema = 'public' AND table_name = 'org_audit_log'
+      WHERE table_schema = 'public' AND table_name = 'org_audit_logs'
       AND column_name = 'organization_id'
     )
   ) THEN
     CREATE POLICY "audit_log_org_isolation"
-      ON public.org_audit_log
+      ON public.org_audit_logs
       FOR SELECT
       USING (
         organization_id IN (
