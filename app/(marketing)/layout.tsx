@@ -1,15 +1,37 @@
 import type { ReactNode } from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { OAuthRedirectWrapper } from './components/oauth-redirect-wrapper';
 import { NavLinks } from './components/NavLinks';
 import { MobileNav } from './components/MobileNav';
 import './marketing.css';
+import { brand } from '@/config/brand';
 
 // Force static rendering for all marketing pages
 export const dynamic = 'force-static';
 
+export const metadata: Metadata = {
+  metadataBase: new URL(brand.seo.siteUrl),
+  title: {
+    default: brand.seo.defaultTitle,
+    template: `%s — ${brand.appName}`,
+  },
+  description: brand.seo.description,
+  openGraph: {
+    title: brand.seo.defaultTitle,
+    description: brand.seo.description,
+    url: brand.seo.siteUrl,
+    siteName: brand.appName,
+    images: [brand.seo.ogImage || brand.logo.wordmarkDark],
+    type: 'website',
+  },
+  icons: {
+    icon: [{ url: brand.logo.favicon }],
+  },
+};
+
 export default function MarketingLayout({ children }: { children: ReactNode }) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
+  const siteUrl = brand.seo.siteUrl;
 
   return (
     <div className="mk-shell font-[var(--font-body)]">
@@ -26,8 +48,8 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
               className="mk-logo-container flex items-center gap-3 group"
             >
               <img
-                src="/brand/formaos-wordmark-dark.svg"
-                alt="FormaOS"
+                src={brand.logo.wordmarkDark}
+                alt={brand.appName}
                 width={180}
                 height={36}
                 className="select-none"
@@ -175,8 +197,8 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
               <div className="col-span-2 md:col-span-1 space-y-5">
                 <div className="flex items-center gap-3">
                   <img
-                    src="/brand/formaos-wordmark-dark.svg"
-                    alt="FormaOS"
+                    src={brand.logo.wordmarkDark}
+                    alt={brand.appName}
                     width={180}
                     height={36}
                     className="select-none"

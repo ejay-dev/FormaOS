@@ -1,6 +1,6 @@
 export const APP = {
   name: 'FormaOS',
-  tagline: 'Premium compliance operating system',
+  tagline: 'Compliance Operating System',
   currency: 'AUD',
   pricing: {
     starter: { setupFee: 1299, monthly: 189 },

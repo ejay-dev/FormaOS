@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { createSupabaseClient } from '@/lib/supabase/client';
+import { brand } from '@/config/brand';
 
 /**
  * =========================================================
@@ -68,15 +69,15 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           </button>
           <Link href="/admin/dashboard" className="flex items-center gap-2">
             <Image
-              src="/brand/formaos-mark.svg"
-              alt="FormaOS"
+              src={brand.logo.mark}
+              alt={brand.appName}
               width={32}
               height={32}
               priority
               className="rounded-md"
             />
             <div className="hidden sm:block">
-              <div className="text-sm font-bold">FormaOS Admin</div>
+              <div className="text-sm font-bold">{brand.appName} Admin</div>
               <div className="text-xs text-slate-500">Platform Console</div>
             </div>
           </Link>

@@ -11,6 +11,7 @@ import { fetchSystemState } from '@/lib/system-state/server';
 import { resolvePlanKey } from '@/lib/plans';
 import { normalizeRole } from '@/app/app/actions/rbac';
 import { TrialStatusBanner } from '@/app/app/components/TrialStatusBanner';
+import { brand } from '@/config/brand';
 
 /**
  * =========================================================
@@ -97,18 +98,18 @@ export default async function AppLayout({
                   <div className="flex h-20 items-center border-b border-white/8 px-6">
                     <div className="flex items-center gap-3">
                       <img
-                        src="/brand/formaos-mark.svg"
-                        alt="FormaOS"
+                        src={brand.logo.mark}
+                        alt={brand.appName}
                         width={40}
                         height={40}
                         className="rounded-lg"
                       />
                       <div>
                         <div className="text-base font-bold font-display">
-                          FormaOS
+                          {brand.appName}
                         </div>
                         <div className="text-xs text-muted-foreground uppercase tracking-wider">
-                          Enterprise
+                          {brand.identity}
                         </div>
                       </div>
                     </div>
@@ -122,9 +123,9 @@ export default async function AppLayout({
                   {/* Sidebar footer */}
                   <div className="border-t border-white/8 px-6 py-5 text-xs text-muted-foreground">
                     <div className="font-medium">
-                      © {new Date().getFullYear()} FormaOS
+                      © {new Date().getFullYear()} {brand.appName}
                     </div>
-                    <div className="mt-1.5">Compliance Operating System</div>
+                    <div className="mt-1.5">{brand.identity}</div>
                   </div>
                 </aside>
 

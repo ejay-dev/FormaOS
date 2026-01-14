@@ -1,9 +1,10 @@
-import { getResendClient, getFromEmail } from "./resend-client";
+import { getResendClient, getFromEmail } from './resend-client';
 import { ReactElement } from 'react';
 import WelcomeEmail from '@/emails/welcome-email';
 import InviteEmail from '@/emails/invite-email';
 import AlertEmail from '@/emails/alert-email';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { brand } from '@/config/brand';
 
 export type EmailType = 'welcome' | 'invite' | 'alert';
 
@@ -48,22 +49,24 @@ export type EmailData = WelcomeEmailData | InviteEmailData | AlertEmailData;
  */
 async function checkEmailPreferences(
   email: string,
-  emailType: EmailType
+  emailType: EmailType,
 ): Promise<boolean> {
   try {
     const supabase = await createSupabaseServerClient();
-    
-    // NOTE: We look up the preferences by the user's email 
+
+    // NOTE: We look up the preferences by the user's email
     // This assumes the user already has a record in email_preferences.
     // We use a join or a subquery if user_id is unknown.
     const { data: prefs, error } = await supabase
       .from('email_preferences')
-      .select(`
+      .select(
+        `
         *,
         user:user_id (
           email
         )
-      `)
+      `,
+      )
       .filter('user.email', 'eq', email.toLowerCase())
       .maybeSingle();
 
@@ -87,7 +90,7 @@ async function checkEmailPreferences(
     }
   } catch (error) {
     console.error('[checkEmailPreferences] Unexpected Error:', error);
-    return true; 
+    return true;
   }
 }
 
@@ -102,11 +105,11 @@ async function logEmail(
   resendId?: string,
   errorMessage?: string,
   organizationId?: string,
-  userId?: string
+  userId?: string,
 ) {
   try {
     const supabase = await createSupabaseServerClient();
-    
+
     const { error } = await supabase.rpc('log_email_send', {
       p_email_type: emailType,
       p_recipient_email: recipientEmail,
@@ -127,16 +130,15 @@ async function logEmail(
 
 export async function sendEmail(data: EmailData) {
   try {
-    const appUrl =
-      process.env.NEXT_PUBLIC_APP_URL ??
-      process.env.NEXT_PUBLIC_SITE_URL ??
-      "https://app.formaos.com.au";
-    const appBase = appUrl.replace(/\/$/, "");
+    const appUrl = brand.seo.appUrl || brand.seo.siteUrl;
+    const appBase = appUrl.replace(/\/$/, '');
 
     // 1. Policy Enforcement: Check if user wants this email
     const allowed = await checkEmailPreferences(data.to, data.type);
     if (!allowed) {
-      console.log(`[sendEmail] BLOCKED: User ${data.to} opted out of ${data.type}`);
+      console.log(
+        `[sendEmail] BLOCKED: User ${data.to} opted out of ${data.type}`,
+      );
       return { success: false, error: 'OPTED_OUT' };
     }
 
@@ -146,7 +148,7 @@ export async function sendEmail(data: EmailData) {
     // 2. Template Selection
     switch (data.type) {
       case 'welcome':
-        subject = `Welcome to FormaOS, ${data.userName}!`;
+        subject = `Welcome to ${brand.appName}, ${data.userName}!`;
         react = WelcomeEmail({
           userName: data.userName,
           organizationName: data.organizationName,
@@ -155,7 +157,7 @@ export async function sendEmail(data: EmailData) {
         break;
 
       case 'invite':
-        subject = `Invitation: Join ${data.organizationName} on FormaOS`;
+        subject = `Invitation: Join ${data.organizationName} on ${brand.appName}`;
         react = InviteEmail({
           inviterName: data.inviterName,
           inviterEmail: data.inviterEmail,
@@ -166,7 +168,7 @@ export async function sendEmail(data: EmailData) {
         break;
 
       case 'alert':
-        subject = `FormaOS Alert: ${data.alertTitle}`;
+        subject = `${brand.appName} Alert: ${data.alertTitle}`;
         react = AlertEmail({
           userName: data.userName,
           alertType: data.alertType,
@@ -184,7 +186,7 @@ export async function sendEmail(data: EmailData) {
     // 3. Execution: Send via Resend
     const resend = getResendClient();
     if (!resend) {
-      throw new Error("Resend is not configured.");
+      throw new Error('Resend is not configured.');
     }
 
     const result = await resend.emails.send({
@@ -205,7 +207,7 @@ export async function sendEmail(data: EmailData) {
       result.data?.id,
       undefined,
       data.organizationId,
-      data.userId
+      data.userId,
     );
 
     return { success: true, data: result.data };
@@ -221,7 +223,7 @@ export async function sendEmail(data: EmailData) {
       undefined,
       error instanceof Error ? error.message : 'Unknown transport error',
       data.organizationId,
-      data.userId
+      data.userId,
     );
 
     return { success: false, error: error.message };

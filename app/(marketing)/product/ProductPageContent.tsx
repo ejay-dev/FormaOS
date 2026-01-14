@@ -1,9 +1,18 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { Database, Shield, Target, FileText, TrendingUp, Users, CheckCircle, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
-import { 
+import Link from 'next/link';
+import {
+  Database,
+  Shield,
+  Target,
+  FileText,
+  TrendingUp,
+  Users,
+  CheckCircle,
+  ArrowRight,
+} from 'lucide-react';
+import { motion } from 'framer-motion';
+import {
   CinematicSection,
   SectionHeader,
   ValueProp,
@@ -11,21 +20,25 @@ import {
   InteractiveCard,
   TimelineItem,
   GradientMesh,
-} from "@/components/motion";
-import { CleanSystemGrid, PulsingNode, ParallaxLayer } from "@/components/motion/CleanBackground";
-import { MarketingAnchor } from "../components/marketing-anchor";
+} from '@/components/motion';
+import {
+  CleanSystemGrid,
+  PulsingNode,
+  ParallaxLayer,
+} from '@/components/motion/CleanBackground';
+import { MarketingAnchor } from '../components/marketing-anchor';
 
 function ProductHero() {
   return (
     <section className="relative min-h-[70vh] sm:min-h-[80vh] lg:min-h-[90vh] flex items-center overflow-hidden">
       {/* Multi-layer animated background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
-      
+
       {/* Clean system grid layer */}
       <div className="absolute inset-0 opacity-40 sm:opacity-60">
         <CleanSystemGrid />
       </div>
-      
+
       {/* Pulsing nodes - hidden on mobile */}
       <div className="hidden sm:block">
         <PulsingNode x="15%" y="20%" delay={0} color="rgb(139, 92, 246)" />
@@ -33,11 +46,11 @@ function ProductHero() {
         <PulsingNode x="20%" y="80%" delay={1} />
         <PulsingNode x="80%" y="90%" delay={1.5} color="rgb(6, 182, 212)" />
       </div>
-      
+
       {/* Radial gradient overlays - reduced on mobile */}
       <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[300px] sm:h-[600px] w-[300px] sm:w-[600px] rounded-full bg-secondary/20 blur-[60px] sm:blur-[120px]" />
       <div className="pointer-events-none absolute -bottom-40 left-1/4 h-[250px] sm:h-[500px] w-[250px] sm:w-[500px] rounded-full bg-primary/15 blur-[50px] sm:blur-[100px]" />
-      
+
       {/* Vignette */}
       <div className="absolute inset-0 vignette pointer-events-none" />
 
@@ -53,7 +66,11 @@ function ProductHero() {
             >
               <motion.div
                 animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
               >
                 <Shield className="h-3 w-3 sm:h-4 sm:w-4 text-secondary" />
               </motion.div>
@@ -66,7 +83,8 @@ function ProductHero() {
               transition={{ delay: 0.3, duration: 0.8 }}
               className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] sm:leading-[1.08] font-display tracking-tight mb-4 sm:mb-6"
             >
-              A Compliance Operating System<br />
+              A Compliance Operating System
+              <br />
               <span className="relative">
                 <span className="text-gradient">for Enterprise Teams</span>
                 <motion.div
@@ -84,7 +102,8 @@ function ProductHero() {
               transition={{ delay: 0.5, duration: 0.8 }}
               className="text-base sm:text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-8 sm:mb-10"
             >
-              FormaOS replaces fragmented tools with a single system for governance, execution, and audit readiness.
+              FormaOS replaces fragmented tools with a single system for
+              governance, execution, and audit readiness.
             </motion.p>
 
             <motion.div
@@ -93,10 +112,16 @@ function ProductHero() {
               transition={{ delay: 0.7, duration: 0.8 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6"
             >
-              <Link href="/auth/signup" className="w-full sm:w-auto btn btn-primary px-6 py-3 text-sm font-semibold text-primary-foreground">
+              <Link
+                href="/auth/signup"
+                className="w-full sm:w-auto btn btn-primary px-6 py-3 text-sm font-semibold text-primary-foreground"
+              >
                 Start Free Trial
               </Link>
-              <Link href="/contact" className="w-full sm:w-auto btn btn-ghost px-6 py-3 text-sm font-semibold leading-6 flex items-center justify-center sm:justify-start gap-2">
+              <Link
+                href="/contact"
+                className="w-full sm:w-auto btn btn-ghost px-6 py-3 text-sm font-semibold leading-6 flex items-center justify-center sm:justify-start gap-2"
+              >
                 Request Demo <ArrowRight className="h-4 w-4" />
               </Link>
             </motion.div>
@@ -115,8 +140,8 @@ export default function ProductPageContent() {
       <VisualDivider />
 
       {/* Core Platform Components */}
-      <CinematicSection 
-        backgroundType="gradient" 
+      <CinematicSection
+        backgroundType="gradient"
         ambientColor="primary"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
@@ -133,16 +158,21 @@ export default function ProductPageContent() {
               <Database className="h-3 w-3" />
               Platform Overview
             </div>
-            
+
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6 max-w-5xl mx-auto">
-              FormaOS is designed to operationalize<br className="hidden sm:inline" />
-              <span className="text-gradient">compliance across the entire organization</span>
+              FormaOS is designed to operationalize
+              <br className="hidden sm:inline" />
+              <span className="text-gradient">
+                compliance across the entire organization
+              </span>
             </h2>
-            
+
             <div className="w-16 h-0.5 bg-gradient-to-r from-secondary via-primary to-accent mx-auto rounded-full mb-6" />
-            
+
             <p className="text-lg text-foreground/70 max-w-4xl mx-auto leading-relaxed">
-              It connects obligations, controls, tasks, and evidence into a unified governance model. This is not policy storage. It is compliance as an operating function.
+              It connects obligations, controls, tasks, and evidence into a
+              unified governance model. This is not policy storage. It is
+              compliance as an operating function.
             </p>
           </motion.div>
 
@@ -171,27 +201,34 @@ export default function ProductPageContent() {
                       <div className="w-12 h-1 bg-gradient-to-r from-primary to-secondary rounded-full mt-1" />
                     </div>
                   </div>
-                  
+
                   <p className="text-foreground/70 leading-relaxed mb-6">
-                    Model your organization, entities, sites, and roles. Define ownership and accountability for every control.
+                    Model your organization, entities, sites, and roles. Define
+                    ownership and accountability for every control.
                   </p>
-                  
+
                   {/* Feature highlights */}
                   <div className="space-y-3">
                     <div className="flex items-center gap-3 text-sm">
                       <div className="w-2 h-2 bg-primary/60 rounded-full" />
-                      <span className="text-foreground/80">Organizational mapping</span>
+                      <span className="text-foreground/80">
+                        Organizational mapping
+                      </span>
                     </div>
                     <div className="flex items-center gap-3 text-sm">
                       <div className="w-2 h-2 bg-primary/60 rounded-full" />
-                      <span className="text-foreground/80">Role-based accountability</span>
+                      <span className="text-foreground/80">
+                        Role-based accountability
+                      </span>
                     </div>
                     <div className="flex items-center gap-3 text-sm">
                       <div className="w-2 h-2 bg-primary/60 rounded-full" />
-                      <span className="text-foreground/80">Control ownership</span>
+                      <span className="text-foreground/80">
+                        Control ownership
+                      </span>
                     </div>
                   </div>
-                  
+
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20 rounded-b-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
               </div>
@@ -218,26 +255,33 @@ export default function ProductPageContent() {
                       <div className="w-12 h-1 bg-gradient-to-r from-secondary to-accent rounded-full mt-1" />
                     </div>
                   </div>
-                  
+
                   <p className="text-foreground/70 leading-relaxed mb-6">
-                    Convert obligations into operational tasks with due dates, assignees, and required evidence.
+                    Convert obligations into operational tasks with due dates,
+                    assignees, and required evidence.
                   </p>
-                  
+
                   <div className="space-y-3">
                     <div className="flex items-center gap-3 text-sm">
                       <div className="w-2 h-2 bg-secondary/60 rounded-full" />
-                      <span className="text-foreground/80">Task automation</span>
+                      <span className="text-foreground/80">
+                        Task automation
+                      </span>
                     </div>
                     <div className="flex items-center gap-3 text-sm">
                       <div className="w-2 h-2 bg-secondary/60 rounded-full" />
-                      <span className="text-foreground/80">Due date management</span>
+                      <span className="text-foreground/80">
+                        Due date management
+                      </span>
                     </div>
                     <div className="flex items-center gap-3 text-sm">
                       <div className="w-2 h-2 bg-secondary/60 rounded-full" />
-                      <span className="text-foreground/80">Evidence requirements</span>
+                      <span className="text-foreground/80">
+                        Evidence requirements
+                      </span>
                     </div>
                   </div>
-                  
+
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-secondary/20 via-secondary/40 to-secondary/20 rounded-b-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
               </div>
@@ -264,26 +308,31 @@ export default function ProductPageContent() {
                       <div className="w-12 h-1 bg-gradient-to-r from-accent to-primary rounded-full mt-1" />
                     </div>
                   </div>
-                  
+
                   <p className="text-foreground/70 leading-relaxed mb-6">
-                    Track control completion in real time. Capture evidence directly inside the system with full traceability.
+                    Track control completion in real time. Capture evidence
+                    directly inside the system with full traceability.
                   </p>
-                  
+
                   <div className="space-y-3">
                     <div className="flex items-center gap-3 text-sm">
                       <div className="w-2 h-2 bg-accent/60 rounded-full" />
-                      <span className="text-foreground/80">Real-time tracking</span>
+                      <span className="text-foreground/80">
+                        Real-time tracking
+                      </span>
                     </div>
                     <div className="flex items-center gap-3 text-sm">
                       <div className="w-2 h-2 bg-accent/60 rounded-full" />
-                      <span className="text-foreground/80">Evidence capture</span>
+                      <span className="text-foreground/80">
+                        Evidence capture
+                      </span>
                     </div>
                     <div className="flex items-center gap-3 text-sm">
                       <div className="w-2 h-2 bg-accent/60 rounded-full" />
                       <span className="text-foreground/80">Audit trail</span>
                     </div>
                   </div>
-                  
+
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-accent/20 via-accent/40 to-accent/20 rounded-b-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
               </div>
@@ -310,26 +359,33 @@ export default function ProductPageContent() {
                       <div className="w-12 h-1 bg-gradient-to-r from-primary to-secondary rounded-full mt-1" />
                     </div>
                   </div>
-                  
+
                   <p className="text-foreground/70 leading-relaxed mb-6">
-                    Generate audit-ready reports without manual compilation. Every action is time-stamped, attributable, and defensible.
+                    Generate audit-ready reports without manual compilation.
+                    Every action is time-stamped, attributable, and defensible.
                   </p>
-                  
+
                   <div className="space-y-3">
                     <div className="flex items-center gap-3 text-sm">
                       <div className="w-2 h-2 bg-primary/60 rounded-full" />
-                      <span className="text-foreground/80">Instant reporting</span>
+                      <span className="text-foreground/80">
+                        Instant reporting
+                      </span>
                     </div>
                     <div className="flex items-center gap-3 text-sm">
                       <div className="w-2 h-2 bg-primary/60 rounded-full" />
-                      <span className="text-foreground/80">Time-stamped records</span>
+                      <span className="text-foreground/80">
+                        Time-stamped records
+                      </span>
                     </div>
                     <div className="flex items-center gap-3 text-sm">
                       <div className="w-2 h-2 bg-primary/60 rounded-full" />
-                      <span className="text-foreground/80">Defensible evidence</span>
+                      <span className="text-foreground/80">
+                        Defensible evidence
+                      </span>
                     </div>
                   </div>
-                  
+
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20 rounded-b-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
               </div>
@@ -341,8 +397,8 @@ export default function ProductPageContent() {
       <VisualDivider />
 
       {/* Workflow Integration */}
-      <CinematicSection 
-        backgroundType="nodes" 
+      <CinematicSection
+        backgroundType="nodes"
         ambientColor="secondary"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
@@ -351,6 +407,7 @@ export default function ProductPageContent() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.8 }}
             className="text-center mb-16 sm:mb-20"
           >
@@ -358,16 +415,18 @@ export default function ProductPageContent() {
               <Target className="h-3 w-3" />
               Governance Model
             </div>
-            
+
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6 max-w-4xl mx-auto">
-              FormaOS enforces governance<br className="hidden sm:inline" />
+              FormaOS enforces governance
+              <br className="hidden sm:inline" />
               <span className="text-gradient">through system design</span>
             </h2>
-            
+
             <div className="w-16 h-0.5 bg-gradient-to-r from-secondary via-primary to-accent mx-auto rounded-full mb-6" />
-            
+
             <p className="text-lg text-foreground/70 max-w-3xl mx-auto leading-relaxed">
-              Nothing exists in isolation. Every activity is part of a traceable compliance chain.
+              Nothing exists in isolation. Every activity is part of a traceable
+              compliance chain.
             </p>
           </motion.div>
 
@@ -375,6 +434,7 @@ export default function ProductPageContent() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.8 }}
             className="relative"
           >
@@ -387,17 +447,19 @@ export default function ProductPageContent() {
                     Compliance Traceability Chain
                   </h3>
                   <p className="text-sm text-foreground/60 mt-2">
-                    Every element connects to provide complete operational accountability
+                    Every element connects to provide complete operational
+                    accountability
                   </p>
                 </div>
               </div>
-              
+
               {/* Governance Flow Grid */}
               <div className="p-8 sm:p-12">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
                     transition={{ delay: 0.2, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -416,13 +478,15 @@ export default function ProductPageContent() {
                       Obligations Mapped to Controls
                     </h4>
                     <p className="text-sm text-foreground/70 leading-relaxed">
-                      Every regulatory requirement connects directly to actionable controls
+                      Every regulatory requirement connects directly to
+                      actionable controls
                     </p>
                   </motion.div>
 
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
                     transition={{ delay: 0.4, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -441,13 +505,15 @@ export default function ProductPageContent() {
                       Controls Mapped to Accountable Owners
                     </h4>
                     <p className="text-sm text-foreground/70 leading-relaxed">
-                      Clear ownership and responsibility for every compliance activity
+                      Clear ownership and responsibility for every compliance
+                      activity
                     </p>
                   </motion.div>
 
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
                     transition={{ delay: 0.6, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -466,13 +532,15 @@ export default function ProductPageContent() {
                       Tasks Linked to Execution
                     </h4>
                     <p className="text-sm text-foreground/70 leading-relaxed">
-                      Operational activities tracked with completion verification
+                      Operational activities tracked with completion
+                      verification
                     </p>
                   </motion.div>
 
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
                     transition={{ delay: 0.8, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -495,7 +563,7 @@ export default function ProductPageContent() {
                     </p>
                   </motion.div>
                 </div>
-                
+
                 {/* Process Flow Connectors (Desktop only) */}
                 <div className="hidden lg:block absolute top-1/2 left-0 right-0 transform -translate-y-1/2 px-20">
                   <div className="flex items-center justify-between">
@@ -517,8 +585,8 @@ export default function ProductPageContent() {
       <VisualDivider />
 
       {/* Key Features */}
-      <CinematicSection 
-        backgroundType="gradient" 
+      <CinematicSection
+        backgroundType="gradient"
         ambientColor="accent"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
@@ -527,6 +595,7 @@ export default function ProductPageContent() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.8 }}
             className="text-center mb-16 sm:mb-20"
           >
@@ -534,12 +603,13 @@ export default function ProductPageContent() {
               <TrendingUp className="h-3 w-3" />
               Built for Scale
             </div>
-            
+
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6 max-w-4xl mx-auto">
-              FormaOS supports<br className="hidden sm:inline" />
+              FormaOS supports
+              <br className="hidden sm:inline" />
               <span className="text-gradient">enterprise complexity</span>
             </h2>
-            
+
             <div className="w-16 h-0.5 bg-gradient-to-r from-accent via-primary to-secondary mx-auto rounded-full mb-6" />
           </motion.div>
 
@@ -547,6 +617,7 @@ export default function ProductPageContent() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.8 }}
             className="relative"
           >
@@ -563,7 +634,7 @@ export default function ProductPageContent() {
                   </p>
                 </div>
               </div>
-              
+
               {/* Enterprise Features Grid */}
               <div className="p-8 sm:p-12">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
@@ -584,7 +655,8 @@ export default function ProductPageContent() {
                       Multi-Entity Organizations
                     </h4>
                     <p className="text-sm text-foreground/70 leading-relaxed">
-                      Manage compliance across subsidiaries and holding companies
+                      Manage compliance across subsidiaries and holding
+                      companies
                     </p>
                   </motion.div>
 
@@ -651,7 +723,7 @@ export default function ProductPageContent() {
                     </p>
                   </motion.div>
                 </div>
-                
+
                 {/* Enterprise Metrics */}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -661,20 +733,36 @@ export default function ProductPageContent() {
                 >
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
                     <div>
-                      <div className="text-2xl font-bold text-gradient mb-1">1000+</div>
-                      <div className="text-xs text-foreground/60">Users Supported</div>
+                      <div className="text-2xl font-bold text-gradient mb-1">
+                        1000+
+                      </div>
+                      <div className="text-xs text-foreground/60">
+                        Users Supported
+                      </div>
                     </div>
                     <div>
-                      <div className="text-2xl font-bold text-gradient mb-1">50+</div>
-                      <div className="text-xs text-foreground/60">Sites per Org</div>
+                      <div className="text-2xl font-bold text-gradient mb-1">
+                        50+
+                      </div>
+                      <div className="text-xs text-foreground/60">
+                        Sites per Org
+                      </div>
                     </div>
                     <div>
-                      <div className="text-2xl font-bold text-gradient mb-1">99.9%</div>
-                      <div className="text-xs text-foreground/60">Uptime SLA</div>
+                      <div className="text-2xl font-bold text-gradient mb-1">
+                        99.9%
+                      </div>
+                      <div className="text-xs text-foreground/60">
+                        Uptime SLA
+                      </div>
                     </div>
                     <div>
-                      <div className="text-2xl font-bold text-gradient mb-1">24/7</div>
-                      <div className="text-xs text-foreground/60">Enterprise Support</div>
+                      <div className="text-2xl font-bold text-gradient mb-1">
+                        24/7
+                      </div>
+                      <div className="text-xs text-foreground/60">
+                        Enterprise Support
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -687,8 +775,8 @@ export default function ProductPageContent() {
       <VisualDivider />
 
       {/* Final CTA */}
-      <CinematicSection 
-        backgroundType="gradient" 
+      <CinematicSection
+        backgroundType="gradient"
         ambientColor="primary"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
@@ -714,17 +802,18 @@ export default function ProductPageContent() {
                     <Shield className="h-3 w-3" />
                     Ready to Transform
                   </motion.div>
-                  
+
                   <motion.h2
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3, duration: 0.8 }}
                     className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6"
                   >
-                    Compliance should be operational,<br className="hidden sm:inline" />
+                    Compliance should be operational,
+                    <br className="hidden sm:inline" />
                     <span className="text-gradient">not administrative.</span>
                   </motion.h2>
-                  
+
                   <motion.div
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: 1 }}
@@ -733,7 +822,7 @@ export default function ProductPageContent() {
                   />
                 </div>
               </div>
-              
+
               {/* CTA Content */}
               <div className="px-8 sm:px-12 py-10 sm:py-12 text-center">
                 <motion.p
@@ -742,9 +831,11 @@ export default function ProductPageContent() {
                   transition={{ delay: 0.4, duration: 0.8 }}
                   className="text-lg text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-10"
                 >
-                  Experience how FormaOS transforms compliance from a quarterly burden into daily operational certainty. See the platform in action.
+                  Experience how FormaOS transforms compliance from a quarterly
+                  burden into daily operational certainty. See the platform in
+                  action.
                 </motion.p>
-                
+
                 {/* Premium CTA Buttons */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -752,23 +843,23 @@ export default function ProductPageContent() {
                   transition={{ delay: 0.6, duration: 0.8 }}
                   className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-8"
                 >
-                  <Link 
-                    href="/contact" 
+                  <Link
+                    href="/contact"
                     className="group w-full sm:w-auto relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary to-secondary px-8 py-4 text-base font-semibold text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
                   >
                     <span className="relative z-10">Request a Demo</span>
                     <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-secondary/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </Link>
-                  
-                  <Link 
-                    href="/auth/signup" 
+
+                  <Link
+                    href="/auth/signup"
                     className="group w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-2xl border-2 border-white/20 text-base font-semibold text-foreground/90 hover:bg-white/[0.08] hover:border-white/30 transition-all duration-300 backdrop-blur-sm"
                   >
                     <span>Start Free Trial</span>
                     <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
                   </Link>
                 </motion.div>
-                
+
                 {/* Trust Indicators */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}

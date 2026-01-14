@@ -1,7 +1,7 @@
 {
-  "name": "FormaOS - Compliance Management",
+  "name": "FormaOS — Compliance Operating System",
   "short_name": "FormaOS",
-  "description": "Professional compliance management system for teams and organizations",
+  "description": "FormaOS is the Compliance Operating System for regulated organizations.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

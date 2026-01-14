@@ -1,31 +1,42 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { Database, Target, Zap, Shield, TrendingUp, Users, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
-import { 
+import Link from 'next/link';
+import {
+  Database,
+  Target,
+  Zap,
+  Shield,
+  TrendingUp,
+  Users,
+  ArrowRight,
+} from 'lucide-react';
+import { motion } from 'framer-motion';
+import {
   CinematicSection,
   SectionHeader,
   ValueProp,
   VisualDivider,
   GradientMesh,
   InteractiveCard,
-} from "@/components/motion";
-import { PulsingNode, ParallaxLayer } from "@/components/motion/CleanBackground";
-import { MarketingAnchor } from "./marketing-anchor";
+} from '@/components/motion';
+import {
+  PulsingNode,
+  ParallaxLayer,
+} from '@/components/motion/CleanBackground';
+import { MarketingAnchor } from './marketing-anchor';
 
 function HomeHero() {
   return (
     <section className="relative min-h-[70vh] sm:min-h-[80vh] lg:min-h-[90vh] flex items-center overflow-hidden">
       {/* Multi-layer animated background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
-      
+
       {/* Soft gradient overlays instead of motion lines */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10" />
         <div className="absolute inset-0 bg-gradient-to-tl from-accent/5 via-transparent to-primary/5" />
       </div>
-      
+
       {/* Subtle pulsing nodes - hidden on mobile */}
       <div className="hidden sm:block">
         <PulsingNode x="12%" y="25%" delay={0} color="rgb(139, 92, 246)" />
@@ -33,11 +44,11 @@ function HomeHero() {
         <PulsingNode x="18%" y="75%" delay={1} />
         <PulsingNode x="82%" y="85%" delay={1.5} color="rgb(6, 182, 212)" />
       </div>
-      
+
       {/* Radial gradient overlays - reduced on mobile */}
       <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[300px] sm:h-[600px] w-[300px] sm:w-[600px] rounded-full bg-secondary/20 blur-[60px] sm:blur-[120px]" />
       <div className="pointer-events-none absolute -bottom-40 left-1/4 h-[250px] sm:h-[500px] w-[250px] sm:w-[500px] rounded-full bg-primary/15 blur-[50px] sm:blur-[100px]" />
-      
+
       {/* Vignette */}
       <div className="absolute inset-0 vignette pointer-events-none" />
 
@@ -53,7 +64,11 @@ function HomeHero() {
             >
               <motion.div
                 animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
               >
                 <Database className="h-3 w-3 sm:h-4 sm:w-4 text-secondary" />
               </motion.div>
@@ -66,9 +81,12 @@ function HomeHero() {
               transition={{ delay: 0.3, duration: 0.8 }}
               className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] sm:leading-[1.08] font-display tracking-tight mb-4 sm:mb-6"
             >
-              Operational Compliance,<br />
+              Operational Compliance,
+              <br />
               <span className="relative">
-                <span className="text-gradient">Built for Real Organizations</span>
+                <span className="text-gradient">
+                  Built for Real Organizations
+                </span>
                 <motion.div
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
@@ -84,7 +102,9 @@ function HomeHero() {
               transition={{ delay: 0.5, duration: 0.8 }}
               className="text-base sm:text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-6 sm:mb-8"
             >
-              FormaOS is a compliance operating system for regulated teams. It turns obligations into structured controls, tracked actions, and audit-ready evidence.
+              FormaOS is a compliance operating system for regulated teams. It
+              turns obligations into structured controls, tracked actions, and
+              audit-ready evidence.
             </motion.p>
 
             <motion.div
@@ -93,8 +113,13 @@ function HomeHero() {
               transition={{ delay: 0.6, duration: 0.8 }}
               className="text-sm sm:text-lg text-foreground/60 leading-relaxed max-w-2xl mx-auto mb-8 sm:mb-10"
             >
-              <p>Most compliance tools store documents. FormaOS runs compliance.</p>
-              <p className="mt-2">It gives organizations a single system to model governance, assign accountability, verify execution, and prove outcomes.</p>
+              <p>
+                Most compliance tools store documents. FormaOS runs compliance.
+              </p>
+              <p className="mt-2">
+                It gives organizations a single system to model governance,
+                assign accountability, verify execution, and prove outcomes.
+              </p>
             </motion.div>
 
             <motion.div
@@ -103,10 +128,16 @@ function HomeHero() {
               transition={{ delay: 0.7, duration: 0.8 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6 mb-8"
             >
-              <Link href="/auth/signup" className="w-full sm:w-auto btn btn-primary px-6 py-3 text-sm font-semibold text-primary-foreground">
+              <Link
+                href="/auth/signup"
+                className="w-full sm:w-auto btn btn-primary px-6 py-3 text-sm font-semibold text-primary-foreground"
+              >
                 Start Free Trial
               </Link>
-              <Link href="/contact" className="w-full sm:w-auto btn btn-ghost px-6 py-3 text-sm font-semibold leading-6 flex items-center justify-center sm:justify-start gap-2">
+              <Link
+                href="/contact"
+                className="w-full sm:w-auto btn btn-ghost px-6 py-3 text-sm font-semibold leading-6 flex items-center justify-center sm:justify-start gap-2"
+              >
                 Request Demo <ArrowRight className="h-4 w-4" />
               </Link>
             </motion.div>
@@ -136,8 +167,8 @@ export function HomePageClient() {
       <VisualDivider />
 
       {/* Platform Overview */}
-      <CinematicSection 
-        backgroundType="gradient" 
+      <CinematicSection
+        backgroundType="gradient"
         ambientColor="primary"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
@@ -146,6 +177,7 @@ export function HomePageClient() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.8 }}
             className="text-center mb-16 sm:mb-20"
           >
@@ -153,16 +185,21 @@ export function HomePageClient() {
               <Database className="h-3 w-3" />
               Value Statement
             </div>
-            
+
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6 max-w-4xl mx-auto">
-              From framework alignment to audit export,<br className="hidden sm:inline" />
-              <span className="text-gradient">every compliance activity is connected</span>
+              From framework alignment to audit export,
+              <br className="hidden sm:inline" />
+              <span className="text-gradient">
+                every compliance activity is connected
+              </span>
             </h2>
-            
+
             <div className="w-16 h-0.5 bg-gradient-to-r from-secondary via-primary to-accent mx-auto rounded-full mb-6" />
-            
+
             <p className="text-lg text-foreground/70 max-w-3xl mx-auto leading-relaxed">
-              FormaOS replaces fragmented spreadsheets, disconnected policy tools, and manual audits with a structured operating layer for governance.
+              FormaOS replaces fragmented spreadsheets, disconnected policy
+              tools, and manual audits with a structured operating layer for
+              governance.
             </p>
           </motion.div>
 
@@ -171,6 +208,7 @@ export function HomePageClient() {
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
               transition={{ delay: 0.2, duration: 0.7 }}
               whileHover={{ y: -8, transition: { duration: 0.3 } }}
               className="group"
@@ -185,7 +223,7 @@ export function HomePageClient() {
                     </div>
                     <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-br from-primary to-secondary opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
-                  
+
                   <div className="text-center">
                     <h3 className="text-xl font-bold mb-4 group-hover:text-primary transition-colors duration-300">
                       Model Obligations
@@ -194,7 +232,7 @@ export function HomePageClient() {
                       Convert regulations into structured policies and controls.
                     </p>
                   </div>
-                  
+
                   {/* Subtle accent line */}
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20 rounded-b-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
@@ -204,6 +242,7 @@ export function HomePageClient() {
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
               transition={{ delay: 0.4, duration: 0.7 }}
               whileHover={{ y: -8, transition: { duration: 0.3 } }}
               className="group"
@@ -216,16 +255,17 @@ export function HomePageClient() {
                     </div>
                     <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-br from-secondary to-accent opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
-                  
+
                   <div className="text-center">
                     <h3 className="text-xl font-bold mb-4 group-hover:text-secondary transition-colors duration-300">
                       Execute Tasks
                     </h3>
                     <p className="text-foreground/70 leading-relaxed">
-                      Assign ownership, due dates, and accountability across teams.
+                      Assign ownership, due dates, and accountability across
+                      teams.
                     </p>
                   </div>
-                  
+
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-secondary/20 via-secondary/40 to-secondary/20 rounded-b-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
               </div>
@@ -234,6 +274,7 @@ export function HomePageClient() {
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
               transition={{ delay: 0.6, duration: 0.7 }}
               whileHover={{ y: -8, transition: { duration: 0.3 } }}
               className="group"
@@ -246,7 +287,7 @@ export function HomePageClient() {
                     </div>
                     <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-br from-accent to-primary opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
-                  
+
                   <div className="text-center">
                     <h3 className="text-xl font-bold mb-4 group-hover:text-accent transition-colors duration-300">
                       Prove Readiness
@@ -255,7 +296,7 @@ export function HomePageClient() {
                       Generate audit-ready evidence and reports in minutes.
                     </p>
                   </div>
-                  
+
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-accent/20 via-accent/40 to-accent/20 rounded-b-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
               </div>
@@ -267,15 +308,15 @@ export function HomePageClient() {
       <VisualDivider />
 
       {/* Live Platform Metrics */}
-      <CinematicSection 
-        backgroundType="gradient" 
+      <CinematicSection
+        backgroundType="gradient"
         ambientColor="secondary"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
         {/* Premium analytics background */}
         <div className="absolute inset-0 bg-gradient-to-b from-slate-900/5 via-background to-slate-800/5" />
         <div className="absolute inset-0 bg-gradient-to-tr from-secondary/[0.03] via-transparent to-primary/[0.03]" />
-        
+
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           {/* Enterprise Analytics Header */}
           <motion.div
@@ -288,16 +329,19 @@ export function HomePageClient() {
               <TrendingUp className="h-3 w-3" />
               Live Platform Metrics
             </div>
-            
+
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6 max-w-4xl mx-auto">
-              Real-Time Compliance<br className="hidden sm:inline" />
+              Real-Time Compliance
+              <br className="hidden sm:inline" />
               <span className="text-gradient">Intelligence</span>
             </h2>
-            
+
             <div className="w-16 h-0.5 bg-gradient-to-r from-secondary via-primary to-accent mx-auto rounded-full mb-6" />
-            
+
             <p className="text-lg text-foreground/70 max-w-3xl mx-auto leading-relaxed">
-              FormaOS continuously measures your organization's compliance posture — across teams, frameworks, and operational controls — without manual tracking.
+              FormaOS continuously measures your organization's compliance
+              posture — across teams, frameworks, and operational controls —
+              without manual tracking.
             </p>
           </motion.div>
 
@@ -315,14 +359,16 @@ export function HomePageClient() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
-                    <span className="text-sm font-semibold text-foreground/80">Live Compliance Dashboard</span>
+                    <span className="text-sm font-semibold text-foreground/80">
+                      Live Compliance Dashboard
+                    </span>
                   </div>
                   <div className="text-xs text-foreground/60">
                     Updated in real-time
                   </div>
                 </div>
               </div>
-              
+
               {/* Metrics Grid */}
               <div className="p-8 sm:p-12">
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
@@ -343,9 +389,9 @@ export function HomePageClient() {
                       Average Compliance Posture
                     </div>
                     <div className="mt-2 w-full h-1 bg-foreground/10 rounded-full overflow-hidden">
-                      <motion.div 
+                      <motion.div
                         initial={{ width: 0 }}
-                        whileInView={{ width: "94%" }}
+                        whileInView={{ width: '94%' }}
                         transition={{ delay: 0.5, duration: 1 }}
                         className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
                       />
@@ -370,8 +416,14 @@ export function HomePageClient() {
                     </div>
                     <div className="mt-2 flex items-center justify-center gap-1">
                       <div className="w-2 h-2 bg-secondary rounded-full animate-pulse" />
-                      <div className="w-2 h-2 bg-primary rounded-full animate-pulse" style={{animationDelay: '0.2s'}} />
-                      <div className="w-2 h-2 bg-accent rounded-full animate-pulse" style={{animationDelay: '0.4s'}} />
+                      <div
+                        className="w-2 h-2 bg-primary rounded-full animate-pulse"
+                        style={{ animationDelay: '0.2s' }}
+                      />
+                      <div
+                        className="w-2 h-2 bg-accent rounded-full animate-pulse"
+                        style={{ animationDelay: '0.4s' }}
+                      />
                     </div>
                   </motion.div>
 
@@ -416,9 +468,9 @@ export function HomePageClient() {
                       Task Completion Rate
                     </div>
                     <div className="mt-2 w-full h-1 bg-foreground/10 rounded-full overflow-hidden">
-                      <motion.div 
+                      <motion.div
                         initial={{ width: 0 }}
-                        whileInView={{ width: "98%" }}
+                        whileInView={{ width: '98%' }}
                         transition={{ delay: 1, duration: 1 }}
                         className="h-full bg-gradient-to-r from-accent to-primary rounded-full"
                       />
@@ -434,14 +486,14 @@ export function HomePageClient() {
       <VisualDivider />
 
       {/* How It Works - System Interface Design */}
-      <CinematicSection 
-        backgroundType="gradient" 
+      <CinematicSection
+        backgroundType="gradient"
         ambientColor="primary"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
         {/* Clean gradient background - NO motion elements */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-secondary/5" />
-        
+
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           {/* Main System Panel Container */}
           <motion.div
@@ -463,31 +515,34 @@ export function HomePageClient() {
                   <Target className="h-3 w-3 text-primary" />
                   How It Works
                 </motion.div>
-                
+
                 <motion.h2
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.8 }}
                   className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-2"
                 >
-                  A Compliance System Designed for<br className="hidden sm:inline" />
+                  A Compliance System Designed for
+                  <br className="hidden sm:inline" />
                   <span className="text-gradient">Daily Operations</span>
                 </motion.h2>
-                
+
                 <motion.div
                   initial={{ scaleX: 0 }}
                   whileInView={{ scaleX: 1 }}
                   transition={{ delay: 0.8, duration: 0.8 }}
                   className="mx-auto mt-3 h-1 w-24 bg-gradient-to-r from-secondary via-primary to-accent rounded-full"
                 />
-                
+
                 <motion.p
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4, duration: 0.8 }}
                   className="mt-4 text-lg text-foreground/70 max-w-3xl mx-auto"
                 >
-                  Compliance should not live in quarterly reviews. FormaOS embeds governance directly into operational workflows so compliance becomes part of how the organization runs.
+                  Compliance should not live in quarterly reviews. FormaOS
+                  embeds governance directly into operational workflows so
+                  compliance becomes part of how the organization runs.
                 </motion.p>
               </div>
             </div>
@@ -495,7 +550,6 @@ export function HomePageClient() {
             {/* System Module Grid */}
             <div className="p-8 sm:p-12">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-                
                 {/* STRUCTURE Module */}
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
@@ -509,7 +563,7 @@ export function HomePageClient() {
                     <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-xs font-bold text-white shadow-lg border-2 border-white/20">
                       1
                     </div>
-                    
+
                     {/* System Icon Node */}
                     <div className="relative w-16 h-16 mx-auto mb-6">
                       <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20" />
@@ -518,17 +572,19 @@ export function HomePageClient() {
                         <Database className="h-8 w-8 text-primary group-hover:scale-110 transition-transform duration-300" />
                       </div>
                     </div>
-                    
+
                     {/* Module Info */}
                     <div className="text-center">
                       <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors duration-300">
                         Structure
                       </h3>
                       <p className="text-sm text-foreground/80 leading-relaxed">
-                        Define ownership and accountability. Model your organization, sites, and teams. Assign control ownership and map obligations to responsible roles.
+                        Define ownership and accountability. Model your
+                        organization, sites, and teams. Assign control ownership
+                        and map obligations to responsible roles.
                       </p>
                     </div>
-                    
+
                     {/* System Connection Indicator */}
                     <div className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-primary/60 group-hover:bg-primary animate-pulse" />
                   </div>
@@ -547,7 +603,7 @@ export function HomePageClient() {
                     <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-xs font-bold text-white shadow-lg border-2 border-white/20">
                       2
                     </div>
-                    
+
                     {/* System Icon Node */}
                     <div className="relative w-16 h-16 mx-auto mb-6">
                       <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-secondary/20 to-secondary/10 border border-secondary/20" />
@@ -556,17 +612,19 @@ export function HomePageClient() {
                         <Target className="h-8 w-8 text-secondary group-hover:scale-110 transition-transform duration-300" />
                       </div>
                     </div>
-                    
+
                     {/* Module Info */}
                     <div className="text-center">
                       <h3 className="text-xl font-bold mb-3 group-hover:text-secondary transition-colors duration-300">
                         Execute
                       </h3>
                       <p className="text-sm text-foreground/80 leading-relaxed">
-                        Turn controls into actions. Convert requirements into tasks with due dates, assignees, and evidence requirements.
+                        Turn controls into actions. Convert requirements into
+                        tasks with due dates, assignees, and evidence
+                        requirements.
                       </p>
                     </div>
-                    
+
                     {/* System Connection Indicator */}
                     <div className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-secondary/60 group-hover:bg-secondary animate-pulse" />
                   </div>
@@ -585,7 +643,7 @@ export function HomePageClient() {
                     <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-gradient-to-br from-accent to-primary flex items-center justify-center text-xs font-bold text-white shadow-lg border-2 border-white/20">
                       3
                     </div>
-                    
+
                     {/* System Icon Node */}
                     <div className="relative w-16 h-16 mx-auto mb-6">
                       <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-accent/20 to-accent/10 border border-accent/20" />
@@ -594,17 +652,19 @@ export function HomePageClient() {
                         <Shield className="h-8 w-8 text-accent group-hover:scale-110 transition-transform duration-300" />
                       </div>
                     </div>
-                    
+
                     {/* Module Info */}
                     <div className="text-center">
                       <h3 className="text-xl font-bold mb-3 group-hover:text-accent transition-colors duration-300">
                         Verify
                       </h3>
                       <p className="text-sm text-foreground/80 leading-relaxed">
-                        Track completion with evidence. Capture proof automatically or manually. Monitor status in real time with a complete audit trail.
+                        Track completion with evidence. Capture proof
+                        automatically or manually. Monitor status in real time
+                        with a complete audit trail.
                       </p>
                     </div>
-                    
+
                     {/* System Connection Indicator */}
                     <div className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-accent/60 group-hover:bg-accent animate-pulse" />
                   </div>
@@ -623,7 +683,7 @@ export function HomePageClient() {
                     <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center text-xs font-bold text-white shadow-lg border-2 border-white/20">
                       4
                     </div>
-                    
+
                     {/* System Icon Node */}
                     <div className="relative w-16 h-16 mx-auto mb-6">
                       <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/20" />
@@ -632,17 +692,19 @@ export function HomePageClient() {
                         <TrendingUp className="h-8 w-8 text-primary group-hover:scale-110 transition-transform duration-300" />
                       </div>
                     </div>
-                    
+
                     {/* Module Info */}
                     <div className="text-center">
                       <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors duration-300">
                         Audit
                       </h3>
                       <p className="text-sm text-foreground/80 leading-relaxed">
-                        Prove compliance without disruption. Export defensible reports in minutes with every control linked to verifiable evidence.
+                        Prove compliance without disruption. Export defensible
+                        reports in minutes with every control linked to
+                        verifiable evidence.
                       </p>
                     </div>
-                    
+
                     {/* System Connection Indicator */}
                     <div className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-primary/60 group-hover:bg-primary animate-pulse" />
                   </div>
@@ -664,8 +726,8 @@ export function HomePageClient() {
       <VisualDivider />
 
       {/* Why FormaOS */}
-      <CinematicSection 
-        backgroundType="gradient" 
+      <CinematicSection
+        backgroundType="gradient"
         ambientColor="secondary"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
@@ -681,16 +743,18 @@ export function HomePageClient() {
               <Shield className="h-3 w-3" />
               Why FormaOS
             </div>
-            
+
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6 max-w-4xl mx-auto">
-              Built for governance,<br className="hidden sm:inline" />
+              Built for governance,
+              <br className="hidden sm:inline" />
               <span className="text-gradient">not checklists</span>
             </h2>
-            
+
             <div className="w-16 h-0.5 bg-gradient-to-r from-secondary via-primary to-accent mx-auto rounded-full mb-6" />
-            
+
             <p className="text-lg text-foreground/70 max-w-3xl mx-auto leading-relaxed">
-              FormaOS is not a document repository or a task manager. It is an operating layer for compliance and risk.
+              FormaOS is not a document repository or a task manager. It is an
+              operating layer for compliance and risk.
             </p>
           </motion.div>
 
@@ -710,11 +774,12 @@ export function HomePageClient() {
                     Governance Architecture
                   </h3>
                   <p className="text-sm text-foreground/60 mt-2">
-                    Every component connects to provide complete operational visibility
+                    Every component connects to provide complete operational
+                    visibility
                   </p>
                 </div>
               </div>
-              
+
               {/* Capabilities Grid */}
               <div className="p-8 sm:p-12">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
@@ -736,7 +801,8 @@ export function HomePageClient() {
                           Controls mapped directly to obligations
                         </h4>
                         <p className="text-sm text-foreground/70 leading-relaxed">
-                          Every control traces back to its regulatory requirement with full lineage
+                          Every control traces back to its regulatory
+                          requirement with full lineage
                         </p>
                       </div>
                     </motion.div>
@@ -757,12 +823,13 @@ export function HomePageClient() {
                           Actions tied to accountable owners
                         </h4>
                         <p className="text-sm text-foreground/70 leading-relaxed">
-                          Clear responsibility chains with automated escalation and oversight
+                          Clear responsibility chains with automated escalation
+                          and oversight
                         </p>
                       </div>
                     </motion.div>
                   </div>
-                  
+
                   {/* Right Column */}
                   <div className="space-y-8">
                     <motion.div
@@ -781,7 +848,8 @@ export function HomePageClient() {
                           Evidence stored in a verifiable chain
                         </h4>
                         <p className="text-sm text-foreground/70 leading-relaxed">
-                          Immutable audit trails with cryptographic integrity and timestamps
+                          Immutable audit trails with cryptographic integrity
+                          and timestamps
                         </p>
                       </div>
                     </motion.div>
@@ -802,13 +870,14 @@ export function HomePageClient() {
                           Continuous audit readiness
                         </h4>
                         <p className="text-sm text-foreground/70 leading-relaxed">
-                          Real-time compliance posture with instant export capabilities
+                          Real-time compliance posture with instant export
+                          capabilities
                         </p>
                       </div>
                     </motion.div>
                   </div>
                 </div>
-                
+
                 {/* Connection Indicators */}
                 <div className="hidden lg:block absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                   <div className="w-px h-24 bg-gradient-to-b from-transparent via-primary/20 to-transparent" />
@@ -823,15 +892,15 @@ export function HomePageClient() {
       <VisualDivider />
 
       {/* Capabilities Section */}
-      <CinematicSection 
-        backgroundType="gradient" 
+      <CinematicSection
+        backgroundType="gradient"
         ambientColor="primary"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
         {/* Premium layered background */}
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/10 via-background to-violet-50/10" />
         <div className="absolute inset-0 bg-gradient-to-tr from-primary/[0.02] via-transparent to-accent/[0.02]" />
-        
+
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           {/* Enterprise Capabilities Header */}
           <motion.div
@@ -844,14 +913,15 @@ export function HomePageClient() {
               <Zap className="h-3 w-3" />
               Capabilities
             </div>
-            
+
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6 max-w-4xl mx-auto">
-              Model obligations. Execute tasks.<br className="hidden sm:inline" />
+              Model obligations. Execute tasks.
+              <br className="hidden sm:inline" />
               <span className="text-gradient">Prove readiness.</span>
             </h2>
-            
+
             <div className="w-16 h-0.5 bg-gradient-to-r from-primary via-secondary to-accent mx-auto rounded-full mb-6" />
-            
+
             <p className="text-lg text-foreground/70 max-w-3xl mx-auto leading-relaxed">
               FormaOS unifies compliance into a single operational system.
             </p>
@@ -873,11 +943,13 @@ export function HomePageClient() {
                     Complete Compliance Operating System
                   </h3>
                   <p className="text-foreground/70 leading-relaxed">
-                    From regulatory mapping to audit export, every compliance function operates within a single, integrated platform designed for enterprise-grade governance.
+                    From regulatory mapping to audit export, every compliance
+                    function operates within a single, integrated platform
+                    designed for enterprise-grade governance.
                   </p>
                 </div>
               </div>
-              
+
               {/* Capability Flow Visualization */}
               <div className="p-8 sm:p-12">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 lg:gap-12">
@@ -897,12 +969,13 @@ export function HomePageClient() {
                           1
                         </div>
                       </div>
-                      
+
                       <h4 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors duration-300">
                         Model
                       </h4>
                       <p className="text-foreground/70 leading-relaxed text-sm">
-                        Transform regulations into structured policies, controls, and organizational accountability frameworks.
+                        Transform regulations into structured policies,
+                        controls, and organizational accountability frameworks.
                       </p>
                     </div>
                   </motion.div>
@@ -923,12 +996,13 @@ export function HomePageClient() {
                           2
                         </div>
                       </div>
-                      
+
                       <h4 className="text-xl font-bold mb-3 group-hover:text-secondary transition-colors duration-300">
                         Execute
                       </h4>
                       <p className="text-foreground/70 leading-relaxed text-sm">
-                        Convert controls into actionable tasks with clear ownership, deadlines, and evidence requirements.
+                        Convert controls into actionable tasks with clear
+                        ownership, deadlines, and evidence requirements.
                       </p>
                     </div>
                   </motion.div>
@@ -949,17 +1023,18 @@ export function HomePageClient() {
                           3
                         </div>
                       </div>
-                      
+
                       <h4 className="text-xl font-bold mb-3 group-hover:text-accent transition-colors duration-300">
                         Prove
                       </h4>
                       <p className="text-foreground/70 leading-relaxed text-sm">
-                        Generate verifiable evidence and export audit-ready reports with complete compliance traceability.
+                        Generate verifiable evidence and export audit-ready
+                        reports with complete compliance traceability.
                       </p>
                     </div>
                   </motion.div>
                 </div>
-                
+
                 {/* Process Flow Connectors (Desktop only) */}
                 <div className="hidden sm:block absolute top-1/2 left-0 right-0 transform -translate-y-1/2 px-12">
                   <div className="flex items-center justify-between">
@@ -979,8 +1054,8 @@ export function HomePageClient() {
       <VisualDivider />
 
       {/* Who It Is For Section */}
-      <CinematicSection 
-        backgroundType="gradient" 
+      <CinematicSection
+        backgroundType="gradient"
         ambientColor="secondary"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
@@ -996,12 +1071,15 @@ export function HomePageClient() {
               <Users className="h-3 w-3" />
               Who It Is For
             </div>
-            
+
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6 max-w-5xl mx-auto">
-              Built for organizations that cannot<br className="hidden sm:inline" />
-              <span className="text-gradient">afford ambiguity in compliance</span>
+              Built for organizations that cannot
+              <br className="hidden sm:inline" />
+              <span className="text-gradient">
+                afford ambiguity in compliance
+              </span>
             </h2>
-            
+
             <div className="w-16 h-0.5 bg-gradient-to-r from-secondary via-primary to-accent mx-auto rounded-full mb-6" />
           </motion.div>
 
@@ -1021,11 +1099,12 @@ export function HomePageClient() {
                     Enterprise Compliance Professionals
                   </h3>
                   <p className="text-sm text-foreground/60 mt-2">
-                    Designed for senior leaders who require operational certainty
+                    Designed for senior leaders who require operational
+                    certainty
                   </p>
                 </div>
               </div>
-              
+
               {/* Professional Roles Grid */}
               <div className="p-8 sm:p-12">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
@@ -1046,7 +1125,8 @@ export function HomePageClient() {
                       Compliance & Governance Teams
                     </h4>
                     <p className="text-sm text-foreground/70 leading-relaxed">
-                      Directors and managers responsible for enterprise compliance programs
+                      Directors and managers responsible for enterprise
+                      compliance programs
                     </p>
                   </motion.div>
 
@@ -1067,7 +1147,8 @@ export function HomePageClient() {
                       Risk & Audit Leaders
                     </h4>
                     <p className="text-sm text-foreground/70 leading-relaxed">
-                      Chief Risk Officers and audit executives requiring defensible evidence
+                      Chief Risk Officers and audit executives requiring
+                      defensible evidence
                     </p>
                   </motion.div>
 
@@ -1088,7 +1169,8 @@ export function HomePageClient() {
                       Regulated Operations
                     </h4>
                     <p className="text-sm text-foreground/70 leading-relaxed">
-                      Operations directors in healthcare, finance, and regulated industries
+                      Operations directors in healthcare, finance, and regulated
+                      industries
                     </p>
                   </motion.div>
 
@@ -1109,7 +1191,8 @@ export function HomePageClient() {
                       Multi-Entity Organizations
                     </h4>
                     <p className="text-sm text-foreground/70 leading-relaxed">
-                      Executives managing compliance across multiple sites and entities
+                      Executives managing compliance across multiple sites and
+                      entities
                     </p>
                   </motion.div>
                 </div>
@@ -1122,8 +1205,8 @@ export function HomePageClient() {
       <VisualDivider />
 
       {/* Security Section */}
-      <CinematicSection 
-        backgroundType="gradient" 
+      <CinematicSection
+        backgroundType="gradient"
         ambientColor="accent"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
@@ -1139,12 +1222,13 @@ export function HomePageClient() {
               <Shield className="h-3 w-3" />
               Security
             </div>
-            
+
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6 max-w-4xl mx-auto">
-              Designed for<br className="hidden sm:inline" />
+              Designed for
+              <br className="hidden sm:inline" />
               <span className="text-gradient">regulated environments</span>
             </h2>
-            
+
             <div className="w-16 h-0.5 bg-gradient-to-r from-accent via-primary to-secondary mx-auto rounded-full mb-6" />
           </motion.div>
 
@@ -1162,14 +1246,16 @@ export function HomePageClient() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
-                    <span className="text-sm font-semibold text-foreground/80">Enterprise Security Framework</span>
+                    <span className="text-sm font-semibold text-foreground/80">
+                      Enterprise Security Framework
+                    </span>
                   </div>
                   <div className="text-xs text-foreground/60">
                     ISO 27001 Aligned
                   </div>
                 </div>
               </div>
-              
+
               {/* Security Features Grid */}
               <div className="p-8 sm:p-12">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
@@ -1265,7 +1351,7 @@ export function HomePageClient() {
                     </p>
                   </motion.div>
                 </div>
-                
+
                 {/* Security Badge */}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -1289,20 +1375,24 @@ export function HomePageClient() {
       <VisualDivider />
 
       {/* Final CTA */}
-      <CinematicSection 
-        backgroundType="gradient" 
+      <CinematicSection
+        backgroundType="gradient"
         ambientColor="accent"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
         {/* Premium CTA background with subtle mesh */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900/10 via-background to-indigo-900/10" />
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <GradientMesh 
-            colors={["rgba(139, 92, 246, 0.08)", "rgba(0, 212, 251, 0.06)", "rgba(20, 184, 166, 0.04)"]}
+          <GradientMesh
+            colors={[
+              'rgba(139, 92, 246, 0.08)',
+              'rgba(0, 212, 251, 0.06)',
+              'rgba(20, 184, 166, 0.04)',
+            ]}
             className="opacity-30"
           />
         </div>
-        
+
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           {/* Premium CTA Container */}
           <motion.div
@@ -1325,17 +1415,20 @@ export function HomePageClient() {
                     <ArrowRight className="h-3 w-3" />
                     Ready to Begin
                   </motion.div>
-                  
+
                   <motion.h2
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3, duration: 0.8 }}
                     className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 max-w-4xl mx-auto"
                   >
-                    Move from tracking to governance.<br className="hidden sm:inline" />
-                    <span className="text-gradient">Run compliance as a system.</span>
+                    Move from tracking to governance.
+                    <br className="hidden sm:inline" />
+                    <span className="text-gradient">
+                      Run compliance as a system.
+                    </span>
                   </motion.h2>
-                  
+
                   <motion.div
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: 1 }}
@@ -1344,7 +1437,7 @@ export function HomePageClient() {
                   />
                 </div>
               </div>
-              
+
               {/* CTA Content */}
               <div className="px-8 sm:px-12 py-10 sm:py-12 text-center">
                 <motion.p
@@ -1353,9 +1446,11 @@ export function HomePageClient() {
                   transition={{ delay: 0.4, duration: 0.8 }}
                   className="text-lg sm:text-xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-10"
                 >
-                  Join the organizations that have transformed compliance from reactive burden to proactive competitive advantage. Experience operational certainty with FormaOS.
+                  Join the organizations that have transformed compliance from
+                  reactive burden to proactive competitive advantage. Experience
+                  operational certainty with FormaOS.
                 </motion.p>
-                
+
                 {/* Premium CTA Buttons */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -1363,23 +1458,23 @@ export function HomePageClient() {
                   transition={{ delay: 0.6, duration: 0.8 }}
                   className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-8"
                 >
-                  <Link 
-                    href="/auth/signup" 
+                  <Link
+                    href="/auth/signup"
                     className="group w-full sm:w-auto relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary to-secondary px-8 py-4 text-base font-semibold text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
                   >
                     <span className="relative z-10">Start Free Trial</span>
                     <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-secondary/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </Link>
-                  
-                  <Link 
-                    href="/contact" 
+
+                  <Link
+                    href="/contact"
                     className="group w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-2xl border-2 border-white/20 text-base font-semibold text-foreground/90 hover:bg-white/[0.08] hover:border-white/30 transition-all duration-300 backdrop-blur-sm"
                   >
                     <span>Request a Demo</span>
                     <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
                   </Link>
                 </motion.div>
-                
+
                 {/* Trust Indicators */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
