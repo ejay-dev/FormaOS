@@ -115,7 +115,7 @@ export default function SecurityPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-12 sm:py-16 lg:py-20 relative"
+        className="py-16 sm:py-20 lg:py-24 relative"
       >
         {/* Premium security background */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-background to-secondary/3" />
@@ -294,7 +294,7 @@ export default function SecurityPageContent() {
       <CinematicSection 
         backgroundType="nodes" 
         ambientColor="secondary"
-        className="py-12 sm:py-16 lg:py-20 relative"
+        className="py-16 sm:py-20 lg:py-24 relative"
       >
         {/* Premium evidence background */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50/10 via-background to-indigo-50/10" />
@@ -489,7 +489,7 @@ export default function SecurityPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="accent"
-        className="py-12 sm:py-16 lg:py-20 relative"
+        className="py-16 sm:py-20 lg:py-24 relative"
       >
         {/* Premium compliance background */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -636,7 +636,7 @@ export default function SecurityPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-12 sm:py-16 lg:py-20 relative"
+        className="py-16 sm:py-20 lg:py-24 relative"
       >
         {/* Premium security CTA background */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900/10 via-background to-violet-900/10" />

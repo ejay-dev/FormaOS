@@ -118,7 +118,7 @@ export default function ProductPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-12 sm:py-16 lg:py-20 relative"
+        className="py-16 sm:py-20 lg:py-24 relative"
       >
         {/* Premium layered background */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50/20 via-background to-slate-100/10" />
@@ -346,7 +346,7 @@ export default function ProductPageContent() {
       <CinematicSection 
         backgroundType="nodes" 
         ambientColor="secondary"
-        className="py-12 sm:py-16 lg:py-20 relative"
+        className="py-16 sm:py-20 lg:py-24 relative"
       >
         {/* Premium governance background */}
         <div className="absolute inset-0 bg-gradient-to-b from-blue-50/10 via-background to-indigo-50/10" />
@@ -526,7 +526,7 @@ export default function ProductPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="accent"
-        className="py-12 sm:py-16 lg:py-20 relative"
+        className="py-16 sm:py-20 lg:py-24 relative"
       >
         {/* Premium scale background with subtle mesh */}
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/10 via-background to-teal-50/10" />
@@ -705,7 +705,7 @@ export default function ProductPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-12 sm:py-16 lg:py-20 relative"
+        className="py-16 sm:py-20 lg:py-24 relative"
       >
         {/* Premium CTA background */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900/10 via-background to-indigo-900/10" />

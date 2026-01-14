@@ -103,7 +103,7 @@ export function StoryContent() {
       <CinematicSection 
         backgroundType="grid" 
         ambientColor="primary"
-        className="py-12 sm:py-16 lg:py-20 relative"
+        className="py-16 sm:py-20 lg:py-24 relative"
       >
         {/* Clean gradient background - NO motion elements */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-background to-secondary/3" />
@@ -147,7 +147,7 @@ export function StoryContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="secondary"
-        className="py-12 sm:py-16 lg:py-20"
+        className="py-16 sm:py-20 lg:py-24"
       >
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <MissionStatement
@@ -165,7 +165,7 @@ export function StoryContent() {
       <CinematicSection 
         backgroundType="nodes" 
         ambientColor="accent"
-        className="py-12 sm:py-16 lg:py-20"
+        className="py-16 sm:py-20 lg:py-24"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
@@ -234,7 +234,7 @@ export function StoryContent() {
       <CinematicSection 
         backgroundType="flow" 
         ambientColor="primary"
-        className="py-12 sm:py-16 lg:py-20"
+        className="py-16 sm:py-20 lg:py-24"
       >
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
@@ -262,7 +262,7 @@ export function StoryContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="secondary"
-        className="py-12 sm:py-16 lg:py-20 relative"
+        className="py-16 sm:py-20 lg:py-24 relative"
       >
         {/* Premium gradient mesh overlay */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
