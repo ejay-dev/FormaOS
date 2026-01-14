@@ -42,18 +42,18 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
 
           <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
-            {/* Logo with hover effect */}
-            <Link
-              href="/"
-              className="mk-logo-container flex items-center gap-3 group"
-            >
+            {/* Logo: mark + text (avoids stale wordmark asset caches) */}
+            <Link href="/" className="mk-logo-container flex items-center gap-2 group">
               <img
-                src={brand.logo.wordmarkDark}
+                src={brand.logo.mark}
                 alt={brand.appName}
-                width={180}
-                height={36}
-                className="select-none"
+                width={32}
+                height={32}
+                className="select-none rounded-md"
               />
+              <span className="text-[17px] sm:text-[18px] font-bold tracking-tight">
+                {brand.appName}
+              </span>
             </Link>
 
             {/* Desktop nav with animated underlines */}
@@ -195,14 +195,15 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
             <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-12 lg:py-16 grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
               {/* Brand column */}
               <div className="col-span-2 md:col-span-1 space-y-5">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <img
-                    src={brand.logo.wordmarkDark}
+                    src={brand.logo.mark}
                     alt={brand.appName}
-                    width={180}
-                    height={36}
-                    className="select-none"
+                    width={28}
+                    height={28}
+                    className="select-none rounded-md"
                   />
+                  <span className="text-[16px] font-semibold">{brand.appName}</span>
                 </div>
                 <p className="text-sm sm:text-[15px] text-foreground/70 leading-relaxed max-w-sm">
                   Compliance and governance operating system for regulated
