@@ -5,9 +5,9 @@ import { Menu, X } from "lucide-react";
 import { Sidebar } from "@/components/sidebar";
 import Button from "./ui/button";
 
-type RoleKey = "OWNER" | "COMPLIANCE_OFFICER" | "MANAGER" | "STAFF" | "VIEWER" | "AUDITOR";
+type UserRole = "viewer" | "member" | "admin" | "owner" | "staff" | "auditor";
 
-export function MobileSidebar({ role }: { role: RoleKey }) {
+export function MobileSidebar({ role }: { role: UserRole }) {
   const [open, setOpen] = useState(false);
 
   return (

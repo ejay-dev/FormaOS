@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { signOut } from "@/app/app/actions/logout";
 import {
   LayoutDashboard,
@@ -23,7 +24,7 @@ import {
 } from "lucide-react";
 import Button from "./ui/button";
 
-type RoleKey = "OWNER" | "COMPLIANCE_OFFICER" | "MANAGER" | "STAFF" | "VIEWER" | "AUDITOR";
+type UserRole = "viewer" | "member" | "admin" | "owner" | "staff" | "auditor";
 
 const ADMIN_NAV = [
   { name: "Dashboard", href: "/app", icon: LayoutDashboard, category: "Overview" },
@@ -48,13 +49,24 @@ const STAFF_NAV = [
   { name: "Evidence Vault", href: "/app/vault", icon: Lock, category: "Operations" },
 ];
 
-export function Sidebar({ role = "OWNER" }: { role?: RoleKey }) {
+export function Sidebar({ role = "owner" }: { role?: UserRole }) {
   const pathname = usePathname();
+  const router = useRouter();
 
-  const navigation = role === "STAFF" ? STAFF_NAV : ADMIN_NAV;
+  const navigation = role === "staff" || role === "member" || role === "viewer" ? STAFF_NAV : ADMIN_NAV;
   const categories = ["Overview", "Governance", "Operations", "Intelligence", "System"].filter((cat) =>
     navigation.some((item) => item.category === cat)
   );
+
+  /**
+   * ⚡ PERFORMANCE: Prefetch all routes on mount
+   * This loads route data in the background so clicks are instant
+   */
+  useEffect(() => {
+    navigation.forEach((item) => {
+      router.prefetch(item.href);
+    });
+  }, [router, navigation]);
 
   return (
     <div className="flex h-full w-full flex-col justify-between px-4 py-6">
@@ -83,6 +95,8 @@ export function Sidebar({ role = "OWNER" }: { role?: RoleKey }) {
                     <Link
                       key={item.name}
                       href={item.href}
+                      // ⚡ Prefetch on hover for even faster transitions
+                      onMouseEnter={() => router.prefetch(item.href)}
                       className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium transition-all ${
                         isActive
                           ? "bg-primary text-primary-foreground shadow-premium-md"

@@ -25,7 +25,7 @@ export async function GET() {
 
     // Get owner emails
     const { data: ownerships } = await admin
-      .from("organization_members")
+      .from("org_members")
       .select("organization_id, user_id")
       .eq("role", "owner");
 

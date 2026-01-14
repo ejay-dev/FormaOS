@@ -48,12 +48,15 @@ export function InviteMemberSheet() {
 
       if (!membership) throw new Error("No organization found")
 
-      // 2. Insert into org_invites
-      const { error } = await supabase.from("org_invites").insert({
+      // 2. Insert into team_invitations
+      const { error } = await supabase.from("team_invitations").insert({
         email,
         role,
         organization_id: membership.organization_id,
-        status: "pending"
+        token: require('crypto').randomBytes(32).toString('hex'),
+        invited_by: (await supabase.auth.getUser()).data.user?.id || '',
+        status: "pending",
+        expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
       })
 
       if (error) throw error

@@ -25,7 +25,7 @@ import Button from "./ui/button";
 // ✅ Notification Center Component
 import { NotificationCenter } from "@/components/notifications/notification-center";
 
-type RoleKey = "OWNER" | "COMPLIANCE_OFFICER" | "MANAGER" | "STAFF" | "VIEWER" | "AUDITOR";
+type UserRole = "viewer" | "member" | "admin" | "owner" | "staff" | "auditor";
 
 export function TopBar({
   orgName,
@@ -38,7 +38,7 @@ export function TopBar({
   userEmail: string;
   userId: string;
   orgId: string;
-  role: RoleKey;
+  role: UserRole;
 }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
