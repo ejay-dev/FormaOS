@@ -53,6 +53,12 @@ export async function GET(request: Request) {
   
   if (founderCheck) {
     console.log(`[auth/callback] ✅ FOUNDER DETECTED: ${data.user.email}`);
+    console.log("[auth/callback] 🔐 ADMIN GATE CHECK", {
+      email: data.user.email,
+      isFounder: founderCheck,
+      redirectTarget: "/admin/dashboard",
+      appBase,
+    });
     
     // Ensure founder has proper role in org_members
     const { data: founderMembership } = await admin
@@ -87,8 +93,8 @@ export async function GET(request: Request) {
         });
     }
     
-    console.log(`[auth/callback] ✅ Founder setup complete, redirecting to /admin`);
-    return NextResponse.redirect(`${appBase}/admin`);
+    console.log(`[auth/callback] ✅ Founder setup complete, redirecting to /admin/dashboard`);
+    return NextResponse.redirect(`${appBase}/admin/dashboard`);
   }
   
   console.log(`[auth/callback] ℹ️  Regular user (not founder), proceeding with org setup`);

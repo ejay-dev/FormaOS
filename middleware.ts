@@ -169,15 +169,17 @@ export async function middleware(request: NextRequest) {
       
       if (isUserFounder) {
         // ✅ FOUNDER → ALLOW ACCESS, bypass everything
-        console.log("[Middleware] ✅ FOUNDER ACCESS GRANTED", {
+        console.log("[Middleware] ✅ FOUNDER ACCESS GRANTED TO /admin", {
           email: userEmail ? userEmail.substring(0, 3) + "***" : "none",
           path: pathname,
+          redirecting: "ALLOW (no redirect, founder gets access)",
         });
         return response;
       } else {
         // ❌ NOT A FOUNDER → DENY ACCESS
         console.log("[Middleware] ❌ NON-FOUNDER BLOCKED FROM /admin", {
           email: userEmail ? userEmail.substring(0, 3) + "***" : "none",
+          redirectTo: "/pricing",
         });
         const url = request.nextUrl.clone();
         url.pathname = "/pricing";

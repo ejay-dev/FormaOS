@@ -1,0 +1,24 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="1024" height="1024" fill="url(#grad)" rx="200"/>
+  
+  <circle cx="512" cy="400" r="100" fill="white" opacity="0.95"/>
+  
+  <circle cx="280" cy="280" r="50" fill="white" opacity="0.8"/>
+  <circle cx="744" cy="280" r="50" fill="white" opacity="0.8"/>
+  <circle cx="180" cy="640" r="50" fill="white" opacity="0.8"/>
+  <circle cx="844" cy="640" r="50" fill="white" opacity="0.8"/>
+  <circle cx="512" cy="800" r="50" fill="white" opacity="0.8"/>
+  
+  <line x1="512" y1="400" x2="280" y2="280" stroke="white" stroke-width="4" opacity="0.7"/>
+  <line x1="512" y1="400" x2="744" y2="280" stroke="white" stroke-width="4" opacity="0.7"/>
+  <line x1="512" y1="400" x2="180" y2="640" stroke="white" stroke-width="4" opacity="0.7"/>
+  <line x1="512" y1="400" x2="844" y2="640" stroke="white" stroke-width="4" opacity="0.7"/>
+  <line x1="512" y1="400" x2="512" y2="800" stroke="white" stroke-width="4" opacity="0.7"/>
+</svg>
