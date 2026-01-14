@@ -141,10 +141,6 @@ export function HomePageClient() {
         ambientColor="primary"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
-        {/* Premium layered background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-50/20 via-background to-slate-100/10" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-primary/[0.02] via-transparent to-secondary/[0.02]" />
-        
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           {/* Enterprise Section Header */}
           <motion.div
@@ -673,10 +669,6 @@ export function HomePageClient() {
         ambientColor="secondary"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
-        {/* Premium contrast background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-100/10 via-background to-slate-50/5" />
-        <div className="absolute inset-0 bg-gradient-to-tl from-secondary/[0.02] via-transparent to-primary/[0.02]" />
-        
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           {/* Enterprise Section Header */}
           <motion.div
@@ -992,10 +984,6 @@ export function HomePageClient() {
         ambientColor="secondary"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
-        {/* Premium targeting background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/10 via-background to-indigo-50/10" />
-        <div className="absolute inset-0 bg-gradient-to-bl from-secondary/[0.02] via-transparent to-accent/[0.02]" />
-        
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           {/* Enterprise Targeting Header */}
           <motion.div
@@ -1139,10 +1127,6 @@ export function HomePageClient() {
         ambientColor="accent"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
-        {/* Premium security background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/10 via-background to-teal-50/10" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-accent/[0.02] via-transparent to-primary/[0.02]" />
-        
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           {/* Enterprise Security Header */}
           <motion.div

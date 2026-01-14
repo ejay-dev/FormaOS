@@ -141,9 +141,6 @@ export default function ContactPageContent({ searchParams, submitAction }: Conta
           ambientColor="primary"
           className="py-16 sm:py-20 lg:py-24 relative"
         >
-        {/* Clean gradient background - NO motion elements */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-background to-secondary/3" />
-        
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
             badge="Request Demo"

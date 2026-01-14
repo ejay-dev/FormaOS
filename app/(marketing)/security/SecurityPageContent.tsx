@@ -117,10 +117,6 @@ export default function SecurityPageContent() {
         ambientColor="primary"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
-        {/* Premium security background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-background to-secondary/3" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-blue-50/10 via-transparent to-violet-50/10" />
-        
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           {/* Enterprise Security Header */}
           <motion.div
@@ -296,10 +292,6 @@ export default function SecurityPageContent() {
         ambientColor="secondary"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
-        {/* Premium evidence background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-50/10 via-background to-indigo-50/10" />
-        <div className="absolute inset-0 bg-gradient-to-bl from-secondary/[0.02] via-transparent to-primary/[0.02]" />
-        
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           {/* Enterprise Evidence Header */}
           <motion.div
@@ -491,15 +483,6 @@ export default function SecurityPageContent() {
         ambientColor="accent"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
-        {/* Premium compliance background */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <GradientMesh 
-            colors={["rgba(139, 92, 246, 0.08)", "rgba(0, 212, 251, 0.06)", "rgba(20, 184, 166, 0.04)"]}
-            className="opacity-50"
-          />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/10 via-background to-cyan-50/10" />
-        
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           {/* Enterprise Compliance Header */}
           <motion.div

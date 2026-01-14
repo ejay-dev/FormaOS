@@ -119,10 +119,6 @@ export default function IndustriesPageContent() {
         ambientColor="secondary"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
-        {/* Premium industry background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-50/10 via-background to-blue-50/10" />
-        <div className="absolute inset-0 bg-gradient-to-bl from-secondary/[0.02] via-transparent to-primary/[0.02]" />
-        
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           {/* Enterprise Statement */}
           <motion.div
@@ -185,10 +181,6 @@ export default function IndustriesPageContent() {
         ambientColor="primary"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
-        {/* Premium verticals background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-background to-secondary/3" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-indigo-50/10 via-transparent to-emerald-50/10" />
-        
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           {/* Enterprise Verticals Header */}
           <motion.div
@@ -438,10 +430,6 @@ export default function IndustriesPageContent() {
         ambientColor="accent"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
-        {/* Premium principles background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/10 via-background to-cyan-50/10" />
-        <div className="absolute inset-0 bg-gradient-to-tl from-accent/[0.02] via-transparent to-primary/[0.02]" />
-        
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           {/* Enterprise Principles Header */}
           <motion.div

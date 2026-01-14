@@ -120,10 +120,6 @@ export default function ProductPageContent() {
         ambientColor="primary"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
-        {/* Premium layered background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-50/20 via-background to-slate-100/10" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-primary/[0.02] via-transparent to-secondary/[0.02]" />
-        
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           {/* Enterprise Section Header */}
           <motion.div
@@ -348,10 +344,6 @@ export default function ProductPageContent() {
         ambientColor="secondary"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
-        {/* Premium governance background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-50/10 via-background to-indigo-50/10" />
-        <div className="absolute inset-0 bg-gradient-to-bl from-secondary/[0.02] via-transparent to-primary/[0.02]" />
-        
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           {/* Enterprise Governance Header */}
           <motion.div
@@ -528,15 +520,6 @@ export default function ProductPageContent() {
         ambientColor="accent"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
-        {/* Premium scale background with subtle mesh */}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/10 via-background to-teal-50/10" />
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <GradientMesh 
-            colors={["rgba(139, 92, 246, 0.08)", "rgba(0, 212, 251, 0.06)", "rgba(20, 184, 166, 0.04)"]}
-            className="opacity-30"
-          />
-        </div>
-        
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           {/* Enterprise Scale Header */}
           <motion.div
@@ -707,9 +690,6 @@ export default function ProductPageContent() {
         ambientColor="primary"
         className="py-16 sm:py-20 lg:py-24 relative"
       >
-        {/* Premium CTA background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/10 via-background to-indigo-900/10" />
-        
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           {/* Premium CTA Container */}
           <motion.div
