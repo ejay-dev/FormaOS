@@ -35,9 +35,7 @@ BEGIN
 
   -- 2️⃣ Update org_members to ensure founder has 'owner' role
   UPDATE public.org_members
-  SET 
-    role = 'owner',
-    updated_at = now()
+  SET role = 'owner'
   WHERE user_id = v_user_id
     AND role != 'owner';
 
@@ -109,24 +107,16 @@ END $$;
 -- 6️⃣ Create a function to ensure founder role on login
 CREATE OR REPLACE FUNCTION public.ensure_founder_role()
 RETURNS TRIGGER AS $$
-DECLARE
-  v_org_id uuid;
 BEGIN
   -- Check if this is the founder email
   IF NEW.email = 'ejazhussaini313@gmail.com' THEN
-    -- Get the user's organization
-    SELECT organization_id INTO v_org_id
-    FROM public.org_members
+    -- Update role to owner for this user in all their org memberships
+    UPDATE public.org_members
+    SET role = 'owner'
     WHERE user_id = NEW.id
-    LIMIT 1;
-
-    -- Update role to owner if it's not already
-    IF v_org_id IS NOT NULL THEN
-      UPDATE public.org_members
-      SET role = 'owner'
-      WHERE user_id = NEW.id
-        AND role != 'owner';
-      
+      AND role != 'owner';
+    
+    IF FOUND THEN
       RAISE NOTICE 'Ensured founder role for user: %', NEW.id;
     END IF;
   END IF;
