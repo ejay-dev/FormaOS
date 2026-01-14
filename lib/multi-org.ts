@@ -5,7 +5,7 @@
  * Support for users belonging to multiple organizations
  */
 
-import { createClient } from '@/lib/supabase/server';
+import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import { getCached, CacheKeys, invalidateCache } from './cache';
 
 export interface Organization {

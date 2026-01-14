@@ -5,7 +5,7 @@
  * Analyze compliance risks using AI and machine learning
  */
 
-import { createClient } from '@/lib/supabase/server';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { logActivity } from '../audit-trail';
 import { sendNotification } from '../realtime';
 
@@ -64,7 +64,7 @@ export interface AIInsight {
 async function analyzeCertificateRisks(
   organizationId: string,
 ): Promise<RiskFactor[]> {
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
   const risks: RiskFactor[] = [];
 
   const { data: certificates } = await supabase
@@ -137,7 +137,7 @@ async function analyzeCertificateRisks(
 async function analyzeEvidenceRisks(
   organizationId: string,
 ): Promise<RiskFactor[]> {
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
   const risks: RiskFactor[] = [];
 
   const { data: tasks } = await supabase
@@ -177,7 +177,7 @@ async function analyzeEvidenceRisks(
  * Analyze overdue task risks
  */
 async function analyzeTaskRisks(organizationId: string): Promise<RiskFactor[]> {
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
   const risks: RiskFactor[] = [];
 
   const { data: tasks } = await supabase
@@ -235,7 +235,7 @@ async function analyzeTaskRisks(organizationId: string): Promise<RiskFactor[]> {
 async function analyzeWorkflowRisks(
   organizationId: string,
 ): Promise<RiskFactor[]> {
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
   const risks: RiskFactor[] = [];
 
   const { data: workflows } = await supabase
@@ -252,7 +252,7 @@ async function analyzeWorkflowRisks(
 
   // Group by workflow config
   const failuresByWorkflow: Record<string, number> = {};
-  workflows.forEach((wf) => {
+  workflows.forEach((wf: { workflow_id: string }) => {
     failuresByWorkflow[wf.workflow_id] =
       (failuresByWorkflow[wf.workflow_id] || 0) + 1;
   });
@@ -289,7 +289,7 @@ async function analyzeWorkflowRisks(
 async function detectComplianceGaps(
   organizationId: string,
 ): Promise<RiskFactor[]> {
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
   const risks: RiskFactor[] = [];
 
   // Check for inactive compliance activities
@@ -333,7 +333,7 @@ async function detectComplianceGaps(
 
     if (taskAssignments) {
       const assignmentCounts: Record<string, number> = {};
-      taskAssignments.forEach((t) => {
+      taskAssignments.forEach((t: { assigned_to: string }) => {
         assignmentCounts[t.assigned_to] =
           (assignmentCounts[t.assigned_to] || 0) + 1;
       });
@@ -480,7 +480,7 @@ function calculateOverallRiskScore(risks: RiskFactor[]): number {
 export async function performRiskAnalysis(
   organizationId: string,
 ): Promise<RiskAnalysisResult> {
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
 
   // Gather all risk factors
   const [certRisks, evidenceRisks, taskRisks, workflowRisks, gapRisks] =
@@ -583,31 +583,31 @@ export async function performRiskAnalysis(
   });
 
   // Log activity
-  await logActivity({
-    organization_id: organizationId,
-    user_id: '', // System action
-    action: 'analyze',
-    entity_type: 'risk_analysis',
-    entity_id: organizationId,
-    entity_name: 'Risk Analysis',
-    metadata: {
-      riskScore: overallRiskScore,
-      riskLevel,
-      totalRisks: allRisks.length,
+  await logActivity(
+    organizationId,
+    '', // System action
+    'view',
+    'report',
+    {
+      entityId: organizationId,
+      entityName: 'Risk Analysis',
+      details: {
+        riskScore: overallRiskScore,
+        riskLevel,
+        totalRisks: allRisks.length,
+      },
     },
-  });
+  );
 
   // Send notification for high/critical risk
   if (riskLevel === 'high' || riskLevel === 'critical') {
-    await sendNotification({
-      organization_id: organizationId,
-      user_id: '', // Will be sent to admins
-      type: 'risk_alert',
-      title: `${riskLevel.toUpperCase()} Risk Level Detected`,
-      message: `Risk analysis identified ${allRisks.length} risks requiring attention`,
-      link: '/dashboard/risk-analysis',
-      metadata: { riskScore: overallRiskScore, riskLevel },
-    });
+    await sendNotification(
+      '', // Will be sent to admins
+      `${riskLevel.toUpperCase()} Risk Level Detected`,
+      `Risk analysis identified ${allRisks.length} risks requiring attention`,
+      'warning',
+      '/dashboard/risk-analysis',
+    );
   }
 
   return {
@@ -633,7 +633,7 @@ export async function getRiskAnalysisHistory(
   organizationId: string,
   limit = 30,
 ): Promise<any[]> {
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
 
   const { data, error } = await supabase
     .from('risk_analyses')
@@ -653,7 +653,7 @@ export async function getRiskAnalysisHistory(
 export async function getAIInsights(
   organizationId: string,
 ): Promise<AIInsight[]> {
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
 
   const { data } = await supabase
     .from('risk_analyses')
@@ -673,7 +673,7 @@ export async function scheduleRiskAnalysis(
   organizationId: string,
   frequency: 'daily' | 'weekly' | 'monthly',
 ): Promise<void> {
-  const supabase = await createClient();
+  const supabase = await createSupabaseServerClient();
 
   await supabase.from('scheduled_tasks').insert({
     organization_id: organizationId,

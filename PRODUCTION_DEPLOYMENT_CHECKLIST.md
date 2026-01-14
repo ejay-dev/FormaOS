@@ -21,8 +21,8 @@ psql "postgresql://<your-connection-string>"
 \dv
 
 # Check RLS policies
-SELECT schemaname, tablename, policyname 
-FROM pg_policies 
+SELECT schemaname, tablename, policyname
+FROM pg_policies
 WHERE schemaname = 'public'
 ORDER BY tablename, policyname;
 
@@ -30,6 +30,7 @@ ORDER BY tablename, policyname;
 ```
 
 **Expected Output:**
+
 ```
 ✅ 11 Phase 5 tables created
 ✅ 10 Phase 6 tables created
@@ -176,6 +177,7 @@ curl https://app.formaos.com.au/api/health
 - [ ] AI API errors
 
 **Monitor These Metrics:**
+
 ```
 Dashboard Load Time: <2s
 API Response Time: <500ms
@@ -331,12 +333,14 @@ DROP VIEW IF EXISTS api_health CASCADE;
 ## Post-Deployment Checklist
 
 ### First Hour
+
 - [ ] Monitor error logs
 - [ ] Check user sign-ins
 - [ ] Verify dashboard loads
 - [ ] Test critical workflows
 
 ### First Day
+
 - [ ] Review performance metrics
 - [ ] Check rate limiting stats
 - [ ] Monitor email deliveries
@@ -344,6 +348,7 @@ DROP VIEW IF EXISTS api_health CASCADE;
 - [ ] Review AI API usage
 
 ### First Week
+
 - [ ] Analyze cache hit rates
 - [ ] Review workflow execution logs
 - [ ] Check for any RLS issues
@@ -357,14 +362,14 @@ DROP VIEW IF EXISTS api_health CASCADE;
 **Emergency Rollback:** Immediate (via Vercel dashboard or Git)  
 **Database Issues:** Check Supabase logs and status  
 **Redis Issues:** Check Upstash dashboard  
-**Email Issues:** Check Resend/SendGrid logs  
+**Email Issues:** Check Resend/SendGrid logs
 
 ---
 
 ## Completion Sign-Off
 
 - [ ] **Phase 5 Migration:** Executed successfully
-- [ ] **Phase 6 Migration:** Executed successfully  
+- [ ] **Phase 6 Migration:** Executed successfully
 - [ ] **Environment Variables:** All configured
 - [ ] **Dependencies:** Installed
 - [ ] **Staging Test:** All tests passed
@@ -377,8 +382,9 @@ DROP VIEW IF EXISTS api_health CASCADE;
 **Deployment Status:** ⏳ READY TO EXECUTE
 
 **Sign-Off:**
-- **Technical Lead:** _________________
-- **Date:** _________________
+
+- **Technical Lead:** ********\_********
+- **Date:** ********\_********
 - **Production URL:** https://app.formaos.com.au
 
 ---

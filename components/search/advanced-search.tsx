@@ -42,7 +42,7 @@ export default function AdvancedSearch({
   });
 
   const searchRef = useRef<HTMLDivElement>(null);
-  const debounceRef = useRef<NodeJS.Timeout>();
+  const debounceRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   // Debounced search
   useEffect(() => {
@@ -95,10 +95,15 @@ export default function AdvancedSearch({
 
     try {
       const params = new URLSearchParams({
-        orgId,
-        query,
-        ...filters,
+        orgId: orgId ?? '',
+        query: query ?? '',
+        dateFrom: filters.dateFrom ?? '',
+        dateTo: filters.dateTo ?? '',
       });
+
+      // Handle array filters separately
+      filters.types.forEach((type) => params.append('types', type));
+      filters.status.forEach((status) => params.append('status', status));
 
       const res = await fetch(`/api/search?${params}`);
       const data = await res.json();

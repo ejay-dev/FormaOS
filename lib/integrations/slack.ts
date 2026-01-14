@@ -5,7 +5,7 @@
  * Send notifications to Slack channels and users
  */
 
-import { createClient } from '@/lib/supabase/server';
+import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 
 export interface SlackConfig {
   organizationId: string;

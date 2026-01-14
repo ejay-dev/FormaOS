@@ -6,7 +6,7 @@
  */
 
 import Stripe from 'stripe';
-import { createClient } from '@/lib/supabase/server';
+import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 
 // Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {

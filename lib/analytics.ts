@@ -5,7 +5,7 @@
  * Data aggregation and analytics for compliance metrics
  */
 
-import { createClient } from '@/lib/supabase/server';
+import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 
 export interface ComplianceMetrics {
   totalCertificates: number;
@@ -62,13 +62,13 @@ export async function getComplianceMetrics(
 
   const totalCertificates = certificates?.length || 0;
   const activeCertificates =
-    certificates?.filter((c) => c.status === 'active').length || 0;
+    certificates?.filter((c: { status: string }) => c.status === 'active').length || 0;
   const expiredCertificates =
-    certificates?.filter((c) => c.expiry_date && new Date(c.expiry_date) < now)
+    certificates?.filter((c: { expiry_date?: string }) => c.expiry_date && new Date(c.expiry_date) < now)
       .length || 0;
   const expiringSoon =
     certificates?.filter(
-      (c) =>
+      (c: { expiry_date?: string }) =>
         c.expiry_date &&
         new Date(c.expiry_date) > now &&
         new Date(c.expiry_date) < thirtyDaysFromNow,
@@ -86,7 +86,7 @@ export async function getComplianceMetrics(
     .not('completed_at', 'is', null);
 
   const completionTimes =
-    tasks?.map((t) => {
+    tasks?.map((t: { created_at: string; completed_at: string }) => {
       const created = new Date(t.created_at).getTime();
       const completed = new Date(t.completed_at).getTime();
       return (completed - created) / (1000 * 60 * 60 * 24); // days

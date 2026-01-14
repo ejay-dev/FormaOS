@@ -6,7 +6,7 @@
  */
 
 import { Redis } from '@upstash/redis';
-import { createClient } from '@/lib/supabase/server';
+import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import { logActivity } from '../audit-trail';
 
 const redis = new Redis({

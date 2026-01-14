@@ -5,7 +5,7 @@
  * Track and manage versions of uploaded evidence files
  */
 
-import { createClient } from '@/lib/supabase/server';
+import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import { logActivity } from './audit-trail';
 import { sendNotification } from './realtime';
 

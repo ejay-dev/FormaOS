@@ -5,7 +5,7 @@
  * Two-Factor Authentication (2FA) and Single Sign-On (SSO)
  */
 
-import { createClient } from '@/lib/supabase/server';
+import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
 

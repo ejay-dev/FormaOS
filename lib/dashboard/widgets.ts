@@ -5,7 +5,7 @@
  * Customizable widgets for compliance dashboards
  */
 
-import { createClient } from '@/lib/supabase/server';
+import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 
 export type WidgetType =
   | 'risk_score'

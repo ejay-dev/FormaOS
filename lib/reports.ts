@@ -5,7 +5,7 @@
  * Generate professional PDF reports with charts and branding
  */
 
-import { createClient } from '@/lib/supabase/server';
+import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import {
   getComplianceMetrics,
   getTeamMetrics,

@@ -5,7 +5,7 @@
  * Rule-based automation for compliance workflows
  */
 
-import { createClient } from '@/lib/supabase/server';
+import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import { sendNotification, logActivity } from '@/lib/realtime';
 
 export type TriggerType =

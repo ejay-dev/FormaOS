@@ -5,7 +5,7 @@
  * Full-text search across all entities with filters
  */
 
-import { createClient } from '@/lib/supabase/server';
+import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import { getCached, CacheKeys } from './cache';
 
 export interface SearchResult {

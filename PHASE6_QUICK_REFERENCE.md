@@ -6,36 +6,42 @@
 ## 🎯 Quick Start
 
 ### Run Risk Analysis
+
 ```typescript
 import { performRiskAnalysis } from '@/lib/ai/risk-analyzer';
 const analysis = await performRiskAnalysis(organizationId);
 ```
 
 ### Run Compliance Scan
+
 ```typescript
 import { performComplianceScan } from '@/lib/compliance/scanner';
 const scan = await performComplianceScan(organizationId, 'soc2', 'full');
 ```
 
 ### Send Teams Notification
+
 ```typescript
 import { sendTeamsComplianceAlert } from '@/lib/integrations/teams';
 await sendTeamsComplianceAlert(orgId, 'high', { title: 'Alert', ... });
 ```
 
 ### Send Email
+
 ```typescript
 import { sendEmail } from '@/lib/notifications/email';
 await sendEmail({ template: 'task_assignment', data: {...}, ... });
 ```
 
 ### Get Widget Data
+
 ```typescript
 import { getWidgetData } from '@/lib/dashboard/widgets';
 const data = await getWidgetData('widget-1', 'risk_score', orgId);
 ```
 
 ### Check Rate Limit
+
 ```typescript
 import { checkRateLimit } from '@/lib/api/rate-limiter';
 const result = await checkRateLimit(orgId, 'professional', '/api/tasks');
@@ -68,24 +74,25 @@ migrations/
 
 ## 🗄️ Database Tables
 
-| Table | Purpose |
-|-------|---------|
-| `risk_analyses` | Risk assessment results |
-| `ai_insights` | AI-generated insights |
-| `email_logs` | Email delivery tracking |
-| `email_preferences` | User email settings |
-| `compliance_scans` | Scan results |
-| `scan_findings` | Individual findings |
-| `dashboard_layouts` | Widget configs |
-| `api_usage_logs` | API request logs |
-| `api_alert_config` | Alert thresholds |
-| `scheduled_tasks` | Automated tasks |
+| Table               | Purpose                 |
+| ------------------- | ----------------------- |
+| `risk_analyses`     | Risk assessment results |
+| `ai_insights`       | AI-generated insights   |
+| `email_logs`        | Email delivery tracking |
+| `email_preferences` | User email settings     |
+| `compliance_scans`  | Scan results            |
+| `scan_findings`     | Individual findings     |
+| `dashboard_layouts` | Widget configs          |
+| `api_usage_logs`    | API request logs        |
+| `api_alert_config`  | Alert thresholds        |
+| `scheduled_tasks`   | Automated tasks         |
 
 ---
 
 ## 🔑 Key Functions
 
 ### Risk Analyzer
+
 ```typescript
 performRiskAnalysis(orgId: string): Promise<RiskAnalysisResult>
 analyzeCertificateRisks(orgId: string): Promise<RiskFactor[]>
@@ -96,6 +103,7 @@ scheduleRiskAnalysis(orgId: string, frequency: string): Promise<void>
 ```
 
 ### Compliance Scanner
+
 ```typescript
 performComplianceScan(orgId: string, framework: string, scanType: string): Promise<ScanResult>
 getScanHistory(orgId: string, framework?: string): Promise<any[]>
@@ -104,6 +112,7 @@ scheduleComplianceScan(orgId: string, framework: string, frequency: string): Pro
 ```
 
 ### Teams Integration
+
 ```typescript
 sendTeamsTaskNotification(orgId: string, type: string, task: any): Promise<void>
 sendTeamsCertificateNotification(orgId: string, type: string, cert: any): Promise<void>
@@ -114,6 +123,7 @@ getTeamsStats(organizationId: string): Promise<any>
 ```
 
 ### Email System
+
 ```typescript
 sendEmail(options: EmailOptions): Promise<boolean>
 getEmailPreferences(userId: string, orgId: string): Promise<EmailPreferences>
@@ -123,6 +133,7 @@ getEmailStats(organizationId: string): Promise<any>
 ```
 
 ### Dashboard Widgets
+
 ```typescript
 getWidgetData(widgetId: string, type: WidgetType, orgId: string): Promise<WidgetData>
 getRiskScoreWidgetData(organizationId: string): Promise<any>
@@ -134,6 +145,7 @@ getDashboardLayout(organizationId: string): Promise<WidgetConfig[]>
 ```
 
 ### Rate Limiter
+
 ```typescript
 checkRateLimit(orgId: string, tier: RateLimitTier, endpoint: string): Promise<RateLimitResult>
 checkIpRateLimit(ipAddress: string): Promise<boolean>
@@ -149,6 +161,7 @@ setApiAlertThresholds(orgId: string, thresholds: any): Promise<void>
 ## 🚀 Deployment Steps
 
 ### 1. Environment Variables
+
 ```bash
 UPSTASH_REDIS_REST_URL=https://...
 UPSTASH_REDIS_REST_TOKEN=...
@@ -158,16 +171,19 @@ TEAMS_WEBHOOK_URL=https://...
 ```
 
 ### 2. Database Migration
+
 ```bash
 psql "postgresql://..." -f migrations/006_phase6_upgrades.sql
 ```
 
 ### 3. Install Dependencies
+
 ```bash
 npm install @upstash/redis
 ```
 
 ### 4. Deploy
+
 ```bash
 npm run build
 vercel --prod
@@ -177,12 +193,12 @@ vercel --prod
 
 ## 📊 Rate Limit Tiers
 
-| Tier | Per Minute | Per Hour | Per Day |
-|------|------------|----------|---------|
-| Free | 10 | 100 | 1,000 |
-| Starter | 60 | 1,000 | 10,000 |
-| Professional | 300 | 10,000 | 100,000 |
-| Enterprise | 1,000 | 50,000 | 500,000 |
+| Tier         | Per Minute | Per Hour | Per Day |
+| ------------ | ---------- | -------- | ------- |
+| Free         | 10         | 100      | 1,000   |
+| Starter      | 60         | 1,000    | 10,000  |
+| Professional | 300        | 10,000   | 100,000 |
+| Enterprise   | 1,000      | 50,000   | 500,000 |
 
 ---
 
@@ -229,14 +245,14 @@ vercel --prod
 
 ## ⚡ Performance
 
-| Feature | Performance |
-|---------|-------------|
-| Risk Analysis | 2-3 seconds |
-| Compliance Scan | 5-7 seconds |
-| Rate Limit Check | <5 ms |
-| Widget Load | 100-200 ms |
-| Email Send | <500 ms |
-| Teams Notification | <300 ms |
+| Feature            | Performance |
+| ------------------ | ----------- |
+| Risk Analysis      | 2-3 seconds |
+| Compliance Scan    | 5-7 seconds |
+| Rate Limit Check   | <5 ms       |
+| Widget Load        | 100-200 ms  |
+| Email Send         | <500 ms     |
+| Teams Notification | <300 ms     |
 
 ---
 
@@ -254,6 +270,7 @@ vercel --prod
 ## 📈 Monitoring
 
 ### Key Metrics
+
 ```typescript
 // Risk trends
 const history = await getRiskAnalysisHistory(orgId, 30);
@@ -272,11 +289,12 @@ const teamsStats = await getTeamsStats(orgId);
 ```
 
 ### Alert Thresholds
+
 ```typescript
 await setApiAlertThresholds(orgId, {
   errorRatePercent: 5.0,
   responseTimeMs: 2000,
-  requestsPerMinute: 500
+  requestsPerMinute: 500,
 });
 ```
 
@@ -285,6 +303,7 @@ await setApiAlertThresholds(orgId, {
 ## 🐛 Troubleshooting
 
 ### Risk Analysis Not Running
+
 ```typescript
 // Check scheduled tasks
 const tasks = await supabase
@@ -294,18 +313,21 @@ const tasks = await supabase
 ```
 
 ### Teams Webhook Failing
+
 ```typescript
 // Test integration
 const success = await testTeamsIntegration(orgId);
 ```
 
 ### Rate Limit Exceeded
+
 ```typescript
 // Check status
 const status = await getRateLimitStatus(orgId, tier);
 ```
 
 ### Email Not Sending
+
 ```typescript
 // Check preferences
 const prefs = await getEmailPreferences(userId, orgId);
@@ -325,6 +347,7 @@ const prefs = await getEmailPreferences(userId, orgId);
 ## 📞 Support
 
 For issues or questions:
+
 1. Check troubleshooting section above
 2. Review implementation summary
 3. Check database logs
@@ -333,4 +356,3 @@ For issues or questions:
 ---
 
 **Phase 6 Status:** ✅ Complete | **Production Ready** | **3,510 Lines of Code**
-
