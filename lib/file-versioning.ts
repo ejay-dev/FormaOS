@@ -190,20 +190,13 @@ export async function uploadNewVersion(
   });
 
   // Notify relevant users
-  await sendNotification({
-    organization_id: fileMetadata.organization_id,
-    user_id: userId,
-    type: 'file_version_uploaded',
-    title: 'New File Version',
-    message: `${file.name} has been updated to version ${newVersionNumber}`,
-    link: `/evidence/${fileMetadata.entity_id}`,
-    metadata: {
-      file_id: fileId,
-      version: newVersionNumber,
-      entity_type: fileMetadata.entity_type,
-      entity_id: fileMetadata.entity_id,
-    },
-  });
+  await sendNotification(
+    userId,
+    'New File Version',
+    `${file.name} has been updated to version ${newVersionNumber}`,
+    'info',
+    `/evidence/${fileMetadata.entity_id}`,
+  );
 
   return newVersion;
 }

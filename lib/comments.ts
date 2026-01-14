@@ -6,8 +6,8 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
-import { logActivity } from '../audit-trail';
-import { sendNotification } from '../realtime';
+import { logActivity } from '@/lib/audit-trail';
+import { sendNotification } from '@/lib/realtime';
 
 export interface Comment {
   id: string;
@@ -81,13 +81,13 @@ export async function createComment(
   // Send notifications to mentioned users
   await Promise.all(
     mentionedUserIds.map((mentionedUserId) =>
-      sendNotification(organizationId, mentionedUserId, {
-        type: 'mention',
-        title: 'You were mentioned in a comment',
-        message: data.content.substring(0, 100),
-        link: `/tasks/${data.entityId}#comment-${comment.id}`,
-        priority: 'normal',
-      }),
+      sendNotification(
+        mentionedUserId,
+        'You were mentioned in a comment',
+        data.content.substring(0, 100),
+        'info',
+        `/tasks/${data.entityId}#comment-${comment.id}`,
+      ),
     ),
   );
 

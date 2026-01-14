@@ -6,7 +6,7 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
-import { logActivity } from '../audit-trail';
+import { logActivity } from '@/lib/audit-trail';
 
 export type TeamsEventType =
   | 'task_created'

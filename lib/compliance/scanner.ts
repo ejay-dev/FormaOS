@@ -6,8 +6,8 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
-import { logActivity } from '../audit-trail';
-import { sendNotification } from '../realtime';
+import { logActivity } from '@/lib/audit-trail';
+import { sendNotification } from '@/lib/realtime';
 
 export type ComplianceFramework =
   | 'soc2'
@@ -532,15 +532,13 @@ export async function performComplianceScan(
 
   // Send notification if compliance score is low
   if (complianceScore < 70) {
-    await sendNotification({
-      organization_id: organizationId,
-      user_id: '',
-      type: 'compliance_alert',
-      title: `Low Compliance Score: ${complianceScore}%`,
-      message: `${framework.toUpperCase()} compliance scan identified ${nonCompliant} non-compliant items`,
-      link: `/dashboard/compliance/${scanId}`,
-      metadata: { scanId, complianceScore },
-    });
+    await sendNotification(
+      '', // System notification
+      `Low Compliance Score: ${complianceScore}%`,
+      `${framework.toUpperCase()} compliance scan identified ${nonCompliant} non-compliant items`,
+      'warning',
+      `/dashboard/compliance/${scanId}`,
+    );
   }
 
   return {

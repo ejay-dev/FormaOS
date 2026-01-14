@@ -6,8 +6,8 @@
  */
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { logActivity } from '../audit-trail';
-import { sendNotification } from '../realtime';
+import { logActivity } from '@/lib/audit-trail';
+import { sendNotification } from '@/lib/realtime';
 
 export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
 export type RiskCategory =

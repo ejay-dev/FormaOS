@@ -45,7 +45,10 @@ async function getCache() {
   if (cacheInstance) return cacheInstance;
 
   // Try Upstash Redis first
-  if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  if (
+    process.env.UPSTASH_REDIS_REST_URL &&
+    process.env.UPSTASH_REDIS_REST_TOKEN
+  ) {
     try {
       const { Redis } = await import('@upstash/redis');
       cacheInstance = new Redis({
