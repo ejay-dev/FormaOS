@@ -94,11 +94,11 @@ function ContactHero() {
               transition={{ delay: 0.7, duration: 0.8 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6"
             >
-              <Link href="#demo-form" className="w-full sm:w-auto rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors">
+              <Link href="#demo-form" className="w-full sm:w-auto btn btn-primary px-6 py-3 text-sm font-semibold text-primary-foreground">
                 Request Demo
               </Link>
-              <Link href="#contact-info" className="w-full sm:w-auto text-sm font-semibold leading-6 text-foreground hover:text-primary transition-colors flex items-center justify-center sm:justify-start">
-                Contact Info <ArrowRight className="ml-2 h-4 w-4" />
+              <Link href="#contact-info" className="w-full sm:w-auto btn btn-ghost px-6 py-3 text-sm font-semibold leading-6 flex items-center justify-center sm:justify-start gap-2">
+                Contact Info <ArrowRight className="h-4 w-4" />
               </Link>
             </motion.div>
           </div>

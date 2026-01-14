@@ -56,6 +56,7 @@ const NAV_SECTIONS = [
     title: "Operations",
     items: [
       { name: "Support", href: "/admin/support", icon: LifeBuoy, description: "Tickets & escalations" },
+      { name: "Audit Log", href: "/admin/audit", icon: Shield, description: "Administrative actions" },
       { name: "Settings", href: "/admin/settings", icon: Settings, description: "Platform configuration" },
     ]
   },
