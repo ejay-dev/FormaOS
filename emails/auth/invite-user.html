@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>You’re invited to FormaOS</title>
+    <style>
+      body {
+        background: #f6f8fb;
+        margin: 0;
+        padding: 0;
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+          Arial, sans-serif;
+        color: #111827;
+      }
+      .container {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 40px 24px;
+      }
+      .card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      }
+      .header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #f0f2f5;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .logo {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        background: #2563eb;
+        display: inline-block;
+      }
+      .brand {
+        font-size: 16px;
+        font-weight: 700;
+        color: #111827;
+      }
+      .content {
+        padding: 28px 24px;
+      }
+      h1 {
+        font-size: 22px;
+        margin: 0 0 8px;
+        color: #111827;
+      }
+      h2 {
+        font-size: 16px;
+        margin: 18px 0 8px;
+        color: #111827;
+      }
+      p {
+        margin: 0 0 14px;
+        color: #374151;
+        line-height: 1.6;
+      }
+      ul {
+        padding-left: 18px;
+        margin: 10px 0 0;
+      }
+      li {
+        margin: 6px 0;
+        color: #374151;
+      }
+      .cta {
+        display: inline-block;
+        background: #2563eb;
+        color: #ffffff !important;
+        text-decoration: none;
+        padding: 12px 18px;
+        border-radius: 10px;
+        font-weight: 600;
+      }
+      .muted {
+        font-size: 12px;
+        color: #6b7280;
+      }
+      .divider {
+        height: 1px;
+        background: #eef1f5;
+        margin: 18px 0;
+      }
+      .footer {
+        text-align: center;
+        margin-top: 12px;
+        font-size: 12px;
+        color: #9ca3af;
+      }
+      .pill {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #eef2ff;
+        color: #3730a3;
+        font-size: 12px;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <div class="header">
+          <img
+            src="https://app.formaos.com.au/brand/formaos-wordmark-light.svg"
+            width="160"
+            height="32"
+            alt="FormaOS"
+            style="display: block"
+          />
+        </div>
+        <div class="content">
+          <p class="pill">Invitation</p>
+          <h1>Welcome — you’re invited to FormaOS</h1>
+          <p>
+            Join your team on FormaOS to manage compliance, tasks, and audits in
+            one place.
+          </p>
+          <p style="margin: 22px 0">
+            <a
+              class="cta"
+              href="{{ .ActionLink }}"
+              target="_blank"
+              rel="noopener"
+              >Accept invitation</a
+            >
+          </p>
+
+          <h2>With your account you can</h2>
+          <ul>
+            <li>Track certificates, expiries, and training requirements</li>
+            <li>Assign and complete compliance tasks on time</li>
+            <li>Collaborate securely with your team and auditors</li>
+            <li>Generate real-time compliance and audit reports</li>
+          </ul>
+
+          <div class="divider"></div>
+          <p class="muted">
+            If you weren’t expecting this, you can safely ignore this email. If
+            the button doesn’t work, copy and paste this link:
+          </p>
+          <p class="muted" style="word-break: break-all">{{ .ActionLink }}</p>
+
+          <div class="divider"></div>
+          <p class="muted">
+            Need help? Email support at
+            <a
+              href="mailto:support@formaos.com.au"
+              style="color: #2563eb; text-decoration: none"
+              >support@formaos.com.au</a
+            >
+          </p>
+        </div>
+      </div>
+      <div class="footer">
+        © {{ .CurrentYear }} FormaOS ·
+        <a
+          href="https://formaos.com.au/privacy"
+          style="color: #9ca3af; text-decoration: none"
+          >Privacy</a
+        >
+        ·
+        <a
+          href="https://formaos.com.au/terms"
+          style="color: #9ca3af; text-decoration: none"
+          >Terms</a
+        >
+      </div>
+    </div>
+  </body>
+</html>

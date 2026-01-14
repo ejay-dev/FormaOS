@@ -1,7 +1,8 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Link from 'next/link';
+import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import {
   LayoutGrid,
   Users,
@@ -15,9 +16,9 @@ import {
   LogOut,
   Menu,
   X,
-} from "lucide-react";
-import { useState } from "react";
-import { createSupabaseClient } from "@/lib/supabase/client";
+} from 'lucide-react';
+import { useState } from 'react';
+import { createSupabaseClient } from '@/lib/supabase/client';
 
 /**
  * =========================================================
@@ -28,15 +29,15 @@ import { createSupabaseClient } from "@/lib/supabase/client";
  */
 
 const NAV_ITEMS = [
-  { name: "Dashboard", href: "/admin/dashboard", icon: LayoutGrid },
-  { name: "Users", href: "/admin/users", icon: Users },
-  { name: "Organizations", href: "/admin/orgs", icon: Building2 },
-  { name: "Billing", href: "/admin/billing", icon: CreditCard },
-  { name: "Trials", href: "/admin/trials", icon: Clock },
-  { name: "Features", href: "/admin/features", icon: Zap },
-  { name: "Security", href: "/admin/security", icon: Shield },
-  { name: "System", href: "/admin/system", icon: Activity },
-  { name: "Audit", href: "/admin/audit", icon: FileText },
+  { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutGrid },
+  { name: 'Users', href: '/admin/users', icon: Users },
+  { name: 'Organizations', href: '/admin/orgs', icon: Building2 },
+  { name: 'Billing', href: '/admin/billing', icon: CreditCard },
+  { name: 'Trials', href: '/admin/trials', icon: Clock },
+  { name: 'Features', href: '/admin/features', icon: Zap },
+  { name: 'Security', href: '/admin/security', icon: Shield },
+  { name: 'System', href: '/admin/system', icon: Activity },
+  { name: 'Audit', href: '/admin/audit', icon: FileText },
 ];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
@@ -46,7 +47,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const handleLogout = async () => {
     const client = createSupabaseClient();
     await client.auth.signOut();
-    window.location.href = "/";
+    window.location.href = '/';
   };
 
   return (
@@ -59,12 +60,21 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="lg:hidden p-2 hover:bg-slate-800 rounded-lg transition-colors"
           >
-            {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {sidebarOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
           </button>
           <Link href="/admin/dashboard" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-800 text-sm font-bold text-slate-100">
-              F
-            </div>
+            <Image
+              src="/brand/formaos-mark.svg"
+              alt="FormaOS"
+              width={32}
+              height={32}
+              priority
+              className="rounded-md"
+            />
             <div className="hidden sm:block">
               <div className="text-sm font-bold">FormaOS Admin</div>
               <div className="text-xs text-slate-500">Platform Console</div>
@@ -96,7 +106,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         {/* Sidebar */}
         <aside
           className={`fixed lg:static w-64 h-[calc(100vh-64px)] border-r border-slate-800 bg-slate-900 overflow-y-auto transition-transform duration-300 z-30 lg:translate-x-0 ${
-            sidebarOpen ? "translate-x-0" : "-translate-x-full"
+            sidebarOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
           <nav className="p-4 space-y-2">
@@ -104,7 +114,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               const Icon = item.icon;
               const isActive =
                 pathname === item.href ||
-                (item.href !== "/admin" && pathname.startsWith(item.href));
+                (item.href !== '/admin' && pathname.startsWith(item.href));
 
               return (
                 <Link
@@ -113,8 +123,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                   onClick={() => setSidebarOpen(false)}
                   className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all text-sm ${
                     isActive
-                      ? "bg-slate-800 text-slate-50 border border-slate-700"
-                      : "text-slate-400 hover:text-slate-100 hover:bg-slate-800/50"
+                      ? 'bg-slate-800 text-slate-50 border border-slate-700'
+                      : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/50'
                   }`}
                 >
                   <Icon className="h-4 w-4 flex-shrink-0" />
@@ -127,9 +137,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
         {/* Main Content */}
         <main className="flex-1 overflow-auto">
-          <div className="p-6 md:p-8 max-w-[1600px] mx-auto">
-            {children}
-          </div>
+          <div className="p-6 md:p-8 max-w-[1600px] mx-auto">{children}</div>
         </main>
       </div>
 
