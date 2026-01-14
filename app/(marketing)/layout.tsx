@@ -100,7 +100,7 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
                   {
                     '@type': 'ContactPoint',
                     contactType: 'sales',
-                    email: 'sales@formaos.com',
+                    email: `sales@${brand.domain}`,
                   },
                 ],
               },
