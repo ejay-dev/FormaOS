@@ -86,27 +86,28 @@ export function CinematicSection({
   );
 }
 
-// Visual separator with gradient and glow
+// Thin, elegant visual separator - premium minimal design
 export function VisualDivider({ gradient = true }: { gradient?: boolean }) {
   return (
     <motion.div 
       initial={{ opacity: 0, scaleX: 0 }}
       whileInView={{ opacity: 1, scaleX: 1 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8 }}
-      className="relative h-px w-full my-24 md:my-32"
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="relative w-full my-12 sm:my-16"
     >
-      <div className={`absolute inset-0 ${gradient ? 'bg-gradient-to-r from-transparent via-primary/40 to-transparent' : 'bg-border/30'}`} />
-      {gradient && (
+      {gradient ? (
         <>
-          {/* Center glow orbs */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-4 w-48 bg-primary/20 blur-xl" />
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-2 w-24 bg-primary/50 blur-md" />
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-1 w-12 bg-primary/80 blur-sm" />
-          {/* Side accent glows */}
-          <div className="absolute left-1/4 top-1/2 -translate-y-1/2 h-2 w-16 bg-secondary/30 blur-lg" />
-          <div className="absolute right-1/4 top-1/2 -translate-y-1/2 h-2 w-16 bg-accent/30 blur-lg" />
+          {/* Premium gradient line */}
+          <div className="h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+          {/* Subtle glass-style backing */}
+          <div className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent backdrop-blur-sm" />
+          {/* Minimal center accent */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[2px] w-24 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20 rounded-full blur-sm" />
         </>
+      ) : (
+        /* Simple minimal line */
+        <div className="h-px bg-white/10 backdrop-blur-sm" />
       )}
     </motion.div>
   );
