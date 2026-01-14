@@ -124,6 +124,7 @@ export default function IndustriesPageContent() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.8 }}
             className="text-center mb-12 sm:mb-16"
           >
@@ -144,6 +145,7 @@ export default function IndustriesPageContent() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.8 }}
             className="max-w-4xl mx-auto"
           >
