@@ -3,6 +3,7 @@
 ## Pre-Deployment Checklist
 
 ### Code Quality (Estimated time: 10 minutes)
+
 - [ ] Run tests locally: `npm test` → All passing
 - [ ] Run linter: `npm run lint` → No errors
 - [ ] Run build: `npm run build` → Completes successfully
@@ -10,12 +11,14 @@
 - [ ] Create deployment branch: `git checkout -b deploy/$(date +%Y%m%d)`
 
 ### Security & Compliance (Estimated time: 5 minutes)
+
 - [ ] Audit dependencies: `npm audit` → 0 high vulnerabilities
 - [ ] Review recent commits: `git log --oneline -10`
 - [ ] Verify no secrets in code: `git grep -i "password\|secret\|key" -- '*.ts' '*.tsx'`
 - [ ] Check environment variables are configured in Vercel
 
 ### Database (Estimated time: 5 minutes)
+
 - [ ] Backup production database
   ```bash
   # Via Supabase dashboard: Backups → Download backup
@@ -25,6 +28,7 @@
 - [ ] Test database queries locally
 
 ### Performance (Estimated time: 5 minutes)
+
 - [ ] Check Core Web Vitals target < 2.5s LCP
 - [ ] Verify image optimization: `npm run build` → "Optimized X images"
 - [ ] Check bundle size: `npm run build-stats` → No unexpected increases
@@ -55,17 +59,20 @@ Vercel will automatically deploy `develop` branch to staging URL.
 ### 2. Monitor Staging Deployment (5 min)
 
 **Vercel Dashboard:**
+
 ```
 https://vercel.com/dashboard → Select FormaOS → Deployments
 ```
 
 **Check:**
+
 - [ ] Build completes ✓
 - [ ] No console errors
 - [ ] Lighthouse score > 90
 - [ ] All environment variables loaded
 
 **Test Staging Environment:**
+
 ```bash
 # Visit staging URL
 https://staging.formaos.com
@@ -102,6 +109,7 @@ curl -X GET https://staging.formaos.com/api/org/overview \
 ### 5. Approval Gate
 
 **Notify stakeholders:**
+
 ```
 📊 Staging Deployment Complete
 
@@ -131,12 +139,14 @@ git push origin v1.2.3
 ### 2. Deploy to Production (Vercel Auto-Deploy)
 
 **Manual trigger if needed:**
+
 ```bash
 # Via Vercel CLI
 vercel promote staging.formaos.com --prod
 ```
 
 **Or via GitHub:**
+
 1. Go to GitHub repository
 2. Releases → Draft new release
 3. Select tag: `v1.2.3`
@@ -145,6 +155,7 @@ vercel promote staging.formaos.com --prod
 ### 3. Monitor Production Deployment (10 min)
 
 **Real-time Monitoring:**
+
 ```bash
 # Vercel logs
 vercel logs --prod
@@ -154,16 +165,19 @@ curl https://formaos.com/api/monitoring/health
 ```
 
 **Metrics to Watch:**
+
 - Error rate < 0.5%
 - Response time < 500ms
 - API uptime 99.9%
 
 **Sentry Monitoring:**
+
 ```
 https://sentry.io/organizations/formaos/issues/
 ```
 
 **DataDog Dashboard:**
+
 ```
 https://app.datadoghq.com/dashboard/
 ```
@@ -269,6 +283,7 @@ vercel logs --prod --follow
 ### Automatic Rollback
 
 **Vercel automatically rolls back if:**
+
 - Build fails
 - Deployment fails
 - Health checks fail (if configured)
@@ -337,6 +352,7 @@ curl https://formaos.com/api/monitoring/metrics | jq '.avgResponseTime'
 
 ```markdown
 ## Deployment: v1.2.3
+
 - **Date**: 2026-01-14
 - **Duration**: 4 min
 - **Status**: ✅ Successful
@@ -407,7 +423,7 @@ SELECT * FROM org_members WHERE role NOT IN ('owner','admin','member','viewer');
 COPY corrupted_data TO '/tmp/backup.csv';
 
 # 3. Fix corruption
-UPDATE org_members SET role = 'member' 
+UPDATE org_members SET role = 'member'
 WHERE role NOT IN ('owner','admin','member','viewer');
 
 # 4. Verify integrity
@@ -436,28 +452,31 @@ SELECT role, COUNT(*) FROM org_members GROUP BY role;
 
 ### Production Alerts
 
-| Alert | Threshold | Action |
-|-------|-----------|--------|
-| Error Rate | > 1% | Page on-call engineer |
-| Response Time | > 2s avg | Investigate, possibly rollback |
-| CPU Usage | > 80% | Scale up, investigate |
-| Memory Usage | > 90% | Restart service, investigate |
-| Database Query Time | > 3s | Optimize query, scale DB |
-| SSL Certificate | < 7 days to expiry | Renew certificate |
+| Alert               | Threshold          | Action                         |
+| ------------------- | ------------------ | ------------------------------ |
+| Error Rate          | > 1%               | Page on-call engineer          |
+| Response Time       | > 2s avg           | Investigate, possibly rollback |
+| CPU Usage           | > 80%              | Scale up, investigate          |
+| Memory Usage        | > 90%              | Restart service, investigate   |
+| Database Query Time | > 3s               | Optimize query, scale DB       |
+| SSL Certificate     | < 7 days to expiry | Renew certificate              |
 
 ### Monitoring Dashboards
 
 **Vercel Analytics:**
+
 ```
 https://vercel.com/dashboard → FormaOS → Analytics
 ```
 
 **Sentry:**
+
 ```
 https://sentry.io/organizations/formaos/
 ```
 
 **DataDog:**
+
 ```
 https://app.datadoghq.com/
 ```
@@ -476,11 +495,13 @@ https://app.datadoghq.com/
 ## Deployment Contacts
 
 **On-Call Team:**
+
 - Lead: @ejay-dev
 - Backup: @team-member
 - On-Call Slack: #formaos-oncall
 
 **Escalation:**
+
 - P1 (Critical): Call 1-800-FORMAOS
 - P2 (High): Slack @formaos-team
 - P3 (Medium): Email support@formaos.com

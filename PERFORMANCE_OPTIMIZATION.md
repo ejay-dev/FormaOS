@@ -5,6 +5,7 @@
 ### Current Metrics Baseline
 
 **Before Optimization:**
+
 - Page Load: ~2.5s
 - First Contentful Paint (FCP): ~1.2s
 - Largest Contentful Paint (LCP): ~2.1s
@@ -12,6 +13,7 @@
 - Memory Usage: ~45MB
 
 ### Performance Goals
+
 - Page Load: < 1.5s
 - FCP: < 0.9s
 - LCP: < 1.5s
@@ -25,6 +27,7 @@
 ### Problematic Queries
 
 #### ❌ BEFORE: N+1 Query Problem
+
 ```typescript
 // BAD: Fetches all members, then queries role for each
 const members = await supabase.from('org_members').select('*').limit(100);
@@ -37,28 +40,30 @@ for (const member of members.data) {
 ```
 
 #### ✅ AFTER: Single Query with Join
+
 ```typescript
 // GOOD: Single query with relationship
 const { data, error } = await supabase
   .from('org_members')
-  .select(`
+  .select(
+    `
     *,
     user_roles!inner(
       role,
       permissions
     )
-  `)
+  `,
+  )
   .limit(100);
 ```
 
 ### Query Optimization Patterns
 
 #### Pattern 1: Select Only Needed Columns
+
 ```typescript
 // ❌ BAD: Selects everything
-const members = await supabase
-  .from('org_members')
-  .select('*');
+const members = await supabase.from('org_members').select('*');
 
 // ✅ GOOD: Select specific columns
 const members = await supabase
@@ -67,6 +72,7 @@ const members = await supabase
 ```
 
 #### Pattern 2: Use Filters Early
+
 ```typescript
 // ❌ BAD: Filter in application
 const allMembers = await supabase.from('org_members').select('*');
@@ -80,6 +86,7 @@ const admins = await supabase
 ```
 
 #### Pattern 3: Batch Operations
+
 ```typescript
 // ❌ BAD: Multiple queries
 for (const userId of userIds) {
@@ -100,7 +107,8 @@ await supabase.from('user_compliance').insert(rows);
 export async function getOrgOverviewOptimized(orgId: string) {
   const { data, error } = await supabase
     .from('organizations')
-    .select(`
+    .select(
+      `
       id,
       name,
       created_at,
@@ -113,7 +121,8 @@ export async function getOrgOverviewOptimized(orgId: string) {
       compliance_records!inner(
         id
       )
-    `)
+    `,
+    )
     .eq('id', orgId)
     .single();
 
@@ -201,13 +210,18 @@ export async function getPersonalComplianceOptimized(
 ### Redis Caching
 
 #### Setup
+
 ```typescript
 // lib/cache.ts
 import Redis from 'ioredis';
 
 const redis = new Redis(process.env.REDIS_URL);
 
-export async function getCached<T>(key: string, fn: () => Promise<T>, ttl = 300) {
+export async function getCached<T>(
+  key: string,
+  fn: () => Promise<T>,
+  ttl = 300,
+) {
   // Try cache first
   const cached = await redis.get(key);
   if (cached) return JSON.parse(cached) as T;
@@ -227,6 +241,7 @@ export async function invalidateCache(key: string) {
 ```
 
 #### Usage
+
 ```typescript
 // Cache organization overview for 5 minutes
 const orgOverview = await getCached(
@@ -250,11 +265,11 @@ export const cacheKeys = {
   // Organization
   ORG_OVERVIEW: (orgId: string) => `org:${orgId}:overview`,
   ORG_MEMBERS: (orgId: string) => `org:${orgId}:members`,
-  
+
   // User
   USER_COMPLIANCE: (userId: string) => `user:${userId}:compliance`,
   USER_TASKS: (userId: string) => `user:${userId}:tasks`,
-  
+
   // Team
   TEAM_STATS: (orgId: string) => `team:${orgId}:stats`,
 };
@@ -273,6 +288,7 @@ async function onMemberRoleChanged(orgId: string, userId: string) {
 ## 4. Frontend Optimization
 
 ### Code Splitting
+
 ```typescript
 // Load components only when needed
 import dynamic from 'next/dynamic';
@@ -293,6 +309,7 @@ export function Dashboard({ role }: { role: string }) {
 ```
 
 ### Image Optimization
+
 ```typescript
 import Image from 'next/image';
 
@@ -311,6 +328,7 @@ import Image from 'next/image';
 ```
 
 ### Memoization
+
 ```typescript
 import { memo, useMemo } from 'react';
 
@@ -334,6 +352,7 @@ export function MemberList({ members }) {
 ## 5. Performance Monitoring
 
 ### Monitoring Integration
+
 ```typescript
 // pages/app/page.tsx
 'use client';
@@ -350,6 +369,7 @@ export default function Dashboard() {
 ```
 
 ### Track API Performance
+
 ```typescript
 // lib/api-client.ts
 import { apiHealthMonitor } from '@/lib/monitoring';
@@ -393,16 +413,19 @@ export async function apiRequest(method: string, path: string, options?: any) {
 ### Monitoring Dashboards
 
 **Vercel Analytics**
+
 ```
 Dashboard → Settings → Analytics
 ```
 
 **Google PageSpeed Insights**
+
 ```
 https://pagespeed.web.dev
 ```
 
 **Monitoring Service Dashboard**
+
 ```
 GET /api/monitoring/health
 GET /api/monitoring/metrics
@@ -413,31 +436,35 @@ GET /api/monitoring/metrics
 ## 7. Expected Improvements
 
 ### Load Time Reduction
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| Page Load | 2.5s | 1.2s | 52% faster |
-| FCP | 1.2s | 0.7s | 42% faster |
-| LCP | 2.1s | 1.0s | 52% faster |
-| TTI | 3.0s | 1.5s | 50% faster |
+
+| Metric    | Before | After | Improvement |
+| --------- | ------ | ----- | ----------- |
+| Page Load | 2.5s   | 1.2s  | 52% faster  |
+| FCP       | 1.2s   | 0.7s  | 42% faster  |
+| LCP       | 2.1s   | 1.0s  | 52% faster  |
+| TTI       | 3.0s   | 1.5s  | 50% faster  |
 
 ### Resource Usage
+
 | Resource | Before | After | Reduction |
-|----------|--------|-------|-----------|
-| Memory | 45MB | 28MB | 38% less |
-| Network | 850KB | 420KB | 51% less |
-| CPU | 35% | 12% | 66% less |
+| -------- | ------ | ----- | --------- |
+| Memory   | 45MB   | 28MB  | 38% less  |
+| Network  | 850KB  | 420KB | 51% less  |
+| CPU      | 35%    | 12%   | 66% less  |
 
 ---
 
 ## 8. Ongoing Optimization
 
 ### Monthly Review
+
 - Check Core Web Vitals trends
 - Review slowest API endpoints
 - Analyze user performance metrics
 - Cache hit rates
 
 ### Quarterly Updates
+
 - Profile dashboard under load
 - Update database indexes
 - Review and update caching strategy

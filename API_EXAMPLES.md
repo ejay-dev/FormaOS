@@ -3,6 +3,7 @@
 ## JavaScript/TypeScript
 
 ### Installation
+
 ```bash
 npm install @formaos/sdk
 # or
@@ -10,6 +11,7 @@ yarn add @formaos/sdk
 ```
 
 ### Basic Setup
+
 ```typescript
 import { FormaOS } from '@formaos/sdk';
 
@@ -20,6 +22,7 @@ const client = new FormaOS({
 ```
 
 ### Get Organization Overview
+
 ```typescript
 async function getOrgStats() {
   try {
@@ -38,6 +41,7 @@ getOrgStats();
 ```
 
 ### List Team Members
+
 ```typescript
 async function listTeamMembers() {
   const members = await client.members.list({
@@ -57,6 +61,7 @@ listTeamMembers();
 ```
 
 ### Invite Team Member
+
 ```typescript
 async function inviteNewMember() {
   const invitation = await client.members.invite({
@@ -71,6 +76,7 @@ inviteNewMember();
 ```
 
 ### Get Personal Tasks
+
 ```typescript
 async function getMyTasks() {
   const tasks = await client.tasks.list();
@@ -87,6 +93,7 @@ getMyTasks();
 ```
 
 ### Upload Evidence
+
 ```typescript
 async function uploadCompliance() {
   const result = await client.evidence.upload({
@@ -102,6 +109,7 @@ uploadCompliance();
 ```
 
 ### Error Handling
+
 ```typescript
 async function handleErrors() {
   try {
@@ -115,7 +123,11 @@ async function handleErrors() {
         console.error('Invalid or expired authentication');
         break;
       case 'RATE_LIMIT':
-        console.error('Too many requests. Try again in:', error.retryAfter, 'seconds');
+        console.error(
+          'Too many requests. Try again in:',
+          error.retryAfter,
+          'seconds',
+        );
         break;
       default:
         console.error('API error:', error.message);
@@ -131,6 +143,7 @@ handleErrors();
 ## cURL Examples
 
 ### Get Organization Overview
+
 ```bash
 curl -X GET https://formaos.com/api/org/overview \
   -H "Authorization: Bearer your_jwt_token" \
@@ -138,12 +151,14 @@ curl -X GET https://formaos.com/api/org/overview \
 ```
 
 ### List Team Members with Pagination
+
 ```bash
 curl -X GET "https://formaos.com/api/org/members?limit=10&offset=0&role=member" \
   -H "Authorization: Bearer your_jwt_token"
 ```
 
 ### Invite New Member
+
 ```bash
 curl -X POST https://formaos.com/api/org/members/invite \
   -H "Authorization: Bearer your_jwt_token" \
@@ -155,6 +170,7 @@ curl -X POST https://formaos.com/api/org/members/invite \
 ```
 
 ### Upload Evidence File
+
 ```bash
 curl -X POST https://formaos.com/api/org/evidence \
   -H "Authorization: Bearer your_jwt_token" \
@@ -164,6 +180,7 @@ curl -X POST https://formaos.com/api/org/evidence \
 ```
 
 ### Get Personal Tasks
+
 ```bash
 curl -X GET https://formaos.com/api/org/tasks \
   -H "Authorization: Bearer your_jwt_token"
@@ -174,11 +191,13 @@ curl -X GET https://formaos.com/api/org/tasks \
 ## Python Examples
 
 ### Installation
+
 ```bash
 pip install formaos
 ```
 
 ### Basic Usage
+
 ```python
 from formaos import FormaOS
 
@@ -203,6 +222,7 @@ print(f"Invitation sent! Expires: {invitation['expiresAt']}")
 ```
 
 ### Batch Operations
+
 ```python
 # Invite multiple members
 emails = ['user1@company.com', 'user2@company.com', 'user3@company.com']
@@ -216,6 +236,7 @@ for email in emails:
 ```
 
 ### Handling Permissions
+
 ```python
 from formaos.exceptions import PermissionDenied
 
@@ -231,11 +252,13 @@ except PermissionDenied:
 ## Go Examples
 
 ### Installation
+
 ```bash
 go get github.com/formaos/go-sdk
 ```
 
 ### Basic Usage
+
 ```go
 package main
 
@@ -302,13 +325,13 @@ async function generateComplianceReport() {
 ```typescript
 async function checkUserPermission(permission: string) {
   const user = await client.auth.getCurrentUser();
-  
+
   const hasPermission = user.permissions.includes(permission);
-  
+
   if (!hasPermission) {
     throw new Error(`User ${user.email} does not have ${permission}`);
   }
-  
+
   return true;
 }
 
@@ -337,7 +360,7 @@ async function inviteTeam(emails: string[], role: string = 'member') {
 // Usage
 const results = await inviteTeam(
   ['alice@company.com', 'bob@company.com'],
-  'member'
+  'member',
 );
 console.table(results);
 ```
@@ -368,11 +391,13 @@ async function exportMemberDirectory() {
 ## Best Practices
 
 1. **Store API Keys Securely**
+
    ```typescript
    const apiKey = process.env.FORMAOS_API_KEY; // Never hardcode
    ```
 
 2. **Implement Retry Logic**
+
    ```typescript
    async function withRetry(fn, maxAttempts = 3) {
      for (let i = 0; i < maxAttempts; i++) {
@@ -387,6 +412,7 @@ async function exportMemberDirectory() {
    ```
 
 3. **Handle Rate Limits**
+
    ```typescript
    if (error.code === 'RATE_LIMIT') {
      const retryAfter = error.retryAfter || 60;
@@ -396,15 +422,16 @@ async function exportMemberDirectory() {
    ```
 
 4. **Cache When Possible**
+
    ```typescript
    const cache = new Map();
-   
+
    async function getMembersWithCache() {
      if (cache.has('members')) return cache.get('members');
-     
+
      const members = await client.members.list();
      cache.set('members', members);
-     
+
      // Invalidate after 5 minutes
      setTimeout(() => cache.delete('members'), 5 * 60 * 1000);
      return members;

@@ -3,18 +3,21 @@
 ## Development Environment
 
 ### Prerequisites
+
 - Node.js 18+ or later
 - npm or yarn package manager
 - Git
 - VS Code (recommended)
 
 ### Step 1: Clone Repository
+
 ```bash
 git clone https://github.com/ejay-dev/FormaOS.git
 cd FormaOS
 ```
 
 ### Step 2: Install Dependencies
+
 ```bash
 npm install
 ```
@@ -53,6 +56,7 @@ NEXT_PUBLIC_ENVIRONMENT=development
 4. Copy `URL` and `anon key` to `.env.local`
 
 ### Step 5: Run Development Server
+
 ```bash
 npm run dev
 ```
@@ -198,6 +202,7 @@ volumes:
 ```
 
 ### Build and Run
+
 ```bash
 # Build image
 docker build -t formaos:latest .
@@ -246,7 +251,7 @@ ALTER TABLE org_members ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "users_can_see_own_org"
   ON organizations FOR SELECT
   USING (id IN (
-    SELECT org_id FROM org_members 
+    SELECT org_id FROM org_members
     WHERE user_id = auth.uid()
   ));
 
@@ -254,7 +259,7 @@ CREATE POLICY "users_can_see_own_org"
 CREATE POLICY "users_can_see_org_members"
   ON org_members FOR SELECT
   USING (org_id IN (
-    SELECT org_id FROM org_members 
+    SELECT org_id FROM org_members
     WHERE user_id = auth.uid()
   ));
 ```
@@ -300,6 +305,7 @@ echo "Open http://localhost:3000 in your browser"
 ```
 
 ### Run Setup Script
+
 ```bash
 chmod +x scripts/setup.sh
 ./scripts/setup.sh
@@ -312,6 +318,7 @@ chmod +x scripts/setup.sh
 ### Issue: "Module not found" errors
 
 **Solution:**
+
 ```bash
 # Clear cache and reinstall
 rm -rf node_modules package-lock.json
@@ -322,6 +329,7 @@ npm run build
 ### Issue: Supabase connection fails
 
 **Checklist:**
+
 - ✓ Verify SUPABASE_URL is correct
 - ✓ Verify SUPABASE_ANON_KEY is correct
 - ✓ Check internet connection
@@ -336,6 +344,7 @@ curl -H "apikey: $NEXT_PUBLIC_SUPABASE_ANON_KEY" \
 ### Issue: Authentication fails
 
 **Solution:**
+
 - Verify AUTH_SECRET is set (32+ random characters)
 - Check callback URL matches Supabase config
 - Clear browser cookies and try again
@@ -343,6 +352,7 @@ curl -H "apikey: $NEXT_PUBLIC_SUPABASE_ANON_KEY" \
 ### Issue: Redis connection error
 
 **Solution:**
+
 ```bash
 # Check if Redis is running
 redis-cli ping
@@ -403,12 +413,14 @@ Before deploying to production:
 ## Common Tasks
 
 ### Update Dependencies
+
 ```bash
 npm update
 npm audit fix
 ```
 
 ### Run Tests
+
 ```bash
 npm test
 npm run test:watch
@@ -416,12 +428,14 @@ npm run test:coverage
 ```
 
 ### Generate Build Report
+
 ```bash
 npm run build
 npm run build-stats
 ```
 
 ### Clean Build
+
 ```bash
 rm -rf .next node_modules
 npm install
