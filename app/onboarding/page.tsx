@@ -1,11 +1,11 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
-import { Building2, ShieldCheck, Sparkles } from "lucide-react";
-import { SubmitButton } from "@/components/ui/submit-button";
-import { applyIndustryPack } from "@/app/app/onboarding/actions";
-import { createInvitation } from "@/lib/invitations/create-invitation";
-import { resolvePlanKey, PLAN_CATALOG } from "@/lib/plans";
-import { ensureSubscription } from "@/lib/billing/subscriptions";
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
+import { Building2, ShieldCheck, Sparkles } from 'lucide-react';
+import { SubmitButton } from '@/components/ui/submit-button';
+import { applyIndustryPack } from '@/app/app/onboarding/actions';
+import { createInvitation } from '@/lib/invitations/create-invitation';
+import { resolvePlanKey, PLAN_CATALOG } from '@/lib/plans';
+import { ensureSubscription } from '@/lib/billing/subscriptions';
 import {
   FRAMEWORK_OPTIONS,
   INDUSTRY_OPTIONS,
@@ -18,17 +18,23 @@ import {
   validateInviteEmails,
   validateOrganizationName,
   sanitizeOrganizationName,
-} from "@/lib/validators/organization";
-import { INDUSTRY_PACKS } from "@/lib/industry-packs";
-import { evaluateFrameworkControls } from "@/app/app/actions/compliance-engine";
+} from '@/lib/validators/organization';
+import { INDUSTRY_PACKS } from '@/lib/industry-packs';
+import { evaluateFrameworkControls } from '@/app/app/actions/compliance-engine';
 
 const TOTAL_STEPS = 7;
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://formaos.com.au").replace(/\/$/, "");
-const PLAN_CHOICES = [PLAN_CATALOG.basic, PLAN_CATALOG.pro, PLAN_CATALOG.enterprise];
+const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au'
+).replace(/\/$/, '');
+const PLAN_CHOICES = [
+  PLAN_CATALOG.basic,
+  PLAN_CATALOG.pro,
+  PLAN_CATALOG.enterprise,
+];
 
 const ROLE_OPTIONS = [
-  { id: "employer", label: "Employer / Organization admin", role: "owner" },
-  { id: "employee", label: "Employee / Field staff", role: "staff" },
+  { id: 'employer', label: 'Employer / Organization admin', role: 'owner' },
+  { id: 'employee', label: 'Employee / Field staff', role: 'member' },
 ];
 
 type OnboardingStatusRow = {
@@ -45,34 +51,40 @@ async function getOrgContext() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/auth/signin");
+  if (!user) redirect('/auth/signin');
 
   // 🚨 FOUNDER BYPASS: Founders should never be in onboarding
   const parseEnvList = (value?: string | null) =>
     new Set(
-      (value ?? "")
-        .split(",")
+      (value ?? '')
+        .split(',')
         .map((entry) => entry.trim().toLowerCase())
-        .filter(Boolean)
+        .filter(Boolean),
     );
 
   const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);
   const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
-  const userEmail = (user?.email ?? "").trim().toLowerCase();
-  const userId = (user?.id ?? "").trim().toLowerCase();
+  const userEmail = (user?.email ?? '').trim().toLowerCase();
+  const userId = (user?.id ?? '').trim().toLowerCase();
   const isFounder = Boolean(
-    user && ((userEmail && founderEmails.has(userEmail)) || founderIds.has(userId))
+    user &&
+    ((userEmail && founderEmails.has(userEmail)) || founderIds.has(userId)),
   );
 
   if (isFounder) {
-    console.log("[onboarding] 🚫 FOUNDER blocked from onboarding - redirecting to /admin", { email: userEmail });
-    redirect("/admin");
+    console.log(
+      '[onboarding] 🚫 FOUNDER blocked from onboarding - redirecting to /admin',
+      { email: userEmail },
+    );
+    redirect('/admin');
   }
 
   const { data: membership } = await supabase
-    .from("org_members")
-    .select("organization_id, organizations(name, plan_key, industry, team_size, frameworks, onboarding_completed)")
-    .eq("user_id", user.id)
+    .from('org_members')
+    .select(
+      'organization_id, organizations(name, plan_key, industry, team_size, frameworks, onboarding_completed)',
+    )
+    .eq('user_id', user.id)
     .maybeSingle();
 
   if (!membership?.organization_id) {
@@ -83,17 +95,24 @@ async function getOrgContext() {
     ? membership.organizations[0]
     : membership.organizations;
 
-  return { supabase, user, orgId: membership.organization_id as string, orgRecord };
+  return {
+    supabase,
+    user,
+    orgId: membership.organization_id as string,
+    orgRecord,
+  };
 }
 
 async function getOnboardingStatus(
   supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
-  orgId: string
+  orgId: string,
 ): Promise<OnboardingStatusRow> {
   const { data } = await supabase
-    .from("org_onboarding_status")
-    .select("organization_id, current_step, completed_steps, completed_at, first_action")
-    .eq("organization_id", orgId)
+    .from('org_onboarding_status')
+    .select(
+      'organization_id, current_step, completed_steps, completed_at, first_action',
+    )
+    .eq('organization_id', orgId)
     .maybeSingle();
 
   if (data?.organization_id) {
@@ -107,9 +126,11 @@ async function getOnboardingStatus(
   }
 
   const { data: created } = await supabase
-    .from("org_onboarding_status")
+    .from('org_onboarding_status')
     .insert({ organization_id: orgId, current_step: 1, completed_steps: [] })
-    .select("organization_id, current_step, completed_steps, completed_at, first_action")
+    .select(
+      'organization_id, current_step, completed_steps, completed_at, first_action',
+    )
     .maybeSingle();
 
   return {
@@ -121,24 +142,20 @@ async function getOnboardingStatus(
   };
 }
 
-async function markStepComplete(
-  orgId: string,
-  step: number,
-  nextStep: number
-) {
-  "use server";
+async function markStepComplete(orgId: string, step: number, nextStep: number) {
+  'use server';
   const { supabase } = await getOrgContext();
 
   const { data: existing } = await supabase
-    .from("org_onboarding_status")
-    .select("completed_steps")
-    .eq("organization_id", orgId)
+    .from('org_onboarding_status')
+    .select('completed_steps')
+    .eq('organization_id', orgId)
     .maybeSingle();
 
   const completed = new Set<number>(existing?.completed_steps ?? []);
   completed.add(step);
 
-  await supabase.from("org_onboarding_status").upsert({
+  await supabase.from('org_onboarding_status').upsert({
     organization_id: orgId,
     current_step: nextStep,
     completed_steps: Array.from(completed).sort((a, b) => a - b),
@@ -148,133 +165,129 @@ async function markStepComplete(
 }
 
 async function advanceWelcome() {
-  "use server";
+  'use server';
   const { orgId } = await getOrgContext();
   await markStepComplete(orgId, 1, 2);
-  redirect("/onboarding?step=2");
+  redirect('/onboarding?step=2');
 }
 
 async function saveOrgDetails(formData: FormData) {
-  "use server";
+  'use server';
   const { supabase, orgId, orgRecord } = await getOrgContext();
 
-  const nameRaw = (formData.get("organizationName") as string | null) ?? "";
-  const teamSize = (formData.get("teamSize") as string | null) ?? "";
-  const planInput = (formData.get("plan") as string | null) ?? "";
+  const nameRaw = (formData.get('organizationName') as string | null) ?? '';
+  const teamSize = (formData.get('teamSize') as string | null) ?? '';
+  const planInput = (formData.get('plan') as string | null) ?? '';
 
   const nameCheck = validateOrganizationName(nameRaw);
   const teamCheck = validateTeamSize(teamSize);
-  const planCandidate = planInput || orgRecord?.plan_key || "";
+  const planCandidate = planInput || orgRecord?.plan_key || '';
   const planCheck = validatePlan(planCandidate);
 
   if (!nameCheck.valid || !teamCheck.valid) {
-    redirect("/onboarding?step=2&error=1");
+    redirect('/onboarding?step=2&error=1');
   }
 
   if (!planCheck.valid) {
-    redirect("/onboarding?step=2&error=1");
+    redirect('/onboarding?step=2&error=1');
   }
 
   const sanitizedName = sanitizeOrganizationName(nameRaw);
   const resolvedPlan = resolvePlanKey(planCandidate);
 
   if (!resolvedPlan) {
-    redirect("/onboarding?step=2&error=1");
+    redirect('/onboarding?step=2&error=1');
   }
 
   await supabase
-    .from("organizations")
+    .from('organizations')
     .update({
       name: sanitizedName,
       team_size: teamSize,
       plan_key: resolvedPlan,
       plan_selected_at: new Date().toISOString(),
     })
-    .eq("id", orgId);
+    .eq('id', orgId);
 
   await ensureSubscription(orgId, resolvedPlan);
 
   await markStepComplete(orgId, 2, 3);
-  redirect("/onboarding?step=3");
+  redirect('/onboarding?step=3');
 }
 
 async function saveIndustrySelection(formData: FormData) {
-  "use server";
+  'use server';
   const { supabase, orgId, orgRecord } = await getOrgContext();
-  const industry = (formData.get("industry") as string | null) ?? "";
+  const industry = (formData.get('industry') as string | null) ?? '';
 
   const validation = validateIndustry(industry);
   if (!validation.valid) {
-    redirect("/onboarding?step=3&error=1");
+    redirect('/onboarding?step=3&error=1');
   }
 
-  await supabase
-    .from("organizations")
-    .update({ industry })
-    .eq("id", orgId);
+  await supabase.from('organizations').update({ industry }).eq('id', orgId);
 
   if (!orgRecord?.industry && INDUSTRY_PACKS[industry]) {
     try {
       await applyIndustryPack(industry);
     } catch (error) {
-      console.error("Industry pack failed:", error);
+      console.error('Industry pack failed:', error);
     }
   }
 
   await markStepComplete(orgId, 3, 4);
-  redirect("/onboarding?step=4");
+  redirect('/onboarding?step=4');
 }
 
 async function saveRoleSelection(formData: FormData) {
-  "use server";
+  'use server';
   const { supabase, orgId, user } = await getOrgContext();
-  const roleSelection = (formData.get("role") as string | null) ?? "";
+  const roleSelection = (formData.get('role') as string | null) ?? '';
 
   const match = ROLE_OPTIONS.find((option) => option.id === roleSelection);
   if (!match) {
-    redirect("/onboarding?step=4&error=1");
+    redirect('/onboarding?step=4&error=1');
   }
 
   await supabase
-    .from("org_members")
+    .from('org_members')
     .update({ role: match.role })
-    .eq("organization_id", orgId)
-    .eq("user_id", user.id);
+    .eq('organization_id', orgId)
+    .eq('user_id', user.id);
 
   await markStepComplete(orgId, 4, 5);
-  redirect("/onboarding?step=5");
+  redirect('/onboarding?step=5');
 }
 
 async function saveFrameworkSelection(formData: FormData) {
-  "use server";
+  'use server';
   const { supabase, orgId } = await getOrgContext();
   const frameworks = formData
-    .getAll("frameworks")
+    .getAll('frameworks')
     .map((item) => item.toString())
     .filter(Boolean);
 
   const validation = validateFrameworks(frameworks);
   if (!validation.valid) {
-    redirect("/onboarding?step=5&error=1");
+    redirect('/onboarding?step=5&error=1');
   }
 
-  await supabase
-    .from("organizations")
-    .update({ frameworks })
-    .eq("id", orgId);
+  await supabase.from('organizations').update({ frameworks }).eq('id', orgId);
 
   await markStepComplete(orgId, 5, 6);
-  redirect("/onboarding?step=6");
+  redirect('/onboarding?step=6');
 }
 
 async function saveInvites(formData: FormData) {
-  "use server";
+  'use server';
   const { orgId, user } = await getOrgContext();
-  const inviteEmails = parseInviteEmails(formData.get("inviteEmails") as string | null);
+  const inviteEmails = parseInviteEmails(
+    formData.get('inviteEmails') as string | null,
+  );
   const validation = validateInviteEmails(inviteEmails);
 
   if (!validation.valid) {
-    redirect("/onboarding?step=6&error=1");
+    redirect('/onboarding?step=6&error=1');
   }
 
   if (validation.validEmails.length > 0) {
@@ -283,77 +296,79 @@ async function saveInvites(formData: FormData) {
         createInvitation({
           organizationId: orgId,
           email,
-          role: "member",
+          role: 'member',
           invitedBy: user.id,
-        })
-      )
+        }),
+      ),
     );
   }
 
   await markStepComplete(orgId, 6, 7);
-  redirect("/onboarding?step=7");
+  redirect('/onboarding?step=7');
 }
 
 async function completeFirstAction(formData: FormData) {
-  "use server";
+  'use server';
   const { supabase, orgId, orgRecord, user } = await getOrgContext();
-  const action = (formData.get("firstAction") as string | null) ?? "";
+  const action = (formData.get('firstAction') as string | null) ?? '';
 
   if (!action) {
-    redirect("/onboarding?step=7&error=1");
+    redirect('/onboarding?step=7&error=1');
   }
 
-  if (action === "create_task") {
-    await supabase.from("org_tasks").insert({
+  if (action === 'create_task') {
+    await supabase.from('org_tasks').insert({
       organization_id: orgId,
-      title: "Kickoff compliance task",
-      description: "Review your first compliance requirement and assign an owner.",
-      status: "pending",
-      priority: "high",
+      title: 'Kickoff compliance task',
+      description:
+        'Review your first compliance requirement and assign an owner.',
+      status: 'pending',
+      priority: 'high',
       assigned_to: user.id,
     });
   }
 
-  if (action === "upload_evidence") {
-    await supabase.from("org_tasks").insert({
+  if (action === 'upload_evidence') {
+    await supabase.from('org_tasks').insert({
       organization_id: orgId,
-      title: "Upload first evidence artifact",
-      description: "Attach a policy, credential, or control evidence file to validate the workflow.",
-      status: "pending",
-      priority: "medium",
+      title: 'Upload first evidence artifact',
+      description:
+        'Attach a policy, credential, or control evidence file to validate the workflow.',
+      status: 'pending',
+      priority: 'medium',
       assigned_to: user.id,
     });
   }
 
-  if (action === "run_evaluation") {
+  if (action === 'run_evaluation') {
     const frameworks = Array.isArray(orgRecord?.frameworks)
       ? orgRecord?.frameworks
       : [];
     await Promise.all(
       frameworks.map((frameworkCode: string) =>
-        evaluateFrameworkControls(orgId, frameworkCode)
-      )
+        evaluateFrameworkControls(orgId, frameworkCode),
+      ),
     );
   }
 
   await supabase
-    .from("organizations")
+    .from('organizations')
     .update({
       onboarding_completed: true,
       onboarding_completed_at: new Date().toISOString(),
     })
-    .eq("id", orgId);
+    .eq('id', orgId);
 
   const { data: existing } = await supabase
-    .from("org_onboarding_status")
-    .select("completed_steps")
-    .eq("organization_id", orgId)
+    .from('org_onboarding_status')
+    .select('completed_steps')
+    .eq('organization_id', orgId)
     .maybeSingle();
 
   const completed = new Set<number>(existing?.completed_steps ?? []);
   completed.add(7);
 
-  await supabase.from("org_onboarding_status").upsert({
+  await supabase.from('org_onboarding_status').upsert({
     organization_id: orgId,
     current_step: 7,
     completed_steps: Array.from(completed).sort((a, b) => a - b),
@@ -363,25 +378,27 @@ async function completeFirstAction(formData: FormData) {
   });
 
   const { data: subscription } = await supabase
-    .from("org_subscriptions")
-    .select("status, current_period_end, trial_expires_at")
-    .eq("organization_id", orgId)
+    .from('org_subscriptions')
+    .select('status, current_period_end, trial_expires_at')
+    .eq('organization_id', orgId)
     .maybeSingle();
 
   const subscriptionActive =
-    subscription?.status && ["active", "trialing"].includes(subscription.status);
-  const trialEndValue = subscription?.trial_expires_at ?? subscription?.current_period_end;
+    subscription?.status &&
+    ['active', 'trialing'].includes(subscription.status);
+  const trialEndValue =
+    subscription?.trial_expires_at ?? subscription?.current_period_end;
   const trialExpired =
-    subscription?.status === "trialing" &&
+    subscription?.status === 'trialing' &&
     (!trialEndValue ||
       Number.isNaN(new Date(trialEndValue).getTime()) ||
       Date.now() > new Date(trialEndValue).getTime());
 
   if (!subscriptionActive || trialExpired) {
-    redirect("/app/billing");
+    redirect('/app/billing');
   }
 
-  redirect("/app");
+  redirect('/app');
 }
 
 type OnboardingPageProps = {
@@ -392,19 +409,22 @@ type OnboardingPageProps = {
   }>;
 };
 
-export default async function OnboardingPage({ searchParams }: OnboardingPageProps) {
+export default async function OnboardingPage({
+  searchParams,
+}: OnboardingPageProps) {
   const resolvedSearchParams = await searchParams;
   const { orgId, orgRecord, supabase } = await getOrgContext();
   const status = await getOnboardingStatus(supabase, orgId);
 
   if (orgRecord?.onboarding_completed && status.completed_at) {
-    redirect("/app");
+    redirect('/app');
   }
 
   const planKey =
-    resolvePlanKey(orgRecord?.plan_key ?? "") || resolvePlanKey(resolvedSearchParams?.plan ?? "");
+    resolvePlanKey(orgRecord?.plan_key ?? '') ||
+    resolvePlanKey(resolvedSearchParams?.plan ?? '');
 
-  const rawStep = Number.parseInt(resolvedSearchParams?.step ?? "", 10);
+  const rawStep = Number.parseInt(resolvedSearchParams?.step ?? '', 10);
   const step = Number.isNaN(rawStep) ? status.current_step : rawStep;
   const safeStep = Math.min(Math.max(step, 1), TOTAL_STEPS);
 
@@ -413,7 +433,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
   }
 
   const errorState = Boolean(resolvedSearchParams?.error);
-  const planLabel = planKey ? PLAN_CATALOG[planKey].name : "Plan not selected";
+  const planLabel = planKey ? PLAN_CATALOG[planKey].name : 'Plan not selected';
 
   return (
     <div className="min-h-screen bg-[hsl(var(--background))] flex items-center justify-center p-6 font-sans">
@@ -425,7 +445,9 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
             <div className="h-14 w-14 rounded-2xl bg-[hsl(var(--card))] text-white flex items-center justify-center mb-6 shadow-xl mx-auto md:mx-0">
               <Building2 className="h-7 w-7" />
             </div>
-            <h1 className="text-3xl font-black text-slate-100 tracking-tight">FormaOS onboarding</h1>
+            <h1 className="text-3xl font-black text-slate-100 tracking-tight">
+              FormaOS onboarding
+            </h1>
             <p className="text-slate-400 mt-2 font-medium leading-relaxed text-sm">
               Step {safeStep} of {TOTAL_STEPS} · {planLabel}
             </p>
@@ -442,17 +464,17 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                 <div className="flex items-start gap-3">
                   <Sparkles className="h-5 w-5 text-sky-400" />
                   <div>
-                    <div className="text-base font-semibold text-slate-100">Welcome to FormaOS.</div>
+                    <div className="text-base font-semibold text-slate-100">
+                      Welcome to FormaOS.
+                    </div>
                     <p className="mt-2 text-sm text-slate-400">
-                      We will capture your organization details and configure the compliance engine to match your
-                      obligations.
+                      We will capture your organization details and configure
+                      the compliance engine to match your obligations.
                     </p>
                   </div>
                 </div>
               </div>
-              <SubmitButton loadingText="Starting...">
-                Continue
-              </SubmitButton>
+              <SubmitButton loadingText="Starting...">Continue</SubmitButton>
             </form>
           ) : null}
 
@@ -465,7 +487,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                 <input
                   required
                   name="organizationName"
-                  defaultValue={orgRecord?.name ?? ""}
+                  defaultValue={orgRecord?.name ?? ''}
                   placeholder="e.g. Acme Corp"
                   className="w-full p-4 rounded-2xl border border-white/10 bg-[hsl(var(--card))] focus:bg-white/5 focus:outline-white/20 text-sm font-semibold transition-all shadow-inner"
                 />
@@ -514,17 +536,19 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                           defaultChecked={planKey === option.key}
                           className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
                         />
-                        <span className="text-sm font-semibold text-slate-100">{option.name}</span>
+                        <span className="text-sm font-semibold text-slate-100">
+                          {option.name}
+                        </span>
                       </div>
-                      <span className="text-xs text-slate-400">{option.summary}</span>
+                      <span className="text-xs text-slate-400">
+                        {option.summary}
+                      </span>
                     </label>
                   ))}
                 </div>
               </div>
 
-              <SubmitButton loadingText="Saving...">
-                Continue
-              </SubmitButton>
+              <SubmitButton loadingText="Saving...">Continue</SubmitButton>
             </form>
           ) : null}
 
@@ -576,7 +600,7 @@ export default async function OnboardingPage({ searchParams }: OnboardingPagePro
                         type="radio"
                         name="role"
                         value={option.id}
-                        defaultChecked={option.role === "owner"}
+                        defaultChecked={option.role === 'owner'}
                         className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
                       />
                       <span>{option.label}</span>
