@@ -440,13 +440,15 @@ export async function getApiHealthMetrics(organizationId: string): Promise<{
   }
 
   // Calculate error rate
-  const errorCount = recentLogs.filter((log: { status_code: number }) => log.status_code >= 500).length;
+  const errorCount = recentLogs.filter(
+    (log: { status_code: number }) => log.status_code >= 500,
+  ).length;
   const errorRate = (errorCount / recentLogs.length) * 100;
 
   // Calculate P95 latency
   const sortedLatencies = recentLogs
     .map((log: { response_time: number }) => log.response_time)
-    .sort((a, b) => a - b);
+    .sort((a: number, b: number) => a - b);
   const p95Index = Math.floor(sortedLatencies.length * 0.95);
   const latencyP95 = sortedLatencies[p95Index] || 0;
 
@@ -499,7 +501,7 @@ export async function checkApiAlerts(
   organizationId: string,
 ): Promise<Array<{ type: string; message: string; severity: string }>> {
   const supabase = await createClient();
-  const alerts = [];
+  const alerts: Array<{ type: string; message: string; severity: string }> = [];
 
   const { data: config } = await supabase
     .from('api_alert_config')

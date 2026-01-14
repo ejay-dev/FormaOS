@@ -231,10 +231,10 @@ export async function getUserActivitySummary(
   }
 
   // Calculate breakdowns
-  const actionBreakdown: Record<ActivityAction, number> = {} as any;
-  const entityBreakdown: Record<ActivityEntity, number> = {} as any;
+  const actionBreakdown: Record<string, number> = {};
+  const entityBreakdown: Record<string, number> = {};
 
-  data.forEach((log: any) => {
+  data.forEach((log: { action: string; entity_type: string }) => {
     actionBreakdown[log.action] = (actionBreakdown[log.action] || 0) + 1;
     entityBreakdown[log.entity_type] =
       (entityBreakdown[log.entity_type] || 0) + 1;
@@ -242,8 +242,8 @@ export async function getUserActivitySummary(
 
   return {
     totalActions: data.length,
-    actionBreakdown,
-    entityBreakdown,
+    actionBreakdown: actionBreakdown as Record<ActivityAction, number>,
+    entityBreakdown: entityBreakdown as Record<ActivityEntity, number>,
     recentActivity: data.slice(0, 10),
   };
 }
@@ -277,16 +277,16 @@ export async function getActivityTrends(
   // Group by date
   const trends: Record<
     string,
-    { count: number; actions: Record<ActivityAction, number> }
+    { count: number; actions: Record<string, number> }
   > = {};
 
-  data.forEach((log: any) => {
+  data.forEach((log: { created_at: string; action: string }) => {
     const date = new Date(log.created_at).toISOString().split('T')[0];
 
     if (!trends[date]) {
       trends[date] = {
         count: 0,
-        actions: {} as Record<ActivityAction, number>,
+        actions: {},
       };
     }
 
@@ -297,7 +297,8 @@ export async function getActivityTrends(
 
   return Object.entries(trends).map(([date, data]) => ({
     date,
-    ...data,
+    count: data.count,
+    actions: data.actions as Record<ActivityAction, number>,
   }));
 }
 

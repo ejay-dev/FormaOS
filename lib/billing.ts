@@ -10,7 +10,7 @@ import { createSupabaseServerClient as createClient } from '@/lib/supabase/serve
 
 // Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2024-12-18.acacia' as any,
   typescript: true,
 });
 
@@ -465,7 +465,10 @@ export async function getCurrentUsage(organizationId: string): Promise<{
 
   // Calculate storage in GB
   const totalBytes =
-    storage.data?.reduce((sum, doc) => sum + (doc.file_size || 0), 0) || 0;
+    storage.data?.reduce(
+      (sum: number, doc: { file_size?: number }) => sum + (doc.file_size || 0),
+      0,
+    ) || 0;
   const storageGB = totalBytes / (1024 * 1024 * 1024);
 
   return {

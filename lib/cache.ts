@@ -44,12 +44,15 @@ let cacheInstance: any;
 async function getCache() {
   if (cacheInstance) return cacheInstance;
 
-  // Try Redis first
-  if (process.env.REDIS_URL) {
+  // Try Upstash Redis first
+  if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
     try {
-      const { default: Redis } = await import('ioredis');
-      cacheInstance = new Redis(process.env.REDIS_URL);
-      console.log('✅ Redis cache initialized');
+      const { Redis } = await import('@upstash/redis');
+      cacheInstance = new Redis({
+        url: process.env.UPSTASH_REDIS_REST_URL,
+        token: process.env.UPSTASH_REDIS_REST_TOKEN,
+      });
+      console.log('✅ Upstash Redis cache initialized');
       return cacheInstance;
     } catch (error) {
       console.warn('⚠️  Redis not available, using in-memory cache');
