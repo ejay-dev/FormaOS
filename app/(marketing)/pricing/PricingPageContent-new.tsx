@@ -116,7 +116,7 @@ export default function PricingPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-16 sm:py-20 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Clean gradient background - NO motion elements */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-background to-secondary/3" />
@@ -363,7 +363,7 @@ export default function PricingPageContent() {
       <CinematicSection 
         backgroundType="nodes" 
         ambientColor="secondary"
-        className="py-16 sm:py-20 lg:py-32"
+        className="py-12 sm:py-16 lg:py-20"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
@@ -419,7 +419,7 @@ export default function PricingPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="accent"
-        className="py-16 sm:py-20 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <GradientMesh 
@@ -498,7 +498,7 @@ export default function PricingPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-16 sm:py-20 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         <MarketingAnchor 
           title="Ready to get started?"

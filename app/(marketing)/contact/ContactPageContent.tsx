@@ -136,7 +136,7 @@ export function ContactContent({ action }: { action: any }) {
   return (
     <div className="relative">
       {/* Contact options grid - Metrics variant */}
-      <SystemBackground variant="metrics" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="metrics" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="cyan" intensity="medium" position="top" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
@@ -154,7 +154,7 @@ export function ContactContent({ action }: { action: any }) {
       <SystemDivider />
 
       {/* Contact form section - Process variant */}
-      <SystemBackground variant="process" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="process" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="blue" intensity="high" position="center" />
         
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 relative">
@@ -172,7 +172,7 @@ export function ContactContent({ action }: { action: any }) {
       <SystemDivider />
 
       {/* Additional info - Info variant */}
-      <SystemBackground variant="info" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="info" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="purple" intensity="low" position="center" />
         
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">

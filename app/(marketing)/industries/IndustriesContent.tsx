@@ -100,7 +100,7 @@ export function IndustriesContent() {
   return (
     <div className="relative">
       {/* Industries Grid - Metrics variant */}
-      <SystemBackground variant="metrics" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="metrics" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="cyan" intensity="medium" position="top" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
@@ -153,7 +153,7 @@ export function IndustriesContent() {
       <SystemDivider />
 
       {/* Problems & Solutions - Process variant */}
-      <SystemBackground variant="process" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="process" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="blue" intensity="high" position="center" />
         
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative">
@@ -207,7 +207,7 @@ export function IndustriesContent() {
       <SystemDivider />
 
       {/* Custom Frameworks CTA - Info variant with high intensity */}
-      <SystemBackground variant="info" intensity="high" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="info" intensity="high" className="py-12 sm:py-16 lg:py-20">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">
           <FadeInView>
             <GlassCard 

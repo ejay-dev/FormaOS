@@ -42,7 +42,7 @@ function ProductHero() {
       <div className="absolute inset-0 vignette pointer-events-none" />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24 w-full">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 w-full">
         <ParallaxLayer speed={0.3}>
           <div className="mx-auto max-w-4xl text-center">
             <motion.div
@@ -118,7 +118,7 @@ export default function ProductPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-16 sm:py-24 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Premium layered background */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50/20 via-background to-slate-100/10" />
@@ -346,7 +346,7 @@ export default function ProductPageContent() {
       <CinematicSection 
         backgroundType="nodes" 
         ambientColor="secondary"
-        className="py-16 sm:py-24 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Premium governance background */}
         <div className="absolute inset-0 bg-gradient-to-b from-blue-50/10 via-background to-indigo-50/10" />
@@ -526,7 +526,7 @@ export default function ProductPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="accent"
-        className="py-16 sm:py-24 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Premium scale background with subtle mesh */}
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/10 via-background to-teal-50/10" />
@@ -705,7 +705,7 @@ export default function ProductPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-16 sm:py-24 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Premium CTA background */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900/10 via-background to-indigo-900/10" />

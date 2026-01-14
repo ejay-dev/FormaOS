@@ -41,7 +41,7 @@ function IndustriesHero() {
       <div className="absolute inset-0 vignette pointer-events-none" />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24 w-full">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 w-full">
         <ParallaxLayer speed={0.3}>
           <div className="mx-auto max-w-4xl text-center">
             <motion.div
@@ -117,7 +117,7 @@ export default function IndustriesPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="secondary"
-        className="py-16 sm:py-24 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Premium industry background */}
         <div className="absolute inset-0 bg-gradient-to-br from-violet-50/10 via-background to-blue-50/10" />
@@ -129,7 +129,7 @@ export default function IndustriesPageContent() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-16 sm:mb-20"
+            className="text-center mb-12 sm:mb-16"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6 text-secondary/80">
               <Building2 className="h-3 w-3" />
@@ -183,7 +183,7 @@ export default function IndustriesPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-16 sm:py-24 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Premium verticals background */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-background to-secondary/3" />
@@ -195,7 +195,7 @@ export default function IndustriesPageContent() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-16 sm:mb-20"
+            className="text-center mb-12 sm:mb-16"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6 text-primary/80">
               <Shield className="h-3 w-3" />
@@ -436,7 +436,7 @@ export default function IndustriesPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="accent"
-        className="py-16 sm:py-24 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Premium principles background */}
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/10 via-background to-cyan-50/10" />
@@ -448,7 +448,7 @@ export default function IndustriesPageContent() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-16 sm:mb-20"
+            className="text-center mb-12 sm:mb-16"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6 text-accent/80">
               <FileCheck className="h-3 w-3" />
@@ -615,7 +615,7 @@ export default function IndustriesPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-16 sm:py-20 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Clean gradient background - NO motion elements */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-background to-secondary/3" />
@@ -668,7 +668,7 @@ export default function IndustriesPageContent() {
           </div>
 
           <InteractiveCard 
-            className="mt-12 sm:mt-16"
+            className="mt-8 sm:mt-12"
             glowColor="rgba(139, 92, 246, 0.2)"
           >
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
@@ -709,7 +709,7 @@ export default function IndustriesPageContent() {
       <CinematicSection 
         backgroundType="nodes" 
         ambientColor="secondary"
-        className="py-16 sm:py-20 lg:py-32"
+        className="py-12 sm:py-16 lg:py-20"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
@@ -719,8 +719,8 @@ export default function IndustriesPageContent() {
             alignment="center"
           />
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
-            <div className="space-y-6 sm:space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+            <div className="space-y-4 sm:space-y-6">
               <div>
                 <h3 className="text-xl sm:text-2xl font-bold mb-4">Clinical Governance</h3>
                 <p className="text-foreground/80">
@@ -796,7 +796,7 @@ export default function IndustriesPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="accent"
-        className="py-16 sm:py-20 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <GradientMesh 
@@ -813,7 +813,7 @@ export default function IndustriesPageContent() {
             alignment="center"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             <div className="space-y-6">
               <div>
                 <h3 className="text-xl sm:text-2xl font-bold mb-4">Program Governance</h3>
@@ -882,7 +882,7 @@ export default function IndustriesPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-16 sm:py-24 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Premium CTA background */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900/10 via-background to-blue-900/10" />
@@ -898,7 +898,7 @@ export default function IndustriesPageContent() {
             {/* Executive CTA Panel */}
             <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-2xl overflow-hidden max-w-5xl mx-auto">
               {/* CTA Header */}
-              <div className="bg-gradient-to-r from-white/[0.08] to-white/[0.04] border-b border-white/10 px-8 sm:px-12 py-8 sm:py-10">
+              <div className="bg-gradient-to-r from-white/[0.08] to-white/[0.04] border-b border-white/10 px-6 sm:px-8 py-6 sm:py-8">
                 <div className="text-center">
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -930,8 +930,8 @@ export default function IndustriesPageContent() {
               </div>
               
               {/* CTA Content */}
-              <div className="px-8 sm:px-12 py-10 sm:py-12">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+              <div className="px-6 sm:px-8 py-8 sm:py-10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center">
                   {/* Industry Promise */}
                   <motion.div
                     initial={{ opacity: 0, x: -30 }}

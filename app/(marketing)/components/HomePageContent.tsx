@@ -138,7 +138,7 @@ export function HomePageContent() {
           SECTION 1: METRICS (variant: metrics)
           Soft radial glow, micro-particles, glass depth
           ======================================== */}
-      <SystemBackground variant="metrics" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="metrics" className="py-12 sm:py-16 lg:py-20">
         {/* Radial glow behind section */}
         <SectionGlow color="cyan" intensity="medium" position="center" />
         
@@ -180,7 +180,7 @@ export function HomePageContent() {
           SECTION 2: CONNECTED SYSTEM (variant: process)
           Stronger node presence, directional flow
           ======================================== */}
-      <SystemBackground variant="process" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="process" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="blue" intensity="high" position="top" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
@@ -239,7 +239,7 @@ export function HomePageContent() {
           SECTION 3: LIFECYCLE (variant: info)
           Minimal, calm, subtle breathing motion
           ======================================== */}
-      <SystemBackground variant="info" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="info" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="purple" intensity="low" position="center" />
         
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative">
@@ -286,7 +286,7 @@ export function HomePageContent() {
           SECTION 4: ARCHITECTURE (variant: process)
           System components with data pathways
           ======================================== */}
-      <SystemBackground variant="process" intensity="high" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="process" intensity="high" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="mixed" intensity="medium" position="top" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
@@ -331,7 +331,7 @@ export function HomePageContent() {
           SECTION 5: INDUSTRIES (variant: info)
           Calm informational section
           ======================================== */}
-      <SystemBackground variant="info" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="info" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="blue" intensity="low" position="center" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
@@ -378,7 +378,7 @@ export function HomePageContent() {
           SECTION 6: SECURITY (variant: metrics)
           Glass effects with soft glow
           ======================================== */}
-      <SystemBackground variant="metrics" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="metrics" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="purple" intensity="medium" position="center" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
@@ -434,7 +434,7 @@ export function HomePageContent() {
           SECTION 7: FINAL CTA (variant: process)
           Full visual intensity
           ======================================== */}
-      <SystemBackground variant="process" intensity="high" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="process" intensity="high" className="py-12 sm:py-16 lg:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <FadeInView>
             <GlassCard 

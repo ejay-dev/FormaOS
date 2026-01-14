@@ -43,7 +43,7 @@ export function PricingHero() {
       <div className="absolute inset-0 vignette pointer-events-none" />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24 w-full">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 w-full">
         <ParallaxLayer speed={0.3}>
           <div className="mx-auto max-w-4xl text-center">
             <motion.div
@@ -182,7 +182,7 @@ export function PricingContent() {
   return (
     <div className="relative">
       {/* Pricing tiers - Metrics variant */}
-      <SystemBackground variant="metrics" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="metrics" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="cyan" intensity="medium" position="top" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
@@ -216,7 +216,7 @@ export function PricingContent() {
       <SystemDivider />
 
       {/* Enterprise CTA - Process variant */}
-      <SystemBackground variant="process" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="process" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="blue" intensity="high" position="center" />
         
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative">
@@ -227,7 +227,7 @@ export function PricingContent() {
       <SystemDivider />
 
       {/* Value props - Info variant */}
-      <SystemBackground variant="info" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="info" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="purple" intensity="low" position="center" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
@@ -286,7 +286,7 @@ export function PricingContent() {
       <SystemDivider />
 
       {/* FAQ Section - Metrics variant */}
-      <SystemBackground variant="metrics" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="metrics" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="cyan" intensity="low" position="center" />
         
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 relative">

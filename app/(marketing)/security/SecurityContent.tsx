@@ -113,7 +113,7 @@ export function SecurityContent() {
   return (
     <div className="relative">
       {/* Security Safeguards Grid - Metrics variant */}
-      <SystemBackground variant="metrics" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="metrics" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="purple" intensity="medium" position="top" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
@@ -153,7 +153,7 @@ export function SecurityContent() {
       <SystemDivider />
 
       {/* Security Architecture Layers - Process variant */}
-      <SystemBackground variant="process" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="process" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="cyan" intensity="high" position="center" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
@@ -195,7 +195,7 @@ export function SecurityContent() {
       <SystemDivider />
 
       {/* Evidence Immutability - Info variant */}
-      <SystemBackground variant="info" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="info" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="blue" intensity="low" position="center" />
         
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">
@@ -230,7 +230,7 @@ export function SecurityContent() {
       <SystemDivider />
 
       {/* Security CTA - Process variant with high intensity */}
-      <SystemBackground variant="process" intensity="high" className="py-20 sm:py-24 lg:py-32">
+      <SystemBackground variant="process" intensity="high" className="py-12 sm:py-16 lg:py-20">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">
           <FadeInView>
             <GlassCard 

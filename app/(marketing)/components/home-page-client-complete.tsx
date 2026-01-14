@@ -42,7 +42,7 @@ function HomeHero() {
       <div className="absolute inset-0 vignette pointer-events-none" />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24 w-full">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 w-full">
         <ParallaxLayer speed={0.3}>
           <div className="mx-auto max-w-4xl text-center">
             <motion.div
@@ -139,7 +139,7 @@ export function HomePageClient() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-16 sm:py-24 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Premium layered background */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50/20 via-background to-slate-100/10" />
@@ -274,7 +274,7 @@ export function HomePageClient() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="secondary"
-        className="py-16 sm:py-24 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Premium analytics background */}
         <div className="absolute inset-0 bg-gradient-to-b from-slate-900/5 via-background to-slate-800/5" />
@@ -441,7 +441,7 @@ export function HomePageClient() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-16 sm:py-20 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Clean gradient background - NO motion elements */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-secondary/5" />
@@ -671,7 +671,7 @@ export function HomePageClient() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="secondary"
-        className="py-16 sm:py-24 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Premium contrast background */}
         <div className="absolute inset-0 bg-gradient-to-b from-slate-100/10 via-background to-slate-50/5" />
@@ -834,7 +834,7 @@ export function HomePageClient() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-16 sm:py-24 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Premium layered background */}
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/10 via-background to-violet-50/10" />
@@ -990,7 +990,7 @@ export function HomePageClient() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="secondary"
-        className="py-16 sm:py-24 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Premium targeting background */}
         <div className="absolute inset-0 bg-gradient-to-b from-blue-50/10 via-background to-indigo-50/10" />
@@ -1137,7 +1137,7 @@ export function HomePageClient() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="accent"
-        className="py-16 sm:py-24 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Premium security background */}
         <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/10 via-background to-teal-50/10" />
@@ -1308,7 +1308,7 @@ export function HomePageClient() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="accent"
-        className="py-16 sm:py-24 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Premium CTA background with subtle mesh */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900/10 via-background to-indigo-900/10" />

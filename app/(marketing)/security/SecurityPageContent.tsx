@@ -39,7 +39,7 @@ function SecurityHero() {
       <div className="absolute inset-0 vignette pointer-events-none" />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24 w-full">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 w-full">
         <ParallaxLayer speed={0.3}>
           <div className="mx-auto max-w-4xl text-center">
             <motion.div
@@ -115,7 +115,7 @@ export default function SecurityPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-16 sm:py-24 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Premium security background */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-background to-secondary/3" />
@@ -294,7 +294,7 @@ export default function SecurityPageContent() {
       <CinematicSection 
         backgroundType="nodes" 
         ambientColor="secondary"
-        className="py-16 sm:py-24 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Premium evidence background */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50/10 via-background to-indigo-50/10" />
@@ -489,7 +489,7 @@ export default function SecurityPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="accent"
-        className="py-16 sm:py-24 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Premium compliance background */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -636,7 +636,7 @@ export default function SecurityPageContent() {
       <CinematicSection 
         backgroundType="gradient" 
         ambientColor="primary"
-        className="py-16 sm:py-24 lg:py-32 relative"
+        className="py-12 sm:py-16 lg:py-20 relative"
       >
         {/* Premium security CTA background */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900/10 via-background to-violet-900/10" />
