@@ -167,17 +167,23 @@ export default function AuditTrailViewer({ orgId }: AuditTrailViewerProps) {
           <div className="grid grid-cols-3 gap-4">
             {/* Date range */}
             <div>
-              <label className="block text-sm font-medium mb-2">Date Range</label>
+              <label className="block text-sm font-medium mb-2">
+                Date Range
+              </label>
               <input
                 type="date"
                 value={filters.dateFrom}
-                onChange={(e) => setFilters({ ...filters, dateFrom: e.target.value })}
+                onChange={(e) =>
+                  setFilters({ ...filters, dateFrom: e.target.value })
+                }
                 className="w-full mb-2 px-3 py-2 border rounded"
               />
               <input
                 type="date"
                 value={filters.dateTo}
-                onChange={(e) => setFilters({ ...filters, dateTo: e.target.value })}
+                onChange={(e) =>
+                  setFilters({ ...filters, dateTo: e.target.value })
+                }
                 className="w-full px-3 py-2 border rounded"
               />
             </div>
@@ -186,34 +192,48 @@ export default function AuditTrailViewer({ orgId }: AuditTrailViewerProps) {
             <div>
               <label className="block text-sm font-medium mb-2">Actions</label>
               <div className="space-y-1 max-h-32 overflow-y-auto">
-                {['create', 'update', 'delete', 'view', 'export', 'approve', 'reject'].map(
-                  (action) => (
-                    <label key={action} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={filters.actions.includes(action)}
-                        onChange={(e) => {
-                          setFilters({
-                            ...filters,
-                            actions: e.target.checked
-                              ? [...filters.actions, action]
-                              : filters.actions.filter((a) => a !== action),
-                          });
-                        }}
-                        className="mr-2"
-                      />
-                      <span className="capitalize text-sm">{action}</span>
-                    </label>
-                  )
-                )}
+                {[
+                  'create',
+                  'update',
+                  'delete',
+                  'view',
+                  'export',
+                  'approve',
+                  'reject',
+                ].map((action) => (
+                  <label key={action} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={filters.actions.includes(action)}
+                      onChange={(e) => {
+                        setFilters({
+                          ...filters,
+                          actions: e.target.checked
+                            ? [...filters.actions, action]
+                            : filters.actions.filter((a) => a !== action),
+                        });
+                      }}
+                      className="mr-2"
+                    />
+                    <span className="capitalize text-sm">{action}</span>
+                  </label>
+                ))}
               </div>
             </div>
 
             {/* Entity Types */}
             <div>
-              <label className="block text-sm font-medium mb-2">Entity Types</label>
+              <label className="block text-sm font-medium mb-2">
+                Entity Types
+              </label>
               <div className="space-y-1 max-h-32 overflow-y-auto">
-                {['task', 'certificate', 'evidence', 'member', 'organization'].map((type) => (
+                {[
+                  'task',
+                  'certificate',
+                  'evidence',
+                  'member',
+                  'organization',
+                ].map((type) => (
                   <label key={type} className="flex items-center">
                     <input
                       type="checkbox"
@@ -263,7 +283,9 @@ export default function AuditTrailViewer({ orgId }: AuditTrailViewerProps) {
                       />
                     ) : (
                       <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium">
-                        {log.user?.full_name?.[0] || log.user?.email?.[0] || '?'}
+                        {log.user?.full_name?.[0] ||
+                          log.user?.email?.[0] ||
+                          '?'}
                       </div>
                     )}
                   </div>
@@ -272,9 +294,13 @@ export default function AuditTrailViewer({ orgId }: AuditTrailViewerProps) {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-medium">
-                        {log.user?.full_name || log.user?.email || 'Unknown user'}
+                        {log.user?.full_name ||
+                          log.user?.email ||
+                          'Unknown user'}
                       </span>
-                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${getActionColor(log.action)}`}>
+                      <span
+                        className={`px-2 py-0.5 rounded text-xs font-medium ${getActionColor(log.action)}`}
+                      >
                         {log.action}
                       </span>
                       <span className="text-gray-600 capitalize text-sm">
