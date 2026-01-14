@@ -8,6 +8,7 @@ import { ComplianceSystemProvider } from "@/components/compliance-system/provide
 import { SystemStateHydrator } from "@/lib/system-state/hydrator";
 import { resolvePlanKey } from "@/lib/plans";
 import { normalizeRole } from "@/app/app/actions/rbac";
+import { TrialStatusBanner } from "@/app/app/components/TrialStatusBanner";
 
 /**
  * =========================================================
@@ -172,6 +173,9 @@ export default async function AppLayout({
                     />
                   </div>
                 </header>
+
+                {/* Trial Status Banner */}
+                <TrialStatusBanner />
 
                 {/* Main content */}
                 <main className="relative flex flex-1 flex-col overflow-y-auto bg-background">

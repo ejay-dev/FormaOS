@@ -473,7 +473,7 @@ export function HomePageContent() {
                 </p>
                 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-                  <Link href="/auth/signup" className="btn btn-primary btn-premium text-sm sm:text-lg px-8 sm:px-12 py-4 sm:py-6 shadow-premium-xl w-full sm:w-auto">
+                  <Link href="/auth/signup?plan=pro" className="btn btn-primary btn-premium text-sm sm:text-lg px-8 sm:px-12 py-4 sm:py-6 shadow-premium-xl w-full sm:w-auto">
                     Start Free Trial
                   </Link>
                   <Link href="/contact" className="btn btn-secondary text-sm sm:text-lg px-8 sm:px-12 py-4 sm:py-6 w-full sm:w-auto">

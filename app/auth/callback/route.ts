@@ -43,7 +43,7 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${appBase}/auth/signin`);
   }
 
-  // 2. CHECK IF USER IS A FOUNDER - Redirect to admin immediately
+  // 2. CHECK IF USER IS A FOUNDER - Ensure proper role and redirect to admin
   const founderCheck = isFounder(data.user.email, data.user.id);
   console.log(`[auth/callback] 🔍 Founder check:`, {
     email: data.user.email,
@@ -52,7 +52,42 @@ export async function GET(request: Request) {
   });
   
   if (founderCheck) {
-    console.log(`[auth/callback] ✅ FOUNDER DETECTED: ${data.user.email}, redirecting to /admin`);
+    console.log(`[auth/callback] ✅ FOUNDER DETECTED: ${data.user.email}`);
+    
+    // Ensure founder has proper role in org_members
+    const { data: founderMembership } = await admin
+      .from("org_members")
+      .select("organization_id, role")
+      .eq("user_id", data.user.id)
+      .maybeSingle();
+    
+    if (founderMembership?.organization_id) {
+      // Update role to owner if not already
+      if (founderMembership.role !== 'owner') {
+        console.log(`[auth/callback] 🔧 Fixing founder role from ${founderMembership.role} to owner`);
+        await admin
+          .from("org_members")
+          .update({ role: 'owner' })
+          .eq("user_id", data.user.id);
+      }
+      
+      // Ensure organization has pro plan and active subscription
+      await admin
+        .from("organizations")
+        .update({ plan_key: 'pro' })
+        .eq("id", founderMembership.organization_id);
+      
+      await admin
+        .from("org_subscriptions")
+        .upsert({
+          organization_id: founderMembership.organization_id,
+          plan_key: 'pro',
+          status: 'active',
+          updated_at: new Date().toISOString(),
+        });
+    }
+    
+    console.log(`[auth/callback] ✅ Founder setup complete, redirecting to /admin`);
     return NextResponse.redirect(`${appBase}/admin`);
   }
   

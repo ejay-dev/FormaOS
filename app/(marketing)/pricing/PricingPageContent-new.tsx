@@ -91,7 +91,7 @@ function PricingHero() {
               transition={{ delay: 0.7, duration: 0.8 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6"
             >
-              <Link href="/auth/signup" className="w-full sm:w-auto rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors">
+              <Link href="/auth/signup?plan=pro" className="w-full sm:w-auto rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors">
                 Start Free Trial
               </Link>
               <Link href="/contact" className="w-full sm:w-auto text-sm font-semibold leading-6 text-foreground hover:text-primary transition-colors flex items-center justify-center sm:justify-start">
@@ -193,10 +193,10 @@ export default function PricingPageContent() {
                 </div>
                 
                 <Link 
-                  href="/auth/signup" 
+                  href="/auth/signup?plan=basic" 
                   className="w-full inline-flex items-center justify-center px-6 py-3 rounded-2xl border-2 border-primary/30 text-primary font-semibold hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 backdrop-blur-sm bg-white/[0.02]"
                 >
-                  Get Started
+                  Start Free Trial
                 </Link>
               </div>
             </motion.div>
@@ -270,10 +270,10 @@ export default function PricingPageContent() {
                 </div>
                 
                 <Link 
-                  href="/auth/signup" 
+                  href="/auth/signup?plan=pro" 
                   className="w-full inline-flex items-center justify-center px-6 py-4 rounded-2xl bg-gradient-to-r from-primary to-secondary text-white font-bold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
-                  Upgrade to Pro
+                  Start Free Trial
                 </Link>
               </div>
             </motion.div>
