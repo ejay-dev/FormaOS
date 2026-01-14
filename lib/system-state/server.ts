@@ -294,14 +294,38 @@ export async function fetchSystemState(): Promise<SystemStatePayload | null> {
   const rolePermissions = ROLE_PERMISSIONS[membership.userRole];
 
   // Build full entitlements object
-  const entitlements: UserEntitlements = {
-    plan: planTier,
-    role: membership.userRole,
-    trialActive,
-    trialDaysRemaining,
-    enabledModules: enabledModules as ModuleId[],
-    permissions: rolePermissions,
-  };
+  let entitlements: UserEntitlements;
+  
+  if (isFounder) {
+    // 🚨 FOUNDER PRIVILEGES: Bypass all restrictions
+    entitlements = {
+      plan: "enterprise", // Founders get enterprise-level access
+      role: "owner",      // Founders are always owners
+      trialActive: false, // Founders don't have trial limitations
+      trialDaysRemaining: 0,
+      enabledModules: MODULE_DEFINITIONS.map(mod => mod.id) as ModuleId[], // All modules
+      permissions: {
+        // Grant all permissions to founders
+        canCreatePolicies: true,
+        canManageTeam: true,
+        canViewAudit: true,
+        canExportReports: true,
+        canManageBilling: true,
+        canAccessAdmin: true,
+        canEditSettings: true,
+      },
+    };
+  } else {
+    // Regular user entitlements
+    entitlements = {
+      plan: planTier,
+      role: membership.userRole,
+      trialActive,
+      trialDaysRemaining,
+      enabledModules: enabledModules as ModuleId[],
+      permissions: rolePermissions,
+    };
+  }
 
   return {
     user: {
@@ -333,10 +357,16 @@ export async function fetchSystemState(): Promise<SystemStatePayload | null> {
 export function calculateModuleState(
   moduleId: ModuleId,
   entitlements: UserEntitlements,
-  subscriptionStatus?: SubscriptionData["status"]
+  subscriptionStatus?: SubscriptionData["status"],
+  isFounder?: boolean
 ): NodeState {
   const moduleDef = MODULE_DEFINITIONS.find(m => m.id === moduleId);
   if (!moduleDef) return "locked";
+
+  // 🚨 FOUNDER BYPASS: Founders have access to everything
+  if (isFounder) {
+    return "active";
+  }
 
   // Check if subscription is in a blocked state
   if (subscriptionStatus === "past_due") {
@@ -375,12 +405,13 @@ export function calculateModuleState(
  */
 export function calculateAllModuleStates(
   entitlements: UserEntitlements,
-  subscriptionStatus?: SubscriptionData["status"]
+  subscriptionStatus?: SubscriptionData["status"],
+  isFounder?: boolean
 ): Map<ModuleId, NodeState> {
   const states = new Map<ModuleId, NodeState>();
   
   for (const moduleDef of MODULE_DEFINITIONS) {
-    const state = calculateModuleState(moduleDef.id, entitlements, subscriptionStatus);
+    const state = calculateModuleState(moduleDef.id, entitlements, subscriptionStatus, isFounder);
     states.set(moduleDef.id, state);
   }
   
@@ -406,10 +437,16 @@ export async function validateModuleAccess(moduleId: ModuleId): Promise<{
     return { allowed: false, state: "locked", reason: "Not authenticated" };
   }
 
+  // 🚨 FOUNDER BYPASS: Founders can access everything
+  if (systemState.isFounder) {
+    return { allowed: true, state: "active" };
+  }
+
   const state = calculateModuleState(
     moduleId, 
     systemState.entitlements, 
-    systemState.subscription?.status
+    systemState.subscription?.status,
+    systemState.isFounder
   );
 
   if (state === "locked") {
@@ -437,6 +474,11 @@ export async function validatePermission(
   
   if (!systemState) {
     return { allowed: false, reason: "Not authenticated" };
+  }
+
+  // 🚨 FOUNDER BYPASS: Founders have all permissions
+  if (systemState.isFounder) {
+    return { allowed: true };
   }
 
   const hasPermission = systemState.entitlements.permissions[permissionKey];
