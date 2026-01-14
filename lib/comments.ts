@@ -142,30 +142,36 @@ export async function getComments(
 
   // Fetch replies for each comment
   const commentsWithReplies = await Promise.all(
-    data.map(async (comment) => {
-      const { data: replies } = await supabase
-        .from('comments')
-        .select(
-          `
+    data.map(
+      async (comment: {
+        id: string;
+        profiles?: any;
+        comment_reactions?: any[];
+      }) => {
+        const { data: replies } = await supabase
+          .from('comments')
+          .select(
+            `
           *,
           profiles!user_id(full_name, email, avatar_url)
         `,
-        )
-        .eq('parent_id', comment.id)
-        .order('created_at', { ascending: true });
+          )
+          .eq('parent_id', comment.id)
+          .order('created_at', { ascending: true });
 
-      return {
-        ...comment,
-        user: comment.profiles,
-        reactions: comment.comment_reactions || [],
-        replies:
-          replies?.map((reply) => ({
-            ...reply,
-            user: reply.profiles,
-            reactions: [],
-          })) || [],
-      };
-    }),
+        return {
+          ...comment,
+          user: comment.profiles,
+          reactions: comment.comment_reactions || [],
+          replies:
+            replies?.map((reply: { profiles?: any }) => ({
+              ...reply,
+              user: reply.profiles,
+              reactions: [],
+            })) || [],
+        };
+      },
+    ),
   );
 
   return commentsWithReplies;
@@ -255,7 +261,7 @@ export async function deleteComment(
   }
 
   // Log activity
-  await logActivity(existing.organization_id, userId, 'delete', 'comment', {
+  await logActivity(existing.organization_id, userId, 'delete', 'task', {
     entityId: commentId,
   });
 }
