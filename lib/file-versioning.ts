@@ -101,17 +101,11 @@ export async function createFile(
     throw new Error(`Failed to create file version: ${versionError.message}`);
   }
 
-  await logActivity(
-    organizationId,
-    file.uploadedBy,
-    'create',
-    'evidence',
-    {
-      entityId: fileMetadata.id,
-      entityName: file.name,
-      details: { entity_type: entityType, entity_id: entityId, version: 1 },
-    },
-  );
+  await logActivity(organizationId, file.uploadedBy, 'create', 'evidence', {
+    entityId: fileMetadata.id,
+    entityName: file.name,
+    details: { entity_type: entityType, entity_id: entityId, version: 1 },
+  });
 
   return fileMetadata;
 }
@@ -430,7 +424,7 @@ export async function getFileHistory(
   if (error) return [];
 
   return (
-    data?.map((version) => ({
+    data?.map((version: any) => ({
       ...version,
       uploader: version.profiles,
     })) || []
@@ -461,15 +455,15 @@ export async function getVersionStats(organizationId: string): Promise<{
 
   const totalFiles = files?.length || 0;
   const totalVersions =
-    files?.reduce((sum, file) => sum + file.total_versions, 0) || 0;
+    files?.reduce((sum: any, file: any) => sum + file.total_versions, 0) || 0;
   const averageVersionsPerFile =
     totalFiles > 0 ? Math.round(totalVersions / totalFiles) : 0;
 
   // Get most versioned files
   const mostVersionedFiles = (files || [])
-    .sort((a, b) => b.total_versions - a.total_versions)
+    .sort((a: any, b: any) => b.total_versions - a.total_versions)
     .slice(0, 5)
-    .map((file) => ({
+    .map((file: any) => ({
       fileId: file.id!,
       fileName: file.file_name,
       versions: file.total_versions,
