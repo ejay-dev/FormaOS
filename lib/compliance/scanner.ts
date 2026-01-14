@@ -230,10 +230,11 @@ async function scanPolicyDocumentation(
     .select('title')
     .eq('organization_id', organizationId);
 
-  const existingPolicies = policies?.map((p) => p.title.toLowerCase()) || [];
+  const existingPolicies =
+    policies?.map((p: { title: string }) => p.title.toLowerCase()) || [];
 
   for (const required of requiredPolicies) {
-    const exists = existingPolicies.some((p) =>
+    const exists = existingPolicies.some((p: string) =>
       p.includes(required.toLowerCase().replace(' policy', '')),
     );
 
@@ -270,7 +271,10 @@ async function scanAccessControls(
     .eq('organization_id', organizationId);
 
   if (members) {
-    const without2FA = members.filter((m) => !m.profiles?.two_factor_enabled);
+    const without2FA = members.filter(
+      (m: { profiles?: { two_factor_enabled?: boolean } }) =>
+        !m.profiles?.two_factor_enabled,
+    );
     if (without2FA.length > 0) {
       findings.push({
         requirementId: 'access-control-2fa',
@@ -398,7 +402,7 @@ async function scanIncidentResponse(
     .eq('organization_id', organizationId);
 
   const hasIncidentWorkflow = workflows?.some(
-    (w) =>
+    (w: { name: string }) =>
       w.name.toLowerCase().includes('incident') ||
       w.name.toLowerCase().includes('breach'),
   );
@@ -467,13 +471,17 @@ export async function performComplianceScan(
 
   // Calculate compliance metrics
   const totalRequirements = requirements.length;
-  const compliant = allFindings.filter((f) => f.status === 'compliant').length;
-  const nonCompliant = allFindings.filter(
-    (f) => f.status === 'non_compliant',
+  const compliant = allFindings.filter(
+    (f: { status: string }) => f.status === 'compliant',
   ).length;
-  const partial = allFindings.filter((f) => f.status === 'partial').length;
+  const nonCompliant = allFindings.filter(
+    (f: { status: string }) => f.status === 'non_compliant',
+  ).length;
+  const partial = allFindings.filter(
+    (f: { status: string }) => f.status === 'partial',
+  ).length;
   const notApplicable = allFindings.filter(
-    (f) => f.status === 'not_applicable',
+    (f: { status: string }) => f.status === 'not_applicable',
   ).length;
 
   const complianceScore =
@@ -485,13 +493,16 @@ export async function performComplianceScan(
 
   // Generate recommendations
   const recommendations = allFindings
-    .filter((f) => f.status === 'non_compliant' || f.status === 'partial')
+    .filter(
+      (f: { status: string }) =>
+        f.status === 'non_compliant' || f.status === 'partial',
+    )
     .sort((a, b) => {
       const severityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
       return severityOrder[b.severity] - severityOrder[a.severity];
     })
     .slice(0, 10)
-    .map((f) => f.remediation);
+    .map((f: { remediation: string }) => f.remediation);
 
   const completedAt = new Date().toISOString();
 
@@ -515,20 +526,22 @@ export async function performComplianceScan(
   });
 
   // Log activity
-  await logActivity({
-    organization_id: organizationId,
-    user_id: '', // System action
-    action: 'scan',
-    entity_type: 'compliance',
-    entity_id: scanId,
-    entity_name: `${framework.toUpperCase()} Compliance Scan`,
-    metadata: {
-      framework,
-      complianceScore,
-      nonCompliant,
-      findings: allFindings.length,
+  await logActivity(
+    organizationId,
+    '', // System action
+    'create',
+    'report',
+    {
+      entityId: scanId,
+      entityName: `${framework.toUpperCase()} Compliance Scan`,
+      details: {
+        framework,
+        complianceScore,
+        nonCompliant,
+        findings: allFindings.length,
+      },
     },
-  });
+  );
 
   // Send notification if compliance score is low
   if (complianceScore < 70) {
@@ -630,7 +643,7 @@ export async function getComplianceTrends(
 
   if (error || !data) return [];
 
-  return data.map((scan) => ({
+  return data.map((scan: { completed_at: string; compliance_score: number }) => ({
     date: scan.completed_at,
     score: scan.compliance_score,
   }));
