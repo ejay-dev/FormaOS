@@ -5,7 +5,7 @@
  * Supabase Realtime integration for live updates
  */
 
-import { createClient } from '@/lib/supabase/client';
+import { createSupabaseClient } from '@/lib/supabase/client';
 import { useEffect, useState } from 'react';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 
@@ -48,7 +48,7 @@ export function useRealtimeTable<T>(
   const [channel, setChannel] = useState<RealtimeChannel | null>(null);
 
   useEffect(() => {
-    const supabase = createClient();
+    const supabase = createSupabaseClient();
 
     // Initial fetch
     const fetchData = async () => {
@@ -83,7 +83,7 @@ export function useRealtimeTable<T>(
           table: table,
           filter: filter ? `${filter.column}=eq.${filter.value}` : undefined,
         },
-        (payload) => {
+        (payload: any) => {
           const event: RealtimeEvent<T> = {
             type: payload.eventType as any,
             table: payload.table,
@@ -138,7 +138,7 @@ export function usePresence(
   const [channel, setChannel] = useState<RealtimeChannel | null>(null);
 
   useEffect(() => {
-    const supabase = createClient();
+    const supabase = createSupabaseClient();
 
     const presenceChannel = supabase.channel(`presence:${room}`, {
       config: {
@@ -153,13 +153,13 @@ export function usePresence(
         const state = presenceChannel.presenceState();
         setPresenceState(state as any);
       })
-      .on('presence', { event: 'join' }, ({ key, newPresences }) => {
+      .on('presence', { event: 'join' }, ({ key, newPresences }: any) => {
         console.log('User joined:', key, newPresences);
       })
-      .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
+      .on('presence', { event: 'leave' }, ({ key, leftPresences }: any) => {
         console.log('User left:', key, leftPresences);
       })
-      .subscribe(async (status) => {
+      .subscribe(async (status: any) => {
         if (status === 'SUBSCRIBED') {
           await presenceChannel.track({
             user_id: userInfo.id,
@@ -220,7 +220,7 @@ export function useNotifications(userId: string) {
   }, [data]);
 
   const markAsRead = async (notificationId: string) => {
-    const supabase = createClient();
+    const supabase = createSupabaseClient();
     await supabase
       .from('notifications')
       .update({ read: true })
@@ -228,7 +228,7 @@ export function useNotifications(userId: string) {
   };
 
   const markAllAsRead = async () => {
-    const supabase = createClient();
+    const supabase = createSupabaseClient();
     await supabase
       .from('notifications')
       .update({ read: true })
@@ -253,7 +253,7 @@ export async function broadcastToRoom(
   event: string,
   payload: any,
 ) {
-  const supabase = createClient();
+  const supabase = createSupabaseClient();
   const channel = supabase.channel(room);
 
   await channel.send({
@@ -277,7 +277,7 @@ export async function logActivity(
   resourceId: string,
   details?: Record<string, any>,
 ) {
-  const supabase = createClient();
+  const supabase = createSupabaseClient();
 
   const { error } = await supabase.from('activity_logs').insert({
     org_id: orgId,
@@ -305,7 +305,7 @@ export async function sendNotification(
   type: 'info' | 'success' | 'warning' | 'error' = 'info',
   actionUrl?: string,
 ) {
-  const supabase = createClient();
+  const supabase = createSupabaseClient();
 
   const { error } = await supabase.from('notifications').insert({
     user_id: userId,

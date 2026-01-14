@@ -66,7 +66,7 @@ export class WorkflowEngine {
       .eq('enabled', true);
 
     if (rules) {
-      rules.forEach((rule) => {
+      rules.forEach((rule: any) => {
         this.rules.set(rule.id, rule);
       });
     }

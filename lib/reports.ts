@@ -205,13 +205,13 @@ export async function generateComplianceReport(
           <div style="margin: 20px 0;">
             <strong>Overall Risk Level:</strong> 
             <span class="risk-indicator ${
-              riskScore < 30
+              riskScore.overall < 30
                 ? 'risk-low'
-                : riskScore < 70
+                : riskScore.overall < 70
                   ? 'risk-medium'
                   : 'risk-high'
             }">
-              ${riskScore < 30 ? 'LOW' : riskScore < 70 ? 'MEDIUM' : 'HIGH'} (${riskScore}/100)
+              ${riskScore.overall < 30 ? 'LOW' : riskScore.overall < 70 ? 'MEDIUM' : 'HIGH'} (${riskScore.overall}/100)
             </span>
           </div>
         </div>
@@ -280,10 +280,10 @@ export async function generateComplianceReport(
                 .map(
                   (performer) => `
                 <tr>
-                  <td>${performer.name}</td>
-                  <td style="text-transform: capitalize;">${performer.role}</td>
+                  <td>${performer.email}</td>
+                  <td style="text-transform: capitalize;">Member</td>
                   <td>${performer.completedTasks}</td>
-                  <td>${performer.completionRate}%</td>
+                  <td>${performer.complianceRate}%</td>
                 </tr>
               `,
                 )
@@ -299,7 +299,7 @@ export async function generateComplianceReport(
             ${metrics.expiringSoon > 0 ? `<li><strong>Certificate Renewal:</strong> ${metrics.expiringSoon} certificate(s) expiring within 30 days require immediate attention.</li>` : ''}
             ${metrics.expiredCertificates > 0 ? `<li><strong>Expired Certificates:</strong> ${metrics.expiredCertificates} certificate(s) have expired and need to be renewed urgently.</li>` : ''}
             ${metrics.completionRate < 80 ? `<li><strong>Task Completion:</strong> Current completion rate of ${metrics.completionRate}% is below target. Review task assignments and deadlines.</li>` : ''}
-            ${riskScore > 50 ? `<li><strong>Risk Mitigation:</strong> Risk score of ${riskScore}/100 indicates areas requiring immediate attention to reduce compliance risk.</li>` : ''}
+            ${riskScore.overall > 50 ? `<li><strong>Risk Mitigation:</strong> Risk score of ${riskScore.overall}/100 indicates areas requiring immediate attention to reduce compliance risk.</li>` : ''}
             ${teamMetrics.activeMembers / teamMetrics.totalMembers < 0.8 ? `<li><strong>Team Engagement:</strong> Only ${Math.round((teamMetrics.activeMembers / teamMetrics.totalMembers) * 100)}% of team members are active. Consider engagement initiatives.</li>` : ''}
           </ul>
         </div>
@@ -381,7 +381,7 @@ export async function generateCertificateReport(
           </thead>
           <tbody>
             ${(certificates || [])
-              .map((cert) => {
+              .map((cert: any) => {
                 const expiryDate = new Date(cert.expiry_date);
                 const daysUntilExpiry = Math.ceil(
                   (expiryDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24),
@@ -447,7 +447,7 @@ export async function generateAuditReport(
 
   // Group activities by action type
   const activityCounts: Record<string, number> = {};
-  (activities || []).forEach((activity) => {
+  (activities || []).forEach((activity: any) => {
     activityCounts[activity.action] =
       (activityCounts[activity.action] || 0) + 1;
   });
@@ -513,7 +513,7 @@ export async function generateAuditReport(
             ${(activities || [])
               .slice(0, 100)
               .map(
-                (activity) => `
+                (activity: any) => `
               <tr>
                 <td>${new Date(activity.created_at).toLocaleString()}</td>
                 <td>${activity.profiles?.full_name || activity.profiles?.email || 'Unknown'}</td>

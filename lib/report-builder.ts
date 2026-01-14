@@ -172,15 +172,17 @@ export async function createReportTemplate(
     throw new Error(`Failed to create report template: ${error.message}`);
   }
 
-  await logActivity({
-    organization_id: template.organization_id,
-    user_id: template.created_by,
-    action: 'create',
-    entity_type: 'report_template',
-    entity_id: data.id,
-    entity_name: template.name,
-    metadata: { widgets_count: template.widgets.length },
-  });
+  await logActivity(
+    template.organization_id,
+    template.created_by,
+    'create',
+    'report',
+    {
+      entityId: data.id,
+      entityName: template.name,
+      details: { widgets_count: template.widgets.length },
+    },
+  );
 
   return data;
 }
@@ -531,7 +533,7 @@ export async function getReportStats(organizationId: string): Promise<{
 
   const totalTemplates = templates?.length || 0;
   const scheduledReports =
-    templates?.filter((t) => t.schedule?.enabled).length || 0;
+    templates?.filter((t: any) => t.schedule?.enabled).length || 0;
 
   // Get generation history (if tracked)
   const { data: generations } = await supabase
@@ -547,7 +549,7 @@ export async function getReportStats(organizationId: string): Promise<{
 
   // Count generations per template
   const generationCounts: Record<string, number> = {};
-  generations?.forEach((gen) => {
+  generations?.forEach((gen: any) => {
     generationCounts[gen.template_id] =
       (generationCounts[gen.template_id] || 0) + 1;
   });
@@ -556,7 +558,7 @@ export async function getReportStats(organizationId: string): Promise<{
     .sort(([, a], [, b]) => b - a)
     .slice(0, 5)
     .map(([templateId, count]) => {
-      const template = templates?.find((t) => t.id === templateId);
+      const template = templates?.find((t: any) => t.id === templateId);
       return {
         id: templateId,
         name: template?.name || 'Unknown',

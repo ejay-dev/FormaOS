@@ -388,16 +388,16 @@ export async function sendEmail(
     let html = '';
     switch (notification.template) {
       case 'task_assignment':
-        html = generateTaskAssignmentEmail(notification.data);
+        html = generateTaskAssignmentEmail(notification.data as any);
         break;
       case 'certificate_expiring':
-        html = generateCertificateExpiringEmail(notification.data);
+        html = generateCertificateExpiringEmail(notification.data as any);
         break;
       case 'compliance_alert':
-        html = generateComplianceAlertEmail(notification.data);
+        html = generateComplianceAlertEmail(notification.data as any);
         break;
       case 'weekly_digest':
-        html = generateWeeklyDigestEmail(notification.data);
+        html = generateWeeklyDigestEmail(notification.data as any);
         break;
       default:
         console.error(`Unknown email template: ${notification.template}`);
@@ -541,7 +541,8 @@ export async function scheduleWeeklyDigest(
   const stats = {
     tasksCompleted:
       tasks.data?.filter((t: any) => t.status === 'completed').length || 0,
-    tasksPending: tasks.data?.filter((t: any) => t.status === 'pending').length || 0,
+    tasksPending:
+      tasks.data?.filter((t: any) => t.status === 'pending').length || 0,
     certificatesRenewed: 0,
     certificatesExpiring:
       certificates.data?.filter((c: any) => {
@@ -559,7 +560,7 @@ export async function scheduleWeeklyDigest(
     tasks.data
       ?.filter((t: any) => t.status === 'pending' && t.due_date)
       .sort(
-        (a, b) =>
+        (a: any, b: any) =>
           new Date(a.due_date).getTime() - new Date(b.due_date).getTime(),
       )
       .slice(0, 5) || [];
@@ -617,7 +618,7 @@ export async function getEmailStats(organizationId: string): Promise<{
     totalSent > 0 ? Math.round((delivered / totalSent) * 100) : 0;
 
   const byTemplate: Record<string, number> = {};
-  logs.forEach((log) => {
+  logs.forEach((log: any) => {
     byTemplate[log.template] = (byTemplate[log.template] || 0) + 1;
   });
 

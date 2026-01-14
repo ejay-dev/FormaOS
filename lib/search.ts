@@ -370,7 +370,7 @@ export async function getSuggestions(
     .ilike('title', `%${query}%`)
     .limit(limit);
 
-  tasks?.forEach((t) => suggestions.add(t.title));
+  tasks?.forEach((t: any) => suggestions.add(t.title));
 
   // Get member names
   const { data: members } = await supabase

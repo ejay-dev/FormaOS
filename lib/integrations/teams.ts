@@ -555,14 +555,10 @@ export async function saveTeamsConfig(
     });
   }
 
-  await logActivity({
-    organization_id: organizationId,
-    user_id: '',
-    action: 'configure',
-    entity_type: 'integration',
-    entity_id: organizationId,
-    entity_name: 'Microsoft Teams',
-    metadata: { events: config.enabledEvents },
+  await logActivity(organizationId, '', 'create', 'report', {
+    entityId: organizationId,
+    entityName: 'Microsoft Teams',
+    details: { events: config.enabledEvents },
   });
 }
 
@@ -692,7 +688,7 @@ export async function getTeamsStats(organizationId: string): Promise<{
     totalSent > 0 ? Math.round((successCount / totalSent) * 100) : 0;
 
   const eventCounts: Record<string, number> = {};
-  events.forEach((event) => {
+  events.forEach((event: any) => {
     eventCounts[event.event_type] = (eventCounts[event.event_type] || 0) + 1;
   });
 

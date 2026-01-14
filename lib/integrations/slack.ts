@@ -489,7 +489,7 @@ export async function getSlackStats(
   }
 
   const messagesByType: Record<string, number> = {};
-  data.forEach((event) => {
+  data.forEach((event: any) => {
     messagesByType[event.event_type] =
       (messagesByType[event.event_type] || 0) + 1;
   });

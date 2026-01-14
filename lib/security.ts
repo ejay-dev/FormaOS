@@ -137,7 +137,9 @@ export async function verify2FAToken(
   // Check if it's a backup code
   if (security.backup_codes?.includes(token)) {
     // Remove used backup code
-    const updatedCodes = security.backup_codes.filter((code) => code !== token);
+    const updatedCodes = security.backup_codes.filter(
+      (code: any) => code !== token,
+    );
     await supabase
       .from('user_security')
       .update({ backup_codes: updatedCodes })

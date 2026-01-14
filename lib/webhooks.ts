@@ -99,15 +99,17 @@ export async function createWebhook(
     throw new Error(`Failed to create webhook: ${error.message}`);
   }
 
-  await logActivity({
-    organization_id: organizationId,
-    user_id: '', // System action
-    action: 'create',
-    entity_type: 'webhook',
-    entity_id: data.id,
-    entity_name: config.name,
-    metadata: { events: config.events },
-  });
+  await logActivity(
+    organizationId,
+    '', // System action
+    'create',
+    'organization',
+    {
+      entityId: data.id,
+      entityName: config.name,
+      details: { events: config.events },
+    },
+  );
 
   return data;
 }
@@ -313,7 +315,7 @@ export async function triggerWebhook(
 
   // Deliver to all subscribed webhooks
   await Promise.allSettled(
-    webhooks.map((webhook) => deliverWebhook(webhook, payload)),
+    webhooks.map((webhook: any) => deliverWebhook(webhook, payload)),
   );
 }
 
@@ -408,7 +410,7 @@ export async function getWebhookStats(organizationId: string): Promise<{
     .eq('organization_id', organizationId);
 
   const totalWebhooks = webhooks?.length || 0;
-  const activeWebhooks = webhooks?.filter((w) => w.enabled).length || 0;
+  const activeWebhooks = webhooks?.filter((w: any) => w.enabled).length || 0;
 
   // Get delivery stats
   const { data: deliveries } = await supabase
@@ -418,9 +420,9 @@ export async function getWebhookStats(organizationId: string): Promise<{
 
   const totalDeliveries = deliveries?.length || 0;
   const successfulDeliveries =
-    deliveries?.filter((d) => d.status === 'success').length || 0;
+    deliveries?.filter((d: any) => d.status === 'success').length || 0;
   const failedDeliveries =
-    deliveries?.filter((d) => d.status === 'failed').length || 0;
+    deliveries?.filter((d: any) => d.status === 'failed').length || 0;
   const successRate =
     totalDeliveries > 0
       ? Math.round((successfulDeliveries / totalDeliveries) * 100)
@@ -428,7 +430,7 @@ export async function getWebhookStats(organizationId: string): Promise<{
 
   // Group by event type
   const deliveriesByEvent: Record<string, number> = {};
-  deliveries?.forEach((delivery) => {
+  deliveries?.forEach((delivery: any) => {
     deliveriesByEvent[delivery.event] =
       (deliveriesByEvent[delivery.event] || 0) + 1;
   });
