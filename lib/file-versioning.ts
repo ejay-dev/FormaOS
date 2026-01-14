@@ -101,15 +101,17 @@ export async function createFile(
     throw new Error(`Failed to create file version: ${versionError.message}`);
   }
 
-  await logActivity({
-    organization_id: organizationId,
-    user_id: file.uploadedBy,
-    action: 'create',
-    entity_type: 'file',
-    entity_id: fileMetadata.id,
-    entity_name: file.name,
-    metadata: { entity_type: entityType, entity_id: entityId, version: 1 },
-  });
+  await logActivity(
+    organizationId,
+    file.uploadedBy,
+    'create',
+    'evidence',
+    {
+      entityId: fileMetadata.id,
+      entityName: file.name,
+      details: { entity_type: entityType, entity_id: entityId, version: 1 },
+    },
+  );
 
   return fileMetadata;
 }
@@ -176,18 +178,20 @@ export async function uploadNewVersion(
     })
     .eq('id', fileId);
 
-  await logActivity({
-    organization_id: fileMetadata.organization_id,
-    user_id: userId,
-    action: 'update',
-    entity_type: 'file',
-    entity_id: fileId,
-    entity_name: file.name,
-    metadata: {
-      version: newVersionNumber,
-      change_summary: changeSummary,
+  await logActivity(
+    fileMetadata.organization_id,
+    userId,
+    'update',
+    'evidence',
+    {
+      entityId: fileId,
+      entityName: file.name,
+      details: {
+        version: newVersionNumber,
+        change_summary: changeSummary,
+      },
     },
-  });
+  );
 
   // Notify relevant users
   await sendNotification(
@@ -303,19 +307,21 @@ export async function restoreVersion(
     })
     .eq('id', fileId);
 
-  await logActivity({
-    organization_id: fileMetadata.organization_id,
-    user_id: userId,
-    action: 'restore',
-    entity_type: 'file',
-    entity_id: fileId,
-    entity_name: versionToRestore.file_name,
-    metadata: {
-      restored_version: versionNumber,
-      new_version: newVersionNumber,
-      reason,
+  await logActivity(
+    fileMetadata.organization_id,
+    userId,
+    'update',
+    'evidence',
+    {
+      entityId: fileId,
+      entityName: versionToRestore.file_name,
+      details: {
+        restored_version: versionNumber,
+        new_version: newVersionNumber,
+        reason,
+      },
     },
-  });
+  );
 
   return newVersion;
 }

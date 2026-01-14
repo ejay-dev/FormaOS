@@ -111,7 +111,7 @@ export async function getCertificateStatusWidgetData(
 
   const upcomingExpiry = [...expiringSoon, ...expired]
     .sort(
-      (a, b) =>
+      (a: any, b: any) =>
         new Date(a.expiry_date).getTime() - new Date(b.expiry_date).getTime(),
     )
     .slice(0, 5)
@@ -176,7 +176,7 @@ export async function getTaskProgressWidgetData(
   // Get recent completed tasks
   const recentTasks = completed
     .sort(
-      (a, b) =>
+      (a: any, b: any) =>
         new Date(b.completed_at || 0).getTime() -
         new Date(a.completed_at || 0).getTime(),
     )
@@ -295,7 +295,7 @@ export async function getTeamActivityWidgetData(
 
   // Get top contributors with user details
   const topUserIds = Array.from(userActivityMap.entries())
-    .sort((a, b) => b[1] - a[1])
+    .sort((a: any, b: any) => b[1] - a[1])
     .slice(0, 5)
     .map(([userId]) => userId);
 
