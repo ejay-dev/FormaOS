@@ -95,6 +95,15 @@ export class RBACMonitor {
   }
 }
 
+interface EndpointMetrics {
+  path: string;
+  method: string;
+  calls: number;
+  errors: number;
+  totalTime: number;
+  lastError?: string;
+}
+
 export class APIHealthMonitor {
   private metrics = {
     requests: 0,
@@ -102,15 +111,6 @@ export class APIHealthMonitor {
     totalResponseTime: 0,
     endpointMetrics: new Map<string, EndpointMetrics>(),
   };
-
-  interface EndpointMetrics {
-    path: string;
-    method: string;
-    calls: number;
-    errors: number;
-    totalTime: number;
-    lastError?: string;
-  }
 
   /**
    * Track API request
@@ -182,18 +182,18 @@ export class APIHealthMonitor {
   }
 }
 
+interface PageLoadMetrics {
+  timestamp: number;
+  renderTime: number;
+  firstContentfulPaint: number;
+  largestContentfulPaint: number;
+  memoryUsage: number;
+}
+
 export class PerformanceMonitor {
   private metrics = {
     pageLoads: new Map<string, PageLoadMetrics[]>(),
   };
-
-  interface PageLoadMetrics {
-    timestamp: number;
-    renderTime: number;
-    firstContentfulPaint: number;
-    largestContentfulPaint: number;
-    memoryUsage: number;
-  }
 
   /**
    * Track page load performance

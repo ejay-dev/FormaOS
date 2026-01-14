@@ -21,9 +21,12 @@ export function usePageLoadMonitoring(pageName: string) {
 
         // LCP measurement
         const lcpObserver = new PerformanceObserver((lcpList) => {
-          const lcpEntry = lcpList.getEntries().at(-1);
+          const lcpEntry = lcpList.getEntries().at(-1) as PerformanceEntry;
           if (lcpEntry) {
-            const lcp = lcpEntry.renderTime || lcpEntry.loadTime;
+            const lcp =
+              (lcpEntry as any).renderTime ||
+              (lcpEntry as any).loadTime ||
+              lcpEntry.startTime;
             const renderTime = Date.now() - renderStartRef.current;
             const memoryUsage =
               (performance as any).memory?.usedJSHeapSize || 0;
