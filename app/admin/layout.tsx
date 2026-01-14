@@ -7,9 +7,20 @@ export const dynamic = "force-dynamic";
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   try {
     const result = await requireFounderAccess();
-    console.log("[admin/layout] ✅ Founder access granted", { email: result.user.email });
+    console.log("[admin/layout] ✅ Founder access granted", { 
+      email: result.user.email,
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
-    console.error("[admin/layout] ❌ Admin access denied:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("[admin/layout] ❌ Admin access denied:", {
+      error: errorMessage,
+      timestamp: new Date().toISOString(),
+    });
+    // Redirect unauthorized users
+    if (errorMessage === "Forbidden") {
+      redirect("/pricing");
+    }
     redirect("/auth/signin");
   }
 

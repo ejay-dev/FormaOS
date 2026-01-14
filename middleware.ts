@@ -151,6 +151,8 @@ export async function middleware(request: NextRequest) {
         userId: userId ? userId.substring(0, 8) + "..." : "none",
         isFounder: isUserFounder,
         hasUser: !!user,
+        FOUNDER_EMAILS_raw: process.env.FOUNDER_EMAILS,
+        FOUNDER_USER_IDS_raw: process.env.FOUNDER_USER_IDS,
       });
     }
 

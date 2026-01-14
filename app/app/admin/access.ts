@@ -16,7 +16,7 @@ export async function requireFounderAccess() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    console.log("[requireFounderAccess] ❌ No user found");
+    console.error("[requireFounderAccess] ❌ No user found");
     throw new Error("Unauthorized");
   }
 
@@ -24,7 +24,11 @@ export async function requireFounderAccess() {
   const allowedIds = parseEnvList(process.env.FOUNDER_USER_IDS);
 
   if (!allowedEmails.size && !allowedIds.size) {
-    console.log("[requireFounderAccess] ⚠️ No founder emails or IDs configured");
+    console.error("[requireFounderAccess] ⚠️ CRITICAL: No founder emails or IDs configured", {
+      FOUNDER_EMAILS: process.env.FOUNDER_EMAILS,
+      FOUNDER_USER_IDS: process.env.FOUNDER_USER_IDS,
+      NODE_ENV: process.env.NODE_ENV,
+    });
     throw new Error("Founder access not configured");
   }
 
@@ -33,19 +37,26 @@ export async function requireFounderAccess() {
   const hasIdAccess = allowedIds.has(user.id.toLowerCase());
 
   console.log("[requireFounderAccess] Checking founder access", {
-    email,
-    userId: user.id.substring(0, 8),
+    email: email ? email.substring(0, 5) + "***" : "none",
+    userId: user.id.substring(0, 8) + "...",
     hasEmailAccess,
     hasIdAccess,
     allowedEmailsCount: allowedEmails.size,
     allowedIdsCount: allowedIds.size,
+    allowedEmails: Array.from(allowedEmails),
   });
 
   if (!hasEmailAccess && !hasIdAccess) {
-    console.log("[requireFounderAccess] ❌ Access denied - not a founder");
+    console.error("[requireFounderAccess] ❌ Access denied - not a founder", {
+      email,
+      userId: user.id,
+    });
     throw new Error("Forbidden");
   }
 
-  console.log("[requireFounderAccess] ✅ Founder access granted", { email });
+  console.log("[requireFounderAccess] ✅ Founder access granted", { 
+    email: email ? email.substring(0, 5) + "***" : "none",
+    timestamp: new Date().toISOString(),
+  });
   return { user };
 }
