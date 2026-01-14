@@ -53,11 +53,17 @@ export default function AuditTrailViewer({ orgId }: AuditTrailViewerProps) {
 
     try {
       const params = new URLSearchParams({
-        orgId,
+        orgId: orgId ?? '',
         limit: pageSize.toString(),
         offset: (page * pageSize).toString(),
-        ...filters,
+        search: filters.search ?? '',
+        dateFrom: filters.dateFrom ?? '',
+        dateTo: filters.dateTo ?? '',
       });
+
+      // Add array filters separately
+      filters.actions.forEach((action) => params.append('actions', action));
+      filters.entityTypes.forEach((type) => params.append('entityTypes', type));
 
       const res = await fetch(`/api/audit/logs?${params}`);
       const data = await res.json();
@@ -73,7 +79,16 @@ export default function AuditTrailViewer({ orgId }: AuditTrailViewerProps) {
 
   const handleExport = async () => {
     try {
-      const params = new URLSearchParams({ orgId, ...filters });
+      const params = new URLSearchParams({
+        orgId: orgId ?? '',
+        search: filters.search ?? '',
+        dateFrom: filters.dateFrom ?? '',
+        dateTo: filters.dateTo ?? '',
+      });
+
+      // Add array filters separately
+      filters.actions.forEach((action) => params.append('actions', action));
+      filters.entityTypes.forEach((type) => params.append('entityTypes', type));
       const res = await fetch(`/api/audit/export?${params}`);
       const csv = await res.text();
 
