@@ -35,12 +35,12 @@ CREATE TABLE IF NOT EXISTS ai_insights (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_risk_analyses_org ON risk_analyses(organization_id);
-CREATE INDEX idx_risk_analyses_created ON risk_analyses(created_at DESC);
-CREATE INDEX idx_risk_analyses_level ON risk_analyses(risk_level);
-CREATE INDEX idx_ai_insights_risk ON ai_insights(risk_analysis_id);
-CREATE INDEX idx_ai_insights_org ON ai_insights(organization_id);
-CREATE INDEX idx_ai_insights_type ON ai_insights(type);
+CREATE INDEX IF NOT EXISTS idx_risk_analyses_org ON risk_analyses(organization_id);
+CREATE INDEX IF NOT EXISTS idx_risk_analyses_created ON risk_analyses(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_risk_analyses_level ON risk_analyses(risk_level);
+CREATE INDEX IF NOT EXISTS idx_ai_insights_risk ON ai_insights(risk_analysis_id);
+CREATE INDEX IF NOT EXISTS idx_ai_insights_org ON ai_insights(organization_id);
+CREATE INDEX IF NOT EXISTS idx_ai_insights_type ON ai_insights(type);
 
 -- =========================================================
 -- 2. Email System Tables
@@ -72,12 +72,23 @@ CREATE TABLE IF NOT EXISTS email_preferences (
   UNIQUE(user_id, organization_id)
 );
 
-CREATE INDEX idx_email_logs_org ON email_logs(organization_id);
-CREATE INDEX idx_email_logs_user ON email_logs(user_id);
-CREATE INDEX idx_email_logs_sent ON email_logs(sent_at DESC);
-CREATE INDEX idx_email_logs_status ON email_logs(status);
-CREATE INDEX idx_email_preferences_user ON email_preferences(user_id);
-CREATE INDEX idx_email_preferences_org ON email_preferences(organization_id);
+-- Ensure sent_at column exists (in case table was created without it)
+DO $$ 
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'email_logs' AND column_name = 'sent_at'
+  ) THEN
+    ALTER TABLE email_logs ADD COLUMN sent_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+  END IF;
+END $$;
+
+CREATE INDEX IF NOT EXISTS idx_email_logs_org ON email_logs(organization_id);
+CREATE INDEX IF NOT EXISTS idx_email_logs_user ON email_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_email_logs_sent ON email_logs(sent_at DESC);
+CREATE INDEX IF NOT EXISTS idx_email_logs_status ON email_logs(status);
+CREATE INDEX IF NOT EXISTS idx_email_preferences_user ON email_preferences(user_id);
+CREATE INDEX IF NOT EXISTS idx_email_preferences_org ON email_preferences(organization_id);
 
 -- =========================================================
 -- 3. Compliance Scanning Tables
@@ -117,14 +128,14 @@ CREATE TABLE IF NOT EXISTS scan_findings (
   detected_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_compliance_scans_org ON compliance_scans(organization_id);
-CREATE INDEX idx_compliance_scans_framework ON compliance_scans(framework);
-CREATE INDEX idx_compliance_scans_completed ON compliance_scans(completed_at DESC);
-CREATE INDEX idx_compliance_scans_score ON compliance_scans(compliance_score);
-CREATE INDEX idx_scan_findings_scan ON scan_findings(scan_id);
-CREATE INDEX idx_scan_findings_org ON scan_findings(organization_id);
-CREATE INDEX idx_scan_findings_severity ON scan_findings(severity);
-CREATE INDEX idx_scan_findings_status ON scan_findings(status);
+CREATE INDEX IF NOT EXISTS idx_compliance_scans_org ON compliance_scans(organization_id);
+CREATE INDEX IF NOT EXISTS idx_compliance_scans_framework ON compliance_scans(framework);
+CREATE INDEX IF NOT EXISTS idx_compliance_scans_completed ON compliance_scans(completed_at DESC);
+CREATE INDEX IF NOT EXISTS idx_compliance_scans_score ON compliance_scans(compliance_score);
+CREATE INDEX IF NOT EXISTS idx_scan_findings_scan ON scan_findings(scan_id);
+CREATE INDEX IF NOT EXISTS idx_scan_findings_org ON scan_findings(organization_id);
+CREATE INDEX IF NOT EXISTS idx_scan_findings_severity ON scan_findings(severity);
+CREATE INDEX IF NOT EXISTS idx_scan_findings_status ON scan_findings(status);
 
 -- =========================================================
 -- 4. Dashboard Widget Tables
@@ -145,9 +156,9 @@ CREATE TABLE IF NOT EXISTS dashboard_layouts (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_dashboard_layouts_org ON dashboard_layouts(organization_id);
-CREATE INDEX idx_dashboard_layouts_enabled ON dashboard_layouts(enabled);
-CREATE INDEX idx_dashboard_layouts_type ON dashboard_layouts(widget_type);
+CREATE INDEX IF NOT EXISTS idx_dashboard_layouts_org ON dashboard_layouts(organization_id);
+CREATE INDEX IF NOT EXISTS idx_dashboard_layouts_enabled ON dashboard_layouts(enabled);
+CREATE INDEX IF NOT EXISTS idx_dashboard_layouts_type ON dashboard_layouts(widget_type);
 
 -- =========================================================
 -- 5. API Rate Limiting & Monitoring Tables
@@ -175,12 +186,12 @@ CREATE TABLE IF NOT EXISTS api_alert_config (
   UNIQUE(organization_id)
 );
 
-CREATE INDEX idx_api_usage_logs_org ON api_usage_logs(organization_id);
-CREATE INDEX idx_api_usage_logs_user ON api_usage_logs(user_id);
-CREATE INDEX idx_api_usage_logs_timestamp ON api_usage_logs(timestamp DESC);
-CREATE INDEX idx_api_usage_logs_endpoint ON api_usage_logs(endpoint);
-CREATE INDEX idx_api_usage_logs_status ON api_usage_logs(status_code);
-CREATE INDEX idx_api_alert_config_org ON api_alert_config(organization_id);
+CREATE INDEX IF NOT EXISTS idx_api_usage_logs_org ON api_usage_logs(organization_id);
+CREATE INDEX IF NOT EXISTS idx_api_usage_logs_user ON api_usage_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_api_usage_logs_timestamp ON api_usage_logs(timestamp DESC);
+CREATE INDEX IF NOT EXISTS idx_api_usage_logs_endpoint ON api_usage_logs(endpoint);
+CREATE INDEX IF NOT EXISTS idx_api_usage_logs_status ON api_usage_logs(status_code);
+CREATE INDEX IF NOT EXISTS idx_api_alert_config_org ON api_alert_config(organization_id);
 
 -- =========================================================
 -- 6. Scheduled Tasks Table
@@ -199,10 +210,10 @@ CREATE TABLE IF NOT EXISTS scheduled_tasks (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_scheduled_tasks_org ON scheduled_tasks(organization_id);
-CREATE INDEX idx_scheduled_tasks_enabled ON scheduled_tasks(enabled);
-CREATE INDEX idx_scheduled_tasks_next_run ON scheduled_tasks(next_run);
-CREATE INDEX idx_scheduled_tasks_type ON scheduled_tasks(task_type);
+CREATE INDEX IF NOT EXISTS idx_scheduled_tasks_org ON scheduled_tasks(organization_id);
+CREATE INDEX IF NOT EXISTS idx_scheduled_tasks_enabled ON scheduled_tasks(enabled);
+CREATE INDEX IF NOT EXISTS idx_scheduled_tasks_next_run ON scheduled_tasks(next_run);
+CREATE INDEX IF NOT EXISTS idx_scheduled_tasks_type ON scheduled_tasks(task_type);
 
 -- =========================================================
 -- Row Level Security (RLS) Policies
@@ -404,19 +415,24 @@ CREATE TRIGGER update_scheduled_tasks_updated_at
 -- =========================================================
 
 -- Composite indexes for common queries
-CREATE INDEX idx_risk_analyses_org_created ON risk_analyses(organization_id, created_at DESC);
-CREATE INDEX idx_compliance_scans_org_framework ON compliance_scans(organization_id, framework);
-CREATE INDEX idx_api_usage_logs_org_timestamp ON api_usage_logs(organization_id, timestamp DESC);
-CREATE INDEX idx_email_logs_org_sent ON email_logs(organization_id, sent_at DESC);
+CREATE INDEX IF NOT EXISTS idx_risk_analyses_org_created ON risk_analyses(organization_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_compliance_scans_org_framework ON compliance_scans(organization_id, framework);
+CREATE INDEX IF NOT EXISTS idx_api_usage_logs_org_timestamp ON api_usage_logs(organization_id, timestamp DESC);
+CREATE INDEX IF NOT EXISTS idx_email_logs_org_sent ON email_logs(organization_id, sent_at DESC);
 
 -- JSONB indexes for querying nested data
-CREATE INDEX idx_risk_analyses_risks_by_severity ON risk_analyses USING gin(risks_by_severity);
-CREATE INDEX idx_compliance_scans_findings ON compliance_scans USING gin(findings);
-CREATE INDEX idx_dashboard_layouts_settings ON dashboard_layouts USING gin(settings);
+CREATE INDEX IF NOT EXISTS idx_risk_analyses_risks_by_severity ON risk_analyses USING gin(risks_by_severity);
+CREATE INDEX IF NOT EXISTS idx_compliance_scans_findings ON compliance_scans USING gin(findings);
+CREATE INDEX IF NOT EXISTS idx_dashboard_layouts_settings ON dashboard_layouts USING gin(settings);
 
 -- =========================================================
 -- Views for Common Queries
 -- =========================================================
+
+-- Drop existing views first to avoid conflicts
+DROP VIEW IF EXISTS risk_summary CASCADE;
+DROP VIEW IF EXISTS compliance_status CASCADE;
+DROP VIEW IF EXISTS api_health CASCADE;
 
 -- Risk Summary View
 CREATE OR REPLACE VIEW risk_summary AS
