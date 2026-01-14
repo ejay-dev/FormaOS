@@ -374,7 +374,7 @@ async function generateAIInsights(
 
   // Insight 1: Certificate renewal pattern
   const certRisks = risks.filter(
-    (r) => r.category === 'certificate_expiration',
+    (r: any) => r.category === 'certificate_expiration',
   );
   if (certRisks.length >= 2) {
     insights.push({
@@ -394,7 +394,7 @@ async function generateAIInsights(
   }
 
   // Insight 2: Task completion patterns
-  const taskRisks = risks.filter((r) => r.category === 'overdue_tasks');
+  const taskRisks = risks.filter((r: any) => r.category === 'overdue_tasks');
   if (taskRisks.length >= 3) {
     insights.push({
       type: 'anomaly',
@@ -413,7 +413,7 @@ async function generateAIInsights(
   }
 
   // Insight 3: Evidence management optimization
-  const evidenceRisks = risks.filter((r) => r.category === 'missing_evidence');
+  const evidenceRisks = risks.filter((r: any) => r.category === 'missing_evidence');
   if (evidenceRisks.length > 0) {
     insights.push({
       type: 'optimization',
@@ -432,7 +432,7 @@ async function generateAIInsights(
   }
 
   // Insight 4: Proactive recommendations
-  const criticalRisks = risks.filter((r) => r.severity === 'critical');
+  const criticalRisks = risks.filter((r: any) => r.severity === 'critical');
   if (criticalRisks.length === 0 && risks.length < 5) {
     insights.push({
       type: 'recommendation',
@@ -524,10 +524,10 @@ export async function performRiskAnalysis(
   };
 
   const risksBySeverity: Record<RiskLevel, number> = {
-    low: allRisks.filter((r) => r.severity === 'low').length,
-    medium: allRisks.filter((r) => r.severity === 'medium').length,
-    high: allRisks.filter((r) => r.severity === 'high').length,
-    critical: allRisks.filter((r) => r.severity === 'critical').length,
+    low: allRisks.filter((r: any) => r.severity === 'low').length,
+    medium: allRisks.filter((r: any) => r.severity === 'medium').length,
+    high: allRisks.filter((r: any) => r.severity === 'high').length,
+    critical: allRisks.filter((r: any) => r.severity === 'critical').length,
   };
 
   // Get previous analysis for trends
@@ -559,13 +559,13 @@ export async function performRiskAnalysis(
   // Compile recommendations
   const recommendations = [
     ...allRisks
-      .filter((r) => r.severity === 'critical' || r.severity === 'high')
+      .filter((r: any) => r.severity === 'critical' || r.severity === 'high')
       .slice(0, 5)
-      .map((r) => r.recommendation),
+      .map((r: any) => r.recommendation),
     ...aiInsights
-      .filter((i) => i.actionable)
+      .filter((i: any) => i.actionable)
       .slice(0, 3)
-      .flatMap((i) => i.suggestedActions),
+      .flatMap((i: any) => i.suggestedActions),
   ];
 
   // Save analysis to database

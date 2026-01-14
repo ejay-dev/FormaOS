@@ -643,8 +643,10 @@ export async function getComplianceTrends(
 
   if (error || !data) return [];
 
-  return data.map((scan: { completed_at: string; compliance_score: number }) => ({
-    date: scan.completed_at,
-    score: scan.compliance_score,
-  }));
+  return data.map(
+    (scan: { completed_at: string; compliance_score: number }) => ({
+      date: scan.completed_at,
+      score: scan.compliance_score,
+    }),
+  );
 }

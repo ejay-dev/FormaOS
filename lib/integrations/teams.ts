@@ -687,7 +687,7 @@ export async function getTeamsStats(organizationId: string): Promise<{
   }
 
   const totalSent = events.length;
-  const successCount = events.filter((e) => e.status === 'sent').length;
+  const successCount = events.filter((e: any) => e.status === 'sent').length;
   const successRate =
     totalSent > 0 ? Math.round((successCount / totalSent) * 100) : 0;
 

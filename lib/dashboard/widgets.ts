@@ -102,12 +102,12 @@ export async function getCertificateStatusWidgetData(
     };
   }
 
-  const active = allCerts.filter((cert) => new Date(cert.expiry_date) > now);
-  const expiringSoon = allCerts.filter((cert) => {
+  const active = allCerts.filter((cert: any) => new Date(cert.expiry_date) > now);
+  const expiringSoon = allCerts.filter((cert: any) => {
     const expiry = new Date(cert.expiry_date);
     return expiry > now && expiry <= thirtyDaysOut;
   });
-  const expired = allCerts.filter((cert) => new Date(cert.expiry_date) <= now);
+  const expired = allCerts.filter((cert: any) => new Date(cert.expiry_date) <= now);
 
   const upcomingExpiry = [...expiringSoon, ...expired]
     .sort(
@@ -115,7 +115,7 @@ export async function getCertificateStatusWidgetData(
         new Date(a.expiry_date).getTime() - new Date(b.expiry_date).getTime(),
     )
     .slice(0, 5)
-    .map((cert) => ({
+    .map((cert: any) => ({
       id: cert.id,
       name: cert.name,
       expiryDate: cert.expiry_date,
@@ -161,11 +161,11 @@ export async function getTaskProgressWidgetData(
   }
 
   const now = new Date();
-  const completed = allTasks.filter((t) => t.status === 'completed');
-  const inProgress = allTasks.filter((t) => t.status === 'in_progress');
-  const notStarted = allTasks.filter((t) => t.status === 'not_started');
+  const completed = allTasks.filter((t: any) => t.status === 'completed');
+  const inProgress = allTasks.filter((t: any) => t.status === 'in_progress');
+  const notStarted = allTasks.filter((t: any) => t.status === 'not_started');
   const overdue = allTasks.filter(
-    (t) => t.status !== 'completed' && t.due_date && new Date(t.due_date) < now,
+    (t: any) => t.status !== 'completed' && t.due_date && new Date(t.due_date) < now,
   );
 
   const completionRate =
@@ -181,7 +181,7 @@ export async function getTaskProgressWidgetData(
         new Date(a.completed_at || 0).getTime(),
     )
     .slice(0, 5)
-    .map((task) => ({
+    .map((task: any) => ({
       id: task.id,
       title: task.title,
       completedAt: task.completed_at,
@@ -288,7 +288,7 @@ export async function getTeamActivityWidgetData(
 
   // Count activities by user
   const userActivityMap = new Map<string, number>();
-  activities.forEach((activity) => {
+  activities.forEach((activity: any) => {
     const count = userActivityMap.get(activity.user_id) || 0;
     userActivityMap.set(activity.user_id, count + 1);
   });
@@ -305,7 +305,7 @@ export async function getTeamActivityWidgetData(
     .in('id', topUserIds);
 
   const topContributors = topUserIds.map((userId) => {
-    const user = users?.find((u) => u.id === userId);
+    const user = users?.find((u: any) => u.id === userId);
     return {
       userId,
       name: user?.full_name || 'Unknown User',
@@ -319,7 +319,7 @@ export async function getTeamActivityWidgetData(
   for (let i = 29; i >= 0; i--) {
     const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
     const dateStr = date.toISOString().split('T')[0];
-    const dayActivities = activities.filter((a) =>
+    const dayActivities = activities.filter((a: any) =>
       a.created_at.startsWith(dateStr),
     );
     activityByDay.push({
@@ -358,7 +358,7 @@ export async function getTrendChartWidgetData(
     return {
       metric: 'risk',
       dataPoints:
-        data?.map((d) => ({
+        data?.map((d: any) => ({
           date: d.created_at.split('T')[0],
           value: d.overall_risk_score,
         })) || [],
@@ -376,7 +376,7 @@ export async function getTrendChartWidgetData(
     return {
       metric: 'compliance',
       dataPoints:
-        data?.map((d) => ({
+        data?.map((d: any) => ({
           date: d.completed_at.split('T')[0],
           value: d.compliance_score,
         })) || [],
@@ -396,7 +396,7 @@ export async function getTrendChartWidgetData(
 
     const completedByDate =
       tasks?.filter(
-        (t) => t.completed_at && t.completed_at <= dateStr + 'T23:59:59',
+        (t: any) => t.completed_at && t.completed_at <= dateStr + 'T23:59:59',
       ).length || 0;
 
     const totalByDate = tasks?.length || 0;
@@ -432,7 +432,7 @@ export async function getRecentAlertsWidgetData(
     .limit(10);
 
   const alerts =
-    notifications?.map((notif) => ({
+    notifications?.map((notif: any) => ({
       id: notif.id,
       type: notif.type,
       title: notif.title,
@@ -442,7 +442,7 @@ export async function getRecentAlertsWidgetData(
       read: notif.read,
     })) || [];
 
-  const unreadCount = alerts.filter((a) => !a.read).length;
+  const unreadCount = alerts.filter((a: any) => !a.read).length;
 
   return {
     alerts,
@@ -568,7 +568,7 @@ export async function getDashboardLayout(
 
   if (error || !data) return [];
 
-  return data.map((row) => ({
+  return data.map((row: any) => ({
     id: row.widget_id,
     organizationId: row.organization_id,
     type: row.widget_type,

@@ -540,11 +540,11 @@ export async function scheduleWeeklyDigest(
 
   const stats = {
     tasksCompleted:
-      tasks.data?.filter((t) => t.status === 'completed').length || 0,
-    tasksPending: tasks.data?.filter((t) => t.status === 'pending').length || 0,
+      tasks.data?.filter((t: any) => t.status === 'completed').length || 0,
+    tasksPending: tasks.data?.filter((t: any) => t.status === 'pending').length || 0,
     certificatesRenewed: 0,
     certificatesExpiring:
-      certificates.data?.filter((c) => {
+      certificates.data?.filter((c: any) => {
         const daysUntil = Math.ceil(
           (new Date(c.expiry_date).getTime() - Date.now()) /
             (1000 * 60 * 60 * 24),
@@ -557,7 +557,7 @@ export async function scheduleWeeklyDigest(
 
   const topTasks =
     tasks.data
-      ?.filter((t) => t.status === 'pending' && t.due_date)
+      ?.filter((t: any) => t.status === 'pending' && t.due_date)
       .sort(
         (a, b) =>
           new Date(a.due_date).getTime() - new Date(b.due_date).getTime(),
@@ -612,7 +612,7 @@ export async function getEmailStats(organizationId: string): Promise<{
   }
 
   const totalSent = logs.length;
-  const delivered = logs.filter((l) => l.status === 'sent').length;
+  const delivered = logs.filter((l: any) => l.status === 'sent').length;
   const deliveryRate =
     totalSent > 0 ? Math.round((delivered / totalSent) * 100) : 0;
 
