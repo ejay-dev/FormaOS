@@ -23,6 +23,7 @@
 ## Deployment Steps
 
 ### Step 1: Access Supabase SQL Editor ⏳
+
 ```
 1. Go to https://app.supabase.com
 2. Select your FormaOS project
@@ -31,6 +32,7 @@
 ```
 
 ### Step 2: Apply RLS Migration ⏳
+
 ```
 1. Copy all contents from: supabase/migrations/20260401_safe_rls_policies.sql
 2. Paste into Supabase SQL Editor
@@ -40,6 +42,7 @@
 ```
 
 ### Step 3: Verify Policies Applied ⏳
+
 ```
 1. Go to Authentication > Policies in Supabase
 2. Check these tables have RLS enabled:
@@ -57,6 +60,7 @@
 ```
 
 ### Step 4: Verify Application Deployment ⏳
+
 ```
 1. Check Vercel dashboard: https://vercel.com/dashboard
 2. Verify latest commit deployed:
@@ -70,6 +74,7 @@
 ## Post-Deployment Testing
 
 ### 🧪 Automated Tests
+
 ```bash
 # Run validation script to re-verify
 cd /Users/ejay/formaos
@@ -81,6 +86,7 @@ cd /Users/ejay/formaos
 ### 🧪 Manual User Testing
 
 #### Test A: Normal User Login ⏳
+
 - [ ] Go to https://app.formaos.com.au
 - [ ] Login with normal user account
 - [ ] Dashboard loads without errors
@@ -91,6 +97,7 @@ cd /Users/ejay/formaos
 - [ ] Can view audit history
 
 #### Test B: Founder/Admin Access ⏳
+
 - [ ] Logout and login with founder account
 - [ ] Navigate to https://app.formaos.com.au/admin/dashboard
 - [ ] Admin dashboard loads
@@ -100,6 +107,7 @@ cd /Users/ejay/formaos
 - [ ] No 403 or RLS errors
 
 #### Test C: Cross-Org Isolation ⏳
+
 - [ ] Open DevTools (F12) → Console
 - [ ] Login as normal user
 - [ ] Run:
@@ -114,6 +122,7 @@ cd /Users/ejay/formaos
 - [ ] Verify returns no data (RLS working correctly)
 
 #### Test D: Audit Logs ⏳
+
 - [ ] Navigate to /app/history
 - [ ] Audit logs page loads
 - [ ] Can see organization's audit trail
@@ -127,12 +136,14 @@ cd /Users/ejay/formaos
 ### Watch For Issues
 
 **In Browser Console:**
+
 - ❌ "permission denied" errors
 - ❌ "policy violation" messages
 - ❌ 403 Forbidden errors on org queries
 - ❌ "relation does not exist" errors
 
 **In Supabase Logs:**
+
 ```
 1. Go to Authentication > Logs in Supabase
 2. Look for RLS-related errors
@@ -141,6 +152,7 @@ cd /Users/ejay/formaos
 ```
 
 **If You See Issues:**
+
 1. Check the Rollback section in RLS_DEPLOYMENT_READY.md
 2. Disable RLS on affected table if needed
 3. Review the fix and re-apply migration
@@ -154,7 +166,8 @@ cd /Users/ejay/formaos
 
 **Cause:** RLS migration tried to create policies on non-existent table
 
-**Fix:** 
+**Fix:**
+
 1. Check if table exists in Supabase Data Editor
 2. If missing, create the table first
 3. Re-run migration
@@ -172,6 +185,7 @@ cd /Users/ejay/formaos
 **Cause:** Admin routes not using service role key
 
 **Fix:**
+
 1. Check `/api/admin/orgs/route.ts` uses `createSupabaseAdminClient()`
 2. Verify `SUPABASE_SERVICE_ROLE_KEY` is set in environment
 3. Restart Next.js server
@@ -183,6 +197,7 @@ cd /Users/ejay/formaos
 **Critical:** Stop deployment immediately!
 
 **Fix:**
+
 1. Disable RLS on affected table (see rollback steps)
 2. Review the failing query
 3. Fix the query or RLS policy
@@ -201,7 +216,7 @@ cd /Users/ejay/formaos
 ✅ Founder can access all organizations via admin dashboard  
 ✅ No unauthorized data is visible to any user  
 ✅ No performance degradation  
-✅ Application still functions normally  
+✅ Application still functions normally
 
 ---
 
@@ -222,6 +237,7 @@ ALTER TABLE public.org_files DISABLE ROW LEVEL SECURITY;
 ```
 
 **Steps:**
+
 1. Go to Supabase SQL Editor
 2. Copy above SQL and run it
 3. Wait for completion

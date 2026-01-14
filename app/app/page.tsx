@@ -1,8 +1,6 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { UnifiedDashboardLayout } from '@/components/dashboard/unified-dashboard-layout';
-import { EmployerDashboard } from '@/components/dashboard/employer-dashboard';
-import { EmployeeDashboard } from '@/components/dashboard/employee-dashboard';
-import { isEmployerRole, type DatabaseRole } from '@/lib/roles';
+import { DashboardWrapper } from './dashboard-wrapper';
+import { type DatabaseRole } from '@/lib/roles';
 import { ShieldCheck } from 'lucide-react';
 
 /**
@@ -11,11 +9,11 @@ import { ShieldCheck } from 'lucide-react';
  * Route: /app
  * =========================================================
  *
- * Single entry point that detects user role and renders:
+ * Server component that fetches user data and passes to
+ * client-side DashboardWrapper for role-based rendering.
+ *
  * - EmployerDashboard for owner/admin roles (org-wide view)
  * - EmployeeDashboard for member/viewer roles (personal view)
- *
- * No redirects - single /app route serves all users appropriately.
  */
 
 type MembershipRow = {
@@ -99,26 +97,13 @@ export default async function DashboardPage() {
       : 'member'
   ) as DatabaseRole;
 
-  // ✅ UNIFIED DASHBOARD: Detect employer vs employee role
-  const isEmployer = isEmployerRole(userRole);
-
-  // Route to appropriate dashboard based on role
-  if (isEmployer) {
-    // Employer dashboard (owner/admin roles) - org-wide view
-    return (
-      <UnifiedDashboardLayout userRole={userRole} organizationName={orgName}>
-        <EmployerDashboard organizationId={orgId} organizationName={orgName} />
-      </UnifiedDashboardLayout>
-    );
-  } else {
-    // Employee dashboard (member/viewer roles) - personal view
-    return (
-      <UnifiedDashboardLayout userRole={userRole} organizationName={orgName}>
-        <EmployeeDashboard
-          employeeName={user.email || 'Employee'}
-          organizationName={orgName}
-        />
-      </UnifiedDashboardLayout>
-    );
-  }
+  // Pass to client component for role-based rendering
+  return (
+    <DashboardWrapper
+      orgId={orgId}
+      orgName={orgName}
+      userRole={userRole}
+      userEmail={user.email || 'User'}
+    />
+  );
 }

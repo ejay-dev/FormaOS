@@ -2,17 +2,18 @@
 
 ## What Changed?
 
-| File | From | To | Impact |
-|------|------|-----|--------|
-| `/app/page.tsx` | 1423 lines (generic) | 88 lines (role-aware) | 94% smaller, cleaner |
-| `/app/onboarding/page.tsx` | "staff" role | "member" role | Consistent taxonomy |
-| Build status | ❌ Old components | ✅ New components | TypeScript verified |
+| File                       | From                 | To                    | Impact               |
+| -------------------------- | -------------------- | --------------------- | -------------------- |
+| `/app/page.tsx`            | 1423 lines (generic) | 88 lines (role-aware) | 94% smaller, cleaner |
+| `/app/onboarding/page.tsx` | "staff" role         | "member" role         | Consistent taxonomy  |
+| Build status               | ❌ Old components    | ✅ New components     | TypeScript verified  |
 
 ---
 
 ## How It Works Now
 
 ### Access Path: New User
+
 ```
 1. User signs up
    ↓
@@ -36,16 +37,19 @@
 ## Testing Checklist (Quick)
 
 ### Test 1: Employer Account
+
 - [ ] Create account, select "Employer"
 - [ ] Dashboard shows organization sections
 - [ ] Can see team data
 
-### Test 2: Employee Account  
+### Test 2: Employee Account
+
 - [ ] Create account, select "Employee"
 - [ ] Dashboard shows personal sections only
 - [ ] Cannot see team data
 
 ### Test 3: API Permissions
+
 - [ ] Employee API call returns personal data only
 - [ ] Employer API call returns all org data
 
@@ -53,12 +57,12 @@
 
 ## Key URLs
 
-| Path | Audience | Redirects |
-|------|----------|-----------|
-| `/app` | All authenticated | ✅ No (role-aware rendering) |
-| `/admin` | Founders only | Non-founder → `/pricing` |
-| `/auth/signin` | Unauthenticated | ✅ Auto → `/app` if logged in |
-| `/onboarding` | Incomplete users | ✅ From `/auth` after signup |
+| Path           | Audience          | Redirects                     |
+| -------------- | ----------------- | ----------------------------- |
+| `/app`         | All authenticated | ✅ No (role-aware rendering)  |
+| `/admin`       | Founders only     | Non-founder → `/pricing`      |
+| `/auth/signin` | Unauthenticated   | ✅ Auto → `/app` if logged in |
+| `/onboarding`  | Incomplete users  | ✅ From `/auth` after signup  |
 
 ---
 
@@ -66,7 +70,7 @@
 
 ```
 owner     → Employer with full access
-admin     → Admin with full access  
+admin     → Admin with full access
 member    → Employee (default), personal view
 viewer    → Read-only, personal view
 ```
@@ -93,6 +97,7 @@ viewer    → Read-only, personal view
 ## If Issues
 
 ### Problem: Wrong role showing
+
 ```bash
 # Check database
 SELECT role FROM org_members WHERE user_id='xxx';
@@ -101,6 +106,7 @@ SELECT role FROM org_members WHERE user_id='xxx';
 ```
 
 ### Problem: Employee sees org data
+
 ```bash
 # 1. Check RLS policies exist
 SELECT tablename FROM pg_policies WHERE tablename LIKE 'org_%';
@@ -112,6 +118,7 @@ SELECT tablename FROM pg_policies WHERE tablename LIKE 'org_%';
 ```
 
 ### Problem: Build fails
+
 ```bash
 rm -rf .next
 npm run build
@@ -125,12 +132,12 @@ npm run build       # Should work (rollback)
 
 ## Files to Review
 
-| File | What's New |
-|------|-----------|
-| `app/app/page.tsx` | Main dashboard - now role-aware |
-| `app/onboarding/page.tsx` | Line 31: "staff" → "member" |
-| `lib/roles.ts` | Role definitions (existing) |
-| `components/dashboard/` | EmployerDashboard, EmployeeDashboard (existing) |
+| File                      | What's New                                      |
+| ------------------------- | ----------------------------------------------- |
+| `app/app/page.tsx`        | Main dashboard - now role-aware                 |
+| `app/onboarding/page.tsx` | Line 31: "staff" → "member"                     |
+| `lib/roles.ts`            | Role definitions (existing)                     |
+| `components/dashboard/`   | EmployerDashboard, EmployeeDashboard (existing) |
 
 ---
 
@@ -150,12 +157,12 @@ npm run build       # Should work (rollback)
 
 ## Support Resources
 
-| Document | Purpose |
-|----------|---------|
-| `RBAC_INTEGRATION_COMPLETE.md` | Full overview |
-| `E2E_TESTING_GUIDE.md` | Complete testing scenarios |
-| `FINAL_INTEGRATION_SUMMARY.md` | Technical details |
-| `lib/roles.ts` | Role system source |
+| Document                       | Purpose                    |
+| ------------------------------ | -------------------------- |
+| `RBAC_INTEGRATION_COMPLETE.md` | Full overview              |
+| `E2E_TESTING_GUIDE.md`         | Complete testing scenarios |
+| `FINAL_INTEGRATION_SUMMARY.md` | Technical details          |
+| `lib/roles.ts`                 | Role system source         |
 
 ---
 
