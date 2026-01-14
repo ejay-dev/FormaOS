@@ -154,8 +154,9 @@ export default async function AdminBillingPage({
                   <td className="px-6 py-4">
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium bg-slate-600/10 text-slate-300">
                       <Zap className="h-3 w-3" />
-                      {row.plan_key?.charAt(0).toUpperCase() +
-                        row.plan_key?.slice(1) || "—"}
+                      {row.plan_key
+                        ? row.plan_key.charAt(0).toUpperCase() + row.plan_key.slice(1)
+                        : "—"}
                     </span>
                   </td>
                   <td className="px-6 py-4">
@@ -165,7 +166,7 @@ export default async function AdminBillingPage({
                   </td>
                   <td className="px-6 py-4">
                     <code className="text-xs text-slate-500 bg-slate-900/50 px-2 py-1 rounded">
-                      {row.stripe_subscription_id?.slice(0, 8)}... || "—"
+                      {row.stripe_subscription_id ? row.stripe_subscription_id.slice(0, 8) + "..." : "—"}
                     </code>
                   </td>
                   <td className="px-6 py-4 text-right">

@@ -157,8 +157,9 @@ export default async function AdminOrgsPage({
                       )}`}
                     >
                       <Zap className="h-3 w-3" />
-                      {org.plan_key?.charAt(0).toUpperCase() +
-                        org.plan_key?.slice(1) || "—"}
+                      {org.plan_key
+                        ? org.plan_key.charAt(0).toUpperCase() + org.plan_key.slice(1)
+                        : "—"}
                     </span>
                   </td>
                   <td className="px-6 py-4">
@@ -167,8 +168,9 @@ export default async function AdminOrgsPage({
                         org.status
                       )}`}
                     >
-                      {org.status?.charAt(0).toUpperCase() +
-                        org.status?.slice(1) || "—"}
+                      {org.status
+                        ? org.status.charAt(0).toUpperCase() + org.status.slice(1)
+                        : "—"}
                     </span>
                   </td>
                   <td className="px-6 py-4">
