@@ -470,7 +470,7 @@ export async function getVersionStats(organizationId: string): Promise<{
     }));
 
   // Get recent versions across all files
-  const fileIds = files?.map((f) => f.id) || [];
+  const fileIds = files?.map((f: any) => f.id) || [];
   const { data: recentVersions } = await supabase
     .from('file_versions')
     .select('*')
