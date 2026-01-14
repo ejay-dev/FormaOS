@@ -421,7 +421,7 @@ export async function getUserRecentComments(
 
   if (error || !data) return [];
 
-  return data.map((comment) => ({
+  return data.map((comment: { profiles?: any }) => ({
     ...comment,
     user: comment.profiles,
     reactions: [],
@@ -451,7 +451,7 @@ export async function getMentionedComments(
 
   if (error || !data) return [];
 
-  return data.map((comment) => ({
+  return data.map((comment: { profiles?: any }) => ({
     ...comment,
     user: comment.profiles,
     reactions: [],
@@ -501,7 +501,7 @@ export async function searchComments(
 
   if (error || !data) return [];
 
-  return data.map((comment) => ({
+  return data.map((comment: { profiles?: any }) => ({
     ...comment,
     user: comment.profiles,
     reactions: [],
