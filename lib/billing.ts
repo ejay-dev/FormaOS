@@ -134,7 +134,7 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionTier, SubscriptionPlan> = {
 export async function createStripeCustomer(
   organizationId: string,
   email: string,
-  name: string
+  name: string,
 ): Promise<string> {
   const customer = await stripe.customers.create({
     email,
@@ -161,7 +161,7 @@ export async function createCheckoutSession(
   organizationId: string,
   tier: SubscriptionTier,
   successUrl: string,
-  cancelUrl: string
+  cancelUrl: string,
 ): Promise<{ sessionId: string; url: string }> {
   const plan = SUBSCRIPTION_PLANS[tier];
 
@@ -184,7 +184,7 @@ export async function createCheckoutSession(
     customerId = await createStripeCustomer(
       organizationId,
       '', // Get from org owner
-      org?.name || 'Organization'
+      org?.name || 'Organization',
     );
   }
 
@@ -222,9 +222,7 @@ export async function createCheckoutSession(
 /**
  * Handle successful checkout
  */
-export async function handleCheckoutSuccess(
-  sessionId: string
-): Promise<void> {
+export async function handleCheckoutSuccess(sessionId: string): Promise<void> {
   const session = await stripe.checkout.sessions.retrieve(sessionId);
 
   if (session.payment_status !== 'paid') {
@@ -264,7 +262,7 @@ export async function handleCheckoutSuccess(
  * Cancel subscription
  */
 export async function cancelSubscription(
-  organizationId: string
+  organizationId: string,
 ): Promise<void> {
   const supabase = await createClient();
 
@@ -304,7 +302,7 @@ export async function cancelSubscription(
  * Resume canceled subscription
  */
 export async function resumeSubscription(
-  organizationId: string
+  organizationId: string,
 ): Promise<void> {
   const supabase = await createClient();
 
@@ -337,7 +335,7 @@ export async function resumeSubscription(
  */
 export async function updateSubscriptionTier(
   organizationId: string,
-  newTier: SubscriptionTier
+  newTier: SubscriptionTier,
 ): Promise<void> {
   const newPlan = SUBSCRIPTION_PLANS[newTier];
 
@@ -358,7 +356,9 @@ export async function updateSubscriptionTier(
   }
 
   // Get subscription
-  const subscription = await stripe.subscriptions.retrieve(org.stripe_subscription_id);
+  const subscription = await stripe.subscriptions.retrieve(
+    org.stripe_subscription_id,
+  );
 
   // Update subscription
   await stripe.subscriptions.update(org.stripe_subscription_id, {
@@ -393,7 +393,7 @@ export async function updateSubscriptionTier(
  */
 export async function createBillingPortalSession(
   organizationId: string,
-  returnUrl: string
+  returnUrl: string,
 ): Promise<string> {
   const supabase = await createClient();
 
@@ -464,7 +464,8 @@ export async function getCurrentUsage(organizationId: string): Promise<{
   ]);
 
   // Calculate storage in GB
-  const totalBytes = storage.data?.reduce((sum, doc) => sum + (doc.file_size || 0), 0) || 0;
+  const totalBytes =
+    storage.data?.reduce((sum, doc) => sum + (doc.file_size || 0), 0) || 0;
   const storageGB = totalBytes / (1024 * 1024 * 1024);
 
   return {
@@ -509,7 +510,10 @@ export async function checkUsageLimits(organizationId: string): Promise<{
     exceeded.push('storage');
   }
 
-  if (plan.limits.certificates !== -1 && usage.certificates > plan.limits.certificates) {
+  if (
+    plan.limits.certificates !== -1 &&
+    usage.certificates > plan.limits.certificates
+  ) {
     exceeded.push('certificates');
   }
 
@@ -526,9 +530,7 @@ export async function checkUsageLimits(organizationId: string): Promise<{
 /**
  * Handle Stripe webhook events
  */
-export async function handleStripeWebhook(
-  event: Stripe.Event
-): Promise<void> {
+export async function handleStripeWebhook(event: Stripe.Event): Promise<void> {
   const supabase = await createClient();
 
   switch (event.type) {

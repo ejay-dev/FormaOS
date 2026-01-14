@@ -8,7 +8,15 @@
  */
 
 import { useState, useEffect } from 'react';
-import { CreditCard, TrendingUp, Users, FileText, Award, Zap, Check } from 'lucide-react';
+import {
+  CreditCard,
+  TrendingUp,
+  Users,
+  FileText,
+  Award,
+  Zap,
+  Check,
+} from 'lucide-react';
 
 interface SubscriptionPlan {
   id: string;
@@ -74,7 +82,7 @@ export default function BillingDashboard({ orgId }: BillingDashboardProps) {
       });
 
       const data = await res.json();
-      
+
       // Redirect to Stripe checkout
       if (data.url) {
         window.location.href = data.url;
@@ -93,7 +101,7 @@ export default function BillingDashboard({ orgId }: BillingDashboardProps) {
       });
 
       const data = await res.json();
-      
+
       // Redirect to Stripe portal
       if (data.url) {
         window.location.href = data.url;
@@ -125,11 +133,15 @@ export default function BillingDashboard({ orgId }: BillingDashboardProps) {
         <div className="flex items-start justify-between">
           <div>
             <div className="text-sm opacity-90 mb-1">Current Plan</div>
-            <h2 className="text-3xl font-bold">{currentPlan?.name || 'Free'}</h2>
+            <h2 className="text-3xl font-bold">
+              {currentPlan?.name || 'Free'}
+            </h2>
             {currentPlan && currentPlan.price > 0 && (
               <div className="mt-2 text-2xl">
                 ${currentPlan.price}
-                <span className="text-sm opacity-90">/{currentPlan.interval}</span>
+                <span className="text-sm opacity-90">
+                  /{currentPlan.interval}
+                </span>
               </div>
             )}
           </div>
@@ -157,7 +169,10 @@ export default function BillingDashboard({ orgId }: BillingDashboardProps) {
               <div className="text-2xl font-bold">
                 {usage.members}
                 {limits.members !== -1 && (
-                  <span className="text-sm text-gray-500 font-normal"> / {limits.members}</span>
+                  <span className="text-sm text-gray-500 font-normal">
+                    {' '}
+                    / {limits.members}
+                  </span>
                 )}
               </div>
               {limits.members !== -1 && (
@@ -165,10 +180,14 @@ export default function BillingDashboard({ orgId }: BillingDashboardProps) {
                   <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                     <div
                       className={`h-full ${getUsageColor(getUsagePercentage(usage.members, limits.members))} bg-current`}
-                      style={{ width: `${Math.min(100, getUsagePercentage(usage.members, limits.members))}%` }}
+                      style={{
+                        width: `${Math.min(100, getUsagePercentage(usage.members, limits.members))}%`,
+                      }}
                     />
                   </div>
-                  <div className={`text-xs mt-1 ${getUsageColor(getUsagePercentage(usage.members, limits.members))}`}>
+                  <div
+                    className={`text-xs mt-1 ${getUsageColor(getUsagePercentage(usage.members, limits.members))}`}
+                  >
                     {getUsagePercentage(usage.members, limits.members)}% used
                   </div>
                 </div>
@@ -184,7 +203,10 @@ export default function BillingDashboard({ orgId }: BillingDashboardProps) {
               <div className="text-2xl font-bold">
                 {usage.storage.toFixed(2)} GB
                 {limits.storage !== -1 && (
-                  <span className="text-sm text-gray-500 font-normal"> / {limits.storage} GB</span>
+                  <span className="text-sm text-gray-500 font-normal">
+                    {' '}
+                    / {limits.storage} GB
+                  </span>
                 )}
               </div>
               {limits.storage !== -1 && (
@@ -192,10 +214,14 @@ export default function BillingDashboard({ orgId }: BillingDashboardProps) {
                   <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                     <div
                       className={`h-full ${getUsageColor(getUsagePercentage(usage.storage, limits.storage))} bg-current`}
-                      style={{ width: `${Math.min(100, getUsagePercentage(usage.storage, limits.storage))}%` }}
+                      style={{
+                        width: `${Math.min(100, getUsagePercentage(usage.storage, limits.storage))}%`,
+                      }}
                     />
                   </div>
-                  <div className={`text-xs mt-1 ${getUsageColor(getUsagePercentage(usage.storage, limits.storage))}`}>
+                  <div
+                    className={`text-xs mt-1 ${getUsageColor(getUsagePercentage(usage.storage, limits.storage))}`}
+                  >
                     {getUsagePercentage(usage.storage, limits.storage)}% used
                   </div>
                 </div>
@@ -211,7 +237,10 @@ export default function BillingDashboard({ orgId }: BillingDashboardProps) {
               <div className="text-2xl font-bold">
                 {usage.certificates}
                 {limits.certificates !== -1 && (
-                  <span className="text-sm text-gray-500 font-normal"> / {limits.certificates}</span>
+                  <span className="text-sm text-gray-500 font-normal">
+                    {' '}
+                    / {limits.certificates}
+                  </span>
                 )}
               </div>
             </div>
@@ -225,7 +254,10 @@ export default function BillingDashboard({ orgId }: BillingDashboardProps) {
               <div className="text-2xl font-bold">
                 {usage.apiCalls.toLocaleString()}
                 {limits.apiCalls !== -1 && (
-                  <span className="text-sm text-gray-500 font-normal"> / {limits.apiCalls.toLocaleString()}</span>
+                  <span className="text-sm text-gray-500 font-normal">
+                    {' '}
+                    / {limits.apiCalls.toLocaleString()}
+                  </span>
                 )}
               </div>
             </div>
@@ -247,7 +279,9 @@ export default function BillingDashboard({ orgId }: BillingDashboardProps) {
               <h4 className="text-xl font-bold mb-2">{plan.name}</h4>
               <div className="text-3xl font-bold mb-4">
                 ${plan.price}
-                <span className="text-sm text-gray-500 font-normal">/{plan.interval}</span>
+                <span className="text-sm text-gray-500 font-normal">
+                  /{plan.interval}
+                </span>
               </div>
 
               <ul className="space-y-2 mb-6">
