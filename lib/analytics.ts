@@ -62,10 +62,13 @@ export async function getComplianceMetrics(
 
   const totalCertificates = certificates?.length || 0;
   const activeCertificates =
-    certificates?.filter((c: { status: string }) => c.status === 'active').length || 0;
-  const expiredCertificates =
-    certificates?.filter((c: { expiry_date?: string }) => c.expiry_date && new Date(c.expiry_date) < now)
+    certificates?.filter((c: { status: string }) => c.status === 'active')
       .length || 0;
+  const expiredCertificates =
+    certificates?.filter(
+      (c: { expiry_date?: string }) =>
+        c.expiry_date && new Date(c.expiry_date) < now,
+    ).length || 0;
   const expiringSoon =
     certificates?.filter(
       (c: { expiry_date?: string }) =>
@@ -94,7 +97,8 @@ export async function getComplianceMetrics(
 
   const averageCompletionTime =
     completionTimes.length > 0
-      ? completionTimes.reduce((a, b) => a + b, 0) / completionTimes.length
+      ? completionTimes.reduce((a: number, b: number) => a + b, 0) /
+        completionTimes.length
       : 0;
 
   return {
@@ -123,13 +127,14 @@ export async function getTeamMetrics(orgId: string): Promise<TeamMetrics> {
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
   const activeMembers =
     members?.filter(
-      (m) => m.last_active && new Date(m.last_active) > thirtyDaysAgo,
+      (m: { last_active?: string }) =>
+        m.last_active && new Date(m.last_active) > thirtyDaysAgo,
     ).length || 0;
 
   // Group by role
   const membersByRole =
     members?.reduce(
-      (acc, m) => {
+      (acc: Record<string, number>, m: { role: string }) => {
         acc[m.role] = (acc[m.role] || 0) + 1;
         return acc;
       },
@@ -148,7 +153,10 @@ export async function getTeamMetrics(orgId: string): Promise<TeamMetrics> {
   // Get top performers
   const tasksByMember =
     tasks?.reduce(
-      (acc, t) => {
+      (
+        acc: Record<string, { total: number; completed: number }>,
+        t: { assigned_to?: string; status: string },
+      ) => {
         if (!t.assigned_to) return acc;
         if (!acc[t.assigned_to]) {
           acc[t.assigned_to] = { total: 0, completed: 0 };
@@ -163,12 +171,14 @@ export async function getTeamMetrics(orgId: string): Promise<TeamMetrics> {
     ) || {};
 
   const topPerformers = Object.entries(tasksByMember)
-    .map(([email, stats]) => ({
-      email,
-      completedTasks: stats.completed,
-      complianceRate:
-        stats.total > 0 ? (stats.completed / stats.total) * 100 : 0,
-    }))
+    .map(([email, stats]) => {
+      const s = stats as { total: number; completed: number };
+      return {
+        email,
+        completedTasks: s.completed,
+        complianceRate: s.total > 0 ? (s.completed / s.total) * 100 : 0,
+      };
+    })
     .sort((a, b) => b.completedTasks - a.completedTasks)
     .slice(0, 5);
 
@@ -198,7 +208,7 @@ export async function getComplianceTrend(orgId: string): Promise<TrendData[]> {
 
   // Group by date
   const trendMap: Record<string, number> = {};
-  completedTasks?.forEach((task) => {
+  completedTasks?.forEach((task: { completed_at: string }) => {
     const date = new Date(task.completed_at).toISOString().split('T')[0];
     trendMap[date] = (trendMap[date] || 0) + 1;
   });
@@ -271,7 +281,8 @@ export async function calculateRiskScore(orgId: string): Promise<RiskScore> {
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
   const inactiveCount =
     members?.filter(
-      (m) => !m.last_active || new Date(m.last_active) < thirtyDaysAgo,
+      (m: { last_active?: string }) =>
+        !m.last_active || new Date(m.last_active) < thirtyDaysAgo,
     ).length || 0;
   const inactiveScore = members?.length
     ? (inactiveCount / members.length) * 100

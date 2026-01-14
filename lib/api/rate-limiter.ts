@@ -198,18 +198,20 @@ export async function trackApiUsage(metrics: ApiUsageMetrics): Promise<void> {
 
   // Log slow requests (>1 second)
   if (metrics.responseTime > 1000) {
-    await logActivity({
-      organization_id: metrics.organizationId,
-      user_id: metrics.userId || '',
-      action: 'slow_request',
-      entity_type: 'api',
-      entity_id: metrics.endpoint,
-      entity_name: `${metrics.method} ${metrics.endpoint}`,
-      metadata: {
-        responseTime: metrics.responseTime,
-        statusCode: metrics.statusCode,
+    await logActivity(
+      metrics.organizationId,
+      metrics.userId || '',
+      'view',
+      'auth',
+      {
+        entityId: metrics.endpoint,
+        entityName: `${metrics.method} ${metrics.endpoint}`,
+        details: {
+          responseTime: metrics.responseTime,
+          statusCode: metrics.statusCode,
+        },
       },
-    });
+    );
   }
 }
 
@@ -250,7 +252,8 @@ export async function getApiUsageStats(
 
   const totalRequests = logs.length;
   const successfulRequests = logs.filter(
-    (log) => log.status_code >= 200 && log.status_code < 300,
+    (log: { status_code: number }) =>
+      log.status_code >= 200 && log.status_code < 300,
   ).length;
   const successRate =
     totalRequests > 0 ? (successfulRequests / totalRequests) * 100 : 0;
@@ -260,7 +263,8 @@ export async function getApiUsageStats(
       : 0;
 
   const totalResponseTime = logs.reduce(
-    (sum, log) => sum + (log.response_time || 0),
+    (sum: number, log: { response_time?: number }) =>
+      sum + (log.response_time || 0),
     0,
   );
   const averageResponseTime =
@@ -268,7 +272,7 @@ export async function getApiUsageStats(
 
   // Count by endpoint
   const endpointCounts = new Map<string, number>();
-  logs.forEach((log) => {
+  logs.forEach((log: { endpoint: string }) => {
     const count = endpointCounts.get(log.endpoint) || 0;
     endpointCounts.set(log.endpoint, count + 1);
   });
@@ -280,7 +284,7 @@ export async function getApiUsageStats(
 
   // Count by status code
   const statusBreakdown: Record<number, number> = {};
-  logs.forEach((log) => {
+  logs.forEach((log: { status_code: number }) => {
     statusBreakdown[log.status_code] =
       (statusBreakdown[log.status_code] || 0) + 1;
   });
@@ -436,12 +440,12 @@ export async function getApiHealthMetrics(organizationId: string): Promise<{
   }
 
   // Calculate error rate
-  const errorCount = recentLogs.filter((log) => log.status_code >= 500).length;
+  const errorCount = recentLogs.filter((log: { status_code: number }) => log.status_code >= 500).length;
   const errorRate = (errorCount / recentLogs.length) * 100;
 
   // Calculate P95 latency
   const sortedLatencies = recentLogs
-    .map((log) => log.response_time)
+    .map((log: { response_time: number }) => log.response_time)
     .sort((a, b) => a - b);
   const p95Index = Math.floor(sortedLatencies.length * 0.95);
   const latencyP95 = sortedLatencies[p95Index] || 0;
