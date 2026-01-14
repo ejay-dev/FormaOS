@@ -1,0 +1,311 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "FormaOS API",
+    "description": "Role-Based Access Control API for Compliance Management",
+    "version": "1.0.0",
+    "contact": {
+      "name": "FormaOS API Support",
+      "email": "api-support@formaos.com"
+    },
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://formaos.com/api",
+      "description": "Production"
+    },
+    {
+      "url": "https://staging.formaos.com/api",
+      "description": "Staging"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "user-123"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["owner", "admin", "member", "viewer"]
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Organization": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "memberCount": {
+            "type": "integer"
+          },
+          "complianceScore": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }
+        }
+      },
+      "Task": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "assignedTo": {
+            "type": "string"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "in_progress", "completed", "blocked"]
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "critical"]
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "PERMISSION_DENIED"
+          },
+          "message": {
+            "type": "string"
+          },
+          "details": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/org/overview": {
+      "get": {
+        "summary": "Get organization overview",
+        "description": "Retrieve organization metrics, team stats, and compliance overview. Requires admin or owner role.",
+        "tags": ["Organization"],
+        "operationId": "getOrgOverview",
+        "responses": {
+          "200": {
+            "description": "Organization overview",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Organization"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/org/members": {
+      "get": {
+        "summary": "Get team members",
+        "description": "List all organization members with pagination. Requires org:view_all_members permission.",
+        "tags": ["Members"],
+        "operationId": "getMembers",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "minimum": 0
+            }
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["owner", "admin", "member", "viewer"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of members",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "members": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "limit": {
+                      "type": "integer"
+                    },
+                    "offset": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission denied"
+          }
+        }
+      }
+    },
+    "/org/tasks": {
+      "get": {
+        "summary": "Get assigned tasks",
+        "description": "Retrieve tasks assigned to the authenticated user",
+        "tags": ["Tasks"],
+        "operationId": "getTasks",
+        "responses": {
+          "200": {
+            "description": "User tasks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "tasks": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Task"
+                      }
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/org/members/invite": {
+      "post": {
+        "summary": "Invite team member",
+        "description": "Send invitation to new team member. Requires team:invite_members permission.",
+        "tags": ["Members"],
+        "operationId": "inviteMember",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": ["owner", "admin", "member", "viewer"],
+                    "default": "member"
+                  }
+                },
+                "required": ["email"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Invitation sent"
+          },
+          "409": {
+            "description": "User already exists"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Organization",
+      "description": "Organization-level operations"
+    },
+    {
+      "name": "Members",
+      "description": "Team member management"
+    },
+    {
+      "name": "Tasks",
+      "description": "Task management"
+    }
+  ]
+}
