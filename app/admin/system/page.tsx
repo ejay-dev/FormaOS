@@ -275,7 +275,7 @@ export default async function AdminSystemPage() {
         <div className="space-y-2 text-sm text-slate-400">
           <p>• Monitoring enabled across all critical services</p>
           <p>• Metrics updated every 60 seconds</p>
-          <p>• Alerts configured for uptime < 95% or error rate > 2%</p>
+          <p>{`• Alerts configured for uptime < 95% or error rate > 2%`}</p>
           <p>• Historical data retained for 90 days</p>
         </div>
       </div>
