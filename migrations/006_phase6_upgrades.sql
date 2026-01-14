@@ -7,7 +7,11 @@
 -- 1. Risk Analysis Tables
 -- =========================================================
 
-CREATE TABLE IF NOT EXISTS risk_analyses (
+-- Drop and recreate tables to ensure clean schema
+DROP TABLE IF EXISTS ai_insights CASCADE;
+DROP TABLE IF EXISTS risk_analyses CASCADE;
+
+CREATE TABLE risk_analyses (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   overall_risk_score INTEGER NOT NULL CHECK (overall_risk_score >= 0 AND overall_risk_score <= 100),
@@ -21,7 +25,7 @@ CREATE TABLE IF NOT EXISTS risk_analyses (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS ai_insights (
+CREATE TABLE ai_insights (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   risk_analysis_id UUID NOT NULL REFERENCES risk_analyses(id) ON DELETE CASCADE,
   organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
@@ -46,7 +50,11 @@ CREATE INDEX IF NOT EXISTS idx_ai_insights_type ON ai_insights(type);
 -- 2. Email System Tables
 -- =========================================================
 
-CREATE TABLE IF NOT EXISTS email_logs (
+-- Drop and recreate email tables to ensure clean schema
+DROP TABLE IF EXISTS email_preferences CASCADE;
+DROP TABLE IF EXISTS email_logs CASCADE;
+
+CREATE TABLE email_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   user_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
@@ -59,7 +67,7 @@ CREATE TABLE IF NOT EXISTS email_logs (
   sent_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS email_preferences (
+CREATE TABLE email_preferences (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
@@ -72,17 +80,6 @@ CREATE TABLE IF NOT EXISTS email_preferences (
   UNIQUE(user_id, organization_id)
 );
 
--- Ensure sent_at column exists (in case table was created without it)
-DO $$ 
-BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.columns 
-    WHERE table_name = 'email_logs' AND column_name = 'sent_at'
-  ) THEN
-    ALTER TABLE email_logs ADD COLUMN sent_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
-  END IF;
-END $$;
-
 CREATE INDEX IF NOT EXISTS idx_email_logs_org ON email_logs(organization_id);
 CREATE INDEX IF NOT EXISTS idx_email_logs_user ON email_logs(user_id);
 CREATE INDEX IF NOT EXISTS idx_email_logs_sent ON email_logs(sent_at DESC);
@@ -94,7 +91,11 @@ CREATE INDEX IF NOT EXISTS idx_email_preferences_org ON email_preferences(organi
 -- 3. Compliance Scanning Tables
 -- =========================================================
 
-CREATE TABLE IF NOT EXISTS compliance_scans (
+-- Drop and recreate compliance tables to ensure clean schema
+DROP TABLE IF EXISTS scan_findings CASCADE;
+DROP TABLE IF EXISTS compliance_scans CASCADE;
+
+CREATE TABLE compliance_scans (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   scan_id VARCHAR(255) NOT NULL UNIQUE,
   organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
@@ -113,7 +114,7 @@ CREATE TABLE IF NOT EXISTS compliance_scans (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS scan_findings (
+CREATE TABLE scan_findings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   scan_id UUID NOT NULL REFERENCES compliance_scans(id) ON DELETE CASCADE,
   organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
@@ -141,7 +142,10 @@ CREATE INDEX IF NOT EXISTS idx_scan_findings_status ON scan_findings(status);
 -- 4. Dashboard Widget Tables
 -- =========================================================
 
-CREATE TABLE IF NOT EXISTS dashboard_layouts (
+-- Drop and recreate dashboard table to ensure clean schema
+DROP TABLE IF EXISTS dashboard_layouts CASCADE;
+
+CREATE TABLE dashboard_layouts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   widget_id VARCHAR(255) NOT NULL UNIQUE,
   organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
@@ -164,7 +168,11 @@ CREATE INDEX IF NOT EXISTS idx_dashboard_layouts_type ON dashboard_layouts(widge
 -- 5. API Rate Limiting & Monitoring Tables
 -- =========================================================
 
-CREATE TABLE IF NOT EXISTS api_usage_logs (
+-- Drop and recreate API tables to ensure clean schema
+DROP TABLE IF EXISTS api_alert_config CASCADE;
+DROP TABLE IF EXISTS api_usage_logs CASCADE;
+
+CREATE TABLE api_usage_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   user_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
@@ -176,7 +184,7 @@ CREATE TABLE IF NOT EXISTS api_usage_logs (
   timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS api_alert_config (
+CREATE TABLE api_alert_config (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   error_rate_threshold DECIMAL(5,2) DEFAULT 10.0,
@@ -197,7 +205,10 @@ CREATE INDEX IF NOT EXISTS idx_api_alert_config_org ON api_alert_config(organiza
 -- 6. Scheduled Tasks Table
 -- =========================================================
 
-CREATE TABLE IF NOT EXISTS scheduled_tasks (
+-- Drop and recreate scheduled tasks table to ensure clean schema
+DROP TABLE IF EXISTS scheduled_tasks CASCADE;
+
+CREATE TABLE scheduled_tasks (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   task_type VARCHAR(50) NOT NULL CHECK (task_type IN ('risk_analysis', 'compliance_scan', 'email_digest', 'report_generation')),
