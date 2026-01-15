@@ -217,14 +217,17 @@ export async function GET(request: Request) {
 
       if (orgError || !organization?.id) {
         console.error(
-          '[auth/callback] Organization bootstrap failed:',
+          '[auth/callback] ❌ CRITICAL: Organization bootstrap failed:',
           orgError?.message ?? orgError,
           orgError?.details ?? null,
           orgError,
         );
-        // CRITICAL FIX: Redirect new users to onboarding, NOT pricing
-        const planQuery = plan ? `?plan=${encodeURIComponent(plan)}` : '';
-        return NextResponse.redirect(`${appBase}/onboarding${planQuery}`);
+        // On org creation failure, redirect to signin with clear error
+        return NextResponse.redirect(
+          `${appBase}/auth/signin?error=org_creation_failed&message=${encodeURIComponent(
+            'Account setup failed. Please try signing in again.',
+          )}`,
+        );
       }
 
       // Create org membership with proper role

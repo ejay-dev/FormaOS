@@ -33,13 +33,21 @@ export async function middleware(request: NextRequest) {
     const host = request.nextUrl.hostname;
 
     const oauthCode = request.nextUrl.searchParams.get('code');
-    if (oauthCode && pathname === '/') {
+    const oauthState = request.nextUrl.searchParams.get('state');
+
+    // Only handle OAuth redirects to root path, and ensure we're on correct domain
+    if (oauthCode && pathname === '/' && oauthState) {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = '/auth/callback';
-      if (appOrigin) {
+      // Preserve all search params for OAuth callback
+      if (appOrigin && request.nextUrl.hostname !== appOrigin.hostname) {
         redirectUrl.protocol = appOrigin.protocol;
         redirectUrl.host = appOrigin.host;
       }
+      console.log('[Middleware] OAuth redirect:', {
+        from: request.nextUrl.toString(),
+        to: redirectUrl.toString(),
+      });
       return NextResponse.redirect(redirectUrl);
     }
 
@@ -215,8 +223,9 @@ export async function middleware(request: NextRequest) {
 
     // ============================================================
     // STEP 4: HANDLE AUTH PAGES FOR LOGGED-IN USERS
+    // Skip interference for auth callback processing
     // ============================================================
-    if (user && pathname.startsWith('/auth')) {
+    if (user && pathname.startsWith('/auth') && pathname !== '/auth/callback') {
       const url = request.nextUrl.clone();
 
       // Founders go directly to admin
