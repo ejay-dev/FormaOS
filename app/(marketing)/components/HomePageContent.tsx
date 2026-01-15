@@ -33,6 +33,7 @@ import {
   AmbientOrbs,
   EnhancedGlassCard,
   HoverLift,
+  ScrollGradient,
 } from '@/components/motion';
 import { motion } from 'framer-motion';
 import { spacing, radius, depth } from '@/config/motion';
@@ -183,7 +184,7 @@ function SystemDivider() {
 
 export function HomePageContent() {
   return (
-    <div className="relative">
+    <ScrollGradient className="relative">
       {/* ========================================
           SECTION 1: METRICS (variant: metrics)
           Soft radial glow, micro-particles, glass depth
@@ -197,7 +198,11 @@ export function HomePageContent() {
           <Reveal variant="fadeInUp" viewport="early">
             <SectionHeader
               badge="Live Platform Metrics"
-              badgeIcon={<BarChart3 className="h-4 w-4 text-primary" />}
+              badgeIcon={
+                <Parallax intensity="subtle" direction="up">
+                  <BarChart3 className="h-4 w-4 text-primary" />
+                </Parallax>
+              }
               title={<>Real-time compliance intelligence</>}
               subtitle="FormaOS tracks compliance posture across your entire organization in real-time"
               alignment="center"
@@ -242,7 +247,11 @@ export function HomePageContent() {
           <Reveal variant="fadeInUp">
             <SectionHeader
               badge="Connected System"
-              badgeIcon={<Layers className="h-4 w-4 text-secondary" />}
+              badgeIcon={
+                <Parallax intensity="subtle" direction="down">
+                  <Layers className="h-4 w-4 text-secondary" />
+                </Parallax>
+              }
               title={
                 <>
                   Every module
@@ -338,7 +347,11 @@ export function HomePageContent() {
           <Reveal variant="fadeInUp">
             <SectionHeader
               badge="The Complete System"
-              badgeIcon={<Sparkles className="h-4 w-4 text-primary" />}
+              badgeIcon={
+                <Parallax intensity="subtle" direction="up">
+                  <Sparkles className="h-4 w-4 text-primary" />
+                </Parallax>
+              }
               title={
                 <>
                   Compliance lifecycle,
@@ -407,7 +420,11 @@ export function HomePageContent() {
           <Reveal variant="fadeInUp">
             <SectionHeader
               badge="System Architecture"
-              badgeIcon={<Layers className="h-4 w-4 text-secondary" />}
+              badgeIcon={
+                <Parallax intensity="subtle" direction="down">
+                  <Layers className="h-4 w-4 text-secondary" />
+                </Parallax>
+              }
               title={
                 <>
                   Built as infrastructure,
@@ -516,13 +533,18 @@ export function HomePageContent() {
           SECTION 5: INDUSTRIES (variant: info)
           Calm informational section
           ======================================== */}
-      <SystemBackground variant="info" className="py-12 sm:py-16 lg:py-20">
+      <SystemBackground variant="info" className={spacing.sectionFull}>
+        <AmbientOrbs intensity="subtle" />
         <SectionGlow color="blue" intensity="low" position="center" />
 
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+        <div className={`mx-auto max-w-7xl ${spacing.container} relative`}>
           <SectionHeader
             badge="Built for Regulated Industries"
-            badgeIcon={<Layers className="h-4 w-4 text-secondary" />}
+            badgeIcon={
+              <Parallax intensity="subtle" direction="up">
+                <Layers className="h-4 w-4 text-secondary" />
+              </Parallax>
+            }
             title={
               <>
                 Compliance frameworks
@@ -578,13 +600,18 @@ export function HomePageContent() {
           SECTION 6: SECURITY (variant: metrics)
           Glass effects with soft glow
           ======================================== */}
-      <SystemBackground variant="metrics" className="py-12 sm:py-16 lg:py-20">
+      <SystemBackground variant="metrics" className={spacing.sectionFull}>
+        <AmbientOrbs intensity="normal" />
         <SectionGlow color="purple" intensity="medium" position="center" />
 
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+        <div className={`mx-auto max-w-7xl ${spacing.container} relative`}>
           <SectionHeader
             badge="Enterprise Security"
-            badgeIcon={<Lock className="h-4 w-4 text-accent" />}
+            badgeIcon={
+              <Parallax intensity="subtle" direction="down">
+                <Lock className="h-4 w-4 text-accent" />
+              </Parallax>
+            }
             title={
               <>
                 Built for
@@ -783,6 +810,6 @@ export function HomePageContent() {
           </Reveal>
         </div>
       </SystemBackground>
-    </div>
+    </ScrollGradient>
   );
 }

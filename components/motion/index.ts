@@ -82,3 +82,12 @@ export {
   GlassCard as EnhancedGlassCard,
   HoverLift,
 } from './EnhancedMotion';
+// Micro-Interactions - Button, input, and loading animations
+export {
+  AnimatedButton,
+  AnimatedLink,
+  AnimatedInput,
+  AnimatedIconButton,
+  LoadingDots,
+  PulseRing,
+} from './MicroInteractions';
