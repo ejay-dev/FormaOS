@@ -1,0 +1,52 @@
+# Artillery.js Smoke Test Configuration
+# Quick validation that the system can handle basic load
+
+config:
+  target: 'http://localhost:3000'
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: 'Smoke test'
+
+  plugins:
+    metrics-by-endpoint:
+      useOnlyRequestNames: true
+
+scenarios:
+  - name: 'Basic Health Check'
+    weight: 50
+    flow:
+      - get:
+          url: '/'
+          name: 'Homepage'
+      - get:
+          url: '/api/health'
+          name: 'Health Check'
+      - think: 1
+
+  - name: 'Marketing Pages'
+    weight: 30
+    flow:
+      - get:
+          url: '/'
+          name: 'Homepage'
+      - think: 2
+      - get:
+          url: '/pricing'
+          name: 'Pricing Page'
+      - think: 2
+      - get:
+          url: '/features'
+          name: 'Features Page'
+      - think: 1
+
+  - name: 'API Endpoints'
+    weight: 20
+    flow:
+      - get:
+          url: '/api/health'
+          name: 'Health Check API'
+      - get:
+          url: '/api/health/detailed'
+          name: 'Detailed Health API'
+      - think: 1

@@ -49,7 +49,7 @@ export const brand = {
     if (process.env.NODE_ENV !== 'production') {
       throw new Error(message);
     } else {
-      // eslint-disable-next-line no-console
+       
       console.error(message);
     }
   }

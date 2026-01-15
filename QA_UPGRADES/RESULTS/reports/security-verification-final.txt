@@ -1,0 +1,88 @@
+[2m[WebServer] [22m[33m[1m⚠[22m[39m Warning: Next.js inferred your workspace root, but it may not be correct.
+[2m[WebServer] [22m We detected multiple lockfiles and selected the directory of /Users/ejay/package-lock.json as the root directory.
+[2m[WebServer] [22m To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+[2m[WebServer] [22m   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+[2m[WebServer] [22m Detected additional lockfiles: 
+[2m[WebServer] [22m   * /Users/ejay/formaos/package-lock.json
+[2m[WebServer] [22m
+[2m[WebServer] [22m[33m[1m⚠[22m[39m The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+
+Running 20 tests using 4 workers
+
+🔍 Testing admin route structure
+🔍 Testing admin route protection for non-authenticated users
+🔍 Testing unauthorized page exists and is accessible
+🔍 Testing environment configuration security
+✅ VERIFIED: /admin properly protected
+✅ VERIFIED: Unauthorized page properly configured
+✅ VERIFIED: Non-authenticated users blocked from /admin
+✅ VERIFIED: Sensitive environment variables not exposed to client
+  ✓   4 [chromium] › e2e/admin-security-verification.spec.ts:20:7 › SECURITY VERIFICATION: Admin Route Protection › Admin page shows "unauthorized" for non-founders (1.1s)
+✅ VERIFIED: /admin/users properly protected
+  ✓   1 [chromium] › e2e/admin-security-verification.spec.ts:5:7 › SECURITY VERIFICATION: Admin Route Protection › Non-authenticated users cannot access /admin routes (1.2s)
+  ✓   2 [chromium] › e2e/admin-security-verification.spec.ts:52:7 › SECURITY AUDIT: Environment Configuration › Environment variables are properly configured for security (1.3s)
+✅ VERIFIED: /admin/dashboard properly protected
+✅ VERIFIED: /admin/settings properly protected
+  ✓   3 [chromium] › e2e/admin-security-verification.spec.ts:33:7 › SECURITY VERIFICATION: Admin Route Protection › Admin routes are properly configured and protected (1.6s)
+🔍 Testing admin route protection for non-authenticated users
+🔍 Testing unauthorized page exists and is accessible
+✅ VERIFIED: Non-authenticated users blocked from /admin
+  ✓   5 [firefox] › e2e/admin-security-verification.spec.ts:5:7 › SECURITY VERIFICATION: Admin Route Protection › Non-authenticated users cannot access /admin routes (1.3s)
+🔍 Testing admin route structure
+✅ VERIFIED: Unauthorized page properly configured
+  ✓   6 [firefox] › e2e/admin-security-verification.spec.ts:20:7 › SECURITY VERIFICATION: Admin Route Protection › Admin page shows "unauthorized" for non-founders (1.5s)
+🔍 Testing environment configuration security
+✅ VERIFIED: /admin properly protected
+🔍 Testing admin route protection for non-authenticated users
+✅ VERIFIED: /admin/users properly protected
+✅ VERIFIED: Sensitive environment variables not exposed to client
+✅ VERIFIED: /admin/dashboard properly protected
+  ✓   8 [firefox] › e2e/admin-security-verification.spec.ts:52:7 › SECURITY AUDIT: Environment Configuration › Environment variables are properly configured for security (1.8s)
+✅ VERIFIED: Non-authenticated users blocked from /admin
+✅ VERIFIED: /admin/settings properly protected
+🔍 Testing unauthorized page exists and is accessible
+  ✓   7 [firefox] › e2e/admin-security-verification.spec.ts:33:7 › SECURITY VERIFICATION: Admin Route Protection › Admin routes are properly configured and protected (2.6s)
+  ✓   9 [webkit] › e2e/admin-security-verification.spec.ts:5:7 › SECURITY VERIFICATION: Admin Route Protection › Non-authenticated users cannot access /admin routes (1.2s)
+✅ VERIFIED: Unauthorized page properly configured
+  ✓  10 [webkit] › e2e/admin-security-verification.spec.ts:20:7 › SECURITY VERIFICATION: Admin Route Protection › Admin page shows "unauthorized" for non-founders (923ms)
+🔍 Testing admin route protection for non-authenticated users
+🔍 Testing admin route structure
+✅ VERIFIED: Non-authenticated users blocked from /admin
+🔍 Testing environment configuration security
+🔍 Testing unauthorized page exists and is accessible
+  ✓  11 [Mobile Chrome] › e2e/admin-security-verification.spec.ts:5:7 › SECURITY VERIFICATION: Admin Route Protection › Non-authenticated users cannot access /admin routes (959ms)
+🔍 Testing admin route structure
+✅ VERIFIED: /admin properly protected
+✅ VERIFIED: /admin/users properly protected
+✅ VERIFIED: Unauthorized page properly configured
+✅ VERIFIED: /admin properly protected
+✅ VERIFIED: Sensitive environment variables not exposed to client
+  ✓  14 [Mobile Chrome] › e2e/admin-security-verification.spec.ts:20:7 › SECURITY VERIFICATION: Admin Route Protection › Admin page shows "unauthorized" for non-founders (823ms)
+🔍 Testing environment configuration security
+✅ VERIFIED: /admin/dashboard properly protected
+✅ VERIFIED: /admin/users properly protected
+✅ VERIFIED: /admin/settings properly protected
+✅ VERIFIED: /admin/dashboard properly protected
+✅ VERIFIED: Sensitive environment variables not exposed to client
+  ✓  12 [webkit] › e2e/admin-security-verification.spec.ts:33:7 › SECURITY VERIFICATION: Admin Route Protection › Admin routes are properly configured and protected (2.2s)
+✅ VERIFIED: /admin/settings properly protected
+  ✓  15 [Mobile Chrome] › e2e/admin-security-verification.spec.ts:33:7 › SECURITY VERIFICATION: Admin Route Protection › Admin routes are properly configured and protected (2.7s)
+  ✓  16 [Mobile Chrome] › e2e/admin-security-verification.spec.ts:52:7 › SECURITY AUDIT: Environment Configuration › Environment variables are properly configured for security (2.1s)
+  ✓  13 [webkit] › e2e/admin-security-verification.spec.ts:52:7 › SECURITY AUDIT: Environment Configuration › Environment variables are properly configured for security (4.1s)
+🔍 Testing admin route protection for non-authenticated users
+🔍 Testing unauthorized page exists and is accessible
+🔍 Testing admin route structure
+✅ VERIFIED: Non-authenticated users blocked from /admin
+  ✓  17 [Mobile Safari] › e2e/admin-security-verification.spec.ts:5:7 › SECURITY VERIFICATION: Admin Route Protection › Non-authenticated users cannot access /admin routes (1.3s)
+✅ VERIFIED: Unauthorized page properly configured
+  ✓  18 [Mobile Safari] › e2e/admin-security-verification.spec.ts:20:7 › SECURITY VERIFICATION: Admin Route Protection › Admin page shows "unauthorized" for non-founders (928ms)
+✅ VERIFIED: /admin properly protected
+🔍 Testing environment configuration security
+✅ VERIFIED: /admin/users properly protected
+✅ VERIFIED: /admin/dashboard properly protected
+✅ VERIFIED: /admin/settings properly protected
+  ✓  19 [Mobile Safari] › e2e/admin-security-verification.spec.ts:33:7 › SECURITY VERIFICATION: Admin Route Protection › Admin routes are properly configured and protected (1.3s)
+✅ VERIFIED: Sensitive environment variables not exposed to client
+  ✓  20 [Mobile Safari] › e2e/admin-security-verification.spec.ts:52:7 › SECURITY AUDIT: Environment Configuration › Environment variables are properly configured for security (6.8s)
+
+  20 passed (21.0s)

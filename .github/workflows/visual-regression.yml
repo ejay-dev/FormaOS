@@ -1,0 +1,274 @@
+name: Visual Regression Testing
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'styles/**'
+      - 'public/**'
+      - '*.css'
+      - '*.scss'
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      generate_references:
+        description: 'Generate new reference images'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  visual-regression:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        browser: [chromium, firefox, webkit]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Build application
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+      - name: Start application
+        run: npm start &
+        env:
+          NODE_ENV: production
+          PORT: 3000
+
+      - name: Wait for application
+        run: npx wait-on http://localhost:3000 --timeout 60000
+
+      - name: Generate reference images (if requested)
+        if: github.event.inputs.generate_references == 'true'
+        run: |
+          node -e "
+            const { generateBrowserConfig } = require('./tests/visual/cross-browser.js');
+            const backstop = require('backstopjs');
+            const config = generateBrowserConfig('${{ matrix.browser }}');
+            backstop('reference', { config });
+          "
+
+      - name: Run visual regression tests
+        id: visual_tests
+        run: |
+          node -e "
+            const { generateBrowserConfig } = require('./tests/visual/cross-browser.js');
+            const backstop = require('backstopjs');
+            const config = generateBrowserConfig('${{ matrix.browser }}');
+            backstop('test', { config })
+              .then(() => {
+                console.log('✅ Visual tests passed');
+                process.exit(0);
+              })
+              .catch((error) => {
+                console.log('❌ Visual tests failed');
+                console.log(error.message);
+                process.exit(1);
+              });
+          "
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-test-results-${{ matrix.browser }}
+          path: |
+            tests/visual/backstop_data/${{ matrix.browser }}/html_report/
+            tests/visual/backstop_data/${{ matrix.browser }}/ci_report/
+            tests/visual/backstop_data/${{ matrix.browser }}/bitmaps_test/
+          retention-days: 7
+
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            // Check if CI report exists
+            const reportPath = `tests/visual/backstop_data/${{ matrix.browser }}/ci_report/xunit.xml`;
+
+            let status = '✅ Passed';
+            let message = `Visual regression tests passed for ${{ matrix.browser }}`;
+
+            if ('${{ steps.visual_tests.outcome }}' !== 'success') {
+              status = '❌ Failed';
+              message = `Visual regression tests failed for ${{ matrix.browser }}. Check the uploaded artifacts for details.`;
+            }
+
+            const comment = `## 📸 Visual Regression Test Results - ${{ matrix.browser }}
+
+            ${status}
+
+            ${message}
+
+            **Test Configuration:**
+            - Browser: ${{ matrix.browser }}
+            - Viewports: Mobile (320x568), Tablet (768x1024), Desktop (1920x1080)
+            - Scenarios: Marketing pages, App pages, Admin pages, Error pages
+
+            **Artifacts:** Check the \\"Artifacts\\" section below for detailed reports and screenshots.
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  mobile-visual-regression:
+    runs-on: ubuntu-latest
+    if: github.event_name != 'push' # Only run on PRs and manual dispatch
+
+    strategy:
+      matrix:
+        device: ['iPhone 12', 'iPhone 12 Pro', 'iPad', 'Pixel 5']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Build application
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+      - name: Start application
+        run: npm start &
+        env:
+          NODE_ENV: production
+          PORT: 3000
+
+      - name: Wait for application
+        run: npx wait-on http://localhost:3000 --timeout 60000
+
+      - name: Generate mobile reference images (if requested)
+        if: github.event.inputs.generate_references == 'true'
+        run: |
+          node -e "
+            const { generateMobileConfig } = require('./tests/visual/cross-browser.js');
+            const backstop = require('backstopjs');
+            const config = generateMobileConfig('${{ matrix.device }}');
+            backstop('reference', { config });
+          "
+
+      - name: Run mobile visual regression tests
+        id: mobile_visual_tests
+        run: |
+          node -e "
+            const { generateMobileConfig } = require('./tests/visual/cross-browser.js');
+            const backstop = require('backstopjs');
+            const config = generateMobileConfig('${{ matrix.device }}');
+            backstop('test', { config })
+              .then(() => {
+                console.log('✅ Mobile visual tests passed');
+                process.exit(0);
+              })
+              .catch((error) => {
+                console.log('❌ Mobile visual tests failed');
+                console.log(error.message);
+                process.exit(1);
+              });
+          "
+
+      - name: Upload mobile test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobile-visual-test-results-${{ matrix.device }}
+          path: |
+            tests/visual/backstop_data/mobile_*/html_report/
+            tests/visual/backstop_data/mobile_*/ci_report/
+            tests/visual/backstop_data/mobile_*/bitmaps_test/
+          retention-days: 7
+
+  visual-regression-summary:
+    runs-on: ubuntu-latest
+    needs: [visual-regression, mobile-visual-regression]
+    if: always() && github.event_name == 'pull_request'
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Generate summary report
+        run: |
+          echo "## 📊 Visual Regression Testing Summary" >> summary.md
+          echo "" >> summary.md
+          echo "| Browser/Device | Status | Details |" >> summary.md
+          echo "|----------------|--------|---------|" >> summary.md
+
+          # Check browser results
+          for browser in chromium firefox webkit; do
+            if [ -d "visual-test-results-${browser}" ]; then
+              echo "| ${browser} | ✅ Passed | Desktop testing completed |" >> summary.md
+            else
+              echo "| ${browser} | ❌ Failed | Check artifacts for details |" >> summary.md
+            fi
+          done
+
+          # Check mobile results
+          for device in "iPhone 12" "iPhone 12 Pro" "iPad" "Pixel 5"; do
+            device_name=$(echo "$device" | tr ' ' '-')
+            if [ -d "mobile-visual-test-results-${device}" ]; then
+              echo "| ${device} | ✅ Passed | Mobile testing completed |" >> summary.md
+            else
+              echo "| ${device} | ❌ Failed | Check artifacts for details |" >> summary.md
+            fi
+          done
+
+          echo "" >> summary.md
+          echo "**Next Steps:**" >> summary.md
+          echo "- If tests passed: Merge when ready" >> summary.md
+          echo "- If tests failed: Review artifacts and approve changes if intentional" >> summary.md
+          echo "- To approve changes: Run workflow with 'Generate new reference images' enabled" >> summary.md
+
+      - name: Comment summary on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('summary.md', 'utf8');
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });

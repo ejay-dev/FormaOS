@@ -1,0 +1,213 @@
+name: Accessibility Testing
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1' # Weekly on Monday at 6 AM UTC
+  workflow_dispatch:
+
+jobs:
+  accessibility-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Build application
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+      - name: Start application
+        run: |
+          npm start &
+          echo $! > app.pid
+        env:
+          NODE_ENV: production
+          PORT: 3000
+
+      - name: Wait for application
+        run: npx wait-on http://localhost:3000 --timeout 60000
+
+      - name: Create reports directory
+        run: mkdir -p tests/accessibility/reports
+
+      - name: Run Pa11y accessibility tests
+        run: |
+          npx pa11y-ci \
+            --config tests/accessibility/pa11y.config.json \
+            --reporter html > tests/accessibility/reports/pa11y-report.html || true
+            
+          npx pa11y-ci \
+            --config tests/accessibility/pa11y.config.json \
+            --reporter json > tests/accessibility/reports/pa11y-report.json || true
+
+      - name: Run comprehensive accessibility audit
+        run: node tests/accessibility/a11y-audit.js
+
+      - name: Stop application
+        if: always()
+        run: |
+          if [ -f app.pid ]; then
+            kill $(cat app.pid) || true
+            rm app.pid
+          fi
+
+      - name: Check accessibility results
+        id: check_results
+        run: |
+          if [ -f tests/accessibility/reports/a11y-summary-report.json ]; then
+            CRITICAL_ISSUES=$(node -e "console.log(JSON.parse(require('fs').readFileSync('tests/accessibility/reports/a11y-summary-report.json', 'utf8')).summary.criticalIssues)")
+            echo "critical_issues=$CRITICAL_ISSUES" >> $GITHUB_OUTPUT
+            
+            if [ "$CRITICAL_ISSUES" -gt "0" ]; then
+              echo "❌ $CRITICAL_ISSUES critical accessibility issues found"
+              echo "status=failed" >> $GITHUB_OUTPUT
+            else
+              echo "✅ No critical accessibility issues found"
+              echo "status=passed" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "No results file found"
+            echo "status=error" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload accessibility reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: accessibility-test-results
+          path: |
+            tests/accessibility/reports/
+          retention-days: 30
+
+      - name: Comment PR with accessibility results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            let comment = '## ♿ Accessibility Test Results\n\n';
+
+            if ('${{ steps.check_results.outputs.status }}' === 'passed') {
+              comment += '✅ **PASSED** - No critical accessibility issues found\n\n';
+            } else if ('${{ steps.check_results.outputs.status }}' === 'failed') {
+              comment += `❌ **FAILED** - ${{ steps.check_results.outputs.critical_issues }} critical accessibility issues found\n\n`;
+              comment += '**Critical issues must be fixed before merging.**\n\n';
+            } else {
+              comment += '⚠️ **ERROR** - Unable to complete accessibility testing\n\n';
+            }
+
+            comment += '**Tests Performed:**\n';
+            comment += '- WCAG 2.1 AA compliance validation\n';
+            comment += '- Cross-browser accessibility testing\n';
+            comment += '- Keyboard navigation testing\n';
+            comment += '- Screen reader compatibility\n';
+            comment += '- Color contrast validation\n\n';
+
+            comment += '**Artifacts:** Download the accessibility reports from the "Artifacts" section for detailed results.\n';
+
+            if ('${{ steps.check_results.outputs.status }}' === 'failed') {
+              comment += '\n**Next Steps:**\n';
+              comment += '1. Review the detailed accessibility report\n';
+              comment += '2. Fix critical accessibility violations\n';
+              comment += '3. Re-run tests to verify fixes\n';
+            }
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+      - name: Fail if critical issues found
+        if: steps.check_results.outputs.status == 'failed'
+        run: |
+          echo "Critical accessibility issues found. Failing the build."
+          exit 1
+
+  lighthouse-accessibility:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+      - name: Start application
+        run: |
+          npm start &
+          echo $! > app.pid
+        env:
+          NODE_ENV: production
+          PORT: 3000
+
+      - name: Wait for application
+        run: npx wait-on http://localhost:3000 --timeout 60000
+
+      - name: Run Lighthouse accessibility audit
+        run: |
+          mkdir -p tests/accessibility/reports/lighthouse
+
+          # Test key pages with Lighthouse
+          npx lighthouse http://localhost:3000 \
+            --only-categories=accessibility \
+            --output=html \
+            --output-path=tests/accessibility/reports/lighthouse/homepage.html \
+            --chrome-flags="--headless --no-sandbox"
+            
+          npx lighthouse http://localhost:3000/pricing \
+            --only-categories=accessibility \
+            --output=html \
+            --output-path=tests/accessibility/reports/lighthouse/pricing.html \
+            --chrome-flags="--headless --no-sandbox"
+
+      - name: Stop application
+        if: always()
+        run: |
+          if [ -f app.pid ]; then
+            kill $(cat app.pid) || true
+            rm app.pid
+          fi
+
+      - name: Upload Lighthouse reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-accessibility-results
+          path: |
+            tests/accessibility/reports/lighthouse/
+          retention-days: 30

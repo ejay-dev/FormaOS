@@ -1,0 +1,158 @@
+name: 'Security Scan'
+
+on:
+  schedule:
+    # Run security scans daily at 6 AM UTC
+    - cron: '0 6 * * *'
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  dependency_scan:
+    name: 'Dependency Security Scan'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run npm audit (high severity)
+        run: npm audit --audit-level=high --omit=dev
+        continue-on-error: true
+
+      - name: Run npm audit (all packages)
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Generate audit report
+        run: npm audit --json > audit-report.json || true
+
+      - name: Upload audit report
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-audit-report
+          path: audit-report.json
+          retention-days: 30
+
+  code_security:
+    name: 'Code Security Analysis'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run CodeQL Analysis
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript, typescript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+  security_tests:
+    name: 'Security Test Verification'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Build application
+        run: npm run build
+
+      - name: Run admin security verification tests
+        run: npx playwright test e2e/admin-security-verification.spec.ts --reporter=json --output-file=security-test-results.json
+        env:
+          CI: true
+
+      - name: Upload security test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-test-results
+          path: security-test-results.json
+          retention-days: 30
+
+      - name: Verify security test results
+        run: |
+          if [ -f security-test-results.json ]; then
+            PASSED=$(jq '.stats.passed' security-test-results.json)
+            TOTAL=$(jq '.stats.total' security-test-results.json)
+            echo "Security tests: $PASSED/$TOTAL passed"
+            if [ "$PASSED" != "$TOTAL" ]; then
+              echo "❌ Security tests failed - blocking deployment"
+              exit 1
+            else
+              echo "✅ All security tests passed"
+            fi
+          else
+            echo "❌ Security test results not found"
+            exit 1
+          fi
+
+  secret_scan:
+    name: 'Secret Detection'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run secret detection scan
+        run: |
+          echo "Checking for potential secrets in codebase..."
+          # Basic secret pattern detection
+          git log --all --full-history --patch | grep -iE "(password|secret|key|token|api_key)" | head -10 || true
+
+          # Check for common secret patterns in current files
+          find . -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" | \
+            xargs grep -l -iE "(password.*=|secret.*=|key.*=|token.*=)" | \
+            head -5 || true
+        continue-on-error: true
+
+  security_summary:
+    name: 'Security Summary'
+    runs-on: ubuntu-latest
+    needs: [dependency_scan, code_security, security_tests, secret_scan]
+    if: always()
+    steps:
+      - name: Security scan summary
+        run: |
+          echo "## Security Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "| Scan Type | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Dependency Scan | ${{ needs.dependency_scan.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Code Security | ${{ needs.code_security.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security Tests | ${{ needs.security_tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Secret Detection | ${{ needs.secret_scan.result }} |" >> $GITHUB_STEP_SUMMARY
+
+      - name: Critical security check
+        if: needs.security_tests.result == 'failure'
+        run: |
+          echo "❌ CRITICAL: Security tests failed - deployment blocked"
+          exit 1

@@ -385,7 +385,7 @@ async function runAllTests() {
   console.log('║ Comprehensive lifecycle testing without time delays' + ' '.repeat(17) + '║');
   console.log('╚' + '═'.repeat(68) + '╝\n');
 
-  let results = {
+  const results = {
     test1: 'pending',
     test2: 'pending',
     test3: 'pending',

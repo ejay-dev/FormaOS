@@ -1,0 +1,46 @@
+{
+  "urls": [
+    "http://localhost:3000",
+    "http://localhost:3000/pricing",
+    "http://localhost:3000/features",
+    "http://localhost:3000/contact",
+    "http://localhost:3000/app",
+    "http://localhost:3000/app/policies",
+    "http://localhost:3000/app/tasks",
+    "http://localhost:3000/app/team"
+  ],
+  "standard": "WCAG2AA",
+  "level": "error",
+  "reporters": ["html", "json", "cli"],
+  "chromeLaunchConfig": {
+    "args": ["--no-sandbox", "--disable-setuid-sandbox"]
+  },
+  "actions": [
+    "wait for element body to be visible",
+    "set field #email to loadtest@formaos.com",
+    "set field #password to TestPass123!",
+    "click element #login-button"
+  ],
+  "rules": [
+    "color-contrast",
+    "heading-order",
+    "image-alt",
+    "label",
+    "landmark-unique",
+    "link-name",
+    "list",
+    "page-has-heading-one",
+    "region",
+    "skip-link"
+  ],
+  "hideElements": [
+    ".timestamp",
+    ".last-updated",
+    ".relative-time",
+    "[data-testid='dynamic-content']"
+  ],
+  "includeNotices": true,
+  "includeWarnings": true,
+  "timeout": 30000,
+  "wait": 2000
+}

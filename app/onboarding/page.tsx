@@ -722,7 +722,7 @@ export default async function OnboardingPage({
 
           <div className="mt-10 pt-8 border-t border-white/10 flex items-center gap-3 text-emerald-300">
             <ShieldCheck className="h-5 w-5" />
-            <p className="text-[10px] font-black uppercase tracking-widest text-[9px]">
+            <p className="text-[10px] font-black uppercase tracking-widest">
               Onboarding progress stored securely
             </p>
           </div>

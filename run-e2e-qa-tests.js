@@ -536,7 +536,7 @@ async function runAllTests() {
   console.log('║ Testing complete user lifecycle without real delays or production impact' + ' '.repeat(4) + '║');
   console.log('╚' + '═'.repeat(68) + '╝\n');
 
-  let results = {
+  const results = {
     test1: { status: 'pending', error: null },
     test2: { status: 'pending', error: null },
     test3: { status: 'pending', error: null },

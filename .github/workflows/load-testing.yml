@@ -1,0 +1,246 @@
+name: Load & Performance Testing
+
+on:
+  schedule:
+    - cron: '0 2 * * 1' # Weekly on Monday at 2 AM UTC
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Type of load test to run'
+        required: true
+        default: 'smoke'
+        type: choice
+        options:
+          - 'smoke'
+          - 'load'
+          - 'stress'
+          - 'spike'
+          - 'soak'
+      duration:
+        description: 'Test duration in minutes'
+        required: false
+        default: '5'
+        type: string
+      max_vus:
+        description: 'Maximum virtual users'
+        required: false
+        default: '50'
+        type: string
+
+jobs:
+  artillery-load-test:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.test_type != 'k6-only'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+      - name: Start application
+        run: |
+          npm start &
+          echo $! > app.pid
+        env:
+          NODE_ENV: production
+          PORT: 3000
+
+      - name: Wait for application
+        run: npx wait-on http://localhost:3000 --timeout 60000
+
+      - name: Run Artillery load test
+        run: |
+          npx artillery run tests/load/artillery-config.yml \
+            --output tests/load/reports/artillery-report.json \
+            --config tests/load/artillery-${{ github.event.inputs.test_type || 'smoke' }}-config.yml
+        env:
+          TEST_DURATION: ${{ github.event.inputs.duration || '5' }}
+          MAX_VUS: ${{ github.event.inputs.max_vus || '50' }}
+
+      - name: Generate Artillery HTML report
+        run: |
+          npx artillery report tests/load/reports/artillery-report.json \
+            --output tests/load/reports/artillery-report.html
+
+      - name: Stop application
+        if: always()
+        run: |
+          if [ -f app.pid ]; then
+            kill $(cat app.pid) || true
+            rm app.pid
+          fi
+
+      - name: Upload Artillery reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: artillery-load-test-results
+          path: |
+            tests/load/reports/artillery-report.json
+            tests/load/reports/artillery-report.html
+          retention-days: 30
+
+      - name: Check performance thresholds
+        run: |
+          node -e "
+            const report = JSON.parse(require('fs').readFileSync('tests/load/reports/artillery-report.json', 'utf8'));
+            const summary = report.aggregate;
+            
+            console.log('📊 Performance Summary:');
+            console.log('Requests:', summary.requestsCompleted);
+            console.log('RPS:', summary.rps?.mean?.toFixed(2) || 'N/A');
+            console.log('Response time p95:', summary.latency?.p95?.toFixed(2) + 'ms' || 'N/A');
+            console.log('Error rate:', ((summary.errors || 0) / summary.requestsCompleted * 100).toFixed(2) + '%');
+            
+            // Performance thresholds
+            const p95Threshold = 2000; // 2 seconds
+            const errorThreshold = 5;  // 5%
+            
+            const p95 = summary.latency?.p95 || 0;
+            const errorRate = (summary.errors || 0) / summary.requestsCompleted * 100;
+            
+            if (p95 > p95Threshold) {
+              console.log('❌ P95 response time exceeded threshold:', p95 + 'ms > ' + p95Threshold + 'ms');
+              process.exit(1);
+            }
+            
+            if (errorRate > errorThreshold) {
+              console.log('❌ Error rate exceeded threshold:', errorRate + '% > ' + errorThreshold + '%');
+              process.exit(1);
+            }
+            
+            console.log('✅ All performance thresholds passed');
+          "
+
+  k6-performance-test:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.test_type == 'k6' || github.event.inputs.test_type == 'stress' || github.event.inputs.test_type == 'spike'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install k6
+        run: |
+          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
+
+      - name: Build application
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+      - name: Start application
+        run: |
+          npm start &
+          echo $! > app.pid
+        env:
+          NODE_ENV: production
+          PORT: 3000
+
+      - name: Wait for application
+        run: npx wait-on http://localhost:3000 --timeout 60000
+
+      - name: Create reports directory
+        run: mkdir -p tests/load/reports
+
+      - name: Run k6 performance test
+        run: |
+          k6 run tests/load/k6-performance.js \
+            --duration ${{ github.event.inputs.duration || '5' }}m \
+            --vus ${{ github.event.inputs.max_vus || '50' }}
+
+      - name: Stop application
+        if: always()
+        run: |
+          if [ -f app.pid ]; then
+            kill $(cat app.pid) || true
+            rm app.pid
+          fi
+
+      - name: Upload k6 reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: k6-performance-test-results
+          path: |
+            tests/load/reports/k6-performance-report.html
+            tests/load/reports/k6-performance-summary.txt
+          retention-days: 30
+
+  performance-summary:
+    runs-on: ubuntu-latest
+    needs: [artillery-load-test, k6-performance-test]
+    if: always()
+
+    steps:
+      - name: Download all test results
+        uses: actions/download-artifact@v4
+
+      - name: Generate performance summary
+        run: |
+          echo "## 🚀 Load & Performance Testing Results" > summary.md
+          echo "" >> summary.md
+          echo "**Test Configuration:**" >> summary.md
+          echo "- Test Type: ${{ github.event.inputs.test_type || 'smoke' }}" >> summary.md
+          echo "- Duration: ${{ github.event.inputs.duration || '5' }} minutes" >> summary.md
+          echo "- Max VUs: ${{ github.event.inputs.max_vus || '50' }}" >> summary.md
+          echo "- Date: $(date)" >> summary.md
+          echo "" >> summary.md
+
+          echo "**Results:**" >> summary.md
+
+          # Check if Artillery results exist
+          if [ -d "artillery-load-test-results" ]; then
+            echo "✅ Artillery Load Test: Completed" >> summary.md
+          else
+            echo "⏭️ Artillery Load Test: Skipped" >> summary.md
+          fi
+
+          # Check if k6 results exist
+          if [ -d "k6-performance-test-results" ]; then
+            echo "✅ k6 Performance Test: Completed" >> summary.md
+          else
+            echo "⏭️ k6 Performance Test: Skipped" >> summary.md
+          fi
+
+          echo "" >> summary.md
+          echo "**Artifacts:**" >> summary.md
+          echo "- Download test reports from the artifacts section below" >> summary.md
+          echo "- Review detailed metrics and performance trends" >> summary.md
+          echo "- Check for any performance regressions or threshold violations" >> summary.md
+
+          cat summary.md
+
+      - name: Upload performance summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-test-summary
+          path: summary.md
+          retention-days: 30
