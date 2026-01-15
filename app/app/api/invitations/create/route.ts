@@ -4,7 +4,10 @@ import { createInvitation } from '@/lib/invitations/create-invitation';
 import { sendEmail } from '@/lib/email/send-email';
 import { hasPermission, normalizeRole } from '@/app/app/actions/rbac';
 import { getEntitlementLimit } from '@/lib/billing/entitlements';
-import { rateLimitApi, createRateLimitedResponse } from '@/lib/security/rate-limiter';
+import {
+  rateLimitApi,
+  createRateLimitedResponse,
+} from '@/lib/security/rate-limiter';
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,7 +23,7 @@ export async function POST(request: NextRequest) {
     if (!rateLimit.success) {
       return NextResponse.json(
         { error: 'Rate limit exceeded', retryAfter: rateLimit.resetAt },
-        { status: 429 }
+        { status: 429 },
       );
     }
 
@@ -31,7 +34,7 @@ export async function POST(request: NextRequest) {
     if (!organizationId || !email || !role) {
       return NextResponse.json(
         { error: 'Missing required fields' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -39,7 +42,7 @@ export async function POST(request: NextRequest) {
     if (!allowedRoles.has(role)) {
       return NextResponse.json(
         { error: 'Invalid role selection' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -52,46 +55,50 @@ export async function POST(request: NextRequest) {
       .single();
 
     const roleKey = normalizeRole(membership?.role ?? null);
-    if (!membership || !hasPermission(roleKey, "MANAGE_USERS")) {
+    if (!membership || !hasPermission(roleKey, 'MANAGE_USERS')) {
       return NextResponse.json(
         { error: 'Insufficient permissions' },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
     try {
-      const limit = await getEntitlementLimit(organizationId, "team_limit");
+      const limit = await getEntitlementLimit(organizationId, 'team_limit');
       if (limit) {
-        const [{ count: memberCount }, { count: inviteCount }] = await Promise.all([
-          supabase
-            .from('org_members')
-            .select('id', { count: 'exact', head: true })
-            .eq('organization_id', organizationId),
-          supabase
-            .from('team_invitations')
-            .select('id', { count: 'exact', head: true })
-            .eq('organization_id', organizationId)
-            .eq('status', 'pending'),
-        ]);
+        const [{ count: memberCount }, { count: inviteCount }] =
+          await Promise.all([
+            supabase
+              .from('org_members')
+              .select('id', { count: 'exact', head: true })
+              .eq('organization_id', organizationId),
+            supabase
+              .from('team_invitations')
+              .select('id', { count: 'exact', head: true })
+              .eq('organization_id', organizationId)
+              .eq('status', 'pending'),
+          ]);
 
         if ((memberCount ?? 0) + (inviteCount ?? 0) >= limit) {
           return NextResponse.json(
             { error: 'Team limit reached for current plan' },
-            { status: 403 }
+            { status: 403 },
           );
         }
       }
     } catch (error: any) {
       return NextResponse.json(
         { error: error?.message || 'Subscription required' },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
-    if (data.user.email && data.user.email.toLowerCase() === email.toLowerCase()) {
+    if (
+      data.user.email &&
+      data.user.email.toLowerCase() === email.toLowerCase()
+    ) {
       return NextResponse.json(
         { error: 'You are already a member of this organization' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -107,7 +114,7 @@ export async function POST(request: NextRequest) {
     if (existingInvite) {
       return NextResponse.json(
         { error: 'Invitation already sent to this email' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -122,7 +129,7 @@ export async function POST(request: NextRequest) {
     if (!result.success || !result.data) {
       return NextResponse.json(
         { error: 'Failed to create invitation' },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -133,16 +140,19 @@ export async function POST(request: NextRequest) {
       .eq('id', organizationId)
       .single();
 
-    const inviterName = data.user.user_metadata?.full_name || 
-                        data.user.user_metadata?.name || 
-                        data.user.email?.split('@')[0] || 
-                        'A team member';
+    const inviterName =
+      data.user.user_metadata?.full_name ||
+      data.user.user_metadata?.name ||
+      data.user.email?.split('@')[0] ||
+      'A team member';
 
     // Send invitation email
     const inviteBase =
-      process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? "https://app.formaos.com.au";
-    const inviteUrl = `${inviteBase.replace(/\/$/, "")}/accept-invite/${result.data.token}`;
-    
+      process.env.NEXT_PUBLIC_APP_URL ??
+      process.env.NEXT_PUBLIC_SITE_URL ??
+      'https://app.formaos.com.au';
+    const inviteUrl = `${inviteBase.replace(/\/$/, '')}/accept-invite/${result.data.token}`;
+
     await sendEmail({
       type: 'invite',
       to: email,
@@ -168,7 +178,7 @@ export async function POST(request: NextRequest) {
     console.error('[API /invitations/create] Error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

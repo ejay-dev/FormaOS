@@ -15,6 +15,7 @@ import {
   Eye,
   BarChart3,
   ArrowRight,
+  CheckCircle,
 } from 'lucide-react';
 import {
   SectionHeader,
@@ -112,17 +113,32 @@ const platformArchitecture = {
   ],
 };
 
+const capabilities = [
+  'REST API v1 with rate limiting',
+  'Workflow automation engine',
+  'Incident reporting & investigation',
+  'Asset & risk register management',
+  'Certificate expiry tracking',
+  'Training records management',
+  'Patient/client records (Healthcare)',
+  'Evidence version control',
+  'Multi-organization support',
+  'Role-based access control (RBAC)',
+  'Immutable audit logs',
+  'Performance monitoring',
+];
+
 const metrics = [
   {
     icon: ShieldCheck,
-    value: '94%',
-    label: 'Avg. Posture Score',
-    trend: 'up' as const,
+    value: '12+',
+    label: 'Core Modules',
+    trend: 'neutral' as const,
   },
   {
     icon: Target,
-    value: '127',
-    label: 'Active Controls',
+    value: '6+',
+    label: 'Industry Standards',
     trend: 'neutral' as const,
   },
   {
@@ -133,8 +149,8 @@ const metrics = [
   },
   {
     icon: TrendingUp,
-    value: '98%',
-    label: 'Task Completion',
+    value: '100%',
+    label: 'Audit Trail Coverage',
     trend: 'up' as const,
   },
 ];
@@ -410,6 +426,56 @@ export function HomePageContent() {
               ),
             )}
           </div>
+        </div>
+      </SystemBackground>
+
+      <SystemDivider />
+
+      {/* ========================================
+          SECTION 4.5: PLATFORM CAPABILITIES
+          Feature showcase section
+          ======================================== */}
+      <SystemBackground variant="info" className="py-12 sm:py-16 lg:py-20">
+        <SectionGlow color="blue" intensity="medium" position="center" />
+
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+          <SectionHeader
+            badge="Complete Platform"
+            title={
+              <>
+                Everything you need
+                <br />
+                <span className="text-gradient-system">out of the box</span>
+              </>
+            }
+            subtitle="12+ modules, 6+ standards, REST API, and workflow automation"
+            alignment="center"
+          />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+            {capabilities.map((capability, idx) => (
+              <motion.div
+                key={capability}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: idx * 0.05 }}
+                className="flex items-start gap-3 p-4 rounded-lg border border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/50 hover:bg-card transition-colors"
+              >
+                <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                <span className="text-sm text-foreground">{capability}</span>
+              </motion.div>
+            ))}
+          </div>
+
+          <FadeInView delay={0.8} className="text-center mt-10 sm:mt-14">
+            <Link
+              href="/product"
+              className="btn btn-primary text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5"
+            >
+              View All Features
+            </Link>
+          </FadeInView>
         </div>
       </SystemBackground>
 
