@@ -28,9 +28,14 @@ import {
   SystemBackground,
   GlassCard,
   SectionGlow,
+  Reveal,
+  Parallax,
+  AmbientOrbs,
+  EnhancedGlassCard,
+  HoverLift,
 } from '@/components/motion';
-import { FadeInView } from '@/components/motion';
 import { motion } from 'framer-motion';
+import { spacing, radius, depth } from '@/config/motion';
 
 const lifecycle = [
   {
@@ -183,37 +188,41 @@ export function HomePageContent() {
           SECTION 1: METRICS (variant: metrics)
           Soft radial glow, micro-particles, glass depth
           ======================================== */}
-      <SystemBackground variant="metrics" className="py-12 sm:py-16 lg:py-20">
-        {/* Radial glow behind section */}
+      <SystemBackground variant="metrics" className={spacing.sectionFull}>
+        {/* Ambient atmosphere */}
+        <AmbientOrbs intensity="subtle" />
         <SectionGlow color="cyan" intensity="medium" position="center" />
 
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-          <SectionHeader
-            badge="Live Platform Metrics"
-            badgeIcon={<BarChart3 className="h-4 w-4 text-primary" />}
-            title={<>Real-time compliance intelligence</>}
-            subtitle="FormaOS tracks compliance posture across your entire organization in real-time"
-            alignment="center"
-          />
+        <div className={`mx-auto max-w-7xl ${spacing.container} relative`}>
+          <Reveal variant="fadeInUp" viewport="early">
+            <SectionHeader
+              badge="Live Platform Metrics"
+              badgeIcon={<BarChart3 className="h-4 w-4 text-primary" />}
+              title={<>Real-time compliance intelligence</>}
+              subtitle="FormaOS tracks compliance posture across your entire organization in real-time"
+              alignment="center"
+            />
+          </Reveal>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div
+            className={`grid grid-cols-2 lg:grid-cols-4 ${spacing.cardGap.normal} mt-12`}
+          >
             {metrics.map((metric, idx) => (
-              <motion.div
-                key={metric.label}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: idx * 0.1 }}
-                className="card-radial-glow section-metrics"
-              >
-                <MetricCard
-                  icon={metric.icon}
-                  value={metric.value}
-                  label={metric.label}
-                  trend={metric.trend}
-                  delay={0}
-                />
-              </motion.div>
+              <Reveal key={metric.label} variant="scaleIn" delay={idx * 0.1}>
+                <HoverLift>
+                  <div
+                    className={`${depth.glass.normal} ${depth.border.subtle} ${radius.card} p-6`}
+                  >
+                    <MetricCard
+                      icon={metric.icon}
+                      value={metric.value}
+                      label={metric.label}
+                      trend={metric.trend}
+                      delay={0}
+                    />
+                  </div>
+                </HoverLift>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -225,32 +234,34 @@ export function HomePageContent() {
           SECTION 2: CONNECTED SYSTEM (variant: process)
           Stronger node presence, directional flow
           ======================================== */}
-      <SystemBackground variant="process" className="py-12 sm:py-16 lg:py-20">
+      <SystemBackground variant="process" className={spacing.sectionFull}>
+        <AmbientOrbs intensity="normal" />
         <SectionGlow color="blue" intensity="high" position="top" />
 
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-          <SectionHeader
-            badge="Connected System"
-            badgeIcon={<Layers className="h-4 w-4 text-secondary" />}
-            title={
-              <>
-                Every module
-                <br />
-                <span className="text-gradient-system">
-                  connected and aware
-                </span>
-              </>
-            }
-            subtitle="A compliance operating system where policies, controls, evidence, and audits work as one intelligent network"
-            alignment="center"
-          />
+        <div className={`mx-auto max-w-7xl ${spacing.container} relative`}>
+          <Reveal variant="fadeInUp">
+            <SectionHeader
+              badge="Connected System"
+              badgeIcon={<Layers className="h-4 w-4 text-secondary" />}
+              title={
+                <>
+                  Every module
+                  <br />
+                  <span className="text-gradient-system">
+                    connected and aware
+                  </span>
+                </>
+              }
+              subtitle="A compliance operating system where policies, controls, evidence, and audits work as one intelligent network"
+              alignment="center"
+            />
+          </Reveal>
 
-          <FadeInView delay={0.3}>
-            <div className="flex justify-center">
-              <GlassCard
-                variant="elevated"
+          <Reveal delay={0.3} variant="scaleIn">
+            <div className="flex justify-center mt-12">
+              <EnhancedGlassCard
+                intensity="strong"
                 glow
-                glowColor="cyan"
                 className="p-6 sm:p-8 lg:p-12 max-w-4xl w-full"
               >
                 <div className="py-4 text-center">
@@ -288,11 +299,15 @@ export function HomePageContent() {
                     </div>
                   </div>
                 </div>
-              </GlassCard>
+              </EnhancedGlassCard>
             </div>
-          </FadeInView>
+          </Reveal>
 
-          <FadeInView delay={0.6} className="text-center mt-8 sm:mt-12">
+          <Reveal
+            variant="fadeInUp"
+            delay={0.6}
+            className="text-center mt-8 sm:mt-12"
+          >
             <p className="text-foreground/60 text-sm sm:text-base mb-6 max-w-2xl mx-auto">
               Each node represents a core compliance function. Changes flow
               through the system—updating controls triggers evidence
@@ -305,7 +320,7 @@ export function HomePageContent() {
               Explore Platform Architecture
               <ArrowRight className="h-4 w-4" />
             </Link>
-          </FadeInView>
+          </Reveal>
         </div>
       </SystemBackground>
 
@@ -315,55 +330,62 @@ export function HomePageContent() {
           SECTION 3: LIFECYCLE (variant: info)
           Minimal, calm, subtle breathing motion
           ======================================== */}
-      <SystemBackground variant="info" className="py-12 sm:py-16 lg:py-20">
+      <SystemBackground variant="info" className={spacing.sectionFull}>
+        <AmbientOrbs intensity="subtle" />
         <SectionGlow color="purple" intensity="low" position="center" />
 
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative">
-          <SectionHeader
-            badge="The Complete System"
-            badgeIcon={<Sparkles className="h-4 w-4 text-primary" />}
-            title={
-              <>
-                Compliance lifecycle,
-                <br />
-                <span className="text-gradient-system">
-                  engineered end-to-end
-                </span>
-              </>
-            }
-            subtitle="From framework alignment to audit export—every step connected, traced, and defensible"
-            alignment="center"
-          />
+        <div className={`mx-auto max-w-6xl ${spacing.container} relative`}>
+          <Reveal variant="fadeInUp">
+            <SectionHeader
+              badge="The Complete System"
+              badgeIcon={<Sparkles className="h-4 w-4 text-primary" />}
+              title={
+                <>
+                  Compliance lifecycle,
+                  <br />
+                  <span className="text-gradient-system">
+                    engineered end-to-end
+                  </span>
+                </>
+              }
+              subtitle="From framework alignment to audit export—every step connected, traced, and defensible"
+              alignment="center"
+            />
+          </Reveal>
 
-          <div className="space-y-4 sm:space-y-6">
+          <div className={`space-y-6 mt-12`}>
             {lifecycle.map((step, idx) => (
-              <motion.div
-                key={step.title}
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: idx * 0.15 }}
-              >
-                <ProcessStep
-                  number={idx + 1}
-                  title={step.title}
-                  description={step.description}
-                  icon={step.icon}
-                  delay={0}
-                  showConnector={idx < lifecycle.length - 1}
-                />
-              </motion.div>
+              <Reveal key={step.title} variant="fadeInLeft" delay={idx * 0.15}>
+                <HoverLift>
+                  <div
+                    className={`${depth.glass.subtle} ${depth.border.subtle} ${radius.card} p-6`}
+                  >
+                    <ProcessStep
+                      number={idx + 1}
+                      title={step.title}
+                      description={step.description}
+                      icon={step.icon}
+                      delay={0}
+                      showConnector={idx < lifecycle.length - 1}
+                    />
+                  </div>
+                </HoverLift>
+              </Reveal>
             ))}
           </div>
 
-          <FadeInView delay={0.8} className="text-center mt-10 sm:mt-14">
+          <Reveal
+            variant="fadeInUp"
+            delay={0.8}
+            className="text-center mt-10 sm:mt-14"
+          >
             <Link
               href="/product"
               className="btn btn-primary text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5 shadow-premium-lg"
             >
               Explore Platform Architecture
             </Link>
-          </FadeInView>
+          </Reveal>
         </div>
       </SystemBackground>
 
@@ -376,53 +398,57 @@ export function HomePageContent() {
       <SystemBackground
         variant="process"
         intensity="high"
-        className="py-12 sm:py-16 lg:py-20"
+        className={spacing.sectionFull}
       >
+        <AmbientOrbs intensity="normal" />
         <SectionGlow color="mixed" intensity="medium" position="top" />
 
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-          <SectionHeader
-            badge="System Architecture"
-            badgeIcon={<Layers className="h-4 w-4 text-secondary" />}
-            title={
-              <>
-                Built as infrastructure,
-                <br />
-                <span className="text-gradient-system">
-                  not a document manager
-                </span>
-              </>
-            }
-            subtitle="FormaOS is a true operating system for compliance—with interconnected modules working as one platform"
-            alignment="center"
-          />
+        <div className={`mx-auto max-w-7xl ${spacing.container} relative`}>
+          <Reveal variant="fadeInUp">
+            <SectionHeader
+              badge="System Architecture"
+              badgeIcon={<Layers className="h-4 w-4 text-secondary" />}
+              title={
+                <>
+                  Built as infrastructure,
+                  <br />
+                  <span className="text-gradient-system">
+                    not a document manager
+                  </span>
+                </>
+              }
+              subtitle="FormaOS is a true operating system for compliance—with interconnected modules working as one platform"
+              alignment="center"
+            />
+          </Reveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+          <div
+            className={`grid grid-cols-1 md:grid-cols-2 ${spacing.cardGap.relaxed} mt-12`}
+          >
             {Object.entries(platformArchitecture).map(
               ([title, components], idx) => (
-                <motion.div
-                  key={title}
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: idx * 0.15 }}
-                  className="card-radial-glow section-process"
-                >
-                  <ArchitectureCard
-                    title={title}
-                    components={components}
-                    icon={
-                      idx === 0
-                        ? Target
-                        : idx === 1
-                          ? Zap
-                          : idx === 2
-                            ? FileCheck
-                            : TrendingUp
-                    }
-                    delay={0}
-                  />
-                </motion.div>
+                <Reveal key={title} variant="scaleIn" delay={idx * 0.15}>
+                  <HoverLift>
+                    <div
+                      className={`${depth.glass.normal} ${depth.border.normal} ${radius.card} p-6`}
+                    >
+                      <ArchitectureCard
+                        title={title}
+                        components={components}
+                        icon={
+                          idx === 0
+                            ? Target
+                            : idx === 1
+                              ? Zap
+                              : idx === 2
+                                ? FileCheck
+                                : TrendingUp
+                        }
+                        delay={0}
+                      />
+                    </div>
+                  </HoverLift>
+                </Reveal>
               ),
             )}
           </div>
@@ -435,7 +461,8 @@ export function HomePageContent() {
           SECTION 4.5: PLATFORM CAPABILITIES
           Feature showcase section
           ======================================== */}
-      <SystemBackground variant="info" className="py-12 sm:py-16 lg:py-20">
+      <SystemBackground variant="info" className={spacing.sectionFull}>
+        <AmbientOrbs intensity="subtle" />
         <SectionGlow color="blue" intensity="medium" position="center" />
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
@@ -468,14 +495,18 @@ export function HomePageContent() {
             ))}
           </div>
 
-          <FadeInView delay={0.8} className="text-center mt-10 sm:mt-14">
+          <Reveal
+            variant="fadeInUp"
+            delay={0.8}
+            className="text-center mt-10 sm:mt-14"
+          >
             <Link
               href="/product"
               className="btn btn-primary text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5"
             >
               View All Features
             </Link>
-          </FadeInView>
+          </Reveal>
         </div>
       </SystemBackground>
 
@@ -526,14 +557,18 @@ export function HomePageContent() {
             ))}
           </div>
 
-          <FadeInView delay={0.6} className="text-center mt-10 sm:mt-14">
+          <Reveal
+            variant="fadeInUp"
+            delay={0.6}
+            className="text-center mt-10 sm:mt-14"
+          >
             <Link
               href="/industries"
               className="btn btn-secondary text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5"
             >
               Explore All Industries
             </Link>
-          </FadeInView>
+          </Reveal>
         </div>
       </SystemBackground>
 
@@ -616,7 +651,11 @@ export function HomePageContent() {
             ))}
           </div>
 
-          <FadeInView delay={0.7} className="text-center mt-10 sm:mt-14">
+          <Reveal
+            variant="fadeInUp"
+            delay={0.7}
+            className="text-center mt-10 sm:mt-14"
+          >
             <Link
               href="/security"
               className="btn btn-ghost text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5 inline-flex items-center gap-2"
@@ -624,7 +663,7 @@ export function HomePageContent() {
               Security Architecture
               <ArrowRight className="h-4 w-4" />
             </Link>
-          </FadeInView>
+          </Reveal>
         </div>
       </SystemBackground>
 
@@ -640,7 +679,7 @@ export function HomePageContent() {
         className="py-12 sm:py-16 lg:py-20"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-          <FadeInView>
+          <Reveal variant="fadeInUp">
             <GlassCard
               variant="intense"
               glow
@@ -741,7 +780,7 @@ export function HomePageContent() {
                 </div>
               </div>
             </GlassCard>
-          </FadeInView>
+          </Reveal>
         </div>
       </SystemBackground>
     </div>
