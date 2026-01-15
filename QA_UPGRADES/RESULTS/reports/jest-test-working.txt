@@ -1,0 +1,11 @@
+
+> formaos@0.1.0 test
+> jest
+
+Error: ● Validation Error:
+
+  Watch plugin jest-watch-typeahead/filename cannot be found. Make sure the watchPlugins configuration option points to an existing node module.
+
+  Configuration Documentation:
+  https://jestjs.io/docs/configuration
+

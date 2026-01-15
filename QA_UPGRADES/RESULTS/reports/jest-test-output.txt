@@ -1,0 +1,15 @@
+
+> formaos@0.1.0 test
+> jest
+
+● Multiple configurations found:
+
+    * /Users/ejay/formaos/jest.config.js
+    * /Users/ejay/formaos/jest.config.ts
+
+  Implicit config resolution does not allow multiple configuration files.
+  Either remove unused config files or select one explicitly with `--config`.
+
+  Configuration Documentation:
+  https://jestjs.io/docs/configuration
+

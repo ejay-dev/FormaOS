@@ -1,0 +1,631 @@
+[2m[WebServer] [22m[33m[1m⚠[22m[39m Warning: Next.js inferred your workspace root, but it may not be correct.
+[2m[WebServer] [22m We detected multiple lockfiles and selected the directory of /Users/ejay/package-lock.json as the root directory.
+[2m[WebServer] [22m To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+[2m[WebServer] [22m   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+[2m[WebServer] [22m Detected additional lockfiles: 
+[2m[WebServer] [22m   * /Users/ejay/formaos/package-lock.json
+[2m[WebServer] [22m
+[2m[WebServer] [22m[33m[1m⚠[22m[39m The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+
+Running 25 tests using 4 workers
+
+🔍 Testing returning user flow
+🔍 Testing admin route protection
+🔍 Testing founder access isolation
+🔍 Testing critical user journey: NO PRICING REDIRECT during onboarding
+  ✘   3 [chromium] › e2e/critical-user-journeys.spec.ts:108:7 › CRITICAL: User Journey Validation › CRITICAL: Non-founder cannot access admin routes (3.5s)
+🔍 Testing page load performance
+✅ VERIFIED: Homepage loaded in 584ms
+  ✓   5 [chromium] › e2e/critical-user-journeys.spec.ts:163:7 › CRITICAL: Performance Validation › Page load performance meets requirements (986ms)
+🔍 Testing critical user journey: NO PRICING REDIRECT during onboarding
+  ✘   2 [chromium] › e2e/critical-user-journeys.spec.ts:72:7 › CRITICAL: User Journey Validation › CRITICAL: Founder access → admin console (not user dashboard) (30.2s)
+  ✘   1 [chromium] › e2e/critical-user-journeys.spec.ts:128:7 › CRITICAL: User Journey Validation › CRITICAL: Existing user login resumes properly (30.2s)
+  ✘   4 [chromium] › e2e/critical-user-journeys.spec.ts:10:7 › CRITICAL: User Journey Validation › CRITICAL: New user signup → onboarding → dashboard (NO PRICING REDIRECT) (30.3s)
+🔍 Testing returning user flow
+🔍 Testing admin route protection
+🔍 Testing founder access isolation
+  ✘   8 [firefox] › e2e/critical-user-journeys.spec.ts:108:7 › CRITICAL: User Journey Validation › CRITICAL: Non-founder cannot access admin routes (2.0s)
+🔍 Testing page load performance
+✅ VERIFIED: Homepage loaded in 741ms
+  ✓  10 [firefox] › e2e/critical-user-journeys.spec.ts:163:7 › CRITICAL: Performance Validation › Page load performance meets requirements (1.6s)
+  ✘   6 [firefox] › e2e/critical-user-journeys.spec.ts:10:7 › CRITICAL: User Journey Validation › CRITICAL: New user signup → onboarding → dashboard (NO PRICING REDIRECT) (30.3s)
+🔍 Testing critical user journey: NO PRICING REDIRECT during onboarding
+🔍 Testing founder access isolation
+  ✘   9 [firefox] › e2e/critical-user-journeys.spec.ts:128:7 › CRITICAL: User Journey Validation › CRITICAL: Existing user login resumes properly (30.1s)
+  ✘   7 [firefox] › e2e/critical-user-journeys.spec.ts:72:7 › CRITICAL: User Journey Validation › CRITICAL: Founder access → admin console (not user dashboard) (30.1s)
+🔍 Testing admin route protection
+  ✘  13 [webkit] › e2e/critical-user-journeys.spec.ts:108:7 › CRITICAL: User Journey Validation › CRITICAL: Non-founder cannot access admin routes (1.2s)
+🔍 Testing returning user flow
+🔍 Testing page load performance
+✅ VERIFIED: Homepage loaded in 564ms
+  ✓  15 [webkit] › e2e/critical-user-journeys.spec.ts:163:7 › CRITICAL: Performance Validation › Page load performance meets requirements (3.4s)
+🔍 Testing critical user journey: NO PRICING REDIRECT during onboarding
+  ✘  12 [webkit] › e2e/critical-user-journeys.spec.ts:72:7 › CRITICAL: User Journey Validation › CRITICAL: Founder access → admin console (not user dashboard) (30.2s)
+🔍 Testing founder access isolation
+  ✘  11 [webkit] › e2e/critical-user-journeys.spec.ts:10:7 › CRITICAL: User Journey Validation › CRITICAL: New user signup → onboarding → dashboard (NO PRICING REDIRECT) (32.6s)
+🔍 Testing admin route protection
+  ✘  18 [Mobile Chrome] › e2e/critical-user-journeys.spec.ts:108:7 › CRITICAL: User Journey Validation › CRITICAL: Non-founder cannot access admin routes (1.1s)
+🔍 Testing returning user flow
+  ✘  14 [webkit] › e2e/critical-user-journeys.spec.ts:128:7 › CRITICAL: User Journey Validation › CRITICAL: Existing user login resumes properly (30.2s)
+🔍 Testing page load performance
+✅ VERIFIED: Homepage loaded in 815ms
+  ✓  20 [Mobile Chrome] › e2e/critical-user-journeys.spec.ts:163:7 › CRITICAL: Performance Validation › Page load performance meets requirements (1.5s)
+🔍 Testing critical user journey: NO PRICING REDIRECT during onboarding
+  ✘  16 [Mobile Chrome] › e2e/critical-user-journeys.spec.ts:10:7 › CRITICAL: User Journey Validation › CRITICAL: New user signup → onboarding → dashboard (NO PRICING REDIRECT) (30.6s)
+🔍 Testing founder access isolation
+  ✘  17 [Mobile Chrome] › e2e/critical-user-journeys.spec.ts:72:7 › CRITICAL: User Journey Validation › CRITICAL: Founder access → admin console (not user dashboard) (30.4s)
+🔍 Testing admin route protection
+  ✘  23 [Mobile Safari] › e2e/critical-user-journeys.spec.ts:108:7 › CRITICAL: User Journey Validation › CRITICAL: Non-founder cannot access admin routes (1.3s)
+🔍 Testing returning user flow
+  ✘  19 [Mobile Chrome] › e2e/critical-user-journeys.spec.ts:128:7 › CRITICAL: User Journey Validation › CRITICAL: Existing user login resumes properly (30.4s)
+🔍 Testing page load performance
+✅ VERIFIED: Homepage loaded in 653ms
+  ✓  25 [Mobile Safari] › e2e/critical-user-journeys.spec.ts:163:7 › CRITICAL: Performance Validation › Page load performance meets requirements (8.1s)
+  ✘  22 [Mobile Safari] › e2e/critical-user-journeys.spec.ts:72:7 › CRITICAL: User Journey Validation › CRITICAL: Founder access → admin console (not user dashboard) (32.7s)
+  ✘  21 [Mobile Safari] › e2e/critical-user-journeys.spec.ts:10:7 › CRITICAL: User Journey Validation › CRITICAL: New user signup → onboarding → dashboard (NO PRICING REDIRECT) (36.2s)
+  ✘  24 [Mobile Safari] › e2e/critical-user-journeys.spec.ts:128:7 › CRITICAL: User Journey Validation › CRITICAL: Existing user login resumes properly (30.2s)
+
+
+  1) [chromium] › e2e/critical-user-journeys.spec.ts:10:7 › CRITICAL: User Journey Validation › CRITICAL: New user signup → onboarding → dashboard (NO PRICING REDIRECT) 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('link', { name: /sign up/i })[22m
+
+
+      16 |
+      17 |     // Step 1: Navigate to signup
+    > 18 |     await page.getByRole('link', { name: /sign up/i }).click();
+         |                                                        ^
+      19 |     await expect(page).toHaveURL(/\/auth\/signup/);
+      20 |
+      21 |     // Step 2: Fill signup form (mock successful signup)
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:18:56
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-dd0d7-hboard-NO-PRICING-REDIRECT--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-dd0d7-hboard-NO-PRICING-REDIRECT--chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-dd0d7-hboard-NO-PRICING-REDIRECT--chromium/error-context.md
+
+  2) [chromium] › e2e/critical-user-journeys.spec.ts:72:7 › CRITICAL: User Journey Validation › CRITICAL: Founder access → admin console (not user dashboard) 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /sign in/i })[22m
+
+
+      94 |     await page.fill('input[type="email"]', 'ejazhussaini313@gmail.com');
+      95 |     await page.fill('input[type="password"]', 'founderpassword');
+    > 96 |     await page.getByRole('button', { name: /sign in/i }).click();
+         |                                                          ^
+      97 |
+      98 |     // Should redirect to admin console, not user dashboard
+      99 |     await expect(page).toHaveURL(/\/admin/);
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:96:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-e2d9e-console-not-user-dashboard--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-e2d9e-console-not-user-dashboard--chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-e2d9e-console-not-user-dashboard--chromium/error-context.md
+
+  3) [chromium] › e2e/critical-user-journeys.spec.ts:108:7 › CRITICAL: User Journey Validation › CRITICAL: Non-founder cannot access admin routes 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeTruthy[2m()[22m
+
+    Received: [31mfalse[39m
+
+      121 |       .isVisible();
+      122 |
+    > 123 |     expect(isSignInPage || isUnauthorizedPage).toBeTruthy();
+          |                                                ^
+      124 |
+      125 |     console.log('✅ VERIFIED: Admin routes properly protected');
+      126 |   });
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:123:48
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-516e8--cannot-access-admin-routes-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-516e8--cannot-access-admin-routes-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-516e8--cannot-access-admin-routes-chromium/error-context.md
+
+  4) [chromium] › e2e/critical-user-journeys.spec.ts:128:7 › CRITICAL: User Journey Validation › CRITICAL: Existing user login resumes properly 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /sign in/i })[22m
+
+
+      148 |     await page.fill('input[type="email"]', 'existing@example.com');
+      149 |     await page.fill('input[type="password"]', 'password123');
+    > 150 |     await page.getByRole('button', { name: /sign in/i }).click();
+          |                                                          ^
+      151 |
+      152 |     // Should go directly to dashboard (not onboarding or pricing)
+      153 |     await expect(page).toHaveURL(/\/app/);
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:150:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-50a4f-user-login-resumes-properly-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-50a4f-user-login-resumes-properly-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-50a4f-user-login-resumes-properly-chromium/error-context.md
+
+  5) [firefox] › e2e/critical-user-journeys.spec.ts:10:7 › CRITICAL: User Journey Validation › CRITICAL: New user signup → onboarding → dashboard (NO PRICING REDIRECT) 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('link', { name: /sign up/i })[22m
+
+
+      16 |
+      17 |     // Step 1: Navigate to signup
+    > 18 |     await page.getByRole('link', { name: /sign up/i }).click();
+         |                                                        ^
+      19 |     await expect(page).toHaveURL(/\/auth\/signup/);
+      20 |
+      21 |     // Step 2: Fill signup form (mock successful signup)
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:18:56
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-dd0d7-hboard-NO-PRICING-REDIRECT--firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-dd0d7-hboard-NO-PRICING-REDIRECT--firefox/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-dd0d7-hboard-NO-PRICING-REDIRECT--firefox/error-context.md
+
+  6) [firefox] › e2e/critical-user-journeys.spec.ts:72:7 › CRITICAL: User Journey Validation › CRITICAL: Founder access → admin console (not user dashboard) 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /sign in/i })[22m
+
+
+      94 |     await page.fill('input[type="email"]', 'ejazhussaini313@gmail.com');
+      95 |     await page.fill('input[type="password"]', 'founderpassword');
+    > 96 |     await page.getByRole('button', { name: /sign in/i }).click();
+         |                                                          ^
+      97 |
+      98 |     // Should redirect to admin console, not user dashboard
+      99 |     await expect(page).toHaveURL(/\/admin/);
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:96:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-e2d9e-console-not-user-dashboard--firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-e2d9e-console-not-user-dashboard--firefox/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-e2d9e-console-not-user-dashboard--firefox/error-context.md
+
+  7) [firefox] › e2e/critical-user-journeys.spec.ts:108:7 › CRITICAL: User Journey Validation › CRITICAL: Non-founder cannot access admin routes 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeTruthy[2m()[22m
+
+    Received: [31mfalse[39m
+
+      121 |       .isVisible();
+      122 |
+    > 123 |     expect(isSignInPage || isUnauthorizedPage).toBeTruthy();
+          |                                                ^
+      124 |
+      125 |     console.log('✅ VERIFIED: Admin routes properly protected');
+      126 |   });
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:123:48
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-516e8--cannot-access-admin-routes-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-516e8--cannot-access-admin-routes-firefox/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-516e8--cannot-access-admin-routes-firefox/error-context.md
+
+  8) [firefox] › e2e/critical-user-journeys.spec.ts:128:7 › CRITICAL: User Journey Validation › CRITICAL: Existing user login resumes properly 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /sign in/i })[22m
+
+
+      148 |     await page.fill('input[type="email"]', 'existing@example.com');
+      149 |     await page.fill('input[type="password"]', 'password123');
+    > 150 |     await page.getByRole('button', { name: /sign in/i }).click();
+          |                                                          ^
+      151 |
+      152 |     // Should go directly to dashboard (not onboarding or pricing)
+      153 |     await expect(page).toHaveURL(/\/app/);
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:150:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-50a4f-user-login-resumes-properly-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-50a4f-user-login-resumes-properly-firefox/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-50a4f-user-login-resumes-properly-firefox/error-context.md
+
+  9) [webkit] › e2e/critical-user-journeys.spec.ts:10:7 › CRITICAL: User Journey Validation › CRITICAL: New user signup → onboarding → dashboard (NO PRICING REDIRECT) 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('link', { name: /sign up/i })[22m
+
+
+      16 |
+      17 |     // Step 1: Navigate to signup
+    > 18 |     await page.getByRole('link', { name: /sign up/i }).click();
+         |                                                        ^
+      19 |     await expect(page).toHaveURL(/\/auth\/signup/);
+      20 |
+      21 |     // Step 2: Fill signup form (mock successful signup)
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:18:56
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-dd0d7-hboard-NO-PRICING-REDIRECT--webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-dd0d7-hboard-NO-PRICING-REDIRECT--webkit/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-dd0d7-hboard-NO-PRICING-REDIRECT--webkit/error-context.md
+
+  10) [webkit] › e2e/critical-user-journeys.spec.ts:72:7 › CRITICAL: User Journey Validation › CRITICAL: Founder access → admin console (not user dashboard) 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /sign in/i })[22m
+
+
+      94 |     await page.fill('input[type="email"]', 'ejazhussaini313@gmail.com');
+      95 |     await page.fill('input[type="password"]', 'founderpassword');
+    > 96 |     await page.getByRole('button', { name: /sign in/i }).click();
+         |                                                          ^
+      97 |
+      98 |     // Should redirect to admin console, not user dashboard
+      99 |     await expect(page).toHaveURL(/\/admin/);
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:96:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-e2d9e-console-not-user-dashboard--webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-e2d9e-console-not-user-dashboard--webkit/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-e2d9e-console-not-user-dashboard--webkit/error-context.md
+
+  11) [webkit] › e2e/critical-user-journeys.spec.ts:108:7 › CRITICAL: User Journey Validation › CRITICAL: Non-founder cannot access admin routes 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeTruthy[2m()[22m
+
+    Received: [31mfalse[39m
+
+      121 |       .isVisible();
+      122 |
+    > 123 |     expect(isSignInPage || isUnauthorizedPage).toBeTruthy();
+          |                                                ^
+      124 |
+      125 |     console.log('✅ VERIFIED: Admin routes properly protected');
+      126 |   });
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:123:48
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-516e8--cannot-access-admin-routes-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-516e8--cannot-access-admin-routes-webkit/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-516e8--cannot-access-admin-routes-webkit/error-context.md
+
+  12) [webkit] › e2e/critical-user-journeys.spec.ts:128:7 › CRITICAL: User Journey Validation › CRITICAL: Existing user login resumes properly 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /sign in/i })[22m
+
+
+      148 |     await page.fill('input[type="email"]', 'existing@example.com');
+      149 |     await page.fill('input[type="password"]', 'password123');
+    > 150 |     await page.getByRole('button', { name: /sign in/i }).click();
+          |                                                          ^
+      151 |
+      152 |     // Should go directly to dashboard (not onboarding or pricing)
+      153 |     await expect(page).toHaveURL(/\/app/);
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:150:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-50a4f-user-login-resumes-properly-webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-50a4f-user-login-resumes-properly-webkit/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-50a4f-user-login-resumes-properly-webkit/error-context.md
+
+  13) [Mobile Chrome] › e2e/critical-user-journeys.spec.ts:10:7 › CRITICAL: User Journey Validation › CRITICAL: New user signup → onboarding → dashboard (NO PRICING REDIRECT) 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('link', { name: /sign up/i })[22m
+
+
+      16 |
+      17 |     // Step 1: Navigate to signup
+    > 18 |     await page.getByRole('link', { name: /sign up/i }).click();
+         |                                                        ^
+      19 |     await expect(page).toHaveURL(/\/auth\/signup/);
+      20 |
+      21 |     // Step 2: Fill signup form (mock successful signup)
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:18:56
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-dd0d7-hboard-NO-PRICING-REDIRECT--Mobile-Chrome/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-dd0d7-hboard-NO-PRICING-REDIRECT--Mobile-Chrome/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-dd0d7-hboard-NO-PRICING-REDIRECT--Mobile-Chrome/error-context.md
+
+  14) [Mobile Chrome] › e2e/critical-user-journeys.spec.ts:72:7 › CRITICAL: User Journey Validation › CRITICAL: Founder access → admin console (not user dashboard) 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /sign in/i })[22m
+
+
+      94 |     await page.fill('input[type="email"]', 'ejazhussaini313@gmail.com');
+      95 |     await page.fill('input[type="password"]', 'founderpassword');
+    > 96 |     await page.getByRole('button', { name: /sign in/i }).click();
+         |                                                          ^
+      97 |
+      98 |     // Should redirect to admin console, not user dashboard
+      99 |     await expect(page).toHaveURL(/\/admin/);
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:96:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-e2d9e-console-not-user-dashboard--Mobile-Chrome/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-e2d9e-console-not-user-dashboard--Mobile-Chrome/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-e2d9e-console-not-user-dashboard--Mobile-Chrome/error-context.md
+
+  15) [Mobile Chrome] › e2e/critical-user-journeys.spec.ts:108:7 › CRITICAL: User Journey Validation › CRITICAL: Non-founder cannot access admin routes 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeTruthy[2m()[22m
+
+    Received: [31mfalse[39m
+
+      121 |       .isVisible();
+      122 |
+    > 123 |     expect(isSignInPage || isUnauthorizedPage).toBeTruthy();
+          |                                                ^
+      124 |
+      125 |     console.log('✅ VERIFIED: Admin routes properly protected');
+      126 |   });
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:123:48
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-516e8--cannot-access-admin-routes-Mobile-Chrome/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-516e8--cannot-access-admin-routes-Mobile-Chrome/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-516e8--cannot-access-admin-routes-Mobile-Chrome/error-context.md
+
+  16) [Mobile Chrome] › e2e/critical-user-journeys.spec.ts:128:7 › CRITICAL: User Journey Validation › CRITICAL: Existing user login resumes properly 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /sign in/i })[22m
+
+
+      148 |     await page.fill('input[type="email"]', 'existing@example.com');
+      149 |     await page.fill('input[type="password"]', 'password123');
+    > 150 |     await page.getByRole('button', { name: /sign in/i }).click();
+          |                                                          ^
+      151 |
+      152 |     // Should go directly to dashboard (not onboarding or pricing)
+      153 |     await expect(page).toHaveURL(/\/app/);
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:150:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-50a4f-user-login-resumes-properly-Mobile-Chrome/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-50a4f-user-login-resumes-properly-Mobile-Chrome/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-50a4f-user-login-resumes-properly-Mobile-Chrome/error-context.md
+
+  17) [Mobile Safari] › e2e/critical-user-journeys.spec.ts:10:7 › CRITICAL: User Journey Validation › CRITICAL: New user signup → onboarding → dashboard (NO PRICING REDIRECT) 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('link', { name: /sign up/i })[22m
+
+
+      16 |
+      17 |     // Step 1: Navigate to signup
+    > 18 |     await page.getByRole('link', { name: /sign up/i }).click();
+         |                                                        ^
+      19 |     await expect(page).toHaveURL(/\/auth\/signup/);
+      20 |
+      21 |     // Step 2: Fill signup form (mock successful signup)
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:18:56
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-dd0d7-hboard-NO-PRICING-REDIRECT--Mobile-Safari/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-dd0d7-hboard-NO-PRICING-REDIRECT--Mobile-Safari/error-context.md
+
+  18) [Mobile Safari] › e2e/critical-user-journeys.spec.ts:72:7 › CRITICAL: User Journey Validation › CRITICAL: Founder access → admin console (not user dashboard) 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /sign in/i })[22m
+
+
+      94 |     await page.fill('input[type="email"]', 'ejazhussaini313@gmail.com');
+      95 |     await page.fill('input[type="password"]', 'founderpassword');
+    > 96 |     await page.getByRole('button', { name: /sign in/i }).click();
+         |                                                          ^
+      97 |
+      98 |     // Should redirect to admin console, not user dashboard
+      99 |     await expect(page).toHaveURL(/\/admin/);
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:96:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-e2d9e-console-not-user-dashboard--Mobile-Safari/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-e2d9e-console-not-user-dashboard--Mobile-Safari/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-e2d9e-console-not-user-dashboard--Mobile-Safari/error-context.md
+
+  19) [Mobile Safari] › e2e/critical-user-journeys.spec.ts:108:7 › CRITICAL: User Journey Validation › CRITICAL: Non-founder cannot access admin routes 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeTruthy[2m()[22m
+
+    Received: [31mfalse[39m
+
+      121 |       .isVisible();
+      122 |
+    > 123 |     expect(isSignInPage || isUnauthorizedPage).toBeTruthy();
+          |                                                ^
+      124 |
+      125 |     console.log('✅ VERIFIED: Admin routes properly protected');
+      126 |   });
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:123:48
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-516e8--cannot-access-admin-routes-Mobile-Safari/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-516e8--cannot-access-admin-routes-Mobile-Safari/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-516e8--cannot-access-admin-routes-Mobile-Safari/error-context.md
+
+  20) [Mobile Safari] › e2e/critical-user-journeys.spec.ts:128:7 › CRITICAL: User Journey Validation › CRITICAL: Existing user login resumes properly 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: /sign in/i })[22m
+
+
+      148 |     await page.fill('input[type="email"]', 'existing@example.com');
+      149 |     await page.fill('input[type="password"]', 'password123');
+    > 150 |     await page.getByRole('button', { name: /sign in/i }).click();
+          |                                                          ^
+      151 |
+      152 |     // Should go directly to dashboard (not onboarding or pricing)
+      153 |     await expect(page).toHaveURL(/\/app/);
+        at /Users/ejay/formaos/e2e/critical-user-journeys.spec.ts:150:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-50a4f-user-login-resumes-properly-Mobile-Safari/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/critical-user-journeys-CRI-50a4f-user-login-resumes-properly-Mobile-Safari/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/critical-user-journeys-CRI-50a4f-user-login-resumes-properly-Mobile-Safari/error-context.md
+
+  20 failed
+    [chromium] › e2e/critical-user-journeys.spec.ts:10:7 › CRITICAL: User Journey Validation › CRITICAL: New user signup → onboarding → dashboard (NO PRICING REDIRECT) 
+    [chromium] › e2e/critical-user-journeys.spec.ts:72:7 › CRITICAL: User Journey Validation › CRITICAL: Founder access → admin console (not user dashboard) 
+    [chromium] › e2e/critical-user-journeys.spec.ts:108:7 › CRITICAL: User Journey Validation › CRITICAL: Non-founder cannot access admin routes 
+    [chromium] › e2e/critical-user-journeys.spec.ts:128:7 › CRITICAL: User Journey Validation › CRITICAL: Existing user login resumes properly 
+    [firefox] › e2e/critical-user-journeys.spec.ts:10:7 › CRITICAL: User Journey Validation › CRITICAL: New user signup → onboarding → dashboard (NO PRICING REDIRECT) 
+    [firefox] › e2e/critical-user-journeys.spec.ts:72:7 › CRITICAL: User Journey Validation › CRITICAL: Founder access → admin console (not user dashboard) 
+    [firefox] › e2e/critical-user-journeys.spec.ts:108:7 › CRITICAL: User Journey Validation › CRITICAL: Non-founder cannot access admin routes 
+    [firefox] › e2e/critical-user-journeys.spec.ts:128:7 › CRITICAL: User Journey Validation › CRITICAL: Existing user login resumes properly 
+    [webkit] › e2e/critical-user-journeys.spec.ts:10:7 › CRITICAL: User Journey Validation › CRITICAL: New user signup → onboarding → dashboard (NO PRICING REDIRECT) 
+    [webkit] › e2e/critical-user-journeys.spec.ts:72:7 › CRITICAL: User Journey Validation › CRITICAL: Founder access → admin console (not user dashboard) 
+    [webkit] › e2e/critical-user-journeys.spec.ts:108:7 › CRITICAL: User Journey Validation › CRITICAL: Non-founder cannot access admin routes 
+    [webkit] › e2e/critical-user-journeys.spec.ts:128:7 › CRITICAL: User Journey Validation › CRITICAL: Existing user login resumes properly 
+    [Mobile Chrome] › e2e/critical-user-journeys.spec.ts:10:7 › CRITICAL: User Journey Validation › CRITICAL: New user signup → onboarding → dashboard (NO PRICING REDIRECT) 
+    [Mobile Chrome] › e2e/critical-user-journeys.spec.ts:72:7 › CRITICAL: User Journey Validation › CRITICAL: Founder access → admin console (not user dashboard) 
+    [Mobile Chrome] › e2e/critical-user-journeys.spec.ts:108:7 › CRITICAL: User Journey Validation › CRITICAL: Non-founder cannot access admin routes 
+    [Mobile Chrome] › e2e/critical-user-journeys.spec.ts:128:7 › CRITICAL: User Journey Validation › CRITICAL: Existing user login resumes properly 
+    [Mobile Safari] › e2e/critical-user-journeys.spec.ts:10:7 › CRITICAL: User Journey Validation › CRITICAL: New user signup → onboarding → dashboard (NO PRICING REDIRECT) 
+    [Mobile Safari] › e2e/critical-user-journeys.spec.ts:72:7 › CRITICAL: User Journey Validation › CRITICAL: Founder access → admin console (not user dashboard) 
+    [Mobile Safari] › e2e/critical-user-journeys.spec.ts:108:7 › CRITICAL: User Journey Validation › CRITICAL: Non-founder cannot access admin routes 
+    [Mobile Safari] › e2e/critical-user-journeys.spec.ts:128:7 › CRITICAL: User Journey Validation › CRITICAL: Existing user login resumes properly 
+  5 passed (2.4m)

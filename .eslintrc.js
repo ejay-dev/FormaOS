@@ -7,7 +7,20 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
   ],
   parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaVersion: 2020,
+    sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true,
+    },
+    project: './tsconfig.json',
+  },
   plugins: ['@typescript-eslint', 'testing-library', 'jsx-a11y'],
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
   rules: {
     // TypeScript specific rules
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],

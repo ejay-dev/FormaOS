@@ -1,0 +1,398 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e6]:
+        - link "FormaOS FormaOS" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - img "FormaOS" [ref=e8]
+          - generic [ref=e9]: FormaOS
+        - navigation [ref=e10]:
+          - link "Home" [ref=e12] [cursor=pointer]:
+            - /url: /
+          - link "Product" [ref=e14] [cursor=pointer]:
+            - /url: /product
+          - link "Industries" [ref=e16] [cursor=pointer]:
+            - /url: /industries
+          - link "Security" [ref=e18] [cursor=pointer]:
+            - /url: /security
+          - link "Pricing" [ref=e20] [cursor=pointer]:
+            - /url: /pricing
+          - link "Our Story" [ref=e22] [cursor=pointer]:
+            - /url: /our-story
+          - link "Contact" [ref=e24] [cursor=pointer]:
+            - /url: /contact
+        - generic [ref=e25]:
+          - link "Login" [ref=e26] [cursor=pointer]:
+            - /url: /auth/signin
+          - link "Plans" [ref=e28] [cursor=pointer]:
+            - /url: /pricing
+          - link "Start Free" [ref=e30] [cursor=pointer]:
+            - /url: /auth/signup
+    - main [ref=e31]:
+      - generic [ref=e32]:
+        - generic [ref=e33]:
+          - generic [ref=e41]:
+            - generic [ref=e42]:
+              - img [ref=e44]
+              - text: Enterprise Compliance OS
+            - heading "Operational Compliance, Built for Real Organizations" [level=1] [ref=e48]:
+              - text: Operational Compliance,
+              - generic [ref=e49]: Built for Real Organizations
+            - paragraph [ref=e51]: FormaOS is a compliance operating system for regulated teams. It turns obligations into structured controls, tracked actions, and audit-ready evidence.
+            - generic [ref=e52]:
+              - paragraph [ref=e53]: Most compliance tools store documents. FormaOS runs compliance.
+              - paragraph [ref=e54]: It gives organizations a single system to model governance, assign accountability, verify execution, and prove outcomes.
+            - generic [ref=e55]:
+              - link "Start Free Trial" [ref=e56] [cursor=pointer]:
+                - /url: /auth/signup
+              - link "Request Demo" [ref=e57] [cursor=pointer]:
+                - /url: /contact
+                - text: Request Demo
+                - img [ref=e58]
+            - generic [ref=e61]:
+              - generic [ref=e62]: • 14-day free trial
+              - generic [ref=e63]: • No credit card required
+              - generic [ref=e64]: • Australian-hosted
+          - generic [ref=e68]:
+            - generic [ref=e69]:
+              - generic [ref=e70]:
+                - img [ref=e71]
+                - text: Value Statement
+              - heading "From framework alignment to audit export, every compliance activity is connected" [level=2] [ref=e75]:
+                - text: From framework alignment to audit export,
+                - text: every compliance activity is connected
+              - paragraph [ref=e77]: FormaOS replaces fragmented spreadsheets, disconnected policy tools, and manual audits with a structured operating layer for governance.
+            - generic [ref=e78]:
+              - generic [ref=e81]:
+                - img [ref=e84]
+                - generic [ref=e89]:
+                  - heading "Model Obligations" [level=3] [ref=e90]
+                  - paragraph [ref=e91]: Convert regulations into structured policies and controls.
+              - generic [ref=e95]:
+                - img [ref=e98]
+                - generic [ref=e101]:
+                  - heading "Execute Tasks" [level=3] [ref=e102]
+                  - paragraph [ref=e103]: Assign ownership, due dates, and accountability across teams.
+              - generic [ref=e107]:
+                - img [ref=e110]
+                - generic [ref=e113]:
+                  - heading "Prove Readiness" [level=3] [ref=e114]
+                  - paragraph [ref=e115]: Generate audit-ready evidence and reports in minutes.
+          - generic [ref=e122]:
+            - generic [ref=e123]:
+              - generic [ref=e124]:
+                - img [ref=e125]
+                - text: Live Platform Metrics
+              - heading "Real-Time Compliance Intelligence" [level=2] [ref=e128]:
+                - text: Real-Time Compliance
+                - text: Intelligence
+              - paragraph [ref=e130]: FormaOS continuously measures your organization's compliance posture — across teams, frameworks, and operational controls — without manual tracking.
+            - generic [ref=e132]:
+              - generic [ref=e134]:
+                - generic [ref=e137]: Live Compliance Dashboard
+                - generic [ref=e138]: Updated in real-time
+              - generic [ref=e140]:
+                - generic [ref=e141]:
+                  - generic [ref=e143]: 94%
+                  - generic [ref=e145]: Average Compliance Posture
+                - generic [ref=e147]:
+                  - generic [ref=e149]: "127"
+                  - generic [ref=e151]: Active Controls
+                - generic [ref=e156]:
+                  - generic [ref=e158]: Fast
+                  - generic [ref=e160]: Audit Export Time
+                  - generic [ref=e162]: Quick generation
+                - generic [ref=e164]:
+                  - generic [ref=e166]: 98%
+                  - generic [ref=e168]: Task Completion Rate
+          - generic [ref=e175]:
+            - generic [ref=e177]:
+              - generic [ref=e178]:
+                - img [ref=e179]
+                - text: How It Works
+              - heading "A Compliance System Designed for Daily Operations" [level=2] [ref=e183]:
+                - text: A Compliance System Designed for
+                - text: Daily Operations
+              - paragraph [ref=e184]: Compliance should not live in quarterly reviews. FormaOS embeds governance directly into operational workflows so compliance becomes part of how the organization runs.
+            - generic [ref=e186]:
+              - generic [ref=e188]:
+                - generic [ref=e189]: "1"
+                - img [ref=e194]
+                - generic [ref=e198]:
+                  - heading "Structure" [level=3] [ref=e199]
+                  - paragraph [ref=e200]: Define ownership and accountability. Model your organization, sites, and teams. Assign control ownership and map obligations to responsible roles.
+              - generic [ref=e203]:
+                - generic [ref=e204]: "2"
+                - img [ref=e209]
+                - generic [ref=e213]:
+                  - heading "Execute" [level=3] [ref=e214]
+                  - paragraph [ref=e215]: Turn controls into actions. Convert requirements into tasks with due dates, assignees, and evidence requirements.
+              - generic [ref=e218]:
+                - generic [ref=e219]: "3"
+                - img [ref=e224]
+                - generic [ref=e226]:
+                  - heading "Verify" [level=3] [ref=e227]
+                  - paragraph [ref=e228]: Track completion with evidence. Capture proof automatically or manually. Monitor status in real time with a complete audit trail.
+              - generic [ref=e231]:
+                - generic [ref=e232]: "4"
+                - img [ref=e237]
+                - generic [ref=e240]:
+                  - heading "Audit" [level=3] [ref=e241]
+                  - paragraph [ref=e242]: Prove compliance without disruption. Export defensible reports in minutes with every control linked to verifiable evidence.
+            - generic [ref=e245]: "System Status: All modules operational"
+          - generic [ref=e250]:
+            - generic [ref=e251]:
+              - generic [ref=e252]:
+                - img [ref=e253]
+                - text: Why FormaOS
+              - heading "Built for governance, not checklists" [level=2] [ref=e255]:
+                - text: Built for governance,
+                - text: not checklists
+              - paragraph [ref=e257]: FormaOS is not a document repository or a task manager. It is an operating layer for compliance and risk.
+            - generic [ref=e259]:
+              - generic [ref=e261]:
+                - heading "Governance Architecture" [level=3] [ref=e262]
+                - paragraph [ref=e263]: Every component connects to provide complete operational visibility
+              - generic [ref=e265]:
+                - generic [ref=e266]:
+                  - generic [ref=e267]:
+                    - img [ref=e270]
+                    - generic [ref=e274]:
+                      - heading "Controls mapped directly to obligations" [level=4] [ref=e275]
+                      - paragraph [ref=e276]: Every control traces back to its regulatory requirement with full lineage
+                  - generic [ref=e277]:
+                    - img [ref=e280]
+                    - generic [ref=e285]:
+                      - heading "Actions tied to accountable owners" [level=4] [ref=e286]
+                      - paragraph [ref=e287]: Clear responsibility chains with automated escalation and oversight
+                - generic [ref=e288]:
+                  - generic [ref=e289]:
+                    - img [ref=e292]
+                    - generic [ref=e296]:
+                      - heading "Evidence stored in a verifiable chain" [level=4] [ref=e297]
+                      - paragraph [ref=e298]: Immutable audit trails with cryptographic integrity and timestamps
+                  - generic [ref=e299]:
+                    - img [ref=e302]
+                    - generic [ref=e305]:
+                      - heading "Continuous audit readiness" [level=4] [ref=e306]
+                      - paragraph [ref=e307]: Real-time compliance posture with instant export capabilities
+          - generic [ref=e316]:
+            - generic [ref=e317]:
+              - generic [ref=e318]:
+                - img [ref=e319]
+                - text: Capabilities
+              - heading "Model obligations. Execute tasks. Prove readiness." [level=2] [ref=e321]:
+                - text: Model obligations. Execute tasks.
+                - text: Prove readiness.
+              - paragraph [ref=e323]: FormaOS unifies compliance into a single operational system.
+            - generic [ref=e325]:
+              - generic [ref=e327]:
+                - heading "Complete Compliance Operating System" [level=3] [ref=e328]
+                - paragraph [ref=e329]: From regulatory mapping to audit export, every compliance function operates within a single, integrated platform designed for enterprise-grade governance.
+              - generic [ref=e331]:
+                - generic [ref=e333]:
+                  - generic [ref=e334]:
+                    - img [ref=e336]
+                    - generic [ref=e340]: "1"
+                  - heading "Model" [level=4] [ref=e341]
+                  - paragraph [ref=e342]: Transform regulations into structured policies, controls, and organizational accountability frameworks.
+                - generic [ref=e344]:
+                  - generic [ref=e345]:
+                    - img [ref=e347]
+                    - generic [ref=e351]: "2"
+                  - heading "Execute" [level=4] [ref=e352]
+                  - paragraph [ref=e353]: Convert controls into actionable tasks with clear ownership, deadlines, and evidence requirements.
+                - generic [ref=e355]:
+                  - generic [ref=e356]:
+                    - img [ref=e358]
+                    - generic [ref=e360]: "3"
+                  - heading "Prove" [level=4] [ref=e361]
+                  - paragraph [ref=e362]: Generate verifiable evidence and export audit-ready reports with complete compliance traceability.
+          - generic [ref=e370]:
+            - generic [ref=e371]:
+              - generic [ref=e372]:
+                - img [ref=e373]
+                - text: Who It Is For
+              - heading "Built for organizations that cannot afford ambiguity in compliance" [level=2] [ref=e378]:
+                - text: Built for organizations that cannot
+                - text: afford ambiguity in compliance
+            - generic [ref=e381]:
+              - generic [ref=e383]:
+                - heading "Enterprise Compliance Professionals" [level=3] [ref=e384]
+                - paragraph [ref=e385]: Designed for senior leaders who require operational certainty
+              - generic [ref=e387]:
+                - generic [ref=e388]:
+                  - img [ref=e391]
+                  - heading "Compliance & Governance Teams" [level=4] [ref=e397]
+                  - paragraph [ref=e398]: Directors and managers responsible for enterprise compliance programs
+                - generic [ref=e399]:
+                  - img [ref=e402]
+                  - heading "Risk & Audit Leaders" [level=4] [ref=e405]
+                  - paragraph [ref=e406]: Chief Risk Officers and audit executives requiring defensible evidence
+                - generic [ref=e407]:
+                  - img [ref=e410]
+                  - heading "Regulated Operations" [level=4] [ref=e415]
+                  - paragraph [ref=e416]: Operations directors in healthcare, finance, and regulated industries
+                - generic [ref=e417]:
+                  - img [ref=e420]
+                  - heading "Multi-Entity Organizations" [level=4] [ref=e425]
+                  - paragraph [ref=e426]: Executives managing compliance across multiple sites and entities
+          - generic [ref=e430]:
+            - generic [ref=e431]:
+              - generic [ref=e432]:
+                - img [ref=e433]
+                - text: Security
+              - heading "Designed for regulated environments" [level=2] [ref=e435]:
+                - text: Designed for
+                - text: regulated environments
+            - generic [ref=e438]:
+              - generic [ref=e440]:
+                - generic [ref=e443]: Enterprise Security Framework
+                - generic [ref=e444]: ISO 27001 Aligned
+              - generic [ref=e445]:
+                - generic [ref=e446]:
+                  - generic [ref=e447]:
+                    - img [ref=e451]
+                    - heading "Immutable Audit Logs" [level=4] [ref=e454]
+                    - paragraph [ref=e455]: Cryptographically sealed evidence with tamper detection
+                  - generic [ref=e456]:
+                    - img [ref=e460]
+                    - heading "Encrypted Evidence Storage" [level=4] [ref=e465]
+                    - paragraph [ref=e466]: End-to-end encryption with Australian data sovereignty
+                  - generic [ref=e467]:
+                    - img [ref=e471]
+                    - heading "Role-Based Access Control" [level=4] [ref=e477]
+                    - paragraph [ref=e478]: Granular permissions with segregation of duties
+                  - generic [ref=e479]:
+                    - img [ref=e483]
+                    - heading "Tenant Isolation" [level=4] [ref=e488]
+                    - paragraph [ref=e489]: Complete organizational separation with zero data bleed
+                - generic [ref=e491]:
+                  - img [ref=e492]
+                  - generic [ref=e494]: SOC 2 Type II Compliant
+          - generic [ref=e501]:
+            - generic [ref=e503]:
+              - generic [ref=e504]:
+                - img [ref=e505]
+                - text: Ready to Begin
+              - heading "Move from tracking to governance. Run compliance as a system." [level=2] [ref=e508]:
+                - text: Move from tracking to governance.
+                - text: Run compliance as a system.
+            - generic [ref=e509]:
+              - paragraph [ref=e510]: Join the organizations that have transformed compliance from reactive burden to proactive competitive advantage. Experience operational certainty with FormaOS.
+              - generic [ref=e511]:
+                - link "Start Free Trial" [ref=e512] [cursor=pointer]:
+                  - /url: /auth/signup
+                  - text: Start Free Trial
+                - link "Request a Demo" [ref=e514] [cursor=pointer]:
+                  - /url: /contact
+                  - generic [ref=e515]: Request a Demo
+                  - img [ref=e516]
+              - generic [ref=e519]:
+                - generic [ref=e522]: 14-day free trial
+                - generic [ref=e525]: No credit card required
+                - generic [ref=e528]: Australian-hosted
+        - generic [ref=e530]:
+          - generic [ref=e531]: Platform Access
+          - generic [ref=e532]: Start your compliance transformation
+          - generic [ref=e533]: Move from tracking to enforcement with FormaOS
+    - contentinfo [ref=e534]:
+      - generic [ref=e539]:
+        - generic [ref=e544]:
+          - heading "Ready to transform your compliance?" [level=3] [ref=e545]
+          - paragraph [ref=e546]: Start your 14-day free trial. No credit card required. Full platform access.
+          - generic [ref=e547]:
+            - link "Start Free Trial" [ref=e549] [cursor=pointer]:
+              - /url: /auth/signup
+            - link "Request Demo" [ref=e551] [cursor=pointer]:
+              - /url: /contact
+        - generic [ref=e552]:
+          - generic [ref=e553]:
+            - link "FormaOS FormaOS" [ref=e555] [cursor=pointer]:
+              - /url: /
+              - img "FormaOS" [ref=e556]
+              - generic [ref=e557]: FormaOS
+            - paragraph [ref=e558]: The compliance operating system for regulated industries. Govern, execute, and prove audit readiness.
+            - generic [ref=e561]: All systems operational
+          - generic [ref=e562]:
+            - heading "Platform" [level=4] [ref=e563]
+            - generic [ref=e564]:
+              - link "How it works" [ref=e566] [cursor=pointer]:
+                - /url: /product
+                - generic [ref=e567]: How it works
+              - link "Industries" [ref=e569] [cursor=pointer]:
+                - /url: /industries
+                - generic [ref=e570]: Industries
+              - link "Security" [ref=e572] [cursor=pointer]:
+                - /url: /security
+                - generic [ref=e573]: Security
+              - link "Pricing" [ref=e575] [cursor=pointer]:
+                - /url: /pricing
+                - generic [ref=e576]: Pricing
+          - generic [ref=e577]:
+            - heading "Use Cases" [level=4] [ref=e578]
+            - generic [ref=e579]:
+              - link "Healthcare" [ref=e581] [cursor=pointer]:
+                - /url: /use-cases/healthcare
+                - generic [ref=e582]: Healthcare
+              - link "NDIS & Aged Care" [ref=e584] [cursor=pointer]:
+                - /url: /use-cases/ndis-aged-care
+                - generic [ref=e585]: NDIS & Aged Care
+              - link "Workforce" [ref=e587] [cursor=pointer]:
+                - /url: /use-cases/workforce-credentials
+                - generic [ref=e588]: Workforce
+              - link "Incidents" [ref=e590] [cursor=pointer]:
+                - /url: /use-cases/incident-management
+                - generic [ref=e591]: Incidents
+          - generic [ref=e592]:
+            - heading "Company" [level=4] [ref=e593]
+            - generic [ref=e594]:
+              - link "About" [ref=e596] [cursor=pointer]:
+                - /url: /about
+                - generic [ref=e597]: About
+              - link "Our Story" [ref=e599] [cursor=pointer]:
+                - /url: /our-story
+                - generic [ref=e600]: Our Story
+              - link "Contact" [ref=e602] [cursor=pointer]:
+                - /url: /contact
+                - generic [ref=e603]: Contact
+          - generic [ref=e604]:
+            - heading "Legal" [level=4] [ref=e605]
+            - generic [ref=e606]:
+              - link "Privacy Policy" [ref=e608] [cursor=pointer]:
+                - /url: /legal/privacy
+                - generic [ref=e609]: Privacy Policy
+              - link "Terms of Service" [ref=e611] [cursor=pointer]:
+                - /url: /legal/terms
+                - generic [ref=e612]: Terms of Service
+              - link "Security" [ref=e614] [cursor=pointer]:
+                - /url: /security
+                - generic [ref=e615]: Security
+        - generic [ref=e617]:
+          - generic [ref=e618]:
+            - img [ref=e620]
+            - generic [ref=e622]: SOC 2 Ready
+          - generic [ref=e623]:
+            - img [ref=e625]
+            - generic [ref=e628]: AES-256 Encryption
+          - generic [ref=e629]:
+            - img [ref=e631]
+            - generic [ref=e635]: Immutable Audit Logs
+        - generic [ref=e636]:
+          - paragraph [ref=e637]: © 2026 FormaOS. All rights reserved.
+          - generic [ref=e638]:
+            - link "hello@formaos.com.au" [ref=e639] [cursor=pointer]:
+              - /url: mailto:hello@formaos.com.au
+              - img [ref=e640]
+              - generic [ref=e643]: hello@formaos.com.au
+            - generic [ref=e644]: "|"
+            - generic [ref=e645]:
+              - img [ref=e646]
+              - generic [ref=e649]: Sydney, Australia
+  - button "Open Next.js Dev Tools" [ref=e655] [cursor=pointer]:
+    - img [ref=e656]
+  - alert [ref=e660]
+```

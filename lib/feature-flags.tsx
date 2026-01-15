@@ -1,4 +1,6 @@
 // lib/feature-flags.ts
+import React from 'react'
+
 interface FeatureFlags {
   // QA & Testing Features
   enableAdvancedMonitoring: boolean
@@ -137,7 +139,14 @@ export const featureFlags = new FeatureFlagManager()
 
 // React hook for components
 export function useFeatureFlag(flag: keyof FeatureFlags): boolean {
-  return featureFlags.isEnabled(flag)
+  const { useEffect, useState } = React
+  const [isEnabled, setIsEnabled] = useState<boolean>(false)
+  
+  useEffect(() => {
+    setIsEnabled(featureFlags.isEnabled(flag))
+  }, [flag])
+  
+  return isEnabled
 }
 
 // Higher-order component for conditional rendering

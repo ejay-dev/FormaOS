@@ -1,0 +1,1516 @@
+
+> formaos@0.1.0 lint
+> eslint --ext .js,.jsx,.ts,.tsx . --fix
+
+
+/Users/ejay/formaos/.next/dev/server/chunks/[root-of-the-server]__1f917f15._.js
+   2323:23  error  Definition for rule '@typescript-eslint/no-unnecessary-condition' was not found  @typescript-eslint/no-unnecessary-condition
+   2323:23  error  Definition for rule 'node/no-unsupported-features/es-builtins' was not found     node/no-unsupported-features/es-builtins
+  10446:22  error  Definition for rule '@typescript-eslint/no-unnecessary-condition' was not found  @typescript-eslint/no-unnecessary-condition
+
+/Users/ejay/formaos/.next/dev/server/chunks/[turbopack]_runtime.js
+    9:5  error  Definition for rule '@typescript-eslint/no-unused-vars' was not found  @typescript-eslint/no-unused-vars
+  546:1  error  Definition for rule '@typescript-eslint/no-unused-vars' was not found  @typescript-eslint/no-unused-vars
+  567:1  error  Definition for rule '@typescript-eslint/no-unused-vars' was not found  @typescript-eslint/no-unused-vars
+  588:1  error  Definition for rule '@typescript-eslint/no-unused-vars' was not found  @typescript-eslint/no-unused-vars
+
+/Users/ejay/formaos/.next/dev/server/edge/chunks/90907_@supabase_auth-js_dist_module_9e22e708._.js
+   601:9   error  Definition for rule '@typescript-eslint/no-extra-semi' was not found   @typescript-eslint/no-extra-semi
+   604:13  error  Definition for rule '@typescript-eslint/no-extra-semi' was not found   @typescript-eslint/no-extra-semi
+   642:9   error  Definition for rule '@typescript-eslint/no-extra-semi' was not found   @typescript-eslint/no-extra-semi
+  1860:1   error  Definition for rule '@typescript-eslint/ban-ts-comment' was not found  @typescript-eslint/ban-ts-comment
+
+/Users/ejay/formaos/.next/dev/server/edge/chunks/c60b2_next_dist_esm_build_templates_edge-wrapper_3e61f5ba.js
+    19:5  error  Definition for rule '@typescript-eslint/no-unused-vars' was not found  @typescript-eslint/no-unused-vars
+   521:5  error  Definition for rule '@typescript-eslint/no-unused-vars' was not found  @typescript-eslint/no-unused-vars
+   752:5  error  Definition for rule '@typescript-eslint/no-unused-vars' was not found  @typescript-eslint/no-unused-vars
+  1642:5  error  Definition for rule '@typescript-eslint/no-unused-vars' was not found  @typescript-eslint/no-unused-vars
+  1751:5  error  Definition for rule '@typescript-eslint/no-unused-vars' was not found  @typescript-eslint/no-unused-vars
+
+/Users/ejay/formaos/.next/dev/types/cache-life.d.ts
+  3:9  error  Parsing error: Unexpected token module
+
+/Users/ejay/formaos/.next/dev/types/routes.d.ts
+  4:6  error  Parsing error: Unexpected token AppRoutes
+
+/Users/ejay/formaos/.next/dev/types/validator.ts
+  5:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/(dashboard)/accept-invite/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/(dashboard)/organization/[orgId]/audit/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/(marketing)/about/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/(marketing)/auth-redirect/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/(marketing)/contact/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/(marketing)/industries/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/(marketing)/legal/privacy/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/(marketing)/legal/terms/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/(marketing)/our-story/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/(marketing)/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/(marketing)/pricing/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/(marketing)/privacy/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/(marketing)/product/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/(marketing)/security/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/(marketing)/terms/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/(marketing)/use-cases/healthcare/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/(marketing)/use-cases/incident-management/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/(marketing)/use-cases/ndis-aged-care/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/(marketing)/use-cases/workforce-credentials/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/admin/audit/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/admin/billing/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/admin/dashboard/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/admin/features/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/admin/health/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/admin/layout.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/admin/orgs/[orgId]/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/admin/orgs/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/admin/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/admin/revenue/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/admin/security/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/admin/settings/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/admin/support/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/admin/system/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/admin/trials/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/admin/users/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/audit/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/features/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/health/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/orgs/[orgId]/lock/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/orgs/[orgId]/notes/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/orgs/[orgId]/plan/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/orgs/[orgId]/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/orgs/[orgId]/trial/extend/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/orgs/[orgId]/trial/reset/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/orgs/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/overview/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/security/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/subscriptions/[orgId]/resync-stripe/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/subscriptions/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/support/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/system/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/trials/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/users/[userId]/lock/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/users/[userId]/resend-confirmation/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/admin/users/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/auth/signup/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/billing/webhook/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/debug-founder/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/debug/bootstrap/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/debug/env/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/debug/founder/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/debug/log/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/debug/supabase-functions/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/debug/supabase/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/email/test/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/onboarding/select-plan/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/system-state/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/v1/audit-logs/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/v1/compliance/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/v1/evidence/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/api/v1/tasks/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/admin/orgs/[orgId]/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/admin/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/api/email/send/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/api/invitations/create/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/api/policies/update/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/audit/export/[userId]/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/audit/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/billing/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/dashboard/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/evidence/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/forms/builder/[id]/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/history/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/patients/[id]/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/patients/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/people/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/policies/[id]/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/policies/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/profile/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/progress-notes/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/registers/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/registers/training/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/reports/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/settings/email-history/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/settings/email-preferences/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/settings/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/staff/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/tasks/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/team/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/vault/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/vault/review/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/app/workflows/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/auth/callback/route.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/auth/login/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/auth/plan-select/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/auth/signin/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/auth/signup/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/layout.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/onboarding/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/signin/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/app/submit/[formId]/page.ts
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/.next/types/routes.d.ts
+  4:6  error  Parsing error: Unexpected token AppRoutes
+
+/Users/ejay/formaos/.next/types/validator.ts
+  5:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/__tests__/auth/auth-flows.test.tsx
+  22:14  error  Parsing error: Unexpected token as
+
+/Users/ejay/formaos/__tests__/onboarding/onboarding-logic.test.tsx
+  12:14  error  Parsing error: Unexpected token as
+
+/Users/ejay/formaos/__tests__/rbac.test.ts
+  9:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/__tests__/security-verification.test.ts
+  8:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/app/(dashboard)/accept-invite/page.tsx
+  8:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/app/(dashboard)/organization/[orgId]/audit/page.tsx
+  3:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/app/(marketing)/about/page.tsx
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/app/(marketing)/auth-redirect/page.tsx
+  23:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/(marketing)/components/CinematicHero.tsx
+  24:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/(marketing)/components/Footer.tsx
+  51:2  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/(marketing)/components/HeaderCTA.tsx
+  9:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/(marketing)/components/HomePageContent.tsx
+  143:22  error  Parsing error: Unexpected token as
+
+/Users/ejay/formaos/app/(marketing)/components/MobileNav.tsx
+  29:28  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/(marketing)/components/NavLinks.tsx
+  19:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/app/(marketing)/components/home-page-client-backup.tsx
+  8:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/(marketing)/components/home-page-client-complete.tsx
+  30:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/(marketing)/components/home-page-client.tsx
+  25:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/(marketing)/components/marketing-anchor.tsx
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/app/(marketing)/components/oauth-redirect-wrapper.tsx
+  6:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/(marketing)/contact/ContactPageContent.tsx
+  19:39  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/(marketing)/contact/ContactPageContentNew.tsx
+  29:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/(marketing)/contact/actions.ts
+  6:25  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/(marketing)/contact/page.tsx
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/app/(marketing)/error.tsx
+  9:2  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/(marketing)/industries/IndustriesContent.tsx
+  20:19  error  Parsing error: Unexpected token as
+
+/Users/ejay/formaos/app/(marketing)/industries/IndustriesHero.tsx
+  10:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/(marketing)/industries/IndustriesPageContent.tsx
+  31:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/(marketing)/industries/page-old.tsx
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/app/(marketing)/industries/page.tsx
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/app/(marketing)/layout.tsx
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/app/(marketing)/legal/privacy/page.tsx
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/app/(marketing)/legal/terms/page.tsx
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/app/(marketing)/our-story/StoryPageContent.tsx
+  35:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/(marketing)/our-story/page.tsx
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/app/(marketing)/page-old.tsx
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/app/(marketing)/page.tsx
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/app/(marketing)/pricing/PricingHero.tsx
+  14:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/(marketing)/pricing/PricingPageContent-new.tsx
+  29:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/(marketing)/pricing/PricingPageContent.tsx
+  22:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/(marketing)/pricing/page-backup.tsx
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/app/(marketing)/pricing/page-old.tsx
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/app/(marketing)/pricing/page.tsx
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/app/(marketing)/product/ProductHero.tsx
+  14:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/(marketing)/product/ProductPageContent.tsx
+  34:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/(marketing)/product/page-old.tsx
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/app/(marketing)/product/page.tsx
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/app/(marketing)/security/SecurityContent.tsx
+  97:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/(marketing)/security/SecurityHero.tsx
+  10:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/(marketing)/security/SecurityPageContent.tsx
+  28:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/(marketing)/security/page-old.tsx
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/app/(marketing)/security/page.tsx
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/app/(marketing)/use-cases/healthcare/page.tsx
+  24:22  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/(marketing)/use-cases/incident-management/page.tsx
+  24:22  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/(marketing)/use-cases/ndis-aged-care/page.tsx
+  24:22  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/(marketing)/use-cases/workforce-credentials/page.tsx
+  24:22  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/admin/audit/page.tsx
+  4:6  error  Parsing error: Unexpected token AuditEntry
+
+/Users/ejay/formaos/app/admin/billing/page.tsx
+  5:6  error  Parsing error: Unexpected token SubscriptionRow
+
+/Users/ejay/formaos/app/admin/components/add-note-form.tsx
+  8:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/app/admin/components/admin-shell.tsx
+  44:40  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/admin/components/billing-action-buttons.tsx
+  8:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/app/admin/components/org-action-buttons.tsx
+  8:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/app/admin/components/user-action-buttons.tsx
+  8:6  error  Parsing error: Unexpected token UserAction
+
+/Users/ejay/formaos/app/admin/dashboard/page.tsx
+  4:6  error  Parsing error: Unexpected token OverviewData
+
+/Users/ejay/formaos/app/admin/features/page.tsx
+  4:6  error  Parsing error: Unexpected token FeatureFlag
+
+/Users/ejay/formaos/app/admin/health/page.tsx
+  14:26  error  Parsing error: Unexpected token ?
+
+/Users/ejay/formaos/app/admin/layout.tsx
+  9:55  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/admin/orgs/[orgId]/page.tsx
+  5:6  error  Parsing error: Unexpected token OrgDetailProps
+
+/Users/ejay/formaos/app/admin/orgs/page.tsx
+  6:6  error  Parsing error: Unexpected token OrgRow
+
+/Users/ejay/formaos/app/admin/revenue/page.tsx
+  19:7  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/admin/security/page.tsx
+  11:6  error  Parsing error: Unexpected token SecurityEvent
+
+/Users/ejay/formaos/app/admin/settings/page.tsx
+  7:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/admin/support/page.tsx
+  3:6  error  Parsing error: Unexpected token SupportRow
+
+/Users/ejay/formaos/app/admin/system/page.tsx
+  11:6  error  Parsing error: Unexpected token SystemStatus
+
+/Users/ejay/formaos/app/admin/trials/page.tsx
+  4:6  error  Parsing error: Unexpected token Trial
+
+/Users/ejay/formaos/app/admin/users/page.tsx
+  5:6  error  Parsing error: Unexpected token UserRow
+
+/Users/ejay/formaos/app/api/admin/_utils.ts
+  1:45  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/admin/audit/route.ts
+  6:34  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/admin/orgs/[orgId]/lock/route.ts
+  6:6  error  Parsing error: Unexpected token Params
+
+/Users/ejay/formaos/app/api/admin/orgs/[orgId]/notes/route.ts
+  6:6  error  Parsing error: Unexpected token Params
+
+/Users/ejay/formaos/app/api/admin/orgs/[orgId]/plan/route.ts
+  9:6  error  Parsing error: Unexpected token Params
+
+/Users/ejay/formaos/app/api/admin/orgs/[orgId]/route.ts
+  5:6  error  Parsing error: Unexpected token OrgRouteProps
+
+/Users/ejay/formaos/app/api/admin/orgs/[orgId]/trial/extend/route.ts
+  6:6  error  Parsing error: Unexpected token Params
+
+/Users/ejay/formaos/app/api/admin/orgs/[orgId]/trial/reset/route.ts
+  6:6  error  Parsing error: Unexpected token Params
+
+/Users/ejay/formaos/app/api/admin/orgs/route.ts
+  6:34  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/admin/overview/route.ts
+  19:48  error  Parsing error: Unexpected token >
+
+/Users/ejay/formaos/app/api/admin/security/route.ts
+  13:25  error  Parsing error: Unexpected token as
+
+/Users/ejay/formaos/app/api/admin/subscriptions/[orgId]/resync-stripe/route.ts
+  7:6  error  Parsing error: Unexpected token Params
+
+/Users/ejay/formaos/app/api/admin/subscriptions/route.ts
+  6:34  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/admin/support/route.ts
+  6:34  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/admin/trials/route.ts
+  18:48  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/admin/users/[userId]/lock/route.ts
+  6:6  error  Parsing error: Unexpected token Params
+
+/Users/ejay/formaos/app/api/admin/users/[userId]/resend-confirmation/route.ts
+  6:6  error  Parsing error: Unexpected token Params
+
+/Users/ejay/formaos/app/api/admin/users/route.ts
+  6:34  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/auth/signup/route.ts
+  9:35  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/billing/webhook/route.ts
+  8:35  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/debug-founder/route.ts
+  4:34  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/debug/bootstrap/route.ts
+  9:35  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/debug/env/route.ts
+  5:34  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/debug/log/route.ts
+  4:35  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/debug/supabase-functions/route.ts
+  23:15  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/email/test/route.ts
+  4:34  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/onboarding/select-plan/route.ts
+  6:35  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/system-state/route.ts
+  25:34  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/v1/audit-logs/route.ts
+  16:34  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/v1/compliance/route.ts
+  17:34  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/v1/evidence/route.ts
+  16:34  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/api/v1/tasks/route.ts
+  16:34  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/actions/audit-bundle.ts
+  24:22  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/actions/audit-events.ts
+  5:6  error  Parsing error: Unexpected token AuditEventInput
+
+/Users/ejay/formaos/app/app/actions/audit-package.ts
+  12:6  error  Parsing error: Unexpected token AuditPackage
+
+/Users/ejay/formaos/app/app/actions/audit.ts
+  5:6  error  Parsing error: Unexpected token LogActivityPayload
+
+/Users/ejay/formaos/app/app/actions/billing.ts
+  10:45  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/actions/certifications.ts
+  9:58  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/actions/compliance-engine.ts
+  9:6  error  Parsing error: Unexpected token ControlStatus
+
+/Users/ejay/formaos/app/app/actions/compliance.ts
+  8:8  error  Parsing error: Unexpected token interface
+
+/Users/ejay/formaos/app/app/actions/control-evaluations.ts
+  5:6  error  Parsing error: Unexpected token ControlStatus
+
+/Users/ejay/formaos/app/app/actions/credentials.ts
+  10:51  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/actions/enforcement.ts
+  10:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/app/app/actions/entity-risk.ts
+  27:50  error  Parsing error: Unexpected token ;
+
+/Users/ejay/formaos/app/app/actions/evidence-intelligence.ts
+  7:28  error  Parsing error: Unexpected token ?
+
+/Users/ejay/formaos/app/app/actions/evidence.ts
+  27:46  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/actions/executive-intelligence.ts
+  7:31  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/actions/notification-preferences.ts
+  20:60  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/actions/notifications.ts
+  8:6  error  Parsing error: Unexpected token CreateNotificationInput
+
+/Users/ejay/formaos/app/app/actions/onboarding.ts
+  8:47  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/actions/org-setup.ts
+  5:52  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/actions/org.ts
+  9:46  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/actions/patients.ts
+  10:35  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/actions/playbooks.ts
+  7:54  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/actions/policies.ts
+  10:44  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/actions/progress-notes.ts
+  10:35  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/actions/rbac.ts
+  3:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/app/app/actions/readiness.ts
+  8:63  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/actions/registers.ts
+  8:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/app/app/actions/reports.ts
+  14:6  error  Parsing error: Unexpected token AuditBundleRow
+
+/Users/ejay/formaos/app/app/actions/stats.ts
+  5:6  error  Parsing error: Unexpected token TaskRow
+
+/Users/ejay/formaos/app/app/actions/tasks.ts
+  10:42  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/actions/team.ts
+  14:41  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/actions/vault.ts
+  9:49  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/admin/access.ts
+  3:28  error  Parsing error: Unexpected token ?
+
+/Users/ejay/formaos/app/app/admin/actions.ts
+  10:45  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/admin/orgs/[orgId]/page.tsx
+  3:6  error  Parsing error: Unexpected token OrgRedirectProps
+
+/Users/ejay/formaos/app/app/api/email/send/route.ts
+  11:35  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/api/invitations/create/route.ts
+  12:35  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/api/policies/update/route.ts
+  10:31  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/audit/export/[userId]/page.tsx
+  9:2  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/audit/page.tsx
+  21:30  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/billing/components/ActivateSubscriptionButton.tsx
+  7:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/app/app/billing/components/ManageBillingButton.tsx
+  24:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/app/billing/page.tsx
+  11:6  error  Parsing error: Unexpected token EntitlementRow
+
+/Users/ejay/formaos/app/app/components/TrialStatusBanner.tsx
+  20:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/app/dashboard-wrapper.tsx
+  8:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/app/app/error.tsx
+  8:2  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/forms/builder/[id]/form-builder-client.tsx
+  19:6  error  Parsing error: Unexpected token FormBuilderClientProps
+
+/Users/ejay/formaos/app/app/forms/builder/[id]/page.tsx
+  6:2  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/history/page.tsx
+  7:6  error  Parsing error: Unexpected token AuditLog
+
+/Users/ejay/formaos/app/app/layout.tsx
+  37:2  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/onboarding/actions.ts
+  8:51  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/page.tsx
+  3:15  error  Parsing error: Unexpected token DatabaseRole
+
+/Users/ejay/formaos/app/app/patients/[id]/page.tsx
+  19:6  error  Parsing error: Unexpected token PatientRow
+
+/Users/ejay/formaos/app/app/patients/page.tsx
+  7:6  error  Parsing error: Unexpected token PatientRow
+
+/Users/ejay/formaos/app/app/people/page.tsx
+  21:46  error  Parsing error: Unexpected token ]
+
+/Users/ejay/formaos/app/app/policies/[id]/page.tsx
+  16:2  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/policies/actions.ts
+  9:44  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/policies/page.tsx
+  9:6  error  Parsing error: Unexpected token PolicyRow
+
+/Users/ejay/formaos/app/app/profile/page.tsx
+  46:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/app/progress-notes/page.tsx
+  8:6  error  Parsing error: Unexpected token PatientRow
+
+/Users/ejay/formaos/app/app/registers/actions.ts
+  8:43  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/registers/page.tsx
+  11:50  error  Parsing error: Unexpected token ]
+
+/Users/ejay/formaos/app/app/registers/training/page.tsx
+  19:46  error  Parsing error: Unexpected token ]
+
+/Users/ejay/formaos/app/app/reports/page.tsx
+  24:6  error  Parsing error: Unexpected token EntitlementRow
+
+/Users/ejay/formaos/app/app/settings/actions.ts
+  8:42  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/settings/email-history/page.tsx
+  5:6  error  Parsing error: Unexpected token EmailLog
+
+/Users/ejay/formaos/app/app/settings/email-preferences/page.tsx
+  6:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/app/app/settings/page.tsx
+  24:40  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/staff/page.tsx
+  7:6  error  Parsing error: Unexpected token TaskRow
+
+/Users/ejay/formaos/app/app/tasks/page.tsx
+  15:6  error  Parsing error: Unexpected token TaskRow
+
+/Users/ejay/formaos/app/app/team/page.tsx
+  6:6  error  Parsing error: Unexpected token EntitlementRow
+
+/Users/ejay/formaos/app/app/vault/page.tsx
+  18:26  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/app/vault/review/page.tsx
+  21:40  error  Parsing error: Unexpected token ]
+
+/Users/ejay/formaos/app/app/workflows/WorkflowManagementClient.tsx
+  16:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/app/app/workflows/page.tsx
+  33:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/app/auth/callback/route.ts
+  14:34  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/auth/login/page.tsx
+  63:35  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/auth/plan-select/page.tsx
+  4:29  error  Parsing error: Unexpected token PlanKey
+
+/Users/ejay/formaos/app/auth/signup/page.tsx
+  53:35  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/error.tsx
+  8:2  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/layout.tsx
+  5:2  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/onboarding/page.tsx
+  40:6  error  Parsing error: Unexpected token OnboardingStatusRow
+
+/Users/ejay/formaos/app/signin/page.tsx
+  59:35  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/app/submit/[formId]/page.tsx
+  8:2  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/analytics/analytics-dashboard.tsx
+  36:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/app-hydrator.tsx
+  28:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/audit/audit-trail-viewer.tsx
+  13:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/audit/print-pack-button.tsx
+  7:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/components/billing/BillingActionButtons.tsx
+  7:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/billing/billing-dashboard.tsx
+  21:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/command-menu.tsx
+  23:20  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/command-palette.tsx
+  18:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/comments/comments-section.tsx
+  21:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/compliance-system/action-button.tsx
+  15:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/components/compliance-system/admin-permission-flow.tsx
+  32:18  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/compliance-system/compliance-graph.tsx
+  18:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/compliance-system/compliance-lifecycle-header.tsx
+  26:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/compliance-system/compliance-node.tsx
+  24:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/components/compliance-system/compliance-toast.tsx
+  22:8  error  Parsing error: Unexpected token interface
+
+/Users/ejay/formaos/components/compliance-system/compliance-wire.tsx
+  22:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/components/compliance-system/feature-enable-flow.tsx
+  32:20  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/compliance-system/index.ts
+  31:31  error  Parsing error: Unexpected token NodeType
+
+/Users/ejay/formaos/components/compliance-system/node-badge.tsx
+  23:6  error  Parsing error: Unexpected token NodeType
+
+/Users/ejay/formaos/components/compliance-system/plan-activation-flow.tsx
+  29:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/compliance-system/progress-indicator.tsx
+  15:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/compliance-system/provider.tsx
+  12:2  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/compliance-system/system-feedback.tsx
+  26:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/components/compliance-system/system-node.tsx
+  33:15  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/compliance-system/system-wire.tsx
+  16:18  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/compliance-system/use-compliance-action.tsx
+  14:6  error  Parsing error: Unexpected token NodeType
+
+/Users/ejay/formaos/components/compliance/ComplianceGateBanner.tsx
+  6:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/components/dashboard/activity-feed.tsx
+  17:22  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/dashboard/audit-stream.tsx
+  9:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/dashboard/compliance-chart.tsx
+  15:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/dashboard/employee-dashboard.tsx
+  24:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/dashboard/employer-dashboard.tsx
+  26:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/dashboard/expiry-alert-widget.tsx
+  6:49  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/dashboard/industry-selector.tsx
+  6:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/components/dashboard/kpi-card.tsx
+  4:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/dashboard/realtime-activity-feed.tsx
+  8:47  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/dashboard/score-ring.tsx
+  3:36  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/dashboard/unified-dashboard-layout.tsx
+  30:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/delete-button.tsx
+  8:36  error  Parsing error: Unexpected token NodeType
+
+/Users/ejay/formaos/components/loading-skeleton.tsx
+  3:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/components/mobile-sidebar.tsx
+  8:6  error  Parsing error: Unexpected token UserRole
+
+/Users/ejay/formaos/components/motion/AnimatedBackground.tsx
+  9:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/components/motion/CleanBackground.tsx
+  7:5  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/components/motion/ComplianceCoreVisualization.tsx
+  7:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/motion/ContactComponents.tsx
+  7:48  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/motion/EnhancedMotion.tsx
+  26:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/motion/EnterpriseCards.tsx
+  8:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/motion/FadeInView.tsx
+  6:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/motion/Floating3DModules.tsx
+  6:46  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/motion/FloatingCard.tsx
+  6:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/motion/InteractionFeedback.tsx
+  18:6  error  Parsing error: Unexpected token ButtonVariant
+
+/Users/ejay/formaos/components/motion/MicroInteractions.tsx
+  15:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/motion/NodeWireSystem.tsx
+  21:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/components/motion/PremiumBackgrounds.tsx
+  18:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/motion/PricingComponents.tsx
+  8:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/motion/StaggerContainer.tsx
+  6:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/motion/StoryComponents.tsx
+  7:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/motion/SystemBackground.tsx
+  25:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/components/motion/VisualSections.tsx
+  7:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/motion/index.ts
+  72:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/components/notifications/notification-center.tsx
+  9:6  error  Parsing error: Unexpected token Notif
+
+/Users/ejay/formaos/components/organization/organization-switcher.tsx
+  13:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/people/invite-member-sheet.tsx
+  32:32  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/policies/artifact-sidebar.tsx
+  28:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/policies/create-policy-sheet.tsx
+  23:39  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/policies/editor.tsx
+  23:2  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/policies/policy-editor.tsx
+  8:40  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/profile/credential-status-widget.tsx
+  5:55  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/profile/profile-editor.tsx
+  11:6  error  Parsing error: Unexpected token ProfileEditorProps
+
+/Users/ejay/formaos/components/pwa/install-prompt.tsx
+  28:23  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/realtime/notification-center.tsx
+  8:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/realtime/presence-indicator.tsx
+  7:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/registers/add-certification-modal.tsx
+  20:2  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/registers/create-asset-sheet.tsx
+  31:39  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/registers/risk-matrix.tsx
+  5:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/reports/bundle-generator.tsx
+  7:45  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/risk-heatmap.tsx
+  5:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/search/advanced-search.tsx
+  13:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/sidebar-shell.tsx
+  6:10  error  Parsing error: Unexpected token <
+
+/Users/ejay/formaos/components/sidebar.tsx
+  27:6  error  Parsing error: Unexpected token UserRole
+
+/Users/ejay/formaos/components/tasks/complete-task-button.tsx
+  25:2  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/tasks/create-task-sheet.tsx
+  28:31  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/tasks/evidence-button.tsx
+  18:53  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/tasks/evidence-sheet.tsx
+  18:58  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/tasks/task-list.tsx
+  8:6  error  Parsing error: Unexpected token Task
+
+/Users/ejay/formaos/components/team/invite-button.tsx
+  16:49  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/team/invite-member-sheet.tsx
+  11:41  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/team/invite-modal.tsx
+  6:55  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/topbar-search.tsx
+  10:54  error  Parsing error: Unexpected token ;
+
+/Users/ejay/formaos/components/topbar.tsx
+  28:6  error  Parsing error: Unexpected token UserRole
+
+/Users/ejay/formaos/components/ui/badge.tsx
+  3:20  error  Parsing error: Unexpected token VariantProps
+
+/Users/ejay/formaos/components/ui/button.tsx
+  3:20  error  Parsing error: Unexpected token VariantProps
+
+/Users/ejay/formaos/components/ui/card.tsx
+  4:45  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/ui/command-provider.tsx
+  5:6  error  Parsing error: Unexpected token CommandContextValue
+
+/Users/ejay/formaos/components/ui/data-table.tsx
+  16:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/components/ui/input.tsx
+  4:45  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/ui/separator.tsx
+  13:2  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/ui/sheet.tsx
+  8:28  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/ui/submit-button.tsx
+  7:6  error  Parsing error: Unexpected token SubmitButtonVariant
+
+/Users/ejay/formaos/components/user-nav.tsx
+  9:38  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/vault/credential-inspector-modal.tsx
+  13:2  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/components/vault/upload-artifact-modal.tsx
+  24:56  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/config/brand.ts
+  27:3  error  Parsing error: Unexpected token as
+
+/Users/ejay/formaos/config/motion.ts
+  21:33  error  Parsing error: Unexpected token as
+
+/Users/ejay/formaos/emails/alert-email.tsx
+  16:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/emails/invite-email.tsx
+  17:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/emails/welcome-email.tsx
+  18:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/jest.config.ts
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/lib/actions/audit.ts
+  9:2  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/lib/actions/team.ts
+  7:41  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/lib/admin/audit.ts
+  3:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/ai-assistant.ts
+  8:8  error  Parsing error: Unexpected token interface
+
+/Users/ejay/formaos/lib/ai/risk-analyzer.ts
+  12:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/analytics.ts
+  10:8  error  Parsing error: Unexpected token interface
+
+/Users/ejay/formaos/lib/api-permission-guards.ts
+  16:8  error  Parsing error: Unexpected token interface
+
+/Users/ejay/formaos/lib/api/rate-limiter.ts
+  13:42  error  Parsing error: Unexpected token !
+
+/Users/ejay/formaos/lib/audit-logger.ts
+  4:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/lib/audit-trail.ts
+  11:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/billing.ts
+  13:35  error  Parsing error: Unexpected token as
+
+/Users/ejay/formaos/lib/billing/entitlements.ts
+  5:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/billing/stripe.ts
+  2:31  error  Parsing error: Unexpected token PlanKey
+
+/Users/ejay/formaos/lib/billing/subscriptions.ts
+  3:31  error  Parsing error: Unexpected token PlanKey
+
+/Users/ejay/formaos/lib/bootstrap/ensure-organization.ts
+  4:11  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/lib/cache.ts
+  10:11  error  Parsing error: Unexpected token cache
+
+/Users/ejay/formaos/lib/cache/dashboard-cache.ts
+  7:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/lib/comments.ts
+  12:8  error  Parsing error: Unexpected token interface
+
+/Users/ejay/formaos/lib/compliance-graph.ts
+  9:8  error  Parsing error: Unexpected token interface
+
+/Users/ejay/formaos/lib/compliance/enforcement-types.ts
+  2:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/compliance/scanner.ts
+  12:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/config/validate-env.ts
+  9:6  error  Parsing error: Unexpected token EnvValidationResult
+
+/Users/ejay/formaos/lib/dashboard/widgets.ts
+  10:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/data/analytics.ts
+  7:8  error  Parsing error: Unexpected token interface
+
+/Users/ejay/formaos/lib/data/audit-logs.ts
+  3:41  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/lib/data/emails.ts
+  3:53  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/lib/email/resend-client.ts
+  3:17  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/lib/email/send-email.ts
+  9:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/errors/compliance.ts
+  1:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/feature-flags.ts
+  2:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/lib/file-versioning.ts
+  12:8  error  Parsing error: Unexpected token interface
+
+/Users/ejay/formaos/lib/forms/field-templates.ts
+  3:29  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/lib/forms/types.ts
+  1:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/industry-packs.ts
+  1:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/integrations/slack.ts
+  10:8  error  Parsing error: Unexpected token interface
+
+/Users/ejay/formaos/lib/integrations/teams.ts
+  11:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/invitations/create-invitation.ts
+  4:8  error  Parsing error: Unexpected token interface
+
+/Users/ejay/formaos/lib/invitations/validate-invitation.ts
+  13:8  error  Parsing error: Unexpected token interface
+
+/Users/ejay/formaos/lib/logger.ts
+  6:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/monitoring-hooks.tsx
+  10:47  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/lib/monitoring.ts
+  8:8  error  Parsing error: Unexpected token interface
+
+/Users/ejay/formaos/lib/multi-org.ts
+  11:8  error  Parsing error: Unexpected token interface
+
+/Users/ejay/formaos/lib/notifications/email.ts
+  11:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/org/get-active-org.ts
+  1:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/permissions.ts
+  1:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/plans.ts
+  1:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/realtime.ts
+  10:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/lib/report-builder.ts
+  11:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/reports.ts
+  16:8  error  Parsing error: Unexpected token interface
+
+/Users/ejay/formaos/lib/roles.ts
+  17:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/search.ts
+  11:8  error  Parsing error: Unexpected token interface
+
+/Users/ejay/formaos/lib/security.ts
+  12:8  error  Parsing error: Unexpected token interface
+
+/Users/ejay/formaos/lib/security/correlation.ts
+  3:38  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/lib/security/rate-limiter.ts
+  10:1  error  Parsing error: The keyword 'interface' is reserved
+
+/Users/ejay/formaos/lib/security/session-rotator.ts
+  13:8  error  Parsing error: Unexpected token interface
+
+/Users/ejay/formaos/lib/stores/app.ts
+  22:8  error  Parsing error: Unexpected token interface
+
+/Users/ejay/formaos/lib/supabase/admin.ts
+  4:28  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/lib/supabase/client.ts
+  3:6  error  Parsing error: Unexpected token SupabaseClient
+
+/Users/ejay/formaos/lib/supabase/cookie-domain.ts
+  1:34  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/lib/supabase/server.ts
+  11:28  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/lib/system-state/actions.ts
+  8:8  error  Parsing error: Unexpected token SystemStatePayload
+
+/Users/ejay/formaos/lib/system-state/context.tsx
+  33:6  error  Parsing error: Unexpected token SystemAction
+
+/Users/ejay/formaos/lib/system-state/hydrator.tsx
+  3:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/lib/system-state/server.ts
+  4:31  error  Parsing error: Unexpected token PlanKey
+
+/Users/ejay/formaos/lib/system-state/types.ts
+  10:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/utils.ts
+  1:21  error  Parsing error: Unexpected token ClassValue
+
+/Users/ejay/formaos/lib/utils/export-helper.ts
+  7:45  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/lib/utils/founder.ts
+  6:32  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/lib/utils/pdf-generator.ts
+  3:40  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/lib/validators/organization.ts
+  23:7  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/lib/webhooks.ts
+  12:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/lib/workflow-engine.ts
+  11:8  error  Parsing error: Unexpected token type
+
+/Users/ejay/formaos/middleware.ts
+  1:29  error  Parsing error: Unexpected token NextRequest
+
+/Users/ejay/formaos/mobile/capacitor.config.ts
+  3:13  error  Parsing error: Unexpected token :
+
+/Users/ejay/formaos/mobile/next.config.mobile.ts
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/mobile/src/mobile.ts
+  56:11  error  Parsing error: Unexpected token async
+
+/Users/ejay/formaos/next.config.mobile.ts
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/next.config.ts
+  1:13  error  Parsing error: Unexpected token {
+
+/Users/ejay/formaos/tailwind.config.ts
+  1:13  error  Parsing error: Unexpected token {
+
+✖ 511 problems (511 errors, 0 warnings)
+

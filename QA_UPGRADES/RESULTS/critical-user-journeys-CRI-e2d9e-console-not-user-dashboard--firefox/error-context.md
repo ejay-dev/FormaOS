@@ -1,0 +1,56 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - img [ref=e6]
+        - generic [ref=e8]: FormaOS
+      - generic [ref=e9]: Secure · Compliance-First · Enterprise-Ready
+    - generic [ref=e11]:
+      - generic [ref=e12]:
+        - generic [ref=e13]:
+          - heading "Welcome to FormaOS" [level=1] [ref=e14]
+          - paragraph [ref=e15]: The compliance-first operating system for modern enterprises
+        - generic [ref=e16]:
+          - generic [ref=e17]:
+            - img [ref=e18]
+            - generic [ref=e21]: SOX Ready
+          - generic [ref=e22]:
+            - img [ref=e23]
+            - generic [ref=e26]: ISO 27001
+          - generic [ref=e27]:
+            - img [ref=e28]
+            - generic [ref=e31]: SOC 2
+        - button "Continue with Google" [ref=e32] [cursor=pointer]:
+          - img [ref=e33]
+          - text: Continue with Google
+        - generic [ref=e40]: or use email
+        - generic [ref=e42]:
+          - generic [ref=e43]:
+            - generic [ref=e44]: Email Address
+            - textbox "Email Address" [ref=e45]:
+              - /placeholder: your@company.com
+              - text: ejazhussaini313@gmail.com
+          - generic [ref=e46]:
+            - generic [ref=e47]: Password
+            - textbox "Password" [active] [ref=e48]:
+              - /placeholder: Enter your password
+              - text: founderpassword
+          - button "Access FormaOS" [ref=e49] [cursor=pointer]:
+            - text: Access FormaOS
+            - img [ref=e50]
+        - paragraph [ref=e54]:
+          - text: New to FormaOS?
+          - link "Start your compliance journey" [ref=e55] [cursor=pointer]:
+            - /url: /auth/signup
+      - generic [ref=e56]:
+        - generic [ref=e57]:
+          - img [ref=e58]
+          - generic [ref=e60]: Enterprise-grade security
+        - paragraph [ref=e61]: Your data is encrypted and protected. FormaOS is SOC 2 Type II compliant.
+  - button "Open Next.js Dev Tools" [ref=e67] [cursor=pointer]:
+    - img [ref=e68]
+  - alert [ref=e72]
+```
