@@ -1,0 +1,195 @@
+name: Professional SaaS QA Pipeline
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+env:
+  NODE_VERSION: '18'
+  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+  SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+  SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+
+jobs:
+  lint-and-format:
+    name: Lint & Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run stylelint
+      - run: npm run type-check
+
+  unit-tests:
+    name: Unit & Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm run test:coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage/lcov.info
+          fail_ci_if_error: true
+
+  security-scan:
+    name: Security Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+
+      - name: CodeQL Analysis
+        uses: github/codeql-action/init@v3
+        with:
+          languages: typescript, javascript
+      - uses: github/codeql-action/analyze@v3
+
+  accessibility-tests:
+    name: Accessibility Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm run start &
+      - run: npx wait-on http://localhost:3000
+      - run: npm run test:a11y
+
+  e2e-tests:
+    name: End-to-End Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: npm run build
+      - run: npm run start &
+      - run: npx wait-on http://localhost:3000
+      - run: npm run test:e2e
+
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+
+  visual-regression:
+    name: Visual Regression Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm run start &
+      - run: npx wait-on http://localhost:3000
+      - run: npm run test:visual
+
+      - name: Upload Visual Diff Report
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: backstop-report
+          path: backstop_data/
+
+  performance-tests:
+    name: Performance & SEO Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm run start &
+      - run: npx wait-on http://localhost:3000
+      - run: npm run test:lighthouse
+
+      - name: Upload Lighthouse Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: lighthouse-reports/
+
+  database-tests:
+    name: Database & Backend Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm run test:db
+      - run: npm run test:supabase-health
+
+  quality-gate:
+    name: Quality Gate
+    runs-on: ubuntu-latest
+    needs:
+      [
+        lint-and-format,
+        unit-tests,
+        security-scan,
+        accessibility-tests,
+        e2e-tests,
+        visual-regression,
+        performance-tests,
+        database-tests,
+      ]
+    if: always()
+    steps:
+      - name: Check all jobs
+        run: |
+          if [[ "${{ needs.lint-and-format.result }}" != "success" || 
+                "${{ needs.unit-tests.result }}" != "success" || 
+                "${{ needs.security-scan.result }}" != "success" || 
+                "${{ needs.accessibility-tests.result }}" != "success" || 
+                "${{ needs.e2e-tests.result }}" != "success" || 
+                "${{ needs.visual-regression.result }}" != "success" || 
+                "${{ needs.performance-tests.result }}" != "success" || 
+                "${{ needs.database-tests.result }}" != "success" ]]; then
+            echo "Quality gate failed - one or more checks failed"
+            exit 1
+          fi
+          echo "✅ All quality checks passed! Ready for merge."

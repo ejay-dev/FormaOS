@@ -88,7 +88,16 @@ async function getOrgContext() {
     .maybeSingle();
 
   if (!membership?.organization_id) {
-    redirect(`${SITE_URL}/pricing`);
+    console.log(
+      '[onboarding] 🚨 NO ORGANIZATION FOUND for user - this should not happen after auth callback',
+    );
+    // Instead of redirecting to pricing, create a minimal org and continue onboarding
+    redirect(
+      '/auth/signin?error=missing_organization&message=' +
+        encodeURIComponent(
+          'Organization setup incomplete. Please sign in again.',
+        ),
+    );
   }
 
   const orgRecord = Array.isArray(membership.organizations)

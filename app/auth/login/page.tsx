@@ -7,14 +7,14 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { Shield, CheckCircle2, ArrowRight } from 'lucide-react';
 
-function SignInContent() {
+function LoginContent() {
   const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Check for error messages from URL params (e.g., from auth callback)
+  // Check for error messages from URL params
   useEffect(() => {
     const error = searchParams.get('error');
     const message = searchParams.get('message');
@@ -26,7 +26,9 @@ function SignInContent() {
 
   const signInWithGoogle = async () => {
     setErrorMessage(null);
-    // Prefer runtime app URL (deployed) when available to ensure callback goes to app host
+    setIsLoading(true);
+
+    // Get app base URL for redirect
     let base = (process.env.NEXT_PUBLIC_APP_URL ?? '').replace(/\/$/, '');
     try {
       const res = await fetch('/api/debug/env');
@@ -48,9 +50,11 @@ function SignInContent() {
 
     if (error) {
       setErrorMessage(error.message ?? 'An unexpected error occurred.');
+      setIsLoading(false);
       return;
     }
 
+    // OAuth redirect will happen automatically
     if (data?.url) {
       window.location.href = data.url;
     }
@@ -73,8 +77,7 @@ function SignInContent() {
       return;
     }
 
-    // Redirect will be handled by middleware
-    // Redirect to app host using runtime app URL if available
+    // Redirect to app
     try {
       const res = await fetch('/api/debug/env');
       const json = await res.json();
@@ -266,7 +269,7 @@ function SignInContent() {
   );
 }
 
-export default function SignInPage() {
+export default function LoginPage() {
   return (
     <Suspense
       fallback={
@@ -278,7 +281,7 @@ export default function SignInPage() {
         </div>
       }
     >
-      <SignInContent />
+      <LoginContent />
     </Suspense>
   );
 }
