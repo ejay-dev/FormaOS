@@ -174,10 +174,10 @@ export async function rateLimitAuth(request: Request): Promise<{
 export async function rateLimitApi(
   request: Request,
   userId?: string | null
-): Promise<{
-  allowed: boolean;
-  headers: Record<string, string>;
-}> {
+): Promise<RateLimitResult> {
+  const identifier = await getClientIdentifier();
+  return checkRateLimit(RATE_LIMITS.API, identifier, userId);
+}
   const identifier = await getClientIdentifier();
   const result = await checkRateLimit(RATE_LIMITS.API, identifier, userId);
   const headers = createRateLimitHeaders(result);

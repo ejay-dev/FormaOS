@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { Sparkles, Zap, Shield, Crown, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
-import { 
+import Link from 'next/link';
+import { Sparkles, Zap, Shield, Crown, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import {
   PricingTierCard,
   EnterprisePricingCard,
   SectionHeader,
@@ -14,19 +14,19 @@ import {
   SystemBackground,
   GlassCard,
   SectionGlow,
-} from "@/components/motion";
+} from '@/components/motion';
 
 export function PricingHero() {
   return (
     <section className="relative min-h-[70vh] sm:min-h-[80vh] lg:min-h-[90vh] flex items-center overflow-hidden">
       {/* Multi-layer animated background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
-      
+
       {/* Animated system grid layer */}
       <div className="absolute inset-0 opacity-40 sm:opacity-60">
         <AnimatedSystemGrid />
       </div>
-      
+
       {/* Pulsing nodes - hidden on mobile */}
       {/* <div className="hidden sm:block">
         <PulsingNode x="10%" y="20%" delay={0} />
@@ -34,11 +34,11 @@ export function PricingHero() {
         <PulsingNode x="15%" y="70%" delay={1} color="rgb(6, 182, 212)" />
         <PulsingNode x="85%" y="80%" delay={1.5} />
       </div> */}
-      
+
       {/* Radial gradient overlays - reduced on mobile */}
       <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[300px] sm:h-[600px] w-[300px] sm:w-[600px] rounded-full bg-primary/20 blur-[60px] sm:blur-[120px]" />
       <div className="pointer-events-none absolute -bottom-40 left-1/4 h-[250px] sm:h-[500px] w-[250px] sm:w-[500px] rounded-full bg-secondary/15 blur-[50px] sm:blur-[100px]" />
-      
+
       {/* Vignette */}
       <div className="absolute inset-0 vignette pointer-events-none" />
 
@@ -54,7 +54,7 @@ export function PricingHero() {
             >
               <motion.div
                 animate={{ rotate: 360 }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
               >
                 <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
               </motion.div>
@@ -67,9 +67,12 @@ export function PricingHero() {
               transition={{ delay: 0.3, duration: 0.8 }}
               className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] sm:leading-[1.08] font-display tracking-tight mb-4 sm:mb-6"
             >
-              Plans built for<br />
+              Plans built for
+              <br />
               <span className="relative">
-                <span className="text-gradient-system-animated">growing compliance teams</span>
+                <span className="text-gradient-system-animated">
+                  growing compliance teams
+                </span>
                 <motion.div
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
@@ -85,8 +88,9 @@ export function PricingHero() {
               transition={{ delay: 0.5, duration: 0.8 }}
               className="text-base sm:text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-6 sm:mb-8"
             >
-              Choose the level of governance and support your organization requires. 
-              Start with a 14-day free trial—no payment details needed.
+              Choose the level of governance and support your organization
+              requires. Start with a 14-day free trial—no payment details
+              needed.
             </motion.p>
 
             <motion.p
@@ -106,71 +110,74 @@ export function PricingHero() {
 
 const tiers = [
   {
-    name: "Starter",
-    price: "$159 AUD",
-    cadence: "/month",
-    description: "For small providers and solo operators running essential compliance workflows.",
+    name: 'Starter',
+    price: '$159 AUD',
+    cadence: '/month',
+    description:
+      'For small providers and solo operators running essential compliance workflows.',
     features: [
-      "Core compliance engine",
-      "Tasks and evidence management",
-      "Audit logs and immutable history",
-      "Standard reporting and exports",
-      "Email support",
-      "14-day free trial"
+      'Core compliance engine',
+      'Tasks and evidence management',
+      'Audit logs and immutable history',
+      'Standard reporting and exports',
+      'Email support',
+      '14-day free trial',
     ],
-    cta: "Start Trial",
-    href: "/auth/signup?plan=basic",
-    featured: false
+    cta: 'Start Trial',
+    href: '/auth/signup?plan=basic',
+    featured: false,
   },
   {
-    name: "Pro",
-    price: "$230 AUD",
-    cadence: "/month",
-    description: "For growing organizations operating across sites and teams.",
+    name: 'Pro',
+    price: '$230 AUD',
+    cadence: '/month',
+    description: 'For growing organizations operating across sites and teams.',
     features: [
-      "Everything in Starter",
-      "Advanced reporting and analytics",
-      "Governance controls and workflows",
-      "Operational dashboards",
-      "Workflow automation",
-      "Priority support",
-      "14-day free trial"
+      'Everything in Starter',
+      'Reporting and analytics',
+      'Governance controls and workflows',
+      'Operational dashboards',
+      'Automated reminders and notifications',
+      'Priority support',
+      '14-day free trial',
     ],
-    cta: "Start Trial",
-    href: "/auth/signup?plan=pro",
-    featured: true
+    cta: 'Start Trial',
+    href: '/auth/signup?plan=pro',
+    featured: true,
   },
   {
-    name: "Enterprise",
-    price: "Custom",
-    cadence: "",
-    description: "For organizations seeking full implementation and white-glove support.",
+    name: 'Enterprise',
+    price: 'Custom',
+    cadence: '',
+    description:
+      'For organizations seeking full implementation and white-glove support.',
     features: [
-      "Everything in Pro",
-      "White-glove onboarding",
-      "Custom compliance frameworks",
-      "Org-wide deployment support",
-      "Dedicated account manager",
-      "SLA guarantees",
-      "Custom integrations"
+      'Everything in Pro',
+      'White-glove onboarding',
+      'Custom compliance frameworks',
+      'Org-wide deployment support',
+      'Dedicated account manager',
+      'SLA guarantees',
+      'Custom integrations',
     ],
-    cta: "Contact Sales",
-    href: "/contact",
-    featured: false
-  }
+    cta: 'Contact Sales',
+    href: '/contact',
+    featured: false,
+  },
 ];
 
 // System-themed divider
 function SystemDivider() {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, scaleX: 0 }}
       whileInView={{ opacity: 1, scaleX: 1 }}
-      viewport={{ once: true, margin: "-100px" }}
+      viewport={{ once: true, margin: '-100px' }}
       transition={{ duration: 0.8 }}
       className="relative h-px w-full"
       style={{
-        background: "linear-gradient(90deg, transparent, rgba(0, 180, 220, 0.3), rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.3), transparent)"
+        background:
+          'linear-gradient(90deg, transparent, rgba(0, 180, 220, 0.3), rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.3), transparent)',
       }}
     >
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-8 bg-[rgba(0,180,220,0.2)] blur-xl" />
@@ -184,7 +191,7 @@ export function PricingContent() {
       {/* Pricing tiers - Metrics variant */}
       <SystemBackground variant="metrics" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="cyan" intensity="medium" position="top" />
-        
+
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
             {tiers.map((tier, idx) => (
@@ -218,7 +225,7 @@ export function PricingContent() {
       {/* Enterprise CTA - Process variant */}
       <SystemBackground variant="process" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="blue" intensity="high" position="center" />
-        
+
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative">
           <EnterprisePricingCard delay={0} />
         </div>
@@ -229,11 +236,17 @@ export function PricingContent() {
       {/* Value props - Info variant */}
       <SystemBackground variant="info" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="purple" intensity="low" position="center" />
-        
+
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
             badge="Included in All Plans"
-            title={<>Enterprise-grade infrastructure<br className="hidden sm:inline" /><span className="text-gradient-system">from day one</span></>}
+            title={
+              <>
+                Enterprise-grade infrastructure
+                <br className="hidden sm:inline" />
+                <span className="text-gradient-system">from day one</span>
+              </>
+            }
             subtitle="Every plan includes the core platform capabilities needed for audit-ready operations"
             alignment="center"
           />
@@ -242,19 +255,34 @@ export function PricingContent() {
             {[
               {
                 icon: Shield,
-                title: "Security & Compliance",
-                items: ["Role-based access control", "Immutable audit logs", "Evidence encryption", "SOC 2 Type II infrastructure"]
+                title: 'Security & Compliance',
+                items: [
+                  'Role-based access control',
+                  'Immutable audit logs',
+                  'Evidence encryption',
+                  'SOC 2 Type II infrastructure',
+                ],
               },
               {
                 icon: Zap,
-                title: "Platform Capabilities",
-                items: ["Unlimited evidence storage", "Real-time dashboards", "Mobile access", "API access"]
+                title: 'Platform Capabilities',
+                items: [
+                  'Unlimited evidence storage',
+                  'Live activity tracking',
+                  'Mobile access',
+                  'Recurring tasks',
+                ],
               },
               {
                 icon: Crown,
-                title: "Support & Success",
-                items: ["Knowledge base access", "Video tutorials", "Email support", "Community forum"]
-              }
+                title: 'Support & Success',
+                items: [
+                  'Knowledge base access',
+                  'Video tutorials',
+                  'Email support',
+                  'Community forum',
+                ],
+              },
             ].map((group, idx) => (
               <motion.div
                 key={group.title}
@@ -267,10 +295,15 @@ export function PricingContent() {
                   <div className="rounded-xl bg-primary/10 p-3 w-fit mb-4 sm:mb-6">
                     <group.icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                   </div>
-                  <h3 className="text-lg sm:text-xl font-semibold font-display mb-3 sm:mb-4">{group.title}</h3>
+                  <h3 className="text-lg sm:text-xl font-semibold font-display mb-3 sm:mb-4">
+                    {group.title}
+                  </h3>
                   <ul className="space-y-2 sm:space-y-3">
                     {group.items.map((item, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-foreground/70">
+                      <li
+                        key={i}
+                        className="flex items-start gap-2 text-sm text-foreground/70"
+                      >
                         <div className="h-1.5 w-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
                         <span>{item}</span>
                       </li>
@@ -288,7 +321,7 @@ export function PricingContent() {
       {/* FAQ Section - Metrics variant */}
       <SystemBackground variant="metrics" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="cyan" intensity="low" position="center" />
-        
+
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
             badge="Frequently Asked Questions"
@@ -299,25 +332,25 @@ export function PricingContent() {
           <div className="space-y-4 sm:space-y-6">
             {[
               {
-                q: "Can I change plans later?",
-                a: "Yes. You can upgrade or downgrade at any time. Changes take effect at the start of your next billing cycle."
+                q: 'Can I change plans later?',
+                a: 'Yes. You can upgrade or downgrade at any time. Changes take effect at the start of your next billing cycle.',
               },
               {
-                q: "What happens after the trial?",
-                a: "Your trial converts to the paid plan you selected. You'll receive a reminder email before billing starts. No credit card required for trial."
+                q: 'What happens after the trial?',
+                a: "Your trial converts to the paid plan you selected. You'll receive a reminder email before billing starts. No credit card required for trial.",
               },
               {
-                q: "Do you offer annual billing?",
-                a: "Yes. Contact sales for annual pricing options with additional discounts."
+                q: 'Do you offer annual billing?',
+                a: 'Yes. Contact sales for annual pricing options with additional discounts.',
               },
               {
                 q: "What's included in white-glove onboarding?",
-                a: "Enterprise customers receive dedicated implementation support, custom framework setup, team training, and deployment assistance."
+                a: 'Enterprise customers receive dedicated implementation support, custom framework setup, team training, and deployment assistance.',
               },
               {
-                q: "Can I cancel anytime?",
-                a: "Yes. Cancel anytime from your billing settings. No long-term contracts required for Starter or Pro plans."
-              }
+                q: 'Can I cancel anytime?',
+                a: 'Yes. Cancel anytime from your billing settings. No long-term contracts required for Starter or Pro plans.',
+              },
             ].map((faq, idx) => (
               <motion.div
                 key={idx}
@@ -327,17 +360,23 @@ export function PricingContent() {
                 transition={{ duration: 0.4, delay: idx * 0.05 }}
               >
                 <GlassCard variant="default" className="p-6 sm:p-8">
-                  <h3 className="text-base sm:text-lg font-semibold font-display mb-2 sm:mb-3">{faq.q}</h3>
-                  <p className="text-sm sm:text-base text-foreground/70 leading-relaxed">{faq.a}</p>
+                  <h3 className="text-base sm:text-lg font-semibold font-display mb-2 sm:mb-3">
+                    {faq.q}
+                  </h3>
+                  <p className="text-sm sm:text-base text-foreground/70 leading-relaxed">
+                    {faq.a}
+                  </p>
                 </GlassCard>
               </motion.div>
             ))}
           </div>
 
           <div className="text-center mt-10 sm:mt-12">
-            <p className="text-foreground/70 mb-4 sm:mb-6">Still have questions?</p>
-            <Link 
-              href="/contact" 
+            <p className="text-foreground/70 mb-4 sm:mb-6">
+              Still have questions?
+            </p>
+            <Link
+              href="/contact"
               className="group inline-flex items-center gap-2 btn btn-primary btn-premium text-base sm:text-lg px-8 sm:px-10 py-4 sm:py-5"
             >
               Contact Sales

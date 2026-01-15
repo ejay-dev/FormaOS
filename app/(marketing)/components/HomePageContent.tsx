@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import Link from "next/link";
+import Link from 'next/link';
 import {
   ShieldCheck,
   Sparkles,
@@ -15,8 +15,8 @@ import {
   Eye,
   BarChart3,
   ArrowRight,
-} from "lucide-react";
-import { 
+} from 'lucide-react';
+import {
   SectionHeader,
   FeatureCard,
   MetricCard,
@@ -27,101 +27,130 @@ import {
   SystemBackground,
   GlassCard,
   SectionGlow,
-} from "@/components/motion";
-import { FadeInView } from "@/components/motion";
-import { motion } from "framer-motion";
+} from '@/components/motion';
+import { FadeInView } from '@/components/motion';
+import { motion } from 'framer-motion';
 
 const lifecycle = [
   {
     icon: Target,
-    title: "Model obligations",
-    description: "Align frameworks, policies, and controls across every site and team.",
+    title: 'Model obligations',
+    description:
+      'Align frameworks, policies, and controls across every site and team.',
   },
   {
     icon: Zap,
-    title: "Execute tasks",
-    description: "Assign remediation work with owners, deadlines, and evidence requirements.",
+    title: 'Execute tasks',
+    description:
+      'Assign remediation work with owners, deadlines, and evidence requirements.',
   },
   {
     icon: ShieldCheck,
-    title: "Capture evidence",
-    description: "Store approvals, artifacts, and audit history in a single chain of custody.",
+    title: 'Capture evidence',
+    description:
+      'Store approvals, artifacts, and audit history in a single chain of custody.',
   },
   {
     icon: TrendingUp,
-    title: "Prove readiness",
-    description: "Generate audit bundles, reports, and compliance posture in minutes.",
+    title: 'Prove readiness',
+    description:
+      'Generate audit bundles, reports, and compliance posture in minutes.',
   },
 ];
 
 const industries = [
   {
     icon: Activity,
-    title: "NDIS & disability services",
-    description: "Track practice standards, provider obligations, and incident reporting.",
+    title: 'NDIS & disability services',
+    description:
+      'Track practice standards, provider obligations, and incident reporting.',
   },
   {
     icon: ShieldCheck,
-    title: "Healthcare providers",
-    description: "Manage credentials, clinical governance, and audit readiness.",
+    title: 'Healthcare providers',
+    description:
+      'Manage credentials, clinical governance, and audit readiness.',
   },
   {
     icon: Layers,
-    title: "Aged care operators",
-    description: "Keep evidence and policy reviews current across multiple sites.",
+    title: 'Aged care operators',
+    description:
+      'Keep evidence and policy reviews current across multiple sites.',
   },
   {
     icon: ClipboardCheck,
-    title: "Community services",
-    description: "Prove service quality and compliance across programs and teams.",
+    title: 'Community services',
+    description:
+      'Prove service quality and compliance across programs and teams.',
   },
 ];
 
 const platformArchitecture = {
-  "Compliance Engine": [
-    "Framework modeling",
-    "Control libraries",
-    "Risk assessment",
-    "Gap analysis"
+  'Compliance Engine': [
+    'Framework modeling',
+    'Control libraries',
+    'Risk assessment',
+    'Gap analysis',
   ],
-  "Task System": [
-    "Workflow automation",
-    "Assignment routing",
-    "Deadline tracking",
-    "Remediation management"
+  'Task System': [
+    'Automated reminders',
+    'Assignment routing',
+    'Deadline tracking',
+    'Remediation management',
   ],
-  "Evidence Vault": [
-    "Immutable storage",
-    "Approval chains",
-    "Artifact versioning",
-    "Audit trails"
+  'Evidence Vault': [
+    'Immutable storage',
+    'Approval chains',
+    'Artifact versioning',
+    'Audit trails',
   ],
-  "Reporting Engine": [
-    "Executive dashboards",
-    "Audit export bundles",
-    "Posture scoring",
-    "Compliance metrics"
-  ]
+  'Reporting Engine': [
+    'Executive dashboards',
+    'Audit export bundles',
+    'Posture scoring',
+    'Compliance metrics',
+  ],
 };
 
 const metrics = [
-  { icon: ShieldCheck, value: "94%", label: "Avg. Posture Score", trend: "up" as const },
-  { icon: Target, value: "127", label: "Active Controls", trend: "neutral" as const },
-  { icon: Zap, value: "<2min", label: "Audit Export Time", trend: "neutral" as const },
-  { icon: TrendingUp, value: "98%", label: "Task Completion", trend: "up" as const },
+  {
+    icon: ShieldCheck,
+    value: '94%',
+    label: 'Avg. Posture Score',
+    trend: 'up' as const,
+  },
+  {
+    icon: Target,
+    value: '127',
+    label: 'Active Controls',
+    trend: 'neutral' as const,
+  },
+  {
+    icon: Zap,
+    value: 'Fast',
+    label: 'Audit Export Time',
+    trend: 'neutral' as const,
+  },
+  {
+    icon: TrendingUp,
+    value: '98%',
+    label: 'Task Completion',
+    trend: 'up' as const,
+  },
 ];
 
 // Enhanced Visual Divider with system theme
 function SystemDivider() {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, scaleX: 0 }}
       whileInView={{ opacity: 1, scaleX: 1 }}
-      viewport={{ once: true, margin: "-100px" }}
+      viewport={{ once: true, margin: '-100px' }}
       transition={{ duration: 0.8 }}
       className="relative h-px w-full my-0"
       style={{
-        background: "linear-gradient(90deg, transparent, rgba(0, 180, 220, 0.3), rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.3), transparent)"
+        background:
+          'linear-gradient(90deg, transparent, rgba(0, 180, 220, 0.3), rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.3), transparent)',
       }}
     >
       {/* Center glow */}
@@ -141,7 +170,7 @@ export function HomePageContent() {
       <SystemBackground variant="metrics" className="py-12 sm:py-16 lg:py-20">
         {/* Radial glow behind section */}
         <SectionGlow color="cyan" intensity="medium" position="center" />
-        
+
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
             badge="Live Platform Metrics"
@@ -182,38 +211,64 @@ export function HomePageContent() {
           ======================================== */}
       <SystemBackground variant="process" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="blue" intensity="high" position="top" />
-        
+
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
             badge="Connected System"
             badgeIcon={<Layers className="h-4 w-4 text-secondary" />}
-            title={<>Every module<br /><span className="text-gradient-system">connected and aware</span></>}
+            title={
+              <>
+                Every module
+                <br />
+                <span className="text-gradient-system">
+                  connected and aware
+                </span>
+              </>
+            }
             subtitle="A compliance operating system where policies, controls, evidence, and audits work as one intelligent network"
             alignment="center"
           />
 
           <FadeInView delay={0.3}>
             <div className="flex justify-center">
-              <GlassCard variant="elevated" glow glowColor="cyan" className="p-6 sm:p-8 lg:p-12 max-w-4xl w-full">
+              <GlassCard
+                variant="elevated"
+                glow
+                glowColor="cyan"
+                className="p-6 sm:p-8 lg:p-12 max-w-4xl w-full"
+              >
                 <div className="py-4 text-center">
-                  <div className="text-2xl font-bold mb-4">Connected Compliance System</div>
-                  <div className="text-muted-foreground">A connected platform where policies, controls, evidence, and audits work as one intelligent network</div>
+                  <div className="text-2xl font-bold mb-4">
+                    Connected Compliance System
+                  </div>
+                  <div className="text-muted-foreground">
+                    A connected platform where policies, controls, evidence, and
+                    audits work as one intelligent network
+                  </div>
                   <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="p-4 rounded-lg bg-background/50 border border-border/50">
                       <div className="text-sm font-semibold">Policies</div>
-                      <div className="text-xs text-muted-foreground">Framework alignment</div>
+                      <div className="text-xs text-muted-foreground">
+                        Framework alignment
+                      </div>
                     </div>
                     <div className="p-4 rounded-lg bg-background/50 border border-border/50">
                       <div className="text-sm font-semibold">Controls</div>
-                      <div className="text-xs text-muted-foreground">Risk mitigation</div>
+                      <div className="text-xs text-muted-foreground">
+                        Risk mitigation
+                      </div>
                     </div>
                     <div className="p-4 rounded-lg bg-background/50 border border-border/50">
                       <div className="text-sm font-semibold">Evidence</div>
-                      <div className="text-xs text-muted-foreground">Audit trail</div>
+                      <div className="text-xs text-muted-foreground">
+                        Audit trail
+                      </div>
                     </div>
                     <div className="p-4 rounded-lg bg-background/50 border border-border/50">
                       <div className="text-sm font-semibold">Reports</div>
-                      <div className="text-xs text-muted-foreground">Compliance posture</div>
+                      <div className="text-xs text-muted-foreground">
+                        Compliance posture
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -223,9 +278,14 @@ export function HomePageContent() {
 
           <FadeInView delay={0.6} className="text-center mt-8 sm:mt-12">
             <p className="text-foreground/60 text-sm sm:text-base mb-6 max-w-2xl mx-auto">
-              Each node represents a core compliance function. Changes flow through the system—updating controls triggers evidence requirements, which cascade to audit readiness.
+              Each node represents a core compliance function. Changes flow
+              through the system—updating controls triggers evidence
+              requirements, which cascade to audit readiness.
             </p>
-            <Link href="/product" className="btn btn-secondary text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5 inline-flex items-center gap-2">
+            <Link
+              href="/product"
+              className="btn btn-secondary text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5 inline-flex items-center gap-2"
+            >
               Explore Platform Architecture
               <ArrowRight className="h-4 w-4" />
             </Link>
@@ -241,12 +301,20 @@ export function HomePageContent() {
           ======================================== */}
       <SystemBackground variant="info" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="purple" intensity="low" position="center" />
-        
+
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
             badge="The Complete System"
             badgeIcon={<Sparkles className="h-4 w-4 text-primary" />}
-            title={<>Compliance lifecycle,<br /><span className="text-gradient-system">engineered end-to-end</span></>}
+            title={
+              <>
+                Compliance lifecycle,
+                <br />
+                <span className="text-gradient-system">
+                  engineered end-to-end
+                </span>
+              </>
+            }
             subtitle="From framework alignment to audit export—every step connected, traced, and defensible"
             alignment="center"
           />
@@ -273,7 +341,10 @@ export function HomePageContent() {
           </div>
 
           <FadeInView delay={0.8} className="text-center mt-10 sm:mt-14">
-            <Link href="/product" className="btn btn-primary text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5 shadow-premium-lg">
+            <Link
+              href="/product"
+              className="btn btn-primary text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5 shadow-premium-lg"
+            >
               Explore Platform Architecture
             </Link>
           </FadeInView>
@@ -286,41 +357,58 @@ export function HomePageContent() {
           SECTION 4: ARCHITECTURE (variant: process)
           System components with data pathways
           ======================================== */}
-      <SystemBackground variant="process" intensity="high" className="py-12 sm:py-16 lg:py-20">
+      <SystemBackground
+        variant="process"
+        intensity="high"
+        className="py-12 sm:py-16 lg:py-20"
+      >
         <SectionGlow color="mixed" intensity="medium" position="top" />
-        
+
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
             badge="System Architecture"
             badgeIcon={<Layers className="h-4 w-4 text-secondary" />}
-            title={<>Built as infrastructure,<br /><span className="text-gradient-system">not a document manager</span></>}
+            title={
+              <>
+                Built as infrastructure,
+                <br />
+                <span className="text-gradient-system">
+                  not a document manager
+                </span>
+              </>
+            }
             subtitle="FormaOS is a true operating system for compliance—with interconnected modules working as one platform"
             alignment="center"
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-            {Object.entries(platformArchitecture).map(([title, components], idx) => (
-              <motion.div
-                key={title}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: idx * 0.15 }}
-                className="card-radial-glow section-process"
-              >
-                <ArchitectureCard
-                  title={title}
-                  components={components}
-                  icon={
-                    idx === 0 ? Target : 
-                    idx === 1 ? Zap : 
-                    idx === 2 ? FileCheck : 
-                    TrendingUp
-                  }
-                  delay={0}
-                />
-              </motion.div>
-            ))}
+            {Object.entries(platformArchitecture).map(
+              ([title, components], idx) => (
+                <motion.div
+                  key={title}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: idx * 0.15 }}
+                  className="card-radial-glow section-process"
+                >
+                  <ArchitectureCard
+                    title={title}
+                    components={components}
+                    icon={
+                      idx === 0
+                        ? Target
+                        : idx === 1
+                          ? Zap
+                          : idx === 2
+                            ? FileCheck
+                            : TrendingUp
+                    }
+                    delay={0}
+                  />
+                </motion.div>
+              ),
+            )}
           </div>
         </div>
       </SystemBackground>
@@ -333,12 +421,20 @@ export function HomePageContent() {
           ======================================== */}
       <SystemBackground variant="info" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="blue" intensity="low" position="center" />
-        
+
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
             badge="Built for Regulated Industries"
             badgeIcon={<Layers className="h-4 w-4 text-secondary" />}
-            title={<>Compliance frameworks<br /><span className="text-gradient-system">that match your obligations</span></>}
+            title={
+              <>
+                Compliance frameworks
+                <br />
+                <span className="text-gradient-system">
+                  that match your obligations
+                </span>
+              </>
+            }
             subtitle="Pre-configured for Australian health, disability, and community services"
             alignment="center"
           />
@@ -365,7 +461,10 @@ export function HomePageContent() {
           </div>
 
           <FadeInView delay={0.6} className="text-center mt-10 sm:mt-14">
-            <Link href="/industries" className="btn btn-secondary text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5">
+            <Link
+              href="/industries"
+              className="btn btn-secondary text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5"
+            >
               Explore All Industries
             </Link>
           </FadeInView>
@@ -380,24 +479,56 @@ export function HomePageContent() {
           ======================================== */}
       <SystemBackground variant="metrics" className="py-12 sm:py-16 lg:py-20">
         <SectionGlow color="purple" intensity="medium" position="center" />
-        
+
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
             badge="Enterprise Security"
             badgeIcon={<Lock className="h-4 w-4 text-accent" />}
-            title={<>Built for<br /><span className="text-gradient-system">regulated environments</span></>}
+            title={
+              <>
+                Built for
+                <br />
+                <span className="text-gradient-system">
+                  regulated environments
+                </span>
+              </>
+            }
             subtitle="Security architecture designed for organizations that answer to regulators"
             alignment="center"
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {[
-              { icon: Lock, title: "Role-based access", description: "Segregation of duties enforced at every level" },
-              { icon: ShieldCheck, title: "Immutable logs", description: "Evidence traceability for audit defense" },
-              { icon: Layers, title: "Org-scoped isolation", description: "Data isolation for every tenant" },
-              { icon: Activity, title: "Compliance gates", description: "Block unsafe actions automatically" },
-              { icon: Eye, title: "Audit trails", description: "Complete history of all compliance actions" },
-              { icon: FileCheck, title: "Evidence chain", description: "Verifiable custody from creation to export" },
+              {
+                icon: Lock,
+                title: 'Role-based access',
+                description: 'Segregation of duties enforced at every level',
+              },
+              {
+                icon: ShieldCheck,
+                title: 'Immutable logs',
+                description: 'Evidence traceability for audit defense',
+              },
+              {
+                icon: Layers,
+                title: 'Org-scoped isolation',
+                description: 'Data isolation for every tenant',
+              },
+              {
+                icon: Activity,
+                title: 'Compliance gates',
+                description: 'Block unsafe actions automatically',
+              },
+              {
+                icon: Eye,
+                title: 'Audit trails',
+                description: 'Complete history of all compliance actions',
+              },
+              {
+                icon: FileCheck,
+                title: 'Evidence chain',
+                description: 'Verifiable custody from creation to export',
+              },
             ].map((point, idx) => (
               <motion.div
                 key={point.title}
@@ -420,7 +551,10 @@ export function HomePageContent() {
           </div>
 
           <FadeInView delay={0.7} className="text-center mt-10 sm:mt-14">
-            <Link href="/security" className="btn btn-ghost text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5 inline-flex items-center gap-2">
+            <Link
+              href="/security"
+              className="btn btn-ghost text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5 inline-flex items-center gap-2"
+            >
               Security Architecture
               <ArrowRight className="h-4 w-4" />
             </Link>
@@ -434,23 +568,27 @@ export function HomePageContent() {
           SECTION 7: FINAL CTA (variant: process)
           Full visual intensity
           ======================================== */}
-      <SystemBackground variant="process" intensity="high" className="py-12 sm:py-16 lg:py-20">
+      <SystemBackground
+        variant="process"
+        intensity="high"
+        className="py-12 sm:py-16 lg:py-20"
+      >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <FadeInView>
-            <GlassCard 
-              variant="intense" 
-              glow 
-              glowColor="cyan" 
+            <GlassCard
+              variant="intense"
+              glow
+              glowColor="cyan"
               className="p-8 sm:p-12 lg:p-16 xl:p-20 text-center relative overflow-hidden"
             >
               {/* Shimmer overlay */}
               <div className="absolute inset-0 shimmer pointer-events-none" />
-              
+
               {/* Gradient mesh overlay */}
               <div className="absolute inset-0 pointer-events-none opacity-50">
                 <GradientMesh animate={true} />
               </div>
-              
+
               <div className="relative z-10">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -464,61 +602,71 @@ export function HomePageContent() {
                 </motion.div>
 
                 <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold font-display mb-4 sm:mb-6">
-                  Ready to operate with<br className="hidden sm:block" />
-                  <span className="text-gradient-system-animated">complete governance clarity?</span>
+                  Ready to operate with
+                  <br className="hidden sm:block" />
+                  <span className="text-gradient-system-animated">
+                    complete governance clarity?
+                  </span>
                 </h2>
-                
+
                 <p className="text-base sm:text-lg lg:text-xl text-foreground/70 mb-8 sm:mb-12 max-w-3xl mx-auto">
-                  Start your 14-day free trial. No credit card required. Full platform access.
+                  Start your 14-day free trial. No credit card required. Full
+                  platform access.
                 </p>
-                
+
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-                  <Link href="/auth/signup?plan=pro" className="btn btn-primary btn-premium text-sm sm:text-lg px-8 sm:px-12 py-4 sm:py-6 shadow-premium-xl w-full sm:w-auto">
+                  <Link
+                    href="/auth/signup?plan=pro"
+                    className="btn btn-primary btn-premium text-sm sm:text-lg px-8 sm:px-12 py-4 sm:py-6 shadow-premium-xl w-full sm:w-auto"
+                  >
                     Start Free Trial
                   </Link>
-                  <Link href="/contact" className="btn btn-secondary text-sm sm:text-lg px-8 sm:px-12 py-4 sm:py-6 w-full sm:w-auto">
+                  <Link
+                    href="/contact"
+                    className="btn btn-secondary text-sm sm:text-lg px-8 sm:px-12 py-4 sm:py-6 w-full sm:w-auto"
+                  >
                     Request Demo
                   </Link>
                 </div>
 
                 <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 mt-8 sm:mt-12 text-xs sm:text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
-                    <motion.div 
+                    <motion.div
                       className="h-2 w-2 rounded-full bg-primary"
-                      animate={{ 
+                      animate={{
                         boxShadow: [
-                          "0 0 8px rgba(0,180,220,0.5)",
-                          "0 0 16px rgba(0,180,220,0.8)",
-                          "0 0 8px rgba(0,180,220,0.5)"
-                        ]
+                          '0 0 8px rgba(0,180,220,0.5)',
+                          '0 0 16px rgba(0,180,220,0.8)',
+                          '0 0 8px rgba(0,180,220,0.5)',
+                        ],
                       }}
                       transition={{ duration: 2, repeat: Infinity }}
                     />
                     <span>14-day free trial</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <motion.div 
+                    <motion.div
                       className="h-2 w-2 rounded-full bg-primary"
-                      animate={{ 
+                      animate={{
                         boxShadow: [
-                          "0 0 8px rgba(0,180,220,0.5)",
-                          "0 0 16px rgba(0,180,220,0.8)",
-                          "0 0 8px rgba(0,180,220,0.5)"
-                        ]
+                          '0 0 8px rgba(0,180,220,0.5)',
+                          '0 0 16px rgba(0,180,220,0.8)',
+                          '0 0 8px rgba(0,180,220,0.5)',
+                        ],
                       }}
                       transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
                     />
                     <span>No credit card</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <motion.div 
+                    <motion.div
                       className="h-2 w-2 rounded-full bg-primary"
-                      animate={{ 
+                      animate={{
                         boxShadow: [
-                          "0 0 8px rgba(0,180,220,0.5)",
-                          "0 0 16px rgba(0,180,220,0.8)",
-                          "0 0 8px rgba(0,180,220,0.5)"
-                        ]
+                          '0 0 8px rgba(0,180,220,0.5)',
+                          '0 0 16px rgba(0,180,220,0.8)',
+                          '0 0 8px rgba(0,180,220,0.5)',
+                        ],
                       }}
                       transition={{ duration: 2, repeat: Infinity, delay: 0.6 }}
                     />
@@ -533,4 +681,3 @@ export function HomePageContent() {
     </div>
   );
 }
-

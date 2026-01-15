@@ -322,7 +322,7 @@ export function HomePageClient() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="text-center mb-16 sm:mb-20"
           >
@@ -352,7 +352,7 @@ export function HomePageClient() {
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+              viewport={{ once: true }}
               transition={{ duration: 0.8 }}
               className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 shadow-2xl overflow-hidden"
             >
@@ -377,7 +377,7 @@ export function HomePageClient() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.2, duration: 0.6 }}
                     whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -395,7 +395,7 @@ export function HomePageClient() {
                       <motion.div
                         initial={{ width: 0 }}
                         whileInView={{ width: '94%' }}
-                          viewport={{ once: true }}
+                        viewport={{ once: true }}
                         transition={{ delay: 0.5, duration: 1 }}
                         className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
                       />
@@ -405,7 +405,7 @@ export function HomePageClient() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.4, duration: 0.6 }}
                     whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -435,14 +435,14 @@ export function HomePageClient() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.6, duration: 0.6 }}
                     whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
                     className="group text-center"
                   >
                     <div className="relative mb-4">
                       <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gradient mb-2 group-hover:scale-110 transition-transform duration-300">
-                        &lt;2min
+                        Fast
                       </div>
                       <div className="absolute -inset-4 bg-gradient-to-r from-accent/10 via-primary/10 to-secondary/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl" />
                     </div>
@@ -452,7 +452,7 @@ export function HomePageClient() {
                     <div className="mt-2">
                       <div className="inline-flex items-center gap-1 text-xs text-green-600 font-medium">
                         <div className="w-1.5 h-1.5 bg-green-400 rounded-full" />
-                        Instant generation
+                        Quick generation
                       </div>
                     </div>
                   </motion.div>
@@ -460,7 +460,7 @@ export function HomePageClient() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.8, duration: 0.6 }}
                     whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -478,7 +478,7 @@ export function HomePageClient() {
                       <motion.div
                         initial={{ width: 0 }}
                         whileInView={{ width: '98%' }}
-                          viewport={{ once: true }}
+                        viewport={{ once: true }}
                         transition={{ delay: 1, duration: 1 }}
                         className="h-full bg-gradient-to-r from-accent to-primary rounded-full"
                       />
@@ -517,7 +517,7 @@ export function HomePageClient() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.2, duration: 0.6 }}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-4"
                 >
@@ -528,7 +528,7 @@ export function HomePageClient() {
                 <motion.h2
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.3, duration: 0.8 }}
                   className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-2"
                 >
@@ -540,7 +540,7 @@ export function HomePageClient() {
                 <motion.div
                   initial={{ scaleX: 0 }}
                   whileInView={{ scaleX: 1 }}
-                    viewport={{ once: true }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.8, duration: 0.8 }}
                   className="mx-auto mt-3 h-1 w-24 bg-gradient-to-r from-secondary via-primary to-accent rounded-full"
                 />
@@ -548,7 +548,7 @@ export function HomePageClient() {
                 <motion.p
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.4, duration: 0.8 }}
                   className="mt-4 text-lg text-foreground/70 max-w-3xl mx-auto"
                 >
@@ -566,7 +566,7 @@ export function HomePageClient() {
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.5, duration: 0.6 }}
                   whileHover={{ y: -8, transition: { duration: 0.3 } }}
                   className="group relative"
@@ -607,7 +607,7 @@ export function HomePageClient() {
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.6, duration: 0.6 }}
                   whileHover={{ y: -8, transition: { duration: 0.3 } }}
                   className="group relative"
@@ -648,7 +648,7 @@ export function HomePageClient() {
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.7, duration: 0.6 }}
                   whileHover={{ y: -8, transition: { duration: 0.3 } }}
                   className="group relative"
@@ -689,7 +689,7 @@ export function HomePageClient() {
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.8, duration: 0.6 }}
                   whileHover={{ y: -8, transition: { duration: 0.3 } }}
                   className="group relative"
@@ -752,7 +752,7 @@ export function HomePageClient() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="text-center mb-16 sm:mb-20"
           >
@@ -779,7 +779,7 @@ export function HomePageClient() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="relative"
           >
@@ -806,7 +806,7 @@ export function HomePageClient() {
                     <motion.div
                       initial={{ opacity: 0, x: -30 }}
                       whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
+                      viewport={{ once: true }}
                       transition={{ delay: 0.2, duration: 0.6 }}
                       className="group flex items-start gap-4"
                     >
@@ -829,7 +829,7 @@ export function HomePageClient() {
                     <motion.div
                       initial={{ opacity: 0, x: -30 }}
                       whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
+                      viewport={{ once: true }}
                       transition={{ delay: 0.4, duration: 0.6 }}
                       className="group flex items-start gap-4"
                     >
@@ -855,7 +855,7 @@ export function HomePageClient() {
                     <motion.div
                       initial={{ opacity: 0, x: 30 }}
                       whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
+                      viewport={{ once: true }}
                       transition={{ delay: 0.6, duration: 0.6 }}
                       className="group flex items-start gap-4"
                     >
@@ -878,7 +878,7 @@ export function HomePageClient() {
                     <motion.div
                       initial={{ opacity: 0, x: 30 }}
                       whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
+                      viewport={{ once: true }}
                       transition={{ delay: 0.8, duration: 0.6 }}
                       className="group flex items-start gap-4"
                     >
@@ -928,7 +928,7 @@ export function HomePageClient() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="text-center mb-16 sm:mb-20"
           >
@@ -954,7 +954,7 @@ export function HomePageClient() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="relative"
           >
@@ -981,7 +981,7 @@ export function HomePageClient() {
                   <motion.div
                     initial={{ opacity: 0, x: -30 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.2, duration: 0.6 }}
                     className="group relative"
                   >
@@ -1009,7 +1009,7 @@ export function HomePageClient() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.4, duration: 0.6 }}
                     className="group relative"
                   >
@@ -1037,7 +1037,7 @@ export function HomePageClient() {
                   <motion.div
                     initial={{ opacity: 0, x: 30 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.6, duration: 0.6 }}
                     className="group relative"
                   >
@@ -1091,7 +1091,7 @@ export function HomePageClient() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="text-center mb-16 sm:mb-20"
           >
@@ -1115,7 +1115,7 @@ export function HomePageClient() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="relative"
           >
@@ -1140,7 +1140,7 @@ export function HomePageClient() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.2, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -1163,7 +1163,7 @@ export function HomePageClient() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.4, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -1186,7 +1186,7 @@ export function HomePageClient() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.6, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -1209,7 +1209,7 @@ export function HomePageClient() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.8, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -1248,7 +1248,7 @@ export function HomePageClient() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="text-center mb-16 sm:mb-20"
           >
@@ -1270,7 +1270,7 @@ export function HomePageClient() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="relative"
           >
@@ -1297,7 +1297,7 @@ export function HomePageClient() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.2, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -1321,7 +1321,7 @@ export function HomePageClient() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.4, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -1345,7 +1345,7 @@ export function HomePageClient() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.6, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -1369,7 +1369,7 @@ export function HomePageClient() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.8, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -1395,7 +1395,7 @@ export function HomePageClient() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
+                  viewport={{ once: true }}
                   transition={{ delay: 1, duration: 0.6 }}
                   className="mt-12 text-center"
                 >
@@ -1438,7 +1438,7 @@ export function HomePageClient() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="relative"
           >
@@ -1450,7 +1450,7 @@ export function HomePageClient() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.2, duration: 0.6 }}
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.12] border border-white/20 text-xs font-semibold uppercase tracking-wider mb-6 text-accent/80"
                   >
@@ -1461,7 +1461,7 @@ export function HomePageClient() {
                   <motion.h2
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.3, duration: 0.8 }}
                     className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 max-w-4xl mx-auto"
                   >
@@ -1475,7 +1475,7 @@ export function HomePageClient() {
                   <motion.div
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: 1 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.8, duration: 0.8 }}
                     className="w-24 h-1 bg-gradient-to-r from-primary via-secondary to-accent mx-auto rounded-full mb-8"
                   />
@@ -1487,7 +1487,7 @@ export function HomePageClient() {
                 <motion.p
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.4, duration: 0.8 }}
                   className="text-lg sm:text-xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-10"
                 >
@@ -1500,7 +1500,7 @@ export function HomePageClient() {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.6, duration: 0.8 }}
                   className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-8"
                 >
@@ -1525,7 +1525,7 @@ export function HomePageClient() {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.8, duration: 0.8 }}
                   className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 text-sm text-foreground/60"
                 >
