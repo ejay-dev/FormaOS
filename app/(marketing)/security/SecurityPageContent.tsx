@@ -194,6 +194,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
                     transition={{ delay: 0.2, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -216,6 +217,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
                     transition={{ delay: 0.4, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -238,6 +240,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
                     transition={{ delay: 0.6, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -260,6 +263,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
                     transition={{ delay: 0.8, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -284,6 +288,7 @@ export default function SecurityPageContent() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
                   transition={{ delay: 1, duration: 0.6 }}
                   className="mt-12 pt-8 border-t border-white/10"
                 >
@@ -346,6 +351,7 @@ export default function SecurityPageContent() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="text-center mb-16 sm:mb-20"
           >
@@ -367,6 +373,7 @@ export default function SecurityPageContent() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="relative"
           >
@@ -391,6 +398,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
                     transition={{ delay: 0.2, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -417,6 +425,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
                     transition={{ delay: 0.4, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -443,6 +452,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
                     transition={{ delay: 0.6, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -469,6 +479,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
                     transition={{ delay: 0.8, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -497,6 +508,7 @@ export default function SecurityPageContent() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
                   transition={{ delay: 1, duration: 0.6 }}
                   className="mt-12 pt-8 border-t border-white/10"
                 >
@@ -559,6 +571,7 @@ export default function SecurityPageContent() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="text-center mb-16 sm:mb-20"
           >
@@ -585,6 +598,7 @@ export default function SecurityPageContent() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="relative max-w-5xl mx-auto"
           >
@@ -610,6 +624,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
                     transition={{ delay: 0.2, duration: 0.6 }}
                     className="text-center"
                   >
@@ -630,6 +645,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
                     transition={{ delay: 0.4, duration: 0.6 }}
                     className="text-center"
                   >
@@ -652,6 +668,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
                     transition={{ delay: 0.6, duration: 0.6 }}
                     className="text-center"
                   >
@@ -676,6 +693,7 @@ export default function SecurityPageContent() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
                   transition={{ delay: 0.8, duration: 0.6 }}
                   className="mt-12 pt-8 border-t border-white/10 text-center"
                 >
@@ -712,6 +730,7 @@ export default function SecurityPageContent() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="relative"
           >
@@ -723,6 +742,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
                     transition={{ delay: 0.2, duration: 0.6 }}
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.12] border border-white/20 text-xs font-semibold uppercase tracking-wider mb-6 text-primary/80"
                   >
@@ -733,6 +753,7 @@ export default function SecurityPageContent() {
                   <motion.h2
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
                     transition={{ delay: 0.3, duration: 0.8 }}
                     className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6"
                   >
@@ -746,6 +767,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: 1 }}
+                      viewport={{ once: true }}
                     transition={{ delay: 0.8, duration: 0.8 }}
                     className="w-24 h-1 bg-gradient-to-r from-primary via-secondary to-accent mx-auto rounded-full mb-8"
                   />
@@ -759,6 +781,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, x: -30 }}
                     whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
                     transition={{ delay: 0.4, duration: 0.8 }}
                     className="text-center lg:text-left"
                   >
@@ -797,6 +820,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, x: 30 }}
                     whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
                     transition={{ delay: 0.6, duration: 0.8 }}
                     className="text-center"
                   >

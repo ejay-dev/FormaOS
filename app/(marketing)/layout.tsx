@@ -43,7 +43,10 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
 
           <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
             {/* Logo: mark + text (avoids stale wordmark asset caches) */}
-            <Link href="/" className="mk-logo-container flex items-center gap-2 group">
+            <Link
+              href="/"
+              className="mk-logo-container flex items-center gap-2 group"
+            >
               <img
                 src={brand.logo.mark}
                 alt={brand.appName}
@@ -203,7 +206,9 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
                     height={28}
                     className="select-none rounded-md"
                   />
-                  <span className="text-[16px] font-semibold">{brand.appName}</span>
+                  <span className="text-[16px] font-semibold">
+                    {brand.appName}
+                  </span>
                 </div>
                 <p className="text-sm sm:text-[15px] text-foreground/70 leading-relaxed max-w-sm">
                   Compliance and governance operating system for regulated
