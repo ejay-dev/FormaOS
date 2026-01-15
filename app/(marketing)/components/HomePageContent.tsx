@@ -34,6 +34,7 @@ import {
   EnhancedGlassCard,
   HoverLift,
   ScrollGradient,
+  AnimatedLink,
 } from '@/components/motion';
 import { motion } from 'framer-motion';
 import { spacing, radius, depth } from '@/config/motion';
@@ -747,18 +748,22 @@ export function HomePageContent() {
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-                  <Link
+                  <AnimatedLink
                     href="/auth/signup?plan=pro"
-                    className="btn btn-primary btn-premium text-sm sm:text-lg px-8 sm:px-12 py-4 sm:py-6 shadow-premium-xl w-full sm:w-auto"
+                    variant="primary"
+                    size="lg"
+                    className="shadow-[0_8px_32px_rgba(0,212,251,0.35)] hover:shadow-[0_12px_40px_rgba(0,212,251,0.5)] w-full sm:w-auto text-sm sm:text-lg px-8 sm:px-12 py-4 sm:py-6"
                   >
                     Start Free Trial
-                  </Link>
-                  <Link
+                  </AnimatedLink>
+                  <AnimatedLink
                     href="/contact"
-                    className="btn btn-secondary text-sm sm:text-lg px-8 sm:px-12 py-4 sm:py-6 w-full sm:w-auto"
+                    variant="secondary"
+                    size="lg"
+                    className="w-full sm:w-auto text-sm sm:text-lg px-8 sm:px-12 py-4 sm:py-6"
                   >
                     Request Demo
-                  </Link>
+                  </AnimatedLink>
                 </div>
 
                 <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 mt-8 sm:mt-12 text-xs sm:text-sm text-muted-foreground">

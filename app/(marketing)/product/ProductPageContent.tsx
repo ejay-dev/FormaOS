@@ -20,6 +20,7 @@ import {
   InteractiveCard,
   TimelineItem,
   GradientMesh,
+  AnimatedLink,
 } from '@/components/motion';
 import {
   CleanSystemGrid,
@@ -112,18 +113,22 @@ function ProductHero() {
               transition={{ delay: 0.7, duration: 0.8 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6"
             >
-              <Link
+              <AnimatedLink
                 href="/auth/signup"
-                className="w-full sm:w-auto btn btn-primary px-6 py-3 text-sm font-semibold text-primary-foreground"
+                variant="primary"
+                size="md"
+                className="w-full sm:w-auto shadow-[0_8px_32px_rgba(0,212,251,0.35)]"
               >
                 Start Free Trial
-              </Link>
-              <Link
+              </AnimatedLink>
+              <AnimatedLink
                 href="/contact"
-                className="w-full sm:w-auto btn btn-ghost px-6 py-3 text-sm font-semibold leading-6 flex items-center justify-center sm:justify-start gap-2"
+                variant="ghost"
+                size="md"
+                className="w-full sm:w-auto"
               >
-                Request Demo <ArrowRight className="h-4 w-4" />
-              </Link>
+                Request Demo <ArrowRight className="h-4 w-4 ml-2" />
+              </AnimatedLink>
             </motion.div>
           </div>
         </ParallaxLayer>
@@ -238,7 +243,7 @@ export default function ProductPageContent() {
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+              viewport={{ once: true }}
               transition={{ delay: 0.4, duration: 0.7 }}
               whileHover={{ y: -8, transition: { duration: 0.3 } }}
               className="group"
@@ -292,7 +297,7 @@ export default function ProductPageContent() {
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+              viewport={{ once: true }}
               transition={{ delay: 0.6, duration: 0.7 }}
               whileHover={{ y: -8, transition: { duration: 0.3 } }}
               className="group"
@@ -344,7 +349,7 @@ export default function ProductPageContent() {
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+              viewport={{ once: true }}
               transition={{ delay: 0.8, duration: 0.7 }}
               whileHover={{ y: -8, transition: { duration: 0.3 } }}
               className="group"
@@ -644,7 +649,7 @@ export default function ProductPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.2, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -667,7 +672,7 @@ export default function ProductPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.4, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -689,7 +694,7 @@ export default function ProductPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.6, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -711,7 +716,7 @@ export default function ProductPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.8, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -735,7 +740,7 @@ export default function ProductPageContent() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
+                  viewport={{ once: true }}
                   transition={{ delay: 1, duration: 0.6 }}
                   className="mt-12 pt-8 border-t border-white/10"
                 >
@@ -793,7 +798,7 @@ export default function ProductPageContent() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="relative"
           >
@@ -805,7 +810,7 @@ export default function ProductPageContent() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.2, duration: 0.6 }}
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.12] border border-white/20 text-xs font-semibold uppercase tracking-wider mb-6 text-primary/80"
                   >
@@ -816,7 +821,7 @@ export default function ProductPageContent() {
                   <motion.h2
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.3, duration: 0.8 }}
                     className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6"
                   >
@@ -828,7 +833,7 @@ export default function ProductPageContent() {
                   <motion.div
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: 1 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.8, duration: 0.8 }}
                     className="w-24 h-1 bg-gradient-to-r from-primary via-secondary to-accent mx-auto rounded-full mb-8"
                   />
@@ -840,7 +845,7 @@ export default function ProductPageContent() {
                 <motion.p
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.4, duration: 0.8 }}
                   className="text-lg text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-10"
                 >
@@ -853,7 +858,7 @@ export default function ProductPageContent() {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.6, duration: 0.8 }}
                   className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-8"
                 >
@@ -878,7 +883,7 @@ export default function ProductPageContent() {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.8, duration: 0.8 }}
                   className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 text-sm text-foreground/60"
                 >

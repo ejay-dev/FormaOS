@@ -14,6 +14,7 @@ import {
   SystemBackground,
   GlassCard,
   SectionGlow,
+  AnimatedLink,
 } from '@/components/motion';
 
 export function PricingHero() {
@@ -385,13 +386,15 @@ export function PricingContent() {
             <p className="text-foreground/70 mb-4 sm:mb-6">
               Still have questions?
             </p>
-            <Link
+            <AnimatedLink
               href="/contact"
-              className="group inline-flex items-center gap-2 btn btn-primary btn-premium text-base sm:text-lg px-8 sm:px-10 py-4 sm:py-5"
+              variant="primary"
+              size="lg"
+              className="shadow-[0_8px_32px_rgba(0,212,251,0.35)]"
             >
               Contact Sales
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
+              <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
+            </AnimatedLink>
           </div>
         </div>
       </SystemBackground>

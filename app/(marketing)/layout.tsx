@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { OAuthRedirectWrapper } from './components/oauth-redirect-wrapper';
 import { NavLinks } from './components/NavLinks';
 import { MobileNav } from './components/MobileNav';
+import { AnimatedLink } from '@/components/motion';
 import './marketing.css';
 import { brand } from '@/config/brand';
 
@@ -73,18 +74,22 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
               >
                 Login
               </Link>
-              <Link
+              <AnimatedLink
                 href="/pricing"
-                className="btn btn-secondary px-3 lg:px-4 py-2"
+                variant="secondary"
+                size="sm"
+                className="px-3 lg:px-4"
               >
                 Plans
-              </Link>
-              <Link
+              </AnimatedLink>
+              <AnimatedLink
                 href="/auth/signup"
-                className="btn btn-primary px-4 lg:px-5 py-2 shadow-[0_0_20px_rgba(0,212,251,0.3)] hover:shadow-[0_0_30px_rgba(0,212,251,0.4)] transition-shadow"
+                variant="primary"
+                size="sm"
+                className="px-4 lg:px-5 shadow-[0_0_20px_rgba(0,212,251,0.3)] hover:shadow-[0_0_30px_rgba(0,212,251,0.4)]"
               >
                 Start Free
-              </Link>
+              </AnimatedLink>
             </div>
           </div>
         </header>
