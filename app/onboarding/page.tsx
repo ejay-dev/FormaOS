@@ -89,57 +89,21 @@ async function getOrgContext() {
 
   if (!membership?.organization_id) {
     console.log(
-      '[onboarding] 🚨 NO ORGANIZATION FOUND - attempting to create one',
+      '[onboarding] 🚨 NO ORGANIZATION FOUND - this indicates auth callback failed',
     );
-    
-    try {
-      // Create minimal organization for user
-      const { data: newOrg, error: orgError } = await supabase
-        .from('organizations')
-        .insert({
-          name: `${user.user_metadata?.name || user.email?.split('@')[0] || 'User'}'s Organization`,
-          created_by: user.id,
-          plan_key: null,
-          onboarding_completed: false,
-        })
-        .select('id')
-        .single();
 
-      if (orgError || !newOrg?.id) {
-        console.error('[onboarding] Failed to create organization:', orgError);
-        // Only redirect to signin as last resort
-        redirect(
-          '/auth/signin?error=org_creation_failed&message=' +
-            encodeURIComponent(
-              'Unable to set up your account. Please try again.',
-            ),
-        );
-      }
+    // Auth callback should have created organization
+    // If we reach here, there was an issue in the auth callback process
+    console.error(
+      '[onboarding] Organization should have been created by auth callback',
+    );
 
-      // Create membership
-      await supabase.from('org_members').insert({
-        organization_id: newOrg.id,
-        user_id: user.id,
-        role: 'owner',
-      });
-
-      // Create onboarding status
-      await supabase.from('org_onboarding_status').insert({
-        organization_id: newOrg.id,
-        current_step: 1,
-        completed_steps: [],
-      });
-
-      console.log('[onboarding] ✅ Organization created successfully');
-      // Redirect to self to reload with new organization
-      redirect('/onboarding');
-    } catch (err) {
-      console.error('[onboarding] Organization creation error:', err);
-      redirect(
-        '/auth/signin?error=setup_failed&message=' +
-          encodeURIComponent('Account setup failed. Please contact support.'),
-      );
-    }
+    redirect(
+      '/auth/signin?error=setup_incomplete&message=' +
+        encodeURIComponent(
+          'Account setup is incomplete. Please sign in again to complete setup.',
+        ),
+    );
   }
 
   const orgRecord = Array.isArray(membership.organizations)

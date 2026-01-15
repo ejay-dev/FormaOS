@@ -34,9 +34,10 @@ export async function middleware(request: NextRequest) {
 
     const oauthCode = request.nextUrl.searchParams.get('code');
     const oauthState = request.nextUrl.searchParams.get('state');
+    const oauthError = request.nextUrl.searchParams.get('error');
 
-    // Only handle OAuth redirects to root path, and ensure we're on correct domain
-    if (oauthCode && pathname === '/' && oauthState) {
+    // Handle OAuth redirects to root path - Google OAuth may not always include state
+    if (oauthCode && pathname === '/') {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = '/auth/callback';
       // Preserve all search params for OAuth callback
@@ -47,7 +48,22 @@ export async function middleware(request: NextRequest) {
       console.log('[Middleware] OAuth redirect:', {
         from: request.nextUrl.toString(),
         to: redirectUrl.toString(),
+        hasState: !!oauthState,
+        hasError: !!oauthError,
       });
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    // Handle OAuth errors (user denied permission, etc.)
+    if (oauthError && pathname === '/') {
+      console.log('[Middleware] OAuth error detected:', oauthError);
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = '/auth/signin';
+      redirectUrl.searchParams.set('error', 'oauth_cancelled');
+      redirectUrl.searchParams.set(
+        'message',
+        'Sign in was cancelled. Please try again.',
+      );
       return NextResponse.redirect(redirectUrl);
     }
 

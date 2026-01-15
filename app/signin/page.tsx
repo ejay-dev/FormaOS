@@ -39,14 +39,22 @@ function SignInContent() {
     if (!base) base = (window.location.origin ?? '').replace(/\/$/, '');
 
     const supabase = createSupabaseClient();
+
+    // Generate a random state for CSRF protection
+    const state = Math.random().toString(36).substring(2, 15);
+
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${base}/auth/callback`,
+        queryParams: {
+          state: state,
+        },
       },
     });
 
     if (error) {
+      console.error('OAuth initialization error:', error);
       setErrorMessage(error.message ?? 'An unexpected error occurred.');
       return;
     }

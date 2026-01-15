@@ -207,7 +207,7 @@ export async function GET(request: Request) {
         .from('organizations')
         .insert({
           name: fallbackName,
-          created_by: null,
+          created_by: data.user.id, // Set the creating user ID properly
           plan_key: plan ?? null,
           plan_selected_at: plan ? now : null,
           onboarding_completed: false, // Ensure onboarding is NOT complete for new users
