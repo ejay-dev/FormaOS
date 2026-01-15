@@ -17,8 +17,11 @@ export async function POST(request: NextRequest) {
     }
 
     const rateLimit = await rateLimitApi(request, data.user.id);
-    if (!rateLimit.allowed) {
-      return createRateLimitedResponse("Rate limit exceeded", 429, rateLimit.headers);
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded', retryAfter: rateLimit.resetAt },
+        { status: 429 }
+      );
     }
 
     const body = await request.json();

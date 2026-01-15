@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendEmail, EmailData } from '@/lib/email/send-email';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { rateLimitApi, createRateLimitedResponse } from '@/lib/security/rate-limiter';
+import {
+  rateLimitApi,
+  createRateLimitedResponse,
+  createRateLimitHeaders,
+} from '@/lib/security/rate-limiter';
 import { requirePermission } from '@/app/app/actions/rbac';
 
 export async function POST(request: NextRequest) {
@@ -10,28 +14,37 @@ export async function POST(request: NextRequest) {
 
     // Verify user is authenticated
     const { data, error: authError } = await supabase.auth.getUser();
-    
+
     if (authError || !data.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const rateLimit = await rateLimitApi(request, data.user.id);
-    if (!rateLimit.allowed) {
-      return createRateLimitedResponse("Rate limit exceeded", 429, rateLimit.headers);
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded', retryAfter: rateLimit.resetAt },
+        { status: 429 },
+      );
     }
 
-    const permissionCtx = await requirePermission("MANAGE_USERS");
+    const permissionCtx = await requirePermission('MANAGE_USERS');
 
     const body = await request.json();
     const emailData = body as EmailData;
-    const normalizedEmail = emailData.to?.toLowerCase?.() ?? "";
+    const normalizedEmail = emailData.to?.toLowerCase?.() ?? '';
 
     if (!normalizedEmail || !emailData.type) {
-      return NextResponse.json({ error: "Invalid email payload" }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Invalid email payload' },
+        { status: 400 },
+      );
     }
 
-    if (emailData.organizationId && emailData.organizationId !== permissionCtx.orgId) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    if (
+      emailData.organizationId &&
+      emailData.organizationId !== permissionCtx.orgId
+    ) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
     const payload: EmailData = {
@@ -47,7 +60,7 @@ export async function POST(request: NextRequest) {
     if (!result.success) {
       return NextResponse.json(
         { error: 'Failed to send email', details: result.error },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -56,7 +69,7 @@ export async function POST(request: NextRequest) {
     console.error('[API /email/send] Error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -1,11 +1,11 @@
 /**
  * FormaOS Security Module - Rate Limiter
- * 
+ *
  * Provides in-memory rate limiting for auth and API routes.
  * Protects from brute force attacks.
  */
 
-import { headers } from "next/headers";
+import { headers } from 'next/headers';
 
 interface RateLimitConfig {
   windowMs: number;
@@ -25,30 +25,30 @@ const RATE_LIMITS = {
   AUTH: {
     windowMs: 15 * 60 * 1000,
     maxRequests: 10,
-    keyPrefix: "rl:auth",
+    keyPrefix: 'rl:auth',
   } as RateLimitConfig,
-  
+
   API: {
     windowMs: 60 * 1000,
     maxRequests: 100,
-    keyPrefix: "rl:api",
+    keyPrefix: 'rl:api',
   } as RateLimitConfig,
-  
+
   GENERAL: {
     windowMs: 60 * 1000,
     maxRequests: 200,
-    keyPrefix: "rl:gen",
+    keyPrefix: 'rl:gen',
   } as RateLimitConfig,
-  
+
   UPLOAD: {
     windowMs: 60 * 1000,
     maxRequests: 20,
-    keyPrefix: "rl:upload",
+    keyPrefix: 'rl:upload',
   } as RateLimitConfig,
   EXPORT: {
     windowMs: 10 * 60 * 1000,
     maxRequests: 5,
-    keyPrefix: "rl:export",
+    keyPrefix: 'rl:export',
   } as RateLimitConfig,
 } as const;
 
@@ -57,12 +57,12 @@ const memoryStore = new Map<string, { count: number; resetAt: number }>();
 export async function getClientIdentifier(): Promise<string> {
   try {
     const headersList = await headers();
-    const forwardedFor = headersList.get("x-forwarded-for");
-    const realIp = headersList.get("x-real-ip");
-    const cfConnectingIp = headersList.get("cf-connecting-ip");
-    
+    const forwardedFor = headersList.get('x-forwarded-for');
+    const realIp = headersList.get('x-real-ip');
+    const cfConnectingIp = headersList.get('cf-connecting-ip');
+
     if (forwardedFor) {
-      return forwardedFor.split(",")[0].trim();
+      return forwardedFor.split(',')[0].trim();
     }
     if (realIp) {
       return realIp.trim();
@@ -70,17 +70,17 @@ export async function getClientIdentifier(): Promise<string> {
     if (cfConnectingIp) {
       return cfConnectingIp.trim();
     }
-    
-    return "unknown";
+
+    return 'unknown';
   } catch {
-    return "server";
+    return 'server';
   }
 }
 
 export async function getUserIdentifier(): Promise<string | null> {
   try {
     const headersList = await headers();
-    return headersList.get("x-user-id");
+    return headersList.get('x-user-id');
   } catch {
     return null;
   }
@@ -98,19 +98,19 @@ function cleanExpiredEntries(): void {
 export async function checkRateLimit(
   config: RateLimitConfig,
   identifier: string,
-  userId?: string | null
+  userId?: string | null,
 ): Promise<RateLimitResult> {
-  const key = userId 
+  const key = userId
     ? `${config.keyPrefix}:user:${userId}`
     : `${config.keyPrefix}:ip:${identifier}`;
-  
+
   const now = Date.now();
   const existing = memoryStore.get(key);
-  
+
   if (Math.random() < 0.05) {
     cleanExpiredEntries();
   }
-  
+
   if (!existing) {
     memoryStore.set(key, { count: 1, resetAt: now + config.windowMs });
     return {
@@ -120,7 +120,7 @@ export async function checkRateLimit(
       resetAt: now + config.windowMs,
     };
   }
-  
+
   if (now > existing.resetAt) {
     memoryStore.set(key, { count: 1, resetAt: now + config.windowMs });
     return {
@@ -130,7 +130,7 @@ export async function checkRateLimit(
       resetAt: now + config.windowMs,
     };
   }
-  
+
   if (existing.count >= config.maxRequests) {
     const retryAfter = existing.resetAt - now;
     return {
@@ -141,7 +141,7 @@ export async function checkRateLimit(
       retryAfter: Math.ceil(retryAfter / 1000),
     };
   }
-  
+
   existing.count++;
   return {
     success: true,
@@ -151,12 +151,14 @@ export async function checkRateLimit(
   };
 }
 
-export function createRateLimitHeaders(result: RateLimitResult): Record<string, string> {
+export function createRateLimitHeaders(
+  result: RateLimitResult,
+): Record<string, string> {
   return {
-    "X-RateLimit-Limit": result.limit.toString(),
-    "X-RateLimit-Remaining": result.remaining.toString(),
-    "X-RateLimit-Reset": Math.ceil(result.resetAt / 1000).toString(),
-    ...(result.retryAfter && { "Retry-After": result.retryAfter.toString() }),
+    'X-RateLimit-Limit': result.limit.toString(),
+    'X-RateLimit-Remaining': result.remaining.toString(),
+    'X-RateLimit-Reset': Math.ceil(result.resetAt / 1000).toString(),
+    ...(result.retryAfter && { 'Retry-After': result.retryAfter.toString() }),
   };
 }
 
@@ -167,36 +169,30 @@ export async function rateLimitAuth(request: Request): Promise<{
   const identifier = await getClientIdentifier();
   const result = await checkRateLimit(RATE_LIMITS.AUTH, identifier);
   const headers = createRateLimitHeaders(result);
-  
+
   return { allowed: result.success, headers };
 }
 
 export async function rateLimitApi(
   request: Request,
-  userId?: string | null
+  userId?: string | null,
 ): Promise<RateLimitResult> {
   const identifier = await getClientIdentifier();
   return checkRateLimit(RATE_LIMITS.API, identifier, userId);
-}
-  const identifier = await getClientIdentifier();
-  const result = await checkRateLimit(RATE_LIMITS.API, identifier, userId);
-  const headers = createRateLimitHeaders(result);
-  
-  return { allowed: result.success, headers };
 }
 
 export function createRateLimitedResponse(
   message: string,
   status: number = 429,
-  headers?: Record<string, string>
+  headers?: Record<string, string>,
 ): Response {
-  const body = JSON.stringify({ error: message, code: "RATE_LIMIT_EXCEEDED" });
-  
+  const body = JSON.stringify({ error: message, code: 'RATE_LIMIT_EXCEEDED' });
+
   return new Response(body, {
     status,
     headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
       ...headers,
     },
   });
@@ -205,15 +201,15 @@ export function createRateLimitedResponse(
 export async function getRateLimitStatus(
   config: RateLimitConfig,
   identifier: string,
-  userId?: string | null
+  userId?: string | null,
 ): Promise<RateLimitResult> {
-  const key = userId 
+  const key = userId
     ? `${config.keyPrefix}:user:${userId}`
     : `${config.keyPrefix}:ip:${identifier}`;
-  
+
   const now = Date.now();
   const existing = memoryStore.get(key);
-  
+
   if (!existing || now > existing.resetAt) {
     return {
       success: true,
@@ -222,7 +218,7 @@ export async function getRateLimitStatus(
       resetAt: now + config.windowMs,
     };
   }
-  
+
   const remaining = Math.max(0, config.maxRequests - existing.count);
   return {
     success: existing.count < config.maxRequests,

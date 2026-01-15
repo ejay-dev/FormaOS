@@ -19,7 +19,7 @@ export async function GET(request: Request) {
     const rateLimitResult = await rateLimitApi(request);
     if (!rateLimitResult.success) {
       return NextResponse.json(
-        { error: 'Rate limit exceeded', retryAfter: rateLimitResult.reset },
+        { error: 'Rate limit exceeded', retryAfter: rateLimitResult.resetAt },
         { status: 429 },
       );
     }

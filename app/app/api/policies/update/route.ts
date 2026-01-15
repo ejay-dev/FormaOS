@@ -17,8 +17,11 @@ export async function POST(req: Request) {
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
     const rateLimit = await rateLimitApi(req, user.id);
-    if (!rateLimit.allowed) {
-      return createRateLimitedResponse("Rate limit exceeded", 429, rateLimit.headers);
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded', retryAfter: rateLimit.resetAt },
+        { status: 429 }
+      );
     }
 
     const permissionCtx = await requirePermission("EDIT_CONTROLS");
