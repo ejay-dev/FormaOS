@@ -2186,6 +2186,7 @@ function Industries() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   // scrollYProgress available for future scroll animations
   useScroll({
@@ -2193,80 +2194,102 @@ function Industries() {
     offset: ['start end', 'end start'],
   });
 
-  // Mouse tracking for parallax effects
+  // Detect mobile for performance optimization
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Mouse tracking for parallax effects - disabled on mobile
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
+    if (isMobile || !containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
     const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
     setMousePosition({ x, y });
   };
 
-  // Animated background particles
-  const backgroundParticles = Array.from({ length: 20 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    delay: Math.random() * 2,
-    duration: 3 + Math.random() * 2,
-  }));
+  // Animated background particles - reduced on mobile
+  const backgroundParticles = Array.from(
+    { length: isMobile ? 6 : 20 },
+    (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      delay: Math.random() * 2,
+      duration: 3 + Math.random() * 2,
+    }),
+  );
 
   return (
     <section
       ref={containerRef}
-      className="relative py-32 bg-[#0a0f1c] overflow-hidden"
+      className="relative py-16 sm:py-24 lg:py-32 bg-[#0a0f1c] overflow-hidden"
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovering(true)}
+      onMouseEnter={() => !isMobile && setIsHovering(true)}
       onMouseLeave={() => {
         setIsHovering(false);
         setMousePosition({ x: 0, y: 0 });
       }}
     >
-      {/* Dynamic Background Elements */}
+      {/* Dynamic Background Elements - simplified on mobile */}
       <div className="absolute inset-0">
-        {/* Animated gradient orbs */}
+        {/* Animated gradient orbs - static on mobile for performance */}
         <motion.div
-          className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl"
-          animate={{
-            x: mousePosition.x * 30,
-            y: mousePosition.y * 20,
-            scale: isHovering ? 1.2 : 1,
-          }}
+          className="absolute top-1/4 left-1/4 w-[250px] sm:w-[400px] lg:w-[500px] h-[250px] sm:h-[400px] lg:h-[500px] bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-2xl sm:blur-3xl will-change-transform"
+          animate={
+            isMobile
+              ? {}
+              : {
+                  x: mousePosition.x * 30,
+                  y: mousePosition.y * 20,
+                  scale: isHovering ? 1.2 : 1,
+                }
+          }
           transition={{ type: 'spring', stiffness: 50, damping: 30 }}
+          style={{ transform: 'translateZ(0)' }}
         />
         <motion.div
-          className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-3xl"
-          animate={{
-            x: mousePosition.x * -25,
-            y: mousePosition.y * -15,
-            scale: isHovering ? 1.1 : 1,
-          }}
+          className="absolute bottom-1/4 right-1/4 w-[200px] sm:w-[300px] lg:w-[400px] h-[200px] sm:h-[300px] lg:h-[400px] bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-2xl sm:blur-3xl will-change-transform"
+          animate={
+            isMobile
+              ? {}
+              : {
+                  x: mousePosition.x * -25,
+                  y: mousePosition.y * -15,
+                  scale: isHovering ? 1.1 : 1,
+                }
+          }
           transition={{ type: 'spring', stiffness: 40, damping: 35 }}
+          style={{ transform: 'translateZ(0)' }}
         />
 
-        {/* Floating particles */}
-        {backgroundParticles.map((particle) => (
-          <motion.div
-            key={particle.id}
-            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"
-            style={{
-              left: `${particle.x}%`,
-              top: `${particle.y}%`,
-            }}
-            animate={{
-              x: [0, mousePosition.x * 10, 0],
-              y: [0, mousePosition.y * 8, 0],
-              opacity: [0.2, 0.6, 0.2],
-              scale: [1, 1.5, 1],
-            }}
-            transition={{
-              duration: particle.duration,
-              delay: particle.delay,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-          />
-        ))}
+        {/* Floating particles - simplified on mobile */}
+        {!isMobile &&
+          backgroundParticles.map((particle) => (
+            <motion.div
+              key={particle.id}
+              className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"
+              style={{
+                left: `${particle.x}%`,
+                top: `${particle.y}%`,
+              }}
+              animate={{
+                x: [0, mousePosition.x * 10, 0],
+                y: [0, mousePosition.y * 8, 0],
+                opacity: [0.2, 0.6, 0.2],
+                scale: [1, 1.5, 1],
+              }}
+              transition={{
+                duration: particle.duration,
+                delay: particle.delay,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+          ))}
 
         {/* Data connection lines */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none">
@@ -2327,33 +2350,36 @@ function Industries() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-6"
+            className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs sm:text-sm font-medium mb-4 sm:mb-6"
           >
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-emerald-400 animate-pulse" />
             Industry Solutions
           </motion.div>
 
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
             Trusted Across
             <span className="bg-gradient-to-r from-cyan-400 via-emerald-400 to-blue-500 bg-clip-text text-transparent">
               {' '}
               Industries
             </span>
           </h2>
-          <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed px-4 sm:px-0">
             Purpose-built solutions for regulated sectors that demand the
             highest standards of evidence and compliance.
           </p>
         </motion.div>
 
-        <div className="relative z-10 grid lg:grid-cols-5 gap-6 mb-12">
+        {/* Mobile: 2-column grid, Desktop: 5-column grid */}
+        <div className="relative z-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6 mb-8 sm:mb-12">
           {industries.map((industry, index) => {
             const Icon = industry.icon;
             const isActive = activeIndex === index;
-            const cardOffset = {
-              x: mousePosition.x * (5 - Math.abs(index - 2)) * 2,
-              y: mousePosition.y * (5 - Math.abs(index - 2)) * 1.5,
-            };
+            const cardOffset = isMobile
+              ? { x: 0, y: 0 }
+              : {
+                  x: mousePosition.x * (5 - Math.abs(index - 2)) * 2,
+                  y: mousePosition.y * (5 - Math.abs(index - 2)) * 1.5,
+                };
 
             return (
               <motion.div
@@ -2374,48 +2400,55 @@ function Industries() {
                   y: cardOffset.y,
                 }}
                 style={{
-                  transformStyle: 'preserve-3d',
+                  transformStyle: isMobile ? 'flat' : 'preserve-3d',
                 }}
               >
                 <motion.button
                   onClick={() => setActiveIndex(index)}
-                  whileHover={{
-                    scale: 1.08,
-                    y: -12,
-                    rotateY: mousePosition.x * 8,
-                    rotateX: mousePosition.y * -5,
-                    z: 50,
-                  }}
+                  whileHover={
+                    isMobile
+                      ? { scale: 1.02 }
+                      : {
+                          scale: 1.08,
+                          y: -12,
+                          rotateY: mousePosition.x * 8,
+                          rotateX: mousePosition.y * -5,
+                          z: 50,
+                        }
+                  }
                   whileTap={{ scale: 0.98 }}
-                  className={`relative w-full p-8 rounded-2xl border transition-all duration-500 text-left overflow-hidden transform-gpu ${
+                  className={`relative w-full p-4 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl border transition-all duration-300 sm:duration-500 text-left overflow-hidden transform-gpu will-change-transform ${
                     isActive
-                      ? 'bg-gradient-to-br from-gray-900/90 to-gray-950/90 border-cyan-500/60 shadow-2xl shadow-cyan-500/25'
-                      : 'bg-gradient-to-br from-gray-900/40 to-gray-950/40 border-white/5 hover:border-cyan-500/30 hover:bg-gradient-to-br hover:from-gray-900/70 hover:to-gray-950/70'
+                      ? 'bg-gradient-to-br from-gray-900/90 to-gray-950/90 border-cyan-500/60 shadow-lg sm:shadow-2xl shadow-cyan-500/25'
+                      : 'bg-gradient-to-br from-gray-900/60 to-gray-950/60 border-white/10 sm:border-white/5 sm:hover:border-cyan-500/30'
                   }`}
                   style={{
-                    backdropFilter: 'blur(20px)',
-                    transformStyle: 'preserve-3d',
+                    backdropFilter: isMobile ? 'none' : 'blur(20px)',
+                    WebkitBackdropFilter: isMobile ? 'none' : 'blur(20px)',
+                    transformStyle: isMobile ? 'flat' : 'preserve-3d',
                     boxShadow: isActive
-                      ? `0 25px 50px -12px rgba(6, 182, 212, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1)`
-                      : `0 10px 25px -5px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)`,
+                      ? `0 15px 30px -8px rgba(6, 182, 212, 0.2)`
+                      : `0 4px 12px -2px rgba(0, 0, 0, 0.2)`,
                   }}
                 >
-                  {/* Enhanced glow effects */}
-                  <motion.div
-                    className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                    style={{
-                      background: `conic-gradient(from 0deg, transparent, rgba(6, 182, 212, 0.1), transparent, rgba(59, 130, 246, 0.1), transparent)`,
-                      transform: 'translateZ(-1px)',
-                    }}
-                    animate={{
-                      rotate: [0, 360],
-                    }}
-                    transition={{
-                      duration: 8,
-                      repeat: Infinity,
-                      ease: 'linear',
-                    }}
-                  />
+                  {/* Enhanced glow effects - disabled on mobile */}
+                  {!isMobile && (
+                    <motion.div
+                      className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                      style={{
+                        background: `conic-gradient(from 0deg, transparent, rgba(6, 182, 212, 0.1), transparent, rgba(59, 130, 246, 0.1), transparent)`,
+                        transform: 'translateZ(-1px)',
+                      }}
+                      animate={{
+                        rotate: [0, 360],
+                      }}
+                      transition={{
+                        duration: 8,
+                        repeat: Infinity,
+                        ease: 'linear',
+                      }}
+                    />
+                  )}
 
                   {/* Animated edge lighting */}
                   <motion.div
@@ -2454,33 +2487,41 @@ function Industries() {
                     style={{ transform: 'translateZ(20px)' }}
                   >
                     <motion.div
-                      className={`inline-flex p-4 rounded-xl bg-gradient-to-br ${industry.color} mb-4 transition-all duration-500 shadow-lg`}
-                      animate={{
-                        scale: isActive ? 1.15 : 1,
-                        rotate: isActive ? [0, 8, -8, 0] : 0,
-                        boxShadow: isActive
-                          ? `0 20px 40px -10px rgba(6, 182, 212, 0.4)`
-                          : `0 8px 16px -4px rgba(0, 0, 0, 0.3)`,
-                      }}
+                      className={`inline-flex p-2.5 sm:p-3 lg:p-4 rounded-lg sm:rounded-xl bg-gradient-to-br ${industry.color} mb-2 sm:mb-4 transition-all duration-300 sm:duration-500 shadow-md sm:shadow-lg`}
+                      animate={
+                        isMobile
+                          ? { scale: isActive ? 1.05 : 1 }
+                          : {
+                              scale: isActive ? 1.15 : 1,
+                              rotate: isActive ? [0, 8, -8, 0] : 0,
+                              boxShadow: isActive
+                                ? `0 20px 40px -10px rgba(6, 182, 212, 0.4)`
+                                : `0 8px 16px -4px rgba(0, 0, 0, 0.3)`,
+                            }
+                      }
                       transition={{
                         scale: { duration: 0.3, ease: 'easeOut' },
                         rotate: {
                           duration: 3,
-                          repeat: isActive ? Infinity : 0,
+                          repeat: isActive && !isMobile ? Infinity : 0,
                           ease: 'easeInOut',
                         },
                         boxShadow: { duration: 0.3 },
                       }}
-                      whileHover={{
-                        scale: 1.2,
-                        rotate: 5,
-                      }}
+                      whileHover={
+                        isMobile
+                          ? {}
+                          : {
+                              scale: 1.2,
+                              rotate: 5,
+                            }
+                      }
                     >
-                      <Icon className="w-7 h-7 text-white filter drop-shadow-lg" />
+                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-white" />
                     </motion.div>
 
                     <motion.h3
-                      className="font-bold text-xl group-hover:text-cyan-300 transition-colors duration-300"
+                      className="font-semibold sm:font-bold text-sm sm:text-base lg:text-xl group-hover:text-cyan-300 transition-colors duration-300"
                       animate={{
                         color: isActive
                           ? 'rgb(103, 232, 249)'
@@ -2498,7 +2539,7 @@ function Industries() {
                     animate={{ scaleX: isActive ? 1 : 0 }}
                     transition={{ duration: 0.4, ease: 'easeOut' }}
                     style={{
-                      borderRadius: '0 0 1rem 1rem',
+                      borderRadius: '0 0 0.75rem 0.75rem',
                     }}
                   />
                 </motion.button>
@@ -2507,62 +2548,68 @@ function Industries() {
           })}
         </div>
 
+        {/* Detail panel - simplified on mobile */}
         <motion.div
           key={activeIndex}
-          initial={{ opacity: 0, y: 30, scale: 0.95 }}
+          initial={{ opacity: 0, y: 20, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -20, scale: 0.95 }}
+          exit={{ opacity: 0, y: -15, scale: 0.98 }}
           transition={{
-            duration: 0.6,
+            duration: 0.4,
             ease: [0.25, 0.46, 0.45, 0.94],
-            staggerChildren: 0.1,
           }}
-          className="relative p-10 sm:p-16 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 border border-white/10 shadow-2xl overflow-hidden"
+          className="relative p-5 sm:p-8 lg:p-16 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 border border-white/10 shadow-lg sm:shadow-2xl overflow-hidden"
           style={{
-            backdropFilter: 'blur(40px)',
-            transform: `translateY(${mousePosition.y * -5}px) translateX(${mousePosition.x * -3}px)`,
+            backdropFilter: isMobile ? 'none' : 'blur(40px)',
+            WebkitBackdropFilter: isMobile ? 'none' : 'blur(40px)',
+            transform: isMobile
+              ? 'none'
+              : `translateY(${mousePosition.y * -5}px) translateX(${mousePosition.x * -3}px)`,
           }}
         >
-          {/* Dynamic content background */}
-          <motion.div
-            className="absolute inset-0 opacity-20"
-            animate={{
-              background: [
-                `linear-gradient(135deg, ${industries[activeIndex].color.replace('from-', 'rgba(').replace(' to-', ', 0.1), rgba(').replace('-', ' ').replace('400', '59').replace('600', '130').replace('500', '85')}, 0.05))`,
-                `linear-gradient(225deg, ${industries[activeIndex].color.replace('from-', 'rgba(').replace(' to-', ', 0.05), rgba(').replace('-', ' ').replace('400', '59').replace('600', '130').replace('500', '85')}, 0.1))`,
-                `linear-gradient(135deg, ${industries[activeIndex].color.replace('from-', 'rgba(').replace(' to-', ', 0.1), rgba(').replace('-', ' ').replace('400', '59').replace('600', '130').replace('500', '85')}, 0.05))`,
-              ],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-          />
-
-          {/* Floating data elements */}
-          {Array.from({ length: 8 }).map((_, i) => (
+          {/* Dynamic content background - simplified on mobile */}
+          {!isMobile && (
             <motion.div
-              key={`data-${activeIndex}-${i}`}
-              className={`absolute w-2 h-2 rounded-full bg-gradient-to-r ${industries[activeIndex].color} opacity-20`}
-              style={{
-                left: `${15 + i * 10}%`,
-                top: `${20 + (i % 3) * 25}%`,
-              }}
+              className="absolute inset-0 opacity-20"
               animate={{
-                x: [0, Math.sin(i) * 20, 0],
-                y: [0, Math.cos(i) * 15, 0],
-                scale: [1, 1.5, 1],
-                opacity: [0.1, 0.4, 0.1],
+                background: [
+                  `linear-gradient(135deg, ${industries[activeIndex].color.replace('from-', 'rgba(').replace(' to-', ', 0.1), rgba(').replace('-', ' ').replace('400', '59').replace('600', '130').replace('500', '85')}, 0.05))`,
+                  `linear-gradient(225deg, ${industries[activeIndex].color.replace('from-', 'rgba(').replace(' to-', ', 0.05), rgba(').replace('-', ' ').replace('400', '59').replace('600', '130').replace('500', '85')}, 0.1))`,
+                  `linear-gradient(135deg, ${industries[activeIndex].color.replace('from-', 'rgba(').replace(' to-', ', 0.1), rgba(').replace('-', ' ').replace('400', '59').replace('600', '130').replace('500', '85')}, 0.05))`,
+                ],
               }}
               transition={{
-                duration: 3 + i * 0.5,
+                duration: 4,
                 repeat: Infinity,
                 ease: 'easeInOut',
-                delay: i * 0.2,
               }}
             />
-          ))}
+          )}
+
+          {/* Floating data elements - hidden on mobile */}
+          {!isMobile &&
+            Array.from({ length: 8 }).map((_, i) => (
+              <motion.div
+                key={`data-${activeIndex}-${i}`}
+                className={`absolute w-2 h-2 rounded-full bg-gradient-to-r ${industries[activeIndex].color} opacity-20`}
+                style={{
+                  left: `${15 + i * 10}%`,
+                  top: `${20 + (i % 3) * 25}%`,
+                }}
+                animate={{
+                  x: [0, Math.sin(i) * 20, 0],
+                  y: [0, Math.cos(i) * 15, 0],
+                  scale: [1, 1.5, 1],
+                  opacity: [0.1, 0.4, 0.1],
+                }}
+                transition={{
+                  duration: 3 + i * 0.5,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                  delay: i * 0.2,
+                }}
+              />
+            ))}
 
           <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
             <motion.div
@@ -2578,41 +2625,39 @@ function Industries() {
               </motion.h3>
 
               <motion.p
-                className="text-xl text-gray-300 mb-10 leading-relaxed"
+                className="text-base sm:text-lg lg:text-xl text-gray-300 mb-6 sm:mb-10 leading-relaxed"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
+                transition={{ duration: 0.4, delay: 0.2 }}
               >
                 {industries[activeIndex].description}
               </motion.p>
 
-              <div className="space-y-5">
+              <div className="space-y-3 sm:space-y-5">
                 {industries[activeIndex].features.map((feature, i) => (
                   <motion.div
                     key={`${activeIndex}-${feature}`}
-                    initial={{ opacity: 0, x: -20, scale: 0.8 }}
-                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    initial={{ opacity: 0, x: -15 }}
+                    animate={{ opacity: 1, x: 0 }}
                     transition={{
-                      duration: 0.5,
-                      delay: 0.4 + i * 0.1,
-                      type: 'spring',
-                      stiffness: 100,
+                      duration: 0.3,
+                      delay: 0.25 + i * 0.08,
                     }}
-                    className="flex items-center gap-4 group hover:scale-105 transition-transform duration-200"
+                    className="flex items-center gap-3 sm:gap-4 group sm:hover:scale-105 transition-transform duration-200"
                   >
                     <motion.div
-                      className={`w-3 h-3 rounded-full bg-gradient-to-r ${industries[activeIndex].color} shadow-lg`}
-                      whileHover={{ scale: 1.5, rotate: 180 }}
+                      className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-gradient-to-r ${industries[activeIndex].color} shadow-md sm:shadow-lg flex-shrink-0`}
+                      whileHover={isMobile ? {} : { scale: 1.5, rotate: 180 }}
                       transition={{ type: 'spring', stiffness: 300 }}
                     />
-                    <span className="text-gray-200 font-medium group-hover:text-cyan-300 transition-colors">
+                    <span className="text-sm sm:text-base text-gray-200 font-medium group-hover:text-cyan-300 transition-colors">
                       {feature}
                     </span>
                     <motion.div
-                      className="ml-auto w-12 h-0.5 bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent"
+                      className="ml-auto w-8 sm:w-12 h-0.5 bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent hidden sm:block"
                       initial={{ scaleX: 0 }}
                       animate={{ scaleX: 1 }}
-                      transition={{ duration: 0.8, delay: 0.5 + i * 0.1 }}
+                      transition={{ duration: 0.6, delay: 0.3 + i * 0.08 }}
                     />
                   </motion.div>
                 ))}
@@ -2620,74 +2665,85 @@ function Industries() {
             </motion.div>
 
             <motion.div
-              className="relative text-center p-16 rounded-3xl bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-white/10 shadow-xl overflow-hidden"
-              initial={{ opacity: 0, scale: 0.9, rotateY: -15 }}
-              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              whileHover={{
-                scale: 1.02,
-                boxShadow: `0 30px 60px -12px rgba(6, 182, 212, 0.4)`,
-              }}
+              className="relative text-center p-8 sm:p-12 lg:p-16 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-white/10 shadow-lg sm:shadow-xl overflow-hidden"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              whileHover={
+                isMobile
+                  ? {}
+                  : {
+                      scale: 1.02,
+                      boxShadow: `0 30px 60px -12px rgba(6, 182, 212, 0.4)`,
+                    }
+              }
               style={{
-                backdropFilter: 'blur(20px)',
-                transform: `perspective(1000px) rotateX(${mousePosition.y * -2}deg) rotateY(${mousePosition.x * 2}deg)`,
+                backdropFilter: isMobile ? 'none' : 'blur(20px)',
+                WebkitBackdropFilter: isMobile ? 'none' : 'blur(20px)',
+                transform: isMobile
+                  ? 'none'
+                  : `perspective(1000px) rotateX(${mousePosition.y * -2}deg) rotateY(${mousePosition.x * 2}deg)`,
               }}
             >
-              {/* Stats background effect */}
-              <motion.div
-                className={`absolute inset-0 bg-gradient-to-br ${industries[activeIndex].color} opacity-5`}
-                animate={{
-                  scale: [1, 1.1, 1],
-                  opacity: [0.05, 0.15, 0.05],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-              />
+              {/* Stats background effect - simplified on mobile */}
+              {!isMobile && (
+                <motion.div
+                  className={`absolute inset-0 bg-gradient-to-br ${industries[activeIndex].color} opacity-5`}
+                  animate={{
+                    scale: [1, 1.1, 1],
+                    opacity: [0.05, 0.15, 0.05],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                />
+              )}
 
               <motion.div
-                className={`relative text-7xl font-bold bg-gradient-to-r ${industries[activeIndex].color} bg-clip-text text-transparent mb-6 filter drop-shadow-lg`}
-                initial={{ scale: 0, rotate: -180 }}
-                animate={{ scale: 1, rotate: 0 }}
+                className={`relative text-4xl sm:text-5xl lg:text-7xl font-bold bg-gradient-to-r ${industries[activeIndex].color} bg-clip-text text-transparent mb-4 sm:mb-6`}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
                 transition={{
                   type: 'spring',
                   stiffness: 100,
                   damping: 15,
-                  delay: 0.6,
+                  delay: 0.3,
                 }}
-                layoutId={`stats-${activeIndex}`}
+                layoutId={isMobile ? undefined : `stats-${activeIndex}`}
               >
                 {industries[activeIndex].stats.value}
               </motion.div>
 
               <motion.div
-                className="text-gray-300 text-lg font-medium"
-                initial={{ opacity: 0, y: 20 }}
+                className="text-gray-300 text-sm sm:text-base lg:text-lg font-medium"
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.8 }}
+                transition={{ duration: 0.4, delay: 0.4 }}
               >
                 {industries[activeIndex].stats.label}
               </motion.div>
 
-              {/* Animated border */}
-              <motion.div
-                className="absolute inset-0 rounded-3xl border border-transparent"
-                style={{
-                  background: `linear-gradient(45deg, transparent, ${industries[activeIndex].color.replace('from-', '').replace(' to-', ', ')}) border-box`,
-                  mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
-                  maskComposite: 'exclude',
-                }}
-                animate={{
-                  opacity: [0.3, 0.7, 0.3],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-              />
+              {/* Animated border - hidden on mobile */}
+              {!isMobile && (
+                <motion.div
+                  className="absolute inset-0 rounded-2xl sm:rounded-3xl border border-transparent"
+                  style={{
+                    background: `linear-gradient(45deg, transparent, ${industries[activeIndex].color.replace('from-', '').replace(' to-', ', ')}) border-box`,
+                    mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+                    maskComposite: 'exclude',
+                  }}
+                  animate={{
+                    opacity: [0.3, 0.7, 0.3],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                />
+              )}
             </motion.div>
           </div>
         </motion.div>
@@ -2726,6 +2782,7 @@ const securityFeatures = [
 function Security() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start end', 'end start'],
@@ -2733,8 +2790,18 @@ function Security() {
 
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
-  // Enhanced enterprise evidence chain with audit trails
+  // Detect mobile for performance optimization
   useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Enhanced enterprise evidence chain with audit trails - skip on mobile
+  useEffect(() => {
+    if (isMobile) return; // Skip canvas animation on mobile for performance
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -3111,21 +3178,24 @@ function Security() {
     return () => {
       // Cleanup will happen when component unmounts
     };
-  }, []);
+  }, [isMobile]);
 
   return (
     <section
       ref={containerRef}
-      className="relative py-32 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421] overflow-hidden"
+      className="relative py-16 sm:py-24 lg:py-32 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421] overflow-hidden"
       style={{ position: 'relative' }}
     >
-      {/* Background effects */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/5 rounded-full blur-3xl" />
-
-        {/* Subtle audit trace overlay */}
+      {/* Background effects - simplified on mobile */}
+      <div className="absolute inset-0 overflow-hidden">
         <div
-          className="absolute inset-0 opacity-20"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[450px] lg:w-[600px] h-[300px] sm:h-[450px] lg:h-[600px] bg-cyan-500/5 rounded-full blur-2xl sm:blur-3xl will-change-transform"
+          style={{ transform: 'translateZ(0)' }}
+        />
+
+        {/* Subtle audit trace overlay - hidden on mobile */}
+        <div
+          className="absolute inset-0 opacity-10 sm:opacity-20 hidden sm:block"
           style={{
             backgroundImage: `linear-gradient(45deg, transparent 40%, rgba(6, 182, 212, 0.03) 50%, transparent 60%)`,
             backgroundSize: '60px 60px',
@@ -3135,16 +3205,16 @@ function Security() {
       </div>
 
       <motion.div
-        style={{ opacity }}
-        className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12"
+        style={{ opacity: isMobile ? 1 : opacity }}
+        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12"
       >
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Content */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: isMobile ? 0 : -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
           >
             {/* Label badge */}
             <motion.div
@@ -3152,50 +3222,50 @@ function Security() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-6"
+              className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs sm:text-sm font-medium mb-4 sm:mb-6"
             >
-              <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+              <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-blue-400 animate-pulse" />
               Enterprise Security
             </motion.div>
 
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
               Security Built Into
               <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-500 bg-clip-text text-transparent">
                 {' '}
                 the Operating Layer
               </span>
             </h2>
-            <p className="text-lg sm:text-xl text-gray-400 mb-4 leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-gray-400 mb-3 sm:mb-4 leading-relaxed">
               Controls are enforced, not just recorded. Every action is
               verified, every evidence chain is immutable, every audit trail is
               complete.
             </p>
-            <p className="text-sm text-gray-500 mb-8 leading-relaxed">
+            <p className="text-xs sm:text-sm text-gray-500 mb-6 sm:mb-8 leading-relaxed">
               Security is infrastructure, not features. Built into the operating
               layer where controls execute automatically and evidence is
               captured at the system level.
             </p>
 
-            <div className="grid sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               {securityFeatures.map((feature, index) => {
                 const Icon = feature.icon;
                 return (
                   <motion.div
                     key={feature.title}
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 15 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className="flex gap-4 group hover:scale-105 transition-transform duration-200"
+                    transition={{ delay: index * 0.08 }}
+                    className="flex gap-3 sm:gap-4 group sm:hover:scale-105 transition-transform duration-200 will-change-transform"
                   >
-                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center group-hover:shadow-lg group-hover:shadow-cyan-500/25 transition-shadow">
-                      <Icon className="w-6 h-6 text-white" />
+                    <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center sm:group-hover:shadow-lg sm:group-hover:shadow-cyan-500/25 transition-shadow">
+                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1 group-hover:text-cyan-300 transition-colors">
+                      <h3 className="font-semibold text-sm sm:text-base mb-0.5 sm:mb-1 group-hover:text-cyan-300 transition-colors">
                         {feature.title}
                       </h3>
-                      <p className="text-sm text-gray-400">
+                      <p className="text-xs sm:text-sm text-gray-400">
                         {feature.description}
                       </p>
                     </div>
@@ -3205,22 +3275,66 @@ function Security() {
             </div>
           </motion.div>
 
-          {/* Enhanced Visual */}
+          {/* Enhanced Visual - Canvas on desktop, static on mobile */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="flex items-center justify-center"
+            transition={{ duration: 0.6 }}
+            className="flex items-center justify-center order-first lg:order-last"
           >
-            <div className="relative p-8 rounded-3xl bg-gradient-to-br from-gray-900/30 to-gray-950/30 border border-white/5 backdrop-blur-xl">
-              <canvas ref={canvasRef} className="w-full h-full" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1c]/10 via-transparent to-transparent rounded-3xl" />
+            <div
+              className="relative p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-gray-900/30 to-gray-950/30 border border-white/5 w-full max-w-[500px] overflow-hidden"
+              style={{ backdropFilter: isMobile ? 'none' : 'blur(20px)' }}
+            >
+              {/* Desktop: Canvas animation */}
+              {!isMobile && (
+                <canvas ref={canvasRef} className="w-full h-full" />
+              )}
+
+              {/* Mobile: Static visual representation */}
+              {isMobile && (
+                <div className="relative h-[250px] sm:h-[300px]">
+                  {/* SOC 2 Shield */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-20 flex flex-col items-center justify-center">
+                    <div className="w-14 h-16 border-2 border-cyan-400/60 rounded-b-full rounded-t-lg bg-gradient-to-b from-cyan-500/10 to-transparent flex items-center justify-center">
+                      <span className="text-white/80 text-xs font-mono">
+                        SOC 2
+                      </span>
+                    </div>
+                    <span className="text-cyan-400/60 text-[8px] font-mono mt-1">
+                      TYPE II COMPLIANT
+                    </span>
+                  </div>
+
+                  {/* Evidence Chain Labels */}
+                  <div className="absolute bottom-6 left-0 right-0 flex justify-between px-4 text-[10px] font-mono text-cyan-400/60">
+                    <span className="text-center">COLLECT</span>
+                    <span className="text-center">ENCRYPT</span>
+                    <span className="text-center">VERIFY</span>
+                    <span className="text-center">AUDIT</span>
+                  </div>
+
+                  {/* Evidence blocks */}
+                  <div className="absolute bottom-12 left-0 right-0 flex justify-between px-4 gap-2">
+                    {['COLLECT', 'ENCRYPT', 'VERIFY', 'AUDIT'].map(
+                      (label, i) => (
+                        <div
+                          key={label}
+                          className={`flex-1 h-8 rounded border ${i < 3 ? 'border-emerald-500/50 bg-emerald-500/10' : 'border-blue-500/50 bg-blue-500/10'}`}
+                        />
+                      ),
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1c]/10 via-transparent to-transparent rounded-2xl sm:rounded-3xl pointer-events-none" />
 
               {/* Enterprise compliance indicators */}
-              <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center text-xs text-gray-500 font-mono">
+              <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 flex justify-between items-center text-[10px] sm:text-xs text-gray-500 font-mono">
                 <span>AUDIT STATUS: ACTIVE</span>
-                <span>COMPLIANCE: 100%</span>
+                <span className="hidden sm:inline">COMPLIANCE: 100%</span>
               </div>
             </div>
           </motion.div>
