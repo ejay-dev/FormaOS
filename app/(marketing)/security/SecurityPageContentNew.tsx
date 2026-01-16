@@ -248,7 +248,7 @@ function SecurityArchitecture() {
       icon: Users,
       title: 'Role-Based Access Control',
       description:
-        'Granular permissions with principle of least privilege. Every action authenticated and authorized.',
+        '6 role types with granular permissions. Principle of least privilege enforced across all actions.',
       color: 'from-orange-500/20 to-amber-500/20',
       borderColor: 'border-orange-500/30',
       iconColor: 'text-orange-400',
@@ -257,7 +257,7 @@ function SecurityArchitecture() {
       icon: Server,
       title: 'Multi-Tenant Isolation',
       description:
-        'Complete data isolation between organizations. Logical and physical separation at infrastructure level.',
+        'Complete data isolation between organizations via Row Level Security. Zero cross-tenant data leakage.',
       color: 'from-amber-500/20 to-yellow-500/20',
       borderColor: 'border-amber-500/30',
       iconColor: 'text-amber-400',
@@ -266,7 +266,7 @@ function SecurityArchitecture() {
       icon: FileCheck,
       title: 'Immutable Audit Logging',
       description:
-        'Comprehensive audit trails that cannot be modified or deleted. Cryptographic verification of data integrity.',
+        'Comprehensive audit trails that cannot be modified or deleted. Every action timestamped and attributed.',
       color: 'from-yellow-500/20 to-lime-500/20',
       borderColor: 'border-yellow-500/30',
       iconColor: 'text-yellow-400',
@@ -280,13 +280,13 @@ function SecurityArchitecture() {
       icon: Shield,
     },
     {
-      name: 'ISO 27001',
-      description: 'Information security management',
+      name: 'Compliance Scanning',
+      description: '6 frameworks: SOC2, ISO, HIPAA, GDPR, NIST, PCI',
       icon: Lock,
     },
     {
-      name: 'GDPR Compliant',
-      description: 'European data protection',
+      name: 'SSO & MFA',
+      description: 'Google OAuth + Enterprise SAML + TOTP',
       icon: Fingerprint,
     },
     {

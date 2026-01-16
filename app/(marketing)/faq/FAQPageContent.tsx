@@ -71,7 +71,7 @@ const faqCategories = [
       },
       {
         q: 'Does FormaOS support SSO and MFA?',
-        a: 'Yes. FormaOS supports enterprise Single Sign-On (SSO) via SAML 2.0 and OIDC protocols, allowing integration with identity providers like Okta, Azure AD, and Google Workspace. Multi-Factor Authentication (MFA) is available for all accounts and can be enforced at the organization level.',
+        a: 'Yes. FormaOS supports Single Sign-On via Google Workspace OAuth. Enterprise SAML 2.0 integration with identity providers like Okta and Azure AD is available on Enterprise plans. Multi-Factor Authentication (MFA/2FA) with TOTP authenticator apps is available for all accounts and can be enforced at the organization level.',
       },
       {
         q: 'Where is data stored?',
@@ -119,19 +119,19 @@ const faqCategories = [
     questions: [
       {
         q: 'Does FormaOS integrate with existing systems?',
-        a: 'Yes. FormaOS is designed to integrate with your existing technology stack. We support integrations with HR systems, document management platforms, identity providers, notification services, and other operational tools. Integration capabilities depend on your plan tier.',
+        a: 'Yes. FormaOS integrates with Slack and Microsoft Teams for real-time notifications, Google Workspace for authentication, and provides webhooks for 17 event types to connect with your existing tools. Our REST API enables custom integrations with any system. Integration capabilities depend on your plan tier.',
       },
       {
         q: 'Are APIs available?',
-        a: 'FormaOS provides a comprehensive REST API for enterprise customers. The API allows you to programmatically create workflows, submit evidence, query compliance status, and integrate FormaOS capabilities into your existing applications. API documentation and sandbox environments are available for development.',
+        a: 'FormaOS provides a comprehensive REST API for enterprise customers. The API allows you to programmatically query audit logs, compliance status, evidence, and tasks. Full API documentation is available for development teams.',
       },
       {
         q: 'Do you support webhooks?',
         a: 'Yes. FormaOS supports webhooks for real-time event notifications. You can configure webhooks to trigger on compliance events such as task completion, evidence submission, control verification, or audit trail entries. This enables seamless integration with external systems and automation workflows.',
       },
       {
-        q: 'Can FormaOS connect to our existing HR or CRM system?',
-        a: 'FormaOS offers integration options for popular HR and CRM platforms. This allows automatic user synchronization, role mapping, and context sharing between systems. For systems without native integrations, our API and webhook capabilities enable custom integration development.',
+        q: 'Can FormaOS connect to our existing systems?',
+        a: 'FormaOS provides native integrations with Slack and Microsoft Teams for real-time compliance notifications. For HR, CRM, and other systems, our comprehensive webhook and REST API capabilities enable custom integration development. Enterprise customers receive dedicated integration support.',
       },
     ],
   },

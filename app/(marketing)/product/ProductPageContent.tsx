@@ -743,9 +743,13 @@ function EnterpriseSecurity() {
   const securityFeatures = [
     { label: 'SOC 2 Type II Compliant', icon: Shield },
     { label: 'End-to-End Encryption (AES-256)', icon: Lock },
-    { label: 'SSO & Multi-Factor Authentication', icon: Users },
+    { label: 'Google OAuth + Enterprise SAML', icon: Users },
+    { label: 'MFA with TOTP Authenticator', icon: UserCheck },
     { label: 'Immutable Audit Logs', icon: Database },
-    { label: 'Role-Based Access Control', icon: UserCheck },
+    { label: 'Role-Based Access Control (6 Roles)', icon: UserCheck },
+    { label: 'Automated Compliance Scanning', icon: Shield },
+    { label: 'Security Event Correlation', icon: Lock },
+    { label: 'Session Rotation & Rate Limiting', icon: Database },
   ];
 
   return (

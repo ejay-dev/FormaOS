@@ -2775,7 +2775,7 @@ const securityFeatures = [
   {
     icon: Key,
     title: 'SSO & MFA',
-    description: 'Enterprise identity integration',
+    description: 'Google OAuth + Enterprise SAML with TOTP',
   },
 ];
 
