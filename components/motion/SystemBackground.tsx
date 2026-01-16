@@ -1,34 +1,39 @@
-"use client";
+'use client';
 
-import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
-import { useRef, useEffect, useState, ReactNode, useMemo } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+} from 'framer-motion';
+import { useRef, useEffect, useState, ReactNode, useMemo } from 'react';
 
 /**
  * =========================================================
  * SYSTEM BACKGROUND - Premium Visual Layer System
  * =========================================================
  * A living compliance engine operating beneath the interface.
- * 
+ *
  * Features:
  * - Multi-layer gradients (deep navy → blue → cyan/purple)
  * - Floating orb system (replaces wire networks)
  * - Ambient motion (parallax, opacity breathing, drifting particles)
  * - Glassmorphism depth layers
  * - Light bloom / soft glow hierarchy
- * 
+ *
  * Variants:
  * - info: Minimal particles, soft breathing, calm
  * - metrics: Radial glow, micro-particles, depth shadows
  * - process: Stronger presence, directional flow, data pathways
  */
 
-export type SystemBackgroundVariant = "info" | "metrics" | "process";
+export type SystemBackgroundVariant = 'info' | 'metrics' | 'process';
 
 interface SystemBackgroundProps {
   variant?: SystemBackgroundVariant;
   children: ReactNode;
   className?: string;
-  intensity?: "low" | "medium" | "high";
+  intensity?: 'low' | 'medium' | 'high';
 }
 
 // =========================================================
@@ -45,48 +50,49 @@ interface OrbConfig {
   delay: number;
 }
 
-function FloatingOrbs({ 
-  variant, 
-  reducedMotion 
-}: { 
+function FloatingOrbs({
+  variant,
+  reducedMotion,
+}: {
   variant: SystemBackgroundVariant;
   reducedMotion: boolean;
 }) {
   const orbConfigs = useMemo(() => {
     const configs: OrbConfig[] = [];
-    
+
     // Color palette - premium deep tones
     const colors = {
-      primary: "rgba(0, 180, 220, 0.25)",      // Cyan
-      secondary: "rgba(59, 130, 246, 0.2)",    // Blue
-      accent: "rgba(139, 92, 246, 0.18)",      // Purple
-      highlight: "rgba(6, 182, 212, 0.15)",    // Teal
-      deep: "rgba(30, 64, 175, 0.12)",         // Deep blue
+      primary: 'rgba(0, 180, 220, 0.25)', // Cyan
+      secondary: 'rgba(59, 130, 246, 0.2)', // Blue
+      accent: 'rgba(139, 92, 246, 0.18)', // Purple
+      highlight: 'rgba(6, 182, 212, 0.15)', // Teal
+      deep: 'rgba(30, 64, 175, 0.12)', // Deep blue
     };
-    
+
     // Generate orbs based on variant
-    const orbCount = variant === "info" ? 4 : variant === "metrics" ? 6 : 8;
-    
+    const orbCount = variant === 'info' ? 4 : variant === 'metrics' ? 6 : 8;
+
     for (let i = 0; i < orbCount; i++) {
       const colorKeys = Object.keys(colors) as (keyof typeof colors)[];
       const colorKey = colorKeys[i % colorKeys.length];
-      
+
       configs.push({
-        size: variant === "process" 
-          ? 300 + Math.random() * 400 
-          : variant === "metrics" 
-            ? 250 + Math.random() * 300 
-            : 200 + Math.random() * 250,
-        x: 10 + (i * 18) + Math.random() * 15,
-        y: 15 + (i * 12) + Math.random() * 20,
+        size:
+          variant === 'process'
+            ? 300 + Math.random() * 400
+            : variant === 'metrics'
+              ? 250 + Math.random() * 300
+              : 200 + Math.random() * 250,
+        x: 10 + i * 18 + Math.random() * 15,
+        y: 15 + i * 12 + Math.random() * 20,
         color: colors[colorKey],
-        blur: variant === "process" ? 80 : variant === "metrics" ? 100 : 120,
-        opacity: variant === "info" ? 0.5 : variant === "metrics" ? 0.7 : 0.85,
+        blur: variant === 'process' ? 80 : variant === 'metrics' ? 100 : 120,
+        opacity: variant === 'info' ? 0.5 : variant === 'metrics' ? 0.7 : 0.85,
         duration: 15 + Math.random() * 15,
         delay: i * 2,
       });
     }
-    
+
     return configs;
   }, [variant]);
 
@@ -105,7 +111,7 @@ function FloatingOrbs({
               background: orb.color,
               filter: `blur(${orb.blur}px)`,
               opacity: orb.opacity,
-              transform: "translate(-50%, -50%)",
+              transform: 'translate(-50%, -50%)',
             }}
           />
         ))}
@@ -124,7 +130,7 @@ function FloatingOrbs({
             height: orb.size,
             background: orb.color,
             filter: `blur(${orb.blur}px)`,
-            transform: "translate(-50%, -50%)",
+            transform: 'translate(-50%, -50%)',
           }}
           initial={{
             left: `${orb.x}%`,
@@ -135,14 +141,19 @@ function FloatingOrbs({
           animate={{
             left: [`${orb.x}%`, `${orb.x + 8}%`, `${orb.x - 5}%`, `${orb.x}%`],
             top: [`${orb.y}%`, `${orb.y - 10}%`, `${orb.y + 6}%`, `${orb.y}%`],
-            opacity: [orb.opacity * 0.6, orb.opacity, orb.opacity * 0.8, orb.opacity * 0.6],
+            opacity: [
+              orb.opacity * 0.6,
+              orb.opacity,
+              orb.opacity * 0.8,
+              orb.opacity * 0.6,
+            ],
             scale: [0.9, 1.1, 0.95, 0.9],
           }}
           transition={{
             duration: orb.duration,
             delay: orb.delay,
             repeat: Infinity,
-            ease: "easeInOut",
+            ease: 'easeInOut',
           }}
         />
       ))}
@@ -153,10 +164,10 @@ function FloatingOrbs({
 // =========================================================
 // MICRO PARTICLES - Drifting ambient particles
 // =========================================================
-function MicroParticles({ 
-  variant, 
-  reducedMotion 
-}: { 
+function MicroParticles({
+  variant,
+  reducedMotion,
+}: {
   variant: SystemBackgroundVariant;
   reducedMotion: boolean;
 }) {
@@ -169,28 +180,27 @@ function MicroParticles({
     setMounted(true);
   }, []);
 
-  const particleConfig = useMemo(() => ({
-    count: variant === "info" ? 20 : variant === "metrics" ? 40 : 60,
-    speed: variant === "process" ? 0.4 : 0.25,
-    maxSize: variant === "metrics" ? 3 : 2,
-    colors: [
-      "rgba(0, 180, 220, 0.6)",
-      "rgba(59, 130, 246, 0.5)",
-      "rgba(139, 92, 246, 0.4)",
-    ],
-  }), [variant]);
+  const particleConfig = useMemo(
+    () => ({
+      count: variant === 'info' ? 20 : variant === 'metrics' ? 40 : 60,
+      speed: variant === 'process' ? 0.4 : 0.25,
+      maxSize: variant === 'metrics' ? 3 : 2,
+      colors: ['rgb(0, 180, 220)', 'rgb(59, 130, 246)', 'rgb(139, 92, 246)'],
+    }),
+    [variant],
+  );
 
   useEffect(() => {
     if (reducedMotion || !mounted) return;
-    
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     // Safely access window APIs
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
 
     const resizeCanvas = () => {
       try {
@@ -205,7 +215,7 @@ function MicroParticles({
     };
 
     resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
+    window.addEventListener('resize', resizeCanvas);
 
     interface Particle {
       x: number;
@@ -230,7 +240,10 @@ function MicroParticles({
         vy: (Math.random() - 0.5) * particleConfig.speed - 0.1, // Slight upward drift
         size: Math.random() * particleConfig.maxSize + 0.5,
         opacity: Math.random() * 0.5 + 0.2,
-        color: particleConfig.colors[Math.floor(Math.random() * particleConfig.colors.length)],
+        color:
+          particleConfig.colors[
+            Math.floor(Math.random() * particleConfig.colors.length)
+          ],
         breathPhase: Math.random() * Math.PI * 2,
         breathSpeed: 0.01 + Math.random() * 0.02,
       });
@@ -256,10 +269,21 @@ function MicroParticles({
         if (p.y > rect.height + 10) p.y = -10;
 
         // Draw particle with glow
-        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 3);
-        gradient.addColorStop(0, p.color.replace(")", `, ${p.opacity * breathScale})`).replace("rgba", "rgba"));
-        gradient.addColorStop(1, "transparent");
-        
+        const gradient = ctx.createRadialGradient(
+          p.x,
+          p.y,
+          0,
+          p.x,
+          p.y,
+          p.size * 3,
+        );
+        const alphaValue = p.opacity * breathScale;
+        gradient.addColorStop(
+          0,
+          p.color.replace('rgb(', 'rgba(').replace(')', `, ${alphaValue})`),
+        );
+        gradient.addColorStop(1, 'transparent');
+
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
         ctx.fillStyle = gradient;
@@ -268,7 +292,9 @@ function MicroParticles({
         // Core particle
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size * breathScale, 0, Math.PI * 2);
-        ctx.fillStyle = p.color.replace(")", `, ${p.opacity * breathScale})`).replace("rgba", "rgba");
+        ctx.fillStyle = p.color
+          .replace('rgb(', 'rgba(')
+          .replace(')', `, ${alphaValue})`);
         ctx.fill();
       });
 
@@ -278,7 +304,7 @@ function MicroParticles({
     animate();
 
     return () => {
-      window.removeEventListener("resize", resizeCanvas);
+      window.removeEventListener('resize', resizeCanvas);
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
   }, [variant, reducedMotion, particleConfig, mounted]);
@@ -290,7 +316,7 @@ function MicroParticles({
     <canvas
       ref={canvasRef}
       className="absolute inset-0 w-full h-full pointer-events-none"
-      style={{ width: "100%", height: "100%" }}
+      style={{ width: '100%', height: '100%' }}
     />
   );
 }
@@ -313,7 +339,7 @@ function GradientLayers({ variant }: { variant: SystemBackgroundVariant }) {
         radial-gradient(ellipse 80% 80% at 30% 90%, rgba(59, 130, 246, 0.12) 0%, transparent 45%)
       `,
     };
-    
+
     return {
       info: base,
       metrics: {
@@ -340,12 +366,12 @@ function GradientLayers({ variant }: { variant: SystemBackgroundVariant }) {
   return (
     <>
       {/* Base gradient layer */}
-      <div 
+      <div
         className="absolute inset-0 pointer-events-none"
         style={{ background: config.primary }}
       />
       {/* Secondary gradient overlay */}
-      <div 
+      <div
         className="absolute inset-0 pointer-events-none"
         style={{ background: config.secondary }}
       />
@@ -356,34 +382,62 @@ function GradientLayers({ variant }: { variant: SystemBackgroundVariant }) {
 // =========================================================
 // LIGHT BLOOM EFFECTS - Soft glow hierarchy
 // =========================================================
-function LightBloom({ 
-  variant, 
-  reducedMotion 
-}: { 
+function LightBloom({
+  variant,
+  reducedMotion,
+}: {
   variant: SystemBackgroundVariant;
   reducedMotion: boolean;
 }) {
   const blooms = useMemo(() => {
     const configs = [];
-    
+
     // Variant-specific bloom configurations
-    if (variant === "metrics") {
+    if (variant === 'metrics') {
       configs.push(
-        { x: 50, y: 30, size: 400, color: "rgba(0, 180, 220, 0.08)", blur: 100 },
-        { x: 30, y: 70, size: 300, color: "rgba(139, 92, 246, 0.06)", blur: 80 }
+        {
+          x: 50,
+          y: 30,
+          size: 400,
+          color: 'rgba(0, 180, 220, 0.08)',
+          blur: 100,
+        },
+        {
+          x: 30,
+          y: 70,
+          size: 300,
+          color: 'rgba(139, 92, 246, 0.06)',
+          blur: 80,
+        },
       );
-    } else if (variant === "process") {
+    } else if (variant === 'process') {
       configs.push(
-        { x: 20, y: 25, size: 500, color: "rgba(0, 180, 220, 0.1)", blur: 120 },
-        { x: 75, y: 40, size: 400, color: "rgba(59, 130, 246, 0.08)", blur: 100 },
-        { x: 50, y: 80, size: 350, color: "rgba(139, 92, 246, 0.07)", blur: 90 }
+        { x: 20, y: 25, size: 500, color: 'rgba(0, 180, 220, 0.1)', blur: 120 },
+        {
+          x: 75,
+          y: 40,
+          size: 400,
+          color: 'rgba(59, 130, 246, 0.08)',
+          blur: 100,
+        },
+        {
+          x: 50,
+          y: 80,
+          size: 350,
+          color: 'rgba(139, 92, 246, 0.07)',
+          blur: 90,
+        },
       );
     } else {
-      configs.push(
-        { x: 40, y: 35, size: 350, color: "rgba(0, 180, 220, 0.05)", blur: 100 }
-      );
+      configs.push({
+        x: 40,
+        y: 35,
+        size: 350,
+        color: 'rgba(0, 180, 220, 0.05)',
+        blur: 100,
+      });
     }
-    
+
     return configs;
   }, [variant]);
 
@@ -400,16 +454,20 @@ function LightBloom({
             top: `${bloom.y}%`,
             background: bloom.color,
             filter: `blur(${bloom.blur}px)`,
-            transform: "translate(-50%, -50%)",
+            transform: 'translate(-50%, -50%)',
           }}
-          animate={reducedMotion ? undefined : {
-            opacity: [0.5, 1, 0.5],
-            scale: [0.95, 1.05, 0.95],
-          }}
+          animate={
+            reducedMotion
+              ? undefined
+              : {
+                  opacity: [0.5, 1, 0.5],
+                  scale: [0.95, 1.05, 0.95],
+                }
+          }
           transition={{
             duration: 8 + i * 2,
             repeat: Infinity,
-            ease: "easeInOut",
+            ease: 'easeInOut',
           }}
         />
       ))}
@@ -442,11 +500,11 @@ function DirectionalFlow({ reducedMotion }: { reducedMotion: boolean }) {
             duration: 6 + i,
             delay: i * 1.5,
             repeat: Infinity,
-            ease: "easeInOut",
+            ease: 'easeInOut',
           }}
         />
       ))}
-      
+
       {/* Vertical flow indicators */}
       {[25, 50, 75].map((x, i) => (
         <motion.div
@@ -463,7 +521,7 @@ function DirectionalFlow({ reducedMotion }: { reducedMotion: boolean }) {
             duration: 8,
             delay: i * 2,
             repeat: Infinity,
-            ease: "easeInOut",
+            ease: 'easeInOut',
           }}
         />
       ))}
@@ -480,7 +538,7 @@ function NoiseTexture() {
       className="absolute inset-0 pointer-events-none opacity-[0.02]"
       style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-        mixBlendMode: "overlay",
+        mixBlendMode: 'overlay',
       }}
     />
   );
@@ -503,38 +561,40 @@ function Vignette({ intensity = 0.4 }: { intensity?: number }) {
 // =========================================================
 // MAIN COMPONENT - SystemBackground
 // =========================================================
-export function SystemBackground({ 
-  variant = "info", 
-  children, 
-  className = "",
-  intensity = "medium"
+export function SystemBackground({
+  variant = 'info',
+  children,
+  className = '',
+  intensity = 'medium',
 }: SystemBackgroundProps) {
   const ref = useRef<HTMLElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const reducedMotion = prefersReducedMotion ?? false;
-  
+
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start end", "end start"]
+    offset: ['start end', 'end start'],
   });
 
   // Parallax for gradient layers
-  const gradientY = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
-  const orbY = useTransform(scrollYProgress, [0, 1], ["0%", "5%"]);
+  const gradientY = useTransform(scrollYProgress, [0, 1], ['0%', '10%']);
+  const orbY = useTransform(scrollYProgress, [0, 1], ['0%', '5%']);
 
   // Intensity modifiers
-  const intensityModifier = intensity === "low" ? 0.6 : intensity === "high" ? 1.2 : 1;
+  const intensityModifier =
+    intensity === 'low' ? 0.6 : intensity === 'high' ? 1.2 : 1;
 
   return (
-    <motion.section 
+    <motion.section
       ref={ref}
       className={`relative overflow-hidden ${className}`}
       style={{
-        background: "linear-gradient(180deg, #030712 0%, #0a0f1f 50%, #0f172a 100%)",
+        background:
+          'linear-gradient(180deg, #030712 0%, #0a0f1f 50%, #0f172a 100%)',
       }}
     >
       {/* Layer 1: Base gradients with parallax */}
-      <motion.div 
+      <motion.div
         className="absolute inset-0"
         style={{ y: reducedMotion ? 0 : gradientY }}
       >
@@ -542,9 +602,9 @@ export function SystemBackground({
       </motion.div>
 
       {/* Layer 2: Floating orbs with parallax */}
-      <motion.div 
+      <motion.div
         className="absolute inset-0"
-        style={{ 
+        style={{
           y: reducedMotion ? 0 : orbY,
           opacity: intensityModifier,
         }}
@@ -561,7 +621,7 @@ export function SystemBackground({
       </div>
 
       {/* Layer 5: Directional flow (process variant only) */}
-      {variant === "process" && (
+      {variant === 'process' && (
         <DirectionalFlow reducedMotion={reducedMotion} />
       )}
 
@@ -569,12 +629,10 @@ export function SystemBackground({
       <NoiseTexture />
 
       {/* Layer 7: Vignette */}
-      <Vignette intensity={variant === "process" ? 0.5 : 0.35} />
+      <Vignette intensity={variant === 'process' ? 0.5 : 0.35} />
 
       {/* Content layer */}
-      <div className="relative z-10">
-        {children}
-      </div>
+      <div className="relative z-10">{children}</div>
     </motion.section>
   );
 }
@@ -585,17 +643,17 @@ export function SystemBackground({
 interface GlassCardProps {
   children: ReactNode;
   className?: string;
-  variant?: "default" | "elevated" | "intense";
+  variant?: 'default' | 'elevated' | 'intense';
   glow?: boolean;
-  glowColor?: "cyan" | "blue" | "purple";
+  glowColor?: 'cyan' | 'blue' | 'purple';
 }
 
 export function GlassCard({
   children,
-  className = "",
-  variant = "default",
+  className = '',
+  variant = 'default',
   glow = false,
-  glowColor = "cyan",
+  glowColor = 'cyan',
 }: GlassCardProps) {
   const variantStyles = {
     default: `
@@ -619,17 +677,17 @@ export function GlassCard({
   };
 
   const glowStyles = {
-    cyan: "shadow-[0_0_30px_rgba(0,180,220,0.15)]",
-    blue: "shadow-[0_0_30px_rgba(59,130,246,0.15)]",
-    purple: "shadow-[0_0_30px_rgba(139,92,246,0.15)]",
+    cyan: 'shadow-[0_0_30px_rgba(0,180,220,0.15)]',
+    blue: 'shadow-[0_0_30px_rgba(59,130,246,0.15)]',
+    purple: 'shadow-[0_0_30px_rgba(139,92,246,0.15)]',
   };
 
   return (
-    <div 
+    <div
       className={`
         rounded-2xl
         ${variantStyles[variant]}
-        ${glow ? glowStyles[glowColor] : ""}
+        ${glow ? glowStyles[glowColor] : ''}
         transition-all duration-300
         hover:border-white/[0.2]
         hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)]
@@ -645,40 +703,41 @@ export function GlassCard({
 // SECTION GLOW - Radial glow behind content
 // =========================================================
 interface SectionGlowProps {
-  color?: "cyan" | "blue" | "purple" | "mixed";
-  intensity?: "low" | "medium" | "high";
-  position?: "center" | "top" | "bottom";
+  color?: 'cyan' | 'blue' | 'purple' | 'mixed';
+  intensity?: 'low' | 'medium' | 'high';
+  position?: 'center' | 'top' | 'bottom';
   className?: string;
 }
 
 export function SectionGlow({
-  color = "cyan",
-  intensity = "medium",
-  position = "center",
-  className = "",
+  color = 'cyan',
+  intensity = 'medium',
+  position = 'center',
+  className = '',
 }: SectionGlowProps) {
   const colorStyles = {
-    cyan: "rgba(0, 180, 220, 0.15)",
-    blue: "rgba(59, 130, 246, 0.12)",
-    purple: "rgba(139, 92, 246, 0.12)",
-    mixed: "rgba(0, 180, 220, 0.1)",
+    cyan: 'rgba(0, 180, 220, 0.15)',
+    blue: 'rgba(59, 130, 246, 0.12)',
+    purple: 'rgba(139, 92, 246, 0.12)',
+    mixed: 'rgba(0, 180, 220, 0.1)',
   };
 
-  const intensityScale = intensity === "low" ? 0.6 : intensity === "high" ? 1.4 : 1;
+  const intensityScale =
+    intensity === 'low' ? 0.6 : intensity === 'high' ? 1.4 : 1;
   const positionStyles = {
-    center: "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
-    top: "top-0 left-1/2 -translate-x-1/2",
-    bottom: "bottom-0 left-1/2 -translate-x-1/2",
+    center: 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+    top: 'top-0 left-1/2 -translate-x-1/2',
+    bottom: 'bottom-0 left-1/2 -translate-x-1/2',
   };
 
   return (
-    <div 
+    <div
       className={`absolute pointer-events-none ${positionStyles[position]} ${className}`}
       style={{
         width: 600 * intensityScale,
         height: 400 * intensityScale,
         background: `radial-gradient(ellipse, ${colorStyles[color]}, transparent 70%)`,
-        filter: "blur(60px)",
+        filter: 'blur(60px)',
       }}
     />
   );

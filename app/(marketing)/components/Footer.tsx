@@ -26,6 +26,11 @@ const footerLinks = {
     { href: '/use-cases/workforce-credentials', label: 'Workforce' },
     { href: '/use-cases/incident-management', label: 'Incidents' },
   ],
+  resources: [
+    { href: '/docs', label: 'Documentation' },
+    { href: '/blog', label: 'Blog' },
+    { href: '/faq', label: 'FAQ' },
+  ],
   company: [
     { href: '/about', label: 'About' },
     { href: '/our-story', label: 'Our Story' },
@@ -228,7 +233,7 @@ export function Footer() {
         </div>
 
         {/* Main Footer Content */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 lg:gap-12 py-12 border-t border-white/10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12 py-12 border-t border-white/10">
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-1 space-y-6">
             <motion.div
@@ -305,6 +310,18 @@ export function Footer() {
             </h4>
             <div className="space-y-3">
               {footerLinks.useCases.map((link, idx) => (
+                <AnimatedFooterLink key={link.href} {...link} />
+              ))}
+            </div>
+          </div>
+
+          {/* Resources Links */}
+          <div className="space-y-4">
+            <h4 className="text-xs uppercase tracking-[0.2em] text-foreground/40 font-semibold">
+              Resources
+            </h4>
+            <div className="space-y-3">
+              {footerLinks.resources.map((link, idx) => (
                 <AnimatedFooterLink key={link.href} {...link} />
               ))}
             </div>
