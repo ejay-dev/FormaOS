@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRef } from 'react';
 import {
   Shield,
   Lock,
@@ -8,121 +9,185 @@ import {
   Database,
   FileCheck,
   ArrowRight,
+  CheckCircle2,
 } from 'lucide-react';
-import { motion } from 'framer-motion';
-import {
-  CinematicSection,
-  SectionHeader,
-  ValueProp,
-  VisualDivider,
-  GradientMesh,
-} from '@/components/motion';
-import {
-  CleanSystemGrid,
-  PulsingNode,
-  ParallaxLayer,
-} from '@/components/motion/CleanBackground';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { CinematicSection, VisualDivider } from '@/components/motion';
+import CinematicField from '../components/motion/CinematicField';
 
 function SecurityHero() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end start'],
+  });
+
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
+  const y = useTransform(scrollYProgress, [0, 0.5], [0, 100]);
+
   return (
-    <section className="relative min-h-[70vh] sm:min-h-[80vh] lg:min-h-[90vh] flex items-center overflow-hidden">
-      {/* Multi-layer animated background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
-
-      {/* Clean system grid layer */}
-      <div className="absolute inset-0 opacity-40 sm:opacity-60">
-        <CleanSystemGrid />
+    <section
+      ref={containerRef}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] pt-24"
+    >
+      {/* Premium Background Effects */}
+      <div className="absolute inset-0 overflow-hidden">
+        <motion.div
+          className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-gradient-to-br from-red-500/10 via-orange-500/8 to-transparent rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.25, 0.35, 0.25],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute -bottom-40 -right-40 w-[700px] h-[700px] bg-gradient-to-tl from-purple-500/12 via-blue-500/8 to-transparent rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.15, 1],
+            opacity: [0.2, 0.3, 0.2],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: 'easeInOut',
+            delay: 2,
+          }}
+        />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-red-500/5 to-transparent rounded-full" />
       </div>
 
-      {/* Pulsing nodes - hidden on mobile */}
-      <div className="hidden sm:block">
-        <PulsingNode x="12%" y="20%" delay={0} color="rgb(139, 92, 246)" />
-        <PulsingNode x="88%" y="30%" delay={0.5} />
-        <PulsingNode x="18%" y="80%" delay={1} />
-        <PulsingNode x="82%" y="90%" delay={1.5} color="rgb(6, 182, 212)" />
+      {/* Cinematic Particle Field */}
+      <div className="absolute inset-0 z-1 opacity-40">
+        <CinematicField />
       </div>
 
-      {/* Radial gradient overlays - reduced on mobile */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[300px] sm:h-[600px] w-[300px] sm:w-[600px] rounded-full bg-secondary/20 blur-[60px] sm:blur-[120px]" />
-      <div className="pointer-events-none absolute -bottom-40 left-1/4 h-[250px] sm:h-[500px] w-[250px] sm:w-[500px] rounded-full bg-primary/15 blur-[50px] sm:blur-[100px]" />
+      {/* Grid Pattern */}
+      <div
+        className="absolute inset-0 opacity-20"
+        style={{
+          backgroundImage:
+            'radial-gradient(circle at 1px 1px, rgba(239, 68, 68, 0.12) 1px, transparent 0)',
+          backgroundSize: '40px 40px',
+        }}
+      />
 
-      {/* Vignette */}
-      <div className="absolute inset-0 vignette pointer-events-none" />
-
-      {/* Content */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 w-full">
-        <ParallaxLayer speed={0.3}>
-          <div className="mx-auto max-w-4xl text-center">
+      {/* Main Hero Content */}
+      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
+        <div className="flex flex-col items-center text-center">
+          <motion.div style={{ opacity, scale, y }}>
+            {/* Badge */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-              className="inline-flex items-center gap-2 sm:gap-2.5 glass-intense rounded-full px-4 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs font-semibold uppercase tracking-wider mb-6 sm:mb-8 border border-secondary/30"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/30 mb-8 backdrop-blur-sm"
             >
-              <motion.div
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-              >
-                <Shield className="h-3 w-3 sm:h-4 sm:w-4 text-secondary" />
-              </motion.div>
-              Security & Privacy
+              <Shield className="w-4 h-4 text-red-400" />
+              <span className="text-sm text-red-400 font-medium tracking-wide">
+                Security Infrastructure
+              </span>
             </motion.div>
 
+            {/* Headline */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-              className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] sm:leading-[1.08] font-display tracking-tight mb-4 sm:mb-6"
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
             >
-              Security Built Into
+              Security at the
               <br />
-              <span className="relative">
-                <span className="text-gradient">the Operating Model</span>
-                <motion.div
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.8, duration: 0.8 }}
-                  className="absolute -bottom-1 sm:-bottom-2 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-secondary via-primary to-accent rounded-full origin-left"
-                />
+              <span className="bg-gradient-to-r from-red-400 via-orange-500 to-yellow-500 bg-clip-text text-transparent">
+                Operating System Layer
               </span>
             </motion.h1>
 
+            {/* Subheadline */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-              className="text-base sm:text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-8 sm:mb-10"
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="text-lg sm:text-xl text-gray-400 mb-4 max-w-2xl mx-auto text-center leading-relaxed"
             >
-              FormaOS is designed for organizations that require secure,
-              verifiable, and auditable systems.
+              Controls are enforced, not documented. Evidence is captured, not
+              requested. Security is structural, not aspirational.
             </motion.p>
 
+            {/* Security Principles */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.65 }}
+              className="mb-10 max-w-2xl mx-auto text-center"
+            >
+              <p className="text-sm text-gray-500 mb-3">
+                Built into the operating layer
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600">
+                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+                  <CheckCircle2 className="w-3 h-3 text-green-400" />
+                  Zero-Trust Architecture
+                </span>
+                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+                  <CheckCircle2 className="w-3 h-3 text-green-400" />
+                  End-to-End Encryption
+                </span>
+                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+                  <CheckCircle2 className="w-3 h-3 text-green-400" />
+                  Immutable Audit Logs
+                </span>
+              </div>
+            </motion.div>
+
+            {/* CTA Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.8 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6"
+              transition={{ duration: 0.8, delay: 0.7 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
             >
-              <Link
-                href="/auth/signup"
-                className="w-full sm:w-auto btn btn-primary px-6 py-3 text-sm font-semibold text-primary-foreground"
+              <motion.a
+                href="/auth"
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: '0 0 40px rgba(239, 68, 68, 0.4)',
+                }}
+                whileTap={{ scale: 0.98 }}
+                className="group px-8 py-4 rounded-full bg-gradient-to-r from-red-500 to-orange-600 text-white font-semibold text-lg flex items-center gap-3 shadow-lg shadow-red-500/25 hover:shadow-red-500/40 transition-all"
               >
-                Start Secure Trial
-              </Link>
-              <Link
+                <span>Start Secure Trial</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </motion.a>
+
+              <motion.a
                 href="/contact"
-                className="w-full sm:w-auto btn btn-ghost px-6 py-3 text-sm font-semibold leading-6 flex items-center justify-center sm:justify-start gap-2"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                className="group px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white font-semibold text-lg flex items-center gap-3 hover:border-red-400/50 hover:bg-red-400/5 transition-all"
               >
-                Request Security Overview <ArrowRight className="h-4 w-4" />
-              </Link>
+                <span>Security Whitepaper</span>
+              </motion.a>
             </motion.div>
-          </div>
-        </ParallaxLayer>
+          </motion.div>
+        </div>
       </div>
+
+      {/* Scroll Indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 1.5 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
+      >
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          className="w-6 h-10 rounded-full border-2 border-gray-600/50 flex items-start justify-center p-2"
+        >
+          <motion.div className="w-1.5 h-1.5 bg-red-400 rounded-full" />
+        </motion.div>
+      </motion.div>
     </section>
   );
 }
@@ -194,7 +259,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.2, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -217,7 +282,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.4, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -240,7 +305,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.6, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -263,7 +328,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.8, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -288,7 +353,7 @@ export default function SecurityPageContent() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
+                  viewport={{ once: true }}
                   transition={{ delay: 1, duration: 0.6 }}
                   className="mt-12 pt-8 border-t border-white/10"
                 >
@@ -351,7 +416,7 @@ export default function SecurityPageContent() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="text-center mb-16 sm:mb-20"
           >
@@ -373,7 +438,7 @@ export default function SecurityPageContent() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="relative"
           >
@@ -398,7 +463,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.2, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -425,7 +490,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.4, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -452,7 +517,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.6, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -479,7 +544,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.8, duration: 0.6 }}
                     whileHover={{ y: -4, transition: { duration: 0.2 } }}
                     className="group text-center"
@@ -508,7 +573,7 @@ export default function SecurityPageContent() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
+                  viewport={{ once: true }}
                   transition={{ delay: 1, duration: 0.6 }}
                   className="mt-12 pt-8 border-t border-white/10"
                 >
@@ -571,7 +636,7 @@ export default function SecurityPageContent() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="text-center mb-16 sm:mb-20"
           >
@@ -598,7 +663,7 @@ export default function SecurityPageContent() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="relative max-w-5xl mx-auto"
           >
@@ -624,7 +689,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.2, duration: 0.6 }}
                     className="text-center"
                   >
@@ -645,7 +710,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.4, duration: 0.6 }}
                     className="text-center"
                   >
@@ -668,7 +733,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.6, duration: 0.6 }}
                     className="text-center"
                   >
@@ -693,7 +758,7 @@ export default function SecurityPageContent() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
+                  viewport={{ once: true }}
                   transition={{ delay: 0.8, duration: 0.6 }}
                   className="mt-12 pt-8 border-t border-white/10 text-center"
                 >
@@ -730,7 +795,7 @@ export default function SecurityPageContent() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="relative"
           >
@@ -742,7 +807,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.2, duration: 0.6 }}
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.12] border border-white/20 text-xs font-semibold uppercase tracking-wider mb-6 text-primary/80"
                   >
@@ -753,7 +818,7 @@ export default function SecurityPageContent() {
                   <motion.h2
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.3, duration: 0.8 }}
                     className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6"
                   >
@@ -767,7 +832,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: 1 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.8, duration: 0.8 }}
                     className="w-24 h-1 bg-gradient-to-r from-primary via-secondary to-accent mx-auto rounded-full mb-8"
                   />
@@ -781,7 +846,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, x: -30 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.4, duration: 0.8 }}
                     className="text-center lg:text-left"
                   >
@@ -820,7 +885,7 @@ export default function SecurityPageContent() {
                   <motion.div
                     initial={{ opacity: 0, x: 30 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
+                    viewport={{ once: true }}
                     transition={{ delay: 0.6, duration: 0.8 }}
                     className="text-center"
                   >

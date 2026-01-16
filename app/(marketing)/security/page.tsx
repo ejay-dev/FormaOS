@@ -1,22 +1,24 @@
-import type { Metadata } from "next";
-import SecurityPageContent from "./SecurityPageContent";
+import type { Metadata } from 'next';
+import SecurityPageContentNew from './SecurityPageContentNew';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://formaos.com.au";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
 
 export const metadata: Metadata = {
-  title: "FormaOS | Security & Compliance",
-  description: "Enterprise-grade security infrastructure with privacy by design for regulated data.",
+  title: 'FormaOS | Security & Compliance',
+  description:
+    'Enterprise-grade security infrastructure with privacy by design for regulated data.',
   alternates: {
     canonical: `${siteUrl}/security`,
   },
   openGraph: {
-    title: "FormaOS | Security & Compliance",
-    description: "Certified security controls and privacy protection for compliance infrastructure.",
-    type: "website",
+    title: 'FormaOS | Security & Compliance',
+    description:
+      'Certified security controls and privacy protection for compliance infrastructure.',
+    type: 'website',
     url: `${siteUrl}/security`,
   },
 };
 
 export default function SecurityPage() {
-  return <SecurityPageContent />;
+  return <SecurityPageContentNew />;
 }

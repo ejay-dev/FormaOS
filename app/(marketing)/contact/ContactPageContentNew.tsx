@@ -1,133 +1,615 @@
 'use client';
 
 import Link from 'next/link';
+import { useRef, useState } from 'react';
 import {
   Mail,
   Phone,
-  MapPin,
-  MessageCircle,
   Clock,
   ArrowRight,
   Send,
+  Shield,
+  Building2,
 } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { useState } from 'react';
-import {
-  CinematicSection,
-  SectionHeader,
-  ValueProp,
-  VisualDivider,
-  InteractiveCard,
-  GradientMesh,
-  AnimatedButton,
-} from '@/components/motion';
-import { ParallaxLayer } from '@/components/motion/CleanBackground';
-import { MarketingAnchor } from '../components/marketing-anchor';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { VisualDivider } from '@/components/motion';
+import CinematicField from '../components/motion/CinematicField';
+
+// ============================================================================
+// HERO SECTION
+// ============================================================================
 
 function ContactHero() {
-  return (
-    <section className="relative min-h-[70vh] sm:min-h-[80vh] lg:min-h-[90vh] flex items-center overflow-hidden">
-      {/* Multi-layer animated background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end start'],
+  });
 
-      {/* Subtle background only - no motion elements */}
-      <div className="absolute inset-0 opacity-30">
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)
-            `,
-            backgroundSize: '50px 50px',
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
+  const y = useTransform(scrollYProgress, [0, 0.5], [0, 100]);
+
+  return (
+    <section
+      ref={containerRef}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] pt-24"
+    >
+      {/* Premium Background Effects */}
+      <div className="absolute inset-0 overflow-hidden">
+        <motion.div
+          className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-gradient-to-br from-blue-500/15 via-cyan-500/10 to-transparent rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.3, 0.4, 0.3],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute -bottom-40 -right-40 w-[700px] h-[700px] bg-gradient-to-tl from-purple-500/15 via-indigo-500/10 to-transparent rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.15, 1],
+            opacity: [0.2, 0.3, 0.2],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: 'easeInOut',
+            delay: 2,
           }}
         />
       </div>
 
-      {/* Radial gradient overlays - reduced on mobile */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[300px] sm:h-[600px] w-[300px] sm:w-[600px] rounded-full bg-secondary/20 blur-[60px] sm:blur-[120px]" />
-      <div className="pointer-events-none absolute -bottom-40 left-1/4 h-[250px] sm:h-[500px] w-[250px] sm:w-[500px] rounded-full bg-primary/15 blur-[50px] sm:blur-[100px]" />
+      {/* Cinematic Particle Field */}
+      <div className="absolute inset-0 z-1 opacity-40">
+        <CinematicField />
+      </div>
 
-      {/* Vignette */}
-      <div className="absolute inset-0 vignette pointer-events-none" />
+      {/* Grid Pattern */}
+      <div
+        className="absolute inset-0 opacity-20"
+        style={{
+          backgroundImage:
+            'radial-gradient(circle at 1px 1px, rgba(59, 130, 246, 0.15) 1px, transparent 0)',
+          backgroundSize: '40px 40px',
+        }}
+      />
 
-      {/* Content */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24 w-full">
-        <ParallaxLayer speed={0.3}>
-          <div className="mx-auto max-w-4xl text-center">
+      {/* Main Hero Content */}
+      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
+        <div className="flex flex-col items-center text-center">
+          <motion.div style={{ opacity, scale, y }}>
+            {/* Badge */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-              className="inline-flex items-center gap-2 sm:gap-2.5 glass-intense rounded-full px-4 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs font-semibold uppercase tracking-wider mb-6 sm:mb-8 border border-secondary/30"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/30 mb-8 backdrop-blur-sm"
             >
-              <motion.div
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-              >
-                <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4 text-secondary" />
-              </motion.div>
-              Get In Touch
+              <Mail className="w-4 h-4 text-blue-400" />
+              <span className="text-sm text-blue-400 font-medium tracking-wide">
+                Contact
+              </span>
             </motion.div>
 
+            {/* Headline */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-              className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] sm:leading-[1.08] font-display tracking-tight mb-4 sm:mb-6"
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
             >
-              Ready to transform
+              Let&apos;s Talk About Your
               <br />
-              <span className="relative">
-                <span className="text-gradient">your compliance?</span>
-                <motion.div
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.8, duration: 0.8 }}
-                  className="absolute -bottom-1 sm:-bottom-2 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-secondary via-primary to-accent rounded-full origin-left"
-                />
+              <span className="bg-gradient-to-r from-blue-400 via-cyan-500 to-purple-500 bg-clip-text text-transparent">
+                Compliance Strategy
               </span>
             </motion.h1>
 
+            {/* Subheadline */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-              className="text-base sm:text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-8 sm:mb-10"
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="text-lg sm:text-xl text-gray-400 mb-4 max-w-3xl mx-auto text-center leading-relaxed"
             >
-              Get a personalized demo tailored to your industry. See how FormaOS
-              can streamline your compliance workflows in minutes, not months.
+              Whether you&apos;re exploring FormaOS, preparing for audits, or
+              designing governance at scale, our team is here to help.
             </motion.p>
 
+            {/* Support Line */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="text-base text-gray-500 mb-10 max-w-2xl mx-auto text-center"
+            >
+              We work with regulated organizations that require precision,
+              accountability, and operational proof.
+            </motion.p>
+
+            {/* CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.8 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6"
+              transition={{ duration: 0.8, delay: 0.7 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
               <Link
                 href="#demo-form"
-                className="w-full sm:w-auto btn btn-primary px-6 py-3 text-sm font-semibold text-primary-foreground"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-blue-500 hover:bg-blue-400 text-white font-medium transition-all duration-300"
               >
-                Request Demo
+                Request a Demo
+                <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href="#contact-info"
-                className="w-full sm:w-auto btn btn-ghost px-6 py-3 text-sm font-semibold leading-6 flex items-center justify-center sm:justify-start gap-2"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium border border-white/20 transition-all duration-300"
               >
-                Contact Info <ArrowRight className="h-4 w-4" />
+                Contact Our Team
+                <ArrowRight className="w-4 h-4" />
               </Link>
             </motion.div>
-          </div>
-        </ParallaxLayer>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Scroll Indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 1.5 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
+      >
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          className="w-6 h-10 rounded-full border-2 border-gray-600/50 flex items-start justify-center p-2"
+        >
+          <motion.div className="w-1.5 h-1.5 bg-blue-400 rounded-full" />
+        </motion.div>
+      </motion.div>
+    </section>
+  );
+}
+
+// ============================================================================
+// CONTACT INFORMATION SECTION
+// ============================================================================
+
+function ContactInformation() {
+  return (
+    <section id="contact-info" className="relative py-32 bg-[#0a0f1c]">
+      <div className="max-w-5xl mx-auto px-6 lg:px-12">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+            Direct Contact
+          </h2>
+        </motion.div>
+
+        {/* Contact Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Email */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl"
+          >
+            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-blue-500/20 flex items-center justify-center">
+              <Mail className="w-8 h-8 text-blue-400" />
+            </div>
+            <h3 className="text-lg font-semibold text-white mb-2">Email</h3>
+            <a
+              href="mailto:formaos.team@gmail.com"
+              className="text-blue-400 hover:text-blue-300 transition-colors"
+            >
+              formaos.team@gmail.com
+            </a>
+          </motion.div>
+
+          {/* Phone */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl"
+          >
+            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-cyan-500/20 flex items-center justify-center">
+              <Phone className="w-8 h-8 text-cyan-400" />
+            </div>
+            <h3 className="text-lg font-semibold text-white mb-2">Phone</h3>
+            <a
+              href="tel:+61469715062"
+              className="text-cyan-400 hover:text-cyan-300 transition-colors"
+            >
+              +61 469 715 062
+            </a>
+          </motion.div>
+
+          {/* Availability */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl"
+          >
+            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-purple-500/20 flex items-center justify-center">
+              <Clock className="w-8 h-8 text-purple-400" />
+            </div>
+            <h3 className="text-lg font-semibold text-white mb-2">
+              Availability
+            </h3>
+            <p className="text-gray-400">Monday – Friday</p>
+            <p className="text-gray-400">9:00 AM – 6:00 PM (AEST)</p>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
 }
+
+// ============================================================================
+// CONTACT FORM SECTION
+// ============================================================================
+
+type ContactFormProps = {
+  submitAction: (formData: FormData) => Promise<void>;
+  searchParams?: {
+    success?: string;
+    error?: string;
+  };
+};
+
+function ContactForm({ submitAction, searchParams }: ContactFormProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (formData: FormData) => {
+    setIsSubmitting(true);
+    try {
+      await submitAction(formData);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <section
+      id="demo-form"
+      className="relative py-32 bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c]"
+    >
+      <div className="max-w-4xl mx-auto px-6 lg:px-12">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+            Start the Conversation
+          </h2>
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+            Tell us about your organization, your regulatory environment, and
+            what you&apos;re trying to achieve. A FormaOS specialist will
+            respond promptly.
+          </p>
+        </motion.div>
+
+        {/* Form Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="p-8 sm:p-12 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl"
+        >
+          <form action={handleSubmit} className="space-y-6">
+            {/* Name & Email Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-300 mb-2"
+                >
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  required
+                  className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  placeholder="Your full name"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-300 mb-2"
+                >
+                  Work Email *
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  placeholder="you@organization.com"
+                />
+              </div>
+            </div>
+
+            {/* Organization & Industry Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label
+                  htmlFor="company"
+                  className="block text-sm font-medium text-gray-300 mb-2"
+                >
+                  Organization
+                </label>
+                <input
+                  type="text"
+                  id="company"
+                  name="company"
+                  className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  placeholder="Your organization name"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="industry"
+                  className="block text-sm font-medium text-gray-300 mb-2"
+                >
+                  Industry
+                </label>
+                <select
+                  id="industry"
+                  name="industry"
+                  className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                >
+                  <option value="" className="bg-[#0a0f1c]">
+                    Select industry
+                  </option>
+                  <option value="healthcare" className="bg-[#0a0f1c]">
+                    Healthcare
+                  </option>
+                  <option value="ndis" className="bg-[#0a0f1c]">
+                    NDIS
+                  </option>
+                  <option value="finance" className="bg-[#0a0f1c]">
+                    Finance
+                  </option>
+                  <option value="education" className="bg-[#0a0f1c]">
+                    Education
+                  </option>
+                  <option value="government" className="bg-[#0a0f1c]">
+                    Government
+                  </option>
+                  <option value="other" className="bg-[#0a0f1c]">
+                    Other
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            {/* Message */}
+            <div>
+              <label
+                htmlFor="message"
+                className="block text-sm font-medium text-gray-300 mb-2"
+              >
+                Message
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                rows={5}
+                className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none"
+                placeholder="Tell us about your compliance challenges and goals..."
+              />
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full py-4 px-6 rounded-lg bg-blue-500 hover:bg-blue-400 disabled:bg-blue-500/50 text-white font-medium transition-all duration-300 flex items-center justify-center gap-2"
+            >
+              {isSubmitting ? (
+                <>
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity,
+                      ease: 'linear',
+                    }}
+                    className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+                  />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  Send Message
+                  <Send className="w-4 h-4" />
+                </>
+              )}
+            </button>
+
+            {/* Trust Note */}
+            <p className="text-center text-sm text-gray-500">
+              Your information is handled securely and never shared.
+            </p>
+          </form>
+
+          {/* Status Messages */}
+          {searchParams?.success && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-6 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg"
+            >
+              <p className="text-emerald-400 text-sm text-center">
+                ✅ Thank you! We&apos;ll be in touch within 24 hours.
+              </p>
+            </motion.div>
+          )}
+
+          {searchParams?.error && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg"
+            >
+              <p className="text-red-400 text-sm text-center">
+                ❌ Something went wrong. Please try again or contact us
+                directly.
+              </p>
+            </motion.div>
+          )}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================================
+// ENTERPRISE INQUIRIES
+// ============================================================================
+
+function EnterpriseInquiries() {
+  return (
+    <section className="relative py-32 bg-[#0a0f1c]">
+      <div className="max-w-4xl mx-auto px-6 lg:px-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center p-12 rounded-2xl bg-gradient-to-br from-purple-500/20 via-white/[0.08] to-white/[0.04] border border-purple-500/30 backdrop-blur-xl"
+        >
+          <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-purple-500/20 flex items-center justify-center">
+            <Building2 className="w-8 h-8 text-purple-400" />
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+            Enterprise & Partnership Requests
+          </h2>
+          <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
+            For large-scale deployments, compliance architecture discussions, or
+            strategic partnerships, contact us directly.
+          </p>
+          <a
+            href="mailto:formaos.team@gmail.com"
+            className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-medium text-lg transition-colors"
+          >
+            <Mail className="w-5 h-5" />
+            formaos.team@gmail.com
+          </a>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================================
+// SECURITY & TRUST STATEMENT
+// ============================================================================
+
+function SecurityTrust() {
+  return (
+    <section className="relative py-32 bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c]">
+      <div className="max-w-4xl mx-auto px-6 lg:px-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center"
+        >
+          <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-cyan-500/20 flex items-center justify-center">
+            <Shield className="w-8 h-8 text-cyan-400" />
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+            Secure by Design
+          </h2>
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+            All communications are handled in line with our security and privacy
+            standards. FormaOS is built for regulated environments where
+            confidentiality, data integrity, and auditability are essential.
+          </p>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================================
+// CLOSING CTA
+// ============================================================================
+
+function ClosingCTA() {
+  return (
+    <section className="relative py-32 bg-[#0a0f1c]">
+      <div className="max-w-4xl mx-auto px-6 lg:px-12 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
+            Operational Compliance Starts With
+            <br />
+            <span className="bg-gradient-to-r from-blue-400 via-cyan-500 to-purple-500 bg-clip-text text-transparent">
+              the Right Conversation
+            </span>
+          </h2>
+
+          <p className="text-lg text-gray-400 mb-12 max-w-2xl mx-auto">
+            Whether you&apos;re early in your compliance transformation or
+            managing complex regulatory operations, we&apos;re here to help you
+            build systems that enforce accountability and prove outcomes.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href="#demo-form"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-blue-500 hover:bg-blue-400 text-white font-medium transition-all duration-300"
+            >
+              Request a Demo
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              href="/auth/signup"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium border border-white/20 transition-all duration-300"
+            >
+              Start Free Trial
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================================
+// MAIN EXPORT
+// ============================================================================
 
 type ContactPageContentProps = {
   searchParams?: {
@@ -141,493 +623,19 @@ export default function ContactPageContent({
   searchParams,
   submitAction,
 }: ContactPageContentProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = async (formData: FormData) => {
-    setIsSubmitting(true);
-    try {
-      await submitAction(formData);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
-    <div>
+    <div className="relative">
       <ContactHero />
-
       <VisualDivider />
-
-      {/* Demo Request Form */}
-      <section id="demo-form">
-        <CinematicSection
-          backgroundType="gradient"
-          ambientColor="primary"
-          className="py-16 sm:py-20 lg:py-24 relative"
-        >
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-            <SectionHeader
-              badge="Request Demo"
-              title={
-                <>
-                  Get a personalized demo
-                  <br className="hidden sm:inline" />
-                  <span className="text-gradient">for your industry</span>
-                </>
-              }
-              subtitle="See FormaOS in action with a tailored demonstration of features relevant to your compliance needs"
-              alignment="center"
-            />
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-              {/* Contact Form */}
-              <InteractiveCard
-                glowColor="rgba(139, 92, 246, 0.15)"
-                className="p-8"
-              >
-                <h3 className="text-xl sm:text-2xl font-bold mb-6">
-                  Book Your Demo
-                </h3>
-
-                <form action={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                      <label
-                        htmlFor="name"
-                        className="block text-sm font-medium mb-2"
-                      >
-                        Name *
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        required
-                        className="w-full px-4 py-3 bg-background/50 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                        placeholder="Your full name"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="email"
-                        className="block text-sm font-medium mb-2"
-                      >
-                        Email *
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        required
-                        className="w-full px-4 py-3 bg-background/50 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                        placeholder="you@company.com"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                      <label
-                        htmlFor="company"
-                        className="block text-sm font-medium mb-2"
-                      >
-                        Company
-                      </label>
-                      <input
-                        type="text"
-                        id="company"
-                        name="company"
-                        className="w-full px-4 py-3 bg-background/50 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                        placeholder="Your organization"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="industry"
-                        className="block text-sm font-medium mb-2"
-                      >
-                        Industry
-                      </label>
-                      <select
-                        id="industry"
-                        name="industry"
-                        className="w-full px-4 py-3 bg-background/50 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                      >
-                        <option value="">Select industry</option>
-                        <option value="ndis">NDIS Service Provider</option>
-                        <option value="healthcare">
-                          Healthcare & Allied Health
-                        </option>
-                        <option value="community">Community Services</option>
-                        <option value="aged-care">Aged Care</option>
-                        <option value="mental-health">Mental Health</option>
-                        <option value="other">Other</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="message"
-                      className="block text-sm font-medium mb-2"
-                    >
-                      Tell us about your compliance needs
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      rows={4}
-                      className="w-full px-4 py-3 bg-background/50 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                      placeholder="What compliance challenges are you facing? What frameworks do you need to meet?"
-                    />
-                  </div>
-
-                  <AnimatedButton
-                    type="submit"
-                    disabled={isSubmitting}
-                    variant="primary"
-                    size="lg"
-                    className="w-full"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{
-                            duration: 1,
-                            repeat: Infinity,
-                            ease: 'linear',
-                          }}
-                          className="mr-2"
-                        >
-                          <div className="h-4 w-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full" />
-                        </motion.div>
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-                        Request Demo <Send className="ml-2 h-4 w-4" />
-                      </>
-                    )}
-                  </AnimatedButton>
-                </form>
-
-                {searchParams?.success && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-6 p-4 bg-green-500/10 border border-green-500/20 rounded-lg"
-                  >
-                    <p className="text-green-400 text-sm">
-                      ✅ Thank you! We'll be in touch within 24 hours to
-                      schedule your demo.
-                    </p>
-                  </motion.div>
-                )}
-
-                {searchParams?.error && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg"
-                  >
-                    <p className="text-red-400 text-sm">
-                      ❌ Something went wrong. Please try again or contact us
-                      directly.
-                    </p>
-                  </motion.div>
-                )}
-              </InteractiveCard>
-
-              {/* Demo Information */}
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-xl sm:text-2xl font-bold mb-4">
-                    What to expect in your demo
-                  </h3>
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2" />
-                      <div>
-                        <h4 className="font-semibold text-sm">
-                          Industry-specific walkthrough
-                        </h4>
-                        <p className="text-sm text-foreground/80">
-                          See FormaOS configured for your specific compliance
-                          requirements
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2" />
-                      <div>
-                        <h4 className="font-semibold text-sm">
-                          Live Q&A with experts
-                        </h4>
-                        <p className="text-sm text-foreground/80">
-                          Get answers about implementation, pricing, and
-                          integration
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2" />
-                      <div>
-                        <h4 className="font-semibold text-sm">
-                          Custom implementation plan
-                        </h4>
-                        <p className="text-sm text-foreground/80">
-                          Receive a tailored roadmap for your compliance
-                          transformation
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <InteractiveCard
-                  glowColor="rgba(0, 212, 251, 0.1)"
-                  className="p-6"
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <Clock className="h-5 w-5 text-primary" />
-                    <h4 className="font-semibold">30-minute session</h4>
-                  </div>
-                  <p className="text-sm text-foreground/80 mb-4">
-                    Focused demonstration covering the features most relevant to
-                    your compliance needs.
-                  </p>
-                  <div className="text-xs text-foreground/60">
-                    Available Monday-Friday, 9 AM - 5 PM AEST
-                  </div>
-                </InteractiveCard>
-              </div>
-            </div>
-          </div>
-        </CinematicSection>
-      </section>
-
+      <ContactInformation />
       <VisualDivider />
-
-      {/* Contact Information */}
-      <section id="contact-info">
-        <CinematicSection
-          backgroundType="nodes"
-          ambientColor="secondary"
-          className="py-16 sm:py-20 lg:py-24"
-        >
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeader
-              badge="Get In Touch"
-              title={
-                <>
-                  Multiple ways to
-                  <br className="hidden sm:inline" />
-                  <span className="text-gradient">connect with us</span>
-                </>
-              }
-              subtitle="Choose the communication method that works best for you"
-              alignment="center"
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-              <ValueProp
-                icon={<Mail className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
-                title="Email Support"
-                description="Get detailed answers to your questions. We respond within 4 hours during business hours."
-                delay={0}
-              />
-              <ValueProp
-                icon={<Phone className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
-                title="Phone Support"
-                description="Speak directly with our compliance experts for immediate assistance and consultation."
-                delay={0.1}
-              />
-              <ValueProp
-                icon={
-                  <MessageCircle className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
-                }
-                title="Live Chat"
-                description="Real-time support during business hours for quick questions and technical assistance."
-                delay={0.2}
-              />
-            </div>
-
-            <div className="mt-12 sm:mt-16 grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <InteractiveCard
-                glowColor="rgba(139, 92, 246, 0.1)"
-                className="p-6 text-center"
-              >
-                <Mail className="h-12 w-12 mx-auto mb-4 text-primary" />
-                <h3 className="text-lg font-bold mb-2">Email</h3>
-                <p className="text-sm text-foreground/80 mb-4">
-                  For detailed inquiries
-                </p>
-                <Link
-                  href="mailto:formaos.team@gmail.com"
-                  className="text-primary hover:text-primary/80 font-medium text-sm"
-                >
-                  formaos.team@gmail.com
-                </Link>
-              </InteractiveCard>
-
-              <InteractiveCard
-                glowColor="rgba(0, 212, 251, 0.1)"
-                className="p-6 text-center"
-              >
-                <Phone className="h-12 w-12 mx-auto mb-4 text-primary" />
-                <h3 className="text-lg font-bold mb-2">Phone</h3>
-                <p className="text-sm text-foreground/80 mb-4">
-                  Business hours: 9 AM - 5 PM ACST
-                </p>
-                <Link
-                  href="tel:+61469715062"
-                  className="text-primary hover:text-primary/80 font-medium text-sm"
-                >
-                  +61 469 715 062
-                </Link>
-              </InteractiveCard>
-
-              <InteractiveCard
-                glowColor="rgba(20, 184, 166, 0.1)"
-                className="p-6 text-center"
-              >
-                <MapPin className="h-12 w-12 mx-auto mb-4 text-primary" />
-                <h3 className="text-lg font-bold mb-2">Location</h3>
-                <p className="text-sm text-foreground/80">
-                  Adelaide
-                  <br />
-                  South Australia
-                  <br />
-                  Australia
-                </p>
-              </InteractiveCard>
-            </div>
-          </div>
-        </CinematicSection>
-      </section>
-
+      <ContactForm submitAction={submitAction} searchParams={searchParams} />
       <VisualDivider />
-
-      {/* FAQ Section */}
-      <CinematicSection
-        backgroundType="gradient"
-        ambientColor="accent"
-        className="py-16 sm:py-20 lg:py-24 relative"
-      >
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <GradientMesh
-            colors={[
-              'rgba(139, 92, 246, 0.08)',
-              'rgba(0, 212, 251, 0.06)',
-              'rgba(20, 184, 166, 0.04)',
-            ]}
-            className="opacity-50"
-          />
-        </div>
-
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-          <SectionHeader
-            badge="Common Questions"
-            title={
-              <>
-                Quick answers to
-                <br className="hidden sm:inline" />
-                <span className="text-gradient">your questions</span>
-              </>
-            }
-            subtitle="Can't find what you're looking for? Contact us directly."
-            alignment="center"
-          />
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="space-y-6">
-              <div>
-                <h4 className="text-lg font-semibold mb-2">
-                  How long does implementation take?
-                </h4>
-                <p className="text-foreground/80 text-sm">
-                  Most organizations are up and running within 2-4 weeks. Our
-                  onboarding team provides guided setup and training to ensure
-                  smooth adoption.
-                </p>
-              </div>
-
-              <div>
-                <h4 className="text-lg font-semibold mb-2">
-                  Do you provide data migration?
-                </h4>
-                <p className="text-foreground/80 text-sm">
-                  Yes, we assist with migrating your existing policies,
-                  evidence, and compliance data. Our team handles the technical
-                  details while you focus on your operations.
-                </p>
-              </div>
-
-              <div>
-                <h4 className="text-lg font-semibold mb-2">
-                  What frameworks do you support?
-                </h4>
-                <p className="text-foreground/80 text-sm">
-                  We support NDIS Practice Standards, NSQHS, ISO 27001, SOC 2,
-                  and custom frameworks. New framework support can be added
-                  based on demand.
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <div>
-                <h4 className="text-lg font-semibold mb-2">
-                  Is training included?
-                </h4>
-                <p className="text-foreground/80 text-sm">
-                  All plans include comprehensive onboarding and user training.
-                  Professional and Enterprise plans include ongoing training
-                  sessions and dedicated support.
-                </p>
-              </div>
-
-              <div>
-                <h4 className="text-lg font-semibold mb-2">
-                  Can I integrate with existing tools?
-                </h4>
-                <p className="text-foreground/80 text-sm">
-                  FormaOS offers API integration and pre-built connectors for
-                  common tools. Enterprise customers can request custom
-                  integrations.
-                </p>
-              </div>
-
-              <div>
-                <h4 className="text-lg font-semibold mb-2">
-                  What about data security?
-                </h4>
-                <p className="text-foreground/80 text-sm">
-                  Enterprise-grade security with AES-256 encryption, SOC 2
-                  compliance, and Australian data residency. Full details
-                  available in our security overview.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </CinematicSection>
-
+      <EnterpriseInquiries />
       <VisualDivider />
-
-      {/* Final CTA */}
-      <CinematicSection
-        backgroundType="gradient"
-        ambientColor="primary"
-        className="py-16 sm:py-20 lg:py-24 relative"
-      >
-        <MarketingAnchor
-          title="Ready to see FormaOS in action?"
-          subtitle="Book your personalized demo and transform your compliance workflow"
-          badge="Request Demo"
-        />
-      </CinematicSection>
+      <SecurityTrust />
+      <VisualDivider />
+      <ClosingCTA />
     </div>
   );
 }

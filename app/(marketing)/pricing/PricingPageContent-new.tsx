@@ -79,7 +79,7 @@ function PricingHero() {
               transition={{ delay: 0.3, duration: 0.8 }}
               className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] sm:leading-[1.08] font-display tracking-tight mb-4 sm:mb-6"
             >
-              Start strong.
+              Install the OS.
               <br />
               <span className="relative">
                 <span className="text-gradient">Scale with confidence.</span>
@@ -98,8 +98,8 @@ function PricingHero() {
               transition={{ delay: 0.5, duration: 0.8 }}
               className="text-base sm:text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-8 sm:mb-10"
             >
-              All plans include the FormaOS compliance engine — transparent
-              monthly pricing with no hidden costs.
+              All plans include the complete FormaOS compliance engine.
+              Transparent pricing. No hidden costs. Full OS capabilities.
             </motion.p>
 
             <motion.div

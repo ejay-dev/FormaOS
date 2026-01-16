@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import type { LucideIcon } from 'lucide-react';
 import {
   Building2,
   Users,
@@ -39,7 +40,7 @@ interface DashboardLayoutProps {
 interface NavigationItem {
   id: ModuleId;
   label: string;
-  icon: React.ElementType;
+  icon: LucideIcon;
   description: string;
   href: string;
 }
@@ -364,7 +365,7 @@ export function DashboardSectionCard({
 }: {
   title: string;
   description: string;
-  icon: React.ElementType;
+  icon: LucideIcon;
   children?: React.ReactNode;
   locked?: boolean;
 }) {
