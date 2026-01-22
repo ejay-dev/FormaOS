@@ -31,7 +31,7 @@ export function HeaderCTA() {
         transition={{ duration: duration.fast, ease: easing.signature }}
       >
         <Link
-          href="/auth/signup"
+          href="/auth/signup?plan=pro"
           className="inline-flex items-center justify-center px-4 lg:px-5 py-2 rounded-lg bg-primary text-primary-foreground font-medium shadow-[0_0_20px_rgba(0,212,251,0.3)] hover:shadow-[0_0_30px_rgba(0,212,251,0.4)] transition-shadow"
         >
           Start Free

@@ -27,26 +27,32 @@ function SignUpContent() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const signUpWithGoogle = async () => {
+    setErrorMessage(null);
+    setIsLoading(true);
     const base = (
       process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin
     ).replace(/\/$/, '');
     const redirectTo = plan
       ? `${base}/auth/callback?plan=${encodeURIComponent(plan.key)}`
       : `${base}/auth/callback`;
-
     const supabase = createSupabaseClient();
+    // Generate CSRF state
+    const state = Math.random().toString(36).substring(2, 15);
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo },
+      options: { redirectTo, queryParams: { state } },
     });
-
     if (error) {
-      setErrorMessage(error.message);
+      setErrorMessage(error.message ?? 'An unexpected error occurred.');
+      setIsLoading(false);
+      console.error('Google OAuth error:', error);
       return;
     }
-
     if (data?.url) {
       window.location.href = data.url;
+    } else {
+      setErrorMessage('No redirect URL returned from Google OAuth.');
+      setIsLoading(false);
     }
   };
 

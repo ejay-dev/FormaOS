@@ -1,0 +1,7 @@
+com/formaos/pages/BasePage.class
+com/formaos/utils/DriverFactory.class
+com/formaos/utils/TestListener.class
+com/formaos/base/BaseTest.class
+com/formaos/utils/ScreenshotUtil.class
+com/formaos/pages/HomePage.class
+com/formaos/utils/ConfigReader.class

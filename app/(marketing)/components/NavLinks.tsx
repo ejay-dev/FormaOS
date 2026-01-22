@@ -12,7 +12,7 @@ const links = [
   { href: '/industries', label: 'Industries' },
   { href: '/security', label: 'Security' },
   { href: '/pricing', label: 'Pricing' },
-  { href: '/our-story', label: 'Our Story' },
+  { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ];
 

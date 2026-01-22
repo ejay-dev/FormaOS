@@ -27,8 +27,6 @@ function LoginContent() {
   const signInWithGoogle = async () => {
     setErrorMessage(null);
     setIsLoading(true);
-
-    // Get app base URL for redirect
     let base = (process.env.NEXT_PUBLIC_APP_URL ?? '').replace(/\/$/, '');
     try {
       const res = await fetch('/api/debug/env');
@@ -37,27 +35,30 @@ function LoginContent() {
     } catch {
       /* silent fallback */
     }
-
     if (!base) base = (window.location.origin ?? '').replace(/\/$/, '');
-
     const supabase = createSupabaseClient();
+    // Generate CSRF state
+    const state = Math.random().toString(36).substring(2, 15);
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${base}/auth/callback`,
+        queryParams: { state },
       },
     });
-
     if (error) {
       setErrorMessage(error.message ?? 'An unexpected error occurred.');
       setIsLoading(false);
+      console.error('Google OAuth error:', error);
       return;
     }
-
-    // OAuth redirect will happen automatically
     if (data?.url) {
       window.location.href = data.url;
+    } else {
+      setErrorMessage('No redirect URL returned from Google OAuth.');
+      setIsLoading(false);
     }
+  };
   };
 
   const signInWithEmail = async (e: React.FormEvent) => {

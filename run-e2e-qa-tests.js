@@ -3,7 +3,7 @@
 /**
  * FormaOS End-to-End QA Test Suite
  * Simulates complete user lifecycle without real time delays or production impact
- * 
+ *
  * Tests:
  * 1. User signup & email verification
  * 2. Stripe checkout completion
@@ -18,13 +18,15 @@ const envPath = path.join(__dirname, '.env.local');
 const envContent = fs.readFileSync(envPath, 'utf8');
 const envVars = {};
 
-envContent.split('\n').forEach(line => {
+envContent.split('\n').forEach((line) => {
   const match = line.match(/^([^=]+)=(.*)$/);
   if (match) {
     const key = match[1].trim();
     let value = match[2].trim();
-    if ((value.startsWith('"') && value.endsWith('"')) || 
-        (value.startsWith("'") && value.endsWith("'"))) {
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
       value = value.slice(1, -1);
     }
     envVars[key] = value;
@@ -43,7 +45,7 @@ if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
 }
 
 const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
-  auth: { autoRefreshToken: false, persistSession: false }
+  auth: { autoRefreshToken: false, persistSession: false },
 });
 
 // Test data
@@ -59,18 +61,19 @@ async function test1_UserSignupAndEmailVerification() {
   console.log('\n' + '='.repeat(70));
   console.log('TEST 1: User Signup & Email Verification');
   console.log('='.repeat(70));
-  
+
   try {
     // 1️⃣ Create auth user
     console.log('\n1️⃣ Creating test user...');
-    const { data: authUser, error: authError } = await supabase.auth.admin.createUser({
-      email: TEST_EMAIL,
-      password: TEST_PASSWORD,
-      user_metadata: {
-        full_name: TEST_FULL_NAME,
-      },
-      email_confirm: false,
-    });
+    const { data: authUser, error: authError } =
+      await supabase.auth.admin.createUser({
+        email: TEST_EMAIL,
+        password: TEST_PASSWORD,
+        user_metadata: {
+          full_name: TEST_FULL_NAME,
+        },
+        email_confirm: false,
+      });
 
     if (authError) {
       throw new Error(`Failed to create auth user: ${authError.message}`);
@@ -84,7 +87,7 @@ async function test1_UserSignupAndEmailVerification() {
     console.log('\n2️⃣ Simulating email confirmation...');
     const { error: confirmError } = await supabase.auth.admin.updateUserById(
       userId,
-      { email_confirm: true }
+      { email_confirm: true },
     );
 
     if (confirmError) {
@@ -106,7 +109,7 @@ async function test1_UserSignupAndEmailVerification() {
 
     if (!membership?.organization_id) {
       console.log('   ⚠️  No organization found. Creating one...');
-      
+
       // Create organization
       const { data: org, error: orgError } = await supabase
         .from('organizations')
@@ -117,33 +120,49 @@ async function test1_UserSignupAndEmailVerification() {
         .select('id')
         .single();
 
-      if (orgError) throw new Error(`Failed to create org: ${orgError.message}`);
+      if (orgError)
+        throw new Error(`Failed to create org: ${orgError.message}`);
 
       // Create membership
-      const { error: memError } = await supabase
-        .from('org_members')
-        .insert({
-          organization_id: org.id,
-          user_id: userId,
-          role: 'owner',
-        });
+      const { error: memError } = await supabase.from('org_members').insert({
+        organization_id: org.id,
+        user_id: userId,
+        role: 'owner',
+      });
 
-      if (memError) throw new Error(`Failed to create membership: ${memError.message}`);
+      if (memError)
+        throw new Error(`Failed to create membership: ${memError.message}`);
 
       console.log(`   ✅ Organization created: ${org.id}`);
       console.log(`   ✅ Membership created with role: owner`);
     } else {
-      console.log(`   ✅ Organization already exists: ${membership.organization_id}`);
+      console.log(
+        `   ✅ Organization already exists: ${membership.organization_id}`,
+      );
       console.log(`   ✅ User role: ${membership.role}`);
     }
 
     // 4️⃣ Verify trial setup
     console.log('\n4️⃣ Verifying trial setup...');
-    const orgId = membership?.organization_id || (await supabase
-      .from('org_members')
-      .select('organization_id')
-      .eq('user_id', userId)
-      .single()).data.organization_id;
+    let orgId = membership?.organization_id;
+
+    if (!orgId) {
+      const { data: memberData, error: memberQueryError } = await supabase
+        .from('org_members')
+        .select('organization_id')
+        .eq('user_id', userId)
+        .single();
+
+      if (memberQueryError || !memberData) {
+        throw new Error(
+          `Failed to get organization_id: ${memberQueryError?.message || 'No membership found'}`,
+        );
+      }
+
+      orgId = memberData.organization_id;
+    }
+
+    console.log(`   ✅ Using organization ID: ${orgId}`);
 
     const { data: subscription, error: subError } = await supabase
       .from('org_subscriptions')
@@ -156,8 +175,10 @@ async function test1_UserSignupAndEmailVerification() {
     }
 
     if (!subscription) {
-      console.log('   ⚠️  No subscription found. Creating trial subscription...');
-      
+      console.log(
+        '   ⚠️  No subscription found. Creating trial subscription...',
+      );
+
       const trialEnd = new Date();
       trialEnd.setDate(trialEnd.getDate() + 14);
 
@@ -174,9 +195,11 @@ async function test1_UserSignupAndEmailVerification() {
         });
 
       if (createSubError) {
-        throw new Error(`Failed to create subscription: ${createSubError.message}`);
+        throw new Error(
+          `Failed to create subscription: ${createSubError.message}`,
+        );
       }
-      
+
       console.log(`   ✅ Trial subscription created`);
       console.log(`   📅 Expires: ${trialEnd.toLocaleDateString()}`);
     } else {
@@ -197,12 +220,18 @@ async function test1_UserSignupAndEmailVerification() {
     }
 
     if (entitlements?.length === 0) {
-      console.log('   ⚠️  No entitlements found. Creating basic tier entitlements...');
-      
+      console.log(
+        '   ⚠️  No entitlements found. Creating basic tier entitlements...',
+      );
+
       const basicEntitlements = [
         { feature_key: 'audit_export', enabled: true, limit_value: null },
         { feature_key: 'reports', enabled: true, limit_value: null },
-        { feature_key: 'framework_evaluations', enabled: true, limit_value: null },
+        {
+          feature_key: 'framework_evaluations',
+          enabled: true,
+          limit_value: null,
+        },
         { feature_key: 'team_limit', enabled: true, limit_value: 15 },
       ];
 
@@ -215,21 +244,26 @@ async function test1_UserSignupAndEmailVerification() {
           });
 
         if (entInsertError && !entInsertError.message.includes('duplicate')) {
-          throw new Error(`Failed to create entitlement: ${entInsertError.message}`);
+          throw new Error(
+            `Failed to create entitlement: ${entInsertError.message}`,
+          );
         }
       }
 
       console.log(`   ✅ Created ${basicEntitlements.length} entitlements`);
     } else {
       console.log(`   ✅ Found ${entitlements.length} entitlements`);
-      entitlements.forEach(e => {
-        console.log(`      • ${e.feature_key}: ${e.enabled ? 'enabled' : 'disabled'}`);
+      entitlements.forEach((e) => {
+        console.log(
+          `      • ${e.feature_key}: ${e.enabled ? 'enabled' : 'disabled'}`,
+        );
       });
     }
 
-    console.log('\n✅ TEST 1 PASSED: Signup & Email Verification Flow Complete');
+    console.log(
+      '\n✅ TEST 1 PASSED: Signup & Email Verification Flow Complete',
+    );
     return { userId, orgId, TEST_EMAIL, TEST_PASSWORD };
-
   } catch (error) {
     console.error('\n❌ TEST 1 FAILED:', error.message);
     throw error;
@@ -251,14 +285,16 @@ async function test2_StripeCheckoutSimulation(testData) {
     // 1️⃣ Verify Stripe is configured
     console.log('\n1️⃣ Checking Stripe configuration...');
     if (!STRIPE_SECRET) {
-      console.warn('   ⚠️  STRIPE_SECRET_KEY not configured. Simulating checkout...');
+      console.warn(
+        '   ⚠️  STRIPE_SECRET_KEY not configured. Simulating checkout...',
+      );
     } else {
       console.log('   ✅ Stripe keys available');
     }
 
     // 2️⃣ Create Stripe customer (if Stripe available)
     console.log('\n2️⃣ Creating/getting Stripe customer...');
-    
+
     const { data: existingSub } = await supabase
       .from('org_subscriptions')
       .select('stripe_customer_id')
@@ -266,7 +302,7 @@ async function test2_StripeCheckoutSimulation(testData) {
       .maybeSingle();
 
     let customerId = existingSub?.stripe_customer_id;
-    
+
     if (!customerId) {
       console.log('   ℹ️  Simulating customer creation...');
       customerId = `cus_test_${orgId.substring(0, 8)}`;
@@ -277,7 +313,7 @@ async function test2_StripeCheckoutSimulation(testData) {
 
     // 3️⃣ Simulate plan upgrade (Basic → Pro)
     console.log('\n3️⃣ Simulating plan upgrade (Basic → Pro)...');
-    
+
     const { error: updateOrgError } = await supabase
       .from('organizations')
       .update({ plan_key: 'pro' })
@@ -290,7 +326,7 @@ async function test2_StripeCheckoutSimulation(testData) {
 
     // 4️⃣ Create/update subscription for Pro plan
     console.log('\n4️⃣ Updating subscription to Pro plan...');
-    
+
     const { error: updateSubError } = await supabase
       .from('org_subscriptions')
       .upsert({
@@ -298,21 +334,29 @@ async function test2_StripeCheckoutSimulation(testData) {
         plan_key: 'pro',
         status: 'active',
         stripe_customer_id: customerId,
-        current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        current_period_end: new Date(
+          Date.now() + 30 * 24 * 60 * 60 * 1000,
+        ).toISOString(),
       });
 
     if (updateSubError) {
-      throw new Error(`Failed to update subscription: ${updateSubError.message}`);
+      throw new Error(
+        `Failed to update subscription: ${updateSubError.message}`,
+      );
     }
     console.log('   ✅ Subscription updated to active/pro');
 
     // 5️⃣ Simulate webhook: sync entitlements for Pro plan
     console.log('\n5️⃣ Simulating webhook: syncing Pro entitlements...');
-    
+
     const proEntitlements = [
       { feature_key: 'audit_export', enabled: true, limit_value: null },
       { feature_key: 'reports', enabled: true, limit_value: null },
-      { feature_key: 'framework_evaluations', enabled: true, limit_value: null },
+      {
+        feature_key: 'framework_evaluations',
+        enabled: true,
+        limit_value: null,
+      },
       { feature_key: 'certifications', enabled: true, limit_value: null },
       { feature_key: 'team_limit', enabled: true, limit_value: 75 },
     ];
@@ -320,20 +364,25 @@ async function test2_StripeCheckoutSimulation(testData) {
     for (const ent of proEntitlements) {
       const { error: entError } = await supabase
         .from('org_entitlements')
-        .upsert({
-          organization_id: orgId,
-          ...ent,
-        }, { onConflict: 'organization_id,feature_key' });
+        .upsert(
+          {
+            organization_id: orgId,
+            ...ent,
+          },
+          { onConflict: 'organization_id,feature_key' },
+        );
 
       if (entError && !entError.message.includes('duplicate')) {
         throw new Error(`Failed to upsert entitlement: ${entError.message}`);
       }
     }
-    console.log(`   ✅ Updated ${proEntitlements.length} entitlements for Pro plan`);
+    console.log(
+      `   ✅ Updated ${proEntitlements.length} entitlements for Pro plan`,
+    );
 
     // 6️⃣ Verify subscription state
     console.log('\n6️⃣ Verifying final subscription state...');
-    
+
     const { data: finalSub, error: finalError } = await supabase
       .from('org_subscriptions')
       .select('*')
@@ -347,29 +396,43 @@ async function test2_StripeCheckoutSimulation(testData) {
     console.log(`   ✅ Status: ${finalSub.status}`);
     console.log(`   ✅ Plan: ${finalSub.plan_key}`);
     console.log(`   ✅ Customer: ${finalSub.stripe_customer_id}`);
-    console.log(`   ✅ Period End: ${new Date(finalSub.current_period_end).toLocaleDateString()}`);
+    console.log(
+      `   ✅ Period End: ${new Date(finalSub.current_period_end).toLocaleDateString()}`,
+    );
 
     // 7️⃣ Verify entitlements unlocked
     console.log('\n7️⃣ Verifying Pro entitlements unlocked...');
-    
+
     const { data: verifyEnts } = await supabase
       .from('org_entitlements')
       .select('feature_key, enabled')
       .eq('organization_id', orgId)
       .eq('enabled', true);
 
-    const expectedFeatures = ['audit_export', 'reports', 'framework_evaluations', 'certifications'];
-    const actualFeatures = (verifyEnts || []).map(e => e.feature_key).filter(f => expectedFeatures.includes(f));
+    const expectedFeatures = [
+      'audit_export',
+      'reports',
+      'framework_evaluations',
+      'certifications',
+    ];
+    const actualFeatures = (verifyEnts || [])
+      .map((e) => e.feature_key)
+      .filter((f) => expectedFeatures.includes(f));
 
     if (actualFeatures.length === expectedFeatures.length) {
-      console.log(`   ✅ All Pro features unlocked: ${actualFeatures.join(', ')}`);
+      console.log(
+        `   ✅ All Pro features unlocked: ${actualFeatures.join(', ')}`,
+      );
     } else {
-      console.warn(`   ⚠️  Some features missing. Expected: ${expectedFeatures}, Got: ${actualFeatures}`);
+      console.warn(
+        `   ⚠️  Some features missing. Expected: ${expectedFeatures}, Got: ${actualFeatures}`,
+      );
     }
 
-    console.log('\n✅ TEST 2 PASSED: Stripe Checkout & Entitlement Sync Complete');
+    console.log(
+      '\n✅ TEST 2 PASSED: Stripe Checkout & Entitlement Sync Complete',
+    );
     return testData;
-
   } catch (error) {
     console.error('\n❌ TEST 2 FAILED:', error.message);
     throw error;
@@ -390,9 +453,9 @@ async function test3_TrialExpirationScenarios(testData) {
 
     // Create a test subscription with expired trial
     console.log('\n1️⃣ Creating test subscription with expired trial...');
-    
+
     const expiredTrialOrg = `test_expired_trial_${Date.now()}`;
-    
+
     // Create new organization for trial test
     const { data: expiredOrg, error: expiredOrgError } = await supabase
       .from('organizations')
@@ -411,7 +474,7 @@ async function test3_TrialExpirationScenarios(testData) {
 
     // 2️⃣ Create subscription with past trial_expires_at
     console.log('\n2️⃣ Setting trial expiration to past date...');
-    
+
     const pastDate = new Date();
     pastDate.setDate(pastDate.getDate() - 1); // Yesterday
 
@@ -421,20 +484,26 @@ async function test3_TrialExpirationScenarios(testData) {
         organization_id: expiredOrg.id,
         plan_key: 'basic',
         status: 'trialing',
-        trial_started_at: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+        trial_started_at: new Date(
+          Date.now() - 15 * 24 * 60 * 60 * 1000,
+        ).toISOString(),
         trial_expires_at: pastDate.toISOString(),
         current_period_end: pastDate.toISOString(),
       });
 
     if (expiredSubError) {
-      throw new Error(`Failed to create expired subscription: ${expiredSubError.message}`);
+      throw new Error(
+        `Failed to create expired subscription: ${expiredSubError.message}`,
+      );
     }
 
-    console.log(`   ✅ Trial set to expire on: ${pastDate.toLocaleDateString()}`);
+    console.log(
+      `   ✅ Trial set to expire on: ${pastDate.toLocaleDateString()}`,
+    );
 
     // 3️⃣ Verify trial is expired
     console.log('\n3️⃣ Verifying trial expiration detection...');
-    
+
     const { data: expiredSub } = await supabase
       .from('org_subscriptions')
       .select('trial_expires_at, status')
@@ -447,7 +516,9 @@ async function test3_TrialExpirationScenarios(testData) {
 
     console.log(`   📅 Trial expires: ${expiresAt.toLocaleDateString()}`);
     console.log(`   ⏰ Current time: ${now.toLocaleDateString()}`);
-    console.log(`   ${isExpired ? '✅' : '❌'} Trial is ${isExpired ? 'EXPIRED' : 'ACTIVE'}`);
+    console.log(
+      `   ${isExpired ? '✅' : '❌'} Trial is ${isExpired ? 'EXPIRED' : 'ACTIVE'}`,
+    );
 
     if (!isExpired) {
       throw new Error('Trial should be expired but is still active');
@@ -455,10 +526,10 @@ async function test3_TrialExpirationScenarios(testData) {
 
     // 4️⃣ Test access restrictions
     console.log('\n4️⃣ Testing access restrictions for expired trial...');
-    
+
     // Check if restricted features would be locked
     const restrictedFeatures = ['reports', 'certifications'];
-    
+
     const { data: entitlements } = await supabase
       .from('org_entitlements')
       .select('feature_key, enabled')
@@ -470,7 +541,7 @@ async function test3_TrialExpirationScenarios(testData) {
 
     // 5️⃣ Test scenario: Within 3 days of expiry (warning state)
     console.log('\n5️⃣ Testing warning state (trial expires in 3 days)...');
-    
+
     const warningOrg = `test_warning_${Date.now()}`;
     const { data: warningOrgData, error: warningOrgError } = await supabase
       .from('organizations')
@@ -482,7 +553,9 @@ async function test3_TrialExpirationScenarios(testData) {
       .single();
 
     if (warningOrgError) {
-      throw new Error(`Failed to create warning org: ${warningOrgError.message}`);
+      throw new Error(
+        `Failed to create warning org: ${warningOrgError.message}`,
+      );
     }
 
     const warningDate = new Date();
@@ -494,30 +567,39 @@ async function test3_TrialExpirationScenarios(testData) {
         organization_id: warningOrgData.id,
         plan_key: 'basic',
         status: 'trialing',
-        trial_started_at: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+        trial_started_at: new Date(
+          Date.now() - 12 * 24 * 60 * 60 * 1000,
+        ).toISOString(),
         trial_expires_at: warningDate.toISOString(),
         current_period_end: warningDate.toISOString(),
       });
 
     if (warningSubError) {
-      throw new Error(`Failed to create warning subscription: ${warningSubError.message}`);
+      throw new Error(
+        `Failed to create warning subscription: ${warningSubError.message}`,
+      );
     }
 
-    const daysRemaining = Math.floor((warningDate - now) / (24 * 60 * 60 * 1000));
+    const daysRemaining = Math.floor(
+      (warningDate - now) / (24 * 60 * 60 * 1000),
+    );
     console.log(`   ⏰ Days remaining: ${daysRemaining}`);
-    console.log(`   ${daysRemaining <= 3 ? '⚠️  WARNING' : '✅ OK'}: Trial expiring soon`);
+    console.log(
+      `   ${daysRemaining <= 3 ? '⚠️  WARNING' : '✅ OK'}: Trial expiring soon`,
+    );
 
     // 6️⃣ Verify billing page shows upgrade prompt
     console.log('\n6️⃣ Verifying UI state transitions...');
     console.log('   ℹ️  UI Logic:');
-    console.log('      • Expired trial → Show "Upgrade Required" + Block features');
+    console.log(
+      '      • Expired trial → Show "Upgrade Required" + Block features',
+    );
     console.log('      • 3-7 days left → Show warning banner');
     console.log('      • < 3 days → Show urgent banner + "Upgrade Now" CTA');
     console.log('   ✅ All states implemented in TrialStatusBanner component');
 
     console.log('\n✅ TEST 3 PASSED: Trial Expiration Scenarios Complete');
     return testData;
-
   } catch (error) {
     console.error('\n❌ TEST 3 FAILED:', error.message);
     throw error;
@@ -531,9 +613,19 @@ async function test3_TrialExpirationScenarios(testData) {
 async function runAllTests() {
   console.log('\n');
   console.log('╔' + '═'.repeat(68) + '╗');
-  console.log('║' + ' '.repeat(15) + 'FormaOS End-to-End QA Test Suite' + ' '.repeat(21) + '║');
+  console.log(
+    '║' +
+      ' '.repeat(15) +
+      'FormaOS End-to-End QA Test Suite' +
+      ' '.repeat(21) +
+      '║',
+  );
   console.log('║' + ' '.repeat(68) + '║');
-  console.log('║ Testing complete user lifecycle without real delays or production impact' + ' '.repeat(4) + '║');
+  console.log(
+    '║ Testing complete user lifecycle without real delays or production impact' +
+      ' '.repeat(4) +
+      '║',
+  );
   console.log('╚' + '═'.repeat(68) + '╝\n');
 
   const results = {
@@ -554,7 +646,6 @@ async function runAllTests() {
     // Test 3
     await test3_TrialExpirationScenarios(testData);
     results.test3.status = 'passed';
-
   } catch (error) {
     console.error('\n❌ Test suite failed:', error.message);
     results.test1.error = error.message;
@@ -565,12 +656,22 @@ async function runAllTests() {
   console.log('TEST SUMMARY');
   console.log('='.repeat(70));
 
-  const passed = Object.values(results).filter(r => r.status === 'passed').length;
-  const failed = Object.values(results).filter(r => r.status === 'failed').length;
+  const passed = Object.values(results).filter(
+    (r) => r.status === 'passed',
+  ).length;
+  const failed = Object.values(results).filter(
+    (r) => r.status === 'failed',
+  ).length;
 
-  console.log(`\nTest 1 - Signup & Email Verification:    ${results.test1.status.toUpperCase()}`);
-  console.log(`Test 2 - Stripe Checkout Simulation:     ${results.test2.status.toUpperCase()}`);
-  console.log(`Test 3 - Trial Expiration Scenarios:     ${results.test3.status.toUpperCase()}`);
+  console.log(
+    `\nTest 1 - Signup & Email Verification:    ${results.test1.status.toUpperCase()}`,
+  );
+  console.log(
+    `Test 2 - Stripe Checkout Simulation:     ${results.test2.status.toUpperCase()}`,
+  );
+  console.log(
+    `Test 3 - Trial Expiration Scenarios:     ${results.test3.status.toUpperCase()}`,
+  );
 
   console.log(`\n📊 Results: ${passed}/3 passed, ${failed}/3 failed`);
 

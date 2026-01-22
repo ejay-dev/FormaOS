@@ -3,11 +3,55 @@ import { createServerClient } from '@supabase/ssr';
 import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 import { isFounder } from '@/lib/utils/founder';
 
+// Define public routes that don't require authentication
+const PUBLIC_ROUTES = [
+  '/',
+  '/product',
+  '/industries',
+  '/security',
+  '/pricing',
+  '/our-story',
+  '/contact',
+  '/about',
+  '/docs',
+  '/blog',
+  '/faq',
+  '/legal/privacy',
+  '/legal/terms',
+  '/auth/signin',
+  '/auth/signup',
+  '/auth/callback',
+];
+
+// Check if a path is a public route
+function isPublicRoute(path: string): boolean {
+  // Exact matches
+  if (PUBLIC_ROUTES.includes(path)) {
+    return true;
+  }
+
+  // Check for static assets
+  if (
+    path.startsWith('/_next/') ||
+    path.startsWith('/public/') ||
+    path.match(/\.(ico|png|jpg|jpeg|svg|css|js)$/)
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
 export async function middleware(request: NextRequest) {
   try {
     const response = NextResponse.next({ request });
 
     const pathname = request.nextUrl.pathname;
+
+    // Skip auth checks for public routes
+    if (isPublicRoute(pathname)) {
+      return response;
+    }
 
     // 🚨 CRITICAL: Verify FOUNDER_EMAILS is loaded (log ONCE per deployment)
     if (pathname === '/admin' || pathname.startsWith('/admin/')) {
@@ -51,6 +95,13 @@ export async function middleware(request: NextRequest) {
         hasState: !!oauthState,
         hasError: !!oauthError,
       });
+      return NextResponse.redirect(redirectUrl);
+    }
+
+    // Handle /auth route - redirect to /auth/signin
+    if (pathname === '/auth') {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = '/auth/signin';
       return NextResponse.redirect(redirectUrl);
     }
 

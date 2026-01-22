@@ -6,6 +6,8 @@ import { NavLinks } from './components/NavLinks';
 import { MobileNav } from './components/MobileNav';
 import { HeaderCTA } from './components/HeaderCTA';
 import { Footer } from './components/Footer';
+import { SystemStateHydrator } from '@/lib/system-state/hydrator';
+import { PublicAuthProvider } from '@/lib/auth/public-auth-provider';
 import './marketing.css';
 import { brand } from '@/config/brand';
 
@@ -13,22 +15,29 @@ import { brand } from '@/config/brand';
 export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(brand.seo.siteUrl),
   title: {
-    default: brand.seo.defaultTitle,
-    template: `%s — ${brand.appName}`,
+    default: 'FormaOS | Compliance Operating System',
+    template: '%s | FormaOS',
   },
-  description: brand.seo.description,
+  description:
+    'FormaOS is the compliance operating system for regulated industries. Manage frameworks, policies, controls, and evidence in a single platform.',
+  metadataBase: new URL(brand.seo.siteUrl),
   openGraph: {
-    title: brand.seo.defaultTitle,
-    description: brand.seo.description,
-    url: brand.seo.siteUrl,
-    siteName: brand.appName,
-    images: [brand.seo.ogImage || brand.logo.wordmarkDark],
     type: 'website',
-  },
-  icons: {
-    icon: [{ url: brand.logo.favicon }],
+    locale: 'en_AU',
+    url: brand.seo.siteUrl,
+    siteName: 'FormaOS',
+    title: 'FormaOS | Compliance Operating System',
+    description:
+      'FormaOS is the compliance operating system for regulated industries. Manage frameworks, policies, controls, and evidence in a single platform.',
+    images: [
+      {
+        url: `${brand.seo.siteUrl}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: 'FormaOS',
+      },
+    ],
   },
 };
 
@@ -37,76 +46,86 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="mk-shell font-[var(--font-body)]">
-      <div className="relative min-h-screen overflow-hidden">
-        {/* Premium header with glass effect and micro-animations */}
-        <header className="mk-header-premium sticky top-0 z-50">
-          {/* Top accent line with gradient animation */}
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+      {/* Add PublicAuthProvider for lightweight auth context */}
+      <PublicAuthProvider>
+        {/* Add SystemStateHydrator with publicRoute flag */}
+        <SystemStateHydrator publicRoute={true}>
+          {/* Add OAuthRedirectWrapper to handle OAuth redirects */}
+          <OAuthRedirectWrapper />
+          <div className="relative min-h-screen overflow-hidden">
+            {/* Premium header with glass effect and micro-animations */}
+            <header className="mk-header-premium sticky top-0 z-50">
+              {/* Top accent line with gradient animation */}
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
 
-          <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
-            {/* Logo: mark + text (avoids stale wordmark asset caches) */}
-            <Link
-              href="/"
-              className="mk-logo-container flex items-center gap-2 group"
-            >
-              <img
-                src={brand.logo.mark}
-                alt={brand.appName}
-                width={32}
-                height={32}
-                className="select-none rounded-md"
-              />
-              <span className="text-[17px] sm:text-[18px] font-bold tracking-tight">
-                {brand.appName}
-              </span>
-            </Link>
+              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="flex h-16 items-center justify-between">
+                  {/* Logo */}
+                  <div className="flex items-center">
+                    <Link
+                      href="/"
+                      className="flex items-center gap-2 text-foreground"
+                    >
+                      <div className="relative h-8 w-8">
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary to-secondary opacity-80" />
+                        <div className="absolute inset-0.5 rounded-full bg-background" />
+                        <div className="absolute inset-1.5 rounded-full bg-gradient-to-br from-primary to-secondary" />
+                      </div>
+                      <span className="text-lg font-bold tracking-tight">
+                        FormaOS
+                      </span>
+                    </Link>
+                  </div>
 
-            {/* Desktop nav with animated underlines */}
-            <NavLinks variant="desktop" />
+                  {/* Desktop Navigation */}
+                  <NavLinks />
 
-            {/* Mobile menu */}
-            <MobileNav />
+                  {/* Mobile Navigation */}
+                  <MobileNav />
 
-            {/* CTA buttons with premium effects */}
-            <HeaderCTA />
-          </div>
-        </header>
+                  {/* CTA Buttons */}
+                  <HeaderCTA />
+                </div>
+              </div>
+            </header>
 
-        <main className="relative z-10">{children}</main>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify([
-              {
-                '@context': 'https://schema.org',
-                '@type': 'Organization',
-                name: 'FormaOS',
-                url: siteUrl,
-                contactPoint: [
+            <main className="relative z-10">{children}</main>
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify([
                   {
-                    '@type': 'ContactPoint',
-                    contactType: 'sales',
-                    email: `sales@${brand.domain}`,
+                    '@context': 'https://schema.org',
+                    '@type': 'Organization',
+                    name: 'FormaOS',
+                    url: siteUrl,
+                    contactPoint: [
+                      {
+                        '@type': 'ContactPoint',
+                        contactType: 'sales',
+                        email: `sales@${brand.domain}`,
+                      },
+                    ],
                   },
-                ],
-              },
-              {
-                '@context': 'https://schema.org',
-                '@type': 'SoftwareApplication',
-                name: 'FormaOS',
-                applicationCategory: 'BusinessApplication',
-                operatingSystem: 'Web',
-                url: siteUrl,
-                description:
-                  'Compliance and governance operating system for regulated industries.',
-              },
-            ]),
-          }}
-        />
+                  {
+                    '@context': 'https://schema.org',
+                    '@type': 'SoftwareApplication',
+                    name: 'FormaOS',
+                    applicationCategory: 'BusinessApplication',
+                    operatingSystem: 'Web',
+                    url: siteUrl,
+                    description:
+                      'Compliance and governance operating system for regulated industries.',
+                  },
+                ]),
+              }}
+            />
 
-        {/* Premium animated footer */}
-        <Footer />
-      </div>
+            {/* Premium animated footer */}
+            <Footer />
+          </div>
+        </SystemStateHydrator>
+      </PublicAuthProvider>
     </div>
   );
 }
