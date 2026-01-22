@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { brand } from "@/config/brand";
 
 export function OAuthRedirectHandler() {
   const searchParams = useSearchParams();
@@ -12,7 +13,7 @@ export function OAuthRedirectHandler() {
     if (code) {
       // OAuth code detected on homepage - redirect to callback
       const plan = searchParams.get("plan");
-      const appBase = (process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin).replace(/\/$/, "");
+      const appBase = brand.seo.appUrl.replace(/\/$/, "");
       const planParam = plan ? `&plan=${encodeURIComponent(plan)}` : "";
       
       console.log("OAuth code detected on homepage, redirecting to callback...");

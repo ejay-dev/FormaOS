@@ -27,6 +27,10 @@ import {
 import { useState } from 'react';
 import { VisualDivider } from '@/components/motion';
 import CinematicField from '../components/motion/CinematicField';
+import { brand } from '@/config/brand';
+
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
 
 // ============================================================================
 // PRICING PAGE - DESIGN SYNCED WITH HOME/PRODUCT VISUAL SYSTEM
@@ -191,7 +195,7 @@ function PricingHero() {
               className="flex flex-col sm:flex-row gap-4 justify-center"
             >
               <Link
-                href="/auth/signup"
+                href={`${appBase}/auth/signup`}
                 className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-8 py-4 text-base font-semibold text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
               >
                 <span className="relative z-10">Start Free Trial</span>
@@ -764,7 +768,7 @@ function FreeTrial() {
             transition={{ delay: 0.6, duration: 0.5 }}
           >
             <Link
-              href="/auth/signup"
+              href={`${appBase}/auth/signup`}
               className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-500 to-emerald-500 px-10 py-4 text-lg font-semibold text-white shadow-xl hover:shadow-2xl hover:shadow-cyan-500/30 transition-all duration-300 hover:scale-105"
             >
               <span className="relative z-10">Start Your Free Trial</span>
@@ -1065,7 +1069,7 @@ function FinalCTA() {
                 >
                   <div className="space-y-4 mb-8">
                     <Link
-                      href="/auth/signup"
+                      href={`${appBase}/auth/signup`}
                       className="group w-full relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-8 py-4 text-base font-semibold text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 inline-block"
                     >
                       <span className="relative z-10">Start Free Trial</span>

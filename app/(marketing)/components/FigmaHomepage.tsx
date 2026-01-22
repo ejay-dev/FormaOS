@@ -34,6 +34,10 @@ import { MotionProvider } from './motion/MotionContext';
 import { ComplianceProvider, useCompliance } from './webgl/useComplianceState';
 import WebGLNodeField from './webgl/NodeField';
 import CinematicField from './motion/CinematicField';
+import { brand } from '@/config/brand';
+
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
 
 // ============================================
 // TYPES & INTERFACES
@@ -1354,7 +1358,7 @@ function Hero() {
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
             >
               <motion.a
-                href="/auth"
+                href={`${appBase}/auth`}
                 whileHover={{
                   scale: 1.05,
                   boxShadow: '0 0 40px rgba(6, 182, 212, 0.4)',
@@ -3772,7 +3776,7 @@ function CTASection() {
           >
             <motion.a
               ref={ctaButtonRef}
-              href="/auth"
+              href={`${appBase}/auth`}
               whileHover={{
                 scale: 1.05,
                 boxShadow:

@@ -51,9 +51,9 @@ export default function CommandPalette() {
     },
     {
       id: 'forms',
-      label: 'Forms',
+      label: 'Workflows',
       icon: <FileText className="w-4 h-4" />,
-      action: () => router.push('/app/forms'),
+      action: () => router.push('/app/workflows'),
       category: 'Navigation',
     },
     {
@@ -79,9 +79,9 @@ export default function CommandPalette() {
     },
     {
       id: 'analytics',
-      label: 'Analytics',
+      label: 'Reports',
       icon: <BarChart className="w-4 h-4" />,
-      action: () => router.push('/app/analytics'),
+      action: () => router.push('/app/reports'),
       category: 'Navigation',
     },
     {

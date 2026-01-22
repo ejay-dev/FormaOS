@@ -12,11 +12,24 @@ import {
 } from '@/lib/compliance-graph';
 
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
+  const requestUrl = new URL(request.url);
+  const { searchParams } = requestUrl;
   const code = searchParams.get('code');
   const plan = resolvePlanKey(searchParams.get('plan'));
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? origin;
-  const appBase = appUrl.replace(/\/$/, '');
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  const appBase = (() => {
+    if (appUrl) {
+      try {
+        const appOrigin = new URL(appUrl);
+        if (appOrigin.hostname === requestUrl.hostname) {
+          return appOrigin.origin.replace(/\/$/, '');
+        }
+      } catch {
+        // Fall back to request origin when env is invalid.
+      }
+    }
+    return requestUrl.origin.replace(/\/$/, '');
+  })();
 
   if (!code) {
     return NextResponse.redirect(`${appBase}/auth/signin`);

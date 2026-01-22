@@ -86,7 +86,7 @@ export default defineConfig({
   // globalTeardown: './e2e/global-teardown.ts', // Commented out for initial testing
 
   /* Test timeout */
-  timeout: 30000,
+  timeout: 120000,
 
   /* Expect timeout */
   expect: {

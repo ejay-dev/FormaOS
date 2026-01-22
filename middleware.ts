@@ -48,11 +48,6 @@ export async function middleware(request: NextRequest) {
 
     const pathname = request.nextUrl.pathname;
 
-    // Skip auth checks for public routes
-    if (isPublicRoute(pathname)) {
-      return response;
-    }
-
     // 🚨 CRITICAL: Verify FOUNDER_EMAILS is loaded (log ONCE per deployment)
     if (pathname === '/admin' || pathname.startsWith('/admin/')) {
       console.log('[Middleware] 🔧 ENV CHECK', {
@@ -85,7 +80,12 @@ export async function middleware(request: NextRequest) {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = '/auth/callback';
       // Preserve all search params for OAuth callback
-      if (appOrigin && request.nextUrl.hostname !== appOrigin.hostname) {
+      if (
+        appOrigin &&
+        siteOrigin &&
+        request.nextUrl.hostname === siteOrigin.hostname &&
+        appOrigin.hostname !== siteOrigin.hostname
+      ) {
         redirectUrl.protocol = appOrigin.protocol;
         redirectUrl.host = appOrigin.host;
       }
@@ -116,6 +116,11 @@ export async function middleware(request: NextRequest) {
         'Sign in was cancelled. Please try again.',
       );
       return NextResponse.redirect(redirectUrl);
+    }
+
+    // Skip auth checks for public routes (after OAuth handling)
+    if (isPublicRoute(pathname)) {
+      return response;
     }
 
     if (appOrigin && siteOrigin && appOrigin.hostname !== siteOrigin.hostname) {
@@ -160,7 +165,8 @@ export async function middleware(request: NextRequest) {
       }
     }
 
-    const cookieDomain = getCookieDomain();
+    const cookieDomain = getCookieDomain(request.nextUrl.hostname);
+    const isHttps = request.nextUrl.protocol === 'https:';
     const isPresent = (value?: string | null) =>
       Boolean(value && value !== 'undefined' && value !== 'null');
     const supabaseUrl = isPresent(process.env.NEXT_PUBLIC_SUPABASE_URL)
@@ -200,9 +206,16 @@ export async function middleware(request: NextRequest) {
             setAll: (cookiesToSet) => {
               try {
                 cookiesToSet.forEach(({ name, value, options }) => {
+                  const normalized = { ...options };
+                  if (!normalized.sameSite) {
+                    normalized.sameSite = 'lax';
+                  }
+                  if (isHttps) {
+                    normalized.secure = true;
+                  }
                   const cookieOptions = cookieDomain
-                    ? { ...options, domain: cookieDomain }
-                    : options;
+                    ? { ...normalized, domain: cookieDomain }
+                    : normalized;
                   request.cookies.set(name, value);
                   response.cookies.set(name, value, cookieOptions);
                 });
@@ -335,7 +348,7 @@ export async function middleware(request: NextRequest) {
       supabase &&
       pathname.startsWith('/app') &&
       !pathname.startsWith('/app/api') &&
-      !isFounder
+      !isUserFounder
     ) {
       const { data: membership } = await supabase
         .from('org_members')

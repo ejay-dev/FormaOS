@@ -11,6 +11,10 @@ import {
 } from "lucide-react";
 import { MarketingAnchor } from "./components/marketing-anchor";
 import { HomeClientMarker } from "./components/home-client-marker";
+import { brand } from '@/config/brand';
+
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://formaos.com.au";
 
@@ -132,7 +136,7 @@ export default function MarketingHomePage() {
             {/* Primary CTA block - Always visible */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-4 sm:pt-6 px-4 sm:px-0">
               <Link 
-                href="/auth/signup" 
+                href={`${appBase}/auth/signup`} 
                 className="w-full sm:w-auto btn btn-primary text-base sm:text-lg px-8 sm:px-10 py-4 sm:py-5 shadow-premium-xl font-semibold"
               >
                 Start Free Trial

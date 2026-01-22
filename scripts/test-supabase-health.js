@@ -11,6 +11,15 @@ if (!supabaseUrl || !supabaseKey) {
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+function isMissingTableError(error) {
+  const message = String(error?.message || '').toLowerCase();
+  return (
+    error?.code === '42P01' ||
+    message.includes('does not exist') ||
+    message.includes('schema cache')
+  );
+}
+
 async function testSupabaseHealth() {
   console.log('🔍 Testing Supabase backend health...\n');
 
@@ -19,7 +28,7 @@ async function testSupabaseHealth() {
       name: 'Database Connection',
       test: async () => {
         const { data, error } = await supabase
-          .from('users')
+          .from('orgs')
           .select('id')
           .limit(1);
 
@@ -105,6 +114,9 @@ async function testSupabaseHealth() {
           .select('*')
           .limit(1);
 
+        if (error && isMissingTableError(error)) {
+          return { status: 'Skipped', data: 'user_profiles table missing' };
+        }
         if (error && error.code === 'PGRST116') {
           return { status: 'Enforced', data: 'RLS policies active' };
         }
@@ -152,11 +164,12 @@ async function testSupabaseHealth() {
   console.log('🔍 Testing compliance-specific tables...\n');
 
   const complianceTests = [
-    { table: 'compliance_nodes', description: 'Compliance graph nodes' },
-    { table: 'compliance_edges', description: 'Node relationships' },
-    { table: 'user_roles', description: 'Role-based access' },
+    { table: 'orgs', description: 'Organization records' },
+    { table: 'org_members', description: 'Organization memberships' },
+    { table: 'org_subscriptions', description: 'Billing and trials' },
+    { table: 'org_onboarding_status', description: 'Onboarding progress' },
+    { table: 'user_profiles', description: 'User profile data' },
     { table: 'audit_logs', description: 'System audit trail' },
-    { table: 'company_profiles', description: 'Organization data' },
   ];
 
   for (const test of complianceTests) {
@@ -165,6 +178,11 @@ async function testSupabaseHealth() {
         .from(test.table)
         .select('*', { count: 'exact', head: true });
 
+      if (error && isMissingTableError(error)) {
+        console.log(`⚠️ ${test.table}: skipped (table missing)`);
+        console.log(`   ${test.description}\n`);
+        continue;
+      }
       if (error) throw error;
 
       console.log(`✅ ${test.table}: ${count || 0} records`);

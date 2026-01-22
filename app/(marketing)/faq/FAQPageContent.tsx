@@ -21,6 +21,10 @@ import {
 } from 'framer-motion';
 import { VisualDivider } from '@/components/motion';
 import CinematicField from '../components/motion/CinematicField';
+import { brand } from '@/config/brand';
+
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
 
 // ============================================================================
 // FAQ DATA - Enterprise-Grade Content
@@ -574,7 +578,7 @@ function FAQCTA() {
               </motion.a>
 
               <Link
-                href="/auth/signup"
+                href={`${appBase}/auth/signup`}
                 className="group px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white font-semibold text-lg flex items-center gap-3 hover:border-cyan-400/50 hover:bg-cyan-400/5 transition-all"
               >
                 <span>Start Free Trial</span>

@@ -14,6 +14,10 @@ import {
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { VisualDivider } from '@/components/motion';
 import CinematicField from '../components/motion/CinematicField';
+import { brand } from '@/config/brand';
+
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
 
 // ============================================================================
 // HERO SECTION
@@ -594,7 +598,7 @@ function ClosingCTA() {
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
-              href="/auth/signup"
+              href={`${appBase}/auth/signup`}
               className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium border border-white/20 transition-all duration-300"
             >
               Start Free Trial

@@ -21,6 +21,10 @@ import {
 import { useRef } from 'react';
 import CinematicField from '../components/motion/CinematicField';
 import { VisualDivider } from '@/components/motion';
+import { brand } from '@/config/brand';
+
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
 
 // ============================================================================
 // SECURITY PAGE - DESIGN SYNCED WITH HOME/PRODUCT VISUAL SYSTEM
@@ -202,7 +206,7 @@ function SecurityHero() {
             <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </Link>
           <Link
-            href="/auth/signup"
+            href={`${appBase}/auth/signup`}
             className="group flex items-center justify-center gap-2 px-8 py-4 rounded-2xl border-2 border-white/20 text-base font-semibold text-white hover:bg-white/[0.08] hover:border-white/30 transition-all duration-300 backdrop-blur-sm"
           >
             <span>Start Secure Trial</span>
@@ -913,7 +917,7 @@ function FinalSecurityCTA() {
                     </Link>
 
                     <Link
-                      href="/auth/signup"
+                      href={`${appBase}/auth/signup`}
                       className="group w-full flex items-center justify-center gap-2 px-8 py-4 rounded-2xl border-2 border-white/20 text-base font-semibold text-white hover:bg-white/[0.08] hover:border-white/30 transition-all duration-300 backdrop-blur-sm"
                     >
                       <span>Start Secure Trial</span>

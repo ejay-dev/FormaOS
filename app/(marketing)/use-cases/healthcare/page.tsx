@@ -20,6 +20,10 @@ import {
   AmbientOrbs,
 } from '@/components/motion';
 import Link from 'next/link';
+import { brand } from '@/config/brand';
+
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
 
 export const metadata: Metadata = {
   title: 'Healthcare Compliance Management | FormaOS',
@@ -55,7 +59,7 @@ export default function HealthcareUseCasePage() {
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
-                  href="/auth/signup?plan=pro"
+                  href={`${appBase}/auth/signup?plan=pro`}
                   className="inline-flex items-center justify-center rounded-md bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
                 >
                   Start Free Trial
@@ -391,7 +395,7 @@ export default function HealthcareUseCasePage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/auth/signup?plan=pro"
+                href={`${appBase}/auth/signup?plan=pro`}
                 className="inline-flex items-center justify-center rounded-md bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
               >
                 Start Free Trial

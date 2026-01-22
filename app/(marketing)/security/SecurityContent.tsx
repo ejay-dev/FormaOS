@@ -12,6 +12,10 @@ import {
 import { FadeInView } from "@/components/motion";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { brand } from '@/config/brand';
+
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
 
 const safeguards = [
   {
@@ -263,7 +267,7 @@ export function SecurityContent() {
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Link>
                   <Link 
-                    href="/auth/signup" 
+                    href={`${appBase}/auth/signup`} 
                     className="btn btn-secondary text-base sm:text-lg px-8 sm:px-12 py-4 sm:py-6 w-full sm:w-auto text-center"
                   >
                     Start Free Trial

@@ -38,6 +38,10 @@ import {
 } from '@/components/motion';
 import { motion } from 'framer-motion';
 import { spacing, radius, depth } from '@/config/motion';
+import { brand } from '@/config/brand';
+
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
 
 const lifecycle = [
   {
@@ -749,7 +753,7 @@ export function HomePageContent() {
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
                   <AnimatedLink
-                    href="/auth/signup?plan=pro"
+                    href={`${appBase}/auth/signup?plan=pro`}
                     variant="primary"
                     size="lg"
                     className="shadow-[0_8px_32px_rgba(0,212,251,0.35)] hover:shadow-[0_12px_40px_rgba(0,212,251,0.5)] w-full sm:w-auto text-sm sm:text-lg px-8 sm:px-12 py-4 sm:py-6"

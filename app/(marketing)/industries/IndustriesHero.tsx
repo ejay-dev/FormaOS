@@ -4,6 +4,10 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Globe, Shield, Heart, Users, ArrowRight } from "lucide-react";
 import { AnimatedSystemGrid, ParallaxLayer, PulsingNode } from "@/components/motion";
+import { brand } from '@/config/brand';
+
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
 
 export function IndustriesHero() {
   return (
@@ -96,7 +100,7 @@ export function IndustriesHero() {
               transition={{ delay: 0.7 }}
               className="flex flex-col sm:flex-row gap-4 justify-center pt-4"
             >
-              <Link href="/auth/signup" className="btn btn-primary text-lg px-8 py-4 shadow-premium-xl group">
+              <Link href={`${appBase}/auth/signup`} className="btn btn-primary text-lg px-8 py-4 shadow-premium-xl group">
                 <span>Start Free Trial</span>
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>

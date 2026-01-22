@@ -21,6 +21,10 @@ import {
   GradientMesh,
 } from '@/components/motion';
 import CinematicField from '../components/motion/CinematicField';
+import { brand } from '@/config/brand';
+
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
 
 function IndustriesHero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -155,7 +159,7 @@ function IndustriesHero() {
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
             >
               <motion.a
-                href="/auth"
+                href={`${appBase}/auth`}
                 whileHover={{
                   scale: 1.05,
                   boxShadow: '0 0 40px rgba(16, 185, 129, 0.4)',
@@ -822,7 +826,7 @@ export default function IndustriesPageContent() {
                     Book NDIS Demo <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                   <Link
-                    href="/auth/signup"
+                    href={`${appBase}/auth/signup`}
                     className="inline-flex items-center justify-center px-6 py-3 rounded-md border border-primary/20 text-foreground font-semibold hover:bg-primary/5 transition-colors"
                   >
                     Start Free Trial
@@ -1179,7 +1183,7 @@ export default function IndustriesPageContent() {
                       </Link>
 
                       <Link
-                        href="/auth/signup"
+                        href={`${appBase}/auth/signup`}
                         className="group w-full flex items-center justify-center gap-2 px-8 py-4 rounded-2xl border-2 border-white/20 text-base font-semibold text-foreground/90 hover:bg-white/[0.08] hover:border-white/30 transition-all duration-300 backdrop-blur-sm"
                       >
                         <span>Start Free Trial</span>

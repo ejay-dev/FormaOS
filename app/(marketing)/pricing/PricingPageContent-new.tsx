@@ -23,6 +23,10 @@ import {
   ParallaxLayer,
 } from '@/components/motion/CleanBackground';
 import { MarketingAnchor } from '../components/marketing-anchor';
+import { brand } from '@/config/brand';
+
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
 
 function PricingHero() {
   return (
@@ -109,7 +113,7 @@ function PricingHero() {
               className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6"
             >
               <Link
-                href="/auth/signup?plan=pro"
+                href={`${appBase}/auth/signup?plan=pro`}
                 className="w-full sm:w-auto btn btn-primary px-6 py-3 text-sm font-semibold text-primary-foreground"
               >
                 Start Free Trial
@@ -226,7 +230,7 @@ export default function PricingPageContent() {
                 </div>
 
                 <Link
-                  href="/auth/signup?plan=basic"
+                  href={`${appBase}/auth/signup?plan=basic`}
                   className="w-full inline-flex items-center justify-center px-6 py-3 rounded-2xl border-2 border-primary/30 text-primary font-semibold hover:bg-primary/10 hover:border-primary/50 transition-all duration-300 backdrop-blur-sm bg-white/[0.02]"
                 >
                   Start Free Trial
@@ -312,7 +316,7 @@ export default function PricingPageContent() {
                 </div>
 
                 <Link
-                  href="/auth/signup?plan=pro"
+                  href={`${appBase}/auth/signup?plan=pro`}
                   className="w-full inline-flex items-center justify-center px-6 py-4 rounded-2xl bg-gradient-to-r from-primary to-secondary text-white font-bold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
                   Start Free Trial

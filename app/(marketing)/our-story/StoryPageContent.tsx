@@ -6,6 +6,10 @@ import { ArrowRight } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { VisualDivider } from '@/components/motion';
 import CinematicField from '../components/motion/CinematicField';
+import { brand } from '@/config/brand';
+
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
 
 // ============================================================================
 // HERO SECTION
@@ -119,7 +123,7 @@ export function StoryHero() {
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
               <Link
-                href="/auth/signup"
+                href={`${appBase}/auth/signup`}
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-indigo-500 hover:bg-indigo-400 text-white font-medium transition-all duration-300"
               >
                 Start Free Trial
@@ -658,7 +662,7 @@ function FinalCTA() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href="/auth/signup"
+              href={`${appBase}/auth/signup`}
               className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-indigo-500 hover:bg-indigo-400 text-white font-medium transition-all duration-300"
             >
               Start Free Trial

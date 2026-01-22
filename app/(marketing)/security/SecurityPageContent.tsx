@@ -14,6 +14,10 @@ import {
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { CinematicSection, VisualDivider } from '@/components/motion';
 import CinematicField from '../components/motion/CinematicField';
+import { brand } from '@/config/brand';
+
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
 
 function SecurityHero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -148,7 +152,7 @@ function SecurityHero() {
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
             >
               <motion.a
-                href="/auth"
+                href={`${appBase}/auth`}
                 whileHover={{
                   scale: 1.05,
                   boxShadow: '0 0 40px rgba(239, 68, 68, 0.4)',
@@ -901,7 +905,7 @@ export default function SecurityPageContent() {
                       </Link>
 
                       <Link
-                        href="/auth/signup"
+                        href={`${appBase}/auth/signup`}
                         className="group w-full flex items-center justify-center gap-2 px-8 py-4 rounded-2xl border-2 border-white/20 text-base font-semibold text-foreground/90 hover:bg-white/[0.08] hover:border-white/30 transition-all duration-300 backdrop-blur-sm"
                       >
                         <span>Start Secure Trial</span>

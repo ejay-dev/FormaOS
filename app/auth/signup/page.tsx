@@ -102,16 +102,23 @@ function SignUpContent() {
         return;
       }
 
-      if (data?.user) {
-        if (data.user.identities && data.user.identities.length === 0) {
-          setSuccessMessage(
-            'Please check your email to confirm your account before signing in.',
-          );
-          setIsLoading(false);
-        } else {
-          window.location.href = redirectTo;
-        }
+      if (data?.session) {
+        window.location.href = redirectTo;
+        return;
       }
+
+      if (data?.user) {
+        setSuccessMessage(
+          'Please check your email to confirm your account before signing in.',
+        );
+        setIsLoading(false);
+        return;
+      }
+
+      setSuccessMessage(
+        'Please check your email to confirm your account before signing in.',
+      );
+      setIsLoading(false);
     } catch (err) {
       setErrorMessage('An unexpected error occurred. Please try again.');
       setIsLoading(false);

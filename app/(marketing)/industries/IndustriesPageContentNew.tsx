@@ -16,6 +16,10 @@ import {
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { VisualDivider } from '@/components/motion';
 import CinematicField from '../components/motion/CinematicField';
+import { brand } from '@/config/brand';
+
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
 
 // ============================================
 // HERO COMPONENT (Already matches Product style)
@@ -154,7 +158,7 @@ function IndustriesHero() {
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
             >
               <motion.a
-                href="/auth"
+                href={`${appBase}/auth`}
                 whileHover={{
                   scale: 1.05,
                   boxShadow: '0 0 40px rgba(16, 185, 129, 0.4)',
@@ -781,7 +785,7 @@ function NDISDeepDive() {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </motion.a>
                 <motion.a
-                  href="/auth/signup"
+                  href={`${appBase}/auth/signup`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
                   className="inline-flex items-center justify-center px-6 py-3 rounded-full border border-white/20 bg-white/5 text-white font-semibold hover:bg-white/10 transition-all"
@@ -1073,7 +1077,7 @@ function FinalCTA() {
                   </motion.a>
 
                   <motion.a
-                    href="/auth/signup"
+                    href={`${appBase}/auth/signup`}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.98 }}
                     className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border-2 border-white/20 text-white font-semibold hover:bg-white/[0.08] hover:border-white/30 transition-all"

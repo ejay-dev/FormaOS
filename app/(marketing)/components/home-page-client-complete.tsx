@@ -24,6 +24,10 @@ import {
   ParallaxLayer,
 } from '@/components/motion/CleanBackground';
 import { MarketingAnchor } from './marketing-anchor';
+import { brand } from '@/config/brand';
+
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
 
 function HomeHero() {
   return (
@@ -129,7 +133,7 @@ function HomeHero() {
               className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6 mb-8"
             >
               <Link
-                href="/auth/signup"
+                href={`${appBase}/auth/signup`}
                 className="w-full sm:w-auto btn btn-primary px-6 py-3 text-sm font-semibold text-primary-foreground"
               >
                 Start Free Trial
@@ -1505,7 +1509,7 @@ export function HomePageClient() {
                   className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-8"
                 >
                   <Link
-                    href="/auth/signup"
+                    href={`${appBase}/auth/signup`}
                     className="group w-full sm:w-auto relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary to-secondary px-8 py-4 text-base font-semibold text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
                   >
                     <span className="relative z-10">Start Free Trial</span>

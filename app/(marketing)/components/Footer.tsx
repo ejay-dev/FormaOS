@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { brand } from '@/config/brand';
 import { easing, duration } from '@/config/motion';
 import {
+
   ArrowUpRight,
   Mail,
   MapPin,
@@ -12,6 +13,8 @@ import {
   Lock,
   FileCheck,
 } from 'lucide-react';
+
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 const footerLinks = {
   platform: [
@@ -124,7 +127,7 @@ function FooterCTA() {
             transition={{ duration: duration.fast, ease: easing.signature }}
           >
             <Link
-              href="/auth/signup"
+              href={`${appBase}/auth/signup`}
               className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold shadow-[0_8px_32px_rgba(0,212,251,0.35)] hover:shadow-[0_12px_40px_rgba(0,212,251,0.5)] transition-shadow"
             >
               Start Free Trial

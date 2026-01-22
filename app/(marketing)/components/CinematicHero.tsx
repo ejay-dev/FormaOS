@@ -5,6 +5,10 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Sparkles, ArrowRight, Zap, Shield, Activity } from "lucide-react";
 import { 
+import { brand } from '@/config/brand';
+
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
   AnimatedSystemGrid, 
   FloatingUIPanel, 
   ParallaxLayer,
@@ -173,7 +177,7 @@ export function CinematicHero() {
                 className="flex flex-col sm:flex-row gap-3 pt-4 md:pt-8 w-full sm:w-auto"
               >
                 <Link
-                  href="/auth/signup?plan=pro"
+                  href={`${appBase}/auth/signup?plan=pro`}
                   className="btn btn-primary text-sm sm:text-base md:text-lg px-5 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 shadow-premium-2xl hover:shadow-[0_0_40px_rgba(56,189,248,0.4)] transition-all group w-full sm:w-auto text-center"
                 >
                   <span>Start Free Trial</span>

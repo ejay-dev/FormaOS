@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Menu, X, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { NavLinks } from "./NavLinks";
+const appBase = 'https://app.formaos.com.au';
+
 
 /**
  * =========================================================
@@ -174,7 +176,7 @@ export function MobileNav() {
               {/* Auth buttons */}
               <div className="p-4 space-y-3">
                 <Link
-                  href="/auth/signin"
+                  href={`${appBase}/auth/signin`}
                   onClick={handleLinkClick}
                   className="flex items-center justify-between w-full rounded-xl px-4 py-3.5 text-sm font-medium text-white/90 hover:bg-white/5 transition-colors border border-white/10"
                 >
@@ -182,7 +184,7 @@ export function MobileNav() {
                   <ChevronRight className="h-4 w-4 text-white/50" />
                 </Link>
                 <Link
-                  href="/auth/signup?plan=pro"
+                  href={`${appBase}/auth/signup?plan=pro`}
                   onClick={handleLinkClick}
                   className="flex items-center justify-center w-full rounded-xl px-4 py-3.5 text-sm font-bold text-white bg-gradient-to-r from-primary/90 to-secondary/90 hover:from-primary hover:to-secondary transition-all shadow-[0_0_20px_rgba(0,212,251,0.3)]"
                 >

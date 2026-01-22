@@ -7,6 +7,11 @@ export async function createSupabaseServerClient() {
   const cookieStore = await cookies();
   // In development, avoid forcing a cookie domain so localhost flows keep working.
   const cookieDomain = process.env.NODE_ENV === "development" ? undefined : getCookieDomain();
+  const isHttps = (() => {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "";
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+    return appUrl.startsWith("https://") || siteUrl.startsWith("https://");
+  })();
 
   const isPresent = (value?: string | null) =>
     Boolean(value && value !== "undefined" && value !== "null");
@@ -40,7 +45,14 @@ export async function createSupabaseServerClient() {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) => {
-              const cookieOptions = cookieDomain ? { ...options, domain: cookieDomain } : options;
+              const normalized = { ...options };
+              if (!normalized.sameSite) {
+                normalized.sameSite = "lax";
+              }
+              if (isHttps) {
+                normalized.secure = true;
+              }
+              const cookieOptions = cookieDomain ? { ...normalized, domain: cookieDomain } : normalized;
               cookieStore.set(name, value, cookieOptions);
             });
           } catch {

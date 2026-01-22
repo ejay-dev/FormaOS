@@ -1,6 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { brand } from '@/config/brand';
+
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
 
 // Minimal fallback components for testing
 function SimpleHero() {
@@ -16,7 +20,7 @@ function SimpleHero() {
           Transform regulatory obligations into executable controls, traceable evidence, and audit-ready governance.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="/auth/signup" className="btn btn-primary text-lg px-8 py-4">
+          <a href={`${appBase}/auth/signup`} className="btn btn-primary text-lg px-8 py-4">
             Start Free Trial
           </a>
           <a href="/contact" className="btn btn-secondary text-lg px-8 py-4">
@@ -93,7 +97,7 @@ function SimpleContent() {
             Start your 14-day free trial. No credit card required.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="/auth/signup" className="btn btn-primary text-lg px-8 py-4">
+            <a href={`${appBase}/auth/signup`} className="btn btn-primary text-lg px-8 py-4">
               Start Free Trial
             </a>
             <a href="/contact" className="btn btn-secondary text-lg px-8 py-4">
