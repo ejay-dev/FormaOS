@@ -59,7 +59,6 @@ function LoginContent() {
       setIsLoading(false);
     }
   };
-  };
 
   const signInWithEmail = async (e: React.FormEvent) => {
     e.preventDefault();
