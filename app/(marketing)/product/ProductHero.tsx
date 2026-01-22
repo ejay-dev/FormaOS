@@ -3,15 +3,13 @@
 import Link from "next/link";
 import { Layers, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { 
-import { brand } from '@/config/brand';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
-
+import {
   AnimatedSystemGrid,
   PulsingNode,
   ParallaxLayer,
 } from "@/components/motion";
+
+const appBase = "https://app.formaos.com.au";
 
 export function ProductHero() {
   return (

@@ -4,17 +4,15 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Sparkles, ArrowRight, Zap, Shield, Activity } from "lucide-react";
-import { 
-import { brand } from '@/config/brand';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
-
-  AnimatedSystemGrid, 
-  FloatingUIPanel, 
+import {
+  AnimatedSystemGrid,
+  FloatingUIPanel,
   ParallaxLayer,
   PulsingNode,
-  ComplianceCoreVisualization 
+  ComplianceCoreVisualization,
 } from "@/components/motion";
+
+const appBase = "https://app.formaos.com.au";
 
 export function CinematicHero() {
   const [isMobile, setIsMobile] = useState(true);
