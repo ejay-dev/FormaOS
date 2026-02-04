@@ -10,6 +10,7 @@ import {
   Play,
   Box,
   Zap,
+  CheckCircle,
   ShieldCheck,
   FileCheck,
   Database,
@@ -28,6 +29,8 @@ import {
   Shield,
   Eye,
   Key,
+  History,
+  RotateCcw,
   Sparkles,
 } from 'lucide-react';
 
@@ -1417,6 +1420,10 @@ function Hero() {
             <ProofMetric value="2.4M" label="Records" />
             <ProofMetric value="-73%" label="Audit Time" />
           </motion.div>
+          <p className="text-xs text-gray-500 mt-4 text-center max-w-md mx-auto">
+            * Metrics represent typical platform capabilities. Actual results
+            vary by organization size and use case.
+          </p>
         </div>
       </div>
 
@@ -2140,6 +2147,118 @@ function CapabilitiesGrid() {
   );
 }
 
+function VersionControlHighlight() {
+  const features = [
+    {
+      icon: History,
+      title: 'Automatic Versioning',
+      description:
+        'Every upload creates a new version automatically—no user action required.',
+    },
+    {
+      icon: Shield,
+      title: 'Tamper Detection',
+      description:
+        'SHA-256 checksums verify evidence integrity and detect modification.',
+    },
+    {
+      icon: RotateCcw,
+      title: 'One-Click Rollback',
+      description:
+        'Restore any previous version in seconds—critical for audit defense.',
+    },
+  ];
+
+  return (
+    <section className="relative py-24 sm:py-28 lg:py-32 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421] overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.4, 0.6, 0.4],
+          }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      </div>
+
+      <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-12">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center"
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs sm:text-sm font-medium mb-4 sm:mb-6"
+          >
+            <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-cyan-400 animate-pulse" />
+            Enterprise-Grade Feature
+          </motion.div>
+
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
+            Evidence Version Control
+            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
+              {' '}
+              That competitors charge $2,000+/mo for
+            </span>
+          </h2>
+          <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            Complete version history on every evidence upload with SHA-256
+            checksum validation and one-click rollback—built-in at $49/mo.
+          </p>
+        </motion.div>
+
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+          {features.map((feature, index) => {
+            const Icon = feature.icon;
+            return (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ scale: 1.03, y: -4 }}
+                className="relative p-6 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 border border-white/5 hover:border-cyan-500/30 transition-all backdrop-blur-sm"
+              >
+                <div className="inline-flex p-3 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 mb-4">
+                  <Icon className="w-6 h-6 text-cyan-300" />
+                </div>
+                <h3 className="text-lg sm:text-xl font-semibold mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-sm sm:text-base text-gray-400 leading-relaxed">
+                  {feature.description}
+                </p>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mt-8 p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-center"
+        >
+          <p className="text-xs sm:text-sm text-cyan-200">
+            <span className="font-semibold">Competitor Pricing:</span> Drata
+            $2,000/mo ❌ | Vanta $3,600/mo ❌ | ServiceNow $10,000/mo ❌ |{' '}
+            <span className="font-semibold">FormaOS: $49/mo ✅</span>
+          </p>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 // ============================================
 // SECURITY COMPONENT - Enhanced for Evidence Protection
 // ============================================
@@ -2784,6 +2903,105 @@ function Industries() {
   );
 }
 
+function HealthcareHighlight() {
+  const categories = [
+    {
+      title: 'Patient Management',
+      features: [
+        'Complete patient profiles with risk levels',
+        'Care episode tracking',
+        'Clinical governance integration',
+        'HIPAA-compliant data handling',
+      ],
+    },
+    {
+      title: 'Incident Reporting',
+      features: [
+        'NDIS incident categorization',
+        'Severity-based routing',
+        'Investigation workflows',
+        'Regulatory reporting built-in',
+      ],
+    },
+  ];
+
+  return (
+    <section className="relative py-16 sm:py-24 lg:py-32 bg-[#0a0f1c] overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-r from-rose-500/10 to-pink-500/10 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.08, 1],
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-12 sm:mb-16"
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs sm:text-sm font-medium mb-4 sm:mb-6"
+          >
+            <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-rose-300 animate-pulse" />
+            Healthcare &amp; NDIS
+          </motion.div>
+
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
+            Built for
+            <span className="bg-gradient-to-r from-rose-300 via-pink-300 to-cyan-400 bg-clip-text text-transparent">
+              {' '}
+              Regulated Healthcare
+            </span>
+          </h2>
+          <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            Complete patient management, incident reporting, and clinical
+            governance workflows—HIPAA and NDIS ready.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {categories.map((category, index) => (
+            <motion.div
+              key={category.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="p-6 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 border border-white/5 backdrop-blur-sm"
+            >
+              <h3 className="text-lg sm:text-xl font-semibold mb-4">
+                {category.title}
+              </h3>
+              <ul className="space-y-3">
+                {category.features.map((feature) => (
+                  <li
+                    key={feature}
+                    className="flex items-start gap-2 text-sm sm:text-base text-gray-400"
+                  >
+                    <CheckCircle className="w-4 h-4 text-rose-300 mt-0.5" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ============================================
 // SECURITY COMPONENT
 // ============================================
@@ -2803,6 +3021,12 @@ const securityFeatures = [
     icon: Eye,
     title: 'Complete Audit Logs',
     description: 'Every action tracked and timestamped',
+  },
+  {
+    icon: History,
+    title: 'Evidence Integrity',
+    description:
+      'SHA-256 checksums and version control detect tampering and ensure audit defensibility',
   },
   {
     icon: Key,
@@ -3931,7 +4155,9 @@ export default function FormaOSHomepage() {
             <ValueProposition />
             <ScrollStory />
             <CapabilitiesGrid />
+            <VersionControlHighlight />
             <Industries />
+            <HealthcareHighlight />
             <Security />
             <CTASection />
             <TrustSection />

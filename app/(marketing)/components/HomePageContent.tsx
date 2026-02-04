@@ -16,6 +16,9 @@ import {
   BarChart3,
   ArrowRight,
   CheckCircle,
+  History,
+  Shield,
+  RotateCcw,
 } from 'lucide-react';
 import {
   SectionHeader,
@@ -41,7 +44,6 @@ import { spacing, radius, depth } from '@/config/motion';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
-
 
 const lifecycle = [
   {
@@ -125,6 +127,7 @@ const platformArchitecture = {
 };
 
 const capabilities = [
+  'Evidence version control with rollback & SHA-256 checksums',
   'REST API v1 with rate limiting',
   'Workflow automation engine',
   'Incident reporting & investigation',
@@ -132,7 +135,6 @@ const capabilities = [
   'Certificate expiry tracking',
   'Training records management',
   'Patient/client records (Healthcare)',
-  'Evidence version control',
   'Multi-organization support',
   'Role-based access control (RBAC)',
   'Immutable audit logs',
@@ -235,6 +237,10 @@ export function HomePageContent() {
               </Reveal>
             ))}
           </div>
+          <p className="text-xs text-muted-foreground mt-4 text-center">
+            * Metrics represent typical platform capabilities. Actual results
+            vary by organization size and use case.
+          </p>
         </div>
       </SystemBackground>
 
@@ -489,7 +495,7 @@ export function HomePageContent() {
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
-            badge="Complete Platform"
+            badge="Enterprise Features"
             title={
               <>
                 Everything you need
@@ -497,7 +503,7 @@ export function HomePageContent() {
                 <span className="text-gradient-system">out of the box</span>
               </>
             }
-            subtitle="12+ modules, 6+ standards, REST API, and workflow automation"
+            subtitle="Evidence version control, workflow automation, and enterprise compliance—built-in at $49/mo"
             alignment="center"
           />
 
@@ -529,6 +535,82 @@ export function HomePageContent() {
               View All Features
             </Link>
           </Reveal>
+        </div>
+      </SystemBackground>
+
+      <SystemDivider />
+
+      {/* ========================================
+          SECTION 4.5b: VERSION CONTROL FEATURE HIGHLIGHT
+          New high-value feature showcase
+          ======================================== */}
+      <SystemBackground variant="info" className={spacing.sectionFull}>
+        <AmbientOrbs intensity="subtle" />
+        <SectionGlow color="cyan" intensity="medium" position="center" />
+
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative">
+          <SectionHeader
+            badge="Enterprise-Grade Feature"
+            title={
+              <>
+                Evidence Version Control
+                <br />
+                <span className="text-gradient-system">
+                  That competitors charge $2,000+/mo for
+                </span>
+              </>
+            }
+            subtitle="Complete version history on every evidence upload with SHA-256 checksum validation and one-click rollback—built-in at $49/mo"
+            alignment="center"
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+            {[
+              {
+                icon: History,
+                title: 'Automatic Versioning',
+                description:
+                  'Every upload creates a new version automatically—no user action required',
+              },
+              {
+                icon: Shield,
+                title: 'Tamper Detection',
+                description:
+                  'SHA-256 checksums verify evidence integrity and detect any modification',
+              },
+              {
+                icon: RotateCcw,
+                title: 'One-Click Rollback',
+                description:
+                  'Restore any previous version in seconds—critical for audit defense',
+              },
+            ].map((feature, idx) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                className="p-6 rounded-xl bg-card/50 border border-border/50 backdrop-blur-sm hover:border-primary/50 transition-colors"
+              >
+                <feature.icon className="h-8 w-8 text-primary mb-4" />
+                <h3 className="text-lg font-semibold mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-8 p-4 rounded-lg bg-primary/10 border border-primary/20 text-center">
+            <p className="text-sm text-primary">
+              <strong>Competitor Pricing:</strong> Drata $2,000/mo ❌ | Vanta
+              $3,600/mo ❌ | ServiceNow $10,000/mo ❌ |{' '}
+              <strong>FormaOS: $49/mo ✅</strong>
+            </p>
+          </div>
         </div>
       </SystemBackground>
 
@@ -602,6 +684,75 @@ export function HomePageContent() {
       <SystemDivider />
 
       {/* ========================================
+          SECTION 5b: HEALTHCARE FEATURES
+          Highlight patient management & incident reporting
+          ======================================== */}
+      <SystemBackground variant="info" className={spacing.sectionFull}>
+        <AmbientOrbs intensity="subtle" />
+        <SectionGlow color="purple" intensity="medium" position="center" />
+
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+          <SectionHeader
+            badge="Healthcare & NDIS"
+            title={
+              <>
+                Built for
+                <br />
+                <span className="text-gradient-system">
+                  Regulated Healthcare
+                </span>
+              </>
+            }
+            subtitle="Complete patient management, incident reporting, and clinical governance workflows—HIPAA and NDIS ready"
+            alignment="center"
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
+            {[
+              {
+                title: 'Patient Management',
+                features: [
+                  'Complete patient profiles with risk levels',
+                  'Care episode tracking',
+                  'Clinical governance integration',
+                  'HIPAA-compliant data handling',
+                ],
+              },
+              {
+                title: 'Incident Reporting',
+                features: [
+                  'NDIS incident categorization',
+                  'Severity-based routing',
+                  'Investigation workflows',
+                  'Regulatory reporting built-in',
+                ],
+              },
+            ].map((category) => (
+              <div
+                key={category.title}
+                className="p-6 rounded-xl bg-card/50 border border-border/50 backdrop-blur-sm"
+              >
+                <h3 className="text-xl font-semibold mb-4">{category.title}</h3>
+                <ul className="space-y-2">
+                  {category.features.map((feature) => (
+                    <li
+                      key={feature}
+                      className="flex items-center gap-2 text-sm text-muted-foreground"
+                    >
+                      <CheckCircle className="h-4 w-4 text-primary shrink-0" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </SystemBackground>
+
+      <SystemDivider />
+
+      {/* ========================================
           SECTION 6: SECURITY (variant: metrics)
           Glass effects with soft glow
           ======================================== */}
@@ -661,6 +812,12 @@ export function HomePageContent() {
                 icon: FileCheck,
                 title: 'Evidence chain',
                 description: 'Verifiable custody from creation to export',
+              },
+              {
+                icon: History,
+                title: 'Evidence integrity',
+                description:
+                  'SHA-256 checksums and version control detect tampering and ensure audit defensibility',
               },
             ].map((point, idx) => (
               <motion.div
