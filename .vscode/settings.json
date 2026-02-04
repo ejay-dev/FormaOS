@@ -22,5 +22,6 @@
     "**/node_modules": true,
     "**/.next": true,
     "**/dist": true
-  }
+  },
+  "CodeGPT.apiKey": "Claude Code"
 }

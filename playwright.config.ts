@@ -1,5 +1,13 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const useDevServer =
+  process.env.PLAYWRIGHT_USE_DEV_SERVER === 'true' ||
+  process.env.PLAYWRIGHT_USE_DEV_SERVER === '1';
+const reuseExistingServer =
+  process.env.PLAYWRIGHT_REUSE_SERVER === 'true' ||
+  process.env.PLAYWRIGHT_REUSE_SERVER === '1' ||
+  (!process.env.CI && useDevServer);
+
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
@@ -74,9 +82,9 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npm run dev',
+    command: useDevServer ? 'npm run dev' : 'npm run build && npm run start',
     url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer,
   },
 
   /* Global setup */

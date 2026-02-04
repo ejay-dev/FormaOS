@@ -103,6 +103,31 @@ $$;
 -- =====================================================
 -- ORG_MEMBERS TABLE POLICIES
 -- =====================================================
+-- Helper to avoid RLS recursion when checking org membership
+CREATE OR REPLACE FUNCTION public.current_user_org_ids()
+RETURNS SETOF uuid
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+SET row_security = off
+AS $$
+  SELECT organization_id
+  FROM public.org_members
+  WHERE user_id = auth.uid()
+$$;
+
+CREATE OR REPLACE FUNCTION public.current_user_admin_org_ids()
+RETURNS SETOF uuid
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+SET row_security = off
+AS $$
+  SELECT organization_id
+  FROM public.org_members
+  WHERE user_id = auth.uid() AND role IN ('owner', 'admin')
+$$;
+
 DO $$
 BEGIN
   DROP POLICY IF EXISTS "members_self_access" ON public.org_members;
@@ -128,8 +153,7 @@ BEGIN
       USING (
         organization_id IN (
           SELECT organization_id
-          FROM public.org_members
-          WHERE user_id = auth.uid()
+          FROM public.current_user_org_ids()
         )
       );
 
@@ -140,8 +164,7 @@ BEGIN
       WITH CHECK (
         organization_id IN (
           SELECT organization_id
-          FROM public.org_members
-          WHERE user_id = auth.uid() AND role IN ('owner', 'admin')
+          FROM public.current_user_admin_org_ids()
         )
       );
 
@@ -152,8 +175,7 @@ BEGIN
       USING (
         organization_id IN (
           SELECT organization_id
-          FROM public.org_members
-          WHERE user_id = auth.uid() AND role IN ('owner', 'admin')
+          FROM public.current_user_admin_org_ids()
         )
       );
 
@@ -164,8 +186,7 @@ BEGIN
       USING (
         organization_id IN (
           SELECT organization_id
-          FROM public.org_members
-          WHERE user_id = auth.uid() AND role IN ('owner', 'admin')
+          FROM public.current_user_admin_org_ids()
         )
       );
   END IF;

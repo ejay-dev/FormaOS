@@ -193,7 +193,6 @@ export function TopBar({
           >
             <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-white/8 text-[10px] font-bold text-card-foreground">
               {avatarUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
                 <img src={avatarUrl} alt="User avatar" className="h-full w-full object-cover" />
               ) : (
                 initials || <User className="h-4 w-4" />

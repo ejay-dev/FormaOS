@@ -257,7 +257,7 @@ const pricingTiers = [
     useCase:
       'You need structured processes, traceable actions, and defensible records without enterprise complexity.',
     cta: 'Start Free Trial',
-    href: '/auth/signup?plan=starter',
+    href: `${appBase}/auth/signup?plan=starter`,
     featured: false,
     color: 'cyan',
     gradientFrom: 'from-cyan-500/20',
@@ -289,7 +289,7 @@ const pricingTiers = [
     useCase:
       'You must reduce audit effort, automate controls, and manage compliance across teams or departments.',
     cta: 'Start Free Trial',
-    href: '/auth/signup?plan=professional',
+    href: `${appBase}/auth/signup?plan=professional`,
     featured: true,
     color: 'emerald',
     gradientFrom: 'from-emerald-500/25',

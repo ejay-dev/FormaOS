@@ -5,7 +5,9 @@ import Link from "next/link";
 import { Menu, X, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { NavLinks } from "./NavLinks";
-const appBase = 'https://app.formaos.com.au';
+
+const appBase = (process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.formaos.com.au')
+  .replace(/\/$/, '');
 
 
 /**

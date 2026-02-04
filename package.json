@@ -9,6 +9,7 @@
     "lint": "eslint --ext .js,.jsx,.ts,.tsx . --fix",
     "stylelint": "stylelint '**/*.{css,scss,sass}' --fix",
     "type-check": "tsc --noEmit",
+    "typecheck": "npm run type-check",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage --collectCoverageFrom='**/*.{js,jsx,ts,tsx}' --collectCoverageFrom='!**/*.d.ts' --collectCoverageFrom='!**/node_modules/**'",

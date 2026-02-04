@@ -12,7 +12,8 @@ import {
   ComplianceCoreVisualization,
 } from "@/components/motion";
 
-const appBase = "https://app.formaos.com.au";
+const appBase = (process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.formaos.com.au')
+  .replace(/\/$/, '');
 
 export function CinematicHero() {
   const [isMobile, setIsMobile] = useState(true);

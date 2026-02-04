@@ -87,4 +87,110 @@ function generateMobileConfig(deviceName) {
  * Run visual tests across all browsers
  */
 async function runCrossBrowserTests() {
-  console.log('🚀 Starting cross-browser visual regression tests...');\n  \n  const results = [];\n  \n  // Test each browser\n  for (const browser of ['chromium', 'firefox', 'webkit']) {\n    console.log(`\\n📱 Testing ${browser}...`);\n    \n    try {\n      const config = generateBrowserConfig(browser);\n      const result = await backstop('test', { config });\n      results.push({ browser, status: 'passed', result });\n      console.log(`✅ ${browser} tests passed`);\n    } catch (error) {\n      results.push({ browser, status: 'failed', error: error.message });\n      console.log(`❌ ${browser} tests failed: ${error.message}`);\n    }\n  }\n  \n  // Test mobile devices\n  for (const device of mobileDevices) {\n    console.log(`\\n📱 Testing ${device}...`);\n    \n    try {\n      const config = generateMobileConfig(device);\n      const result = await backstop('test', { config });\n      results.push({ device, status: 'passed', result });\n      console.log(`✅ ${device} tests passed`);\n    } catch (error) {\n      results.push({ device, status: 'failed', error: error.message });\n      console.log(`❌ ${device} tests failed: ${error.message}`);\n    }\n  }\n  \n  // Generate summary report\n  const summary = {\n    total: results.length,\n    passed: results.filter(r => r.status === 'passed').length,\n    failed: results.filter(r => r.status === 'failed').length,\n    results\n  };\n  \n  console.log('\\n📊 Cross-Browser Test Summary:');\n  console.log(`Total: ${summary.total}`);\n  console.log(`Passed: ${summary.passed}`);\n  console.log(`Failed: ${summary.failed}`);\n  \n  // Write detailed report\n  require('fs').writeFileSync(\n    'tests/visual/cross-browser-report.json',\n    JSON.stringify(summary, null, 2)\n  );\n  \n  return summary;\n}\n\n/**\n * Generate reference images for all browsers\n */\nasync function generateReferences() {\n  console.log('📸 Generating reference images for all browsers...');\n  \n  for (const browser of ['chromium', 'firefox', 'webkit']) {\n    console.log(`Generating ${browser} references...`);\n    const config = generateBrowserConfig(browser);\n    await backstop('reference', { config });\n  }\n  \n  for (const device of mobileDevices) {\n    console.log(`Generating ${device} references...`);\n    const config = generateMobileConfig(device);\n    await backstop('reference', { config });\n  }\n  \n  console.log('✅ All reference images generated');\n}\n\n/**\n * Approve visual changes across all browsers\n */\nasync function approveAll() {\n  console.log('✅ Approving visual changes across all browsers...');\n  \n  for (const browser of ['chromium', 'firefox', 'webkit']) {\n    console.log(`Approving ${browser} changes...`);\n    const config = generateBrowserConfig(browser);\n    await backstop('approve', { config });\n  }\n  \n  for (const device of mobileDevices) {\n    console.log(`Approving ${device} changes...`);\n    const config = generateMobileConfig(device);\n    await backstop('approve', { config });\n  }\n  \n  console.log('✅ All visual changes approved');\n}\n\nmodule.exports = {\n  runCrossBrowserTests,\n  generateReferences,\n  approveAll,\n  generateBrowserConfig,\n  generateMobileConfig,\n  browsers,\n  mobileDevices\n};
+  console.log('🚀 Starting cross-browser visual regression tests...');
+
+  const results = [];
+
+  // Test each browser
+  for (const browser of ['chromium', 'firefox', 'webkit']) {
+    console.log(`\n📱 Testing ${browser}...`);
+
+    try {
+      const config = generateBrowserConfig(browser);
+      const result = await backstop('test', { config });
+      results.push({ browser, status: 'passed', result });
+      console.log(`✅ ${browser} tests passed`);
+    } catch (error) {
+      results.push({ browser, status: 'failed', error: error.message });
+      console.log(`❌ ${browser} tests failed: ${error.message}`);
+    }
+  }
+
+  // Test mobile devices
+  for (const device of mobileDevices) {
+    console.log(`\n📱 Testing ${device}...`);
+
+    try {
+      const config = generateMobileConfig(device);
+      const result = await backstop('test', { config });
+      results.push({ device, status: 'passed', result });
+      console.log(`✅ ${device} tests passed`);
+    } catch (error) {
+      results.push({ device, status: 'failed', error: error.message });
+      console.log(`❌ ${device} tests failed: ${error.message}`);
+    }
+  }
+
+  // Generate summary report
+  const summary = {
+    total: results.length,
+    passed: results.filter((r) => r.status === 'passed').length,
+    failed: results.filter((r) => r.status === 'failed').length,
+    results,
+  };
+
+  console.log('\n📊 Cross-Browser Test Summary:');
+  console.log(`Total: ${summary.total}`);
+  console.log(`Passed: ${summary.passed}`);
+  console.log(`Failed: ${summary.failed}`);
+
+  // Write detailed report
+  require('fs').writeFileSync(
+    'tests/visual/cross-browser-report.json',
+    JSON.stringify(summary, null, 2),
+  );
+
+  return summary;
+}
+
+/**
+ * Generate reference images for all browsers
+ */
+async function generateReferences() {
+  console.log('📸 Generating reference images for all browsers...');
+
+  for (const browser of ['chromium', 'firefox', 'webkit']) {
+    console.log(`Generating ${browser} references...`);
+    const config = generateBrowserConfig(browser);
+    await backstop('reference', { config });
+  }
+
+  for (const device of mobileDevices) {
+    console.log(`Generating ${device} references...`);
+    const config = generateMobileConfig(device);
+    await backstop('reference', { config });
+  }
+
+  console.log('✅ All reference images generated');
+}
+
+/**
+ * Approve visual changes across all browsers
+ */
+async function approveAll() {
+  console.log('✅ Approving visual changes across all browsers...');
+
+  for (const browser of ['chromium', 'firefox', 'webkit']) {
+    console.log(`Approving ${browser} changes...`);
+    const config = generateBrowserConfig(browser);
+    await backstop('approve', { config });
+  }
+
+  for (const device of mobileDevices) {
+    console.log(`Approving ${device} changes...`);
+    const config = generateMobileConfig(device);
+    await backstop('approve', { config });
+  }
+
+  console.log('✅ All visual changes approved');
+}
+
+module.exports = {
+  runCrossBrowserTests,
+  generateReferences,
+  approveAll,
+  generateBrowserConfig,
+  generateMobileConfig,
+  browsers,
+  mobileDevices,
+};

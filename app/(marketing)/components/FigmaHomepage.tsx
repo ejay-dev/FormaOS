@@ -1,7 +1,9 @@
 'use client';
 
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useRef, useEffect, useMemo, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
   ArrowRight,
@@ -50,6 +52,13 @@ interface Node {
   vy: number;
   radius: number;
 }
+
+const seededRandom = (seed: number) => {
+  let t = seed + 0x6d2b79f5;
+  t = Math.imul(t ^ (t >>> 15), t | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
 
 // ============================================
 // ENHANCED MOTION SYSTEMS
@@ -1191,10 +1200,27 @@ function Hero() {
     offset: ['start start', 'end start'],
   });
   const { state } = useCompliance();
+  const router = useRouter();
 
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
   const y = useTransform(scrollYProgress, [0, 0.5], [0, 100]);
+  const handleRequestDemoClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+  ) => {
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    ) {
+      return;
+    }
+    event.preventDefault();
+    router.push('/contact');
+  };
 
   return (
     <section
@@ -1370,15 +1396,14 @@ function Hero() {
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </motion.a>
 
-              <motion.a
+              <Link
                 href="/contact"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-                className="group px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white font-semibold text-lg flex items-center gap-3 hover:border-cyan-400/50 hover:bg-cyan-400/5 transition-all"
+                onClick={handleRequestDemoClick}
+                className="group relative z-30 pointer-events-auto px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white font-semibold text-lg flex items-center gap-3 hover:border-cyan-400/50 hover:bg-cyan-400/5 transition-all transform-gpu hover:scale-105 active:scale-95"
               >
                 <Play className="w-5 h-5" />
                 <span>Request Demo</span>
-              </motion.a>
+              </Link>
             </motion.div>
           </motion.div>
 
@@ -2216,16 +2241,20 @@ function Industries() {
   };
 
   // Animated background particles - reduced on mobile
-  const backgroundParticles = Array.from(
-    { length: isMobile ? 6 : 20 },
-    (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      delay: Math.random() * 2,
-      duration: 3 + Math.random() * 2,
-    }),
-  );
+  const backgroundParticles = useMemo(() => {
+    const count = isMobile ? 6 : 20;
+    const seedOffset = isMobile ? 1000 : 0;
+    return Array.from({ length: count }, (_, i) => {
+      const seed = seedOffset + i * 7;
+      return {
+        id: i,
+        x: seededRandom(seed + 1) * 100,
+        y: seededRandom(seed + 2) * 100,
+        delay: seededRandom(seed + 3) * 2,
+        duration: 3 + seededRandom(seed + 4) * 2,
+      };
+    });
+  }, [isMobile]);
 
   return (
     <section
