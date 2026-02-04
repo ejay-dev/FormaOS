@@ -313,7 +313,12 @@ test.describe('FormaOS Node & Wire Integrity Tests', () => {
         .first();
       await requestDemoButton.scrollIntoViewIfNeeded();
       await expect(requestDemoButton).toBeVisible();
-      await requestDemoButton.click({ force: true });
+      await Promise.all([
+        page.waitForURL(buildSiteUrlRegex('/contact'), {
+          waitUntil: 'domcontentloaded',
+        }),
+        requestDemoButton.click(),
+      ]);
 
       await expectOnSitePath(page, '/contact');
     });
@@ -326,7 +331,12 @@ test.describe('FormaOS Node & Wire Integrity Tests', () => {
         .first();
       await scheduleDemoLink.scrollIntoViewIfNeeded();
       await expect(scheduleDemoLink).toBeVisible();
-      await scheduleDemoLink.click({ force: true });
+      await Promise.all([
+        page.waitForURL(buildSiteUrlRegex('/contact'), {
+          waitUntil: 'domcontentloaded',
+        }),
+        scheduleDemoLink.click(),
+      ]);
 
       await expectOnSitePath(page, '/contact');
     });

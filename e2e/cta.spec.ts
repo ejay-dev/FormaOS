@@ -32,6 +32,40 @@ const normalizeHref = (href: string | null) => {
   }
 };
 
+const escapeRegex = (value: string) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const siteBaseVariants = (() => {
+  try {
+    const url = new URL(SITE_BASE);
+    const host = url.hostname;
+    const normalized = SITE_BASE.replace(/\/$/, '');
+    const variants = new Set<string>([normalized]);
+
+    if (!host.includes('localhost')) {
+      if (host.startsWith('www.')) {
+        const withoutWww = new URL(url.toString());
+        withoutWww.hostname = host.replace(/^www\./, '');
+        variants.add(withoutWww.toString().replace(/\/$/, ''));
+      } else {
+        const withWww = new URL(url.toString());
+        withWww.hostname = `www.${host}`;
+        variants.add(withWww.toString().replace(/\/$/, ''));
+      }
+    }
+
+    return Array.from(variants);
+  } catch {
+    return [SITE_BASE.replace(/\/$/, '')];
+  }
+})();
+
+const buildSiteUrlRegex = (path: string) => {
+  const normalizedPath = path === '/' ? '/?' : `${path.replace(/\/$/, '')}/?`;
+  const escaped = siteBaseVariants.map(escapeRegex).join('|');
+  return new RegExp(`^(${escaped})${normalizedPath}$`);
+};
+
 const isMobileProject = (projectName: string) =>
   projectName.toLowerCase().includes('mobile');
 
@@ -84,7 +118,7 @@ test.describe('Marketing CTA wiring', () => {
   });
 
   test('homepage primary CTAs route correctly', async ({ page }) => {
-    await page.goto(SITE_BASE, { waitUntil: 'domcontentloaded' });
+    await page.goto(SITE_BASE, { waitUntil: 'load' });
 
     const startTrial = page
       .getByRole('link', { name: /start free trial/i })
@@ -99,8 +133,10 @@ test.describe('Marketing CTA wiring', () => {
     await requestDemo.scrollIntoViewIfNeeded();
     await expect(requestDemo).toBeVisible();
     await Promise.all([
-      page.waitForURL(new RegExp(`${SITE_BASE}/contact/?$`)),
-      requestDemo.click({ force: true }),
+      page.waitForURL(buildSiteUrlRegex('/contact'), {
+        waitUntil: 'domcontentloaded',
+      }),
+      requestDemo.click(),
     ]);
   });
 

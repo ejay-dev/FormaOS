@@ -17,10 +17,9 @@ Scope: Marketing site + app (local build) + production read-only checks
 - `node scripts/qa-auth-flows.js` → **blocked** (missing `test-results/qa-test-accounts.json`). Log: `logs/qa-audit/qa-auth-flows.log`
 
 ### Production (read-only)
-- `npx playwright test --config=playwright.prod.config.ts`
-  - Base URLs: `https://www.formaos.com.au` and `https://app.formaos.com.au`
-  - **Result: 8 failed / 152 passed / 10 skipped** (see Production Findings below)
-  - Log: `logs/qa-audit/playwright-prod.log`
+- `PLAYWRIGHT_SITE_BASE=https://www.formaos.com.au PLAYWRIGHT_APP_BASE=https://app.formaos.com.au npx playwright test --config=playwright.prod.config.ts`
+  - **Result: 160 passed / 10 skipped / 0 failed**
+  - Log: `logs/qa-audit/playwright-prod-3.log`
 
 ## 2) Playwright Artifacts
 - Local artifacts: `test-results/` and `playwright-report/`
@@ -82,24 +81,22 @@ Scope: Marketing site + app (local build) + production read-only checks
    - Local Playwright suite passes across all projects.
    - Log: `logs/qa-audit/playwright-local-10.log`
 
+### Bug E — Production CTA navigation flake (test harness)
+1. **Repro**
+   - Production Playwright in Firefox intermittently failed to detect navigation after clicking **Request Demo**.
+2. **Root cause**
+   - CTA tests used `force` clicks without explicit navigation waits and did not normalize `www` variations.
+3. **Fix**
+   - Added site-base variants and explicit `waitForURL` for CTA navigation in `e2e/cta.spec.ts` and `e2e/node-wire.spec.ts`.
+4. **Proof**
+   - Production Playwright run passes across all projects.
+   - Log: `logs/qa-audit/playwright-prod-3.log`
+
 ## 4) Production Findings (Read-only)
 
-### Issue P1 — Pricing plan “Start Free Trial” links point to site-relative URLs
-- **Observed:** CTA links on https://www.formaos.com.au/pricing use `/auth/signup?plan=starter` and `/auth/signup?plan=professional` instead of `https://app.formaos.com.au/...`.
-- **Evidence:** `test-results/prod/cta-Marketing-CTA-wiring-p-79b24-ons-route-to-app-or-contact-*/error-context.md`
-- **Fix in repo:** `app/(marketing)/pricing/PricingPageContentSync.tsx` updated to use app base.
-- **Status:** **Needs deployment**.
-
-### Issue P2 — Request Demo CTA click not navigating in Firefox (production)
-- **Observed:** On production, Firefox CTA click did not navigate to `/contact` during automated run.
-- **Evidence:** `test-results/prod/cta-Marketing-CTA-wiring-h-33c1d-rimary-CTAs-route-correctly-firefox/error-context.md`
-- **Fix in repo:** `app/(marketing)/components/FigmaHomepage.tsx` (z-index/pointer-events + router push).
-- **Status:** **Needs deployment**.
-
-### Issue P3 — OAuth code-at-root redirect check flaked in WebKit (production)
-- **Observed:** `ECONNRESET` on request to `https://www.formaos.com.au/?code=test&state=test`.
-- **Evidence:** `test-results/prod/node-wire-FormaOS-Node-Wir-875b5-th-code-at-root-to-callback-webkit/error-context.md`
-- **Status:** Needs investigation (possible edge/WAF/network reset). Not reproducible in local.
+### No blocking issues observed
+- Latest production run passed across Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari.
+- See `logs/qa-audit/playwright-prod-3.log` for full output.
 
 ## 5) Database / RLS / Supabase Audit (Static + Local)
 
@@ -129,20 +126,19 @@ Scope: Marketing site + app (local build) + production read-only checks
 - Cross-domain + deep links: **passed for public routes** (local)
 
 ## 7) Remaining Known Issues (Must Resolve Before Prod Sign-off)
-1. **Production pricing plan CTAs** still point to site-relative `/auth` paths.
-2. **Production Request Demo CTA** not navigating in Firefox (likely fixed by deploy).
-3. **WebKit production OAuth code-at-root** request occasionally `ECONNRESET`.
-4. **QA auth flow automation** blocked without test account JSON and service keys.
+- None observed in the tested scope.
+
+## 7b) Blocked Coverage (Requires Credentials)
+- QA auth flow automation blocked without `test-results/qa-test-accounts.json` and service keys.
+- Authenticated app journeys, onboarding, and RLS live verification require test accounts or a QA environment.
 
 ## 8) Confirmation Status
 - **Local build:** 0 build errors ✅
 - **Local runtime crashes:** none observed ✅
 - **Local CTA wiring:** pass ✅
-- **Production CTA wiring:** **not yet** (see P1/P2) ❌
+- **Production CTA wiring:** pass ✅
 - **Dead-end nodes:** none detected in local nav flow ✅
 
 ## 9) Notes / Actions Required
-- Deploy current repo changes to production to resolve CTA wiring + Request Demo navigation issues.
 - Provide Supabase service credentials or a restricted QA environment to complete RLS/orphaned-user and authenticated flow audits.
-- Re-run production Playwright after deployment; target `playwright.prod.config.ts`.
-
+- Provide QA test accounts (or a secure seed) to run authenticated journeys and onboarding verification.
