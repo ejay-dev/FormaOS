@@ -36,6 +36,9 @@ Scope: Marketing site + app (local build) + production read-only checks
 ### Commit References
 - `0a7f70f` — QA fixes: CTA wiring + deterministic marketing rendering.
 - `419cb48` — Stabilize production CTA tests + update QA report.
+- `bdb5766` — Update QA report with production run results.
+- `92ca00c` — Record Supabase health/integrity results.
+- `TBD` — Backfill user_profiles + add org_members trigger (migration).
 
 ### Bug A — Homepage hydration mismatch (console error)
 1. **Repro**
@@ -107,6 +110,19 @@ Scope: Marketing site + app (local build) + production read-only checks
    - Log: `logs/qa-audit/playwright-prod-3.log`
    - Commit: `419cb48`
 
+### Bug F — Missing user_profiles for existing users (backfill + trigger)
+1. **Repro**
+   - Live DB integrity check reported 30 users without `user_profiles`.
+2. **Root cause**
+   - No automated backfill for legacy users; profile creation appears to be optional or tied to UI edits.
+3. **Fix**
+   - Added migration `supabase/migrations/20260204_backfill_user_profiles.sql`:
+     - Backfills `user_profiles` for users with `org_members`.
+     - Adds `org_members` trigger to ensure future rows exist.
+4. **Proof**
+   - Pending deploy/run; migration is additive and idempotent.
+   - Commit: (next deploy)
+
 ## 4) Production Findings (Read-only)
 
 ### No blocking issues observed
@@ -150,7 +166,7 @@ Scope: Marketing site + app (local build) + production read-only checks
 - Cross-domain + deep links: **passed for public routes** (local)
 
 ## 7) Remaining Known Issues (Must Resolve Before Prod Sign-off)
-- **Orphaned users without user_profiles (30)** — needs confirmation whether profiles are expected for all users or only after profile completion. If required, backfill job or trigger needed.
+- **Orphaned users without user_profiles (30)** — fix prepared via migration; pending deploy/run.
 
 ## 7b) Blocked Coverage (Requires Credentials)
 - QA auth flow automation blocked without `test-results/qa-test-accounts.json` and service keys.
