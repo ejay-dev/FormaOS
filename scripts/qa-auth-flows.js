@@ -26,6 +26,14 @@ const envs = [
   },
 ];
 
+const envFilter = process.env.QA_ENV
+  ? new Set(process.env.QA_ENV.split(',').map((value) => value.trim()))
+  : null;
+
+const activeEnvs = envFilter
+  ? envs.filter((env) => envFilter.has(env.name))
+  : envs;
+
 const ensureNewUserEmail = (envName) => {
   const email = `qa-new-${envName}-${Date.now()}@example.com`;
   accounts.newUsers = accounts.newUsers || [];
@@ -276,7 +284,7 @@ const runEnvChecks = async (env) => {
 
 const run = async () => {
   const failures = [];
-  for (const env of envs) {
+  for (const env of activeEnvs) {
     try {
       await runEnvChecks(env);
     } catch (error) {

@@ -26,6 +26,18 @@ Scope: Marketing site + app (local build) + production read-only checks
 - `SUPABASE_URL=https://bvfniosswcvuyfaaicze.supabase.co SUPABASE_SERVICE_KEY=*** node scripts/test-db-integrity.js`
   - **Result: pass (with logged findings)**
   - Log: `logs/qa-audit/db-integrity-prod-2026-02-04.log`
+- `SUPABASE_URL=https://bvfniosswcvuyfaaicze.supabase.co SUPABASE_SERVICE_ROLE_KEY=*** node scripts/qa-test-accounts.js`
+  - **Result: pass (accounts created)**
+  - Log: `logs/qa-audit/qa-test-accounts-prod-2026-02-04.log`
+- `QA_ENV=production node scripts/qa-auth-flows.js`
+  - **Result: failed** (setup_incomplete loop)
+  - Log: `logs/qa-audit/qa-auth-flows-prod-2026-02-04.log`
+- `node scripts/rls-org-members-recursion` (ad-hoc anon check)
+  - **Result: failed** (RLS recursion on org_members)
+  - Log: `logs/qa-audit/rls-org-members-recursion-prod-2026-02-04.log`
+- `SUPABASE_URL=https://bvfniosswcvuyfaaicze.supabase.co SUPABASE_SERVICE_ROLE_KEY=*** node scripts/qa-cleanup-test-accounts.js`
+  - **Result: pass (accounts cleaned)**
+  - Log: `logs/qa-audit/qa-test-accounts-cleanup-prod-2026-02-04.log`
 
 ## 2) Playwright Artifacts
 - Local artifacts: `test-results/` and `playwright-report/`
@@ -39,6 +51,7 @@ Scope: Marketing site + app (local build) + production read-only checks
 - `bdb5766` — Update QA report with production run results.
 - `92ca00c` — Record Supabase health/integrity results.
 - `b54c5c5` — Backfill user_profiles + add org_members trigger (migration).
+- `TBD` — QA auth flow runner env filter (production-only).
 
 ### Bug A — Homepage hydration mismatch (console error)
 1. **Repro**
@@ -123,6 +136,18 @@ Scope: Marketing site + app (local build) + production read-only checks
    - Pending deploy/run; migration is additive and idempotent.
    - Commit: `b54c5c5`
 
+### Bug G — org_members RLS recursion blocks authenticated queries
+1. **Repro**
+   - Sign in with a regular user and query `org_members` via anon client.
+   - Error: `infinite recursion detected in policy for relation "org_members"`.
+2. **Root cause**
+   - RLS policies on `org_members` reference `org_members` without a safe helper, triggering recursion under anon role.
+3. **Fix**
+   - Apply safe policies in `supabase/migrations/20260401_safe_rls_policies.sql` (uses `current_user_org_ids()` with `SECURITY DEFINER`).
+4. **Proof**
+   - Pending deploy/run; reproduction captured in log.
+   - Log: `logs/qa-audit/rls-org-members-recursion-prod-2026-02-04.log`
+
 ## 4) Production Findings (Read-only)
 
 ### No blocking issues observed
@@ -167,10 +192,11 @@ Scope: Marketing site + app (local build) + production read-only checks
 
 ## 7) Remaining Known Issues (Must Resolve Before Prod Sign-off)
 - **Orphaned users without user_profiles (30)** — fix prepared via migration; pending deploy/run.
+- **RLS recursion on org_members** — blocks authenticated org membership reads; causes setup_incomplete in auth flow automation.
 
 ## 7b) Blocked Coverage (Requires Credentials)
-- QA auth flow automation blocked without `test-results/qa-test-accounts.json` and service keys.
-- Authenticated app journeys, onboarding, and RLS live verification require test accounts or a QA environment.
+- Authenticated journey automation **failed** due to RLS recursion (see Bug G).
+- Full RLS linting via `supabase db lint` still requires DB URL or Supabase CLI access.
 
 ## 8) Confirmation Status
 - **Local build:** 0 build errors ✅
@@ -180,5 +206,6 @@ Scope: Marketing site + app (local build) + production read-only checks
 - **Dead-end nodes:** none detected in local nav flow ✅
 
 ## 9) Notes / Actions Required
+- Apply `supabase/migrations/20260204_backfill_user_profiles.sql`.
+- Apply `supabase/migrations/20260401_safe_rls_policies.sql` to remove recursion and restore auth flows.
 - Provide `SUPABASE_DB_URL` (or Supabase CLI access token) to run full linting and catalog-based view audits.
-- Provide QA test accounts (or a secure seed) to run authenticated journeys and onboarding verification.
