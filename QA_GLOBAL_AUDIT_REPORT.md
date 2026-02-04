@@ -27,6 +27,10 @@ Scope: Marketing site + app (local build) + production read-only checks
 
 ## 3) Bugs Found + Fixes (Local Code)
 
+### Commit References
+- `0a7f70f` — QA fixes: CTA wiring + deterministic marketing rendering.
+- `419cb48` — Stabilize production CTA tests + update QA report.
+
 ### Bug A — Homepage hydration mismatch (console error)
 1. **Repro**
    - Visit `/` and open browser console.
@@ -38,6 +42,7 @@ Scope: Marketing site + app (local build) + production read-only checks
 4. **Proof**
    - Local Playwright console error checks now pass.
    - Log: `logs/qa-audit/playwright-local-10.log`
+   - Commit: `0a7f70f`
 
 ### Bug B — Request Demo CTA not reliably navigating (Firefox)
 1. **Repro**
@@ -50,6 +55,7 @@ Scope: Marketing site + app (local build) + production read-only checks
 4. **Proof**
    - Local Playwright CTA tests pass in all projects.
    - Log: `logs/qa-audit/playwright-local-10.log`
+   - Commit: `0a7f70f`
 
 ### Bug C — Marketing CTA wiring to app domain (pricing + header/menu)
 1. **Repro**
@@ -68,6 +74,7 @@ Scope: Marketing site + app (local build) + production read-only checks
 4. **Proof**
    - Local Playwright CTA suite passes.
    - Log: `logs/qa-audit/playwright-local-10.log`
+   - Commit: `0a7f70f`
 
 ### Bug D — Playwright stability + nav flakiness (local)
 1. **Repro**
@@ -80,6 +87,7 @@ Scope: Marketing site + app (local build) + production read-only checks
 4. **Proof**
    - Local Playwright suite passes across all projects.
    - Log: `logs/qa-audit/playwright-local-10.log`
+   - Commit: `0a7f70f`
 
 ### Bug E — Production CTA navigation flake (test harness)
 1. **Repro**
@@ -91,6 +99,7 @@ Scope: Marketing site + app (local build) + production read-only checks
 4. **Proof**
    - Production Playwright run passes across all projects.
    - Log: `logs/qa-audit/playwright-prod-3.log`
+   - Commit: `419cb48`
 
 ## 4) Production Findings (Read-only)
 
