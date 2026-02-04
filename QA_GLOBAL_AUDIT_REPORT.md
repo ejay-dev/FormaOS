@@ -20,6 +20,12 @@ Scope: Marketing site + app (local build) + production read-only checks
 - `PLAYWRIGHT_SITE_BASE=https://www.formaos.com.au PLAYWRIGHT_APP_BASE=https://app.formaos.com.au npx playwright test --config=playwright.prod.config.ts`
   - **Result: 160 passed / 10 skipped / 0 failed**
   - Log: `logs/qa-audit/playwright-prod-3.log`
+- `SUPABASE_URL=https://bvfniosswcvuyfaaicze.supabase.co SUPABASE_SERVICE_KEY=*** node scripts/test-supabase-health.js`
+  - **Result: pass**
+  - Log: `logs/qa-audit/supabase-health-prod-2026-02-04.log`
+- `SUPABASE_URL=https://bvfniosswcvuyfaaicze.supabase.co SUPABASE_SERVICE_KEY=*** node scripts/test-db-integrity.js`
+  - **Result: pass (with logged findings)**
+  - Log: `logs/qa-audit/db-integrity-prod-2026-02-04.log`
 
 ## 2) Playwright Artifacts
 - Local artifacts: `test-results/` and `playwright-report/`
@@ -123,9 +129,18 @@ Scope: Marketing site + app (local build) + production read-only checks
 - `plan_key` column exists in migrations (`supabase/migrations/20250314_org_onboarding_fields.sql`) and referenced consistently in code.
 
 ### Supabase CLI / live DB checks
-- **Blocked:** No Supabase credentials or CLI context provided. Scripts requiring service keys could not be executed.
-  - `scripts/test-db-integrity.js`, `check-schema.js` require `.env.local` and service role keys.
-  - `scripts/qa-auth-flows.js` blocked by missing `test-results/qa-test-accounts.json`.
+### Live DB checks (service role, read-only)
+- `scripts/test-supabase-health.js` passed.
+  - orgs: 6, org_members: 21, org_subscriptions: 6, org_onboarding_status: 14, user_profiles: 0, audit_logs: 0.
+- `scripts/test-db-integrity.js` passed with findings:
+  - **30 users without profiles** (logged).
+  - compliance_edges / org_members / company_profiles checks skipped due to missing relationship or table resolution.
+  - Query performance within thresholds (135ms / 124ms).
+- Logs: `logs/qa-audit/supabase-health-prod-2026-02-04.log`, `logs/qa-audit/db-integrity-prod-2026-02-04.log`.
+
+### Supabase CLI / deeper linting
+- **Blocked:** No direct DB connection string or Supabase CLI auth provided. `supabase db lint` / catalog queries require DB access beyond service role key.
+  - Provide `SUPABASE_DB_URL` (or CLI access token) for full policy/view linting.
 
 ## 6) Required Journey Coverage (Local)
 - Marketing → App CTA wiring: **passed** (local)
@@ -135,7 +150,7 @@ Scope: Marketing site + app (local build) + production read-only checks
 - Cross-domain + deep links: **passed for public routes** (local)
 
 ## 7) Remaining Known Issues (Must Resolve Before Prod Sign-off)
-- None observed in the tested scope.
+- **Orphaned users without user_profiles (30)** — needs confirmation whether profiles are expected for all users or only after profile completion. If required, backfill job or trigger needed.
 
 ## 7b) Blocked Coverage (Requires Credentials)
 - QA auth flow automation blocked without `test-results/qa-test-accounts.json` and service keys.
@@ -149,5 +164,5 @@ Scope: Marketing site + app (local build) + production read-only checks
 - **Dead-end nodes:** none detected in local nav flow ✅
 
 ## 9) Notes / Actions Required
-- Provide Supabase service credentials or a restricted QA environment to complete RLS/orphaned-user and authenticated flow audits.
+- Provide `SUPABASE_DB_URL` (or Supabase CLI access token) to run full linting and catalog-based view audits.
 - Provide QA test accounts (or a secure seed) to run authenticated journeys and onboarding verification.
