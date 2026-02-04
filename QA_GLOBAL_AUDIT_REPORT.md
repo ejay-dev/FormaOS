@@ -28,16 +28,16 @@ Scope: Marketing site + app (local build) + production read-only checks
   - Log: `logs/qa-audit/db-integrity-prod-2026-02-04.log`, `logs/qa-audit/db-integrity-prod-2026-02-04-post-migrations.log`
 - `SUPABASE_URL=https://bvfniosswcvuyfaaicze.supabase.co SUPABASE_SERVICE_ROLE_KEY=*** node scripts/qa-test-accounts.js`
   - **Result: pass (accounts created)**
-  - Log: `logs/qa-audit/qa-test-accounts-prod-2026-02-04.log`
+  - Log: `logs/qa-audit/qa-test-accounts-prod-2026-02-04.log`, `logs/qa-audit/qa-test-accounts-prod-2026-02-04-onboarding-complete.log`, `logs/qa-audit/qa-test-accounts-prod-2026-02-04-invite-accept-fix.log`, `logs/qa-audit/qa-test-accounts-prod-2026-02-04-invite-policy.log`
 - `QA_ENV=production node scripts/qa-auth-flows.js`
   - **Result: failed** (setup_incomplete loop, then invite acceptance blocked)
-  - Log: `logs/qa-audit/qa-auth-flows-prod-2026-02-04.log`, `logs/qa-audit/qa-auth-flows-prod-2026-02-04-onboarding-complete.log`, `logs/qa-audit/qa-auth-flows-prod-2026-02-04-invite-fix-3.log`
+  - Log: `logs/qa-audit/qa-auth-flows-prod-2026-02-04.log`, `logs/qa-audit/qa-auth-flows-prod-2026-02-04-onboarding-complete.log`, `logs/qa-audit/qa-auth-flows-prod-2026-02-04-invite-fix-3.log`, `logs/qa-audit/qa-auth-flows-prod-2026-02-04-invite-accept-fix.log`, `logs/qa-audit/qa-auth-flows-prod-2026-02-04-invite-accept-fix-2.log`
 - `node scripts/rls-org-members-recursion` (ad-hoc anon check)
   - **Result: failed** (RLS recursion on org_members)
   - Log: `logs/qa-audit/rls-org-members-recursion-prod-2026-02-04.log`
 - `SUPABASE_URL=https://bvfniosswcvuyfaaicze.supabase.co SUPABASE_SERVICE_ROLE_KEY=*** node scripts/qa-cleanup-test-accounts.js`
   - **Result: pass (accounts cleaned)**
-  - Log: `logs/qa-audit/qa-test-accounts-cleanup-prod-2026-02-04.log`
+  - Log: `logs/qa-audit/qa-test-accounts-cleanup-prod-2026-02-04.log`, `logs/qa-audit/qa-test-accounts-cleanup-prod-2026-02-04-after-invite-fail.log`, `logs/qa-audit/qa-test-accounts-cleanup-prod-2026-02-04-invite-accept-fix.log`, `logs/qa-audit/qa-test-accounts-cleanup-prod-2026-02-04-invite-accept-fix-2.log`
 
 ## 2) Playwright Artifacts
 - Local artifacts: `test-results/` and `playwright-report/`
@@ -53,6 +53,7 @@ Scope: Marketing site + app (local build) + production read-only checks
 - `b54c5c5` — Backfill user_profiles + add org_members trigger (migration).
 - `e6b6410` — QA auth flow runner env filter (production-only) + report updates.
 - `6761e8f` — Allow invitees to SELECT team_invitations + QA onboarding seeding tweaks.
+- `fb9ad9a` — Create org membership on invite acceptance.
 
 ### Bug A — Homepage hydration mismatch (console error)
 1. **Repro**
@@ -162,6 +163,18 @@ Scope: Marketing site + app (local build) + production read-only checks
    - Log: `logs/qa-audit/qa-auth-flows-prod-2026-02-04-invite-fix-3.log`
    - Commit: `6761e8f`
 
+### Bug I — Invite acceptance does not create org membership
+1. **Repro**
+   - Invited user reaches “Welcome to …” page, but clicking **Go to Dashboard** redirects to `/auth/signin?error=setup_incomplete`.
+2. **Root cause**
+   - `acceptInvitation` only updates invitation status and does not add the user to `org_members`.
+3. **Fix**
+   - `lib/invitations/validate-invitation.ts` now upserts `org_members` on acceptance.
+4. **Proof**
+   - Pending deploy; production still failing while old code is live.
+   - Logs: `logs/qa-audit/qa-auth-flows-prod-2026-02-04-invite-accept-fix.log`, `logs/qa-audit/qa-auth-flows-prod-2026-02-04-invite-accept-fix-2.log`
+   - Commit: `fb9ad9a`
+
 ## 4) Production Findings (Read-only)
 
 ### No blocking issues observed
@@ -207,9 +220,10 @@ Scope: Marketing site + app (local build) + production read-only checks
 ## 7) Remaining Known Issues (Must Resolve Before Prod Sign-off)
 - **Orphaned users without user_profiles (10)** — backfill reduced count; verify if remaining users are expected (system/service accounts) or require cleanup.
 - **Invite acceptance blocked** — missing SELECT policy on `team_invitations` for invitees.
+- **Invite acceptance does not add org membership** — fix committed; pending deploy.
 
 ## 7b) Blocked Coverage (Requires Credentials)
-- Authenticated journey automation **failed** at invite acceptance (see Bug H).
+- Authenticated journey automation **failed** at invite acceptance (see Bugs H + I).
 - Full RLS linting via `supabase db lint` still requires DB URL or Supabase CLI access.
 
 ## 8) Confirmation Status
@@ -223,4 +237,5 @@ Scope: Marketing site + app (local build) + production read-only checks
 - Apply `supabase/migrations/20260204_backfill_user_profiles.sql`.
 - Apply `supabase/migrations/20260401_safe_rls_policies.sql` to remove recursion and restore auth flows.
 - Apply `supabase/migrations/20260204_fix_team_invitation_select.sql` to allow invite acceptance.
+- Deploy commit `fb9ad9a` to production, then re-run `scripts/qa-auth-flows.js`.
 - Provide `SUPABASE_DB_URL` (or Supabase CLI access token) to run full linting and catalog-based view audits.

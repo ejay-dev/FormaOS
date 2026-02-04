@@ -238,6 +238,7 @@ const runEnvChecks = async (env) => {
   await page.goto(`${env.appBase}/auth/signout`, {
     waitUntil: 'domcontentloaded',
   });
+  await context.clearCookies();
 
   const inviteToken = accounts.invitations.invitedUser.token;
   await page.goto(`${env.appBase}/accept-invite/${inviteToken}`, {
