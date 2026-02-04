@@ -52,7 +52,7 @@ Scope: Marketing site + app (local build) + production read-only checks
 - `92ca00c` — Record Supabase health/integrity results.
 - `b54c5c5` — Backfill user_profiles + add org_members trigger (migration).
 - `e6b6410` — QA auth flow runner env filter (production-only) + report updates.
-- `TBD` — Allow invitees to SELECT team_invitations (RLS fix).
+- `6761e8f` — Allow invitees to SELECT team_invitations + QA onboarding seeding tweaks.
 
 ### Bug A — Homepage hydration mismatch (console error)
 1. **Repro**
@@ -160,6 +160,7 @@ Scope: Marketing site + app (local build) + production read-only checks
 4. **Proof**
    - Pending deploy/run; auth automation currently fails on invite acceptance.
    - Log: `logs/qa-audit/qa-auth-flows-prod-2026-02-04-invite-fix-3.log`
+   - Commit: `6761e8f`
 
 ## 4) Production Findings (Read-only)
 

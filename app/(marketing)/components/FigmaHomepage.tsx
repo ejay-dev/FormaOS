@@ -40,7 +40,6 @@ import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
-
 // ============================================
 // TYPES & INTERFACES
 // ============================================
@@ -3439,14 +3438,6 @@ function CTASection() {
       verifyTime: 200 + i * 80,
     }));
 
-    // Process-to-Proof Arc elements
-    const arcSegments = [
-      { label: 'MODEL', x: 150, y: 300, progress: 0 },
-      { label: 'EXECUTE', x: 300, y: 280, progress: 0 },
-      { label: 'VERIFY', x: 450, y: 280, progress: 0 },
-      { label: 'PROVE', x: 600, y: 300, progress: 0 },
-    ];
-
     const animate = () => {
       ctx.clearRect(0, 0, 800, 600);
 
@@ -3558,100 +3549,6 @@ function CTASection() {
           ctx.arc(particle.x, particle.y, pulseSize, 0, Math.PI * 2);
           ctx.stroke();
         }
-      });
-
-      // Process-to-Proof Arc - animated progression
-      arcSegments.forEach((segment, i) => {
-        const segmentTime = (time - i * 300) % 2000;
-        segment.progress = Math.max(0, Math.min(1, (segmentTime - 200) / 800));
-
-        // Segment node
-        const nodeGradient = ctx.createRadialGradient(
-          segment.x,
-          segment.y,
-          0,
-          segment.x,
-          segment.y,
-          15,
-        );
-        if (segment.progress > 0.8) {
-          nodeGradient.addColorStop(0, 'rgba(16, 185, 129, 0.8)');
-          nodeGradient.addColorStop(1, 'rgba(16, 185, 129, 0.2)');
-        } else if (segment.progress > 0.3) {
-          nodeGradient.addColorStop(0, 'rgba(59, 130, 246, 0.6)');
-          nodeGradient.addColorStop(1, 'rgba(59, 130, 246, 0.1)');
-        } else {
-          nodeGradient.addColorStop(0, 'rgba(156, 163, 175, 0.4)');
-          nodeGradient.addColorStop(1, 'rgba(156, 163, 175, 0.1)');
-        }
-
-        ctx.fillStyle = nodeGradient;
-        ctx.beginPath();
-        ctx.arc(segment.x, segment.y, 8, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Arc connection to next segment
-        if (i < arcSegments.length - 1) {
-          const nextSegment = arcSegments[i + 1];
-          const connectionProgress = Math.max(
-            0,
-            Math.min(1, (segment.progress - 0.5) * 2),
-          );
-
-          if (connectionProgress > 0) {
-            // Arc path
-            const midX = (segment.x + nextSegment.x) / 2;
-            const midY = Math.min(segment.y, nextSegment.y) - 40;
-
-            ctx.strokeStyle =
-              segment.progress > 0.8
-                ? `rgba(16, 185, 129, ${0.6 * connectionProgress})`
-                : `rgba(59, 130, 246, ${0.4 * connectionProgress})`;
-            ctx.lineWidth = 2;
-            ctx.setLineDash([]);
-            ctx.beginPath();
-            ctx.moveTo(segment.x, segment.y);
-            ctx.quadraticCurveTo(midX, midY, nextSegment.x, nextSegment.y);
-            ctx.stroke();
-
-            // Flow pulse along arc
-            if (connectionProgress > 0.7) {
-              const pulseProgress = (time * 0.02 + i * 0.5) % 1;
-              const pulseX =
-                segment.x + (nextSegment.x - segment.x) * pulseProgress;
-              const pulseY =
-                segment.y +
-                (nextSegment.y - segment.y) * pulseProgress -
-                Math.sin(pulseProgress * Math.PI) * 40;
-
-              const pulseGradient = ctx.createRadialGradient(
-                pulseX,
-                pulseY,
-                0,
-                pulseX,
-                pulseY,
-                6,
-              );
-              pulseGradient.addColorStop(0, 'rgba(16, 185, 129, 0.8)');
-              pulseGradient.addColorStop(1, 'rgba(16, 185, 129, 0)');
-              ctx.fillStyle = pulseGradient;
-              ctx.beginPath();
-              ctx.arc(pulseX, pulseY, 4, 0, Math.PI * 2);
-              ctx.fill();
-            }
-          }
-        }
-
-        // Segment label
-        ctx.fillStyle =
-          segment.progress > 0.8
-            ? 'rgba(255, 255, 255, 0.9)'
-            : segment.progress > 0.3
-              ? 'rgba(255, 255, 255, 0.7)'
-              : 'rgba(156, 163, 175, 0.6)';
-        ctx.font = '10px monospace';
-        ctx.textAlign = 'center';
-        ctx.fillText(segment.label, segment.x, segment.y + 25);
       });
 
       // Central convergence point - the "proof" destination
