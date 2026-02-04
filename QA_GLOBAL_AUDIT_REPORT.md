@@ -38,7 +38,7 @@ Scope: Marketing site + app (local build) + production read-only checks
 - `419cb48` — Stabilize production CTA tests + update QA report.
 - `bdb5766` — Update QA report with production run results.
 - `92ca00c` — Record Supabase health/integrity results.
-- `TBD` — Backfill user_profiles + add org_members trigger (migration).
+- `b54c5c5` — Backfill user_profiles + add org_members trigger (migration).
 
 ### Bug A — Homepage hydration mismatch (console error)
 1. **Repro**
@@ -121,7 +121,7 @@ Scope: Marketing site + app (local build) + production read-only checks
      - Adds `org_members` trigger to ensure future rows exist.
 4. **Proof**
    - Pending deploy/run; migration is additive and idempotent.
-   - Commit: (next deploy)
+   - Commit: `b54c5c5`
 
 ## 4) Production Findings (Read-only)
 
