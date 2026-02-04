@@ -51,7 +51,7 @@ Scope: Marketing site + app (local build) + production read-only checks
 - `bdb5766` — Update QA report with production run results.
 - `92ca00c` — Record Supabase health/integrity results.
 - `b54c5c5` — Backfill user_profiles + add org_members trigger (migration).
-- `TBD` — QA auth flow runner env filter (production-only).
+- `e6b6410` — QA auth flow runner env filter (production-only) + report updates.
 
 ### Bug A — Homepage hydration mismatch (console error)
 1. **Repro**
