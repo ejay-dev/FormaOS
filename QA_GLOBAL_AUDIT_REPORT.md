@@ -25,13 +25,13 @@ Scope: Marketing site + app (local build) + production read-only checks
   - Log: `logs/qa-audit/supabase-health-prod-2026-02-04.log`
 - `SUPABASE_URL=https://bvfniosswcvuyfaaicze.supabase.co SUPABASE_SERVICE_KEY=*** node scripts/test-db-integrity.js`
   - **Result: pass (with logged findings)**
-  - Log: `logs/qa-audit/db-integrity-prod-2026-02-04.log`
+  - Log: `logs/qa-audit/db-integrity-prod-2026-02-04.log`, `logs/qa-audit/db-integrity-prod-2026-02-04-post-migrations.log`
 - `SUPABASE_URL=https://bvfniosswcvuyfaaicze.supabase.co SUPABASE_SERVICE_ROLE_KEY=*** node scripts/qa-test-accounts.js`
   - **Result: pass (accounts created)**
   - Log: `logs/qa-audit/qa-test-accounts-prod-2026-02-04.log`
 - `QA_ENV=production node scripts/qa-auth-flows.js`
-  - **Result: failed** (setup_incomplete loop)
-  - Log: `logs/qa-audit/qa-auth-flows-prod-2026-02-04.log`
+  - **Result: failed** (setup_incomplete loop, then invite acceptance blocked)
+  - Log: `logs/qa-audit/qa-auth-flows-prod-2026-02-04.log`, `logs/qa-audit/qa-auth-flows-prod-2026-02-04-onboarding-complete.log`, `logs/qa-audit/qa-auth-flows-prod-2026-02-04-invite-fix-3.log`
 - `node scripts/rls-org-members-recursion` (ad-hoc anon check)
   - **Result: failed** (RLS recursion on org_members)
   - Log: `logs/qa-audit/rls-org-members-recursion-prod-2026-02-04.log`
@@ -52,6 +52,7 @@ Scope: Marketing site + app (local build) + production read-only checks
 - `92ca00c` — Record Supabase health/integrity results.
 - `b54c5c5` — Backfill user_profiles + add org_members trigger (migration).
 - `e6b6410` — QA auth flow runner env filter (production-only) + report updates.
+- `TBD` — Allow invitees to SELECT team_invitations (RLS fix).
 
 ### Bug A — Homepage hydration mismatch (console error)
 1. **Repro**
@@ -145,8 +146,20 @@ Scope: Marketing site + app (local build) + production read-only checks
 3. **Fix**
    - Apply safe policies in `supabase/migrations/20260401_safe_rls_policies.sql` (uses `current_user_org_ids()` with `SECURITY DEFINER`).
 4. **Proof**
-   - Pending deploy/run; reproduction captured in log.
-   - Log: `logs/qa-audit/rls-org-members-recursion-prod-2026-02-04.log`
+   - Resolved after migration (anon membership query succeeds).
+   - Logs: `logs/qa-audit/rls-org-members-recursion-prod-2026-02-04.log`, `logs/qa-audit/rls-org-members-recursion-prod-2026-02-04-post-migrations.log`
+
+### Bug H — Invite acceptance blocked by missing SELECT policy
+1. **Repro**
+   - Sign in as invited user and open `/accept-invite/{token}`.
+   - Page shows “Invitation not found” despite valid pending invitation.
+2. **Root cause**
+   - `team_invitations` lacks a SELECT policy for invitees. Only org members can read.
+3. **Fix**
+   - New migration `supabase/migrations/20260204_fix_team_invitation_select.sql` adds `invitations_self_select`.
+4. **Proof**
+   - Pending deploy/run; auth automation currently fails on invite acceptance.
+   - Log: `logs/qa-audit/qa-auth-flows-prod-2026-02-04-invite-fix-3.log`
 
 ## 4) Production Findings (Read-only)
 
@@ -174,7 +187,7 @@ Scope: Marketing site + app (local build) + production read-only checks
 - `scripts/test-supabase-health.js` passed.
   - orgs: 6, org_members: 21, org_subscriptions: 6, org_onboarding_status: 14, user_profiles: 0, audit_logs: 0.
 - `scripts/test-db-integrity.js` passed with findings:
-  - **30 users without profiles** (logged).
+  - **10 users without profiles** (after backfill).
   - compliance_edges / org_members / company_profiles checks skipped due to missing relationship or table resolution.
   - Query performance within thresholds (135ms / 124ms).
 - Logs: `logs/qa-audit/supabase-health-prod-2026-02-04.log`, `logs/qa-audit/db-integrity-prod-2026-02-04.log`.
@@ -191,11 +204,11 @@ Scope: Marketing site + app (local build) + production read-only checks
 - Cross-domain + deep links: **passed for public routes** (local)
 
 ## 7) Remaining Known Issues (Must Resolve Before Prod Sign-off)
-- **Orphaned users without user_profiles (30)** — fix prepared via migration; pending deploy/run.
-- **RLS recursion on org_members** — blocks authenticated org membership reads; causes setup_incomplete in auth flow automation.
+- **Orphaned users without user_profiles (10)** — backfill reduced count; verify if remaining users are expected (system/service accounts) or require cleanup.
+- **Invite acceptance blocked** — missing SELECT policy on `team_invitations` for invitees.
 
 ## 7b) Blocked Coverage (Requires Credentials)
-- Authenticated journey automation **failed** due to RLS recursion (see Bug G).
+- Authenticated journey automation **failed** at invite acceptance (see Bug H).
 - Full RLS linting via `supabase db lint` still requires DB URL or Supabase CLI access.
 
 ## 8) Confirmation Status
@@ -208,4 +221,5 @@ Scope: Marketing site + app (local build) + production read-only checks
 ## 9) Notes / Actions Required
 - Apply `supabase/migrations/20260204_backfill_user_profiles.sql`.
 - Apply `supabase/migrations/20260401_safe_rls_policies.sql` to remove recursion and restore auth flows.
+- Apply `supabase/migrations/20260204_fix_team_invitation_select.sql` to allow invite acceptance.
 - Provide `SUPABASE_DB_URL` (or Supabase CLI access token) to run full linting and catalog-based view audits.

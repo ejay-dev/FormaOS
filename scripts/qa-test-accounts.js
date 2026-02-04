@@ -20,6 +20,7 @@ const supabase = createClient(supabaseUrl, supabaseKey, {
 const nowIso = new Date().toISOString();
 const suffix = Date.now();
 const password = `QA!Pass${suffix}`;
+const completeOnboarding = process.env.QA_COMPLETE_ONBOARDING !== 'false';
 
 const qaAccounts = {
   createdAt: nowIso,
@@ -55,7 +56,8 @@ const createOrgForUser = async (userId, label, planKey, role = 'owner') => {
       created_by: userId,
       plan_key: planKey,
       plan_selected_at: nowIso,
-      onboarding_completed: false,
+      onboarding_completed: completeOnboarding,
+      onboarding_completed_at: completeOnboarding ? nowIso : null,
     })
     .select('id')
     .single();
@@ -79,12 +81,19 @@ const createOrgForUser = async (userId, label, planKey, role = 'owner') => {
 
   if (memberError) throw memberError;
 
+  const completedSteps = completeOnboarding
+    ? [1, 2, 3, 4, 5, 6, 7]
+    : [];
+
   const { error: onboardingError } = await supabase
     .from('org_onboarding_status')
     .insert({
       organization_id: organizationId,
-      current_step: planKey ? 1 : 2,
-      completed_steps: [],
+      current_step: completeOnboarding ? 7 : planKey ? 1 : 2,
+      completed_steps: completedSteps,
+      completed_at: completeOnboarding ? nowIso : null,
+      last_completed_at: completeOnboarding ? nowIso : null,
+      first_action: completeOnboarding ? 'qa_seed' : null,
     });
 
   if (onboardingError) throw onboardingError;

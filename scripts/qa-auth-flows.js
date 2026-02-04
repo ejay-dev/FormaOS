@@ -239,43 +239,52 @@ const runEnvChecks = async (env) => {
     waitUntil: 'domcontentloaded',
   });
 
-  await page.goto(`${env.appBase}/auth/signin`, {
-    waitUntil: 'domcontentloaded',
-  });
-  await page.waitForSelector('#email', { state: 'visible', timeout: 20000 });
-  await page.waitForSelector('#password', { state: 'visible', timeout: 20000 });
-  await page.fill('#email', accounts.users.invited.email);
-  await page.fill('#password', accounts.password);
-  const invitedLoginState = await page.evaluate(() => ({
-    email: document.querySelector('#email')?.value,
-    password: document.querySelector('#password')?.value,
-  }));
-  if (!invitedLoginState.email || !invitedLoginState.password) {
-    await page.fill('#email', '');
-    await page.type('#email', accounts.users.invited.email);
-    await page.fill('#password', '');
-    await page.type('#password', accounts.password);
-  }
-  const invitedLoginStateAfter = await page.evaluate(() => ({
-    email: document.querySelector('#email')?.value,
-    password: document.querySelector('#password')?.value,
-  }));
-  if (!invitedLoginStateAfter.email || !invitedLoginStateAfter.password) {
-    throw new Error(
-      `[${env.name}] invited login inputs missing: ${JSON.stringify(
-        invitedLoginStateAfter,
-      )}`,
-    );
-  }
-  await page.click('button[type="submit"]');
-  await waitForLogin('invited');
-
   const inviteToken = accounts.invitations.invitedUser.token;
   await page.goto(`${env.appBase}/accept-invite/${inviteToken}`, {
     waitUntil: 'domcontentloaded',
   });
+  await page.waitForTimeout(1000);
+  const hasEmail = (await page.locator('#email').count()) > 0;
+  const hasWelcome = (await page.locator('text=Welcome to').count()) > 0;
+  const hasMismatch = (await page.locator('text=Email Mismatch').count()) > 0;
+
+  if (hasEmail) {
+    await page.waitForSelector('#password', { state: 'visible', timeout: 20000 });
+    await page.fill('#email', accounts.users.invited.email);
+    await page.fill('#password', accounts.password);
+    const invitedLoginState = await page.evaluate(() => ({
+      email: document.querySelector('#email')?.value,
+      password: document.querySelector('#password')?.value,
+    }));
+    if (!invitedLoginState.email || !invitedLoginState.password) {
+      await page.fill('#email', '');
+      await page.type('#email', accounts.users.invited.email);
+      await page.fill('#password', '');
+      await page.type('#password', accounts.password);
+    }
+    const invitedLoginStateAfter = await page.evaluate(() => ({
+      email: document.querySelector('#email')?.value,
+      password: document.querySelector('#password')?.value,
+    }));
+    if (!invitedLoginStateAfter.email || !invitedLoginStateAfter.password) {
+      throw new Error(
+        `[${env.name}] invited login inputs missing: ${JSON.stringify(
+          invitedLoginStateAfter,
+        )}`,
+      );
+    }
+    await page.click('button[type="submit"]');
+    await page.waitForURL(`**/accept-invite/${inviteToken}`, { timeout: 20000 });
+  } else if (!hasWelcome && !hasMismatch) {
+    const bodyText = await page.textContent('body');
+    throw new Error(
+      `[${env.name}] invited flow unexpected page: ${page.url()} ` +
+        `Body: ${String(bodyText).slice(0, 280)}`,
+    );
+  }
+
   await assertVisibleText(page, 'Welcome to');
-  await page.click('a[href="/app"]');
+  await page.click('a[href=\"/app\"]');
   await page.waitForURL('**/app', { timeout: 20000 });
 
   await browser.close();
