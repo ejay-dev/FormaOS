@@ -156,6 +156,23 @@ export async function acceptInvitation(
       console.error("[InvitationValidator] Accept error:", updateError);
       return { success: false, error: "Failed to accept invitation" };
     }
+
+    // Ensure org membership is created for invitee
+    const { error: memberError } = await supabase
+      .from("org_members")
+      .upsert(
+        {
+          organization_id: invitation.organization_id,
+          user_id: userId,
+          role: invitation.role,
+        },
+        { onConflict: "organization_id,user_id" },
+      );
+
+    if (memberError) {
+      console.error("[InvitationValidator] Member insert error:", memberError);
+      return { success: false, error: "Failed to add member to organization" };
+    }
     
     return { success: true };
   } catch (error) {
@@ -295,4 +312,3 @@ export async function revokeInvitation(
     return { success: false, error: "Failed to revoke invitation" };
   }
 }
-
