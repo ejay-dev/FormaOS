@@ -1,0 +1,45 @@
+🚀 FormaOS Production Readiness Check
+======================================
+
+1. Testing server availability...
+[0;32m✓ Server is running[0m
+2. Testing key routes...
+  [0;32m✓ / (HTTP 200)[0m
+  [0;32m✓ /auth/signin (HTTP 200)[0m
+  [0;32m✓ /admin (HTTP 307)[0m
+  [0;32m✓ /app (HTTP 307)[0m
+  [0;32m✓ /app/billing (HTTP 307)[0m
+  [0;32m✓ /pricing (HTTP 200)[0m
+3. Checking for TypeScript errors...
+[0;32m✓ No TypeScript errors[0m
+4. Checking environment variables...
+[0;32m✓ .env.local exists[0m
+  [0;32m✓ NEXT_PUBLIC_SUPABASE_URL is set[0m
+  [0;32m✓ NEXT_PUBLIC_SUPABASE_ANON_KEY is set[0m
+  [0;32m✓ SUPABASE_SERVICE_ROLE_KEY is set[0m
+  [0;32m✓ STRIPE_SECRET_KEY is set[0m
+  [0;32m✓ STRIPE_WEBHOOK_SECRET is set[0m
+  [0;32m✓ NEXT_PUBLIC_SITE_URL is set[0m
+  [0;32m✓ FOUNDER_EMAILS is set[0m
+5. Checking critical files...
+  [0;32m✓ app/app/actions/billing.ts exists[0m
+  [0;32m✓ components/billing/BillingActionButtons.tsx exists[0m
+  [0;32m✓ lib/utils/founder.ts exists[0m
+  [0;32m✓ middleware.ts exists[0m
+  [0;32m✓ app/(marketing)/marketing.css exists[0m
+6. Checking package dependencies...
+[0;32m✓ package.json exists[0m
+  [0;32m✓ next is installed[0m
+  [0;32m✓ react is installed[0m
+  [0;32m✓ stripe is installed[0m
+  [0;32m✓ @supabase/supabase-js is installed[0m
+  [0;32m✓ framer-motion is installed[0m
+
+======================================
+Validation Summary
+======================================
+[0;32mPassed: 27[0m
+[1;33mWarnings: 0[0m
+[0;31mFailed: 0[0m
+
+[0;32m🎉 All critical checks passed! Ready for production.[0m

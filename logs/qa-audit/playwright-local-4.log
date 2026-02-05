@@ -1,0 +1,1361 @@
+
+Running 170 tests using 4 workers
+
+[1A[2K[1/170] [chromium] › e2e/cta.spec.ts:86:7 › Marketing CTA wiring › homepage primary CTAs route correctly
+[1A[2K[2/170] [chromium] › e2e/cta.spec.ts:128:7 › Marketing CTA wiring › footer links are present and non-empty
+[1A[2K[3/170] [chromium] › e2e/cta.spec.ts:104:7 › Marketing CTA wiring › pricing plan actions route to app or contact
+[1A[2K[4/170] [chromium] › e2e/cta.spec.ts:56:7 › Marketing CTA wiring › header CTAs route to app domain on all marketing pages
+[1A[2K[5/170] [chromium] › e2e/node-wire.spec.ts:100:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should display all navigation links in header
+[1A[2K[6/170] [chromium] › e2e/node-wire.spec.ts:142:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Home page
+[1A[2K[7/170] [chromium] › e2e/node-wire.spec.ts:154:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Product page
+[1A[2K[8/170] [chromium] › e2e/node-wire.spec.ts:179:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Industries page
+[1A[2K[9/170] [chromium] › e2e/node-wire.spec.ts:204:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Security page
+[1A[2K[10/170] [chromium] › e2e/node-wire.spec.ts:216:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Pricing page
+[1A[2K[11/170] [chromium] › e2e/node-wire.spec.ts:228:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › [NEW] should navigate to About page
+[1A[2K[12/170] [chromium] › e2e/node-wire.spec.ts:240:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Contact page
+[1A[2K[13/170] [chromium] › e2e/node-wire.spec.ts:258:9 › FormaOS Node & Wire Integrity Tests › Header CTA Buttons › should navigate to Login page
+[1A[2K[14/170] [chromium] › e2e/node-wire.spec.ts:269:9 › FormaOS Node & Wire Integrity Tests › Header CTA Buttons › should navigate to Pricing from Plans button
+[1A[2K[15/170] [chromium] › e2e/node-wire.spec.ts:282:9 › FormaOS Node & Wire Integrity Tests › Header CTA Buttons › [UPDATED] should navigate to Signup with plan parameter
+[1A[2K[16/170] [chromium] › e2e/node-wire.spec.ts:316:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should have Start Free Trial CTA with plan parameter
+[1A[2K[chromium] › e2e/node-wire.spec.ts:316:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should have Start Free Trial CTA with plan parameter
+Found 3 start-free CTAs on homepage
+
+[1A[2K[17/170] [chromium] › e2e/node-wire.spec.ts:346:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should navigate to Contact from Request Demo
+[1A[2K[18/170] [chromium] › e2e/node-wire.spec.ts:360:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should navigate to Contact from Schedule Demo
+[1A[2K[19/170] [chromium] › e2e/node-wire.spec.ts:381:9 › FormaOS Node & Wire Integrity Tests › Mobile Navigation › should open mobile menu and show all links
+[1A[2K[20/170] [chromium] › e2e/node-wire.spec.ts:396:9 › FormaOS Node & Wire Integrity Tests › Mobile Navigation › [NEW] should navigate to About from mobile menu
+[1A[2K[21/170] [chromium] › e2e/node-wire.spec.ts:421:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect /auth to /auth/signin
+[1A[2K[22/170] [chromium] › e2e/node-wire.spec.ts:426:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect OAuth code at root to callback
+[1A[2K[23/170] [chromium] › e2e/node-wire.spec.ts:442:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect unauthenticated /app to signin
+[1A[2K[24/170] [chromium] › e2e/node-wire.spec.ts:450:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect unauthenticated /admin to signin
+[1A[2K[25/170] [chromium] › e2e/node-wire.spec.ts:466:9 › FormaOS Node & Wire Integrity Tests › Error Pages › should display 404 page for non-existent route
+[1A[2K[26/170] [chromium] › e2e/node-wire.spec.ts:473:9 › FormaOS Node & Wire Integrity Tests › Error Pages › should display unauthorized page
+[1A[2K[27/170] [chromium] › e2e/node-wire.spec.ts:488:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load homepage within 3 seconds
+[1A[2K[28/170] [chromium] › e2e/node-wire.spec.ts:497:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load About page within 3 seconds
+[1A[2K[29/170] [chromium] › e2e/node-wire.spec.ts:512:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on homepage
+[1A[2K[chromium] › e2e/node-wire.spec.ts:488:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load homepage within 3 seconds
+Homepage loaded in 800ms
+
+[1A[2K[30/170] [chromium] › e2e/node-wire.spec.ts:539:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on About page
+[1A[2K[chromium] › e2e/node-wire.spec.ts:497:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load About page within 3 seconds
+About page loaded in 1173ms
+
+[1A[2K[31/170] [chromium] › e2e/node-wire.spec.ts:561:9 › FormaOS Node & Wire Integrity Tests › Basic Accessibility › should have proper page titles
+[1A[2K[32/170] [chromium] › e2e/node-wire.spec.ts:568:9 › FormaOS Node & Wire Integrity Tests › Basic Accessibility › should have accessible navigation
+[1A[2K[chromium] › e2e/node-wire.spec.ts:539:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on About page
+Console errors found: []
+
+[1A[2K[chromium] › e2e/node-wire.spec.ts:512:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on homepage
+Console errors found: [
+  [32m"A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:\n"[39m +
+    [32m'\n'[39m +
+    [32m"- A server/client branch `if (typeof window !== 'undefined')`.\n"[39m +
+    [32m"- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.\n"[39m +
+    [32m"- Date formatting in a user's locale which doesn't match the server.\n"[39m +
+    [32m'- External changing data without sending a snapshot of it along with the HTML.\n'[39m +
+    [32m'- Invalid HTML tag nesting.\n'[39m +
+    [32m'\n'[39m +
+    [32m'It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.\n'[39m +
+    [32m'\n'[39m +
+    [32m'%s%s https://react.dev/link/hydration-mismatch \n'[39m +
+    [32m'\n'[39m +
+    [32m'  ...\n'[39m +
+    [32m'    <SegmentViewNode type="page" pagePath="/formaos/a...">\n'[39m +
+    [32m'      <SegmentTrieNode>\n'[39m +
+    [32m'      <HomePage>\n'[39m +
+    [32m'        <div className="relative m...">\n'[39m +
+    [32m'          <HomeClientMarker>\n'[39m +
+    [32m'          ...\n'[39m +
+    [32m'            <ComplianceProvider>\n'[39m +
+    [32m'              <div className="figma-home...">\n'[39m +
+    [32m'                <div>\n'[39m +
+    [32m'                <div>\n'[39m +
+    [32m'                <div className="relative z-10">\n'[39m +
+    [32m'                  <Hero>\n'[39m +
+    [32m'                  <ValueProposition>\n'[39m +
+    [32m'                  <ScrollStory>\n'[39m +
+    [32m'                  <CapabilitiesGrid>\n'[39m +
+    [32m'                  <Industries>\n'[39m +
+    [32m'                    <section ref={{current:null}} className="relative p..." onMouseMove={function handleMouseMove} ...>\n'[39m +
+    [32m'                      <div className="absolute i...">\n'[39m +
+    [32m'                        <motion.div>\n'[39m +
+    [32m'                        <motion.div>\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"50.4...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "50.440167775172625%"\n'[39m +
+    [32m'-                             left: "84.0944%"\n'[39m +
+    [32m'+                             top: "70.18968674940508%"\n'[39m +
+    [32m'-                             top: "48.5379%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"62.9...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "62.99453195214705%"\n'[39m +
+    [32m'-                             left: "14.5279%"\n'[39m +
+    [32m'+                             top: "30.045287929981168%"\n'[39m +
+    [32m'-                             top: "46.4769%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"82.6...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "82.67291244428824%"\n'[39m +
+    [32m'-                             left: "52.6097%"\n'[39m +
+    [32m'+                             top: "70.64732165587948%"\n'[39m +
+    [32m'-                             top: "41.1217%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"24.2...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "24.218360220251167%"\n'[39m +
+    [32m'-                             left: "4.02462%"\n'[39m +
+    [32m'+                             top: "98.8363141966535%"\n'[39m +
+    [32m'-                             top: "57.0924%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"94.0...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "94.07914883173815%"\n'[39m +
+    [32m'-                             left: "37.9175%"\n'[39m +
+    [32m'+                             top: "80.36279546891681%"\n'[39m +
+    [32m'-                             top: "42.9556%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"6.92...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "6.92860950786951%"\n'[39m +
+    [32m'-                             left: "52.5869%"\n'[39m +
+    [32m'+                             top: "8.100062458261071%"\n'[39m +
+    [32m'-                             top: "15.9128%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"88.3...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "88.3360244106103%"\n'[39m +
+    [32m'-                             left: "37.0863%"\n'[39m +
+    [32m'+                             top: "60.8147731516605%"\n'[39m +
+    [32m'-                             top: "34.0976%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"66.5...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "66.5699303230818%"\n'[39m +
+    [32m'-                             left: "64.7314%"\n'[39m +
+    [32m'+                             top: "32.617480365890884%"\n'[39m +
+    [32m'-                             top: "51.1128%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"40.3...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "40.36542456418035%"\n'[39m +
+    [32m'-                             left: "77.9009%"\n'[39m +
+    [32m'+                             top: "72.6619774586265%"\n'[39m +
+    [32m'-                             top: "50.828%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"74.1...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "74.16876503016965%"\n'[39m +
+    [32m'-                             left: "72.4868%"\n'[39m +
+    [32m'+                             top: "25.777017105624132%"\n'[39m +
+    [32m'-                             top: "60.5539%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"17.8...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "17.84838906546604%"\n'[39m +
+    [32m'-                             left: "27.3094%"\n'[39m +
+    [32m'+                             top: "74.22746387542577%"\n'[39m +
+    [32m'-                             top: "58.1172%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"53.1...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "53.11283066893383%"\n'[39m +
+    [32m'-                             left: "95.2462%"\n'[39m +
+    [32m'+                             top: "16.356859672241665%"\n'[39m +
+    [32m'-                             top: "68.8343%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"42.3...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "42.308156122283755%"\n'[39m +
+    [32m'-                             left: "50.8872%"\n'[39m +
+    [32m'+                             top: "92.66102612794114%"\n'[39m +
+    [32m'-                             top: "49.7873%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"46.5...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "46.55534976474506%"\n'[39m +
+    [32m'-                             left: "44.2088%"\n'[39m +
+    [32m'+                             top: "71.44511072449961%"\n'[39m +
+    [32m'-                             top: "29.7828%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"87.9...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "87.90383829380526%"\n'[39m +
+    [32m'-                             left: "23.9471%"\n'[39m +
+    [32m'+                             top: "8'[39m... 3186 more characters
+]
+
+[1A[2KRelevant console errors: []
+
+[1A[2K[33/170] [chromium] › e2e/node-wire.spec.ts:599:8 › Authenticated User Tests › should access app dashboard when authenticated
+[1A[2K[34/170] [chromium] › e2e/node-wire.spec.ts:609:8 › Authenticated User Tests › should redirect to /admin for founder users
+[1A[2K[35/170] [firefox] › e2e/cta.spec.ts:56:7 › Marketing CTA wiring › header CTAs route to app domain on all marketing pages
+[1A[2K[36/170] [firefox] › e2e/cta.spec.ts:86:7 › Marketing CTA wiring › homepage primary CTAs route correctly
+[1A[2K[37/170] [firefox] › e2e/cta.spec.ts:128:7 › Marketing CTA wiring › footer links are present and non-empty
+[1A[2K[38/170] [firefox] › e2e/cta.spec.ts:104:7 › Marketing CTA wiring › pricing plan actions route to app or contact
+[1A[2K[39/170] [firefox] › e2e/node-wire.spec.ts:100:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should display all navigation links in header
+[1A[2K[40/170] [firefox] › e2e/node-wire.spec.ts:142:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Home page
+[1A[2K[41/170] [firefox] › e2e/node-wire.spec.ts:154:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Product page
+[1A[2K[42/170] [firefox] › e2e/node-wire.spec.ts:179:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Industries page
+[1A[2K[43/170] [firefox] › e2e/node-wire.spec.ts:204:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Security page
+[1A[2K[44/170] [firefox] › e2e/node-wire.spec.ts:216:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Pricing page
+[1A[2K[45/170] [firefox] › e2e/node-wire.spec.ts:228:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › [NEW] should navigate to About page
+[1A[2K[46/170] [firefox] › e2e/node-wire.spec.ts:240:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Contact page
+[1A[2K[47/170] [firefox] › e2e/node-wire.spec.ts:258:9 › FormaOS Node & Wire Integrity Tests › Header CTA Buttons › should navigate to Login page
+[1A[2K[48/170] [firefox] › e2e/node-wire.spec.ts:269:9 › FormaOS Node & Wire Integrity Tests › Header CTA Buttons › should navigate to Pricing from Plans button
+[1A[2K  1) [firefox] › e2e/cta.spec.ts:86:7 › Marketing CTA wiring › homepage primary CTAs route correctly 
+
+    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Expected pattern: [32m/http:\/\/localhost:3000\/contact\/?$/[39m
+    Received string:  [31m"http://localhost:3000/"[39m
+    Timeout: 10000ms
+
+    Call log:
+    [2m  - Expect "toHaveURL" with timeout 10000ms[22m
+    [2m    13 × unexpected value "http://localhost:3000/"[22m
+
+
+       99 |     await expect(requestDemo).toBeVisible();
+      100 |     await requestDemo.click();
+    > 101 |     await expect(page).toHaveURL(new RegExp(`${SITE_BASE}/contact/?$`));
+          |                        ^
+      102 |   });
+      103 |
+      104 |   test('pricing plan actions route to app or contact', async ({ page }) => {
+        at /Users/ejay/formaos/e2e/cta.spec.ts:101:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/cta-Marketing-CTA-wiring-h-33c1d-rimary-CTAs-route-correctly-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/cta-Marketing-CTA-wiring-h-33c1d-rimary-CTAs-route-correctly-firefox/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/cta-Marketing-CTA-wiring-h-33c1d-rimary-CTAs-route-correctly-firefox/error-context.md
+
+
+[1A[2K[49/170] [firefox] › e2e/node-wire.spec.ts:282:9 › FormaOS Node & Wire Integrity Tests › Header CTA Buttons › [UPDATED] should navigate to Signup with plan parameter
+[1A[2K[50/170] [firefox] › e2e/node-wire.spec.ts:316:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should have Start Free Trial CTA with plan parameter
+[1A[2K[51/170] [firefox] › e2e/node-wire.spec.ts:346:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should navigate to Contact from Request Demo
+[1A[2K[52/170] [firefox] › e2e/node-wire.spec.ts:360:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should navigate to Contact from Schedule Demo
+[1A[2K[firefox] › e2e/node-wire.spec.ts:316:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should have Start Free Trial CTA with plan parameter
+Found 3 start-free CTAs on homepage
+
+[1A[2K[53/170] [firefox] › e2e/node-wire.spec.ts:381:9 › FormaOS Node & Wire Integrity Tests › Mobile Navigation › should open mobile menu and show all links
+[1A[2K[54/170] [firefox] › e2e/node-wire.spec.ts:396:9 › FormaOS Node & Wire Integrity Tests › Mobile Navigation › [NEW] should navigate to About from mobile menu
+[1A[2K[55/170] [firefox] › e2e/node-wire.spec.ts:421:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect /auth to /auth/signin
+[1A[2K[56/170] [firefox] › e2e/node-wire.spec.ts:426:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect OAuth code at root to callback
+[1A[2K[57/170] [firefox] › e2e/node-wire.spec.ts:442:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect unauthenticated /app to signin
+[1A[2K[58/170] [firefox] › e2e/node-wire.spec.ts:450:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect unauthenticated /admin to signin
+[1A[2K[59/170] [firefox] › e2e/node-wire.spec.ts:466:9 › FormaOS Node & Wire Integrity Tests › Error Pages › should display 404 page for non-existent route
+[1A[2K[60/170] [firefox] › e2e/node-wire.spec.ts:473:9 › FormaOS Node & Wire Integrity Tests › Error Pages › should display unauthorized page
+[1A[2K[61/170] [firefox] › e2e/node-wire.spec.ts:488:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load homepage within 3 seconds
+[1A[2K[62/170] [firefox] › e2e/node-wire.spec.ts:497:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load About page within 3 seconds
+[1A[2K[63/170] [firefox] › e2e/node-wire.spec.ts:512:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on homepage
+[1A[2K[64/170] [firefox] › e2e/node-wire.spec.ts:539:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on About page
+[1A[2K[firefox] › e2e/node-wire.spec.ts:488:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load homepage within 3 seconds
+Homepage loaded in 909ms
+
+[1A[2K[firefox] › e2e/node-wire.spec.ts:497:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load About page within 3 seconds
+About page loaded in 968ms
+
+[1A[2K[65/170] [firefox] › e2e/node-wire.spec.ts:561:9 › FormaOS Node & Wire Integrity Tests › Basic Accessibility › should have proper page titles
+[1A[2K[66/170] [firefox] › e2e/node-wire.spec.ts:568:9 › FormaOS Node & Wire Integrity Tests › Basic Accessibility › should have accessible navigation
+[1A[2K[firefox] › e2e/node-wire.spec.ts:512:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on homepage
+Console errors found: [
+  [32m"A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:\n"[39m +
+    [32m'\n'[39m +
+    [32m"- A server/client branch `if (typeof window !== 'undefined')`.\n"[39m +
+    [32m"- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.\n"[39m +
+    [32m"- Date formatting in a user's locale which doesn't match the server.\n"[39m +
+    [32m'- External changing data without sending a snapshot of it along with the HTML.\n'[39m +
+    [32m'- Invalid HTML tag nesting.\n'[39m +
+    [32m'\n'[39m +
+    [32m'It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.\n'[39m +
+    [32m'\n'[39m +
+    [32m'https://react.dev/link/hydration-mismatch\n'[39m +
+    [32m'\n'[39m +
+    [32m'  ...\n'[39m +
+    [32m'    <SegmentViewNode type="page" pagePath="/formaos/a...">\n'[39m +
+    [32m'      <SegmentTrieNode>\n'[39m +
+    [32m'      <HomePage>\n'[39m +
+    [32m'        <div className="relative m...">\n'[39m +
+    [32m'          <HomeClientMarker>\n'[39m +
+    [32m'          ...\n'[39m +
+    [32m'            <ComplianceProvider>\n'[39m +
+    [32m'              <div className="figma-home...">\n'[39m +
+    [32m'                <div>\n'[39m +
+    [32m'                <div>\n'[39m +
+    [32m'                <div className="relative z-10">\n'[39m +
+    [32m'                  <Hero>\n'[39m +
+    [32m'                  <ValueProposition>\n'[39m +
+    [32m'                  <ScrollStory>\n'[39m +
+    [32m'                  <CapabilitiesGrid>\n'[39m +
+    [32m'                  <Industries>\n'[39m +
+    [32m'                    <section ref={{current:null}} className="relative p..." onMouseMove={function handleMouseMove} ...>\n'[39m +
+    [32m'                      <div className="absolute i...">\n'[39m +
+    [32m'                        <motion.div>\n'[39m +
+    [32m'                        <motion.div>\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"73.8...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "73.83320665340366%"\n'[39m +
+    [32m'-                             left: "21.9823%"\n'[39m +
+    [32m'+                             top: "54.84179695413302%"\n'[39m +
+    [32m'-                             top: "35.5238%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"63.1...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "63.17922675718959%"\n'[39m +
+    [32m'-                             left: "60.0499%"\n'[39m +
+    [32m'+                             top: "42.3345356397496%"\n'[39m +
+    [32m'-                             top: "90.2498%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"0.71...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "0.7117305875641411%"\n'[39m +
+    [32m'-                             left: "98.0748%"\n'[39m +
+    [32m'+                             top: "28.327832548273648%"\n'[39m +
+    [32m'-                             top: "38.0131%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"9.92...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "9.924422000622378%"\n'[39m +
+    [32m'-                             left: "88.2564%"\n'[39m +
+    [32m'+                             top: "32.51455618227078%"\n'[39m +
+    [32m'-                             top: "88.5837%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"70.2...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "70.22366329511772%"\n'[39m +
+    [32m'-                             left: "96.4241%"\n'[39m +
+    [32m'+                             top: "16.355318496137926%"\n'[39m +
+    [32m'-                             top: "28.7209%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"6.17...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "6.173425906051211%"\n'[39m +
+    [32m'-                             left: "41.0752%"\n'[39m +
+    [32m'+                             top: "36.23319367848376%"\n'[39m +
+    [32m'-                             top: "91.3222%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"50.8...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "50.80244011539683%"\n'[39m +
+    [32m'-                             left: "4.68887%"\n'[39m +
+    [32m'+                             top: "12.484667935257555%"\n'[39m +
+    [32m'-                             top: "21.1035%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"41.0...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "41.05116234912808%"\n'[39m +
+    [32m'-                             left: "71.4176%"\n'[39m +
+    [32m'+                             top: "25.23610217959761%"\n'[39m +
+    [32m'-                             top: "19.0004%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"55.0...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "55.040161999567516%"\n'[39m +
+    [32m'-                             left: "8.16095%"\n'[39m +
+    [32m'+                             top: "69.56525468473596%"\n'[39m +
+    [32m'-                             top: "88.9001%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"25.1...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "25.13284300308223%"\n'[39m +
+    [32m'-                             left: "88.5643%"\n'[39m +
+    [32m'+                             top: "45.413720986438975%"\n'[39m +
+    [32m'-                             top: "62.3827%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"72.2...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "72.21443166346062%"\n'[39m +
+    [32m'-                             left: "2.89805%"\n'[39m +
+    [32m'+                             top: "32.76732780402381%"\n'[39m +
+    [32m'-                             top: "24.8803%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"20.4...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "20.471517532093742%"\n'[39m +
+    [32m'-                             left: "86.64%"\n'[39m +
+    [32m'+                             top: "21.196407681416808%"\n'[39m +
+    [32m'-                             top: "89.0202%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"20.0...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "20.04100844404614%"\n'[39m +
+    [32m'-                             left: "33.8847%"\n'[39m +
+    [32m'+                             top: "75.96801733822474%"\n'[39m +
+    [32m'-                             top: "70.812%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"37.1...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "37.1594272738094%"\n'[39m +
+    [32m'-                             left: "60.2123%"\n'[39m +
+    [32m'+                             top: "20.212750469230834%"\n'[39m +
+    [32m'-                             top: "11.8438%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"58.6...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "58.68886693300605%"\n'[39m +
+    [32m'-                             left: "44.8448%"\n'[39m +
+    [32m'+                             top: "17.'[39m... 3179 more characters
+]
+
+[1A[2KRelevant console errors: []
+
+[1A[2K[firefox] › e2e/node-wire.spec.ts:539:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on About page
+Console errors found: []
+
+[1A[2K[67/170] [firefox] › e2e/node-wire.spec.ts:599:8 › Authenticated User Tests › should access app dashboard when authenticated
+[1A[2K[68/170] [firefox] › e2e/node-wire.spec.ts:609:8 › Authenticated User Tests › should redirect to /admin for founder users
+[1A[2K[69/170] [webkit] › e2e/cta.spec.ts:104:7 › Marketing CTA wiring › pricing plan actions route to app or contact
+[1A[2K[70/170] [webkit] › e2e/cta.spec.ts:86:7 › Marketing CTA wiring › homepage primary CTAs route correctly
+[1A[2K[71/170] [webkit] › e2e/cta.spec.ts:56:7 › Marketing CTA wiring › header CTAs route to app domain on all marketing pages
+[1A[2K[72/170] [webkit] › e2e/cta.spec.ts:128:7 › Marketing CTA wiring › footer links are present and non-empty
+[1A[2K[73/170] [webkit] › e2e/node-wire.spec.ts:100:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should display all navigation links in header
+[1A[2K[74/170] [webkit] › e2e/node-wire.spec.ts:142:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Home page
+[1A[2K[75/170] [webkit] › e2e/node-wire.spec.ts:154:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Product page
+[1A[2K[76/170] [webkit] › e2e/node-wire.spec.ts:179:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Industries page
+[1A[2K[77/170] [webkit] › e2e/node-wire.spec.ts:204:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Security page
+[1A[2K[78/170] [webkit] › e2e/node-wire.spec.ts:216:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Pricing page
+[1A[2K[79/170] [webkit] › e2e/node-wire.spec.ts:228:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › [NEW] should navigate to About page
+[1A[2K[80/170] [webkit] › e2e/node-wire.spec.ts:240:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Contact page
+[1A[2K[81/170] [webkit] › e2e/node-wire.spec.ts:258:9 › FormaOS Node & Wire Integrity Tests › Header CTA Buttons › should navigate to Login page
+[1A[2K[82/170] [webkit] › e2e/node-wire.spec.ts:269:9 › FormaOS Node & Wire Integrity Tests › Header CTA Buttons › should navigate to Pricing from Plans button
+[1A[2K  2) [webkit] › e2e/node-wire.spec.ts:240:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Contact page 
+
+    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Expected pattern: [32m/^(http:\/\/localhost:3000)\/contact\/?$/[39m
+    Received string:  [31m"http://localhost:3000/"[39m
+    Timeout: 10000ms
+
+    Call log:
+    [2m  - Expect "toHaveURL" with timeout 10000ms[22m
+    [2m    10 × unexpected value "http://localhost:3000/"[22m
+
+
+      62 |
+      63 | const expectOnSitePath = async (page: Page, path: string) => {
+    > 64 |   await expect(page).toHaveURL(buildSiteUrlRegex(path));
+         |                      ^
+      65 | };
+      66 |
+      67 | const expectOnAppPath = async (page: Page, path: string) => {
+        at expectOnSitePath (/Users/ejay/formaos/e2e/node-wire.spec.ts:64:22)
+        at /Users/ejay/formaos/e2e/node-wire.spec.ts:248:13
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/node-wire-FormaOS-Node-Wir-08440-ld-navigate-to-Contact-page-webkit/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/node-wire-FormaOS-Node-Wir-08440-ld-navigate-to-Contact-page-webkit/error-context.md
+
+
+[1A[2K  3) [webkit] › e2e/node-wire.spec.ts:216:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Pricing page 
+
+    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Expected pattern: [32m/^(http:\/\/localhost:3000)\/pricing\/?$/[39m
+    Received string:  [31m"http://localhost:3000/"[39m
+    Timeout: 10000ms
+
+    Call log:
+    [2m  - Expect "toHaveURL" with timeout 10000ms[22m
+    [2m    11 × unexpected value "http://localhost:3000/"[22m
+
+
+      62 |
+      63 | const expectOnSitePath = async (page: Page, path: string) => {
+    > 64 |   await expect(page).toHaveURL(buildSiteUrlRegex(path));
+         |                      ^
+      65 | };
+      66 |
+      67 | const expectOnAppPath = async (page: Page, path: string) => {
+        at expectOnSitePath (/Users/ejay/formaos/e2e/node-wire.spec.ts:64:22)
+        at /Users/ejay/formaos/e2e/node-wire.spec.ts:224:13
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/node-wire-FormaOS-Node-Wir-dfa49-ld-navigate-to-Pricing-page-webkit/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/node-wire-FormaOS-Node-Wir-dfa49-ld-navigate-to-Pricing-page-webkit/error-context.md
+
+
+[1A[2K  4) [webkit] › e2e/node-wire.spec.ts:228:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › [NEW] should navigate to About page 
+
+    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Expected pattern: [32m/^(http:\/\/localhost:3000)\/about\/?$/[39m
+    Received string:  [31m"http://localhost:3000/"[39m
+    Timeout: 10000ms
+
+    Call log:
+    [2m  - Expect "toHaveURL" with timeout 10000ms[22m
+    [2m    12 × unexpected value "http://localhost:3000/"[22m
+
+
+      62 |
+      63 | const expectOnSitePath = async (page: Page, path: string) => {
+    > 64 |   await expect(page).toHaveURL(buildSiteUrlRegex(path));
+         |                      ^
+      65 | };
+      66 |
+      67 | const expectOnAppPath = async (page: Page, path: string) => {
+        at expectOnSitePath (/Users/ejay/formaos/e2e/node-wire.spec.ts:64:22)
+        at /Users/ejay/formaos/e2e/node-wire.spec.ts:236:13
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/node-wire-FormaOS-Node-Wir-438ad-ould-navigate-to-About-page-webkit/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/node-wire-FormaOS-Node-Wir-438ad-ould-navigate-to-About-page-webkit/error-context.md
+
+
+[1A[2K[83/170] [webkit] › e2e/node-wire.spec.ts:282:9 › FormaOS Node & Wire Integrity Tests › Header CTA Buttons › [UPDATED] should navigate to Signup with plan parameter
+[1A[2K[84/170] [webkit] › e2e/node-wire.spec.ts:316:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should have Start Free Trial CTA with plan parameter
+[1A[2K[85/170] [webkit] › e2e/node-wire.spec.ts:346:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should navigate to Contact from Request Demo
+[1A[2K[webkit] › e2e/node-wire.spec.ts:316:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should have Start Free Trial CTA with plan parameter
+Found 3 start-free CTAs on homepage
+
+[1A[2K[86/170] [webkit] › e2e/node-wire.spec.ts:360:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should navigate to Contact from Schedule Demo
+[1A[2K[87/170] [webkit] › e2e/node-wire.spec.ts:381:9 › FormaOS Node & Wire Integrity Tests › Mobile Navigation › should open mobile menu and show all links
+[1A[2K[88/170] [webkit] › e2e/node-wire.spec.ts:396:9 › FormaOS Node & Wire Integrity Tests › Mobile Navigation › [NEW] should navigate to About from mobile menu
+[1A[2K[89/170] [webkit] › e2e/node-wire.spec.ts:421:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect /auth to /auth/signin
+[1A[2K[90/170] [webkit] › e2e/node-wire.spec.ts:426:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect OAuth code at root to callback
+[1A[2K[91/170] [webkit] › e2e/node-wire.spec.ts:442:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect unauthenticated /app to signin
+[1A[2K[92/170] [webkit] › e2e/node-wire.spec.ts:450:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect unauthenticated /admin to signin
+[1A[2K[93/170] [webkit] › e2e/node-wire.spec.ts:466:9 › FormaOS Node & Wire Integrity Tests › Error Pages › should display 404 page for non-existent route
+[1A[2K[94/170] [webkit] › e2e/node-wire.spec.ts:473:9 › FormaOS Node & Wire Integrity Tests › Error Pages › should display unauthorized page
+[1A[2K[95/170] [webkit] › e2e/node-wire.spec.ts:488:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load homepage within 3 seconds
+[1A[2K[96/170] [webkit] › e2e/node-wire.spec.ts:497:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load About page within 3 seconds
+[1A[2K[97/170] [webkit] › e2e/node-wire.spec.ts:512:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on homepage
+[1A[2K[98/170] [webkit] › e2e/node-wire.spec.ts:539:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on About page
+[1A[2K[webkit] › e2e/node-wire.spec.ts:488:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load homepage within 3 seconds
+Homepage loaded in 902ms
+
+[1A[2K[webkit] › e2e/node-wire.spec.ts:497:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load About page within 3 seconds
+About page loaded in 932ms
+
+[1A[2K[webkit] › e2e/node-wire.spec.ts:539:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on About page
+Console errors found: []
+
+[1A[2K[webkit] › e2e/node-wire.spec.ts:512:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on homepage
+Console errors found: [
+  [32m"A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:\n"[39m +
+    [32m'\n'[39m +
+    [32m"- A server/client branch `if (typeof window !== 'undefined')`.\n"[39m +
+    [32m"- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.\n"[39m +
+    [32m"- Date formatting in a user's locale which doesn't match the server.\n"[39m +
+    [32m'- External changing data without sending a snapshot of it along with the HTML.\n'[39m +
+    [32m'- Invalid HTML tag nesting.\n'[39m +
+    [32m'\n'[39m +
+    [32m'It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.\n'[39m +
+    [32m'\n'[39m +
+    [32m'%s%s https://react.dev/link/hydration-mismatch \n'[39m +
+    [32m'\n'[39m +
+    [32m'  ...\n'[39m +
+    [32m'    <SegmentViewNode type="page" pagePath="/formaos/a...">\n'[39m +
+    [32m'      <SegmentTrieNode>\n'[39m +
+    [32m'      <HomePage>\n'[39m +
+    [32m'        <div className="relative m...">\n'[39m +
+    [32m'          <HomeClientMarker>\n'[39m +
+    [32m'          ...\n'[39m +
+    [32m'            <ComplianceProvider>\n'[39m +
+    [32m'              <div className="figma-home...">\n'[39m +
+    [32m'                <div>\n'[39m +
+    [32m'                <div>\n'[39m +
+    [32m'                <div className="relative z-10">\n'[39m +
+    [32m'                  <Hero>\n'[39m +
+    [32m'                  <ValueProposition>\n'[39m +
+    [32m'                  <ScrollStory>\n'[39m +
+    [32m'                  <CapabilitiesGrid>\n'[39m +
+    [32m'                  <Industries>\n'[39m +
+    [32m'                    <section ref={{current:null}} className="relative p..." onMouseMove={function handleMouseMove} ...>\n'[39m +
+    [32m'                      <div className="absolute i...">\n'[39m +
+    [32m'                        <motion.div>\n'[39m +
+    [32m'                        <motion.div>\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"97.3...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "97.37523543984516%"\n'[39m +
+    [32m'-                             left: "20.065916%"\n'[39m +
+    [32m'+                             top: "83.77929379130097%"\n'[39m +
+    [32m'-                             top: "52.13613%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"96.2...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "96.2742691010482%"\n'[39m +
+    [32m'-                             left: "11.471314%"\n'[39m +
+    [32m'+                             top: "95.00432664716337%"\n'[39m +
+    [32m'-                             top: "44.769659%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"16.4...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "16.44965976681729%"\n'[39m +
+    [32m'-                             left: "65.843122%"\n'[39m +
+    [32m'+                             top: "86.13403059666894%"\n'[39m +
+    [32m'-                             top: "48.067711%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"6.73...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "6.73681574263899%"\n'[39m +
+    [32m'-                             left: "28.241918%"\n'[39m +
+    [32m'+                             top: "9.00639515406747%"\n'[39m +
+    [32m'-                             top: "94.085797%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"58.6...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "58.6129678572022%"\n'[39m +
+    [32m'-                             left: "80.176617%"\n'[39m +
+    [32m'+                             top: "41.31949766260868%"\n'[39m +
+    [32m'-                             top: "68.385995%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"19.2...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "19.235062210464104%"\n'[39m +
+    [32m'-                             left: "35.897802%"\n'[39m +
+    [32m'+                             top: "21.340507491203432%"\n'[39m +
+    [32m'-                             top: "81.247487%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"37.5...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "37.52311423615019%"\n'[39m +
+    [32m'-                             left: "95.414388%"\n'[39m +
+    [32m'+                             top: "88.01419429232689%"\n'[39m +
+    [32m'-                             top: "76.902743%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"98.8...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "98.83980691681332%"\n'[39m +
+    [32m'-                             left: "34.497075%"\n'[39m +
+    [32m'+                             top: "21.40878445781921%"\n'[39m +
+    [32m'-                             top: "44.132133%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"77.5...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "77.59762063332914%"\n'[39m +
+    [32m'-                             left: "30.989838%"\n'[39m +
+    [32m'+                             top: "9.921997740369326%"\n'[39m +
+    [32m'-                             top: "79.843614%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"34.0...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "34.06760389432765%"\n'[39m +
+    [32m'-                             left: "54.753514%"\n'[39m +
+    [32m'+                             top: "49.90281769082293%"\n'[39m +
+    [32m'-                             top: "37.017881%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"30.6...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "30.66348224074512%"\n'[39m +
+    [32m'-                             left: "43.694002%"\n'[39m +
+    [32m'+                             top: "40.649663582209946%"\n'[39m +
+    [32m'-                             top: "83.809665%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"75.7...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "75.72614645998887%"\n'[39m +
+    [32m'-                             left: "79.857522%"\n'[39m +
+    [32m'+                             top: "48.27970453009631%"\n'[39m +
+    [32m'-                             top: "0.653241%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"58.3...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "58.357797952144985%"\n'[39m +
+    [32m'-                             left: "9.197094%"\n'[39m +
+    [32m'+                             top: "85.17605100976414%"\n'[39m +
+    [32m'-                             top: "4.855265%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"9.40...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "9.405010435095829%"\n'[39m +
+    [32m'-                             left: "53.360429%"\n'[39m +
+    [32m'+                             top: "24.65405009627617%"\n'[39m +
+    [32m'-                             top: "49.572941%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"5.34...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "5.341918695374637%"\n'[39m +
+    [32m'-                             le'[39m... 3263 more characters
+]
+
+[1A[2KRelevant console errors: []
+
+[1A[2K[99/170] [webkit] › e2e/node-wire.spec.ts:561:9 › FormaOS Node & Wire Integrity Tests › Basic Accessibility › should have proper page titles
+[1A[2K[100/170] [webkit] › e2e/node-wire.spec.ts:568:9 › FormaOS Node & Wire Integrity Tests › Basic Accessibility › should have accessible navigation
+[1A[2K[101/170] [webkit] › e2e/node-wire.spec.ts:599:8 › Authenticated User Tests › should access app dashboard when authenticated
+[1A[2K[102/170] [webkit] › e2e/node-wire.spec.ts:609:8 › Authenticated User Tests › should redirect to /admin for founder users
+[1A[2K[103/170] [Mobile Chrome] › e2e/cta.spec.ts:56:7 › Marketing CTA wiring › header CTAs route to app domain on all marketing pages
+[1A[2K[104/170] [Mobile Chrome] › e2e/cta.spec.ts:86:7 › Marketing CTA wiring › homepage primary CTAs route correctly
+[1A[2K[105/170] [Mobile Chrome] › e2e/cta.spec.ts:104:7 › Marketing CTA wiring › pricing plan actions route to app or contact
+[1A[2K[106/170] [Mobile Chrome] › e2e/node-wire.spec.ts:100:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should display all navigation links in header
+[1A[2K[107/170] [Mobile Chrome] › e2e/node-wire.spec.ts:142:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Home page
+[1A[2K[108/170] [Mobile Chrome] › e2e/cta.spec.ts:128:7 › Marketing CTA wiring › footer links are present and non-empty
+[1A[2K[109/170] [Mobile Chrome] › e2e/node-wire.spec.ts:154:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Product page
+[1A[2K[110/170] [Mobile Chrome] › e2e/node-wire.spec.ts:179:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Industries page
+[1A[2K[111/170] [Mobile Chrome] › e2e/node-wire.spec.ts:204:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Security page
+[1A[2K[112/170] [Mobile Chrome] › e2e/node-wire.spec.ts:216:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Pricing page
+[1A[2K[113/170] [Mobile Chrome] › e2e/node-wire.spec.ts:228:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › [NEW] should navigate to About page
+[1A[2K[114/170] [Mobile Chrome] › e2e/node-wire.spec.ts:240:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Contact page
+[1A[2K[115/170] [Mobile Chrome] › e2e/node-wire.spec.ts:258:9 › FormaOS Node & Wire Integrity Tests › Header CTA Buttons › should navigate to Login page
+[1A[2K[116/170] [Mobile Chrome] › e2e/node-wire.spec.ts:269:9 › FormaOS Node & Wire Integrity Tests › Header CTA Buttons › should navigate to Pricing from Plans button
+[1A[2K[117/170] [Mobile Chrome] › e2e/node-wire.spec.ts:282:9 › FormaOS Node & Wire Integrity Tests › Header CTA Buttons › [UPDATED] should navigate to Signup with plan parameter
+[1A[2K[118/170] [Mobile Chrome] › e2e/node-wire.spec.ts:316:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should have Start Free Trial CTA with plan parameter
+[1A[2K[119/170] [Mobile Chrome] › e2e/node-wire.spec.ts:346:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should navigate to Contact from Request Demo
+[1A[2K[120/170] [Mobile Chrome] › e2e/node-wire.spec.ts:360:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should navigate to Contact from Schedule Demo
+[1A[2K[121/170] [Mobile Chrome] › e2e/node-wire.spec.ts:381:9 › FormaOS Node & Wire Integrity Tests › Mobile Navigation › should open mobile menu and show all links
+[1A[2K[Mobile Chrome] › e2e/node-wire.spec.ts:316:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should have Start Free Trial CTA with plan parameter
+Found 3 start-free CTAs on homepage
+
+[1A[2K[122/170] [Mobile Chrome] › e2e/node-wire.spec.ts:396:9 › FormaOS Node & Wire Integrity Tests › Mobile Navigation › [NEW] should navigate to About from mobile menu
+[1A[2K[123/170] [Mobile Chrome] › e2e/node-wire.spec.ts:421:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect /auth to /auth/signin
+[1A[2K[124/170] [Mobile Chrome] › e2e/node-wire.spec.ts:426:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect OAuth code at root to callback
+[1A[2K[125/170] [Mobile Chrome] › e2e/node-wire.spec.ts:442:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect unauthenticated /app to signin
+[1A[2K[126/170] [Mobile Chrome] › e2e/node-wire.spec.ts:450:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect unauthenticated /admin to signin
+[1A[2K[127/170] [Mobile Chrome] › e2e/node-wire.spec.ts:466:9 › FormaOS Node & Wire Integrity Tests › Error Pages › should display 404 page for non-existent route
+[1A[2K[128/170] [Mobile Chrome] › e2e/node-wire.spec.ts:473:9 › FormaOS Node & Wire Integrity Tests › Error Pages › should display unauthorized page
+[1A[2K[129/170] [Mobile Chrome] › e2e/node-wire.spec.ts:488:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load homepage within 3 seconds
+[1A[2K[130/170] [Mobile Chrome] › e2e/node-wire.spec.ts:497:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load About page within 3 seconds
+[1A[2K[131/170] [Mobile Chrome] › e2e/node-wire.spec.ts:512:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on homepage
+[1A[2K[Mobile Chrome] › e2e/node-wire.spec.ts:497:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load About page within 3 seconds
+About page loaded in 3029ms
+
+[1A[2K[Mobile Chrome] › e2e/node-wire.spec.ts:488:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load homepage within 3 seconds
+Homepage loaded in 5138ms
+
+[1A[2K[132/170] [Mobile Chrome] › e2e/node-wire.spec.ts:539:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on About page
+[1A[2K[133/170] [Mobile Chrome] › e2e/node-wire.spec.ts:561:9 › FormaOS Node & Wire Integrity Tests › Basic Accessibility › should have proper page titles
+[1A[2K[134/170] [Mobile Chrome] › e2e/node-wire.spec.ts:568:9 › FormaOS Node & Wire Integrity Tests › Basic Accessibility › should have accessible navigation
+[1A[2K[Mobile Chrome] › e2e/node-wire.spec.ts:512:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on homepage
+Console errors found: [
+  [32m"A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:\n"[39m +
+    [32m'\n'[39m +
+    [32m"- A server/client branch `if (typeof window !== 'undefined')`.\n"[39m +
+    [32m"- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.\n"[39m +
+    [32m"- Date formatting in a user's locale which doesn't match the server.\n"[39m +
+    [32m'- External changing data without sending a snapshot of it along with the HTML.\n'[39m +
+    [32m'- Invalid HTML tag nesting.\n'[39m +
+    [32m'\n'[39m +
+    [32m'It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.\n'[39m +
+    [32m'\n'[39m +
+    [32m'%s%s https://react.dev/link/hydration-mismatch \n'[39m +
+    [32m'\n'[39m +
+    [32m'  ...\n'[39m +
+    [32m'    <SegmentViewNode type="page" pagePath="/formaos/a...">\n'[39m +
+    [32m'      <SegmentTrieNode>\n'[39m +
+    [32m'      <HomePage>\n'[39m +
+    [32m'        <div className="relative m...">\n'[39m +
+    [32m'          <HomeClientMarker>\n'[39m +
+    [32m'          ...\n'[39m +
+    [32m'            <ComplianceProvider>\n'[39m +
+    [32m'              <div className="figma-home...">\n'[39m +
+    [32m'                <div>\n'[39m +
+    [32m'                <div>\n'[39m +
+    [32m'                <div className="relative z-10">\n'[39m +
+    [32m'                  <Hero>\n'[39m +
+    [32m'                  <ValueProposition>\n'[39m +
+    [32m'                  <ScrollStory>\n'[39m +
+    [32m'                  <CapabilitiesGrid>\n'[39m +
+    [32m'                  <Industries>\n'[39m +
+    [32m'                    <section ref={{current:null}} className="relative p..." onMouseMove={function handleMouseMove} ...>\n'[39m +
+    [32m'                      <div className="absolute i...">\n'[39m +
+    [32m'                        <motion.div>\n'[39m +
+    [32m'                        <motion.div>\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"11.4...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "11.452567744398722%"\n'[39m +
+    [32m'-                             left: "95.2008%"\n'[39m +
+    [32m'+                             top: "10.38907257343784%"\n'[39m +
+    [32m'-                             top: "4.09493%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"19.7...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "19.784022923870914%"\n'[39m +
+    [32m'-                             left: "24.7325%"\n'[39m +
+    [32m'+                             top: "20.019255827614757%"\n'[39m +
+    [32m'-                             top: "20.106%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"96.8...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "96.82938125403514%"\n'[39m +
+    [32m'-                             left: "74.131%"\n'[39m +
+    [32m'+                             top: "7.909712312536088%"\n'[39m +
+    [32m'-                             top: "87.8062%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"52.6...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "52.69910898425502%"\n'[39m +
+    [32m'-                             left: "96.4724%"\n'[39m +
+    [32m'+                             top: "71.20908585567159%"\n'[39m +
+    [32m'-                             top: "11.4294%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"66.7...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "66.71756862280934%"\n'[39m +
+    [32m'-                             left: "77.6606%"\n'[39m +
+    [32m'+                             top: "37.39934564242081%"\n'[39m +
+    [32m'-                             top: "88.1621%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"3.22...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "3.2237230853900845%"\n'[39m +
+    [32m'-                             left: "71.7558%"\n'[39m +
+    [32m'+                             top: "6.280495924454154%"\n'[39m +
+    [32m'-                             top: "83.5702%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"15.8...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "15.843245777861203%"\n'[39m +
+    [32m'-                             left: "40.6894%"\n'[39m +
+    [32m'+                             top: "38.64891593976688%"\n'[39m +
+    [32m'-                             top: "55.7648%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"35.0...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "35.04022809094375%"\n'[39m +
+    [32m'-                             left: "84.1106%"\n'[39m +
+    [32m'+                             top: "60.93467463875254%"\n'[39m +
+    [32m'-                             top: "17.1203%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"16.9...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "16.943809125598776%"\n'[39m +
+    [32m'-                             left: "81.406%"\n'[39m +
+    [32m'+                             top: "62.54293256133205%"\n'[39m +
+    [32m'-                             top: "79.4869%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"54.9...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "54.98773038272934%"\n'[39m +
+    [32m'-                             left: "95.1934%"\n'[39m +
+    [32m'+                             top: "2.943996866638565%"\n'[39m +
+    [32m'-                             top: "2.11747%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"28.3...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "28.399868296774432%"\n'[39m +
+    [32m'-                             left: "48.2734%"\n'[39m +
+    [32m'+                             top: "92.20666649903225%"\n'[39m +
+    [32m'-                             top: "48.9267%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"58.0...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "58.05128628793443%"\n'[39m +
+    [32m'-                             left: "23.502%"\n'[39m +
+    [32m'+                             top: "64.2761169926804%"\n'[39m +
+    [32m'-                             top: "5.44074%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"26.2...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "26.271773332007275%"\n'[39m +
+    [32m'-                             left: "75.8326%"\n'[39m +
+    [32m'+                             top: "1.9661173878959604%"\n'[39m +
+    [32m'-                             top: "30.2594%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"74.9...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "74.9383022957004%"\n'[39m +
+    [32m'-                             left: "46.1064%"\n'[39m +
+    [32m'+                             top: "54.073475603785404%"\n'[39m +
+    [32m'-                             top: "52.1762%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"9.68...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "9.687839621824379%"\n'[39m +
+    [32m'-                             left: "10.7093%"\n'[39m +
+    [32m'+                             top'[39m... 3186 more characters
+]
+
+[1A[2KRelevant console errors: []
+
+[1A[2K[Mobile Chrome] › e2e/node-wire.spec.ts:539:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on About page
+Console errors found: []
+
+[1A[2K[135/170] [Mobile Chrome] › e2e/node-wire.spec.ts:599:8 › Authenticated User Tests › should access app dashboard when authenticated
+[1A[2K[136/170] [Mobile Chrome] › e2e/node-wire.spec.ts:609:8 › Authenticated User Tests › should redirect to /admin for founder users
+[1A[2K[137/170] [Mobile Safari] › e2e/cta.spec.ts:86:7 › Marketing CTA wiring › homepage primary CTAs route correctly
+[1A[2K[138/170] [Mobile Safari] › e2e/cta.spec.ts:56:7 › Marketing CTA wiring › header CTAs route to app domain on all marketing pages
+[1A[2K[139/170] [Mobile Safari] › e2e/cta.spec.ts:104:7 › Marketing CTA wiring › pricing plan actions route to app or contact
+[1A[2K[140/170] [Mobile Safari] › e2e/cta.spec.ts:128:7 › Marketing CTA wiring › footer links are present and non-empty
+[1A[2K[141/170] [Mobile Safari] › e2e/node-wire.spec.ts:100:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should display all navigation links in header
+[1A[2K[142/170] [Mobile Safari] › e2e/node-wire.spec.ts:142:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Home page
+[1A[2K[143/170] [Mobile Safari] › e2e/node-wire.spec.ts:154:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Product page
+[1A[2K[144/170] [Mobile Safari] › e2e/node-wire.spec.ts:179:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Industries page
+[1A[2K[145/170] [Mobile Safari] › e2e/node-wire.spec.ts:204:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Security page
+[1A[2K[146/170] [Mobile Safari] › e2e/node-wire.spec.ts:216:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Pricing page
+[1A[2K[147/170] [Mobile Safari] › e2e/node-wire.spec.ts:228:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › [NEW] should navigate to About page
+[1A[2K[148/170] [Mobile Safari] › e2e/node-wire.spec.ts:240:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Contact page
+[1A[2K[149/170] [Mobile Safari] › e2e/node-wire.spec.ts:258:9 › FormaOS Node & Wire Integrity Tests › Header CTA Buttons › should navigate to Login page
+[1A[2K[150/170] [Mobile Safari] › e2e/node-wire.spec.ts:269:9 › FormaOS Node & Wire Integrity Tests › Header CTA Buttons › should navigate to Pricing from Plans button
+[1A[2K[151/170] [Mobile Safari] › e2e/node-wire.spec.ts:282:9 › FormaOS Node & Wire Integrity Tests › Header CTA Buttons › [UPDATED] should navigate to Signup with plan parameter
+[1A[2K[152/170] [Mobile Safari] › e2e/node-wire.spec.ts:316:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should have Start Free Trial CTA with plan parameter
+[1A[2K[153/170] [Mobile Safari] › e2e/node-wire.spec.ts:346:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should navigate to Contact from Request Demo
+[1A[2K[154/170] [Mobile Safari] › e2e/node-wire.spec.ts:360:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should navigate to Contact from Schedule Demo
+[1A[2K[Mobile Safari] › e2e/node-wire.spec.ts:316:9 › FormaOS Node & Wire Integrity Tests › Homepage CTAs › should have Start Free Trial CTA with plan parameter
+Found 3 start-free CTAs on homepage
+
+[1A[2K[155/170] [Mobile Safari] › e2e/node-wire.spec.ts:381:9 › FormaOS Node & Wire Integrity Tests › Mobile Navigation › should open mobile menu and show all links
+[1A[2K[156/170] [Mobile Safari] › e2e/node-wire.spec.ts:396:9 › FormaOS Node & Wire Integrity Tests › Mobile Navigation › [NEW] should navigate to About from mobile menu
+[1A[2K[157/170] [Mobile Safari] › e2e/node-wire.spec.ts:421:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect /auth to /auth/signin
+[1A[2K[158/170] [Mobile Safari] › e2e/node-wire.spec.ts:426:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect OAuth code at root to callback
+[1A[2K[159/170] [Mobile Safari] › e2e/node-wire.spec.ts:442:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect unauthenticated /app to signin
+[1A[2K[160/170] [Mobile Safari] › e2e/node-wire.spec.ts:450:9 › FormaOS Node & Wire Integrity Tests › Middleware Redirects › should redirect unauthenticated /admin to signin
+[1A[2K[161/170] [Mobile Safari] › e2e/node-wire.spec.ts:466:9 › FormaOS Node & Wire Integrity Tests › Error Pages › should display 404 page for non-existent route
+[1A[2K[162/170] [Mobile Safari] › e2e/node-wire.spec.ts:473:9 › FormaOS Node & Wire Integrity Tests › Error Pages › should display unauthorized page
+[1A[2K[163/170] [Mobile Safari] › e2e/node-wire.spec.ts:488:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load homepage within 3 seconds
+[1A[2K[164/170] [Mobile Safari] › e2e/node-wire.spec.ts:497:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load About page within 3 seconds
+[1A[2K[165/170] [Mobile Safari] › e2e/node-wire.spec.ts:512:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on homepage
+[1A[2K[Mobile Safari] › e2e/node-wire.spec.ts:488:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load homepage within 3 seconds
+Homepage loaded in 913ms
+
+[1A[2K[Mobile Safari] › e2e/node-wire.spec.ts:497:9 › FormaOS Node & Wire Integrity Tests › Page Load Performance › should load About page within 3 seconds
+About page loaded in 957ms
+
+[1A[2K[Mobile Safari] › e2e/node-wire.spec.ts:512:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on homepage
+Console errors found: [
+  [32m"A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:\n"[39m +
+    [32m'\n'[39m +
+    [32m"- A server/client branch `if (typeof window !== 'undefined')`.\n"[39m +
+    [32m"- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.\n"[39m +
+    [32m"- Date formatting in a user's locale which doesn't match the server.\n"[39m +
+    [32m'- External changing data without sending a snapshot of it along with the HTML.\n'[39m +
+    [32m'- Invalid HTML tag nesting.\n'[39m +
+    [32m'\n'[39m +
+    [32m'It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.\n'[39m +
+    [32m'\n'[39m +
+    [32m'%s%s https://react.dev/link/hydration-mismatch \n'[39m +
+    [32m'\n'[39m +
+    [32m'  ...\n'[39m +
+    [32m'    <SegmentViewNode type="page" pagePath="/formaos/a...">\n'[39m +
+    [32m'      <SegmentTrieNode>\n'[39m +
+    [32m'      <HomePage>\n'[39m +
+    [32m'        <div className="relative m...">\n'[39m +
+    [32m'          <HomeClientMarker>\n'[39m +
+    [32m'          ...\n'[39m +
+    [32m'            <ComplianceProvider>\n'[39m +
+    [32m'              <div className="figma-home...">\n'[39m +
+    [32m'                <div>\n'[39m +
+    [32m'                <div>\n'[39m +
+    [32m'                <div className="relative z-10">\n'[39m +
+    [32m'                  <Hero>\n'[39m +
+    [32m'                  <ValueProposition>\n'[39m +
+    [32m'                  <ScrollStory>\n'[39m +
+    [32m'                  <CapabilitiesGrid>\n'[39m +
+    [32m'                  <Industries>\n'[39m +
+    [32m'                    <section ref={{current:null}} className="relative p..." onMouseMove={function handleMouseMove} ...>\n'[39m +
+    [32m'                      <div className="absolute i...">\n'[39m +
+    [32m'                        <motion.div>\n'[39m +
+    [32m'                        <motion.div>\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"68.0...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "68.03491209803954%"\n'[39m +
+    [32m'-                             left: "70.765338%"\n'[39m +
+    [32m'+                             top: "13.462437630280988%"\n'[39m +
+    [32m'-                             top: "46.655887%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"31.2...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "31.21187047918179%"\n'[39m +
+    [32m'-                             left: "27.903735%"\n'[39m +
+    [32m'+                             top: "3.6770248963748142%"\n'[39m +
+    [32m'-                             top: "4.209466%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"86.9...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "86.98000701072579%"\n'[39m +
+    [32m'-                             left: "13.976003%"\n'[39m +
+    [32m'+                             top: "69.31460591745174%"\n'[39m +
+    [32m'-                             top: "78.667704%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"41.1...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "41.11641035297387%"\n'[39m +
+    [32m'-                             left: "36.317546%"\n'[39m +
+    [32m'+                             top: "92.00780516287979%"\n'[39m +
+    [32m'-                             top: "61.676402%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"13.8...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "13.844809316412787%"\n'[39m +
+    [32m'-                             left: "68.604154%"\n'[39m +
+    [32m'+                             top: "50.58133459621564%"\n'[39m +
+    [32m'-                             top: "48.630131%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"44.0...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "44.04051775526844%"\n'[39m +
+    [32m'-                             left: "97.12502%"\n'[39m +
+    [32m'+                             top: "90.35881662739394%"\n'[39m +
+    [32m'-                             top: "8.630785%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"75.7...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "75.74599230702616%"\n'[39m +
+    [32m'-                             left: "48.058315%"\n'[39m +
+    [32m'+                             top: "13.12120013886835%"\n'[39m +
+    [32m'-                             top: "96.317703%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"89.1...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "89.15071525821364%"\n'[39m +
+    [32m'-                             left: "75.659772%"\n'[39m +
+    [32m'+                             top: "45.84963890141871%"\n'[39m +
+    [32m'-                             top: "86.846719%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"42.8...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "42.82945184747044%"\n'[39m +
+    [32m'-                             left: "47.466007%"\n'[39m +
+    [32m'+                             top: "34.7913769988121%"\n'[39m +
+    [32m'-                             top: "75.512756%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"63.9...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "63.92881216927617%"\n'[39m +
+    [32m'-                             left: "65.523715%"\n'[39m +
+    [32m'+                             top: "18.537927352077777%"\n'[39m +
+    [32m'-                             top: "45.842672%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"99.1...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "99.19942763242587%"\n'[39m +
+    [32m'-                             left: "52.045891%"\n'[39m +
+    [32m'+                             top: "46.84038192466352%"\n'[39m +
+    [32m'-                             top: "88.062498%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"8.11...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "8.114626561097726%"\n'[39m +
+    [32m'-                             left: "46.007272%"\n'[39m +
+    [32m'+                             top: "63.69146588269922%"\n'[39m +
+    [32m'-                             top: "43.598054%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"54.8...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "54.86052719050887%"\n'[39m +
+    [32m'-                             left: "69.544071%"\n'[39m +
+    [32m'+                             top: "99.46451446327319%"\n'[39m +
+    [32m'-                             top: "61.772027%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"67.8...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "67.80459021743425%"\n'[39m +
+    [32m'-                             left: "73.215327%"\n'[39m +
+    [32m'+                             top: "18.67828261236034%"\n'[39m +
+    [32m'-                             top: "85.519859%"\n'[39m +
+    [32m'                            }}\n'[39m +
+    [32m'                            ref={function useMotionRef.useCallback}\n'[39m +
+    [32m'                          >\n'[39m +
+    [32m'                        <motion.div className="absolute w..." style={{left:"66.0...", ...}} ...>\n'[39m +
+    [32m'                          <div\n'[39m +
+    [32m'                            className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"\n'[39m +
+    [32m'                            style={{\n'[39m +
+    [32m'+                             left: "66.08122341740166%"\n'[39m +
+    [32m'-                           '[39m... 3264 more characters
+]
+
+[1A[2KRelevant console errors: []
+
+[1A[2K[166/170] [Mobile Safari] › e2e/node-wire.spec.ts:539:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on About page
+[1A[2K[167/170] [Mobile Safari] › e2e/node-wire.spec.ts:561:9 › FormaOS Node & Wire Integrity Tests › Basic Accessibility › should have proper page titles
+[1A[2K[Mobile Safari] › e2e/node-wire.spec.ts:539:9 › FormaOS Node & Wire Integrity Tests › Console Error Detection › should not have console errors on About page
+Console errors found: []
+
+[1A[2K[168/170] [Mobile Safari] › e2e/node-wire.spec.ts:568:9 › FormaOS Node & Wire Integrity Tests › Basic Accessibility › should have accessible navigation
+[1A[2K[169/170] [Mobile Safari] › e2e/node-wire.spec.ts:599:8 › Authenticated User Tests › should access app dashboard when authenticated
+[1A[2K[170/170] [Mobile Safari] › e2e/node-wire.spec.ts:609:8 › Authenticated User Tests › should redirect to /admin for founder users
+[1A[2K  4 failed
+    [firefox] › e2e/cta.spec.ts:86:7 › Marketing CTA wiring › homepage primary CTAs route correctly 
+    [webkit] › e2e/node-wire.spec.ts:216:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Pricing page 
+    [webkit] › e2e/node-wire.spec.ts:228:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › [NEW] should navigate to About page 
+    [webkit] › e2e/node-wire.spec.ts:240:9 › FormaOS Node & Wire Integrity Tests › Public Website Navigation › should navigate to Contact page 
+  10 skipped
+  156 passed (11.4m)

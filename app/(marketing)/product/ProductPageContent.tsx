@@ -388,7 +388,7 @@ function ObligationToExecution() {
 
           <p className="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
             Most compliance platforms stop at documentation. FormaOS goes
-            further — it operationalizes compliance across your organization.
+            further. It operationalizes compliance across your organization.
           </p>
         </motion.div>
 
@@ -501,7 +501,7 @@ function OperatingModel() {
         'Live risk and status visibility',
       ],
       outcome:
-        "You don't wait for audits to discover issues — you see them as they happen.",
+        "You don't wait for audits to discover issues. You see them as they happen.",
       color: 'from-purple-500 to-pink-500',
       icon: Eye,
     },
@@ -663,7 +663,7 @@ function WhatMakesDifferent() {
       icon: UserCheck,
       title: 'Accountability at Scale',
       description:
-        'Every control has a defined owner, status, and outcome — no ambiguity.',
+        'Every control has a defined owner, status, and outcome. No ambiguity.',
       color: 'from-pink-500 to-rose-500',
     },
     {
@@ -791,7 +791,7 @@ function EnterpriseSecurity() {
               Built for Regulated Organizations
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              Security is embedded at the operating layer — not added as a
+              Security is embedded at the operating layer, not added as a
               feature.
             </p>
           </div>
@@ -863,8 +863,8 @@ function ComplianceIntelligence() {
             </span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            Leadership no longer relies on spreadsheets or manual reporting —
-            compliance is observable in real time.
+            Leadership no longer relies on spreadsheets or manual reporting.
+            Compliance is observable in real time.
           </p>
         </motion.div>
 
@@ -1135,7 +1135,7 @@ function FinalCTA() {
               transition={{ delay: 0.4, duration: 0.8 }}
               className="text-lg text-gray-400 max-w-2xl mx-auto"
             >
-              From obligation to execution, validation, and defense — FormaOS is
+              From obligation to execution, validation, and defense. FormaOS is
               the operating system for modern compliance.
             </motion.p>
           </div>

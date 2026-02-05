@@ -7,6 +7,8 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { Shield, CheckCircle2, ArrowRight } from 'lucide-react';
 
+const appBase = (process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.formaos.com.au').replace(/\/$/, '');
+
 function LoginContent() {
   const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
@@ -243,7 +245,7 @@ function LoginContent() {
               <p className="text-center text-sm text-slate-400">
                 New to FormaOS?{' '}
                 <Link
-                  href="/auth/signup"
+                  href={`${appBase}/auth/signup`}
                   className="font-semibold text-sky-400 hover:text-sky-300 transition-colors"
                 >
                   Start your compliance journey

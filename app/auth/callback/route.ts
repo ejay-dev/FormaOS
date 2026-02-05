@@ -11,11 +11,20 @@ import {
   validateComplianceGraph,
 } from '@/lib/compliance-graph';
 
+// Default plan for users without a plan selection - ensures no one lands with "No Plan"
+const DEFAULT_PLAN = 'basic';
+
+// Legacy plan_code mapping (basic -> starter for FK constraint)
+function toLegacyPlanCode(planKey: string): string {
+  return planKey === 'basic' ? 'starter' : planKey;
+}
+
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const { searchParams } = requestUrl;
   const code = searchParams.get('code');
-  const plan = resolvePlanKey(searchParams.get('plan'));
+  // HARDENING: Default to 'basic' if no valid plan provided - ensures no "No Plan" users
+  const plan = resolvePlanKey(searchParams.get('plan')) || DEFAULT_PLAN;
   const appUrl = process.env.NEXT_PUBLIC_APP_URL;
   const appBase = (() => {
     if (appUrl) {
@@ -103,7 +112,9 @@ export async function GET(request: Request) {
         .eq('id', founderMembership.organization_id);
 
       await admin.from('org_subscriptions').upsert({
+        org_id: founderMembership.organization_id, // Legacy column
         organization_id: founderMembership.organization_id,
+        plan_code: 'pro', // Legacy column
         plan_key: 'pro',
         status: 'active',
         updated_at: new Date().toISOString(),
@@ -216,13 +227,14 @@ export async function GET(request: Request) {
       const now = new Date().toISOString();
 
       // Use the admin (service-role) client for bootstrap writes so RLS doesn't block
+      // HARDENING: Always set plan_key (defaulted to 'basic' above)
       const { data: organization, error: orgError } = await admin
         .from('organizations')
         .insert({
           name: fallbackName,
           created_by: data.user.id, // Set the creating user ID properly
-          plan_key: plan ?? null,
-          plan_selected_at: plan ? now : null,
+          plan_key: plan, // Always set (defaulted to 'basic')
+          plan_selected_at: now,
           onboarding_completed: false, // Ensure onboarding is NOT complete for new users
         })
         .select('id')
@@ -240,6 +252,25 @@ export async function GET(request: Request) {
           `${appBase}/auth/signin?error=org_creation_failed&message=${encodeURIComponent(
             'Account setup failed. Please try signing in again.',
           )}`,
+        );
+      }
+
+      // HARDENING: Upsert into legacy 'orgs' table (prevents duplicates, required for org_subscriptions.org_id FK)
+      const { error: legacyOrgError } = await admin.from('orgs').upsert(
+        {
+          id: organization.id, // Use same ID to keep them in sync
+          name: fallbackName,
+          created_by: data.user.id,
+          created_at: now,
+          updated_at: now,
+        },
+        { onConflict: 'id' }
+      );
+
+      if (legacyOrgError) {
+        console.error(
+          '[auth/callback] Legacy orgs table upsert failed (non-critical):',
+          legacyOrgError.message,
         );
       }
 
@@ -316,7 +347,7 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${appBase}/onboarding${planQuery}`);
   }
 
-  // 5. EXISTING USER WITH ORGANIZATION - Check their onboarding status
+  // 5. EXISTING USER WITH ORGANIZATION - Check their onboarding status and backfill missing data
   console.log(
     '[auth/callback] 🔍 EXISTING USER with org - checking onboarding status',
   );
@@ -333,7 +364,7 @@ export async function GET(request: Request) {
 
   const { data: organization, error: orgError } = await supabase
     .from('organizations')
-    .select('plan_key, industry, onboarding_completed, frameworks')
+    .select('plan_key, industry, onboarding_completed, frameworks, name, created_by')
     .eq('id', membership.organization_id)
     .maybeSingle();
 
@@ -341,7 +372,41 @@ export async function GET(request: Request) {
     console.error('Organization lookup failed:', orgError);
   }
 
-  const resolvedPlan = resolvePlanKey(organization?.plan_key ?? null) || plan;
+  // HARDENING: Default to 'basic' if org has no plan
+  const resolvedPlan = resolvePlanKey(organization?.plan_key ?? null) || DEFAULT_PLAN;
+
+  // BACKFILL: Update org with plan if missing
+  if (!organization?.plan_key) {
+    console.log('[auth/callback] 🔧 Backfilling missing plan_key for existing org');
+    await admin
+      .from('organizations')
+      .update({ plan_key: resolvedPlan, plan_selected_at: new Date().toISOString() })
+      .eq('id', membership.organization_id);
+  }
+
+  // BACKFILL: Ensure legacy orgs table entry exists (for org_subscriptions.org_id FK)
+  const { data: legacyOrg } = await admin
+    .from('orgs')
+    .select('id')
+    .eq('id', membership.organization_id)
+    .maybeSingle();
+
+  if (!legacyOrg) {
+    console.log('[auth/callback] 🔧 Backfilling legacy orgs table entry');
+    const now = new Date().toISOString();
+    await admin.from('orgs').upsert(
+      {
+        id: membership.organization_id,
+        name: organization?.name || 'Organization',
+        created_by: organization?.created_by || data.user.id,
+        created_at: now,
+        updated_at: now,
+      },
+      { onConflict: 'id' }
+    );
+  }
+
+  // HARDENING: Always ensure subscription + entitlements exist
   await ensureSubscription(membership.organization_id, resolvedPlan);
 
   // CRITICAL: Validate compliance graph integrity for existing users

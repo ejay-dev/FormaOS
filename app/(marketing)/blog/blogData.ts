@@ -12,17 +12,12 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { StaticImageData } from 'next/image';
-import complianceDashboardHero from '@/public/blog/B4-dashboard.png';
-import tasksWorkflowHero from '@/public/blog/C9-tasks-page.png';
-import rbacHero from '@/public/blog/C12-rbac-redirect.png';
-import marketingHomeHero from '@/public/blog/A1-marketing-home.png';
-import adminAccessHero from '@/public/blog/admin-access.png';
-import monitoringHero from '@/public/blog/monitoring.png';
-import soc2Hero from '@/public/blog/soc2.png';
-import controlsMapHero from '@/public/blog/controls-map.png';
-import policyLifecycleHero from '@/public/blog/policy-lifecycle.png';
-import vendorRiskHero from '@/public/blog/vendor-risk.png';
-import retentionHero from '@/public/blog/retention.png';
+import dashboardHero from '@/public/marketing/screenshots/dashboard.png';
+import tasksHero from '@/public/marketing/screenshots/tasks.png';
+import vaultHero from '@/public/marketing/screenshots/vault.png';
+import settingsHero from '@/public/marketing/screenshots/settings.png';
+import complianceHero from '@/public/marketing/screenshots/compliance.png';
+import reportsHero from '@/public/marketing/screenshots/reports.png';
 
 export type BlogSection = {
   heading: string;
@@ -57,7 +52,7 @@ export const blogPosts: BlogPost[] = [
     date: 'February 2, 2026',
     readTime: '10 min read',
     category: 'Compliance',
-    heroImage: complianceDashboardHero,
+    heroImage: dashboardHero,
     heroAlt: 'FormaOS compliance dashboard with control status and evidence',
     icon: Sparkles,
     featured: true,
@@ -67,7 +62,7 @@ export const blogPosts: BlogPost[] = [
         paragraphs: [
           'Growth creates compliance pressure. New services, new markets, and new partners multiply obligations faster than policy teams can keep up.',
           'The result is a gap between what the organization thinks is happening and what is actually happening day to day.',
-          'That gap shows up as late evidence, scattered documentation, and a scramble before audits. A compliance operating system closes that gap by turning requirements into audit‑readiness workflows rather than a yearly project.',
+          'That gap shows up as late evidence, scattered documentation, and a scramble before audits. A compliance operating system closes that gap by turning requirements into audit-readiness workflows rather than a yearly project.',
         ],
         bullets: [
           'Policies that are readable but not operationalized',
@@ -80,7 +75,7 @@ export const blogPosts: BlogPost[] = [
         paragraphs: [
           'A compliance operating system connects obligations to controls, controls to tasks, and tasks to evidence.',
           'It is not a GRC spreadsheet, and it is not a document repository. It is the system of record for how compliance actually happens.',
-          'The most effective platforms make compliance measurable. They expose control health, make ownership explicit, and enforce governance with role‑based access controls (RBAC).',
+          'The most effective platforms make compliance measurable. They expose control health, make ownership explicit, and enforce governance with role-based access controls (RBAC).',
         ],
         bullets: [
           'Control lifecycle management with ownership and SLAs',
@@ -98,8 +93,8 @@ export const blogPosts: BlogPost[] = [
           'Establish weekly control health reviews with defined escalation paths.',
         ],
         paragraphs: [
-          'A 90‑day rollout is realistic when teams focus on repeatable controls first.',
-          'Start with high‑risk controls and the workflows that already produce evidence, then layer in compliance automation for the rest.',
+          'A 90-day rollout is realistic when teams focus on repeatable controls first.',
+          'Start with high-risk controls and the workflows that already produce evidence, then layer in compliance automation for the rest.',
         ],
       },
       {
@@ -149,7 +144,7 @@ export const blogPosts: BlogPost[] = [
     date: 'January 20, 2026',
     readTime: '9 min read',
     category: 'NDIS',
-    heroImage: tasksWorkflowHero,
+    heroImage: tasksHero,
     heroAlt: 'FormaOS task workflow view with evidence-ready tasks',
     icon: Building2,
     sections: [
@@ -195,7 +190,7 @@ export const blogPosts: BlogPost[] = [
         heading: 'Evidence that stands up to audit',
         paragraphs: [
           'Auditors want to see timing, ownership, and completeness.',
-          'Evidence should show who performed the control, when it was completed, and how exceptions were handled in the audit‑readiness workflow.',
+          'Evidence should show who performed the control, when it was completed, and how exceptions were handled in the audit-readiness workflow.',
         ],
         bullets: [
           'Training records linked to staff rosters and role requirements',
@@ -233,7 +228,7 @@ export const blogPosts: BlogPost[] = [
     date: 'January 12, 2026',
     readTime: '8 min read',
     category: 'Security',
-    heroImage: rbacHero,
+    heroImage: settingsHero,
     heroAlt: 'FormaOS RBAC configuration and access controls interface',
     icon: Shield,
     sections: [
@@ -253,7 +248,7 @@ export const blogPosts: BlogPost[] = [
         heading: 'Designing an immutable trail',
         paragraphs: [
           'Immutable trails do not require blockchain to be effective.',
-          'They require strong integrity controls: write‑once logs, chained hashes, and strict access controls with clear audit metadata.',
+          'They require strong integrity controls: write-once logs, chained hashes, and strict access controls with clear audit metadata.',
         ],
         bullets: [
           'Append-only logs with cryptographic hashing',
@@ -264,7 +259,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: 'Implementation steps for teams',
         paragraphs: [
-          'Teams should treat integrity controls as part of their audit‑readiness workflow, not a one‑off project.',
+          'Teams should treat integrity controls as part of their audit-readiness workflow, not a one-off project.',
         ],
         steps: [
           'Identify controls where evidence integrity is most critical.',
@@ -304,12 +299,12 @@ export const blogPosts: BlogPost[] = [
     id: 'automated-evidence-collection',
     title: 'From Manual to Automatic: Evidence Collection Reimagined',
     excerpt:
-      'Manual evidence collection is costly and error‑prone. Learn how to automate capture with workflow triggers and integrations without disrupting teams.',
+      'Manual evidence collection is costly and error-prone. Learn how to automate capture with workflow triggers and integrations without disrupting teams.',
     author: 'Product Team',
     date: 'January 6, 2026',
     readTime: '7 min read',
     category: 'Technology',
-    heroImage: marketingHomeHero,
+    heroImage: vaultHero,
     heroAlt:
       'FormaOS product overview showing evidence automation and workflows',
     icon: Zap,
@@ -319,7 +314,7 @@ export const blogPosts: BlogPost[] = [
         paragraphs: [
           'Compliance teams often spend weeks gathering screenshots, spreadsheets, and approvals.',
           'This work is repetitive and rarely improves quality, yet it consumes scarce time.',
-          'Automation shifts evidence capture from a separate activity into the workflow itself, making compliance the by‑product of doing the work.',
+          'Automation shifts evidence capture from a separate activity into the workflow itself, making compliance the by-product of doing the work.',
         ],
         bullets: [
           'Evidence requests that interrupt delivery teams',
@@ -328,10 +323,10 @@ export const blogPosts: BlogPost[] = [
         ],
       },
       {
-        heading: 'Event‑driven evidence capture',
+        heading: 'Event-driven evidence capture',
         paragraphs: [
-          'Modern systems can emit signals whenever a control‑relevant action happens: an approval, a deployment, or a training completion.',
-          'These signals can be captured automatically and stored as evidence inside audit‑readiness workflows.',
+          'Modern systems can emit signals whenever a control-relevant action happens: an approval, a deployment, or a training completion.',
+          'These signals can be captured automatically and stored as evidence inside audit-readiness workflows.',
         ],
         bullets: [
           'Integrations with identity, ticketing, and HR systems',
@@ -345,7 +340,7 @@ export const blogPosts: BlogPost[] = [
           'Start with the controls that generate the most recurring evidence. Build momentum before expanding across the full control library.',
         ],
         steps: [
-          'Select 3–5 high‑volume controls that generate repeatable evidence.',
+          'Select 3–5 high-volume controls that generate repeatable evidence.',
           'Define evidence templates with required fields and owners.',
           'Connect workflow systems to capture events automatically.',
           'Set quality checks for completeness and data drift.',
@@ -366,7 +361,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: 'Where to start with FormaOS',
         paragraphs: [
-          'FormaOS automates evidence capture across your existing tools and provides a single audit‑ready view.',
+          'FormaOS automates evidence capture across your existing tools and provides a single audit-ready view.',
           'Teams see only the tasks they need, while compliance leaders get reliable coverage metrics and ownership clarity.',
         ],
         links: [
@@ -387,7 +382,7 @@ export const blogPosts: BlogPost[] = [
     date: 'December 18, 2025',
     readTime: '8 min read',
     category: 'Compliance',
-    heroImage: adminAccessHero,
+    heroImage: settingsHero,
     heroAlt: 'FormaOS admin governance screen with access controls',
     icon: FileCheck,
     sections: [
@@ -431,7 +426,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: 'RACI clarity prevents drift',
         paragraphs: [
-          'RBAC governance in tooling should mirror the RACI model, keeping decision‑makers and executors aligned.',
+          'RBAC governance in tooling should mirror the RACI model, keeping decision-makers and executors aligned.',
         ],
         bullets: [
           'Responsible: the person who executes the control',
@@ -459,12 +454,12 @@ export const blogPosts: BlogPost[] = [
     id: 'real-time-compliance-monitoring',
     title: 'Real-Time Compliance Monitoring: Beyond the Dashboard',
     excerpt:
-      'Dashboards are not enough. Real‑time monitoring means alerts, ownership, and action. Here’s how to design monitoring that keeps you audit‑ready.',
+      'Dashboards are not enough. Real-time monitoring means alerts, ownership, and action. Here’s how to design monitoring that keeps you audit-ready.',
     author: 'Product Team',
     date: 'December 4, 2025',
     readTime: '7 min read',
     category: 'Technology',
-    heroImage: monitoringHero,
+    heroImage: complianceHero,
     heroAlt: 'FormaOS monitoring console with alerts and control health',
     icon: TrendingUp,
     sections: [
@@ -477,7 +472,7 @@ export const blogPosts: BlogPost[] = [
         bullets: [
           'Define thresholds for control freshness and completion',
           'Attach escalation paths to each alert type',
-          'Track time‑to‑resolution for every control issue',
+          'Track time-to-resolution for every control issue',
         ],
       },
       {
@@ -497,10 +492,10 @@ export const blogPosts: BlogPost[] = [
           'Monitoring works best when it is embedded in compliance automation and routed to the people who can act quickly.',
         ],
         steps: [
-          'Identify the 10–15 most audit‑critical controls.',
+          'Identify the 10–15 most audit-critical controls.',
           'Define signal thresholds and owners for each control.',
           'Automate alerts into the tools teams already use.',
-          'Review signal trends in a weekly compliance stand‑up.',
+          'Review signal trends in a weekly compliance stand-up.',
           'Adjust thresholds after each audit cycle.',
         ],
       },
@@ -511,7 +506,7 @@ export const blogPosts: BlogPost[] = [
         ],
         bullets: [
           'Tiered severity to avoid alert fatigue',
-          'Auto‑assigning issues to control owners',
+          'Auto-assigning issues to control owners',
           'Escalation to leadership if thresholds are breached',
         ],
       },
@@ -539,7 +534,7 @@ export const blogPosts: BlogPost[] = [
     date: 'November 22, 2025',
     readTime: '9 min read',
     category: 'Security',
-    heroImage: soc2Hero,
+    heroImage: settingsHero,
     heroAlt: 'FormaOS security view highlighting SOC 2 readiness work',
     icon: Shield,
     sections: [
@@ -589,7 +584,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: 'Takeaways for teams starting SOC 2',
         paragraphs: [
-          'Treat SOC 2 as an operating system, not a once‑a‑year project.',
+          'Treat SOC 2 as an operating system, not a once-a-year project.',
           'Build evidence capture into everyday workflows, keep ownership explicit, and use RBAC governance to protect control changes.',
         ],
         links: [
@@ -607,22 +602,22 @@ export const blogPosts: BlogPost[] = [
   },
   {
     id: 'risk-based-controls-mapping',
-    title: 'Risk‑Based Controls Mapping: A Practical Framework',
+    title: 'Risk-Based Controls Mapping: A Practical Framework',
     excerpt:
-      'Risk‑based mapping reduces duplication and focuses effort where it matters. Learn how to build a control map that scales across regulations.',
+      'Risk-based mapping reduces duplication and focuses effort where it matters. Learn how to build a control map that scales across regulations.',
     author: 'Compliance Strategy',
     date: 'November 6, 2025',
     readTime: '8 min read',
     category: 'Compliance',
-    heroImage: controlsMapHero,
+    heroImage: complianceHero,
     heroAlt: 'FormaOS control mapping view for risk-based oversight',
     icon: Layers,
     sections: [
       {
-        heading: 'Why risk‑based mapping works',
+        heading: 'Why risk-based mapping works',
         paragraphs: [
-          'Treating every requirement equally leads to over‑engineering.',
-          'Risk‑based mapping ensures you focus on controls that reduce the most exposure.',
+          'Treating every requirement equally leads to over-engineering.',
+          'Risk-based mapping ensures you focus on controls that reduce the most exposure.',
         ],
         bullets: [
           'Aligns effort with actual regulatory and business risk',
@@ -634,7 +629,7 @@ export const blogPosts: BlogPost[] = [
         heading: 'A repeatable mapping model',
         paragraphs: [
           'Start with a normalized control library, then map obligations to those controls.',
-          'This creates a one‑to‑many relationship that reduces complexity and supports audit readiness workflows.',
+          'This creates a one-to-many relationship that reduces complexity and supports audit readiness workflows.',
         ],
         bullets: [
           'Define control objectives in plain language',
@@ -689,7 +684,7 @@ export const blogPosts: BlogPost[] = [
     date: 'October 18, 2025',
     readTime: '7 min read',
     category: 'Product Updates',
-    heroImage: policyLifecycleHero,
+    heroImage: tasksHero,
     heroAlt: 'FormaOS workflow screen for policy approvals and reviews',
     icon: ClipboardCheck,
     sections: [
@@ -713,7 +708,7 @@ export const blogPosts: BlogPost[] = [
         ],
         bullets: [
           'Draft: collaboration and version history',
-          'Review: stakeholder sign‑off tracking',
+          'Review: stakeholder sign-off tracking',
           'Publish: distribution and acknowledgment',
         ],
       },
@@ -724,7 +719,7 @@ export const blogPosts: BlogPost[] = [
         ],
         steps: [
           'Set a policy review cadence and owner for every policy.',
-          'Automate approvals with time‑boxed reminders.',
+          'Automate approvals with time-boxed reminders.',
           'Capture acknowledgment evidence from staff systems.',
           'Link policies to controls and audit checklists.',
           'Track exceptions and update policies after audits.',
@@ -737,7 +732,7 @@ export const blogPosts: BlogPost[] = [
         ],
         bullets: [
           'Notify teams of material changes',
-          'Require acknowledgment for high‑risk updates',
+          'Require acknowledgment for high-risk updates',
           'Keep audit logs of edits and approvals',
         ],
       },
@@ -757,14 +752,14 @@ export const blogPosts: BlogPost[] = [
   },
   {
     id: 'vendor-risk-management-playbook',
-    title: 'Vendor Risk Management Playbook for Fast‑Growing Teams',
+    title: 'Vendor Risk Management Playbook for Fast-Growing Teams',
     excerpt:
-      'A vendor program should scale with growth. This playbook covers tiering, evidence requirements, and how to keep third‑party risk visible.',
+      'A vendor program should scale with growth. This playbook covers tiering, evidence requirements, and how to keep third-party risk visible.',
     author: 'Security Team',
     date: 'September 28, 2025',
     readTime: '8 min read',
     category: 'Security',
-    heroImage: vendorRiskHero,
+    heroImage: settingsHero,
     heroAlt: 'FormaOS vendor invite and access workflow screen',
     icon: Lock,
     sections: [
@@ -780,10 +775,10 @@ export const blogPosts: BlogPost[] = [
         bullets: [
           'Tier 1: access to sensitive data or core systems',
           'Tier 2: operational tools with limited data exposure',
-          'Tier 3: low‑risk services with no sensitive access',
+          'Tier 3: low-risk services with no sensitive access',
         ],
         paragraphs: [
-          'Tiering keeps due diligence proportional. High‑risk vendors get deeper review and ongoing monitoring.',
+          'Tiering keeps due diligence proportional. High-risk vendors get deeper review and ongoing monitoring.',
         ],
       },
       {
@@ -838,7 +833,7 @@ export const blogPosts: BlogPost[] = [
     date: 'September 10, 2025',
     readTime: '8 min read',
     category: 'Compliance',
-    heroImage: retentionHero,
+    heroImage: vaultHero,
     heroAlt: 'FormaOS evidence workflow for retention and approvals',
     icon: BookOpen,
     sections: [
@@ -857,7 +852,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: 'Privacy controls that show intent',
         paragraphs: [
-          'Privacy controls should demonstrate least‑privilege access, controlled sharing, and prompt incident response.',
+          'Privacy controls should demonstrate least-privilege access, controlled sharing, and prompt incident response.',
           'The evidence must show ongoing compliance, not just design intent.',
         ],
         bullets: [
@@ -880,7 +875,7 @@ export const blogPosts: BlogPost[] = [
         ],
       },
       {
-        heading: 'Make privacy evidence audit‑ready',
+        heading: 'Make privacy evidence audit-ready',
         paragraphs: [
           'Audit readiness workflows should surface privacy evidence continuously, not just during reviews.',
         ],

@@ -1,0 +1,146 @@
+
+> formaos@0.1.0 build
+> __NEXT_PRIVATE_STANDALONE_CONFIG= next build --webpack
+
+▲ Next.js 16.1.1 (webpack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 6.8s
+  Running TypeScript ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/88) ...
+  Generating static pages using 7 workers (22/88) 
+  Generating static pages using 7 workers (44/88) 
+  Generating static pages using 7 workers (66/88) 
+✓ Generating static pages using 7 workers (88/88) in 366.6ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /about
+├ ƒ /accept-invite/[token]
+├ ƒ /admin
+├ ƒ /admin/audit
+├ ƒ /admin/billing
+├ ƒ /admin/dashboard
+├ ƒ /admin/features
+├ ƒ /admin/health
+├ ƒ /admin/orgs
+├ ƒ /admin/orgs/[orgId]
+├ ƒ /admin/revenue
+├ ƒ /admin/security
+├ ƒ /admin/settings
+├ ƒ /admin/support
+├ ƒ /admin/system
+├ ƒ /admin/trials
+├ ƒ /admin/users
+├ ƒ /api/admin/audit
+├ ƒ /api/admin/features
+├ ƒ /api/admin/health
+├ ƒ /api/admin/orgs
+├ ƒ /api/admin/orgs/[orgId]
+├ ƒ /api/admin/orgs/[orgId]/lock
+├ ƒ /api/admin/orgs/[orgId]/notes
+├ ƒ /api/admin/orgs/[orgId]/plan
+├ ƒ /api/admin/orgs/[orgId]/trial/extend
+├ ƒ /api/admin/orgs/[orgId]/trial/reset
+├ ƒ /api/admin/overview
+├ ƒ /api/admin/security
+├ ƒ /api/admin/subscriptions
+├ ƒ /api/admin/subscriptions/[orgId]/resync-stripe
+├ ƒ /api/admin/support
+├ ƒ /api/admin/system
+├ ƒ /api/admin/trials
+├ ƒ /api/admin/users
+├ ƒ /api/admin/users/[userId]/lock
+├ ƒ /api/admin/users/[userId]/resend-confirmation
+├ ƒ /api/auth/signup
+├ ƒ /api/billing/webhook
+├ ƒ /api/debug-founder
+├ ƒ /api/debug/bootstrap
+├ ƒ /api/debug/env
+├ ƒ /api/debug/founder
+├ ƒ /api/debug/log
+├ ƒ /api/debug/supabase
+├ ƒ /api/debug/supabase-functions
+├ ƒ /api/email/test
+├ ƒ /api/health
+├ ƒ /api/health/detailed
+├ ƒ /api/onboarding/select-plan
+├ ƒ /api/system-state
+├ ƒ /api/v1/audit-logs
+├ ƒ /api/v1/compliance
+├ ƒ /api/v1/evidence
+├ ƒ /api/v1/tasks
+├ ƒ /app
+├ ƒ /app/admin
+├ ƒ /app/admin/orgs/[orgId]
+├ ƒ /app/api/email/send
+├ ƒ /app/api/invitations/create
+├ ƒ /app/api/policies/update
+├ ƒ /app/audit
+├ ƒ /app/audit/export/[userId]
+├ ƒ /app/billing
+├ ƒ /app/dashboard
+├ ƒ /app/evidence
+├ ƒ /app/forms/builder/[id]
+├ ƒ /app/history
+├ ƒ /app/patients
+├ ƒ /app/patients/[id]
+├ ƒ /app/people
+├ ƒ /app/policies
+├ ƒ /app/policies/[id]
+├ ƒ /app/profile
+├ ƒ /app/progress-notes
+├ ƒ /app/registers
+├ ƒ /app/registers/training
+├ ƒ /app/reports
+├ ƒ /app/settings
+├ ƒ /app/settings/email-history
+├ ƒ /app/settings/email-preferences
+├ ƒ /app/staff
+├ ƒ /app/tasks
+├ ƒ /app/team
+├ ƒ /app/vault
+├ ƒ /app/vault/review
+├ ƒ /app/workflows
+├ ○ /auth
+├ ○ /auth-redirect
+├ ƒ /auth/callback
+├ ○ /auth/login
+├ ○ /auth/plan-select
+├ ○ /auth/signin
+├ ƒ /auth/signout
+├ ○ /auth/signup
+├ ○ /blog
+├ ○ /contact
+├ ○ /docs
+├ ○ /faq
+├ ○ /industries
+├ ○ /legal/privacy
+├ ○ /legal/terms
+├ ƒ /onboarding
+├ ƒ /organization/[orgId]/audit
+├ ○ /our-story
+├ ○ /pricing
+├ ○ /privacy
+├ ○ /product
+├ ○ /security
+├ ○ /signin
+├ ƒ /submit/[formId]
+├ ○ /terms
+├ ○ /unauthorized
+├ ○ /use-cases/healthcare
+├ ○ /use-cases/incident-management
+├ ○ /use-cases/ndis-aged-care
+└ ○ /use-cases/workforce-credentials
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

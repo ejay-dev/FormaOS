@@ -1,0 +1,26 @@
+🔍 Testing database integrity...
+
+✅ User Profile Consistency: Logged
+   10 users without profiles
+
+✅ Compliance Graph Integrity: Skipped
+   compliance_edges table missing
+
+✅ Role Assignment Validity: Skipped
+   org_members table missing
+
+✅ Company Hierarchy Consistency: Skipped
+   company_profiles table missing
+
+✅ Audit Log Completeness: Tracked
+   0 recent logs, 0 critical
+
+⚡ Testing query performance...
+
+✅ User Dashboard Query: 157ms
+   Performance within acceptable range
+
+✅ Compliance Graph Query: 206ms
+   Performance within acceptable range
+
+🎉 Database integrity check passed!

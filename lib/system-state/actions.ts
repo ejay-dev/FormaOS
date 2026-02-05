@@ -182,11 +182,16 @@ export async function confirmPlanUpgrade(
       enterprise: "enterprise",
     };
 
+    // Legacy plan_code uses different values (starter vs basic)
+    const toLegacyPlanCode = (key: string) => (key === "basic" ? "starter" : key);
+
     const now = new Date().toISOString();
 
     // Update subscription
     await admin.from("org_subscriptions").upsert({
+      org_id: orgId, // Legacy column
       organization_id: orgId,
+      plan_code: toLegacyPlanCode(planKeyMap[newPlan]), // Legacy column with different values
       plan_key: planKeyMap[newPlan],
       status: "active",
       stripe_customer_id: stripeData?.customerId,

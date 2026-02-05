@@ -1,71 +1,63 @@
-"use server"
+'use server';
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
-type LogActivityPayload = {
-  type: string;
-  description: string;
-  metadata?: any;
-  entityType?: string;
-  entityId?: string | null;
-  beforeState?: any;
-  afterState?: any;
-  reason?: string | null;
-  orgId?: string;
-};
+export type AuditAction =
+  | 'CREATE_ORGANIZATION'
+  | 'UPDATE_ORGANIZATION'
+  | 'CREATE_POLICY'
+  | 'UPDATE_POLICY'
+  | 'DELETE_POLICY'
+  | 'UPLOAD_DOCUMENT'
+  | 'DELETE_DOCUMENT'
+  | 'INVITE_USER'
+  | 'REMOVE_USER'
+  | 'LOGIN_ATTEMPT'
+  | 'EXPORT_DATA';
 
+/**
+ * ✅ CENTRALIZED AUDIT LOGGER
+ * Call this from ANY server action to record an event.
+ * It fails silently (console error) so it doesn't block the user's main action.
+ */
 export async function logActivity(
-  arg1: LogActivityPayload | string,
-  arg2?: string,
-  arg3?: any,
-  arg4?: any
+  organizationId: string,
+  action: AuditAction,
+  details: Record<string, any>,
 ) {
-  const supabase = await createSupabaseServerClient();
-  
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return;
-
-  const { data: membership } = await supabase
-    .from("org_members")
-    .select("organization_id")
-    .eq("user_id", user.id)
-    .single();
-
-  if (!membership) return;
-
-  const payload: LogActivityPayload =
-    typeof arg1 === "string"
-      ? {
-          orgId: arg1,
-          type: arg2 || "activity",
-          description: typeof arg3 === "string" ? arg3 : (arg3?.event || "activity"),
-          metadata: arg4 ?? arg3 ?? {},
-        }
-      : arg1;
-
-  const orgId = payload.orgId || membership.organization_id;
-  if (orgId !== membership.organization_id) return;
-
   try {
-    await supabase.from("org_audit_logs").insert({
-      organization_id: orgId,
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      console.warn(
+        `[AUDIT SKIPPED] No authenticated user for action: ${action}`,
+      );
+      return;
+    }
+
+    // Insert into the ledger
+    const { error } = await supabase.from('org_audit_logs').insert({
+      organization_id: organizationId,
       actor_id: user.id,
-      actor_email: user.email ?? null,
-      action: payload.type,
-      target: payload.description,
-      domain: "compliance",
-      severity: "low",
-      metadata: {
-        entity_type: payload.entityType ?? "activity",
-        entity_id: payload.entityId ?? null,
-        before_state: payload.beforeState ?? null,
-        after_state: payload.afterState ?? payload.metadata ?? null,
-        reason: payload.reason ?? null,
-        ...(payload.metadata ? { metadata: payload.metadata } : {}),
-      },
-      created_at: new Date().toISOString(),
+      action: action,
+      // Smart resource labeling based on details
+      target_resource:
+        details.resourceName ||
+        details.documentName ||
+        details.email ||
+        'System',
+      details: details,
     });
-  } catch (error: any) {
-    console.error("Audit Event Error:", error?.message || error);
+
+    if (error) {
+      console.error(`[AUDIT FAILURE] DB rejected log: ${error.message}`);
+    } else {
+      console.log(`[AUDIT SUCCESS] Recorded ${action} by ${user.id}`);
+    }
+  } catch (err) {
+    console.error(`[AUDIT CRASH] Logger failed:`, err);
   }
 }

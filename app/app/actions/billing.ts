@@ -7,6 +7,11 @@ import { getStripeClient, getStripePriceId } from "@/lib/billing/stripe";
 import { resolvePlanKey } from "@/lib/plans";
 import { isFounder } from "@/lib/utils/founder";
 
+// Legacy plan_code uses different values (starter vs basic)
+function toLegacyPlanCode(planKey: string): string {
+  return planKey === "basic" ? "starter" : planKey;
+}
+
 export async function startCheckout(formData: FormData) {
   const supabase = await createSupabaseServerClient();
   const {
@@ -121,7 +126,9 @@ export async function startCheckout(formData: FormData) {
   });
 
   await admin.from("org_subscriptions").upsert({
+    org_id: orgId, // Legacy column
     organization_id: orgId,
+    plan_code: toLegacyPlanCode(planKey), // Legacy column with different values
     plan_key: planKey,
     status: "pending",
     stripe_customer_id: customerId,

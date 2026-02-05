@@ -1347,7 +1347,7 @@ function Hero() {
               className="text-lg sm:text-xl text-gray-400 mb-4 max-w-2xl mx-auto text-center leading-relaxed"
             >
               The operating system for governance, controls, evidence, and audit
-              defense. Not a document repository—a system that enforces
+              defense. Not a document repository. A system that enforces
               accountability.
             </motion.p>
 
@@ -1576,7 +1576,7 @@ function ValueProposition() {
             transition={{ duration: 1, delay: 0.3 }}
           >
             Real-time compliance state. Immutable evidence chains.
-            System-enforced accountability—not spreadsheet-level tracking.
+            System-enforced accountability, not spreadsheet-level tracking.
           </motion.p>
 
           <div className="grid md:grid-cols-2 gap-8 text-left">
@@ -1681,7 +1681,7 @@ const steps = [
     id: 'execute',
     title: 'Operationalize',
     description:
-      'Controls become enforced workflows. Tasks are assigned, deadlines are tracked, escalations are automatic. The OS ensures execution—not just intention.',
+      'Controls become enforced workflows. Tasks are assigned, deadlines are tracked, escalations are automatic. The OS ensures execution, not just intention.',
     icon: Zap,
     variant: 'connecting' as const,
     color: 'from-blue-500 to-purple-500',
@@ -1709,7 +1709,7 @@ const steps = [
     id: 'prove',
     title: 'Defend',
     description:
-      'When auditors arrive, the evidence is already assembled. Chain of custody, timestamps, attestations—all exportable, all defensible, all undeniable.',
+      'When auditors arrive, the evidence is already assembled. Chain of custody, timestamps, attestations. All exportable, all defensible, all undeniable.',
     icon: FileCheck,
     variant: 'complete' as const,
     color: 'from-pink-500 to-cyan-500',
@@ -2121,7 +2121,7 @@ function VersionControlHighlight() {
       icon: History,
       title: 'Automatic Versioning',
       description:
-        'Every upload creates a new version automatically—no user action required.',
+        'Every upload creates a new version automatically. No user action required.',
     },
     {
       icon: Shield,
@@ -2133,7 +2133,7 @@ function VersionControlHighlight() {
       icon: RotateCcw,
       title: 'One-Click Rollback',
       description:
-        'Restore any previous version in seconds—critical for audit defense.',
+        'Restore any previous version in seconds. Critical for audit defense.',
     },
   ];
 
@@ -2178,7 +2178,7 @@ function VersionControlHighlight() {
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
             Complete version history on every evidence upload with SHA-256
-            checksum validation and one-click rollback—built-in from $159/mo.
+            checksum validation and one-click rollback. Built-in from $159/mo.
           </p>
         </motion.div>
 
@@ -2934,7 +2934,7 @@ function HealthcareHighlight() {
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
             Complete patient management, incident reporting, and clinical
-            governance workflows—HIPAA and NDIS ready.
+            governance workflows. HIPAA and NDIS ready.
           </p>
         </motion.div>
 
@@ -3881,7 +3881,7 @@ function CTASection() {
             className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed"
           >
             Stop managing compliance manually. FormaOS enforces controls,
-            captures evidence, and keeps you audit-ready—every single day.
+            captures evidence, and keeps you audit-ready. Every single day.
           </motion.p>
 
           {/* Enhanced CTA buttons with improved micro-interactions */}

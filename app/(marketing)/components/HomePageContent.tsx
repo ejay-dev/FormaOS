@@ -330,7 +330,7 @@ export function HomePageContent() {
           >
             <p className="text-foreground/60 text-sm sm:text-base mb-6 max-w-2xl mx-auto">
               Each node represents a core compliance function. Changes flow
-              through the system—updating controls triggers evidence
+              through the system. Updating controls triggers evidence
               requirements, which cascade to audit readiness.
             </p>
             <Link
@@ -372,7 +372,7 @@ export function HomePageContent() {
                   </span>
                 </>
               }
-              subtitle="From framework alignment to audit export—every step connected, traced, and defensible"
+              subtitle="From framework alignment to audit export. Every step connected, traced, and defensible"
               alignment="center"
             />
           </Reveal>
@@ -445,7 +445,7 @@ export function HomePageContent() {
                   </span>
                 </>
               }
-              subtitle="FormaOS is a true operating system for compliance—with interconnected modules working as one platform"
+              subtitle="FormaOS is a true operating system for compliance with interconnected modules working as one platform"
               alignment="center"
             />
           </Reveal>
@@ -503,7 +503,7 @@ export function HomePageContent() {
                 <span className="text-gradient-system">out of the box</span>
               </>
             }
-            subtitle="Evidence version control, workflow automation, and enterprise compliance—built-in from $159/mo"
+            subtitle="Evidence version control, workflow automation, and enterprise compliance. Built-in from $159/mo"
             alignment="center"
           />
 
@@ -560,7 +560,7 @@ export function HomePageContent() {
                 </span>
               </>
             }
-            subtitle="Complete version history on every evidence upload with SHA-256 checksum validation and one-click rollback—built-in from $159/mo"
+            subtitle="Complete version history on every evidence upload with SHA-256 checksum validation and one-click rollback. Built-in from $159/mo"
             alignment="center"
           />
 
@@ -570,7 +570,7 @@ export function HomePageContent() {
                 icon: History,
                 title: 'Automatic Versioning',
                 description:
-                  'Every upload creates a new version automatically—no user action required',
+                  'Every upload creates a new version automatically. No user action required',
               },
               {
                 icon: Shield,
@@ -582,7 +582,7 @@ export function HomePageContent() {
                 icon: RotateCcw,
                 title: 'One-Click Rollback',
                 description:
-                  'Restore any previous version in seconds—critical for audit defense',
+                  'Restore any previous version in seconds. Critical for audit defense',
               },
             ].map((feature, idx) => (
               <motion.div
@@ -703,7 +703,7 @@ export function HomePageContent() {
                 </span>
               </>
             }
-            subtitle="Complete patient management, incident reporting, and clinical governance workflows—HIPAA and NDIS ready"
+            subtitle="Complete patient management, incident reporting, and clinical governance workflows. HIPAA and NDIS ready"
             alignment="center"
           />
 

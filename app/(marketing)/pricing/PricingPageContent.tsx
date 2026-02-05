@@ -133,7 +133,7 @@ export function PricingHero() {
               className="text-base text-gray-500 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
             >
               Our pricing reflects the level of governance, automation, and
-              regulatory accountability your organization requires — from
+              regulatory accountability your organization requires, from
               foundational process tracking to enterprise-wide audit
               infrastructure.
             </motion.p>
@@ -840,7 +840,7 @@ function TransparentPricing() {
           className="text-center text-gray-400 mt-12 text-lg"
         >
           Because in regulated environments, these are not &quot;premium
-          features&quot; — they are necessities.
+          features.&quot; They are necessities.
         </motion.p>
       </div>
     </section>

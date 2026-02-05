@@ -1,0 +1,8 @@
+
+> formaos@0.1.0 typecheck
+> npm run type-check
+
+
+> formaos@0.1.0 type-check
+> tsc --noEmit
+
