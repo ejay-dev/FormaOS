@@ -12,17 +12,17 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { StaticImageData } from 'next/image';
-import complianceDashboardHero from '@/test-results/screenshots/B4-dashboard.png';
-import tasksWorkflowHero from '@/test-results/screenshots/C9-tasks-page.png';
-import rbacHero from '@/test-results/screenshots/C12-rbac-redirect.png';
-import workspaceHero from '@/test-results/screenshots/A3-post-login.png';
-import adminAccessHero from '@/QA_UPGRADES/RESULTS/critical-user-journeys-CRI-516e8--cannot-access-admin-routes-chromium/test-failed-1.png';
-import monitoringHero from '@/QA_UPGRADES/RESULTS/critical-user-journeys-CRI-e2d9e-console-not-user-dashboard--chromium/test-failed-1.png';
-import soc2Hero from '@/QA_UPGRADES/RESULTS/critical-user-journeys-CRI-50a4f-user-login-resumes-properly-chromium/test-failed-1.png';
-import controlsMapHero from '@/QA_UPGRADES/RESULTS/critical-user-journeys-CRI-dd0d7-hboard-NO-PRICING-REDIRECT--chromium/test-failed-1.png';
-import policyLifecycleHero from '@/selenium-tests/test-results/screenshots/testAcceptInviteFlow_20260119_004735.png';
-import vendorRiskHero from '@/selenium-tests/test-results/screenshots/uat_invite_flow.png';
-import retentionHero from '@/selenium-tests/test-results/screenshots/testAcceptInviteFlow_20260119_010306.png';
+import complianceDashboardHero from '@/public/blog/B4-dashboard.png';
+import tasksWorkflowHero from '@/public/blog/C9-tasks-page.png';
+import rbacHero from '@/public/blog/C12-rbac-redirect.png';
+import workspaceHero from '@/public/blog/A3-post-login.png';
+import adminAccessHero from '@/public/blog/admin-access.png';
+import monitoringHero from '@/public/blog/monitoring.png';
+import soc2Hero from '@/public/blog/soc2.png';
+import controlsMapHero from '@/public/blog/controls-map.png';
+import policyLifecycleHero from '@/public/blog/policy-lifecycle.png';
+import vendorRiskHero from '@/public/blog/vendor-risk.png';
+import retentionHero from '@/public/blog/retention.png';
 
 export type BlogSection = {
   heading: string;
