@@ -24,9 +24,10 @@ export async function createTask(formData: FormData) {
     throw new Error("Organization mismatch.");
   }
 
-  const title = formData.get("title") as string;
-  const priority = formData.get("priority") as string;
-  const dueDate = formData.get("dueDate") as string;
+  const title = (formData.get("title") as string) || "";
+  const priority = (formData.get("priority") as string) || "standard";
+  const dueDateRaw = (formData.get("dueDate") as string) || "";
+  const dueDate = dueDateRaw.trim() === "" ? null : dueDateRaw;
   const recurrenceDays = parseInt(formData.get("recurrenceDays") as string) || 0;
   const patientId = (formData.get("patientId") as string) || null;
 

@@ -106,7 +106,7 @@ export default async function SettingsPage() {
     );
   }
 
-  const isAdmin = membership.role === "admin";
+  const isAdmin = membership.role === "admin" || membership.role === "owner";
 
   // ✅ UPGRADE: Fetch "At Risk" documents from the new view
   const { data: atRiskDocs } = await supabase

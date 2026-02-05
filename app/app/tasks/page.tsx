@@ -1,16 +1,19 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { 
-  CheckCircle2, 
-  Circle, 
-  Clock, 
+import {
+  CheckCircle2,
+  Circle,
+  Clock,
   MoreVertical,
   ShieldCheck,
   Search,
   Filter,
-  Plus
+  Plus,
+  Calendar,
+  RefreshCcw,
 } from "lucide-react";
 import Link from "next/link";
 import { EvidenceButton } from "@/components/tasks/evidence-button";
+import { createTask } from "@/app/app/actions/tasks";
 
 type TaskRow = {
   id: string;
@@ -62,10 +65,74 @@ export default async function TasksPage() {
             <div className="px-4 py-2 bg-white/5 rounded-xl border border-white/10 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                 {completed.length} / {allTasks.length} Controls Verified
             </div>
-            <button className="bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:brightness-110 transition-all flex items-center gap-2 shadow-[0_10px_30px_rgba(59,130,246,0.35)]">
+            <details className="group">
+              <summary className="list-none cursor-pointer bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:brightness-110 transition-all flex items-center gap-2 shadow-[0_10px_30px_rgba(59,130,246,0.35)]">
                 <Plus className="h-4 w-4" />
                 Add Requirement
-            </button>
+              </summary>
+              <div className="mt-4 bg-white/5 border border-white/10 rounded-2xl p-5 shadow-[0_16px_40px_rgba(0,0,0,0.35)] min-w-[320px]">
+                <form action={createTask} className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                      Requirement title
+                    </label>
+                    <input
+                      name="title"
+                      required
+                      placeholder="e.g. Verify staff credential renewal"
+                      className="w-full rounded-xl border border-white/10 bg-[hsl(var(--card))] px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-white/20"
+                    />
+                  </div>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                        Priority
+                      </label>
+                      <select
+                        name="priority"
+                        defaultValue="standard"
+                        className="w-full rounded-xl border border-white/10 bg-[hsl(var(--card))] px-4 py-2.5 text-sm text-slate-100 focus:outline-white/20"
+                      >
+                        <option value="critical">Critical</option>
+                        <option value="high">High</option>
+                        <option value="standard">Standard</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                        Due date (optional)
+                      </label>
+                      <div className="relative">
+                        <Calendar className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                        <input
+                          type="date"
+                          name="dueDate"
+                          className="w-full rounded-xl border border-white/10 bg-[hsl(var(--card))] pl-9 pr-4 py-2.5 text-sm text-slate-100 focus:outline-white/20"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                      Recurrence (days, optional)
+                    </label>
+                    <div className="relative">
+                      <RefreshCcw className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                      <input
+                        type="number"
+                        name="recurrenceDays"
+                        min={0}
+                        placeholder="0"
+                        className="w-full rounded-xl border border-white/10 bg-[hsl(var(--card))] pl-9 pr-4 py-2.5 text-sm text-slate-100 focus:outline-white/20"
+                      />
+                    </div>
+                  </div>
+                  <button className="w-full rounded-xl bg-sky-500/90 hover:bg-sky-400 text-slate-950 text-sm font-bold py-2.5 transition-all">
+                    Save Requirement
+                  </button>
+                </form>
+              </div>
+            </details>
         </div>
       </div>
 
