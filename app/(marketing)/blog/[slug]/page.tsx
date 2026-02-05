@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { CalendarDays, Clock, User } from 'lucide-react';
 import { blogPosts, getCategoryId } from '../blogData';
+import { BlogHeroVisual } from '@/components/blog/BlogHeroVisual';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -67,16 +67,12 @@ export default async function BlogPostPage({ params }: PageProps) {
             </div>
           </div>
 
-          <div className="relative mt-10 aspect-video w-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl shadow-black/30">
-            <Image
-              src={post.heroImage}
-              alt={post.heroAlt}
-              fill
-              priority
-              sizes="(min-width: 1024px) 66vw, 100vw"
-              className="object-cover"
+          <div className="mt-10">
+            <BlogHeroVisual
+              category={post.category}
+              icon={post.icon}
+              title={post.title}
             />
-            <div className="absolute inset-0 bg-gradient-to-tr from-black/50 via-black/10 to-transparent" />
           </div>
         </section>
 

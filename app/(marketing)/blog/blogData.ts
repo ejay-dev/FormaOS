@@ -11,13 +11,6 @@ import {
   Zap,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import type { StaticImageData } from 'next/image';
-import dashboardHero from '@/public/marketing/screenshots/dashboard.png';
-import tasksHero from '@/public/marketing/screenshots/tasks.png';
-import vaultHero from '@/public/marketing/screenshots/vault.png';
-import settingsHero from '@/public/marketing/screenshots/settings.png';
-import complianceHero from '@/public/marketing/screenshots/compliance.png';
-import reportsHero from '@/public/marketing/screenshots/reports.png';
 
 export type BlogSection = {
   heading: string;
@@ -35,8 +28,6 @@ export type BlogPost = {
   date: string;
   readTime: string;
   category: string;
-  heroImage: StaticImageData;
-  heroAlt: string;
   icon: LucideIcon;
   featured?: boolean;
   sections: BlogSection[];
@@ -52,8 +43,6 @@ export const blogPosts: BlogPost[] = [
     date: 'February 2, 2026',
     readTime: '10 min read',
     category: 'Compliance',
-    heroImage: dashboardHero,
-    heroAlt: 'FormaOS compliance dashboard with control status and evidence',
     icon: Sparkles,
     featured: true,
     sections: [
@@ -144,8 +133,6 @@ export const blogPosts: BlogPost[] = [
     date: 'January 20, 2026',
     readTime: '9 min read',
     category: 'NDIS',
-    heroImage: tasksHero,
-    heroAlt: 'FormaOS task workflow view with evidence-ready tasks',
     icon: Building2,
     sections: [
       {
@@ -228,8 +215,6 @@ export const blogPosts: BlogPost[] = [
     date: 'January 12, 2026',
     readTime: '8 min read',
     category: 'Security',
-    heroImage: settingsHero,
-    heroAlt: 'FormaOS RBAC configuration and access controls interface',
     icon: Shield,
     sections: [
       {
@@ -304,9 +289,6 @@ export const blogPosts: BlogPost[] = [
     date: 'January 6, 2026',
     readTime: '7 min read',
     category: 'Technology',
-    heroImage: vaultHero,
-    heroAlt:
-      'FormaOS product overview showing evidence automation and workflows',
     icon: Zap,
     sections: [
       {
@@ -382,8 +364,6 @@ export const blogPosts: BlogPost[] = [
     date: 'December 18, 2025',
     readTime: '8 min read',
     category: 'Compliance',
-    heroImage: settingsHero,
-    heroAlt: 'FormaOS admin governance screen with access controls',
     icon: FileCheck,
     sections: [
       {
@@ -459,8 +439,6 @@ export const blogPosts: BlogPost[] = [
     date: 'December 4, 2025',
     readTime: '7 min read',
     category: 'Technology',
-    heroImage: complianceHero,
-    heroAlt: 'FormaOS monitoring console with alerts and control health',
     icon: TrendingUp,
     sections: [
       {
@@ -534,8 +512,6 @@ export const blogPosts: BlogPost[] = [
     date: 'November 22, 2025',
     readTime: '9 min read',
     category: 'Security',
-    heroImage: settingsHero,
-    heroAlt: 'FormaOS security view highlighting SOC 2 readiness work',
     icon: Shield,
     sections: [
       {
@@ -609,8 +585,6 @@ export const blogPosts: BlogPost[] = [
     date: 'November 6, 2025',
     readTime: '8 min read',
     category: 'Compliance',
-    heroImage: complianceHero,
-    heroAlt: 'FormaOS control mapping view for risk-based oversight',
     icon: Layers,
     sections: [
       {
@@ -684,8 +658,6 @@ export const blogPosts: BlogPost[] = [
     date: 'October 18, 2025',
     readTime: '7 min read',
     category: 'Product Updates',
-    heroImage: tasksHero,
-    heroAlt: 'FormaOS workflow screen for policy approvals and reviews',
     icon: ClipboardCheck,
     sections: [
       {
@@ -759,8 +731,6 @@ export const blogPosts: BlogPost[] = [
     date: 'September 28, 2025',
     readTime: '8 min read',
     category: 'Security',
-    heroImage: settingsHero,
-    heroAlt: 'FormaOS vendor invite and access workflow screen',
     icon: Lock,
     sections: [
       {
@@ -833,8 +803,6 @@ export const blogPosts: BlogPost[] = [
     date: 'September 10, 2025',
     readTime: '8 min read',
     category: 'Compliance',
-    heroImage: vaultHero,
-    heroAlt: 'FormaOS evidence workflow for retention and approvals',
     icon: BookOpen,
     sections: [
       {

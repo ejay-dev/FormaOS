@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import {
   BookOpen,
   ArrowRight,
@@ -215,18 +214,15 @@ function FeaturedPost() {
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-cyan-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
 
               <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
-                {/* Image placeholder */}
-                <div className="relative w-full lg:w-1/2 aspect-video rounded-2xl overflow-hidden border border-white/5">
-                  <Image
-                    src={featuredPost.heroImage}
-                    alt={featuredPost.heroAlt}
-                    fill
-                    priority
-                    sizes="(min-width: 1024px) 50vw, 100vw"
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-black/10 to-transparent" />
-                  <div className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-black/40 px-3 py-1 text-xs text-white/80">
+                {/* Category visual */}
+                <div className="relative w-full lg:w-1/2 aspect-video rounded-2xl overflow-hidden border border-white/5 bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-transparent">
+                  <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-transparent" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
+                      <featuredPost.icon className="w-16 h-16 text-purple-400" />
+                    </div>
+                  </div>
+                  <div className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-black/40 backdrop-blur-sm px-3 py-1 text-xs text-white/80 border border-white/10">
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>Featured article</span>
                   </div>
@@ -377,15 +373,13 @@ function BlogCard({
           {/* Top accent */}
           <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-purple-400/30 transition-colors" />
 
-          <div className="relative mb-5 h-28 w-full rounded-xl overflow-hidden border border-white/5">
-            <Image
-              src={post.heroImage}
-              alt={post.heroAlt}
-              fill
-              sizes="(min-width: 1024px) 20vw, (min-width: 768px) 33vw, 100vw"
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+          <div className="relative mb-5 h-28 w-full rounded-xl overflow-hidden border border-white/5 bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-transparent group-hover:from-purple-500/20 transition-all duration-500">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 group-hover:bg-white/10 transition-all duration-500">
+                <Icon className="w-8 h-8 text-purple-400 group-hover:text-purple-300 transition-colors" />
+              </div>
+            </div>
           </div>
 
           {/* Icon header */}
