@@ -1,6 +1,7 @@
 "use server"
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
 import { logActivity } from "@/lib/logger";
 import { requirePermission } from "@/app/app/actions/rbac";
@@ -27,14 +28,16 @@ export async function updateOrganization(data: {
     throw new Error("Security Violation: Only authorized users can modify organization settings.");
   }
 
-  // 2. Update Organization Metadata
-  const { error } = await supabase
+  const admin = createSupabaseAdminClient();
+
+  // 2. Update Organization Metadata (admin client bypasses strict org RLS)
+  const { error } = await admin
     .from("organizations")
     .update({
       name: data.name,
       domain: data.domain,
       registration_number: data.registrationNumber,
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     })
     .eq("id", membership.organization_id);
 
