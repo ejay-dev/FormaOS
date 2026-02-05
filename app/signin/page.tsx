@@ -1,11 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { createSupabaseClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { Shield, CheckCircle2, ArrowRight } from 'lucide-react';
+
+const appBase = (process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.formaos.com.au').replace(/\/$/, '');
 
 function SignInContent() {
   const searchParams = useSearchParams();
@@ -13,6 +15,23 @@ function SignInContent() {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const bootstrapAndRedirect = useCallback(async () => {
+    try {
+      const response = await fetch('/api/auth/bootstrap', { method: 'POST' });
+      if (!response.ok) {
+        window.location.href = `${appBase}/app`;
+        return;
+      }
+      const payload = await response.json();
+      const next = typeof payload?.next === 'string' ? payload.next : '/app';
+      window.location.href = next.startsWith('http')
+        ? next
+        : `${appBase}${next.startsWith('/') ? '' : '/'}${next}`;
+    } catch {
+      window.location.href = `${appBase}/app`;
+    }
+  }, []);
 
   // Check for error messages from URL params (e.g., from auth callback)
   useEffect(() => {
@@ -23,6 +42,33 @@ function SignInContent() {
       setErrorMessage(decodeURIComponent(message));
     }
   }, [searchParams]);
+
+  // Handle email confirmation or existing session redirects
+  useEffect(() => {
+    const supabase = createSupabaseClient();
+
+    const handleAuthRedirect = async () => {
+      try {
+        const hasHash = typeof window !== 'undefined' && window.location.hash.includes('access_token=');
+        if (hasHash) {
+          const { error } = await supabase.auth.getSessionFromUrl({ storeSession: true });
+          if (error) {
+            setErrorMessage(error.message ?? 'Authentication failed. Please sign in again.');
+            return;
+          }
+        }
+
+        const { data } = await supabase.auth.getSession();
+        if (data?.session) {
+          await bootstrapAndRedirect();
+        }
+      } catch (err) {
+        setErrorMessage('Authentication failed. Please sign in again.');
+      }
+    };
+
+    handleAuthRedirect();
+  }, [bootstrapAndRedirect]);
 
   const signInWithGoogle = async () => {
     setErrorMessage(null);
@@ -77,22 +123,7 @@ function SignInContent() {
       return;
     }
 
-    // Redirect will be handled by middleware
-    // Redirect to app host using runtime app URL if available
-    try {
-      const res = await fetch('/api/debug/env');
-      const json = await res.json();
-      const runtimeBase =
-        json?.env?.appUrl ??
-        process.env.NEXT_PUBLIC_APP_URL ??
-        window.location.origin;
-      window.location.href = `${String(runtimeBase).replace(/\/$/, '')}/app`;
-    } catch {
-      const fallback = (
-        process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin
-      ).replace(/\/$/, '');
-      window.location.href = `${fallback}/app`;
-    }
+    await bootstrapAndRedirect();
   };
 
   return (
@@ -244,7 +275,7 @@ function SignInContent() {
               <p className="text-center text-sm text-slate-400">
                 New to FormaOS?{' '}
                 <Link
-                  href="/auth/signup"
+                  href={`${appBase}/auth/signup`}
                   className="font-semibold text-sky-400 hover:text-sky-300 transition-colors"
                 >
                   Start your compliance journey

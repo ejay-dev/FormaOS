@@ -82,12 +82,10 @@ function SignUpContent() {
       const base = (
         process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin
       ).replace(/\/$/, '');
-      const redirectTo = plan
-        ? `${base}/auth/callback?plan=${encodeURIComponent(plan.key)}`
-        : `${base}/auth/callback`;
+      const emailRedirectTo = `${base}/auth/signin`;
       const options = plan
-        ? { emailRedirectTo: redirectTo, data: { selected_plan: plan.key } }
-        : { emailRedirectTo: redirectTo };
+        ? { emailRedirectTo, data: { selected_plan: plan.key } }
+        : { emailRedirectTo };
 
       const supabase = createSupabaseClient();
       const { data, error } = await supabase.auth.signUp({
@@ -103,7 +101,7 @@ function SignUpContent() {
       }
 
       if (data?.session) {
-        window.location.href = redirectTo;
+        window.location.href = emailRedirectTo;
         return;
       }
 
