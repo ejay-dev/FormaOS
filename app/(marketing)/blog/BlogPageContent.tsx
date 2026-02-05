@@ -191,6 +191,8 @@ function BlogHero() {
 // ============================================================================
 
 function FeaturedPost() {
+  const FeaturedIcon = featuredPost.icon;
+
   return (
     <section className="relative py-16 bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c]">
       <div className="max-w-6xl mx-auto px-6 lg:px-12">
@@ -219,7 +221,7 @@ function FeaturedPost() {
                   <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-transparent" />
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
-                      <featuredPost.icon className="w-16 h-16 text-purple-400" />
+                      <FeaturedIcon className="w-16 h-16 text-purple-400" />
                     </div>
                   </div>
                   <div className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-black/40 backdrop-blur-sm px-3 py-1 text-xs text-white/80 border border-white/10">

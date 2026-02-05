@@ -1,12 +1,25 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import {
+  Sparkles,
+  Building2,
+  Shield,
+  Zap,
+  FileCheck,
+  TrendingUp,
+  Layers,
+  ClipboardCheck,
+  Lock,
+  BookOpen,
+} from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 type CategoryConfig = {
   gradient: string;
   accentGradient: string;
   glowColor: string;
+  icon: LucideIcon;
   nodes?: { x: string; y: string; size: string; delay: number }[];
 };
 
@@ -15,6 +28,7 @@ const categoryConfigs: Record<string, CategoryConfig> = {
     gradient: 'from-emerald-500/20 via-cyan-500/10 to-blue-500/5',
     accentGradient: 'from-emerald-400 to-cyan-500',
     glowColor: 'rgba(16, 185, 129, 0.3)',
+    icon: Sparkles,
     nodes: [
       { x: '15%', y: '25%', size: '8px', delay: 0 },
       { x: '85%', y: '30%', size: '6px', delay: 0.2 },
@@ -26,6 +40,7 @@ const categoryConfigs: Record<string, CategoryConfig> = {
     gradient: 'from-purple-500/20 via-pink-500/10 to-rose-500/5',
     accentGradient: 'from-purple-400 to-pink-500',
     glowColor: 'rgba(168, 85, 247, 0.3)',
+    icon: Building2,
     nodes: [
       { x: '20%', y: '30%', size: '9px', delay: 0.1 },
       { x: '80%', y: '25%', size: '7px', delay: 0.3 },
@@ -36,6 +51,7 @@ const categoryConfigs: Record<string, CategoryConfig> = {
     gradient: 'from-red-500/20 via-orange-500/10 to-yellow-500/5',
     accentGradient: 'from-red-400 to-orange-500',
     glowColor: 'rgba(239, 68, 68, 0.3)',
+    icon: Shield,
     nodes: [
       { x: '10%', y: '20%', size: '8px', delay: 0 },
       { x: '90%', y: '35%', size: '9px', delay: 0.2 },
@@ -47,6 +63,7 @@ const categoryConfigs: Record<string, CategoryConfig> = {
     gradient: 'from-blue-500/20 via-indigo-500/10 to-purple-500/5',
     accentGradient: 'from-blue-400 to-indigo-500',
     glowColor: 'rgba(59, 130, 246, 0.3)',
+    icon: Zap,
     nodes: [
       { x: '25%', y: '28%', size: '10px', delay: 0.1 },
       { x: '75%', y: '32%', size: '8px', delay: 0.3 },
@@ -57,6 +74,7 @@ const categoryConfigs: Record<string, CategoryConfig> = {
     gradient: 'from-cyan-500/20 via-teal-500/10 to-emerald-500/5',
     accentGradient: 'from-cyan-400 to-teal-500',
     glowColor: 'rgba(6, 182, 212, 0.3)',
+    icon: ClipboardCheck,
     nodes: [
       { x: '18%', y: '22%', size: '9px', delay: 0 },
       { x: '82%', y: '28%', size: '7px', delay: 0.2 },
@@ -67,15 +85,14 @@ const categoryConfigs: Record<string, CategoryConfig> = {
 
 export function BlogHeroVisual({
   category,
-  icon: Icon,
   title,
 }: {
   category: string;
-  icon: LucideIcon;
   title: string;
 }) {
   const config =
     categoryConfigs[category.toLowerCase()] || categoryConfigs.compliance;
+  const Icon = config.icon;
 
   return (
     <div className="relative w-full h-[400px] overflow-hidden rounded-2xl bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] border border-white/10">

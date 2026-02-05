@@ -70,7 +70,6 @@ export default async function BlogPostPage({ params }: PageProps) {
           <div className="mt-10">
             <BlogHeroVisual
               category={post.category}
-              icon={post.icon}
               title={post.title}
             />
           </div>
