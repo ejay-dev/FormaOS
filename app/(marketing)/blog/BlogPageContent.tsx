@@ -1,7 +1,8 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   BookOpen,
   ArrowRight,
@@ -9,112 +10,27 @@ import {
   User,
   Tag,
   TrendingUp,
-  Shield,
-  FileCheck,
-  Zap,
-  Building2,
   ChevronRight,
   Sparkles,
   CalendarDays,
+  Search,
 } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { VisualDivider } from '@/components/motion';
 import CinematicField from '../components/motion/CinematicField';
+import {
+  blogPosts,
+  featuredPost,
+  getCategoryCounts,
+  getCategoryId,
+} from './blogData';
 
 // ============================================================================
 // BLOG DATA
 // ============================================================================
 
-const categories = [
-  { id: 'all', name: 'All Posts', count: 12 },
-  { id: 'compliance', name: 'Compliance', count: 4 },
-  { id: 'technology', name: 'Technology', count: 3 },
-  { id: 'ndis', name: 'NDIS', count: 2 },
-  { id: 'security', name: 'Security', count: 2 },
-  { id: 'updates', name: 'Product Updates', count: 1 },
-];
-
-const featuredPost = {
-  id: 'compliance-operating-system',
-  title: 'Why Your Organization Needs a Compliance Operating System',
-  excerpt:
-    'Discover how modern compliance operating systems are replacing fragmented tools and manual processes to deliver real-time assurance, defensible audit trails, and operational efficiency.',
-  author: 'FormaOS Team',
-  date: 'January 15, 2025',
-  readTime: '8 min read',
-  category: 'Compliance',
-  image: '/blog/compliance-os.jpg',
-  featured: true,
-};
-
-const blogPosts = [
-  {
-    id: 'ndis-practice-standards-2025',
-    title: 'NDIS Practice Standards 2025: What Providers Need to Know',
-    excerpt:
-      'A comprehensive guide to the updated NDIS Practice Standards and how to ensure your organization remains compliant with the new requirements.',
-    author: 'Compliance Team',
-    date: 'January 10, 2025',
-    readTime: '6 min read',
-    category: 'NDIS',
-    icon: Building2,
-  },
-  {
-    id: 'immutable-audit-trails',
-    title: 'The Power of Immutable Audit Trails in Regulatory Defense',
-    excerpt:
-      'Learn how immutable audit trails provide bulletproof evidence chains that satisfy even the most rigorous regulatory scrutiny.',
-    author: 'Security Team',
-    date: 'January 5, 2025',
-    readTime: '5 min read',
-    category: 'Security',
-    icon: Shield,
-  },
-  {
-    id: 'automated-evidence-collection',
-    title: 'From Manual to Automatic: Evidence Collection Reimagined',
-    excerpt:
-      'See how FormaOS automatically generates compliance evidence as work is completed, eliminating retroactive documentation burden.',
-    author: 'Product Team',
-    date: 'December 28, 2024',
-    readTime: '4 min read',
-    category: 'Technology',
-    icon: Zap,
-  },
-  {
-    id: 'governance-framework-design',
-    title: 'Designing a Governance Framework That Actually Works',
-    excerpt:
-      'Best practices for structuring policies, controls, and workflows that create accountability and drive compliance outcomes.',
-    author: 'FormaOS Team',
-    date: 'December 20, 2024',
-    readTime: '7 min read',
-    category: 'Compliance',
-    icon: FileCheck,
-  },
-  {
-    id: 'real-time-compliance-monitoring',
-    title: 'Real-Time Compliance Monitoring: Beyond the Dashboard',
-    excerpt:
-      'How modern compliance platforms provide actionable insights, not just metrics, to keep your organization audit-ready.',
-    author: 'Product Team',
-    date: 'December 15, 2024',
-    readTime: '5 min read',
-    category: 'Technology',
-    icon: TrendingUp,
-  },
-  {
-    id: 'security-soc2-journey',
-    title: 'Our SOC 2 Journey: Lessons Learned Building FormaOS',
-    excerpt:
-      'A transparent look at how we applied our own principles to achieve SOC 2 compliance and what we learned along the way.',
-    author: 'Engineering Team',
-    date: 'December 8, 2024',
-    readTime: '6 min read',
-    category: 'Security',
-    icon: Shield,
-  },
-];
+const categories = getCategoryCounts(blogPosts);
+const parseDate = (value: string) => new Date(value).getTime();
 
 // ============================================================================
 // HERO SECTION
@@ -122,6 +38,13 @@ const blogPosts = [
 
 function BlogHero() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const latestPostDate = useMemo(() => {
+    const sorted = [...blogPosts].sort(
+      (a, b) => parseDate(b.date) - parseDate(a.date),
+    );
+    return sorted[0]?.date;
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
@@ -227,17 +150,19 @@ function BlogHero() {
               className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500"
             >
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-800/50 border border-gray-700/50">
-                <FileCheck className="w-4 h-4 text-purple-400" />
-                <span>12 Articles</span>
+                <Tag className="w-4 h-4 text-purple-400" />
+                <span>{blogPosts.length} Articles</span>
               </div>
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-800/50 border border-gray-700/50">
-                <Tag className="w-4 h-4 text-pink-400" />
-                <span>5 Categories</span>
+                <BookOpen className="w-4 h-4 text-pink-400" />
+                <span>{categories.length - 1} Categories</span>
               </div>
-              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-800/50 border border-gray-700/50">
-                <TrendingUp className="w-4 h-4 text-cyan-400" />
-                <span>Updated Weekly</span>
-              </div>
+              {latestPostDate ? (
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-800/50 border border-gray-700/50">
+                  <TrendingUp className="w-4 h-4 text-cyan-400" />
+                  <span>Last updated {latestPostDate}</span>
+                </div>
+              ) : null}
             </motion.div>
           </motion.div>
         </div>
@@ -291,10 +216,19 @@ function FeaturedPost() {
 
               <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
                 {/* Image placeholder */}
-                <div className="w-full lg:w-1/2 aspect-video rounded-2xl bg-gradient-to-br from-purple-500/20 via-pink-500/10 to-cyan-500/20 flex items-center justify-center border border-white/5">
-                  <div className="text-center">
-                    <Sparkles className="w-16 h-16 text-purple-400 mx-auto mb-4 opacity-50" />
-                    <span className="text-gray-500 text-sm">Featured Image</span>
+                <div className="relative w-full lg:w-1/2 aspect-video rounded-2xl overflow-hidden border border-white/5">
+                  <Image
+                    src={featuredPost.heroImage}
+                    alt={featuredPost.heroAlt}
+                    fill
+                    priority
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-black/10 to-transparent" />
+                  <div className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-black/40 px-3 py-1 text-xs text-white/80">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Featured article</span>
                   </div>
                 </div>
 
@@ -353,12 +287,20 @@ function FeaturedPost() {
 // CATEGORY FILTER
 // ============================================================================
 
-function CategoryFilter() {
-  const [activeCategory, setActiveCategory] = useState('all');
-
+function CategoryFilter({
+  activeCategory,
+  onCategoryChange,
+  searchQuery,
+  onSearchChange,
+}: {
+  activeCategory: string;
+  onCategoryChange: (category: string) => void;
+  searchQuery: string;
+  onSearchChange: (value: string) => void;
+}) {
   return (
     <section className="relative py-8 bg-gradient-to-b from-[#0d1421] to-[#0a0f1c]">
-      <div className="max-w-6xl mx-auto px-6 lg:px-12">
+      <div className="max-w-6xl mx-auto px-6 lg:px-12 space-y-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -369,7 +311,7 @@ function CategoryFilter() {
           {categories.map((category) => (
             <button
               key={category.id}
-              onClick={() => setActiveCategory(category.id)}
+              onClick={() => onCategoryChange(category.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeCategory === category.id
                   ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
@@ -380,6 +322,25 @@ function CategoryFilter() {
               <span className="text-xs opacity-60">({category.count})</span>
             </button>
           ))}
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="max-w-xl mx-auto"
+        >
+          <div className="flex items-center gap-3 px-4 py-3 rounded-full bg-gray-900/60 border border-white/10 text-gray-300 focus-within:border-purple-500/40 focus-within:ring-2 focus-within:ring-purple-500/20 transition">
+            <Search className="w-4 h-4 text-gray-400" />
+            <input
+              value={searchQuery}
+              onChange={(event) => onSearchChange(event.target.value)}
+              placeholder="Search articles"
+              className="flex-1 bg-transparent outline-none text-sm placeholder:text-gray-500"
+              type="search"
+            />
+          </div>
         </motion.div>
       </div>
     </section>
@@ -415,6 +376,17 @@ function BlogCard({
         <div className="relative h-full p-6 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-purple-500/30 transition-all duration-500 shadow-xl shadow-black/20">
           {/* Top accent */}
           <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-purple-400/30 transition-colors" />
+
+          <div className="relative mb-5 h-28 w-full rounded-xl overflow-hidden border border-white/5">
+            <Image
+              src={post.heroImage}
+              alt={post.heroAlt}
+              fill
+              sizes="(min-width: 1024px) 20vw, (min-width: 768px) 33vw, 100vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+          </div>
 
           {/* Icon header */}
           <div className="flex items-center justify-between mb-4">
@@ -465,7 +437,15 @@ function BlogCard({
 // BLOG GRID
 // ============================================================================
 
-function BlogGrid() {
+function BlogGrid({
+  posts,
+  onLoadMore,
+  hasMore,
+}: {
+  posts: typeof blogPosts;
+  onLoadMore: () => void;
+  hasMore: boolean;
+}) {
   return (
     <section className="relative py-16 bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c]">
       {/* Animated background */}
@@ -499,25 +479,36 @@ function BlogGrid() {
           Latest Articles
         </motion.h2>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {blogPosts.map((post, index) => (
-            <BlogCard key={post.id} post={post} index={index} />
-          ))}
-        </div>
+        {posts.length ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post, index) => (
+              <BlogCard key={post.id} post={post} index={index} />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-white/5 bg-gray-900/50 p-10 text-center text-gray-400">
+            No articles match your search. Try a different keyword or category.
+          </div>
+        )}
 
         {/* Load more */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="flex justify-center mt-12"
-        >
-          <button className="flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-white font-medium hover:border-purple-500/30 hover:bg-purple-500/10 transition-all">
-            <span>Load More Articles</span>
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </motion.div>
+        {hasMore ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex justify-center mt-12"
+          >
+            <button
+              onClick={onLoadMore}
+              className="flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-white font-medium hover:border-purple-500/30 hover:bg-purple-500/10 transition-all"
+            >
+              <span>Load More Articles</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </motion.div>
+        ) : null}
       </div>
     </section>
   );
@@ -602,6 +593,41 @@ function NewsletterCTA() {
 // ============================================================================
 
 export default function BlogPageContent() {
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [visibleCount, setVisibleCount] = useState(6);
+
+  const filteredPosts = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    const includeFeatured = activeCategory !== 'all' || query.length > 0;
+    return blogPosts
+      .filter((post) => (includeFeatured ? true : post.id !== featuredPost.id))
+      .filter((post) =>
+        activeCategory === 'all'
+          ? true
+          : getCategoryId(post.category) === activeCategory,
+      )
+      .filter((post) => {
+        if (!query) {
+          return true;
+        }
+        return (
+          post.title.toLowerCase().includes(query) ||
+          post.excerpt.toLowerCase().includes(query) ||
+          post.author.toLowerCase().includes(query) ||
+          post.category.toLowerCase().includes(query)
+        );
+      })
+      .sort((a, b) => parseDate(b.date) - parseDate(a.date));
+  }, [activeCategory, searchQuery]);
+
+  const visiblePosts = filteredPosts.slice(0, visibleCount);
+  const hasMore = filteredPosts.length > visibleCount;
+
+  useEffect(() => {
+    setVisibleCount(6);
+  }, [activeCategory, searchQuery]);
+
   return (
     <div className="relative min-h-screen bg-[#0a0f1c]">
       {/* Fixed particle background */}
@@ -617,8 +643,17 @@ export default function BlogPageContent() {
         <BlogHero />
         <VisualDivider gradient />
         <FeaturedPost />
-        <CategoryFilter />
-        <BlogGrid />
+        <CategoryFilter
+          activeCategory={activeCategory}
+          onCategoryChange={setActiveCategory}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
+        <BlogGrid
+          posts={visiblePosts}
+          hasMore={hasMore}
+          onLoadMore={() => setVisibleCount((count) => count + 6)}
+        />
         <VisualDivider gradient />
         <NewsletterCTA />
       </div>
