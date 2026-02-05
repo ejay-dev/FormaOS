@@ -171,7 +171,7 @@ async function verifyUserHasAccess(userId: string, email: string): Promise<void>
   logResult({
     test: `${email} has valid subscription`,
     passed: hasValidSub,
-    details: hasValidSub
+    details: hasValidSub && subscription
       ? `Plan: ${subscription.plan_key}, Status: ${subscription.status}`
       : 'No valid subscription'
   });
