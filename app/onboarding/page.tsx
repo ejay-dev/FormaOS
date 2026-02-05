@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { redirect } from 'next/navigation';
 import { Building2, ShieldCheck, Sparkles } from 'lucide-react';
 import { SubmitButton } from '@/components/ui/submit-button';
@@ -189,6 +190,7 @@ async function advanceWelcome() {
 async function saveOrgDetails(formData: FormData) {
   'use server';
   const { supabase, orgId, orgRecord } = await getOrgContext();
+  const admin = createSupabaseAdminClient();
 
   const nameRaw = (formData.get('organizationName') as string | null) ?? '';
   const teamSize = (formData.get('teamSize') as string | null) ?? '';
@@ -214,7 +216,7 @@ async function saveOrgDetails(formData: FormData) {
     redirect('/onboarding?step=2&error=1');
   }
 
-  await supabase
+  await admin
     .from('organizations')
     .update({
       name: sanitizedName,
@@ -233,6 +235,7 @@ async function saveOrgDetails(formData: FormData) {
 async function saveIndustrySelection(formData: FormData) {
   'use server';
   const { supabase, orgId, orgRecord } = await getOrgContext();
+  const admin = createSupabaseAdminClient();
   const industry = (formData.get('industry') as string | null) ?? '';
 
   const validation = validateIndustry(industry);
@@ -240,7 +243,7 @@ async function saveIndustrySelection(formData: FormData) {
     redirect('/onboarding?step=3&error=1');
   }
 
-  await supabase.from('organizations').update({ industry }).eq('id', orgId);
+  await admin.from('organizations').update({ industry }).eq('id', orgId);
 
   if (!orgRecord?.industry && INDUSTRY_PACKS[industry]) {
     try {
@@ -325,6 +328,7 @@ async function saveInvites(formData: FormData) {
 async function completeFirstAction(formData: FormData) {
   'use server';
   const { supabase, orgId, orgRecord, user } = await getOrgContext();
+  const admin = createSupabaseAdminClient();
   const action = (formData.get('firstAction') as string | null) ?? '';
 
   if (!action) {
@@ -366,7 +370,7 @@ async function completeFirstAction(formData: FormData) {
     );
   }
 
-  await supabase
+  await admin
     .from('organizations')
     .update({
       onboarding_completed: true,
