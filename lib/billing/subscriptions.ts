@@ -46,6 +46,34 @@ export async function ensureSubscription(orgId: string, planKey: string | null) 
   const nowIso = now.toISOString();
   const trialEndIso = isTrialEligible ? getTrialEndIso() : null;
 
+  // BACKFILL: Ensure legacy orgs table entry exists for org_subscriptions.org_id FK
+  try {
+    const { data: org } = await admin
+      .from("organizations")
+      .select("name, created_by")
+      .eq("id", orgId)
+      .maybeSingle();
+
+    if (org?.name) {
+      const { error: legacyOrgError } = await admin.from("orgs").upsert(
+        {
+          id: orgId,
+          name: org.name,
+          created_by: org.created_by ?? null,
+          created_at: nowIso,
+          updated_at: nowIso,
+        },
+        { onConflict: "id" },
+      );
+
+      if (legacyOrgError) {
+        console.error("[ensureSubscription] legacy orgs upsert failed", legacyOrgError);
+      }
+    }
+  } catch (error) {
+    console.error("[ensureSubscription] legacy orgs backfill error", error);
+  }
+
   const basePayload = {
     organization_id: orgId,
     plan_key: resolvedPlan,
