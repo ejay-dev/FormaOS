@@ -28,7 +28,6 @@ import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
-
 function HomeHero() {
   return (
     <section className="relative min-h-[70vh] sm:min-h-[80vh] lg:min-h-[90vh] flex items-center overflow-hidden">
@@ -345,7 +344,7 @@ export function HomePageClient() {
 
             <p className="text-lg text-foreground/70 max-w-3xl mx-auto leading-relaxed">
               FormaOS continuously measures your organization's compliance
-              posture — across teams, frameworks, and operational controls —
+              posture across teams, frameworks, and operational controls,
               without manual tracking.
             </p>
           </motion.div>

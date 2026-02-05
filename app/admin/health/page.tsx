@@ -1,10 +1,10 @@
-import { getAdminFetchConfig } from "@/app/admin/lib";
-import { Activity, AlertCircle, CheckCircle, Clock } from "lucide-react";
+import { getAdminFetchConfig } from '@/app/admin/lib';
+import { Activity, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 
 async function fetchHealth() {
   const { base, headers } = await getAdminFetchConfig();
   const res = await fetch(`${base}/api/admin/health`, {
-    cache: "no-store",
+    cache: 'no-store',
     headers,
   });
   if (!res.ok) return null;
@@ -12,22 +12,22 @@ async function fetchHealth() {
 }
 
 function formatDate(value?: string | null) {
-  if (!value) return "—";
+  if (!value) return 'N/A';
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
+  if (Number.isNaN(date.getTime())) return 'N/A';
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
   }).format(date);
 }
 
 function getEventIcon(eventType: string) {
-  if (eventType?.includes("error") || eventType?.includes("failed")) {
+  if (eventType?.includes('error') || eventType?.includes('failed')) {
     return <AlertCircle className="h-4 w-4 text-red-400" />;
   }
-  if (eventType?.includes("success") || eventType?.includes("completed")) {
+  if (eventType?.includes('success') || eventType?.includes('completed')) {
     return <CheckCircle className="h-4 w-4 text-emerald-400" />;
   }
   return <Activity className="h-4 w-4 text-slate-400" />;
@@ -73,7 +73,9 @@ export default async function AdminHealthPage() {
             <Clock className="h-5 w-5 text-slate-400" />
             <div>
               <p className="text-sm font-medium text-slate-300">Last Check</p>
-              <p className="text-xs text-slate-500">{formatDate(new Date().toISOString())}</p>
+              <p className="text-xs text-slate-500">
+                {formatDate(new Date().toISOString())}
+              </p>
             </div>
           </div>
         </div>
@@ -81,7 +83,9 @@ export default async function AdminHealthPage() {
 
       {/* Billing Events */}
       <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
-        <h2 className="text-lg font-semibold text-slate-100 mb-4">Billing Events</h2>
+        <h2 className="text-lg font-semibold text-slate-100 mb-4">
+          Billing Events
+        </h2>
         <div className="space-y-2">
           {billingEvents.length > 0 ? (
             billingEvents.map((event: any) => (
@@ -113,7 +117,9 @@ export default async function AdminHealthPage() {
 
       {/* Admin Activity */}
       <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
-        <h2 className="text-lg font-semibold text-slate-100 mb-4">Admin Activity</h2>
+        <h2 className="text-lg font-semibold text-slate-100 mb-4">
+          Admin Activity
+        </h2>
         <div className="space-y-2">
           {adminAudit.length > 0 ? (
             adminAudit.map((event: any) => (
@@ -125,7 +131,10 @@ export default async function AdminHealthPage() {
                   {getEventIcon(event.action)}
                   <div className="min-w-0 flex-1">
                     <p className="text-sm text-slate-300 truncate">
-                      {event.action} · <span className="text-slate-500">{event.target_type}</span>
+                      {event.action} ·{' '}
+                      <span className="text-slate-500">
+                        {event.target_type}
+                      </span>
                     </p>
                   </div>
                 </div>

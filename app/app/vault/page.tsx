@@ -1,4 +1,4 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
   ShieldCheck,
   FileText,
@@ -12,15 +12,15 @@ import {
   Clock,
   Download,
   Eye,
-} from "lucide-react";
-import { verifyEvidence } from "@/app/app/actions/evidence";
+} from 'lucide-react';
+import { verifyEvidence } from '@/app/app/actions/evidence';
 
 function getFileName(item: any) {
-  return item?.file_name || item?.title || item?.name || "Untitled";
+  return item?.file_name || item?.title || item?.name || 'Untitled';
 }
 
 function getFileType(item: any) {
-  return item?.file_type || item?.mime_type || "file";
+  return item?.file_type || item?.mime_type || 'file';
 }
 
 function getFileSizeKB(item: any) {
@@ -44,54 +44,66 @@ export default async function VaultPage() {
 
   // 1) Fetch Context
   const { data: membership } = await supabase
-    .from("org_members")
-    .select("organization_id, role")
-    .eq("user_id", user.id)
+    .from('org_members')
+    .select('organization_id, role')
+    .eq('user_id', user.id)
     .maybeSingle();
 
   if (!membership) {
     return (
       <div className="p-12 text-center">
         <h1 className="text-xl font-bold text-slate-100">Access Denied</h1>
-        <p className="text-slate-400">No active organization membership found.</p>
+        <p className="text-slate-400">
+          No active organization membership found.
+        </p>
       </div>
     );
   }
 
-  const isAuditor = ["admin", "manager"].includes(membership.role);
+  const isAuditor = ['admin', 'manager'].includes(membership.role);
 
   // 2) Fetch All Evidence (upgrade adds joins)
   const { data: artifacts } = await supabase
-    .from("org_evidence")
+    .from('org_evidence')
     .select(
       `
       *,
       task:task_id (title),
       policy:policy_id (title)
-    `
+    `,
     )
-    .eq("organization_id", membership.organization_id)
-    .order("created_at", { ascending: false });
+    .eq('organization_id', membership.organization_id)
+    .order('created_at', { ascending: false });
 
   const allArtifacts = artifacts || [];
 
   // Storage calc (current feature)
   const totalSize =
-    allArtifacts.reduce((acc: number, curr: any) => acc + (Number(curr.file_size) || 0), 0) || 0;
+    allArtifacts.reduce(
+      (acc: number, curr: any) => acc + (Number(curr.file_size) || 0),
+      0,
+    ) || 0;
   const sizeInMB = (totalSize / (1024 * 1024)).toFixed(2);
 
   // Split (upgrade feature)
-  const pending = allArtifacts.filter((a: any) => a.verification_status === "pending");
-  const verified = allArtifacts.filter((a: any) => a.verification_status === "verified");
+  const pending = allArtifacts.filter(
+    (a: any) => a.verification_status === 'pending',
+  );
+  const verified = allArtifacts.filter(
+    (a: any) => a.verification_status === 'verified',
+  );
 
   return (
     <div className="space-y-10 pb-24">
       {/* Header with Storage Meter (current) + Total count (upgrade) */}
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between border-b border-white/10 pb-8">
         <div>
-          <h1 className="text-4xl font-black text-slate-100 tracking-tight">Evidence Vault</h1>
+          <h1 className="text-4xl font-black text-slate-100 tracking-tight">
+            Evidence Vault
+          </h1>
           <p className="text-slate-400 mt-2 font-medium tracking-tight">
-            Encrypted repository for compliance artifacts. Review, verify, and archive evidence.
+            Encrypted repository for compliance artifacts. Review, verify, and
+            archive evidence.
           </p>
         </div>
 
@@ -106,8 +118,12 @@ export default async function VaultPage() {
               <HardDrive className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Vault Usage</p>
-              <p className="text-sm font-bold text-slate-100">{sizeInMB} MB / 500 MB</p>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                Vault Usage
+              </p>
+              <p className="text-sm font-bold text-slate-100">
+                {sizeInMB} MB / 500 MB
+              </p>
             </div>
           </div>
         </div>
@@ -155,9 +171,12 @@ export default async function VaultPage() {
                   </span>
                 </div>
 
-                <h3 className="font-bold text-slate-100 truncate pr-4">{getFileName(item)}</h3>
+                <h3 className="font-bold text-slate-100 truncate pr-4">
+                  {getFileName(item)}
+                </h3>
                 <p className="text-xs text-slate-400 mt-1 mb-6 truncate">
-                  Linked to: {item.task?.title || item.policy?.title || "General Upload"}
+                  Linked to:{' '}
+                  {item.task?.title || item.policy?.title || 'General Upload'}
                 </p>
 
                 <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4">
@@ -165,7 +184,9 @@ export default async function VaultPage() {
                     {getFileType(item)} • {getFileSizeKB(item)} KB
                   </p>
                   <span className="text-[10px] text-slate-400 font-medium">
-                    {item.created_at ? new Date(item.created_at).toLocaleDateString() : "—"}
+                    {item.created_at
+                      ? new Date(item.created_at).toLocaleDateString()
+                      : 'N/A'}
                   </span>
                 </div>
 
@@ -182,9 +203,9 @@ export default async function VaultPage() {
                   {isAuditor && (
                     <form
                       action={async (formData) => {
-                        "use server";
-                        const reason = (formData.get("reason") as string) || "";
-                        await verifyEvidence(item.id, "verified", reason);
+                        'use server';
+                        const reason = (formData.get('reason') as string) || '';
+                        await verifyEvidence(item.id, 'verified', reason);
                       }}
                       className="flex-1"
                     >
@@ -237,7 +258,10 @@ export default async function VaultPage() {
                 </thead>
                 <tbody className="divide-y divide-white/10">
                   {verified.map((item: any) => (
-                    <tr key={item.id} className="group hover:bg-white/5 transition-colors">
+                    <tr
+                      key={item.id}
+                      className="group hover:bg-white/5 transition-colors"
+                    >
                       <td className="px-8 py-4">
                         <div className="flex items-center gap-3">
                           <FileText className="h-4 w-4 text-emerald-300" />
@@ -251,7 +275,7 @@ export default async function VaultPage() {
                       </td>
 
                       <td className="px-8 py-4 text-xs text-slate-400">
-                        {item.task?.title || item.policy?.title || "—"}
+                        {item.task?.title || item.policy?.title || 'N/A'}
                       </td>
 
                       <td className="px-8 py-4">
@@ -260,11 +284,19 @@ export default async function VaultPage() {
                             <ShieldCheck className="h-3 w-3" />
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-[10px] font-bold text-slate-100">Verified</span>
+                            <span className="text-[10px] font-bold text-slate-100">
+                              Verified
+                            </span>
                             <span className="text-[9px] font-mono text-slate-400">
                               {item.verified_at
-                                ? new Date(item.verified_at).toLocaleDateString()
-                                : (item.created_at ? new Date(item.created_at).toLocaleDateString() : "—")}
+                                ? new Date(
+                                    item.verified_at,
+                                  ).toLocaleDateString()
+                                : item.created_at
+                                  ? new Date(
+                                      item.created_at,
+                                    ).toLocaleDateString()
+                                  : 'N/A'}
                             </span>
                           </div>
                         </div>

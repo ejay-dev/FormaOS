@@ -1,6 +1,6 @@
-import { getAdminFetchConfig } from "@/app/admin/lib";
-import { BillingActionButtons } from "@/app/admin/components/billing-action-buttons";
-import { CreditCard, Calendar, AlertCircle, Zap } from "lucide-react";
+import { getAdminFetchConfig } from '@/app/admin/lib';
+import { BillingActionButtons } from '@/app/admin/components/billing-action-buttons';
+import { CreditCard, Calendar, AlertCircle, Zap } from 'lucide-react';
 
 type SubscriptionRow = {
   organization_id: string;
@@ -13,24 +13,24 @@ type SubscriptionRow = {
 };
 
 function formatDate(value?: string | null) {
-  if (!value) return "—";
+  if (!value) return 'N/A';
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
+  if (Number.isNaN(date.getTime())) return 'N/A';
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
   }).format(date);
 }
 
 function getStatusIcon(status?: string | null) {
   switch (status?.toLowerCase()) {
-    case "active":
+    case 'active':
       return <span className="text-emerald-400">●</span>;
-    case "trialing":
+    case 'trialing':
       return <span className="text-amber-400">●</span>;
-    case "past_due":
-    case "payment_failed":
+    case 'past_due':
+    case 'payment_failed':
       return <span className="text-red-400">●</span>;
     default:
       return <span className="text-slate-400">●</span>;
@@ -40,12 +40,15 @@ function getStatusIcon(status?: string | null) {
 async function fetchSubscriptions(status?: string, page?: string) {
   const { base, headers } = await getAdminFetchConfig();
   const params = new URLSearchParams();
-  if (status) params.set("status", status);
-  if (page) params.set("page", page);
-  const res = await fetch(`${base}/api/admin/subscriptions?${params.toString()}`, {
-    cache: "no-store",
-    headers,
-  });
+  if (status) params.set('status', status);
+  if (page) params.set('page', page);
+  const res = await fetch(
+    `${base}/api/admin/subscriptions?${params.toString()}`,
+    {
+      cache: 'no-store',
+      headers,
+    },
+  );
   if (!res.ok) return null;
   return res.json();
 }
@@ -59,10 +62,10 @@ export default async function AdminBillingPage({
   const data = await fetchSubscriptions(resolved?.status, resolved?.page);
   const rows: SubscriptionRow[] = data?.data ?? [];
 
-  const activeCount = rows.filter((r) => r.status === "active").length;
-  const trialsCount = rows.filter((r) => r.status === "trialing").length;
+  const activeCount = rows.filter((r) => r.status === 'active').length;
+  const trialsCount = rows.filter((r) => r.status === 'trialing').length;
   const failedCount = rows.filter((r) =>
-    ["past_due", "payment_failed"].includes(r.status?.toLowerCase() || "")
+    ['past_due', 'payment_failed'].includes(r.status?.toLowerCase() || ''),
   ).length;
 
   return (
@@ -147,7 +150,7 @@ export default async function AdminBillingPage({
                     <div className="flex items-center gap-2">
                       {getStatusIcon(row.status)}
                       <span className="text-sm text-slate-400 capitalize">
-                        {row.status ?? "—"}
+                        {row.status ?? 'N/A'}
                       </span>
                     </div>
                   </td>
@@ -155,8 +158,9 @@ export default async function AdminBillingPage({
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium bg-slate-600/10 text-slate-300">
                       <Zap className="h-3 w-3" />
                       {row.plan_key
-                        ? row.plan_key.charAt(0).toUpperCase() + row.plan_key.slice(1)
-                        : "—"}
+                        ? row.plan_key.charAt(0).toUpperCase() +
+                          row.plan_key.slice(1)
+                        : 'N/A'}
                     </span>
                   </td>
                   <td className="px-6 py-4">
@@ -166,7 +170,9 @@ export default async function AdminBillingPage({
                   </td>
                   <td className="px-6 py-4">
                     <code className="text-xs text-slate-500 bg-slate-900/50 px-2 py-1 rounded">
-                      {row.stripe_subscription_id ? row.stripe_subscription_id.slice(0, 8) + "..." : "—"}
+                      {row.stripe_subscription_id
+                        ? row.stripe_subscription_id.slice(0, 8) + '...'
+                        : 'N/A'}
                     </code>
                   </td>
                   <td className="px-6 py-4 text-right">

@@ -1,6 +1,6 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
-import Link from "next/link";
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
 import {
   AlertTriangle,
   ClipboardCheck,
@@ -10,11 +10,20 @@ import {
   ShieldAlert,
   BadgeCheck,
   NotebookPen,
-} from "lucide-react";
-import { normalizeRole } from "@/app/app/actions/rbac";
-import { createProgressNote, signOffProgressNote } from "@/app/app/actions/progress-notes";
-import { createIncident, resolveIncident, startShift, endShift, updatePatient } from "@/app/app/actions/patients";
-import { createTask } from "@/app/app/actions/tasks";
+} from 'lucide-react';
+import { normalizeRole } from '@/app/app/actions/rbac';
+import {
+  createProgressNote,
+  signOffProgressNote,
+} from '@/app/app/actions/progress-notes';
+import {
+  createIncident,
+  resolveIncident,
+  startShift,
+  endShift,
+  updatePatient,
+} from '@/app/app/actions/patients';
+import { createTask } from '@/app/app/actions/tasks';
 
 type PatientRow = {
   id: string;
@@ -71,19 +80,19 @@ type EvidenceRow = {
 };
 
 function fmtDate(value?: string | null) {
-  if (!value) return "—";
+  if (!value) return 'N/A';
   try {
     return new Date(value).toLocaleString();
   } catch {
-    return "—";
+    return 'N/A';
   }
 }
 
 const NOTE_TAGS = [
-  { value: "routine", label: "Routine" },
-  { value: "follow_up", label: "Follow-up" },
-  { value: "incident", label: "Incident" },
-  { value: "risk", label: "Risk" },
+  { value: 'routine', label: 'Routine' },
+  { value: 'follow_up', label: 'Follow-up' },
+  { value: 'incident', label: 'Incident' },
+  { value: 'risk', label: 'Risk' },
 ];
 
 export default async function PatientDetailPage({
@@ -92,25 +101,29 @@ export default async function PatientDetailPage({
   params?: Promise<{ id: string }>;
 }) {
   const resolvedParams = await params;
-  const patientId = resolvedParams?.id ?? "";
+  const patientId = resolvedParams?.id ?? '';
   const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/signin");
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect('/auth/signin');
 
   const { data: membership } = await supabase
-    .from("org_members")
-    .select("organization_id, role")
-    .eq("user_id", user.id)
+    .from('org_members')
+    .select('organization_id, role')
+    .eq('user_id', user.id)
     .maybeSingle();
 
-  if (!membership?.organization_id) redirect("/onboarding");
+  if (!membership?.organization_id) redirect('/onboarding');
 
   const roleKey = normalizeRole(membership.role ?? null);
-  const canWrite = ["OWNER", "COMPLIANCE_OFFICER", "MANAGER", "STAFF"].includes(roleKey);
-  const canAdmin = ["OWNER", "COMPLIANCE_OFFICER", "MANAGER"].includes(roleKey);
+  const canWrite = ['OWNER', 'COMPLIANCE_OFFICER', 'MANAGER', 'STAFF'].includes(
+    roleKey,
+  );
+  const canAdmin = ['OWNER', 'COMPLIANCE_OFFICER', 'MANAGER'].includes(roleKey);
 
   if (!patientId) {
-    redirect("/app/patients");
+    redirect('/app/patients');
   }
 
   const [
@@ -122,47 +135,49 @@ export default async function PatientDetailPage({
     { data: evidenceData },
   ] = await Promise.all([
     supabase
-      .from("org_patients")
+      .from('org_patients')
       .select(
-        "id, full_name, external_id, date_of_birth, care_status, risk_level, emergency_flag, created_at, updated_at"
+        'id, full_name, external_id, date_of_birth, care_status, risk_level, emergency_flag, created_at, updated_at',
       )
-      .eq("id", patientId)
-      .eq("organization_id", membership.organization_id)
+      .eq('id', patientId)
+      .eq('organization_id', membership.organization_id)
       .maybeSingle(),
     supabase
-      .from("org_tasks")
-      .select("id, title, status, due_date, priority")
-      .eq("organization_id", membership.organization_id)
-      .eq("patient_id", patientId)
-      .order("due_date", { ascending: true })
+      .from('org_tasks')
+      .select('id, title, status, due_date, priority')
+      .eq('organization_id', membership.organization_id)
+      .eq('patient_id', patientId)
+      .order('due_date', { ascending: true })
       .limit(12),
     supabase
-      .from("org_progress_notes")
-      .select("id, note_text, status_tag, created_at, signed_off_by, signed_off_at")
-      .eq("organization_id", membership.organization_id)
-      .eq("patient_id", patientId)
-      .order("created_at", { ascending: false })
+      .from('org_progress_notes')
+      .select(
+        'id, note_text, status_tag, created_at, signed_off_by, signed_off_at',
+      )
+      .eq('organization_id', membership.organization_id)
+      .eq('patient_id', patientId)
+      .order('created_at', { ascending: false })
       .limit(10),
     supabase
-      .from("org_incidents")
-      .select("id, severity, status, description, occurred_at, resolved_at")
-      .eq("organization_id", membership.organization_id)
-      .eq("patient_id", patientId)
-      .order("occurred_at", { ascending: false })
+      .from('org_incidents')
+      .select('id, severity, status, description, occurred_at, resolved_at')
+      .eq('organization_id', membership.organization_id)
+      .eq('patient_id', patientId)
+      .order('occurred_at', { ascending: false })
       .limit(8),
     supabase
-      .from("org_shifts")
-      .select("id, status, started_at, ended_at, staff_user_id")
-      .eq("organization_id", membership.organization_id)
-      .eq("patient_id", patientId)
-      .order("started_at", { ascending: false })
+      .from('org_shifts')
+      .select('id, status, started_at, ended_at, staff_user_id')
+      .eq('organization_id', membership.organization_id)
+      .eq('patient_id', patientId)
+      .order('started_at', { ascending: false })
       .limit(8),
     supabase
-      .from("org_evidence")
-      .select("id, file_name, verification_status, created_at, task_id")
-      .eq("organization_id", membership.organization_id)
-      .eq("patient_id", patientId)
-      .order("created_at", { ascending: false })
+      .from('org_evidence')
+      .select('id, file_name, verification_status, created_at, task_id')
+      .eq('organization_id', membership.organization_id)
+      .eq('patient_id', patientId)
+      .order('created_at', { ascending: false })
       .limit(10),
   ]);
 
@@ -174,30 +189,34 @@ export default async function PatientDetailPage({
   const evidence = evidenceData as EvidenceRow[] | null;
 
   if (!patient) {
-    redirect("/app/patients");
+    redirect('/app/patients');
   }
 
   const nowIso = new Date().toISOString();
   const overdueTasks = (tasks ?? []).filter(
-    (task) => task.due_date && task.status !== "completed" && task.due_date < nowIso
+    (task) =>
+      task.due_date && task.status !== 'completed' && task.due_date < nowIso,
   );
   const escalationNeeded =
     patient.emergency_flag ||
-    patient.risk_level === "critical" ||
+    patient.risk_level === 'critical' ||
     (incidents ?? []).some(
       (incident) =>
-        incident.status === "open" && (incident.severity === "high" || incident.severity === "critical")
+        incident.status === 'open' &&
+        (incident.severity === 'high' || incident.severity === 'critical'),
     );
 
   const activeShift = (shifts ?? []).find(
-    (shift) => shift.status === "active" && shift.staff_user_id === user.id
+    (shift) => shift.status === 'active' && shift.staff_user_id === user.id,
   );
 
   return (
     <div className="space-y-8 pb-12">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-50">{patient.full_name}</h1>
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-50">
+            {patient.full_name}
+          </h1>
           <p className="text-sm text-slate-400">
             Care status {patient.care_status} • Risk {patient.risk_level}
           </p>
@@ -231,7 +250,8 @@ export default async function PatientDetailPage({
         <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 px-6 py-4 text-sm text-amber-200">
           <span className="inline-flex items-center gap-2 font-semibold">
             <AlertTriangle className="h-4 w-4" />
-            {overdueTasks.length} overdue task{overdueTasks.length === 1 ? "" : "s"} linked to this patient.
+            {overdueTasks.length} overdue task
+            {overdueTasks.length === 1 ? '' : 's'} linked to this patient.
           </span>
         </div>
       )}
@@ -244,28 +264,45 @@ export default async function PatientDetailPage({
           </div>
           <div className="mt-4 grid gap-4 md:grid-cols-2 text-sm text-slate-300">
             <div>
-              <div className="text-[10px] uppercase tracking-widest text-slate-500">External ID</div>
-              <div className="text-slate-100">{patient.external_id || "—"}</div>
+              <div className="text-[10px] uppercase tracking-widest text-slate-500">
+                External ID
+              </div>
+              <div className="text-slate-100">
+                {patient.external_id || 'N/A'}
+              </div>
             </div>
             <div>
-              <div className="text-[10px] uppercase tracking-widest text-slate-500">Date of Birth</div>
-              <div className="text-slate-100">{patient.date_of_birth || "—"}</div>
+              <div className="text-[10px] uppercase tracking-widest text-slate-500">
+                Date of Birth
+              </div>
+              <div className="text-slate-100">
+                {patient.date_of_birth || 'N/A'}
+              </div>
             </div>
             <div>
-              <div className="text-[10px] uppercase tracking-widest text-slate-500">Care Status</div>
+              <div className="text-[10px] uppercase tracking-widest text-slate-500">
+                Care Status
+              </div>
               <div className="text-slate-100">{patient.care_status}</div>
             </div>
             <div>
-              <div className="text-[10px] uppercase tracking-widest text-slate-500">Risk Level</div>
+              <div className="text-[10px] uppercase tracking-widest text-slate-500">
+                Risk Level
+              </div>
               <div className="text-slate-100">{patient.risk_level}</div>
             </div>
           </div>
 
           {canWrite && (
-            <form action={updatePatient} className="mt-6 grid gap-4 md:grid-cols-4">
+            <form
+              action={updatePatient}
+              className="mt-6 grid gap-4 md:grid-cols-4"
+            >
               <input type="hidden" name="patientId" value={patient.id} />
               <div className="md:col-span-2">
-                <label className="text-[10px] uppercase tracking-widest text-slate-500">Full Name</label>
+                <label className="text-[10px] uppercase tracking-widest text-slate-500">
+                  Full Name
+                </label>
                 <input
                   name="fullName"
                   defaultValue={patient.full_name}
@@ -273,7 +310,9 @@ export default async function PatientDetailPage({
                 />
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-widest text-slate-500">Status</label>
+                <label className="text-[10px] uppercase tracking-widest text-slate-500">
+                  Status
+                </label>
                 <select
                   name="careStatus"
                   defaultValue={patient.care_status}
@@ -285,7 +324,9 @@ export default async function PatientDetailPage({
                 </select>
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-widest text-slate-500">Risk</label>
+                <label className="text-[10px] uppercase tracking-widest text-slate-500">
+                  Risk
+                </label>
                 <select
                   name="riskLevel"
                   defaultValue={patient.risk_level}
@@ -326,8 +367,12 @@ export default async function PatientDetailPage({
           <div className="mt-4 space-y-3 text-xs text-slate-300">
             {activeShift ? (
               <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                <div className="text-[10px] uppercase tracking-widest text-slate-400">Active</div>
-                <div className="text-sm text-slate-100">Started {fmtDate(activeShift.started_at)}</div>
+                <div className="text-[10px] uppercase tracking-widest text-slate-400">
+                  Active
+                </div>
+                <div className="text-sm text-slate-100">
+                  Started {fmtDate(activeShift.started_at)}
+                </div>
                 <form action={endShift} className="mt-3">
                   <input type="hidden" name="shiftId" value={activeShift.id} />
                   <button
@@ -355,9 +400,16 @@ export default async function PatientDetailPage({
               <p className="text-xs text-slate-400">No shifts logged yet.</p>
             ) : (
               (shifts ?? []).map((shift) => (
-                <div key={shift.id} className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
-                  <div className="text-[10px] uppercase tracking-widest text-slate-400">{shift.status}</div>
-                  <div className="text-xs text-slate-300">Start {fmtDate(shift.started_at)}</div>
+                <div
+                  key={shift.id}
+                  className="rounded-xl border border-white/10 bg-white/5 px-3 py-2"
+                >
+                  <div className="text-[10px] uppercase tracking-widest text-slate-400">
+                    {shift.status}
+                  </div>
+                  <div className="text-xs text-slate-300">
+                    Start {fmtDate(shift.started_at)}
+                  </div>
                 </div>
               ))
             )}
@@ -405,12 +457,17 @@ export default async function PatientDetailPage({
               <p className="text-xs text-slate-400">No progress notes yet.</p>
             ) : (
               (notes ?? []).map((note) => (
-                <div key={note.id} className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+                <div
+                  key={note.id}
+                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-3"
+                >
                   <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-slate-400">
                     <span>{note.status_tag}</span>
                     <span>{fmtDate(note.created_at)}</span>
                   </div>
-                  <p className="mt-2 text-sm text-slate-100">{note.note_text}</p>
+                  <p className="mt-2 text-sm text-slate-100">
+                    {note.note_text}
+                  </p>
                   <div className="mt-3 flex items-center gap-2 text-xs">
                     {note.signed_off_by ? (
                       <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-2 py-1 text-[10px] font-semibold text-emerald-200">
@@ -479,16 +536,27 @@ export default async function PatientDetailPage({
               <p className="text-xs text-slate-400">No incidents recorded.</p>
             ) : (
               (incidents ?? []).map((incident) => (
-                <div key={incident.id} className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+                <div
+                  key={incident.id}
+                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-3"
+                >
                   <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-slate-400">
                     <span>{incident.severity}</span>
                     <span>{incident.status}</span>
                   </div>
-                  <p className="mt-2 text-xs text-slate-300">{incident.description}</p>
-                  <div className="mt-2 text-xs text-slate-400">Occurred {fmtDate(incident.occurred_at)}</div>
-                  {canAdmin && incident.status === "open" && (
+                  <p className="mt-2 text-xs text-slate-300">
+                    {incident.description}
+                  </p>
+                  <div className="mt-2 text-xs text-slate-400">
+                    Occurred {fmtDate(incident.occurred_at)}
+                  </div>
+                  {canAdmin && incident.status === 'open' && (
                     <form action={resolveIncident} className="mt-3">
-                      <input type="hidden" name="incidentId" value={incident.id} />
+                      <input
+                        type="hidden"
+                        name="incidentId"
+                        value={incident.id}
+                      />
                       <button
                         type="submit"
                         className="rounded-lg border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-semibold text-slate-100 hover:bg-white/15"
@@ -543,16 +611,26 @@ export default async function PatientDetailPage({
         )}
         <div className="mt-4 space-y-3">
           {(tasks ?? []).length === 0 ? (
-            <p className="text-xs text-slate-400">No tasks linked to this patient.</p>
+            <p className="text-xs text-slate-400">
+              No tasks linked to this patient.
+            </p>
           ) : (
             (tasks ?? []).map((task) => (
-              <div key={task.id} className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+              <div
+                key={task.id}
+                className="rounded-xl border border-white/10 bg-white/5 px-4 py-3"
+              >
                 <div className="flex items-center justify-between text-sm text-slate-100">
                   <span className="font-semibold">{task.title}</span>
-                  <span className="text-[10px] uppercase tracking-widest text-slate-400">{task.status}</span>
+                  <span className="text-[10px] uppercase tracking-widest text-slate-400">
+                    {task.status}
+                  </span>
                 </div>
                 <div className="mt-1 text-xs text-slate-400">
-                  Due {task.due_date ? new Date(task.due_date).toLocaleDateString() : "—"}
+                  Due{' '}
+                  {task.due_date
+                    ? new Date(task.due_date).toLocaleDateString()
+                    : 'N/A'}
                 </div>
               </div>
             ))
@@ -567,14 +645,19 @@ export default async function PatientDetailPage({
         </div>
         <div className="mt-4 space-y-3">
           {(evidence ?? []).length === 0 ? (
-            <p className="text-xs text-slate-400">No evidence linked to this patient yet.</p>
+            <p className="text-xs text-slate-400">
+              No evidence linked to this patient yet.
+            </p>
           ) : (
             (evidence ?? []).map((item) => (
-              <div key={item.id} className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+              <div
+                key={item.id}
+                className="rounded-xl border border-white/10 bg-white/5 px-4 py-3"
+              >
                 <div className="flex items-center justify-between text-sm text-slate-100">
                   <span className="font-semibold">{item.file_name}</span>
                   <span className="text-[10px] uppercase tracking-widest text-slate-400">
-                    {item.verification_status || "pending"}
+                    {item.verification_status || 'pending'}
                   </span>
                 </div>
                 <div className="mt-1 text-xs text-slate-400">

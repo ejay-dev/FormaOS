@@ -1,9 +1,12 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { createProgressNote, signOffProgressNote } from "@/app/app/actions/progress-notes";
-import { normalizeRole } from "@/app/app/actions/rbac";
-import { NotebookPen, UserCircle2, BadgeCheck } from "lucide-react";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import {
+  createProgressNote,
+  signOffProgressNote,
+} from '@/app/app/actions/progress-notes';
+import { normalizeRole } from '@/app/app/actions/rbac';
+import { NotebookPen, UserCircle2, BadgeCheck } from 'lucide-react';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 type PatientRow = {
   id: string;
@@ -21,61 +24,73 @@ type NoteRow = {
 };
 
 function fmtDate(value?: string | null) {
-  if (!value) return "—";
+  if (!value) return 'N/A';
   try {
     return new Date(value).toLocaleString();
   } catch {
-    return "—";
+    return 'N/A';
   }
 }
 
 const NOTE_TAGS = [
-  { value: "routine", label: "Routine" },
-  { value: "follow_up", label: "Follow-up" },
-  { value: "incident", label: "Incident" },
-  { value: "risk", label: "Risk" },
+  { value: 'routine', label: 'Routine' },
+  { value: 'follow_up', label: 'Follow-up' },
+  { value: 'incident', label: 'Incident' },
+  { value: 'risk', label: 'Risk' },
 ];
 
 export default async function ProgressNotesPage() {
   const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/signin");
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect('/auth/signin');
 
   const { data: membership } = await supabase
-    .from("org_members")
-    .select("organization_id, role")
-    .eq("user_id", user.id)
+    .from('org_members')
+    .select('organization_id, role')
+    .eq('user_id', user.id)
     .maybeSingle();
 
-  if (!membership?.organization_id) redirect("/onboarding");
+  if (!membership?.organization_id) redirect('/onboarding');
 
   const roleKey = normalizeRole(membership.role ?? null);
-  const canWrite = ["OWNER", "COMPLIANCE_OFFICER", "MANAGER", "STAFF"].includes(roleKey);
-  const canSignOff = ["OWNER", "COMPLIANCE_OFFICER", "MANAGER"].includes(roleKey);
+  const canWrite = ['OWNER', 'COMPLIANCE_OFFICER', 'MANAGER', 'STAFF'].includes(
+    roleKey,
+  );
+  const canSignOff = ['OWNER', 'COMPLIANCE_OFFICER', 'MANAGER'].includes(
+    roleKey,
+  );
 
   const [{ data: notesData }, { data: patientsData }] = await Promise.all([
     supabase
-      .from("org_progress_notes")
-      .select("id, patient_id, note_text, status_tag, created_at, signed_off_by, signed_off_at")
-      .eq("organization_id", membership.organization_id)
-      .order("created_at", { ascending: false })
+      .from('org_progress_notes')
+      .select(
+        'id, patient_id, note_text, status_tag, created_at, signed_off_by, signed_off_at',
+      )
+      .eq('organization_id', membership.organization_id)
+      .order('created_at', { ascending: false })
       .limit(40),
     supabase
-      .from("org_patients")
-      .select("id, full_name")
-      .eq("organization_id", membership.organization_id)
-      .order("full_name", { ascending: true }),
+      .from('org_patients')
+      .select('id, full_name')
+      .eq('organization_id', membership.organization_id)
+      .order('full_name', { ascending: true }),
   ]);
 
   const notes: NoteRow[] = notesData ?? [];
   const patients: PatientRow[] = patientsData ?? [];
-  const patientMap = new Map(patients.map((patient) => [patient.id, patient.full_name]));
+  const patientMap = new Map(
+    patients.map((patient) => [patient.id, patient.full_name]),
+  );
 
   return (
     <div className="space-y-8 pb-12">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-50">Progress Notes</h1>
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-50">
+            Progress Notes
+          </h1>
           <p className="text-sm text-slate-400">
             Capture care updates, follow-ups, and compliance-relevant notes.
           </p>
@@ -88,7 +103,10 @@ export default async function ProgressNotesPage() {
             <NotebookPen className="h-4 w-4 text-indigo-300" />
             New Progress Note
           </div>
-          <form action={createProgressNote} className="mt-4 grid gap-4 md:grid-cols-3">
+          <form
+            action={createProgressNote}
+            className="mt-4 grid gap-4 md:grid-cols-3"
+          >
             <div className="md:col-span-1">
               <label className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
                 Patient
@@ -163,16 +181,23 @@ export default async function ProgressNotesPage() {
         </div>
         <div className="divide-y divide-white/10">
           {(notes ?? []).length === 0 ? (
-            <div className="px-6 py-10 text-sm text-slate-400">No notes recorded yet.</div>
+            <div className="px-6 py-10 text-sm text-slate-400">
+              No notes recorded yet.
+            </div>
           ) : (
             (notes ?? []).map((note) => {
-              const patientName = patientMap.get(note.patient_id) ?? "Unknown patient";
+              const patientName =
+                patientMap.get(note.patient_id) ?? 'Unknown patient';
               return (
                 <div key={note.id} className="px-6 py-4">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                      <div className="text-sm font-semibold text-slate-100">{patientName}</div>
-                      <div className="text-xs text-slate-400">{fmtDate(note.created_at)}</div>
+                      <div className="text-sm font-semibold text-slate-100">
+                        {patientName}
+                      </div>
+                      <div className="text-xs text-slate-400">
+                        {fmtDate(note.created_at)}
+                      </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="rounded-full border border-white/10 bg-white/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-widest text-slate-300">
@@ -186,9 +211,14 @@ export default async function ProgressNotesPage() {
                       ) : null}
                     </div>
                   </div>
-                  <p className="mt-3 text-sm text-slate-300">{note.note_text}</p>
+                  <p className="mt-3 text-sm text-slate-300">
+                    {note.note_text}
+                  </p>
                   <div className="mt-3 flex flex-wrap items-center gap-3 text-xs">
-                    <Link href={`/app/patients/${note.patient_id}`} className="text-sky-300 hover:underline">
+                    <Link
+                      href={`/app/patients/${note.patient_id}`}
+                      className="text-sky-300 hover:underline"
+                    >
                       View patient record
                     </Link>
                     {canSignOff && !note.signed_off_by && (

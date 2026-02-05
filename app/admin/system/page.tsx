@@ -1,4 +1,4 @@
-import { getAdminFetchConfig } from "@/app/admin/lib";
+import { getAdminFetchConfig } from '@/app/admin/lib';
 import {
   Activity,
   CheckCircle,
@@ -6,7 +6,7 @@ import {
   Zap,
   Database,
   Server,
-} from "lucide-react";
+} from 'lucide-react';
 
 type SystemStatus = {
   api_uptime: number;
@@ -22,7 +22,7 @@ type SystemStatus = {
 async function fetchSystemStatus() {
   const { base, headers } = await getAdminFetchConfig();
   const res = await fetch(`${base}/api/admin/system`, {
-    cache: "no-store",
+    cache: 'no-store',
     headers,
   });
   if (!res.ok) return null;
@@ -31,23 +31,23 @@ async function fetchSystemStatus() {
 
 function formatDate(dateStr: string) {
   const date = new Date(dateStr);
-  if (Number.isNaN(date.getTime())) return "—";
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
+  if (Number.isNaN(date.getTime())) return 'N/A';
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
   }).format(date);
 }
 
 function getHealthColor(value: number, threshold: number = 95) {
   if (value >= threshold) {
-    return "text-emerald-400";
+    return 'text-emerald-400';
   }
   if (value >= threshold - 5) {
-    return "text-amber-400";
+    return 'text-amber-400';
   }
-  return "text-red-400";
+  return 'text-red-400';
 }
 
 export default async function AdminSystemPage() {
@@ -99,9 +99,7 @@ export default async function AdminSystemPage() {
           <div className={`text-3xl font-bold ${getHealthColor(apiUptime)}`}>
             {apiUptime.toFixed(2)}%
           </div>
-          <p className="text-xs text-slate-500 mt-2">
-            Last 30 days average
-          </p>
+          <p className="text-xs text-slate-500 mt-2">Last 30 days average</p>
         </div>
 
         <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
@@ -113,7 +111,7 @@ export default async function AdminSystemPage() {
           </div>
           <div
             className={`text-3xl font-bold ${
-              errorRate < 1 ? "text-emerald-400" : "text-red-400"
+              errorRate < 1 ? 'text-emerald-400' : 'text-red-400'
             }`}
           >
             {errorRate.toFixed(2)}%
@@ -130,7 +128,7 @@ export default async function AdminSystemPage() {
           </div>
           <div
             className={`text-3xl font-bold ${
-              dbLatency < 50 ? "text-emerald-400" : "text-amber-400"
+              dbLatency < 50 ? 'text-emerald-400' : 'text-amber-400'
             }`}
           >
             {dbLatency}ms
@@ -159,7 +157,7 @@ export default async function AdminSystemPage() {
               <p className="text-sm text-slate-400">Failed Jobs</p>
               <p
                 className={`text-2xl font-bold mt-1 ${
-                  failedJobs > 0 ? "text-red-400" : "text-slate-100"
+                  failedJobs > 0 ? 'text-red-400' : 'text-slate-100'
                 }`}
               >
                 {failedJobs}
@@ -179,7 +177,7 @@ export default async function AdminSystemPage() {
           <div className="flex items-center justify-between p-3 rounded-lg border border-slate-800/50 bg-slate-800/20">
             <span className="text-sm text-slate-400">Version</span>
             <code className="text-xs bg-slate-900 px-2 py-1 rounded font-mono text-slate-100">
-              {status.build_version || "—"}
+              {status.build_version || 'N/A'}
             </code>
           </div>
           <div className="flex items-center justify-between p-3 rounded-lg border border-slate-800/50 bg-slate-800/20">
@@ -205,47 +203,47 @@ export default async function AdminSystemPage() {
         <div className="grid gap-3 md:grid-cols-2">
           {[
             {
-              name: "API",
-              status: apiUptime > 99 ? "healthy" : "warning",
+              name: 'API',
+              status: apiUptime > 99 ? 'healthy' : 'warning',
               icon: Server,
             },
             {
-              name: "Database",
-              status: dbLatency < 50 ? "healthy" : "warning",
+              name: 'Database',
+              status: dbLatency < 50 ? 'healthy' : 'warning',
               icon: Database,
             },
             {
-              name: "Job Queue",
-              status: failedJobs < 10 ? "healthy" : "warning",
+              name: 'Job Queue',
+              status: failedJobs < 10 ? 'healthy' : 'warning',
               icon: Zap,
             },
             {
-              name: "Auth Service",
-              status: "healthy",
+              name: 'Auth Service',
+              status: 'healthy',
               icon: CheckCircle,
             },
           ].map((service) => {
             const Icon = service.icon;
-            const isHealthy = service.status === "healthy";
+            const isHealthy = service.status === 'healthy';
 
             return (
               <div
                 key={service.name}
                 className={`flex items-center justify-between p-3 rounded-lg border ${
                   isHealthy
-                    ? "border-emerald-800/30 bg-emerald-900/10"
-                    : "border-amber-800/30 bg-amber-900/10"
+                    ? 'border-emerald-800/30 bg-emerald-900/10'
+                    : 'border-amber-800/30 bg-amber-900/10'
                 }`}
               >
                 <div className="flex items-center gap-2">
                   <Icon
                     className={`h-4 w-4 ${
-                      isHealthy ? "text-emerald-400" : "text-amber-400"
+                      isHealthy ? 'text-emerald-400' : 'text-amber-400'
                     }`}
                   />
                   <span
                     className={`text-sm font-medium ${
-                      isHealthy ? "text-emerald-100" : "text-amber-100"
+                      isHealthy ? 'text-emerald-100' : 'text-amber-100'
                     }`}
                   >
                     {service.name}
@@ -254,12 +252,12 @@ export default async function AdminSystemPage() {
                 <span
                   className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${
                     isHealthy
-                      ? "bg-emerald-500/20 text-emerald-200"
-                      : "bg-amber-500/20 text-amber-200"
+                      ? 'bg-emerald-500/20 text-emerald-200'
+                      : 'bg-amber-500/20 text-amber-200'
                   }`}
                 >
                   <span className="h-2 w-2 rounded-full bg-current" />
-                  {isHealthy ? "Operational" : "Degraded"}
+                  {isHealthy ? 'Operational' : 'Degraded'}
                 </span>
               </div>
             );

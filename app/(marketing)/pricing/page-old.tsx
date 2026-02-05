@@ -239,7 +239,7 @@ export default function PricingPage() {
       {/* Legacy/Backup Page: Do not deploy. Trial language updated for accuracy. */}
       <MarketingAnchor
         title="Ready to transform compliance?"
-        subtitle="Start your free trial today. No credit card required. All onboarding uses real organization data—no sample/demo content."
+        subtitle="Start your free trial today. No credit card required. All onboarding uses real organization data, with no sample/demo content."
         badge="Get Started"
       />
     </div>

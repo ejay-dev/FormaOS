@@ -1,4 +1,4 @@
-import { getAdminFetchConfig } from "@/app/admin/lib";
+import { getAdminFetchConfig } from '@/app/admin/lib';
 
 type SupportRow = {
   id: string;
@@ -11,18 +11,18 @@ type SupportRow = {
 };
 
 function formatDate(value?: string | null) {
-  if (!value) return "—";
+  if (!value) return 'N/A';
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
+  if (Number.isNaN(date.getTime())) return 'N/A';
   return date.toLocaleDateString();
 }
 
 async function fetchSupport(status?: string) {
   const { base, headers } = await getAdminFetchConfig();
   const params = new URLSearchParams();
-  if (status) params.set("status", status);
+  if (status) params.set('status', status);
   const res = await fetch(`${base}/api/admin/support?${params.toString()}`, {
-    cache: "no-store",
+    cache: 'no-store',
     headers,
   });
   if (!res.ok) return null;
@@ -42,7 +42,9 @@ export default async function AdminSupportPage({
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-slate-100">Support</h1>
-        <p className="mt-2 text-sm text-slate-400">Inbound requests and contact queue.</p>
+        <p className="mt-2 text-sm text-slate-400">
+          Inbound requests and contact queue.
+        </p>
       </div>
 
       <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
@@ -60,12 +62,16 @@ export default async function AdminSupportPage({
               {rows.map((row) => (
                 <tr key={row.id}>
                   <td className="py-3">
-                    <div className="text-slate-100">{row.name ?? row.email}</div>
+                    <div className="text-slate-100">
+                      {row.name ?? row.email}
+                    </div>
                     <div className="text-xs text-slate-500">{row.email}</div>
                   </td>
                   <td className="py-3">
                     <div className="text-slate-100">{row.subject}</div>
-                    <div className="text-xs text-slate-500 line-clamp-2">{row.message}</div>
+                    <div className="text-xs text-slate-500 line-clamp-2">
+                      {row.message}
+                    </div>
                   </td>
                   <td className="py-3">{row.status}</td>
                   <td className="py-3">{formatDate(row.created_at)}</td>
@@ -73,7 +79,10 @@ export default async function AdminSupportPage({
               ))}
               {rows.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="py-6 text-center text-sm text-slate-500">
+                  <td
+                    colSpan={4}
+                    className="py-6 text-center text-sm text-slate-500"
+                  >
                     No support requests logged.
                   </td>
                 </tr>

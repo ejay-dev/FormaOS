@@ -34,16 +34,16 @@ export function getLastExportMetrics() {
 }
 
 function fmtDate(d?: string | null) {
-  if (!d) return '—';
+  if (!d) return 'N/A';
   try {
     return new Date(d).toLocaleString();
   } catch {
-    return '—';
+    return 'N/A';
   }
 }
 
 function safeStr(v: any) {
-  if (v === null || v === undefined) return '—';
+  if (v === null || v === undefined) return 'N/A';
   const s = String(v);
   return s.length > 180 ? s.slice(0, 177) + '...' : s;
 }
@@ -136,17 +136,17 @@ async function buildAuditPDF(payload: {
   drawH1('FormaOS Audit Bundle');
   drawP(`Organization: ${safeStr(payload.orgName)}`);
   drawP(`Generated: ${fmtDate(payload.generatedAtISO)}`);
-  drawP(`Framework: ${safeStr(payload.frameworkCode || '—')}`);
-  drawP(`Snapshot Hash: ${safeStr(payload.snapshotHash || '—')}`);
+  drawP(`Framework: ${safeStr(payload.frameworkCode || 'N/A')}`);
+  drawP(`Snapshot Hash: ${safeStr(payload.snapshotHash || 'N/A')}`);
 
   y -= 10;
 
   drawH2('Compliance Summary');
-  drawP(`Compliance Score: ${safeStr(payload.score ?? '—')} %`);
+  drawP(`Compliance Score: ${safeStr(payload.score ?? 'N/A')} %`);
   drawP(
-    `Controls Satisfied: ${safeStr((payload.total ?? 0) - (payload.missing ?? 0))} / ${safeStr(payload.total ?? '—')}`,
+    `Controls Satisfied: ${safeStr((payload.total ?? 0) - (payload.missing ?? 0))} / ${safeStr(payload.total ?? 'N/A')}`,
   );
-  drawP(`Missing Controls: ${safeStr(payload.missing ?? '—')}`);
+  drawP(`Missing Controls: ${safeStr(payload.missing ?? 'N/A')}`);
 
   if ((payload.missingCodes || []).length > 0) {
     drawP(
@@ -204,7 +204,7 @@ export async function createAuditBundleAction() {
     const correlationId = createCorrelationId();
     await requireEntitlement(orgId, 'audit_export');
 
-    // 1) HARD BLOCK — this is the lock-in
+    // 1) HARD BLOCK, this is the lock-in
     await requireNoComplianceBlocks(orgId, 'AUDIT_EXPORT');
 
     // 2) Fetch org name

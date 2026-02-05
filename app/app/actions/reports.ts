@@ -1,15 +1,22 @@
-"use server";
+'use server';
 
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
-import { getOrgIdForUser, requireNoComplianceBlocks } from "@/app/app/actions/enforcement";
-import { logActivity } from "@/lib/logger";
-import { requirePermission } from "@/app/app/actions/rbac";
-import { requireEntitlement } from "@/lib/billing/entitlements";
-import { logAuditEvent } from "@/app/app/actions/audit-events";
-import { checkRateLimit, getClientIdentifier, RATE_LIMITS } from "@/lib/security/rate-limiter";
-import { createCorrelationId } from "@/lib/security/correlation";
+import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { revalidatePath } from 'next/cache';
+import {
+  getOrgIdForUser,
+  requireNoComplianceBlocks,
+} from '@/app/app/actions/enforcement';
+import { logActivity } from '@/lib/logger';
+import { requirePermission } from '@/app/app/actions/rbac';
+import { requireEntitlement } from '@/lib/billing/entitlements';
+import { logAuditEvent } from '@/app/app/actions/audit-events';
+import {
+  checkRateLimit,
+  getClientIdentifier,
+  RATE_LIMITS,
+} from '@/lib/security/rate-limiter';
+import { createCorrelationId } from '@/lib/security/correlation';
 
 type AuditBundleRow = {
   orgId: string;
@@ -24,62 +31,74 @@ type AuditBundleRow = {
   policies: Array<{ title: string; status: string; updated_at: string | null }>;
   evidence: Array<{ title: string; status: string; created_at: string | null }>;
   tasks: Array<{ title: string; status: string; completed_at: string | null }>;
-  auditLogs: Array<{ action: string; target: string; actor_email?: string | null; created_at: string }>;
+  auditLogs: Array<{
+    action: string;
+    target: string;
+    actor_email?: string | null;
+    created_at: string;
+  }>;
 };
 
 function toDate(d?: string | null) {
-  if (!d) return "—";
+  if (!d) return 'N/A';
   try {
     return new Date(d).toLocaleString();
   } catch {
-    return "—";
+    return 'N/A';
   }
 }
 
 function safeFilePart(input: string) {
-  return input.replace(/[^\w\-]+/g, "_").slice(0, 60);
+  return input.replace(/[^\w\-]+/g, '_').slice(0, 60);
 }
 
 async function safeSelectPolicies(supabase: any, orgId: string) {
   const attempts = [
-    "title,status,updated_at",
-    "title,status,last_updated_at",
-    "title,status,created_at",
-    "title,created_at",
+    'title,status,updated_at',
+    'title,status,last_updated_at',
+    'title,status,created_at',
+    'title,created_at',
   ];
 
   let lastError: string | null = null;
   for (const select of attempts) {
     try {
       const { data, error } = await supabase
-        .from("org_policies")
+        .from('org_policies')
         .select(select)
-        .eq("organization_id", orgId)
-        .order(select.includes("updated_at") ? "updated_at" : select.includes("last_updated_at") ? "last_updated_at" : "created_at", { ascending: false });
+        .eq('organization_id', orgId)
+        .order(
+          select.includes('updated_at')
+            ? 'updated_at'
+            : select.includes('last_updated_at')
+              ? 'last_updated_at'
+              : 'created_at',
+          { ascending: false },
+        );
       if (!error) return data ?? [];
       lastError = error.message;
     } catch {
       // try next
     }
   }
-  throw new Error(lastError || "Failed to load policies");
+  throw new Error(lastError || 'Failed to load policies');
 }
 
 async function safeSelectEvidence(supabase: any, orgId: string) {
   const attempts = [
-    "title,status,created_at",
-    "title,verification_status,created_at",
-    "title,created_at",
+    'title,status,created_at',
+    'title,verification_status,created_at',
+    'title,created_at',
   ];
 
   let lastError: string | null = null;
   for (const select of attempts) {
     try {
       const { data, error } = await supabase
-        .from("org_evidence")
+        .from('org_evidence')
         .select(select)
-        .eq("organization_id", orgId)
-        .order("created_at", { ascending: false });
+        .eq('organization_id', orgId)
+        .order('created_at', { ascending: false });
       if (!error) {
         return (data ?? []).map((row: any) => ({
           title: row.title,
@@ -92,25 +111,28 @@ async function safeSelectEvidence(supabase: any, orgId: string) {
       // try next
     }
   }
-  throw new Error(lastError || "Failed to load evidence");
+  throw new Error(lastError || 'Failed to load evidence');
 }
 
 async function safeSelectTasks(supabase: any, orgId: string) {
   const attempts = [
-    "title,status,completed_at",
-    "title,status,updated_at",
-    "title,status",
-    "title",
+    'title,status,completed_at',
+    'title,status,updated_at',
+    'title,status',
+    'title',
   ];
 
   let lastError: string | null = null;
   for (const select of attempts) {
     try {
       const { data, error } = await supabase
-        .from("org_tasks")
+        .from('org_tasks')
         .select(select)
-        .eq("organization_id", orgId)
-        .order(select.includes("completed_at") ? "completed_at" : "updated_at", { ascending: false });
+        .eq('organization_id', orgId)
+        .order(
+          select.includes('completed_at') ? 'completed_at' : 'updated_at',
+          { ascending: false },
+        );
       if (!error) {
         return (data ?? []).map((row: any) => ({
           title: row.title,
@@ -123,28 +145,30 @@ async function safeSelectTasks(supabase: any, orgId: string) {
       // try next
     }
   }
-  throw new Error(lastError || "Failed to load tasks");
+  throw new Error(lastError || 'Failed to load tasks');
 }
 
 async function safeSelectAuditLogs(supabase: any, orgId: string) {
   const attempts = [
-    "action,target,actor_email,created_at",
-    "action,target,created_at",
-    "activity_type,description,created_at",
+    'action,target,actor_email,created_at',
+    'action,target,created_at',
+    'activity_type,description,created_at',
   ];
 
   let lastError: string | null = null;
   for (const select of attempts) {
     try {
-      const table = select.includes("activity_type") ? "org_audit_log" : "org_audit_logs";
+      const table = select.includes('activity_type')
+        ? 'org_audit_log'
+        : 'org_audit_logs';
       const { data, error } = await supabase
         .from(table)
         .select(select)
-        .eq("organization_id", orgId)
-        .order("created_at", { ascending: false })
+        .eq('organization_id', orgId)
+        .order('created_at', { ascending: false })
         .limit(80);
       if (!error) {
-        if (table === "org_audit_log") {
+        if (table === 'org_audit_log') {
           return (data ?? []).map((row: any) => ({
             action: row.activity_type,
             target: row.description,
@@ -159,7 +183,7 @@ async function safeSelectAuditLogs(supabase: any, orgId: string) {
       // try next
     }
   }
-  throw new Error(lastError || "Failed to load audit logs");
+  throw new Error(lastError || 'Failed to load audit logs');
 }
 
 /**
@@ -167,23 +191,26 @@ async function safeSelectAuditLogs(supabase: any, orgId: string) {
  */
 export async function generateAuditSummary() {
   const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error("Unauthorized");
-  const permissionCtx = await requirePermission("EXPORT_REPORTS");
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error('Unauthorized');
+  const permissionCtx = await requirePermission('EXPORT_REPORTS');
 
   const { data: membership } = await supabase
-    .from("org_members")
-    .select("organization_id")
-    .eq("user_id", user.id)
+    .from('org_members')
+    .select('organization_id')
+    .eq('user_id', user.id)
     .single();
 
-  if (!membership) throw new Error("No organization found");
+  if (!membership) throw new Error('No organization found');
   const orgId = membership.organization_id;
-  await requireEntitlement(orgId, "reports");
+  await requireEntitlement(orgId, 'reports');
 
   const { data: evidenceData, error } = await supabase
-    .from("org_tasks")
-    .select(`
+    .from('org_tasks')
+    .select(
+      `
       title,
       status,
       completed_at,
@@ -192,22 +219,27 @@ export async function generateAuditSummary() {
         file_path,
         created_at
       )
-    `)
-    .eq("organization_id", orgId)
-    .eq("status", "completed");
+    `,
+    )
+    .eq('organization_id', orgId)
+    .eq('status', 'completed');
 
   if (error) throw error;
 
-  await logActivity(orgId, "audit_export", "Generated Comprehensive Audit Summary");
+  await logActivity(
+    orgId,
+    'audit_export',
+    'Generated Comprehensive Audit Summary',
+  );
   await logAuditEvent({
     organizationId: orgId,
     actorUserId: user.id,
     actorRole: permissionCtx.role,
-    entityType: "report",
+    entityType: 'report',
     entityId: null,
-    actionType: "AUDIT_SUMMARY_EXPORTED",
-    afterState: { type: "audit_summary" },
-    reason: "export",
+    actionType: 'AUDIT_SUMMARY_EXPORTED',
+    afterState: { type: 'audit_summary' },
+    reason: 'export',
   });
   return evidenceData;
 }
@@ -220,38 +252,44 @@ export async function generateAuditSummary() {
  * - Uploads to Supabase Storage (private bucket)
  * - Returns signed URL
  */
-export async function generateAuditBundlePdf(frameworkCode: string = "ISO27001") {
+export async function generateAuditBundlePdf(
+  frameworkCode: string = 'ISO27001',
+) {
   // 1) Identify org + enforce gates
-  const membership = await requirePermission("EXPORT_REPORTS");
+  const membership = await requirePermission('EXPORT_REPORTS');
   const { orgId } = await getOrgIdForUser();
-  if (membership.orgId !== orgId) throw new Error("Organization mismatch.");
+  if (membership.orgId !== orgId) throw new Error('Organization mismatch.');
   const identifier = await getClientIdentifier();
-  const rateLimit = await checkRateLimit(RATE_LIMITS.EXPORT, identifier, membership.userId);
+  const rateLimit = await checkRateLimit(
+    RATE_LIMITS.EXPORT,
+    identifier,
+    membership.userId,
+  );
   if (!rateLimit.success) {
-    throw new Error("Export rate limit exceeded. Please try again later.");
+    throw new Error('Export rate limit exceeded. Please try again later.');
   }
   const correlationId = createCorrelationId();
-  await requireEntitlement(orgId, "audit_export");
-  await requireNoComplianceBlocks(orgId, "AUDIT_EXPORT");
+  await requireEntitlement(orgId, 'audit_export');
+  await requireNoComplianceBlocks(orgId, 'AUDIT_EXPORT');
 
   const supabase = await createSupabaseServerClient();
 
   // 2) Fetch org name (best-effort)
   const { data: orgRow } = await supabase
-    .from("organizations")
-    .select("name")
-    .eq("id", orgId)
+    .from('organizations')
+    .select('name')
+    .eq('id', orgId)
     .single();
 
-  const orgName = orgRow?.name || "FormaOS Client";
+  const orgName = orgRow?.name || 'FormaOS Client';
 
   // 3) Latest compliance evaluation for framework (framework snapshots only)
   let frameworkId: string | null = null;
   try {
     const { data: frameworkRow } = await supabase
-      .from("compliance_frameworks")
-      .select("id")
-      .eq("code", frameworkCode)
+      .from('compliance_frameworks')
+      .select('id')
+      .eq('code', frameworkCode)
       .maybeSingle();
     frameworkId = frameworkRow?.id ?? null;
   } catch {
@@ -261,15 +299,17 @@ export async function generateAuditBundlePdf(frameworkCode: string = "ISO27001")
   let evalRow: any = null;
   try {
     let evalQuery = supabase
-      .from("org_control_evaluations")
-      .select("compliance_score,total_controls,missing_control_codes,partial_control_codes,framework_id,created_at,evaluated_at,last_evaluated_at")
-      .eq("organization_id", orgId)
-      .eq("control_type", "framework_snapshot");
+      .from('org_control_evaluations')
+      .select(
+        'compliance_score,total_controls,missing_control_codes,partial_control_codes,framework_id,created_at,evaluated_at,last_evaluated_at',
+      )
+      .eq('organization_id', orgId)
+      .eq('control_type', 'framework_snapshot');
 
-    if (frameworkId) evalQuery = evalQuery.eq("framework_id", frameworkId);
+    if (frameworkId) evalQuery = evalQuery.eq('framework_id', frameworkId);
 
     const { data, error } = await evalQuery
-      .order("last_evaluated_at", { ascending: false })
+      .order('last_evaluated_at', { ascending: false })
       .limit(1)
       .maybeSingle();
     if (error) throw error;
@@ -277,12 +317,13 @@ export async function generateAuditBundlePdf(frameworkCode: string = "ISO27001")
   } catch {
     try {
       let fallbackQuery = supabase
-        .from("org_control_evaluations")
-        .select("framework_id, created_at")
-        .eq("organization_id", orgId);
-      if (frameworkId) fallbackQuery = fallbackQuery.eq("framework_id", frameworkId);
+        .from('org_control_evaluations')
+        .select('framework_id, created_at')
+        .eq('organization_id', orgId);
+      if (frameworkId)
+        fallbackQuery = fallbackQuery.eq('framework_id', frameworkId);
       const { data } = await fallbackQuery
-        .order("created_at", { ascending: false })
+        .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle();
       evalRow = data ?? null;
@@ -329,9 +370,9 @@ export async function generateAuditBundlePdf(frameworkCode: string = "ISO27001")
   const storagePath = `${orgId}/${datePart}/${fileName}`;
 
   const upload = await supabase.storage
-    .from("audit-bundles")
+    .from('audit-bundles')
     .upload(storagePath, pdfBuffer, {
-      contentType: "application/pdf",
+      contentType: 'application/pdf',
       upsert: false,
     });
 
@@ -341,7 +382,7 @@ export async function generateAuditBundlePdf(frameworkCode: string = "ISO27001")
 
   // 7) Create a signed URL (1 hour)
   const signed = await supabase.storage
-    .from("audit-bundles")
+    .from('audit-bundles')
     .createSignedUrl(storagePath, 60 * 60);
 
   if (signed.error) {
@@ -349,13 +390,17 @@ export async function generateAuditBundlePdf(frameworkCode: string = "ISO27001")
   }
 
   // 8) Write audit log entry (immutable)
-  await logActivity(orgId, "audit_export", `Generated Audit Bundle PDF (${frameworkCode}) @ ${storagePath}`);
+  await logActivity(
+    orgId,
+    'audit_export',
+    `Generated Audit Bundle PDF (${frameworkCode}) @ ${storagePath}`,
+  );
   try {
-    const { error: exportErr } = await supabase.from("org_exports").insert({
+    const { error: exportErr } = await supabase.from('org_exports').insert({
       organization_id: orgId,
-      export_type: "AUDIT_BUNDLE",
+      export_type: 'AUDIT_BUNDLE',
       framework_id: frameworkId,
-      status: "generated",
+      status: 'generated',
       created_by: membership.userId,
       payload: {
         storagePath,
@@ -368,9 +413,9 @@ export async function generateAuditBundlePdf(frameworkCode: string = "ISO27001")
     });
     if (exportErr) throw exportErr;
   } catch {
-    await supabase.from("org_exports").insert({
+    await supabase.from('org_exports').insert({
       organization_id: orgId,
-      type: "AUDIT_BUNDLE",
+      type: 'AUDIT_BUNDLE',
       framework_code: frameworkCode,
       snapshot_hash: null,
       file_path: storagePath,
@@ -382,9 +427,9 @@ export async function generateAuditBundlePdf(frameworkCode: string = "ISO27001")
     organizationId: orgId,
     actorUserId: membership.userId,
     actorRole: membership.role,
-    entityType: "export",
+    entityType: 'export',
     entityId: null,
-    actionType: "AUDIT_BUNDLE_EXPORTED",
+    actionType: 'AUDIT_BUNDLE_EXPORTED',
     afterState: {
       frameworkCode,
       storagePath,
@@ -393,10 +438,10 @@ export async function generateAuditBundlePdf(frameworkCode: string = "ISO27001")
       missing: missingCodes.length,
       correlation_id: correlationId,
     },
-    reason: "export",
+    reason: 'export',
   });
 
-  revalidatePath("/app/reports");
+  revalidatePath('/app/reports');
 
   return {
     success: true,
@@ -410,7 +455,9 @@ export async function generateAuditBundlePdf(frameworkCode: string = "ISO27001")
       missing: missingCodes.length,
       policies: bundleData.policies.length,
       evidenceTotal: bundleData.evidence.length,
-      evidenceApproved: bundleData.evidence.filter(e => e.status === "approved").length,
+      evidenceApproved: bundleData.evidence.filter(
+        (e) => e.status === 'approved',
+      ).length,
       logsIncluded: bundleData.auditLogs.length,
     },
   };
@@ -430,12 +477,24 @@ async function buildAuditBundlePdf(data: AuditBundleRow): Promise<Buffer> {
   let y = height - margin;
 
   const drawH1 = (text: string) => {
-    page.drawText(text, { x: margin, y, size: 20, font: fontBold, color: rgb(0.1, 0.1, 0.1) });
+    page.drawText(text, {
+      x: margin,
+      y,
+      size: 20,
+      font: fontBold,
+      color: rgb(0.1, 0.1, 0.1),
+    });
     y -= 28;
   };
 
   const drawH2 = (text: string) => {
-    page.drawText(text, { x: margin, y, size: 12, font: fontBold, color: rgb(0.15, 0.15, 0.15) });
+    page.drawText(text, {
+      x: margin,
+      y,
+      size: 12,
+      font: fontBold,
+      color: rgb(0.15, 0.15, 0.15),
+    });
     y -= 18;
   };
 
@@ -443,13 +502,19 @@ async function buildAuditBundlePdf(data: AuditBundleRow): Promise<Buffer> {
     const size = 10;
     const lineHeight = 14;
     const maxWidth = width - margin * 2;
-    const words = text.split(" ");
-    let line = "";
+    const words = text.split(' ');
+    let line = '';
     for (const w of words) {
-      const test = line ? line + " " + w : w;
+      const test = line ? line + ' ' + w : w;
       const tw = font.widthOfTextAtSize(test, size);
       if (tw > maxWidth) {
-        page.drawText(line, { x: margin, y, size, font, color: rgb(0.2, 0.2, 0.2) });
+        page.drawText(line, {
+          x: margin,
+          y,
+          size,
+          font,
+          color: rgb(0.2, 0.2, 0.2),
+        });
         y -= lineHeight;
         line = w;
       } else {
@@ -457,31 +522,39 @@ async function buildAuditBundlePdf(data: AuditBundleRow): Promise<Buffer> {
       }
     }
     if (line) {
-      page.drawText(line, { x: margin, y, size, font, color: rgb(0.2, 0.2, 0.2) });
+      page.drawText(line, {
+        x: margin,
+        y,
+        size,
+        font,
+        color: rgb(0.2, 0.2, 0.2),
+      });
       y -= lineHeight;
     }
   };
 
-  drawH1("Compliance Audit Bundle");
+  drawH1('Compliance Audit Bundle');
   drawP(`Organization: ${data.orgName}`);
   drawP(`Framework: ${data.frameworkCode}`);
   drawP(`Generated: ${toDate(data.generatedAt)}`);
   drawP(`Org ID: ${data.orgId}`);
   y -= 10;
 
-  drawH2("Executive Summary");
+  drawH2('Executive Summary');
   drawP(`Compliance Score: ${data.complianceScore}%`);
   drawP(`Total Controls: ${data.totalControls}`);
   drawP(`Missing Controls: ${data.missingControls}`);
   drawP(`Policies: ${data.policies.length}`);
   drawP(`Evidence Items: ${data.evidence.length}`);
-  drawP(`Approved Evidence: ${data.evidence.filter(e => e.status === "approved").length}`);
+  drawP(
+    `Approved Evidence: ${data.evidence.filter((e) => e.status === 'approved').length}`,
+  );
   drawP(`Recent Governance Actions Included: ${data.auditLogs.length}`);
   y -= 10;
 
   if (data.missingControls > 0) {
-    drawH2("Priority Gaps (Missing Control Codes)");
-    drawP(data.missingCodes.slice(0, 60).join(", ") || "—");
+    drawH2('Priority Gaps (Missing Control Codes)');
+    drawP(data.missingCodes.slice(0, 60).join(', ') || 'N/A');
     y -= 8;
   }
 
@@ -489,19 +562,31 @@ async function buildAuditBundlePdf(data: AuditBundleRow): Promise<Buffer> {
     const sectionPage = pdfDoc.addPage([595.28, 841.89]);
     const { height: ph } = sectionPage.getSize();
     let py = ph - margin;
-    sectionPage.drawText(title, { x: margin, y: py, size: 14, font: fontBold, color: rgb(0.1, 0.1, 0.1) });
+    sectionPage.drawText(title, {
+      x: margin,
+      y: py,
+      size: 14,
+      font: fontBold,
+      color: rgb(0.1, 0.1, 0.1),
+    });
     py -= 22;
     const size = 10;
     const lineHeight = 14;
     const maxWidth = width - margin * 2;
     for (const line of lines) {
-      const words = line.split(" ");
-      let chunk = "";
+      const words = line.split(' ');
+      let chunk = '';
       for (const w of words) {
-        const test = chunk ? chunk + " " + w : w;
+        const test = chunk ? chunk + ' ' + w : w;
         const tw = font.widthOfTextAtSize(test, size);
         if (tw > maxWidth) {
-          sectionPage.drawText(chunk, { x: margin, y: py, size, font, color: rgb(0.2, 0.2, 0.2) });
+          sectionPage.drawText(chunk, {
+            x: margin,
+            y: py,
+            size,
+            font,
+            color: rgb(0.2, 0.2, 0.2),
+          });
           py -= lineHeight;
           chunk = w;
         } else {
@@ -509,7 +594,13 @@ async function buildAuditBundlePdf(data: AuditBundleRow): Promise<Buffer> {
         }
       }
       if (chunk) {
-        sectionPage.drawText(chunk, { x: margin, y: py, size, font, color: rgb(0.2, 0.2, 0.2) });
+        sectionPage.drawText(chunk, {
+          x: margin,
+          y: py,
+          size,
+          font,
+          color: rgb(0.2, 0.2, 0.2),
+        });
         py -= lineHeight;
       }
       if (py < margin + lineHeight) {
@@ -519,20 +610,40 @@ async function buildAuditBundlePdf(data: AuditBundleRow): Promise<Buffer> {
   };
 
   addSection(
-    "Policy Inventory",
-    data.policies.slice(0, 200).map((p, idx) => `${idx + 1}. ${p.title} — ${p.status || "—"} — ${toDate(p.updated_at)}`)
+    'Policy Inventory',
+    data.policies
+      .slice(0, 200)
+      .map(
+        (p, idx) =>
+          `${idx + 1}. ${p.title} - ${p.status || 'N/A'} - ${toDate(p.updated_at)}`,
+      ),
   );
   addSection(
-    "Evidence Ledger",
-    data.evidence.slice(0, 250).map((e, idx) => `${idx + 1}. ${e.title} — ${e.status || "—"} — ${toDate(e.created_at)}`)
+    'Evidence Ledger',
+    data.evidence
+      .slice(0, 250)
+      .map(
+        (e, idx) =>
+          `${idx + 1}. ${e.title} - ${e.status || 'N/A'} - ${toDate(e.created_at)}`,
+      ),
   );
   addSection(
-    "Task Ledger",
-    data.tasks.slice(0, 250).map((t, idx) => `${idx + 1}. ${t.title} — ${t.status || "—"} — ${toDate(t.completed_at)}`)
+    'Task Ledger',
+    data.tasks
+      .slice(0, 250)
+      .map(
+        (t, idx) =>
+          `${idx + 1}. ${t.title} - ${t.status || 'N/A'} - ${toDate(t.completed_at)}`,
+      ),
   );
   addSection(
-    "Audit Trail (Recent Governance Actions)",
-    data.auditLogs.slice(0, 120).map((l, idx) => `${idx + 1}. ${l.action || "—"} — ${l.target || "—"} — ${toDate(l.created_at)}${l.actor_email ? ` | ${l.actor_email}` : ""}`)
+    'Audit Trail (Recent Governance Actions)',
+    data.auditLogs
+      .slice(0, 120)
+      .map(
+        (l, idx) =>
+          `${idx + 1}. ${l.action || 'N/A'} - ${l.target || 'N/A'} - ${toDate(l.created_at)}${l.actor_email ? ` | ${l.actor_email}` : ''}`,
+      ),
   );
 
   const pdfBytes = await pdfDoc.save();

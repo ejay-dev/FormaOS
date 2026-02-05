@@ -1,24 +1,24 @@
-import { NextResponse } from "next/server";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { requireFounderAccess } from "@/app/app/admin/access";
-import { parsePageParams } from "@/app/api/admin/_utils";
+import { NextResponse } from 'next/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { requireFounderAccess } from '@/app/app/admin/access';
+import { parsePageParams } from '@/app/api/admin/_utils';
 
 export async function GET(request: Request) {
   try {
     await requireFounderAccess();
     const admin = createSupabaseAdminClient();
     const url = new URL(request.url);
-    const query = (url.searchParams.get("query") ?? "").trim();
+    const query = (url.searchParams.get('query') ?? '').trim();
     const { page, limit, from, to } = parsePageParams(url.searchParams);
 
     const orgQuery = admin
-      .from("organizations")
-      .select("id, name, created_at", { count: "exact" })
-      .order("created_at", { ascending: false })
+      .from('organizations')
+      .select('id, name, created_at', { count: 'exact' })
+      .order('created_at', { ascending: false })
       .range(from, to);
 
     if (query) {
-      orgQuery.ilike("name", `%${query}%`);
+      orgQuery.ilike('name', `%${query}%`);
     }
 
     const { data: organizations, count } = await orgQuery;
@@ -27,21 +27,23 @@ export async function GET(request: Request) {
     const [{ data: members }, { data: subscriptions }] = await Promise.all([
       orgIds.length
         ? admin
-            .from("org_members")
-            .select("organization_id, user_id, role")
-            .in("organization_id", orgIds)
+            .from('org_members')
+            .select('organization_id, user_id, role')
+            .in('organization_id', orgIds)
         : Promise.resolve({ data: [] }),
       orgIds.length
         ? admin
-            .from("org_subscriptions")
-            .select("organization_id, status, plan_key, current_period_end, trial_expires_at")
-            .in("organization_id", orgIds)
+            .from('org_subscriptions')
+            .select(
+              'organization_id, status, plan_key, current_period_end, trial_expires_at',
+            )
+            .in('organization_id', orgIds)
         : Promise.resolve({ data: [] }),
     ]);
 
     const ownersByOrg = new Map<string, string>();
     (members ?? []).forEach((member: any) => {
-      if (member.role === "owner") {
+      if (member.role === 'owner') {
         ownersByOrg.set(member.organization_id, member.user_id);
       }
     });
@@ -52,11 +54,14 @@ export async function GET(request: Request) {
     await Promise.all(
       ownerIds.map(async (ownerId) => {
         const { data } = await (admin as any).auth.admin.getUserById(ownerId);
-        ownerEmails.set(ownerId, data?.user?.email ?? "—");
-      })
+        ownerEmails.set(ownerId, data?.user?.email ?? 'N/A');
+      }),
     );
 
-    const subscriptionByOrg = new Map<string, typeof subscriptions extends Array<infer T> ? T : any>();
+    const subscriptionByOrg = new Map<
+      string,
+      typeof subscriptions extends Array<infer T> ? T : any
+    >();
     (subscriptions ?? []).forEach((subscription: any) => {
       subscriptionByOrg.set(subscription.organization_id, subscription);
     });
@@ -68,10 +73,13 @@ export async function GET(request: Request) {
         id: org.id,
         name: org.name,
         created_at: org.created_at,
-        owner_email: ownerId ? ownerEmails.get(ownerId) ?? "—" : "—",
+        owner_email: ownerId ? (ownerEmails.get(ownerId) ?? 'N/A') : 'N/A',
         plan_key: subscription?.plan_key ?? null,
-        status: subscription?.status ?? "pending",
-        trial_expires_at: subscription?.trial_expires_at ?? subscription?.current_period_end ?? null,
+        status: subscription?.status ?? 'pending',
+        trial_expires_at:
+          subscription?.trial_expires_at ??
+          subscription?.current_period_end ??
+          null,
       };
     });
 
@@ -82,7 +90,7 @@ export async function GET(request: Request) {
       data: rows,
     });
   } catch (error) {
-    console.error("/api/admin/orgs error:", error);
-    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    console.error('/api/admin/orgs error:', error);
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 }

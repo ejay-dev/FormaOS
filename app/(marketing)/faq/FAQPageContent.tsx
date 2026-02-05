@@ -25,7 +25,6 @@ import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
-
 // ============================================================================
 // FAQ DATA - Enterprise-Grade Content
 // ============================================================================
@@ -95,7 +94,7 @@ const faqCategories = [
     questions: [
       {
         q: 'How does FormaOS generate audit trails?',
-        a: 'Every action in FormaOS is automatically logged with full context—who did what, when, and in relation to which control or workflow. Audit trails are immutable and timestamped, providing a complete chain of evidence that satisfies regulatory requirements. You can filter, search, and export audit logs at any time.',
+        a: 'Every action in FormaOS is automatically logged with full context, who did what, when, and in relation to which control or workflow. Audit trails are immutable and timestamped, providing a complete chain of evidence that satisfies regulatory requirements. You can filter, search, and export audit logs at any time.',
       },
       {
         q: 'Is evidence immutable?',
@@ -295,7 +294,7 @@ function FAQHero() {
               transition={{ duration: 0.8, delay: 0.5 }}
               className="text-lg sm:text-xl text-gray-400 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
             >
-              Everything you need to know about FormaOS—from platform
+              Everything you need to know about FormaOS, from platform
               capabilities and security to integrations, pricing, and support.
             </motion.p>
 

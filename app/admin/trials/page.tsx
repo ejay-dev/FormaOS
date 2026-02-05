@@ -1,19 +1,19 @@
-import { getAdminFetchConfig } from "@/app/admin/lib";
-import { Clock, AlertTriangle, CheckCircle, Lock, Zap } from "lucide-react";
+import { getAdminFetchConfig } from '@/app/admin/lib';
+import { Clock, AlertTriangle, CheckCircle, Lock, Zap } from 'lucide-react';
 
 type Trial = {
   id: string;
   organization_id: string;
   organization_name: string;
   trial_ends_at: string;
-  status: "active" | "expiring" | "expired";
+  status: 'active' | 'expiring' | 'expired';
   owner_email: string;
 };
 
 async function fetchTrials() {
   const { base, headers } = await getAdminFetchConfig();
   const res = await fetch(`${base}/api/admin/trials`, {
-    cache: "no-store",
+    cache: 'no-store',
     headers,
   });
   if (!res.ok) return null;
@@ -22,13 +22,13 @@ async function fetchTrials() {
 
 function formatDate(dateStr: string) {
   const date = new Date(dateStr);
-  if (Number.isNaN(date.getTime())) return "—";
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
+  if (Number.isNaN(date.getTime())) return 'N/A';
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
   }).format(date);
 }
 
@@ -40,7 +40,7 @@ function getDaysRemaining(dateStr: string): number {
 }
 
 function getStatusBadge(status: string, daysRemaining: number) {
-  if (status === "expired") {
+  if (status === 'expired') {
     return (
       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium bg-red-500/10 text-red-300">
         <AlertTriangle className="h-3 w-3" />
@@ -79,7 +79,7 @@ export default async function AdminTrialsPage() {
   const now = new Date();
   const activeTrials = trials.filter((t) => new Date(t.trial_ends_at) > now);
   const expiringTrials = activeTrials.filter(
-    (t) => getDaysRemaining(t.trial_ends_at) <= 3
+    (t) => getDaysRemaining(t.trial_ends_at) <= 3,
   );
   const expiredTrials = trials.filter((t) => new Date(t.trial_ends_at) <= now);
 
@@ -152,9 +152,7 @@ export default async function AdminTrialsPage() {
                   <p className="text-sm font-semibold text-slate-100">
                     {trial.organization_name}
                   </p>
-                  <p className="text-xs text-slate-500">
-                    {trial.owner_email}
-                  </p>
+                  <p className="text-xs text-slate-500">{trial.owner_email}</p>
                 </div>
                 <div className="text-right mr-4">
                   <p className="text-sm text-slate-300">
@@ -241,13 +239,12 @@ export default async function AdminTrialsPage() {
                   <p className="text-sm font-semibold text-red-100">
                     {trial.organization_name}
                   </p>
-                  <p className="text-xs text-red-200/70">
-                    {trial.owner_email}
-                  </p>
+                  <p className="text-xs text-red-200/70">{trial.owner_email}</p>
                 </div>
                 <div className="text-right mr-4">
                   <p className="text-sm text-red-100">
-                    Expired {Math.abs(getDaysRemaining(trial.trial_ends_at))} days ago
+                    Expired {Math.abs(getDaysRemaining(trial.trial_ends_at))}{' '}
+                    days ago
                   </p>
                   <p className="text-xs text-red-200/50">
                     {formatDate(trial.trial_ends_at)}

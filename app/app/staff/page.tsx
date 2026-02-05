@@ -1,8 +1,15 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import { ClipboardCheck, AlertTriangle, FileText, Users, ArrowRight, CalendarDays } from "lucide-react";
-import { normalizeRole } from "@/app/app/actions/rbac";
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import {
+  ClipboardCheck,
+  AlertTriangle,
+  FileText,
+  Users,
+  ArrowRight,
+  CalendarDays,
+} from 'lucide-react';
+import { normalizeRole } from '@/app/app/actions/rbac';
 
 type TaskRow = {
   id: string;
@@ -43,32 +50,34 @@ type ShiftRow = {
 };
 
 function fmtDate(d?: string | null) {
-  if (!d) return "—";
+  if (!d) return 'N/A';
   try {
     return new Date(d).toLocaleString();
   } catch {
-    return "—";
+    return 'N/A';
   }
 }
 
 export default async function StaffDashboardPage() {
   const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/signin");
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect('/auth/signin');
 
   const { data: membership } = await supabase
-    .from("org_members")
-    .select("organization_id, role")
-    .eq("user_id", user.id)
+    .from('org_members')
+    .select('organization_id, role')
+    .eq('user_id', user.id)
     .maybeSingle();
 
   if (!membership?.organization_id) {
-    redirect("/onboarding");
+    redirect('/onboarding');
   }
 
   const roleKey = normalizeRole(membership.role ?? null);
-  if (roleKey !== "STAFF") {
-    redirect("/app");
+  if (roleKey !== 'STAFF') {
+    redirect('/app');
   }
 
   const orgId = membership.organization_id;
@@ -81,41 +90,41 @@ export default async function StaffDashboardPage() {
     { data: incidentsData },
     { data: shiftsData },
   ] = await Promise.all([
-      supabase
-        .from("org_tasks")
-        .select("id,title,status,due_date,patient_id")
-        .eq("organization_id", orgId)
-        .eq("assigned_to", user.id)
-        .order("due_date", { ascending: true })
-        .limit(8),
-      supabase
-        .from("org_patients")
-        .select("id, full_name, care_status, risk_level, emergency_flag")
-        .eq("organization_id", orgId)
-        .order("full_name", { ascending: true })
-        .limit(6),
-      supabase
-        .from("org_progress_notes")
-        .select("id, patient_id, status_tag, created_at")
-        .eq("organization_id", orgId)
-        .eq("staff_user_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(6),
-      supabase
-        .from("org_incidents")
-        .select("id, severity, status, occurred_at, patient_id")
-        .eq("organization_id", orgId)
-        .eq("status", "open")
-        .order("occurred_at", { ascending: false })
-        .limit(5),
-      supabase
-        .from("org_shifts")
-        .select("id, status, started_at, patient_id")
-        .eq("organization_id", orgId)
-        .eq("staff_user_id", user.id)
-        .order("started_at", { ascending: false })
-        .limit(4),
-    ]);
+    supabase
+      .from('org_tasks')
+      .select('id,title,status,due_date,patient_id')
+      .eq('organization_id', orgId)
+      .eq('assigned_to', user.id)
+      .order('due_date', { ascending: true })
+      .limit(8),
+    supabase
+      .from('org_patients')
+      .select('id, full_name, care_status, risk_level, emergency_flag')
+      .eq('organization_id', orgId)
+      .order('full_name', { ascending: true })
+      .limit(6),
+    supabase
+      .from('org_progress_notes')
+      .select('id, patient_id, status_tag, created_at')
+      .eq('organization_id', orgId)
+      .eq('staff_user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(6),
+    supabase
+      .from('org_incidents')
+      .select('id, severity, status, occurred_at, patient_id')
+      .eq('organization_id', orgId)
+      .eq('status', 'open')
+      .order('occurred_at', { ascending: false })
+      .limit(5),
+    supabase
+      .from('org_shifts')
+      .select('id, status, started_at, patient_id')
+      .eq('organization_id', orgId)
+      .eq('staff_user_id', user.id)
+      .order('started_at', { ascending: false })
+      .limit(4),
+  ]);
 
   const tasks: TaskRow[] = tasksData ?? [];
   const patients: PatientRow[] = patientsData ?? [];
@@ -124,14 +133,17 @@ export default async function StaffDashboardPage() {
   const shifts: ShiftRow[] = shiftsData ?? [];
 
   const overdueTasks = tasks.filter(
-    (task) => task.due_date && task.status !== "completed" && task.due_date < nowIso
+    (task) =>
+      task.due_date && task.status !== 'completed' && task.due_date < nowIso,
   );
 
   return (
     <div className="space-y-8 pb-12">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-50">Field Operations</h1>
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-50">
+            Field Operations
+          </h1>
           <p className="text-sm text-slate-400">
             Your assigned work, patient updates, and required documentation.
           </p>
@@ -158,7 +170,8 @@ export default async function StaffDashboardPage() {
         <div className="rounded-2xl border border-rose-500/30 bg-rose-500/10 px-6 py-4 text-sm text-rose-200">
           <span className="inline-flex items-center gap-2 font-semibold">
             <AlertTriangle className="h-4 w-4" />
-            {overdueTasks.length} overdue task{overdueTasks.length === 1 ? "" : "s"} require attention.
+            {overdueTasks.length} overdue task
+            {overdueTasks.length === 1 ? '' : 's'} require attention.
           </span>
         </div>
       )}
@@ -174,8 +187,13 @@ export default async function StaffDashboardPage() {
               <p className="text-xs text-slate-400">No tasks assigned.</p>
             ) : (
               (tasks ?? []).map((task) => (
-                <div key={task.id} className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                  <div className="text-sm font-semibold text-slate-100">{task.title}</div>
+                <div
+                  key={task.id}
+                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-3"
+                >
+                  <div className="text-sm font-semibold text-slate-100">
+                    {task.title}
+                  </div>
                   <div className="text-xs text-slate-400">
                     Due {fmtDate(task.due_date)} • {task.status}
                   </div>
@@ -220,11 +238,16 @@ export default async function StaffDashboardPage() {
               <p className="text-xs text-slate-400">No notes logged yet.</p>
             ) : (
               (notes ?? []).map((note) => (
-                <div key={note.id} className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+                <div
+                  key={note.id}
+                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-3"
+                >
                   <div className="text-xs uppercase tracking-widest text-slate-400">
                     {note.status_tag}
                   </div>
-                  <div className="text-xs text-slate-300">Logged {fmtDate(note.created_at)}</div>
+                  <div className="text-xs text-slate-300">
+                    Logged {fmtDate(note.created_at)}
+                  </div>
                 </div>
               ))
             )}
@@ -243,7 +266,10 @@ export default async function StaffDashboardPage() {
               <p className="text-xs text-slate-400">No active incidents.</p>
             ) : (
               (incidents ?? []).map((incident) => (
-                <div key={incident.id} className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+                <div
+                  key={incident.id}
+                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-3"
+                >
                   <div className="text-xs uppercase tracking-widest text-rose-300">
                     {incident.severity}
                   </div>
@@ -266,7 +292,10 @@ export default async function StaffDashboardPage() {
               <p className="text-xs text-slate-400">No shifts logged.</p>
             ) : (
               (shifts ?? []).map((shift) => (
-                <div key={shift.id} className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+                <div
+                  key={shift.id}
+                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-3"
+                >
                   <div className="text-xs uppercase tracking-widest text-slate-400">
                     {shift.status}
                   </div>

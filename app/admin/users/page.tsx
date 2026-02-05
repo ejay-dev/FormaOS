@@ -1,6 +1,6 @@
-import { getAdminFetchConfig } from "@/app/admin/lib";
-import { UserActionButtons } from "@/app/admin/components/user-action-buttons";
-import { Mail, Building2, Shield, Clock } from "lucide-react";
+import { getAdminFetchConfig } from '@/app/admin/lib';
+import { UserActionButtons } from '@/app/admin/components/user-action-buttons';
+import { Mail, Building2, Shield, Clock } from 'lucide-react';
 
 type UserRow = {
   id: string;
@@ -13,23 +13,23 @@ type UserRow = {
 };
 
 function formatDate(value?: string | null) {
-  if (!value) return "—";
+  if (!value) return 'N/A';
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
+  if (Number.isNaN(date.getTime())) return 'N/A';
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
   }).format(date);
 }
 
 async function fetchUsers(query?: string, page?: string) {
   const { base, headers } = await getAdminFetchConfig();
   const params = new URLSearchParams();
-  if (query) params.set("query", query);
-  if (page) params.set("page", page);
+  if (query) params.set('query', query);
+  if (page) params.set('page', page);
   const res = await fetch(`${base}/api/admin/users?${params.toString()}`, {
-    cache: "no-store",
+    cache: 'no-store',
     headers,
   });
   if (!res.ok) return null;
@@ -59,7 +59,7 @@ export default async function AdminUsersPage({
       <form className="flex items-center gap-2">
         <input
           name="query"
-          defaultValue={resolved?.query ?? ""}
+          defaultValue={resolved?.query ?? ''}
           placeholder="Search by email or name"
           className="rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:border-slate-600 focus:outline-none"
         />
@@ -113,10 +113,10 @@ export default async function AdminUsersPage({
                       </div>
                       <div>
                         <div className="text-sm font-medium text-slate-100">
-                          {user.email.split("@")[0]}
+                          {user.email.split('@')[0]}
                         </div>
                         <div className="text-xs text-slate-500">
-                          {user.email.split("@")[1]}
+                          {user.email.split('@')[1]}
                         </div>
                       </div>
                     </div>
@@ -124,7 +124,7 @@ export default async function AdminUsersPage({
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2 text-slate-300">
                       <Building2 className="h-4 w-4 text-slate-500" />
-                      {user.organization || "—"}
+                      {user.organization || 'N/A'}
                     </div>
                   </td>
                   <td className="px-6 py-4">
@@ -148,11 +148,11 @@ export default async function AdminUsersPage({
                     <span
                       className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${
                         user.email_confirmed
-                          ? "bg-emerald-500/10 text-emerald-300"
-                          : "bg-amber-500/10 text-amber-300"
+                          ? 'bg-emerald-500/10 text-emerald-300'
+                          : 'bg-amber-500/10 text-amber-300'
                       }`}
                     >
-                      {user.email_confirmed ? "Verified" : "Pending"}
+                      {user.email_confirmed ? 'Verified' : 'Pending'}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">

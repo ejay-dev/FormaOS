@@ -22,7 +22,6 @@ import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
-
 // ============================================================================
 // OUR STORY PAGE - DESIGN SYNCED WITH HOME/PRODUCT VISUAL SYSTEM
 // ============================================================================
@@ -139,7 +138,7 @@ export function StoryHero() {
             >
               FormaOS was created for teams that operate in environments where
               failure is not an option. Healthcare, disability services,
-              finance, education, and government don&apos;t just need software —
+              finance, education, and government don&apos;t just need software,
               they need systems that can withstand scrutiny, audits, and
               real-world consequences.
             </motion.p>
@@ -285,7 +284,7 @@ function FounderQuote() {
               className="relative text-gray-400"
             >
               <span className="font-semibold text-white">Ejaz Hussain</span>
-              <span className="mx-3 text-indigo-500">—</span>
+              <span className="mx-3 text-indigo-500">•</span>
               <span>Founder & Chief Engineer, FormaOS</span>
             </motion.div>
           </div>
@@ -369,8 +368,8 @@ function TheProblem() {
               workflows, handovers, approvals, and accountability.
             </p>
             <p className="text-lg text-gray-400 leading-relaxed">
-              Organizations were being asked to prove compliance after the fact
-              — instead of being supported to operate compliantly by design.
+              Organizations were being asked to prove compliance after the fact,
+              instead of being supported to operate compliantly by design.
             </p>
           </div>
         </motion.div>
@@ -486,7 +485,7 @@ function TheApproach() {
           </motion.div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
-            From Policy to Proof —
+            From Policy to Proof
             <br />
             <span className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
               Built Into Operations
@@ -510,7 +509,7 @@ function TheApproach() {
             We designed FormaOS around one principle:
           </p>
           <p className="text-2xl sm:text-3xl text-indigo-400 font-bold italic leading-tight">
-            &ldquo;Compliance should be embedded into how work is done — not
+            &ldquo;Compliance should be embedded into how work is done, not
             verified after it is done.&rdquo;
           </p>
         </motion.div>
@@ -931,7 +930,7 @@ function OurMission() {
             <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
               Provable compliance
             </span>{' '}
-            — built into daily operations.
+            built into daily operations.
           </p>
         </motion.div>
       </div>
@@ -1032,8 +1031,8 @@ function FinalCTA() {
                 </p>
 
                 <p className="text-xl text-white font-medium max-w-2xl mx-auto">
-                  If your organization needs more than documents — if it needs
-                  execution, ownership, and proof — you are in the right place.
+                  If your organization needs more than documents. If it needs
+                  execution, ownership, and proof, you are in the right place.
                 </p>
               </div>
 

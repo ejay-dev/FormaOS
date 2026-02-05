@@ -163,7 +163,7 @@ export default function PricingPage() {
             {[
               {
                 q: "What's included in the free trial?",
-                a: 'Full access to all features for 14 days, no credit card required. All onboarding uses real organization data—no sample/demo content.',
+                a: 'Full access to all features for 14 days, no credit card required. All onboarding uses real organization data, with no sample/demo content.',
               },
               {
                 q: 'Can I change plans anytime?',
@@ -193,7 +193,7 @@ export default function PricingPage() {
       <MarketingAnchor
         /* Legacy/Backup Page: Do not deploy. Trial language updated for accuracy. */
         title="Start your compliance transformation"
-        subtitle="14-day free trial · No credit card required. All onboarding uses real organization data—no sample/demo content."
+        subtitle="14-day free trial · No credit card required. All onboarding uses real organization data, with no sample/demo content."
         badge="Get Started"
       />
     </div>

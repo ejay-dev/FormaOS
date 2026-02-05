@@ -102,8 +102,8 @@ function AboutHero() {
               className="text-lg sm:text-xl text-gray-400 mb-10 max-w-2xl mx-auto text-center leading-relaxed"
             >
               FormaOS exists to help regulated organizations operate with
-              confidence. Compliance teams need more than spreadsheets—they need
-              a defensible system that proves governance, evidence, and
+              confidence. Compliance teams need more than spreadsheets. They
+              need a defensible system that proves governance, evidence, and
               oversight.
             </motion.p>
 

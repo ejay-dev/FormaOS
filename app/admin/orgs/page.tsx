@@ -1,7 +1,7 @@
-import Link from "next/link";
-import { getAdminFetchConfig } from "@/app/admin/lib";
-import { OrgActionButtons } from "@/app/admin/components/org-action-buttons";
-import { Building2, Calendar, Zap } from "lucide-react";
+import Link from 'next/link';
+import { getAdminFetchConfig } from '@/app/admin/lib';
+import { OrgActionButtons } from '@/app/admin/components/org-action-buttons';
+import { Building2, Calendar, Zap } from 'lucide-react';
 
 type OrgRow = {
   id: string;
@@ -16,11 +16,11 @@ type OrgRow = {
 async function fetchOrganizations(query?: string, page?: string) {
   const { base, headers } = await getAdminFetchConfig();
   const params = new URLSearchParams();
-  if (query) params.set("query", query);
-  if (page) params.set("page", page);
+  if (query) params.set('query', query);
+  if (page) params.set('page', page);
 
   const res = await fetch(`${base}/api/admin/orgs?${params.toString()}`, {
-    cache: "no-store",
+    cache: 'no-store',
     headers,
   });
   if (!res.ok) return null;
@@ -28,40 +28,40 @@ async function fetchOrganizations(query?: string, page?: string) {
 }
 
 function formatDate(value?: string | null) {
-  if (!value) return "—";
+  if (!value) return 'N/A';
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
+  if (Number.isNaN(date.getTime())) return 'N/A';
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
   }).format(date);
 }
 
 function getPlanColor(plan?: string | null) {
   switch (plan?.toLowerCase()) {
-    case "starter":
-    case "basic":
-      return "bg-purple-500/10 text-purple-300";
-    case "pro":
-      return "bg-emerald-500/10 text-emerald-300";
-    case "enterprise":
-      return "bg-blue-500/10 text-blue-300";
+    case 'starter':
+    case 'basic':
+      return 'bg-purple-500/10 text-purple-300';
+    case 'pro':
+      return 'bg-emerald-500/10 text-emerald-300';
+    case 'enterprise':
+      return 'bg-blue-500/10 text-blue-300';
     default:
-      return "bg-slate-600/10 text-slate-300";
+      return 'bg-slate-600/10 text-slate-300';
   }
 }
 
 function getStatusColor(status?: string) {
   switch (status?.toLowerCase()) {
-    case "active":
-      return "bg-emerald-500/10 text-emerald-300";
-    case "trialing":
-      return "bg-amber-500/10 text-amber-300";
-    case "suspended":
-      return "bg-red-500/10 text-red-300";
+    case 'active':
+      return 'bg-emerald-500/10 text-emerald-300';
+    case 'trialing':
+      return 'bg-amber-500/10 text-amber-300';
+    case 'suspended':
+      return 'bg-red-500/10 text-red-300';
     default:
-      return "bg-slate-600/10 text-slate-300";
+      return 'bg-slate-600/10 text-slate-300';
   }
 }
 
@@ -88,7 +88,7 @@ export default async function AdminOrgsPage({
       <form className="flex items-center gap-2">
         <input
           name="query"
-          defaultValue={resolved?.query ?? ""}
+          defaultValue={resolved?.query ?? ''}
           placeholder="Search by organization name or owner"
           className="rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:border-slate-600 focus:outline-none"
         />
@@ -141,7 +141,7 @@ export default async function AdminOrgsPage({
                         href={`/admin/orgs/${org.id}`}
                         className="text-sm font-medium text-slate-100 hover:text-sky-300 transition-colors"
                       >
-                        {org.name ?? "Untitled Organization"}
+                        {org.name ?? 'Untitled Organization'}
                       </Link>
                     </div>
                   </td>
@@ -153,24 +153,26 @@ export default async function AdminOrgsPage({
                   <td className="px-6 py-4">
                     <span
                       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium ${getPlanColor(
-                        org.plan_key
+                        org.plan_key,
                       )}`}
                     >
                       <Zap className="h-3 w-3" />
                       {org.plan_key
-                        ? org.plan_key.charAt(0).toUpperCase() + org.plan_key.slice(1)
-                        : "—"}
+                        ? org.plan_key.charAt(0).toUpperCase() +
+                          org.plan_key.slice(1)
+                        : 'N/A'}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <span
                       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium ${getStatusColor(
-                        org.status
+                        org.status,
                       )}`}
                     >
                       {org.status
-                        ? org.status.charAt(0).toUpperCase() + org.status.slice(1)
-                        : "—"}
+                        ? org.status.charAt(0).toUpperCase() +
+                          org.status.slice(1)
+                        : 'N/A'}
                     </span>
                   </td>
                   <td className="px-6 py-4">

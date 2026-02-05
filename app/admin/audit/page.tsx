@@ -1,5 +1,5 @@
-import { getAdminFetchConfig } from "@/app/admin/lib";
-import { Shield, User, Building2, Calendar } from "lucide-react";
+import { getAdminFetchConfig } from '@/app/admin/lib';
+import { Shield, User, Building2, Calendar } from 'lucide-react';
 
 type AuditEntry = {
   id: string;
@@ -12,28 +12,32 @@ type AuditEntry = {
 };
 
 function formatDate(value?: string | null) {
-  if (!value) return "—";
+  if (!value) return 'N/A';
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
+  if (Number.isNaN(date.getTime())) return 'N/A';
   return date.toLocaleString();
 }
 
 function getActionIcon(targetType: string) {
   switch (targetType) {
-    case "organization": return <Building2 className="h-4 w-4 text-blue-400" />;
-    case "user": return <User className="h-4 w-4 text-green-400" />;
-    case "subscription": return <Shield className="h-4 w-4 text-purple-400" />;
-    default: return <Calendar className="h-4 w-4 text-gray-400" />;
+    case 'organization':
+      return <Building2 className="h-4 w-4 text-blue-400" />;
+    case 'user':
+      return <User className="h-4 w-4 text-green-400" />;
+    case 'subscription':
+      return <Shield className="h-4 w-4 text-purple-400" />;
+    default:
+      return <Calendar className="h-4 w-4 text-gray-400" />;
   }
 }
 
 async function fetchAuditLog(page?: string) {
   const { base, headers } = await getAdminFetchConfig();
   const params = new URLSearchParams();
-  if (page) params.set("page", page);
+  if (page) params.set('page', page);
 
   const res = await fetch(`${base}/api/admin/audit?${params.toString()}`, {
-    cache: "no-store",
+    cache: 'no-store',
     headers,
   });
   if (!res.ok) return null;
@@ -61,7 +65,9 @@ export default async function AdminAuditPage({
       {entries.length === 0 ? (
         <div className="rounded-2xl border border-white/10 bg-white/5 p-12 text-center">
           <Shield className="mx-auto h-12 w-12 text-slate-600 mb-4" />
-          <h3 className="text-lg font-semibold text-slate-300 mb-2">No audit entries</h3>
+          <h3 className="text-lg font-semibold text-slate-300 mb-2">
+            No audit entries
+          </h3>
           <p className="text-sm text-slate-500">
             Administrative actions will appear here.
           </p>
@@ -84,11 +90,12 @@ export default async function AdminAuditPage({
                       <span className="font-mono">
                         {entry.target_type}:{entry.target_id.substring(0, 8)}...
                       </span>
-                      {entry.metadata && Object.keys(entry.metadata).length > 0 && (
-                        <span className="ml-2 text-slate-500">
-                          • {JSON.stringify(entry.metadata)}
-                        </span>
-                      )}
+                      {entry.metadata &&
+                        Object.keys(entry.metadata).length > 0 && (
+                          <span className="ml-2 text-slate-500">
+                            • {JSON.stringify(entry.metadata)}
+                          </span>
+                        )}
                     </div>
                     <div className="text-xs text-slate-500 mt-1 font-mono">
                       Actor: {entry.actor_user_id.substring(0, 8)}...
@@ -107,7 +114,7 @@ export default async function AdminAuditPage({
       {data?.pagination && data.pagination.totalPages > 1 && (
         <div className="flex items-center justify-between border-t border-white/10 pt-4">
           <p className="text-sm text-slate-400">
-            Page {data.pagination.page} of {data.pagination.totalPages} •{" "}
+            Page {data.pagination.page} of {data.pagination.totalPages} •{' '}
             {data.pagination.total} total entries
           </p>
           <div className="flex gap-2">

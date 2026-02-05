@@ -15,7 +15,7 @@ import type { StaticImageData } from 'next/image';
 import complianceDashboardHero from '@/public/blog/B4-dashboard.png';
 import tasksWorkflowHero from '@/public/blog/C9-tasks-page.png';
 import rbacHero from '@/public/blog/C12-rbac-redirect.png';
-import workspaceHero from '@/public/blog/A3-post-login.png';
+import marketingHomeHero from '@/public/blog/A1-marketing-home.png';
 import adminAccessHero from '@/public/blog/admin-access.png';
 import monitoringHero from '@/public/blog/monitoring.png';
 import soc2Hero from '@/public/blog/soc2.png';
@@ -52,7 +52,7 @@ export const blogPosts: BlogPost[] = [
     id: 'compliance-operating-system',
     title: 'Why Your Organization Needs a Compliance Operating System',
     excerpt:
-      'Modern compliance requires more than checklists. Learn how a compliance operating system aligns people, processes, and evidence in real time—without slowing the business.',
+      'Modern compliance requires more than checklists. Learn how a compliance operating system aligns people, processes, and evidence in real time, without slowing the business.',
     author: 'FormaOS Team',
     date: 'February 2, 2026',
     readTime: '10 min read',
@@ -144,7 +144,7 @@ export const blogPosts: BlogPost[] = [
     id: 'ndis-practice-standards-2025',
     title: 'NDIS Practice Standards 2025: What Providers Need to Know',
     excerpt:
-      'A practical guide to the 2025 NDIS Practice Standards updates—what changed, how to map controls, and how to keep evidence ready across service lines.',
+      'A practical guide to the 2025 NDIS Practice Standards updates, what changed, how to map controls, and how to keep evidence ready across service lines.',
     author: 'Compliance Team',
     date: 'January 20, 2026',
     readTime: '9 min read',
@@ -158,7 +158,7 @@ export const blogPosts: BlogPost[] = [
         paragraphs: [
           'The 2025 update focuses on participant safety, continuity of care, and transparent outcomes reporting.',
           'Providers are expected to demonstrate not only policies but also reliable execution evidence across locations and teams.',
-          'The most significant change is the emphasis on ongoing monitoring—auditors now expect evidence that shows consistent control performance, not a single snapshot.',
+          'The most significant change is the emphasis on ongoing monitoring. Auditors now expect evidence that shows consistent control performance, not a single snapshot.',
         ],
         bullets: [
           'Stronger requirements for incident response and reporting timelines',
@@ -309,15 +309,16 @@ export const blogPosts: BlogPost[] = [
     date: 'January 6, 2026',
     readTime: '7 min read',
     category: 'Technology',
-    heroImage: workspaceHero,
-    heroAlt: 'FormaOS workspace overview showing evidence automation',
+    heroImage: marketingHomeHero,
+    heroAlt:
+      'FormaOS product overview showing evidence automation and workflows',
     icon: Zap,
     sections: [
       {
         heading: 'The manual evidence tax',
         paragraphs: [
           'Compliance teams often spend weeks gathering screenshots, spreadsheets, and approvals.',
-          'This work is repetitive and rarely improves quality—yet it consumes scarce time.',
+          'This work is repetitive and rarely improves quality, yet it consumes scarce time.',
           'Automation shifts evidence capture from a separate activity into the workflow itself, making compliance the by‑product of doing the work.',
         ],
         bullets: [
@@ -470,7 +471,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: 'Dashboards show, monitoring acts',
         paragraphs: [
-          'A dashboard is passive. Monitoring is active—it triggers action when control health changes.',
+          'A dashboard is passive. Monitoring is active. It triggers action when control health changes.',
           'The difference is the difference between reporting and preventing issues.',
         ],
         bullets: [
@@ -533,7 +534,7 @@ export const blogPosts: BlogPost[] = [
     id: 'security-soc2-journey',
     title: 'Our SOC 2 Journey: Lessons Learned Building FormaOS',
     excerpt:
-      'An inside look at how we achieved SOC 2 compliance—what we prioritized, where we struggled, and how we built repeatable evidence along the way.',
+      'An inside look at how we achieved SOC 2 compliance, what we prioritized, where we struggled, and how we built repeatable evidence along the way.',
     author: 'Engineering Team',
     date: 'November 22, 2025',
     readTime: '9 min read',
@@ -547,7 +548,7 @@ export const blogPosts: BlogPost[] = [
         paragraphs: [
           'We scoped our first SOC 2 to the Security and Availability trust services criteria.',
           'The goal was a timeline we could actually hit without disrupting delivery.',
-          'The biggest challenge was not documentation—it was proving ongoing control execution with verifiable evidence.',
+          'The biggest challenge was not documentation. It was proving ongoing control execution with verifiable evidence.',
         ],
       },
       {
@@ -683,7 +684,7 @@ export const blogPosts: BlogPost[] = [
     id: 'policy-lifecycle-automation',
     title: 'Policy Lifecycle Automation: From Draft to Audit',
     excerpt:
-      'Policies fail when they drift. Learn how to automate the policy lifecycle—from drafting and approvals to ongoing reviews and evidence capture.',
+      'Policies fail when they drift. Learn how to automate the policy lifecycle, from drafting and approvals to ongoing reviews and evidence capture.',
     author: 'Product Updates',
     date: 'October 18, 2025',
     readTime: '7 min read',

@@ -1,19 +1,19 @@
 // app/app/actions/enforcement.ts
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { logActivity as logger } from "@/lib/logger";
-import { requirePermission } from "@/app/app/actions/rbac";
-import { logAuditEvent } from "@/app/app/actions/audit-events";
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { logActivity as logger } from '@/lib/logger';
+import { requirePermission } from '@/app/app/actions/rbac';
+import { logAuditEvent } from '@/app/app/actions/audit-events';
 
 /**
  * GateKey union
  */
 export type GateKey =
-  | "AUDIT_EXPORT"
-  | "CERT_REPORT"
-  | "FRAMEWORK_ISO27001"
-  | "FRAMEWORK_SOC2"
-  | "FRAMEWORK_HIPAA"
-  | "FRAMEWORK_NDIS";
+  | 'AUDIT_EXPORT'
+  | 'CERT_REPORT'
+  | 'FRAMEWORK_ISO27001'
+  | 'FRAMEWORK_SOC2'
+  | 'FRAMEWORK_HIPAA'
+  | 'FRAMEWORK_NDIS';
 
 /**
  * Compliance block shape (matches DB)
@@ -42,7 +42,7 @@ export class ComplianceBlockedError extends Error {
         ? `Action blocked by compliance gate: ${gate} (${blocks.length} unresolved block(s))`
         : `Action blocked by compliance gate: ${gate}`;
     super(message);
-    this.name = "ComplianceBlockedError";
+    this.name = 'ComplianceBlockedError';
     this.gate = gate;
     this.blocks = blocks;
     // maintain proper prototype chain
@@ -54,9 +54,14 @@ export class ComplianceBlockedError extends Error {
  * Safe wrapper for logging activities.
  * Tries lib/logger first; falls back to inserting a minimal audit row.
  */
-async function safeLogActivity(orgId: string, action: string, description: string, metadata?: any) {
+async function safeLogActivity(
+  orgId: string,
+  action: string,
+  description: string,
+  metadata?: any,
+) {
   try {
-    if (typeof logger === "function") {
+    if (typeof logger === 'function') {
       // logger signature in repo: logActivity(orgId, action, description)
       try {
         await (logger as any)(orgId, action, description, metadata);
@@ -72,7 +77,7 @@ async function safeLogActivity(orgId: string, action: string, description: strin
   // Fallback: best-effort insert into org_audit_logs
   try {
     const supabase = await createSupabaseServerClient();
-    await supabase.from("org_audit_logs").insert({
+    await supabase.from('org_audit_logs').insert({
       organization_id: orgId,
       action,
       target: description,
@@ -80,7 +85,7 @@ async function safeLogActivity(orgId: string, action: string, description: strin
       created_at: new Date().toISOString(),
     });
   } catch {
-    // swallow — logging must never block enforcement flow further
+    // swallow, logging must never block enforcement flow further
   }
 }
 
@@ -93,16 +98,17 @@ export async function getOrgIdForUser() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) throw new Error("Unauthorized");
+  if (!user) throw new Error('Unauthorized');
 
   const { data: membership, error } = await supabase
-    .from("org_members")
-    .select("organization_id, role")
-    .eq("user_id", user.id)
+    .from('org_members')
+    .select('organization_id, role')
+    .eq('user_id', user.id)
     .maybeSingle();
 
-  if (error) throw new Error("Organization context lost");
-  if (!membership || !membership.organization_id) throw new Error("Organization context lost");
+  if (error) throw new Error('Organization context lost');
+  if (!membership || !membership.organization_id)
+    throw new Error('Organization context lost');
 
   return {
     orgId: membership.organization_id as string,
@@ -120,14 +126,14 @@ export async function getComplianceBlocks(orgId: string, gateKey?: GateKey) {
 
   try {
     let q = supabase
-      .from("org_compliance_blocks")
-      .select("id, gate_key, reason, metadata, created_at")
-      .eq("organization_id", orgId)
-      .is("resolved_at", null);
+      .from('org_compliance_blocks')
+      .select('id, gate_key, reason, metadata, created_at')
+      .eq('organization_id', orgId)
+      .is('resolved_at', null);
 
-    if (gateKey) q = q.eq("gate_key", gateKey);
+    if (gateKey) q = q.eq('gate_key', gateKey);
 
-    const { data, error } = await q.order("created_at", { ascending: false });
+    const { data, error } = await q.order('created_at', { ascending: false });
     if (error) {
       // If table missing or RLS blocks, return empty safely.
       return [] as ComplianceBlock[];
@@ -144,25 +150,28 @@ export async function getComplianceBlocks(orgId: string, gateKey?: GateKey) {
  * This checks for direct gate blocks and relevant FRAMEWORK_* blocks as described.
  * If blocks are found, logs the blocking event and throws ComplianceBlockedError.
  */
-export async function requireNoComplianceBlocks(orgId: string, gateKey: GateKey) {
+export async function requireNoComplianceBlocks(
+  orgId: string,
+  gateKey: GateKey,
+) {
   const supabase = await createSupabaseServerClient();
 
   try {
     // collect relevant gate keys: the specific gate and canonical framework gates
     const gateCandidates = [
       gateKey,
-      "FRAMEWORK_ISO27001",
-      "FRAMEWORK_SOC2",
-      "FRAMEWORK_HIPAA",
-      "FRAMEWORK_NDIS",
+      'FRAMEWORK_ISO27001',
+      'FRAMEWORK_SOC2',
+      'FRAMEWORK_HIPAA',
+      'FRAMEWORK_NDIS',
     ];
 
     const { data, error } = await supabase
-      .from("org_compliance_blocks")
-      .select("id, gate_key, reason, metadata, created_at")
-      .eq("organization_id", orgId)
-      .is("resolved_at", null)
-      .in("gate_key", gateCandidates);
+      .from('org_compliance_blocks')
+      .select('id, gate_key, reason, metadata, created_at')
+      .eq('organization_id', orgId)
+      .is('resolved_at', null)
+      .in('gate_key', gateCandidates);
 
     if (error) {
       throw new ComplianceBlockedError(gateKey, []);
@@ -173,11 +182,16 @@ export async function requireNoComplianceBlocks(orgId: string, gateKey: GateKey)
     if (blocks.length > 0) {
       // Log the enforcement event with metadata (best-effort)
       try {
-        await safeLogActivity(orgId, "compliance_blocked", `Blocked gate: ${gateKey}`, {
-          gateKey,
-          reasonCount: blocks.length,
-          blockIds: blocks.map((b) => b.id),
-        });
+        await safeLogActivity(
+          orgId,
+          'compliance_blocked',
+          `Blocked gate: ${gateKey}`,
+          {
+            gateKey,
+            reasonCount: blocks.length,
+            blockIds: blocks.map((b) => b.id),
+          },
+        );
       } catch {
         // swallow
       }
@@ -186,12 +200,12 @@ export async function requireNoComplianceBlocks(orgId: string, gateKey: GateKey)
         await logAuditEvent({
           organizationId: orgId,
           actorUserId: null,
-          actorRole: "system",
-          entityType: "compliance_block",
+          actorRole: 'system',
+          entityType: 'compliance_block',
           entityId: null,
-          actionType: "COMPLIANCE_BLOCK_ENFORCED",
+          actionType: 'COMPLIANCE_BLOCK_ENFORCED',
           afterState: { gateKey, blockIds: blocks.map((b) => b.id) },
-          reason: "enforcement_gate",
+          reason: 'enforcement_gate',
         });
       } catch {
         // swallow
@@ -205,7 +219,7 @@ export async function requireNoComplianceBlocks(orgId: string, gateKey: GateKey)
   } catch (err) {
     // If the thrown error is already ComplianceBlockedError, rethrow
     if (err instanceof ComplianceBlockedError) throw err;
-    // Any other unexpected error should not be swallowed — rethrow to surface auth/db issues
+    // Any other unexpected error should not be swallowed, rethrow to surface auth/db issues
     throw err;
   }
 }
@@ -218,34 +232,38 @@ export async function resolveComplianceBlocks(orgId: string, gateKey: GateKey) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) throw new Error("Unauthorized");
+  if (!user) throw new Error('Unauthorized');
 
-  const membership = await requirePermission("RESOLVE_COMPLIANCE_BLOCK");
+  const membership = await requirePermission('RESOLVE_COMPLIANCE_BLOCK');
   if (membership.orgId !== orgId) {
-    throw new Error("Organization mismatch.");
+    throw new Error('Organization mismatch.');
   }
 
   try {
     const { data: blocks } = await supabase
-      .from("org_compliance_blocks")
-      .select("id, created_by, gate_key, reason")
-      .eq("organization_id", orgId)
-      .eq("gate_key", gateKey)
-      .is("resolved_at", null);
+      .from('org_compliance_blocks')
+      .select('id, created_by, gate_key, reason')
+      .eq('organization_id', orgId)
+      .eq('gate_key', gateKey)
+      .is('resolved_at', null);
 
-    if ((blocks ?? []).some((b: any) => b.created_by && b.created_by === user.id)) {
-      throw new Error("Segregation violation: cannot resolve your own compliance blocks.");
+    if (
+      (blocks ?? []).some((b: any) => b.created_by && b.created_by === user.id)
+    ) {
+      throw new Error(
+        'Segregation violation: cannot resolve your own compliance blocks.',
+      );
     }
 
     const { error } = await supabase
-      .from("org_compliance_blocks")
+      .from('org_compliance_blocks')
       .update({
         resolved_at: new Date().toISOString(),
         resolved_by: user?.id ?? null,
       })
-      .eq("organization_id", orgId)
-      .eq("gate_key", gateKey)
-      .is("resolved_at", null);
+      .eq('organization_id', orgId)
+      .eq('gate_key', gateKey)
+      .is('resolved_at', null);
 
     if (error) throw new Error(error.message);
 
@@ -253,15 +271,23 @@ export async function resolveComplianceBlocks(orgId: string, gateKey: GateKey) {
       organizationId: orgId,
       actorUserId: user.id,
       actorRole: membership.role,
-      entityType: "compliance_block",
+      entityType: 'compliance_block',
       entityId: null,
-      actionType: "COMPLIANCE_BLOCK_RESOLVED",
-      beforeState: { gate_key: gateKey, unresolved_blocks: (blocks ?? []).map((b: any) => b.id) },
+      actionType: 'COMPLIANCE_BLOCK_RESOLVED',
+      beforeState: {
+        gate_key: gateKey,
+        unresolved_blocks: (blocks ?? []).map((b: any) => b.id),
+      },
       afterState: { gate_key: gateKey, resolved_at: new Date().toISOString() },
-      reason: "manual_resolution",
+      reason: 'manual_resolution',
     });
 
-    await safeLogActivity(orgId, "compliance_resolved", `Resolved gate: ${gateKey}`, { gateKey });
+    await safeLogActivity(
+      orgId,
+      'compliance_resolved',
+      `Resolved gate: ${gateKey}`,
+      { gateKey },
+    );
     return { success: true };
   } catch (e) {
     throw e;

@@ -1,4 +1,4 @@
-import { getAdminFetchConfig } from "@/app/admin/lib";
+import { getAdminFetchConfig } from '@/app/admin/lib';
 import {
   AlertTriangle,
   Shield,
@@ -6,12 +6,12 @@ import {
   LogIn,
   Users,
   Activity,
-} from "lucide-react";
+} from 'lucide-react';
 
 type SecurityEvent = {
   id: string;
   event_type: string;
-  severity: "low" | "medium" | "high" | "critical";
+  severity: 'low' | 'medium' | 'high' | 'critical';
   user_email?: string;
   organization_id?: string;
   description: string;
@@ -22,7 +22,7 @@ type SecurityEvent = {
 async function fetchSecurity() {
   const { base, headers } = await getAdminFetchConfig();
   const res = await fetch(`${base}/api/admin/security`, {
-    cache: "no-store",
+    cache: 'no-store',
     headers,
   });
   if (!res.ok) return null;
@@ -31,32 +31,32 @@ async function fetchSecurity() {
 
 function formatDate(dateStr: string) {
   const date = new Date(dateStr);
-  if (Number.isNaN(date.getTime())) return "—";
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
+  if (Number.isNaN(date.getTime())) return 'N/A';
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
   }).format(date);
 }
 
 function getSeverityBadge(severity: string) {
   switch (severity) {
-    case "critical":
+    case 'critical':
       return (
         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-medium bg-red-500/10 text-red-300">
           <AlertTriangle className="h-3 w-3" />
           Critical
         </span>
       );
-    case "high":
+    case 'high':
       return (
         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-medium bg-orange-500/10 text-orange-300">
           <AlertTriangle className="h-3 w-3" />
           High
         </span>
       );
-    case "medium":
+    case 'medium':
       return (
         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-medium bg-amber-500/10 text-amber-300">
           Alert
@@ -76,7 +76,7 @@ export default async function AdminSecurityPage() {
   const events: SecurityEvent[] = data?.events ?? [];
 
   const criticalEvents = events.filter(
-    (e) => e.severity === "critical" || e.severity === "high"
+    (e) => e.severity === 'critical' || e.severity === 'high',
   );
   const recentEvents = events.slice(0, 20);
 
@@ -98,7 +98,7 @@ export default async function AdminSecurityPage() {
             <div>
               <p className="font-semibold text-red-200">
                 {criticalEvents.length} Critical Event
-                {criticalEvents.length !== 1 ? "s" : ""}
+                {criticalEvents.length !== 1 ? 's' : ''}
               </p>
               <p className="text-sm text-red-200/70">
                 Requires immediate attention
@@ -121,13 +121,13 @@ export default async function AdminSecurityPage() {
             <div className="flex justify-between">
               <span className="text-slate-400">Last 24h</span>
               <span className="font-semibold text-slate-100">
-                {events.filter((e) => e.event_type === "login").length}
+                {events.filter((e) => e.event_type === 'login').length}
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-400">Failed Attempts</span>
               <span className="font-semibold text-amber-300">
-                {events.filter((e) => e.event_type === "login_failed").length}
+                {events.filter((e) => e.event_type === 'login_failed').length}
               </span>
             </div>
           </div>
@@ -144,13 +144,16 @@ export default async function AdminSecurityPage() {
             <div className="flex justify-between">
               <span className="text-slate-400">Role Changes</span>
               <span className="font-semibold text-slate-100">
-                {events.filter((e) => e.event_type === "role_change").length}
+                {events.filter((e) => e.event_type === 'role_change').length}
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-400">Permission Updates</span>
               <span className="font-semibold text-slate-100">
-                {events.filter((e) => e.event_type === "permission_update").length}
+                {
+                  events.filter((e) => e.event_type === 'permission_update')
+                    .length
+                }
               </span>
             </div>
           </div>
