@@ -158,7 +158,7 @@ function IndustriesHero() {
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
             >
               <motion.a
-                href={`${appBase}/auth`}
+                href={`${appBase}/auth/signup`}
                 whileHover={{
                   scale: 1.05,
                   boxShadow: '0 0 40px rgba(16, 185, 129, 0.4)',
