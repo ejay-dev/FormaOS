@@ -1862,11 +1862,6 @@ function CompactStoryStep({
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent" />
       </div>
 
-      {/* Step number indicator with glow */}
-      <div className="absolute top-2 right-3 w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-cyan-500/30 z-10">
-        {index + 1}
-      </div>
-
       <div className="flex items-center gap-4 mb-6">
         <motion.div
           className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300`}
@@ -1921,33 +1916,6 @@ function ScrollStory() {
       className="relative py-32 bg-gradient-to-b from-[#0d1421] via-[#0a0f1c] to-[#0a0f1c] overflow-hidden"
       style={{ position: 'relative' }}
     >
-      {/* Ambient background gradient orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-20 left-1/4 w-[600px] h-[600px] rounded-full bg-cyan-500/5 blur-3xl"
-          animate={{
-            x: [0, 30, 0],
-            y: [0, -20, 0],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute bottom-20 right-1/4 w-[500px] h-[500px] rounded-full bg-blue-500/5 blur-3xl"
-          animate={{
-            x: [0, -40, 0],
-            y: [0, 30, 0],
-            scale: [1, 1.15, 1],
-          }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 2,
-          }}
-        />
-      </div>
-
       <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section Header with enhanced styling */}
         <motion.div
@@ -2210,7 +2178,7 @@ function VersionControlHighlight() {
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
             Complete version history on every evidence upload with SHA-256
-            checksum validation and one-click rollback—built-in at $49/mo.
+            checksum validation and one-click rollback—built-in from $159/mo.
           </p>
         </motion.div>
 
@@ -2251,7 +2219,7 @@ function VersionControlHighlight() {
           <p className="text-xs sm:text-sm text-cyan-200">
             <span className="font-semibold">Competitor Pricing:</span> Drata
             $2,000/mo ❌ | Vanta $3,600/mo ❌ | ServiceNow $10,000/mo ❌ |{' '}
-            <span className="font-semibold">FormaOS: $49/mo ✅</span>
+            <span className="font-semibold">FormaOS: from $159/mo ✅</span>
           </p>
         </motion.div>
       </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import Link from 'next/link';
 import {
   BookOpen,
   ArrowRight,
@@ -269,74 +270,80 @@ function FeaturedPost() {
   return (
     <section className="relative py-16 bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c]">
       <div className="max-w-6xl mx-auto px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="relative group"
+        <Link
+          href={`/blog/${featuredPost.id}`}
+          className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/60 rounded-3xl"
+          aria-label={`Read ${featuredPost.title}`}
         >
-          <div className="relative p-8 lg:p-12 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-purple-500/20 transition-all duration-500 shadow-2xl shadow-black/30 overflow-hidden">
-            {/* Top accent */}
-            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-purple-400/40 to-transparent" />
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative"
+          >
+            <div className="relative p-8 lg:p-12 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-purple-500/20 transition-all duration-500 shadow-2xl shadow-black/30 overflow-hidden">
+              {/* Top accent */}
+              <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-purple-400/40 to-transparent" />
 
-            {/* Glow effect on hover */}
-            <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-cyan-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
+              {/* Glow effect on hover */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-cyan-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
 
-            <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
-              {/* Image placeholder */}
-              <div className="w-full lg:w-1/2 aspect-video rounded-2xl bg-gradient-to-br from-purple-500/20 via-pink-500/10 to-cyan-500/20 flex items-center justify-center border border-white/5">
-                <div className="text-center">
-                  <Sparkles className="w-16 h-16 text-purple-400 mx-auto mb-4 opacity-50" />
-                  <span className="text-gray-500 text-sm">Featured Image</span>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="flex-1 space-y-6">
-                <div className="flex items-center gap-4">
-                  <span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-400 text-xs font-medium">
-                    Featured
-                  </span>
-                  <span className="px-3 py-1 rounded-full bg-gray-800/50 text-gray-400 text-xs">
-                    {featuredPost.category}
-                  </span>
-                </div>
-
-                <h2 className="text-2xl lg:text-3xl font-bold text-white group-hover:text-purple-300 transition-colors leading-tight">
-                  {featuredPost.title}
-                </h2>
-
-                <p className="text-gray-400 leading-relaxed">
-                  {featuredPost.excerpt}
-                </p>
-
-                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4" />
-                    <span>{featuredPost.author}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CalendarDays className="w-4 h-4" />
-                    <span>{featuredPost.date}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4" />
-                    <span>{featuredPost.readTime}</span>
+              <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
+                {/* Image placeholder */}
+                <div className="w-full lg:w-1/2 aspect-video rounded-2xl bg-gradient-to-br from-purple-500/20 via-pink-500/10 to-cyan-500/20 flex items-center justify-center border border-white/5">
+                  <div className="text-center">
+                    <Sparkles className="w-16 h-16 text-purple-400 mx-auto mb-4 opacity-50" />
+                    <span className="text-gray-500 text-sm">Featured Image</span>
                   </div>
                 </div>
 
-                <motion.button
-                  whileHover={{ x: 5 }}
-                  className="flex items-center gap-2 text-purple-400 font-medium group/btn"
-                >
-                  <span>Read Article</span>
-                  <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                </motion.button>
+                {/* Content */}
+                <div className="flex-1 space-y-6">
+                  <div className="flex items-center gap-4">
+                    <span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-400 text-xs font-medium">
+                      Featured
+                    </span>
+                    <span className="px-3 py-1 rounded-full bg-gray-800/50 text-gray-400 text-xs">
+                      {featuredPost.category}
+                    </span>
+                  </div>
+
+                  <h2 className="text-2xl lg:text-3xl font-bold text-white group-hover:text-purple-300 transition-colors leading-tight">
+                    {featuredPost.title}
+                  </h2>
+
+                  <p className="text-gray-400 leading-relaxed">
+                    {featuredPost.excerpt}
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                    <div className="flex items-center gap-2">
+                      <User className="w-4 h-4" />
+                      <span>{featuredPost.author}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CalendarDays className="w-4 h-4" />
+                      <span>{featuredPost.date}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4" />
+                      <span>{featuredPost.readTime}</span>
+                    </div>
+                  </div>
+
+                  <motion.span
+                    whileHover={{ x: 5 }}
+                    className="flex items-center gap-2 text-purple-400 font-medium group/btn"
+                  >
+                    <span>Read Article</span>
+                    <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                  </motion.span>
+                </div>
               </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </Link>
       </div>
     </section>
   );
@@ -393,58 +400,64 @@ function BlogCard({
   const Icon = post.icon;
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="group"
+    <Link
+      href={`/blog/${post.id}`}
+      className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/60 rounded-2xl"
+      aria-label={`Read ${post.title}`}
     >
-      <div className="relative h-full p-6 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-purple-500/30 transition-all duration-500 shadow-xl shadow-black/20">
-        {/* Top accent */}
-        <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-purple-400/30 transition-colors" />
+      <motion.article
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: index * 0.1 }}
+        className="h-full"
+      >
+        <div className="relative h-full p-6 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-purple-500/30 transition-all duration-500 shadow-xl shadow-black/20">
+          {/* Top accent */}
+          <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-purple-400/30 transition-colors" />
 
-        {/* Icon header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
-            <Icon className="w-5 h-5 text-purple-400" />
+          {/* Icon header */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
+              <Icon className="w-5 h-5 text-purple-400" />
+            </div>
+            <span className="px-2.5 py-1 rounded-full bg-gray-800/50 text-gray-400 text-xs">
+              {post.category}
+            </span>
           </div>
-          <span className="px-2.5 py-1 rounded-full bg-gray-800/50 text-gray-400 text-xs">
-            {post.category}
-          </span>
-        </div>
 
-        {/* Title */}
-        <h3 className="text-lg font-bold text-white mb-3 group-hover:text-purple-300 transition-colors line-clamp-2">
-          {post.title}
-        </h3>
+          {/* Title */}
+          <h3 className="text-lg font-bold text-white mb-3 group-hover:text-purple-300 transition-colors line-clamp-2">
+            {post.title}
+          </h3>
 
-        {/* Excerpt */}
-        <p className="text-sm text-gray-400 mb-4 line-clamp-3">
-          {post.excerpt}
-        </p>
+          {/* Excerpt */}
+          <p className="text-sm text-gray-400 mb-4 line-clamp-3">
+            {post.excerpt}
+          </p>
 
-        {/* Meta */}
-        <div className="flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-white/5">
-          <div className="flex items-center gap-2">
-            <CalendarDays className="w-3.5 h-3.5" />
-            <span>{post.date}</span>
+          {/* Meta */}
+          <div className="flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-white/5">
+            <div className="flex items-center gap-2">
+              <CalendarDays className="w-3.5 h-3.5" />
+              <span>{post.date}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock className="w-3.5 h-3.5" />
+              <span>{post.readTime}</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Clock className="w-3.5 h-3.5" />
-            <span>{post.readTime}</span>
+
+          {/* Hover CTA */}
+          <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span className="flex items-center gap-2 text-sm text-purple-400 font-medium">
+              <span>Read More</span>
+              <ChevronRight className="w-4 h-4" />
+            </span>
           </div>
         </div>
-
-        {/* Hover CTA */}
-        <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button className="flex items-center gap-2 text-sm text-purple-400 font-medium">
-            <span>Read More</span>
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-    </motion.article>
+      </motion.article>
+    </Link>
   );
 }
 

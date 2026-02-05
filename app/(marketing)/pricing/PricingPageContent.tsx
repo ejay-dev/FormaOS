@@ -205,7 +205,7 @@ const pricingTiers = [
     useCase:
       'You need structured processes, traceable actions, and defensible records without enterprise complexity.',
     cta: 'Start Free Trial',
-    href: '/auth/signup?plan=starter',
+    href: `${appBase}/auth/signup?plan=basic`,
     featured: false,
     color: 'cyan',
   },
@@ -227,7 +227,7 @@ const pricingTiers = [
     useCase:
       'You must reduce audit effort, automate controls, and manage compliance across teams or departments.',
     cta: 'Start Free Trial',
-    href: '/auth/signup?plan=professional',
+    href: `${appBase}/auth/signup?plan=pro`,
     featured: true,
     color: 'emerald',
   },
@@ -380,6 +380,125 @@ function PricingTiers() {
             </motion.div>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================================
+// PRICING COMPARISON
+// ============================================================================
+
+function PricingComparison() {
+  return (
+    <section className="py-16 bg-muted/30">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center"
+        >
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+            Enterprise Features at
+            <br />
+            <span className="text-gradient-system">Startup Pricing</span>
+          </h2>
+          <p className="text-gray-400 max-w-2xl mx-auto">
+            FormaOS includes enterprise-grade features that competitors charge
+            20-200x more for
+          </p>
+        </motion.div>
+
+        <div className="overflow-x-auto mt-10">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="text-left py-4 px-4 font-semibold text-white">
+                  Feature
+                </th>
+                <th className="text-center py-4 px-4 font-semibold text-muted-foreground">
+                  FormaOS
+                </th>
+                <th className="text-center py-4 px-4 font-semibold text-muted-foreground">
+                  Drata
+                </th>
+                <th className="text-center py-4 px-4 font-semibold text-muted-foreground">
+                  ServiceNow
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                {
+                  formaos: '$159/mo',
+                  drata: '$2,000/mo',
+                  servicenow: '$10,000/mo',
+                  highlight: true,
+                },
+                {
+                  formaos: '✅ Included',
+                  drata: '❌ None',
+                  servicenow: '✅ $10,000/mo',
+                  feature: 'Version Control',
+                  highlight: true,
+                },
+                {
+                  formaos: '✅ Included',
+                  drata: '⚠️ Limited',
+                  servicenow: '✅ Add-on',
+                  feature: 'Workflow Automation',
+                },
+                {
+                  formaos: '✅ Included',
+                  drata: '❌ None',
+                  servicenow: '✅ Add-on',
+                  feature: 'Patient Management',
+                },
+                {
+                  formaos: '✅ Included',
+                  drata: '❌ None',
+                  servicenow: '✅ Add-on',
+                  feature: 'Incident Reporting',
+                },
+                {
+                  formaos: '✅ Included',
+                  drata: '⚠️ Basic',
+                  servicenow: '✅ $10,000/mo',
+                  feature: 'Asset Register',
+                },
+              ].map((row, idx) => (
+                <tr
+                  key={idx}
+                  className={
+                    row.highlight ? 'bg-primary/5' : 'border-b border-border/50'
+                  }
+                >
+                  <td className="py-4 px-4 text-white">
+                    {row.feature || 'Pricing'}
+                  </td>
+                  <td
+                    className={`text-center py-4 px-4 font-semibold ${row.highlight ? 'text-primary' : 'text-white'}`}
+                  >
+                    {row.formaos}
+                  </td>
+                  <td className="text-center py-4 px-4 text-muted-foreground">
+                    {row.drata}
+                  </td>
+                  <td className="text-center py-4 px-4 text-muted-foreground">
+                    {row.servicenow}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <p className="text-xs text-muted-foreground mt-4 text-center">
+          Pricing as of February 2026. Competitor pricing sourced from public
+          websites.
+        </p>
       </div>
     </section>
   );
@@ -880,6 +999,7 @@ export function PricingContent() {
   return (
     <div className="relative">
       <PricingTiers />
+      <PricingComparison />
       <VisualDivider />
       <AllPlansInclude />
       <VisualDivider />

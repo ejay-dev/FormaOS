@@ -503,7 +503,7 @@ export function HomePageContent() {
                 <span className="text-gradient-system">out of the box</span>
               </>
             }
-            subtitle="Evidence version control, workflow automation, and enterprise compliance—built-in at $49/mo"
+            subtitle="Evidence version control, workflow automation, and enterprise compliance—built-in from $159/mo"
             alignment="center"
           />
 
@@ -560,7 +560,7 @@ export function HomePageContent() {
                 </span>
               </>
             }
-            subtitle="Complete version history on every evidence upload with SHA-256 checksum validation and one-click rollback—built-in at $49/mo"
+            subtitle="Complete version history on every evidence upload with SHA-256 checksum validation and one-click rollback—built-in from $159/mo"
             alignment="center"
           />
 
@@ -608,7 +608,7 @@ export function HomePageContent() {
             <p className="text-sm text-primary">
               <strong>Competitor Pricing:</strong> Drata $2,000/mo ❌ | Vanta
               $3,600/mo ❌ | ServiceNow $10,000/mo ❌ |{' '}
-              <strong>FormaOS: $49/mo ✅</strong>
+              <strong>FormaOS: from $159/mo ✅</strong>
             </p>
           </div>
         </div>
