@@ -49,12 +49,33 @@ function SignInContent() {
 
     const handleAuthRedirect = async () => {
       try {
-        const hasHash = typeof window !== 'undefined' && window.location.hash.includes('access_token=');
+        const hasHash =
+          typeof window !== 'undefined' &&
+          window.location.hash.includes('access_token=');
         if (hasHash) {
-          const { error } = await supabase.auth.getSessionFromUrl({ storeSession: true });
-          if (error) {
-            setErrorMessage(error.message ?? 'Authentication failed. Please sign in again.');
-            return;
+          const hash = window.location.hash.startsWith('#')
+            ? window.location.hash.slice(1)
+            : window.location.hash;
+          const params = new URLSearchParams(hash);
+          const accessToken = params.get('access_token');
+          const refreshToken = params.get('refresh_token');
+
+          if (accessToken && refreshToken) {
+            const { error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+            if (error) {
+              setErrorMessage(
+                error.message ?? 'Authentication failed. Please sign in again.',
+              );
+              return;
+            }
+            window.history.replaceState(
+              null,
+              '',
+              `${window.location.pathname}${window.location.search}`,
+            );
           }
         }
 
