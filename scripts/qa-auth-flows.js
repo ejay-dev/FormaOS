@@ -46,6 +46,78 @@ const assertVisibleText = async (page, text) => {
   await page.locator(`text=${text}`).first().waitFor({ timeout: 15000 });
 };
 
+const demoLabels = ['Request Demo', 'Schedule Demo', 'Contact Sales'];
+const trialLabels = [
+  'Start Free Trial',
+  'Start Free',
+  'Get Started',
+  'Get Started Free',
+  'Start Your Free Trial',
+];
+
+const normalize = (value = '') => value.replace(/\/$/, '');
+
+const assertDemoCtas = async (page, env, pageName) => {
+  const marketingBase = normalize(env.siteBase);
+  for (const label of demoLabels) {
+    const link = page.getByRole('link', { name: new RegExp(label, 'i') }).first();
+    if ((await link.count()) === 0) continue;
+    const href = await link.getAttribute('href');
+    if (!href) {
+      throw new Error(`[${env.name}] ${pageName}: demo CTA "${label}" missing href`);
+    }
+    if (href.startsWith('http')) {
+      if (!href.startsWith(`${marketingBase}/contact`)) {
+        throw new Error(
+          `[${env.name}] ${pageName}: demo CTA "${label}" points to ${href}, expected ${marketingBase}/contact`,
+        );
+      }
+    } else if (href !== '/contact' && !href.startsWith('/contact?')) {
+      throw new Error(
+        `[${env.name}] ${pageName}: demo CTA "${label}" points to ${href}, expected /contact`,
+      );
+    }
+  }
+};
+
+const assertTrialCtas = async (page, env, pageName) => {
+  const allowedAppBases = [normalize(env.appBase)];
+  if (env.name === 'local') {
+    allowedAppBases.push('https://app.formaos.com.au');
+  }
+
+  let found = 0;
+  for (const label of trialLabels) {
+    const link = page.getByRole('link', { name: new RegExp(label, 'i') }).first();
+    if ((await link.count()) === 0) continue;
+    found += 1;
+    const href = await link.getAttribute('href');
+    if (!href) {
+      throw new Error(`[${env.name}] ${pageName}: trial CTA "${label}" missing href`);
+    }
+    if (!allowedAppBases.some((base) => href.startsWith(base))) {
+      throw new Error(
+        `[${env.name}] ${pageName}: trial CTA "${label}" points to ${href}, expected ${allowedAppBases.join(
+          ' or ',
+        )}`,
+      );
+    }
+  }
+
+  if (!found) {
+    throw new Error(`[${env.name}] ${pageName}: no trial CTA found`);
+  }
+};
+
+const assertNoRelativeAuthLinks = async (page, env, pageName) => {
+  const relativeAuthLinks = await page.locator('a[href^=\"/auth\"]').count();
+  if (relativeAuthLinks > 0) {
+    throw new Error(
+      `[${env.name}] ${pageName}: found ${relativeAuthLinks} relative /auth links on marketing domain`,
+    );
+  }
+};
+
 const runEnvChecks = async (env) => {
   console.log(`\n🔍 QA flows on ${env.name}...`);
   const browser = await chromium.launch();
@@ -58,24 +130,18 @@ const runEnvChecks = async (env) => {
     }
   });
 
-  await page.goto(env.siteBase, { waitUntil: 'domcontentloaded' });
-  const ctaHref = await page
-    .locator('a[href*="/auth/signin"]')
-    .first()
-    .getAttribute('href');
-  if (!ctaHref) {
-    throw new Error(`[${env.name}] No signin CTA found on marketing site.`);
-  }
-  const allowedAppBases = [env.appBase];
-  if (env.name === 'local') {
-    allowedAppBases.push('https://app.formaos.com.au');
-  }
-  if (!allowedAppBases.some((base) => ctaHref.startsWith(base))) {
-    throw new Error(
-      `[${env.name}] CTA points to ${ctaHref}, expected ${allowedAppBases.join(
-        ' or ',
-      )}`,
-    );
+  const marketingPages = [
+    { name: 'home', path: '' },
+    { name: 'pricing', path: '/pricing' },
+    { name: 'product', path: '/product' },
+  ];
+
+  for (const pageInfo of marketingPages) {
+    const targetUrl = `${env.siteBase}${pageInfo.path}`;
+    await page.goto(targetUrl, { waitUntil: 'domcontentloaded' });
+    await assertNoRelativeAuthLinks(page, env, pageInfo.name);
+    await assertTrialCtas(page, env, pageInfo.name);
+    await assertDemoCtas(page, env, pageInfo.name);
   }
 
   const newUserEmail = ensureNewUserEmail(env.name);
