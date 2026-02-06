@@ -1,16 +1,24 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import {
+  getCachedIntelligence,
+  setCachedIntelligence,
+  checkRateLimit,
+  getRateLimitStatus,
+} from '@/lib/cache/intelligence-cache';
 
 export async function GET() {
   try {
     const supabase = await createSupabaseServerClient();
+
+    // TENANT ISOLATION: Get user from session
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get organization
+    // TENANT ISOLATION: Get organization scoped to this user only
     const { data: membership } = await supabase
       .from('org_members')
       .select('organization_id')
@@ -23,6 +31,35 @@ export async function GET() {
 
     const orgId = membership.organization_id;
 
+    // RATE LIMITING: Check if organization is rate limited
+    if (!checkRateLimit(orgId)) {
+      const status = getRateLimitStatus(orgId);
+      return NextResponse.json(
+        {
+          error: 'Rate limit exceeded',
+          retryAfter: Math.ceil((status.resetAt - Date.now()) / 1000),
+        },
+        {
+          status: 429,
+          headers: {
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': status.resetAt.toString(),
+          },
+        }
+      );
+    }
+
+    // CACHING: Check for cached data
+    const cached = getCachedIntelligence(orgId);
+    if (cached) {
+      return NextResponse.json(cached, {
+        headers: {
+          'X-Cache': 'HIT',
+        },
+      });
+    }
+
+    // TENANT ISOLATION: All queries explicitly scoped by organization_id
     // Fetch data in parallel
     const [
       automationRuns,
@@ -31,7 +68,7 @@ export async function GET() {
       evidence,
       upcomingDeadlines,
     ] = await Promise.all([
-      // Recent automation runs
+      // Recent automation runs - SCOPED by orgId
       supabase
         .from('automation_runs')
         .select('id, status, created_at, completed_at, metadata')
@@ -39,7 +76,7 @@ export async function GET() {
         .order('created_at', { ascending: false })
         .limit(10),
 
-      // Compliance scores over time
+      // Compliance scores over time - SCOPED by orgId
       supabase
         .from('org_control_evaluations')
         .select('created_at, pass_count, fail_count, total_count')
@@ -47,19 +84,19 @@ export async function GET() {
         .order('created_at', { ascending: false })
         .limit(30),
 
-      // Task statistics
+      // Task statistics - SCOPED by orgId
       supabase
         .from('tasks')
         .select('status, due_date')
         .eq('organization_id', orgId),
 
-      // Evidence count
+      // Evidence count - SCOPED by orgId
       supabase
         .from('evidence')
         .select('id', { count: 'exact', head: true })
         .eq('organization_id', orgId),
 
-      // Upcoming tasks with deadlines
+      // Upcoming tasks with deadlines - SCOPED by orgId
       supabase
         .from('tasks')
         .select('title, due_date, status')
@@ -108,7 +145,7 @@ export async function GET() {
     const olderFailures = scoreHistory.slice(0, 7).reduce((sum: number, s: any) => sum + (100 - s.score), 0) / 7;
     const riskReduction = Math.max(0, Math.round(olderFailures - recentFailures));
 
-    return NextResponse.json({
+    const responseData = {
       complianceScore: {
         current: latestScore,
         trend: scoreTrend,
@@ -137,6 +174,15 @@ export async function GET() {
       auditReadiness: {
         score: auditReadiness,
         trend: scoreTrend > 0 ? 'improving' : scoreTrend < 0 ? 'declining' : 'stable',
+      },
+    };
+
+    // CACHING: Store in cache
+    setCachedIntelligence(orgId, responseData);
+
+    return NextResponse.json(responseData, {
+      headers: {
+        'X-Cache': 'MISS',
       },
     });
   } catch (error) {

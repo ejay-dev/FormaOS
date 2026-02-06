@@ -6,24 +6,27 @@ interface FeatureFlags {
   enableAdvancedMonitoring: boolean
   enablePerformanceTracking: boolean
   enableVisualRegression: boolean
-  
+
   // UX Improvements
   enableButtonFeedback: boolean
   enableScrollAnimations: boolean
   enableSectionRhythm: boolean
-  
+
   // Admin Features
   enableFounderIsolation: boolean
   enableAuditLogging: boolean
-  
+
   // Email Features
   enableBrandedEmails: boolean
   enableResendIntegration: boolean
-  
+
   // Performance Features
   enableRoutePrefetch: boolean
   enableLazyLoading: boolean
   enableBundleOptimization: boolean
+
+  // Intelligence Features
+  enableIntelligence: boolean
 }
 
 const DEFAULT_FLAGS: FeatureFlags = {
@@ -41,6 +44,8 @@ const DEFAULT_FLAGS: FeatureFlags = {
   enableRoutePrefetch: false,
   enableLazyLoading: false,
   enableBundleOptimization: false,
+  // Intelligence defaults to ON in production, OFF elsewhere
+  enableIntelligence: process.env.NODE_ENV === 'production' || process.env.INTELLIGENCE_ENABLED === 'true',
 }
 
 export class FeatureFlagManager {

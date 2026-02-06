@@ -12,6 +12,7 @@ import {
   Target,
   Sparkles,
 } from 'lucide-react';
+import { useFeatureFlag } from '@/lib/feature-flags';
 
 interface IntelligenceData {
   complianceScore: {
@@ -100,16 +101,21 @@ function TrendIndicator({ value, reverse = false }: { value: number; reverse?: b
 }
 
 export function ComplianceIntelligenceSummary() {
+  const isEnabled = useFeatureFlag('enableIntelligence');
   const [data, setData] = useState<IntelligenceData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!isEnabled) {
+      setIsLoading(false);
+      return;
+    }
     fetchIntelligence();
     // Refresh every 2 minutes
     const interval = setInterval(fetchIntelligence, 120000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isEnabled]);
 
   const fetchIntelligence = async () => {
     try {
@@ -128,7 +134,7 @@ export function ComplianceIntelligenceSummary() {
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-purple-500/5 via-blue-500/5 to-cyan-500/5 p-6 backdrop-blur-sm">
+      <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-purple-500/5 via-blue-500/5 to-cyan-500/5 p-6 backdrop-blur-sm" style={{ minHeight: '400px' }}>
         <div className="animate-pulse space-y-4">
           <div className="h-6 w-48 rounded bg-white/10" />
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -142,14 +148,14 @@ export function ComplianceIntelligenceSummary() {
     );
   }
 
-  if (error || !data) {
+  if (!isEnabled || error || !data) {
     return null; // Silent fail - don't block dashboard
   }
 
   const scoreHistory = data.complianceScore.history.map((h) => h.score);
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-purple-500/5 via-blue-500/5 to-cyan-500/5 p-6 backdrop-blur-sm">
+    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-purple-500/5 via-blue-500/5 to-cyan-500/5 p-6 backdrop-blur-sm" style={{ minHeight: '400px' }}>
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -158,12 +164,8 @@ export function ComplianceIntelligenceSummary() {
           </div>
           <div>
             <h3 className="text-lg font-semibold text-white">Compliance Intelligence</h3>
-            <p className="text-xs text-gray-400">Real-time insights powered by automation</p>
+            <p className="text-xs text-gray-400">Analytics powered by automation</p>
           </div>
-        </div>
-        <div className="flex items-center gap-2 rounded-lg bg-purple-500/10 px-3 py-1 text-xs font-medium text-purple-400">
-          <div className="h-2 w-2 animate-pulse rounded-full bg-purple-400" />
-          Live
         </div>
       </div>
 
@@ -271,25 +273,55 @@ export function ComplianceIntelligenceSummary() {
         </div>
       )}
 
-      {/* AI Insight */}
+      {/* Data-Driven Insight */}
       <div className="mt-4 rounded-xl border border-purple-500/20 bg-gradient-to-r from-purple-500/10 to-blue-500/10 p-4">
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0">
             <Sparkles className="h-5 w-5 text-purple-400" />
           </div>
           <div>
-            <h4 className="mb-1 text-sm font-semibold text-white">AI Insight</h4>
+            <h4 className="mb-1 text-sm font-semibold text-white">Insight</h4>
             <p className="text-sm leading-relaxed text-gray-300">
-              {data.complianceScore.trend > 0
-                ? `Your compliance score improved by ${data.complianceScore.trend}% this period. `
-                : data.complianceScore.trend < 0
-                  ? `Compliance score decreased ${Math.abs(data.complianceScore.trend)}%. Review failed controls. `
-                  : 'Compliance score is stable. '}
-              {data.automation.successRate >= 90
-                ? 'Automation is performing excellently.'
-                : data.automation.successRate >= 70
-                  ? 'Automation performance is good but could be optimized.'
-                  : 'Consider reviewing automation configurations.'}
+              {(() => {
+                const insights: string[] = [];
+
+                // Compliance score insight
+                if (data.complianceScore.current === 0 && data.tasks.total === 0) {
+                  return 'Not enough data yet. Complete your first compliance task or run automation to see insights.';
+                }
+
+                if (data.complianceScore.trend > 0) {
+                  insights.push(`Compliance score improved ${data.complianceScore.trend}% to ${data.complianceScore.current}%.`);
+                } else if (data.complianceScore.trend < 0) {
+                  insights.push(`Compliance score decreased ${Math.abs(data.complianceScore.trend)}% to ${data.complianceScore.current}%.`);
+                }
+
+                // Automation insight
+                if (data.automation.totalRuns > 0) {
+                  insights.push(`${data.automation.completedRuns} of ${data.automation.totalRuns} automation runs completed (${data.automation.successRate}% success).`);
+                }
+
+                // Task insight
+                if (data.tasks.total > 0) {
+                  const pending = data.tasks.total - data.tasks.completed;
+                  if (pending > 0) {
+                    insights.push(`${pending} task${pending !== 1 ? 's' : ''} pending completion.`);
+                  } else {
+                    insights.push('All tasks completed.');
+                  }
+                }
+
+                // Deadlines insight
+                if (data.upcomingDeadlines.length > 0) {
+                  const nextDeadline = data.upcomingDeadlines[0];
+                  const daysUntil = Math.ceil((new Date(nextDeadline.dueDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+                  if (daysUntil <= 7) {
+                    insights.push(`Next deadline in ${daysUntil} day${daysUntil !== 1 ? 's' : ''}.`);
+                  }
+                }
+
+                return insights.length > 0 ? insights.join(' ') : 'Monitoring compliance metrics.';
+              })()}
             </p>
           </div>
         </div>
