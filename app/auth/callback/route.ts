@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-
-export const runtime = 'nodejs';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { cookies } from 'next/headers';
+import { createServerClient } from '@supabase/ssr';
+import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { resolvePlanKey } from '@/lib/plans';
 import { ensureSubscription } from '@/lib/billing/subscriptions';
@@ -10,6 +10,8 @@ import {
   initializeComplianceGraph,
   validateComplianceGraph,
 } from '@/lib/compliance-graph';
+
+export const runtime = 'nodejs';
 
 // Default plan for users without a plan selection - ensures no one lands with "No Plan"
 const DEFAULT_PLAN = 'basic';
@@ -23,6 +25,33 @@ export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const { searchParams } = requestUrl;
   const code = searchParams.get('code');
+  const cookieStore = await cookies();
+  let cookieSnapshot = cookieStore.getAll();
+  const cookieDomain = getCookieDomain(requestUrl.hostname);
+  const isHttps = requestUrl.protocol === 'https:';
+  const cookieChanges: { name: string; value: string; options: any }[] = [];
+
+  const normalizeCookieOptions = (options?: Record<string, any>) => {
+    const normalized = { ...(options ?? {}) };
+    if (!normalized.sameSite) {
+      normalized.sameSite = 'lax';
+    }
+    if (!normalized.path) {
+      normalized.path = '/';
+    }
+    if (isHttps) {
+      normalized.secure = true;
+    }
+    return cookieDomain ? { ...normalized, domain: cookieDomain } : normalized;
+  };
+
+  const redirectWithCookies = (destination: string) => {
+    const response = NextResponse.redirect(destination);
+    cookieChanges.forEach(({ name, value, options }) => {
+      response.cookies.set(name, value, options);
+    });
+    return response;
+  };
   // HARDENING: Default to 'basic' if no valid plan provided - ensures no "No Plan" users
   const plan = resolvePlanKey(searchParams.get('plan')) || DEFAULT_PLAN;
   const appUrl = process.env.NEXT_PUBLIC_APP_URL;
@@ -41,7 +70,7 @@ export async function GET(request: Request) {
   })();
 
   if (!code) {
-    return NextResponse.redirect(`${appBase}/auth/signin`);
+    return redirectWithCookies(`${appBase}/auth/signin`);
   }
 
   // CRITICAL: Validate service role key is configured
@@ -51,14 +80,52 @@ export async function GET(request: Request) {
       '[auth/callback] CRITICAL: SUPABASE_SERVICE_ROLE_KEY not configured. Cannot create user records.',
     );
     // Redirect to error page with clear message
-    return NextResponse.redirect(
+    return redirectWithCookies(
       `${appBase}/auth/signin?error=configuration_error&message=${encodeURIComponent(
         'Server configuration error. Please contact support.',
       )}`,
     );
   }
 
-  const supabase = await createSupabaseServerClient();
+  const isPresent = (value?: string | null) =>
+    Boolean(value && value !== 'undefined' && value !== 'null');
+  const supabaseUrl = isPresent(process.env.NEXT_PUBLIC_SUPABASE_URL)
+    ? process.env.NEXT_PUBLIC_SUPABASE_URL!
+    : '';
+  const supabaseAnonKey = isPresent(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+    ? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    : '';
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error(
+      '[auth/callback] CRITICAL: Missing Supabase URL or anonymous key.',
+    );
+    return redirectWithCookies(
+      `${appBase}/auth/signin?error=configuration_error&message=${encodeURIComponent(
+        'Server configuration error. Please contact support.',
+      )}`,
+    );
+  }
+
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      getAll: () => cookieSnapshot,
+      setAll: (cookiesToSet) => {
+        try {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            const cookieOptions = normalizeCookieOptions(options);
+            cookieChanges.push({ name, value, options: cookieOptions });
+            cookieSnapshot = [
+              ...cookieSnapshot.filter((cookie) => cookie.name !== name),
+              { name, value },
+            ];
+          });
+        } catch {
+          // Ignore cookie write errors in auth callback
+        }
+      },
+    },
+  });
   const admin = createSupabaseAdminClient();
 
   // 1. Exchange the code for a session
@@ -66,7 +133,7 @@ export async function GET(request: Request) {
 
   if (error || !data?.user) {
     console.error('OAuth exchange failed:', error);
-    return NextResponse.redirect(`${appBase}/auth/signin`);
+    return redirectWithCookies(`${appBase}/auth/signin`);
   }
 
   // 2. CHECK IF USER IS A FOUNDER - Ensure proper role and redirect to admin
@@ -124,7 +191,7 @@ export async function GET(request: Request) {
     console.log(
       `[auth/callback] ✅ Founder setup complete, redirecting to /admin/dashboard`,
     );
-    return NextResponse.redirect(`${appBase}/admin/dashboard`);
+    return redirectWithCookies(`${appBase}/admin/dashboard`);
   }
 
   console.log(
@@ -205,10 +272,10 @@ export async function GET(request: Request) {
           const planQuery = resolvedPlan
             ? `?plan=${encodeURIComponent(resolvedPlan)}`
             : '';
-          return NextResponse.redirect(`${appBase}/onboarding${planQuery}`);
+          return redirectWithCookies(`${appBase}/onboarding${planQuery}`);
         }
 
-        return NextResponse.redirect(`${appBase}/app`);
+        return redirectWithCookies(`${appBase}/app`);
       }
     }
 
@@ -248,7 +315,7 @@ export async function GET(request: Request) {
           orgError,
         );
         // On org creation failure, redirect to signin with clear error
-        return NextResponse.redirect(
+        return redirectWithCookies(
           `${appBase}/auth/signin?error=org_creation_failed&message=${encodeURIComponent(
             'Account setup failed. Please try signing in again.',
           )}`,
@@ -344,7 +411,7 @@ export async function GET(request: Request) {
 
     // CRITICAL FIX: Always redirect new users to onboarding
     const planQuery = plan ? `?plan=${encodeURIComponent(plan)}` : '';
-    return NextResponse.redirect(`${appBase}/onboarding${planQuery}`);
+    return redirectWithCookies(`${appBase}/onboarding${planQuery}`);
   }
 
   // 5. EXISTING USER WITH ORGANIZATION - Check their onboarding status and backfill missing data
@@ -438,9 +505,9 @@ export async function GET(request: Request) {
     const planQuery = resolvedPlan
       ? `?plan=${encodeURIComponent(resolvedPlan)}`
       : '';
-    return NextResponse.redirect(`${appBase}/onboarding${planQuery}`);
+    return redirectWithCookies(`${appBase}/onboarding${planQuery}`);
   }
 
   console.log('[auth/callback] ✅ User fully onboarded, redirecting to app');
-  return NextResponse.redirect(`${appBase}/app`);
+  return redirectWithCookies(`${appBase}/app`);
 }

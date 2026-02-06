@@ -49,6 +49,9 @@ export async function createSupabaseServerClient() {
               if (!normalized.sameSite) {
                 normalized.sameSite = "lax";
               }
+              if (!normalized.path) {
+                normalized.path = "/";
+              }
               if (isHttps) {
                 normalized.secure = true;
               }

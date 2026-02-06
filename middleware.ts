@@ -118,8 +118,12 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(redirectUrl);
     }
 
-    // Skip auth checks for public routes (after OAuth handling)
-    if (isPublicRoute(pathname)) {
+    const isAuthPath = pathname === '/auth' || pathname.startsWith('/auth/');
+    const isAuthCallback = pathname === '/auth/callback';
+
+    // Skip auth checks for public routes (after OAuth handling),
+    // but allow /auth/* to continue so we can redirect signed-in users.
+    if (isPublicRoute(pathname) && !isAuthPath) {
       return response;
     }
 
@@ -209,6 +213,9 @@ export async function middleware(request: NextRequest) {
                   const normalized = { ...options };
                   if (!normalized.sameSite) {
                     normalized.sameSite = 'lax';
+                  }
+                  if (!normalized.path) {
+                    normalized.path = '/';
                   }
                   if (isHttps) {
                     normalized.secure = true;
@@ -305,7 +312,7 @@ export async function middleware(request: NextRequest) {
     // STEP 4: HANDLE AUTH PAGES FOR LOGGED-IN USERS
     // Skip interference for auth callback processing
     // ============================================================
-    if (user && pathname.startsWith('/auth') && pathname !== '/auth/callback') {
+    if (user && pathname.startsWith('/auth') && !isAuthCallback) {
       const url = request.nextUrl.clone();
 
       // Founders go directly to admin
