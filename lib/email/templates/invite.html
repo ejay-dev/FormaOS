@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You're Invited to FormaOS</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #0a0f1c; color: #ffffff;">
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #0a0f1c;">
+    <tr>
+      <td style="padding: 40px 20px;">
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #1a2332 0%, #0d1421 100%); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden;">
+
+          <!-- Header -->
+          <tr>
+            <td style="padding: 40px 40px 20px; text-align: center; background: linear-gradient(180deg, rgba(16, 185, 129, 0.1) 0%, transparent 100%);">
+              <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px;">FormaOS</h1>
+              <p style="margin: 8px 0 0; font-size: 14px; color: #94a3b8;">Compliance Operating System</p>
+            </td>
+          </tr>
+
+          <!-- Content -->
+          <tr>
+            <td style="padding: 40px;">
+              <h2 style="margin: 0 0 16px; font-size: 24px; font-weight: 700; color: #ffffff;">You've Been Invited!</h2>
+
+              <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #cbd5e1;">
+                <strong style="color: #10b981;">{{ .InviterName }}</strong> has invited you to join their organization on FormaOS:
+              </p>
+
+              <!-- Organization Info -->
+              <div style="margin: 0 0 32px; padding: 20px; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px;">
+                <p style="margin: 0 0 8px; font-size: 14px; color: #94a3b8;">Organization</p>
+                <p style="margin: 0 0 16px; font-size: 20px; font-weight: 600; color: #ffffff;">{{ .OrganizationName }}</p>
+                <p style="margin: 0 0 4px; font-size: 14px; color: #94a3b8;">Your Role</p>
+                <p style="margin: 0; font-size: 16px; font-weight: 500; color: #10b981; text-transform: capitalize;">{{ .Role }}</p>
+              </div>
+
+              <p style="margin: 0 0 32px; font-size: 16px; line-height: 1.6; color: #cbd5e1;">
+                Accept this invitation to start collaborating on compliance management, evidence tracking, and automated reporting.
+              </p>
+
+              <!-- CTA Button -->
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                <tr>
+                  <td style="text-align: center;">
+                    <a href="{{ .InvitationURL }}" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%); color: #ffffff; text-decoration: none; border-radius: 12px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);">
+                      Accept Invitation
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin: 32px 0 0; font-size: 14px; line-height: 1.6; color: #94a3b8;">
+                If the button doesn't work, copy and paste this link into your browser:
+              </p>
+              <p style="margin: 8px 0 0; font-size: 12px; color: #64748b; word-break: break-all;">
+                {{ .InvitationURL }}
+              </p>
+
+              <!-- What You'll Get -->
+              <div style="margin-top: 32px; padding: 20px; background: rgba(255, 255, 255, 0.03); border-radius: 12px;">
+                <p style="margin: 0 0 12px; font-size: 15px; font-weight: 600; color: #ffffff;">
+                  What you'll get access to:
+                </p>
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                  <tr>
+                    <td style="padding: 6px 0;">
+                      <span style="color: #10b981; margin-right: 8px;">✓</span>
+                      <span style="font-size: 14px; color: #cbd5e1;">Automated compliance tracking</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 6px 0;">
+                      <span style="color: #10b981; margin-right: 8px;">✓</span>
+                      <span style="font-size: 14px; color: #cbd5e1;">Evidence management system</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 6px 0;">
+                      <span style="color: #10b981; margin-right: 8px;">✓</span>
+                      <span style="font-size: 14px; color: #cbd5e1;">Task assignment and tracking</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 6px 0;">
+                      <span style="color: #10b981; margin-right: 8px;">✓</span>
+                      <span style="font-size: 14px; color: #cbd5e1;">Real-time collaboration tools</span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+
+              <!-- Security Note -->
+              <div style="margin-top: 32px; padding: 16px; background: rgba(16, 185, 129, 0.1); border-left: 3px solid #10b981; border-radius: 8px;">
+                <p style="margin: 0; font-size: 14px; color: #cbd5e1;">
+                  <strong style="color: #10b981;">🔒 Security Notice:</strong> This invitation expires in 7 days. If you didn't expect this invitation, you can safely ignore this email.
+                </p>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 32px 40px; border-top: 1px solid rgba(255, 255, 255, 0.1); text-align: center;">
+              <p style="margin: 0 0 8px; font-size: 14px; color: #64748b;">
+                FormaOS - Enterprise Compliance Infrastructure
+              </p>
+              <p style="margin: 0; font-size: 12px; color: #475569;">
+                Australian-hosted • GDPR Compliant • Enterprise-Ready
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { DashboardSectionCard } from '@/components/dashboard/unified-dashboard-layout';
 import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedChecklist';
+import { SystemStatusPanel } from '@/components/trust/SystemStatusPanel';
 
 /**
  * =========================================================
@@ -447,6 +448,8 @@ export function EmployerDashboard({
           openTasksCount={openTasksCount}
         />
       </div>
+
+      <SystemStatusPanel />
 
       <TeamComplianceTable members={[]} />
       <CertificatesExpiry certificates={[]} />
