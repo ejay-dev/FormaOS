@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
+import { checkRedisHealth } from '@/lib/redis/health';
 
 interface DetailedCheck {
   name: string;
@@ -25,6 +26,9 @@ export async function GET() {
 
   // Environment configuration test
   await testEnvironmentConfig(checks);
+
+  // Redis health check
+  await testRedis(checks);
 
   // Calculate overall health
   const errorCount = checks.filter((c) => c.status === 'error').length;
@@ -219,6 +223,29 @@ async function testEnvironmentConfig(checks: DetailedCheck[]) {
       responseTime: Date.now() - startTime,
       error:
         error instanceof Error ? error.message : 'Environment config error',
+    });
+  }
+}
+
+async function testRedis(checks: DetailedCheck[]) {
+  const startTime = Date.now();
+
+  try {
+    const result = await checkRedisHealth();
+    checks.push({
+      name: 'redis_cache',
+      status: result.ok ? 'healthy' : 'degraded',
+      responseTime: Date.now() - startTime,
+      details: {
+        reason: result.ok ? 'ok' : result.reason ?? 'unknown',
+      },
+    });
+  } catch (error) {
+    checks.push({
+      name: 'redis_cache',
+      status: 'degraded',
+      responseTime: Date.now() - startTime,
+      error: error instanceof Error ? error.message : 'Redis check failed',
     });
   }
 }

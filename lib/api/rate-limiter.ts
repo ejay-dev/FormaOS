@@ -5,14 +5,14 @@
  * Rate limiting and API usage monitoring with Redis
  */
 
-import { Redis } from '@upstash/redis';
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import { logActivity } from '@/lib/audit-trail';
+import { getRedisClient, getRedisConfig } from '@/lib/redis/client';
 
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-});
+const hasRedisConfig = () => {
+  const { url, token } = getRedisConfig();
+  return Boolean(url && token);
+};
 
 export type RateLimitTier = 'free' | 'starter' | 'professional' | 'enterprise';
 
@@ -84,6 +84,21 @@ export async function checkRateLimit(
   const dayKey = `ratelimit:${organizationId}:day`;
 
   try {
+    if (!hasRedisConfig()) {
+      return {
+        allowed: true,
+        remaining: config.requestsPerMinute,
+        resetAt: new Date(now + 60000),
+      };
+    }
+    const redis = getRedisClient();
+    if (!redis) {
+      return {
+        allowed: true,
+        remaining: config.requestsPerMinute,
+        resetAt: new Date(now + 60000),
+      };
+    }
     // Check minute limit (sliding window)
     const minuteCount = (await redis.get<number>(minuteKey)) || 0;
     if (minuteCount >= config.requestsPerMinute) {
@@ -152,6 +167,13 @@ export async function checkIpRateLimit(ipAddress: string): Promise<boolean> {
   const ttl = 60; // 1 minute window
 
   try {
+    if (!hasRedisConfig()) {
+      return true;
+    }
+    const redis = getRedisClient();
+    if (!redis) {
+      return true;
+    }
     const count = await redis.incr(key);
     if (count === 1) {
       await redis.expire(key, ttl);
@@ -183,6 +205,13 @@ export async function trackApiUsage(metrics: ApiUsageMetrics): Promise<void> {
   });
 
   // Update real-time counters in Redis
+  if (!hasRedisConfig()) {
+    return;
+  }
+  const redis = getRedisClient();
+  if (!redis) {
+    return;
+  }
   const date = new Date().toISOString().split('T')[0];
   const hourKey = `metrics:${metrics.organizationId}:${date}:hour`;
 
@@ -309,6 +338,23 @@ export async function getRealtimeApiMetrics(organizationId: string): Promise<{
   currentLoad: number;
 }> {
   try {
+    if (!hasRedisConfig()) {
+      return {
+        requestsLastMinute: 0,
+        requestsLastHour: 0,
+        averageResponseTime: 0,
+        currentLoad: 0,
+      };
+    }
+    const redis = getRedisClient();
+    if (!redis) {
+      return {
+        requestsLastMinute: 0,
+        requestsLastHour: 0,
+        averageResponseTime: 0,
+        currentLoad: 0,
+      };
+    }
     const minuteKey = `ratelimit:${organizationId}:minute`;
     const hourKey = `ratelimit:${organizationId}:hour`;
     const responseKey = `metrics:${organizationId}:response_times`;
@@ -374,6 +420,31 @@ export async function getRateLimitStatus(
   const dayKey = `ratelimit:${organizationId}:day`;
 
   try {
+    if (!hasRedisConfig()) {
+      return {
+        tier,
+        limits: config,
+        current: { minute: 0, hour: 0, day: 0 },
+        remaining: {
+          minute: config.requestsPerMinute,
+          hour: config.requestsPerHour,
+          day: config.requestsPerDay,
+        },
+      };
+    }
+    const redis = getRedisClient();
+    if (!redis) {
+      return {
+        tier,
+        limits: config,
+        current: { minute: 0, hour: 0, day: 0 },
+        remaining: {
+          minute: config.requestsPerMinute,
+          hour: config.requestsPerHour,
+          day: config.requestsPerDay,
+        },
+      };
+    }
     const [minuteCount, hourCount, dayCount] = await Promise.all([
       redis.get<number>(minuteKey),
       redis.get<number>(hourKey),

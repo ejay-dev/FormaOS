@@ -21,13 +21,7 @@
  * ```
  */
 
-import { Redis } from '@upstash/redis';
-
-// Initialize Redis client
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL || '',
-  token: process.env.UPSTASH_REDIS_REST_TOKEN || '',
-});
+import { getRedisClient, getRedisConfig } from '@/lib/redis/client';
 
 // Simple rate limiter implementation
 interface RateLimitResult {
@@ -46,7 +40,8 @@ async function rateLimit(
   windowMs: number
 ): Promise<RateLimitResult> {
   // If Redis not configured, allow all requests (dev mode)
-  if (!process.env.UPSTASH_REDIS_REST_URL) {
+  const { url, token } = getRedisConfig();
+  if (!url || !token) {
     console.warn('[RateLimit] Redis not configured, allowing all requests');
     return {
       success: true,
@@ -57,6 +52,16 @@ async function rateLimit(
   }
 
   try {
+    const redis = getRedisClient();
+    if (!redis) {
+      console.warn('[RateLimit] Redis client unavailable, allowing all requests');
+      return {
+        success: true,
+        limit,
+        remaining: limit,
+        reset: Date.now() + windowMs,
+      };
+    }
     const now = Date.now();
     const windowStart = now - windowMs;
     const redisKey = `ratelimit:${key}`;
