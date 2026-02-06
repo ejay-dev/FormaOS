@@ -293,6 +293,7 @@ function SignUpContent() {
 
               <button
                 type="submit"
+                data-testid="signup-submit-button"
                 disabled={isLoading}
                 className="w-full rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950 hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >

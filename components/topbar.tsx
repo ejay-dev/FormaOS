@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState, useRef, useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
-import { createSupabaseClient } from "@/lib/supabase/client";
+import { useState, useRef, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import { createSupabaseClient } from '@/lib/supabase/client';
 
-import { TopbarSearch } from "./topbar-search";
+import { TopbarSearch } from './topbar-search';
 import {
   Bell,
   Search,
@@ -18,15 +18,16 @@ import {
   ShieldCheck,
   LifeBuoy,
   Building2,
-} from "lucide-react";
-import { MobileSidebar } from "@/components/mobile-sidebar";
+} from 'lucide-react';
+import { MobileSidebar } from '@/components/mobile-sidebar';
+import { TrialDaysRemaining } from '@/components/billing/TrialDaysRemaining';
 
-import Button from "./ui/button";
+import Button from './ui/button';
 
 // ✅ Notification Center Component
-import { NotificationCenter } from "@/components/notifications/notification-center";
+import { NotificationCenter } from '@/components/notifications/notification-center';
 
-type UserRole = "viewer" | "member" | "admin" | "owner" | "staff" | "auditor";
+type UserRole = 'viewer' | 'member' | 'admin' | 'owner' | 'staff' | 'auditor';
 
 export function TopBar({
   orgName,
@@ -70,8 +71,8 @@ export function TopBar({
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -80,9 +81,9 @@ export function TopBar({
     const loadProfile = async () => {
       if (!userId) return;
       const { data: profile } = await supabase
-        .from("user_profiles")
-        .select("full_name, avatar_path")
-        .eq("user_id", userId)
+        .from('user_profiles')
+        .select('full_name, avatar_path')
+        .eq('user_id', userId)
         .maybeSingle();
 
       if (!isMounted) return;
@@ -95,13 +96,13 @@ export function TopBar({
       }
 
       const { data, error } = await supabase.storage
-        .from("user-avatars")
+        .from('user-avatars')
         .createSignedUrl(profile.avatar_path, 60 * 60 * 12);
 
       if (!isMounted) return;
 
       if (error) {
-        console.error("Failed to load avatar:", error.message);
+        console.error('Failed to load avatar:', error.message);
         setAvatarUrl(null);
         return;
       }
@@ -119,31 +120,30 @@ export function TopBar({
   // Logout
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    router.push("/auth/signin");
+    router.push('/auth/signin');
   };
 
-  const initialsSource = displayName || userEmail || "";
+  const initialsSource = displayName || userEmail || '';
   const initials = initialsSource
     ? initialsSource
-        .split(" ")
+        .split(' ')
         .map((part) => part[0])
-        .join("")
+        .join('')
         .slice(0, 2)
         .toUpperCase()
-    : "US";
+    : 'US';
 
   const menuItems = [
-    { label: "Profile", icon: UserCircle, href: "/app/profile" },
-    { label: "Account Settings", icon: Settings, href: "/app/settings" },
-    { label: "Billing & Subscription", icon: CreditCard, href: "/app/billing" },
-    { label: "Security", icon: ShieldCheck, href: "/app/settings" },
-    { label: "Switch Organization", icon: Building2, href: "/app/settings" },
-    { label: "Support", icon: LifeBuoy, href: "/contact" },
+    { label: 'Profile', icon: UserCircle, href: '/app/profile' },
+    { label: 'Account Settings', icon: Settings, href: '/app/settings' },
+    { label: 'Billing & Subscription', icon: CreditCard, href: '/app/billing' },
+    { label: 'Security', icon: ShieldCheck, href: '/app/settings' },
+    { label: 'Switch Organization', icon: Building2, href: '/app/settings' },
+    { label: 'Support', icon: LifeBuoy, href: '/contact' },
   ];
 
   return (
     <div className="flex h-full w-full items-center justify-between gap-3 min-w-0">
-      
       {/* Left: Breadcrumbs */}
       <div className="flex items-center gap-2 text-sm text-sidebar-foreground min-w-0">
         <MobileSidebar role={role} />
@@ -163,11 +163,14 @@ export function TopBar({
 
       {/* Right: Actions */}
       <div className="ml-auto flex items-center gap-2 sm:gap-3">
+        {/* Trial days remaining badge */}
+        <TrialDaysRemaining />
+
         {/* Mobile search trigger */}
         <Button
           variant="ghost"
           onClick={() => {
-            window.dispatchEvent(new Event("open-command-menu"));
+            window.dispatchEvent(new Event('open-command-menu'));
           }}
           className="md:hidden rounded-full p-2.5 text-sidebar-foreground/90 hover:bg-card/8 transition-colors"
           aria-label="Open search"
@@ -205,14 +208,18 @@ export function TopBar({
           >
             <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-white/8 text-[10px] font-bold text-card-foreground">
               {avatarUrl ? (
-                <img src={avatarUrl} alt="User avatar" className="h-full w-full object-cover" />
+                <img
+                  src={avatarUrl}
+                  alt="User avatar"
+                  className="h-full w-full object-cover"
+                />
               ) : (
                 initials || <User className="h-4 w-4" />
               )}
             </div>
             <ChevronDown
               className={`h-3 w-3 text-card-foreground/70 transition-transform ${
-                showUserMenu ? "rotate-180" : ""
+                showUserMenu ? 'rotate-180' : ''
               }`}
             />
           </Button>
@@ -222,11 +229,13 @@ export function TopBar({
               className="absolute right-0 mt-2 w-[min(16rem,calc(100vw-1.5rem))] rounded-2xl border border-card-foreground/8 bg-card p-2 shadow-xl z-50"
               role="menu"
               onKeyDown={(event) => {
-                if (event.key === "Escape") setShowUserMenu(false);
+                if (event.key === 'Escape') setShowUserMenu(false);
               }}
             >
               <div className="px-3 py-2 border-b border-card-foreground/8 mb-1">
-                <p className="text-xs font-bold text-card-foreground">Signed in as</p>
+                <p className="text-xs font-bold text-card-foreground">
+                  Signed in as
+                </p>
                 <p className="text-xs text-muted truncate">{userEmail}</p>
               </div>
 

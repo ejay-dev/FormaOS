@@ -10,7 +10,10 @@ import { AppHydrator } from '@/components/app-hydrator';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { resolvePlanKey } from '@/lib/plans';
 import { normalizeRole } from '@/app/app/actions/rbac';
-import { TrialStatusBanner } from '@/app/app/components/TrialStatusBanner';
+import { TrialCountdownBanner } from '@/components/billing/TrialCountdownBanner';
+import { UpgradeModal } from '@/components/billing/UpgradeModal';
+import { UpgradeSuggestionEngine } from '@/components/billing/UpgradeSuggestionEngine';
+import { TrialDaysRemaining } from '@/components/billing/TrialDaysRemaining';
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';
 
@@ -141,8 +144,8 @@ export default async function AppLayout({
                     </div>
                   </header>
 
-                  {/* Trial Status Banner */}
-                  <TrialStatusBanner />
+                  {/* Trial Countdown Banner (conversion system) */}
+                  <TrialCountdownBanner />
 
                   {/* Main content */}
                   <main className="relative flex flex-1 flex-col overflow-y-auto bg-background">
@@ -156,6 +159,10 @@ export default async function AppLayout({
 
               {/* Command palette */}
               <CommandMenu />
+
+              {/* Trial conversion system (non-blocking) */}
+              <UpgradeModal />
+              <UpgradeSuggestionEngine />
             </div>
           </ComplianceSystemProvider>
         </CommandProvider>

@@ -116,6 +116,7 @@ export default function CheckEmailPage() {
           {/* Continue Button */}
           <button
             onClick={handleContinue}
+            data-testid="check-email-continue-button"
             disabled={isChecking}
             className="w-full mb-3 py-4 px-6 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
           >

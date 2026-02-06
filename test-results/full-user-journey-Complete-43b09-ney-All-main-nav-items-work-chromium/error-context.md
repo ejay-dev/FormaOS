@@ -1,0 +1,54 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - img "FormaOS" [ref=e5]
+        - generic [ref=e6]: FormaOS
+      - generic [ref=e7]: Secure · Compliance-First · Enterprise-Ready
+    - generic [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e11]:
+          - heading "Welcome to FormaOS" [level=1] [ref=e12]
+          - paragraph [ref=e13]: The compliance-first operating system for modern enterprises
+        - generic [ref=e14]:
+          - generic [ref=e15]:
+            - img [ref=e16]
+            - generic [ref=e19]: SOX Ready
+          - generic [ref=e20]:
+            - img [ref=e21]
+            - generic [ref=e24]: ISO 27001
+          - generic [ref=e25]:
+            - img [ref=e26]
+            - generic [ref=e29]: SOC 2
+        - button "Continue with Google" [ref=e30] [cursor=pointer]:
+          - img [ref=e31]
+          - text: Continue with Google
+        - generic [ref=e38]: or use email
+        - generic [ref=e40]:
+          - generic [ref=e41]:
+            - generic [ref=e42]: Email Address
+            - textbox "Email Address" [ref=e43]:
+              - /placeholder: your@company.com
+          - generic [ref=e44]:
+            - generic [ref=e45]: Password
+            - textbox "Password" [ref=e46]:
+              - /placeholder: Enter your password
+          - button "Access FormaOS" [ref=e47] [cursor=pointer]:
+            - text: Access FormaOS
+            - img [ref=e48]
+        - paragraph [ref=e51]:
+          - text: New to FormaOS?
+          - link "Start your compliance journey" [ref=e52] [cursor=pointer]:
+            - /url: https://app.formaos.com.au/auth/signup
+      - generic [ref=e53]:
+        - generic [ref=e54]:
+          - img "FormaOS" [ref=e55]
+          - generic [ref=e56]: Enterprise-grade security
+        - paragraph [ref=e57]: Your data is encrypted and protected. FormaOS is SOC 2 Type II compliant.
+  - button "Open Next.js Dev Tools" [ref=e63] [cursor=pointer]:
+    - img [ref=e64]
+  - alert [ref=e67]
+```

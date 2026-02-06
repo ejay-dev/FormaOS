@@ -196,6 +196,7 @@ function PricingHero() {
             >
               <Link
                 href={`${appBase}/auth/signup`}
+                data-testid="pricing-hero-start-trial"
                 className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-8 py-4 text-base font-semibold text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
               >
                 <span className="relative z-10">Start Free Trial</span>
@@ -524,6 +525,7 @@ function PricingTiers() {
                 {/* CTA */}
                 <Link
                   href={tier.href}
+                  data-testid={`pricing-${tier.name.toLowerCase()}-cta`}
                   className={`group/btn relative block w-full py-4 px-6 rounded-2xl text-center font-semibold transition-all duration-300 overflow-hidden ${
                     tier.featured
                       ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-lg hover:shadow-xl hover:shadow-emerald-500/30 hover:scale-105'

@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 import { isFounder } from '@/lib/utils/founder';
+import { autoProvisionTrialAccess } from '@/lib/middleware/auto-provision-trial';
 
 // Define public routes that don't require authentication
 const PUBLIC_ROUTES = [
@@ -357,11 +358,30 @@ export async function middleware(request: NextRequest) {
       !pathname.startsWith('/app/api') &&
       !isUserFounder
     ) {
-      const { data: membership } = await supabase
+      let { data: membership } = await supabase
         .from('org_members')
         .select('organization_id, role')
         .eq('user_id', user.id)
         .maybeSingle();
+
+      // Auto-provision trial access if user has no organization
+      if (!membership?.organization_id) {
+        const provisionResult = await autoProvisionTrialAccess(
+          supabase,
+          user.id,
+          user.email ?? null
+        );
+
+        if (provisionResult.success && provisionResult.organizationId) {
+          // Reload membership after provisioning
+          const { data: newMembership } = await supabase
+            .from('org_members')
+            .select('organization_id, role')
+            .eq('user_id', user.id)
+            .maybeSingle();
+          membership = newMembership;
+        }
+      }
 
       const role = (membership?.role ?? '').toLowerCase();
       const isStaff = role === 'staff' || role === 'member';
