@@ -153,7 +153,7 @@ function HomeHero() {
             >
               <span>• 14-day free trial</span>
               <span>• No credit card required</span>
-              <span>• Australian-hosted</span>
+              <span>• Region-aware hosting</span>
             </motion.div>
           </div>
         </ParallaxLayer>
@@ -1289,7 +1289,7 @@ export function HomePageClient() {
                     </span>
                   </div>
                   <div className="text-xs text-foreground/60">
-                    ISO 27001 Aligned
+                    Framework-aligned controls
                   </div>
                 </div>
               </div>
@@ -1405,7 +1405,7 @@ export function HomePageClient() {
                   <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border border-emerald-500/20">
                     <Shield className="h-5 w-5 text-emerald-600" />
                     <span className="text-sm font-semibold text-foreground/80">
-                      SOC 2 Type II Compliant
+                      SOC 2-aligned controls
                     </span>
                   </div>
                 </motion.div>
@@ -1542,7 +1542,7 @@ export function HomePageClient() {
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-purple-400" />
-                    <span>Australian-hosted</span>
+                    <span>Region-aware hosting</span>
                   </div>
                 </motion.div>
               </div>

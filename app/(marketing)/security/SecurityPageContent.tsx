@@ -368,15 +368,15 @@ export default function SecurityPageContent() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                       <div>
                         <div className="text-lg font-bold text-gradient mb-1">
-                          SOC 2
+                          SOC 2-aligned
                         </div>
                         <div className="text-xs text-foreground/60">
-                          Type II Certified
+                          Aligned controls
                         </div>
                       </div>
                       <div>
                         <div className="text-lg font-bold text-gradient mb-1">
-                          ISO 27001
+                          ISO 27001-aligned
                         </div>
                         <div className="text-xs text-foreground/60">
                           Information Security
@@ -384,10 +384,10 @@ export default function SecurityPageContent() {
                       </div>
                       <div>
                         <div className="text-lg font-bold text-gradient mb-1">
-                          GDPR
+                          GDPR-ready
                         </div>
                         <div className="text-xs text-foreground/60">
-                          Privacy Compliant
+                          Privacy-ready workflows
                         </div>
                       </div>
                       <div>
@@ -862,7 +862,7 @@ export default function SecurityPageContent() {
                       <div className="flex items-center gap-3 justify-center lg:justify-start">
                         <div className="w-2 h-2 rounded-full bg-green-400" />
                         <span className="text-sm text-foreground/70">
-                          SOC 2 Type II and ISO 27001 certified infrastructure
+                          SOC 2 and ISO 27001-aligned infrastructure practices
                         </span>
                       </div>
                       <div className="flex items-center gap-3 justify-center lg:justify-start">
@@ -914,7 +914,7 @@ export default function SecurityPageContent() {
                     </div>
 
                     <div className="text-xs text-foreground/50">
-                      SOC 2 compliant • GDPR ready • Enterprise security
+                      SOC 2-aligned • GDPR-ready • Enterprise security
                       standards
                     </div>
                   </motion.div>

@@ -2136,7 +2136,7 @@ function VersionControlHighlight() {
       icon: Shield,
       title: 'Tamper Detection',
       description:
-        'SHA-256 checksums verify evidence integrity and detect modification.',
+        'Integrity checksums verify evidence integrity and detect modification.',
     },
     {
       icon: RotateCcw,
@@ -2182,12 +2182,12 @@ function VersionControlHighlight() {
             Evidence Version Control
             <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
               {' '}
-              That competitors charge $2,000+/mo for
+              That competitors charge a premium for
             </span>
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Complete version history on every evidence upload with SHA-256
-            checksum validation and one-click rollback. Built-in from $159/mo.
+            Complete version history on every evidence upload with integrity
+            validation and one-click rollback. Built into FormaOS.
           </p>
         </motion.div>
 
@@ -2350,15 +2350,15 @@ const industrySolutions: IndustrySolution[] = [
   {
     icon: TrendingUp,
     title: 'Financial Services',
-    subtitle: 'SOC 2, ISO 27001, PCI DSS',
+    subtitle: 'Multi-framework compliance alignment',
     color: 'from-emerald-400 to-green-600',
     accentColor: 'emerald',
     problemStatement:
-      'Financial institutions face relentless compliance demands from multiple frameworks simultaneously. Manual evidence collection for SOC 2 audits consumes hundreds of hours annually, while security incidents require immediate documentation and response.',
+      'Financial institutions face relentless compliance demands from multiple frameworks simultaneously. Manual evidence collection for audits consumes significant time, while security incidents require immediate documentation and response.',
     solutionMapping: {
       title: 'FormaOS Financial Module',
       features: [
-        'Multi-framework compliance mapping (SOC 2, ISO, PCI)',
+        'Multi-framework compliance mapping (SOC 2, ISO, PCI alignment)',
         'Automated control evidence collection and testing',
         'Vendor risk assessment and due diligence tracking',
         'Security incident response documentation',
@@ -2380,7 +2380,7 @@ const industrySolutions: IndustrySolution[] = [
       {
         icon: CheckCircle,
         title: 'Audit Acceleration',
-        description: 'Pre-mapped evidence to SOC 2 Trust Services Criteria',
+        description: 'Pre-mapped evidence to common trust service criteria',
       },
     ],
     cta: {
@@ -2814,13 +2814,13 @@ function HealthcareHighlight() {
 const securityFeatures = [
   {
     icon: Shield,
-    title: 'SOC 2 Type II',
-    description: 'Independently audited security controls',
+    title: 'SOC 2-aligned controls',
+    description: 'Security controls aligned to common trust frameworks',
   },
   {
     icon: Lock,
     title: 'End-to-End Encryption',
-    description: 'AES-256 encryption at rest and in transit',
+    description: 'Encryption at rest and in transit',
   },
   {
     icon: Eye,
@@ -2831,12 +2831,12 @@ const securityFeatures = [
     icon: History,
     title: 'Evidence Integrity',
     description:
-      'SHA-256 checksums and version control detect tampering and ensure audit defensibility',
+      'Integrity checks and version control protect evidence defensibility',
   },
   {
     icon: Key,
     title: 'SSO & MFA',
-    description: 'Google OAuth + Enterprise SAML with TOTP',
+    description: 'OAuth login with MFA-ready controls',
   },
 ];
 
@@ -3223,12 +3223,12 @@ function Security() {
       ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
       ctx.font = '12px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText('SOC 2', shieldCenterX, shieldCenterY + 5);
+      ctx.fillText('TRUST', shieldCenterX, shieldCenterY + 5);
 
       // Audit compliance indicator
       ctx.fillStyle = 'rgba(6, 182, 212, 0.6)';
       ctx.font = '8px monospace';
-      ctx.fillText('TYPE II COMPLIANT', shieldCenterX, shieldCenterY + 65);
+      ctx.fillText('ALIGNED CONTROLS', shieldCenterX, shieldCenterY + 65);
 
       time += 1;
       requestAnimationFrame(animate);
@@ -3356,15 +3356,15 @@ function Security() {
               {/* Mobile: Static visual representation */}
               {isMobile && (
                 <div className="relative h-[250px] sm:h-[300px]">
-                  {/* SOC 2 Shield */}
+                  {/* Trust Shield */}
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-20 flex flex-col items-center justify-center">
                     <div className="w-14 h-16 border-2 border-cyan-400/60 rounded-b-full rounded-t-lg bg-gradient-to-b from-cyan-500/10 to-transparent flex items-center justify-center">
                       <span className="text-white/80 text-xs font-mono">
-                        SOC 2
+                        TRUST
                       </span>
                     </div>
                     <span className="text-cyan-400/60 text-[8px] font-mono mt-1">
-                      TYPE II COMPLIANT
+                      ALIGNED CONTROLS
                     </span>
                   </div>
 
@@ -3778,10 +3778,10 @@ function CTASection() {
           >
             <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-center">
               {[
-                { value: '99.9%', label: 'Audit Success' },
-                { value: '50M+', label: 'Evidence Records' },
-                { value: 'SOC 2', label: 'Type II Compliant' },
-                { value: '24/7', label: 'Enterprise Support' },
+                { value: 'Audit-ready', label: 'Evidence workflows' },
+                { value: 'Traceable', label: 'Evidence records' },
+                { value: 'SOC 2-aligned', label: 'Trust framework' },
+                { value: 'Priority', label: 'Support coverage' },
               ].map((stat, index) => (
                 <motion.div
                   key={stat.label}
@@ -3815,14 +3815,14 @@ function CTASection() {
 // ============================================
 
 const trustedBy = [
-  'Royal Melbourne Hospital',
-  'Australian Unity',
-  'Westpac Group',
-  'University of Sydney',
-  'NSW Government',
-  'Aged Care Quality',
-  'MedHealth Group',
-  'Education Queensland',
+  'Healthcare & NDIS teams',
+  'Aged care operators',
+  'Financial services teams',
+  'Education & research',
+  'Government programs',
+  'Community services',
+  'Enterprise compliance',
+  'Multi-site operators',
 ];
 
 function TrustSection() {
@@ -3862,7 +3862,7 @@ function TrustSection() {
           className="text-center mb-12"
         >
           <p className="text-sm uppercase tracking-wider text-gray-500 mb-8">
-            Trusted by leading organizations
+            Built for regulated teams
           </p>
         </motion.div>
 
@@ -3898,10 +3898,10 @@ function TrustSection() {
           className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto"
         >
           {[
-            { value: '99.9%', label: 'System Uptime' },
-            { value: '50M+', label: 'Evidence Records' },
-            { value: '100%', label: 'Audit Pass Rate' },
-            { value: '<5min', label: 'Evidence Retrieval' },
+            { value: 'Reliable uptime', label: 'High availability' },
+            { value: 'Evidence-first', label: 'Operational traceability' },
+            { value: 'Audit-ready', label: 'Continuous readiness' },
+            { value: 'Fast access', label: 'Retrieval at speed' },
           ].map((stat, index) => (
             <motion.div
               key={stat.label}

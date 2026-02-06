@@ -127,7 +127,7 @@ export default async function AuditTrailPage() {
                   System Audit Trail
                 </h1>
                 <p className="text-slate-400 mt-1 font-medium tracking-tight max-w-xl leading-relaxed text-sm">
-                  Immutable record of governance actions. This log satisfies ISO 27001 non-repudiation requirements.
+                  Immutable record of governance actions. This log supports audit-ready evidence trails.
                 </p>
               </div>
             </div>

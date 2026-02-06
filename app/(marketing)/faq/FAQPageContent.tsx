@@ -66,23 +66,23 @@ const faqCategories = [
     questions: [
       {
         q: 'Is FormaOS SOC 2 compliant?',
-        a: 'FormaOS is built with SOC 2 controls in mind and follows security best practices aligned with SOC 2 Type II requirements. We implement comprehensive security controls including encryption, access management, audit logging, and incident response procedures. Enterprise customers can request our security documentation and compliance attestations.',
+        a: 'FormaOS is built with SOC 2-aligned controls and security best practices. We implement encryption, access management, audit logging, and incident response procedures designed to support audit readiness. Security documentation can be provided on request.',
       },
       {
         q: 'How is data encrypted?',
-        a: 'All data is encrypted both in transit and at rest. We use TLS 1.3 for data transmission and AES-256 encryption for data storage. Encryption keys are managed using industry-standard key management practices with regular rotation. Sensitive fields can be additionally encrypted at the application level.',
+        a: 'Data is encrypted in transit and at rest using industry-standard practices. Encryption keys are managed with secure key management and regular rotation, and sensitive fields can be additionally protected when needed.',
       },
       {
         q: 'Does FormaOS support SSO and MFA?',
-        a: 'Yes. FormaOS supports Single Sign-On via Google Workspace OAuth. Enterprise SAML 2.0 integration with identity providers like Okta and Azure AD is available on Enterprise plans. Multi-Factor Authentication (MFA/2FA) with TOTP authenticator apps is available for all accounts and can be enforced at the organization level.',
+        a: 'FormaOS supports Google OAuth login today. Enterprise SSO options are available by configuration, and MFA can be enforced via your identity provider or additional security controls.',
       },
       {
         q: 'Where is data stored?',
-        a: 'FormaOS infrastructure is hosted on enterprise-grade cloud platforms with data centers in Australia. For enterprise customers with specific data residency requirements, we offer region-specific deployment options. All infrastructure is configured with high availability, automated backups, and disaster recovery capabilities.',
+        a: 'FormaOS is hosted on enterprise-grade cloud platforms with region-aware hosting options. Enterprise customers can request specific data residency configurations. Infrastructure is designed for high availability, automated backups, and disaster recovery.',
       },
       {
         q: 'How do you handle data privacy?',
-        a: 'We are committed to data privacy and comply with Australian Privacy Principles (APPs) and GDPR where applicable. We collect only necessary data, provide clear data handling policies, and give you control over your organizational data. Customer data is never used for advertising or sold to third parties.',
+        a: 'We follow privacy-by-design principles and support APP/GDPR-aligned workflows where applicable. We collect only necessary data, provide clear data handling policies, and give you control over your organizational data. Customer data is never sold to third parties.',
       },
     ],
   },
@@ -122,19 +122,19 @@ const faqCategories = [
     questions: [
       {
         q: 'Does FormaOS integrate with existing systems?',
-        a: 'Yes. FormaOS integrates with Slack and Microsoft Teams for real-time notifications, Google Workspace for authentication, and provides webhooks for 17 event types to connect with your existing tools. Our REST API enables custom integrations with any system. Integration capabilities depend on your plan tier.',
+        a: 'FormaOS supports Slack and Microsoft Teams notifications where configured, Google OAuth for authentication, and webhooks/REST APIs to connect with your existing tools. Integration capabilities depend on your plan tier.',
       },
       {
         q: 'Are APIs available?',
-        a: 'FormaOS provides a comprehensive REST API for enterprise customers. The API allows you to programmatically query audit logs, compliance status, evidence, and tasks. Full API documentation is available for development teams.',
+        a: 'FormaOS provides a REST API for authorized customers to query audit logs, compliance status, evidence, and tasks. API documentation is available on request.',
       },
       {
         q: 'Do you support webhooks?',
-        a: 'Yes. FormaOS supports webhooks for real-time event notifications. You can configure webhooks to trigger on compliance events such as task completion, evidence submission, control verification, or audit trail entries. This enables seamless integration with external systems and automation workflows.',
+        a: 'Yes. FormaOS supports webhooks for real-time event notifications. You can configure webhooks to trigger on compliance events such as task completion, evidence submission, control verification, or audit trail entries.',
       },
       {
         q: 'Can FormaOS connect to our existing systems?',
-        a: 'FormaOS provides native integrations with Slack and Microsoft Teams for real-time compliance notifications. For HR, CRM, and other systems, our comprehensive webhook and REST API capabilities enable custom integration development. Enterprise customers receive dedicated integration support.',
+        a: 'FormaOS provides integration-ready workflows with Slack/Teams notifications and webhook/REST API capabilities to connect HR, CRM, or other systems. Enterprise customers can request dedicated integration support.',
       },
     ],
   },
@@ -162,7 +162,7 @@ const faqCategories = [
       },
       {
         q: 'Is there a money-back guarantee?',
-        a: 'If you are not satisfied within the first 30 days of your paid subscription, we offer a full refund. We are confident that FormaOS will deliver value, but we want you to feel secure in your investment.',
+        a: 'If you have concerns during onboarding or early adoption, contact our team and we will work with you on a fair resolution based on your plan and terms.',
       },
     ],
   },
@@ -174,23 +174,23 @@ const faqCategories = [
     questions: [
       {
         q: 'What onboarding is provided?',
-        a: 'All paid plans include structured onboarding with a dedicated success manager. Onboarding covers platform configuration, user setup, workflow modeling, and best practices for your industry. Enterprise plans include extended onboarding with custom training sessions and implementation support.',
+        a: 'Paid plans include structured onboarding to configure the platform, users, workflows, and best practices. Enterprise plans can request extended onboarding and implementation support.',
       },
       {
         q: 'Is enterprise support available?',
-        a: 'Yes. Enterprise plans include priority support with dedicated success managers, custom SLAs, direct access to our product team, and 24/7 availability for critical issues. We partner with our enterprise customers to ensure their compliance programs run smoothly.',
+        a: 'Enterprise plans include priority support with SLAs and dedicated success support. Coverage and response times depend on your plan and support package.',
       },
       {
         q: 'How do I get help if I have an issue?',
-        a: 'Support is available through multiple channels: in-app help center, email support, and live chat during business hours. Professional and Enterprise plans include phone support and faster response times. Our knowledge base provides self-service documentation for common questions.',
+        a: 'Support is available through the in-app help center and email. Priority support and expanded channels depend on your plan. Our knowledge base provides self-service documentation for common questions.',
       },
       {
         q: 'Do you provide training for our team?',
-        a: 'Yes. FormaOS provides comprehensive training resources including documentation, video tutorials, and live webinars. Enterprise customers receive custom training sessions tailored to their workflows and can request on-site training for large deployments.',
+        a: 'FormaOS provides training resources including documentation and guided sessions. Enterprise customers can request custom training tailored to their workflows.',
       },
       {
         q: 'What is your support response time?',
-        a: 'Response times vary by plan tier. Starter plans receive responses within 24 hours. Professional plans include priority support with responses within 4 business hours. Enterprise plans include dedicated support with response times as fast as 1 hour for critical issues.',
+        a: 'Response times vary by plan tier and support package. Contact us to confirm the response time commitments for your plan.',
       },
     ],
   },

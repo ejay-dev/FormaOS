@@ -48,7 +48,7 @@ export function MobileSidebar({ role }: { role: UserRole }) {
             onClick={() => setOpen(false)}
             className="absolute inset-0 bg-black/60"
           />
-          <div className="absolute left-0 top-0 h-full w-[85vw] max-w-[320px] sm:w-80 shadow-2xl overflow-y-auto">
+          <div className="absolute left-0 top-0 h-full w-[85vw] max-w-[320px] sm:w-80 shadow-2xl overflow-y-auto bg-[hsl(var(--sidebar))] glass-panel-strong pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
             <Sidebar role={role} />
             <Button
               variant="ghost"

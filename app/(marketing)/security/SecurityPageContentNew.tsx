@@ -171,9 +171,9 @@ function SecurityHero() {
           className="flex flex-wrap justify-center gap-6 sm:gap-10 mb-12"
         >
           {[
-            { label: 'SOC 2 Type II', icon: CheckCircle },
-            { label: 'ISO 27001', icon: Shield },
-            { label: 'GDPR Ready', icon: Lock },
+            { label: 'SOC 2-aligned', icon: CheckCircle },
+            { label: 'ISO 27001-aligned', icon: Shield },
+            { label: 'GDPR-ready workflows', icon: Lock },
             { label: 'HIPAA Aligned', icon: FileCheck },
           ].map((cert, index) => (
             <motion.div
@@ -243,7 +243,7 @@ function SecurityArchitecture() {
       icon: Database,
       title: 'Encrypted Data Storage',
       description:
-        'AES-256 encryption at rest, with TLS 1.3 in transit. Data isolation ensures multi-tenant security boundaries.',
+        'Encryption at rest and in transit with data isolation across tenants.',
       color: 'from-red-500/20 to-orange-500/20',
       borderColor: 'border-red-500/30',
       iconColor: 'text-red-400',
@@ -279,13 +279,13 @@ function SecurityArchitecture() {
 
   const certifications = [
     {
-      name: 'SOC 2 Type II',
+      name: 'SOC 2-aligned',
       description: 'Comprehensive security controls',
       icon: Shield,
     },
     {
       name: 'Compliance Scanning',
-      description: '6 frameworks: SOC2, ISO, HIPAA, GDPR, NIST, PCI',
+      description: 'Framework mapping: SOC 2, ISO, HIPAA, GDPR, NIST, PCI',
       icon: Lock,
     },
     {
@@ -874,7 +874,7 @@ function FinalSecurityCTA() {
                     <div className="flex items-center gap-3 justify-center lg:justify-start">
                       <div className="w-2 h-2 rounded-full bg-green-400" />
                       <span className="text-sm text-gray-400">
-                        SOC 2 Type II and ISO 27001 certified infrastructure
+                        SOC 2 and ISO 27001-aligned infrastructure practices
                       </span>
                     </div>
                     <div className="flex items-center gap-3 justify-center lg:justify-start">
@@ -926,7 +926,7 @@ function FinalSecurityCTA() {
                   </div>
 
                   <div className="text-xs text-gray-500">
-                    SOC 2 compliant • GDPR ready • Enterprise security standards
+                    SOC 2-aligned • GDPR-ready • Enterprise security standards
                   </div>
                 </motion.div>
               </div>

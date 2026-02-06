@@ -127,7 +127,7 @@ const platformArchitecture = {
 };
 
 const capabilities = [
-  'Evidence version control with rollback & SHA-256 checksums',
+  'Evidence version control with rollback & integrity checks',
   'REST API v1 with rate limiting',
   'Workflow automation engine',
   'Incident reporting & investigation',
@@ -556,11 +556,11 @@ export function HomePageContent() {
                 Evidence Version Control
                 <br />
                 <span className="text-gradient-system">
-                  That competitors charge $2,000+/mo for
+                  That competitors charge a premium for
                 </span>
               </>
             }
-            subtitle="Complete version history on every evidence upload with SHA-256 checksum validation and one-click rollback. Built-in from $159/mo"
+            subtitle="Complete version history on every evidence upload with integrity validation and one-click rollback."
             alignment="center"
           />
 
@@ -576,7 +576,7 @@ export function HomePageContent() {
                 icon: Shield,
                 title: 'Tamper Detection',
                 description:
-                  'SHA-256 checksums verify evidence integrity and detect any modification',
+                  'Integrity checksums verify evidence and detect any modification',
               },
               {
                 icon: RotateCcw,
@@ -817,7 +817,7 @@ export function HomePageContent() {
                 icon: History,
                 title: 'Evidence integrity',
                 description:
-                  'SHA-256 checksums and version control detect tampering and ensure audit defensibility',
+                  'Integrity checksums and version control detect tampering and support audit defensibility',
               },
             ].map((point, idx) => (
               <motion.div

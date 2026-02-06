@@ -178,18 +178,20 @@ function SignInContent() {
               <div className="text-center">
                 <CheckCircle2 className="h-5 w-5 text-emerald-400 mx-auto mb-1" />
                 <div className="text-xs font-medium text-emerald-200">
-                  SOX Ready
+                  Audit-ready controls
                 </div>
               </div>
               <div className="text-center">
                 <CheckCircle2 className="h-5 w-5 text-sky-400 mx-auto mb-1" />
                 <div className="text-xs font-medium text-sky-200">
-                  ISO 27001
+                  Evidence integrity
                 </div>
               </div>
               <div className="text-center">
                 <CheckCircle2 className="h-5 w-5 text-cyan-400 mx-auto mb-1" />
-                <div className="text-xs font-medium text-cyan-200">SOC 2</div>
+                <div className="text-xs font-medium text-cyan-200">
+                  Access governance
+                </div>
               </div>
             </div>
 
@@ -310,8 +312,8 @@ function SignInContent() {
               <span>Enterprise-grade security</span>
             </div>
             <p>
-              Your data is encrypted and protected. FormaOS is SOC 2 Type II
-              compliant.
+              Your data is encrypted and protected with audit-ready security
+              controls.
             </p>
           </div>
         </div>

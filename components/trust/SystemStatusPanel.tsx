@@ -211,15 +211,15 @@ export function SystemStatusPanel() {
       <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-white/10 pt-4">
         <div className="flex items-center gap-2 text-xs text-gray-400">
           <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-          <span>Australian-hosted</span>
+          <span>Region-aware hosting</span>
         </div>
         <div className="flex items-center gap-2 text-xs text-gray-400">
           <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-          <span>GDPR-aligned</span>
+          <span>Privacy-ready workflows</span>
         </div>
         <div className="flex items-center gap-2 text-xs text-gray-400">
           <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-          <span>ISO 27001-aligned</span>
+          <span>Framework-aligned controls</span>
         </div>
         <div className="flex items-center gap-2 text-xs text-gray-400">
           <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />

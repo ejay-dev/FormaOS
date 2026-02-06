@@ -433,7 +433,7 @@ export default function PricingPageContent() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             <ValueProp
               icon={<Shield className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />}
-              title="Australian-hosted infrastructure"
+              title="Region-aware hosting options"
               description="Data sovereignty and compliance with local privacy laws, hosted in secure Australian data centers"
               delay={0}
             />

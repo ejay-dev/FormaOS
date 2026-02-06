@@ -145,7 +145,7 @@ export function MobileNav() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.95 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute left-3 right-3 top-20 rounded-2xl overflow-hidden shadow-2xl"
+              className="absolute left-3 right-3 top-[calc(env(safe-area-inset-top)+4.5rem)] max-h-[calc(100vh-6rem)] rounded-2xl overflow-hidden shadow-2xl"
               style={{
                 background: "linear-gradient(180deg, rgba(10, 16, 31, 0.98) 0%, rgba(5, 7, 17, 0.98) 100%)",
                 border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -154,60 +154,62 @@ export function MobileNav() {
             >
               {/* Decorative top line */}
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-              
-              {/* Header */}
-              <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
-                <span className="text-sm font-bold text-white tracking-wide">Menu</span>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-                  aria-label="Close menu"
-                >
-                  <X className="h-5 w-5 text-slate-400" />
-                </button>
-              </div>
 
-              {/* Navigation Links */}
-              <div className="p-4">
-                <NavLinks variant="mobile" onLinkClick={handleLinkClick} />
-              </div>
+              <div className="max-h-[calc(100vh-6rem)] overflow-y-auto pb-[env(safe-area-inset-bottom)]">
+                {/* Header */}
+                <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
+                  <span className="text-sm font-bold text-white tracking-wide">Menu</span>
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+                    aria-label="Close menu"
+                  >
+                    <X className="h-5 w-5 text-slate-400" />
+                  </button>
+                </div>
 
-              {/* Divider with gradient */}
-              <div className="mx-4 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                {/* Navigation Links */}
+                <div className="p-4">
+                  <NavLinks variant="mobile" onLinkClick={handleLinkClick} />
+                </div>
 
-              {/* Auth buttons */}
-              <div className="p-4 space-y-3">
-                <Link
-                  href={`${appBase}/auth/signin`}
-                  onClick={handleLinkClick}
-                  className="flex items-center justify-between w-full rounded-xl px-4 py-3.5 text-sm font-medium text-white/90 hover:bg-white/5 transition-colors border border-white/10"
-                >
-                  <span>Login</span>
-                  <ChevronRight className="h-4 w-4 text-white/50" />
-                </Link>
-                <Link
-                  href={`${appBase}/auth/signup?plan=pro`}
-                  onClick={handleLinkClick}
-                  className="flex items-center justify-center w-full rounded-xl px-4 py-3.5 text-sm font-bold text-white bg-gradient-to-r from-primary/90 to-secondary/90 hover:from-primary hover:to-secondary transition-all shadow-[0_0_20px_rgba(0,212,251,0.3)]"
-                >
-                  Start Free Trial
-                </Link>
-              </div>
+                {/* Divider with gradient */}
+                <div className="mx-4 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-              {/* Footer trust indicators */}
-              <div className="px-4 pb-5 pt-2">
-                <div className="flex items-center justify-center gap-6 text-[10px] text-slate-500">
-                  <span className="flex items-center gap-1.5">
-                    <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]" />
-                    14-day trial
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <div className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.5)]" />
-                    No credit card
-                  </span>
+                {/* Auth buttons */}
+                <div className="p-4 space-y-3">
+                  <Link
+                    href={`${appBase}/auth/signin`}
+                    onClick={handleLinkClick}
+                    className="flex items-center justify-between w-full rounded-xl px-4 py-3.5 text-sm font-medium text-white/90 hover:bg-white/5 transition-colors border border-white/10"
+                  >
+                    <span>Login</span>
+                    <ChevronRight className="h-4 w-4 text-white/50" />
+                  </Link>
+                  <Link
+                    href={`${appBase}/auth/signup?plan=pro`}
+                    onClick={handleLinkClick}
+                    className="flex items-center justify-center w-full rounded-xl px-4 py-3.5 text-sm font-bold text-white bg-gradient-to-r from-primary/90 to-secondary/90 hover:from-primary hover:to-secondary transition-all shadow-[0_0_20px_rgba(0,212,251,0.3)]"
+                  >
+                    Start Free Trial
+                  </Link>
+                </div>
+
+                {/* Footer trust indicators */}
+                <div className="px-4 pb-5 pt-2">
+                  <div className="flex items-center justify-center gap-6 text-[10px] text-slate-500">
+                    <span className="flex items-center gap-1.5">
+                      <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]" />
+                      14-day trial
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <div className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.5)]" />
+                      No credit card
+                    </span>
+                  </div>
                 </div>
               </div>
-              
+
               {/* Bottom decorative line */}
               <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-secondary/30 to-transparent" />
             </motion.div>

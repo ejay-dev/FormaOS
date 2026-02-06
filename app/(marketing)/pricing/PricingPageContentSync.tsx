@@ -248,7 +248,7 @@ const pricingTiers = [
       'Core workflow modeling (Model → Execute → Verify → Prove)',
       'Task management & recurring compliance activities',
       'Evidence storage with version history',
-      'Automated compliance scanning (SOC 2, ISO 27001, GDPR)',
+      'Framework mapping for SOC 2, ISO 27001, and GDPR',
       'Document versioning & change tracking',
       'Basic analytics & reporting',
       'Role-based access control (RBAC)',
@@ -1088,7 +1088,7 @@ function FinalCTA() {
                   </div>
 
                   <div className="text-xs text-gray-500">
-                    Australian-hosted • GDPR compliant • Enterprise-ready
+                    Region-aware hosting • GDPR-ready workflows • Enterprise-ready
                   </div>
                 </motion.div>
               </div>

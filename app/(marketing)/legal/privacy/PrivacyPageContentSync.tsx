@@ -443,7 +443,7 @@ function PrivacyContent() {
           <p>We implement enterprise-grade protections including:</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
             {[
-              { icon: Lock, label: 'AES-256 encryption at rest' },
+              { icon: Lock, label: 'Encryption at rest' },
               { icon: Shield, label: 'Encrypted transmission (TLS)' },
               { icon: Users, label: 'Role-based access control' },
               { icon: Server, label: 'Immutable audit logs' },

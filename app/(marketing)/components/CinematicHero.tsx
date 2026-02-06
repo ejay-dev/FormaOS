@@ -207,7 +207,7 @@ export function CinematicHero() {
                 </span>
                 <span className="flex items-center gap-2">
                   <div className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
-                  Australian-hosted
+                  Region-aware hosting
                 </span>
               </motion.div>
             </motion.div>

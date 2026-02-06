@@ -59,7 +59,7 @@ const securityLayers = {
   ],
   "Data Protection": [
     "Evidence encryption at rest",
-    "Encrypted transport (TLS 1.3)",
+    "Encrypted transport",
     "Immutable audit log storage",
     "Backup & disaster recovery"
   ],
@@ -70,7 +70,7 @@ const securityLayers = {
     "Export bundle signing"
   ],
   "Infrastructure": [
-    "SOC 2 Type II hosting",
+    "Framework-aligned hosting",
     "Private storage buckets",
     "Network isolation",
     "DDoS protection"

@@ -47,9 +47,9 @@ const footerLinks = {
 };
 
 const trustBadges = [
-  { icon: Shield, label: 'SOC 2 Ready', color: 'primary' },
-  { icon: Lock, label: 'AES-256 Encryption', color: 'secondary' },
-  { icon: FileCheck, label: 'Immutable Audit Logs', color: 'accent' },
+  { icon: Shield, label: 'Security-first controls', color: 'primary' },
+  { icon: Lock, label: 'Encrypted data flows', color: 'secondary' },
+  { icon: FileCheck, label: 'Audit-ready logs', color: 'accent' },
 ];
 
 function AnimatedFooterLink({

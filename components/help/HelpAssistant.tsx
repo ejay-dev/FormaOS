@@ -144,7 +144,7 @@ export function HelpAssistant() {
           aria-label="Close help assistant"
         />
       ) : null}
-      <div className="fixed bottom-4 right-4 z-[80]">
+      <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+1rem)] right-4 z-[80]">
         <button
           onClick={toggle}
           className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-gradient-to-br from-cyan-400/90 to-blue-500/90 text-slate-900 shadow-lg shadow-cyan-500/30 transition-transform hover:-translate-y-0.5"
@@ -155,7 +155,7 @@ export function HelpAssistant() {
       </div>
 
       {isOpen ? (
-        <div className="fixed bottom-0 left-0 right-0 z-[90] max-h-[85vh] overflow-hidden rounded-t-3xl border-t border-white/10 bg-[hsl(var(--card))] shadow-2xl sm:bottom-6 sm:left-auto sm:right-6 sm:max-h-[80vh] sm:w-[380px] sm:rounded-2xl sm:border sm:border-white/10">
+        <div className="fixed bottom-0 left-0 right-0 z-[90] max-h-[85vh] overflow-hidden rounded-t-3xl border-t border-white/10 bg-[hsl(var(--card))] shadow-2xl sm:bottom-6 sm:left-auto sm:right-6 sm:max-h-[80vh] sm:w-[380px] sm:rounded-2xl sm:border sm:border-white/10 pb-[env(safe-area-inset-bottom)]">
           <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
             <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-cyan-300" />

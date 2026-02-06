@@ -745,8 +745,8 @@ function WhatMakesDifferent() {
 
 function EnterpriseSecurity() {
   const securityFeatures = [
-    { label: 'SOC 2 Type II Compliant', icon: Shield },
-    { label: 'End-to-End Encryption (AES-256)', icon: Lock },
+    { label: 'SOC 2-aligned controls', icon: Shield },
+    { label: 'End-to-end encryption', icon: Lock },
     { label: 'Google OAuth + Enterprise SAML', icon: Users },
     { label: 'MFA with TOTP Authenticator', icon: UserCheck },
     { label: 'Immutable Audit Logs', icon: Database },
