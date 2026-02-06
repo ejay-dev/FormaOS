@@ -18,6 +18,19 @@ export type MasterControl = {
   }>
 }
 
+type FrameworkControlRow = {
+  id: string
+  control_code: string
+  title: string
+  summary_description: string | null
+  default_risk_level: string | null
+  framework_id: string
+  frameworks: {
+    slug: string
+    name: string
+  } | null
+}
+
 /**
  * Build master control mappings from existing framework controls
  * Safe and idempotent - can be run multiple times
@@ -50,8 +63,8 @@ export async function buildMasterControlMappings(): Promise<{
     let created = 0
 
     // Group controls by normalized title to find duplicates
-    const titleGroups = new Map<string, any[]>()
-    controls.forEach((control) => {
+    const titleGroups = new Map<string, FrameworkControlRow[]>()
+    controls.forEach((control: FrameworkControlRow) => {
       const normalizedTitle = control.title.toLowerCase().trim()
       if (!titleGroups.has(normalizedTitle)) {
         titleGroups.set(normalizedTitle, [])
