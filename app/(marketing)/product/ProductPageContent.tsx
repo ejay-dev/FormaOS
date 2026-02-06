@@ -751,8 +751,8 @@ function EnterpriseSecurity() {
     { label: 'MFA with TOTP Authenticator', icon: UserCheck },
     { label: 'Immutable Audit Logs', icon: Database },
     { label: 'Role-Based Access Control (6 Roles)', icon: UserCheck },
-    { label: 'Automated Compliance Scanning', icon: Shield },
-    { label: 'Security Event Correlation', icon: Lock },
+    { label: 'Automated compliance score engine', icon: Shield },
+    { label: 'Correlation ID tracking', icon: Lock },
     { label: 'Session Rotation & Rate Limiting', icon: Database },
   ];
 
@@ -827,22 +827,48 @@ function EnterpriseSecurity() {
 // ============================================
 
 function ComplianceIntelligence() {
-  const metrics = [
-    { label: 'Active control status', icon: Activity },
-    { label: 'Evidence completeness', icon: FileCheck },
-    { label: 'Risk indicators', icon: AlertTriangle },
-    { label: 'Audit readiness scores', icon: BarChart3 },
+  const intelligenceFeatures = [
+    {
+      label: 'Compliance Score Trends',
+      description: '14-day historical tracking with sparkline visualization',
+      icon: Activity
+    },
+    {
+      label: 'Framework Health Monitoring',
+      description: 'Per-framework readiness with gap detection',
+      icon: FileCheck
+    },
+    {
+      label: 'Regression Alerts',
+      description: 'Automatic detection of >10% score drops',
+      icon: AlertTriangle
+    },
+    {
+      label: 'Automation Analytics',
+      description: 'Task velocity, completion rates, and trigger history',
+      icon: BarChart3
+    },
+    {
+      label: 'Cross-Framework Insights',
+      description: 'Deduplicated control library shows shared requirements',
+      icon: GitBranch
+    },
+    {
+      label: 'Evidence Pack Exports',
+      description: 'One-click auditor-ready ZIP bundles with context',
+      icon: Database
+    },
   ];
 
   return (
     <section className="relative py-32 overflow-hidden">
-      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -852,7 +878,7 @@ function ComplianceIntelligence() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium mb-6"
           >
             <Activity className="w-4 h-4" />
-            Real-Time Compliance Intelligence
+            Compliance Intelligence Dashboard
           </motion.div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white">
@@ -863,27 +889,27 @@ function ComplianceIntelligence() {
             </span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            Leadership no longer relies on spreadsheets or manual reporting.
-            Compliance is observable in real time.
+            Built-in analytics engine provides real-time compliance insights, historical trends, and predictive regression alerts—no manual reporting required.
           </p>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {metrics.map((metric, index) => {
-            const Icon = metric.icon;
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {intelligenceFeatures.map((feature, index) => {
+            const Icon = feature.icon;
             return (
               <motion.div
-                key={metric.label}
+                key={feature.label}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 text-center hover:border-green-500/30 transition-all"
+                className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-green-500/30 transition-all"
               >
-                <div className="w-12 h-12 mx-auto rounded-xl bg-green-500/10 flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-4">
                   <Icon className="w-6 h-6 text-green-400" />
                 </div>
-                <p className="text-sm text-gray-300">{metric.label}</p>
+                <h3 className="text-base font-semibold text-white mb-2">{feature.label}</h3>
+                <p className="text-sm text-gray-400">{feature.description}</p>
               </motion.div>
             );
           })}

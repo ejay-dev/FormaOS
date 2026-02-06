@@ -242,7 +242,7 @@ const pricingTiers = [
     features: [
       'Advanced security controls (SSO, MFA, enterprise access policies)',
       'Organization-wide governance and cross-unit visibility',
-      'AI-assisted risk analysis & compliance scanning',
+      'Automated risk scoring & regression detection',
       'Custom reporting & regulatory export frameworks',
       'API access & system integrations',
       'Dedicated onboarding & implementation support',

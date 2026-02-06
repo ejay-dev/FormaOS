@@ -312,7 +312,7 @@ const pricingTiers = [
       'SSO via Google OAuth + Enterprise SAML (Okta, Azure AD)',
       'MFA enforcement with TOTP authenticator',
       'Organization-wide governance and cross-unit visibility',
-      'AI-assisted risk analysis & compliance scanning',
+      'Automated risk scoring & regression detection',
       'Custom reporting & regulatory export frameworks',
       'API access & webhook integrations',
       'Security event correlation & session management',
