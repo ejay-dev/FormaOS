@@ -16,6 +16,7 @@ import {
 import { DashboardSectionCard } from '@/components/dashboard/unified-dashboard-layout';
 import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedChecklist';
 import { SystemStatusPanel } from '@/components/trust/SystemStatusPanel';
+import { ComplianceIntelligenceSummary } from '@/components/intelligence/ComplianceIntelligenceSummary';
 
 /**
  * =========================================================
@@ -438,6 +439,8 @@ export function EmployerDashboard({
   return (
     <div className="space-y-8">
       <GettingStartedChecklist />
+
+      <ComplianceIntelligenceSummary />
 
       <div data-tour="dashboard-overview">
         <h2 className="text-xl font-bold mb-4">Organization Health</h2>
