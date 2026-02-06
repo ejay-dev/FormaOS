@@ -83,7 +83,7 @@ function SignUpContent() {
       const base = (
         process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin
       ).replace(/\/$/, '');
-      const emailRedirectTo = `${base}/auth/signin`;
+      const emailRedirectTo = `${base}/app/onboarding`;
       const options = plan
         ? { emailRedirectTo, data: { selected_plan: plan.key } }
         : { emailRedirectTo };
@@ -102,22 +102,19 @@ function SignUpContent() {
       }
 
       if (data?.session) {
+        // Session created immediately (auto-confirm enabled)
         window.location.href = emailRedirectTo;
         return;
       }
 
       if (data?.user) {
-        setSuccessMessage(
-          'Please check your email to confirm your account before signing in.',
-        );
-        setIsLoading(false);
+        // Email confirmation required - redirect to check-email page
+        window.location.href = `${base}/auth/check-email`;
         return;
       }
 
-      setSuccessMessage(
-        'Please check your email to confirm your account before signing in.',
-      );
-      setIsLoading(false);
+      // Fallback
+      window.location.href = `${base}/auth/check-email`;
     } catch (err) {
       setErrorMessage('An unexpected error occurred. Please try again.');
       setIsLoading(false);
