@@ -19,10 +19,16 @@ COMMENT ON COLUMN organizations.first_team_invite_at IS 'Timestamp when the orga
 CREATE OR REPLACE FUNCTION update_first_evidence_upload()
 RETURNS TRIGGER AS $$
 BEGIN
-  UPDATE organizations
-  SET first_evidence_upload_at = NOW()
-  WHERE id = NEW.organization_id
-    AND first_evidence_upload_at IS NULL;
+  -- Fail-safe: log metrics but never block user actions
+  BEGIN
+    UPDATE organizations
+    SET first_evidence_upload_at = NOW()
+    WHERE id = NEW.organization_id
+      AND first_evidence_upload_at IS NULL;
+  EXCEPTION WHEN OTHERS THEN
+    -- Silent fail: metrics are nice-to-have, not critical
+    RAISE WARNING 'Failed to record first evidence upload metric: %', SQLERRM;
+  END;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -31,12 +37,17 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE OR REPLACE FUNCTION update_first_task_completed()
 RETURNS TRIGGER AS $$
 BEGIN
-  IF NEW.status = 'completed' AND (OLD.status IS NULL OR OLD.status != 'completed') THEN
-    UPDATE organizations
-    SET first_task_completed_at = NOW()
-    WHERE id = NEW.organization_id
-      AND first_task_completed_at IS NULL;
-  END IF;
+  -- Fail-safe: log metrics but never block user actions
+  BEGIN
+    IF NEW.status = 'completed' AND (OLD.status IS NULL OR OLD.status != 'completed') THEN
+      UPDATE organizations
+      SET first_task_completed_at = NOW()
+      WHERE id = NEW.organization_id
+        AND first_task_completed_at IS NULL;
+    END IF;
+  EXCEPTION WHEN OTHERS THEN
+    RAISE WARNING 'Failed to record first task completion metric: %', SQLERRM;
+  END;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -45,12 +56,17 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE OR REPLACE FUNCTION update_first_report_generated()
 RETURNS TRIGGER AS $$
 BEGIN
-  IF NEW.status = 'completed' AND (OLD.status IS NULL OR OLD.status != 'completed') THEN
-    UPDATE organizations
-    SET first_report_generated_at = NOW()
-    WHERE id = NEW.organization_id
-      AND first_report_generated_at IS NULL;
-  END IF;
+  -- Fail-safe: log metrics but never block user actions
+  BEGIN
+    IF NEW.status = 'completed' AND (OLD.status IS NULL OR OLD.status != 'completed') THEN
+      UPDATE organizations
+      SET first_report_generated_at = NOW()
+      WHERE id = NEW.organization_id
+        AND first_report_generated_at IS NULL;
+    END IF;
+  EXCEPTION WHEN OTHERS THEN
+    RAISE WARNING 'Failed to record first report generation metric: %', SQLERRM;
+  END;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -61,16 +77,21 @@ RETURNS TRIGGER AS $$
 DECLARE
   org_id UUID;
 BEGIN
-  SELECT organization_id INTO org_id
-  FROM org_members
-  WHERE user_id = (SELECT invited_by FROM team_invitations WHERE id = NEW.id);
+  -- Fail-safe: log metrics but never block user actions
+  BEGIN
+    SELECT organization_id INTO org_id
+    FROM org_members
+    WHERE user_id = (SELECT invited_by FROM team_invitations WHERE id = NEW.id);
 
-  IF org_id IS NOT NULL THEN
-    UPDATE organizations
-    SET first_team_invite_at = NOW()
-    WHERE id = org_id
-      AND first_team_invite_at IS NULL;
-  END IF;
+    IF org_id IS NOT NULL THEN
+      UPDATE organizations
+      SET first_team_invite_at = NOW()
+      WHERE id = org_id
+        AND first_team_invite_at IS NULL;
+    END IF;
+  EXCEPTION WHEN OTHERS THEN
+    RAISE WARNING 'Failed to record first team invite metric: %', SQLERRM;
+  END;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

@@ -88,7 +88,7 @@ export function SystemStatusPanel() {
         lastScanTime,
         subscriptionStatus,
         subscriptionDaysRemaining: daysRemaining,
-        uptime: '99.9%', // Static for now - would come from monitoring service
+        uptime: 'Monitored', // Changed from false claim to generic monitoring indicator
       });
     } catch (error) {
       console.error('Error fetching system status:', error);
@@ -188,11 +188,11 @@ export function SystemStatusPanel() {
           <p className="text-sm font-semibold text-white">{formatLastScan()}</p>
         </div>
 
-        {/* System Uptime */}
+        {/* System Status */}
         <div className="rounded-xl border border-white/10 bg-white/5 p-4">
           <div className="mb-2 flex items-center gap-2">
             <Activity className="h-4 w-4 text-emerald-400" />
-            <span className="text-xs font-medium text-gray-400">Uptime</span>
+            <span className="text-xs font-medium text-gray-400">Status</span>
           </div>
           <p className="text-sm font-semibold text-white">{status.uptime}</p>
         </div>
@@ -215,15 +215,15 @@ export function SystemStatusPanel() {
         </div>
         <div className="flex items-center gap-2 text-xs text-gray-400">
           <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-          <span>GDPR Compliant</span>
+          <span>GDPR-aligned</span>
         </div>
         <div className="flex items-center gap-2 text-xs text-gray-400">
           <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-          <span>ISO 27001 Ready</span>
+          <span>ISO 27001-aligned</span>
         </div>
         <div className="flex items-center gap-2 text-xs text-gray-400">
           <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-          <span>SOC 2 Type II</span>
+          <span>Enterprise Security</span>
         </div>
       </div>
     </div>
