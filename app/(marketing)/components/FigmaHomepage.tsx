@@ -1,9 +1,14 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
+import {
+  motion,
+  useScroll,
+  useTransform,
+  AnimatePresence,
+} from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useRef, useEffect, useMemo, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
   ArrowRight,
@@ -32,6 +37,9 @@ import {
   History,
   RotateCcw,
   Sparkles,
+  ChevronDown,
+  AlertCircle,
+  FileText,
 } from 'lucide-react';
 
 // Motion System Imports
@@ -55,7 +63,8 @@ interface Node {
   radius: number;
 }
 
-const seededRandom = (seed: number) => {
+// Legacy seeded random function (kept for reference)
+const _seededRandom = (seed: number) => {
   let t = seed + 0x6d2b79f5;
   t = Math.imul(t ^ (t >>> 15), t | 1);
   t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
@@ -791,8 +800,8 @@ function StepVisualization({ step }: { step: string }) {
   );
 }
 
-// Industry-specific micro-visuals
-function IndustryMicroVisual({
+// Industry-specific micro-visuals (legacy - kept for reference)
+function _IndustryMicroVisual({
   type,
   active,
 }: {
@@ -2228,643 +2237,471 @@ function VersionControlHighlight() {
 }
 
 // ============================================
-// SECURITY COMPONENT - Enhanced for Evidence Protection
+// INDUSTRY SOLUTIONS - Built for High-Accountability Industries
 // ============================================
 
-const industries = [
+interface IndustrySolution {
+  icon: LucideIcon;
+  title: string;
+  subtitle: string;
+  color: string;
+  accentColor: string;
+  problemStatement: string;
+  solutionMapping: {
+    title: string;
+    features: string[];
+  };
+  capabilities: {
+    icon: LucideIcon;
+    title: string;
+    description: string;
+  }[];
+  cta: {
+    text: string;
+    href: string;
+  };
+}
+
+const industrySolutions: IndustrySolution[] = [
   {
     icon: Heart,
     title: 'Healthcare',
-    description:
-      'Clinical workflows, patient safety, and regulatory compliance.',
-    features: [
-      'HIPAA Compliance',
-      'Clinical Audit Trails',
-      'Patient Safety Monitoring',
-    ],
+    subtitle: 'HIPAA, RACGP, AHPRA Compliance',
     color: 'from-rose-400 to-pink-600',
-    stats: { label: 'Reduction in Audit Time', value: '73%' },
+    accentColor: 'rose',
+    problemStatement:
+      'Healthcare providers face mounting pressure from patient safety requirements, clinical governance obligations, and audit cycles that demand instant evidence retrieval. One compliance gap can mean regulatory sanctions, accreditation loss, or worse: patient harm.',
+    solutionMapping: {
+      title: 'FormaOS Healthcare Module',
+      features: [
+        'Patient records with automated retention and access controls',
+        'Clinical incident reporting with severity-based routing',
+        'Staff credential tracking with expiry alerts',
+        'Audit-ready evidence bundles generated in seconds',
+      ],
+    },
+    capabilities: [
+      {
+        icon: Shield,
+        title: 'Clinical Governance',
+        description:
+          'Full audit trails for every patient interaction, policy acknowledgment, and clinical decision',
+      },
+      {
+        icon: FileText,
+        title: 'Incident Management',
+        description:
+          'Category-based incident capture, investigation workflows, and regulatory notification tracking',
+      },
+      {
+        icon: CheckCircle,
+        title: 'Accreditation Ready',
+        description:
+          'Pre-built evidence packs for RACGP, AHPRA, and NSQHS standards',
+      },
+    ],
+    cta: {
+      text: 'Explore Healthcare Solution',
+      href: '/use-cases/healthcare',
+    },
   },
   {
     icon: Users,
-    title: 'NDIS',
-    description:
-      'Evidence-based care, participant safety, and quality assurance.',
-    features: [
-      'NDIS Quality Standards',
-      'Incident Management',
-      'Participant Outcomes',
-    ],
+    title: 'NDIS Providers',
+    subtitle: 'NDIS Practice Standards, Quality & Safeguards',
     color: 'from-cyan-400 to-blue-600',
-    stats: { label: 'Compliance Score', value: '98%' },
+    accentColor: 'cyan',
+    problemStatement:
+      'NDIS providers operate under intense scrutiny from the Quality and Safeguards Commission. Participant safety incidents, worker screening lapses, and missing evidence during audits can result in registration revocation and service shutdown.',
+    solutionMapping: {
+      title: 'FormaOS NDIS Module',
+      features: [
+        'Participant management with support plans and risk profiles',
+        'Reportable incident workflows aligned with Commission requirements',
+        'Worker screening and credential verification',
+        'Continuous self-assessment against NDIS Practice Standards',
+      ],
+    },
+    capabilities: [
+      {
+        icon: Shield,
+        title: 'Safeguarding System',
+        description:
+          'Behavior support plans, restrictive practice registers, and participant consent tracking',
+      },
+      {
+        icon: FileText,
+        title: 'Incident Reporting',
+        description:
+          '24-hour, 5-day, and final report workflows with Commission notification tracking',
+      },
+      {
+        icon: CheckCircle,
+        title: 'Audit Evidence',
+        description:
+          'One-click evidence bundles mapped to all NDIS Practice Standard modules',
+      },
+    ],
+    cta: {
+      text: 'Explore NDIS Solution',
+      href: '/use-cases/ndis',
+    },
   },
   {
     icon: TrendingUp,
-    title: 'Finance',
-    description:
-      'Transaction verification, fraud detection, and regulatory reporting.',
-    features: [
-      'SOC 2 Ready',
-      'Transaction Integrity',
-      'Real-time Fraud Detection',
+    title: 'Financial Services',
+    subtitle: 'SOC 2, ISO 27001, PCI DSS',
+    color: 'from-emerald-400 to-green-600',
+    accentColor: 'emerald',
+    problemStatement:
+      'Financial institutions face relentless compliance demands from multiple frameworks simultaneously. Manual evidence collection for SOC 2 audits consumes hundreds of hours annually, while security incidents require immediate documentation and response.',
+    solutionMapping: {
+      title: 'FormaOS Financial Module',
+      features: [
+        'Multi-framework compliance mapping (SOC 2, ISO, PCI)',
+        'Automated control evidence collection and testing',
+        'Vendor risk assessment and due diligence tracking',
+        'Security incident response documentation',
+      ],
+    },
+    capabilities: [
+      {
+        icon: Shield,
+        title: 'Control Monitoring',
+        description:
+          'Real-time control status dashboards with automated gap detection',
+      },
+      {
+        icon: FileText,
+        title: 'Evidence Automation',
+        description:
+          'Scheduled evidence collection, version control, and auditor access portals',
+      },
+      {
+        icon: CheckCircle,
+        title: 'Audit Acceleration',
+        description: 'Pre-mapped evidence to SOC 2 Trust Services Criteria',
+      },
     ],
-    color: 'from-green-400 to-emerald-600',
-    stats: { label: 'Faster Reporting', value: '5x' },
+    cta: {
+      text: 'Explore Financial Solution',
+      href: '/use-cases/financial-services',
+    },
   },
   {
     icon: GraduationCap,
-    title: 'Education',
-    description: 'Student outcomes, accreditation, and program effectiveness.',
-    features: [
-      'Learning Analytics',
-      'Accreditation Evidence',
-      'Outcome Tracking',
-    ],
+    title: 'Education & Accreditation',
+    subtitle: 'TEQSA, ASQA, RTO Standards',
     color: 'from-purple-400 to-violet-600',
-    stats: { label: 'Accreditation Success', value: '100%' },
+    accentColor: 'purple',
+    problemStatement:
+      'Education providers preparing for TEQSA registration or ASQA audits spend months gathering evidence across departments. Missing documentation, outdated policies, or incomplete staff records can delay registration or trigger compliance conditions.',
+    solutionMapping: {
+      title: 'FormaOS Education Module',
+      features: [
+        'Academic governance frameworks with approval workflows',
+        'Course and unit compliance mapping',
+        'Trainer and assessor credential management',
+        'Student complaint and appeal tracking',
+      ],
+    },
+    capabilities: [
+      {
+        icon: Shield,
+        title: 'Academic Governance',
+        description:
+          'Policy lifecycle management with academic board approvals',
+      },
+      {
+        icon: FileText,
+        title: 'RTO Compliance',
+        description:
+          'Training package mapping, validation records, and learner file audits',
+      },
+      {
+        icon: CheckCircle,
+        title: 'Registration Ready',
+        description:
+          'Evidence organized by TEQSA/ASQA standard for instant retrieval',
+      },
+    ],
+    cta: {
+      text: 'Explore Education Solution',
+      href: '/use-cases/education',
+    },
   },
   {
     icon: Building2,
-    title: 'Government',
-    description: 'Public accountability, transparency, and service delivery.',
-    features: [
-      'Freedom of Information',
-      'Service Level Tracking',
-      'Public Reporting',
-    ],
+    title: 'Government & Public Sector',
+    subtitle: 'FOI, ISM, PSPF Compliance',
     color: 'from-amber-400 to-orange-600',
-    stats: { label: 'Transparency Score', value: 'A+' },
+    accentColor: 'amber',
+    problemStatement:
+      'Government agencies face unique accountability requirements: Freedom of Information requests, ministerial briefings, and public sector performance reporting. Every decision must be documented, defensible, and retrievable on demand.',
+    solutionMapping: {
+      title: 'FormaOS Government Module',
+      features: [
+        'Decision registers with approval chains and rationale capture',
+        'FOI request management and document tracking',
+        'Service delivery performance dashboards',
+        'Cross-agency collaboration with access controls',
+      ],
+    },
+    capabilities: [
+      {
+        icon: Shield,
+        title: 'Accountability',
+        description:
+          'Complete decision audit trails with ministerial-ready documentation',
+      },
+      {
+        icon: FileText,
+        title: 'Information Management',
+        description:
+          'Records classification, retention scheduling, and disposal tracking',
+      },
+      {
+        icon: CheckCircle,
+        title: 'Performance Reporting',
+        description:
+          'Automated KPI dashboards and public accountability statements',
+      },
+    ],
+    cta: {
+      text: 'Explore Government Solution',
+      href: '/use-cases/government',
+    },
   },
 ];
 
 function Industries() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  // scrollYProgress available for future scroll animations
-  useScroll({
-    target: containerRef,
-    offset: ['start end', 'end start'],
-  });
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
 
-  // Detect mobile for performance optimization
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  // Mouse tracking for parallax effects - disabled on mobile
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (isMobile || !containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
-    const y = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
-    setMousePosition({ x, y });
+  const toggleExpand = (index: number) => {
+    setExpandedIndex(expandedIndex === index ? null : index);
   };
 
-  // Animated background particles - reduced on mobile
-  const backgroundParticles = useMemo(() => {
-    const count = isMobile ? 6 : 20;
-    const seedOffset = isMobile ? 1000 : 0;
-    return Array.from({ length: count }, (_, i) => {
-      const seed = seedOffset + i * 7;
-      return {
-        id: i,
-        x: seededRandom(seed + 1) * 100,
-        y: seededRandom(seed + 2) * 100,
-        delay: seededRandom(seed + 3) * 2,
-        duration: 3 + seededRandom(seed + 4) * 2,
-      };
-    });
-  }, [isMobile]);
-
   return (
-    <section
-      ref={containerRef}
-      className="relative py-16 sm:py-24 lg:py-32 bg-[#0a0f1c] overflow-hidden"
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => !isMobile && setIsHovering(true)}
-      onMouseLeave={() => {
-        setIsHovering(false);
-        setMousePosition({ x: 0, y: 0 });
-      }}
-    >
-      {/* Dynamic Background Elements - simplified on mobile */}
+    <section className="relative py-20 sm:py-28 lg:py-36 bg-[#0a0f1c] overflow-hidden">
+      {/* Subtle gradient background - no particles */}
       <div className="absolute inset-0">
-        {/* Animated gradient orbs - static on mobile for performance */}
-        <motion.div
-          className="absolute top-1/4 left-1/4 w-[250px] sm:w-[400px] lg:w-[500px] h-[250px] sm:h-[400px] lg:h-[500px] bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-2xl sm:blur-3xl will-change-transform"
-          animate={
-            isMobile
-              ? {}
-              : {
-                  x: mousePosition.x * 30,
-                  y: mousePosition.y * 20,
-                  scale: isHovering ? 1.2 : 1,
-                }
-          }
-          transition={{ type: 'spring', stiffness: 50, damping: 30 }}
-          style={{ transform: 'translateZ(0)' }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 right-1/4 w-[200px] sm:w-[300px] lg:w-[400px] h-[200px] sm:h-[300px] lg:h-[400px] bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-2xl sm:blur-3xl will-change-transform"
-          animate={
-            isMobile
-              ? {}
-              : {
-                  x: mousePosition.x * -25,
-                  y: mousePosition.y * -15,
-                  scale: isHovering ? 1.1 : 1,
-                }
-          }
-          transition={{ type: 'spring', stiffness: 40, damping: 35 }}
-          style={{ transform: 'translateZ(0)' }}
-        />
-
-        {/* Floating particles - simplified on mobile */}
-        {!isMobile &&
-          backgroundParticles.map((particle) => (
-            <motion.div
-              key={particle.id}
-              className="absolute w-1 h-1 bg-cyan-400/20 rounded-full"
-              style={{
-                left: `${particle.x}%`,
-                top: `${particle.y}%`,
-              }}
-              animate={{
-                x: [0, mousePosition.x * 10, 0],
-                y: [0, mousePosition.y * 8, 0],
-                opacity: [0.2, 0.6, 0.2],
-                scale: [1, 1.5, 1],
-              }}
-              transition={{
-                duration: particle.duration,
-                delay: particle.delay,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            />
-          ))}
-
-        {/* Data connection lines */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none">
-          <defs>
-            <linearGradient
-              id="connectionGradient"
-              x1="0%"
-              y1="0%"
-              x2="100%"
-              y2="100%"
-            >
-              <stop offset="0%" stopColor="rgba(6, 182, 212, 0.1)" />
-              <stop offset="50%" stopColor="rgba(59, 130, 246, 0.3)" />
-              <stop offset="100%" stopColor="rgba(168, 85, 247, 0.1)" />
-            </linearGradient>
-          </defs>
-          {Array.from({ length: 6 }).map((_, i) => (
-            <motion.line
-              key={i}
-              x1={`${10 + i * 15}%`}
-              y1="20%"
-              x2={`${90 - i * 10}%`}
-              y2="80%"
-              stroke="url(#connectionGradient)"
-              strokeWidth="1"
-              strokeDasharray="5,5"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{
-                pathLength: isHovering ? 1 : 0.3,
-                opacity: isHovering ? 0.6 : 0.2,
-                strokeDashoffset: [0, -10],
-              }}
-              transition={{
-                pathLength: { duration: 1, ease: 'easeInOut' },
-                opacity: { duration: 0.5 },
-                strokeDashoffset: {
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: 'linear',
-                },
-              }}
-            />
-          ))}
-        </svg>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-950/5 to-transparent" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-r from-cyan-500/5 via-blue-500/5 to-purple-500/5 rounded-full blur-3xl" />
       </div>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
+        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-16 lg:mb-20"
         >
-          {/* Label badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs sm:text-sm font-medium mb-4 sm:mb-6"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-medium mb-6"
           >
-            <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
             Industry Solutions
           </motion.div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
-            Trusted Across
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+            Built for{' '}
             <span className="bg-gradient-to-r from-cyan-400 via-emerald-400 to-blue-500 bg-clip-text text-transparent">
-              {' '}
-              Industries
+              High-Accountability
             </span>
+            <br />
+            Industries
           </h2>
-          <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed px-4 sm:px-0">
-            Purpose-built solutions for regulated sectors that demand the
-            highest standards of evidence and compliance.
+          <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            When compliance failure means regulatory action, accreditation loss,
+            or operational shutdown, FormaOS delivers the evidence
+            infrastructure your industry demands.
           </p>
         </motion.div>
 
-        {/* Mobile: 2-column grid, Desktop: 5-column grid */}
-        <div className="relative z-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6 mb-8 sm:mb-12">
-          {industries.map((industry, index) => {
-            const Icon = industry.icon;
-            const isActive = activeIndex === index;
-            const cardOffset = isMobile
-              ? { x: 0, y: 0 }
-              : {
-                  x: mousePosition.x * (5 - Math.abs(index - 2)) * 2,
-                  y: mousePosition.y * (5 - Math.abs(index - 2)) * 1.5,
-                };
+        {/* Industry Panels */}
+        <div className="space-y-4">
+          {industrySolutions.map((solution, index) => {
+            const Icon = solution.icon;
+            const isExpanded = expandedIndex === index;
 
             return (
               <motion.div
-                key={industry.title}
-                className="relative group perspective-1000"
-                initial={{ opacity: 0, y: 20, rotateX: 15 }}
-                whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+                key={solution.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{
-                  delay: index * 0.15,
-                  duration: 0.8,
-                  type: 'spring',
-                  stiffness: 100,
-                  damping: 25,
-                }}
-                animate={{
-                  x: cardOffset.x,
-                  y: cardOffset.y,
-                }}
-                style={{
-                  transformStyle: isMobile ? 'flat' : 'preserve-3d',
-                }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="group"
               >
+                {/* Collapsed Header / Expandable Button */}
                 <motion.button
-                  onClick={() => setActiveIndex(index)}
-                  whileHover={
-                    isMobile
-                      ? { scale: 1.02 }
-                      : {
-                          scale: 1.08,
-                          y: -12,
-                          rotateY: mousePosition.x * 8,
-                          rotateX: mousePosition.y * -5,
-                          z: 50,
-                        }
-                  }
-                  whileTap={{ scale: 0.98 }}
-                  className={`relative w-full p-4 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl border transition-all duration-300 sm:duration-500 text-left overflow-hidden transform-gpu will-change-transform ${
-                    isActive
-                      ? 'bg-gradient-to-br from-gray-900/90 to-gray-950/90 border-cyan-500/60 shadow-lg sm:shadow-2xl shadow-cyan-500/25'
-                      : 'bg-gradient-to-br from-gray-900/60 to-gray-950/60 border-white/10 sm:border-white/5 sm:hover:border-cyan-500/30'
+                  onClick={() => toggleExpand(index)}
+                  className={`w-full p-6 lg:p-8 rounded-2xl border text-left transition-all duration-300 ${
+                    isExpanded
+                      ? 'bg-gradient-to-br from-gray-900/90 to-gray-950/90 border-cyan-500/40 shadow-lg shadow-cyan-500/10'
+                      : 'bg-gradient-to-br from-gray-900/60 to-gray-950/60 border-white/10 hover:border-cyan-500/30'
                   }`}
                   style={{
-                    backdropFilter: isMobile ? 'none' : 'blur(20px)',
-                    WebkitBackdropFilter: isMobile ? 'none' : 'blur(20px)',
-                    transformStyle: isMobile ? 'flat' : 'preserve-3d',
-                    boxShadow: isActive
-                      ? `0 15px 30px -8px rgba(6, 182, 212, 0.2)`
-                      : `0 4px 12px -2px rgba(0, 0, 0, 0.2)`,
+                    backdropFilter: 'blur(20px)',
+                    WebkitBackdropFilter: 'blur(20px)',
                   }}
                 >
-                  {/* Enhanced glow effects - disabled on mobile */}
-                  {!isMobile && (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4 lg:gap-6">
+                      <div
+                        className={`p-3 lg:p-4 rounded-xl bg-gradient-to-br ${solution.color} shadow-lg transition-transform duration-300 ${
+                          isExpanded ? 'scale-110' : 'group-hover:scale-105'
+                        }`}
+                      >
+                        <Icon className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl lg:text-2xl font-bold text-white mb-1">
+                          {solution.title}
+                        </h3>
+                        <p className="text-sm lg:text-base text-gray-400">
+                          {solution.subtitle}
+                        </p>
+                      </div>
+                    </div>
                     <motion.div
-                      className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                      style={{
-                        background: `conic-gradient(from 0deg, transparent, rgba(6, 182, 212, 0.1), transparent, rgba(59, 130, 246, 0.1), transparent)`,
-                        transform: 'translateZ(-1px)',
-                      }}
-                      animate={{
-                        rotate: [0, 360],
-                      }}
-                      transition={{
-                        duration: 8,
-                        repeat: Infinity,
-                        ease: 'linear',
-                      }}
-                    />
-                  )}
-
-                  {/* Animated edge lighting */}
-                  <motion.div
-                    className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-60 transition-opacity duration-300"
-                    style={{
-                      background: `linear-gradient(135deg, transparent 40%, rgba(6, 182, 212, 0.1) 50%, transparent 60%)`,
-                      transform: 'translateZ(-0.5px)',
-                    }}
-                    animate={{
-                      backgroundPosition: isHovering
-                        ? ['0% 0%', '100% 100%']
-                        : '0% 0%',
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: isHovering ? Infinity : 0,
-                      ease: 'linear',
-                    }}
-                  />
-
-                  {/* Enhanced micro-visual with depth */}
-                  <motion.div
-                    className="relative"
-                    style={{
-                      transform: 'translateZ(10px)',
-                    }}
-                  >
-                    <IndustryMicroVisual
-                      type={industry.title.toLowerCase().replace(/\s+/g, '')}
-                      active={isActive}
-                    />
-                  </motion.div>
-
-                  <div
-                    className="relative z-20"
-                    style={{ transform: 'translateZ(20px)' }}
-                  >
-                    <motion.div
-                      className={`inline-flex p-2.5 sm:p-3 lg:p-4 rounded-lg sm:rounded-xl bg-gradient-to-br ${industry.color} mb-2 sm:mb-4 transition-all duration-300 sm:duration-500 shadow-md sm:shadow-lg`}
-                      animate={
-                        isMobile
-                          ? { scale: isActive ? 1.05 : 1 }
-                          : {
-                              scale: isActive ? 1.15 : 1,
-                              rotate: isActive ? [0, 8, -8, 0] : 0,
-                              boxShadow: isActive
-                                ? `0 20px 40px -10px rgba(6, 182, 212, 0.4)`
-                                : `0 8px 16px -4px rgba(0, 0, 0, 0.3)`,
-                            }
-                      }
-                      transition={{
-                        scale: { duration: 0.3, ease: 'easeOut' },
-                        rotate: {
-                          duration: 3,
-                          repeat: isActive && !isMobile ? Infinity : 0,
-                          ease: 'easeInOut',
-                        },
-                        boxShadow: { duration: 0.3 },
-                      }}
-                      whileHover={
-                        isMobile
-                          ? {}
-                          : {
-                              scale: 1.2,
-                              rotate: 5,
-                            }
-                      }
+                      animate={{ rotate: isExpanded ? 180 : 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="text-cyan-400"
                     >
-                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-white" />
+                      <ChevronDown className="w-6 h-6" />
                     </motion.div>
-
-                    <motion.h3
-                      className="font-semibold sm:font-bold text-sm sm:text-base lg:text-xl group-hover:text-cyan-300 transition-colors duration-300"
-                      animate={{
-                        color: isActive
-                          ? 'rgb(103, 232, 249)'
-                          : 'rgb(255, 255, 255)',
-                      }}
-                    >
-                      {industry.title}
-                    </motion.h3>
                   </div>
-
-                  {/* Selection indicator */}
-                  <motion.div
-                    className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 origin-left"
-                    initial={{ scaleX: 0 }}
-                    animate={{ scaleX: isActive ? 1 : 0 }}
-                    transition={{ duration: 0.4, ease: 'easeOut' }}
-                    style={{
-                      borderRadius: '0 0 0.75rem 0.75rem',
-                    }}
-                  />
                 </motion.button>
+
+                {/* Expanded Content */}
+                <AnimatePresence>
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.4, ease: 'easeInOut' }}
+                      className="overflow-hidden"
+                    >
+                      <div className="p-6 lg:p-10 mt-2 rounded-2xl bg-gradient-to-br from-gray-900/80 to-gray-950/80 border border-white/5">
+                        {/* Split Layout: Problem + Solution */}
+                        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 mb-10">
+                          {/* Problem Statement */}
+                          <div className="space-y-4">
+                            <div className="flex items-center gap-2 text-rose-400 text-sm font-medium">
+                              <AlertCircle className="w-4 h-4" />
+                              The Challenge
+                            </div>
+                            <p className="text-gray-300 text-base lg:text-lg leading-relaxed">
+                              {solution.problemStatement}
+                            </p>
+                          </div>
+
+                          {/* Solution Mapping */}
+                          <div className="space-y-4">
+                            <div className="flex items-center gap-2 text-emerald-400 text-sm font-medium">
+                              <CheckCircle className="w-4 h-4" />
+                              {solution.solutionMapping.title}
+                            </div>
+                            <ul className="space-y-3">
+                              {solution.solutionMapping.features.map(
+                                (feature, i) => (
+                                  <motion.li
+                                    key={i}
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.2 + i * 0.1 }}
+                                    className="flex items-start gap-3"
+                                  >
+                                    <div
+                                      className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${solution.color} mt-2 flex-shrink-0`}
+                                    />
+                                    <span className="text-gray-200 text-sm lg:text-base">
+                                      {feature}
+                                    </span>
+                                  </motion.li>
+                                ),
+                              )}
+                            </ul>
+                          </div>
+                        </div>
+
+                        {/* Capabilities Grid */}
+                        <div className="grid md:grid-cols-3 gap-4 lg:gap-6 mb-8">
+                          {solution.capabilities.map((capability, i) => {
+                            const CapIcon = capability.icon;
+                            return (
+                              <motion.div
+                                key={capability.title}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 + i * 0.1 }}
+                                className="p-5 lg:p-6 rounded-xl bg-gray-800/40 border border-white/5 hover:border-cyan-500/20 transition-colors"
+                              >
+                                <div
+                                  className={`inline-flex p-2 rounded-lg bg-gradient-to-br ${solution.color} bg-opacity-20 mb-3`}
+                                >
+                                  <CapIcon className="w-5 h-5 text-white" />
+                                </div>
+                                <h4 className="text-white font-semibold mb-2">
+                                  {capability.title}
+                                </h4>
+                                <p className="text-gray-400 text-sm leading-relaxed">
+                                  {capability.description}
+                                </p>
+                              </motion.div>
+                            );
+                          })}
+                        </div>
+
+                        {/* CTA */}
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-white/10">
+                          <p className="text-gray-400 text-sm">
+                            See how FormaOS transforms{' '}
+                            {solution.title.toLowerCase()} compliance
+                          </p>
+                          <Link
+                            href={solution.cta.href}
+                            className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r ${solution.color} text-white font-semibold hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 hover:-translate-y-0.5`}
+                          >
+                            {solution.cta.text}
+                            <ArrowRight className="w-4 h-4" />
+                          </Link>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             );
           })}
         </div>
 
-        {/* Detail panel - simplified on mobile */}
+        {/* Bottom CTA */}
         <motion.div
-          key={activeIndex}
-          initial={{ opacity: 0, y: 20, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -15, scale: 0.98 }}
-          transition={{
-            duration: 0.4,
-            ease: [0.25, 0.46, 0.45, 0.94],
-          }}
-          className="relative p-5 sm:p-8 lg:p-16 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 border border-white/10 shadow-lg sm:shadow-2xl overflow-hidden"
-          style={{
-            backdropFilter: isMobile ? 'none' : 'blur(40px)',
-            WebkitBackdropFilter: isMobile ? 'none' : 'blur(40px)',
-            transform: isMobile
-              ? 'none'
-              : `translateY(${mousePosition.y * -5}px) translateX(${mousePosition.x * -3}px)`,
-          }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="mt-16 text-center"
         >
-          {/* Dynamic content background - simplified on mobile */}
-          {!isMobile && (
-            <motion.div
-              className="absolute inset-0 opacity-20"
-              animate={{
-                background: [
-                  `linear-gradient(135deg, ${industries[activeIndex].color.replace('from-', 'rgba(').replace(' to-', ', 0.1), rgba(').replace('-', ' ').replace('400', '59').replace('600', '130').replace('500', '85')}, 0.05))`,
-                  `linear-gradient(225deg, ${industries[activeIndex].color.replace('from-', 'rgba(').replace(' to-', ', 0.05), rgba(').replace('-', ' ').replace('400', '59').replace('600', '130').replace('500', '85')}, 0.1))`,
-                  `linear-gradient(135deg, ${industries[activeIndex].color.replace('from-', 'rgba(').replace(' to-', ', 0.1), rgba(').replace('-', ' ').replace('400', '59').replace('600', '130').replace('500', '85')}, 0.05))`,
-                ],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            />
-          )}
-
-          {/* Floating data elements - hidden on mobile */}
-          {!isMobile &&
-            Array.from({ length: 8 }).map((_, i) => (
-              <motion.div
-                key={`data-${activeIndex}-${i}`}
-                className={`absolute w-2 h-2 rounded-full bg-gradient-to-r ${industries[activeIndex].color} opacity-20`}
-                style={{
-                  left: `${15 + i * 10}%`,
-                  top: `${20 + (i % 3) * 25}%`,
-                }}
-                animate={{
-                  x: [0, Math.sin(i) * 20, 0],
-                  y: [0, Math.cos(i) * 15, 0],
-                  scale: [1, 1.5, 1],
-                  opacity: [0.1, 0.4, 0.1],
-                }}
-                transition={{
-                  duration: 3 + i * 0.5,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                  delay: i * 0.2,
-                }}
-              />
-            ))}
-
-          <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <motion.h3
-                className="text-4xl font-bold mb-6 bg-gradient-to-r from-white via-gray-100 to-gray-200 bg-clip-text text-transparent"
-                layoutId={`title-${activeIndex}`}
-              >
-                {industries[activeIndex].title}
-              </motion.h3>
-
-              <motion.p
-                className="text-base sm:text-lg lg:text-xl text-gray-300 mb-6 sm:mb-10 leading-relaxed"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.4, delay: 0.2 }}
-              >
-                {industries[activeIndex].description}
-              </motion.p>
-
-              <div className="space-y-3 sm:space-y-5">
-                {industries[activeIndex].features.map((feature, i) => (
-                  <motion.div
-                    key={`${activeIndex}-${feature}`}
-                    initial={{ opacity: 0, x: -15 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{
-                      duration: 0.3,
-                      delay: 0.25 + i * 0.08,
-                    }}
-                    className="flex items-center gap-3 sm:gap-4 group sm:hover:scale-105 transition-transform duration-200"
-                  >
-                    <motion.div
-                      className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-gradient-to-r ${industries[activeIndex].color} shadow-md sm:shadow-lg flex-shrink-0`}
-                      whileHover={isMobile ? {} : { scale: 1.5, rotate: 180 }}
-                      transition={{ type: 'spring', stiffness: 300 }}
-                    />
-                    <span className="text-sm sm:text-base text-gray-200 font-medium group-hover:text-cyan-300 transition-colors">
-                      {feature}
-                    </span>
-                    <motion.div
-                      className="ml-auto w-8 sm:w-12 h-0.5 bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent hidden sm:block"
-                      initial={{ scaleX: 0 }}
-                      animate={{ scaleX: 1 }}
-                      transition={{ duration: 0.6, delay: 0.3 + i * 0.08 }}
-                    />
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="relative text-center p-8 sm:p-12 lg:p-16 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-gray-800/40 to-gray-900/40 border border-white/10 shadow-lg sm:shadow-xl overflow-hidden"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              whileHover={
-                isMobile
-                  ? {}
-                  : {
-                      scale: 1.02,
-                      boxShadow: `0 30px 60px -12px rgba(6, 182, 212, 0.4)`,
-                    }
-              }
-              style={{
-                backdropFilter: isMobile ? 'none' : 'blur(20px)',
-                WebkitBackdropFilter: isMobile ? 'none' : 'blur(20px)',
-                transform: isMobile
-                  ? 'none'
-                  : `perspective(1000px) rotateX(${mousePosition.y * -2}deg) rotateY(${mousePosition.x * 2}deg)`,
-              }}
-            >
-              {/* Stats background effect - simplified on mobile */}
-              {!isMobile && (
-                <motion.div
-                  className={`absolute inset-0 bg-gradient-to-br ${industries[activeIndex].color} opacity-5`}
-                  animate={{
-                    scale: [1, 1.1, 1],
-                    opacity: [0.05, 0.15, 0.05],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                />
-              )}
-
-              <motion.div
-                className={`relative text-4xl sm:text-5xl lg:text-7xl font-bold bg-gradient-to-r ${industries[activeIndex].color} bg-clip-text text-transparent mb-4 sm:mb-6`}
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{
-                  type: 'spring',
-                  stiffness: 100,
-                  damping: 15,
-                  delay: 0.3,
-                }}
-                layoutId={isMobile ? undefined : `stats-${activeIndex}`}
-              >
-                {industries[activeIndex].stats.value}
-              </motion.div>
-
-              <motion.div
-                className="text-gray-300 text-sm sm:text-base lg:text-lg font-medium"
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.4 }}
-              >
-                {industries[activeIndex].stats.label}
-              </motion.div>
-
-              {/* Animated border - hidden on mobile */}
-              {!isMobile && (
-                <motion.div
-                  className="absolute inset-0 rounded-2xl sm:rounded-3xl border border-transparent"
-                  style={{
-                    background: `linear-gradient(45deg, transparent, ${industries[activeIndex].color.replace('from-', '').replace(' to-', ', ')}) border-box`,
-                    mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
-                    maskComposite: 'exclude',
-                  }}
-                  animate={{
-                    opacity: [0.3, 0.7, 0.3],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                />
-              )}
-            </motion.div>
-          </div>
+          <p className="text-gray-400 mb-6">
+            Not sure which solution fits your organization?
+          </p>
+          <Link
+            href="/contact"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 hover:-translate-y-0.5"
+          >
+            Talk to a Compliance Expert
+            <ArrowRight className="w-5 h-5" />
+          </Link>
         </motion.div>
       </div>
     </section>
