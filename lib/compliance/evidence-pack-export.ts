@@ -85,6 +85,7 @@ export async function processExportJob(
   const admin = createSupabaseAdminClient()
 
   try {
+    console.log(`[processExportJob] Starting job ${jobId}`)
     // Mark as processing
     await admin
       .from('compliance_export_jobs')
@@ -184,8 +185,10 @@ export async function processExportJob(
       })
       .eq('id', jobId)
 
+    console.log(`[processExportJob] Job ${jobId} completed successfully`)
     return { ok: true, fileUrl }
   } catch (error) {
+    console.error(`[processExportJob] Job ${jobId} failed:`, error)
     await admin
       .from('compliance_export_jobs')
       .update({

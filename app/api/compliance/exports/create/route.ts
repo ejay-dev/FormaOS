@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createSupabaseServerClient } from '@/lib/supabase/server'
-import { createExportJob } from '@/lib/compliance/evidence-pack-export'
+import { createExportJob, processExportJob } from '@/lib/compliance/evidence-pack-export'
 
 export async function POST(request: Request) {
   try {
@@ -41,8 +41,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: result.error }, { status: 500 })
     }
 
-    // In production, trigger background job here
-    // For now, return job ID for polling
+    // Start processing job asynchronously (non-blocking)
+    // In production, this would be handled by a queue worker
+    if (result.jobId) {
+      processExportJob(result.jobId).catch((err) => {
+        console.error(`[exports/create] Background job ${result.jobId} failed:`, err)
+      })
+    }
+
     return NextResponse.json({ ok: true, jobId: result.jobId })
   } catch (error) {
     console.error('[exports/create] Error:', error)
