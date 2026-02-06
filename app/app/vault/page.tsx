@@ -303,7 +303,7 @@ export default async function VaultPage() {
                       </td>
 
                       <td className="px-8 py-4 text-right">
-                        <div className="inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="inline-flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                           <button
                             type="button"
                             className="p-2 hover:bg-rose-500/10 text-rose-300 rounded-lg transition-colors"

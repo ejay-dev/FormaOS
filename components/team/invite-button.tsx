@@ -73,8 +73,8 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in">
-            <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl w-full max-w-md shadow-2xl animate-in zoom-in-95 overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in">
+            <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-t-2xl sm:rounded-2xl w-full max-w-md shadow-2xl animate-in zoom-in-95 overflow-hidden max-h-[92vh] overflow-y-auto">
                 {success ? (
                   <div className="p-12 flex flex-col items-center justify-center">
                     <div className="h-20 w-20 rounded-full bg-emerald-400/20 flex items-center justify-center mb-4 border-2 border-emerald-400/40">
@@ -127,7 +127,7 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                         {/* Role Selector */}
                         <div className="space-y-2">
                             <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Access Level</label>
-                            <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <button
                                     type="button"
                                     onClick={() => setRole("member")}

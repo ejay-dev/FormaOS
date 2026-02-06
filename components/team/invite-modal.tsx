@@ -46,8 +46,8 @@ export function InviteModal({ isOpen, onClose, orgId }: { isOpen: boolean; onClo
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="w-full max-w-md bg-white/10 rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/70 sm:bg-gradient-to-r sm:from-blue-600 sm:via-indigo-600 sm:to-cyan-500/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+      <div className="w-full max-w-md bg-white/10 rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 max-h-[92vh] overflow-y-auto">
         
         {/* Header */}
         <div className="p-6 border-b border-white/10 flex items-center justify-between bg-white/10">
@@ -89,7 +89,7 @@ export function InviteModal({ isOpen, onClose, orgId }: { isOpen: boolean; onClo
             {/* Role Selection */}
             <div className="space-y-2">
               <label className="text-[10px] font-bold uppercase text-slate-400 tracking-widest">Workspace Role</label>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <button
                   type="button"
                   onClick={() => setRole("member")}

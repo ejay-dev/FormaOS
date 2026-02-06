@@ -405,8 +405,8 @@ export function AdminPermissionFlow({
 
       {/* Confirmation Modal */}
       {showConfirm && selectedRole && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-slate-800 border border-white/10 rounded-3xl p-6 max-w-md mx-4 animate-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/80 backdrop-blur-sm animate-in fade-in duration-200 p-4">
+          <div className="bg-slate-800 border border-white/10 rounded-t-3xl sm:rounded-3xl p-6 max-w-md w-full mx-auto animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center gap-3 mb-4">
               <div className="h-12 w-12 rounded-xl bg-violet-500/20 flex items-center justify-center">
                 <Zap className="h-6 w-6 text-violet-400" />

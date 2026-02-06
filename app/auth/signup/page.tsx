@@ -127,9 +127,9 @@ function SignUpContent() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Header */}
-      <div className="flex items-center justify-between p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-6">
         <Logo size={36} />
-        <div className="text-sm text-slate-400">
+        <div className="text-xs sm:text-sm text-slate-400 text-center sm:text-left">
           Secure · Compliance-First · Enterprise-Ready
         </div>
       </div>

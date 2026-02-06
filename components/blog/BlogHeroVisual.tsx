@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import {
   Sparkles,
   Building2,
@@ -92,6 +92,7 @@ export function BlogHeroVisual({
 }) {
   const config =
     categoryConfigs[category.toLowerCase()] || categoryConfigs.compliance;
+  const reduceMotion = useReducedMotion();
   const Icon = config.icon;
 
   return (
@@ -99,24 +100,38 @@ export function BlogHeroVisual({
       {/* Background gradient orbs */}
       <motion.div
         className={`absolute -top-32 -left-32 w-[360px] h-[360px] sm:w-[520px] sm:h-[520px] lg:w-[600px] lg:h-[600px] bg-gradient-to-br ${config.gradient} rounded-full blur-2xl sm:blur-3xl`}
-        animate={{
-          scale: [1, 1.1, 1],
-          opacity: [0.3, 0.5, 0.3],
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        animate={
+          reduceMotion
+            ? undefined
+            : {
+                scale: [1, 1.1, 1],
+                opacity: [0.3, 0.5, 0.3],
+              }
+        }
+        transition={
+          reduceMotion ? undefined : { duration: 8, repeat: Infinity, ease: 'easeInOut' }
+        }
       />
       <motion.div
         className={`absolute -bottom-32 -right-32 w-[320px] h-[320px] sm:w-[440px] sm:h-[440px] lg:w-[500px] lg:h-[500px] bg-gradient-to-tl ${config.gradient} rounded-full blur-2xl sm:blur-3xl`}
-        animate={{
-          scale: [1, 1.15, 1],
-          opacity: [0.2, 0.4, 0.2],
-        }}
-        transition={{
-          duration: 10,
-          repeat: Infinity,
-          ease: 'easeInOut',
-          delay: 2,
-        }}
+        animate={
+          reduceMotion
+            ? undefined
+            : {
+                scale: [1, 1.15, 1],
+                opacity: [0.2, 0.4, 0.2],
+              }
+        }
+        transition={
+          reduceMotion
+            ? undefined
+            : {
+                duration: 10,
+                repeat: Infinity,
+                ease: 'easeInOut',
+                delay: 2,
+              }
+        }
       />
 
       {/* Grid pattern */}
@@ -141,17 +156,25 @@ export function BlogHeroVisual({
             height: node.size,
             boxShadow: `0 0 20px ${config.glowColor}`,
           }}
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{
-            opacity: [0.4, 0.8, 0.4],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: node.delay,
-          }}
+          initial={reduceMotion ? false : { opacity: 0, scale: 0 }}
+          animate={
+            reduceMotion
+              ? undefined
+              : {
+                  opacity: [0.4, 0.8, 0.4],
+                  scale: [1, 1.2, 1],
+                }
+          }
+          transition={
+            reduceMotion
+              ? undefined
+              : {
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                  delay: node.delay,
+                }
+          }
         >
           <div
             className={`w-full h-full rounded-full bg-gradient-to-r ${config.accentGradient}`}
@@ -177,14 +200,18 @@ export function BlogHeroVisual({
                 y2={nextNode.y}
                 stroke="url(#lineGradient)"
                 strokeWidth="1"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                  delay: index * 0.3,
-                }}
+                initial={reduceMotion ? false : { pathLength: 0 }}
+                animate={reduceMotion ? undefined : { pathLength: 1 }}
+                transition={
+                  reduceMotion
+                    ? undefined
+                    : {
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: 'easeInOut',
+                        delay: index * 0.3,
+                      }
+                }
               />
             );
           })}

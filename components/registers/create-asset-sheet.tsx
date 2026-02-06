@@ -145,7 +145,7 @@ export function CreateAssetSheet() {
                   <ShieldAlert className="h-3 w-3 text-amber-500" />
                   Risk Level
                 </label>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                    <select 
                       name="criticality" 
                       className="col-span-2 w-full rounded-xl border border-white/10 p-3 text-sm outline-none focus:border-teal-400/50 bg-white/5"

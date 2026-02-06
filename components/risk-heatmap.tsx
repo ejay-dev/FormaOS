@@ -38,7 +38,7 @@ export function RiskHeatmap({ data }: RiskHeatmapProps) {
       </div>
 
       {/* Legend Grid */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {segments.map((s) => (
           <div key={s.label} className="p-3 rounded-xl border border-white/10 bg-white/10">
             <div className="flex items-center gap-2 mb-1">

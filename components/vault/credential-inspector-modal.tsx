@@ -117,7 +117,7 @@ export function CredentialInspectorModal({
                         <p className="text-lg font-black text-slate-100">{credential.document_type}</p>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-6 pt-6 border-t border-white/10">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-white/10">
                         <div className="space-y-1">
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Issue Date</p>
                             <div className="flex items-center gap-2 text-xs font-bold text-slate-300">

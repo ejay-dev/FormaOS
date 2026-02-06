@@ -1423,7 +1423,7 @@ function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.9 }}
-            className="xl:hidden grid grid-cols-3 gap-4 w-full max-w-lg"
+            className="xl:hidden grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-lg"
           >
             <ProofMetric value="99.7%" label="Compliance" />
             <ProofMetric value="2.4M" label="Records" />

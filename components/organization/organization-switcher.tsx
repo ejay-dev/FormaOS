@@ -101,7 +101,7 @@ export default function OrganizationSwitcher({
       {/* Current Organization Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors min-w-[200px]"
+        className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors min-w-0 sm:min-w-[200px] w-full sm:w-auto"
       >
         {currentOrg.logo_url ? (
           <img

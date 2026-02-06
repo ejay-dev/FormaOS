@@ -18,7 +18,7 @@ export function CredentialStatusWidget({ credentials }: { credentials: any[] }) 
         </span>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-emerald-400/10 rounded-2xl p-4 border border-emerald-400/30 text-center">
             <ShieldCheck className="h-5 w-5 text-emerald-500 mx-auto mb-2" />
             <p className="text-xl font-black text-emerald-700 leading-none">{stats.verified}</p>

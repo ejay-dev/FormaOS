@@ -184,7 +184,7 @@ export default function MarketingHomePage() {
                       <div className="h-2 w-[94%] rounded-full gradient-primary" />
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                     <div className="glass-panel rounded-lg p-2 text-center">
                       <div className="font-bold text-primary">127</div>
                       <div className="text-muted-foreground">Controls</div>
@@ -244,7 +244,7 @@ export default function MarketingHomePage() {
                     <div className="font-bold text-lg sm:text-xl mb-1">23 days</div>
                     <div className="text-xs text-muted-foreground">NDIS Practice Standards</div>
                   </div>
-                  <div className="grid grid-cols-3 gap-2 text-xs">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
                     <div className="glass-panel rounded-lg p-2 text-center">
                       <div className="font-bold text-primary">✓</div>
                       <div className="text-muted-foreground mt-1">Ready</div>

@@ -302,7 +302,7 @@ export function ComplianceLifecycleHeader({
         </div>
 
         {/* Mobile: Grid layout */}
-        <div className="lg:hidden grid grid-cols-2 gap-3">
+        <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-3">
           {NODES.map((node) => {
             const colors = COLOR_CLASSES[node.color];
             const nodeStats = getNodeStats(node.type);

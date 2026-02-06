@@ -274,23 +274,49 @@ export function UnifiedDashboardLayout({
     <div className="min-h-screen bg-slate-950 text-white">
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/95 backdrop-blur">
-        <div className="flex items-center justify-between px-6 py-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-4 sm:px-6 py-4">
           <div>
-            <h1 className="text-2xl font-bold">{organizationName}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold">{organizationName}</h1>
             <p className="text-sm text-slate-400">
               {isEmployer ? 'Employer Dashboard' : 'Employee Dashboard'}
             </p>
           </div>
-          <div className="text-right">
+          <div className="text-left sm:text-right">
             <p className="text-xs text-slate-400">Role</p>
-            <p className="text-lg font-semibold capitalize">{userRole}</p>
+            <p className="text-base sm:text-lg font-semibold capitalize">{userRole}</p>
           </div>
         </div>
       </header>
 
-      <div className="flex">
+      {/* Mobile nav pills */}
+      <div className="md:hidden border-b border-white/10 bg-slate-950/95">
+        <div className="flex gap-2 overflow-x-auto px-4 py-3 no-scrollbar">
+          {navItems.map((item) => {
+            const state = MODULE_ACCESS[userRole][item.id];
+            const isLocked = state === 'locked';
+            return (
+              <a
+                key={item.id}
+                href={isLocked ? '#' : item.href}
+                onClick={(e) => {
+                  if (isLocked) e.preventDefault();
+                }}
+                className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold ${
+                  isLocked
+                    ? 'border-white/10 text-slate-500'
+                    : 'border-white/20 text-slate-200 hover:bg-white/10'
+                }`}
+              >
+                {item.label}
+              </a>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="flex min-w-0">
         {/* Sidebar Navigation */}
-        <aside className="w-64 border-r border-white/10 bg-slate-900/50">
+        <aside className="hidden md:block w-64 border-r border-white/10 bg-slate-900/50">
           <nav className="space-y-1 p-4">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -324,7 +350,7 @@ export function UnifiedDashboardLayout({
 
         {/* Main Content */}
         <main className="flex-1 overflow-auto">
-          <div className="p-8">
+          <div className="p-4 sm:p-6 lg:p-8">
             {/* Role-specific content */}
             {isEmployer && empSections ? (
               <div className="space-y-8">{empSections}</div>

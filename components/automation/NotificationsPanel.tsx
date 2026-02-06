@@ -220,7 +220,7 @@ function NotificationItem({
                 e.stopPropagation();
                 onDismiss(notification.id);
               }}
-              className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-gray-600"
+              className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity text-gray-400 hover:text-gray-600"
             >
               <X className="w-4 h-4" />
             </button>

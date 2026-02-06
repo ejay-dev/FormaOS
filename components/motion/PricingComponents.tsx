@@ -180,7 +180,7 @@ export function ComparisonFeature({ feature, starter, pro, enterprise }: Compari
       viewport={{ once: true }}
       transition={{ duration: 0.4 }}
       whileHover={{ backgroundColor: "rgba(255,255,255,0.02)" }}
-      className="grid grid-cols-4 gap-4 py-4 border-b border-border/10 items-center transition-colors duration-300 rounded-lg px-2 -mx-2"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-4 border-b border-border/10 items-center transition-colors duration-300 rounded-lg px-2 -mx-2"
     >
       <div className="text-sm text-foreground/80">{feature}</div>
       <div className="flex justify-center">{starter ? <CheckMark /> : <CrossMark />}</div>

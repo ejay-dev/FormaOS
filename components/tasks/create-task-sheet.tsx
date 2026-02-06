@@ -107,7 +107,7 @@ export function CreateTaskSheet() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                  {/* Priority */}
                  <div className="space-y-2">
                     <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Priority Level</label>

@@ -7,6 +7,7 @@ import { createSupabaseClient } from "@/lib/supabase/client";
 import { TopbarSearch } from "./topbar-search";
 import {
   Bell,
+  Search,
   ChevronRight,
   User,
   Settings,
@@ -162,6 +163,17 @@ export function TopBar({
 
       {/* Right: Actions */}
       <div className="ml-auto flex items-center gap-2 sm:gap-3">
+        {/* Mobile search trigger */}
+        <Button
+          variant="ghost"
+          onClick={() => {
+            window.dispatchEvent(new Event("open-command-menu"));
+          }}
+          className="md:hidden rounded-full p-2.5 text-sidebar-foreground/90 hover:bg-card/8 transition-colors"
+          aria-label="Open search"
+        >
+          <Search className="h-5 w-5" />
+        </Button>
 
         {/* 🔔 NOTIFICATIONS */}
         <div className="relative" ref={notifRef}>

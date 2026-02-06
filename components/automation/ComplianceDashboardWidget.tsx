@@ -143,7 +143,7 @@ export function ComplianceDashboardWidget() {
         </div>
 
         {/* Score Display */}
-        <div className="flex items-center gap-6">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-6">
           <div className="flex-shrink-0">
             <div className="relative w-32 h-32">
               {/* Circular progress background */}

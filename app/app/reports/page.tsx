@@ -264,7 +264,7 @@ export default async function ReportsPage() {
                                     <p className="text-xs text-slate-400">No approved evidence linked to this mandatory control.</p>
                                 </div>
                             </div>
-                            <Link href="/app/evidence" className="text-[10px] font-bold uppercase tracking-widest bg-white/10 text-slate-100 px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all">
+                            <Link href="/app/evidence" className="text-[10px] font-bold uppercase tracking-widest bg-white/10 text-slate-100 px-3 py-1.5 rounded-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all">
                                 Upload Evidence
                             </Link>
                         </div>
