@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useProductTour } from '@/lib/onboarding/product-tour';
@@ -42,6 +42,7 @@ export function ProductTourOverlay() {
     height: number;
   } | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
+  const routeAttemptsRef = useRef(0);
 
   const highlightStyle = useMemo(() => {
     if (!highlightRect) return null;
@@ -54,12 +55,21 @@ export function ProductTourOverlay() {
   }, [highlightRect]);
 
   useEffect(() => {
+    routeAttemptsRef.current = 0;
+  }, [step.id]);
+
+  useEffect(() => {
     if (!isActive) {
       setHighlightRect(null);
       return;
     }
 
     if (pathname !== step.route) {
+      routeAttemptsRef.current += 1;
+      if (routeAttemptsRef.current > 3) {
+        nextStep();
+        return;
+      }
       router.push(step.route);
       return;
     }

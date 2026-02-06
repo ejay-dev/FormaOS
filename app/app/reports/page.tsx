@@ -89,7 +89,10 @@ export default async function ReportsPage() {
   const isControlBlocked = requiredNonCompliantCount > 0;
 
   return (
-    <div className="space-y-10 pb-12 animate-in fade-in duration-500">
+    <div
+      className="space-y-10 pb-12 animate-in fade-in duration-500"
+      data-tour="reports-header"
+    >
 
       {/* Enforcement banner (if blocked) */}
       {isExportBlocked ? (

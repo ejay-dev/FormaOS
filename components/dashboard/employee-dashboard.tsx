@@ -12,6 +12,7 @@ import {
   Briefcase,
 } from 'lucide-react';
 import { DashboardSectionCard } from '@/components/dashboard/unified-dashboard-layout';
+import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedChecklist';
 
 /**
  * =========================================================
@@ -455,12 +456,16 @@ export function EmployeeDashboard({
 }: EmployeeDashboardProps) {
   return (
     <div className="space-y-8">
-      <MyComplianceStatus
-        complianceScore={complianceScore}
-        orgAverage={75}
-        nextAuditDate={nextAuditDate}
-        status={complianceScore >= 80 ? 'on_track' : 'at_risk'}
-      />
+      <GettingStartedChecklist />
+
+      <div data-tour="dashboard-overview">
+        <MyComplianceStatus
+          complianceScore={complianceScore}
+          orgAverage={75}
+          nextAuditDate={nextAuditDate}
+          status={complianceScore >= 80 ? 'on_track' : 'at_risk'}
+        />
+      </div>
 
       <MyTasks tasks={[]} />
 

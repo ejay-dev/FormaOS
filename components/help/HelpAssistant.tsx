@@ -26,7 +26,7 @@ function getSuggestedArticles(pathname: string) {
 }
 
 export function HelpAssistant() {
-  const { isOpen, panel, open, close, toggle, setPanel } = useHelpAssistant();
+  const { isOpen, panel, close, toggle, setPanel } = useHelpAssistant();
   const { startTour } = useProductTour();
   const pathname = usePathname();
 
@@ -326,7 +326,7 @@ export function HelpAssistant() {
               </>
             ) : null}
 
-            {activeArticle ? (
+            {panel === 'home' && activeArticle ? (
               <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-4">
                 <div className="flex items-start justify-between gap-2">
                   <div>

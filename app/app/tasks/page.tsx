@@ -56,7 +56,10 @@ export default async function TasksPage() {
   return (
     <div className="space-y-8 pb-12">
       {/* 1. Dynamic Roadmap Header */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div
+        className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
+        data-tour="tasks-header"
+      >
         <div>
           <h1 className="text-3xl font-bold text-slate-100 tracking-tight">Compliance Roadmap</h1>
           <p className="text-slate-400 mt-1">Execute mandatory controls and link evidence artifacts.</p>

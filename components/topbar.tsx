@@ -21,6 +21,8 @@ import {
 } from 'lucide-react';
 import { MobileSidebar } from '@/components/mobile-sidebar';
 import { TrialDaysRemaining } from '@/components/billing/TrialDaysRemaining';
+import { useHelpAssistant } from '@/components/help/help-assistant-context';
+import { useProductTour } from '@/lib/onboarding/product-tour';
 
 import Button from './ui/button';
 
@@ -28,6 +30,12 @@ import Button from './ui/button';
 import { NotificationCenter } from '@/components/notifications/notification-center';
 
 type UserRole = 'viewer' | 'member' | 'admin' | 'owner' | 'staff' | 'auditor';
+type MenuItem = {
+  label: string;
+  icon: typeof UserCircle;
+  href?: string;
+  action?: () => void;
+};
 
 export function TopBar({
   orgName,
@@ -46,6 +54,8 @@ export function TopBar({
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState<string | null>(null);
+  const { open: openHelp } = useHelpAssistant();
+  const { startTour } = useProductTour();
 
   const notifRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -133,13 +143,22 @@ export function TopBar({
         .toUpperCase()
     : 'US';
 
-  const menuItems = [
+  const menuItems: MenuItem[] = [
     { label: 'Profile', icon: UserCircle, href: '/app/profile' },
     { label: 'Account Settings', icon: Settings, href: '/app/settings' },
     { label: 'Billing & Subscription', icon: CreditCard, href: '/app/billing' },
     { label: 'Security', icon: ShieldCheck, href: '/app/settings' },
     { label: 'Switch Organization', icon: Building2, href: '/app/settings' },
-    { label: 'Support', icon: LifeBuoy, href: '/contact' },
+    {
+      label: 'Help Center',
+      icon: LifeBuoy,
+      action: () => openHelp('home'),
+    },
+    {
+      label: 'Take a Tour',
+      icon: LifeBuoy,
+      action: () => startTour({ fromStep: 0, resetProgress: true }),
+    },
   ];
 
   return (
@@ -197,6 +216,16 @@ export function TopBar({
           )}
         </div>
 
+        {/* Help Assistant */}
+        <Button
+          variant="ghost"
+          onClick={() => openHelp('home')}
+          className="rounded-full p-2.5 text-sidebar-foreground/90 hover:bg-card/8 transition-colors"
+          aria-label="Open help assistant"
+        >
+          <LifeBuoy className="h-5 w-5" />
+        </Button>
+
         {/* USER DROPDOWN */}
         <div className="relative" ref={userMenuRef}>
           <Button
@@ -244,7 +273,11 @@ export function TopBar({
                   <button
                     key={item.label}
                     onClick={() => {
-                      router.push(item.href);
+                      if ('action' in item && item.action) {
+                        item.action();
+                      } else if ('href' in item && item.href) {
+                        router.push(item.href);
+                      }
                       setShowUserMenu(false);
                     }}
                     className="w-full flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-card-foreground hover:bg-card/8 transition-colors text-left"

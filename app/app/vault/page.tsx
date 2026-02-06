@@ -96,7 +96,10 @@ export default async function VaultPage() {
   return (
     <div className="space-y-10 pb-24">
       {/* Header with Storage Meter (current) + Total count (upgrade) */}
-      <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between border-b border-white/10 pb-8">
+      <div
+        className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between border-b border-white/10 pb-8"
+        data-tour="vault-header"
+      >
         <div>
           <h1 className="text-4xl font-black text-slate-100 tracking-tight">
             Evidence Vault

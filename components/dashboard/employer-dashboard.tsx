@@ -14,6 +14,7 @@ import {
   FileText,
 } from 'lucide-react';
 import { DashboardSectionCard } from '@/components/dashboard/unified-dashboard-layout';
+import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedChecklist';
 
 /**
  * =========================================================
@@ -435,7 +436,9 @@ export function EmployerDashboard({
 }: EmployerDashboardProps) {
   return (
     <div className="space-y-8">
-      <div>
+      <GettingStartedChecklist />
+
+      <div data-tour="dashboard-overview">
         <h2 className="text-xl font-bold mb-4">Organization Health</h2>
         <OrgHealthOverview
           teamMemberCount={teamMemberCount}

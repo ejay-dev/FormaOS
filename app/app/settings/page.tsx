@@ -116,7 +116,10 @@ export default async function SettingsPage() {
     .limit(3);
 
   return (
-    <div className="space-y-10 pb-24 max-w-6xl animate-in fade-in duration-700">
+    <div
+      className="space-y-10 pb-24 max-w-6xl animate-in fade-in duration-700"
+      data-tour="settings-header"
+    >
       
       {/* HEADER SECTION */}
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
