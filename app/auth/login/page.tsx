@@ -103,7 +103,7 @@ function LoginContent() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Header */}
       <div className="flex items-center justify-between p-6">
-        <Logo size={36} textClassName="text-xl font-bold text-white" />
+        <Logo size={36} />
         <div className="text-sm text-slate-400">
           Secure · Compliance-First · Enterprise-Ready
         </div>
@@ -123,7 +123,7 @@ function LoginContent() {
             </div>
 
             {/* Trust Indicators */}
-            <div className="grid grid-cols-3 gap-4 mb-8 p-4 rounded-lg bg-gradient-to-r from-emerald-500/10 via-sky-500/10 to-cyan-500/10 border border-emerald-400/20">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8 p-4 rounded-lg bg-gradient-to-r from-emerald-500/10 via-sky-500/10 to-cyan-500/10 border border-emerald-400/20">
               <div className="text-center">
                 <CheckCircle2 className="h-5 w-5 text-emerald-400 mx-auto mb-1" />
                 <div className="text-xs font-medium text-emerald-200">

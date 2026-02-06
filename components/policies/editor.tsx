@@ -44,7 +44,7 @@ export function PolicyEditor({
     content: initialContent || "",
     editorProps: {
       attributes: {
-        class: "prose prose-neutral focus:outline-none min-h-[600px] max-w-none p-4",
+        class: "prose prose-neutral focus:outline-none min-h-[360px] sm:min-h-[600px] max-w-none p-4",
       },
     },
   })
@@ -93,8 +93,8 @@ export function PolicyEditor({
   return (
     <div className="flex flex-col h-full bg-white/10 rounded-3xl border border-white/10 shadow-sm overflow-hidden">
       {/* Toolbar */}
-      <div className="flex items-center justify-between border-b border-white/10 bg-white/10 p-3">
-        <div className="flex items-center gap-1">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-white/10 bg-white/10 p-3">
+        <div className="flex flex-wrap items-center gap-1">
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleBold().run()}
             active={editor.isActive("bold")}
@@ -122,7 +122,7 @@ export function PolicyEditor({
           />
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {lastSaved && (
             <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-400/10 text-emerald-300 rounded-md border border-emerald-400/30 animate-in fade-in">
               <span className="relative flex h-1.5 w-1.5">

@@ -29,7 +29,7 @@ function SheetOverlay({
     <SheetPrimitive.Overlay
       data-slot="sheet-overlay"
       className={cn(
-        "fixed inset-0 z-50 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500/50",
+        "fixed inset-0 z-50 bg-black/60 backdrop-blur-sm sm:bg-gradient-to-r sm:from-blue-600 sm:via-indigo-600 sm:to-cyan-500/50",
         className
       )}
       {...props}
@@ -51,15 +51,15 @@ function SheetContent({
       <SheetPrimitive.Content
         data-slot="sheet-content"
         className={cn(
-          "fixed z-50 flex flex-col gap-4 bg-white/10 shadow-xl transition ease-in-out",
+          "fixed z-50 flex flex-col gap-4 bg-white/10 shadow-xl transition ease-in-out overflow-y-auto",
           side === "right" &&
-            "inset-y-0 right-0 h-full w-3/4 border-l border-white/10 sm:max-w-sm",
+            "inset-y-0 right-0 h-full w-[90vw] max-w-[360px] border-l border-white/10 sm:w-3/4 sm:max-w-sm",
           side === "left" &&
-            "inset-y-0 left-0 h-full w-3/4 border-r border-white/10 sm:max-w-sm",
+            "inset-y-0 left-0 h-full w-[90vw] max-w-[360px] border-r border-white/10 sm:w-3/4 sm:max-w-sm",
           side === "top" &&
-            "inset-x-0 top-0 h-auto border-b border-white/10",
+            "inset-x-0 top-0 h-auto max-h-[90vh] border-b border-white/10",
           side === "bottom" &&
-            "inset-x-0 bottom-0 h-auto border-t border-white/10",
+            "inset-x-0 bottom-0 h-auto max-h-[90vh] border-t border-white/10 rounded-t-2xl",
           className
         )}
         {...props}

@@ -41,7 +41,7 @@ export function TaskList({ initialTasks }: { initialTasks: Task[] }) {
   return (
     <div className="bg-white/10 border border-white/10 rounded-2xl overflow-hidden shadow-sm">
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm">
+        <table className="min-w-[520px] w-full text-left text-sm">
           <thead className="bg-white/10 border-b border-white/10 text-slate-400">
             <tr>
               <th className="px-6 py-4 font-bold text-[10px] uppercase tracking-wider w-16">Done</th>

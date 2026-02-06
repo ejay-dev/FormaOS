@@ -65,7 +65,7 @@ export function MyComplianceStatus({
     >
       <div className="space-y-6">
         {/* Score */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <p className="text-sm text-slate-400 mb-2">Your Score</p>
             <div className="flex items-end gap-2">
@@ -106,11 +106,11 @@ export function MyComplianceStatus({
         </div>
 
         {/* Quick Actions */}
-        <div className="pt-4 border-t border-white/10 flex gap-2">
-          <button className="flex-1 px-4 py-2 rounded-lg bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 transition-colors font-semibold text-sm">
+        <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row gap-2">
+          <button className="w-full sm:flex-1 px-4 py-2 rounded-lg bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 transition-colors font-semibold text-sm">
             View Full Report
           </button>
-          <button className="flex-1 px-4 py-2 rounded-lg bg-slate-700/50 text-slate-300 hover:bg-slate-700 transition-colors font-semibold text-sm">
+          <button className="w-full sm:flex-1 px-4 py-2 rounded-lg bg-slate-700/50 text-slate-300 hover:bg-slate-700 transition-colors font-semibold text-sm">
             Request Help
           </button>
         </div>

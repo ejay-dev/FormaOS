@@ -245,7 +245,7 @@ export function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: () =>
       exit={{ opacity: 0, x: 100, scale: 0.9 }}
       className={`
         flex items-center gap-3 px-4 py-3 rounded-xl border backdrop-blur-lg
-        shadow-premium-lg min-w-[280px] max-w-[400px]
+        shadow-premium-lg min-w-[240px] max-w-[min(400px,calc(100vw-2rem))]
         ${toastColors[toast.type]}
       `}
     >

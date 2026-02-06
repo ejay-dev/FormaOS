@@ -26,10 +26,10 @@ interface LogoProps {
  * Unified FormaOS logo component.
  * Single source of truth for brand rendering across the entire app.
  *
- * @example
- * <Logo />                           // Full logo: mark + "FormaOS" text
- * <Logo variant="mark" size={40} />  // Icon only
- * <Logo variant="wordmark" />        // SVG wordmark (mark + text baked in)
+ * Usage:
+ *   <Logo />                           — Full: mark + "FormaOS" text
+ *   <Logo variant="mark" size={40} />  — Icon only
+ *   <Logo variant="wordmark" />        — SVG wordmark (mark + text baked in)
  */
 export function Logo({
   variant = 'full',
@@ -42,7 +42,7 @@ export function Logo({
 }: LogoProps) {
   const altText = alt ?? brand.appName;
 
-  // Mark only — icon/symbol
+  /* ---- Mark only (icon/symbol) ---- */
   if (variant === 'mark') {
     return (
       <Image
@@ -50,18 +50,17 @@ export function Logo({
         alt={altText}
         width={size}
         height={size}
-        className={`rounded-lg select-none ${className}`}
+        className={`select-none ${className}`}
         priority
       />
     );
   }
 
-  // Wordmark — SVG with mark + text baked in
+  /* ---- Wordmark (SVG with mark + text) ---- */
   if (variant === 'wordmark') {
     const src = darkBackground
       ? brand.logo.wordmarkDark
       : brand.logo.wordmarkLight;
-    // Wordmark SVG is 320×64, so width = size * 5
     return (
       <Image
         src={src}
@@ -74,20 +73,23 @@ export function Logo({
     );
   }
 
-  // Full — mark image + text span (default)
+  /* ---- Full (mark + text span) ---- */
   return (
-    <span className={`inline-flex items-center gap-2 ${className}`}>
+    <span className={`inline-flex items-center gap-2 select-none ${className}`}>
       <Image
         src={brand.logo.mark}
         alt={altText}
         width={size}
         height={size}
-        className="rounded-lg select-none"
+        className="select-none"
         priority
       />
       {showText && (
-        <span className={textClassName || 'text-lg font-bold tracking-tight'}>
-          {brand.appName}
+        <span
+          className={textClassName || 'text-lg font-semibold tracking-tight'}
+        >
+          Forma
+          <span className="text-blue-500">OS</span>
         </span>
       )}
     </span>

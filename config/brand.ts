@@ -8,9 +8,13 @@ export const brand = {
   identity: 'Compliance Operating System',
   logo: {
     mark: '/brand/formaos-mark.svg',
+    markLight: '/brand/formaos-mark-light.svg',
+    markWhite: '/brand/formaos-mark-white.svg',
     wordmarkLight: '/brand/formaos-wordmark-light.svg',
     wordmarkDark: '/brand/formaos-wordmark-dark.svg',
     favicon: '/favicon.ico',
+    icon: '/icon.svg',
+    appleTouchIcon: '/apple-touch-icon.png',
   },
   email: {
     senderName: 'FormaOS',
@@ -49,7 +53,6 @@ export const brand = {
     if (process.env.NODE_ENV !== 'production') {
       throw new Error(message);
     } else {
-       
       console.error(message);
     }
   }

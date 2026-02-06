@@ -61,8 +61,8 @@ export default async function TasksPage() {
           <h1 className="text-3xl font-bold text-slate-100 tracking-tight">Compliance Roadmap</h1>
           <p className="text-slate-400 mt-1">Execute mandatory controls and link evidence artifacts.</p>
         </div>
-        <div className="flex items-center gap-3">
-            <div className="px-4 py-2 bg-white/5 rounded-xl border border-white/10 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="px-4 py-2 bg-white/5 rounded-xl border border-white/10 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center sm:text-left">
                 {completed.length} / {allTasks.length} Controls Verified
             </div>
             <details className="group">
@@ -70,7 +70,7 @@ export default async function TasksPage() {
                 <Plus className="h-4 w-4" />
                 Add Requirement
               </summary>
-              <div className="mt-4 bg-white/5 border border-white/10 rounded-2xl p-5 shadow-[0_16px_40px_rgba(0,0,0,0.35)] min-w-[320px]">
+              <div className="mt-4 bg-white/5 border border-white/10 rounded-2xl p-5 shadow-[0_16px_40px_rgba(0,0,0,0.35)] w-full sm:min-w-[320px]">
                 <form action={createTask} className="space-y-4">
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
@@ -137,7 +137,7 @@ export default async function TasksPage() {
       </div>
 
       {/* 2. Control Filters */}
-      <div className="flex items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <input 
@@ -145,7 +145,7 @@ export default async function TasksPage() {
                 className="w-full pl-10 pr-4 py-2 text-sm outline-none bg-transparent text-slate-100 placeholder:text-slate-500"
             />
          </div>
-         <div className="h-6 w-px bg-white/10" />
+         <div className="hidden sm:block h-6 w-px bg-white/10" />
          <button className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold text-slate-400 hover:bg-white/10 rounded-lg transition-colors">
             <Filter className="h-4 w-4" />
             Priority: All
@@ -154,7 +154,8 @@ export default async function TasksPage() {
 
       {/* 3. The Roadmap Master Table */}
       <div className="bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] border border-white/10 rounded-3xl shadow-[0_24px_70px_rgba(0,0,0,0.45)] overflow-hidden">
-        <table className="w-full text-left border-collapse">
+        <div className="w-full overflow-x-auto">
+        <table className="min-w-[900px] w-full text-left border-collapse">
           <thead>
             <tr className="bg-white/5 border-b border-white/10 text-[10px] font-bold uppercase text-slate-400 tracking-widest">
               <th className="px-6 py-4">Status</th>
@@ -229,6 +230,7 @@ export default async function TasksPage() {
             ))}
           </tbody>
         </table>
+        </div>
         
         {/* ✅ FINAL CORRECTED EMPTY STATE BLOCK */}
         {allTasks.length === 0 && (

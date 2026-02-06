@@ -37,8 +37,8 @@ export default async function EmailHistoryPage() {
   const logs: EmailLog[] = await getOrganizationEmailLogs(membership.organization_id);
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <div className="mb-8 flex justify-between items-end">
+    <div className="p-4 sm:p-6 max-w-6xl mx-auto">
+      <div className="mb-8 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3">
         <div>
           <h1 className="text-2xl font-bold text-slate-100">Email Delivery History</h1>
           <p className="text-slate-400">
@@ -51,7 +51,8 @@ export default async function EmailHistoryPage() {
       </div>
 
       <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden shadow-sm">
-        <table className="w-full text-left text-sm">
+        <div className="overflow-x-auto">
+        <table className="min-w-[760px] w-full text-left text-sm">
           <thead className="bg-white/10 border-b border-white/10 text-slate-400 font-medium">
             <tr>
               <th className="px-6 py-4">Recipient</th>
@@ -119,6 +120,7 @@ export default async function EmailHistoryPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
       <div className="mt-4 text-[10px] text-slate-400 flex justify-between">
         <span>Showing last {logs.length} events</span>

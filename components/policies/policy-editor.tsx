@@ -70,12 +70,12 @@ export function PolicyEditor({ policy }: { policy: any }) {
       </div>
 
       {/* The Writing Area */}
-      <div className="min-h-screen bg-white/10 rounded-2xl border border-white/10 shadow-sm p-8 md:p-12">
+      <div className="min-h-[60vh] md:min-h-screen bg-white/10 rounded-2xl border border-white/10 shadow-sm p-4 sm:p-6 md:p-12">
         <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="# Write your policy here..."
-            className="w-full h-[80vh] resize-none outline-none text-slate-100 leading-relaxed font-serif text-lg placeholder:text-slate-400"
+            className="w-full h-[60vh] md:h-[80vh] resize-none outline-none text-slate-100 leading-relaxed font-serif text-base md:text-lg placeholder:text-slate-400"
             spellCheck={false}
         />
       </div>

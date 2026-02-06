@@ -92,17 +92,17 @@ export default async function PolicyDetailPage({
           
           {/* LEFT: Main Editor */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white/5 border border-white/10 rounded-[2rem] shadow-sm overflow-hidden flex flex-col h-[800px]">
-               <div className="p-8 border-b border-white/10 bg-white/5">
+            <div className="bg-white/5 border border-white/10 rounded-[2rem] shadow-sm overflow-hidden flex flex-col h-[70vh] md:h-[800px]">
+               <div className="p-6 sm:p-8 border-b border-white/10 bg-white/5">
                   <input 
                     name="title"
                     defaultValue={policy.title}
                     disabled={!isAdmin}
                     placeholder="Policy Title..."
-                    className="w-full bg-transparent text-3xl font-black text-slate-100 outline-none placeholder:text-slate-400 tracking-tight disabled:opacity-50"
+                    className="w-full bg-transparent text-2xl sm:text-3xl font-black text-slate-100 outline-none placeholder:text-slate-400 tracking-tight disabled:opacity-50"
                   />
                </div>
-               <div className="p-8 flex-1">
+               <div className="p-6 sm:p-8 flex-1">
                   <textarea 
                     name="content"
                     defaultValue={policy.content}
@@ -126,7 +126,7 @@ export default async function PolicyDetailPage({
             />
 
             {/* Document Controls */}
-            <div className="bg-white/5 border border-white/10 rounded-[2rem] p-8 shadow-sm space-y-8 sticky top-6">
+            <div className="bg-white/5 border border-white/10 rounded-[2rem] p-6 sm:p-8 shadow-sm space-y-8 md:sticky md:top-6">
                 <div className="space-y-3">
                     <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
                         Lifecycle Stage

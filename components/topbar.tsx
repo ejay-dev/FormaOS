@@ -141,16 +141,16 @@ export function TopBar({
   ];
 
   return (
-    <div className="flex h-full w-full items-center justify-between">
+    <div className="flex h-full w-full items-center justify-between gap-3 min-w-0">
       
       {/* Left: Breadcrumbs */}
-      <div className="flex items-center gap-2 text-sm text-sidebar-foreground">
+      <div className="flex items-center gap-2 text-sm text-sidebar-foreground min-w-0">
         <MobileSidebar role={role} />
         <span className="hidden sm:inline font-semibold text-sidebar-primary-foreground uppercase text-[11px] tracking-[0.2em]">
           Organization
         </span>
         <ChevronRight className="h-4 w-4 text-slate-400" />
-        <span className="max-w-[160px] truncate px-3 py-1 rounded-md bg-card/70 text-card-foreground text-sm font-semibold border border-card-foreground/8">
+        <span className="max-w-[120px] sm:max-w-[200px] truncate px-2.5 sm:px-3 py-1 rounded-md bg-card/70 text-card-foreground text-xs sm:text-sm font-semibold border border-card-foreground/8">
           {orgName}
         </span>
       </div>
@@ -161,7 +161,7 @@ export function TopBar({
       </div>
 
       {/* Right: Actions */}
-      <div className="ml-auto flex items-center gap-3">
+      <div className="ml-auto flex items-center gap-2 sm:gap-3">
 
         {/* 🔔 NOTIFICATIONS */}
         <div className="relative" ref={notifRef}>
@@ -207,7 +207,7 @@ export function TopBar({
 
           {showUserMenu && (
             <div
-              className="absolute right-0 mt-2 w-64 rounded-2xl border border-card-foreground/8 bg-card p-2 shadow-xl z-50"
+              className="absolute right-0 mt-2 w-[min(16rem,calc(100vw-1.5rem))] rounded-2xl border border-card-foreground/8 bg-card p-2 shadow-xl z-50"
               role="menu"
               onKeyDown={(event) => {
                 if (event.key === "Escape") setShowUserMenu(false);

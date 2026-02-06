@@ -75,7 +75,7 @@ export function ArtifactSidebar({
   );
 
   return (
-    <div className="bg-white/5 border border-white/10 rounded-[2rem] p-6 shadow-sm space-y-8 sticky top-6">
+    <div className="bg-white/5 border border-white/10 rounded-[2rem] p-6 shadow-sm space-y-8 md:sticky md:top-6">
       {/* SECTION 1: LINKED EVIDENCE */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">

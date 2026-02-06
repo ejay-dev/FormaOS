@@ -65,7 +65,7 @@ export function DashboardAuditStream({ orgId }: { orgId: string }) {
   }
 
   return (
-    <div className="bg-white/10 border border-white/10 rounded-2xl shadow-sm overflow-hidden flex flex-col h-full min-h-[400px]">
+    <div className="bg-white/10 border border-white/10 rounded-2xl shadow-sm overflow-hidden flex flex-col h-full min-h-[280px] sm:min-h-[400px]">
       <div className="p-4 border-b border-white/10 flex items-center justify-between bg-white/10">
         <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
           <Activity className="h-4 w-4 text-green-500" />

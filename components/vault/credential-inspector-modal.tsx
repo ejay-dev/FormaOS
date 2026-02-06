@@ -81,11 +81,11 @@ export function CredentialInspectorModal({
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500/60 backdrop-blur-md p-4 animate-in fade-in duration-300">
-      <div className="w-full max-w-6xl h-[90vh] bg-white/10 rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row">
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/70 sm:bg-gradient-to-r sm:from-blue-600 sm:via-indigo-600 sm:to-cyan-500/60 backdrop-blur-md p-4 animate-in fade-in duration-300">
+      <div className="w-full max-w-6xl h-[92vh] sm:h-[90vh] bg-white/10 rounded-t-[3rem] sm:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row">
         
         {/* LEFT: Document Preview (The "Proof") */}
-        <div className="flex-1 bg-white/10 relative overflow-hidden flex items-center justify-center p-8 border-r border-white/10">
+        <div className="flex-1 bg-white/10 relative overflow-hidden flex items-center justify-center p-6 sm:p-8 border-b md:border-b-0 md:border-r border-white/10 min-h-[240px]">
             <div className="absolute top-6 left-6 z-10">
                 <span className="px-3 py-1.5 bg-white/10 backdrop-blur-md text-[10px] font-black uppercase tracking-widest rounded-lg border border-white/10 shadow-sm flex items-center gap-2">
                     <FileText className="h-3.5 w-3.5 text-blue-500" />
@@ -102,7 +102,7 @@ export function CredentialInspectorModal({
         </div>
 
         {/* RIGHT: Metadata & Action Sidebar (The "Audit Control") */}
-        <div className="w-full md:w-[400px] flex flex-col justify-between p-10 bg-white/10">
+        <div className="w-full md:w-[400px] flex flex-col justify-between p-6 sm:p-10 bg-white/10">
             <div className="space-y-10">
                 <div className="flex items-center justify-between">
                     <h3 className="text-sm font-black text-slate-100 tracking-tight">Audit Inspection</h3>

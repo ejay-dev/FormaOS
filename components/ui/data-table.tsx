@@ -45,9 +45,9 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4">
       {/* Toolbar */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         {searchKey && (
-          <div className="relative w-64">
+          <div className="relative w-full sm:w-64">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-slate-400" />
             <input
               placeholder="Search..."
@@ -61,7 +61,8 @@ export function DataTable<TData, TValue>({
 
       {/* Table */}
         <div className="rounded-md border border-card-foreground/8 bg-card p-0 shadow-sm overflow-hidden">
-        <table className="w-full text-sm text-left">
+          <div className="w-full overflow-x-auto">
+            <table className="min-w-[640px] w-full text-sm text-left">
             <thead className="bg-card text-muted font-medium">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b border-card-foreground/8">
@@ -103,10 +104,11 @@ export function DataTable<TData, TValue>({
             )}
           </tbody>
         </table>
+          </div>
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="flex flex-wrap items-center justify-end gap-2 py-4">
         <button
           className="px-3 py-1 border rounded text-sm disabled:opacity-50"
           onClick={() => table.previousPage()}

@@ -158,7 +158,7 @@ export default async function AuditTrailPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="min-w-[720px] w-full text-left border-collapse">
               <thead className="bg-white/5 border-b border-white/10 sticky top-0 backdrop-blur-md">
                 <tr className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">
                   <th className="px-8 py-6">Actor</th>

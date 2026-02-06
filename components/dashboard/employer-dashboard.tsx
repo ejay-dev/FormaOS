@@ -47,7 +47,7 @@ export function OrgHealthOverview({
   openTasksCount: number;
 }) {
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
       <div className="rounded-xl border border-white/10 bg-white/5 p-6">
         <div className="flex items-center justify-between">
           <div>
@@ -113,7 +113,7 @@ export function TeamComplianceTable({
       icon={Users}
     >
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="min-w-[520px] w-full text-sm">
           <thead className="border-b border-white/10">
             <tr>
               <th className="px-4 py-2 text-left font-semibold">Employee</th>

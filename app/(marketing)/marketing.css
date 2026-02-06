@@ -740,6 +740,15 @@ body {
   .mk-parallax-fast {
     animation: none;
   }
+
+  /* Tighten padding for mobile */
+  .mk-content-block {
+    padding: 1.25rem;
+  }
+
+  .mk-card {
+    border-radius: 16px;
+  }
 }
 
 /* Small mobile (< 375px) */

@@ -95,10 +95,10 @@ export function BlogHeroVisual({
   const Icon = config.icon;
 
   return (
-    <div className="relative w-full h-[400px] overflow-hidden rounded-2xl bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] border border-white/10">
+    <div className="relative w-full h-[280px] sm:h-[360px] lg:h-[400px] overflow-hidden rounded-2xl bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] border border-white/10">
       {/* Background gradient orbs */}
       <motion.div
-        className={`absolute -top-40 -left-40 w-[600px] h-[600px] bg-gradient-to-br ${config.gradient} rounded-full blur-3xl`}
+        className={`absolute -top-32 -left-32 w-[360px] h-[360px] sm:w-[520px] sm:h-[520px] lg:w-[600px] lg:h-[600px] bg-gradient-to-br ${config.gradient} rounded-full blur-2xl sm:blur-3xl`}
         animate={{
           scale: [1, 1.1, 1],
           opacity: [0.3, 0.5, 0.3],
@@ -106,7 +106,7 @@ export function BlogHeroVisual({
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
-        className={`absolute -bottom-40 -right-40 w-[500px] h-[500px] bg-gradient-to-tl ${config.gradient} rounded-full blur-3xl`}
+        className={`absolute -bottom-32 -right-32 w-[320px] h-[320px] sm:w-[440px] sm:h-[440px] lg:w-[500px] lg:h-[500px] bg-gradient-to-tl ${config.gradient} rounded-full blur-2xl sm:blur-3xl`}
         animate={{
           scale: [1, 1.15, 1],
           opacity: [0.2, 0.4, 0.2],

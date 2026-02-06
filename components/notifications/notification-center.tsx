@@ -96,7 +96,7 @@ export function NotificationCenter({ orgId }: { orgId: string }) {
       </div>
 
       {/* Panel */}
-      <div className="mt-3 w-[360px] rounded-2xl border border-white/10 bg-white/10 shadow-xl overflow-hidden">
+      <div className="mt-3 w-[min(360px,calc(100vw-1.5rem))] rounded-2xl border border-white/10 bg-white/10 shadow-xl overflow-hidden">
         <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
           <div className="text-xs font-black uppercase tracking-widest text-slate-400">
             Notifications

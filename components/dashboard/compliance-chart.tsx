@@ -25,7 +25,7 @@ interface ComplianceChartProps {
 export function ComplianceChart({ data, benchmark = 85 }: ComplianceChartProps) {
   return (
     <motion.div
-      className="h-[320px] w-full rounded-2xl border border-white/10 bg-white/10 p-4 shadow-sm"
+      className="h-[240px] sm:h-[320px] w-full rounded-2xl border border-white/10 bg-white/10 p-4 shadow-sm"
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}

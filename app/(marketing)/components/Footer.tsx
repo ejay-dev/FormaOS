@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { brand } from '@/config/brand';
+import { Logo } from '@/components/brand/Logo';
 import { easing, duration } from '@/config/motion';
 import {
-
   ArrowUpRight,
   Mail,
   MapPin,
@@ -246,21 +246,10 @@ export function Footer() {
               transition={{ duration: duration.fast, ease: easing.signature }}
             >
               <Link href="/" className="flex items-center gap-2.5 group">
-                <motion.img
-                  src={brand.logo.mark}
-                  alt={brand.appName}
-                  width={32}
-                  height={32}
-                  className="select-none rounded-lg"
-                  whileHover={{ scale: 1.05, rotate: 5 }}
-                  transition={{
-                    duration: duration.fast,
-                    ease: easing.signature,
-                  }}
+                <Logo
+                  size={32}
+                  textClassName="text-lg font-semibold tracking-tight"
                 />
-                <span className="text-lg font-bold tracking-tight">
-                  {brand.appName}
-                </span>
               </Link>
             </motion.div>
 

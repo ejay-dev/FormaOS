@@ -142,7 +142,17 @@ export function WalkthroughOverlay() {
           break;
       }
 
-      setTooltipPosition({ top, left });
+      const tooltipWidth = Math.min(400, window.innerWidth - 32);
+      const tooltipHeight = 320;
+      const minLeft = scrollX + 16;
+      const maxLeft = scrollX + window.innerWidth - tooltipWidth - 16;
+      const minTop = scrollY + 16;
+      const maxTop = scrollY + window.innerHeight - tooltipHeight - 16;
+
+      const clampedLeft = Math.min(Math.max(left, minLeft), maxLeft);
+      const clampedTop = Math.min(Math.max(top, minTop), maxTop);
+
+      setTooltipPosition({ top: clampedTop, left: clampedLeft });
 
       // Scroll element into view
       targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -190,7 +200,7 @@ export function WalkthroughOverlay() {
 
       {/* Tooltip card */}
       <Card
-        className="fixed z-[102] w-[400px] p-6 bg-white border-2 border-purple-300 shadow-2xl pointer-events-auto"
+        className="fixed z-[102] w-[min(400px,calc(100vw-2rem))] p-6 bg-white border-2 border-purple-300 shadow-2xl pointer-events-auto"
         style={{
           top: tooltipPosition.top,
           left: tooltipPosition.left,

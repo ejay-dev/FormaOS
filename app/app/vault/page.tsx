@@ -247,7 +247,7 @@ export default async function VaultPage() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left">
+              <table className="min-w-[760px] w-full text-left">
                 <thead className="bg-white/5 border-b border-white/10 text-[10px] font-black uppercase text-slate-400 tracking-widest">
                   <tr>
                     <th className="px-8 py-6">Artifact</th>

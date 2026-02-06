@@ -70,7 +70,7 @@ export function NotificationCenter({ userId }: NotificationCenterProps) {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-[600px] overflow-hidden flex flex-col"
+              className="absolute right-0 mt-2 w-[min(24rem,calc(100vw-1.5rem))] bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-[600px] overflow-hidden flex flex-col"
             >
               {/* Header */}
               <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50">

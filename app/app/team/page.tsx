@@ -94,7 +94,7 @@ export default async function TeamPage() {
           </div>
           
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
+            <table className="min-w-[640px] w-full text-left text-sm">
                 <thead className="bg-white/10 text-slate-400 font-bold text-[10px] uppercase tracking-wider">
                     <tr>
                         <th className="px-6 py-4">User</th>
@@ -150,34 +150,36 @@ export default async function TeamPage() {
                </div>
             </div>
             
-            <table className="w-full text-left text-sm">
-              <tbody className="divide-y divide-white/10">
-                {inviteRows.map((invite) => (
-                  <tr key={invite.id} className="group hover:bg-amber-400/10 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-400">
-                            <Mail className="h-4 w-4" />
+            <div className="overflow-x-auto">
+              <table className="min-w-[560px] w-full text-left text-sm">
+                <tbody className="divide-y divide-white/10">
+                  {inviteRows.map((invite) => (
+                    <tr key={invite.id} className="group hover:bg-amber-400/10 transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="h-8 w-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-400">
+                              <Mail className="h-4 w-4" />
+                          </div>
+                          <span className="text-slate-100 font-bold">{invite.email}</span>
                         </div>
-                        <span className="text-slate-100 font-bold">{invite.email}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="px-2 py-1 rounded-md bg-white/10 text-slate-400 text-[10px] font-bold uppercase border border-white/10">
-                        {invite.role}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                       {/* In a real app, you would wire this button to a delete action */}
-                       <button className="flex items-center gap-1 ml-auto px-3 py-1.5 rounded-lg text-xs font-bold text-rose-300 hover:bg-rose-500/10 transition-colors">
-                            <Trash2 className="h-3 w-3" />
-                            Revoke
-                       </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="px-2 py-1 rounded-md bg-white/10 text-slate-400 text-[10px] font-bold uppercase border border-white/10">
+                          {invite.role}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                         {/* In a real app, you would wire this button to a delete action */}
+                         <button className="flex items-center gap-1 ml-auto px-3 py-1.5 rounded-lg text-xs font-bold text-rose-300 hover:bg-rose-500/10 transition-colors">
+                              <Trash2 className="h-3 w-3" />
+                              Revoke
+                         </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>

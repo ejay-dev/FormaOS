@@ -80,7 +80,7 @@ export default function TrainingRegisterPage() {
       </div>
 
       {/* ✅ ADVANCED FILTER BAR */}
-      <div className="flex items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 shadow-sm">
          <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <input 
@@ -88,7 +88,7 @@ export default function TrainingRegisterPage() {
                 className="w-full pl-12 pr-4 py-2.5 text-xs font-bold outline-none bg-transparent"
             />
          </div>
-         <div className="h-6 w-px bg-white/10" />
+         <div className="hidden sm:block h-6 w-px bg-white/10" />
          <button className="flex items-center gap-2 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:bg-white/10 rounded-xl transition-colors">
             <Filter className="h-4 w-4" />
             Filter
@@ -96,7 +96,8 @@ export default function TrainingRegisterPage() {
       </div>
 
       <div className="bg-white/5 border border-white/10 rounded-[2.5rem] shadow-sm overflow-hidden">
-        <table className="w-full text-left border-collapse">
+        <div className="w-full overflow-x-auto">
+        <table className="min-w-[860px] w-full text-left border-collapse">
           <thead>
             <tr className="bg-white/5 border-b border-white/10 text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">
               <th className="px-8 py-6">Personnel</th>
@@ -174,6 +175,7 @@ export default function TrainingRegisterPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );
