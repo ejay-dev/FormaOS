@@ -45,9 +45,15 @@ test.describe('Complete User Journey', () => {
     await page.goto('/pricing');
     await expect(page).toHaveTitle(/Pricing|FormaOS/i);
 
-    const startTrialBtns = page.locator('text=/Start.*Trial/i, text=/Get.*Started/i');
+    // Check for "Start Free Trial" or "Start Your Free Trial" links
+    const startTrialBtns = page.locator('a:has-text("Start Free Trial"), a:has-text("Start Your Free Trial")');
     const count = await startTrialBtns.count();
     expect(count).toBeGreaterThan(0);
+
+    // Verify at least one leads to signup
+    const firstBtn = startTrialBtns.first();
+    const href = await firstBtn.getAttribute('href');
+    expect(href).toContain('/auth/signup');
   });
 
   test('Industries page loads', async ({ page }) => {
@@ -68,21 +74,23 @@ test.describe('Complete User Journey', () => {
     // Fill signup form
     await page.fill('input[type="email"], input[name="email"]', TEST_EMAIL);
     await page.fill('input[type="password"], input[name="password"]', TEST_PASSWORD);
+    await page.fill('input[name="confirmPassword"]', TEST_PASSWORD);
 
     // Look for terms checkbox if exists
     const termsCheckbox = page.locator('input[type="checkbox"]').first();
-    if (await termsCheckbox.isVisible()) {
+    if (await termsCheckbox.isVisible({ timeout: 1000 }).catch(() => false)) {
       await termsCheckbox.check();
     }
 
     // Submit
     await page.click('button[type="submit"], button:has-text("Sign up"), button:has-text("Create account")');
 
-    // Should redirect to onboarding or dashboard
-    await page.waitForURL(/\/(app|onboarding|dashboard)/, { timeout: 10000 });
+    // Should redirect to check-email page
+    await page.waitForURL(/\/auth\/check-email/, { timeout: 10000 });
 
-    // Verify we're authenticated
-    await expect(page).not.toHaveURL(/\/auth\/(signin|signup|login)/);
+    // Verify we're on check-email page
+    await expect(page).toHaveURL(/\/auth\/check-email/);
+    await expect(page.locator('text=/Check.*Email/i')).toBeVisible();
   });
 
   // Test 3: Dashboard Access
