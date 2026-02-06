@@ -3,6 +3,7 @@ import "server-only";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { resolvePlanKey, type PlanKey } from "@/lib/plans";
 import { normalizeRole, type RoleKey } from "@/app/app/actions/rbac";
+import { ensureOrgProvisioning, ensureUserProvisioning } from "@/lib/provisioning/ensure-provisioning";
 import type { 
   PlanTier, 
   UserRole, 
@@ -251,17 +252,40 @@ export async function fetchSystemState(): Promise<SystemStatePayload | null> {
   if (!user) return null;
 
   // Get membership data
-  const membership = await getMembershipData();
+  let membership = await getMembershipData();
+  if (!membership) {
+    await ensureUserProvisioning({ userId: user.id, email: user.email ?? null });
+    membership = await getMembershipData();
+  }
   if (!membership) return null;
 
   // Get subscription data
-  const subscription = await getSubscriptionData(membership.orgId);
-  const planTier = subscription?.planTier ?? "trial";
-  const trialActive = subscription?.trialActive ?? false;
-  const trialDaysRemaining = subscription?.trialDaysRemaining ?? 0;
+  let subscription = await getSubscriptionData(membership.orgId);
+  let planTier = subscription?.planTier ?? "trial";
+  let trialActive = subscription?.trialActive ?? false;
+  let trialDaysRemaining = subscription?.trialDaysRemaining ?? 0;
 
   // Get entitlements from database
-  const dbEntitlements = await getEntitlements(membership.orgId);
+  let dbEntitlements = await getEntitlements(membership.orgId);
+
+  const resolvedPlanForEntitlements = resolvePlanKey(subscription?.planKey ?? null);
+  const needsEntitlements =
+    resolvedPlanForEntitlements === "basic" || resolvedPlanForEntitlements === "pro";
+  const needsRepair = !subscription || (needsEntitlements && dbEntitlements.length === 0);
+
+  if (needsRepair) {
+    await ensureOrgProvisioning({
+      orgId: membership.orgId,
+      planKey: subscription?.planKey ?? null,
+      ownerUserId: membership.userId,
+      orgName: membership.organizationName,
+    });
+    subscription = await getSubscriptionData(membership.orgId);
+    planTier = subscription?.planTier ?? planTier;
+    trialActive = subscription?.trialActive ?? trialActive;
+    trialDaysRemaining = subscription?.trialDaysRemaining ?? trialDaysRemaining;
+    dbEntitlements = await getEntitlements(membership.orgId);
+  }
 
   // Check if founder
   const parseEnvList = (value?: string | null) =>
