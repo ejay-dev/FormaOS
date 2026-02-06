@@ -1,0 +1,196 @@
+{
+  "framework": {
+    "name": "SOC 2 Trust Services Criteria",
+    "slug": "soc2",
+    "version": "2022",
+    "description": "Trust Services Criteria focused on security, availability, confidentiality, processing integrity, and privacy.",
+    "is_active": true
+  },
+  "domains": [
+    { "name": "Security", "description": "Protect systems against unauthorized access.", "sort_order": 1, "key": "security" },
+    { "name": "Availability", "description": "Ensure systems are available as committed.", "sort_order": 2, "key": "availability" },
+    { "name": "Confidentiality", "description": "Protect confidential information from unauthorized access.", "sort_order": 3, "key": "confidentiality" },
+    { "name": "Processing Integrity", "description": "Ensure system processing is complete, valid, accurate, and timely.", "sort_order": 4, "key": "processing_integrity" },
+    { "name": "Privacy", "description": "Collect, use, retain, and dispose of personal information appropriately.", "sort_order": 5, "key": "privacy" }
+  ],
+  "controls": [
+    {
+      "control_code": "SOC2-S1",
+      "title": "Security governance and risk oversight",
+      "summary_description": "Define security objectives, ownership, and oversight to manage risk.",
+      "implementation_guidance": "Document security governance, risk decisions, and executive reporting cadence.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Security",
+      "suggested_evidence_types": ["Security governance charter", "Risk oversight meeting notes"],
+      "suggested_automation_triggers": ["policy_review_due"],
+      "suggested_task_templates": [
+        { "title": "Review security governance", "description": "Validate governance roles and risk oversight cadence.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "SOC2-S2",
+      "title": "Identity and access management",
+      "summary_description": "Grant, modify, and remove access based on role and approval.",
+      "implementation_guidance": "Enforce MFA, periodic access reviews, and least-privilege access.",
+      "default_risk_level": "high",
+      "review_frequency_days": 90,
+      "domain": "Security",
+      "suggested_evidence_types": ["Access review logs", "MFA enforcement report"],
+      "suggested_automation_triggers": ["control_incomplete", "task_overdue"],
+      "suggested_task_templates": [
+        { "title": "Perform access review", "description": "Validate access for privileged accounts and critical apps.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "SOC2-S3",
+      "title": "Security monitoring and detection",
+      "summary_description": "Detect and analyze security events to enable timely response.",
+      "implementation_guidance": "Centralize logs, tune alerts, and document triage procedures.",
+      "default_risk_level": "high",
+      "review_frequency_days": 60,
+      "domain": "Security",
+      "suggested_evidence_types": ["SIEM dashboards", "Alert triage runbook"],
+      "suggested_automation_triggers": ["control_failed"],
+      "suggested_task_templates": [
+        { "title": "Review monitoring alerts", "description": "Investigate critical alerts and document outcomes.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "SOC2-A1",
+      "title": "Availability planning",
+      "summary_description": "Define availability requirements and monitor capacity.",
+      "implementation_guidance": "Establish availability targets and monitor capacity thresholds.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 180,
+      "domain": "Availability",
+      "suggested_evidence_types": ["Availability targets", "Capacity reports"],
+      "suggested_automation_triggers": ["risk_score_change"],
+      "suggested_task_templates": [
+        { "title": "Review availability targets", "description": "Validate uptime goals and capacity thresholds.", "priority": "medium" }
+      ]
+    },
+    {
+      "control_code": "SOC2-A2",
+      "title": "Resilience and recovery",
+      "summary_description": "Maintain recovery procedures to restore services after disruption.",
+      "implementation_guidance": "Test backups and recovery steps on a defined cadence.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Availability",
+      "suggested_evidence_types": ["Recovery runbooks", "Backup restore tests"],
+      "suggested_automation_triggers": ["task_overdue"],
+      "suggested_task_templates": [
+        { "title": "Test recovery procedures", "description": "Run recovery test and document results.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "SOC2-C1",
+      "title": "Confidential data classification",
+      "summary_description": "Classify data and apply handling rules for confidentiality.",
+      "implementation_guidance": "Define classification levels and enforce handling standards.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Confidentiality",
+      "suggested_evidence_types": ["Data classification register", "Handling standards"],
+      "suggested_automation_triggers": ["policy_review_due"],
+      "suggested_task_templates": [
+        { "title": "Review data classification", "description": "Confirm classification coverage for sensitive data.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "SOC2-C2",
+      "title": "Encryption and key management",
+      "summary_description": "Protect confidential data with encryption and key management controls.",
+      "implementation_guidance": "Ensure encryption at rest and in transit with managed key rotation.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Confidentiality",
+      "suggested_evidence_types": ["Encryption policy", "Key rotation logs"],
+      "suggested_automation_triggers": ["control_incomplete"],
+      "suggested_task_templates": [
+        { "title": "Validate encryption coverage", "description": "Confirm encryption for critical datasets.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "SOC2-PI1",
+      "title": "Change management",
+      "summary_description": "Control changes to systems that affect processing integrity.",
+      "implementation_guidance": "Require approvals, testing, and rollback procedures for changes.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 120,
+      "domain": "Processing Integrity",
+      "suggested_evidence_types": ["Change management policy", "Release approvals"],
+      "suggested_automation_triggers": ["task_overdue"],
+      "suggested_task_templates": [
+        { "title": "Review change approvals", "description": "Validate change approvals and test evidence.", "priority": "medium" }
+      ]
+    },
+    {
+      "control_code": "SOC2-PI2",
+      "title": "Data processing quality",
+      "summary_description": "Ensure processing outputs are complete, accurate, and timely.",
+      "implementation_guidance": "Monitor data quality checks and exception handling.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 120,
+      "domain": "Processing Integrity",
+      "suggested_evidence_types": ["Data quality reports", "Exception logs"],
+      "suggested_automation_triggers": ["risk_score_change"],
+      "suggested_task_templates": [
+        { "title": "Validate data quality controls", "description": "Review processing exceptions and remediation.", "priority": "medium" }
+      ]
+    },
+    {
+      "control_code": "SOC2-P1",
+      "title": "Privacy notice and consent",
+      "summary_description": "Provide clear privacy notices and obtain appropriate consent.",
+      "implementation_guidance": "Publish privacy notices and track consent collection.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 365,
+      "domain": "Privacy",
+      "suggested_evidence_types": ["Privacy notice", "Consent records"],
+      "suggested_automation_triggers": ["policy_review_due"],
+      "suggested_task_templates": [
+        { "title": "Review privacy notice", "description": "Validate privacy disclosures and consent flows.", "priority": "medium" }
+      ]
+    },
+    {
+      "control_code": "SOC2-P2",
+      "title": "Data subject rights and retention",
+      "summary_description": "Honor data subject rights and manage retention/disposal.",
+      "implementation_guidance": "Document retention schedules and ensure request handling workflows.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 365,
+      "domain": "Privacy",
+      "suggested_evidence_types": ["Retention schedule", "Rights request logs"],
+      "suggested_automation_triggers": ["task_overdue"],
+      "suggested_task_templates": [
+        { "title": "Review retention schedule", "description": "Validate retention and disposal controls for personal data.", "priority": "medium" }
+      ]
+    }
+  ],
+  "mappings": [
+    { "internal_control_code": "SOC2-S1", "framework_slug": "nist-csf", "external_control_reference": "GV-1", "mapping_strength": "primary" },
+    { "internal_control_code": "SOC2-S1", "framework_slug": "cis-controls", "external_control_reference": "CIS-15", "mapping_strength": "secondary" },
+    { "internal_control_code": "SOC2-S2", "framework_slug": "nist-csf", "external_control_reference": "PR-1", "mapping_strength": "primary" },
+    { "internal_control_code": "SOC2-S2", "framework_slug": "cis-controls", "external_control_reference": "CIS-05", "mapping_strength": "primary" },
+    { "internal_control_code": "SOC2-S3", "framework_slug": "nist-csf", "external_control_reference": "DE-1", "mapping_strength": "primary" },
+    { "internal_control_code": "SOC2-S3", "framework_slug": "cis-controls", "external_control_reference": "CIS-13", "mapping_strength": "primary" },
+    { "internal_control_code": "SOC2-A1", "framework_slug": "nist-csf", "external_control_reference": "ID-2", "mapping_strength": "primary" },
+    { "internal_control_code": "SOC2-A1", "framework_slug": "cis-controls", "external_control_reference": "CIS-11", "mapping_strength": "secondary" },
+    { "internal_control_code": "SOC2-A2", "framework_slug": "nist-csf", "external_control_reference": "RC-1", "mapping_strength": "primary" },
+    { "internal_control_code": "SOC2-A2", "framework_slug": "cis-controls", "external_control_reference": "CIS-11", "mapping_strength": "primary" },
+    { "internal_control_code": "SOC2-C1", "framework_slug": "nist-csf", "external_control_reference": "PR-2", "mapping_strength": "primary" },
+    { "internal_control_code": "SOC2-C1", "framework_slug": "cis-controls", "external_control_reference": "CIS-03", "mapping_strength": "primary" },
+    { "internal_control_code": "SOC2-C2", "framework_slug": "nist-csf", "external_control_reference": "PR-2", "mapping_strength": "primary" },
+    { "internal_control_code": "SOC2-C2", "framework_slug": "cis-controls", "external_control_reference": "CIS-03", "mapping_strength": "secondary" },
+    { "internal_control_code": "SOC2-PI1", "framework_slug": "nist-csf", "external_control_reference": "GV-2", "mapping_strength": "secondary" },
+    { "internal_control_code": "SOC2-PI1", "framework_slug": "cis-controls", "external_control_reference": "CIS-16", "mapping_strength": "primary" },
+    { "internal_control_code": "SOC2-PI2", "framework_slug": "nist-csf", "external_control_reference": "DE-2", "mapping_strength": "primary" },
+    { "internal_control_code": "SOC2-PI2", "framework_slug": "cis-controls", "external_control_reference": "CIS-08", "mapping_strength": "primary" },
+    { "internal_control_code": "SOC2-P1", "framework_slug": "nist-csf", "external_control_reference": "GV-2", "mapping_strength": "secondary" },
+    { "internal_control_code": "SOC2-P1", "framework_slug": "cis-controls", "external_control_reference": "CIS-14", "mapping_strength": "secondary" },
+    { "internal_control_code": "SOC2-P2", "framework_slug": "nist-csf", "external_control_reference": "PR-2", "mapping_strength": "primary" },
+    { "internal_control_code": "SOC2-P2", "framework_slug": "cis-controls", "external_control_reference": "CIS-03", "mapping_strength": "primary" }
+  ]
+}

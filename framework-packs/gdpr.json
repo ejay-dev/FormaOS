@@ -1,0 +1,163 @@
+{
+  "framework": {
+    "name": "GDPR Audit Workflow",
+    "slug": "gdpr",
+    "version": "2024",
+    "description": "Workflow-focused controls for GDPR audit readiness and accountability.",
+    "is_active": true
+  },
+  "domains": [
+    { "name": "Governance", "description": "Accountability, roles, and documentation.", "sort_order": 1, "key": "governance" },
+    { "name": "Data Protection", "description": "Data minimization, classification, and security.", "sort_order": 2, "key": "data" },
+    { "name": "Rights & Requests", "description": "Handle data subject rights and requests.", "sort_order": 3, "key": "rights" },
+    { "name": "Breach Response", "description": "Breach detection and notification readiness.", "sort_order": 4, "key": "breach" },
+    { "name": "Vendors", "description": "Third-party and transfer governance.", "sort_order": 5, "key": "vendors" }
+  ],
+  "controls": [
+    {
+      "control_code": "GDPR-GOV-1",
+      "title": "Accountability documentation",
+      "summary_description": "Maintain records that demonstrate GDPR accountability.",
+      "implementation_guidance": "Keep an up-to-date compliance register and audit trail.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Governance",
+      "suggested_evidence_types": ["Compliance register", "Audit log extracts"],
+      "suggested_automation_triggers": ["policy_review_due"],
+      "suggested_task_templates": [
+        { "title": "Update GDPR accountability register", "description": "Review records of processing and compliance artifacts.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "GDPR-GOV-2",
+      "title": "Privacy governance roles",
+      "summary_description": "Define privacy roles, responsibilities, and escalation paths.",
+      "implementation_guidance": "Document responsibilities and ensure staffing coverage.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 365,
+      "domain": "Governance",
+      "suggested_evidence_types": ["Role descriptions", "Responsibility matrix"],
+      "suggested_automation_triggers": ["task_overdue"],
+      "suggested_task_templates": [
+        { "title": "Review privacy role assignments", "description": "Confirm accountability coverage for GDPR obligations.", "priority": "medium" }
+      ]
+    },
+    {
+      "control_code": "GDPR-DATA-1",
+      "title": "Records of processing",
+      "summary_description": "Maintain a record of processing activities for personal data.",
+      "implementation_guidance": "Track data categories, purpose, and retention.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Data Protection",
+      "suggested_evidence_types": ["Processing register", "Data inventory"],
+      "suggested_automation_triggers": ["task_created"],
+      "suggested_task_templates": [
+        { "title": "Update processing records", "description": "Verify data processing activities and retention.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "GDPR-DATA-2",
+      "title": "Data minimization controls",
+      "summary_description": "Collect and retain only necessary personal data.",
+      "implementation_guidance": "Review data collection forms and retention schedules.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 180,
+      "domain": "Data Protection",
+      "suggested_evidence_types": ["Data collection review", "Retention schedule"],
+      "suggested_automation_triggers": ["policy_review_due"],
+      "suggested_task_templates": [
+        { "title": "Review data minimization", "description": "Validate data collection against business need.", "priority": "medium" }
+      ]
+    },
+    {
+      "control_code": "GDPR-RIGHTS-1",
+      "title": "Data subject request workflow",
+      "summary_description": "Respond to access, deletion, and correction requests on time.",
+      "implementation_guidance": "Document request intake, SLA tracking, and fulfillment.",
+      "default_risk_level": "high",
+      "review_frequency_days": 90,
+      "domain": "Rights & Requests",
+      "suggested_evidence_types": ["Request log", "SLA tracking report"],
+      "suggested_automation_triggers": ["task_overdue"],
+      "suggested_task_templates": [
+        { "title": "Audit data subject requests", "description": "Review request SLAs and fulfillment evidence.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "GDPR-RIGHTS-2",
+      "title": "Consent and lawful basis",
+      "summary_description": "Document lawful basis and consent records for processing.",
+      "implementation_guidance": "Track consent collection and withdrawal workflows.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 180,
+      "domain": "Rights & Requests",
+      "suggested_evidence_types": ["Consent records", "Lawful basis register"],
+      "suggested_automation_triggers": ["task_overdue"],
+      "suggested_task_templates": [
+        { "title": "Review consent records", "description": "Validate consent capture and withdrawal handling.", "priority": "medium" }
+      ]
+    },
+    {
+      "control_code": "GDPR-BREACH-1",
+      "title": "Breach detection and triage",
+      "summary_description": "Detect incidents involving personal data and triage quickly.",
+      "implementation_guidance": "Maintain detection processes and incident logging.",
+      "default_risk_level": "high",
+      "review_frequency_days": 90,
+      "domain": "Breach Response",
+      "suggested_evidence_types": ["Incident logs", "Detection alerts"],
+      "suggested_automation_triggers": ["control_failed"],
+      "suggested_task_templates": [
+        { "title": "Review breach detection", "description": "Validate detection coverage for personal data systems.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "GDPR-BREACH-2",
+      "title": "Notification readiness",
+      "summary_description": "Prepare to notify regulators and affected parties within required timelines.",
+      "implementation_guidance": "Maintain notification templates and approval workflow.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Breach Response",
+      "suggested_evidence_types": ["Notification templates", "Response playbook"],
+      "suggested_automation_triggers": ["task_overdue"],
+      "suggested_task_templates": [
+        { "title": "Test breach notification workflow", "description": "Simulate breach notification approvals and timing.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "GDPR-VEND-1",
+      "title": "Vendor data processing agreements",
+      "summary_description": "Ensure vendors processing personal data have agreements in place.",
+      "implementation_guidance": "Maintain a vendor register and DPA status tracking.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 180,
+      "domain": "Vendors",
+      "suggested_evidence_types": ["Vendor register", "DPA repository"],
+      "suggested_automation_triggers": ["task_overdue"],
+      "suggested_task_templates": [
+        { "title": "Review vendor DPAs", "description": "Verify DPAs for high-risk vendors.", "priority": "medium" }
+      ]
+    },
+    {
+      "control_code": "GDPR-VEND-2",
+      "title": "Cross-border transfer oversight",
+      "summary_description": "Assess safeguards for international data transfers.",
+      "implementation_guidance": "Document transfer mechanisms and approvals.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 180,
+      "domain": "Vendors",
+      "suggested_evidence_types": ["Transfer assessment", "Standard clauses inventory"],
+      "suggested_automation_triggers": ["task_overdue"],
+      "suggested_task_templates": [
+        { "title": "Review transfer safeguards", "description": "Validate safeguards for cross-border data flows.", "priority": "medium" }
+      ]
+    }
+  ],
+  "mappings": [
+    { "internal_control_code": "GDPR-GOV-1", "framework_slug": "iso27001", "external_control_reference": "ISO-A.5.1", "mapping_strength": "secondary" },
+    { "internal_control_code": "GDPR-DATA-1", "framework_slug": "nist-csf", "external_control_reference": "ID-1", "mapping_strength": "secondary" },
+    { "internal_control_code": "GDPR-BREACH-1", "framework_slug": "nist-csf", "external_control_reference": "DE-1", "mapping_strength": "primary" }
+  ]
+}

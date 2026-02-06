@@ -1,0 +1,230 @@
+{
+  "framework": {
+    "name": "NIST Cybersecurity Framework",
+    "slug": "nist-csf",
+    "version": "2.0",
+    "description": "Risk-based framework for governing, identifying, protecting, detecting, responding to, and recovering from cybersecurity events.",
+    "is_active": true
+  },
+  "domains": [
+    { "name": "Govern", "description": "Set direction, oversight, and accountability for cybersecurity.", "sort_order": 1, "key": "govern" },
+    { "name": "Identify", "description": "Understand assets, business context, and risks.", "sort_order": 2, "key": "identify" },
+    { "name": "Protect", "description": "Implement safeguards to protect services and data.", "sort_order": 3, "key": "protect" },
+    { "name": "Detect", "description": "Identify anomalous events and potential incidents.", "sort_order": 4, "key": "detect" },
+    { "name": "Respond", "description": "Take action on detected incidents.", "sort_order": 5, "key": "respond" },
+    { "name": "Recover", "description": "Restore services and learn from incidents.", "sort_order": 6, "key": "recover" }
+  ],
+  "controls": [
+    {
+      "control_code": "GV-1",
+      "title": "Cybersecurity governance defined",
+      "summary_description": "Establish leadership ownership, policy direction, and accountability for cybersecurity outcomes.",
+      "implementation_guidance": "Define a governance charter, assign accountable owners, and review program objectives quarterly.",
+      "default_risk_level": "high",
+      "review_frequency_days": 90,
+      "domain": "Govern",
+      "suggested_evidence_types": ["Governance charter", "Security policy index", "Board or leadership minutes"],
+      "suggested_automation_triggers": ["policy_review_due", "task_overdue"],
+      "suggested_task_templates": [
+        { "title": "Publish cybersecurity governance charter", "description": "Approve and publish governance roles, responsibilities, and reporting cadence.", "priority": "high" },
+        { "title": "Quarterly governance review", "description": "Review program objectives, risks, and KPIs with leadership.", "priority": "medium" }
+      ]
+    },
+    {
+      "control_code": "GV-2",
+      "title": "Risk strategy established",
+      "summary_description": "Define risk appetite, tolerance, and decision criteria for cybersecurity.",
+      "implementation_guidance": "Document risk thresholds and ensure they are referenced in exception and remediation workflows.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Govern",
+      "suggested_evidence_types": ["Risk appetite statement", "Risk acceptance records"],
+      "suggested_automation_triggers": ["control_incomplete"],
+      "suggested_task_templates": [
+        { "title": "Document risk appetite", "description": "Define acceptable residual risk levels and escalation paths.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "GV-3",
+      "title": "Supply chain oversight",
+      "summary_description": "Assess and manage third-party risk across vendors and partners.",
+      "implementation_guidance": "Maintain vendor inventory, classify critical suppliers, and enforce security requirements in contracts.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 180,
+      "domain": "Govern",
+      "suggested_evidence_types": ["Vendor register", "Security addenda", "Risk assessments"],
+      "suggested_automation_triggers": ["task_overdue"],
+      "suggested_task_templates": [
+        { "title": "Review critical vendor security", "description": "Validate security controls for high-risk vendors.", "priority": "medium" }
+      ]
+    },
+    {
+      "control_code": "ID-1",
+      "title": "Asset inventory maintained",
+      "summary_description": "Identify and track business-critical systems, data, and infrastructure assets.",
+      "implementation_guidance": "Keep a living inventory with owners, classifications, and dependencies.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 180,
+      "domain": "Identify",
+      "suggested_evidence_types": ["Asset inventory", "Data classification register"],
+      "suggested_automation_triggers": ["task_created"],
+      "suggested_task_templates": [
+        { "title": "Build asset inventory", "description": "Document systems, data stores, and owners.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "ID-2",
+      "title": "Business environment understood",
+      "summary_description": "Define critical services, customers, and operational dependencies.",
+      "implementation_guidance": "Map business processes to systems and data that support them.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 365,
+      "domain": "Identify",
+      "suggested_evidence_types": ["Business impact analysis", "Service dependency map"],
+      "suggested_automation_triggers": ["task_overdue"],
+      "suggested_task_templates": [
+        { "title": "Document critical services", "description": "Identify services and dependencies required to operate.", "priority": "medium" }
+      ]
+    },
+    {
+      "control_code": "ID-3",
+      "title": "Risk assessment performed",
+      "summary_description": "Identify threats, vulnerabilities, and impacts to prioritize remediation.",
+      "implementation_guidance": "Run periodic risk assessments and track treatment plans.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Identify",
+      "suggested_evidence_types": ["Risk register", "Threat model summaries"],
+      "suggested_automation_triggers": ["risk_score_change"],
+      "suggested_task_templates": [
+        { "title": "Conduct quarterly risk review", "description": "Update risk register and treatment status.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "PR-1",
+      "title": "Access control enforced",
+      "summary_description": "Ensure access is granted based on role, least privilege, and approval.",
+      "implementation_guidance": "Apply MFA, role-based access, and regular access reviews.",
+      "default_risk_level": "high",
+      "review_frequency_days": 90,
+      "domain": "Protect",
+      "suggested_evidence_types": ["Access review logs", "MFA policy", "RBAC matrix"],
+      "suggested_automation_triggers": ["control_incomplete", "task_overdue"],
+      "suggested_task_templates": [
+        { "title": "Run access review", "description": "Validate user access for critical systems.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "PR-2",
+      "title": "Data protection applied",
+      "summary_description": "Protect sensitive data through encryption, retention, and handling controls.",
+      "implementation_guidance": "Use encryption at rest/in transit and enforce retention schedules.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Protect",
+      "suggested_evidence_types": ["Encryption standards", "Data retention policy"],
+      "suggested_automation_triggers": ["policy_review_due"],
+      "suggested_task_templates": [
+        { "title": "Validate encryption coverage", "description": "Confirm encryption for critical data stores.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "PR-3",
+      "title": "Security awareness training",
+      "summary_description": "Ensure workforce understands security expectations and reporting.",
+      "implementation_guidance": "Run onboarding training and annual refreshers with tracking.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 365,
+      "domain": "Protect",
+      "suggested_evidence_types": ["Training completion report", "Awareness materials"],
+      "suggested_automation_triggers": ["task_overdue"],
+      "suggested_task_templates": [
+        { "title": "Launch annual security training", "description": "Schedule and track annual security refresher.", "priority": "medium" }
+      ]
+    },
+    {
+      "control_code": "DE-1",
+      "title": "Continuous monitoring",
+      "summary_description": "Monitor systems and logs to detect anomalous activity.",
+      "implementation_guidance": "Aggregate logs, alert on thresholds, and review alerts weekly.",
+      "default_risk_level": "high",
+      "review_frequency_days": 30,
+      "domain": "Detect",
+      "suggested_evidence_types": ["SIEM alerts", "Log review reports"],
+      "suggested_automation_triggers": ["control_failed"],
+      "suggested_task_templates": [
+        { "title": "Review security alerts", "description": "Investigate critical alerts and document outcomes.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "DE-2",
+      "title": "Anomaly detection",
+      "summary_description": "Identify unusual behavior that may indicate compromise.",
+      "implementation_guidance": "Define baseline behavior and tune detection rules.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 60,
+      "domain": "Detect",
+      "suggested_evidence_types": ["Detection rule changes", "Alert tuning logs"],
+      "suggested_automation_triggers": ["risk_score_change"],
+      "suggested_task_templates": [
+        { "title": "Tune detection rules", "description": "Adjust anomaly detection rules based on recent findings.", "priority": "medium" }
+      ]
+    },
+    {
+      "control_code": "RS-1",
+      "title": "Incident response plan",
+      "summary_description": "Maintain a tested incident response plan with clear roles.",
+      "implementation_guidance": "Define escalation paths, run tabletop exercises, and update lessons learned.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Respond",
+      "suggested_evidence_types": ["Incident response plan", "Tabletop exercise report"],
+      "suggested_automation_triggers": ["task_overdue"],
+      "suggested_task_templates": [
+        { "title": "Run incident response tabletop", "description": "Simulate incident response and capture outcomes.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "RS-2",
+      "title": "Incident communications",
+      "summary_description": "Coordinate communications with stakeholders during incidents.",
+      "implementation_guidance": "Prepare comms templates and approval workflows.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 365,
+      "domain": "Respond",
+      "suggested_evidence_types": ["Comms plan", "Stakeholder contact list"],
+      "suggested_automation_triggers": ["control_incomplete"],
+      "suggested_task_templates": [
+        { "title": "Review incident communications plan", "description": "Validate stakeholder contacts and messaging templates.", "priority": "medium" }
+      ]
+    },
+    {
+      "control_code": "RC-1",
+      "title": "Recovery planning",
+      "summary_description": "Maintain recovery objectives and procedures for critical services.",
+      "implementation_guidance": "Define RTO/RPO targets and verify backup strategies.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Recover",
+      "suggested_evidence_types": ["Business continuity plan", "Backup test results"],
+      "suggested_automation_triggers": ["task_overdue"],
+      "suggested_task_templates": [
+        { "title": "Test recovery procedures", "description": "Run recovery test and document results.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "RC-2",
+      "title": "Post-incident improvements",
+      "summary_description": "Capture lessons learned and improve response and recovery.",
+      "implementation_guidance": "Conduct retrospectives and update procedures.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 180,
+      "domain": "Recover",
+      "suggested_evidence_types": ["Post-incident review", "Improvement backlog"],
+      "suggested_automation_triggers": ["task_created"],
+      "suggested_task_templates": [
+        { "title": "Create improvement backlog", "description": "Track remediation tasks from incident retrospectives.", "priority": "medium" }
+      ]
+    }
+  ]
+}
