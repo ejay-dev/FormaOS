@@ -72,9 +72,9 @@ test.describe('Complete User Journey', () => {
     await page.goto('/auth/signup');
 
     // Fill signup form
-    await page.fill('input[type="email"], input[name="email"]', TEST_EMAIL);
-    await page.fill('input[type="password"], input[name="password"]', TEST_PASSWORD);
-    await page.fill('input[name="confirmPassword"]', TEST_PASSWORD);
+    await page.fill('input[type="email"]', TEST_EMAIL);
+    await page.fill('input[placeholder*="secure password" i]', TEST_PASSWORD);
+    await page.fill('input[placeholder*="Confirm" i]', TEST_PASSWORD);
 
     // Look for terms checkbox if exists
     const termsCheckbox = page.locator('input[type="checkbox"]').first();
