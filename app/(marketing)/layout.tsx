@@ -10,6 +10,7 @@ import { SystemStateHydrator } from '@/lib/system-state/hydrator';
 import { PublicAuthProvider } from '@/lib/auth/public-auth-provider';
 import './marketing.css';
 import { brand } from '@/config/brand';
+import { Logo } from '@/components/brand/Logo';
 
 // Force static rendering for all marketing pages
 export const dynamic = 'force-static';
@@ -64,16 +65,9 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
                   <div className="flex items-center">
                     <Link
                       href="/"
-                      className="flex items-center gap-2 text-foreground"
+                      className="flex items-center text-foreground"
                     >
-                      <div className="relative h-8 w-8">
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary to-secondary opacity-80" />
-                        <div className="absolute inset-0.5 rounded-full bg-background" />
-                        <div className="absolute inset-1.5 rounded-full bg-gradient-to-br from-primary to-secondary" />
-                      </div>
-                      <span className="text-lg font-bold tracking-tight">
-                        FormaOS
-                      </span>
+                      <Logo size={32} />
                     </Link>
                   </div>
 

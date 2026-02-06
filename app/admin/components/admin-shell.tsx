@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
   LayoutGrid,
@@ -20,6 +19,7 @@ import {
 import { useState } from 'react';
 import { createSupabaseClient } from '@/lib/supabase/client';
 import { brand } from '@/config/brand';
+import { Logo } from '@/components/brand/Logo';
 
 /**
  * =========================================================
@@ -68,14 +68,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             )}
           </button>
           <Link href="/admin/dashboard" className="flex items-center gap-2">
-            <Image
-              src={brand.logo.mark}
-              alt={brand.appName}
-              width={32}
-              height={32}
-              priority
-              className="rounded-md"
-            />
+            <Logo variant="mark" size={32} />
             <div className="hidden sm:block">
               <div className="text-sm font-bold">{brand.appName} Admin</div>
               <div className="text-xs text-slate-500">Platform Console</div>

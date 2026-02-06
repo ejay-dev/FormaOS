@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { brand } from '@/config/brand';
+import { Logo } from '@/components/brand/Logo';
 
 /**
  * =========================================================
@@ -23,11 +24,7 @@ export default function NotFound() {
       <div className="relative z-10 max-w-2xl text-center">
         {/* Logo */}
         <div className="mb-8 flex justify-center">
-          <img
-            src={brand.logo.mark}
-            alt={brand.appName}
-            className="h-16 w-16 rounded-lg"
-          />
+          <Logo variant="mark" size={64} />
         </div>
 
         {/* 404 */}

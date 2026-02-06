@@ -5,7 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import { createSupabaseClient } from '@/lib/supabase/client';
 import { PLAN_CATALOG, resolvePlanKey } from '@/lib/plans';
 import Link from 'next/link';
-import { Shield, CheckCircle2, ArrowRight, Star } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Star } from 'lucide-react';
+import { Logo } from '@/components/brand/Logo';
 
 function SignUpContent() {
   const searchParams = useSearchParams();
@@ -127,12 +128,7 @@ function SignUpContent() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Header */}
       <div className="flex items-center justify-between p-6">
-        <div className="flex items-center gap-3">
-          <div className="rounded-lg bg-gradient-to-br from-sky-400 to-cyan-500 p-2">
-            <Shield className="h-6 w-6 text-white" />
-          </div>
-          <span className="text-xl font-bold text-white">FormaOS</span>
-        </div>
+        <Logo size={36} textClassName="text-xl font-bold text-white" />
         <div className="text-sm text-slate-400">
           Secure · Compliance-First · Enterprise-Ready
         </div>
@@ -357,7 +353,7 @@ export default function SignUpPage() {
       fallback={
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
           <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm px-6 py-4 text-sm text-slate-300">
-            <Shield className="h-4 w-4 animate-pulse" />
+            <Logo variant="mark" size={16} />
             <span>Loading FormaOS signup...</span>
           </div>
         </div>

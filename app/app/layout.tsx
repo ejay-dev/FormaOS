@@ -12,6 +12,7 @@ import { resolvePlanKey } from '@/lib/plans';
 import { normalizeRole } from '@/app/app/actions/rbac';
 import { TrialStatusBanner } from '@/app/app/components/TrialStatusBanner';
 import { brand } from '@/config/brand';
+import { Logo } from '@/components/brand/Logo';
 
 /**
  * =========================================================
@@ -97,13 +98,7 @@ export default async function AppLayout({
                   {/* Sidebar header */}
                   <div className="flex h-20 items-center border-b border-white/8 px-6">
                     <div className="flex items-center gap-3">
-                      <img
-                        src={brand.logo.mark}
-                        alt={brand.appName}
-                        width={40}
-                        height={40}
-                        className="rounded-lg"
-                      />
+                      <Logo variant="mark" size={40} />
                       <div>
                         <div className="text-base font-bold font-display">
                           {brand.appName}
