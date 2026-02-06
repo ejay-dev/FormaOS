@@ -22,6 +22,8 @@ import {
 } from '@/lib/validators/organization';
 import { INDUSTRY_PACKS } from '@/lib/industry-packs';
 import { evaluateFrameworkControls } from '@/app/app/actions/compliance-engine';
+import { provisionFrameworkControls } from '@/lib/frameworks/provisioning';
+import { PACK_SLUGS } from '@/lib/frameworks/framework-installer';
 
 const TOTAL_STEPS = 7;
 const SITE_URL = (
@@ -32,6 +34,16 @@ const PLAN_CHOICES = [
   PLAN_CATALOG.pro,
   PLAN_CATALOG.enterprise,
 ];
+const FRAMEWORK_ENGINE_SLUGS = new Set([
+  ...PACK_SLUGS,
+  'iso27001',
+  'hipaa',
+  'gdpr',
+  'pci-dss',
+  'soc2',
+  'nist-csf',
+  'cis-controls',
+]);
 
 const ROLE_OPTIONS = [
   { id: 'employer', label: 'Employer / Organization admin', role: 'owner' },
@@ -291,6 +303,54 @@ async function saveFrameworkSelection(formData: FormData) {
   }
 
   await supabase.from('organizations').update({ frameworks }).eq('id', orgId);
+
+  try {
+    const selectedFrameworks = frameworks
+      .map((entry) => entry.toLowerCase().trim())
+      .filter((entry) => FRAMEWORK_ENGINE_SLUGS.has(entry));
+
+    if (selectedFrameworks.length) {
+      const admin = createSupabaseAdminClient();
+      const upsertPayload = selectedFrameworks.map((slug) => ({
+        org_id: orgId,
+        framework_slug: slug,
+        enabled_at: new Date().toISOString(),
+      }));
+      const { error: adminUpsertError } = await admin.from('org_frameworks').upsert(
+        upsertPayload,
+        { onConflict: 'org_id,framework_slug' },
+      );
+
+      if (adminUpsertError) {
+        console.warn('[onboarding] admin org_frameworks upsert failed', adminUpsertError);
+        await supabase.from('org_frameworks').upsert(upsertPayload, {
+          onConflict: 'org_id,framework_slug',
+        });
+      }
+
+      try {
+        await Promise.all(
+          selectedFrameworks.map((slug) =>
+            provisionFrameworkControls(orgId, slug, { force: true, client: admin }),
+          ),
+        );
+      } catch (error) {
+        console.warn('[onboarding] admin provisioning failed', error);
+      }
+
+      try {
+        await Promise.all(
+          selectedFrameworks.map((slug) =>
+            provisionFrameworkControls(orgId, slug, { force: true, client: supabase }),
+          ),
+        );
+      } catch (error) {
+        console.warn('[onboarding] user provisioning failed', error);
+      }
+    }
+  } catch (error) {
+    console.warn('[onboarding] Framework provisioning skipped:', error);
+  }
 
   await markStepComplete(orgId, 5, 6);
   redirect('/onboarding?step=6');

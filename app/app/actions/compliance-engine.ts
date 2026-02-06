@@ -5,6 +5,7 @@ import { requireEntitlement } from "@/lib/billing/entitlements";
 import { logActivity as logger } from "@/lib/logger";
 import { logAuditEvent } from "@/app/app/actions/audit-events";
 import { createCorrelationId } from "@/lib/security/correlation";
+import { getFrameworkCodeForSlug } from "@/lib/frameworks/framework-installer";
 
 type ControlStatus = "compliant" | "at_risk" | "non_compliant" | "not_applicable";
 
@@ -174,17 +175,40 @@ async function safeLogActivity(orgId: string, action: string, description: strin
 
 async function safeSelectFrameworks(
   supabase: any,
+  orgId?: string,
   strict: boolean = false
 ): Promise<FrameworkRow[]> {
   try {
     const { data, error } = await supabase
       .from("compliance_frameworks")
-      .select("id, code, title, description");
+      .select("id, code, name, description");
     if (error) {
       if (strict) throw new Error(error.message);
       return [];
     }
-    return data ?? [];
+    const frameworks = (data ?? []).map((row: any) => ({
+      ...row,
+      title: row.title ?? row.name ?? null,
+    }));
+    if (!orgId) return frameworks;
+
+    try {
+      const { data: enabled } = await supabase
+        .from("org_frameworks")
+        .select("framework_slug")
+        .eq("org_id", orgId);
+
+      const enabledSlugs = (enabled ?? []).map((row: any) => row.framework_slug);
+      if (!enabledSlugs.length) return frameworks;
+
+      const enabledCodes = new Set(
+        enabledSlugs.map((slug: string) => getFrameworkCodeForSlug(slug))
+      );
+
+      return frameworks.filter((fw: any) => enabledCodes.has(fw.code));
+    } catch {
+      return frameworks;
+    }
   } catch {
     if (strict) throw new Error("Failed to load frameworks");
     return [];
@@ -690,7 +714,7 @@ export async function getOrgComplianceSnapshot(orgId: string, strict: boolean = 
     };
   }
 
-  const frameworks = await safeSelectFrameworks(supabase, strict);
+  const frameworks = await safeSelectFrameworks(supabase, orgId, strict);
   const controlsByFramework: Record<string, any[]> = {};
   for (const framework of frameworks) {
     controlsByFramework[framework.id] = await safeSelectControls(supabase, framework.id, strict);

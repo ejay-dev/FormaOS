@@ -27,6 +27,9 @@ interface FeatureFlags {
 
   // Intelligence Features
   enableIntelligence: boolean
+
+  // Framework Engine
+  enableFrameworkEngine: boolean
 }
 
 const DEFAULT_FLAGS: FeatureFlags = {
@@ -46,6 +49,9 @@ const DEFAULT_FLAGS: FeatureFlags = {
   enableBundleOptimization: false,
   // Intelligence defaults to ON in production, OFF elsewhere
   enableIntelligence: process.env.NODE_ENV === 'production' || process.env.INTELLIGENCE_ENABLED === 'true',
+  enableFrameworkEngine:
+    process.env.NODE_ENV === 'production' ||
+    process.env.FRAMEWORK_ENGINE_ENABLED === 'true',
 }
 
 export class FeatureFlagManager {
@@ -181,11 +187,24 @@ export function getServerSideFeatureFlags(): FeatureFlags {
     const envFlags = process.env.NEXT_PUBLIC_FEATURE_FLAGS
     if (envFlags) {
       const parsedFlags = JSON.parse(envFlags)
-      return { ...DEFAULT_FLAGS, ...parsedFlags }
+      const merged = { ...DEFAULT_FLAGS, ...parsedFlags }
+      return {
+        ...merged,
+        enableFrameworkEngine:
+          merged.enableFrameworkEngine ||
+          process.env.FRAMEWORK_ENGINE_ENABLED === 'true' ||
+          process.env.NODE_ENV === 'production',
+      }
     }
   } catch (error) {
     console.warn('Failed to parse server-side feature flags:', error)
   }
-  
-  return DEFAULT_FLAGS
+
+  return {
+    ...DEFAULT_FLAGS,
+    enableFrameworkEngine:
+      DEFAULT_FLAGS.enableFrameworkEngine ||
+      process.env.FRAMEWORK_ENGINE_ENABLED === 'true' ||
+      process.env.NODE_ENV === 'production',
+  }
 }

@@ -8,35 +8,93 @@ import {
 } from '@/lib/cache/intelligence-cache';
 
 export async function GET() {
+  let supabase;
+  let user;
+  let orgId: string;
+
+  // TENANT ISOLATION: Get user from session
   try {
-    const supabase = await createSupabaseServerClient();
+    supabase = await createSupabaseServerClient();
+    const { data: { user: authUser }, error: userError } = await supabase.auth.getUser();
 
-    // TENANT ISOLATION: Get user from session
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (userError || !authUser) {
+      return NextResponse.json(
+        {
+          error: 'Unauthorized',
+          message: 'Session expired. Please sign in again.',
+          code: 'AUTH_REQUIRED',
+        },
+        { status: 401 }
+      );
     }
 
-    // TENANT ISOLATION: Get organization scoped to this user only
-    const { data: membership } = await supabase
+    user = authUser;
+  } catch (authError) {
+    console.error('Intelligence auth error:', authError);
+    return NextResponse.json(
+      {
+        error: 'Unauthorized',
+        message: 'Session expired. Please sign in again.',
+        code: 'AUTH_ERROR',
+      },
+      { status: 401 }
+    );
+  }
+
+  // TENANT ISOLATION: Get organization scoped to this user only
+  try {
+    const { data: membership, error: membershipError } = await supabase
       .from('org_members')
       .select('organization_id')
       .eq('user_id', user.id)
       .maybeSingle();
 
-    if (!membership?.organization_id) {
-      return NextResponse.json({ error: 'No organization found' }, { status: 404 });
+    if (membershipError) {
+      console.error('Intelligence membership lookup error:', membershipError);
+      return NextResponse.json(
+        {
+          error: 'Forbidden',
+          message: 'Unable to verify organization membership.',
+          code: 'ORG_LOOKUP_ERROR',
+        },
+        { status: 403 }
+      );
     }
 
-    const orgId = membership.organization_id;
+    if (!membership?.organization_id) {
+      return NextResponse.json(
+        {
+          error: 'Not Found',
+          message: 'No organization found. Please contact support.',
+          code: 'NO_ORGANIZATION',
+        },
+        { status: 404 }
+      );
+    }
 
-    // RATE LIMITING: Check if organization is rate limited
-    if (!checkRateLimit(orgId)) {
-      const status = getRateLimitStatus(orgId);
+    orgId = membership.organization_id;
+  } catch (orgError) {
+    console.error('Intelligence organization error:', orgError);
+    return NextResponse.json(
+      {
+        error: 'Forbidden',
+        message: 'Unable to verify organization membership.',
+        code: 'ORG_ERROR',
+      },
+      { status: 403 }
+    );
+  }
+
+  // RATE LIMITING: Check if organization is rate limited
+  try {
+    const rateLimitOk = await checkRateLimit(orgId);
+    if (!rateLimitOk) {
+      const status = await getRateLimitStatus(orgId);
       return NextResponse.json(
         {
           error: 'Rate limit exceeded',
+          message: 'Too many requests. Please try again later.',
+          code: 'RATE_LIMIT_EXCEEDED',
           retryAfter: Math.ceil((status.resetAt - Date.now()) / 1000),
         },
         {
@@ -48,9 +106,14 @@ export async function GET() {
         }
       );
     }
+  } catch (rateLimitError) {
+    console.warn('Intelligence rate limit check failed:', rateLimitError);
+    // Continue without rate limiting if check fails
+  }
 
-    // CACHING: Check for cached data
-    const cached = getCachedIntelligence(orgId);
+  // CACHING: Check for cached data
+  try {
+    const cached = await getCachedIntelligence(orgId);
     if (cached) {
       return NextResponse.json(cached, {
         headers: {
@@ -58,6 +121,13 @@ export async function GET() {
         },
       });
     }
+  } catch (cacheError) {
+    console.warn('Intelligence cache check failed:', cacheError);
+    // Continue without cache if check fails
+  }
+
+  // DATA FETCHING: Fetch intelligence data
+  try {
 
     // TENANT ISOLATION: All queries explicitly scoped by organization_id
     // Fetch data in parallel
@@ -178,17 +248,26 @@ export async function GET() {
     };
 
     // CACHING: Store in cache
-    setCachedIntelligence(orgId, responseData);
+    try {
+      await setCachedIntelligence(orgId, responseData);
+    } catch (cacheError) {
+      console.warn('Intelligence cache set failed:', cacheError);
+      // Continue even if caching fails
+    }
 
     return NextResponse.json(responseData, {
       headers: {
         'X-Cache': 'MISS',
       },
     });
-  } catch (error) {
-    console.error('Intelligence summary error:', error);
+  } catch (dataError) {
+    console.error('Intelligence data fetching error:', dataError);
     return NextResponse.json(
-      { error: 'Failed to fetch intelligence summary' },
+      {
+        error: 'Internal Server Error',
+        message: 'Unable to fetch intelligence data. Please try again later.',
+        code: 'DATA_FETCH_ERROR',
+      },
       { status: 500 }
     );
   }

@@ -230,8 +230,10 @@ async function getControlsData(orgId: string, frameworkSlug: string) {
     .select('control_key, status, details')
     .eq('organization_id', orgId)
 
-  const controlsWithStatus = (controls || []).map((c) => {
-    const evaluation = evaluations?.find((e) => e.control_key?.includes(c.control_code))
+  const controlsWithStatus = (controls || []).map((c: { control_code: string }) => {
+    const evaluation = evaluations?.find(
+      (e: { control_key?: string }) => e.control_key?.includes(c.control_code),
+    )
     return {
       ...c,
       status: evaluation?.status || 'unknown',

@@ -13,6 +13,15 @@ export interface ComplianceScoreResult {
   tasksScore: number;
   policiesScore: number;
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  frameworkScores?: Array<{
+    frameworkId: string;
+    frameworkCode: string;
+    frameworkTitle: string;
+    score: number;
+    totalControls: number;
+    evaluatedAt: string | null;
+  }>;
+  combinedFrameworkScore?: number;
   details: {
     totalControls: number;
     compliantControls: number;
@@ -41,11 +50,12 @@ export async function calculateComplianceScore(
   const supabase = createSupabaseAdminClient();
 
   // Fetch all compliance data in parallel
-  const [controls, evidence, tasks, policies] = await Promise.all([
+  const [controls, evidence, tasks, policies, frameworkSnapshots] = await Promise.all([
     fetchControlsData(supabase, organizationId),
     fetchEvidenceData(supabase, organizationId),
     fetchTasksData(supabase, organizationId),
     fetchPoliciesData(supabase, organizationId),
+    fetchFrameworkScores(supabase, organizationId),
   ]);
 
   // Calculate individual scores
@@ -69,6 +79,19 @@ export async function calculateComplianceScore(
     rejectedEvidence: evidence.rejectedEvidence,
   });
 
+  const combinedFrameworkScore = frameworkSnapshots.length
+    ? Math.round(
+        frameworkSnapshots.reduce(
+          (sum: number, fw: any) => sum + fw.score * Math.max(1, fw.totalControls),
+          0,
+        ) /
+          frameworkSnapshots.reduce(
+            (sum: number, fw: any) => sum + Math.max(1, fw.totalControls),
+            0,
+          ),
+      )
+    : overallScore;
+
   return {
     organizationId,
     overallScore,
@@ -77,6 +100,8 @@ export async function calculateComplianceScore(
     tasksScore,
     policiesScore,
     riskLevel,
+    frameworkScores: frameworkSnapshots,
+    combinedFrameworkScore,
     details: {
       totalControls: controls.totalControls,
       compliantControls: controls.compliantControls,
@@ -95,6 +120,41 @@ export async function calculateComplianceScore(
     },
     calculatedAt: new Date(),
   };
+}
+
+async function fetchFrameworkScores(supabase: any, orgId: string) {
+  const { data: frameworks } = await supabase
+    .from('compliance_frameworks')
+    .select('id, code, title');
+
+  if (!frameworks || frameworks.length === 0) return [];
+
+  const { data: snapshots } = await supabase
+    .from('org_control_evaluations')
+    .select('framework_id, compliance_score, total_controls, last_evaluated_at')
+    .eq('organization_id', orgId)
+    .eq('control_type', 'framework_snapshot')
+    .order('last_evaluated_at', { ascending: false });
+
+  const latestByFramework = new Map<string, any>();
+  (snapshots ?? []).forEach((row: any) => {
+    if (!row.framework_id) return;
+    if (!latestByFramework.has(row.framework_id)) {
+      latestByFramework.set(row.framework_id, row);
+    }
+  });
+
+  return frameworks.map((framework: any) => {
+    const snapshot = latestByFramework.get(framework.id);
+    return {
+      frameworkId: framework.id as string,
+      frameworkCode: framework.code ?? 'UNKNOWN',
+      frameworkTitle: framework.title ?? framework.code,
+      score: Number(snapshot?.compliance_score ?? 0),
+      totalControls: Number(snapshot?.total_controls ?? 0),
+      evaluatedAt: snapshot?.last_evaluated_at ?? null,
+    };
+  });
 }
 
 /**

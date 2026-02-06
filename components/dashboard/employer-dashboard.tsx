@@ -17,6 +17,7 @@ import { DashboardSectionCard } from '@/components/dashboard/unified-dashboard-l
 import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedChecklist';
 import { SystemStatusPanel } from '@/components/trust/SystemStatusPanel';
 import { ComplianceIntelligenceSummary } from '@/components/intelligence/ComplianceIntelligenceSummary';
+import { FrameworkHealthWidget } from '@/components/intelligence/FrameworkHealthWidget';
 
 /**
  * =========================================================
@@ -441,6 +442,7 @@ export function EmployerDashboard({
       <GettingStartedChecklist />
 
       <ComplianceIntelligenceSummary />
+      <FrameworkHealthWidget />
 
       <div data-tour="dashboard-overview">
         <h2 className="text-xl font-bold mb-4">Organization Health</h2>

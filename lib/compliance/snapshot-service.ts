@@ -54,7 +54,8 @@ export async function captureComplianceSnapshot(
       .eq('organization_id', orgId)
 
     const totalTasks = tasks?.length || 0
-    const completedTasks = tasks?.filter((t) => t.status === 'completed').length || 0
+    const completedTasks =
+      tasks?.filter((t: { status?: string }) => t.status === 'completed').length || 0
     const taskCompletionRate = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0
 
     const snapshots = frameworks.map((fw) => ({

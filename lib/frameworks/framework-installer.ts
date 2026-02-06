@@ -1,6 +1,10 @@
 import path from 'path'
 import { createSupabaseAdminClient } from '@/lib/supabase/admin'
 import { loadFrameworkPack } from './loadFrameworkPack'
+import {
+  detectComplianceControlsSchema,
+  riskWeightFromLevel,
+} from './compliance-controls-schema'
 
 const PACK_REGISTRY = [
   { slug: 'nist-csf', file: 'nist-csf.json', code: 'NIST_CSF' },
@@ -27,8 +31,11 @@ export function getPackFileForSlug(slug: string) {
   return path.join(process.cwd(), 'framework-packs', found.file)
 }
 
-async function syncComplianceFramework(slug: string) {
-  const admin = createSupabaseAdminClient()
+export async function syncComplianceFramework(
+  slug: string,
+  adminClient?: ReturnType<typeof createSupabaseAdminClient>,
+) {
+  const admin = adminClient ?? createSupabaseAdminClient()
   const { data: framework } = await admin
     .from('frameworks')
     .select('id, name, description, slug')
@@ -43,7 +50,8 @@ async function syncComplianceFramework(slug: string) {
     .upsert(
       {
         code: frameworkCode,
-        title: framework.name,
+        name: framework.name,
+        version: (framework as any).version ?? null,
         description: framework.description ?? null,
       },
       { onConflict: 'code' },
@@ -71,18 +79,33 @@ async function syncComplianceFramework(slug: string) {
 
   if (!controls?.length) return
 
-  const rows = controls.map((control: any) => ({
-    framework_id: complianceFramework.id,
-    code: control.control_code,
-    title: control.title,
-    description: control.summary_description ?? null,
-    category: domainNameById.get(control.domain_id) ?? 'General',
-    risk_level: control.default_risk_level ?? 'medium',
-    weight: 1,
-    required_evidence_count: 1,
-    is_mandatory: true,
-    framework_control_id: control.id,
-  }))
+  const schema = await detectComplianceControlsSchema(admin)
+  const rows =
+    schema === 'legacy'
+      ? controls.map((control: any) => ({
+          framework_id: complianceFramework.id,
+          code: control.control_code,
+          title: control.title,
+          description: control.summary_description ?? null,
+          domain: domainNameById.get(control.domain_id) ?? 'General',
+          risk_weight: riskWeightFromLevel(control.default_risk_level),
+          expected_evidence_count: 1,
+          evaluation_mode: 'semi_auto',
+          is_mandatory: true,
+          framework_control_id: control.id,
+        }))
+      : controls.map((control: any) => ({
+          framework_id: complianceFramework.id,
+          code: control.control_code,
+          title: control.title,
+          description: control.summary_description ?? null,
+          category: domainNameById.get(control.domain_id) ?? 'General',
+          risk_level: control.default_risk_level ?? 'medium',
+          weight: 1,
+          required_evidence_count: 1,
+          is_mandatory: true,
+          framework_control_id: control.id,
+        }))
 
   await admin.from('compliance_controls').upsert(rows, {
     onConflict: 'framework_id,code',
@@ -99,7 +122,7 @@ export async function ensureFrameworkPacksInstalled() {
       for (const pack of PACK_REGISTRY) {
         const filePath = path.join(process.cwd(), 'framework-packs', pack.file)
         await loadFrameworkPack({ path: filePath }, { adminClient: admin })
-        await syncComplianceFramework(pack.slug)
+        await syncComplianceFramework(pack.slug, admin)
       }
     } catch (error) {
       console.error('[framework-installer] Failed to install packs:', error)
@@ -117,5 +140,5 @@ export async function installFrameworkPack(slug: string) {
 
   const admin = createSupabaseAdminClient()
   await loadFrameworkPack({ path: filePath }, { adminClient: admin })
-  await syncComplianceFramework(slug)
+  await syncComplianceFramework(slug, admin)
 }

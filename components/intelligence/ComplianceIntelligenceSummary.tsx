@@ -104,7 +104,7 @@ export function ComplianceIntelligenceSummary() {
   const isEnabled = useFeatureFlag('enableIntelligence');
   const [data, setData] = useState<IntelligenceData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<{ code: string; message: string } | null>(null);
 
   useEffect(() => {
     if (!isEnabled) {
@@ -120,13 +120,25 @@ export function ComplianceIntelligenceSummary() {
   const fetchIntelligence = async () => {
     try {
       const response = await fetch('/api/intelligence/summary');
-      if (!response.ok) throw new Error('Failed to fetch');
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        const code = errorData.code || 'UNKNOWN_ERROR';
+        const message = errorData.message || 'Unable to load intelligence data';
+
+        setError({ code, message });
+        setData(null);
+        setIsLoading(false);
+        return;
+      }
+
       const json = await response.json();
       setData(json);
       setError(null);
     } catch (err) {
       console.error('Intelligence fetch error:', err);
-      setError('Unable to load intelligence data');
+      setError({ code: 'NETWORK_ERROR', message: 'Unable to connect. Please check your connection.' });
+      setData(null);
     } finally {
       setIsLoading(false);
     }
@@ -148,8 +160,53 @@ export function ComplianceIntelligenceSummary() {
     );
   }
 
-  if (!isEnabled || error || !data) {
-    return null; // Silent fail - don't block dashboard
+  if (!isEnabled) {
+    return null; // Feature disabled
+  }
+
+  // Handle authentication errors with a clean message
+  if (error && (error.code === 'AUTH_REQUIRED' || error.code === 'AUTH_ERROR')) {
+    return (
+      <div
+        className="rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-orange-500/5 p-6 backdrop-blur-sm"
+        style={{ minHeight: '120px' }}
+      >
+        <div className="flex items-center gap-3">
+          <AlertTriangle className="h-5 w-5 text-amber-400" />
+          <div>
+            <h3 className="text-sm font-semibold text-white">Session Expired</h3>
+            <p className="mt-1 text-sm text-gray-400">
+              Please <a href="/auth/signin" className="text-amber-400 underline hover:text-amber-300">sign in again</a> to view intelligence insights.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle organization errors
+  if (error && (error.code === 'NO_ORGANIZATION' || error.code === 'ORG_LOOKUP_ERROR' || error.code === 'ORG_ERROR')) {
+    return (
+      <div
+        className="rounded-2xl border border-red-500/20 bg-gradient-to-br from-red-500/5 to-orange-500/5 p-6 backdrop-blur-sm"
+        style={{ minHeight: '120px' }}
+      >
+        <div className="flex items-center gap-3">
+          <AlertTriangle className="h-5 w-5 text-red-400" />
+          <div>
+            <h3 className="text-sm font-semibold text-white">Organization Not Found</h3>
+            <p className="mt-1 text-sm text-gray-400">
+              {error.message}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Silent fail for other errors - don't block dashboard
+  if (error || !data) {
+    return null;
   }
 
   const scoreHistory = data.complianceScore.history.map((h) => h.score);

@@ -90,6 +90,8 @@ export const FRAMEWORK_OPTIONS = [
   { id: "hipaa", label: "HIPAA-style healthcare controls" },
   { id: "soc2", label: "SOC 2" },
   { id: "iso27001", label: "ISO 27001" },
+  { id: "gdpr", label: "GDPR" },
+  { id: "pci-dss", label: "PCI DSS" },
   { id: "aged_care", label: "Aged Care Quality Standards" },
   { id: "custom", label: "Custom / internal framework" },
 ] as const;

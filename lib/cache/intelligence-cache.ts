@@ -43,6 +43,20 @@ export function getCachedIntelligence(orgId: string): any | null {
   return entry.data;
 }
 
+export function getCachedFrameworkIntelligence(orgId: string): any | null {
+  const key = `framework-intel:${orgId}`;
+  const entry = cache.get(key);
+
+  if (!entry) return null;
+
+  if (Date.now() - entry.timestamp > CACHE_TTL) {
+    cache.delete(key);
+    return null;
+  }
+
+  return entry.data;
+}
+
 /**
  * Set cached intelligence data
  */
@@ -60,6 +74,21 @@ export function setCachedIntelligence(orgId: string, data: any): void {
     const sorted = entries.sort((a, b) => a[1].timestamp - b[1].timestamp);
     // Remove oldest 100 entries
     sorted.slice(0, 100).forEach(([key]) => cache.delete(key));
+  }
+}
+
+export function setCachedFrameworkIntelligence(orgId: string, data: any): void {
+  const key = `framework-intel:${orgId}`;
+  cache.set(key, {
+    data,
+    timestamp: Date.now(),
+    orgId,
+  });
+
+  if (cache.size > 1000) {
+    const entries = Array.from(cache.entries());
+    const sorted = entries.sort((a, b) => a[1].timestamp - b[1].timestamp);
+    sorted.slice(0, 100).forEach(([entryKey]) => cache.delete(entryKey));
   }
 }
 

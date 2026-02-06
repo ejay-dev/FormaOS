@@ -198,12 +198,14 @@ export async function getFrameworksSatisfiedByControl(
     .select('framework_slug')
     .eq('org_id', orgId)
 
-  const enabledSlugs = new Set((enabledFrameworks || []).map((f) => f.framework_slug))
+  const enabledSlugs = new Set(
+    (enabledFrameworks || []).map((f: { framework_slug: string }) => f.framework_slug),
+  )
 
   // Return intersection
   const satisfiedFrameworks = (mappings || [])
     .map((m: any) => m.framework_control.framework.slug)
-    .filter((slug) => enabledSlugs.has(slug))
+    .filter((slug: string) => enabledSlugs.has(slug))
 
   return Array.from(new Set(satisfiedFrameworks))
 }

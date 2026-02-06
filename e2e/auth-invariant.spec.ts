@@ -17,6 +17,13 @@ let admin: SupabaseClient;
 const createdUserIds: string[] = [];
 const createdOrgIds = new Set<string>();
 
+const FRAMEWORK_SELECTIONS = [
+  { slug: "iso27001", label: "ISO 27001", code: "ISO27001" },
+  { slug: "hipaa", label: "HIPAA-style healthcare controls", code: "HIPAA" },
+  { slug: "gdpr", label: "GDPR", code: "GDPR" },
+  { slug: "pci-dss", label: "PCI DSS", code: "PCIDSS" },
+];
+
 async function waitForProvisioning(userId: string) {
   await expect
     .poll(
@@ -55,6 +62,51 @@ async function waitForProvisioning(userId: string) {
         return false;
       },
       { timeout: 20000, intervals: [1000, 2000, 4000] },
+    )
+    .toBe(true);
+}
+
+async function waitForFrameworkProvisioning(
+  orgId: string,
+  frameworkSlug: string,
+  frameworkCode: string,
+) {
+  await expect
+    .poll(
+      async () => {
+        const { data: enabled } = await admin
+          .from("org_frameworks")
+          .select("framework_slug")
+          .eq("org_id", orgId)
+          .eq("framework_slug", frameworkSlug);
+
+        const hasOrgFramework = (enabled ?? []).length > 0;
+
+        const { data: evaluations } = await admin
+          .from("org_control_evaluations")
+          .select("details")
+          .eq("organization_id", orgId);
+
+        const matchingEvaluations = (evaluations ?? []).filter((row) => {
+          const details = (row as any)?.details ?? {};
+          return details.framework_code === frameworkCode;
+        });
+
+        const hasEvaluations = matchingEvaluations.length > 0;
+        const hasSuggestions = matchingEvaluations.some((row) => {
+          const details = (row as any)?.details ?? {};
+          const evidenceTypes = Array.isArray(details.evidence_types)
+            ? details.evidence_types
+            : [];
+          const automationTriggers = Array.isArray(details.automation_triggers)
+            ? details.automation_triggers
+            : [];
+          return evidenceTypes.length > 0 || automationTriggers.length > 0;
+        });
+
+        return hasOrgFramework && hasEvaluations && hasSuggestions;
+      },
+      { timeout: 120000, intervals: [1000, 2000, 4000, 8000, 16000] },
     )
     .toBe(true);
 }
@@ -162,5 +214,96 @@ test.describe("Auth provisioning invariant", () => {
       .toBe(true);
 
     await waitForProvisioning(userId);
+  });
+
+  test("Onboarding framework selection provisions controls", async ({ page }) => {
+    for (const framework of FRAMEWORK_SELECTIONS) {
+      const email = `qa.framework.${framework.slug}.${timestamp}@formaos.team`;
+      const now = new Date().toISOString();
+
+      const { data, error } = await admin.auth.admin.createUser({
+        email,
+        password: PASSWORD,
+        email_confirm: true,
+      });
+
+      expect(error).toBeNull();
+      expect(data?.user?.id).toBeTruthy();
+
+      const userId = data!.user!.id;
+      createdUserIds.push(userId);
+
+      const { data: org, error: orgError } = await admin
+        .from("organizations")
+        .insert({
+          name: `QA ${framework.slug.toUpperCase()} Org`,
+          created_by: userId,
+          plan_key: "basic",
+          plan_selected_at: now,
+          onboarding_completed: false,
+          industry: "technology",
+          team_size: "1-10",
+          frameworks: [],
+        })
+        .select("id")
+        .single();
+
+      expect(orgError).toBeNull();
+      expect(org?.id).toBeTruthy();
+
+      const orgId = org!.id as string;
+      createdOrgIds.add(orgId);
+
+      await admin.from("orgs").upsert(
+        {
+          id: orgId,
+          name: `QA ${framework.slug.toUpperCase()} Org`,
+          created_by: userId,
+          created_at: now,
+          updated_at: now,
+        },
+        { onConflict: "id" },
+      );
+
+      await admin.from("org_members").insert({
+        organization_id: orgId,
+        user_id: userId,
+        role: "owner",
+      });
+
+      await admin.from("org_onboarding_status").upsert(
+        {
+          organization_id: orgId,
+          current_step: 5,
+          completed_steps: [1, 2, 3, 4],
+          updated_at: now,
+        },
+        { onConflict: "organization_id" },
+      );
+
+      await page.context().clearCookies();
+      await page.goto(`${APP_URL}/auth/signin`);
+      await page.fill('input[type="email"]', email);
+      await page.fill('input[type="password"]', PASSWORD);
+      await page.click('button[type="submit"]');
+      await page.waitForURL(/\/(app|onboarding)/, { timeout: 20000 });
+
+      await page.goto(`${APP_URL}/onboarding?step=5`);
+      await expect(
+        page.locator("text=/Compliance frameworks/i"),
+      ).toBeVisible();
+      await expect(
+        page.getByText(framework.label, { exact: false }),
+      ).toBeVisible();
+
+      const checkbox = page.locator(
+        `input[name="frameworks"][value="${framework.slug}"]`,
+      );
+      await checkbox.check();
+      await page.click('button[type="submit"]');
+      await page.waitForURL(/\/onboarding\?step=6/, { timeout: 60000 });
+
+      await waitForFrameworkProvisioning(orgId, framework.slug, framework.code);
+    }
   });
 });

@@ -1,8 +1,16 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin'
-import { ensureFrameworkPacksInstalled, getFrameworkCodeForSlug } from './framework-installer'
+import {
+  ensureFrameworkPacksInstalled,
+  getFrameworkCodeForSlug,
+  syncComplianceFramework,
+} from './framework-installer'
 import { getEvidenceSuggestions } from './evidence-suggestions'
 import type { FrameworkControlRow } from './types'
 import { getServerSideFeatureFlags } from '@/lib/feature-flags'
+import {
+  detectComplianceControlsSchema,
+  riskLevelFromWeight,
+} from './compliance-controls-schema'
 
 const DEFAULT_TASK_PRIORITY_BY_RISK: Record<string, string> = {
   low: 'low',
@@ -29,12 +37,21 @@ function defaultDueDate(riskLevel?: string | null) {
   return now.toISOString()
 }
 
-export async function enableFrameworkForOrg(orgId: string, frameworkSlug: string) {
+type FrameworkProvisionOptions = {
+  force?: boolean
+  client?: any
+}
+
+export async function enableFrameworkForOrg(
+  orgId: string,
+  frameworkSlug: string,
+  options: FrameworkProvisionOptions = {},
+) {
   const flags = getServerSideFeatureFlags()
-  if (!flags.enableFrameworkEngine) return
+  if (!flags.enableFrameworkEngine && !options.force) return
 
   await ensureFrameworkPacksInstalled()
-  const admin = createSupabaseAdminClient()
+  const admin = options.client ?? createSupabaseAdminClient()
 
   await admin.from('org_frameworks').upsert(
     {
@@ -45,15 +62,29 @@ export async function enableFrameworkForOrg(orgId: string, frameworkSlug: string
     { onConflict: 'org_id,framework_slug' },
   )
 
-  await provisionFrameworkControls(orgId, frameworkSlug)
+  await provisionFrameworkControls(orgId, frameworkSlug, options)
 }
 
-export async function provisionFrameworkControls(orgId: string, frameworkSlug: string) {
+export async function provisionFrameworkControls(
+  orgId: string,
+  frameworkSlug: string,
+  options: FrameworkProvisionOptions = {},
+) {
   const flags = getServerSideFeatureFlags()
-  if (!flags.enableFrameworkEngine) return
+  if (!flags.enableFrameworkEngine && !options.force) return
 
   await ensureFrameworkPacksInstalled()
-  const admin = createSupabaseAdminClient()
+  const admin = options.client ?? createSupabaseAdminClient()
+  await syncComplianceFramework(frameworkSlug, admin)
+
+  await admin.from('org_frameworks').upsert(
+    {
+      org_id: orgId,
+      framework_slug: frameworkSlug,
+      enabled_at: new Date().toISOString(),
+    },
+    { onConflict: 'org_id,framework_slug' },
+  )
   const frameworkCode = getFrameworkCodeForSlug(frameworkSlug)
 
   const { data: complianceFramework } = await admin
@@ -64,10 +95,25 @@ export async function provisionFrameworkControls(orgId: string, frameworkSlug: s
 
   if (!complianceFramework?.id) return
 
-  const { data: complianceControls } = await admin
-    .from('compliance_controls')
-    .select('id, code, title, description, risk_level, framework_control_id')
-    .eq('framework_id', complianceFramework.id)
+  const schema = await detectComplianceControlsSchema(admin)
+  let complianceControls: any[] | null = null
+
+  if (schema === 'legacy') {
+    const { data } = await admin
+      .from('compliance_controls')
+      .select('id, code, title, description, risk_weight, framework_control_id')
+      .eq('framework_id', complianceFramework.id)
+    complianceControls = (data ?? []).map((control: any) => ({
+      ...control,
+      risk_level: riskLevelFromWeight(control.risk_weight),
+    }))
+  } else {
+    const { data } = await admin
+      .from('compliance_controls')
+      .select('id, code, title, description, risk_level, framework_control_id')
+      .eq('framework_id', complianceFramework.id)
+    complianceControls = data ?? []
+  }
 
   if (!complianceControls?.length) return
 

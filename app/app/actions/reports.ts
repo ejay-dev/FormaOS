@@ -17,6 +17,7 @@ import {
   RATE_LIMITS,
 } from '@/lib/security/rate-limiter';
 import { createCorrelationId } from '@/lib/security/correlation';
+import { buildSoc2Report } from '@/lib/audit/soc2-report';
 
 type AuditBundleRow = {
   orgId: string;
@@ -648,4 +649,42 @@ async function buildAuditBundlePdf(data: AuditBundleRow): Promise<Buffer> {
 
   const pdfBytes = await pdfDoc.save();
   return Buffer.from(pdfBytes);
+}
+
+export async function generateSoc2ReportExport() {
+  const membership = await requirePermission('EXPORT_REPORTS');
+  const { orgId } = await getOrgIdForUser();
+  if (membership.orgId !== orgId) throw new Error('Organization mismatch.');
+  await requireEntitlement(orgId, 'audit_export');
+
+  const supabase = await createSupabaseServerClient();
+  const payload = await buildSoc2Report(orgId);
+  const correlationId = createCorrelationId();
+
+  await supabase.from('org_exports').insert({
+    organization_id: orgId,
+    export_type: 'SOC2_REPORT',
+    framework_id: null,
+    status: 'generated',
+    created_by: membership.userId,
+    payload: {
+      ...payload,
+      correlation_id: correlationId,
+    },
+  });
+
+  await logActivity(orgId, 'audit_export', 'Generated SOC 2 readiness report');
+
+  await logAuditEvent({
+    organizationId: orgId,
+    actorUserId: membership.userId,
+    actorRole: membership.role,
+    entityType: 'org_export',
+    entityId: null,
+    actionType: 'SOC2_REPORT_EXPORTED',
+    afterState: { frameworkCode: 'SOC2', readinessScore: payload.readinessScore },
+    reason: 'export',
+  });
+
+  return payload;
 }
