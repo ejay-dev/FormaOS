@@ -25,19 +25,14 @@ export async function runScheduledAutomation(): Promise<{
 
   try {
     // Run all checks in parallel
-    const [
-      evidenceCheck,
-      policyCheck,
-      taskCheck,
-      certCheck,
-      scoreCheck,
-    ] = await Promise.allSettled([
-      checkExpiringEvidence(),
-      checkPolicyReviews(),
-      checkOverdueTasks(),
-      checkExpiringCertifications(),
-      updateAllComplianceScores(),
-    ]);
+    const [evidenceCheck, policyCheck, taskCheck, certCheck, scoreCheck] =
+      await Promise.allSettled([
+        checkExpiringEvidence(),
+        checkPolicyReviews(),
+        checkOverdueTasks(),
+        checkExpiringCertifications(),
+        updateAllComplianceScores(),
+      ]);
 
     // Aggregate results
     const checkResults = [
@@ -56,19 +51,17 @@ export async function runScheduledAutomation(): Promise<{
           results.errors.push(...result.value.errors);
         }
       } else if (result.status === 'rejected') {
-        results.errors.push(
-          result.reason?.message || 'Unknown error in check'
-        );
+        results.errors.push(result.reason?.message || 'Unknown error in check');
       }
     }
 
     console.log(
-      `[Scheduled Automation] Completed: ${results.checksRun} checks, ${results.triggersExecuted} triggers`
+      `[Scheduled Automation] Completed: ${results.checksRun} checks, ${results.triggersExecuted} triggers`,
     );
   } catch (error) {
     console.error('[Scheduled Automation] Fatal error:', error);
     results.errors.push(
-      error instanceof Error ? error.message : 'Unknown error'
+      error instanceof Error ? error.message : 'Unknown error',
     );
   }
 
@@ -107,7 +100,7 @@ async function checkExpiringEvidence(): Promise<{
   }
 
   console.log(
-    `[Scheduled] Found ${expiringEvidence.length} expiring evidence items`
+    `[Scheduled] Found ${expiringEvidence.length} expiring evidence items`,
   );
 
   // Trigger renewal for each
@@ -136,7 +129,7 @@ async function checkExpiringEvidence(): Promise<{
         .eq('id', evidence.id);
     } catch (err) {
       results.errors.push(
-        `Failed to process evidence ${evidence.id}: ${err instanceof Error ? err.message : 'Unknown error'}`
+        `Failed to process evidence ${evidence.id}: ${err instanceof Error ? err.message : 'Unknown error'}`,
       );
     }
   }
@@ -161,7 +154,9 @@ async function checkPolicyReviews(): Promise<{
   const { data: policiesDueReview, error } = await supabase
     .from('org_policies')
     .select('id, organization_id, title, last_updated_at')
-    .or(`last_updated_at.lt.${reviewThreshold.toISOString()},last_updated_at.is.null`)
+    .or(
+      `last_updated_at.lt.${reviewThreshold.toISOString()},last_updated_at.is.null`,
+    )
     .in('status', ['published', 'approved'])
     .is('review_task_created', null);
 
@@ -175,7 +170,7 @@ async function checkPolicyReviews(): Promise<{
   }
 
   console.log(
-    `[Scheduled] Found ${policiesDueReview.length} policies due for review`
+    `[Scheduled] Found ${policiesDueReview.length} policies due for review`,
   );
 
   for (const policy of policiesDueReview) {
@@ -203,7 +198,7 @@ async function checkPolicyReviews(): Promise<{
         .eq('id', policy.id);
     } catch (err) {
       results.errors.push(
-        `Failed to process policy ${policy.id}: ${err instanceof Error ? err.message : 'Unknown error'}`
+        `Failed to process policy ${policy.id}: ${err instanceof Error ? err.message : 'Unknown error'}`,
       );
     }
   }
@@ -246,7 +241,7 @@ async function checkOverdueTasks(): Promise<{
     try {
       const daysOverdue = Math.floor(
         (now.getTime() - new Date(task.due_date).getTime()) /
-          (24 * 60 * 60 * 1000)
+          (24 * 60 * 60 * 1000),
       );
 
       const triggerEvent: TriggerEvent = {
@@ -274,7 +269,7 @@ async function checkOverdueTasks(): Promise<{
         .eq('id', task.id);
     } catch (err) {
       results.errors.push(
-        `Failed to process task ${task.id}: ${err instanceof Error ? err.message : 'Unknown error'}`
+        `Failed to process task ${task.id}: ${err instanceof Error ? err.message : 'Unknown error'}`,
       );
     }
   }
@@ -303,9 +298,7 @@ async function checkExpiringCertifications(): Promise<{
     .is('renewal_task_created', null);
 
   if (error) {
-    results.errors.push(
-      `Error fetching certifications: ${error.message}`
-    );
+    results.errors.push(`Error fetching certifications: ${error.message}`);
     return results;
   }
 
@@ -314,15 +307,22 @@ async function checkExpiringCertifications(): Promise<{
   }
 
   // Assume certifications are valid for 1 year
-  const expiringWithinThreshold = expiringCerts.filter((cert) => {
-    const issuedDate = new Date(cert.issued_at);
-    const expiryDate = new Date(issuedDate);
-    expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-    return expiryDate <= expiryThreshold;
-  });
+  const expiringWithinThreshold = expiringCerts.filter(
+    (cert: {
+      id: string;
+      organization_id: string;
+      framework_id: string;
+      issued_at: string;
+    }) => {
+      const issuedDate = new Date(cert.issued_at);
+      const expiryDate = new Date(issuedDate);
+      expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+      return expiryDate <= expiryThreshold;
+    },
+  );
 
   console.log(
-    `[Scheduled] Found ${expiringWithinThreshold.length} expiring certifications`
+    `[Scheduled] Found ${expiringWithinThreshold.length} expiring certifications`,
   );
 
   for (const cert of expiringWithinThreshold) {
@@ -332,7 +332,7 @@ async function checkExpiringCertifications(): Promise<{
       expiryDate.setFullYear(expiryDate.getFullYear() + 1);
 
       const daysUntilExpiry = Math.floor(
-        (expiryDate.getTime() - Date.now()) / (24 * 60 * 60 * 1000)
+        (expiryDate.getTime() - Date.now()) / (24 * 60 * 60 * 1000),
       );
 
       const triggerEvent: TriggerEvent = {
@@ -358,7 +358,7 @@ async function checkExpiringCertifications(): Promise<{
         .eq('id', cert.id);
     } catch (err) {
       results.errors.push(
-        `Failed to process certification ${cert.id}: ${err instanceof Error ? err.message : 'Unknown error'}`
+        `Failed to process certification ${cert.id}: ${err instanceof Error ? err.message : 'Unknown error'}`,
       );
     }
   }
@@ -399,7 +399,7 @@ async function updateAllComplianceScores(): Promise<{
     const batch = orgs.slice(i, i + batchSize);
 
     await Promise.all(
-      batch.map(async (org) => {
+      batch.map(async (org: { id: string }) => {
         try {
           // Get previous score
           const { data: prevEval } = await supabase
@@ -421,8 +421,7 @@ async function updateAllComplianceScores(): Promise<{
               .single();
 
             if (
-              currentEval?.details?.riskLevel !==
-              prevEval.details.riskLevel
+              currentEval?.details?.riskLevel !== prevEval.details.riskLevel
             ) {
               const triggerEvent: TriggerEvent = {
                 type: 'risk_score_change',
@@ -440,10 +439,10 @@ async function updateAllComplianceScores(): Promise<{
           }
         } catch (err) {
           results.errors.push(
-            `Failed to update score for org ${org.id}: ${err instanceof Error ? err.message : 'Unknown error'}`
+            `Failed to update score for org ${org.id}: ${err instanceof Error ? err.message : 'Unknown error'}`,
           );
         }
-      })
+      }),
     );
   }
 
@@ -454,12 +453,7 @@ async function updateAllComplianceScores(): Promise<{
  * Run specific scheduled check by type
  */
 export async function runScheduledCheck(
-  checkType:
-    | 'evidence'
-    | 'policies'
-    | 'tasks'
-    | 'certifications'
-    | 'scores'
+  checkType: 'evidence' | 'policies' | 'tasks' | 'certifications' | 'scores',
 ): Promise<any> {
   switch (checkType) {
     case 'evidence':

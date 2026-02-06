@@ -53,7 +53,7 @@ export async function recalculateComplianceScore(): Promise<ComplianceScoreResul
  */
 export async function triggerAutomation(
   triggerType: TriggerType,
-  metadata?: Record<string, any>
+  metadata?: Record<string, any>,
 ): Promise<AutomationResult> {
   const { orgId } = await requirePermission('VIEW_CONTROLS');
 
@@ -75,7 +75,7 @@ export async function triggerDatabaseEvent(
   eventType: EventType,
   entityId: string,
   entityType: string,
-  metadata?: Record<string, any>
+  metadata?: Record<string, any>,
 ): Promise<{ triggered: boolean }> {
   const { orgId } = await requirePermission('VIEW_CONTROLS');
 
@@ -95,9 +95,7 @@ export async function triggerDatabaseEvent(
 /**
  * Get automation execution history
  */
-export async function getAutomationHistory(
-  limit: number = 50
-): Promise<
+export async function getAutomationHistory(limit: number = 50): Promise<
   Array<{
     id: string;
     workflowId: string;
@@ -115,7 +113,7 @@ export async function getAutomationHistory(
   const { data, error } = await supabase
     .from('org_workflow_executions')
     .select(
-      'id, workflow_id, trigger_event, status, actions_executed, executed_at, error_message'
+      'id, workflow_id, trigger_event, status, actions_executed, executed_at, error_message',
     )
     .eq('organization_id', orgId)
     .order('executed_at', { ascending: false })
@@ -126,15 +124,25 @@ export async function getAutomationHistory(
   }
 
   return (
-    data?.map((item) => ({
-      id: item.id,
-      workflowId: item.workflow_id,
-      trigger: item.trigger_event,
-      status: item.status,
-      actionsExecuted: item.actions_executed,
-      executedAt: item.executed_at,
-      errorMessage: item.error_message,
-    })) || []
+    data?.map(
+      (item: {
+        id: string;
+        workflow_id: string;
+        trigger_event: string;
+        status: string;
+        actions_executed: number;
+        executed_at: string;
+        error_message: string | null;
+      }) => ({
+        id: item.id,
+        workflowId: item.workflow_id,
+        trigger: item.trigger_event,
+        status: item.status,
+        actionsExecuted: item.actions_executed,
+        executedAt: item.executed_at,
+        errorMessage: item.error_message,
+      }),
+    ) || []
   );
 }
 
@@ -179,7 +187,7 @@ export async function runScheduledChecks(): Promise<{
   // Admin permission required
   const { role } = await requirePermission('VIEW_CONTROLS');
 
-  if (role !== 'owner' && role !== 'admin') {
+  if (role !== 'OWNER' && role !== 'COMPLIANCE_OFFICER') {
     throw new Error('Admin permission required');
   }
 
@@ -191,11 +199,11 @@ export async function runScheduledChecks(): Promise<{
  * Admin-only: Run specific scheduled check
  */
 export async function runSpecificCheck(
-  checkType: 'evidence' | 'policies' | 'tasks' | 'certifications' | 'scores'
+  checkType: 'evidence' | 'policies' | 'tasks' | 'certifications' | 'scores',
 ): Promise<any> {
   const { role } = await requirePermission('VIEW_CONTROLS');
 
-  if (role !== 'owner' && role !== 'admin') {
+  if (role !== 'OWNER' && role !== 'COMPLIANCE_OFFICER') {
     throw new Error('Admin permission required');
   }
 
