@@ -12,7 +12,7 @@ import { updateComplianceScore } from './compliance-score-engine';
 export async function onEvidenceUploaded(
   organizationId: string,
   evidenceId: string,
-  metadata?: Record<string, any>
+  metadata?: Record<string, any>,
 ): Promise<void> {
   try {
     await processEvent({
@@ -36,7 +36,7 @@ export async function onEvidenceVerified(
   organizationId: string,
   evidenceId: string,
   verified: boolean,
-  metadata?: Record<string, any>
+  metadata?: Record<string, any>,
 ): Promise<void> {
   try {
     await processEvent({
@@ -48,7 +48,10 @@ export async function onEvidenceVerified(
       timestamp: new Date(),
     });
   } catch (error) {
-    console.error('[Automation] Error processing evidence verification:', error);
+    console.error(
+      '[Automation] Error processing evidence verification:',
+      error,
+    );
   }
 }
 
@@ -59,7 +62,7 @@ export async function onControlStatusUpdated(
   organizationId: string,
   controlId: string,
   newStatus: string,
-  previousStatus?: string
+  previousStatus?: string,
 ): Promise<void> {
   try {
     await processEvent({
@@ -71,7 +74,10 @@ export async function onControlStatusUpdated(
       timestamp: new Date(),
     });
   } catch (error) {
-    console.error('[Automation] Error processing control status update:', error);
+    console.error(
+      '[Automation] Error processing control status update:',
+      error,
+    );
   }
 }
 
@@ -81,7 +87,7 @@ export async function onControlStatusUpdated(
 export async function onTaskCompleted(
   organizationId: string,
   taskId: string,
-  metadata?: Record<string, any>
+  metadata?: Record<string, any>,
 ): Promise<void> {
   try {
     await processEvent({
@@ -103,7 +109,7 @@ export async function onTaskCompleted(
 export async function onTaskCreated(
   organizationId: string,
   taskId: string,
-  metadata?: Record<string, any>
+  metadata?: Record<string, any>,
 ): Promise<void> {
   try {
     await processEvent({
@@ -124,7 +130,7 @@ export async function onTaskCreated(
  */
 export async function onSubscriptionActivated(
   organizationId: string,
-  subscriptionId: string
+  subscriptionId: string,
 ): Promise<void> {
   try {
     await processEvent({
@@ -135,7 +141,10 @@ export async function onSubscriptionActivated(
       timestamp: new Date(),
     });
   } catch (error) {
-    console.error('[Automation] Error processing subscription activation:', error);
+    console.error(
+      '[Automation] Error processing subscription activation:',
+      error,
+    );
   }
 }
 
@@ -143,7 +152,7 @@ export async function onSubscriptionActivated(
  * Trigger automation after onboarding completion
  */
 export async function onOnboardingCompleted(
-  organizationId: string
+  organizationId: string,
 ): Promise<void> {
   try {
     await processEvent({
@@ -154,7 +163,100 @@ export async function onOnboardingCompleted(
       timestamp: new Date(),
     });
   } catch (error) {
-    console.error('[Automation] Error processing onboarding completion:', error);
+    console.error(
+      '[Automation] Error processing onboarding completion:',
+      error,
+    );
+  }
+}
+
+/**
+ * Trigger automation after industry configuration
+ */
+export async function onIndustryConfigured(
+  organizationId: string,
+  industry: string,
+): Promise<void> {
+  try {
+    const { processTrigger } = await import('./trigger-engine');
+    await processTrigger({
+      type: 'industry_configured',
+      organizationId,
+      metadata: { industry },
+      triggeredAt: new Date(),
+    });
+  } catch (error) {
+    console.error(
+      '[Automation] Error processing industry configuration:',
+      error,
+    );
+  }
+}
+
+/**
+ * Trigger automation after frameworks are provisioned
+ */
+export async function onFrameworksProvisioned(
+  organizationId: string,
+  frameworks: string[],
+): Promise<void> {
+  try {
+    const { processTrigger } = await import('./trigger-engine');
+    await processTrigger({
+      type: 'frameworks_provisioned',
+      organizationId,
+      metadata: { frameworks },
+      triggeredAt: new Date(),
+    });
+  } catch (error) {
+    console.error(
+      '[Automation] Error processing frameworks provisioning:',
+      error,
+    );
+  }
+}
+
+/**
+ * Trigger automation after industry pack is applied
+ */
+export async function onIndustryPackApplied(
+  organizationId: string,
+  industry: string,
+  packName: string,
+): Promise<void> {
+  try {
+    const { processTrigger } = await import('./trigger-engine');
+    await processTrigger({
+      type: 'industry_pack_applied',
+      organizationId,
+      metadata: { industry, packName },
+      triggeredAt: new Date(),
+    });
+  } catch (error) {
+    console.error(
+      '[Automation] Error processing industry pack application:',
+      error,
+    );
+  }
+}
+
+/**
+ * Trigger automation for onboarding milestone
+ */
+export async function onOnboardingMilestone(
+  organizationId: string,
+  milestone: string,
+): Promise<void> {
+  try {
+    const { processTrigger } = await import('./trigger-engine');
+    await processTrigger({
+      type: 'onboarding_milestone',
+      organizationId,
+      metadata: { milestone },
+      triggeredAt: new Date(),
+    });
+  } catch (error) {
+    console.error('[Automation] Error processing onboarding milestone:', error);
   }
 }
 
@@ -163,7 +265,7 @@ export async function onOnboardingCompleted(
  * Safe to call frequently - caches results
  */
 export async function updateComplianceScoreAndCheckRisk(
-  organizationId: string
+  organizationId: string,
 ): Promise<void> {
   try {
     await updateComplianceScore(organizationId);
@@ -176,7 +278,7 @@ export async function updateComplianceScoreAndCheckRisk(
  * Batch update compliance scores for multiple organizations
  */
 export async function batchUpdateComplianceScores(
-  organizationIds: string[]
+  organizationIds: string[],
 ): Promise<{ succeeded: number; failed: number }> {
   let succeeded = 0;
   let failed = 0;
@@ -186,7 +288,10 @@ export async function batchUpdateComplianceScores(
       await updateComplianceScore(orgId);
       succeeded++;
     } catch (error) {
-      console.error(`[Automation] Error updating score for org ${orgId}:`, error);
+      console.error(
+        `[Automation] Error updating score for org ${orgId}:`,
+        error,
+      );
       failed++;
     }
   }

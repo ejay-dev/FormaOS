@@ -24,11 +24,10 @@ import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
-
 export const metadata: Metadata = {
   title: 'NDIS & Aged Care Compliance | FormaOS',
   description:
-    'Complete compliance management for NDIS providers and aged care facilities. Meet quality standards with automated worker screening, incident management, and audit readiness.',
+    'Compliance management for NDIS providers and aged care facilities. Support worker screening records, incident workflows, and audit readiness.',
 };
 
 export default function NDISUseCasePage() {
@@ -93,37 +92,37 @@ export default function NDISUseCasePage() {
                   icon: Shield,
                   title: 'Worker Screening',
                   description:
-                    'Track NDIS Worker Screening Checks, police checks, and WWCC. Automated expiry reminders ensure continuous compliance.',
+                    'Track worker screening checks, police checks, and WWCC with review reminders. Renewal dates configured per role.',
                 },
                 {
                   icon: Heart,
-                  title: 'Client Management',
+                  title: 'Participant Management',
                   description:
-                    'NDIS participant records, service agreements, support plans, and consent documentation. Privacy-compliant and audit-ready.',
+                    'Complete participant records with care status, risk levels, emergency flags, service agreements, and support plans. Evidence-linked tracking automatically supports NDIS audits.',
                 },
                 {
                   icon: AlertTriangle,
                   title: 'Incident & Safeguarding',
                   description:
-                    'Report incidents, allegations, and safeguarding concerns. Reportable incidents to NDIS Commission with full investigation workflows.',
+                    'Report incidents, allegations, and safeguarding concerns with severity classification. Auto-mapped to NDIS Quality & Safeguards Commission reporting requirements.',
                 },
                 {
                   icon: FileCheck,
                   title: 'Policy & Procedures',
                   description:
-                    'Maintain all required NDIS Practice Standards policies. Version control, staff acknowledgment, and scheduled reviews.',
+                    'Maintain NDIS Practice Standards policies with acknowledgments and review reminders (by request). Track acknowledgment dates for audit evidence.',
                 },
                 {
                   icon: Users,
                   title: 'Training & Competency',
                   description:
-                    'Track mandatory training, NDIS worker orientation, and competency assessments. CPD hours and skill development records.',
+                    'Track mandatory training, worker orientation, and competency records linked to participant support. Evidence of workforce readiness for inspections.',
                 },
                 {
                   icon: Award,
                   title: 'Quality & Audit',
                   description:
-                    'Internal audits, quality improvement activities, and compliance evidence repository. Export packages for NDIS Commission audits.',
+                    'Internal audits, quality improvement activities, and evidence repository with export packs. All participant-related actions automatically become audit evidence.',
                 },
               ].map((module, idx) => (
                 <div
@@ -334,37 +333,42 @@ export default function NDISUseCasePage() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SectionHeader
               badge="Workflows"
-              title="Automated Compliance Workflows"
-              subtitle="Streamline routine compliance tasks with intelligent automation"
+              title="Compliance Workflows"
+              subtitle="Configurable workflows and reminders for routine compliance tasks"
               alignment="center"
             />
 
             <div className="space-y-6">
               {[
                 {
+                  workflow: 'Participant Care & Evidence Generation',
+                  description:
+                    'Workers log participant interactions, care updates, and progress notes. Each note automatically linked to NDIS Practice Standards controls and included in audit evidence export. Sign-off workflow ensures supervisor oversight.',
+                  timeframe: 'Real-time audit readiness',
+                },
+                {
                   workflow: 'Reportable Incident Management',
                   description:
-                    'Capture incident details, classify severity, investigate with root cause analysis, implement corrective actions, report to NDIS Commission within required timeframes.',
-                  timeframe:
-                    'Commission reporting: 24 hours (critical) / 5 days (other)',
+                    'Capture incident details, classify severity, document investigations, and track corrective actions. Auto-mapped to NDIS Quality & Safeguards Commission requirements. Incidents linked to participant records create complete incident history for audits.',
+                  timeframe: 'Regulatory timeframes configurable by policy',
                 },
                 {
                   workflow: 'Worker Screening Expiry Management',
                   description:
-                    'Monitor NDIS Worker Screening Check expiry dates, send automated reminders at 90/60/30 days, escalate to management if renewal not received, suspend roster access on expiry.',
-                  timeframe: 'Automated checks: Daily',
+                    'Track screening expiry dates with reminders and escalation workflows. Renewal documentation becomes part of evidence trail. Audit reports show complete workforce screening compliance history.',
+                  timeframe: 'Review cadence configurable',
                 },
                 {
                   workflow: 'Service Agreement Review',
                   description:
-                    'Schedule service agreement reviews, notify support coordinators and participants, document agreement amendments, obtain signatures, store executed agreements.',
-                  timeframe: 'Review cycle: Annually or on plan change',
+                    'Schedule service agreement reviews, document amendments, and store executed agreements. Review dates automatically tracked for evidence. Participant consent documentation preserved for audit bundles.',
+                  timeframe: 'Review cycle configurable',
                 },
                 {
                   workflow: 'Policy Review and Acknowledgment',
                   description:
-                    'Trigger scheduled policy reviews, stakeholder consultation, management approval, staff notification, acknowledgment tracking, evidence of currency.',
-                  timeframe: 'Review cycle: Annually or on regulatory change',
+                    'Schedule policy reviews, approvals, and acknowledgment tracking. Staff acknowledgment dates recorded as evidence. Audit-ready proof of workforce policy understanding.',
+                  timeframe: 'Review cycle configurable',
                 },
               ].map((item, idx) => (
                 <div
@@ -401,24 +405,24 @@ export default function NDISUseCasePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
               {[
                 {
-                  metric: '100%',
-                  label: 'Incident reporting compliance',
-                  description: 'All reportable incidents submitted on time',
+                  metric: 'Faster',
+                  label: 'Incident reporting',
+                  description: 'Workflow templates improve consistency',
                 },
                 {
-                  metric: '90%',
-                  label: 'Reduction in overdue screenings',
-                  description: 'Automated reminders ensure renewals',
+                  metric: 'Fewer',
+                  label: 'Overdue screenings',
+                  description: 'Review reminders reduce missed renewals',
                 },
                 {
-                  metric: '5 hours',
-                  label: 'Weekly admin time saved',
-                  description: 'Per quality manager on compliance tracking',
+                  metric: 'Less',
+                  label: 'Admin overhead',
+                  description: 'Centralized tracking reduces manual follow-up',
                 },
                 {
-                  metric: '24/7',
-                  label: 'Audit-ready evidence',
-                  description: 'Export complete packages anytime',
+                  metric: 'Audit-ready',
+                  label: 'Evidence',
+                  description: 'Export packs available when needed',
                 },
               ].map((stat, idx) => (
                 <div

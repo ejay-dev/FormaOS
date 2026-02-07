@@ -24,10 +24,10 @@ export async function requireFounderAccess() {
   const allowedIds = parseEnvList(process.env.FOUNDER_USER_IDS);
 
   if (!allowedEmails.size && !allowedIds.size) {
-    console.error("[requireFounderAccess] ⚠️ CRITICAL: No founder emails or IDs configured", {
-      FOUNDER_EMAILS: process.env.FOUNDER_EMAILS,
-      FOUNDER_USER_IDS: process.env.FOUNDER_USER_IDS,
-      NODE_ENV: process.env.NODE_ENV,
+    console.error("[requireFounderAccess] ⚠️ CRITICAL: Founder access not configured", {
+      hasFounderEmails: false,
+      hasFounderIds: false,
+      nodeEnv: process.env.NODE_ENV,
     });
     throw new Error("Founder access not configured");
   }
@@ -43,7 +43,6 @@ export async function requireFounderAccess() {
     hasIdAccess,
     allowedEmailsCount: allowedEmails.size,
     allowedIdsCount: allowedIds.size,
-    allowedEmails: Array.from(allowedEmails),
   });
 
   if (!hasEmailAccess && !hasIdAccess) {

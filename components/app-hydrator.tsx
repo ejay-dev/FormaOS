@@ -30,7 +30,7 @@ interface AppHydratorProps {
   // Server-side state can be passed to skip API call
   initialState?: {
     user: { id: string; email: string; name: string };
-    organization: { id: string; name: string; plan: string; onboardingCompleted: boolean };
+    organization: { id: string; name: string; plan: string; onboardingCompleted: boolean; industry: string | null };
     role: 'owner' | 'admin' | 'member' | 'staff' | 'viewer' | 'auditor';
     isFounder: boolean;
     entitlements: {

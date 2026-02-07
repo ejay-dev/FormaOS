@@ -28,7 +28,7 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 export const metadata: Metadata = {
   title: 'Workforce Credential Management | FormaOS',
   description:
-    'Automated credential tracking for workforce compliance. Never miss a certificate expiry with intelligent reminders, competency management, and audit-ready reporting.',
+    'Credential tracking for workforce compliance with reminders, competency management, and audit-ready reporting.',
 };
 
 export default function WorkforceUseCasePage() {
@@ -46,14 +46,14 @@ export default function WorkforceUseCasePage() {
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-                <span className="text-gradient-system">Never Miss</span>
+                <span className="text-gradient-system">Stay Ahead</span>
                 <br />A Certificate Expiry
               </h1>
 
               <p className="text-lg sm:text-xl text-muted-foreground mb-8">
-                Automated credential tracking and workforce compliance
-                management. Professional registrations, certifications, training
-                records, and competency assessments - all in one place.
+                Credential tracking and workforce compliance management.
+                Professional registrations, certifications, training records,
+                and competency assessments in one place.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -146,8 +146,8 @@ export default function WorkforceUseCasePage() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SectionHeader
               badge="The Solution"
-              title="Intelligent Credential Management"
-              subtitle="Automated tracking, proactive reminders, and complete audit trails"
+              title="Credential Management"
+              subtitle="Tracking, reminders, and complete audit trails"
               alignment="center"
             />
 
@@ -214,8 +214,8 @@ export default function WorkforceUseCasePage() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SectionHeader
               badge="Automation"
-              title="Set It and Forget It"
-              subtitle="Intelligent automation handles the heavy lifting"
+              title="Credential Workflow Support"
+              subtitle="Configurable reminders and review workflows (by request)"
               alignment="center"
             />
 
@@ -224,38 +224,38 @@ export default function WorkforceUseCasePage() {
                 {
                   feature: 'Multi-Stage Expiry Reminders',
                   description:
-                    'Automated email and in-app notifications at 90, 60, 30, and 7 days before expiry. Escalates to manager if no action taken.',
-                  benefit: 'Reduces expired credentials by 85%',
+                    'Configurable reminder schedules for upcoming expiries (by request).',
+                  benefit: 'Reduce missed renewals',
                 },
                 {
                   feature: 'Document Upload & Verification',
                   description:
-                    'Staff upload renewal certificates directly. Managers review and approve with one click. Version history maintained.',
-                  benefit: 'Cuts admin time by 70%',
+                    'Staff upload renewal certificates directly. Managers review and approve with audit trails.',
+                  benefit: 'Streamlined reviews',
                 },
                 {
                   feature: 'Rostering Integration Flags',
                   description:
-                    'Expired or expiring credentials trigger warnings in rostering systems. Prevents scheduling non-compliant staff.',
-                  benefit: 'Eliminates compliance risk',
+                    'Rostering integration flags available by request to highlight expired credentials.',
+                  benefit: 'Reduce scheduling risk',
                 },
                 {
                   feature: 'Bulk Import & Export',
                   description:
                     'Import existing credential data via CSV. Export current status reports for management or auditors.',
-                  benefit: 'Saves hours of manual data entry',
+                  benefit: 'Faster data onboarding',
                 },
                 {
                   feature: 'Customizable Credential Types',
                   description:
-                    'Define any credential type your organization needs. Set renewal frequencies, alert thresholds, and approval workflows.',
-                  benefit: 'Adapts to any industry',
+                    'Configure credential types and review workflows to fit your organization (by request).',
+                  benefit: 'Adapts to different roles',
                 },
                 {
                   feature: 'Mobile Access',
                   description:
-                    'Staff can view their credentials and upload renewals from mobile devices. No desktop required.',
-                  benefit: 'Increases compliance rates',
+                    'Staff can view credentials and upload renewals from mobile devices.',
+                  benefit: 'Accessible on the go',
                 },
               ].map((feature, idx) => (
                 <div
@@ -287,7 +287,7 @@ export default function WorkforceUseCasePage() {
             <SectionHeader
               badge="Example Workflow"
               title="AHPRA Registration Renewal"
-              subtitle="How FormaOS automates professional registration tracking"
+              subtitle="A configurable review flow for professional registrations"
               alignment="center"
             />
 
@@ -295,39 +295,29 @@ export default function WorkforceUseCasePage() {
               <div className="space-y-4">
                 {[
                   {
-                    step: '90 days before expiry',
+                    step: 'Review cadence defined',
                     action:
-                      'System sends email to clinician: "Your AHPRA registration expires in 3 months. Please upload your renewal certificate."',
+                      'Set renewal cadence and reminder schedules based on policy.',
                   },
                   {
-                    step: '60 days before expiry',
+                    step: 'Staff notified',
                     action:
-                      'Second reminder sent to clinician. Practice manager receives notification to monitor renewal status.',
+                      'Staff receive reminders when renewals are due (by request).',
                   },
                   {
-                    step: '30 days before expiry',
+                    step: 'Upload renewal',
                     action:
-                      'Escalation email sent to both clinician and practice manager. Warning flag appears in rostering system.',
+                      'Staff upload renewal documents via web or mobile.',
                   },
                   {
-                    step: '7 days before expiry',
+                    step: 'Manager review',
                     action:
-                      'Final warning sent. System blocks new roster assignments for shifts after expiry date.',
-                  },
-                  {
-                    step: 'Clinician uploads renewal',
-                    action:
-                      'Document uploaded via mobile or desktop. Manager receives approval notification.',
-                  },
-                  {
-                    step: 'Manager approves',
-                    action:
-                      'Manager verifies new certificate, updates expiry date with one click. Alerts cleared, rostering restrictions lifted.',
+                      'Managers review submissions and update expiry dates.',
                   },
                   {
                     step: 'Audit trail complete',
                     action:
-                      'All actions timestamped. Old and new certificates archived. Compliance evidence ready for next audit.',
+                      'All actions are logged to support audit readiness.',
                   },
                 ].map((item, idx) => (
                   <div
@@ -468,7 +458,7 @@ export default function WorkforceUseCasePage() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SectionHeader
               badge="ROI"
-              title="Time Saved, Risk Eliminated"
+              title="Time Saved, Risk Reduced"
               subtitle="Organizations using FormaOS for credential management"
               alignment="center"
             />
@@ -476,24 +466,24 @@ export default function WorkforceUseCasePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
               {[
                 {
-                  metric: '85%',
-                  label: 'Reduction in expired credentials',
-                  description: 'Automated reminders ensure renewals',
+                  metric: 'Clear',
+                  label: 'Credential status',
+                  description: 'Reminder workflows available by request',
                 },
                 {
-                  metric: '10 hrs',
-                  label: 'Weekly admin time saved',
-                  description: 'Per 100 staff members tracked',
+                  metric: 'Less',
+                  label: 'Admin overhead',
+                  description: 'Centralized tracking for teams',
                 },
                 {
-                  metric: '100%',
-                  label: 'Audit compliance',
-                  description: 'Complete evidence at your fingertips',
+                  metric: 'Audit-ready',
+                  label: 'Evidence',
+                  description: 'Exports and audit trails when needed',
                 },
                 {
-                  metric: '3 mins',
-                  label: 'Average approval time',
-                  description: 'Manager reviews and approves renewals',
+                  metric: 'Streamlined',
+                  label: 'Approval flow',
+                  description: 'Manager review with audit trails',
                 },
               ].map((stat, idx) => (
                 <div

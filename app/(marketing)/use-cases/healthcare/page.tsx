@@ -24,11 +24,10 @@ import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
-
 export const metadata: Metadata = {
   title: 'Healthcare Compliance Management | FormaOS',
   description:
-    'Complete compliance solution for healthcare organizations. Manage policies, evidence, certificates, patient records, and incident reporting in one AHPRA-ready platform.',
+    'Compliance solution for healthcare organizations. Manage policies, evidence, certificates, patient records, and incident reporting in one AHPRA-aligned platform.',
 };
 
 export default function HealthcareUseCasePage() {
@@ -46,7 +45,7 @@ export default function HealthcareUseCasePage() {
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-                <span className="text-gradient-system">AHPRA-Ready</span>
+                <span className="text-gradient-system">AHPRA-Aligned</span>
                 <br />
                 Healthcare Compliance
               </h1>
@@ -54,7 +53,7 @@ export default function HealthcareUseCasePage() {
               <p className="text-lg sm:text-xl text-muted-foreground mb-8">
                 Complete compliance management for medical practices, allied
                 health clinics, and healthcare organizations. Meet AHPRA, RACGP,
-                and NDIS standards with confidence.
+                and NDIS standards with aligned workflows.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -89,39 +88,39 @@ export default function HealthcareUseCasePage() {
               {[
                 {
                   icon: FileText,
-                  title: 'Policy Management',
+                  title: 'Patient Management System',
                   description:
-                    'Keep clinical policies current and accessible. Version control, approval workflows, and automated staff acknowledgment.',
+                    'Complete patient records with care status tracking, risk stratification, emergency flags, and episode management. HIPAA-aligned design supports multi-site healthcare networks.',
                 },
                 {
                   icon: Shield,
                   title: 'Certificate Tracking',
                   description:
-                    'Never miss a credential expiry. Track registrations, CPD, immunizations, and mandatory training with automated reminders.',
+                    'Track registrations, CPD, immunizations, and mandatory training with reminder workflows (by request).',
                 },
                 {
                   icon: Users,
-                  title: 'Patient Records & Progress Notes',
+                  title: 'Progress Notes & Clinical Documentation',
                   description:
-                    'Maintain compliant patient documentation with structured progress notes, consent forms, care plans, and automated retention policies. Complete audit trails for regulatory compliance.',
+                    'Structured progress notes automatically become audit evidence. Sign-off workflows, status tagging (routine/follow-up/incident/risk), and supervisor approval built-in.',
                 },
                 {
                   icon: AlertCircle,
                   title: 'Incident Reporting',
                   description:
-                    'Capture and investigate adverse events. Root cause analysis, corrective actions, and regulatory reporting workflows.',
+                    'Capture and investigate adverse events with corrective actions and configurable reporting workflows. Links to patient records and incidents auto-map to compliance evidence.',
                 },
                 {
                   icon: ClipboardCheck,
                   title: 'Evidence Management',
                   description:
-                    'Centralized repository for compliance evidence. Policies, procedures, training records, and meeting minutes - all audit-ready.',
+                    'Patient-linked evidence tracking. Every progress note, incident, and task completion automatically tagged to relevant compliance controls. Audit-ready exports by standard.',
                 },
                 {
                   icon: TrendingUp,
                   title: 'Audit Readiness',
                   description:
-                    'Export complete compliance packages in minutes. Everything AHPRA, RACGP, or ACHS auditors need, organized and timestamped.',
+                    'Export compliance packages with complete audit trails. Patient-level evidence bundles with automated control mapping for AHPRA, RACGP, or ACHS audits.',
                 },
               ].map((challenge, idx) => (
                 <div
@@ -166,33 +165,33 @@ export default function HealthcareUseCasePage() {
                   ],
                 },
                 {
+                  title: 'Patient Care & Progress Notes (Evidence Generation)',
+                  steps: [
+                    'Clinician accesses patient record with care status, risk level, emergency flags',
+                    'Creates structured progress note with status tag (routine/follow-up/incident/risk)',
+                    'Note automatically linked to compliance framework controls',
+                    'Manager reviews and signs off on progress note (supervisor approval workflow)',
+                    'Note becomes audit evidence - automatically exported in compliance audit bundles',
+                  ],
+                },
+                {
                   title: 'Clinical Incident Management',
                   steps: [
-                    'Staff member submits incident report (near miss or adverse event)',
-                    'Manager reviews and classifies severity (SAC rating)',
-                    'Investigation assigned with root cause analysis framework',
+                    'Staff member logs incident with severity classification (SAC rating)',
+                    'Incident linked to patient record and auto-mapped to compliance evidence',
+                    'Manager reviews and initiates investigation with root cause analysis',
                     'Corrective actions implemented and tracked to completion',
-                    'Regulatory reporting to AHPRA/SA Health if required',
+                    'Regulatory reporting to AHPRA/SA Health if required with evidence artifacts attached',
                   ],
                 },
                 {
-                  title: 'Credential Expiry Management',
+                  title: 'Credential Expiry & Audit Readiness',
                   steps: [
-                    'System monitors certificate expiry dates automatically',
-                    '90-day alert sent to clinician and practice manager',
-                    '30-day escalation if no renewal documentation uploaded',
-                    '7-day final warning with rostering implications noted',
-                    'Expired credential triggers workflow restrictions',
-                  ],
-                },
-                {
-                  title: 'Policy Review & Update',
-                  steps: [
-                    'Scheduled review triggered for policy due for update',
-                    'Clinical lead reviews and updates content with version control',
-                    'Stakeholder consultation and approval workflow',
-                    'All staff notified and required to acknowledge new version',
-                    'Old version archived with full audit trail maintained',
+                    'Track all practitioner certificates with configurable expiry cadences',
+                    'Reminder workflows flag renewals 90/60/30/7 days out',
+                    'Renewal documentation uploaded and reviewed automatically',
+                    'Complete audit trail of all credential changes preserved',
+                    'Export auditor-ready credential reports with verification timestamps',
                   ],
                 },
               ].map((workflow, idx) => (
@@ -229,7 +228,7 @@ export default function HealthcareUseCasePage() {
             <SectionHeader
               badge="Compliance Standards"
               title="Built for Australian Healthcare Standards"
-              subtitle="Preconfigured frameworks aligned with regulatory requirements"
+              subtitle="Framework packs aligned with regulatory requirements (configurable)"
               alignment="center"
             />
 
@@ -241,9 +240,9 @@ export default function HealthcareUseCasePage() {
                     'Australian Health Practitioner Regulation Agency compliance',
                   features: [
                     'Practitioner registration tracking',
-                    'CPD hours monitoring',
-                    'Mandatory reporting protocols',
-                    'Professional indemnity verification',
+                    'CPD record tracking',
+                    'Mandatory reporting checklists',
+                    'Professional indemnity records',
                   ],
                 },
                 {
@@ -252,9 +251,9 @@ export default function HealthcareUseCasePage() {
                     'Royal Australian College of General Practitioners standards',
                   features: [
                     'QI&CPD criteria tracking',
-                    'Clinical governance framework',
+                    'Clinical governance framework templates',
                     'Infection control protocols',
-                    'Patient safety systems',
+                    'Patient safety workflows',
                   ],
                 },
                 {
@@ -262,8 +261,8 @@ export default function HealthcareUseCasePage() {
                   description:
                     'National Disability Insurance Scheme practice standards',
                   features: [
-                    'Worker screening compliance',
-                    'Incident management requirements',
+                    'Worker screening records',
+                    'Incident management workflows',
                     'Service agreement documentation',
                     'Provider registration evidence',
                   ],
@@ -344,24 +343,24 @@ export default function HealthcareUseCasePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
               {[
                 {
-                  metric: '85%',
-                  label: 'Time saved on audits',
+                  metric: 'Faster',
+                  label: 'Audit preparation',
                   description: 'Export complete audit packages in minutes',
                 },
                 {
-                  metric: '70%',
-                  label: 'Reduction in expired credentials',
-                  description: 'Automated reminders ensure renewals',
+                  metric: 'Reduced',
+                  label: 'Credential gaps',
+                  description: 'Automated reminders ensure timely renewals',
                 },
                 {
-                  metric: '3 hours',
-                  label: 'Weekly admin time saved',
-                  description: 'Per practice manager on compliance tasks',
+                  metric: 'Hours',
+                  label: 'Admin time saved weekly',
+                  description: 'Streamlined compliance tracking per manager',
                 },
                 {
-                  metric: '100%',
-                  label: 'Audit trail completeness',
-                  description: 'Every action timestamped and immutable',
+                  metric: 'Full',
+                  label: 'Audit trail coverage',
+                  description: 'Every action timestamped and preserved',
                 },
               ].map((stat, idx) => (
                 <div

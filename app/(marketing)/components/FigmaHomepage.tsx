@@ -51,14 +51,9 @@ import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
-
-
-
 // ============================================
 // HERO ENHANCEMENT COMPONENTS
 // ============================================
-
-
 
 // ============================================
 // HERO COMPONENT
@@ -230,6 +225,10 @@ function Hero() {
               <p className="text-sm text-gray-500 mb-3">
                 Structure → Operationalize → Validate → Defend
               </p>
+              <p className="text-xs text-gray-500 mb-4">
+                Used by compliance teams. Aligned to ISO/SOC frameworks. Built
+                for audit defensibility.
+              </p>
               {/* OS Capability Indicators */}
               <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600">
                 <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
@@ -255,7 +254,7 @@ function Hero() {
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
             >
               <motion.a
-                href={`${appBase}/auth/signup`}
+                href={`${appBase}/auth/signup?plan=pro`}
                 whileHover={{
                   scale: 1.05,
                   boxShadow: '0 0 40px rgba(6, 182, 212, 0.4)',
@@ -586,7 +585,6 @@ const steps = [
   },
 ];
 
-
 function CompactStoryStep({
   step,
   index,
@@ -731,57 +729,71 @@ const capabilities = [
     icon: Workflow,
     title: 'Automation Engine',
     description:
-      '8 workflow triggers, conditional logic, auto-task generation, escalation rules, and notification routing.',
+      '8 automation triggers for evidence, tasks, policies, and certifications with auto-task generation and escalation notifications.',
     color: 'from-cyan-400 to-blue-500',
   },
   {
     icon: Database,
     title: 'Evidence Versioning',
     description:
-      'SHA-256 integrity checks, automatic versioning, one-click rollback, and tamper detection on every upload.',
+      'Evidence activity is logged with audit trail context. Optional versioning and rollback available by request.',
     color: 'from-blue-500 to-purple-500',
   },
   {
     icon: Lock,
     title: 'Compliance Score Engine',
     description:
-      'Real-time scoring across all frameworks with historical snapshots, regression alerts, and point-in-time audit state capture.',
+      'Continuous compliance scoring with trend insights and snapshot history when enabled.',
     color: 'from-purple-500 to-pink-500',
   },
   {
     icon: GitBranch,
     title: 'Framework Packs',
     description:
-      '7 pre-built frameworks (ISO 27001, SOC 2, GDPR, HIPAA, PCI-DSS, NIST CSF, CIS) with 85+ deduplicated controls.',
+      '7 pre-built frameworks (ISO 27001, SOC 2, GDPR, HIPAA, PCI-DSS, NIST CSF, CIS).',
     color: 'from-pink-500 to-rose-500',
   },
   {
     icon: Layers,
-    title: 'Master Control Deduplication',
+    title: 'Cross-Framework Mapping',
     description:
-      'Single source of truth for controls across frameworks. SOC 2, ISO 27001, HIPAA, NDIS share requirements—implement once, satisfy all.',
+      'Control mappings across SOC 2, NIST CSF, and CIS Controls with coverage visibility.',
     color: 'from-rose-500 to-orange-500',
   },
   {
     icon: Terminal,
-    title: 'Evidence Intelligence AI',
+    title: 'Compliance Intelligence',
     description:
-      'Automated quality scoring of evidence with actionable feedback. Identifies gaps before auditors do.',
+      'Real-time compliance scoring with trend analysis and risk insights across all frameworks.',
     color: 'from-orange-500 to-yellow-500',
+  },
+  {
+    icon: Eye,
+    title: 'Executive Dashboard',
+    description:
+      'C-level visibility into compliance posture, framework health, and risk trends.',
+    color: 'from-yellow-500 to-lime-500',
   },
   {
     icon: Clock,
     title: 'REST API v1',
     description:
-      'Complete API for compliance data, evidence uploads, task management, and webhook integrations.',
+      'REST API v1 for compliance data, evidence uploads, and tasks. Webhooks available by request.',
     color: 'from-yellow-500 to-green-500',
   },
   {
     icon: Globe,
     title: 'Multi-Site Operations',
     description:
-      'Org hierarchies, business units, team isolation, and cross-site compliance rollups in one platform.',
+      'Planned enterprise roadmap: multi-site hierarchies, business units, and cross-site rollups.',
     color: 'from-green-500 to-cyan-500',
+  },
+  {
+    icon: Shield,
+    title: 'Compliance Gate Enforcement',
+    description:
+      'Block non-compliant actions before they happen. Real-time validation ensures controls are satisfied before proceeding.',
+    color: 'from-cyan-500 to-blue-500',
   },
 ];
 
@@ -874,21 +886,21 @@ function VersionControlHighlight() {
   const features = [
     {
       icon: History,
-      title: 'Automatic Versioning',
+      title: 'Audit Trail History',
       description:
-        'Every upload creates a new version automatically. No user action required.',
+        'Every evidence action is logged with timestamps and ownership.',
     },
     {
       icon: Shield,
-      title: 'Tamper Detection',
+      title: 'Integrity Context',
       description:
-        'Integrity checksums verify evidence integrity and detect modification.',
+        'Audit logs preserve what changed and when, supporting defensible evidence.',
     },
     {
       icon: RotateCcw,
-      title: 'One-Click Rollback',
+      title: 'Versioning (By Request)',
       description:
-        'Restore any previous version in seconds. Critical for audit defense.',
+        'Optional versioning and rollback can be enabled for enterprise deployments.',
     },
   ];
 
@@ -921,19 +933,19 @@ function VersionControlHighlight() {
             className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs sm:text-sm font-medium mb-4 sm:mb-6"
           >
             <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-cyan-400 animate-pulse" />
-            Enterprise-Grade Feature
+            Available By Request
           </motion.div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
-            Evidence Version Control
+            Evidence Integrity &amp; Change History
             <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
               {' '}
-              That competitors charge a premium for
+              For audit defensibility
             </span>
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Complete version history on every evidence upload with integrity
-            validation and one-click rollback. Built into FormaOS.
+            Audit logs capture evidence activity today. Optional versioning and
+            rollback are available by request.
           </p>
         </motion.div>
 
@@ -972,9 +984,7 @@ function VersionControlHighlight() {
           className="mt-8 p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-center"
         >
           <p className="text-xs sm:text-sm text-cyan-200">
-            <span className="font-semibold">Competitor Pricing:</span> Drata
-            $2,000/mo ❌ | Vanta $3,600/mo ❌ | ServiceNow $10,000/mo ❌ |{' '}
-            <span className="font-semibold">FormaOS: from $159/mo ✅</span>
+            Optional enterprise enhancements are available on request.
           </p>
         </motion.div>
       </div>
@@ -1020,10 +1030,10 @@ const industrySolutions: IndustrySolution[] = [
     solutionMapping: {
       title: 'FormaOS Healthcare Module',
       features: [
-        'Patient records with automated retention and access controls',
-        'Clinical incident reporting with severity-based routing (Early Access)',
-        'Staff credential tracking with expiry alerts',
-        'Audit-ready evidence bundles generated in seconds',
+        'Patient records and progress notes with role-based access',
+        'Clinical incident reporting (advanced routing available by request)',
+        'Staff credential tracking with review reminders',
+        'Audit-ready evidence bundles and exports',
       ],
     },
     capabilities: [
@@ -1031,19 +1041,19 @@ const industrySolutions: IndustrySolution[] = [
         icon: Shield,
         title: 'Clinical Governance',
         description:
-          'Full audit trails for every patient interaction, policy acknowledgment, and clinical decision',
+          'Audit trails for compliance actions, evidence updates, and policy acknowledgments',
       },
       {
         icon: FileText,
         title: 'Incident Management (Early Access)',
         description:
-          'Category-based incident capture, investigation workflows, and regulatory notification tracking',
+          'Category-based incident capture and investigation workflows (regulator-specific flows by request)',
       },
       {
         icon: CheckCircle,
         title: 'Accreditation Ready',
         description:
-          'Pre-built evidence packs for RACGP, AHPRA, and NSQHS standards',
+          'Aligned to RACGP, AHPRA, and NSQHS standards with configurable templates',
       },
     ],
     cta: {
@@ -1062,10 +1072,10 @@ const industrySolutions: IndustrySolution[] = [
     solutionMapping: {
       title: 'FormaOS NDIS Module',
       features: [
-        'Participant management with support plans and risk profiles',
-        'Reportable incident workflows aligned with Commission requirements',
-        'Worker screening and credential verification',
-        'Continuous self-assessment against NDIS Practice Standards',
+        'Participant records and support plans (configurable)',
+        'Incident reporting workflows (advanced regulator flows by request)',
+        'Credential tracking and screening records',
+        'Self-assessment checklists aligned to NDIS Practice Standards (by request)',
       ],
     },
     capabilities: [
@@ -1073,19 +1083,18 @@ const industrySolutions: IndustrySolution[] = [
         icon: Shield,
         title: 'Safeguarding System',
         description:
-          'Behavior support plans, restrictive practice registers, and participant consent tracking',
+          'Safeguarding registers and participant consent tracking (early access)',
       },
       {
         icon: FileText,
         title: 'Incident Reporting',
         description:
-          '24-hour, 5-day, and final report workflows with Commission notification tracking',
+          'Incident reporting workflows with configurable timelines (early access)',
       },
       {
         icon: CheckCircle,
         title: 'Audit Evidence',
-        description:
-          'One-click evidence bundles mapped to all NDIS Practice Standard modules',
+        description: 'Evidence bundles and exports to support NDIS audits',
       },
     ],
     cta: {
@@ -1104,10 +1113,10 @@ const industrySolutions: IndustrySolution[] = [
     solutionMapping: {
       title: 'FormaOS Financial Module',
       features: [
-        'Multi-framework compliance mapping (SOC 2, ISO, PCI alignment)',
-        'Automated control evidence collection and testing',
-        'Vendor risk assessment and due diligence tracking',
-        'Security incident response documentation',
+        'Multi-framework compliance packs (SOC 2, ISO, PCI) with configurable mapping',
+        'Evidence collection workflows and control tracking',
+        'Vendor risk tracking (available by request)',
+        'Incident response documentation workflows',
       ],
     },
     capabilities: [
@@ -1115,18 +1124,18 @@ const industrySolutions: IndustrySolution[] = [
         icon: Shield,
         title: 'Control Monitoring',
         description:
-          'Real-time control status dashboards with automated gap detection',
+          'Control status dashboards with gap visibility and trend insights',
       },
       {
         icon: FileText,
         title: 'Evidence Automation',
         description:
-          'Scheduled evidence collection, version control, and auditor access portals',
+          'Evidence collection workflows and audit-ready export packs',
       },
       {
         icon: CheckCircle,
         title: 'Audit Acceleration',
-        description: 'Pre-mapped evidence to common trust service criteria',
+        description: 'Framework packs aligned to common trust service criteria',
       },
     ],
     cta: {
@@ -1459,19 +1468,17 @@ function HealthcareHighlight() {
     {
       title: 'Patient Management',
       features: [
-        'Complete patient profiles with risk assessment',
-        'Progress notes with audit trails and retention policies',
-        'Care episode tracking and clinical governance',
-        'HIPAA-compliant data handling with automated workflows',
+        'Patient management with automatic audit evidence generation',
+        'Progress notes become compliance proof with supervisor sign-off workflows',
+        'Care episode tracking and clinical governance workflows',
       ],
     },
     {
-      title: 'Incident Reporting (Early Access)',
+      title: 'NDIS & Aged Care',
       features: [
-        'NDIS incident categorization',
-        'Severity-based routing',
-        'Investigation workflows',
-        'Regulatory reporting built-in',
+        'NDIS Practice Standards 1-8 controls pre-configured',
+        'Participant records with evidence-linked tracking',
+        'Worker screening and incident workflows aligned to NDIS requirements',
       ],
     },
   ];
@@ -1516,8 +1523,8 @@ function HealthcareHighlight() {
             </span>
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Complete patient management, incident reporting, and clinical
-            governance workflows. HIPAA and NDIS ready.
+            Patient management, incident reporting, and clinical governance
+            workflows aligned to HIPAA and NDIS requirements.
           </p>
         </motion.div>
 
@@ -1577,12 +1584,12 @@ const securityFeatures = [
     icon: History,
     title: 'Evidence Integrity',
     description:
-      'Integrity checks and version control protect evidence defensibility',
+      'Audit trail context protects evidence defensibility; versioning available by request',
   },
   {
     icon: Key,
     title: 'SSO & MFA',
-    description: 'OAuth login with MFA-ready controls',
+    description: 'Google OAuth today; enterprise SSO/MFA available by request',
   },
 ];
 
@@ -2043,9 +2050,8 @@ function Security() {
               </span>
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-gray-400 mb-3 sm:mb-4 leading-relaxed">
-              Controls are enforced, not just recorded. Every action is
-              verified, every evidence chain is immutable, every audit trail is
-              complete.
+              Controls are enforced, not just recorded. Every action is logged,
+              evidence activity is tracked, and audit trails are complete.
             </p>
             <p className="text-xs sm:text-sm text-gray-500 mb-6 sm:mb-8 leading-relaxed">
               Security is infrastructure, not features. Built into the operating
@@ -2477,7 +2483,7 @@ function CTASection() {
           >
             <motion.a
               ref={ctaButtonRef}
-              href={`${appBase}/auth/signup`}
+              href={`${appBase}/auth/signup?plan=pro`}
               whileHover={{
                 scale: 1.05,
                 boxShadow:

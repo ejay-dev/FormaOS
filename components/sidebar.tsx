@@ -4,62 +4,24 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { signOut } from "@/app/app/actions/logout";
-import {
-  LayoutDashboard,
-  FileText,
-  CheckSquare,
-  Laptop,
-  Users,
-  History,
-  Settings,
-  Lock,
-  Printer,
-  LogOut,
-  ShieldCheck,
-  ChevronRight,
-  Mail,
-  Command,
-  HeartPulse,
-  NotebookPen,
-} from "lucide-react";
+import { LogOut, Command } from "lucide-react";
 import Button from "./ui/button";
+import { useAppStore } from "@/lib/stores/app";
+import { getIndustryNavigation, getIndustryLabel } from "@/lib/navigation/industry-sidebar";
 
 type UserRole = "viewer" | "member" | "admin" | "owner" | "staff" | "auditor";
-
-const ADMIN_NAV = [
-  { name: "Dashboard", href: "/app", icon: LayoutDashboard, category: "Overview" },
-  { name: "Policies", href: "/app/policies", icon: FileText, category: "Governance" },
-  { name: "Registers", href: "/app/registers", icon: Laptop, category: "Governance" },
-  { name: "Tasks", href: "/app/tasks", icon: CheckSquare, category: "Governance" },
-  { name: "People", href: "/app/people", icon: Users, category: "Operations" },
-  { name: "Patients", href: "/app/patients", icon: HeartPulse, category: "Operations" },
-  { name: "Progress Notes", href: "/app/progress-notes", icon: NotebookPen, category: "Operations" },
-  { name: "Evidence Vault", href: "/app/vault", icon: Lock, category: "Operations" },
-  { name: "Reports", href: "/app/reports", icon: Printer, category: "Intelligence" },
-  { name: "Audit Trail", href: "/app/audit", icon: History, category: "Intelligence" },
-  { name: "Settings", href: "/app/settings", icon: Settings, category: "System" },
-  { name: "Email Preferences", href: "/app/settings/email-preferences", icon: Mail, category: "System" },
-];
-
-const STAFF_NAV = [
-  { name: "Dashboard", href: "/app/staff", icon: LayoutDashboard, category: "Overview" },
-  { name: "Tasks", href: "/app/tasks", icon: CheckSquare, category: "Operations" },
-  { name: "Patients", href: "/app/patients", icon: HeartPulse, category: "Operations" },
-  { name: "Progress Notes", href: "/app/progress-notes", icon: NotebookPen, category: "Operations" },
-  { name: "Evidence Vault", href: "/app/vault", icon: Lock, category: "Operations" },
-];
 
 export function Sidebar({ role = "owner" }: { role?: UserRole }) {
   const pathname = usePathname();
   const router = useRouter();
+  const organization = useAppStore((state) => state.organization);
+  const industry = organization?.industry ?? null;
 
-  const navigation = role === "staff" || role === "member" || role === "viewer" ? STAFF_NAV : ADMIN_NAV;
-  const categories = ["Overview", "Governance", "Operations", "Intelligence", "System"].filter((cat) =>
-    navigation.some((item) => item.category === cat)
-  );
+  // Get industry-specific navigation
+  const { navigation, categories } = getIndustryNavigation(industry, role);
 
   /**
-   * ⚡ PERFORMANCE: Prefetch all routes on mount
+   * PERFORMANCE: Prefetch all routes on mount
    * This loads route data in the background so clicks are instant
    */
   useEffect(() => {
@@ -70,8 +32,17 @@ export function Sidebar({ role = "owner" }: { role?: UserRole }) {
 
   return (
     <div className="flex h-full w-full flex-col justify-between px-4 py-6">
+      {/* Industry Badge */}
+      {industry && (
+        <div className="mb-4 px-3">
+          <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary">
+            {getIndustryLabel(industry)}
+          </span>
+        </div>
+      )}
+
       {/* Navigation */}
-      <div className="space-y-8 overflow-y-auto no-scrollbar">
+      <div className="space-y-8 overflow-y-auto no-scrollbar flex-1">
         <nav className="space-y-6">
           {categories.map((cat) => (
             <div key={cat} className="space-y-2">
@@ -95,7 +66,8 @@ export function Sidebar({ role = "owner" }: { role?: UserRole }) {
                     <Link
                       key={item.name}
                       href={item.href}
-                      // ⚡ Prefetch on hover for even faster transitions
+                      data-testid={item.testId}
+                      // Prefetch on hover for even faster transitions
                       onMouseEnter={() => router.prefetch(item.href)}
                       className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium transition-all ${
                         isActive
@@ -116,8 +88,8 @@ export function Sidebar({ role = "owner" }: { role?: UserRole }) {
       {/* Bottom actions */}
       <div className="space-y-2 border-t border-white/8 pt-5">
         {/* Quick search */}
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           className="group flex w-full items-center justify-between rounded-xl px-3 py-3 text-sm font-medium hover:bg-white/5"
         >
           <div className="flex items-center gap-3">
@@ -131,9 +103,9 @@ export function Sidebar({ role = "owner" }: { role?: UserRole }) {
 
         {/* Logout */}
         <form action={signOut}>
-          <Button 
-            type="submit" 
-            variant="ghost" 
+          <Button
+            type="submit"
+            variant="ghost"
             className="group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium hover:bg-white/5"
           >
             <LogOut className="h-4 w-4 text-foreground/50" />

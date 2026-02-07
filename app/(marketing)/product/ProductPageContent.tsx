@@ -134,6 +134,15 @@ function ProductHero() {
               system that transforms regulatory obligations into structured
               controls, owned actions, live evidence, and audit-ready outcomes.
             </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="text-xs sm:text-sm text-gray-500 mb-6 max-w-3xl mx-auto text-center"
+            >
+              Used by compliance teams. Aligned to ISO/SOC frameworks. Built for
+              audit defensibility.
+            </motion.p>
 
             {/* Key Differentiator */}
             <motion.div
@@ -478,13 +487,15 @@ function OperatingModel() {
       description:
         'Turn requirements into real, trackable execution across teams.',
       features: [
-        '8 workflow triggers: evidence expiry, control failures, task overdue, cert expiring, etc.',
+        '5 workflow triggers: evidence expiry, control failures, task overdue, cert expiring, progress notes due',
+        'Healthcare workflows: Progress notes auto-generate compliance evidence, incidents auto-map to controls',
+        'Patient/participant tracking: All care updates linked to compliance controls automatically',
         'Conditional task generation with priority, owners, and due dates',
         'Auto-escalation rules for critical issues',
         'Notification routing and audit trail logging',
       ],
       outcome:
-        'Compliance becomes part of daily operations, not a quarterly scramble.',
+        'Compliance becomes part of daily operations. Patient care and regulatory evidence happen together, not separately.',
       color: 'from-blue-500 to-purple-500',
       icon: Zap,
     },
@@ -746,13 +757,13 @@ function EnterpriseSecurity() {
   const securityFeatures = [
     { label: 'SOC 2-aligned controls', icon: Shield },
     { label: 'End-to-end encryption', icon: Lock },
-    { label: 'Google OAuth + Enterprise SAML', icon: Users },
-    { label: 'MFA with TOTP Authenticator', icon: UserCheck },
+    { label: 'Google OAuth + Enterprise SSO (SAML by request)', icon: Users },
+    { label: 'MFA options available by request', icon: UserCheck },
     { label: 'Immutable Audit Logs', icon: Database },
     { label: 'Role-Based Access Control (6 Roles)', icon: UserCheck },
     { label: 'Automated compliance score engine', icon: Shield },
     { label: 'Correlation ID tracking', icon: Lock },
-    { label: 'Session Rotation & Rate Limiting', icon: Database },
+    { label: 'Session management & rate limiting', icon: Database },
   ];
 
   return (
@@ -829,17 +840,17 @@ function ComplianceIntelligence() {
   const intelligenceFeatures = [
     {
       label: 'Compliance Score Trends',
-      description: '14-day historical tracking with sparkline visualization',
+      description: 'Rolling trend view with sparkline visualization',
       icon: Activity,
     },
     {
       label: 'Framework Health Monitoring',
-      description: 'Per-framework readiness with gap detection',
+      description: 'Per-framework readiness with gap visibility (when enabled)',
       icon: FileCheck,
     },
     {
       label: 'Regression Alerts',
-      description: 'Automatic detection of >10% score drops',
+      description: 'Regression insights and alerts (early access)',
       icon: AlertTriangle,
     },
     {
@@ -849,23 +860,30 @@ function ComplianceIntelligence() {
     },
     {
       label: 'Master Control Deduplication',
-      description: 'Single source of truth for controls across all frameworks—SOC 2, ISO 27001, HIPAA, NDIS share requirements automatically',
+      description:
+        'Cross-framework mapping planned to reduce duplicate controls',
       icon: GitBranch,
     },
     {
       label: 'Historical Compliance Snapshots',
-      description: 'Point-in-time compliance state capture with timeline visualization for audit trails and regression analysis',
+      description: 'Snapshot history when captured (early access)',
       icon: Database,
     },
     {
       label: 'Evidence Intelligence AI Scoring',
-      description: 'Automated quality assessment of evidence with actionable feedback to improve audit readiness',
+      description: 'Compliance intelligence with real-time scoring',
       icon: Sparkles,
     },
     {
       label: 'Compliance Gate Enforcement',
-      description: 'Block non-compliant actions before they happen with real-time validation against control requirements',
+      description:
+        'Block non-compliant actions before they happen with real-time validation against control requirements',
       icon: Shield,
+    },
+    {
+      label: 'Executive Risk Narratives',
+      description: 'Executive dashboard with compliance posture analytics',
+      icon: Eye,
     },
   ];
 

@@ -16,6 +16,10 @@ export type TriggerType =
   | 'control_failed'
   | 'control_incomplete'
   | 'org_onboarding'
+  | 'onboarding_milestone'
+  | 'industry_configured'
+  | 'frameworks_provisioned'
+  | 'industry_pack_applied'
   | 'risk_score_change'
   | 'task_overdue'
   | 'certification_expiring';
@@ -43,7 +47,7 @@ export interface AutomationResult {
  */
 export async function processTrigger(
   event: TriggerEvent,
-  depth: number = 0
+  depth: number = 0,
 ): Promise<AutomationResult> {
   const result: AutomationResult = {
     tasksCreated: 0,
@@ -59,7 +63,9 @@ export async function processTrigger(
       orgId: event.organizationId,
       depth,
     });
-    result.errors.push(`Max trigger recursion depth reached (${MAX_TRIGGER_DEPTH})`);
+    result.errors.push(
+      `Max trigger recursion depth reached (${MAX_TRIGGER_DEPTH})`,
+    );
     return result;
   }
 
@@ -78,6 +84,18 @@ export async function processTrigger(
       case 'org_onboarding':
         await handleOrgOnboarding(event, result);
         break;
+      case 'onboarding_milestone':
+        await handleOnboardingMilestone(event, result);
+        break;
+      case 'industry_configured':
+        await handleIndustryConfigured(event, result);
+        break;
+      case 'frameworks_provisioned':
+        await handleFrameworksProvisioned(event, result);
+        break;
+      case 'industry_pack_applied':
+        await handleIndustryPackApplied(event, result);
+        break;
       case 'risk_score_change':
         await handleRiskScoreChange(event, result);
         break;
@@ -93,7 +111,7 @@ export async function processTrigger(
     await updateComplianceScore(event.organizationId);
   } catch (error) {
     result.errors.push(
-      error instanceof Error ? error.message : 'Unknown error'
+      error instanceof Error ? error.message : 'Unknown error',
     );
   }
 
@@ -105,7 +123,7 @@ export async function processTrigger(
  */
 async function handleEvidenceExpiry(
   event: TriggerEvent,
-  result: AutomationResult
+  result: AutomationResult,
 ) {
   const supabase = createSupabaseAdminClient();
   const evidenceId = event.metadata?.evidenceId;
@@ -177,7 +195,7 @@ async function handleEvidenceExpiry(
  */
 async function handlePolicyReviewDue(
   event: TriggerEvent,
-  result: AutomationResult
+  result: AutomationResult,
 ) {
   const supabase = createSupabaseAdminClient();
   const policyId = event.metadata?.policyId;
@@ -248,7 +266,7 @@ async function handlePolicyReviewDue(
  */
 async function handleControlIssue(
   event: TriggerEvent,
-  result: AutomationResult
+  result: AutomationResult,
 ) {
   const supabase = createSupabaseAdminClient();
   const controlId = event.metadata?.controlId;
@@ -284,7 +302,7 @@ async function handleControlIssue(
       priority,
       status: 'pending',
       due_date: new Date(
-        Date.now() + (isCritical ? 2 : 7) * 24 * 60 * 60 * 1000
+        Date.now() + (isCritical ? 2 : 7) * 24 * 60 * 60 * 1000,
       ).toISOString(),
     })
     .select()
@@ -325,14 +343,30 @@ async function handleControlIssue(
 
 /**
  * Handle organization onboarding trigger
+ * Enhanced with industry awareness and milestone tracking
  */
 async function handleOrgOnboarding(
   event: TriggerEvent,
-  result: AutomationResult
+  result: AutomationResult,
 ) {
   const supabase = createSupabaseAdminClient();
 
-  // Create initial onboarding tasks
+  // Get organization details for industry-specific setup
+  const { data: org } = await supabase
+    .from('organizations')
+    .select('industry, name')
+    .eq('id', event.organizationId)
+    .single();
+
+  const industry = org?.industry || 'other';
+
+  automationLogger.info('onboarding_started', {
+    orgId: event.organizationId,
+    industry,
+    metadata: event.metadata,
+  });
+
+  // Create initial onboarding tasks (industry-aware)
   const onboardingTasks = [
     {
       title: 'Complete Organization Profile',
@@ -372,9 +406,7 @@ async function handleOrgOnboarding(
     });
 
     if (error) {
-      result.errors.push(
-        `Failed to create onboarding task: ${error.message}`
-      );
+      result.errors.push(`Failed to create onboarding task: ${error.message}`);
     } else {
       result.tasksCreated++;
     }
@@ -395,7 +427,168 @@ async function handleOrgOnboarding(
       type: 'ONBOARDING_STARTED',
       title: 'Welcome to FormaOS!',
       message: `Your onboarding tasks are ready. Complete them to get started with compliance automation.`,
-      metadata: { tasksCreated: result.tasksCreated },
+      metadata: { tasksCreated: result.tasksCreated, industry },
+    });
+    result.notificationsSent++;
+  }
+
+  automationLogger.info('onboarding_automation_completed', {
+    orgId: event.organizationId,
+    tasksCreated: result.tasksCreated,
+    notificationsSent: result.notificationsSent,
+  });
+}
+
+/**
+ * Handle onboarding milestone trigger
+ * Tracks progress through onboarding phases
+ */
+async function handleOnboardingMilestone(
+  event: TriggerEvent,
+  result: AutomationResult,
+) {
+  const supabase = createSupabaseAdminClient();
+  const milestone = event.metadata?.milestone || 'unknown';
+
+  automationLogger.info('onboarding_milestone_reached', {
+    orgId: event.organizationId,
+    milestone,
+  });
+
+  // Update org onboarding status
+  await supabase
+    .from('org_onboarding_status')
+    .update({
+      last_milestone: milestone,
+      last_milestone_at: new Date().toISOString(),
+    })
+    .eq('organization_id', event.organizationId);
+}
+
+/**
+ * Handle industry configuration trigger
+ * Fired when organization selects their industry
+ */
+async function handleIndustryConfigured(
+  event: TriggerEvent,
+  result: AutomationResult,
+) {
+  const supabase = createSupabaseAdminClient();
+  const industry = event.metadata?.industry;
+
+  automationLogger.info('industry_configured', {
+    orgId: event.organizationId,
+    industry,
+  });
+
+  // Check if industry pack was already applied
+  const { data: org } = await supabase
+    .from('organizations')
+    .select('industry')
+    .eq('id', event.organizationId)
+    .single();
+
+  if (org?.industry && org.industry !== 'other') {
+    // Industry pack should trigger compliance scoring
+    await updateComplianceScore(event.organizationId);
+    result.workflowsExecuted++;
+  }
+}
+
+/**
+ * Handle frameworks provisioned trigger
+ * Fired after framework controls are provisioned
+ */
+async function handleFrameworksProvisioned(
+  event: TriggerEvent,
+  result: AutomationResult,
+) {
+  const supabase = createSupabaseAdminClient();
+  const frameworks = event.metadata?.frameworks || [];
+
+  automationLogger.info('frameworks_provisioned', {
+    orgId: event.organizationId,
+    frameworks,
+    count: frameworks.length,
+  });
+
+  // Create reminder task for control completion
+  const { error } = await supabase.from('org_tasks').insert({
+    organization_id: event.organizationId,
+    title: 'Complete Framework Controls',
+    description: `Your ${frameworks.length} framework(s) have been provisioned. Start completing controls to improve your compliance score.`,
+    priority: 'high',
+    status: 'pending',
+    due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+  });
+
+  if (!error) {
+    result.tasksCreated++;
+  }
+
+  // Trigger initial compliance scoring
+  await updateComplianceScore(event.organizationId);
+  result.workflowsExecuted++;
+
+  // Notify about framework activation
+  const { data: owner } = await supabase
+    .from('org_members')
+    .select('user_id')
+    .eq('organization_id', event.organizationId)
+    .eq('role', 'owner')
+    .single();
+
+  if (owner) {
+    await supabase.from('org_notifications').insert({
+      organization_id: event.organizationId,
+      user_id: owner.user_id,
+      type: 'FRAMEWORKS_ACTIVATED',
+      title: 'Compliance Frameworks Activated',
+      message: `${frameworks.length} framework(s) have been provisioned and are ready for control completion.`,
+      metadata: { frameworks },
+    });
+    result.notificationsSent++;
+  }
+}
+
+/**
+ * Handle industry pack applied trigger
+ * Fired after industry-specific policies, tasks, and assets are created
+ */
+async function handleIndustryPackApplied(
+  event: TriggerEvent,
+  result: AutomationResult,
+) {
+  const supabase = createSupabaseAdminClient();
+  const industry = event.metadata?.industry;
+  const packName = event.metadata?.packName;
+
+  automationLogger.info('industry_pack_applied', {
+    orgId: event.organizationId,
+    industry,
+    packName,
+  });
+
+  // Update compliance score after industry pack application
+  await updateComplianceScore(event.organizationId);
+  result.workflowsExecuted++;
+
+  // Notify about industry pack activation
+  const { data: owner } = await supabase
+    .from('org_members')
+    .select('user_id')
+    .eq('organization_id', event.organizationId)
+    .eq('role', 'owner')
+    .single();
+
+  if (owner) {
+    await supabase.from('org_notifications').insert({
+      organization_id: event.organizationId,
+      user_id: owner.user_id,
+      type: 'INDUSTRY_PACK_APPLIED',
+      title: 'Industry Pack Activated',
+      message: `${packName || 'Industry-specific'} resources have been added to your organization.`,
+      metadata: { industry, packName },
     });
     result.notificationsSent++;
   }
@@ -406,7 +599,7 @@ async function handleOrgOnboarding(
  */
 async function handleRiskScoreChange(
   event: TriggerEvent,
-  result: AutomationResult
+  result: AutomationResult,
 ) {
   const supabase = createSupabaseAdminClient();
   const { previousRisk, newRisk, score } = event.metadata || {};
@@ -435,7 +628,7 @@ async function handleRiskScoreChange(
         priority: newRisk === 'critical' ? 'critical' : 'high',
         status: 'pending',
         due_date: new Date(
-          Date.now() + (newRisk === 'critical' ? 1 : 3) * 24 * 60 * 60 * 1000
+          Date.now() + (newRisk === 'critical' ? 1 : 3) * 24 * 60 * 60 * 1000,
         ).toISOString(),
       })
       .select()
@@ -443,7 +636,7 @@ async function handleRiskScoreChange(
 
     if (error) {
       result.errors.push(
-        `Failed to create risk escalation task: ${error.message}`
+        `Failed to create risk escalation task: ${error.message}`,
       );
     } else {
       result.tasksCreated++;
@@ -477,7 +670,7 @@ async function handleRiskScoreChange(
  */
 async function handleTaskOverdue(
   event: TriggerEvent,
-  result: AutomationResult
+  result: AutomationResult,
 ) {
   const supabase = createSupabaseAdminClient();
   const taskId = event.metadata?.taskId;
@@ -500,7 +693,7 @@ async function handleTaskOverdue(
 
   // Calculate days overdue
   const daysOverdue = Math.floor(
-    (Date.now() - new Date(task.due_date).getTime()) / (24 * 60 * 60 * 1000)
+    (Date.now() - new Date(task.due_date).getTime()) / (24 * 60 * 60 * 1000),
   );
 
   // Escalate to admins if significantly overdue
@@ -554,7 +747,7 @@ async function handleTaskOverdue(
  */
 async function handleCertificationExpiring(
   event: TriggerEvent,
-  result: AutomationResult
+  result: AutomationResult,
 ) {
   const supabase = createSupabaseAdminClient();
   const certificationId = event.metadata?.certificationId;
@@ -587,7 +780,7 @@ async function handleCertificationExpiring(
       priority: daysUntilExpiry <= 7 ? 'high' : 'standard',
       status: 'pending',
       due_date: new Date(
-        Date.now() + Math.max(daysUntilExpiry - 7, 1) * 24 * 60 * 60 * 1000
+        Date.now() + Math.max(daysUntilExpiry - 7, 1) * 24 * 60 * 60 * 1000,
       ).toISOString(),
     })
     .select()

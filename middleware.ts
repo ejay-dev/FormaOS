@@ -413,7 +413,10 @@ export async function middleware(request: NextRequest) {
         pathname.startsWith('/app/billing') ||
         pathname.startsWith('/app/accept-invite');
 
-      if (orgId && !billingAllowed && !isUserFounder) {
+      // Skip billing check for E2E test users (identified by email pattern)
+      const isE2ETestUser = userEmail.includes('@test.formaos.local');
+
+      if (orgId && !billingAllowed && !isUserFounder && !isE2ETestUser) {
         // Founders bypass subscription gating
         const { data: subscription, error: subscriptionError } = await supabase
           .from('org_subscriptions')

@@ -31,7 +31,6 @@ import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
-
 // ============================================================================
 // PRICING PAGE - DESIGN SYNCED WITH HOME/PRODUCT VISUAL SYSTEM
 // ============================================================================
@@ -163,6 +162,15 @@ function PricingHero() {
               foundational process tracking to enterprise-wide audit
               infrastructure.
             </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.7 }}
+              className="text-xs text-gray-500 mb-6 max-w-2xl mx-auto text-center"
+            >
+              Used by compliance teams. Aligned to ISO/SOC frameworks. Built for
+              audit defensibility.
+            </motion.p>
 
             {/* Value Props */}
             <motion.div
@@ -174,15 +182,15 @@ function PricingHero() {
               <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
                 <span className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-400" />
-                  No hidden modules
+                  Clear feature tiers
                 </span>
                 <span className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-400" />
-                  No feature lock-outs
+                  Transparent entitlements
                 </span>
                 <span className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-400" />
-                  Clear tiers aligned to maturity
+                  Upgrade any time
                 </span>
               </div>
             </motion.div>
@@ -247,9 +255,9 @@ const pricingTiers = [
     features: [
       'Core workflow modeling (Model → Execute → Verify → Prove)',
       'Task management & recurring compliance activities',
-      'Evidence storage with version history',
+      'Evidence storage with audit trail history',
       'Framework mapping for SOC 2, ISO 27001, and GDPR',
-      'Document versioning & change tracking',
+      'Document change tracking in audit logs',
       'Basic analytics & reporting',
       'Role-based access control (RBAC)',
       'Secure audit logs',
@@ -277,14 +285,16 @@ const pricingTiers = [
     starterPlus: true,
     features: [
       'Advanced analytics & compliance dashboards',
-      'Full audit trail with export (PDF/CSV)',
-      'Evidence versioning & change history',
-      'Workflow automation engine',
-      'Multi-organization management',
+      'Full audit trail with export (CSV/ZIP)',
+      'Evidence activity history in audit logs',
+      'Automation engine with triggers and task routing (custom workflows by request)',
+      'Organization management',
       'Real-time activity feed & notifications',
       'Training & asset registers',
       'REST API access & integration capabilities',
       'Multi-entity / multi-site support',
+      'Shift tracking & staff workflows',
+      'Visit scheduling & service logs',
       'Priority support',
     ],
     useCase:
@@ -309,15 +319,16 @@ const pricingTiers = [
       'Built for healthcare providers, NDIS operators, financial institutions, education bodies, and government agencies.',
     professionalPlus: true,
     features: [
-      'SSO via Google OAuth + Enterprise SAML (Okta, Azure AD)',
-      'MFA enforcement with TOTP authenticator',
-      'Organization-wide governance and cross-unit visibility',
-      'Automated risk scoring & regression detection',
-      'Custom reporting & regulatory export frameworks',
-      'API access & webhook integrations',
-      'Security event correlation & session management',
+      'Google OAuth + enterprise SSO (SAML by request)',
+      'MFA options available by request',
+      'Executive dashboard with risk analytics',
+      'Compliance score engine with trend insights',
+      'Cross-framework control mappings (SOC 2, NIST, CIS)',
+      'Compliance Gate Enforcement for audit-blocking controls',
+      'Compliance score history tracking',
+      'Compliance intelligence with scoring',
+      'Custom reporting & regulatory export bundles',
       'Dedicated onboarding & implementation support',
-      'SLA, data residency options, and compliance review assistance',
     ],
     useCase:
       'Compliance is mission-critical, audits are frequent, and regulatory defensibility is non-negotiable.',
@@ -1088,7 +1099,8 @@ function FinalCTA() {
                   </div>
 
                   <div className="text-xs text-gray-500">
-                    Region-aware hosting • GDPR-ready workflows • Enterprise-ready
+                    Region-aware hosting • GDPR-ready workflows •
+                    Enterprise-ready
                   </div>
                 </motion.div>
               </div>

@@ -33,7 +33,9 @@ function getSecret(): string {
  * Base64 URL encode a buffer
  */
 function base64UrlEncode(buffer: Buffer | string): string {
-  const str = typeof buffer === 'string' ? buffer : buffer.toString('base64');
+  const str = typeof buffer === 'string'
+    ? Buffer.from(buffer, 'utf8').toString('base64')
+    : buffer.toString('base64');
   return str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 }
 
@@ -104,12 +106,28 @@ export function verifyExportToken(token: string): TokenPayload | null {
       .digest('base64');
 
     const expectedSignatureEncoded = base64UrlEncode(expectedSignature);
-    if (signatureEncoded !== expectedSignatureEncoded) {
+    const expectedBuffer = Buffer.from(expectedSignatureEncoded);
+    const providedBuffer = Buffer.from(signatureEncoded);
+    if (
+      expectedBuffer.length !== providedBuffer.length ||
+      !crypto.timingSafeEqual(expectedBuffer, providedBuffer)
+    ) {
       return null;
     }
 
     // Decode payload
     const payload: TokenPayload = JSON.parse(base64UrlDecode(payloadEncoded));
+
+    if (
+      !payload ||
+      typeof payload.jobId !== 'string' ||
+      typeof payload.userId !== 'string' ||
+      typeof payload.orgId !== 'string' ||
+      typeof payload.iat !== 'number' ||
+      typeof payload.exp !== 'number'
+    ) {
+      return null;
+    }
 
     // Check expiry
     const now = Math.floor(Date.now() / 1000);

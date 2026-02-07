@@ -77,13 +77,13 @@ const industries = [
     icon: Activity,
     title: 'NDIS & disability services',
     description:
-      'Track practice standards, provider obligations, and incident reporting.',
+      'NDIS Practice Standards 1-8 controls pre-configured. Track provider obligations, incident reporting, and participant evidence.',
   },
   {
     icon: ShieldCheck,
     title: 'Healthcare providers',
     description:
-      'Manage credentials, clinical governance, and audit readiness.',
+      'Patient management with automatic audit evidence generation. Progress notes become compliance proof with supervisor sign-off workflows.',
   },
   {
     icon: Layers,
@@ -103,44 +103,48 @@ const platformArchitecture = {
   'Compliance Engine': [
     '7 framework packs (85+ controls)',
     'Control deduplication & mapping',
-    'AI risk scoring & gap detection',
+    'Risk scoring & gap detection',
     'Real-time evaluation engine',
   ],
   'Automation Layer': [
-    '8 workflow triggers (evidence expiry, control failures, etc.)',
+    '12 workflow triggers (evidence expiry, policy review, control status, task overdue, cert expiry, shift completion, etc.)',
     'Conditional task generation',
     'Auto-escalation & notifications',
-    'Scheduled compliance checks',
+    'Scheduled compliance checks (every 6 hours)',
   ],
   'Evidence Vault': [
-    'Version control with SHA-256 integrity',
-    'One-click rollback',
-    'Approval workflows',
+    'Secure encrypted artifact storage',
+    'Verification & approval workflows',
+    'Task & policy linking',
     'Auditor export bundles',
   ],
   'Intelligence Analytics': [
-    'Compliance score trends (14-day history)',
-    'Regression alerts (>10% drop detection)',
+    'Compliance score dashboard',
     'Framework health monitoring',
+    'Control coverage tracking',
     'Cross-framework insights',
   ],
 };
 
 const capabilities = [
-  'Evidence versioning with SHA-256 integrity & rollback',
-  'Automation engine: 8 triggers, 6 action types, conditional workflows',
+  'Secure evidence vault with verification workflows',
+  'Automation engine: 12 triggers, 5 action types, conditional workflows',
   '7 compliance framework packs (ISO 27001, SOC 2, GDPR, HIPAA, PCI-DSS, NIST, CIS)',
-  'Compliance intelligence: scoring, trends, regression alerts',
+  'Compliance intelligence: real-time scoring & framework health',
   'Control deduplication across multi-framework mapping',
-  'Auditor evidence export ZIP with control context',
-  'REST API v1 with rate limiting & webhooks',
+  'Shift tracking system with staff clock-in/out and audit trails',
+  'Staff portal dashboard for front-line workers (tasks, patients, shifts)',
+  'Visit/appointment scheduling with service delivery logs',
+  'Auditor evidence export with control context',
+  'Progress notes with supervisor sign-off',
   'Workflow automation: task generation, escalation, notifications',
-  'Incident reporting & investigation workflows',
-  'Certificate expiry tracking with auto-renewal tasks',
-  'Multi-organization + multi-site hierarchies',
-  'Role-based access control (RBAC) + org isolation',
-  'Immutable audit trail (every action logged)',
-  'Risk scoring & anomaly detection',
+  'Incident reporting & investigation workflows with severity classification',
+  'Staff credential tracking with 10+ pre-built types (AHPRA, NDIS, police checks)',
+  'Multi-organization + multi-site hierarchies (fully operational)',
+  'Role-based access control (RBAC) + row-level security isolation',
+  'Immutable audit trail (every action logged with before/after state)',
+  'Evidence version control with SHA-256 checksums and rollback',
+  'REST API v1 with rate limiting for integrations',
 ];
 
 const metrics = [
@@ -543,8 +547,8 @@ export function HomePageContent() {
       <SystemDivider />
 
       {/* ========================================
-          SECTION 4.5b: VERSION CONTROL FEATURE HIGHLIGHT
-          New high-value feature showcase
+          SECTION 4.5b: COMPLIANCE INTELLIGENCE HIGHLIGHT
+          Real-time compliance scoring and analytics
           ======================================== */}
       <SystemBackground variant="info" className={spacing.sectionFull}>
         <AmbientOrbs intensity="subtle" />
@@ -555,36 +559,36 @@ export function HomePageContent() {
             badge="Enterprise-Grade Feature"
             title={
               <>
-                Evidence Version Control
+                Real-Time Compliance Intelligence
                 <br />
                 <span className="text-gradient-system">
-                  That competitors charge a premium for
+                  Know your audit readiness at any moment
                 </span>
               </>
             }
-            subtitle="Complete version history on every evidence upload with integrity validation and one-click rollback."
+            subtitle="Live compliance scoring across all frameworks, controls, evidence, and tasks. Executive dashboards with framework health monitoring."
             alignment="center"
           />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
             {[
               {
-                icon: History,
-                title: 'Automatic Versioning',
+                icon: Target,
+                title: 'Live Compliance Score',
                 description:
-                  'Every upload creates a new version automatically. No user action required',
+                  'Real-time scoring engine calculates compliance posture across controls, evidence, and tasks',
               },
               {
-                icon: Shield,
-                title: 'Tamper Detection',
+                icon: Layers,
+                title: 'Multi-Framework View',
                 description:
-                  'Integrity checksums verify evidence and detect any modification',
+                  'Track compliance across ISO 27001, SOC 2, HIPAA, NIST, and more from one dashboard',
               },
               {
-                icon: RotateCcw,
-                title: 'One-Click Rollback',
+                icon: TrendingUp,
+                title: 'Executive Analytics',
                 description:
-                  'Restore any previous version in seconds. Critical for audit defense',
+                  'Framework health, control coverage, and risk level insights for leadership reporting',
               },
             ].map((feature, idx) => (
               <motion.div
@@ -703,28 +707,28 @@ export function HomePageContent() {
                 </span>
               </>
             }
-            subtitle="Complete patient management, incident reporting, and clinical governance workflows. HIPAA and NDIS ready"
+            subtitle="Patient management with automatic audit evidence generation. Progress notes become compliance proof. HIPAA and NDIS ready."
             alignment="center"
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
             {[
               {
-                title: 'Patient Management',
+                title: 'Patient Management & Evidence',
                 features: [
-                  'Complete patient profiles with risk levels',
-                  'Care episode tracking',
-                  'Clinical governance integration',
-                  'HIPAA-compliant data handling',
+                  'Complete patient profiles with risk levels & care status',
+                  'Progress notes automatically linked to compliance controls',
+                  'Incident logging with auto-evidence mapping',
+                  'All patient actions become audit evidence',
                 ],
               },
               {
-                title: 'Incident Reporting',
+                title: 'NDIS & Healthcare Compliance',
                 features: [
-                  'NDIS incident categorization',
-                  'Severity-based routing',
-                  'Investigation workflows',
-                  'Regulatory reporting built-in',
+                  'NDIS Practice Standards 1-8 controls pre-configured',
+                  'Incident categorization with regulatory mapping',
+                  'Worker screening & credential tracking',
+                  'HIPAA-aligned participant consent & privacy',
                 ],
               },
             ].map((category) => (

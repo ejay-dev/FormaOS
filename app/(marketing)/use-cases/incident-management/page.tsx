@@ -28,7 +28,7 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 export const metadata: Metadata = {
   title: 'Incident Management & Investigation | FormaOS',
   description:
-    'Comprehensive incident reporting, investigation, and corrective action management. Root cause analysis, regulatory reporting, and complete audit trails for workplace incidents.',
+    'Incident reporting and investigation workflows with corrective actions, audit trails, and configurable regulator templates.',
 };
 
 export default function IncidentManagementPage() {
@@ -53,8 +53,8 @@ export default function IncidentManagementPage() {
 
               <p className="text-lg sm:text-xl text-muted-foreground mb-8">
                 Capture, investigate, and resolve workplace incidents with
-                confidence. Root cause analysis, corrective actions, regulatory
-                reporting, and complete audit trails.
+                confidence. Root cause analysis, corrective actions, regulator
+                templates by request, and complete audit trails.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -190,44 +190,44 @@ export default function IncidentManagementPage() {
                 {
                   phase: '1. Immediate Response',
                   description:
-                    'Staff member or witness submits incident report via mobile or desktop. Captures: what happened, when, where, who was involved, immediate actions taken.',
-                  timeframe: 'Within 24 hours of incident',
+                    'Staff member or witness submits incident report via mobile or desktop with key incident details.',
+                  timeframe: 'Timing defined by policy',
                 },
                 {
                   phase: '2. Initial Assessment',
                   description:
-                    'Manager reviews report and classifies severity (SAC rating, severity matrix, risk level). Determines if reportable to regulator (NDIS Commission, SafeWork, AHPRA, etc.).',
-                  timeframe: 'Within 24 hours of report',
+                    'Manager reviews report, classifies severity, and determines reportability requirements.',
+                  timeframe: 'Timing defined by policy',
                 },
                 {
                   phase: '3. Investigation Assignment',
                   description:
-                    'Investigation assigned to appropriate person based on severity. High-risk incidents may require external investigator or multidisciplinary team.',
-                  timeframe: 'Within 48 hours',
+                    'Investigation assigned to the appropriate person based on severity.',
+                  timeframe: 'Timing defined by policy',
                 },
                 {
                   phase: '4. Evidence Collection',
                   description:
-                    'Investigator collects witness statements, photos, video, documents, policies. Timeline builder creates chronological sequence of events.',
+                    'Investigator collects witness statements, media, documents, and policies.',
                   timeframe: 'Ongoing during investigation',
                 },
                 {
                   phase: '5. Root Cause Analysis',
                   description:
-                    'Apply RCA methodology (5 Whys, Fishbone, FMEA). Identify contributing factors, system issues, human factors. Guided templates provided.',
-                  timeframe: '5-30 days depending on severity',
+                    'Apply RCA methodology to identify contributing factors, system issues, and human factors.',
+                  timeframe: 'Timing defined by policy',
                 },
                 {
                   phase: '6. Corrective Actions',
                   description:
-                    'Develop corrective and preventive actions (CAPA). Assign owners, set due dates, track implementation. Link to risk register if systemic issue identified.',
+                    'Develop corrective and preventive actions (CAPA) with owners and due dates.',
                   timeframe: 'Documented in investigation report',
                 },
                 {
                   phase: '7. Regulatory Reporting',
                   description:
-                    'If reportable incident, system generates regulatory report template. Submit to NDIS Commission, SafeWork, etc. Track submission and follow-up.',
-                  timeframe: '24 hours (critical) / 5 days (other)',
+                    'If reportable, use regulator-specific templates and track submission status (by request).',
+                  timeframe: 'Regulatory timeframes configurable',
                 },
                 {
                   phase: '8. Closure & Learning',
@@ -272,32 +272,32 @@ export default function IncidentManagementPage() {
                 {
                   feature: 'Mobile Incident Reporting',
                   description:
-                    'Staff submit incident reports from mobile devices at point of occurrence. Photos, voice notes, location data captured automatically.',
+                    'Staff submit incident reports from mobile or desktop with optional media attachments.',
                 },
                 {
                   feature: 'Severity Classification',
                   description:
-                    'SAC rating matrix, consequence/likelihood grids, custom severity scales. Automatic escalation for high-risk incidents.',
+                    'SAC rating matrices, consequence/likelihood grids, and configurable escalation workflows (by request).',
                 },
                 {
                   feature: 'Investigation Templates',
                   description:
-                    'Pre-built templates for different incident types (workplace injury, clinical adverse event, safeguarding, etc.). Customizable to your needs.',
+                    'Configurable templates for different incident types (by request).',
                 },
                 {
                   feature: 'Root Cause Analysis Tools',
                   description:
-                    'Guided RCA methodologies: 5 Whys, Fishbone diagram, Fault Tree Analysis, FMEA. Visual diagrams and structured analysis.',
+                    'Structured RCA checklists and guidance (by request).',
                 },
                 {
                   feature: 'CAPA Management',
                   description:
-                    'Track corrective and preventive actions from identification through completion. Assign owners, set deadlines, receive reminders.',
+                    'Track corrective and preventive actions with owners and due dates.',
                 },
                 {
                   feature: 'Regulatory Reporting',
                   description:
-                    'Pre-filled report templates for NDIS Commission, SafeWork, AHPRA, TGA, etc. Track submission status and regulator responses.',
+                    'Regulator-specific templates available by request with submission tracking.',
                 },
                 {
                   feature: 'Witness Management',
@@ -307,17 +307,17 @@ export default function IncidentManagementPage() {
                 {
                   feature: 'Document Repository',
                   description:
-                    'Centralized storage for all incident evidence: photos, videos, statements, policies, procedures, external reports. Version controlled.',
+                    'Centralized storage for incident evidence with audit trails.',
                 },
                 {
                   feature: 'Timeline Builder',
                   description:
-                    'Construct chronological timeline of events. Visual representation helps identify sequence, gaps, inconsistencies.',
+                    'Document chronological timelines of events within investigation notes.',
                 },
                 {
                   feature: 'Trend Analysis',
                   description:
-                    'Identify incident patterns by type, location, time, staff, severity. Spot systemic issues before they escalate.',
+                    'Basic incident trend views and filters (early access).',
                 },
                 {
                   feature: 'Privacy & Confidentiality',
@@ -358,8 +358,8 @@ export default function IncidentManagementPage() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SectionHeader
               badge="Regulatory Compliance"
-              title="Built for Australian Regulators"
-              subtitle="Preconfigured reporting templates for common regulatory bodies"
+              title="Aligned to Australian Regulators"
+              subtitle="Regulatory reference checklists; templates available by request"
               alignment="center"
             />
 
@@ -457,24 +457,24 @@ export default function IncidentManagementPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
               {[
                 {
-                  metric: '100%',
-                  label: 'On-time regulatory reporting',
-                  description: 'Never miss a reporting deadline',
+                  metric: 'Clear',
+                  label: 'Regulatory reporting',
+                  description: 'Deadline tracking and templates by request',
                 },
                 {
-                  metric: '75%',
-                  label: 'Faster investigation closure',
-                  description: 'Structured process accelerates resolution',
+                  metric: 'Structured',
+                  label: 'Investigation closure',
+                  description: 'Guided process improves consistency',
                 },
                 {
-                  metric: '60%',
-                  label: 'Reduction in repeat incidents',
-                  description: 'Effective CAPA implementation',
+                  metric: 'Actionable',
+                  label: 'Corrective actions',
+                  description: 'CAPA tracking for accountability',
                 },
                 {
-                  metric: '8 hours',
-                  label: 'Admin time saved per incident',
-                  description: 'Automated workflows and templates',
+                  metric: 'Less',
+                  label: 'Manual admin',
+                  description: 'Centralized workflows and templates',
                 },
               ].map((stat, idx) => (
                 <div

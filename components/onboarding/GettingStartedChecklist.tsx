@@ -2,41 +2,14 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { CheckCircle2, Circle, ArrowUpRight } from 'lucide-react';
+import { CheckCircle2, Circle, ArrowUpRight, Clock, Zap } from 'lucide-react';
 import { useAppStore } from '@/lib/stores/app';
-
-const CHECKLIST_ITEMS = [
-  {
-    id: 'task',
-    label: 'Create your first task',
-    description: 'Add a compliance requirement and assign an owner.',
-    href: '/app/tasks',
-  },
-  {
-    id: 'evidence',
-    label: 'Upload first evidence',
-    description: 'Store a compliance artifact in the vault.',
-    href: '/app/vault',
-  },
-  {
-    id: 'invite',
-    label: 'Invite a teammate',
-    description: 'Bring your compliance team into FormaOS.',
-    href: '/app/team',
-  },
-  {
-    id: 'compliance',
-    label: 'Review compliance status',
-    description: 'Check live compliance scores and gaps.',
-    href: '/app/reports',
-  },
-  {
-    id: 'reports',
-    label: 'Preview an export report',
-    description: 'Generate a report snapshot for audit readiness.',
-    href: '/app/reports',
-  },
-];
+import {
+  generateIndustryChecklist,
+  getGenericChecklist,
+  type ChecklistItem,
+  type ChecklistCompletionCounts,
+} from '@/lib/onboarding/industry-checklists';
 
 function ConfettiBurst() {
   const pieces = Array.from({ length: 14 });
@@ -57,17 +30,38 @@ function ConfettiBurst() {
   );
 }
 
-export function GettingStartedChecklist() {
+type GettingStartedChecklistProps = {
+  industry?: string | null;
+};
+
+export function GettingStartedChecklist({
+  industry,
+}: GettingStartedChecklistProps) {
   const organizationId = useAppStore((s) => s.organization?.id ?? null);
-  const [counts, setCounts] = useState({
+  const [counts, setCounts] = useState<ChecklistCompletionCounts>({
     tasks: 0,
     evidence: 0,
     members: 0,
     complianceChecks: 0,
     reports: 0,
+    frameworks: 0,
+    policies: 0,
+    incidents: 0,
+    registers: 0,
+    workflows: 0,
+    patients: 0,
+    orgProfileComplete: false,
   });
   const [isLoading, setIsLoading] = useState(true);
   const [showConfetti, setShowConfetti] = useState(false);
+
+  // Generate industry-specific checklist
+  const checklistItems = useMemo(() => {
+    if (industry && industry !== 'other') {
+      return generateIndustryChecklist(industry);
+    }
+    return getGenericChecklist();
+  }, [industry]);
 
   useEffect(() => {
     if (!organizationId) return;
@@ -84,6 +78,13 @@ export function GettingStartedChecklist() {
           members: data.members ?? 0,
           complianceChecks: data.complianceChecks ?? 0,
           reports: data.reports ?? 0,
+          frameworks: data.frameworks ?? 0,
+          policies: data.policies ?? 0,
+          incidents: data.incidents ?? 0,
+          registers: data.registers ?? 0,
+          workflows: data.workflows ?? 0,
+          patients: data.patients ?? 0,
+          orgProfileComplete: Boolean(data.orgProfileComplete),
         });
       } finally {
         setIsLoading(false);
@@ -91,94 +92,174 @@ export function GettingStartedChecklist() {
     };
 
     fetchChecklist();
-    const handleFocus = () => fetchChecklist();
-    window.addEventListener('focus', handleFocus);
-    return () => window.removeEventListener('focus', handleFocus);
   }, [organizationId]);
 
+  // Calculate completion state using industry-specific logic
   const completionState = useMemo(() => {
-    return {
-      task: counts.tasks > 0,
-      evidence: counts.evidence > 0,
-      invite: counts.members > 1,
-      compliance: counts.complianceChecks > 0,
-      reports: counts.reports > 0,
-    };
-  }, [counts]);
+    const state: Record<string, boolean> = {};
+    for (const item of checklistItems) {
+      state[item.id] = item.completionCheck(counts);
+    }
+    return state;
+  }, [checklistItems, counts]);
 
   const completedCount = Object.values(completionState).filter(Boolean).length;
-  const totalCount = CHECKLIST_ITEMS.length;
-  const progress = totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
+  const totalCount = checklistItems.length;
+  const progress =
+    totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100);
+
+  // Calculate estimated time remaining
+  const timeRemaining = useMemo(() => {
+    let minutes = 0;
+    for (const item of checklistItems) {
+      if (!completionState[item.id]) {
+        minutes += item.estimatedMinutes;
+      }
+    }
+    if (minutes < 60) return `${minutes} min`;
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+  }, [checklistItems, completionState]);
 
   useEffect(() => {
-    if (progress !== 100) return;
-    const key = `formaos_checklist_confetti_${organizationId ?? 'org'}`;
-    if (typeof window !== 'undefined' && localStorage.getItem(key)) return;
-
-    setShowConfetti(true);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(key, 'true');
+    if (progress === 100 && completedCount > 0) {
+      setShowConfetti(true);
+      const timer = setTimeout(() => setShowConfetti(false), 3000);
+      return () => clearTimeout(timer);
     }
-    const timer = window.setTimeout(() => setShowConfetti(false), 1600);
-    return () => window.clearTimeout(timer);
-  }, [organizationId, progress]);
+  }, [progress, completedCount]);
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6">
-      {showConfetti ? <ConfettiBurst /> : null}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div
+      className="relative rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-6"
+      data-testid="getting-started-checklist"
+    >
+      {showConfetti && <ConfettiBurst />}
+      <div className="relative space-y-6">
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
-            Getting Started
+          <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
+            {industry ? 'Industry Onboarding' : 'Getting Started'}
           </p>
           <h3 className="text-lg font-semibold text-slate-100">
-            Your first wins in FormaOS
+            {industry
+              ? `${industry.toUpperCase().replace('_', ' ')} Activation Roadmap`
+              : 'Your first wins in FormaOS'}
           </h3>
           <p className="text-sm text-slate-400">
-            Complete these steps to activate your compliance workspace.
+            {industry
+              ? 'Complete these steps to activate your compliance infrastructure'
+              : 'Complete these steps to activate your compliance workspace'}
           </p>
+          {progress < 100 && progress > 0 && (
+            <div className="mt-2 flex items-center gap-2 text-xs text-slate-500">
+              <Clock className="h-3.5 w-3.5" />
+              <span>~{timeRemaining} remaining</span>
+            </div>
+          )}
         </div>
-        <div className="min-w-[180px]">
+        <div
+          className="w-full sm:min-w-[180px]"
+          data-testid="getting-started-progress"
+        >
           <div className="flex items-center justify-between text-xs text-slate-400">
-            <span>{completedCount} of {totalCount} done</span>
+            <span>
+              {completedCount} of {totalCount} done
+            </span>
             <span>{progress}%</span>
           </div>
-          <div className="mt-2 h-2 w-full rounded-full bg-white/10">
+          <div className="mt-2 h-2 rounded-full bg-slate-800 overflow-hidden">
             <div
-              className="h-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500"
+              className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500"
               style={{ width: `${progress}%` }}
             />
           </div>
         </div>
       </div>
 
-      <div className="mt-5 space-y-3">
-        {CHECKLIST_ITEMS.map((item) => {
-          const isComplete = completionState[item.id as keyof typeof completionState];
+      <div className="mt-6 space-y-3">
+        {checklistItems.map((item) => {
+          const isComplete = completionState[item.id] || false;
+
+          // Determine priority border color
+          const priorityColors = {
+            critical: 'border-l-red-500',
+            high: 'border-l-orange-500',
+            medium: 'border-l-yellow-500',
+            low: 'border-l-slate-500',
+          };
+          const borderColor =
+            priorityColors[item.priority] || 'border-l-slate-500';
+
           return (
             <Link
               key={item.id}
               href={item.href}
-              className="flex items-start justify-between gap-3 rounded-xl border border-white/10 bg-white/5 p-4 transition-colors hover:bg-white/10"
+              data-testid={`checklist-item-${item.id}`}
+              aria-label={`${isComplete ? 'Completed' : 'Pending'}: ${item.label}`}
+              aria-describedby={`desc-${item.id}`}
+              className={`flex items-start justify-between gap-3 rounded-xl border border-white/10 ${borderColor} border-l-2 bg-white/5 p-4 transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900`}
             >
-              <div className="flex items-start gap-3">
-                <div className="mt-1">
+              <div className="flex items-start gap-3 flex-1">
+                <div
+                  className="mt-1"
+                  role="img"
+                  aria-label={isComplete ? 'Completed' : 'Not completed'}
+                >
                   {isComplete ? (
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                    <CheckCircle2
+                      className="h-4 w-4 text-emerald-400"
+                      aria-hidden="true"
+                    />
                   ) : (
-                    <Circle className="h-4 w-4 text-slate-500" />
+                    <Circle
+                      className="h-4 w-4 text-slate-500"
+                      aria-hidden="true"
+                    />
                   )}
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-slate-100">
-                    {item.label}
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="text-sm font-semibold text-slate-100">
+                      {item.label}
+                    </p>
+                    {item.estimatedMinutes > 0 && (
+                      <span
+                        className="text-xs text-slate-500"
+                        aria-label={`Estimated ${item.estimatedMinutes} minutes`}
+                      >
+                        ~{item.estimatedMinutes}min
+                      </span>
+                    )}
+                    {item.automationTrigger && (
+                      <>
+                        <span aria-hidden="true">•</span>
+                        <span
+                          className="flex items-center gap-1 text-cyan-500"
+                          aria-label="Automation enabled"
+                        >
+                          <Zap className="h-3 w-3" aria-hidden="true" />
+                          Auto-trigger
+                        </span>
+                      </>
+                    )}
+                  </div>
+                  <p
+                    className="text-xs text-slate-400 mt-1"
+                    id={`desc-${item.id}`}
+                  >
+                    {item.description}
                   </p>
-                  <p className="text-xs text-slate-400">{item.description}</p>
                 </div>
               </div>
-              <span className="text-slate-500">
-                <ArrowUpRight className="h-4 w-4" />
-              </span>
+              {!isComplete && (
+                <span
+                  className="text-slate-500 hover:text-slate-400 transition-colors"
+                  aria-hidden="true"
+                >
+                  <ArrowUpRight className="h-4 w-4" />
+                </span>
+              )}
             </Link>
           );
         })}

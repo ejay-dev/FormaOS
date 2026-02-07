@@ -872,7 +872,7 @@ export function HomePageClient() {
                           Evidence stored in a verifiable chain
                         </h4>
                         <p className="text-sm text-foreground/70 leading-relaxed">
-                          Immutable audit trails with cryptographic integrity
+                          Immutable audit trails with tamper-evident logging
                           and timestamps
                         </p>
                       </div>

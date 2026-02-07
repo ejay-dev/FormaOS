@@ -123,7 +123,7 @@ const docSections = [
     articles: [
       {
         title: 'Authentication & SSO',
-        description: 'SAML, OIDC, and identity providers',
+        description: 'Google OAuth today; enterprise SSO by request',
         icon: Key,
       },
       {
@@ -162,7 +162,7 @@ const docSections = [
       },
       {
         title: 'Webhooks',
-        description: 'Real-time event notifications',
+        description: 'Webhook integrations (by request)',
         icon: Bell,
       },
       {
@@ -172,7 +172,7 @@ const docSections = [
       },
       {
         title: 'Identity Provider Setup',
-        description: 'Okta, Azure AD, Google Workspace',
+        description: 'Okta, Azure AD, Google Workspace (by request)',
         icon: Globe,
       },
     ],

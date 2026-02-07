@@ -180,6 +180,7 @@ export interface MembershipData {
   userRole: UserRole;
   organizationName: string;
   onboardingCompleted: boolean;
+  industry: string | null;
 }
 
 export async function getMembershipData(): Promise<MembershipData | null> {
@@ -195,7 +196,8 @@ export async function getMembershipData(): Promise<MembershipData | null> {
       role,
       organizations:organization_id (
         name,
-        onboarding_completed
+        onboarding_completed,
+        industry
       )
     `)
     .eq("user_id", user.id)
@@ -215,6 +217,7 @@ export async function getMembershipData(): Promise<MembershipData | null> {
     userRole: mapRoleKeyToUserRole(roleKey),
     organizationName: org?.name ?? "Unknown Organization",
     onboardingCompleted: org?.onboarding_completed ?? false,
+    industry: org?.industry ?? null,
   };
 }
 
@@ -233,6 +236,7 @@ export interface SystemStatePayload {
     name: string;
     plan: PlanTier;
     onboardingCompleted: boolean;
+    industry: string | null;
   };
   role: UserRole;
   entitlements: UserEntitlements;
@@ -362,6 +366,7 @@ export async function fetchSystemState(): Promise<SystemStatePayload | null> {
       name: membership.organizationName,
       plan: planTier,
       onboardingCompleted: membership.onboardingCompleted,
+      industry: membership.industry,
     },
     role: membership.userRole,
     entitlements,

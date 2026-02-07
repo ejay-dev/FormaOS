@@ -509,7 +509,7 @@ const principles = [
     icon: Activity,
     title: 'Evidence is captured continuously',
     description:
-      'Proof of compliance accumulates automatically as work happens',
+      'Proof of compliance accumulates as workflows are completed',
     color: 'from-purple-500 to-violet-500',
     iconBg: 'from-purple-500/20 to-purple-500/10',
     iconBorder: 'border-purple-500/20',
@@ -521,7 +521,7 @@ const principles = [
     icon: Zap,
     title: 'Audits become reporting, not reconstruction',
     description:
-      'Complete audit trails exist in real-time, ready for inspection',
+      'Audit trails are available for inspection and reporting',
     color: 'from-orange-500 to-red-500',
     iconBg: 'from-orange-500/20 to-orange-500/10',
     iconBorder: 'border-orange-500/20',
@@ -651,37 +651,37 @@ const ndisFeatures = [
     icon: FileCheck,
     title: 'Practice Standards Workflows',
     description:
-      'Pre-configured controls for all 8 NDIS practice standards with evidence templates and approval processes',
+      'NDIS-aligned controls and templates (configurable; mapping depth varies)',
   },
   {
     icon: Shield,
     title: 'Incident Management',
     description:
-      'Structured incident reporting, investigation workflows, and NDIA notification requirements tracking',
+      'Incident reporting and investigation workflows (regulator notifications by request)',
   },
   {
     icon: Users,
     title: 'Worker Screening',
     description:
-      'Manage clearances, training records, and competency assessments with automated compliance tracking',
+      'Credential and training tracking with review reminders',
   },
   {
     icon: Building2,
     title: 'Governance & Leadership',
     description:
-      'Board oversight, risk management, and strategic planning controls with executive reporting',
+      'Governance oversight, risk management, and executive reporting',
   },
   {
     icon: Heart,
     title: 'Person-Centered Practice',
     description:
-      'Individual outcome tracking, service planning documentation, and participant feedback systems',
+      'Participant plans, service documentation, and feedback tracking (configurable)',
   },
   {
     icon: TrendingUp,
     title: 'Continuous Improvement',
     description:
-      'Service review cycles, corrective action tracking, and quality improvement planning',
+      'Service review cycles, corrective actions, and quality improvement planning',
   },
 ];
 
@@ -717,7 +717,7 @@ function NDISDeepDive() {
           </motion.div>
 
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
-            Pre-built Practice Standards
+            NDIS-aligned Practice Standards
             <span className="bg-gradient-to-r from-pink-400 via-rose-400 to-purple-500 bg-clip-text text-transparent">
               {' '}
               for Audit Readiness
@@ -725,8 +725,8 @@ function NDISDeepDive() {
           </h2>
 
           <p className="text-lg text-gray-400 max-w-3xl mx-auto">
-            Complete workflows for NDIS Quality and Safeguarding Commission
-            compliance
+            Configurable workflows aligned to NDIS Quality and Safeguarding
+            Commission requirements
           </p>
         </motion.div>
 
@@ -767,12 +767,12 @@ function NDISDeepDive() {
           <div className="grid lg:grid-cols-2 gap-8 p-8 sm:p-12 items-center">
             <div>
               <h3 className="text-2xl font-bold text-white mb-4">
-                Ready for NDIS audits from day one
+                Built to support NDIS audit readiness
               </h3>
               <p className="text-gray-400 mb-6">
-                Our NDIS framework comes with comprehensive pre-built controls, evidence
-                templates, and workflow automation that maps directly to NDIA
-                requirements, including patient management and progress notes.
+                Our NDIS framework includes aligned controls, evidence templates,
+                and configurable workflows. Mapping depth varies by deployment,
+                with participant management and progress notes available.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <motion.a
@@ -801,11 +801,11 @@ function NDISDeepDive() {
               </h4>
               <ul className="space-y-2 text-sm text-gray-400">
                 {[
-                  'Practice Standards 1-8 complete framework',
-                  'Incident reporting and NDIA notifications',
-                  'Worker screening and training management',
-                  'Quality review and audit preparation tools',
-                  'Participant feedback and outcome tracking',
+                  'NDIS Practice Standards framework packs (configurable)',
+                  'Incident reporting workflows (regulator notifications by request)',
+                  'Credential and training tracking',
+                  'Audit preparation tools and export packs',
+                  'Participant feedback tracking (by request)',
                   'Risk management and mitigation workflows',
                 ].map((item) => (
                   <li key={item} className="flex items-center gap-2">
@@ -878,12 +878,12 @@ function HealthcareSection() {
               {
                 title: 'Clinical Governance',
                 description:
-                  'Evidence-based practice protocols, clinical incident management, and quality improvement frameworks aligned with NSQHS standards.',
+                  'Evidence-based practice protocols, incident management, and quality improvement workflows aligned to NSQHS standards.',
               },
               {
                 title: 'Professional Standards',
                 description:
-                  'AHPRA registration tracking, CPD management, and professional supervision documentation with automated compliance alerts.',
+                  'AHPRA registration tracking, CPD management, and supervision documentation with review reminders.',
               },
               {
                 title: 'Safety & Risk Management',
@@ -919,12 +919,12 @@ function HealthcareSection() {
             </h4>
             <div className="space-y-3 text-sm text-gray-400 mb-8">
               {[
-                'NSQHS Standards compliance tracking',
-                'Clinical incident and near-miss reporting',
-                'Medication management protocols',
-                'Infection prevention and control measures',
-                'Patient rights and engagement processes',
-                'Clinical handover and communication',
+                'NSQHS Standards tracking templates',
+                'Clinical incident and near-miss reporting workflows',
+                'Medication management templates (by request)',
+                'Infection prevention and control templates',
+                'Patient rights and engagement workflows',
+                'Clinical handover and communication templates',
               ].map((item) => (
                 <div key={item} className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-cyan-400 rounded-full" />

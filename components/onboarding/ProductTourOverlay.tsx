@@ -35,6 +35,16 @@ export function ProductTourOverlay() {
   const isMobile = useIsMobile();
   const step = steps[currentStep];
 
+  // Disable Product Tour in E2E tests to prevent navigation hijacking
+  // Check synchronously to prevent redirect before flag is read
+  const isE2ETest = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    return (
+      localStorage.getItem('e2e_test_mode') === 'true' ||
+      window.location.search.includes('e2e=true')
+    );
+  }, []);
+
   const [highlightRect, setHighlightRect] = useState<{
     top: number;
     left: number;
@@ -59,7 +69,13 @@ export function ProductTourOverlay() {
   }, [step.id]);
 
   useEffect(() => {
-    if (!isActive) {
+    // Check E2E test mode - disable navigation hijacking
+    const isTestMode = typeof window !== 'undefined' && (
+      localStorage.getItem('e2e_test_mode') === 'true' ||
+      window.location.search.includes('e2e=true')
+    );
+
+    if (!isActive || isTestMode) {
       setHighlightRect(null);
       return;
     }
@@ -176,7 +192,8 @@ export function ProductTourOverlay() {
     };
   }, [highlightRect, isActive, isMobile, step.targetSelector]);
 
-  if (!isActive || !step) return null;
+  // Skip rendering entirely in E2E test mode
+  if (isE2ETest || !isActive || !step) return null;
 
   return (
     <div className="fixed inset-0 z-[90]">

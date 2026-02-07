@@ -260,7 +260,7 @@ function SecurityArchitecture() {
       icon: Server,
       title: 'Multi-Tenant Isolation',
       description:
-        'Complete data isolation between organizations via Row Level Security. Zero cross-tenant data leakage.',
+        'Complete data isolation between organizations via Row Level Security. Strict tenant boundary enforcement.',
       color: 'from-amber-500/20 to-yellow-500/20',
       borderColor: 'border-amber-500/30',
       iconColor: 'text-amber-400',
@@ -289,12 +289,12 @@ function SecurityArchitecture() {
     },
     {
       name: 'SSO & MFA',
-      description: 'Google OAuth, Enterprise SAML, TOTP 2FA',
+      description: 'Google OAuth today; enterprise SSO/MFA by request',
       icon: Fingerprint,
     },
     {
       name: 'Evidence Integrity',
-      description: 'SHA-256 checksums detect tampering',
+      description: 'Audit logs capture evidence activity and changes',
       icon: Key,
     },
   ];
@@ -415,7 +415,7 @@ function SecurityArchitecture() {
               Compliance & Certifications
             </h3>
             <p className="text-gray-400">
-              Enterprise-grade security verified by independent auditors
+              Enterprise-grade security aligned to leading standards
             </p>
           </div>
 
@@ -455,7 +455,7 @@ function EvidenceIntegrity() {
       icon: Clock,
       title: 'Time-Stamped',
       description:
-        'Every piece of evidence carries cryptographic timestamps that prove when it was created or modified.',
+        'Every piece of evidence is time-stamped to show when it was created or updated.',
       detail: 'Immutable temporal records',
     },
     {
@@ -471,16 +471,16 @@ function EvidenceIntegrity() {
       icon: Link2,
       title: 'Control-Linked',
       description:
-        'Evidence automatically links to specific controls and requirements, maintaining compliance context.',
-      detail: 'Automated compliance mapping',
+        'Evidence can be linked to specific controls and requirements to maintain compliance context.',
+      detail: 'Compliance mapping context',
     },
     {
       number: '04',
       icon: Archive,
       title: 'Audit-Preserved',
       description:
-        'Once captured, evidence cannot be altered without creating a new version with full audit trail.',
-      detail: 'Version-controlled history',
+        'Evidence updates are logged with a full audit trail; optional versioning is available by request.',
+      detail: 'Audit history',
     },
   ];
 
@@ -598,9 +598,9 @@ function EvidenceIntegrity() {
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
-              { value: '100%', label: 'Evidence Traceability' },
-              { value: 'Zero', label: 'Data Tampering Risk' },
-              { value: 'Real-time', label: 'Integrity Verification' },
+              { value: 'Full', label: 'Evidence Traceability' },
+              { value: 'Enforced', label: 'Data Integrity Controls' },
+              { value: 'Real-time', label: 'Activity Monitoring' },
               { value: 'Complete', label: 'Audit Coverage' },
             ].map((metric, index) => (
               <motion.div
@@ -633,7 +633,7 @@ function ComplianceByDesign() {
       title: 'No Hidden State',
       description:
         "Every system state is visible, documented, and auditable. No background processes that can't be inspected. Complete transparency in how data flows through the system.",
-      metrics: ['100% State Visibility', 'Full Process Documentation'],
+      metrics: ['Complete State Visibility', 'Full Process Documentation'],
     },
     {
       icon: FileCheck,
@@ -879,13 +879,13 @@ function FinalSecurityCTA() {
                     <div className="flex items-center gap-3 justify-center lg:justify-start">
                       <div className="w-2 h-2 rounded-full bg-blue-400" />
                       <span className="text-sm text-gray-400">
-                        End-to-end encryption with enterprise key management
+                        Encryption at rest and in transit
                       </span>
                     </div>
                     <div className="flex items-center gap-3 justify-center lg:justify-start">
                       <div className="w-2 h-2 rounded-full bg-purple-400" />
                       <span className="text-sm text-gray-400">
-                        Immutable audit trails with cryptographic verification
+                        Immutable audit trails with tamper-evident logging
                       </span>
                     </div>
                   </div>

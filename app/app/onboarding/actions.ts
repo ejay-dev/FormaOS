@@ -1,14 +1,18 @@
 'use server';
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { INDUSTRY_PACKS } from '@/lib/industry-packs';
 import { logActivity } from '@/lib/logger';
+import { isProvisioningRole } from '@/lib/onboarding/roles';
 import { revalidatePath } from 'next/cache';
+import { onIndustryPackApplied } from '@/lib/automation/integration';
 
 export async function applyIndustryPack(industryId: string) {
   console.log(`🚀 Starting Industry Pack: ${industryId}`);
 
   const supabase = await createSupabaseServerClient();
+  const admin = createSupabaseAdminClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -21,7 +25,7 @@ export async function applyIndustryPack(industryId: string) {
   // 1. Get Organization (SAFE VERSION, no crashes)
   const { data: membership, error: memError } = await supabase
     .from('org_members')
-    .select('organization_id')
+    .select('organization_id, role')
     .eq('user_id', user.id)
     .maybeSingle(); // <-- CRITICAL FIX
 
@@ -31,28 +35,49 @@ export async function applyIndustryPack(industryId: string) {
   }
 
   const orgId = membership?.organization_id;
+  const roleKey = (membership?.role as string | null) ?? null;
 
   if (!orgId) {
     console.error('❌ No organization_id found for user:', user.id);
     throw new Error('Organization not found.');
   }
 
+  if (!isProvisioningRole(roleKey)) {
+    console.error('❌ Insufficient role to provision industry pack:', roleKey);
+    throw new Error('Access denied: owner or admin required.');
+  }
+
   const pack = INDUSTRY_PACKS[industryId];
   if (!pack) throw new Error('Invalid industry pack ID.');
 
   // 2. INSERT POLICIES
-  const policiesToInsert = pack.policies.map((p) => ({
-    organization_id: orgId,
-    title: p.title,
-    content: p.content,
-    status: 'draft',
-    version: 'v0.1',
-    author: 'System Template',
-  }));
+  const policyTitles = pack.policies.map((p) => p.title);
+  const { data: existingPolicies } = policyTitles.length
+    ? await admin
+        .from('org_policies')
+        .select('title')
+        .eq('organization_id', orgId)
+        .in('title', policyTitles)
+    : { data: [] };
 
-  const { error: policyError } = await supabase
-    .from('org_policies')
-    .insert(policiesToInsert);
+  const existingPolicyTitles = new Set(
+    (existingPolicies ?? []).map((row: any) => row.title),
+  );
+
+  const policiesToInsert = pack.policies
+    .filter((p) => !existingPolicyTitles.has(p.title))
+    .map((p) => ({
+      organization_id: orgId,
+      title: p.title,
+      content: p.content,
+      status: 'draft',
+      version: 'v0.1',
+      author: 'System Template',
+    }));
+
+  const { error: policyError } = policiesToInsert.length
+    ? await admin.from('org_policies').insert(policiesToInsert)
+    : { error: null };
 
   if (policyError) {
     console.error('❌ Policy Insert Error:', policyError.message);
@@ -60,17 +85,32 @@ export async function applyIndustryPack(industryId: string) {
   }
 
   // 3. INSERT TASKS
-  const tasksToInsert = pack.tasks.map((t) => ({
-    organization_id: orgId,
-    title: t.title,
-    description: t.description,
-    status: 'pending',
-    priority: 'high',
-  }));
+  const taskTitles = pack.tasks.map((t) => t.title);
+  const { data: existingTasks } = taskTitles.length
+    ? await admin
+        .from('org_tasks')
+        .select('title')
+        .eq('organization_id', orgId)
+        .in('title', taskTitles)
+    : { data: [] };
 
-  const { error: taskError } = await supabase
-    .from('org_tasks')
-    .insert(tasksToInsert);
+  const existingTaskTitles = new Set(
+    (existingTasks ?? []).map((row: any) => row.title),
+  );
+
+  const tasksToInsert = pack.tasks
+    .filter((t) => !existingTaskTitles.has(t.title))
+    .map((t) => ({
+      organization_id: orgId,
+      title: t.title,
+      description: t.description,
+      status: 'pending',
+      priority: 'high',
+    }));
+
+  const { error: taskError } = tasksToInsert.length
+    ? await admin.from('org_tasks').insert(tasksToInsert)
+    : { error: null };
 
   if (taskError) {
     console.error('❌ Task Insert Error:', taskError.message);
@@ -78,17 +118,32 @@ export async function applyIndustryPack(industryId: string) {
   }
 
   // 4. INSERT ASSETS
-  const assetsToInsert = pack.assets.map((a) => ({
-    organization_id: orgId,
-    name: a.name,
-    type: a.type,
-    criticality: a.criticality,
-    owner: 'Unassigned',
-  }));
+  const assetNames = pack.assets.map((a) => a.name);
+  const { data: existingAssets } = assetNames.length
+    ? await admin
+        .from('org_assets')
+        .select('name')
+        .eq('organization_id', orgId)
+        .in('name', assetNames)
+    : { data: [] };
 
-  const { error: assetError } = await supabase
-    .from('org_assets')
-    .insert(assetsToInsert);
+  const existingAssetNames = new Set(
+    (existingAssets ?? []).map((row: any) => row.name),
+  );
+
+  const assetsToInsert = pack.assets
+    .filter((a) => !existingAssetNames.has(a.name))
+    .map((a) => ({
+      organization_id: orgId,
+      name: a.name,
+      type: a.type,
+      criticality: a.criticality,
+      owner: 'Unassigned',
+    }));
+
+  const { error: assetError } = assetsToInsert.length
+    ? await admin.from('org_assets').insert(assetsToInsert)
+    : { error: null };
 
   if (assetError) {
     console.error('❌ Asset Insert Error:', assetError.message);
@@ -97,6 +152,10 @@ export async function applyIndustryPack(industryId: string) {
 
   // 5. Success Log
   await logActivity(orgId, 'applied_industry_pack', pack.name);
+
+  // 6. Trigger automation for industry pack application
+  await onIndustryPackApplied(orgId, industryId, pack.name);
+
   revalidatePath('/app');
 
   console.log('✅ Industry pack applied successfully:', pack.name);

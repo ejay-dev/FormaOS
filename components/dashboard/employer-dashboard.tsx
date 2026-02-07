@@ -1,14 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Building2,
   Users,
   TrendingUp,
   AlertCircle,
   CheckCircle2,
-  Clock3,
-  User2,
   Calendar,
   Briefcase,
   FileText,
@@ -18,6 +15,19 @@ import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedC
 import { SystemStatusPanel } from '@/components/trust/SystemStatusPanel';
 import { ComplianceIntelligenceSummary } from '@/components/intelligence/ComplianceIntelligenceSummary';
 import { FrameworkHealthWidget } from '@/components/intelligence/FrameworkHealthWidget';
+import { ComplianceScoreHistory } from '@/components/compliance/ComplianceScoreHistory';
+import { IndustryGuidancePanel } from '@/components/dashboard/IndustryGuidancePanel';
+import type { ChecklistCompletionCounts } from '@/lib/onboarding/industry-checklists';
+import {
+  getCachedProgress,
+  setCachedProgress,
+} from '@/lib/onboarding/progress-persistence';
+import {
+  trackCustomMetric,
+  trackCacheEvent,
+  trackAPIRequest,
+  CUSTOM_METRICS,
+} from '@/lib/monitoring/performance-monitor';
 
 /**
  * =========================================================
@@ -30,6 +40,7 @@ import { FrameworkHealthWidget } from '@/components/intelligence/FrameworkHealth
 interface EmployerDashboardProps {
   organizationId: string;
   organizationName: string;
+  industry?: string | null;
   teamMemberCount?: number;
   complianceScore?: number;
   expiringCertsCount?: number;
@@ -431,18 +442,148 @@ export function AuditActivityLog({
  */
 export function EmployerDashboard({
   organizationId,
-  organizationName,
+  industry,
   teamMemberCount = 0,
   complianceScore = 0,
   expiringCertsCount = 0,
   openTasksCount = 0,
 }: EmployerDashboardProps) {
+  const [completionCounts, setCompletionCounts] =
+    useState<ChecklistCompletionCounts>({
+      tasks: 0,
+      evidence: 0,
+      members: 0,
+      complianceChecks: 0,
+      reports: 0,
+      frameworks: 0,
+      policies: 0,
+      incidents: 0,
+      registers: 0,
+      workflows: 0,
+      patients: 0,
+      orgProfileComplete: false,
+    });
+  const [isLoadingCounts, setIsLoadingCounts] = useState(true);
+  const [countsError, setCountsError] = useState<string | null>(null);
+
+  // Fetch completion counts for industry guidance
+  useEffect(() => {
+    if (!organizationId) return;
+
+    const loadStartTime = performance.now();
+
+    // Try to load from cache first for instant UI
+    const cached = getCachedProgress(organizationId);
+    if (cached) {
+      setCompletionCounts(cached);
+      setIsLoadingCounts(false);
+      trackCacheEvent(true, 'onboarding_progress');
+      const loadTime = performance.now() - loadStartTime;
+      trackCustomMetric(CUSTOM_METRICS.CHECKLIST_LOAD, loadTime, {
+        source: 'cache',
+      });
+    } else {
+      trackCacheEvent(false, 'onboarding_progress');
+    }
+
+    async function fetchCounts() {
+      try {
+        setCountsError(null);
+
+        // Track API request with performance monitoring
+        const data = await trackAPIRequest(
+          '/api/onboarding/checklist',
+          async () => {
+            const res = await fetch('/api/onboarding/checklist');
+            if (!res.ok) {
+              throw new Error(`Failed to fetch: ${res.status}`);
+            }
+            return res.json();
+          },
+        );
+
+        const newCounts: ChecklistCompletionCounts = {
+          tasks: data.tasks ?? 0,
+          evidence: data.evidence ?? 0,
+          members: data.members ?? 0,
+          complianceChecks: data.complianceChecks ?? 0,
+          reports: data.reports ?? 0,
+          frameworks: data.frameworks ?? 0,
+          policies: data.policies ?? 0,
+          incidents: data.incidents ?? 0,
+          registers: data.registers ?? 0,
+          workflows: data.workflows ?? 0,
+          patients: data.patients ?? 0,
+          orgProfileComplete: Boolean(data.orgProfileComplete),
+        };
+        setCompletionCounts(newCounts);
+        // Cache for next time
+        setCachedProgress(organizationId, newCounts);
+
+        // Track total load time
+        const totalLoadTime = performance.now() - loadStartTime;
+        trackCustomMetric(CUSTOM_METRICS.CHECKLIST_LOAD, totalLoadTime, {
+          source: cached ? 'cache_then_api' : 'api_only',
+        });
+      } catch (error) {
+        console.error('Failed to fetch completion counts:', error);
+        setCountsError('Failed to load onboarding progress');
+      } finally {
+        setIsLoadingCounts(false);
+      }
+    }
+    fetchCounts();
+  }, [organizationId]);
+
+  // Analytics tracking for industry actions
+  const handleIndustryActionClick = (stepId: string, stepLabel: string) => {
+    // Track analytics event (integrate with your analytics provider)
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'industry_action_click', {
+        step_id: stepId,
+        step_label: stepLabel,
+        industry,
+        organization_id: organizationId,
+      });
+    }
+  };
+
   return (
     <div className="space-y-8">
-      <GettingStartedChecklist />
+      <GettingStartedChecklist industry={industry} />
+
+      {/* Industry-Aware Guidance Panel */}
+      {industry && industry !== 'other' && (
+        <>
+          {countsError ? (
+            <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 text-sm text-amber-400">
+              ⚠️ {countsError}. Refresh the page to try again.
+            </div>
+          ) : (
+            <IndustryGuidancePanel
+              industry={industry}
+              completionCounts={completionCounts}
+              complianceScore={complianceScore}
+              showFullRoadmap={true}
+              isLoading={isLoadingCounts}
+              onActionClickAction={handleIndustryActionClick}
+            />
+          )}
+        </>
+      )}
 
       <ComplianceIntelligenceSummary />
       <FrameworkHealthWidget />
+
+      {/* Compliance Score History with Trend Analytics */}
+      <div>
+        <h2 className="text-xl font-bold mb-4">Compliance Score History</h2>
+        <ComplianceScoreHistory
+          orgId={organizationId}
+          frameworkSlug="all"
+          days={30}
+        />
+      </div>
 
       <div data-tour="dashboard-overview">
         <h2 className="text-xl font-bold mb-4">Organization Health</h2>

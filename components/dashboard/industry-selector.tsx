@@ -3,7 +3,10 @@ import { applyIndustryPack } from "@/app/app/actions/onboarding";
 
 export function IndustrySelector() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+    <div
+      className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"
+      data-testid="industry-pack-selector"
+    >
       {/* 1. NDIS CARD */}
       <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-white/10 p-6 shadow-sm transition-all hover:border-white/10 hover:shadow-md">
         <div>
@@ -19,7 +22,11 @@ export function IndustrySelector() {
             "use server";
             await applyIndustryPack("ndis");
         }}>
-            <button type="submit" className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/10 py-3 text-xs font-bold text-slate-100 transition-colors hover:bg-white/10">
+            <button
+              type="submit"
+              data-testid="apply-pack-ndis"
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/10 py-3 text-xs font-bold text-slate-100 transition-colors hover:bg-white/10"
+            >
                 <CheckCircle2 className="h-4 w-4 text-slate-400" />
                 APPLY PACK
             </button>
@@ -41,7 +48,11 @@ export function IndustrySelector() {
             "use server";
             await applyIndustryPack("healthcare");
         }}>
-            <button type="submit" className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/10 py-3 text-xs font-bold text-slate-100 transition-colors hover:bg-white/10">
+            <button
+              type="submit"
+              data-testid="apply-pack-healthcare"
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/10 py-3 text-xs font-bold text-slate-100 transition-colors hover:bg-white/10"
+            >
                 <CheckCircle2 className="h-4 w-4 text-slate-400" />
                 APPLY PACK
             </button>
@@ -63,7 +74,11 @@ export function IndustrySelector() {
             "use server";
             await applyIndustryPack("childcare");
         }}>
-            <button type="submit" className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/10 py-3 text-xs font-bold text-slate-100 transition-colors hover:bg-white/10">
+            <button
+              type="submit"
+              data-testid="apply-pack-childcare"
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/10 py-3 text-xs font-bold text-slate-100 transition-colors hover:bg-white/10"
+            >
                 <CheckCircle2 className="h-4 w-4 text-slate-400" />
                 APPLY PACK
             </button>
@@ -85,7 +100,11 @@ export function IndustrySelector() {
             "use server";
             await applyIndustryPack("aged_care");
         }}>
-            <button type="submit" className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/10 py-3 text-xs font-bold text-slate-100 transition-colors hover:bg-white/10">
+            <button
+              type="submit"
+              data-testid="apply-pack-aged-care"
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/10 py-3 text-xs font-bold text-slate-100 transition-colors hover:bg-white/10"
+            >
                 <CheckCircle2 className="h-4 w-4 text-slate-400" />
                 APPLY PACK
             </button>

@@ -566,7 +566,7 @@ export default function SecurityPageContent() {
                       Audit Preservation
                     </h4>
                     <p className="text-sm text-foreground/70 leading-relaxed">
-                      Immutable storage with cryptographic proofs for long-term
+                      Immutable storage with tamper-evident logging for long-term
                       regulatory compliance
                     </p>
                   </motion.div>
@@ -865,7 +865,7 @@ export default function SecurityPageContent() {
                       <div className="flex items-center gap-3 justify-center lg:justify-start">
                         <div className="w-2 h-2 rounded-full bg-purple-400" />
                         <span className="text-sm text-foreground/70">
-                          Immutable audit trails with cryptographic verification
+                          Immutable audit trails with tamper-evident logging
                         </span>
                       </div>
                     </div>

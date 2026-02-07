@@ -10,6 +10,7 @@ interface DashboardWrapperProps {
   orgName: string;
   userRole: DatabaseRole;
   userEmail: string;
+  industry?: string | null;
 }
 
 /**
@@ -21,13 +22,18 @@ export function DashboardWrapper({
   orgName,
   userRole,
   userEmail,
+  industry,
 }: DashboardWrapperProps) {
   const isEmployer = isEmployerRole(userRole);
 
   if (isEmployer) {
     return (
       <UnifiedDashboardLayout userRole={userRole} organizationName={orgName}>
-        <EmployerDashboard organizationId={orgId} organizationName={orgName} />
+        <EmployerDashboard
+          organizationId={orgId}
+          organizationName={orgName}
+          industry={industry}
+        />
       </UnifiedDashboardLayout>
     );
   }

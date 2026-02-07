@@ -30,6 +30,7 @@ export interface AppOrganization {
   name: string;
   plan: string; // 'trial' | 'basic' | 'pro' | 'enterprise'
   onboardingCompleted: boolean;
+  industry: string | null; // 'ndis' | 'healthcare' | 'aged_care' | etc.
 }
 
 export interface AppEntitlements {

@@ -71,17 +71,22 @@ export default async function DashboardPage() {
     );
   }
 
-  // Fetch user's organization membership and role
+  // Fetch user's organization membership, role, and industry
   let membership: MembershipRow | null = null;
+  let industry: string | null = null;
 
   try {
     const { data } = await supabase
       .from('org_members')
-      .select('organization_id, role, organizations(name)')
+      .select('organization_id, role, organizations(name, industry)')
       .eq('user_id', user.id)
       .maybeSingle();
 
     membership = (data as any) || null;
+
+    // Extract industry from nested organizations object
+    const orgs = membership?.organizations as any;
+    industry = Array.isArray(orgs) ? orgs?.[0]?.industry : orgs?.industry;
   } catch {
     membership = null;
   }
@@ -104,6 +109,7 @@ export default async function DashboardPage() {
       orgName={orgName}
       userRole={userRole}
       userEmail={user.email || 'User'}
+      industry={industry}
     />
   );
 }

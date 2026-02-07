@@ -53,6 +53,10 @@ const PLAN_ENTITLEMENTS: Record<PlanKey, EntitlementSet> = {
   },
 };
 
+export function shouldAutoFixEntitlements(status: string | null): boolean {
+  return ["active", "trialing"].includes(status ?? "");
+}
+
 /**
  * Detect entitlement drift for a specific organization
  */
@@ -185,7 +189,7 @@ export async function detectEntitlementDrift(
   let autoFixed = false;
 
   // Auto-fix if enabled and drift detected
-  if (hasDrift && autoFix && ["active", "trialing"].includes(subscription.status || "")) {
+  if (hasDrift && autoFix && shouldAutoFixEntitlements(subscription.status || "")) {
     try {
       await syncEntitlementsForPlan(orgId, planKey);
 

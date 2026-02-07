@@ -41,6 +41,16 @@ export interface LogContext {
   requestId?: string;
 }
 
+function safeStringify(value: Record<string, unknown>): string {
+  try {
+    return JSON.stringify(value, (_key, val) =>
+      typeof val === 'bigint' ? val.toString() : val
+    );
+  } catch {
+    return '{"logging_error":"unserializable_context"}';
+  }
+}
+
 /**
  * Log a structured event
  * Output format: [DOMAIN] [LEVEL] action - details
@@ -75,7 +85,7 @@ export function logStructured(log: StructuredLog): void {
 
   const message = parts.join(' ');
   const contextStr = Object.keys(context).length > 0
-    ? ` ${JSON.stringify(context)}`
+    ? ` ${safeStringify(context)}`
     : '';
 
   const fullMessage = `${message}${contextStr}`;

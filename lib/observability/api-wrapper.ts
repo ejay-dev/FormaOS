@@ -22,6 +22,14 @@ export interface MonitoredResult<T> {
   status: number;
 }
 
+function safeMonitorCall(label: string, fn: () => void): void {
+  try {
+    fn();
+  } catch (error) {
+    console.error(`[monitoring] ${label} failed`, error);
+  }
+}
+
 /**
  * Wrap an async operation with monitoring
  * Tracks duration, success/failure, and logs structured events
@@ -39,18 +47,22 @@ export async function withMonitoring<T>(
     const duration = Date.now() - start;
 
     // Track successful call
-    enterpriseMonitor.trackAPICall(domain, endpoint, duration, 200);
+    safeMonitorCall('track_api_success', () => {
+      enterpriseMonitor.trackAPICall(domain, endpoint, duration, 200);
+    });
 
     // Log info for slow requests
     if (duration > 500) {
-      logStructured({
-        timestamp: new Date().toISOString(),
-        level: 'warn',
-        domain,
-        action: `slow_request:${endpoint}`,
-        duration,
-        orgId: context?.orgId,
-        userId: context?.userId,
+      safeMonitorCall('log_slow_request', () => {
+        logStructured({
+          timestamp: new Date().toISOString(),
+          level: 'warn',
+          domain,
+          action: `slow_request:${endpoint}`,
+          duration,
+          orgId: context?.orgId,
+          userId: context?.userId,
+        });
       });
     }
 
@@ -63,25 +75,29 @@ export async function withMonitoring<T>(
     const status = getStatusFromError(err);
 
     // Track failed call
-    enterpriseMonitor.trackAPICall(domain, endpoint, duration, status, {
-      code: getErrorCode(err),
-      message: err.message,
+    safeMonitorCall('track_api_error', () => {
+      enterpriseMonitor.trackAPICall(domain, endpoint, duration, status, {
+        code: getErrorCode(err),
+        message: err.message,
+      });
     });
 
     // Log error
-    logStructured({
-      timestamp: new Date().toISOString(),
-      level: status >= 500 ? 'error' : 'warn',
-      domain,
-      action: `error:${endpoint}`,
-      duration,
-      orgId: context?.orgId,
-      userId: context?.userId,
-      error: {
-        code: getErrorCode(err),
-        message: err.message,
-        stack: err.stack,
-      },
+    safeMonitorCall('log_api_error', () => {
+      logStructured({
+        timestamp: new Date().toISOString(),
+        level: status >= 500 ? 'error' : 'warn',
+        domain,
+        action: `error:${endpoint}`,
+        duration,
+        orgId: context?.orgId,
+        userId: context?.userId,
+        error: {
+          code: getErrorCode(err),
+          message: err.message,
+          stack: err.stack,
+        },
+      });
     });
 
     throw error;
@@ -134,14 +150,18 @@ export async function withJobMonitoring<T>(
     const result = await handler();
     const duration = Date.now() - start;
 
-    enterpriseMonitor.trackBackgroundJob(jobName, true, duration);
+    safeMonitorCall('track_job_success', () => {
+      enterpriseMonitor.trackBackgroundJob(jobName, true, duration);
+    });
 
-    logStructured({
-      timestamp: new Date().toISOString(),
-      level: 'info',
-      domain: 'automation',
-      action: `job_completed:${jobName}`,
-      duration,
+    safeMonitorCall('log_job_success', () => {
+      logStructured({
+        timestamp: new Date().toISOString(),
+        level: 'info',
+        domain: 'automation',
+        action: `job_completed:${jobName}`,
+        duration,
+      });
     });
 
     return result;
@@ -149,9 +169,11 @@ export async function withJobMonitoring<T>(
     const duration = Date.now() - start;
     const err = error instanceof Error ? error : new Error(String(error));
 
-    enterpriseMonitor.trackBackgroundJob(jobName, false, duration, {
-      code: getErrorCode(err),
-      message: err.message,
+    safeMonitorCall('track_job_error', () => {
+      enterpriseMonitor.trackBackgroundJob(jobName, false, duration, {
+        code: getErrorCode(err),
+        message: err.message,
+      });
     });
 
     throw error;

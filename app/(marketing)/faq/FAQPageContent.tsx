@@ -38,11 +38,11 @@ const faqCategories = [
     questions: [
       {
         q: 'What is FormaOS?',
-        a: 'FormaOS is an enterprise compliance operating system designed for regulated industries. It connects governance frameworks, operational controls, evidence collection, and audit defense into a single, unified platform. Unlike document repositories or checklists, FormaOS enforces accountability through structured workflows, immutable audit trails, and real-time compliance verification.',
+        a: 'FormaOS is an enterprise compliance operating system designed for regulated industries. It connects governance frameworks, operational controls, evidence collection, and audit defense into a single, unified platform. Unlike document repositories or checklists, FormaOS enforces accountability through structured workflows, immutable audit trails, and compliance visibility.',
       },
       {
         q: 'How is FormaOS different from task or compliance software?',
-        a: 'Traditional compliance tools store documents and rely on manual tracking. FormaOS is an operating system that actively runs your compliance program. It enforces control ownership, generates evidence automatically as work is completed, maintains immutable audit trails, and provides real-time compliance state visibility. This means you move from reactive compliance to proactive operational assurance.',
+        a: 'Traditional compliance tools store documents and rely on manual tracking. FormaOS is an operating system that runs your compliance program. It enforces control ownership, captures evidence as work is completed, maintains immutable audit trails, and provides continuous compliance visibility. This means you move from reactive compliance to proactive operational assurance.',
       },
       {
         q: 'What industries is FormaOS built for?',
@@ -54,7 +54,7 @@ const faqCategories = [
       },
       {
         q: 'How does workflow modeling work?',
-        a: 'FormaOS allows you to model your operational workflows as structured processes with defined steps, control points, and evidence requirements. Each workflow can be assigned ownership, linked to policies, and configured to automatically capture evidence as tasks are completed. This creates a defensible chain of accountability.',
+        a: 'FormaOS allows you to model operational workflows as structured processes with defined steps, control points, and evidence requirements. Workflow automation can be configured by request, creating a defensible chain of accountability.',
       },
     ],
   },
@@ -70,7 +70,7 @@ const faqCategories = [
       },
       {
         q: 'How is data encrypted?',
-        a: 'Data is encrypted in transit and at rest using industry-standard practices. Encryption keys are managed with secure key management and regular rotation, and sensitive fields can be additionally protected when needed.',
+        a: 'Data is encrypted in transit and at rest using industry-standard practices. Encryption key management follows cloud-provider best practices, and sensitive fields can be additionally protected when needed.',
       },
       {
         q: 'Does FormaOS support SSO and MFA?',
@@ -78,7 +78,7 @@ const faqCategories = [
       },
       {
         q: 'Where is data stored?',
-        a: 'FormaOS is hosted on enterprise-grade cloud platforms with region-aware hosting options. Enterprise customers can request specific data residency configurations. Infrastructure is designed for high availability, automated backups, and disaster recovery.',
+        a: 'FormaOS is hosted on enterprise-grade cloud platforms. Enterprise customers can request specific data residency configurations and region-aware hosting options.',
       },
       {
         q: 'How do you handle data privacy?',
@@ -98,11 +98,11 @@ const faqCategories = [
       },
       {
         q: 'Is evidence immutable?',
-        a: 'Yes. Once evidence is captured in FormaOS, it cannot be altered or deleted. All evidence records are cryptographically sealed with timestamps and user attribution. This immutability is essential for regulatory audits and ensures that your compliance records can withstand scrutiny.',
+        a: 'Evidence records are tracked with audit logs and timestamps. Optional evidence versioning and enhanced integrity controls are available by request.',
       },
       {
         q: 'Can we export regulatory reports?',
-        a: 'Absolutely. FormaOS provides comprehensive reporting capabilities including compliance status reports, evidence summaries, audit trail exports, and control verification reports. Reports can be exported in multiple formats (PDF, CSV, Excel) and customized to meet specific regulatory requirements.',
+        a: 'Yes. FormaOS provides compliance status reports, evidence summaries, audit trail exports, and control verification reports. Exports are available in CSV/ZIP formats, with PDF/Excel options available by request.',
       },
       {
         q: 'How long is data retained?',
@@ -122,7 +122,7 @@ const faqCategories = [
     questions: [
       {
         q: 'Does FormaOS integrate with existing systems?',
-        a: 'FormaOS provides Google OAuth for authentication and REST API access for authorized customers. Slack and Microsoft Teams integrations are on the roadmap. Integration capabilities depend on your plan tier.',
+        a: 'FormaOS provides Google OAuth for authentication and REST API access. Slack and Microsoft Teams integrations are available by request.',
       },
       {
         q: 'Are APIs available?',
@@ -130,11 +130,11 @@ const faqCategories = [
       },
       {
         q: 'Do you support webhooks?',
-        a: 'Webhook support for real-time event notifications is in development. Contact our team to discuss webhook requirements and early access options.',
+        a: 'Webhook support is available by request for real-time event notifications. Contact us to discuss your integration needs.',
       },
       {
         q: 'Can FormaOS connect to our existing systems?',
-        a: 'FormaOS provides REST API capabilities to connect with HR, CRM, and other systems. Slack and Teams integrations are on the roadmap. Enterprise customers can request dedicated integration support.',
+        a: 'FormaOS provides REST API capabilities to connect with HR, CRM, and other systems. Slack and Microsoft Teams integrations are available by request, and enterprise customers can request dedicated integration support.',
       },
     ],
   },

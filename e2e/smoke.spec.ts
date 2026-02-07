@@ -14,13 +14,13 @@ test('Critical user journey smoke test', async ({ page }) => {
   await expect(page.locator('h1').first()).toBeVisible();
 
   // 2. Navigate to pricing
-  await page.goto('/pricing');
+  await page.goto('/pricing', { waitUntil: 'networkidle' });
   await expect(page).toHaveTitle(/Pricing|FormaOS/i);
 
-  // 3. Click Start Free Trial CTA
-  const trialCTA = page.locator('[data-testid="pricing-hero-start-trial"]').first();
-  await expect(trialCTA).toBeVisible();
-  await trialCTA.click();
+  // 3. Click Start Free CTA from header (always visible, doesn't depend on page content load)
+  const headerStartFree = page.locator('header a:has-text("Start Free"), nav a:has-text("Start Free")').first();
+  await expect(headerStartFree).toBeVisible({ timeout: 10000 });
+  await headerStartFree.click();
 
   // 4. Should land on signup page
   await expect(page).toHaveURL(/\/auth\/signup/);

@@ -69,6 +69,9 @@ export const INDUSTRY_OPTIONS = [
   { id: "aged_care", label: "Aged Care" },
   { id: "childcare", label: "Childcare / Early Learning" },
   { id: "community_services", label: "Community Services" },
+  { id: "financial_services", label: "Financial Services" },
+  { id: "saas_technology", label: "SaaS / Technology" },
+  { id: "enterprise", label: "Enterprise / Multi-site" },
   { id: "other", label: "Other regulated services" },
 ] as const;
 

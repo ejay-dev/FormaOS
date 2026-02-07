@@ -299,11 +299,106 @@ export default async function ReportsPage() {
       </div>
 
       {/* =========================
-          REPORT TEMPLATES
+          CERTIFICATION REPORTS
          ========================= */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Existing templates unchanged */}
+      <div className="space-y-4">
+        <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+          <FileText className="w-4 h-4" /> Certification Reports
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* SOC 2 Report */}
+          <CertificationReportCard
+            title="SOC 2"
+            description="Service Organization Control Type II readiness assessment"
+            icon={ShieldCheck}
+            reportType="soc2"
+            color="sky"
+            disabled={!hasSubscription || !hasAuditExport}
+          />
+          {/* ISO 27001 Report */}
+          <CertificationReportCard
+            title="ISO 27001"
+            description="Statement of Applicability with control implementation status"
+            icon={ShieldCheck}
+            reportType="iso27001"
+            color="indigo"
+            disabled={!hasSubscription || !hasAuditExport}
+          />
+          {/* NDIS Report */}
+          <CertificationReportCard
+            title="NDIS"
+            description="Practice Standards compliance with staff credentials summary"
+            icon={ShieldCheck}
+            reportType="ndis"
+            color="pink"
+            disabled={!hasSubscription || !hasAuditExport}
+          />
+          {/* HIPAA Report */}
+          <CertificationReportCard
+            title="HIPAA"
+            description="Privacy, Security, and Breach Notification rule compliance"
+            icon={ShieldCheck}
+            reportType="hipaa"
+            color="emerald"
+            disabled={!hasSubscription || !hasAuditExport}
+          />
+        </div>
       </div>
+    </div>
+  );
+}
+
+function CertificationReportCard({
+  title,
+  description,
+  icon: Icon,
+  reportType,
+  color,
+  disabled = false,
+}: {
+  title: string;
+  description: string;
+  icon: typeof ShieldCheck;
+  reportType: string;
+  color: 'sky' | 'indigo' | 'pink' | 'emerald';
+  disabled?: boolean;
+}) {
+  const colorClasses = {
+    sky: 'from-sky-500/20 to-sky-500/5 border-sky-400/20 text-sky-400',
+    indigo: 'from-indigo-500/20 to-indigo-500/5 border-indigo-400/20 text-indigo-400',
+    pink: 'from-pink-500/20 to-pink-500/5 border-pink-400/20 text-pink-400',
+    emerald: 'from-emerald-500/20 to-emerald-500/5 border-emerald-400/20 text-emerald-400',
+  };
+
+  const handleDownload = async () => {
+    if (disabled) return;
+    window.open(`/api/reports/export?type=${reportType}&format=pdf`, '_blank');
+  };
+
+  return (
+    <div
+      className={`rounded-2xl border bg-gradient-to-br p-6 relative overflow-hidden transition-all ${
+        disabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02] cursor-pointer'
+      } ${colorClasses[color]}`}
+      onClick={handleDownload}
+    >
+      <div className="flex items-start justify-between mb-4">
+        <div className="p-2 rounded-xl bg-white/10">
+          <Icon className="h-5 w-5" />
+        </div>
+        <div className="flex items-center gap-1">
+          <Download className="h-4 w-4 text-slate-400" />
+          <span className="text-[10px] text-slate-400 uppercase font-bold">PDF</span>
+        </div>
+      </div>
+      <h4 className="text-lg font-bold text-slate-100 mb-1">{title}</h4>
+      <p className="text-xs text-slate-400 leading-relaxed">{description}</p>
+      {disabled && (
+        <div className="mt-3 text-[10px] text-amber-400 flex items-center gap-1">
+          <AlertTriangle className="h-3 w-3" />
+          Upgrade required
+        </div>
+      )}
     </div>
   );
 }

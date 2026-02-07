@@ -23,28 +23,22 @@ import {
 import { INDUSTRY_PACKS } from '@/lib/industry-packs';
 import { evaluateFrameworkControls } from '@/app/app/actions/compliance-engine';
 import { provisionFrameworkControls } from '@/lib/frameworks/provisioning';
-import { PACK_SLUGS } from '@/lib/frameworks/framework-installer';
+import { getProvisioningFrameworkSlugs } from '@/lib/onboarding/framework-selection';
+import { isProvisioningRole } from '@/lib/onboarding/roles';
+import {
+  onOnboardingCompleted,
+  updateComplianceScoreAndCheckRisk,
+  onIndustryConfigured,
+  onFrameworksProvisioned,
+  onOnboardingMilestone,
+} from '@/lib/automation/integration';
 
 const TOTAL_STEPS = 7;
-const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au'
-).replace(/\/$/, '');
 const PLAN_CHOICES = [
   PLAN_CATALOG.basic,
   PLAN_CATALOG.pro,
   PLAN_CATALOG.enterprise,
 ];
-const FRAMEWORK_ENGINE_SLUGS = new Set([
-  ...PACK_SLUGS,
-  'iso27001',
-  'hipaa',
-  'gdpr',
-  'pci-dss',
-  'soc2',
-  'nist-csf',
-  'cis-controls',
-]);
-
 const ROLE_OPTIONS = [
   { id: 'employer', label: 'Employer / Organization admin', role: 'owner' },
   { id: 'employee', label: 'Employee / Field staff', role: 'member' },
@@ -95,7 +89,7 @@ async function getOrgContext() {
   const { data: membership } = await supabase
     .from('org_members')
     .select(
-      'organization_id, organizations(name, plan_key, industry, team_size, frameworks, onboarding_completed)',
+      'organization_id, role, organizations(name, plan_key, industry, team_size, frameworks, onboarding_completed, created_by)',
     )
     .eq('user_id', user.id)
     .maybeSingle();
@@ -128,6 +122,8 @@ async function getOrgContext() {
     user,
     orgId: membership.organization_id as string,
     orgRecord,
+    role: membership.role as string | null,
+    canProvision: isProvisioningRole(membership.role as string | null),
   };
 }
 
@@ -201,7 +197,7 @@ async function advanceWelcome() {
 
 async function saveOrgDetails(formData: FormData) {
   'use server';
-  const { supabase, orgId, orgRecord } = await getOrgContext();
+  const { orgId, orgRecord } = await getOrgContext();
   const admin = createSupabaseAdminClient();
 
   const nameRaw = (formData.get('organizationName') as string | null) ?? '';
@@ -246,12 +242,16 @@ async function saveOrgDetails(formData: FormData) {
 
 async function saveIndustrySelection(formData: FormData) {
   'use server';
-  const { supabase, orgId, orgRecord } = await getOrgContext();
+  const { orgId, orgRecord, canProvision } = await getOrgContext();
   const admin = createSupabaseAdminClient();
   const industry = (formData.get('industry') as string | null) ?? '';
 
   const validation = validateIndustry(industry);
   if (!validation.valid) {
+    redirect('/onboarding?step=3&error=1');
+  }
+
+  if (!canProvision) {
     redirect('/onboarding?step=3&error=1');
   }
 
@@ -264,6 +264,9 @@ async function saveIndustrySelection(formData: FormData) {
       console.error('Industry pack failed:', error);
     }
   }
+
+  // Trigger automation for industry configuration
+  await onIndustryConfigured(orgId, industry);
 
   await markStepComplete(orgId, 3, 4);
   redirect('/onboarding?step=4');
@@ -291,7 +294,7 @@ async function saveRoleSelection(formData: FormData) {
 
 async function saveFrameworkSelection(formData: FormData) {
   'use server';
-  const { supabase, orgId } = await getOrgContext();
+  const { supabase, orgId, canProvision } = await getOrgContext();
   const frameworks = formData
     .getAll('frameworks')
     .map((item) => item.toString())
@@ -302,12 +305,14 @@ async function saveFrameworkSelection(formData: FormData) {
     redirect('/onboarding?step=5&error=1');
   }
 
+  if (!canProvision) {
+    redirect('/onboarding?step=5&error=1');
+  }
+
   await supabase.from('organizations').update({ frameworks }).eq('id', orgId);
 
   try {
-    const selectedFrameworks = frameworks
-      .map((entry) => entry.toLowerCase().trim())
-      .filter((entry) => FRAMEWORK_ENGINE_SLUGS.has(entry));
+    const selectedFrameworks = getProvisioningFrameworkSlugs(frameworks);
 
     if (selectedFrameworks.length) {
       const admin = createSupabaseAdminClient();
@@ -316,13 +321,15 @@ async function saveFrameworkSelection(formData: FormData) {
         framework_slug: slug,
         enabled_at: new Date().toISOString(),
       }));
-      const { error: adminUpsertError } = await admin.from('org_frameworks').upsert(
-        upsertPayload,
-        { onConflict: 'org_id,framework_slug' },
-      );
+      const { error: adminUpsertError } = await admin
+        .from('org_frameworks')
+        .upsert(upsertPayload, { onConflict: 'org_id,framework_slug' });
 
       if (adminUpsertError) {
-        console.warn('[onboarding] admin org_frameworks upsert failed', adminUpsertError);
+        console.warn(
+          '[onboarding] admin org_frameworks upsert failed',
+          adminUpsertError,
+        );
         await supabase.from('org_frameworks').upsert(upsertPayload, {
           onConflict: 'org_id,framework_slug',
         });
@@ -331,7 +338,10 @@ async function saveFrameworkSelection(formData: FormData) {
       try {
         await Promise.all(
           selectedFrameworks.map((slug) =>
-            provisionFrameworkControls(orgId, slug, { force: true, client: admin }),
+            provisionFrameworkControls(orgId, slug, {
+              force: true,
+              client: admin,
+            }),
           ),
         );
       } catch (error) {
@@ -341,9 +351,15 @@ async function saveFrameworkSelection(formData: FormData) {
       try {
         await Promise.all(
           selectedFrameworks.map((slug) =>
-            provisionFrameworkControls(orgId, slug, { force: true, client: supabase }),
+            provisionFrameworkControls(orgId, slug, {
+              force: true,
+              client: supabase,
+            }),
           ),
         );
+
+        // Trigger automation for frameworks provisioned
+        await onFrameworksProvisioned(orgId, selectedFrameworks);
       } catch (error) {
         console.warn('[onboarding] user provisioning failed', error);
       }
@@ -456,6 +472,9 @@ async function completeFirstAction(formData: FormData) {
     updated_at: new Date().toISOString(),
   });
 
+  await onOnboardingCompleted(orgId);
+  await updateComplianceScoreAndCheckRisk(orgId);
+
   const { data: subscription } = await supabase
     .from('org_subscriptions')
     .select('status, current_period_end, trial_expires_at')
@@ -558,7 +577,11 @@ export default async function OnboardingPage({
           ) : null}
 
           {safeStep === 2 ? (
-            <form action={saveOrgDetails} className="space-y-8">
+            <form
+              action={saveOrgDetails}
+              className="space-y-8"
+              data-testid="onboarding-step-org"
+            >
               <div className="space-y-4">
                 <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
                   Organization name
@@ -568,6 +591,7 @@ export default async function OnboardingPage({
                   name="organizationName"
                   defaultValue={orgRecord?.name ?? ''}
                   placeholder="e.g. Acme Corp"
+                  data-testid="organization-name"
                   className="w-full p-4 rounded-2xl border border-white/10 bg-[hsl(var(--card))] focus:bg-white/5 focus:outline-white/20 text-sm font-semibold transition-all shadow-inner"
                 />
               </div>
@@ -588,6 +612,7 @@ export default async function OnboardingPage({
                         name="teamSize"
                         value={option.id}
                         defaultChecked={orgRecord?.team_size === option.id}
+                        data-testid={`team-size-${option.id}`}
                         className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
                       />
                       <span>{option.label} people</span>
@@ -613,6 +638,7 @@ export default async function OnboardingPage({
                           name="plan"
                           value={option.key}
                           defaultChecked={planKey === option.key}
+                          data-testid={`plan-option-${option.key}`}
                           className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
                         />
                         <span className="text-sm font-semibold text-slate-100">
@@ -632,7 +658,11 @@ export default async function OnboardingPage({
           ) : null}
 
           {safeStep === 3 ? (
-            <form action={saveIndustrySelection} className="space-y-8">
+            <form
+              action={saveIndustrySelection}
+              className="space-y-8"
+              data-testid="onboarding-step-industry"
+            >
               <div className="space-y-3">
                 <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
                   Industry
@@ -649,6 +679,7 @@ export default async function OnboardingPage({
                         name="industry"
                         value={option.id}
                         defaultChecked={orgRecord?.industry === option.id}
+                        data-testid={`industry-option-${option.id}`}
                         className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
                       />
                       <span>{option.label}</span>
@@ -663,7 +694,11 @@ export default async function OnboardingPage({
           ) : null}
 
           {safeStep === 4 ? (
-            <form action={saveRoleSelection} className="space-y-8">
+            <form
+              action={saveRoleSelection}
+              className="space-y-8"
+              data-testid="onboarding-step-role"
+            >
               <div className="space-y-3">
                 <div className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
                   Your role
@@ -680,6 +715,7 @@ export default async function OnboardingPage({
                         name="role"
                         value={option.id}
                         defaultChecked={option.role === 'owner'}
+                        data-testid={`role-option-${option.id}`}
                         className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
                       />
                       <span>{option.label}</span>
@@ -694,7 +730,11 @@ export default async function OnboardingPage({
           ) : null}
 
           {safeStep === 5 ? (
-            <form action={saveFrameworkSelection} className="space-y-8">
+            <form
+              action={saveFrameworkSelection}
+              className="space-y-8"
+              data-testid="onboarding-step-frameworks"
+            >
               <div className="space-y-3">
                 <div className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
                   Compliance frameworks (select at least one)
@@ -714,6 +754,7 @@ export default async function OnboardingPage({
                           name="frameworks"
                           value={framework.id}
                           defaultChecked={checked}
+                          data-testid={`framework-option-${framework.id}`}
                           className="h-4 w-4 rounded border-white/20 bg-[hsl(var(--card))] text-sky-400"
                         />
                         <span>{framework.label}</span>
@@ -729,7 +770,11 @@ export default async function OnboardingPage({
           ) : null}
 
           {safeStep === 6 ? (
-            <form action={saveInvites} className="space-y-8">
+            <form
+              action={saveInvites}
+              className="space-y-8"
+              data-testid="onboarding-step-invites"
+            >
               <div className="space-y-3">
                 <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
                   Invite teammates (optional)
@@ -738,6 +783,7 @@ export default async function OnboardingPage({
                   name="inviteEmails"
                   rows={4}
                   placeholder="Add emails separated by commas or new lines"
+                  data-testid="invite-emails"
                   className="w-full p-4 rounded-2xl border border-white/10 bg-[hsl(var(--card))] text-sm font-semibold text-slate-100"
                 />
               </div>
@@ -748,7 +794,11 @@ export default async function OnboardingPage({
           ) : null}
 
           {safeStep === 7 ? (
-            <form action={completeFirstAction} className="space-y-8">
+            <form
+              action={completeFirstAction}
+              className="space-y-8"
+              data-testid="onboarding-step-first-action"
+            >
               <div className="space-y-3">
                 <div className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
                   First system action
@@ -759,6 +809,7 @@ export default async function OnboardingPage({
                       type="radio"
                       name="firstAction"
                       value="create_task"
+                      data-testid="first-action-create-task"
                       className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
                       required
                     />
@@ -769,6 +820,7 @@ export default async function OnboardingPage({
                       type="radio"
                       name="firstAction"
                       value="upload_evidence"
+                      data-testid="first-action-upload-evidence"
                       className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
                     />
                     <span>Prepare an evidence upload task</span>
@@ -778,6 +830,7 @@ export default async function OnboardingPage({
                       type="radio"
                       name="firstAction"
                       value="run_evaluation"
+                      data-testid="first-action-run-evaluation"
                       className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
                     />
                     <span>Run the first compliance evaluation</span>

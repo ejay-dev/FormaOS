@@ -45,6 +45,12 @@ const AUTO_FIX_STATUS_MAP: Record<string, string[]> = {
   canceled: ["active", "past_due", "trialing"], // Can mark as canceled
 };
 
+export function shouldAutoCancelMissingStripe(localStatus: string | null): boolean {
+  const normalized = (localStatus || "").toLowerCase();
+  if (!normalized) return false;
+  return normalized !== "active" && normalized !== "trialing";
+}
+
 export async function runBillingReconciliation(): Promise<ReconciliationResult> {
   const start = Date.now();
   const discrepancies: BillingDiscrepancy[] = [];
@@ -241,7 +247,11 @@ export async function runBillingReconciliation(): Promise<ReconciliationResult> 
           };
 
           // Mark as canceled if subscription doesn't exist in Stripe
-          if (AUTO_FIX_ENABLED && sub.status !== "canceled") {
+          if (
+            AUTO_FIX_ENABLED &&
+            sub.status !== "canceled" &&
+            shouldAutoCancelMissingStripe(sub.status)
+          ) {
             const { error: updateError } = await admin
               .from("org_subscriptions")
               .update({

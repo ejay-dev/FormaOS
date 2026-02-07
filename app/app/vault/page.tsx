@@ -255,6 +255,7 @@ export default async function VaultPage() {
                   <tr>
                     <th className="px-8 py-6">Artifact</th>
                     <th className="px-8 py-6">Context</th>
+                    <th className="px-8 py-6">AI Quality</th>
                     <th className="px-8 py-6">Verification</th>
                     <th className="px-8 py-6 text-right">Action</th>
                   </tr>
@@ -279,6 +280,29 @@ export default async function VaultPage() {
 
                       <td className="px-8 py-4 text-xs text-slate-400">
                         {item.task?.title || item.policy?.title || 'N/A'}
+                      </td>
+
+                      <td className="px-8 py-4">
+                        {item.quality_score != null ? (
+                          <div className="flex items-center gap-2">
+                            <div className={`h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                              item.quality_score >= 70 ? 'bg-emerald-400/10 text-emerald-300' :
+                              item.quality_score >= 50 ? 'bg-amber-400/10 text-amber-300' :
+                              'bg-rose-400/10 text-rose-300'
+                            }`}>
+                              {item.quality_score}
+                            </div>
+                            <span className={`text-[9px] font-bold uppercase ${
+                              item.risk_flag === 'low' ? 'text-emerald-400' :
+                              item.risk_flag === 'medium' ? 'text-amber-400' :
+                              'text-rose-400'
+                            }`}>
+                              {item.risk_flag || 'N/A'}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-[10px] text-slate-500">Not scored</span>
+                        )}
                       </td>
 
                       <td className="px-8 py-4">
