@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import { MarketingAnchor } from '../components/marketing-anchor';
+import { brand } from '@/config/brand';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 export const metadata: Metadata = {
   title: 'FormaOS | Pricing',
@@ -135,7 +137,9 @@ export default function PricingPage() {
                 <div className="mt-8">
                   <a
                     href={
-                      plan.name === 'Enterprise' ? '/contact' : '/auth/signup'
+                      plan.name === 'Enterprise'
+                        ? '/contact'
+                        : `${appBase}/auth/signup`
                     }
                     className={`w-full btn ${
                       plan.popular ? 'btn-primary' : 'btn-secondary'

@@ -6,6 +6,27 @@ import { createSupabaseClient } from '@/lib/supabase/client';
 import { Logo } from '@/components/brand/Logo';
 import { Mail, RefreshCw, ArrowRight, CheckCircle2 } from 'lucide-react';
 
+const SESSION_TIMEOUT_MS = 5000;
+
+const withTimeout = async <T,>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  label: string,
+) => {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(
+      () => reject(new Error(`${label}_timeout`)),
+      timeoutMs,
+    );
+  });
+  try {
+    return await Promise.race([promise, timeout]);
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId);
+  }
+};
+
 export default function CheckEmailPage() {
   const router = useRouter();
   const [isChecking, setIsChecking] = useState(false);
@@ -21,7 +42,15 @@ export default function CheckEmailPage() {
       const supabase = createSupabaseClient();
 
       // Try to get current session
-      const { data: { session }, error } = await supabase.auth.getSession();
+      const sessionResult = (await withTimeout(
+        supabase.auth.getSession(),
+        SESSION_TIMEOUT_MS,
+        'session',
+      )) as Awaited<ReturnType<typeof supabase.auth.getSession>>;
+      const {
+        data: { session },
+        error,
+      } = sessionResult;
 
       if (error) {
         console.error('Session check error:', error);
@@ -39,8 +68,15 @@ export default function CheckEmailPage() {
         setIsChecking(false);
       }
     } catch (err) {
-      console.error('Continue error:', err);
-      setErrorMessage('An error occurred. Please try again.');
+      if (err instanceof Error && err.message.includes('timeout')) {
+        console.error('[Auth] Session check timed out');
+        setErrorMessage(
+          'Having trouble verifying your session. Please refresh and try again.',
+        );
+      } else {
+        console.error('Continue error:', err);
+        setErrorMessage('An error occurred. Please try again.');
+      }
       setIsChecking(false);
     }
   };

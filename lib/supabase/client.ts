@@ -1,8 +1,27 @@
 import { createBrowserClient } from "@supabase/ssr";
+import { getCookieDomain } from "@/lib/supabase/cookie-domain";
 
 type SupabaseClient = ReturnType<typeof createBrowserClient>;
 
 let cachedClient: SupabaseClient | null = null;
+
+function resolveBrowserCookieOptions() {
+  if (typeof window === "undefined") return undefined;
+  const domain = getCookieDomain(window.location.hostname);
+  const secure = window.location.protocol === "https:";
+  const options: {
+    domain?: string;
+    path: string;
+    sameSite: "lax";
+    secure?: boolean;
+  } = {
+    path: "/",
+    sameSite: "lax",
+  };
+  if (domain) options.domain = domain;
+  if (secure) options.secure = true;
+  return options;
+}
 
 function getSupabaseKey() {
   return (
@@ -89,7 +108,9 @@ export function createSupabaseClient() {
   }
 
   try {
-    cachedClient = createBrowserClient(url, key);
+    cachedClient = createBrowserClient(url, key, {
+      cookieOptions: resolveBrowserCookieOptions(),
+    });
     return cachedClient;
   } catch (error) {
     console.error("[Supabase] Failed to initialize browser client:", error);

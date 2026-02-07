@@ -8,13 +8,54 @@ import Link from 'next/link';
 import { CheckCircle2, ArrowRight, Star } from 'lucide-react';
 import { Logo } from '@/components/brand/Logo';
 
+const DEFAULT_APP_BASE = 'https://app.formaos.com.au';
+const DEFAULT_SITE_BASE = 'https://www.formaos.com.au';
+const SESSION_TIMEOUT_MS = 5000;
+
+const resolveAppBase = () => {
+  const envBase = (process.env.NEXT_PUBLIC_APP_URL ?? '').replace(/\/$/, '');
+  if (envBase) return envBase;
+  if (typeof window === 'undefined') return DEFAULT_APP_BASE;
+  const origin = window.location.origin.replace(/\/$/, '');
+  const host = window.location.hostname;
+  const isLocalhost =
+    host === 'localhost' ||
+    host.endsWith('.localhost') ||
+    host.startsWith('127.') ||
+    host === '0.0.0.0';
+  if (isLocalhost || host.startsWith('app.')) return origin;
+  return DEFAULT_APP_BASE;
+};
+
+const resolveSiteBase = () => {
+  const envBase = (process.env.NEXT_PUBLIC_SITE_URL ?? '').replace(/\/$/, '');
+  if (envBase) return envBase;
+  if (typeof window === 'undefined') return DEFAULT_SITE_BASE;
+  return window.location.origin.replace(/\/$/, '');
+};
+
+const withTimeout = async <T,>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  label: string,
+) => {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(
+      () => reject(new Error(`${label}_timeout`)),
+      timeoutMs,
+    );
+  });
+  try {
+    return await Promise.race([promise, timeout]);
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId);
+  }
+};
+
 function SignUpContent() {
   const searchParams = useSearchParams();
   const planParam = resolvePlanKey(searchParams.get('plan'));
-  const siteBase = (
-    process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin
-  ).replace(/\/$/, '');
-
   const plan = useMemo(
     () => (planParam ? PLAN_CATALOG[planParam] : null),
     [planParam],
@@ -30,29 +71,38 @@ function SignUpContent() {
   const signUpWithGoogle = async () => {
     setErrorMessage(null);
     setIsLoading(true);
-    const base = (
-      process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin
-    ).replace(/\/$/, '');
+    const appBase = resolveAppBase();
     const redirectTo = plan
-      ? `${base}/auth/callback?plan=${encodeURIComponent(plan.key)}`
-      : `${base}/auth/callback`;
+      ? `${appBase}/auth/callback?plan=${encodeURIComponent(plan.key)}`
+      : `${appBase}/auth/callback`;
     const supabase = createSupabaseClient();
     // Generate CSRF state
     const state = Math.random().toString(36).substring(2, 15);
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo, queryParams: { state } },
-    });
-    if (error) {
-      setErrorMessage(error.message ?? 'An unexpected error occurred.');
-      setIsLoading(false);
-      console.error('Google OAuth error:', error);
-      return;
-    }
-    if (data?.url) {
-      window.location.href = data.url;
-    } else {
-      setErrorMessage('No redirect URL returned from Google OAuth.');
+    try {
+      const oauthResult = (await withTimeout(
+        supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo, queryParams: { state } },
+        }),
+        SESSION_TIMEOUT_MS,
+        'oauth',
+      )) as Awaited<ReturnType<typeof supabase.auth.signInWithOAuth>>;
+      const { data, error } = oauthResult;
+      if (error) {
+        setErrorMessage(error.message ?? 'An unexpected error occurred.');
+        setIsLoading(false);
+        console.error('Google OAuth error:', error);
+        return;
+      }
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        setErrorMessage('No redirect URL returned from Google OAuth.');
+        setIsLoading(false);
+      }
+    } catch (err) {
+      console.error('[Auth] Google OAuth failed:', err);
+      setErrorMessage('Unable to start Google sign up. Please try again.');
       setIsLoading(false);
     }
   };
@@ -80,20 +130,23 @@ function SignUpContent() {
     setIsLoading(true);
 
     try {
-      const base = (
-        process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin
-      ).replace(/\/$/, '');
-      const emailRedirectTo = `${base}/app/onboarding`;
+      const appBase = resolveAppBase();
+      const emailRedirectTo = `${appBase}/app/onboarding`;
       const options = plan
         ? { emailRedirectTo, data: { selected_plan: plan.key } }
         : { emailRedirectTo };
 
       const supabase = createSupabaseClient();
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options,
-      });
+      const signupResult = (await withTimeout(
+        supabase.auth.signUp({
+          email,
+          password,
+          options,
+        }),
+        SESSION_TIMEOUT_MS,
+        'signup',
+      )) as Awaited<ReturnType<typeof supabase.auth.signUp>>;
+      const { data, error } = signupResult;
 
       if (error) {
         setErrorMessage(error.message);
@@ -109,14 +162,20 @@ function SignUpContent() {
 
       if (data?.user) {
         // Email confirmation required - redirect to check-email page
-        window.location.href = `${base}/auth/check-email`;
+        window.location.href = `${appBase}/auth/check-email`;
         return;
       }
 
       // Fallback
-      window.location.href = `${base}/auth/check-email`;
+      window.location.href = `${appBase}/auth/check-email`;
     } catch (err) {
-      setErrorMessage('An unexpected error occurred. Please try again.');
+      if (err instanceof Error && err.message.includes('timeout')) {
+        setErrorMessage(
+          'Having trouble creating your account. Please refresh and try again.',
+        );
+      } else {
+        setErrorMessage('An unexpected error occurred. Please try again.');
+      }
       setIsLoading(false);
     }
   };
@@ -316,7 +375,9 @@ function SignUpContent() {
                   </p>
                   <button
                     onClick={() =>
-                      window.location.assign(`${siteBase}/pricing`)
+                      window.location.assign(
+                        `${resolveSiteBase()}/pricing`,
+                      )
                     }
                     className="text-xs font-semibold text-emerald-300 hover:text-emerald-200 transition-colors"
                   >

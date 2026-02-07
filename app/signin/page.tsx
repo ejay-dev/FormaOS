@@ -8,9 +8,60 @@ import { Suspense } from 'react';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
 import { Logo } from '@/components/brand/Logo';
 
-const appBase = (
-  process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.formaos.com.au'
-).replace(/\/$/, '');
+const DEFAULT_APP_BASE = 'https://app.formaos.com.au';
+const SESSION_TIMEOUT_MS = 5000;
+const RENDER_APP_BASE = (process.env.NEXT_PUBLIC_APP_URL ?? '').replace(
+  /\/$/,
+  '',
+);
+
+const resolveAppBase = () => {
+  const envBase = (process.env.NEXT_PUBLIC_APP_URL ?? '').replace(/\/$/, '');
+  if (envBase) return envBase;
+  if (typeof window === 'undefined') return DEFAULT_APP_BASE;
+  const origin = window.location.origin.replace(/\/$/, '');
+  const host = window.location.hostname;
+  const isLocalhost =
+    host === 'localhost' ||
+    host.endsWith('.localhost') ||
+    host.startsWith('127.') ||
+    host === '0.0.0.0';
+  if (isLocalhost || host.startsWith('app.')) return origin;
+  return DEFAULT_APP_BASE;
+};
+
+const withTimeout = async <T,>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  label: string,
+) => {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(
+      () => reject(new Error(`${label}_timeout`)),
+      timeoutMs,
+    );
+  });
+  try {
+    return await Promise.race([promise, timeout]);
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId);
+  }
+};
+
+const fetchWithTimeout = async (
+  url: string,
+  init: RequestInit = {},
+  timeoutMs = SESSION_TIMEOUT_MS,
+) => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+};
 
 function SignInContent() {
   const searchParams = useSearchParams();
@@ -18,21 +69,26 @@ function SignInContent() {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [sessionTimeout, setSessionTimeout] = useState(false);
 
   const bootstrapAndRedirect = useCallback(async () => {
+    const base = resolveAppBase();
     try {
-      const response = await fetch('/api/auth/bootstrap', { method: 'POST' });
+      const response = await fetchWithTimeout('/api/auth/bootstrap', {
+        method: 'POST',
+      });
       if (!response.ok) {
-        window.location.href = `${appBase}/app`;
-        return;
+        return { ok: false, status: response.status };
       }
-      const payload = await response.json();
+      const payload = await response.json().catch(() => ({}));
       const next = typeof payload?.next === 'string' ? payload.next : '/app';
       window.location.href = next.startsWith('http')
         ? next
-        : `${appBase}${next.startsWith('/') ? '' : '/'}${next}`;
-    } catch {
-      window.location.href = `${appBase}/app`;
+        : `${base}${next.startsWith('/') ? '' : '/'}${next}`;
+      return { ok: true };
+    } catch (err) {
+      console.error('[Auth] bootstrap failed:', err);
+      return { ok: false, status: 0 };
     }
   }, []);
 
@@ -82,11 +138,29 @@ function SignInContent() {
           }
         }
 
-        const { data } = await supabase.auth.getSession();
+        const sessionResult = (await withTimeout(
+          supabase.auth.getSession(),
+          SESSION_TIMEOUT_MS,
+          'session',
+        )) as Awaited<ReturnType<typeof supabase.auth.getSession>>;
+        const { data } = sessionResult;
         if (data?.session) {
-          await bootstrapAndRedirect();
+          const bootstrapResult = await bootstrapAndRedirect();
+          if (!bootstrapResult?.ok) {
+            setErrorMessage(
+              'We could not complete sign-in. Please refresh and try again.',
+            );
+          }
         }
       } catch (err) {
+        if (err instanceof Error && err.message.includes('timeout')) {
+          setSessionTimeout(true);
+          console.error('[Auth] Session check timed out');
+          setErrorMessage(
+            'Having trouble verifying your session. Please refresh or try again.',
+          );
+          return;
+        }
         setErrorMessage('Authentication failed. Please sign in again.');
       }
     };
@@ -96,36 +170,40 @@ function SignInContent() {
 
   const signInWithGoogle = async () => {
     setErrorMessage(null);
+    setSessionTimeout(false);
     setIsLoading(true);
-    let base = (process.env.NEXT_PUBLIC_APP_URL ?? '').replace(/\/$/, '');
     try {
-      const res = await fetch('/api/debug/env');
-      const json = await res.json();
-      if (json?.env?.appUrl) base = json.env.appUrl.replace(/\/$/, '');
-    } catch {
-      /* silent fallback */
-    }
-    if (!base) base = (window.location.origin ?? '').replace(/\/$/, '');
-    const supabase = createSupabaseClient();
-    // Generate CSRF state
-    const state = Math.random().toString(36).substring(2, 15);
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${base}/auth/callback`,
-        queryParams: { state },
-      },
-    });
-    if (error) {
-      setErrorMessage(error.message ?? 'An unexpected error occurred.');
-      setIsLoading(false);
-      console.error('Google OAuth error:', error);
-      return;
-    }
-    if (data?.url) {
-      window.location.href = data.url;
-    } else {
-      setErrorMessage('No redirect URL returned from Google OAuth.');
+      const base = resolveAppBase();
+      const supabase = createSupabaseClient();
+      // Generate CSRF state
+      const state = Math.random().toString(36).substring(2, 15);
+      const oauthResult = (await withTimeout(
+        supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: `${base}/auth/callback`,
+            queryParams: { state },
+          },
+        }),
+        SESSION_TIMEOUT_MS,
+        'oauth',
+      )) as Awaited<ReturnType<typeof supabase.auth.signInWithOAuth>>;
+      const { data, error } = oauthResult;
+      if (error) {
+        setErrorMessage(error.message ?? 'An unexpected error occurred.');
+        setIsLoading(false);
+        console.error('Google OAuth error:', error);
+        return;
+      }
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        setErrorMessage('No redirect URL returned from Google OAuth.');
+        setIsLoading(false);
+      }
+    } catch (err) {
+      console.error('[Auth] Google OAuth failed:', err);
+      setErrorMessage('Unable to start Google sign in. Please try again.');
       setIsLoading(false);
     }
   };
@@ -133,21 +211,45 @@ function SignInContent() {
   const signInWithEmail = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
+    setSessionTimeout(false);
     setIsLoading(true);
 
     const supabase = createSupabaseClient();
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const passwordResult = (await withTimeout(
+        supabase.auth.signInWithPassword({
+          email,
+          password,
+        }),
+        SESSION_TIMEOUT_MS,
+        'password_signin',
+      )) as Awaited<ReturnType<typeof supabase.auth.signInWithPassword>>;
+      const { error } = passwordResult;
 
-    if (error) {
-      setErrorMessage(error.message ?? 'Invalid email or password.');
+      if (error) {
+        setErrorMessage(error.message ?? 'Invalid email or password.');
+        setIsLoading(false);
+        return;
+      }
+
+      const bootstrapResult = await bootstrapAndRedirect();
+      if (!bootstrapResult?.ok) {
+        setErrorMessage(
+          'We could not complete sign-in. Please refresh and try again.',
+        );
+        setIsLoading(false);
+        return;
+      }
+    } catch (err) {
+      if (err instanceof Error && err.message.includes('timeout')) {
+        setErrorMessage(
+          'Having trouble signing you in. Please refresh and try again.',
+        );
+      } else {
+        setErrorMessage('Authentication failed. Please sign in again.');
+      }
       setIsLoading(false);
-      return;
     }
-
-    await bootstrapAndRedirect();
   };
 
   return (
@@ -198,6 +300,21 @@ function SignInContent() {
             {errorMessage && (
               <div className="mb-6 rounded-lg border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
                 {errorMessage}
+              </div>
+            )}
+            {sessionTimeout && (
+              <div className="mb-6 rounded-lg border border-amber-400/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+                <div className="font-semibold">Having trouble?</div>
+                <div className="mt-1 text-amber-100/80">
+                  Refresh the page or try again.
+                </div>
+                <button
+                  type="button"
+                  onClick={() => window.location.reload()}
+                  className="mt-3 inline-flex items-center justify-center rounded-md border border-amber-300/40 bg-amber-400/10 px-3 py-1.5 text-xs font-semibold text-amber-100 hover:bg-amber-400/20"
+                >
+                  Refresh
+                </button>
               </div>
             )}
 
@@ -296,7 +413,7 @@ function SignInContent() {
               <p className="text-center text-sm text-slate-400">
                 New to FormaOS?{' '}
                 <Link
-                  href={`${appBase}/auth/signup`}
+                  href={`${RENDER_APP_BASE}/auth/signup`}
                   className="font-semibold text-sky-400 hover:text-sky-300 transition-colors"
                 >
                   Start your compliance journey

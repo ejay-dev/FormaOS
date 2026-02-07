@@ -58,10 +58,7 @@ export async function GET(request: Request) {
   const appBase = (() => {
     if (appUrl) {
       try {
-        const appOrigin = new URL(appUrl);
-        if (appOrigin.hostname === requestUrl.hostname) {
-          return appOrigin.origin.replace(/\/$/, '');
-        }
+        return new URL(appUrl).origin.replace(/\/$/, '');
       } catch {
         // Fall back to request origin when env is invalid.
       }

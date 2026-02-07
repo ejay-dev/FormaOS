@@ -8,9 +8,46 @@ import { Suspense } from 'react';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
 import { Logo } from '@/components/brand/Logo';
 
-const appBase = (
-  process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.formaos.com.au'
-).replace(/\/$/, '');
+const DEFAULT_APP_BASE = 'https://app.formaos.com.au';
+const SESSION_TIMEOUT_MS = 5000;
+const RENDER_APP_BASE = (process.env.NEXT_PUBLIC_APP_URL ?? '').replace(
+  /\/$/,
+  '',
+);
+
+const resolveAppBase = () => {
+  const envBase = (process.env.NEXT_PUBLIC_APP_URL ?? '').replace(/\/$/, '');
+  if (envBase) return envBase;
+  if (typeof window === 'undefined') return DEFAULT_APP_BASE;
+  const origin = window.location.origin.replace(/\/$/, '');
+  const host = window.location.hostname;
+  const isLocalhost =
+    host === 'localhost' ||
+    host.endsWith('.localhost') ||
+    host.startsWith('127.') ||
+    host === '0.0.0.0';
+  if (isLocalhost || host.startsWith('app.')) return origin;
+  return DEFAULT_APP_BASE;
+};
+
+const withTimeout = async <T,>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  label: string,
+) => {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(
+      () => reject(new Error(`${label}_timeout`)),
+      timeoutMs,
+    );
+  });
+  try {
+    return await Promise.race([promise, timeout]);
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId);
+  }
+};
 
 function LoginContent() {
   const searchParams = useSearchParams();
@@ -32,35 +69,38 @@ function LoginContent() {
   const signInWithGoogle = async () => {
     setErrorMessage(null);
     setIsLoading(true);
-    let base = (process.env.NEXT_PUBLIC_APP_URL ?? '').replace(/\/$/, '');
     try {
-      const res = await fetch('/api/debug/env');
-      const json = await res.json();
-      if (json?.env?.appUrl) base = json.env.appUrl.replace(/\/$/, '');
-    } catch {
-      /* silent fallback */
-    }
-    if (!base) base = (window.location.origin ?? '').replace(/\/$/, '');
-    const supabase = createSupabaseClient();
-    // Generate CSRF state
-    const state = Math.random().toString(36).substring(2, 15);
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${base}/auth/callback`,
-        queryParams: { state },
-      },
-    });
-    if (error) {
-      setErrorMessage(error.message ?? 'An unexpected error occurred.');
-      setIsLoading(false);
-      console.error('Google OAuth error:', error);
-      return;
-    }
-    if (data?.url) {
-      window.location.href = data.url;
-    } else {
-      setErrorMessage('No redirect URL returned from Google OAuth.');
+      const base = resolveAppBase();
+      const supabase = createSupabaseClient();
+      // Generate CSRF state
+      const state = Math.random().toString(36).substring(2, 15);
+      const oauthResult = (await withTimeout(
+        supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: `${base}/auth/callback`,
+            queryParams: { state },
+          },
+        }),
+        SESSION_TIMEOUT_MS,
+        'oauth',
+      )) as Awaited<ReturnType<typeof supabase.auth.signInWithOAuth>>;
+      const { data, error } = oauthResult;
+      if (error) {
+        setErrorMessage(error.message ?? 'An unexpected error occurred.');
+        setIsLoading(false);
+        console.error('Google OAuth error:', error);
+        return;
+      }
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        setErrorMessage('No redirect URL returned from Google OAuth.');
+        setIsLoading(false);
+      }
+    } catch (err) {
+      console.error('[Auth] Google OAuth failed:', err);
+      setErrorMessage('Unable to start Google sign in. Please try again.');
       setIsLoading(false);
     }
   };
@@ -71,31 +111,34 @@ function LoginContent() {
     setIsLoading(true);
 
     const supabase = createSupabaseClient();
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      setErrorMessage(error.message ?? 'Invalid email or password.');
-      setIsLoading(false);
-      return;
-    }
-
-    // Redirect to app
     try {
-      const res = await fetch('/api/debug/env');
-      const json = await res.json();
-      const runtimeBase =
-        json?.env?.appUrl ??
-        process.env.NEXT_PUBLIC_APP_URL ??
-        window.location.origin;
-      window.location.href = `${String(runtimeBase).replace(/\/$/, '')}/app`;
-    } catch {
-      const fallback = (
-        process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin
-      ).replace(/\/$/, '');
-      window.location.href = `${fallback}/app`;
+      const base = resolveAppBase();
+      const passwordResult = (await withTimeout(
+        supabase.auth.signInWithPassword({
+          email,
+          password,
+        }),
+        SESSION_TIMEOUT_MS,
+        'password_signin',
+      )) as Awaited<ReturnType<typeof supabase.auth.signInWithPassword>>;
+      const { error } = passwordResult;
+
+      if (error) {
+        setErrorMessage(error.message ?? 'Invalid email or password.');
+        setIsLoading(false);
+        return;
+      }
+
+      window.location.href = `${base}/app`;
+    } catch (err) {
+      if (err instanceof Error && err.message.includes('timeout')) {
+        setErrorMessage(
+          'Having trouble signing you in. Please refresh and try again.',
+        );
+      } else {
+        setErrorMessage('Authentication failed. Please sign in again.');
+      }
+      setIsLoading(false);
     }
   };
 
@@ -245,7 +288,7 @@ function LoginContent() {
               <p className="text-center text-sm text-slate-400">
                 New to FormaOS?{' '}
                 <Link
-                  href={`${appBase}/auth/signup`}
+                  href={`${RENDER_APP_BASE}/auth/signup`}
                   className="font-semibold text-sky-400 hover:text-sky-300 transition-colors"
                 >
                   Start your compliance journey

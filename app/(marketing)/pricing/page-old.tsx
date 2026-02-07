@@ -18,8 +18,10 @@ import {
   PulsingNode,
   ParallaxLayer,
 } from '@/components/motion';
+import { brand } from '@/config/brand';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
+const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 export const metadata: Metadata = {
   title: 'FormaOS | Pricing',
@@ -218,7 +220,9 @@ export default function PricingPage() {
 
                 <Link
                   href={
-                    plan.name === 'Enterprise' ? '/contact' : '/auth/signup'
+                    plan.name === 'Enterprise'
+                      ? '/contact'
+                      : `${appBase}/auth/signup`
                   }
                   className={`w-full block text-center px-4 py-2 rounded-md text-sm font-semibold transition-colors ${
                     plan.popular

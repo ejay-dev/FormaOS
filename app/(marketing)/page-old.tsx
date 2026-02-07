@@ -84,13 +84,13 @@ const pricingPreview = [
     title: "Starter",
     price: "$159 AUD",
     detail: "Core compliance engine for small teams.",
-    href: "/auth/signup?plan=basic",
+    href: `${appBase}/auth/signup?plan=basic`,
   },
   {
     title: "Pro",
     price: "$230 AUD",
     detail: "Advanced reporting and governance controls.",
-    href: "/auth/signup?plan=pro",
+    href: `${appBase}/auth/signup?plan=pro`,
   },
   {
     title: "Enterprise",
