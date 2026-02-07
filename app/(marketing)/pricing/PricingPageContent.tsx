@@ -21,7 +21,6 @@ import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
-
 // ============================================================================
 // HERO SECTION
 // ============================================================================
@@ -197,6 +196,7 @@ const pricingTiers = [
       'Core workflow modeling (Model → Execute → Verify → Prove)',
       'Task management & recurring compliance activities',
       'Evidence storage with version history',
+      '7 framework packs (ISO 27001, SOC 2, GDPR, HIPAA, PCI-DSS, NIST, CIS)',
       'Basic analytics & reporting',
       'Role-based access control (RBAC)',
       'Secure audit logs',
@@ -216,10 +216,10 @@ const pricingTiers = [
       'Designed for teams that must demonstrate compliance consistently and efficiently.',
     starterPlus: true,
     features: [
-      'Advanced analytics & compliance dashboards',
-      'Full audit trail with export (PDF/CSV)',
-      'Evidence versioning & change history',
-      'Workflow automation engine',
+      'Advanced compliance intelligence: scoring, trends, regression alerts',
+      'Full audit trail export (PDF/CSV/ZIP with evidence bundles)',
+      'Evidence versioning with SHA-256 integrity & rollback',
+      'Workflow automation engine (8 triggers, conditional logic)',
       'Multi-organization management',
       'Real-time notifications & activity monitoring',
       'Priority support',
@@ -242,9 +242,10 @@ const pricingTiers = [
     features: [
       'Advanced security controls (SSO, MFA, enterprise access policies)',
       'Organization-wide governance and cross-unit visibility',
-      'Automated risk scoring & regression detection',
+      'AI risk scoring, anomaly detection & regression analysis',
       'Custom reporting & regulatory export frameworks',
-      'API access & system integrations',
+      'REST API v1 with rate limiting & webhook integrations',
+      'Control deduplication across multi-framework mapping',
       'Dedicated onboarding & implementation support',
       'SLA, data residency options, and compliance review assistance',
     ],
@@ -692,8 +693,9 @@ function EnterpriseImplementation() {
             },
             {
               icon: Shield,
-              title: 'Industry Frameworks',
-              description: 'Industry-specific compliance frameworks',
+              title: '7 Framework Packs',
+              description:
+                'ISO 27001, SOC 2, GDPR, HIPAA, PCI-DSS, NIST CSF, CIS Controls (85+ deduplicated controls)',
             },
             {
               icon: Database,

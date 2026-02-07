@@ -101,69 +101,71 @@ const industries = [
 
 const platformArchitecture = {
   'Compliance Engine': [
-    'Framework modeling',
-    'Control libraries',
-    'Risk assessment',
-    'Gap analysis',
+    '7 framework packs (85+ controls)',
+    'Control deduplication & mapping',
+    'AI risk scoring & gap detection',
+    'Real-time evaluation engine',
   ],
-  'Task System': [
-    'Automated reminders',
-    'Assignment routing',
-    'Deadline tracking',
-    'Remediation management',
+  'Automation Layer': [
+    '8 workflow triggers (evidence expiry, control failures, etc.)',
+    'Conditional task generation',
+    'Auto-escalation & notifications',
+    'Scheduled compliance checks',
   ],
   'Evidence Vault': [
-    'Immutable storage',
-    'Approval chains',
-    'Artifact versioning',
-    'Audit trails',
+    'Version control with SHA-256 integrity',
+    'One-click rollback',
+    'Approval workflows',
+    'Auditor export bundles',
   ],
-  'Reporting Engine': [
-    'Executive dashboards',
-    'Audit export bundles',
-    'Posture scoring',
-    'Compliance metrics',
+  'Intelligence Analytics': [
+    'Compliance score trends (14-day history)',
+    'Regression alerts (>10% drop detection)',
+    'Framework health monitoring',
+    'Cross-framework insights',
   ],
 };
 
 const capabilities = [
-  'Evidence version control with rollback & integrity checks',
-  'REST API v1 with rate limiting',
-  'Workflow automation engine',
-  'Incident reporting & investigation',
-  'Asset & risk register management',
-  'Certificate expiry tracking',
-  'Training records management',
-  'Patient/client records (Healthcare)',
-  'Multi-organization support',
-  'Role-based access control (RBAC)',
-  'Immutable audit logs',
-  'Performance monitoring',
+  'Evidence versioning with SHA-256 integrity & rollback',
+  'Automation engine: 8 triggers, 6 action types, conditional workflows',
+  '7 compliance framework packs (ISO 27001, SOC 2, GDPR, HIPAA, PCI-DSS, NIST, CIS)',
+  'Compliance intelligence: scoring, trends, regression alerts',
+  'Control deduplication across multi-framework mapping',
+  'Auditor evidence export ZIP with control context',
+  'REST API v1 with rate limiting & webhooks',
+  'Workflow automation: task generation, escalation, notifications',
+  'Incident reporting & investigation workflows',
+  'Certificate expiry tracking with auto-renewal tasks',
+  'Multi-organization + multi-site hierarchies',
+  'Role-based access control (RBAC) + org isolation',
+  'Immutable audit trail (every action logged)',
+  'Risk scoring & anomaly detection',
 ];
 
 const metrics = [
   {
     icon: ShieldCheck,
-    value: '12+',
+    value: '15+',
     label: 'Core Modules',
     trend: 'neutral' as const,
   },
   {
     icon: Target,
-    value: '6+',
-    label: 'Industry Standards',
+    value: '7',
+    label: 'Framework Packs',
     trend: 'neutral' as const,
   },
   {
     icon: Zap,
-    value: 'Fast',
+    value: '<2min',
     label: 'Audit Export Time',
     trend: 'neutral' as const,
   },
   {
     icon: TrendingUp,
-    value: '100%',
-    label: 'Audit Trail Coverage',
+    value: '85+',
+    label: 'Pre-built Controls',
     trend: 'up' as const,
   },
 ];
@@ -594,9 +596,7 @@ export function HomePageContent() {
                 className="p-6 rounded-xl bg-card/50 border border-border/50 backdrop-blur-sm hover:border-primary/50 transition-colors"
               >
                 <feature.icon className="h-8 w-8 text-primary mb-4" />
-                <h3 className="text-lg font-semibold mb-2">
-                  {feature.title}
-                </h3>
+                <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
                 <p className="text-sm text-muted-foreground">
                   {feature.description}
                 </p>

@@ -52,6 +52,734 @@ import { brand } from '@/config/brand';
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 
+// ============================================
+// ENHANCED MOTION SYSTEMS
+// ============================================
+
+// Process Panel UI for Story Section
+function ProcessPanelUI({ step }: { step: string }) {
+  const stepData = {
+    model: {
+      title: 'Workflow Designer',
+      policy: { value: 'Draft', status: 'editing', color: 'text-yellow-400' },
+      controls: { value: 'Pending', status: 'waiting', color: 'text-gray-400' },
+      evidence: {
+        value: 'Collecting',
+        status: 'active',
+        color: 'text-cyan-400',
+      },
+      status: {
+        value: 'Setup Phase',
+        status: 'progress',
+        color: 'text-blue-400',
+      },
+      progress: 25,
+    },
+    execute: {
+      title: 'Process Engine',
+      policy: { value: 'Active', status: 'live', color: 'text-green-400' },
+      controls: { value: 'Running', status: 'active', color: 'text-blue-400' },
+      evidence: {
+        value: 'Generating',
+        status: 'active',
+        color: 'text-cyan-400',
+      },
+      status: {
+        value: 'Processing',
+        status: 'progress',
+        color: 'text-orange-400',
+      },
+      progress: 60,
+    },
+    verify: {
+      title: 'Verification Hub',
+      policy: { value: 'Active', status: 'live', color: 'text-green-400' },
+      controls: {
+        value: 'Verified',
+        status: 'complete',
+        color: 'text-purple-400',
+      },
+      evidence: {
+        value: 'Complete',
+        status: 'complete',
+        color: 'text-green-400',
+      },
+      status: {
+        value: 'Validating',
+        status: 'progress',
+        color: 'text-purple-400',
+      },
+      progress: 85,
+    },
+    prove: {
+      title: 'Evidence Ledger',
+      policy: { value: 'Locked', status: 'complete', color: 'text-green-400' },
+      controls: {
+        value: 'Verified',
+        status: 'complete',
+        color: 'text-green-400',
+      },
+      evidence: {
+        value: 'Secured',
+        status: 'complete',
+        color: 'text-green-400',
+      },
+      status: { value: 'Ready', status: 'complete', color: 'text-green-400' },
+      progress: 100,
+    },
+  }[step] || {
+    title: 'Process Monitor',
+    policy: { value: 'Active', status: 'live', color: 'text-green-400' },
+    controls: {
+      value: 'Verified',
+      status: 'complete',
+      color: 'text-green-400',
+    },
+    evidence: { value: 'Secured', status: 'complete', color: 'text-green-400' },
+    status: { value: 'Ready', status: 'complete', color: 'text-green-400' },
+    progress: 100,
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'editing':
+        return '✏️';
+      case 'waiting':
+        return '⏳';
+      case 'active':
+        return '🔄';
+      case 'progress':
+        return '⚡';
+      case 'live':
+        return '🟢';
+      case 'complete':
+        return '✅';
+      default:
+        return '📊';
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+      className="absolute inset-4 rounded-2xl border border-white/10 bg-gradient-to-br from-black/60 to-gray-900/60 backdrop-blur-xl p-6 shadow-2xl"
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <motion.h4
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="text-sm font-semibold text-cyan-400 flex items-center gap-2"
+        >
+          <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
+          {stepData.title}
+        </motion.h4>
+        <div className="text-xs text-gray-500">
+          {stepData.progress}% Complete
+        </div>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="mb-6">
+        <div className="w-full bg-gray-800 rounded-full h-1.5">
+          <motion.div
+            className="bg-gradient-to-r from-cyan-400 to-blue-500 h-1.5 rounded-full"
+            initial={{ width: 0 }}
+            animate={{ width: `${stepData.progress}%` }}
+            transition={{ duration: 1, delay: 0.6 }}
+          />
+        </div>
+      </div>
+
+      {/* Status Grid */}
+      <div className="space-y-4">
+        {Object.entries(stepData)
+          .filter(([key]) => !['title', 'progress'].includes(key))
+          .map(([key, data], index) => {
+            const statusData = data as {
+              value: string;
+              status: string;
+              color: string;
+            };
+            return (
+              <motion.div
+                key={key}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.8 + index * 0.1 }}
+                className="flex items-center justify-between group hover:bg-gray-800/30 rounded-lg p-2 -mx-2 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-lg">
+                    {getStatusIcon(statusData.status)}
+                  </span>
+                  <span className="text-gray-300 capitalize text-sm font-medium">
+                    {key}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`text-sm font-semibold ${statusData.color}`}>
+                    {statusData.value}
+                  </span>
+                  {statusData.status === 'active' && (
+                    <div className="w-2 h-2 bg-current rounded-full animate-pulse" />
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
+      </div>
+
+      {/* Footer */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.4 }}
+        className="mt-6 pt-4 border-t border-gray-700/50"
+      >
+        <div className="text-xs text-gray-500 flex items-center justify-between">
+          <span>Last Updated</span>
+          <span className="font-mono">{new Date().toLocaleTimeString()}</span>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// Step-specific animated workflow visualizations
+function StepVisualization({ step }: { step: string }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start center', 'end center'],
+  });
+
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 0.2, 0.8, 1],
+    [0.2, 1, 1, 0.2],
+  );
+  const scale = useTransform(
+    scrollYProgress,
+    [0, 0.2, 0.8, 1],
+    [0.8, 1, 1, 0.8],
+  );
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // High DPI canvas
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = 400 * dpr;
+    canvas.height = 400 * dpr;
+    canvas.style.width = '400px';
+    canvas.style.height = '400px';
+    ctx.scale(dpr, dpr);
+
+    let time = 0;
+    let animationId: number;
+
+    const animate = () => {
+      ctx.clearRect(0, 0, 400, 400);
+
+      // Enhanced glow background
+      const gradient = ctx.createRadialGradient(200, 200, 0, 200, 200, 200);
+      gradient.addColorStop(0, 'rgba(6, 182, 212, 0.1)');
+      gradient.addColorStop(1, 'rgba(6, 182, 212, 0)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 400, 400);
+
+      switch (step) {
+        case 'model':
+          // Enhanced workflow design animation with data flow
+          const modelNodes = [
+            { x: 80, y: 150, label: 'Design' },
+            { x: 200, y: 120, label: 'Validate' },
+            { x: 320, y: 180, label: 'Deploy' },
+            { x: 200, y: 250, label: 'Monitor' },
+          ];
+
+          // Draw data flow background
+          for (let i = 0; i < 20; i++) {
+            const flowX = (time * 0.5 + i * 20) % 400;
+            const flowY = 200 + Math.sin((time + i * 30) * 0.01) * 30;
+            ctx.fillStyle = `rgba(6, 182, 212, ${0.1 + Math.sin(time * 0.01 + i) * 0.1})`;
+            ctx.beginPath();
+            ctx.arc(flowX, flowY, 2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Draw workflow nodes with enhanced animations
+          modelNodes.forEach((node, i) => {
+            const progress = (Math.sin(time * 0.008 + i * 0.8) + 1) / 2;
+            const isActive = (time * 0.01) % 4 < i + 1;
+
+            // Node glow
+            if (isActive) {
+              const glowGradient = ctx.createRadialGradient(
+                node.x,
+                node.y,
+                0,
+                node.x,
+                node.y,
+                25,
+              );
+              glowGradient.addColorStop(0, 'rgba(6, 182, 212, 0.3)');
+              glowGradient.addColorStop(1, 'rgba(6, 182, 212, 0)');
+              ctx.fillStyle = glowGradient;
+              ctx.beginPath();
+              ctx.arc(node.x, node.y, 25, 0, Math.PI * 2);
+              ctx.fill();
+            }
+
+            // Main node
+            ctx.fillStyle = isActive
+              ? `rgba(6, 182, 212, ${0.8 + progress * 0.2})`
+              : 'rgba(156, 163, 175, 0.4)';
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, 12 + progress * 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Node border
+            ctx.strokeStyle = isActive
+              ? 'rgba(6, 182, 212, 1)'
+              : 'rgba(156, 163, 175, 0.6)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, 12 + progress * 3, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Connection lines with animation
+            if (i < modelNodes.length - 1) {
+              const nextNode = modelNodes[i + 1];
+              const connectionProgress = (time * 0.02 + i) % 1;
+
+              ctx.strokeStyle = isActive
+                ? `rgba(6, 182, 212, ${0.6 + Math.sin(time * 0.01) * 0.2})`
+                : 'rgba(156, 163, 175, 0.3)';
+              ctx.lineWidth = isActive ? 3 : 1;
+              ctx.beginPath();
+              ctx.moveTo(node.x, node.y);
+              ctx.lineTo(nextNode.x, nextNode.y);
+              ctx.stroke();
+
+              // Animated data packets
+              if (isActive && connectionProgress > 0.2) {
+                const packetX =
+                  node.x + (nextNode.x - node.x) * connectionProgress;
+                const packetY =
+                  node.y + (nextNode.y - node.y) * connectionProgress;
+                ctx.fillStyle = 'rgba(6, 182, 212, 0.9)';
+                ctx.beginPath();
+                ctx.arc(packetX, packetY, 4, 0, Math.PI * 2);
+                ctx.fill();
+              }
+            }
+          });
+          break;
+
+        case 'execute':
+          // Enhanced process execution animation with progress rings
+          const executeNodes = 8;
+          const executeCenterX = 200;
+          const executeCenterY = 200;
+
+          // Central processing core
+          const coreProgress = (Math.sin(time * 0.01) + 1) / 2;
+          const coreGradient = ctx.createRadialGradient(
+            executeCenterX,
+            executeCenterY,
+            0,
+            executeCenterX,
+            executeCenterY,
+            30,
+          );
+          coreGradient.addColorStop(
+            0,
+            `rgba(59, 130, 246, ${0.6 + coreProgress * 0.4})`,
+          );
+          coreGradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+          ctx.fillStyle = coreGradient;
+          ctx.beginPath();
+          ctx.arc(executeCenterX, executeCenterY, 30, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Progress rings
+          for (let ring = 0; ring < 3; ring++) {
+            const radius = 40 + ring * 25;
+            const ringProgress = (time * 0.005 + ring * 0.3) % 1;
+
+            ctx.strokeStyle = `rgba(59, 130, 246, ${0.4 - ring * 0.1})`;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(
+              executeCenterX,
+              executeCenterY,
+              radius,
+              0,
+              Math.PI * 2 * ringProgress,
+            );
+            ctx.stroke();
+          }
+
+          // Execution nodes with enhanced animation
+          for (let i = 0; i < executeNodes; i++) {
+            const angle = (i / executeNodes) * Math.PI * 2 + time * 0.003;
+            const x = executeCenterX + Math.cos(angle) * 90;
+            const y = executeCenterY + Math.sin(angle) * 90;
+            const activePhase = (time * 0.01 + i * 0.5) % executeNodes;
+            const isActive = Math.abs(activePhase - i) < 1.5;
+            const intensity = isActive ? 1 : 0.2;
+
+            // Node glow effect
+            if (isActive) {
+              const nodeGlow = ctx.createRadialGradient(x, y, 0, x, y, 15);
+              nodeGlow.addColorStop(0, 'rgba(59, 130, 246, 0.6)');
+              nodeGlow.addColorStop(1, 'rgba(59, 130, 246, 0)');
+              ctx.fillStyle = nodeGlow;
+              ctx.beginPath();
+              ctx.arc(x, y, 15, 0, Math.PI * 2);
+              ctx.fill();
+            }
+
+            // Main execution node
+            ctx.fillStyle = `rgba(59, 130, 246, ${intensity * 0.8})`;
+            ctx.beginPath();
+            ctx.arc(x, y, isActive ? 8 : 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Connection to center
+            if (isActive) {
+              ctx.strokeStyle = `rgba(59, 130, 246, ${intensity * 0.6})`;
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.moveTo(x, y);
+              ctx.lineTo(executeCenterX, executeCenterY);
+              ctx.stroke();
+
+              // Data pulse along connection
+              const pulseProgress = (time * 0.02 + i) % 1;
+              const pulseX = x + (executeCenterX - x) * pulseProgress;
+              const pulseY = y + (executeCenterY - y) * pulseProgress;
+              ctx.fillStyle = 'rgba(59, 130, 246, 1)';
+              ctx.beginPath();
+              ctx.arc(pulseX, pulseY, 3, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+          break;
+
+        case 'verify':
+          // Enhanced verification clustering with validation waves
+          const verifyNodes = 8;
+          const verifyCenterX = 200;
+          const verifyCenterY = 200;
+
+          // Verification scanning waves
+          for (let wave = 0; wave < 3; wave++) {
+            const waveRadius = ((time * 0.8 + wave * 30) % 120) + 20;
+            const waveOpacity = Math.max(0, ((120 - waveRadius) / 120) * 0.3);
+
+            ctx.strokeStyle = `rgba(168, 85, 247, ${waveOpacity})`;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(verifyCenterX, verifyCenterY, waveRadius, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+
+          // Verification nodes with clustering behavior
+          for (let i = 0; i < verifyNodes; i++) {
+            const baseAngle = (i / verifyNodes) * Math.PI * 2;
+            const clusterOffset = Math.sin(time * 0.01 + i) * 20;
+            const x =
+              verifyCenterX + Math.cos(baseAngle) * (70 + clusterOffset);
+            const y =
+              verifyCenterY + Math.sin(baseAngle) * (70 + clusterOffset);
+
+            const verificationProgress = (time * 0.03 - i * 0.3) % 1;
+            const isVerified = verificationProgress > 0.5;
+            const verificationStrength = isVerified
+              ? Math.sin((time * 0.02 + i) * Math.PI)
+              : 0;
+
+            // Verification glow
+            if (isVerified && verificationStrength > 0) {
+              const glowIntensity = verificationStrength * 0.4;
+              const verifyGlow = ctx.createRadialGradient(x, y, 0, x, y, 25);
+              verifyGlow.addColorStop(
+                0,
+                `rgba(168, 85, 247, ${glowIntensity})`,
+              );
+              verifyGlow.addColorStop(1, 'rgba(168, 85, 247, 0)');
+              ctx.fillStyle = verifyGlow;
+              ctx.beginPath();
+              ctx.arc(x, y, 25, 0, Math.PI * 2);
+              ctx.fill();
+            }
+
+            // Main verification node
+            ctx.fillStyle = isVerified
+              ? `rgba(168, 85, 247, ${0.7 + verificationStrength * 0.3})`
+              : 'rgba(156, 163, 175, 0.4)';
+            ctx.beginPath();
+            ctx.arc(x, y, isVerified ? 10 : 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Verification checkmark
+            if (isVerified && verificationStrength > 0.3) {
+              ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+              ctx.lineWidth = 2;
+              ctx.lineCap = 'round';
+              ctx.beginPath();
+              ctx.moveTo(x - 4, y);
+              ctx.lineTo(x - 1, y + 3);
+              ctx.lineTo(x + 4, y - 2);
+              ctx.stroke();
+            }
+
+            // Cross-verification connections
+            for (let j = i + 1; j < verifyNodes; j++) {
+              if (Math.abs(i - j) <= 2) {
+                const otherAngle = (j / verifyNodes) * Math.PI * 2;
+                const otherX =
+                  verifyCenterX +
+                  Math.cos(otherAngle) * (70 + Math.sin(time * 0.01 + j) * 20);
+                const otherY =
+                  verifyCenterY +
+                  Math.sin(otherAngle) * (70 + Math.sin(time * 0.01 + j) * 20);
+
+                const connectionStrength = Math.min(
+                  verificationProgress,
+                  (time * 0.03 - j * 0.3) % 1,
+                );
+                if (connectionStrength > 0.3) {
+                  ctx.strokeStyle = `rgba(168, 85, 247, ${connectionStrength * 0.3})`;
+                  ctx.lineWidth = 1;
+                  ctx.beginPath();
+                  ctx.moveTo(x, y);
+                  ctx.lineTo(otherX, otherY);
+                  ctx.stroke();
+                }
+              }
+            }
+          }
+          break;
+
+        case 'prove':
+          // Enhanced evidence chain with blockchain-style validation
+          const evidenceBlocks = 6;
+          const blockWidth = 50;
+          const blockHeight = 35;
+          const startX = 50;
+          const chainY = 200;
+
+          // Background ledger grid
+          ctx.strokeStyle = 'rgba(16, 185, 129, 0.1)';
+          ctx.lineWidth = 1;
+          for (let i = 0; i < 8; i++) {
+            ctx.beginPath();
+            ctx.moveTo(30, 150 + i * 15);
+            ctx.lineTo(370, 150 + i * 15);
+            ctx.stroke();
+          }
+
+          // Evidence chain blocks
+          for (let i = 0; i < evidenceBlocks; i++) {
+            const x = startX + i * (blockWidth + 10);
+            const lockProgress = (time * 0.02 - i * 0.2) % 1;
+            const isLocked = lockProgress > 0.6;
+            const lockStrength = isLocked
+              ? Math.min(1, (lockProgress - 0.6) * 2.5)
+              : 0;
+
+            // Block shadow for depth
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            ctx.fillRect(
+              x - blockWidth / 2 + 2,
+              chainY - blockHeight / 2 + 2,
+              blockWidth,
+              blockHeight,
+            );
+
+            // Main evidence block
+            const blockGradient = ctx.createLinearGradient(
+              x - blockWidth / 2,
+              chainY - blockHeight / 2,
+              x + blockWidth / 2,
+              chainY + blockHeight / 2,
+            );
+            if (isLocked) {
+              blockGradient.addColorStop(
+                0,
+                `rgba(16, 185, 129, ${0.7 + lockStrength * 0.3})`,
+              );
+              blockGradient.addColorStop(
+                1,
+                `rgba(5, 150, 105, ${0.5 + lockStrength * 0.2})`,
+              );
+            } else {
+              blockGradient.addColorStop(0, 'rgba(156, 163, 175, 0.4)');
+              blockGradient.addColorStop(1, 'rgba(107, 114, 128, 0.3)');
+            }
+            ctx.fillStyle = blockGradient;
+            ctx.fillRect(
+              x - blockWidth / 2,
+              chainY - blockHeight / 2,
+              blockWidth,
+              blockHeight,
+            );
+
+            // Block border
+            ctx.strokeStyle = isLocked
+              ? 'rgba(16, 185, 129, 1)'
+              : 'rgba(156, 163, 175, 0.6)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(
+              x - blockWidth / 2,
+              chainY - blockHeight / 2,
+              blockWidth,
+              blockHeight,
+            );
+
+            // Hash visualization inside block
+            if (isLocked) {
+              ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+              ctx.font = '8px monospace';
+              ctx.textAlign = 'center';
+              ctx.fillText(`#${i.toString(16).toUpperCase()}`, x, chainY - 5);
+
+              // Mini hash bars
+              for (let h = 0; h < 3; h++) {
+                const barWidth = Math.random() * 15 + 5;
+                ctx.fillRect(x - barWidth / 2, chainY + 2 + h * 3, barWidth, 2);
+              }
+            }
+
+            // Enhanced lock icon
+            if (isLocked) {
+              const lockY = chainY - blockHeight / 2 - 12;
+
+              // Lock glow
+              const lockGlow = ctx.createRadialGradient(
+                x,
+                lockY,
+                0,
+                x,
+                lockY,
+                8,
+              );
+              lockGlow.addColorStop(0, 'rgba(16, 185, 129, 0.6)');
+              lockGlow.addColorStop(1, 'rgba(16, 185, 129, 0)');
+              ctx.fillStyle = lockGlow;
+              ctx.beginPath();
+              ctx.arc(x, lockY, 8, 0, Math.PI * 2);
+              ctx.fill();
+
+              // Lock body
+              ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+              ctx.fillRect(x - 3, lockY - 1, 6, 4);
+
+              // Lock shackle
+              ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+              ctx.lineWidth = 1.5;
+              ctx.beginPath();
+              ctx.arc(x, lockY - 2, 2.5, Math.PI, 0);
+              ctx.stroke();
+            }
+
+            // Chain connections with hash validation
+            if (i < evidenceBlocks - 1) {
+              const nextX = startX + (i + 1) * (blockWidth + 10);
+              const connectionLocked =
+                isLocked && (time * 0.02 - (i + 1) * 0.2) % 1 > 0.4;
+
+              // Chain link background
+              ctx.strokeStyle = connectionLocked
+                ? 'rgba(16, 185, 129, 0.8)'
+                : 'rgba(156, 163, 175, 0.4)';
+              ctx.lineWidth = 6;
+              ctx.lineCap = 'round';
+              ctx.beginPath();
+              ctx.moveTo(x + blockWidth / 2, chainY);
+              ctx.lineTo(nextX - blockWidth / 2, chainY);
+              ctx.stroke();
+
+              // Chain link highlight
+              ctx.strokeStyle = connectionLocked
+                ? 'rgba(255, 255, 255, 0.3)'
+                : 'rgba(255, 255, 255, 0.1)';
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.moveTo(x + blockWidth / 2, chainY - 1);
+              ctx.lineTo(nextX - blockWidth / 2, chainY - 1);
+              ctx.stroke();
+
+              // Validation pulse
+              if (connectionLocked) {
+                const pulseProgress = (time * 0.03 + i) % 1;
+                const pulseX =
+                  x +
+                  blockWidth / 2 +
+                  (nextX - blockWidth / 2 - (x + blockWidth / 2)) *
+                    pulseProgress;
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.beginPath();
+                ctx.arc(pulseX, chainY, 3, 0, Math.PI * 2);
+                ctx.fill();
+              }
+            }
+          }
+
+          // Cryptographic hash visualization
+          ctx.fillStyle = 'rgba(16, 185, 129, 0.3)';
+          ctx.font = '10px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText('Immutable Evidence Chain', 200, 280);
+          break;
+      }
+
+      time += 1;
+      animationId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+    };
+  }, [step]);
+
+  return (
+    <motion.div
+      ref={containerRef}
+      style={{ opacity, scale }}
+      className="absolute inset-0"
+    >
+      <canvas ref={canvasRef} className="absolute inset-0 opacity-90" />
+
+      {/* Enhanced overlay effects */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1c]/30 via-transparent to-[#0a0f1c]/10" />
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/5 to-transparent" />
+
+      {/* Interactive glow on hover */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-3xl opacity-0"
+        whileHover={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      />
+    </motion.div>
+  );
+}
 
 
 // ============================================

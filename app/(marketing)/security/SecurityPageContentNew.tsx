@@ -25,7 +25,6 @@ import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
-
 // ============================================================================
 // SECURITY PAGE - DESIGN SYNCED WITH HOME/PRODUCT VISUAL SYSTEM
 // ============================================================================
@@ -280,22 +279,22 @@ function SecurityArchitecture() {
   const certifications = [
     {
       name: 'SOC 2-aligned',
-      description: 'Comprehensive security controls',
+      description: 'Security controls mapped to trust principles',
       icon: Shield,
     },
     {
-      name: 'Compliance Scanning',
-      description: 'Framework mapping: SOC 2, ISO, HIPAA, GDPR, NIST, PCI',
+      name: '7 Framework Packs',
+      description: 'ISO 27001, SOC 2, HIPAA, GDPR, PCI-DSS, NIST CSF, CIS',
       icon: Lock,
     },
     {
       name: 'SSO & MFA',
-      description: 'Google OAuth + Enterprise SAML + TOTP',
+      description: 'Google OAuth, Enterprise SAML, TOTP 2FA',
       icon: Fingerprint,
     },
     {
-      name: 'AES 256-bit',
-      description: 'Military-grade encryption',
+      name: 'Evidence Integrity',
+      description: 'SHA-256 checksums detect tampering',
       icon: Key,
     },
   ];

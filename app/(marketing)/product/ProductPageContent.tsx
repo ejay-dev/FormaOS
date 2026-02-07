@@ -31,7 +31,6 @@ import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
-
 // ============================================
 // HERO COMPONENT
 // ============================================
@@ -479,10 +478,10 @@ function OperatingModel() {
       description:
         'Turn requirements into real, trackable execution across teams.',
       features: [
-        'Task automation and scheduling',
-        'Escalation pathways and exception handling',
-        'Due-date enforcement',
-        'Complete activity logging',
+        '8 workflow triggers: evidence expiry, control failures, task overdue, cert expiring, etc.',
+        'Conditional task generation with priority, owners, and due dates',
+        'Auto-escalation rules for critical issues',
+        'Notification routing and audit trail logging',
       ],
       outcome:
         'Compliance becomes part of daily operations, not a quarterly scramble.',
@@ -831,32 +830,32 @@ function ComplianceIntelligence() {
     {
       label: 'Compliance Score Trends',
       description: '14-day historical tracking with sparkline visualization',
-      icon: Activity
+      icon: Activity,
     },
     {
       label: 'Framework Health Monitoring',
       description: 'Per-framework readiness with gap detection',
-      icon: FileCheck
+      icon: FileCheck,
     },
     {
       label: 'Regression Alerts',
       description: 'Automatic detection of >10% score drops',
-      icon: AlertTriangle
+      icon: AlertTriangle,
     },
     {
       label: 'Automation Analytics',
       description: 'Task velocity, completion rates, and trigger history',
-      icon: BarChart3
+      icon: BarChart3,
     },
     {
       label: 'Cross-Framework Insights',
       description: 'Deduplicated control library shows shared requirements',
-      icon: GitBranch
+      icon: GitBranch,
     },
     {
       label: 'Evidence Pack Exports',
       description: 'One-click auditor-ready ZIP bundles with context',
-      icon: Database
+      icon: Database,
     },
   ];
 
@@ -889,7 +888,9 @@ function ComplianceIntelligence() {
             </span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            Built-in analytics engine provides real-time compliance insights, historical trends, and predictive regression alerts—no manual reporting required.
+            Built-in analytics engine provides real-time compliance insights,
+            historical trends, and predictive regression alerts—no manual
+            reporting required.
           </p>
         </motion.div>
 
@@ -908,7 +909,9 @@ function ComplianceIntelligence() {
                 <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-4">
                   <Icon className="w-6 h-6 text-green-400" />
                 </div>
-                <h3 className="text-base font-semibold text-white mb-2">{feature.label}</h3>
+                <h3 className="text-base font-semibold text-white mb-2">
+                  {feature.label}
+                </h3>
                 <p className="text-sm text-gray-400">{feature.description}</p>
               </motion.div>
             );
