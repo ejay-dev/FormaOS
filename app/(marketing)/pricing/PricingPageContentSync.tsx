@@ -283,7 +283,7 @@ const pricingTiers = [
       'Multi-organization management',
       'Real-time activity feed & notifications',
       'Training & asset registers',
-      'Slack & Microsoft Teams integration',
+      'REST API access & integration capabilities',
       'Multi-entity / multi-site support',
       'Priority support',
     ],

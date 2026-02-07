@@ -848,14 +848,24 @@ function ComplianceIntelligence() {
       icon: BarChart3,
     },
     {
-      label: 'Cross-Framework Insights',
-      description: 'Deduplicated control library shows shared requirements',
+      label: 'Master Control Deduplication',
+      description: 'Single source of truth for controls across all frameworks—SOC 2, ISO 27001, HIPAA, NDIS share requirements automatically',
       icon: GitBranch,
     },
     {
-      label: 'Evidence Pack Exports',
-      description: 'One-click auditor-ready ZIP bundles with context',
+      label: 'Historical Compliance Snapshots',
+      description: 'Point-in-time compliance state capture with timeline visualization for audit trails and regression analysis',
       icon: Database,
+    },
+    {
+      label: 'Evidence Intelligence AI Scoring',
+      description: 'Automated quality assessment of evidence with actionable feedback to improve audit readiness',
+      icon: Sparkles,
+    },
+    {
+      label: 'Compliance Gate Enforcement',
+      description: 'Block non-compliant actions before they happen with real-time validation against control requirements',
+      icon: Shield,
     },
   ];
 

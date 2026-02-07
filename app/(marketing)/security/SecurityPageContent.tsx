@@ -131,7 +131,7 @@ function SecurityHero() {
               <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600">
                 <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
                   <CheckCircle2 className="w-3 h-3 text-green-400" />
-                  Zero-Trust Architecture
+                  Zero-trust principles with RBAC
                 </span>
                 <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
                   <CheckCircle2 className="w-3 h-3 text-green-400" />
@@ -486,8 +486,7 @@ export default function SecurityPageContent() {
                       Time-Stamped
                     </h4>
                     <p className="text-sm text-foreground/70 leading-relaxed">
-                      Precision timestamps with blockchain-verified
-                      chronological integrity
+                      Precision timestamps with immutable chronological integrity
                     </p>
                   </motion.div>
 
@@ -513,8 +512,8 @@ export default function SecurityPageContent() {
                       User Attribution
                     </h4>
                     <p className="text-sm text-foreground/70 leading-relaxed">
-                      Cryptographically signed by authenticated user with
-                      non-repudiation guarantees
+                      Authenticated user attribution with secure identity
+                      verification and audit trails
                     </p>
                   </motion.div>
 
@@ -585,21 +584,13 @@ export default function SecurityPageContent() {
                     <h4 className="text-lg font-bold mb-6">
                       Evidence Quality Standards
                     </h4>
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 text-center">
                       <div>
                         <div className="text-2xl font-bold text-gradient mb-1">
-                          100%
+                          Complete
                         </div>
                         <div className="text-xs text-foreground/60">
                           Audit Traceability
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-2xl font-bold text-gradient mb-1">
-                          0
-                        </div>
-                        <div className="text-xs text-foreground/60">
-                          Data Loss Incidents
                         </div>
                       </div>
                       <div>
@@ -612,10 +603,10 @@ export default function SecurityPageContent() {
                       </div>
                       <div>
                         <div className="text-2xl font-bold text-gradient mb-1">
-                          99.99%
+                          Enterprise
                         </div>
                         <div className="text-xs text-foreground/60">
-                          System Uptime
+                          Infrastructure Standards
                         </div>
                       </div>
                     </div>

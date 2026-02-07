@@ -101,9 +101,9 @@ export default function HealthcareUseCasePage() {
                 },
                 {
                   icon: Users,
-                  title: 'Patient Records',
+                  title: 'Patient Records & Progress Notes',
                   description:
-                    'Maintain compliant patient documentation. Progress notes, consent forms, and care plans with complete audit trails.',
+                    'Maintain compliant patient documentation with structured progress notes, consent forms, care plans, and automated retention policies. Complete audit trails for regulatory compliance.',
                 },
                 {
                   icon: AlertCircle,

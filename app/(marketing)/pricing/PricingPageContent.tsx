@@ -216,8 +216,8 @@ const pricingTiers = [
       'Designed for teams that must demonstrate compliance consistently and efficiently.',
     starterPlus: true,
     features: [
-      'Advanced compliance intelligence: scoring, trends, regression alerts',
-      'Full audit trail export (PDF/CSV/ZIP with evidence bundles)',
+      'Compliance score engine with historical snapshots & regression alerts',
+      'Master control deduplication across all frameworks',
       'Evidence versioning with SHA-256 integrity & rollback',
       'Workflow automation engine (8 triggers, conditional logic)',
       'Multi-organization management',
@@ -242,12 +242,12 @@ const pricingTiers = [
     features: [
       'Advanced security controls (SSO, MFA, enterprise access policies)',
       'Organization-wide governance and cross-unit visibility',
-      'AI risk scoring, anomaly detection & regression analysis',
-      'Custom reporting & regulatory export frameworks',
+      'Evidence intelligence AI scoring with quality feedback',
+      'Compliance gate enforcement to prevent non-compliant actions',
       'REST API v1 with rate limiting & webhook integrations',
-      'Control deduplication across multi-framework mapping',
+      'Executive intelligence with AI-generated risk narratives',
       'Dedicated onboarding & implementation support',
-      'SLA, data residency options, and compliance review assistance',
+      'Data residency options and compliance review assistance',
     ],
     useCase:
       'Compliance is mission-critical, audits are frequent, and regulatory defensibility is non-negotiable.',

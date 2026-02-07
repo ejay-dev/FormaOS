@@ -122,7 +122,7 @@ const faqCategories = [
     questions: [
       {
         q: 'Does FormaOS integrate with existing systems?',
-        a: 'FormaOS supports Slack and Microsoft Teams notifications where configured, Google OAuth for authentication, and webhooks/REST APIs to connect with your existing tools. Integration capabilities depend on your plan tier.',
+        a: 'FormaOS provides Google OAuth for authentication and REST API access for authorized customers. Slack and Microsoft Teams integrations are on the roadmap. Integration capabilities depend on your plan tier.',
       },
       {
         q: 'Are APIs available?',
@@ -130,11 +130,11 @@ const faqCategories = [
       },
       {
         q: 'Do you support webhooks?',
-        a: 'Yes. FormaOS supports webhooks for real-time event notifications. You can configure webhooks to trigger on compliance events such as task completion, evidence submission, control verification, or audit trail entries.',
+        a: 'Webhook support for real-time event notifications is in development. Contact our team to discuss webhook requirements and early access options.',
       },
       {
         q: 'Can FormaOS connect to our existing systems?',
-        a: 'FormaOS provides integration-ready workflows with Slack/Teams notifications and webhook/REST API capabilities to connect HR, CRM, or other systems. Enterprise customers can request dedicated integration support.',
+        a: 'FormaOS provides REST API capabilities to connect with HR, CRM, and other systems. Slack and Teams integrations are on the roadmap. Enterprise customers can request dedicated integration support.',
       },
     ],
   },

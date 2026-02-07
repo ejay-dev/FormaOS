@@ -814,9 +814,9 @@ export default function IndustriesPageContent() {
                   Ready for NDIS audits from day one
                 </h3>
                 <p className="text-foreground/80 mb-6">
-                  Our NDIS framework comes with 200+ pre-built controls,
+                  Our NDIS framework comes with comprehensive pre-built controls,
                   evidence templates, and workflow automation that maps directly
-                  to NDIA requirements.
+                  to NDIA requirements, including patient management and progress notes.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Link

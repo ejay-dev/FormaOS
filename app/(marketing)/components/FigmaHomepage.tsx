@@ -140,17 +140,17 @@ function Hero() {
       {/* Floating Metrics - Left Side */}
       <div className="absolute left-8 lg:left-16 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6 z-20">
         <FloatingMetricCard
-          value="99.7%"
-          label="Compliance Rate"
-          trend="+12%"
+          value="Real-time"
+          label="Compliance Monitoring"
+          trend="Continuous"
           icon={ShieldCheck}
           delay={0.8}
           direction="left"
         />
         <FloatingMetricCard
-          value="2.4M"
-          label="Evidence Records"
-          trend="+45%"
+          value="Automated"
+          label="Evidence Capture"
+          trend="Built-in"
           icon={Database}
           delay={1.0}
           direction="left"
@@ -160,17 +160,17 @@ function Hero() {
       {/* Floating Metrics - Right Side */}
       <div className="absolute right-8 lg:right-16 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6 z-20">
         <FloatingMetricCard
-          value="-73%"
-          label="Audit Time"
-          trend="Reduced"
+          value="Faster"
+          label="Audit Defense"
+          trend="Streamlined"
           icon={Clock}
           delay={1.2}
           direction="right"
         />
         <FloatingMetricCard
-          value="24/7"
-          label="Monitoring"
-          trend="Always On"
+          value="Always-on"
+          label="Activity Tracking"
+          trend="Continuous"
           icon={Eye}
           delay={1.4}
           direction="right"
@@ -285,14 +285,10 @@ function Hero() {
             transition={{ duration: 0.8, delay: 0.9 }}
             className="xl:hidden grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-lg"
           >
-            <ProofMetric value="99.7%" label="Compliance" />
-            <ProofMetric value="2.4M" label="Records" />
-            <ProofMetric value="-73%" label="Audit Time" />
+            <ProofMetric value="Real-time" label="Compliance" />
+            <ProofMetric value="Automated" label="Evidence" />
+            <ProofMetric value="Faster" label="Audits" />
           </motion.div>
-          <p className="text-xs text-gray-500 mt-4 text-center max-w-md mx-auto">
-            * Metrics represent typical platform capabilities. Actual results
-            vary by organization size and use case.
-          </p>
         </div>
       </div>
 
@@ -747,9 +743,9 @@ const capabilities = [
   },
   {
     icon: Lock,
-    title: 'Intelligence Analytics',
+    title: 'Compliance Score Engine',
     description:
-      'Compliance score trends, regression alerts, framework health monitoring, and predictive gap detection.',
+      'Real-time scoring across all frameworks with historical snapshots, regression alerts, and point-in-time audit state capture.',
     color: 'from-purple-500 to-pink-500',
   },
   {
@@ -761,16 +757,16 @@ const capabilities = [
   },
   {
     icon: Layers,
-    title: 'Control Deduplication',
+    title: 'Master Control Deduplication',
     description:
-      'Master control library maps shared requirements across frameworks. Implement once, satisfy multiple standards.',
+      'Single source of truth for controls across frameworks. SOC 2, ISO 27001, HIPAA, NDIS share requirements—implement once, satisfy all.',
     color: 'from-rose-500 to-orange-500',
   },
   {
     icon: Terminal,
-    title: 'Auditor Export System',
+    title: 'Evidence Intelligence AI',
     description:
-      'One-click evidence ZIP bundles with control mappings, evaluation context, and compliance snapshots.',
+      'Automated quality scoring of evidence with actionable feedback. Identifies gaps before auditors do.',
     color: 'from-orange-500 to-yellow-500',
   },
   {
@@ -1025,7 +1021,7 @@ const industrySolutions: IndustrySolution[] = [
       title: 'FormaOS Healthcare Module',
       features: [
         'Patient records with automated retention and access controls',
-        'Clinical incident reporting with severity-based routing',
+        'Clinical incident reporting with severity-based routing (Early Access)',
         'Staff credential tracking with expiry alerts',
         'Audit-ready evidence bundles generated in seconds',
       ],
@@ -1039,7 +1035,7 @@ const industrySolutions: IndustrySolution[] = [
       },
       {
         icon: FileText,
-        title: 'Incident Management',
+        title: 'Incident Management (Early Access)',
         description:
           'Category-based incident capture, investigation workflows, and regulatory notification tracking',
       },
@@ -1463,14 +1459,14 @@ function HealthcareHighlight() {
     {
       title: 'Patient Management',
       features: [
-        'Complete patient profiles with risk levels',
-        'Care episode tracking',
-        'Clinical governance integration',
-        'HIPAA-compliant data handling',
+        'Complete patient profiles with risk assessment',
+        'Progress notes with audit trails and retention policies',
+        'Care episode tracking and clinical governance',
+        'HIPAA-compliant data handling with automated workflows',
       ],
     },
     {
-      title: 'Incident Reporting',
+      title: 'Incident Reporting (Early Access)',
       features: [
         'NDIS incident categorization',
         'Severity-based routing',

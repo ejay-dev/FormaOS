@@ -220,8 +220,8 @@ export function ComplianceIntelligenceSummary() {
             <Sparkles className="h-5 w-5 text-purple-400" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-white">Compliance Intelligence</h3>
-            <p className="text-xs text-gray-400">Analytics powered by automation</p>
+            <h3 className="text-lg font-semibold text-white">Executive Intelligence Dashboard</h3>
+            <p className="text-xs text-gray-400">AI-powered compliance analytics and risk insights</p>
           </div>
         </div>
       </div>
@@ -330,14 +330,14 @@ export function ComplianceIntelligenceSummary() {
         </div>
       )}
 
-      {/* Data-Driven Insight */}
+      {/* Executive Intelligence Narrative */}
       <div className="mt-4 rounded-xl border border-purple-500/20 bg-gradient-to-r from-purple-500/10 to-blue-500/10 p-4">
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0">
             <Sparkles className="h-5 w-5 text-purple-400" />
           </div>
           <div>
-            <h4 className="mb-1 text-sm font-semibold text-white">Insight</h4>
+            <h4 className="mb-1 text-sm font-semibold text-white">AI Risk Narrative</h4>
             <p className="text-sm leading-relaxed text-gray-300">
               {(() => {
                 const insights: string[] = [];
