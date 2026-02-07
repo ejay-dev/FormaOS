@@ -48,8 +48,68 @@ import { ComplianceProvider, useCompliance } from './webgl/useComplianceState';
 import WebGLNodeField from './webgl/NodeField';
 import CinematicField from './motion/CinematicField';
 import { brand } from '@/config/brand';
+import { ScrollShowcase } from '@/components/marketing/ScrollShowcase';
+import type { ScrollScene } from '@/components/marketing/ScrollShowcase';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
+// =============================================================================
+// SCROLL SHOWCASE SCENE DATA
+// =============================================================================
+
+const showcaseScenes: ScrollScene[] = [
+  {
+    id: 'dashboard',
+    title: 'Command Center Overview',
+    description:
+      'Your compliance posture at a glance. Real-time scores, active tasks, and framework health — all in one unified dashboard.',
+    media: {
+      type: 'image',
+      src: '/marketing/screenshots/dashboard.png',
+      alt: 'FormaOS Dashboard showing compliance overview',
+    },
+    accentColor: 'from-cyan-400 to-blue-500',
+    features: [
+      'Real-time compliance scoring',
+      'Framework health indicators',
+      'Priority task queue',
+    ],
+  },
+  {
+    id: 'tasks',
+    title: 'Task Orchestration',
+    description:
+      'Every control has an owner. Every deadline has accountability. The OS ensures nothing falls through the cracks.',
+    media: {
+      type: 'image',
+      src: '/marketing/screenshots/tasks.png',
+      alt: 'FormaOS Task management interface',
+    },
+    accentColor: 'from-blue-500 to-purple-500',
+    features: [
+      'Automated task assignment',
+      'Deadline tracking with escalation',
+      'Immutable completion logs',
+    ],
+  },
+  {
+    id: 'vault',
+    title: 'Evidence Vault',
+    description:
+      'Audit-ready evidence, always. Every document timestamped, every chain of custody preserved, every export defensible.',
+    media: {
+      type: 'image',
+      src: '/marketing/screenshots/vault.png',
+      alt: 'FormaOS Evidence Vault with document management',
+    },
+    accentColor: 'from-purple-500 to-pink-500',
+    features: [
+      'Immutable audit trail',
+      'Chain-of-custody tracking',
+      'One-click regulatory export',
+    ],
+  },
+];
 
 // ============================================
 // HERO ENHANCEMENT COMPONENTS
@@ -2710,6 +2770,12 @@ export default function FormaOSHomepage() {
           <div className="relative z-10">
             <Hero />
             <ValueProposition />
+            <ScrollShowcase
+              scenes={showcaseScenes}
+              badge="Product Tour"
+              sectionTitle="See FormaOS in Action"
+              sectionSubtitle="Scroll through the key capabilities that make compliance operational, not aspirational."
+            />
             <ScrollStory />
             <CapabilitiesGrid />
             <VersionControlHighlight />

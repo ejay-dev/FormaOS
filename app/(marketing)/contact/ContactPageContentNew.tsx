@@ -12,12 +12,10 @@ import {
   Building2,
 } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { VisualDivider } from '@/components/motion';
 import CinematicField from '../components/motion/CinematicField';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
-
 
 // ============================================================================
 // HERO SECTION
@@ -630,15 +628,10 @@ export default function ContactPageContent({
   return (
     <div className="relative">
       <ContactHero />
-      <VisualDivider />
       <ContactInformation />
-      <VisualDivider />
       <ContactForm submitAction={submitAction} searchParams={searchParams} />
-      <VisualDivider />
       <EnterpriseInquiries />
-      <VisualDivider />
       <SecurityTrust />
-      <VisualDivider />
       <ClosingCTA />
     </div>
   );

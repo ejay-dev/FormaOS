@@ -4,39 +4,88 @@
  */
 
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import type {
-  TriggerEvent,
-  AutomationResult,
-} from '@/lib/automation/trigger-engine';
+import type { TriggerEvent } from '@/lib/automation/trigger-engine';
+import type { Mock } from 'jest-mock';
 
-// Mock Supabase admin client
+// =============================================================================
+// Type definitions for Supabase mocks
+// =============================================================================
+
+/** Successful Supabase response */
+type SupabaseOk<T> = { data: T; error: null };
+
+/** Failed Supabase response */
+type SupabaseErr = { data: null; error: Error };
+
+/** Union of success/failure for Supabase calls */
+type SupabaseResponse<T> = SupabaseOk<T> | SupabaseErr;
+
+/** Generic organization data shape */
+interface OrgData {
+  industry?: string;
+  name?: string;
+  user_id?: string;
+}
+
+/** Mock insert data with optional type field for notifications */
+interface MockInsertData {
+  type?: string;
+  [key: string]: unknown;
+}
+
+/** Supabase select chain return type */
+interface SelectChain<T> {
+  eq: (column: string, value: string) => {
+    single: () => Promise<SupabaseResponse<T>>;
+  };
+}
+
+// UpdateChain intentionally not defined - using inline types where needed
+
+// =============================================================================
+// Mock functions - use simple jest.fn() and cast when needed
+// =============================================================================
+
 const mockSupabaseInsert = jest.fn();
 const mockSupabaseSelect = jest.fn();
 const mockSupabaseUpdate = jest.fn();
 
-jest.mock('@/lib/supabase/admin', () => ({
-  createSupabaseAdminClient: jest.fn(() => ({
-    from: jest.fn((_table: string) => ({
-      insert: mockSupabaseInsert.mockReturnValue({ error: null }),
-      select: mockSupabaseSelect.mockReturnValue({
-        eq: jest.fn().mockReturnValue({
-          single: jest.fn().mockResolvedValue({ data: null, error: null }),
-        }),
-      }),
-      update: mockSupabaseUpdate.mockReturnValue({
-        eq: jest.fn().mockResolvedValue({ error: null }),
-      }),
+// =============================================================================
+// Module mocks
+// =============================================================================
+
+jest.mock('@/lib/supabase/admin', () => {
+  return {
+    createSupabaseAdminClient: jest.fn(() => ({
+      from: jest.fn((_table: string) => ({
+        insert: mockSupabaseInsert.mockImplementation(() => ({
+          error: null,
+          data: null,
+        })),
+        select: mockSupabaseSelect.mockImplementation(() => ({
+          eq: jest.fn(() => ({
+            single: jest.fn(() => Promise.resolve({ data: null, error: null })),
+          })),
+        })),
+        update: mockSupabaseUpdate.mockImplementation(() => ({
+          eq: jest.fn(() => Promise.resolve({ error: null, data: null })),
+        })),
+      })),
     })),
-  })),
-}));
+  };
+});
 
 // Mock compliance score engine
+const mockComplianceScoreResult = {
+  score: 75,
+  controlsComplete: 10,
+  controlsTotal: 20,
+};
+
 jest.mock('@/lib/automation/compliance-score-engine', () => ({
-  updateComplianceScore: jest.fn().mockResolvedValue({
-    score: 75,
-    controlsComplete: 10,
-    controlsTotal: 20,
-  }),
+  updateComplianceScore: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve(mockComplianceScoreResult)),
 }));
 
 // Mock automation logger
@@ -47,6 +96,27 @@ jest.mock('@/lib/observability/structured-logger', () => ({
     error: jest.fn(),
   },
 }));
+
+// =============================================================================
+// Helper to create typed select mock return value
+// =============================================================================
+
+function createSelectMock(data: OrgData): SelectChain<OrgData> {
+  return {
+    eq: jest.fn(() => ({
+      single: jest.fn(() =>
+        Promise.resolve({
+          data,
+          error: null,
+        } satisfies SupabaseOk<OrgData>),
+      ),
+    })),
+  };
+}
+
+// =============================================================================
+// Tests
+// =============================================================================
 
 describe('Automation Triggers - Onboarding', () => {
   const mockOrgId = 'test-org-123';
@@ -69,14 +139,9 @@ describe('Automation Triggers - Onboarding', () => {
         triggeredAt: new Date(),
       };
 
-      mockSupabaseSelect.mockReturnValueOnce({
-        eq: jest.fn().mockReturnValue({
-          single: jest.fn().mockResolvedValue({
-            data: { industry: 'ndis' },
-            error: null,
-          }),
-        }),
-      });
+      mockSupabaseSelect.mockReturnValueOnce(
+        createSelectMock({ industry: 'ndis' }),
+      );
 
       const result = await processTrigger(event);
 
@@ -90,14 +155,9 @@ describe('Automation Triggers - Onboarding', () => {
       const { updateComplianceScore } =
         await import('@/lib/automation/compliance-score-engine');
 
-      mockSupabaseSelect.mockReturnValueOnce({
-        eq: jest.fn().mockReturnValue({
-          single: jest.fn().mockResolvedValue({
-            data: { industry: 'other' },
-            error: null,
-          }),
-        }),
-      });
+      mockSupabaseSelect.mockReturnValueOnce(
+        createSelectMock({ industry: 'other' }),
+      );
 
       const event: TriggerEvent = {
         type: 'industry_configured',
@@ -145,14 +205,9 @@ describe('Automation Triggers - Onboarding', () => {
         triggeredAt: new Date(),
       };
 
-      mockSupabaseSelect.mockReturnValueOnce({
-        eq: jest.fn().mockReturnValue({
-          single: jest.fn().mockResolvedValue({
-            data: { user_id: 'owner-123' },
-            error: null,
-          }),
-        }),
-      });
+      mockSupabaseSelect.mockReturnValueOnce(
+        createSelectMock({ user_id: 'owner-123' }),
+      );
 
       await processTrigger(event);
 
@@ -163,14 +218,9 @@ describe('Automation Triggers - Onboarding', () => {
       const { processTrigger } =
         await import('@/lib/automation/trigger-engine');
 
-      mockSupabaseSelect.mockReturnValueOnce({
-        eq: jest.fn().mockReturnValue({
-          single: jest.fn().mockResolvedValue({
-            data: { user_id: 'owner-123' },
-            error: null,
-          }),
-        }),
-      });
+      mockSupabaseSelect.mockReturnValueOnce(
+        createSelectMock({ user_id: 'owner-123' }),
+      );
 
       const event: TriggerEvent = {
         type: 'frameworks_provisioned',
@@ -202,14 +252,9 @@ describe('Automation Triggers - Onboarding', () => {
         triggeredAt: new Date(),
       };
 
-      mockSupabaseSelect.mockReturnValueOnce({
-        eq: jest.fn().mockReturnValue({
-          single: jest.fn().mockResolvedValue({
-            data: { user_id: 'owner-123' },
-            error: null,
-          }),
-        }),
-      });
+      mockSupabaseSelect.mockReturnValueOnce(
+        createSelectMock({ user_id: 'owner-123' }),
+      );
 
       await processTrigger(event);
 
@@ -220,14 +265,9 @@ describe('Automation Triggers - Onboarding', () => {
       const { processTrigger } =
         await import('@/lib/automation/trigger-engine');
 
-      mockSupabaseSelect.mockReturnValueOnce({
-        eq: jest.fn().mockReturnValue({
-          single: jest.fn().mockResolvedValue({
-            data: { user_id: 'owner-123' },
-            error: null,
-          }),
-        }),
-      });
+      mockSupabaseSelect.mockReturnValueOnce(
+        createSelectMock({ user_id: 'owner-123' }),
+      );
 
       const event: TriggerEvent = {
         type: 'industry_pack_applied',
@@ -292,23 +332,13 @@ describe('Automation Triggers - Onboarding', () => {
       const { processTrigger } =
         await import('@/lib/automation/trigger-engine');
 
-      mockSupabaseSelect.mockReturnValueOnce({
-        eq: jest.fn().mockReturnValue({
-          single: jest.fn().mockResolvedValue({
-            data: { industry: 'ndis', name: 'Test Org' },
-            error: null,
-          }),
-        }),
-      });
+      mockSupabaseSelect.mockReturnValueOnce(
+        createSelectMock({ industry: 'ndis', name: 'Test Org' }),
+      );
 
-      mockSupabaseSelect.mockReturnValueOnce({
-        eq: jest.fn().mockReturnValue({
-          single: jest.fn().mockResolvedValue({
-            data: { user_id: 'owner-123' },
-            error: null,
-          }),
-        }),
-      });
+      mockSupabaseSelect.mockReturnValueOnce(
+        createSelectMock({ user_id: 'owner-123' }),
+      );
 
       const event: TriggerEvent = {
         type: 'org_onboarding',
@@ -326,28 +356,15 @@ describe('Automation Triggers - Onboarding', () => {
       const { processTrigger } =
         await import('@/lib/automation/trigger-engine');
 
-      mockSupabaseSelect.mockReturnValueOnce({
-        eq: jest.fn().mockReturnValue({
-          single: jest.fn().mockResolvedValue({
-            data: { industry: 'healthcare', name: 'Health Org' },
-            error: null,
-          }),
-        }),
-      });
+      mockSupabaseSelect.mockReturnValueOnce(
+        createSelectMock({ industry: 'healthcare', name: 'Health Org' }),
+      );
 
-      mockSupabaseSelect.mockReturnValueOnce({
-        eq: jest.fn().mockReturnValue({
-          single: jest.fn().mockResolvedValue({
-            data: { user_id: 'owner-456' },
-            error: null,
-          }),
-        }),
-      });
+      mockSupabaseSelect.mockReturnValueOnce(
+        createSelectMock({ user_id: 'owner-456' }),
+      );
 
-      const mockNotificationInsert = jest
-        .fn()
-        .mockResolvedValue({ error: null });
-      mockSupabaseInsert.mockReturnValue(mockNotificationInsert);
+      mockSupabaseInsert.mockReturnValue({ error: null, data: null });
 
       const event: TriggerEvent = {
         type: 'org_onboarding',
@@ -357,10 +374,18 @@ describe('Automation Triggers - Onboarding', () => {
 
       await processTrigger(event);
 
-      // Check that notification includes industry
-      const notificationCall = mockSupabaseInsert.mock.calls.find(
-        (call) => call[0]?.type === 'ONBOARDING_STARTED',
-      );
+      // Check that notification includes industry by looking at insert calls
+      const typedMock = mockSupabaseInsert as Mock<
+        (data: MockInsertData | MockInsertData[]) => SupabaseResponse<null>
+      >;
+      const calls = typedMock.mock.calls;
+      const notificationCall = calls.find((call) => {
+        const arg = call[0];
+        if (arg && typeof arg === 'object' && !Array.isArray(arg)) {
+          return (arg as MockInsertData).type === 'ONBOARDING_STARTED';
+        }
+        return false;
+      });
 
       expect(notificationCall).toBeDefined();
     });
@@ -458,14 +483,9 @@ describe('Trigger Chain and Compliance Scoring', () => {
       onIndustryPackApplied,
     } = await import('@/lib/automation/integration');
 
-    mockSupabaseSelect.mockReturnValue({
-      eq: jest.fn().mockReturnValue({
-        single: jest.fn().mockResolvedValue({
-          data: { industry: 'ndis', user_id: 'owner-123' },
-          error: null,
-        }),
-      }),
-    });
+    mockSupabaseSelect.mockReturnValue(
+      createSelectMock({ industry: 'ndis', user_id: 'owner-123' }),
+    );
 
     // Industry configured
     await onIndustryConfigured(mockOrgId, 'ndis');
