@@ -12,7 +12,13 @@ export default function CinematicField() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas size
+    // Respect prefers-reduced-motion
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (motionQuery.matches) return;
+
+    let animationId: number;
+    let isVisible = true;
+
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -21,17 +27,24 @@ export default function CinematicField() {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    const particles = Array.from({ length: 200 }, () => ({
+    // Reduced particle count for better performance (was 200)
+    const particles = Array.from({ length: 80 }, () => ({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
-      z: Math.random() * 1,
+      z: Math.random(),
       speed: Math.random() * 0.2 + 0.05,
     }));
 
     const animate = () => {
+      if (!isVisible) {
+        animationId = requestAnimationFrame(animate);
+        return;
+      }
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      particles.forEach((p) => {
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
         p.y += p.speed * (1 + p.z * 2);
         if (p.y > canvas.height) {
           p.y = 0;
@@ -42,15 +55,23 @@ export default function CinematicField() {
         ctx.arc(p.x, p.y, 1.2 + p.z * 2, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(6,182,212,${0.15 + p.z * 0.3})`;
         ctx.fill();
-      });
+      }
 
-      requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
     };
+
+    // Pause when tab is not visible
+    const handleVisibility = () => {
+      isVisible = document.visibilityState === 'visible';
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
 
     animate();
 
     return () => {
+      cancelAnimationFrame(animationId);
       window.removeEventListener('resize', resizeCanvas);
+      document.removeEventListener('visibilitychange', handleVisibility);
     };
   }, []);
 

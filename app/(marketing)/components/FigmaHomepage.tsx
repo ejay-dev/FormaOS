@@ -45,8 +45,17 @@ import {
 // Motion System Imports
 import { MotionProvider } from './motion/MotionContext';
 import { ComplianceProvider, useCompliance } from './webgl/useComplianceState';
-import WebGLNodeField from './webgl/NodeField';
-import CinematicField from './motion/CinematicField';
+import dynamic from 'next/dynamic';
+
+// Lazy-load heavy rendering components (Three.js ~800KB, Canvas animations)
+const WebGLNodeField = dynamic(() => import('./webgl/NodeField'), {
+  ssr: false,
+  loading: () => null,
+});
+const CinematicField = dynamic(() => import('./motion/CinematicField'), {
+  ssr: false,
+  loading: () => null,
+});
 import { brand } from '@/config/brand';
 import { ScrollShowcase } from '@/components/marketing/ScrollShowcase';
 import type { ScrollScene } from '@/components/marketing/ScrollShowcase';

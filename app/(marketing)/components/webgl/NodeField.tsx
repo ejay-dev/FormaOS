@@ -1,18 +1,18 @@
 'use client';
 
 import * as THREE from 'three';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useEffect, useState } from 'react';
 import { ComplianceState } from './useComplianceState';
 
-function NodeSystem({ state }: { state: ComplianceState }) {
+function NodeSystem({ state, paused }: { state: ComplianceState; paused: boolean }) {
   const ref = useRef<THREE.Points>(null!);
   const mouse = useRef({ x: 0, y: 0 });
 
-  const nodeCount = 2500;
+  // Reduced from 2500 to 800 for much better performance
+  const nodeCount = 800;
 
-  // Node attributes (GPU buffers)
   const positions = useMemo(() => {
     const arr = new Float32Array(nodeCount * 3);
     for (let i = 0; i < nodeCount; i++) {
@@ -34,7 +34,7 @@ function NodeSystem({ state }: { state: ComplianceState }) {
   }, []);
 
   useFrame(({ pointer, camera }) => {
-    if (!ref.current?.geometry?.attributes?.position) return;
+    if (paused || !ref.current?.geometry?.attributes?.position) return;
 
     mouse.current.x = pointer.x * 10;
     mouse.current.y = pointer.y * 10;
@@ -44,7 +44,6 @@ function NodeSystem({ state }: { state: ComplianceState }) {
     for (let i = 0; i < nodeCount; i++) {
       const i3 = i * 3;
 
-      // Cursor repulsion physics
       const dx = pos[i3] - mouse.current.x;
       const dy = pos[i3 + 1] - mouse.current.y;
       const dz = pos[i3 + 2];
@@ -55,7 +54,6 @@ function NodeSystem({ state }: { state: ComplianceState }) {
         pos[i3 + 1] += dy * 0.03;
       }
 
-      // Chemistry: state-based motion
       switch (state) {
         case 'model':
           velocities[i3 + 1] += Math.sin(Date.now() * 0.0002) * 0.0005;
@@ -74,29 +72,11 @@ function NodeSystem({ state }: { state: ComplianceState }) {
           break;
       }
 
-      // Apply velocity
       pos[i3] += velocities[i3];
       pos[i3 + 1] += velocities[i3 + 1];
       pos[i3 + 2] += velocities[i3 + 2];
-
-      // Node bonding for 'prove' state
-      if (state === 'prove') {
-        for (let j = i + 1; j < nodeCount; j += 40) {
-          const j3 = j * 3;
-          const dx = pos[j3] - pos[i3];
-          const dy = pos[j3 + 1] - pos[i3 + 1];
-          const dz = pos[j3 + 2] - pos[i3 + 2];
-          const d = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
-          if (d < 1.2) {
-            pos[i3] += dx * 0.002;
-            pos[i3 + 1] += dy * 0.002;
-          }
-        }
-      }
     }
 
-    // Physics-reactive cursor glow
     camera.position.x += (mouse.current.x * 0.03 - camera.position.x) * 0.02;
     camera.position.y += (mouse.current.y * 0.03 - camera.position.y) * 0.02;
 
@@ -124,21 +104,40 @@ function NodeSystem({ state }: { state: ComplianceState }) {
 }
 
 export default function WebGLNodeField({ state }: { state: ComplianceState }) {
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    // Respect prefers-reduced-motion
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (motionQuery.matches) {
+      setPaused(true);
+      return;
+    }
+
+    // Pause when tab is not visible
+    const handleVisibility = () => {
+      setPaused(document.visibilityState !== 'visible');
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, []);
+
   return (
     <Canvas
       gl={{
-        antialias: true,
+        antialias: false,
         powerPreference: 'high-performance',
         alpha: true,
         stencil: false,
         depth: false,
       }}
       camera={{ position: [0, 0, 18], fov: 60 }}
-      dpr={[1, 1.5]}
+      dpr={[1, 1]}
+      frameloop={paused ? 'never' : 'always'}
       style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
     >
       <ambientLight intensity={0.5} />
-      <NodeSystem state={state} />
+      <NodeSystem state={state} paused={paused} />
     </Canvas>
   );
 }

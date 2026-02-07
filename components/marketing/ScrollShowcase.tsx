@@ -1,13 +1,13 @@
 /**
- * ScrollShowcase - Ready.so-style scroll storytelling component
- * Features sticky media column with scroll-driven animations
+ * ScrollShowcase - Premium product tour section
+ * Dense layout with primary + secondary screenshots, scene tabs, feature strip
  */
 
 'use client';
 
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import Image from 'next/image';
-import { useRef, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { easing, duration, depth, radius } from '@/config/motion';
 
 // =============================================================================
@@ -40,333 +40,232 @@ interface ScrollShowcaseProps {
 // =============================================================================
 
 const mediaTransition = {
-  duration: duration.slow,
+  duration: duration.normal,
   ease: easing.signature,
-};
-
-const sceneContentVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: duration.slow,
-      ease: easing.signature,
-    },
-  },
 };
 
 // =============================================================================
 // Sub-components
 // =============================================================================
 
-function SectionHeader({
-  badge,
-  title,
-  subtitle,
-}: {
-  badge?: string;
-  title?: string;
-  subtitle?: string;
-}) {
-  if (!title && !subtitle && !badge) return null;
-
-  return (
-    <div className="text-center mb-16 md:mb-20 px-6">
-      {badge && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: duration.normal, ease: easing.signature }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.05] border border-white/[0.08] mb-6"
-        >
-          <span className="text-sm font-medium text-cyan-400">{badge}</span>
-        </motion.div>
-      )}
-      {title && (
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{
-            duration: duration.slow,
-            ease: easing.signature,
-            delay: 0.1,
-          }}
-          className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4"
-        >
-          {title}
-        </motion.h2>
-      )}
-      {subtitle && (
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{
-            duration: duration.slow,
-            ease: easing.signature,
-            delay: 0.2,
-          }}
-          className="text-lg text-slate-400 max-w-2xl mx-auto"
-        >
-          {subtitle}
-        </motion.p>
-      )}
-    </div>
-  );
-}
-
-function SceneContent({
+function SceneTab({
   scene,
   index,
   isActive,
-  onInView,
+  onClick,
 }: {
   scene: ScrollScene;
   index: number;
   isActive: boolean;
-  onInView: (index: number) => void;
+  onClick: () => void;
 }) {
   return (
-    <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
-      variants={sceneContentVariants}
-      onViewportEnter={() => onInView(index)}
-      className="min-h-[60vh] flex flex-col justify-center"
+    <button
+      onClick={onClick}
+      className={`group w-full text-left p-4 rounded-xl border transition-all duration-300 ${
+        isActive
+          ? `${depth.glass.strong} border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.08)]`
+          : 'bg-transparent border-white/[0.05] hover:border-white/[0.12] hover:bg-white/[0.02]'
+      }`}
     >
-      {/* Scene number indicator */}
-      <div className="flex items-center gap-3 mb-4">
+      <div className="flex items-start gap-3">
         <div
-          className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors duration-300 ${
+          className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0 mt-0.5 transition-colors duration-300 ${
             isActive
               ? 'bg-cyan-500 text-white'
-              : 'bg-white/[0.05] text-slate-500'
+              : 'bg-white/[0.06] text-slate-500 group-hover:text-slate-400'
           }`}
         >
           {index + 1}
         </div>
-        <div
-          className={`h-px flex-1 max-w-16 transition-colors duration-300 ${
-            isActive ? 'bg-cyan-500/50' : 'bg-white/[0.08]'
-          }`}
-        />
+        <div className="min-w-0">
+          <h3
+            className={`font-semibold transition-colors duration-300 ${
+              isActive ? 'text-white' : 'text-slate-300 group-hover:text-white'
+            }`}
+          >
+            {scene.title}
+          </h3>
+          <p
+            className={`text-sm mt-1 leading-relaxed transition-all duration-300 ${
+              isActive
+                ? 'text-slate-400 max-h-20 opacity-100'
+                : 'text-slate-500 max-h-0 opacity-0 overflow-hidden'
+            }`}
+          >
+            {scene.description}
+          </p>
+        </div>
       </div>
-
-      {/* Title */}
-      <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-        {scene.title}
-      </h3>
-
-      {/* Description */}
-      <p className="text-lg text-slate-400 mb-6 leading-relaxed">
-        {scene.description}
-      </p>
-
-      {/* Features list */}
-      {scene.features && scene.features.length > 0 && (
-        <ul className="space-y-3">
-          {scene.features.map((feature, i) => (
-            <li key={i} className="flex items-start gap-3">
-              <div className="w-5 h-5 rounded-full bg-cyan-500/20 flex items-center justify-center mt-0.5 flex-shrink-0">
-                <div className="w-2 h-2 rounded-full bg-cyan-400" />
-              </div>
-              <span className="text-slate-300">{feature}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </motion.div>
+    </button>
   );
 }
 
-function StickyMedia({
-  scenes,
-  activeIndex,
+function PrimaryMedia({
+  scene,
+  shouldAnimate,
 }: {
-  scenes: ScrollScene[];
-  activeIndex: number;
+  scene: ScrollScene;
+  shouldAnimate: boolean;
 }) {
-  const activeScene = scenes[activeIndex];
-
   return (
-    <div className="sticky top-28 h-[calc(100vh-8rem)]">
-      <div className="relative h-full flex items-center">
-        {/* Glow effect behind image */}
-        <div
-          className={`absolute inset-0 rounded-3xl opacity-30 blur-3xl transition-colors duration-700 ${
-            activeScene.accentColor
-              ? `bg-gradient-to-br ${activeScene.accentColor}`
-              : 'bg-gradient-to-br from-cyan-500 to-blue-600'
-          }`}
-          style={{ transform: 'scale(0.9)' }}
-        />
+    <div className="relative">
+      {/* Glow effect */}
+      <div
+        className={`absolute -inset-4 rounded-3xl opacity-20 blur-2xl transition-colors duration-700 ${
+          scene.accentColor
+            ? `bg-gradient-to-br ${scene.accentColor}`
+            : 'bg-gradient-to-br from-cyan-500 to-blue-600'
+        }`}
+      />
 
-        {/* Image container with glass effect */}
-        <div
-          className={`relative w-full aspect-[16/10] ${radius.cardLarge} overflow-hidden ${depth.glass.strong} ${depth.border.glow}`}
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeScene.id}
-              initial={{ opacity: 0, scale: 0.98, filter: 'blur(8px)' }}
-              animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, scale: 1.02, filter: 'blur(4px)' }}
-              transition={mediaTransition}
-              className="absolute inset-0"
-            >
-              {activeScene.media.type === 'image' ? (
-                <Image
-                  src={activeScene.media.src}
-                  alt={activeScene.media.alt}
-                  fill
-                  className="object-cover object-top"
-                  priority={activeIndex === 0}
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
-              ) : (
-                <video
-                  src={activeScene.media.src}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover"
-                />
-              )}
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Gradient overlay for depth */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
-        </div>
+      {/* Main image */}
+      <div
+        className={`relative aspect-[16/10] ${radius.cardLarge} overflow-hidden ${depth.border.glow} ${depth.shadow.strong}`}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={scene.id}
+            initial={
+              shouldAnimate
+                ? { opacity: 0, scale: 0.98, filter: 'blur(6px)' }
+                : false
+            }
+            animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+            exit={
+              shouldAnimate
+                ? { opacity: 0, scale: 1.01, filter: 'blur(4px)' }
+                : undefined
+            }
+            transition={mediaTransition}
+            className="absolute inset-0"
+          >
+            <Image
+              src={scene.media.src}
+              alt={scene.media.alt}
+              fill
+              className="object-cover object-top"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 60vw, 700px"
+            />
+          </motion.div>
+        </AnimatePresence>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent pointer-events-none" />
       </div>
     </div>
   );
 }
 
-function MobileSceneCard({
-  scene,
-  index,
-  shouldReduceMotion,
+function ThumbnailStrip({
+  scenes,
+  activeIndex,
+  onSelect,
 }: {
-  scene: ScrollScene;
-  index: number;
-  shouldReduceMotion: boolean;
+  scenes: ScrollScene[];
+  activeIndex: number;
+  onSelect: (index: number) => void;
 }) {
+  if (scenes.length < 2) return null;
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{
-        duration: shouldReduceMotion ? 0 : duration.slow,
-        ease: easing.signature,
-      }}
-      className="space-y-6"
-    >
-      {/* Media */}
-      <div
-        className={`relative aspect-[16/10] ${radius.card} overflow-hidden ${depth.glass.normal} ${depth.border.subtle}`}
-      >
-        {scene.media.type === 'image' ? (
+    <div className="flex gap-3 mt-4">
+      {scenes.map((scene, index) => (
+        <button
+          key={scene.id}
+          onClick={() => onSelect(index)}
+          className={`relative flex-1 aspect-[16/10] rounded-xl overflow-hidden border-2 transition-all duration-300 ${
+            index === activeIndex
+              ? 'border-cyan-500/60 ring-1 ring-cyan-500/20'
+              : 'border-white/[0.06] hover:border-white/[0.15] opacity-60 hover:opacity-80'
+          }`}
+        >
           <Image
             src={scene.media.src}
             alt={scene.media.alt}
             fill
             className="object-cover object-top"
-            priority={index === 0}
-            sizes="100vw"
+            sizes="200px"
           />
-        ) : (
-          <video
-            src={scene.media.src}
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover"
-          />
-        )}
+          {index !== activeIndex && (
+            <div className="absolute inset-0 bg-black/30" />
+          )}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function FeatureStrip({ features }: { features: string[] }) {
+  if (features.length === 0) return null;
+
+  return (
+    <div className="flex flex-wrap gap-3 justify-center mt-10">
+      {features.map((feature, i) => (
+        <div
+          key={i}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${depth.glass.normal} ${depth.border.subtle}`}
+        >
+          <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+          <span className="text-sm text-slate-300">{feature}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// =============================================================================
+// Mobile Layout
+// =============================================================================
+
+function MobileShowcase({
+  scenes,
+  activeIndex,
+  onSelect,
+  shouldAnimate,
+}: {
+  scenes: ScrollScene[];
+  activeIndex: number;
+  onSelect: (index: number) => void;
+  shouldAnimate: boolean;
+}) {
+  const scene = scenes[activeIndex];
+
+  return (
+    <div className="md:hidden px-5 space-y-6">
+      {/* Scene pills */}
+      <div className="flex gap-2 overflow-x-auto pb-1 -mx-5 px-5 scrollbar-hide">
+        {scenes.map((s, i) => (
+          <button
+            key={s.id}
+            onClick={() => onSelect(i)}
+            className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              i === activeIndex
+                ? 'bg-cyan-500 text-white'
+                : 'bg-white/[0.05] text-slate-400 border border-white/[0.08]'
+            }`}
+          >
+            {s.title}
+          </button>
+        ))}
       </div>
 
-      {/* Content */}
+      {/* Primary image */}
+      <PrimaryMedia scene={scene} shouldAnimate={shouldAnimate} />
+
+      {/* Description */}
       <div>
-        {/* Scene number */}
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-7 h-7 rounded-full bg-cyan-500 flex items-center justify-center text-sm font-semibold text-white">
-            {index + 1}
-          </div>
-        </div>
-
-        <h3 className="text-xl font-bold text-white mb-3">{scene.title}</h3>
-        <p className="text-slate-400 mb-4">{scene.description}</p>
-
+        <p className="text-slate-400 leading-relaxed">{scene.description}</p>
         {scene.features && scene.features.length > 0 && (
-          <ul className="space-y-2">
+          <ul className="mt-4 space-y-2">
             {scene.features.map((feature, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm">
-                <div className="w-4 h-4 rounded-full bg-cyan-500/20 flex items-center justify-center mt-0.5 flex-shrink-0">
-                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-                </div>
+              <li key={i} className="flex items-center gap-2 text-sm">
+                <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 flex-shrink-0" />
                 <span className="text-slate-300">{feature}</span>
               </li>
             ))}
           </ul>
         )}
       </div>
-    </motion.div>
-  );
-}
-
-function StaticShowcase({
-  scenes,
-  sectionTitle,
-  sectionSubtitle,
-  badge,
-  className = '',
-}: ScrollShowcaseProps) {
-  // Reduced motion fallback - simple static layout
-  return (
-    <section
-      data-testid="scroll-showcase"
-      className={`relative py-24 sm:py-32 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421] overflow-hidden ${className}`}
-    >
-      <div className="max-w-7xl mx-auto">
-        <SectionHeader
-          badge={badge}
-          title={sectionTitle}
-          subtitle={sectionSubtitle}
-        />
-
-        <div className="space-y-16 px-6">
-          {scenes.map((scene) => (
-            <div key={scene.id} className="space-y-6">
-              <div
-                className={`relative aspect-[16/10] ${radius.card} overflow-hidden max-w-3xl mx-auto`}
-              >
-                <Image
-                  src={scene.media.src}
-                  alt={scene.media.alt}
-                  fill
-                  className="object-cover object-top"
-                  sizes="(max-width: 768px) 100vw, 800px"
-                />
-              </div>
-              <div className="max-w-3xl mx-auto text-center">
-                <h3 className="text-2xl font-bold text-white mb-3">
-                  {scene.title}
-                </h3>
-                <p className="text-slate-400">{scene.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
+    </div>
   );
 }
 
@@ -383,74 +282,128 @@ export function ScrollShowcase({
 }: ScrollShowcaseProps) {
   const shouldReduceMotion = useReducedMotion();
   const [activeIndex, setActiveIndex] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const shouldAnimate = !shouldReduceMotion;
 
-  const handleSceneInView = useCallback((index: number) => {
+  const handleSelect = useCallback((index: number) => {
     setActiveIndex(index);
   }, []);
 
-  // Reduced motion fallback
-  if (shouldReduceMotion) {
-    return (
-      <StaticShowcase
-        scenes={scenes}
-        sectionTitle={sectionTitle}
-        sectionSubtitle={sectionSubtitle}
-        badge={badge}
-        className={className}
-      />
-    );
-  }
+  // Collect all unique features for the feature strip
+  const allFeatures = scenes.flatMap((s) => s.features ?? []);
 
   return (
     <section
-      ref={containerRef}
       data-testid="scroll-showcase"
-      className={`relative py-24 sm:py-32 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421] overflow-hidden ${className}`}
+      className={`relative py-16 sm:py-20 lg:py-24 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421] overflow-hidden ${className}`}
     >
-      {/* Background ambient elements */}
+      {/* Background ambient */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-cyan-500/[0.03] blur-3xl" />
-        <div className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-blue-500/[0.03] blur-3xl" />
+        <div className="absolute top-1/4 -left-32 w-80 h-80 rounded-full bg-cyan-500/[0.03] blur-3xl" />
+        <div className="absolute bottom-1/4 -right-32 w-80 h-80 rounded-full bg-blue-500/[0.03] blur-3xl" />
       </div>
 
       <div className="relative max-w-7xl mx-auto">
-        <SectionHeader
-          badge={badge}
-          title={sectionTitle}
-          subtitle={sectionSubtitle}
-        />
+        {/* Section header - compact */}
+        <div className="text-center mb-10 md:mb-12 px-6">
+          {badge && (
+            <motion.div
+              initial={shouldAnimate ? { opacity: 0, y: 10 } : false}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: duration.normal,
+                ease: easing.signature,
+              }}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.05] border border-white/[0.08] mb-4"
+            >
+              <span className="text-sm font-medium text-cyan-400">
+                {badge}
+              </span>
+            </motion.div>
+          )}
+          {sectionTitle && (
+            <motion.h2
+              initial={shouldAnimate ? { opacity: 0, y: 16 } : false}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: duration.slow,
+                ease: easing.signature,
+                delay: 0.05,
+              }}
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-3"
+            >
+              {sectionTitle}
+            </motion.h2>
+          )}
+          {sectionSubtitle && (
+            <motion.p
+              initial={shouldAnimate ? { opacity: 0, y: 16 } : false}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: duration.slow,
+                ease: easing.signature,
+                delay: 0.1,
+              }}
+              className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto"
+            >
+              {sectionSubtitle}
+            </motion.p>
+          )}
+        </div>
 
-        {/* Desktop: Two-column sticky layout */}
-        <div className="hidden md:grid md:grid-cols-2 gap-8 lg:gap-16 px-6 lg:px-12">
-          {/* Left: Scrolling text content */}
-          <div className="space-y-8">
+        {/* Desktop: Two-column dense layout */}
+        <div className="hidden md:grid md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-6 lg:gap-10 px-6 lg:px-12 items-start">
+          {/* Left: Scene tabs */}
+          <div className="space-y-3 sticky top-28">
             {scenes.map((scene, index) => (
-              <SceneContent
+              <SceneTab
                 key={scene.id}
                 scene={scene}
                 index={index}
                 isActive={index === activeIndex}
-                onInView={handleSceneInView}
+                onClick={() => handleSelect(index)}
               />
             ))}
           </div>
 
-          {/* Right: Sticky media column */}
-          <StickyMedia scenes={scenes} activeIndex={activeIndex} />
+          {/* Right: Primary screenshot + thumbnails */}
+          <div>
+            <PrimaryMedia
+              scene={scenes[activeIndex]}
+              shouldAnimate={shouldAnimate}
+            />
+            <ThumbnailStrip
+              scenes={scenes}
+              activeIndex={activeIndex}
+              onSelect={handleSelect}
+            />
+          </div>
         </div>
 
-        {/* Mobile: Stacked layout */}
-        <div className="md:hidden space-y-12 px-6">
-          {scenes.map((scene, index) => (
-            <MobileSceneCard
-              key={scene.id}
-              scene={scene}
-              index={index}
-              shouldReduceMotion={!!shouldReduceMotion}
-            />
-          ))}
-        </div>
+        {/* Mobile layout */}
+        <MobileShowcase
+          scenes={scenes}
+          activeIndex={activeIndex}
+          onSelect={handleSelect}
+          shouldAnimate={shouldAnimate}
+        />
+
+        {/* Feature strip */}
+        <motion.div
+          initial={shouldAnimate ? { opacity: 0, y: 12 } : false}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{
+            duration: duration.slow,
+            ease: easing.signature,
+            delay: 0.15,
+          }}
+          className="px-6 lg:px-12"
+        >
+          <FeatureStrip features={allFeatures} />
+        </motion.div>
       </div>
     </section>
   );
