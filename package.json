@@ -26,6 +26,7 @@
     "setup:monitoring": "node scripts/monitoring-setup.js",
     "setup:tests": "playwright install && npm run test:visual:reference",
     "qa:smoke": "PLAYWRIGHT_REUSE_SERVER=true playwright test e2e/smoke.spec.ts --reporter=list --workers=1",
+    "qa:enterprise": "playwright test e2e/enterprise-invariants.spec.ts e2e/security-invariants.spec.ts e2e/qa-enterprise-smoke.spec.ts --reporter=list",
     "qa:full": "npm run test:all && npm run test:supabase-health",
     "ab-test": "ts-node tests/ab-testing/ab-test-cli.ts",
     "ab-test:list": "npm run ab-test list",

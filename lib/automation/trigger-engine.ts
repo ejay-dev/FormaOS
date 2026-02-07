@@ -5,6 +5,10 @@
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { updateComplianceScore } from './compliance-score-engine';
+import { automationLogger } from '@/lib/observability/structured-logger';
+
+// Maximum recursion depth for trigger chains
+const MAX_TRIGGER_DEPTH = 5;
 
 export type TriggerType =
   | 'evidence_expiry'
@@ -34,9 +38,12 @@ export interface AutomationResult {
 
 /**
  * Process trigger events and execute appropriate automations
+ * @param event - The trigger event to process
+ * @param depth - Current recursion depth (internal use)
  */
 export async function processTrigger(
-  event: TriggerEvent
+  event: TriggerEvent,
+  depth: number = 0
 ): Promise<AutomationResult> {
   const result: AutomationResult = {
     tasksCreated: 0,
@@ -44,6 +51,17 @@ export async function processTrigger(
     workflowsExecuted: 0,
     errors: [],
   };
+
+  // Recursion protection
+  if (depth >= MAX_TRIGGER_DEPTH) {
+    automationLogger.warn('trigger_recursion_limit', {
+      eventType: event.type,
+      orgId: event.organizationId,
+      depth,
+    });
+    result.errors.push(`Max trigger recursion depth reached (${MAX_TRIGGER_DEPTH})`);
+    return result;
+  }
 
   try {
     switch (event.type) {

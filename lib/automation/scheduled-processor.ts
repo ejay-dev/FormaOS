@@ -6,6 +6,9 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { processTrigger, type TriggerEvent } from './trigger-engine';
 import { updateComplianceScore } from './compliance-score-engine';
+import { runBillingReconciliation } from '@/lib/billing/nightly-reconciliation';
+import { scanAllForEntitlementDrift } from '@/lib/billing/entitlement-drift-detector';
+import { automationLogger } from '@/lib/observability/structured-logger';
 
 /**
  * Run all scheduled automation checks
@@ -25,13 +28,15 @@ export async function runScheduledAutomation(): Promise<{
 
   try {
     // Run all checks in parallel
-    const [evidenceCheck, policyCheck, taskCheck, certCheck, scoreCheck] =
+    const [evidenceCheck, policyCheck, taskCheck, certCheck, scoreCheck, billingCheck, entitlementCheck] =
       await Promise.allSettled([
         checkExpiringEvidence(),
         checkPolicyReviews(),
         checkOverdueTasks(),
         checkExpiringCertifications(),
         updateAllComplianceScores(),
+        runBillingReconciliationJob(),
+        runEntitlementDriftCheck(),
       ]);
 
     // Aggregate results
@@ -41,6 +46,8 @@ export async function runScheduledAutomation(): Promise<{
       taskCheck,
       certCheck,
       scoreCheck,
+      billingCheck,
+      entitlementCheck,
     ];
 
     for (const result of checkResults) {
@@ -444,6 +451,67 @@ async function updateAllComplianceScores(): Promise<{
         }
       }),
     );
+  }
+
+  return results;
+}
+
+/**
+ * Run billing reconciliation job
+ */
+async function runBillingReconciliationJob(): Promise<{
+  triggersExecuted: number;
+  errors: string[];
+}> {
+  const results = { triggersExecuted: 0, errors: [] as string[] };
+
+  try {
+    automationLogger.info('billing_reconciliation_started');
+    const reconciliation = await runBillingReconciliation();
+
+    results.triggersExecuted = reconciliation.autoFixed;
+    results.errors.push(...reconciliation.errors);
+
+    automationLogger.info('billing_reconciliation_completed', {
+      checked: reconciliation.checked,
+      discrepancies: reconciliation.discrepancies.length,
+      autoFixed: reconciliation.autoFixed,
+      duration: reconciliation.duration,
+    });
+  } catch (err) {
+    const error = err instanceof Error ? err.message : 'Unknown error';
+    results.errors.push(`Billing reconciliation failed: ${error}`);
+    automationLogger.error('billing_reconciliation_failed', err instanceof Error ? err : new Error(error));
+  }
+
+  return results;
+}
+
+/**
+ * Run entitlement drift check
+ */
+async function runEntitlementDriftCheck(): Promise<{
+  triggersExecuted: number;
+  errors: string[];
+}> {
+  const results = { triggersExecuted: 0, errors: [] as string[] };
+
+  try {
+    automationLogger.info('entitlement_drift_check_started');
+    const driftScan = await scanAllForEntitlementDrift({ autoFix: true, limit: 500 });
+
+    results.triggersExecuted = driftScan.autoFixed;
+    results.errors.push(...driftScan.errors);
+
+    automationLogger.info('entitlement_drift_check_completed', {
+      scanned: driftScan.scanned,
+      withDrift: driftScan.withDrift,
+      autoFixed: driftScan.autoFixed,
+    });
+  } catch (err) {
+    const error = err instanceof Error ? err.message : 'Unknown error';
+    results.errors.push(`Entitlement drift check failed: ${error}`);
+    automationLogger.error('entitlement_drift_check_failed', err instanceof Error ? err : new Error(error));
   }
 
   return results;

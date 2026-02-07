@@ -110,14 +110,103 @@ export const ORG_CACHE_KEYS = {
 export function cleanupCache(): number {
   const now = Date.now();
   let removed = 0;
-  
+
   for (const [key, entry] of cacheStore.entries()) {
     if (now > entry.expiresAt) {
       cacheStore.delete(key);
       removed++;
     }
   }
-  
+
   return removed;
+}
+
+/**
+ * Cache with fallback strategy for resilient data fetching
+ * Returns fallback value if computation fails
+ */
+export async function cacheWithFallback<T>(
+  key: string,
+  compute: () => Promise<T>,
+  fallback: T,
+  options?: {
+    ttlMs?: number;
+    staleWhileRevalidate?: boolean;
+  }
+): Promise<T> {
+  const ttlMs = options?.ttlMs ?? DEFAULT_CACHE_TTL_MS;
+  const staleWhileRevalidate = options?.staleWhileRevalidate ?? true;
+
+  // Check for fresh cache
+  const cached = getFromCache<T>(key);
+  if (cached !== null) {
+    return cached;
+  }
+
+  // Check for stale cache (if stale-while-revalidate is enabled)
+  const staleEntry = cacheStore.get(key);
+  const hasStale = staleEntry && staleWhileRevalidate;
+
+  try {
+    const data = await compute();
+    setCache(key, data, ttlMs);
+    return data;
+  } catch (error) {
+    // Log error but don't throw
+    console.error(`[Cache] Compute failed for ${key}:`, error);
+
+    // Return stale data if available
+    if (hasStale && staleEntry) {
+      console.log(`[Cache] Returning stale data for ${key}`);
+      return staleEntry.data as T;
+    }
+
+    // Return fallback
+    console.log(`[Cache] Returning fallback for ${key}`);
+    return fallback;
+  }
+}
+
+/**
+ * Optimistic cache update with background refresh
+ */
+export async function cacheWithBackgroundRefresh<T>(
+  key: string,
+  compute: () => Promise<T>,
+  options?: {
+    ttlMs?: number;
+    refreshThresholdMs?: number;
+  }
+): Promise<T | null> {
+  const ttlMs = options?.ttlMs ?? DEFAULT_CACHE_TTL_MS;
+  const refreshThreshold = options?.refreshThresholdMs ?? ttlMs / 2;
+
+  const entry = cacheStore.get(key) as CacheEntry<T> | undefined;
+  const now = Date.now();
+
+  // If we have valid cache
+  if (entry && now < entry.expiresAt) {
+    // Check if we should background refresh
+    const timeUntilExpiry = entry.expiresAt - now;
+    if (timeUntilExpiry < refreshThreshold) {
+      // Trigger background refresh
+      compute().then(data => {
+        setCache(key, data, ttlMs);
+      }).catch(err => {
+        console.error(`[Cache] Background refresh failed for ${key}:`, err);
+      });
+    }
+    return entry.data;
+  }
+
+  // No cache, compute synchronously
+  try {
+    const data = await compute();
+    setCache(key, data, ttlMs);
+    return data;
+  } catch (error) {
+    console.error(`[Cache] Compute failed for ${key}:`, error);
+    return null;
+  }
 }
 
