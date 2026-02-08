@@ -14,11 +14,7 @@ function longestCommonSuffixHost(hostA: string, hostB: string) {
   const partsA = normalizeHost(hostA).split('.');
   const partsB = normalizeHost(hostB).split('.');
   const suffix: string[] = [];
-  for (
-    let idx = 1;
-    idx <= Math.min(partsA.length, partsB.length);
-    idx += 1
-  ) {
+  for (let idx = 1; idx <= Math.min(partsA.length, partsB.length); idx += 1) {
     const partA = partsA[partsA.length - idx];
     const partB = partsB[partsB.length - idx];
     if (partA !== partB) break;
@@ -38,7 +34,8 @@ function widenHost(host: string) {
 }
 
 export function getCookieDomain(requestHost?: string): string | undefined {
-  const explicit = process.env.NEXT_PUBLIC_COOKIE_DOMAIN ?? process.env.COOKIE_DOMAIN;
+  const explicit =
+    process.env.NEXT_PUBLIC_COOKIE_DOMAIN ?? process.env.COOKIE_DOMAIN;
   if (explicit) {
     if (!requestHost) return explicit;
     const clean = normalizeHost(explicit);
@@ -63,23 +60,32 @@ export function getCookieDomain(requestHost?: string): string | undefined {
       return undefined;
     }
 
-    let cookieHost = normalizedPrimary;
-    if (siteHost && appHost && siteHost !== appHost) {
-      const common = longestCommonSuffixHost(siteHost, appHost);
-      if (common) {
-        cookieHost = common;
-      }
-    } else {
-      cookieHost = widenHost(normalizedPrimary);
+    // For mobile Safari compatibility: don't use domain cookie if on same subdomain
+    // Only use cross-subdomain cookies if truly needed
+    if (!requestHost) {
+      // No cross-subdomain needed - let browser handle it
+      return undefined;
     }
-
-    if (!requestHost) return `.${cookieHost}`;
 
     if (isLocalhost(requestHost) || isIpAddress(requestHost)) {
       return undefined;
     }
-    if (!requestHost.endsWith(cookieHost)) return undefined;
-    return `.${cookieHost}`;
+
+    // If request host matches app host exactly, don't set domain cookie
+    if (requestHost === appHost || requestHost === siteHost) {
+      return undefined;
+    }
+
+    // Only set domain cookie if we need cross-subdomain auth
+    let cookieHost = normalizedPrimary;
+    if (siteHost && appHost && siteHost !== appHost) {
+      const common = longestCommonSuffixHost(siteHost, appHost);
+      if (common && requestHost.endsWith(common)) {
+        return `.${common}`;
+      }
+    }
+
+    return undefined;
   } catch {
     return undefined;
   }

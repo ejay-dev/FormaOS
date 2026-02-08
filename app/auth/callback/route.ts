@@ -25,6 +25,8 @@ export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const { searchParams } = requestUrl;
   const code = searchParams.get('code');
+  const oauthError = searchParams.get('error');
+  const errorDescription = searchParams.get('error_description');
   const cookieStore = await cookies();
   let cookieSnapshot = cookieStore.getAll();
   const cookieDomain = getCookieDomain(requestUrl.hostname);
@@ -33,6 +35,8 @@ export async function GET(request: Request) {
 
   const normalizeCookieOptions = (options?: Record<string, any>) => {
     const normalized = { ...(options ?? {}) };
+
+    // Mobile Safari requires explicit cookie settings
     if (!normalized.sameSite) {
       normalized.sameSite = 'lax';
     }
@@ -42,7 +46,24 @@ export async function GET(request: Request) {
     if (isHttps) {
       normalized.secure = true;
     }
-    return cookieDomain ? { ...normalized, domain: cookieDomain } : normalized;
+
+    // Ensure httpOnly is preserved from Supabase
+    if (options?.httpOnly !== undefined) {
+      normalized.httpOnly = options.httpOnly;
+    }
+
+    // Set explicit maxAge if provided by Supabase
+    if (options?.maxAge !== undefined) {
+      normalized.maxAge = options.maxAge;
+    }
+
+    // For production, only use domain if we're on the correct domain
+    // Avoid setting domain for localhost/dev
+    if (cookieDomain && isHttps) {
+      normalized.domain = cookieDomain;
+    }
+
+    return normalized;
   };
 
   const redirectWithCookies = (destination: string) => {
@@ -65,6 +86,19 @@ export async function GET(request: Request) {
     }
     return requestUrl.origin.replace(/\/$/, '');
   })();
+
+  // Handle OAuth errors (user denied permission, etc.)
+  if (oauthError) {
+    console.error('[auth/callback] OAuth error:', {
+      oauthError,
+      errorDescription,
+    });
+    return redirectWithCookies(
+      `${appBase}/auth/signin?error=oauth_error&message=${encodeURIComponent(
+        errorDescription || 'Authentication failed. Please try again.',
+      )}`,
+    );
+  }
 
   if (!code) {
     return redirectWithCookies(`${appBase}/auth/signin`);
@@ -129,22 +163,29 @@ export async function GET(request: Request) {
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error || !data?.user) {
-    console.error('OAuth exchange failed:', error);
-    return redirectWithCookies(`${appBase}/auth/signin`);
+    console.error('[auth/callback] OAuth code exchange failed:', error);
+    return redirectWithCookies(
+      `${appBase}/auth/signin?error=oauth_failed&message=${encodeURIComponent(
+        'Failed to authenticate. Please try again.',
+      )}`,
+    );
   }
 
+  const user = data.user;
+  console.log('[auth/callback] ✅ Session established for user:', user.email);
+
   // 2. CHECK IF USER IS A FOUNDER - Ensure proper role and redirect to admin
-  const founderCheck = isFounder(data.user.email, data.user.id);
+  const founderCheck = isFounder(user.email, user.id);
   console.log(`[auth/callback] 🔍 Founder check:`, {
-    email: data.user.email,
-    userId: data.user.id.substring(0, 8) + '...',
+    email: user.email,
+    userId: user.id.substring(0, 8) + '...',
     isFounder: founderCheck,
   });
 
   if (founderCheck) {
-    console.log(`[auth/callback] ✅ FOUNDER DETECTED: ${data.user.email}`);
+    console.log(`[auth/callback] ✅ FOUNDER DETECTED: ${user.email}`);
     console.log('[auth/callback] 🔐 ADMIN GATE CHECK', {
-      email: data.user.email,
+      email: user.email,
       isFounder: founderCheck,
       redirectTarget: '/admin/dashboard',
       appBase,
@@ -154,7 +195,7 @@ export async function GET(request: Request) {
     const { data: founderMembership } = await admin
       .from('org_members')
       .select('organization_id, role')
-      .eq('user_id', data.user.id)
+      .eq('user_id', user.id)
       .maybeSingle();
 
     if (founderMembership?.organization_id) {
@@ -166,7 +207,7 @@ export async function GET(request: Request) {
         await admin
           .from('org_members')
           .update({ role: 'owner' })
-          .eq('user_id', data.user.id);
+          .eq('user_id', user.id);
       }
 
       // Ensure organization has pro plan and active subscription
@@ -207,7 +248,7 @@ export async function GET(request: Request) {
   const { data: membership, error: membershipError } = await supabase
     .from('org_members')
     .select('organization_id, role')
-    .eq('user_id', data.user.id)
+    .eq('user_id', user.id)
     .maybeSingle();
 
   if (membershipError) {
@@ -224,7 +265,7 @@ export async function GET(request: Request) {
     const { data: orphanedOrg } = await admin
       .from('organizations')
       .select('id, name')
-      .or(`created_by.eq.${data.user.id}`)
+      .or(`created_by.eq.${user.id}`)
       .maybeSingle();
 
     if (orphanedOrg) {
@@ -235,7 +276,7 @@ export async function GET(request: Request) {
       // Restore membership
       const { error: restoreError } = await admin.from('org_members').insert({
         organization_id: orphanedOrg.id,
-        user_id: data.user.id,
+        user_id: user.id,
         role: 'owner',
       });
 
@@ -282,9 +323,9 @@ export async function GET(request: Request) {
     );
 
     const fallbackName =
-      data.user.user_metadata?.full_name ||
-      data.user.user_metadata?.name ||
-      data.user.email?.split('@')[0] ||
+      user.user_metadata?.full_name ||
+      user.user_metadata?.name ||
+      user.email?.split('@')[0] ||
       'New Organization';
 
     try {
@@ -296,7 +337,7 @@ export async function GET(request: Request) {
         .from('organizations')
         .insert({
           name: fallbackName,
-          created_by: data.user.id, // Set the creating user ID properly
+          created_by: user.id, // Set the creating user ID properly
           plan_key: plan, // Always set (defaulted to 'basic')
           plan_selected_at: now,
           onboarding_completed: false, // Ensure onboarding is NOT complete for new users
@@ -324,11 +365,11 @@ export async function GET(request: Request) {
         {
           id: organization.id, // Use same ID to keep them in sync
           name: fallbackName,
-          created_by: data.user.id,
+          created_by: user.id,
           created_at: now,
           updated_at: now,
         },
-        { onConflict: 'id' }
+        { onConflict: 'id' },
       );
 
       if (legacyOrgError) {
@@ -341,7 +382,7 @@ export async function GET(request: Request) {
       // Create org membership with proper role
       const { error: memberError } = await admin.from('org_members').insert({
         organization_id: organization.id,
-        user_id: data.user.id,
+        user_id: user.id,
         role: 'owner', // New users become organization owners
       });
 
@@ -382,7 +423,7 @@ export async function GET(request: Request) {
       console.log('[auth/callback] 🏗️  Initializing compliance graph');
       const graphResult = await initializeComplianceGraph(
         organization.id,
-        data.user.id,
+        user.id,
       );
 
       if (graphResult.success) {
@@ -423,12 +464,14 @@ export async function GET(request: Request) {
       .from('org_members')
       .update({ role: 'member' }) // Default role for existing users
       .eq('organization_id', membership.organization_id)
-      .eq('user_id', data.user.id);
+      .eq('user_id', user.id);
   }
 
   const { data: organization, error: orgError } = await supabase
     .from('organizations')
-    .select('plan_key, industry, onboarding_completed, frameworks, name, created_by')
+    .select(
+      'plan_key, industry, onboarding_completed, frameworks, name, created_by',
+    )
     .eq('id', membership.organization_id)
     .maybeSingle();
 
@@ -437,14 +480,20 @@ export async function GET(request: Request) {
   }
 
   // HARDENING: Default to 'basic' if org has no plan
-  const resolvedPlan = resolvePlanKey(organization?.plan_key ?? null) || DEFAULT_PLAN;
+  const resolvedPlan =
+    resolvePlanKey(organization?.plan_key ?? null) || DEFAULT_PLAN;
 
   // BACKFILL: Update org with plan if missing
   if (!organization?.plan_key) {
-    console.log('[auth/callback] 🔧 Backfilling missing plan_key for existing org');
+    console.log(
+      '[auth/callback] 🔧 Backfilling missing plan_key for existing org',
+    );
     await admin
       .from('organizations')
-      .update({ plan_key: resolvedPlan, plan_selected_at: new Date().toISOString() })
+      .update({
+        plan_key: resolvedPlan,
+        plan_selected_at: new Date().toISOString(),
+      })
       .eq('id', membership.organization_id);
   }
 
@@ -462,11 +511,11 @@ export async function GET(request: Request) {
       {
         id: membership.organization_id,
         name: organization?.name || 'Organization',
-        created_by: organization?.created_by || data.user.id,
+        created_by: organization?.created_by || user.id,
         created_at: now,
         updated_at: now,
       },
-      { onConflict: 'id' }
+      { onConflict: 'id' },
     );
   }
 
