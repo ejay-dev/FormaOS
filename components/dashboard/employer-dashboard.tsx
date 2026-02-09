@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import {
   Users,
   TrendingUp,
@@ -9,6 +10,12 @@ import {
   Calendar,
   Briefcase,
   FileText,
+  Building2,
+  Shield,
+  CreditCard,
+  Settings,
+  CheckSquare,
+  ArrowRight,
 } from 'lucide-react';
 import { DashboardSectionCard } from '@/components/dashboard/unified-dashboard-layout';
 import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedChecklist';
@@ -28,6 +35,100 @@ import {
   trackAPIRequest,
   CUSTOM_METRICS,
 } from '@/lib/monitoring/performance-monitor';
+
+/**
+ * Quick-action cards — replaces the old sidebar-style "middle column"
+ * navigation so users can jump to key areas without a second nav.
+ */
+const QUICK_ACTIONS = [
+  {
+    label: 'Organization',
+    description: 'Overview & KPIs',
+    href: '/app/org-overview',
+    icon: Building2,
+    color: 'text-blue-400',
+  },
+  {
+    label: 'Team',
+    description: 'Manage employees',
+    href: '/app/team',
+    icon: Users,
+    color: 'text-cyan-400',
+  },
+  {
+    label: 'Certificates',
+    description: 'All certifications',
+    href: '/app/certificates',
+    icon: FileText,
+    color: 'text-emerald-400',
+  },
+  {
+    label: 'Evidence',
+    description: 'Evidence submissions',
+    href: '/app/vault',
+    icon: CheckSquare,
+    color: 'text-purple-400',
+  },
+  {
+    label: 'Tasks',
+    description: 'Create & assign',
+    href: '/app/tasks',
+    icon: Briefcase,
+    color: 'text-amber-400',
+  },
+  {
+    label: 'Audit Logs',
+    description: 'Activity history',
+    href: '/app/audit-logs',
+    icon: Shield,
+    color: 'text-rose-400',
+  },
+  {
+    label: 'Billing',
+    description: 'Plan & subscription',
+    href: '/app/billing',
+    icon: CreditCard,
+    color: 'text-sky-400',
+  },
+  {
+    label: 'Settings',
+    description: 'Organization settings',
+    href: '/app/settings',
+    icon: Settings,
+    color: 'text-slate-400',
+  },
+] as const;
+
+function QuickActions() {
+  return (
+    <div
+      className="grid grid-cols-2 sm:grid-cols-4 gap-3"
+      data-testid="quick-actions"
+    >
+      {QUICK_ACTIONS.map((a) => {
+        const Icon = a.icon;
+        return (
+          <Link
+            key={a.href}
+            href={a.href}
+            className="group flex flex-col gap-2 rounded-xl border border-white/10 bg-white/5 p-4 transition-all hover:bg-white/10 hover:border-white/20"
+          >
+            <Icon
+              className={`h-5 w-5 ${a.color} transition-transform group-hover:scale-110`}
+            />
+            <div>
+              <p className="text-sm font-semibold text-slate-100">{a.label}</p>
+              <p className="text-[11px] text-slate-400 leading-tight">
+                {a.description}
+              </p>
+            </div>
+            <ArrowRight className="h-3.5 w-3.5 text-slate-500 ml-auto mt-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
 
 /**
  * =========================================================
@@ -550,6 +651,9 @@ export function EmployerDashboard({
 
   return (
     <div className="space-y-8">
+      {/* Quick-action cards (replaces old sidebar-style middle column) */}
+      <QuickActions />
+
       <GettingStartedChecklist industry={industry} />
 
       {/* Industry-Aware Guidance Panel */}

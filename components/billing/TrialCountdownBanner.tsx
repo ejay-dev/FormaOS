@@ -32,14 +32,6 @@ export function TrialCountdownBanner() {
   const isUrgent = status === 'urgent';
   const isExpiringSoon = status === 'expiring_soon';
 
-  // Compute progress (14-day trial)
-  const totalDays = 14;
-  const elapsed = Math.max(0, totalDays - daysRemaining);
-  const progressPercent = Math.min(
-    100,
-    Math.round((elapsed / totalDays) * 100),
-  );
-
   // Color scheme based on urgency
   const scheme = isExpired
     ? {
@@ -136,21 +128,6 @@ export function TrialCountdownBanner() {
             )}
           </div>
         </div>
-
-        {/* Center: Progress bar (hidden on mobile) */}
-        {!isExpired && (
-          <div className="hidden lg:flex items-center gap-2 flex-shrink-0">
-            <div className="w-32 h-1.5 rounded-full bg-white/10 overflow-hidden">
-              <div
-                className={`h-full rounded-full transition-all duration-1000 ${scheme.bar}`}
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
-            <span className="text-[10px] opacity-60 tabular-nums">
-              {elapsed}/{totalDays}d
-            </span>
-          </div>
-        )}
 
         {/* Right: CTA */}
         {canManageBilling && (

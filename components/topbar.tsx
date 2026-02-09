@@ -158,7 +158,7 @@ export function TopBar({
 
   return (
     <div className="flex h-full w-full items-center justify-between gap-3 min-w-0">
-      {/* Left: Breadcrumbs */}
+      {/* Left: Breadcrumbs + Role badge */}
       <div className="flex items-center gap-2 text-sm text-sidebar-foreground min-w-0">
         <MobileSidebar role={role} />
         <span className="hidden sm:inline font-semibold text-sidebar-primary-foreground uppercase text-[11px] tracking-[0.2em]">
@@ -167,6 +167,9 @@ export function TopBar({
         <ChevronRight className="h-4 w-4 text-slate-400" />
         <span className="max-w-[120px] sm:max-w-[200px] truncate px-2.5 sm:px-3 py-1 rounded-md bg-card/70 text-card-foreground text-xs sm:text-sm font-semibold border border-card-foreground/8">
           {orgName}
+        </span>
+        <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-white/10 bg-white/5 text-slate-300">
+          {role}
         </span>
       </div>
 

@@ -1,17 +1,20 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
-import { signOut } from "@/app/app/actions/logout";
-import { LogOut, Command } from "lucide-react";
-import Button from "./ui/button";
-import { useAppStore } from "@/lib/stores/app";
-import { getIndustryNavigation, getIndustryLabel } from "@/lib/navigation/industry-sidebar";
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useMemo } from 'react';
+import { signOut } from '@/app/app/actions/logout';
+import { LogOut, Command } from 'lucide-react';
+import Button from './ui/button';
+import { useAppStore } from '@/lib/stores/app';
+import {
+  getIndustryNavigation,
+  getIndustryLabel,
+} from '@/lib/navigation/industry-sidebar';
 
-type UserRole = "viewer" | "member" | "admin" | "owner" | "staff" | "auditor";
+type UserRole = 'viewer' | 'member' | 'admin' | 'owner' | 'staff' | 'auditor';
 
-export function Sidebar({ role = "owner" }: { role?: UserRole }) {
+export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
   const pathname = usePathname();
   const router = useRouter();
   const organization = useAppStore((state) => state.organization);
@@ -57,13 +60,17 @@ export function Sidebar({ role = "owner" }: { role?: UserRole }) {
                 .filter((item) => item.category === cat)
                 .map((item) => {
                   const isExact = pathname === item.href;
-                  const isChildRoute = item.href !== "/app" && pathname.startsWith(`${item.href}/`);
-                  const isSettingsRoot = item.href === "/app/settings";
-                  const isInsideSettings = pathname.startsWith("/app/settings/");
+                  const isChildRoute =
+                    item.href !== '/app' &&
+                    pathname.startsWith(`${item.href}/`);
+                  const isSettingsRoot = item.href === '/app/settings';
+                  const isInsideSettings =
+                    pathname.startsWith('/app/settings/');
                   const isActive =
                     isExact ||
                     isChildRoute ||
-                    (isSettingsRoot && (pathname === "/app/settings" || isInsideSettings));
+                    (isSettingsRoot &&
+                      (pathname === '/app/settings' || isInsideSettings));
 
                   return (
                     <Link
@@ -74,11 +81,13 @@ export function Sidebar({ role = "owner" }: { role?: UserRole }) {
                       onMouseEnter={() => router.prefetch(item.href)}
                       className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium transition-all ${
                         isActive
-                          ? "bg-primary text-primary-foreground shadow-premium-md"
-                          : "text-foreground/70 hover:bg-white/5 hover:text-foreground"
+                          ? 'bg-primary text-primary-foreground shadow-premium-md'
+                          : 'text-foreground/70 hover:bg-white/5 hover:text-foreground'
                       }`}
                     >
-                      <item.icon className={`h-4 w-4 ${isActive ? "" : "text-foreground/50"}`} />
+                      <item.icon
+                        className={`h-4 w-4 ${isActive ? '' : 'text-foreground/50'}`}
+                      />
                       {item.name}
                     </Link>
                   );

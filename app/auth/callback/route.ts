@@ -819,7 +819,10 @@ export async function GET(request: Request) {
   validateComplianceGraph(membership.organization_id)
     .then((result) => {
       if (!result.isValid) {
-        console.warn('[auth/callback] Graph issues (async):', result.issues.join(', '));
+        console.warn(
+          '[auth/callback] Graph issues (async):',
+          result.issues.join(', '),
+        );
       }
     })
     .catch(() => {});
