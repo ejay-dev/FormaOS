@@ -166,131 +166,25 @@ export async function GET(request: Request) {
   const admin = createSupabaseAdminClient();
 
   if (!code) {
-    // setup=1: Called after client-side signInWithIdToken (Google Identity Services).
-    // The session already exists in browser cookies — skip code exchange
-    // and proceed directly to the org-creation / onboarding flow.
-    const setupMode = searchParams.get('setup') === '1';
+    // No authorization code present — this is not a valid OAuth callback.
+    // (The old setup=1 mode for signInWithIdToken / Google One Tap has been
+    //  removed; the only supported flow is Supabase signInWithOAuth which
+    //  always sends a ?code= parameter.)
     const { data } = await supabase.auth.getUser();
 
-    if (!data?.user) {
-      return redirectWithCookies(
-        setupMode
-          ? `${appBase}/auth/signin?error=setup_incomplete&message=${encodeURIComponent('Session not found. Please sign in again.')}`
-          : `${appBase}/auth/signin`,
+    if (data?.user) {
+      // User has an existing session — just send them to the app
+      console.log(
+        '[auth/callback] No code but session exists for',
+        data.user.email,
+        '→ /app',
       );
-    }
-
-    if (!setupMode) {
-      // Regular visit to /auth/callback without code — redirect to app
       return redirectWithCookies(`${appBase}/app`);
     }
 
-    // Setup mode: session already established via signInWithIdToken
-    // Fall through to the org-setup logic below using the session user
-    console.log(
-      '[auth/callback] Setup mode (signInWithIdToken): session found for',
-      data.user.email,
-    );
-
-    // Re-use the same variable name the rest of the route expects
-    const user = data.user;
-
-    // --- BEGIN SHARED ORG-SETUP FLOW (same logic as post-exchange) ---
-
-    // Founder check
-    const founderCheck = isFounder(user.email, user.id);
-    if (founderCheck) {
-      console.log(
-        `[auth/callback] Setup mode: FOUNDER DETECTED: ${user.email}`,
-      );
-      const { data: founderMembership } = await admin
-        .from('org_members')
-        .select('organization_id, role')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (founderMembership?.organization_id) {
-        if (founderMembership.role !== 'owner') {
-          await admin
-            .from('org_members')
-            .update({ role: 'owner' })
-            .eq('user_id', user.id);
-        }
-        await admin
-          .from('organizations')
-          .update({ plan_key: 'pro' })
-          .eq('id', founderMembership.organization_id);
-        await admin.from('org_subscriptions').upsert({
-          org_id: founderMembership.organization_id,
-          organization_id: founderMembership.organization_id,
-          plan_code: 'pro',
-          plan_key: 'pro',
-          status: 'active',
-          updated_at: new Date().toISOString(),
-        });
-      }
-      return redirectWithCookies(`${appBase}/admin/dashboard`);
-    }
-
-    // Check existing membership
-    const { data: membership } = await supabase
-      .from('org_members')
-      .select('organization_id, role')
-      .eq('user_id', user.id)
-      .maybeSingle();
-
-    if (!membership?.organization_id) {
-      // Check for pending invitations
-      const { data: pendingInvite } = await admin
-        .from('team_invitations')
-        .select('id, organization_id, role, email')
-        .ilike('email', user.email || '')
-        .eq('status', 'pending')
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      if (pendingInvite) {
-        console.log(
-          '[auth/callback] 📧 Auto-accepting pending invitation for',
-          user.email,
-        );
-        const { error: joinError } = await admin.from('org_members').upsert(
-          {
-            organization_id: pendingInvite.organization_id,
-            user_id: user.id,
-            role: pendingInvite.role || 'member',
-          },
-          { onConflict: 'user_id,organization_id' },
-        );
-        if (!joinError) {
-          await admin
-            .from('team_invitations')
-            .update({ status: 'accepted' })
-            .eq('id', pendingInvite.id);
-          return redirectWithCookies(`${appBase}/app`);
-        }
-      }
-
-      // No membership and no invite — redirect to join/create page
-      return redirectWithCookies(
-        `${appBase}/onboarding?plan=${encodeURIComponent(plan)}`,
-      );
-    }
-
-    // Has membership — check onboarding completion
-    const { data: org } = await supabase
-      .from('organizations')
-      .select('onboarding_completed')
-      .eq('id', membership.organization_id)
-      .maybeSingle();
-
-    if (!org?.onboarding_completed) {
-      return redirectWithCookies(`${appBase}/onboarding`);
-    }
-
-    return redirectWithCookies(`${appBase}/app`);
-    // --- END SHARED ORG-SETUP FLOW ---
+    // No code, no session — redirect to sign-in
+    console.log('[auth/callback] No code, no session → /auth/signin');
+    return redirectWithCookies(`${appBase}/auth/signin`);
   }
 
   // 1. Exchange the code for a session
