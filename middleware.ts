@@ -88,11 +88,13 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(targetUrl);
     };
 
-    // 🚨 CRITICAL: Verify FOUNDER_EMAILS is loaded (log ONCE per deployment)
-    if (pathname === '/admin' || pathname.startsWith('/admin/')) {
-      console.log('[Middleware] 🔧 ENV CHECK', {
+    // 🚨 ENV CHECK for admin routes (debug only — remove in stable production)
+    if (
+      (pathname === '/admin' || pathname === '/admin/dashboard') &&
+      process.env.NODE_ENV !== 'production'
+    ) {
+      console.log('[Middleware] ENV CHECK', {
         FOUNDER_EMAILS_RAW: process.env.FOUNDER_EMAILS,
-        FOUNDER_USER_IDS_RAW: process.env.FOUNDER_USER_IDS,
         NODE_ENV: process.env.NODE_ENV,
       });
     }
@@ -145,6 +147,18 @@ export async function middleware(request: NextRequest) {
       return redirectWithLoopGuard(redirectUrl, false, '/auth -> /auth/signin');
     }
 
+    // 🔒 CRITICAL: Never intercept /auth/callback, /auth/signin, /auth/signup
+    // These routes handle OAuth flows and must NOT be redirected or auth-checked.
+    // Interfering here causes session-loss loops ("try again" errors).
+    if (
+      pathname === '/auth/callback' ||
+      pathname === '/auth/signin' ||
+      pathname === '/auth/signup'
+    ) {
+      logTiming('auth-passthrough');
+      return response;
+    }
+
     // Normalize legacy /app/* auth paths to /auth/*
     if (pathname === '/app/signup' || pathname === '/app/signin') {
       const redirectUrl = request.nextUrl.clone();
@@ -184,6 +198,7 @@ export async function middleware(request: NextRequest) {
         '/auth',
         '/onboarding',
         '/accept-invite',
+        '/join',
         '/submit',
         '/signin',
         '/api',
@@ -305,16 +320,10 @@ export async function middleware(request: NextRequest) {
     const userId = user?.id ?? '';
     const isUserFounder = isFounder(userEmail, userId);
 
-    // 🔍 FOUNDER DETECTION LOGGING (for /admin paths only)
-    if (pathname.startsWith('/admin')) {
-      console.log('[Middleware] 🔍 FOUNDER CHECK', {
-        pathname,
-        userEmail: userEmail ? userEmail.substring(0, 3) + '***' : 'none',
-        userId: userId ? userId.substring(0, 8) + '...' : 'none',
-        isFounder: isUserFounder,
-        hasUser: !!user,
-        FOUNDER_EMAILS_raw: process.env.FOUNDER_EMAILS,
-        FOUNDER_USER_IDS_raw: process.env.FOUNDER_USER_IDS,
+    // 🔍 FOUNDER DETECTION LOGGING (only log denials to reduce noise)
+    if (pathname.startsWith('/admin') && !isUserFounder && user) {
+      console.log('[Middleware] NON-FOUNDER tried /admin', {
+        email: userEmail ? userEmail.substring(0, 3) + '***' : 'none',
       });
     }
 
@@ -356,6 +365,14 @@ export async function middleware(request: NextRequest) {
     // STEP 3: BLOCK OTHER PROTECTED ROUTES IF NOT LOGGED IN
     // ============================================================
     if (!user && isAppPath) {
+      const hasSessionCookie = request.cookies
+        .getAll()
+        .some((c) => c.name.startsWith('sb-') && c.name.includes('auth-token'));
+      console.log('[Middleware] Redirecting to /auth/signin', {
+        reason: 'no-session',
+        path: pathname,
+        hasSessionCookie,
+      });
       const url = request.nextUrl.clone();
       url.pathname = '/auth/signin';
       return redirectWithLoopGuard(url, false, '/app-unauth');
@@ -371,7 +388,7 @@ export async function middleware(request: NextRequest) {
     response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     response.headers.set(
       'Content-Security-Policy',
-      "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co;",
+      "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://accounts.google.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://accounts.google.com; frame-src 'self' https://accounts.google.com;",
     );
 
     // -------------------------------

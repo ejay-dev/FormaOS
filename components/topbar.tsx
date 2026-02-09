@@ -22,7 +22,8 @@ import {
 import { MobileSidebar } from '@/components/mobile-sidebar';
 import { TrialDaysRemaining } from '@/components/billing/TrialDaysRemaining';
 import { useHelpAssistant } from '@/components/help/help-assistant-context';
-import { useProductTour } from '@/lib/onboarding/product-tour';
+// Product tour disabled — import removed
+// import { useProductTour } from '@/lib/onboarding/product-tour';
 
 import Button from './ui/button';
 
@@ -55,7 +56,6 @@ export function TopBar({
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState<string | null>(null);
   const { open: openHelp } = useHelpAssistant();
-  const { startTour } = useProductTour();
 
   const notifRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -153,11 +153,6 @@ export function TopBar({
       label: 'Help Center',
       icon: LifeBuoy,
       action: () => openHelp('home'),
-    },
-    {
-      label: 'Take a Tour',
-      icon: LifeBuoy,
-      action: () => startTour({ fromStep: 0, resetProgress: true }),
     },
   ];
 

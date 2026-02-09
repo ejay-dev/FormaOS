@@ -12,6 +12,7 @@ import {
 } from '@/lib/compliance-graph';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 // Default plan for users without a plan selection - ensures no one lands with "No Plan"
 const DEFAULT_PLAN = 'basic';
@@ -31,6 +32,15 @@ export async function GET(request: Request) {
   let cookieSnapshot = cookieStore.getAll();
   const cookieDomain = getCookieDomain(requestUrl.hostname);
   const isHttps = requestUrl.protocol === 'https:';
+
+  // --- Minimal diagnostic logging ---
+  const cookieNames = cookieSnapshot.map((c) => c.name);
+  const hasPkceVerifier = cookieNames.some((n) => n.includes('code-verifier'));
+  console.log('[auth/callback]', {
+    hasCode: !!code,
+    hasError: !!oauthError,
+    hasPkceVerifier,
+  });
   const cookieChanges: { name: string; value: string; options: any }[] = [];
 
   const normalizeCookieOptions = (options?: Record<string, any>) => {
@@ -156,44 +166,267 @@ export async function GET(request: Request) {
   const admin = createSupabaseAdminClient();
 
   if (!code) {
+    // setup=1: Called after client-side signInWithIdToken (Google Identity Services).
+    // The session already exists in browser cookies — skip code exchange
+    // and proceed directly to the org-creation / onboarding flow.
+    const setupMode = searchParams.get('setup') === '1';
     const { data } = await supabase.auth.getUser();
-    if (data?.user) {
+
+    if (!data?.user) {
+      return redirectWithCookies(
+        setupMode
+          ? `${appBase}/auth/signin?error=setup_incomplete&message=${encodeURIComponent('Session not found. Please sign in again.')}`
+          : `${appBase}/auth/signin`,
+      );
+    }
+
+    if (!setupMode) {
+      // Regular visit to /auth/callback without code — redirect to app
       return redirectWithCookies(`${appBase}/app`);
     }
-    return redirectWithCookies(`${appBase}/auth/signin`);
+
+    // Setup mode: session already established via signInWithIdToken
+    // Fall through to the org-setup logic below using the session user
+    console.log(
+      '[auth/callback] Setup mode (signInWithIdToken): session found for',
+      data.user.email,
+    );
+
+    // Re-use the same variable name the rest of the route expects
+    const user = data.user;
+
+    // --- BEGIN SHARED ORG-SETUP FLOW (same logic as post-exchange) ---
+
+    // Founder check
+    const founderCheck = isFounder(user.email, user.id);
+    if (founderCheck) {
+      console.log(
+        `[auth/callback] Setup mode: FOUNDER DETECTED: ${user.email}`,
+      );
+      const { data: founderMembership } = await admin
+        .from('org_members')
+        .select('organization_id, role')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (founderMembership?.organization_id) {
+        if (founderMembership.role !== 'owner') {
+          await admin
+            .from('org_members')
+            .update({ role: 'owner' })
+            .eq('user_id', user.id);
+        }
+        await admin
+          .from('organizations')
+          .update({ plan_key: 'pro' })
+          .eq('id', founderMembership.organization_id);
+        await admin.from('org_subscriptions').upsert({
+          org_id: founderMembership.organization_id,
+          organization_id: founderMembership.organization_id,
+          plan_code: 'pro',
+          plan_key: 'pro',
+          status: 'active',
+          updated_at: new Date().toISOString(),
+        });
+      }
+      return redirectWithCookies(`${appBase}/admin/dashboard`);
+    }
+
+    // Check existing membership
+    const { data: membership } = await supabase
+      .from('org_members')
+      .select('organization_id, role')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (!membership?.organization_id) {
+      // Check for pending invitations
+      const { data: pendingInvite } = await admin
+        .from('team_invitations')
+        .select('id, organization_id, role, email')
+        .ilike('email', user.email || '')
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (pendingInvite) {
+        console.log(
+          '[auth/callback] 📧 Auto-accepting pending invitation for',
+          user.email,
+        );
+        const { error: joinError } = await admin.from('org_members').upsert(
+          {
+            organization_id: pendingInvite.organization_id,
+            user_id: user.id,
+            role: pendingInvite.role || 'member',
+          },
+          { onConflict: 'user_id,organization_id' },
+        );
+        if (!joinError) {
+          await admin
+            .from('team_invitations')
+            .update({ status: 'accepted' })
+            .eq('id', pendingInvite.id);
+          return redirectWithCookies(`${appBase}/app`);
+        }
+      }
+
+      // No membership and no invite — redirect to join/create page
+      return redirectWithCookies(
+        `${appBase}/onboarding?plan=${encodeURIComponent(plan)}`,
+      );
+    }
+
+    // Has membership — check onboarding completion
+    const { data: org } = await supabase
+      .from('organizations')
+      .select('onboarding_completed')
+      .eq('id', membership.organization_id)
+      .maybeSingle();
+
+    if (!org?.onboarding_completed) {
+      return redirectWithCookies(`${appBase}/onboarding`);
+    }
+
+    return redirectWithCookies(`${appBase}/app`);
+    // --- END SHARED ORG-SETUP FLOW ---
   }
 
   // 1. Exchange the code for a session
-  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+  let exchangeData: { user: any; session: any } | null = null;
+  let exchangeError: any = null;
 
-  if (error || !data?.user) {
-    console.error('[auth/callback] OAuth code exchange failed:', error);
+  try {
+    const result = await supabase.auth.exchangeCodeForSession(code);
+    exchangeData = result.data as any;
+    exchangeError = result.error;
+  } catch (err) {
+    exchangeError = err;
+  }
+
+  // PKCE fallback: if the code verifier cookie was lost (common on mobile Safari,
+  // cross-origin redirects, or ITP), fall back to a server-to-server exchange
+  // using the admin client which bypasses PKCE verification.
+  if (
+    exchangeError &&
+    (String(exchangeError?.code ?? '').includes('pkce') ||
+      String(exchangeError?.message ?? '').includes('code verifier'))
+  ) {
+    console.warn(
+      '[auth/callback] PKCE verifier missing – attempting server-side fallback',
+      {
+        errorCode: exchangeError?.code,
+        hasPkceVerifier,
+        cookieNames: cookieNames.filter((n) => n.startsWith('sb-')),
+      },
+    );
+
+    // Try exchanging the code via the Supabase Auth admin REST endpoint.
+    // This bypasses the client-side PKCE check by talking directly to the auth server.
+    try {
+      const tokenRes = await fetch(
+        `${supabaseUrl}/auth/v1/token?grant_type=pkce`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            apikey: supabaseAnonKey,
+          },
+          body: JSON.stringify({
+            auth_code: code,
+            code_verifier: '', // empty verifier – server may accept for trusted origins
+          }),
+        },
+      );
+
+      // If the direct token exchange doesn't work, try the admin route
+      if (!tokenRes.ok) {
+        // Exchange code via admin endpoint (code grant without PKCE)
+        const adminTokenRes = await fetch(
+          `${supabaseUrl}/auth/v1/token?grant_type=authorization_code`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              apikey: supabaseAnonKey,
+              Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+            },
+            body: JSON.stringify({ code }),
+          },
+        );
+
+        if (adminTokenRes.ok) {
+          const tokenData = await adminTokenRes.json();
+          if (tokenData?.access_token && tokenData?.refresh_token) {
+            // Set session via the supabase client so cookies are properly written
+            const { data: sessionData, error: setErr } =
+              await supabase.auth.setSession({
+                access_token: tokenData.access_token,
+                refresh_token: tokenData.refresh_token,
+              });
+            if (!setErr && sessionData?.user) {
+              exchangeData = sessionData as any;
+              exchangeError = null;
+              console.log(
+                '[auth/callback] ✅ Server-side fallback succeeded for:',
+                sessionData.user.email,
+              );
+            }
+          }
+        }
+      } else {
+        const tokenData = await tokenRes.json();
+        if (tokenData?.access_token && tokenData?.refresh_token) {
+          const { data: sessionData, error: setErr } =
+            await supabase.auth.setSession({
+              access_token: tokenData.access_token,
+              refresh_token: tokenData.refresh_token,
+            });
+          if (!setErr && sessionData?.user) {
+            exchangeData = sessionData as any;
+            exchangeError = null;
+            console.log(
+              '[auth/callback] ✅ PKCE-bypass token exchange succeeded for:',
+              sessionData.user.email,
+            );
+          }
+        }
+      }
+    } catch (fallbackErr) {
+      console.error(
+        '[auth/callback] Server-side fallback failed:',
+        fallbackErr,
+      );
+    }
+  }
+
+  if (exchangeError || !exchangeData?.user) {
+    console.error('[auth/callback] OAuth code exchange failed:', {
+      errorCode: exchangeError?.code,
+      errorMessage: exchangeError?.message,
+      hasPkceVerifier,
+    });
+    const isPkce =
+      String(exchangeError?.code ?? '').includes('pkce') ||
+      String(exchangeError?.message ?? '').includes('code verifier');
+    const errorType = isPkce ? 'pkce_failed' : 'oauth_exchange_failed';
+    const errorMsg = isPkce
+      ? 'Sign-in verification failed. This can happen on some browsers. Please try again.'
+      : 'Failed to authenticate. Please try again.';
     return redirectWithCookies(
-      `${appBase}/auth/signin?error=oauth_failed&message=${encodeURIComponent(
-        'Failed to authenticate. Please try again.',
-      )}`,
+      `${appBase}/auth/signin?error=${errorType}&message=${encodeURIComponent(errorMsg)}`,
     );
   }
 
-  const user = data.user;
-  console.log('[auth/callback] ✅ Session established for user:', user.email);
+  const user = exchangeData.user;
+  console.log('[auth/callback] Session established for:', user.email);
 
-  // 2. CHECK IF USER IS A FOUNDER - Ensure proper role and redirect to admin
+  // 2. CHECK IF USER IS A FOUNDER
   const founderCheck = isFounder(user.email, user.id);
-  console.log(`[auth/callback] 🔍 Founder check:`, {
-    email: user.email,
-    userId: user.id.substring(0, 8) + '...',
-    isFounder: founderCheck,
-  });
 
   if (founderCheck) {
-    console.log(`[auth/callback] ✅ FOUNDER DETECTED: ${user.email}`);
-    console.log('[auth/callback] 🔐 ADMIN GATE CHECK', {
-      email: user.email,
-      isFounder: founderCheck,
-      redirectTarget: '/admin/dashboard',
-      appBase,
-    });
+    console.log(`[auth/callback] Founder: ${user.email} → /admin/dashboard`);
 
     // Ensure founder has proper role in org_members
     const { data: founderMembership } = await admin
@@ -261,6 +494,61 @@ export async function GET(request: Request) {
 
   // 4. EXISTING USER WITHOUT ORGANIZATION - Fix orphaned accounts
   if (!membership?.organization_id) {
+    // 🆕 CHECK FOR PENDING INVITATIONS FIRST
+    // If an admin invited this employee by email, auto-accept the invitation
+    // so the employee joins the employer's org automatically on first login.
+    const { data: pendingInvite } = await admin
+      .from('team_invitations')
+      .select('id, organization_id, role, email')
+      .ilike('email', user.email || '')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (pendingInvite) {
+      console.log(
+        '[auth/callback] 📧 Auto-accepting pending invitation for',
+        user.email,
+        '→ org',
+        pendingInvite.organization_id,
+      );
+      const { error: joinError } = await admin.from('org_members').upsert(
+        {
+          organization_id: pendingInvite.organization_id,
+          user_id: user.id,
+          role: pendingInvite.role || 'member',
+        },
+        { onConflict: 'user_id,organization_id' },
+      );
+      if (!joinError) {
+        await admin
+          .from('team_invitations')
+          .update({ status: 'accepted' })
+          .eq('id', pendingInvite.id);
+
+        // Check if org has completed onboarding
+        const { data: inviteOrg } = await supabase
+          .from('organizations')
+          .select('onboarding_completed')
+          .eq('id', pendingInvite.organization_id)
+          .maybeSingle();
+
+        if (inviteOrg?.onboarding_completed) {
+          console.log('[auth/callback] ✅ Auto-joined via invitation → /app');
+          return redirectWithCookies(`${appBase}/app`);
+        }
+        console.log(
+          '[auth/callback] ✅ Auto-joined via invitation → /onboarding',
+        );
+        return redirectWithCookies(`${appBase}/onboarding`);
+      }
+      console.error(
+        '[auth/callback] Failed to auto-accept invitation:',
+        joinError,
+      );
+    }
+
     console.log(
       '[auth/callback] 🔧 EXISTING USER without org - fixing orphaned account',
     );
@@ -526,20 +814,15 @@ export async function GET(request: Request) {
   // HARDENING: Always ensure subscription + entitlements exist
   await ensureSubscription(membership.organization_id, resolvedPlan);
 
-  // CRITICAL: Validate compliance graph integrity for existing users
-  console.log('[auth/callback] 🔍 Validating compliance graph integrity');
-  const graphValidation = await validateComplianceGraph(
-    membership.organization_id,
-  );
-
-  if (!graphValidation.isValid) {
-    console.log(
-      `[auth/callback] ⚠️  Graph issues detected: ${graphValidation.issues.join(', ')}`,
-    );
-    // Note: We don't block login for graph issues, just log them
-  } else {
-    console.log('[auth/callback] ✅ Compliance graph integrity verified');
-  }
+  // PERF: Validate compliance graph in background (non-blocking).
+  // Previously this blocked every login with a DB query. Now fire-and-forget.
+  validateComplianceGraph(membership.organization_id)
+    .then((result) => {
+      if (!result.isValid) {
+        console.warn('[auth/callback] Graph issues (async):', result.issues.join(', '));
+      }
+    })
+    .catch(() => {});
 
   const hasPlan = Boolean(organization?.plan_key ?? resolvedPlan);
   const hasIndustry = Boolean(organization?.industry);

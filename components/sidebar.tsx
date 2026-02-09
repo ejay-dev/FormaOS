@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { signOut } from "@/app/app/actions/logout";
 import { LogOut, Command } from "lucide-react";
 import Button from "./ui/button";
@@ -17,8 +17,11 @@ export function Sidebar({ role = "owner" }: { role?: UserRole }) {
   const organization = useAppStore((state) => state.organization);
   const industry = organization?.industry ?? null;
 
-  // Get industry-specific navigation
-  const { navigation, categories } = getIndustryNavigation(industry, role);
+  // Get industry-specific navigation (memoized to prevent prefetch re-runs)
+  const { navigation, categories } = useMemo(
+    () => getIndustryNavigation(industry, role),
+    [industry, role],
+  );
 
   /**
    * PERFORMANCE: Prefetch all routes on mount
