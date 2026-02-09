@@ -6,26 +6,21 @@
 export function isFounder(email: string | undefined, userId: string): boolean {
   // Return false immediately if no user info
   if (!email && !userId) {
-    console.log('[isFounder] ❌ No email or userId provided');
     return false;
   }
 
   const parseEnvList = (value?: string | null): Set<string> => {
     const raw = value ?? '';
     if (!raw || raw.trim() === '') {
-      console.log('[isFounder] ⚠️ Empty environment variable');
       return new Set();
     }
 
-    const parsed = new Set(
+    return new Set(
       raw
         .split(',')
         .map((entry) => entry.trim().toLowerCase())
         .filter(Boolean),
     );
-
-    console.log('[isFounder] 📋 Parsed env list size:', parsed.size);
-    return parsed;
   };
 
   const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);

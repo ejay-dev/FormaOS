@@ -706,7 +706,14 @@ export async function GET(request: Request) {
   }
 
   // HARDENING: Always ensure subscription + entitlements exist
-  await ensureSubscription(membership.organization_id, resolvedPlan);
+  try {
+    await ensureSubscription(membership.organization_id, resolvedPlan);
+  } catch (subErr) {
+    console.error(
+      '[auth/callback] ensureSubscription failed (non-critical):',
+      subErr,
+    );
+  }
 
   // PERF: Validate compliance graph in background (non-blocking).
   // Previously this blocked every login with a DB query. Now fire-and-forget.
