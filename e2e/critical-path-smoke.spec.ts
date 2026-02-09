@@ -69,7 +69,15 @@ const siteBase =
 async function signInWithMagicLink(page: any, email: string, expectedUrl?: RegExp) {
   const session = await createMagicLinkSession(email);
   await setPlaywrightSession(page.context(), session, appBase);
-  await page.goto(`${appBase}/auth/signin`, { waitUntil: 'domcontentloaded' });
+  const bootstrapResponse = await page.request.post(
+    `${appBase}/api/auth/bootstrap`,
+  );
+  if (!bootstrapResponse.ok()) {
+    throw new Error(`Bootstrap failed: ${bootstrapResponse.status()}`);
+  }
+  const payload = await bootstrapResponse.json().catch(() => ({}));
+  const next = typeof payload?.next === 'string' ? payload.next : '/app';
+  await page.goto(`${appBase}${next}`, { waitUntil: 'domcontentloaded' });
   if (expectedUrl) {
     await page.waitForURL(expectedUrl, { timeout: 20_000 });
     return;

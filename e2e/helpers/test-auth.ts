@@ -159,13 +159,13 @@ export async function setPlaywrightSession(
   const encoded = `base64-${toBase64Url(serialized)}`;
   const chunks = createCookieChunks(storageKey, encoded);
   const base = new URL(appBaseUrl);
+  const cookieUrl = `${base.protocol}//${base.host}`;
 
   await context.addCookies(
     chunks.map((chunk) => ({
       name: chunk.name,
       value: chunk.value,
-      domain: base.hostname,
-      path: '/',
+      url: cookieUrl,
       httpOnly: false,
       secure: base.protocol === 'https:',
       sameSite: 'Lax',
