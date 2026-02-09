@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
 import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { bootstrapOrganizationAtomic } from '@/lib/supabase/transaction';
 import { resolvePlanKey } from '@/lib/plans';
 import { ensureSubscription } from '@/lib/billing/subscriptions';
 import { isFounder } from '@/lib/utils/founder';
@@ -514,126 +515,42 @@ export async function GET(request: Request) {
       user.email?.split('@')[0] ||
       'New Organization';
 
+    // Use atomic bootstrap with rollback on failure
+    const { data: bootstrapResult, error: bootstrapError } = await bootstrapOrganizationAtomic({
+      userId: user.id,
+      userEmail: user.email ?? null,
+      orgName: fallbackName,
+      planKey: plan,
+    });
+
+    if (bootstrapError || !bootstrapResult) {
+      console.error('[auth/callback] ❌ Atomic bootstrap failed:', bootstrapError?.message);
+      return redirectWithCookies(
+        `${appBase}/auth/signin?error=org_creation_failed&message=${encodeURIComponent(
+          'Account setup failed. Please try signing in again.',
+        )}`,
+      );
+    }
+
+    const organizationId = bootstrapResult.organizationId;
+    console.log('[auth/callback] ✅ Atomic bootstrap succeeded:', organizationId);
+
+    // Initialize compliance graph (non-critical, can fail)
     try {
-      const now = new Date().toISOString();
-
-      // Use the admin (service-role) client for bootstrap writes so RLS doesn't block
-      // HARDENING: Always set plan_key (defaulted to 'basic' above)
-      const { data: organization, error: orgError } = await admin
-        .from('organizations')
-        .insert({
-          name: fallbackName,
-          created_by: user.id, // Set the creating user ID properly
-          plan_key: plan, // Always set (defaulted to 'basic')
-          plan_selected_at: now,
-          onboarding_completed: false, // Ensure onboarding is NOT complete for new users
-        })
-        .select('id')
-        .single();
-
-      if (orgError || !organization?.id) {
-        console.error(
-          '[auth/callback] ❌ CRITICAL: Organization bootstrap failed:',
-          orgError?.message ?? orgError,
-          orgError?.details ?? null,
-          orgError,
-        );
-        // On org creation failure, redirect to signin with clear error
-        return redirectWithCookies(
-          `${appBase}/auth/signin?error=org_creation_failed&message=${encodeURIComponent(
-            'Account setup failed. Please try signing in again.',
-          )}`,
-        );
-      }
-
-      // HARDENING: Upsert into legacy 'orgs' table (prevents duplicates, required for org_subscriptions.org_id FK)
-      const { error: legacyOrgError } = await admin.from('orgs').upsert(
-        {
-          id: organization.id, // Use same ID to keep them in sync
-          name: fallbackName,
-          created_by: user.id,
-          created_at: now,
-          updated_at: now,
-        },
-        { onConflict: 'id' },
-      );
-
-      if (legacyOrgError) {
-        console.error(
-          '[auth/callback] Legacy orgs table upsert failed (non-critical):',
-          legacyOrgError.message,
-        );
-      }
-
-      // Create org membership with proper role
-      const { error: memberError } = await admin.from('org_members').insert({
-        organization_id: organization.id,
-        user_id: user.id,
-        role: 'owner', // New users become organization owners
-      });
-
-      if (memberError) {
-        console.error(
-          '[auth/callback] Membership bootstrap failed:',
-          memberError?.message ?? memberError,
-          memberError?.details ?? null,
-          memberError,
-        );
-      }
-
-      // Set up onboarding status (start at step 2 if plan already selected)
-      const { error: onboardingError } = await admin
-        .from('org_onboarding_status')
-        .insert({
-          organization_id: organization.id,
-          current_step: plan ? 1 : 2,
-          completed_steps: [],
-        });
-
-      if (onboardingError) {
-        console.error(
-          '[auth/callback] org_onboarding_status insert failed:',
-          onboardingError?.message ?? onboardingError,
-          onboardingError?.details ?? null,
-          onboardingError,
-        );
-      }
-
-      try {
-        await ensureSubscription(organization.id, plan);
-      } catch (subErr) {
-        console.error('[auth/callback] ensureSubscription failed:', subErr);
-      }
-
-      // CRITICAL: Initialize compliance graph for new organization
       console.log('[auth/callback] 🏗️  Initializing compliance graph');
-      const graphResult = await initializeComplianceGraph(
-        organization.id,
-        user.id,
-      );
-
+      const graphResult = await initializeComplianceGraph(organizationId, user.id);
       if (graphResult.success) {
         console.log(
           `[auth/callback] ✅ Compliance graph initialized: ${graphResult.nodes?.length} nodes, ${graphResult.wires?.length} wires`,
         );
       } else {
-        console.error(
-          `[auth/callback] ⚠️  Graph initialization warning: ${graphResult.error}`,
-        );
-        // Continue anyway - graph can be initialized later
+        console.warn(`[auth/callback] ⚠️  Graph initialization warning: ${graphResult.error}`);
       }
-
-      console.log(
-        '[auth/callback] ✅ NEW USER setup complete, redirecting to onboarding',
-      );
-    } catch (err) {
-      console.error(
-        '[auth/callback] Organization bootstrap failed (unexpected):',
-        err,
-      );
+    } catch (graphErr) {
+      console.error('[auth/callback] Graph initialization failed (non-critical):', graphErr);
     }
 
-    // CRITICAL FIX: Always redirect new users to onboarding
+    console.log('[auth/callback] ✅ NEW USER setup complete, redirecting to onboarding');
     const planQuery = plan ? `?plan=${encodeURIComponent(plan)}` : '';
     return redirectWithCookies(`${appBase}/onboarding${planQuery}`);
   }

@@ -62,12 +62,12 @@ export default async function AppLayout({
 
   /* -------------------------------------------------------
    * 2) FETCH COMPLETE SYSTEM STATE (server-side, once)
-   *    Single call — NOT duplicated in child components.
+   *    Pass user to avoid duplicate getUser() call.
    * ----------------------------------------------------- */
   let systemState: Awaited<ReturnType<typeof fetchSystemState>> = null;
 
   try {
-    systemState = await fetchSystemState();
+    systemState = await fetchSystemState(user);
   } catch (err) {
     console.error('[AppLayout] fetchSystemState crashed:', err);
   }

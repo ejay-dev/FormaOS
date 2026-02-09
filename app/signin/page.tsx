@@ -409,12 +409,20 @@ function SignInContent() {
               </div>
 
               <div>
-                <label
-                  htmlFor="password"
-                  className="block text-xs font-semibold text-slate-300 mb-2"
-                >
-                  Password
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label
+                    htmlFor="password"
+                    className="block text-xs font-semibold text-slate-300"
+                  >
+                    Password
+                  </label>
+                  <Link
+                    href="/auth/forgot-password"
+                    className="text-xs text-sky-400 hover:text-sky-300 transition-colors"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
                 <input
                   id="password"
                   type="password"

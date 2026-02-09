@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
-import { isFounder } from "@/lib/utils/founder";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { NextResponse } from 'next/server';
+import { isFounder } from '@/lib/utils/founder';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
-export const runtime = "nodejs";
+export const runtime = 'nodejs';
 
 /**
  * Debug endpoint — only accessible by founders.
@@ -12,7 +12,9 @@ export async function GET() {
   // 1. Require authenticated founder
   try {
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user || !isFounder(user.email ?? '', user.id)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }

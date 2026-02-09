@@ -21,8 +21,13 @@ import type {
  */
 export async function buildReport(
   orgId: string,
-  reportType: ReportType
-): Promise<BaseReportPayload | Iso27001ReportPayload | NdisReportPayload | HipaaReportPayload> {
+  reportType: ReportType,
+): Promise<
+  | BaseReportPayload
+  | Iso27001ReportPayload
+  | NdisReportPayload
+  | HipaaReportPayload
+> {
   switch (reportType) {
     case 'iso27001':
       return buildIso27001Report(orgId);
@@ -42,7 +47,7 @@ export async function buildReport(
 async function buildBaseReport(
   orgId: string,
   frameworkCode: string,
-  frameworkName: string
+  frameworkName: string,
 ): Promise<BaseReportPayload> {
   const admin = createSupabaseAdminClient();
 
@@ -56,7 +61,7 @@ async function buildBaseReport(
   // Get framework readiness
   const readinessData = await calculateFrameworkReadiness(orgId);
   const frameworkReadiness = readinessData.find(
-    (r) => r.frameworkCode === frameworkCode
+    (r) => r.frameworkCode === frameworkCode,
   );
 
   // Get evidence summary
@@ -67,9 +72,21 @@ async function buildBaseReport(
 
   const evidenceSummary = {
     total: evidence?.length || 0,
-    verified: evidence?.filter((e: { verification_status?: string }) => e.verification_status === 'verified').length || 0,
-    pending: evidence?.filter((e: { verification_status?: string }) => !e.verification_status || e.verification_status === 'pending').length || 0,
-    rejected: evidence?.filter((e: { verification_status?: string }) => e.verification_status === 'rejected').length || 0,
+    verified:
+      evidence?.filter(
+        (e: { verification_status?: string }) =>
+          e.verification_status === 'verified',
+      ).length || 0,
+    pending:
+      evidence?.filter(
+        (e: { verification_status?: string }) =>
+          !e.verification_status || e.verification_status === 'pending',
+      ).length || 0,
+    rejected:
+      evidence?.filter(
+        (e: { verification_status?: string }) =>
+          e.verification_status === 'rejected',
+      ).length || 0,
   };
 
   // Get task summary
@@ -81,10 +98,14 @@ async function buildBaseReport(
 
   const taskSummary = {
     total: tasks?.length || 0,
-    completed: tasks?.filter((t: { status: string }) => t.status === 'completed').length || 0,
-    overdue: tasks?.filter(
-      (t: { status: string; due_date?: string }) => t.status !== 'completed' && t.due_date && new Date(t.due_date) < now
-    ).length || 0,
+    completed:
+      tasks?.filter((t: { status: string }) => t.status === 'completed')
+        .length || 0,
+    overdue:
+      tasks?.filter(
+        (t: { status: string; due_date?: string }) =>
+          t.status !== 'completed' && t.due_date && new Date(t.due_date) < now,
+      ).length || 0,
   };
 
   // Get critical gaps
@@ -116,38 +137,47 @@ async function buildBaseReport(
 /**
  * Build ISO 27001 report with Statement of Applicability
  */
-async function buildIso27001Report(orgId: string): Promise<Iso27001ReportPayload> {
+async function buildIso27001Report(
+  orgId: string,
+): Promise<Iso27001ReportPayload> {
   const baseReport = await buildBaseReport(orgId, 'ISO27001', 'ISO 27001:2022');
   const admin = createSupabaseAdminClient();
 
   // Get control evaluations for SoA
   const { data: evaluations } = await admin
     .from('org_control_evaluations')
-    .select(`
+    .select(
+      `
       control_id,
       compliance_score,
       evidence_count,
       compliance_controls!inner(code, title)
-    `)
+    `,
+    )
     .eq('organization_id', orgId)
     .eq('control_type', 'control_snapshot');
 
   // Build SoA entries
-  const statementOfApplicability: SoaEntry[] = (evaluations || []).map((eval_: any) => {
-    const score = eval_.compliance_score || 0;
-    let status: SoaEntry['implementationStatus'] = 'not_implemented';
-    if (score >= 80) status = 'implemented';
-    else if (score >= 40) status = 'partial';
+  const statementOfApplicability: SoaEntry[] = (evaluations || []).map(
+    (eval_: any) => {
+      const score = eval_.compliance_score || 0;
+      let status: SoaEntry['implementationStatus'] = 'not_implemented';
+      if (score >= 80) status = 'implemented';
+      else if (score >= 40) status = 'partial';
 
-    return {
-      clauseNumber: eval_.compliance_controls?.code || 'A.X.X',
-      controlName: eval_.compliance_controls?.title || 'Unknown Control',
-      applicable: true,
-      justification: score >= 80 ? 'Control fully implemented with evidence' : 'Control requires additional implementation',
-      implementationStatus: status,
-      evidenceCount: eval_.evidence_count || 0,
-    };
-  });
+      return {
+        clauseNumber: eval_.compliance_controls?.code || 'A.X.X',
+        controlName: eval_.compliance_controls?.title || 'Unknown Control',
+        applicable: true,
+        justification:
+          score >= 80
+            ? 'Control fully implemented with evidence'
+            : 'Control requires additional implementation',
+        implementationStatus: status,
+        evidenceCount: eval_.evidence_count || 0,
+      };
+    },
+  );
 
   // Get risk assessment summary
   const { data: risks } = await admin
@@ -157,10 +187,20 @@ async function buildIso27001Report(orgId: string): Promise<Iso27001ReportPayload
 
   const riskAssessmentSummary = {
     totalRisks: risks?.length || 0,
-    highRisks: risks?.filter((r: { severity?: string }) => r.severity === 'high' || r.severity === 'critical').length || 0,
-    mediumRisks: risks?.filter((r: { severity?: string }) => r.severity === 'medium').length || 0,
-    lowRisks: risks?.filter((r: { severity?: string }) => r.severity === 'low').length || 0,
-    mitigated: risks?.filter((r: { status?: string }) => r.status === 'mitigated').length || 0,
+    highRisks:
+      risks?.filter(
+        (r: { severity?: string }) =>
+          r.severity === 'high' || r.severity === 'critical',
+      ).length || 0,
+    mediumRisks:
+      risks?.filter((r: { severity?: string }) => r.severity === 'medium')
+        .length || 0,
+    lowRisks:
+      risks?.filter((r: { severity?: string }) => r.severity === 'low')
+        .length || 0,
+    mitigated:
+      risks?.filter((r: { status?: string }) => r.status === 'mitigated')
+        .length || 0,
   };
 
   return {
@@ -175,37 +215,45 @@ async function buildIso27001Report(orgId: string): Promise<Iso27001ReportPayload
  * Build NDIS compliance report
  */
 async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
-  const baseReport = await buildBaseReport(orgId, 'NDIS', 'NDIS Practice Standards');
+  const baseReport = await buildBaseReport(
+    orgId,
+    'NDIS',
+    'NDIS Practice Standards',
+  );
   const admin = createSupabaseAdminClient();
 
   // Get NDIS practice standards evaluations
   const { data: evaluations } = await admin
     .from('org_control_evaluations')
-    .select(`
+    .select(
+      `
       control_id,
       compliance_score,
       evidence_count,
       last_evaluated_at,
       compliance_controls!inner(code, title, category)
-    `)
+    `,
+    )
     .eq('organization_id', orgId)
     .eq('control_type', 'control_snapshot');
 
-  const practiceStandards: NdisPracticeStandard[] = (evaluations || []).map((eval_: any) => {
-    const score = eval_.compliance_score || 0;
-    let status: NdisPracticeStandard['complianceStatus'] = 'non_compliant';
-    if (score >= 80) status = 'compliant';
-    else if (score >= 40) status = 'partial';
+  const practiceStandards: NdisPracticeStandard[] = (evaluations || []).map(
+    (eval_: any) => {
+      const score = eval_.compliance_score || 0;
+      let status: NdisPracticeStandard['complianceStatus'] = 'non_compliant';
+      if (score >= 80) status = 'compliant';
+      else if (score >= 40) status = 'partial';
 
-    return {
-      standardCode: eval_.compliance_controls?.code || 'PS.X',
-      standardName: eval_.compliance_controls?.title || 'Unknown Standard',
-      category: eval_.compliance_controls?.category || 'Core',
-      complianceStatus: status,
-      evidenceCount: eval_.evidence_count || 0,
-      lastReviewDate: eval_.last_evaluated_at,
-    };
-  });
+      return {
+        standardCode: eval_.compliance_controls?.code || 'PS.X',
+        standardName: eval_.compliance_controls?.title || 'Unknown Standard',
+        category: eval_.compliance_controls?.category || 'Core',
+        complianceStatus: status,
+        evidenceCount: eval_.evidence_count || 0,
+        lastReviewDate: eval_.last_evaluated_at,
+      };
+    },
+  );
 
   // Get incident metrics
   const thirtyDaysAgo = new Date();
@@ -217,11 +265,12 @@ async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
     .eq('organization_id', orgId);
 
   // Calculate actual average resolution time (in days)
-  const resolvedIncidents = incidents?.filter(
-    (i: { status?: string; resolved_at?: string; created_at?: string }) =>
-      i.status === 'resolved' && i.resolved_at && i.created_at
-  ) || [];
-  
+  const resolvedIncidents =
+    incidents?.filter(
+      (i: { status?: string; resolved_at?: string; created_at?: string }) =>
+        i.status === 'resolved' && i.resolved_at && i.created_at,
+    ) || [];
+
   let avgResolutionTime: number | null = null;
   if (resolvedIncidents.length > 0) {
     const totalDays = resolvedIncidents.reduce((sum: number, i: any) => {
@@ -229,16 +278,25 @@ async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
       const resolved = new Date(i.resolved_at).getTime();
       return sum + (resolved - created) / (1000 * 60 * 60 * 24);
     }, 0);
-    avgResolutionTime = Math.round((totalDays / resolvedIncidents.length) * 10) / 10;
+    avgResolutionTime =
+      Math.round((totalDays / resolvedIncidents.length) * 10) / 10;
   }
 
   const participantSafetyMetrics = {
-    openIncidents: incidents?.filter((i: { status?: string }) => i.status === 'open').length || 0,
-    resolvedLast30Days: incidents?.filter(
-      (i: { status?: string; resolved_at?: string }) => i.status === 'resolved' && i.resolved_at && new Date(i.resolved_at) >= thirtyDaysAgo
-    ).length || 0,
+    openIncidents:
+      incidents?.filter((i: { status?: string }) => i.status === 'open')
+        .length || 0,
+    resolvedLast30Days:
+      incidents?.filter(
+        (i: { status?: string; resolved_at?: string }) =>
+          i.status === 'resolved' &&
+          i.resolved_at &&
+          new Date(i.resolved_at) >= thirtyDaysAgo,
+      ).length || 0,
     averageResolutionTime: avgResolutionTime ?? 0, // Real calculation
-    reportableIncidents: incidents?.filter((i: { is_reportable?: boolean }) => i.is_reportable).length || 0,
+    reportableIncidents:
+      incidents?.filter((i: { is_reportable?: boolean }) => i.is_reportable)
+        .length || 0,
   };
 
   // Get staff credentials
@@ -257,22 +315,34 @@ async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
   thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
 
   // Calculate actual compliant staff count from credentials
-  const validCredentials = credentials?.filter(
-    (c: { status?: string; expires_at?: string }) =>
-      c.status === 'active' || c.status === 'verified' ||
-      (c.expires_at && new Date(c.expires_at) > now)
-  ) || [];
-  const compliantStaffCount = Math.min(validCredentials.length, totalStaff || 0);
+  const validCredentials =
+    credentials?.filter(
+      (c: { status?: string; expires_at?: string }) =>
+        c.status === 'active' ||
+        c.status === 'verified' ||
+        (c.expires_at && new Date(c.expires_at) > now),
+    ) || [];
+  const compliantStaffCount = Math.min(
+    validCredentials.length,
+    totalStaff || 0,
+  );
 
   const staffCredentialsSummary = {
     totalStaff: totalStaff || 0,
     compliantStaff: compliantStaffCount, // Real calculation
-    expiringCredentials: credentials?.filter(
-      (c: { expires_at?: string }) => c.expires_at && new Date(c.expires_at) > now && new Date(c.expires_at) <= thirtyDaysFromNow
-    ).length || 0,
-    expiredCredentials: credentials?.filter(
-      (c: { status?: string; expires_at?: string }) => c.status === 'expired' || (c.expires_at && new Date(c.expires_at) < now)
-    ).length || 0,
+    expiringCredentials:
+      credentials?.filter(
+        (c: { expires_at?: string }) =>
+          c.expires_at &&
+          new Date(c.expires_at) > now &&
+          new Date(c.expires_at) <= thirtyDaysFromNow,
+      ).length || 0,
+    expiredCredentials:
+      credentials?.filter(
+        (c: { status?: string; expires_at?: string }) =>
+          c.status === 'expired' ||
+          (c.expires_at && new Date(c.expires_at) < now),
+      ).length || 0,
   };
 
   return {
@@ -294,25 +364,38 @@ async function buildHipaaReport(orgId: string): Promise<HipaaReportPayload> {
   // Get control evaluations grouped by category
   const { data: evaluations } = await admin
     .from('org_control_evaluations')
-    .select(`
+    .select(
+      `
       control_id,
       compliance_score,
       compliance_controls!inner(category)
-    `)
+    `,
+    )
     .eq('organization_id', orgId)
     .eq('control_type', 'control_snapshot');
 
   // Calculate rule compliance
   const calculateRuleCompliance = (category: string) => {
-    const ruleEvals = (evaluations || []).filter(
-      (e: any) => e.compliance_controls?.category?.toLowerCase().includes(category.toLowerCase())
+    const ruleEvals = (evaluations || []).filter((e: any) =>
+      e.compliance_controls?.category
+        ?.toLowerCase()
+        .includes(category.toLowerCase()),
     );
     const totalReqs = ruleEvals.length || 1;
-    const satisfiedReqs = ruleEvals.filter((e: any) => (e.compliance_score || 0) >= 80).length;
+    const satisfiedReqs = ruleEvals.filter(
+      (e: any) => (e.compliance_score || 0) >= 80,
+    ).length;
     const avgScore = ruleEvals.length
-      ? Math.round(ruleEvals.reduce((sum: number, e: any) => sum + (e.compliance_score || 0), 0) / ruleEvals.length)
+      ? Math.round(
+          ruleEvals.reduce(
+            (sum: number, e: any) => sum + (e.compliance_score || 0),
+            0,
+          ) / ruleEvals.length,
+        )
       : 0;
-    const criticalGaps = ruleEvals.filter((e: any) => (e.compliance_score || 0) < 40).length;
+    const criticalGaps = ruleEvals.filter(
+      (e: any) => (e.compliance_score || 0) < 40,
+    ).length;
 
     return {
       complianceScore: avgScore,
@@ -361,16 +444,18 @@ async function buildHipaaReport(orgId: string): Promise<HipaaReportPayload> {
 async function getCriticalGaps(
   orgId: string,
   admin: ReturnType<typeof createSupabaseAdminClient>,
-  frameworkCode: string
+  frameworkCode: string,
 ): Promise<CriticalGap[]> {
   const { data: evaluations } = await admin
     .from('org_control_evaluations')
-    .select(`
+    .select(
+      `
       control_id,
       compliance_score,
       gap_description,
       compliance_controls!inner(code, title)
-    `)
+    `,
+    )
     .eq('organization_id', orgId)
     .eq('control_type', 'control_snapshot')
     .lt('compliance_score', 50)
@@ -382,7 +467,8 @@ async function getCriticalGaps(
     return {
       controlCode: eval_.compliance_controls?.code || 'UNKNOWN',
       controlTitle: eval_.compliance_controls?.title || 'Unknown Control',
-      reason: eval_.gap_description || 'Evidence gap or control not implemented',
+      reason:
+        eval_.gap_description || 'Evidence gap or control not implemented',
       priority: score < 25 ? 'critical' : score < 40 ? 'high' : 'medium',
     } as CriticalGap;
   });

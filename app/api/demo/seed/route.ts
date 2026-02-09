@@ -1,7 +1,7 @@
 /**
  * Demo Data Seed API Endpoint
  * Seeds demo data for guided demo mode
- * 
+ *
  * PROTECTED: Requires founder access
  */
 
@@ -14,7 +14,9 @@ export async function POST(request: NextRequest) {
   // 🔐 SECURITY: Require founder access to seed demo data
   try {
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user || !isFounder(user.email ?? '', user.id)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
@@ -30,7 +32,7 @@ export async function POST(request: NextRequest) {
     if (!organizationId) {
       return NextResponse.json(
         { error: 'Organization ID is required' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -46,7 +48,7 @@ export async function POST(request: NextRequest) {
     if (orgError || !org) {
       return NextResponse.json(
         { error: 'Organization not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -147,7 +149,7 @@ export async function POST(request: NextRequest) {
         },
         {
           onConflict: 'organization_id',
-        }
+        },
       );
 
     if (scoreError) {
@@ -167,8 +169,11 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Demo seed error:', error);
     return NextResponse.json(
-      { error: 'Failed to seed demo data', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
+      {
+        error: 'Failed to seed demo data',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 },
     );
   }
 }
