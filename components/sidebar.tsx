@@ -82,7 +82,7 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
                       className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium transition-all ${
                         isActive
                           ? 'bg-primary text-primary-foreground shadow-premium-md'
-                          : 'text-foreground/70 hover:bg-white/5 hover:text-foreground'
+                          : 'text-foreground/70 hover:bg-muted/50 hover:text-foreground'
                       }`}
                     >
                       <item.icon
@@ -98,11 +98,11 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
       </div>
 
       {/* Bottom actions */}
-      <div className="space-y-2 border-t border-white/8 pt-5">
+      <div className="space-y-2 border-t border-border pt-5">
         {/* Quick search */}
         <Button
           variant="ghost"
-          className="group flex w-full items-center justify-between rounded-xl px-3 py-3 text-sm font-medium hover:bg-white/5"
+          className="group flex w-full items-center justify-between rounded-xl px-3 py-3 text-sm font-medium hover:bg-muted/50"
         >
           <div className="flex items-center gap-3">
             <Command className="h-4 w-4 text-foreground/50" />
@@ -118,7 +118,7 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
           <Button
             type="submit"
             variant="ghost"
-            className="group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium hover:bg-white/5"
+            className="group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium hover:bg-muted/50"
           >
             <LogOut className="h-4 w-4 text-foreground/50" />
             <span>Sign Out</span>

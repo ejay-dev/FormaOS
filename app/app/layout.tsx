@@ -111,9 +111,9 @@ export default async function AppLayout({
                 {/* App shell grid */}
                 <div className="flex h-full w-full min-w-0">
                   {/* Sidebar */}
-                  <aside className="relative z-30 hidden md:flex h-full w-[280px] shrink-0 flex-col glass-panel-strong border-r border-white/8">
+                  <aside className="relative z-30 hidden md:flex h-full w-[280px] shrink-0 flex-col glass-panel-strong border-r border-border">
                     {/* Sidebar header */}
-                    <div className="flex h-20 items-center border-b border-white/8 px-6">
+                    <div className="flex h-20 items-center border-b border-border px-6">
                       <div className="flex items-center gap-3">
                         <Logo variant="mark" size={40} />
                         <div>
@@ -133,7 +133,7 @@ export default async function AppLayout({
                     </div>
 
                     {/* Sidebar footer */}
-                    <div className="border-t border-white/8 px-6 py-5 text-xs text-muted-foreground">
+                    <div className="border-t border-border px-6 py-5 text-xs text-muted-foreground">
                       <div className="font-medium">
                         © {new Date().getFullYear()} {brand.appName}
                       </div>
@@ -144,7 +144,7 @@ export default async function AppLayout({
                   {/* Main application area */}
                   <section className="relative flex h-full flex-1 flex-col overflow-hidden">
                     {/* Top bar */}
-                    <header className="sticky top-0 z-40 flex h-16 md:h-20 w-full items-center glass-panel-strong border-b border-white/8">
+                    <header className="sticky top-0 z-40 flex h-16 md:h-20 w-full items-center glass-panel-strong border-b border-border">
                       <div className="flex h-full w-full items-center px-4 sm:px-6 lg:px-8">
                         <TopBar
                           orgName={

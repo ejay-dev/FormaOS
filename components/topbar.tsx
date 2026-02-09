@@ -29,6 +29,7 @@ import Button from './ui/button';
 
 // ✅ Notification Center Component
 import { NotificationCenter } from '@/components/notifications/notification-center';
+import { ThemeSwitcher, ThemeToggle } from '@/components/theme-switcher';
 
 type UserRole = 'viewer' | 'member' | 'admin' | 'owner' | 'staff' | 'auditor';
 type MenuItem = {
@@ -168,7 +169,7 @@ export function TopBar({
         <span className="max-w-[120px] sm:max-w-[200px] truncate px-2.5 sm:px-3 py-1 rounded-md bg-card/70 text-card-foreground text-xs sm:text-sm font-semibold border border-card-foreground/8">
           {orgName}
         </span>
-        <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-white/10 bg-white/5 text-slate-300">
+        <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-border bg-muted/50 text-muted-foreground">
           {role}
         </span>
       </div>
@@ -224,6 +225,9 @@ export function TopBar({
           <LifeBuoy className="h-5 w-5" />
         </Button>
 
+        {/* Theme Toggle */}
+        <ThemeToggle />
+
         {/* USER DROPDOWN */}
         <div className="relative" ref={userMenuRef}>
           <Button
@@ -233,7 +237,7 @@ export function TopBar({
             aria-expanded={showUserMenu}
             className="flex items-center gap-2 rounded-full pl-1 pr-3 py-1.5"
           >
-            <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-white/8 text-[10px] font-bold text-card-foreground">
+            <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-muted text-[10px] font-bold text-card-foreground">
               {avatarUrl ? (
                 <img
                   src={avatarUrl}
@@ -286,6 +290,11 @@ export function TopBar({
                   </button>
                 ))}
               </div>
+
+              <div className="my-1 border-t border-card-foreground/8" />
+
+              {/* Theme switcher */}
+              <ThemeSwitcher />
 
               <div className="my-1 border-t border-card-foreground/8" />
 

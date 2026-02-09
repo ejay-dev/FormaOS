@@ -16,6 +16,7 @@ import {
 import { updateOrganization } from "@/app/app/actions/org";
 import { ExpiryAlertWidget } from "@/components/dashboard/expiry-alert-widget";
 import { SaveButton } from "@/components/ui/submit-button";
+import { AppearanceSettings } from "@/components/settings/appearance-settings";
 
 /**
  * ✅ GOVERNANCE UPDATE ACTION (UPGRADED)
@@ -315,6 +316,9 @@ export default async function SettingsPage() {
           </div>
         </div>
       </form>
+
+      {/* Appearance / Theme Settings */}
+      <AppearanceSettings />
     </div>
   );
 }

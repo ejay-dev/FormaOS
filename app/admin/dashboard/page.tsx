@@ -1,5 +1,12 @@
-import { getAdminFetchConfig } from "@/app/admin/lib";
-import { TrendingUp, Users, Building2, CreditCard, Zap, Activity } from "lucide-react";
+import { getAdminFetchConfig } from '@/app/admin/lib';
+import {
+  TrendingUp,
+  Users,
+  Building2,
+  CreditCard,
+  Zap,
+  Activity,
+} from 'lucide-react';
 
 type OverviewData = {
   totalOrgs: number;
@@ -13,9 +20,9 @@ type OverviewData = {
 
 async function fetchOverview() {
   const { base, headers } = await getAdminFetchConfig();
-  const res = await fetch(`${base}/api/admin/overview`, { 
-    cache: "no-store", 
-    headers 
+  const res = await fetch(`${base}/api/admin/overview`, {
+    cache: 'no-store',
+    headers,
   });
   if (!res.ok) return null;
   return res.json();
@@ -32,13 +39,16 @@ function KPICard({
   label: string;
   value: string | number;
   detail?: string;
-  color: "blue" | "green" | "purple" | "amber";
+  color: 'blue' | 'green' | 'purple' | 'amber';
 }) {
   const colorMap = {
-    blue: "from-blue-500/10 to-blue-600/5 border-blue-400/20 text-blue-300",
-    green: "from-emerald-500/10 to-emerald-600/5 border-emerald-400/20 text-emerald-300",
-    purple: "from-purple-500/10 to-purple-600/5 border-purple-400/20 text-purple-300",
-    amber: "from-amber-500/10 to-amber-600/5 border-amber-400/20 text-amber-300",
+    blue: 'from-blue-500/10 to-blue-600/5 border-blue-400/20 text-blue-300',
+    green:
+      'from-emerald-500/10 to-emerald-600/5 border-emerald-400/20 text-emerald-300',
+    purple:
+      'from-purple-500/10 to-purple-600/5 border-purple-400/20 text-purple-300',
+    amber:
+      'from-amber-500/10 to-amber-600/5 border-amber-400/20 text-amber-300',
   };
 
   return (
@@ -67,16 +77,19 @@ export default async function AdminDashboard() {
   }
 
   const formatCurrency = (cents: number) =>
-    new Intl.NumberFormat("en-AU", {
-      style: "currency",
-      currency: "AUD",
+    new Intl.NumberFormat('en-AU', {
+      style: 'currency',
+      currency: 'AUD',
       minimumFractionDigits: 0,
     }).format(cents / 100);
 
-  const basicCount = data.activeByPlan["basic"] || 0;
-  const proCount = data.activeByPlan["pro"] || 0;
-  const enterpriseCount = data.activeByPlan["enterprise"] || 0;
-  const maxOrgCount = Math.max(...data.orgsByDay.map((d: { count: number }) => d.count), 1);
+  const basicCount = data.activeByPlan['basic'] || 0;
+  const proCount = data.activeByPlan['pro'] || 0;
+  const enterpriseCount = data.activeByPlan['enterprise'] || 0;
+  const maxOrgCount = Math.max(
+    ...data.orgsByDay.map((d: { count: number }) => d.count),
+    1,
+  );
 
   return (
     <div className="space-y-8">
@@ -104,7 +117,7 @@ export default async function AdminDashboard() {
           detail={
             data.trialsExpiring > 0
               ? `${data.trialsExpiring} expiring soon`
-              : "All stable"
+              : 'All stable'
           }
           color="amber"
         />
@@ -134,11 +147,9 @@ export default async function AdminDashboard() {
           label="Failed Payments"
           value={data.failedPayments}
           detail={
-            data.failedPayments > 0
-              ? "Action required"
-              : "All payments current"
+            data.failedPayments > 0 ? 'Action required' : 'All payments current'
           }
-          color={data.failedPayments > 0 ? "amber" : "blue"}
+          color={data.failedPayments > 0 ? 'amber' : 'blue'}
         />
       </div>
 
@@ -158,10 +169,13 @@ export default async function AdminDashboard() {
                   }}
                 />
                 <span className="text-[10px] text-slate-500 mt-2">
-                  {new Date(day.date + "T00:00:00").toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  })}
+                  {new Date(day.date + 'T00:00:00').toLocaleDateString(
+                    'en-US',
+                    {
+                      month: 'short',
+                      day: 'numeric',
+                    },
+                  )}
                 </span>
               </div>
             ))}
@@ -185,7 +199,7 @@ export default async function AdminDashboard() {
                   className="h-full bg-purple-500"
                   style={{
                     width: `${
-                      ((basicCount) / Math.max(data.totalOrgs, 1)) * 100
+                      (basicCount / Math.max(data.totalOrgs, 1)) * 100
                     }%`,
                   }}
                 />
@@ -203,9 +217,7 @@ export default async function AdminDashboard() {
                 <div
                   className="h-full bg-emerald-500"
                   style={{
-                    width: `${
-                      ((proCount) / Math.max(data.totalOrgs, 1)) * 100
-                    }%`,
+                    width: `${(proCount / Math.max(data.totalOrgs, 1)) * 100}%`,
                   }}
                 />
               </div>
@@ -223,7 +235,7 @@ export default async function AdminDashboard() {
                   className="h-full bg-blue-500"
                   style={{
                     width: `${
-                      ((enterpriseCount) / Math.max(data.totalOrgs, 1)) * 100
+                      (enterpriseCount / Math.max(data.totalOrgs, 1)) * 100
                     }%`,
                   }}
                 />

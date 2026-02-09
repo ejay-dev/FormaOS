@@ -61,7 +61,13 @@ const NAV_SECTIONS = [
   },
 ];
 
-export function AdminShell({ children, email }: { children: React.ReactNode; email?: string }) {
+export function AdminShell({
+  children,
+  email,
+}: {
+  children: React.ReactNode;
+  email?: string;
+}) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -134,7 +140,8 @@ export function AdminShell({ children, email }: { children: React.ReactNode; ema
                     const Icon = item.icon;
                     const isActive =
                       pathname === item.href ||
-                      (item.href !== '/admin' && pathname.startsWith(item.href));
+                      (item.href !== '/admin' &&
+                        pathname.startsWith(item.href));
 
                     return (
                       <Link
