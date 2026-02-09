@@ -76,6 +76,7 @@ export default async function AdminDashboard() {
   const basicCount = data.activeByPlan["basic"] || 0;
   const proCount = data.activeByPlan["pro"] || 0;
   const enterpriseCount = data.activeByPlan["enterprise"] || 0;
+  const maxOrgCount = Math.max(...data.orgsByDay.map((d: { count: number }) => d.count), 1);
 
   return (
     <div className="space-y-8">
@@ -147,17 +148,17 @@ export default async function AdminDashboard() {
           <h2 className="text-lg font-semibold text-slate-100 mb-4">
             Organization Growth
           </h2>
-          <div className="h-48 flex items-end gap-2">
+          <div className="h-48 flex items-end gap-2 overflow-hidden">
             {data.orgsByDay.map((day, idx) => (
               <div key={idx} className="flex-1 flex flex-col items-center">
                 <div
-                  className="w-full bg-slate-700 rounded-t"
+                  className="w-full bg-blue-500/40 hover:bg-blue-500/60 rounded-t transition-colors"
                   style={{
-                    height: `${Math.max(day.count * 20, 4)}px`,
+                    height: `${Math.max(Math.round((day.count / maxOrgCount) * 140), 4)}px`,
                   }}
                 />
                 <span className="text-[10px] text-slate-500 mt-2">
-                  {new Date(day.date).toLocaleDateString("en-US", {
+                  {new Date(day.date + "T00:00:00").toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
                   })}

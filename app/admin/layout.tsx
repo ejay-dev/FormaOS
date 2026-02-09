@@ -7,8 +7,11 @@ import { isFounder } from "@/lib/utils/founder";
 export const dynamic = "force-dynamic";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  let userEmail: string | undefined;
+
   try {
     const result = await requireFounderAccess();
+    userEmail = result.user.email ?? undefined;
     console.log("[admin/layout] ✅ Founder access granted", { 
       email: result.user.email,
       timestamp: new Date().toISOString(),
@@ -46,5 +49,5 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     redirect("/auth/signin");
   }
 
-  return <AdminShell>{children}</AdminShell>;
+  return <AdminShell email={userEmail}>{children}</AdminShell>;
 }
