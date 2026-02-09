@@ -185,21 +185,29 @@ export async function ensureUserProvisioning(
   let orgName: string | null = null;
 
   if (!orgId) {
-    const { data: userData } = await (admin as any).auth.admin.getUserById(
-      input.userId,
-    );
-    const userEmail =
-      input.email ??
-      userData?.user?.email ??
-      `user-${input.userId.slice(0, 8)}`;
-    const userName =
-      userData?.user?.user_metadata?.full_name ??
-      userData?.user?.user_metadata?.name ??
-      userEmail.split("@")[0];
-    const planFromMetadata = resolvePlanKey(
-      userData?.user?.user_metadata?.selected_plan ?? null,
-    );
-    resolvedPlan = planFromMetadata ?? resolvedPlan;
+    // Fetch user metadata for org naming — wrapped in try/catch because
+    // the fallback admin client doesn't implement .auth.admin
+    let userEmail = input.email ?? `user-${input.userId.slice(0, 8)}`;
+    let userName = userEmail.split("@")[0];
+    try {
+      const { data: userData } = await (admin as any).auth.admin.getUserById(
+        input.userId,
+      );
+      if (userData?.user) {
+        userEmail = userData.user.email ?? userEmail;
+        userName =
+          userData.user.user_metadata?.full_name ??
+          userData.user.user_metadata?.name ??
+          userEmail.split("@")[0];
+        const planFromMetadata = resolvePlanKey(
+          userData.user.user_metadata?.selected_plan ?? null,
+        );
+        resolvedPlan = planFromMetadata ?? resolvedPlan;
+      }
+    } catch (err) {
+      console.error("[provisioning] auth.admin.getUserById failed:", err);
+      // Continue with defaults — org will still be created
+    }
     orgName = `${userName}'s Organization`;
 
     const { data: createdOrg, error } = await admin

@@ -92,8 +92,7 @@ test.describe('Google OAuth Smoke Tests', () => {
 
     // Should land on signin or app — not a 500 error page
     const is200 = response?.status() === 200 || response?.status() === 304;
-    const isRedirect =
-      response?.status() === 307 || response?.status() === 302;
+    const isRedirect = response?.status() === 307 || response?.status() === 302;
     expect(is200 || isRedirect).toBe(true);
 
     // Page should not show a server error

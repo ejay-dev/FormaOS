@@ -258,7 +258,11 @@ export async function fetchSystemState(): Promise<SystemStatePayload | null> {
   // Get membership data
   let membership = await getMembershipData();
   if (!membership) {
-    await ensureUserProvisioning({ userId: user.id, email: user.email ?? null });
+    try {
+      await ensureUserProvisioning({ userId: user.id, email: user.email ?? null });
+    } catch (err) {
+      console.error("[fetchSystemState] ensureUserProvisioning failed:", err);
+    }
     membership = await getMembershipData();
   }
   if (!membership) return null;
@@ -278,12 +282,16 @@ export async function fetchSystemState(): Promise<SystemStatePayload | null> {
   const needsRepair = !subscription || (needsEntitlements && dbEntitlements.length === 0);
 
   if (needsRepair) {
-    await ensureOrgProvisioning({
-      orgId: membership.orgId,
-      planKey: subscription?.planKey ?? null,
-      ownerUserId: membership.userId,
-      orgName: membership.organizationName,
-    });
+    try {
+      await ensureOrgProvisioning({
+        orgId: membership.orgId,
+        planKey: subscription?.planKey ?? null,
+        ownerUserId: membership.userId,
+        orgName: membership.organizationName,
+      });
+    } catch (err) {
+      console.error("[fetchSystemState] ensureOrgProvisioning failed:", err);
+    }
     subscription = await getSubscriptionData(membership.orgId);
     planTier = subscription?.planTier ?? planTier;
     trialActive = subscription?.trialActive ?? trialActive;

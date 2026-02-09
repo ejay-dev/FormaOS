@@ -63,7 +63,15 @@ export default async function AppLayout({
    * 2) FETCH COMPLETE SYSTEM STATE (server-side, once)
    *    This replaces all the individual Supabase queries below
    * ----------------------------------------------------- */
-  const systemState = await fetchSystemState();
+  let systemState: Awaited<ReturnType<typeof fetchSystemState>> = null;
+
+  try {
+    systemState = await fetchSystemState();
+  } catch (err) {
+    console.error('[AppLayout] fetchSystemState crashed:', err);
+    // Don't let provisioning errors crash the whole page — redirect safely
+    redirect('/onboarding');
+  }
 
   if (!systemState) {
     redirect('/onboarding');
