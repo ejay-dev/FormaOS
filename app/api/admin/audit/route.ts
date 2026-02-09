@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { requireFounderAccess } from "@/app/app/admin/access";
-import { parsePageParams } from "@/app/api/admin/_utils";
+import { NextResponse } from 'next/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { requireFounderAccess } from '@/app/app/admin/access';
+import { parsePageParams } from '@/app/api/admin/_utils';
 import { handleAdminError } from '@/app/api/admin/_helpers';
 
 export async function GET(request: Request) {
@@ -12,8 +12,9 @@ export async function GET(request: Request) {
     const { page, limit, from, to } = parsePageParams(url.searchParams);
 
     const { data, count } = await admin
-      .from("admin_audit_log")
-      .select(`
+      .from('admin_audit_log')
+      .select(
+        `
         id,
         actor_user_id,
         action,
@@ -21,8 +22,10 @@ export async function GET(request: Request) {
         target_id,
         metadata,
         created_at
-      `, { count: "exact" })
-      .order("created_at", { ascending: false })
+      `,
+        { count: 'exact' },
+      )
+      .order('created_at', { ascending: false })
       .range(from, to);
 
     return NextResponse.json({

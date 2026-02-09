@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireFounderAccess } from '@/app/app/admin/access';
-import { handleAdminError, ADMIN_CACHE_HEADERS } from '@/app/api/admin/_helpers';
+import {
+  handleAdminError,
+  ADMIN_CACHE_HEADERS,
+} from '@/app/api/admin/_helpers';
 
 export async function GET() {
   try {

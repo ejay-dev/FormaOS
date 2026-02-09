@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { requireFounderAccess } from "@/app/app/admin/access";
-import { logAdminAction } from "@/lib/admin/audit";
+import { NextResponse } from 'next/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { requireFounderAccess } from '@/app/app/admin/access';
+import { logAdminAction } from '@/lib/admin/audit';
 import { handleAdminError } from '@/app/api/admin/_helpers';
 
 type Params = {
@@ -17,23 +17,29 @@ export async function POST(request: Request, { params }: Params) {
     const email = data?.user?.email;
 
     if (!email) {
-      return NextResponse.json({ error: "User email not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: 'User email not found' },
+        { status: 404 },
+      );
     }
 
     await (admin as any).auth.admin.generateLink({
-      type: "signup",
+      type: 'signup',
       email,
     });
 
     await logAdminAction({
       actorUserId: user.id,
-      action: "user_resend_confirmation",
-      targetType: "user",
+      action: 'user_resend_confirmation',
+      targetType: 'user',
       targetId: userId,
     });
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    return handleAdminError(error, '/api/admin/users/[userId]/resend-confirmation');
+    return handleAdminError(
+      error,
+      '/api/admin/users/[userId]/resend-confirmation',
+    );
   }
 }

@@ -1,37 +1,35 @@
 import { NextResponse } from "next/server";
 import { isFounder } from "@/lib/utils/founder";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
+/**
+ * Debug endpoint — only accessible by founders.
+ * Never exposes raw env values in response.
+ */
 export async function GET() {
+  // 1. Require authenticated founder
   try {
-    // Test the founder detection utility with various inputs
-    const testCases = [
-      { email: "ejazhussaini313@gmail.com", userId: "test-user-1" },
-      { email: "normal@example.com", userId: "test-user-2" },
-      { email: "", userId: "" },
-      { email: undefined, userId: undefined },
-    ];
-
-    const results = testCases.map(({ email, userId }) => ({
-      email: email || "undefined",
-      userId: userId || "undefined", 
-      isFounder: isFounder(email ?? "", userId ?? ""),
-    }));
-
-    return NextResponse.json({
-      timestamp: new Date().toISOString(),
-      environment: {
-        NODE_ENV: process.env.NODE_ENV,
-        FOUNDER_EMAILS: process.env.FOUNDER_EMAILS,
-        FOUNDER_USER_IDS: process.env.FOUNDER_USER_IDS,
-      },
-      testResults: results,
-    });
-  } catch (error) {
-    return NextResponse.json({
-      error: "Debug failed",
-      message: error instanceof Error ? error.message : "Unknown error",
-    }, { status: 500 });
+    const supabase = await createSupabaseServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user || !isFounder(user.email ?? '', user.id)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+  } catch {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
+
+  // 2. Return sanitized diagnostics (no raw env values)
+  const hasFounderEmails = Boolean(process.env.FOUNDER_EMAILS?.length);
+  const hasFounderIds = Boolean(process.env.FOUNDER_USER_IDS?.length);
+
+  return NextResponse.json({
+    timestamp: new Date().toISOString(),
+    config: {
+      hasFounderEmails,
+      hasFounderIds,
+      nodeEnv: process.env.NODE_ENV,
+    },
+  });
 }

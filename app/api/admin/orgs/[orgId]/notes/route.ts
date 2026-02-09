@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { requireFounderAccess } from "@/app/app/admin/access";
-import { logAdminAction } from "@/lib/admin/audit";
+import { NextResponse } from 'next/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { requireFounderAccess } from '@/app/app/admin/access';
+import { logAdminAction } from '@/lib/admin/audit';
 import { handleAdminError } from '@/app/api/admin/_helpers';
 
 type Params = {
@@ -12,18 +12,18 @@ export async function POST(request: Request, { params }: Params) {
   try {
     const { user } = await requireFounderAccess();
     const { orgId } = await params;
-    const contentType = request.headers.get("content-type") ?? "";
-    const body = contentType.includes("application/json")
+    const contentType = request.headers.get('content-type') ?? '';
+    const body = contentType.includes('application/json')
       ? await request.json().catch(() => ({}))
       : Object.fromEntries(await request.formData());
-    const note = String(body?.note ?? "").trim();
+    const note = String(body?.note ?? '').trim();
 
     if (!note) {
-      return NextResponse.json({ error: "Note is required" }, { status: 400 });
+      return NextResponse.json({ error: 'Note is required' }, { status: 400 });
     }
 
     const admin = createSupabaseAdminClient();
-    await admin.from("admin_notes").insert({
+    await admin.from('admin_notes').insert({
       org_id: orgId,
       note,
       created_by: user.id,
@@ -31,8 +31,8 @@ export async function POST(request: Request, { params }: Params) {
 
     await logAdminAction({
       actorUserId: user.id,
-      action: "admin_note_create",
-      targetType: "organization",
+      action: 'admin_note_create',
+      targetType: 'organization',
       targetId: orgId,
     });
 

@@ -131,7 +131,10 @@ function SignUpContent() {
 
     try {
       const appBase = resolveAppBase();
-      const emailRedirectTo = `${appBase}/app/onboarding`;
+      // 🔧 FIX: Email signup must route through /auth/callback (like Google OAuth)
+      // so that org + membership + subscription + entitlements are created.
+      // The callback will then redirect to /onboarding or /app as appropriate.
+      const emailRedirectTo = `${appBase}/auth/callback`;
       const options = plan
         ? { emailRedirectTo, data: { selected_plan: plan.key } }
         : { emailRedirectTo };

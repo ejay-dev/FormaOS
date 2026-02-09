@@ -1,7 +1,10 @@
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
-import { handleAdminError, ADMIN_CACHE_HEADERS } from '@/app/api/admin/_helpers';
+import {
+  handleAdminError,
+  ADMIN_CACHE_HEADERS,
+} from '@/app/api/admin/_helpers';
 
 /**
  * GET /api/admin/features — Real feature usage from org_entitlements
@@ -93,10 +96,7 @@ export async function GET() {
     // Sort: most-used first
     features.sort((a, b) => b.enabled_count - a.enabled_count);
 
-    return NextResponse.json(
-      { features },
-      { headers: ADMIN_CACHE_HEADERS },
-    );
+    return NextResponse.json({ features }, { headers: ADMIN_CACHE_HEADERS });
   } catch (error) {
     return handleAdminError(error, '/api/admin/features');
   }

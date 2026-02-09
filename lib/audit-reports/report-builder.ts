@@ -213,15 +213,31 @@ async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
 
   const { data: incidents } = await admin
     .from('org_incidents')
-    .select('status, severity, resolved_at, is_reportable')
+    .select('status, severity, resolved_at, is_reportable, created_at')
     .eq('organization_id', orgId);
+
+  // Calculate actual average resolution time (in days)
+  const resolvedIncidents = incidents?.filter(
+    (i: { status?: string; resolved_at?: string; created_at?: string }) =>
+      i.status === 'resolved' && i.resolved_at && i.created_at
+  ) || [];
+  
+  let avgResolutionTime: number | null = null;
+  if (resolvedIncidents.length > 0) {
+    const totalDays = resolvedIncidents.reduce((sum: number, i: any) => {
+      const created = new Date(i.created_at).getTime();
+      const resolved = new Date(i.resolved_at).getTime();
+      return sum + (resolved - created) / (1000 * 60 * 60 * 24);
+    }, 0);
+    avgResolutionTime = Math.round((totalDays / resolvedIncidents.length) * 10) / 10;
+  }
 
   const participantSafetyMetrics = {
     openIncidents: incidents?.filter((i: { status?: string }) => i.status === 'open').length || 0,
     resolvedLast30Days: incidents?.filter(
       (i: { status?: string; resolved_at?: string }) => i.status === 'resolved' && i.resolved_at && new Date(i.resolved_at) >= thirtyDaysAgo
     ).length || 0,
-    averageResolutionTime: 2.5, // TODO: Calculate actual average
+    averageResolutionTime: avgResolutionTime ?? 0, // Real calculation
     reportableIncidents: incidents?.filter((i: { is_reportable?: boolean }) => i.is_reportable).length || 0,
   };
 
@@ -240,9 +256,17 @@ async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
   const thirtyDaysFromNow = new Date();
   thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
 
+  // Calculate actual compliant staff count from credentials
+  const validCredentials = credentials?.filter(
+    (c: { status?: string; expires_at?: string }) =>
+      c.status === 'active' || c.status === 'verified' ||
+      (c.expires_at && new Date(c.expires_at) > now)
+  ) || [];
+  const compliantStaffCount = Math.min(validCredentials.length, totalStaff || 0);
+
   const staffCredentialsSummary = {
     totalStaff: totalStaff || 0,
-    compliantStaff: Math.round((totalStaff || 0) * 0.85), // TODO: Calculate actual
+    compliantStaff: compliantStaffCount, // Real calculation
     expiringCredentials: credentials?.filter(
       (c: { expires_at?: string }) => c.expires_at && new Date(c.expires_at) > now && new Date(c.expires_at) <= thirtyDaysFromNow
     ).length || 0,

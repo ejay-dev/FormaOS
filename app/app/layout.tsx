@@ -78,10 +78,10 @@ export default async function AppLayout({
     redirect('/onboarding');
   }
 
-  // Founder bypass
-  if (systemState.isFounder) {
-    redirect('/admin');
-  }
+  // 🔧 FIX: Don't force founders to /admin when they visit /app intentionally.
+  // Founders may want to use the regular app (their org's dashboard).
+  // Only redirect to /admin if they have NO organization at all.
+  // The middleware already allows founders to access /admin, so this is safe.
 
   // Validate onboarding completion
   if (!systemState.organization.onboardingCompleted) {

@@ -1,12 +1,27 @@
 /**
  * Demo Data Seed API Endpoint
  * Seeds demo data for guided demo mode
+ * 
+ * PROTECTED: Requires founder access
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { isFounder } from '@/lib/utils/founder';
 
 export async function POST(request: NextRequest) {
+  // 🔐 SECURITY: Require founder access to seed demo data
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user || !isFounder(user.email ?? '', user.id)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+  } catch {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     // Parse request body
     const body = await request.json();
