@@ -20,7 +20,7 @@ export default function ResetPasswordPage() {
   // Check for valid session from reset link
   useEffect(() => {
     const supabase = createSupabaseClient();
-    
+
     const checkSession = async () => {
       // Handle hash fragment from email link
       if (typeof window !== 'undefined' && window.location.hash) {
@@ -101,9 +101,12 @@ export default function ResetPasswordPage() {
         <div className="flex items-center justify-center px-6 py-12">
           <div className="w-full max-w-md">
             <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-8 text-center">
-              <h1 className="text-2xl font-bold text-white mb-2">Invalid or expired link</h1>
+              <h1 className="text-2xl font-bold text-white mb-2">
+                Invalid or expired link
+              </h1>
               <p className="text-slate-400 mb-6">
-                This password reset link is invalid or has expired. Please request a new one.
+                This password reset link is invalid or has expired. Please
+                request a new one.
               </p>
               <Link
                 href="/auth/forgot-password"
@@ -130,9 +133,12 @@ export default function ResetPasswordPage() {
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/20">
                 <CheckCircle2 className="h-6 w-6 text-emerald-400" />
               </div>
-              <h1 className="text-2xl font-bold text-white mb-2">Password updated</h1>
+              <h1 className="text-2xl font-bold text-white mb-2">
+                Password updated
+              </h1>
               <p className="text-slate-400">
-                Your password has been successfully updated. Redirecting you to the app...
+                Your password has been successfully updated. Redirecting you to
+                the app...
               </p>
             </div>
           </div>
@@ -157,10 +163,10 @@ export default function ResetPasswordPage() {
                 <ArrowLeft className="h-4 w-4" />
                 Back to sign in
               </Link>
-              <h1 className="text-2xl font-bold text-white mb-2">Set new password</h1>
-              <p className="text-slate-400">
-                Enter your new password below.
-              </p>
+              <h1 className="text-2xl font-bold text-white mb-2">
+                Set new password
+              </h1>
+              <p className="text-slate-400">Enter your new password below.</p>
             </div>
 
             {errorMessage && (
@@ -171,7 +177,10 @@ export default function ResetPasswordPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="password" className="block text-xs font-semibold text-slate-300 mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-xs font-semibold text-slate-300 mb-2"
+                >
                   New Password
                 </label>
                 <div className="relative">
@@ -192,13 +201,20 @@ export default function ResetPasswordPage() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
                   >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
                   </button>
                 </div>
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-xs font-semibold text-slate-300 mb-2">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-xs font-semibold text-slate-300 mb-2"
+                >
                   Confirm Password
                 </label>
                 <div className="relative">

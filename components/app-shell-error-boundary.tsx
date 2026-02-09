@@ -1,6 +1,7 @@
 'use client';
 
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import * as Sentry from '@sentry/nextjs';
 
 interface Props {
   children: ReactNode;
@@ -41,6 +42,21 @@ export class AppShellErrorBoundary extends Component<Props, State> {
         .slice(0, 8)
         .join('\n'),
     });
+
+    // Sentry-style reporting (non-PII)
+    try {
+      Sentry.captureException(error, {
+        tags: { boundary: 'app-shell' },
+        extra: {
+          componentStack: errorInfo.componentStack
+            ?.split('\n')
+            .slice(0, 8)
+            .join('\n'),
+        },
+      });
+    } catch {
+      // Ignore Sentry failures
+    }
   }
 
   render() {

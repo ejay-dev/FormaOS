@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
+import crypto from 'crypto';
 import { createServerClient } from '@supabase/ssr';
 import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 import { isFounder } from '@/lib/utils/founder';
@@ -44,10 +45,14 @@ function isPublicRoute(path: string): boolean {
 
 export async function middleware(request: NextRequest) {
   try {
-    const response = NextResponse.next({ request });
+    const nonce = crypto.randomUUID();
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-nonce', nonce);
+    const response = NextResponse.next({ request: { headers: requestHeaders } });
     const startTime = Date.now();
 
     const pathname = request.nextUrl.pathname;
+    const serverTiming = () => `mw;dur=${Date.now() - startTime}`;
     const logTiming = (label: string) => {
       if (pathname.startsWith('/app') || pathname.startsWith('/admin')) {
         const ms = Date.now() - startTime;
@@ -79,13 +84,17 @@ export async function middleware(request: NextRequest) {
           reason,
         });
         logTiming('loop-guard');
-        return NextResponse.redirect(safeUrl);
+        const loopResponse = NextResponse.redirect(safeUrl);
+        loopResponse.headers.set('Server-Timing', serverTiming());
+        return loopResponse;
       }
 
       targetUrl.searchParams.set(LOOP_COUNT_PARAM, String(nextCount));
       targetUrl.searchParams.set(LOOP_TARGET_PARAM, targetPath);
       logTiming('redirect');
-      return NextResponse.redirect(targetUrl);
+      const redirectResponse = NextResponse.redirect(targetUrl);
+      redirectResponse.headers.set('Server-Timing', serverTiming());
+      return redirectResponse;
     };
 
     // 🚨 ENV CHECK for admin routes (debug only — remove in stable production)
@@ -156,6 +165,7 @@ export async function middleware(request: NextRequest) {
       pathname === '/auth/signup'
     ) {
       logTiming('auth-passthrough');
+      response.headers.set('Server-Timing', serverTiming());
       return response;
     }
 
@@ -188,6 +198,7 @@ export async function middleware(request: NextRequest) {
     // but allow /auth/* to continue so we can redirect signed-in users.
     if (isPublicRoute(pathname) && !isAuthPath) {
       logTiming('public');
+      response.headers.set('Server-Timing', serverTiming());
       return response;
     }
 
@@ -236,6 +247,7 @@ export async function middleware(request: NextRequest) {
 
     if (!isAppPath && !isAdminPath) {
       logTiming('no-auth-check');
+      response.headers.set('Server-Timing', serverTiming());
       return response;
     }
 
@@ -267,6 +279,7 @@ export async function middleware(request: NextRequest) {
         return redirectWithLoopGuard(url, false, 'missing-supabase-env');
       }
       logTiming('no-supabase-env');
+      response.headers.set('Server-Timing', serverTiming());
       return response;
     }
 
@@ -348,7 +361,8 @@ export async function middleware(request: NextRequest) {
           redirecting: 'ALLOW (no redirect, founder gets access)',
         });
         logTiming('admin-allow');
-        return response;
+      response.headers.set('Server-Timing', serverTiming());
+      return response;
       } else {
         // ❌ NOT A FOUNDER → DENY ACCESS
         console.log('[Middleware] ❌ NON-FOUNDER BLOCKED FROM /admin', {
@@ -386,9 +400,42 @@ export async function middleware(request: NextRequest) {
     response.headers.set('X-Content-Type-Options', 'nosniff');
     response.headers.set('X-XSS-Protection', '1; mode=block');
     response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    const allowInlineScripts =
+      (process.env.CSP_ALLOW_INLINE_SCRIPTS ?? 'true') === 'true';
+    const allowEvalScripts =
+      process.env.NODE_ENV !== 'production' &&
+      (process.env.CSP_ALLOW_EVAL_SCRIPTS ?? 'true') === 'true';
+
+    const scriptSrc = [
+      "'self'",
+      `'nonce-${nonce}'`,
+      allowInlineScripts ? "'unsafe-inline'" : null,
+      allowEvalScripts ? "'unsafe-eval'" : null,
+    ]
+      .filter(Boolean)
+      .join(' ');
+
+    const styleSrc = [
+      "'self'",
+      "'unsafe-inline'",
+      'https://fonts.googleapis.com',
+    ].join(' ');
+
     response.headers.set(
       'Content-Security-Policy',
-      "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-src 'self';",
+      [
+        "default-src 'self'",
+        `script-src ${scriptSrc}`,
+        "script-src-attr 'none'",
+        `style-src ${styleSrc}`,
+        "img-src 'self' data: https:",
+        "font-src 'self' data: https://fonts.gstatic.com",
+        "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+        "frame-src 'self'",
+        "object-src 'none'",
+        "base-uri 'self'",
+        "form-action 'self'",
+      ].join('; '),
     );
 
     // -------------------------------
@@ -396,6 +443,7 @@ export async function middleware(request: NextRequest) {
     // -------------------------------
     // No redirects here. Onboarding is handled inside the app.
     logTiming('allow');
+    response.headers.set('Server-Timing', serverTiming());
     return response;
   } catch (err) {
     console.error('Middleware runtime error:', err);

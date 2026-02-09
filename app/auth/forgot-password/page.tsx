@@ -37,7 +37,7 @@ export default function ForgotPasswordPage() {
     try {
       const supabase = createSupabaseClient();
       const base = resolveAppBase();
-      
+
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${base}/auth/reset-password`,
       });
@@ -68,12 +68,16 @@ export default function ForgotPasswordPage() {
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/20">
                 <CheckCircle2 className="h-6 w-6 text-emerald-400" />
               </div>
-              <h1 className="text-2xl font-bold text-white mb-2">Check your email</h1>
+              <h1 className="text-2xl font-bold text-white mb-2">
+                Check your email
+              </h1>
               <p className="text-slate-400 mb-6">
-                We&apos;ve sent a password reset link to <span className="text-white font-medium">{email}</span>
+                We&apos;ve sent a password reset link to{' '}
+                <span className="text-white font-medium">{email}</span>
               </p>
               <p className="text-sm text-slate-500 mb-6">
-                Click the link in the email to reset your password. If you don&apos;t see it, check your spam folder.
+                Click the link in the email to reset your password. If you
+                don&apos;t see it, check your spam folder.
               </p>
               <Link
                 href="/auth/signin"
@@ -105,9 +109,12 @@ export default function ForgotPasswordPage() {
                 <ArrowLeft className="h-4 w-4" />
                 Back to sign in
               </Link>
-              <h1 className="text-2xl font-bold text-white mb-2">Reset your password</h1>
+              <h1 className="text-2xl font-bold text-white mb-2">
+                Reset your password
+              </h1>
               <p className="text-slate-400">
-                Enter your email address and we&apos;ll send you a link to reset your password.
+                Enter your email address and we&apos;ll send you a link to reset
+                your password.
               </p>
             </div>
 
@@ -119,7 +126,10 @@ export default function ForgotPasswordPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="email" className="block text-xs font-semibold text-slate-300 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-xs font-semibold text-slate-300 mb-2"
+                >
                   Email Address
                 </label>
                 <div className="relative">

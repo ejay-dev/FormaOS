@@ -19,7 +19,7 @@ export default async function EmailHistoryPage() {
   
   // 1. Identify the organization
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  if (!user) redirect("/auth/signin");
 
   const { data: membership } = await supabase
     .from("org_members")

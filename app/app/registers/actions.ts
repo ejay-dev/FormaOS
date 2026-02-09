@@ -30,6 +30,9 @@ export async function createAsset(formData: FormData) {
   const type = formData.get("type") as string;
   const owner = formData.get("owner") as string;
   const criticality = formData.get("criticality") as string;
+  const containsPhi = formData.get("contains_phi") === "true";
+  const encryptedAtRest = formData.get("encrypted_at_rest") === "true";
+  const encryptedInTransit = formData.get("encrypted_in_transit") === "true";
 
   // 4. Insert into DB
   const { error } = await supabase.from("org_assets").insert({
@@ -37,7 +40,10 @@ export async function createAsset(formData: FormData) {
     name,
     type,
     owner,
-    criticality
+    criticality,
+    contains_phi: containsPhi,
+    encrypted_at_rest: encryptedAtRest,
+    encrypted_in_transit: encryptedInTransit,
   });
 
   if (error) throw new Error(error.message);

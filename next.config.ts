@@ -1,5 +1,5 @@
-import type { NextConfig } from "next";
-import { withSentryConfig } from "@sentry/nextjs";
+import type { NextConfig } from 'next';
+import { withSentryConfig } from '@sentry/nextjs';
 
 const nextConfig: NextConfig = {
   generateBuildId: async () => null,
@@ -14,13 +14,13 @@ const sentryConfig = {
   silent: true, // Suppress Sentry build logs
   org: process.env.SENTRY_ORG,
   project: process.env.SENTRY_PROJECT,
-  
+
   // Upload source maps for better stack traces
   widenClientFileUpload: true,
-  
+
   // Tree-shake Sentry in dev
   disableLogger: true,
-  
+
   // Hide source maps from users
   hideSourceMaps: true,
 };

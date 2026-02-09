@@ -1,6 +1,5 @@
 import { 
   FileText, 
-  Download, 
   ShieldCheck, 
   ExternalLink, 
   ArrowRight,
@@ -13,6 +12,7 @@ import {
 import Link from "next/link";
 import { runGapAnalysis } from "@/app/app/actions/compliance";
 import { BundleGenerator } from "@/components/reports/bundle-generator";
+import { CertificationReportCard } from "@/components/reports/certification-report-card";
 import ComplianceGateBanner from "@/components/compliance/ComplianceGateBanner";
 import { getOrgIdForUser, getComplianceBlocks } from "@/app/app/actions/enforcement";
 import {
@@ -42,17 +42,23 @@ export default async function ReportsPage() {
 
     if (membership?.organization_id) {
       const orgId = membership.organization_id;
-      const { data: subscription } = await supabase
-        .from("org_subscriptions")
-        .select("status")
-        .eq("organization_id", orgId)
-        .maybeSingle();
-      hasSubscription = subscription?.status === "active" || subscription?.status === "trialing";
+      const [subscriptionResult, entitlementsResult] = await Promise.all([
+        supabase
+          .from("org_subscriptions")
+          .select("status")
+          .eq("organization_id", orgId)
+          .maybeSingle(),
+        supabase
+          .from("org_entitlements")
+          .select("feature_key, enabled")
+          .eq("organization_id", orgId),
+      ]);
 
-      const { data: entitlements } = await supabase
-        .from("org_entitlements")
-        .select("feature_key, enabled")
-        .eq("organization_id", orgId);
+      const subscription = subscriptionResult.data;
+      hasSubscription =
+        subscription?.status === "active" || subscription?.status === "trialing";
+
+      const entitlements = entitlementsResult.data;
 
       const entitlementRows: EntitlementRow[] = entitlements ?? [];
       const entitlementSet = new Set(
@@ -348,57 +354,4 @@ export default async function ReportsPage() {
   );
 }
 
-function CertificationReportCard({
-  title,
-  description,
-  icon: Icon,
-  reportType,
-  color,
-  disabled = false,
-}: {
-  title: string;
-  description: string;
-  icon: typeof ShieldCheck;
-  reportType: string;
-  color: 'sky' | 'indigo' | 'pink' | 'emerald';
-  disabled?: boolean;
-}) {
-  const colorClasses = {
-    sky: 'from-sky-500/20 to-sky-500/5 border-sky-400/20 text-sky-400',
-    indigo: 'from-indigo-500/20 to-indigo-500/5 border-indigo-400/20 text-indigo-400',
-    pink: 'from-pink-500/20 to-pink-500/5 border-pink-400/20 text-pink-400',
-    emerald: 'from-emerald-500/20 to-emerald-500/5 border-emerald-400/20 text-emerald-400',
-  };
-
-  const handleDownload = async () => {
-    if (disabled) return;
-    window.open(`/api/reports/export?type=${reportType}&format=pdf`, '_blank');
-  };
-
-  return (
-    <div
-      className={`rounded-2xl border bg-gradient-to-br p-6 relative overflow-hidden transition-all ${
-        disabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02] cursor-pointer'
-      } ${colorClasses[color]}`}
-      onClick={handleDownload}
-    >
-      <div className="flex items-start justify-between mb-4">
-        <div className="p-2 rounded-xl bg-white/10">
-          <Icon className="h-5 w-5" />
-        </div>
-        <div className="flex items-center gap-1">
-          <Download className="h-4 w-4 text-slate-400" />
-          <span className="text-[10px] text-slate-400 uppercase font-bold">PDF</span>
-        </div>
-      </div>
-      <h4 className="text-lg font-bold text-slate-100 mb-1">{title}</h4>
-      <p className="text-xs text-slate-400 leading-relaxed">{description}</p>
-      {disabled && (
-        <div className="mt-3 text-[10px] text-amber-400 flex items-center gap-1">
-          <AlertTriangle className="h-3 w-3" />
-          Upgrade required
-        </div>
-      )}
-    </div>
-  );
-}
+// CertificationReportCard moved to client component for async export polling.

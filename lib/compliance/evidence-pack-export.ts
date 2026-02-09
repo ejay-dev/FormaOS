@@ -6,10 +6,6 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin'
 import { getSnapshotHistory } from './snapshot-service'
 import archiver from 'archiver'
-import crypto from 'crypto'
-import fs from 'fs'
-import path from 'path'
-import { Readable } from 'stream'
 
 export type ExportManifest = {
   exportId: string
@@ -79,19 +75,32 @@ export async function createExportJob(
 /**
  * Process export job (run as background task)
  */
+type ProcessOptions = {
+  workerId?: string
+  maxAttempts?: number
+  preclaimed?: boolean
+}
+
+const DEFAULT_MAX_ATTEMPTS = 3
+
+function getRetryDelayMs(attempt: number) {
+  const base = 60_000
+  const max = 15 * 60_000
+  const delay = Math.min(base * Math.pow(2, Math.max(attempt - 1, 0)), max)
+  return delay + Math.floor(Math.random() * 5_000)
+}
+
 export async function processExportJob(
-  jobId: string
+  jobId: string,
+  options: ProcessOptions = {}
 ): Promise<{ ok: boolean; fileUrl?: string; error?: string }> {
   const admin = createSupabaseAdminClient()
+  const workerId = options.workerId ?? 'inline'
+  const maxAttempts = options.maxAttempts ?? DEFAULT_MAX_ATTEMPTS
+  const preclaimed = options.preclaimed ?? false
 
   try {
     console.log(`[processExportJob] Starting job ${jobId}`)
-    // Mark as processing
-    await admin
-      .from('compliance_export_jobs')
-      .update({ status: 'processing', started_at: new Date().toISOString(), progress: 0 })
-      .eq('id', jobId)
-
     // Load job details
     const { data: job } = await admin
       .from('compliance_export_jobs')
@@ -101,6 +110,24 @@ export async function processExportJob(
 
     if (!job) {
       throw new Error('Export job not found')
+    }
+
+    const attempt = preclaimed ? job.attempt_count ?? 0 : (job.attempt_count ?? 0) + 1
+
+    if (!preclaimed) {
+      // Mark as processing + increment attempt
+      await admin
+        .from('compliance_export_jobs')
+        .update({
+          status: 'processing',
+          started_at: new Date().toISOString(),
+          progress: 0,
+          locked_at: new Date().toISOString(),
+          locked_by: workerId,
+          attempt_count: attempt,
+          last_error: null,
+        })
+        .eq('id', jobId)
     }
 
     const { organization_id: orgId, framework_slug: frameworkSlug } = job
@@ -157,7 +184,7 @@ export async function processExportJob(
 
     await updateProgress(jobId, 90)
 
-    // Create ZIP (in-memory for now, would use S3/storage in production)
+    // Create ZIP (in-memory)
     const zipBuffer = await createZipBundle({
       manifest,
       controls,
@@ -169,9 +196,33 @@ export async function processExportJob(
       csvSummary,
     })
 
-    // In production, upload to S3 and get URL
-    // For now, we'll store a placeholder URL
-    const fileUrl = `/api/compliance/exports/${jobId}/download`
+    const bucket =
+      (process.env.COMPLIANCE_EXPORTS_BUCKET ?? '').trim() || 'compliance-exports'
+
+    if (!('storage' in admin) || !admin.storage) {
+      throw new Error('Supabase storage client unavailable')
+    }
+
+    const datePart = new Date().toISOString().slice(0, 10)
+    const safeSlug = frameworkSlug.replace(/[^a-z0-9_-]/gi, '') || 'framework'
+    const storagePath = `${orgId}/${safeSlug}/${datePart}/${jobId}.zip`
+
+    const upload = await admin.storage.from(bucket).upload(storagePath, zipBuffer, {
+      contentType: 'application/zip',
+      upsert: false,
+    })
+
+    if (upload.error) {
+      throw new Error(`Storage upload failed: ${upload.error.message}`)
+    }
+
+    const signed = await admin.storage.from(bucket).createSignedUrl(storagePath, 60 * 60)
+
+    if (signed.error || !signed.data?.signedUrl) {
+      throw new Error(`Signed URL failed: ${signed.error?.message ?? 'Unknown error'}`)
+    }
+
+    const fileUrl = signed.data.signedUrl
     const fileSize = zipBuffer.length
 
     await admin
@@ -181,7 +232,11 @@ export async function processExportJob(
         progress: 100,
         file_url: fileUrl,
         file_size: fileSize,
+        metadata: { storagePath, bucket, signedUrlExpiresIn: 3600 },
         completed_at: new Date().toISOString(),
+        locked_at: null,
+        locked_by: null,
+        last_error: null,
       })
       .eq('id', jobId)
 
@@ -189,18 +244,34 @@ export async function processExportJob(
     return { ok: true, fileUrl }
   } catch (error) {
     console.error(`[processExportJob] Job ${jobId} failed:`, error)
+    const message =
+      error instanceof Error ? error.message : 'Export processing failed'
+
+    const { data: job } = await admin
+      .from('compliance_export_jobs')
+      .select('attempt_count')
+      .eq('id', jobId)
+      .maybeSingle()
+
+    const attempt = job?.attempt_count ?? 0
+    const shouldRetry = attempt > 0 && attempt < maxAttempts
+    const nextRunAt = shouldRetry
+      ? new Date(Date.now() + getRetryDelayMs(attempt)).toISOString()
+      : null
+
     await admin
       .from('compliance_export_jobs')
       .update({
-        status: 'failed',
-        error_message: error instanceof Error ? error.message : 'Export failed',
+        status: shouldRetry ? 'pending' : 'failed',
+        error_message: message,
+        last_error: message,
+        next_run_at: nextRunAt,
+        locked_at: null,
+        locked_by: null,
       })
       .eq('id', jobId)
 
-    return {
-      ok: false,
-      error: error instanceof Error ? error.message : 'Export processing failed',
-    }
+    return { ok: false, error: message }
   }
 }
 

@@ -78,6 +78,9 @@ export async function createAsset(formData: FormData) {
   const type = (formData.get("type") as AssetType) || "software";
   const owner = (formData.get("owner") as string) || null;
   const criticality = (formData.get("criticality") as string) || "medium";
+  const containsPhi = formData.get("contains_phi") === "true";
+  const encryptedAtRest = formData.get("encrypted_at_rest") === "true";
+  const encryptedInTransit = formData.get("encrypted_in_transit") === "true";
 
   if (!name.trim()) throw new Error("Asset name is required");
 
@@ -92,6 +95,9 @@ export async function createAsset(formData: FormData) {
       confidentiality_req: (formData.get("confidentiality_req") as string) || "low",
       integrity_req: (formData.get("integrity_req") as string) || "low",
       availability_req: (formData.get("availability_req") as string) || "low",
+      contains_phi: containsPhi,
+      encrypted_at_rest: encryptedAtRest,
+      encrypted_in_transit: encryptedInTransit,
     })
     .select("id, name")
     .single();

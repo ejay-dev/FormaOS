@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { buildReport } from '@/lib/audit-reports/report-builder';
 import { generateReportPdf } from '@/lib/audit-reports/pdf-generator';
 import type { ReportType } from '@/lib/audit-reports/types';
+import { createReportExportJob, processReportExportJob } from '@/lib/reports/export-jobs';
 
 const VALID_REPORT_TYPES: ReportType[] = ['soc2', 'iso27001', 'ndis', 'hipaa'];
 
@@ -22,6 +23,8 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const reportType = searchParams.get('type') as ReportType | null;
   const format = searchParams.get('format') || 'pdf';
+  const asyncMode =
+    searchParams.get('mode') === 'async' || searchParams.get('async') === '1';
 
   // Validate report type
   if (!reportType || !VALID_REPORT_TYPES.includes(reportType)) {
@@ -113,6 +116,47 @@ export async function GET(request: NextRequest) {
 
   try {
     // Build the report
+    if (asyncMode) {
+      const jobResult = await createReportExportJob({
+        organizationId: orgId,
+        requestedBy: userId,
+        reportType,
+        format: format === 'json' ? 'json' : 'pdf',
+      });
+
+      if (!jobResult.ok || !jobResult.jobId) {
+        return NextResponse.json(
+          {
+            error: 'Internal Server Error',
+            message: jobResult.error ?? 'Failed to create export job.',
+            code: 'JOB_CREATE_FAILED',
+          },
+          { status: 500 }
+        );
+      }
+
+      const inlineProcessingEnabled =
+        (process.env.REPORT_EXPORTS_INLINE_PROCESSING ?? 'true') !== 'false';
+
+      if (inlineProcessingEnabled) {
+        processReportExportJob(jobResult.jobId, {
+          workerId: 'inline',
+          maxAttempts: 3,
+        }).catch((err) => {
+          console.error(
+            `[Report Export] Background job ${jobResult.jobId} failed:`,
+            err
+          );
+        });
+      }
+
+      return NextResponse.json({
+        ok: true,
+        jobId: jobResult.jobId,
+        status: 'pending',
+      });
+    }
+
     const report = await buildReport(orgId, reportType);
 
     // Return based on format

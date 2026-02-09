@@ -3,7 +3,7 @@
  * Provides self-contained auth for Playwright tests
  */
 
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type Session } from '@supabase/supabase-js';
 import { config } from 'dotenv';
 
 // Load .env.local for local development
@@ -15,6 +15,12 @@ interface TestUser {
   password: string;
   orgId?: string;
 }
+
+type SupabaseEnv = {
+  url: string;
+  anonKey: string;
+  serviceRoleKey: string;
+};
 
 // Test user state (module-level for cleanup)
 let createdTestUser: TestUser | null = null;
@@ -41,6 +47,130 @@ export async function getTestCredentials(): Promise<{
     email: testUser.email,
     password: testUser.password,
   };
+}
+
+function resolveSupabaseEnv(): SupabaseEnv {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !anonKey || !serviceRoleKey) {
+    throw new Error(
+      'Supabase env missing: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY are required',
+    );
+  }
+
+  return { url: supabaseUrl, anonKey, serviceRoleKey };
+}
+
+function toBase64Url(value: string) {
+  return Buffer.from(value, 'utf8').toString('base64url');
+}
+
+function createCookieChunks(key: string, value: string, chunkSize = 3180) {
+  let encodedValue = encodeURIComponent(value);
+
+  if (encodedValue.length <= chunkSize) {
+    return [{ name: key, value }];
+  }
+
+  const chunks: string[] = [];
+  while (encodedValue.length > 0) {
+    let encodedChunkHead = encodedValue.slice(0, chunkSize);
+    const lastEscapePos = encodedChunkHead.lastIndexOf('%');
+
+    if (lastEscapePos > chunkSize - 3) {
+      encodedChunkHead = encodedChunkHead.slice(0, lastEscapePos);
+    }
+
+    let valueHead = '';
+    while (encodedChunkHead.length > 0) {
+      try {
+        valueHead = decodeURIComponent(encodedChunkHead);
+        break;
+      } catch (error) {
+        if (
+          error instanceof URIError &&
+          encodedChunkHead.at(-3) === '%' &&
+          encodedChunkHead.length > 3
+        ) {
+          encodedChunkHead = encodedChunkHead.slice(0, encodedChunkHead.length - 3);
+        } else {
+          throw error;
+        }
+      }
+    }
+
+    chunks.push(valueHead);
+    encodedValue = encodedValue.slice(encodedChunkHead.length);
+  }
+
+  return chunks.map((chunk, index) => ({ name: `${key}.${index}`, value: chunk }));
+}
+
+function getStorageKey(supabaseUrl: string) {
+  const projectRef = new URL(supabaseUrl).hostname.split('.')[0];
+  return `sb-${projectRef}-auth-token`;
+}
+
+export async function createMagicLinkSession(email: string): Promise<Session> {
+  const { url, anonKey, serviceRoleKey } = resolveSupabaseEnv();
+
+  const adminClient = createClient(url, serviceRoleKey, {
+    auth: { persistSession: false },
+  });
+
+  const { data: linkData, error: linkError } =
+    await adminClient.auth.admin.generateLink({
+      type: 'magiclink',
+      email,
+    });
+
+  if (linkError || !linkData?.properties?.hashed_token) {
+    throw new Error(`Failed to generate magic link: ${linkError?.message}`);
+  }
+
+  const userClient = createClient(url, anonKey, {
+    auth: { persistSession: false },
+  });
+
+  const { data: verifyData, error: verifyError } = await userClient.auth.verifyOtp({
+    type: 'magiclink',
+    token_hash: linkData.properties.hashed_token,
+  });
+
+  if (verifyError || !verifyData?.session) {
+    throw new Error(`Failed to verify magic link: ${verifyError?.message}`);
+  }
+
+  return verifyData.session;
+}
+
+export async function setPlaywrightSession(
+  context: { addCookies: (cookies: Array<Record<string, any>>) => Promise<void> },
+  session: Session,
+  appBaseUrl: string,
+) {
+  const { url } = resolveSupabaseEnv();
+  const storageKey = getStorageKey(url);
+  const serialized = JSON.stringify(session);
+  const encoded = `base64-${toBase64Url(serialized)}`;
+  const chunks = createCookieChunks(storageKey, encoded);
+  const base = new URL(appBaseUrl);
+
+  await context.addCookies(
+    chunks.map((chunk) => ({
+      name: chunk.name,
+      value: chunk.value,
+      domain: base.hostname,
+      path: '/',
+      httpOnly: false,
+      secure: base.protocol === 'https:',
+      sameSite: 'Lax',
+    })),
+  );
 }
 
 /**
@@ -100,6 +230,23 @@ async function createTemporaryTestUser(): Promise<TestUser> {
     throw new Error(`Failed to create test org: ${orgError.message}`);
   }
 
+  const nowIso = new Date().toISOString();
+  // Backfill legacy orgs table for org_subscriptions.org_id FK
+  try {
+    await adminClient.from('orgs').upsert(
+      {
+        id: orgData.id,
+        name: `E2E Test Org ${testId}`,
+        created_by: userData.user.id,
+        created_at: nowIso,
+        updated_at: nowIso,
+      },
+      { onConflict: 'id' },
+    );
+  } catch (error) {
+    console.warn('[E2E] Failed to backfill orgs table:', error);
+  }
+
   // Add user as org owner
   const { error: memberError } = await adminClient.from('org_members').insert({
     user_id: userData.user.id,
@@ -124,9 +271,11 @@ async function createTemporaryTestUser(): Promise<TestUser> {
       organization_id: orgData.id,
       org_id: orgData.id, // Legacy column, still required
       plan_key: 'pro',
+      plan_code: 'pro', // Legacy FK requires plan_code in some schemas
       status: 'trialing',
       trial_expires_at: trialEnd.toISOString(),
       current_period_end: trialEnd.toISOString(),
+      updated_at: nowIso,
     });
 
   if (subscriptionError) {

@@ -516,15 +516,19 @@ export async function GET(request: Request) {
       'New Organization';
 
     // Use atomic bootstrap with rollback on failure
-    const { data: bootstrapResult, error: bootstrapError } = await bootstrapOrganizationAtomic({
-      userId: user.id,
-      userEmail: user.email ?? null,
-      orgName: fallbackName,
-      planKey: plan,
-    });
+    const { data: bootstrapResult, error: bootstrapError } =
+      await bootstrapOrganizationAtomic({
+        userId: user.id,
+        userEmail: user.email ?? null,
+        orgName: fallbackName,
+        planKey: plan,
+      });
 
     if (bootstrapError || !bootstrapResult) {
-      console.error('[auth/callback] ❌ Atomic bootstrap failed:', bootstrapError?.message);
+      console.error(
+        '[auth/callback] ❌ Atomic bootstrap failed:',
+        bootstrapError?.message,
+      );
       return redirectWithCookies(
         `${appBase}/auth/signin?error=org_creation_failed&message=${encodeURIComponent(
           'Account setup failed. Please try signing in again.',
@@ -533,24 +537,37 @@ export async function GET(request: Request) {
     }
 
     const organizationId = bootstrapResult.organizationId;
-    console.log('[auth/callback] ✅ Atomic bootstrap succeeded:', organizationId);
+    console.log(
+      '[auth/callback] ✅ Atomic bootstrap succeeded:',
+      organizationId,
+    );
 
     // Initialize compliance graph (non-critical, can fail)
     try {
       console.log('[auth/callback] 🏗️  Initializing compliance graph');
-      const graphResult = await initializeComplianceGraph(organizationId, user.id);
+      const graphResult = await initializeComplianceGraph(
+        organizationId,
+        user.id,
+      );
       if (graphResult.success) {
         console.log(
           `[auth/callback] ✅ Compliance graph initialized: ${graphResult.nodes?.length} nodes, ${graphResult.wires?.length} wires`,
         );
       } else {
-        console.warn(`[auth/callback] ⚠️  Graph initialization warning: ${graphResult.error}`);
+        console.warn(
+          `[auth/callback] ⚠️  Graph initialization warning: ${graphResult.error}`,
+        );
       }
     } catch (graphErr) {
-      console.error('[auth/callback] Graph initialization failed (non-critical):', graphErr);
+      console.error(
+        '[auth/callback] Graph initialization failed (non-critical):',
+        graphErr,
+      );
     }
 
-    console.log('[auth/callback] ✅ NEW USER setup complete, redirecting to onboarding');
+    console.log(
+      '[auth/callback] ✅ NEW USER setup complete, redirecting to onboarding',
+    );
     const planQuery = plan ? `?plan=${encodeURIComponent(plan)}` : '';
     return redirectWithCookies(`${appBase}/onboarding${planQuery}`);
   }

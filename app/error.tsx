@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import * as Sentry from '@sentry/nextjs';
 
 export default function GlobalError({
   error,
@@ -22,6 +23,19 @@ export default function GlobalError({
       stack: error.stack?.split('\n').slice(0, 8).join('\n'),
       timestamp: new Date().toISOString(),
     });
+
+    // Sentry-style reporting (non-PII)
+    try {
+      Sentry.captureException(error, {
+        tags: { boundary: 'global' },
+        extra: {
+          digest: error.digest,
+          pathname,
+        },
+      });
+    } catch {
+      // Ignore Sentry failures
+    }
   }, [error, pathname]);
 
   return (

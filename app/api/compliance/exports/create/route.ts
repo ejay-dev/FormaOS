@@ -41,10 +41,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: result.error }, { status: 500 })
     }
 
+    const inlineProcessingEnabled =
+      (process.env.EXPORTS_INLINE_PROCESSING ?? 'true') !== 'false'
+
     // Start processing job asynchronously (non-blocking)
-    // In production, this would be handled by a queue worker
-    if (result.jobId) {
-      processExportJob(result.jobId).catch((err) => {
+    // Queue workers can also pick up pending jobs if inline processing is disabled or fails.
+    if (result.jobId && inlineProcessingEnabled) {
+      processExportJob(result.jobId, {
+        workerId: 'inline',
+        maxAttempts: 3,
+      }).catch((err) => {
         console.error(`[exports/create] Background job ${result.jobId} failed:`, err)
       })
     }

@@ -275,16 +275,26 @@ export interface SystemStatePayload {
 /**
  * Fetch complete system state from backend
  * This is the primary data source for the SystemStateProvider
- * 
+ *
  * @param preloadedUser - Optional user object to avoid duplicate getUser() calls
  */
-export async function fetchSystemState(preloadedUser?: { id: string; email?: string | null; user_metadata?: Record<string, unknown> }): Promise<SystemStatePayload | null> {
+export async function fetchSystemState(preloadedUser?: {
+  id: string;
+  email?: string | null;
+  user_metadata?: Record<string, unknown>;
+}): Promise<SystemStatePayload | null> {
   const supabase = await createSupabaseServerClient();
 
   // Use preloaded user if provided, otherwise fetch
-  let user: { id: string; email?: string | null; user_metadata?: Record<string, unknown> } | null = preloadedUser ?? null;
+  let user: {
+    id: string;
+    email?: string | null;
+    user_metadata?: Record<string, unknown>;
+  } | null = preloadedUser ?? null;
   if (!user) {
-    const { data: { user: fetchedUser } } = await supabase.auth.getUser();
+    const {
+      data: { user: fetchedUser },
+    } = await supabase.auth.getUser();
     user = fetchedUser ?? null;
   }
   if (!user) return null;
@@ -410,7 +420,11 @@ export async function fetchSystemState(preloadedUser?: { id: string; email?: str
       id: user.id,
       email: user.email ?? '',
       name:
-        (typeof user.user_metadata?.full_name === 'string' ? user.user_metadata.full_name : null) ?? user.email?.split('@')[0] ?? 'User',
+        (typeof user.user_metadata?.full_name === 'string'
+          ? user.user_metadata.full_name
+          : null) ??
+        user.email?.split('@')[0] ??
+        'User',
     },
     organization: {
       id: membership.orgId,

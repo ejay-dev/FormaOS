@@ -12,6 +12,7 @@ import {
   Shield,
   Activity,
   FileText,
+  FileArchive,
   LogOut,
   Menu,
   X,
@@ -50,6 +51,7 @@ const NAV_SECTIONS = [
       { name: 'Security', href: '/admin/security', icon: Shield },
       { name: 'System', href: '/admin/system', icon: Activity },
       { name: 'Audit', href: '/admin/audit', icon: FileText },
+      { name: 'Exports', href: '/admin/exports', icon: FileArchive },
     ],
   },
   {

@@ -420,13 +420,7 @@ async function buildHipaaReport(orgId: string): Promise<HipaaReportPayload> {
     ...calculateRuleCompliance('breach'),
   };
 
-  // PHI inventory (placeholder - would come from asset inventory)
-  const phiInventorySummary = {
-    totalSystems: 12,
-    systemsWithPhi: 8,
-    encryptedAtRest: 7,
-    encryptedInTransit: 8,
-  };
+  const phiInventorySummary = await getPhiInventorySummary(orgId, admin);
 
   return {
     ...baseReport,
@@ -436,6 +430,56 @@ async function buildHipaaReport(orgId: string): Promise<HipaaReportPayload> {
     breachNotificationCompliance,
     phiInventorySummary,
   };
+}
+
+async function getPhiInventorySummary(
+  orgId: string,
+  admin: ReturnType<typeof createSupabaseAdminClient>,
+): Promise<HipaaReportPayload['phiInventorySummary']> {
+  try {
+    const [totalRes, phiRes, restRes, transitRes] = await Promise.all([
+      admin
+        .from('org_assets')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId),
+      admin
+        .from('org_assets')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId)
+        .eq('contains_phi', true),
+      admin
+        .from('org_assets')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId)
+        .eq('contains_phi', true)
+        .eq('encrypted_at_rest', true),
+      admin
+        .from('org_assets')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId)
+        .eq('contains_phi', true)
+        .eq('encrypted_in_transit', true),
+    ]);
+
+    if (totalRes.error || phiRes.error || restRes.error || transitRes.error) {
+      throw totalRes.error || phiRes.error || restRes.error || transitRes.error;
+    }
+
+    return {
+      totalSystems: totalRes.count ?? 0,
+      systemsWithPhi: phiRes.count ?? 0,
+      encryptedAtRest: restRes.count ?? 0,
+      encryptedInTransit: transitRes.count ?? 0,
+    };
+  } catch (err) {
+    console.warn('[report-builder] PHI inventory lookup failed:', err);
+    return {
+      totalSystems: 0,
+      systemsWithPhi: 0,
+      encryptedAtRest: 0,
+      encryptedInTransit: 0,
+    };
+  }
 }
 
 /**
