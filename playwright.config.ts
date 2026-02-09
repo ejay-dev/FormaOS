@@ -85,6 +85,7 @@ export default defineConfig({
     command: useDevServer ? 'npm run dev' : 'npm run build && npm run start',
     url: 'http://localhost:3000',
     reuseExistingServer,
+    timeout: 240000,
   },
 
   /* Global setup */

@@ -46,4 +46,11 @@ test.describe('Redirect loop guard', () => {
     const signinResult = await followRedirects(request, signinUrl);
     expect(signinResult.loopDetected, `Redirect loop for /auth/signin: ${signinResult.chain.join(' -> ')}`).toBeFalsy();
   });
+
+  test('should normalize legacy /app/signup to /auth/signup', async ({ request, baseURL }) => {
+    const legacyUrl = new URL('/app/signup', baseURL!).toString();
+    const response = await request.get(legacyUrl, { maxRedirects: 0 });
+    expect([301, 302, 303, 307, 308]).toContain(response.status());
+    expect(response.headers().location || '').toContain('/auth/signup');
+  });
 });

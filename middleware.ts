@@ -145,6 +145,14 @@ export async function middleware(request: NextRequest) {
       return redirectWithLoopGuard(redirectUrl, false, '/auth -> /auth/signin');
     }
 
+    // Normalize legacy /app/* auth paths to /auth/*
+    if (pathname === '/app/signup' || pathname === '/app/signin') {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname =
+        pathname === '/app/signup' ? '/auth/signup' : '/auth/signin';
+      return redirectWithLoopGuard(redirectUrl, false, 'legacy-app-auth');
+    }
+
     // Handle OAuth errors (user denied permission, etc.)
     if (oauthError && pathname === '/') {
       console.log('[Middleware] OAuth error detected:', oauthError);

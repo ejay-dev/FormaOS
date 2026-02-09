@@ -20,6 +20,7 @@ import {
 
 export function AutomationShowcase() {
   const [activeExample, setActiveExample] = useState(0);
+  const appBase = (process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.formaos.com.au').replace(/\/$/, '');
 
   const automationExamples = [
     {
@@ -239,7 +240,7 @@ export function AutomationShowcase() {
         <div className="mt-16 text-center">
           <div className="inline-flex flex-col sm:flex-row items-center gap-4">
             <a
-              href="/app/signup"
+              href={`${appBase}/auth/signup?plan=pro`}
               className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105"
             >
               Start Automating Compliance

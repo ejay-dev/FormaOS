@@ -263,14 +263,14 @@ export async function fetchSystemState(): Promise<SystemStatePayload | null> {
   }
   if (!membership) return null;
 
-  // Get subscription data
-  let subscription = await getSubscriptionData(membership.orgId);
+  // Get subscription + entitlements in parallel
+  let [subscription, dbEntitlements] = await Promise.all([
+    getSubscriptionData(membership.orgId),
+    getEntitlements(membership.orgId),
+  ]);
   let planTier = subscription?.planTier ?? "trial";
   let trialActive = subscription?.trialActive ?? false;
   let trialDaysRemaining = subscription?.trialDaysRemaining ?? 0;
-
-  // Get entitlements from database
-  let dbEntitlements = await getEntitlements(membership.orgId);
 
   const resolvedPlanForEntitlements = resolvePlanKey(subscription?.planKey ?? null);
   const needsEntitlements =
