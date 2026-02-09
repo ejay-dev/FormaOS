@@ -5,6 +5,7 @@ import { resolvePlanKey } from "@/lib/plans";
 import { ensureSubscription } from "@/lib/billing/subscriptions";
 import { syncEntitlementsForPlan } from "@/lib/billing/entitlements";
 import { logAdminAction } from "@/lib/admin/audit";
+import { handleAdminError } from '@/app/api/admin/_helpers';
 
 type Params = {
   params: Promise<{ orgId: string }>;
@@ -60,7 +61,6 @@ export async function POST(request: Request, { params }: Params) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error("/api/admin/orgs/[orgId]/plan error:", error);
-    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    return handleAdminError(error, '/api/admin/orgs/[orgId]/plan');
   }
 }

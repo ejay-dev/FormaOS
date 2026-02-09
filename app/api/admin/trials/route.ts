@@ -1,6 +1,7 @@
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
+import { handleAdminError } from '@/app/api/admin/_helpers';
 
 export async function GET() {
   try {
@@ -53,10 +54,6 @@ export async function GET() {
 
     return NextResponse.json({ trials });
   } catch (error) {
-    console.error('/api/admin/trials error:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch trials' },
-      { status: 500 },
-    );
+    return handleAdminError(error, '/api/admin/trials');
   }
 }

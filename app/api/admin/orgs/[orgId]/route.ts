@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireFounderAccess } from '@/app/app/admin/access';
+import { handleAdminError } from '@/app/api/admin/_helpers';
 
 type OrgRouteProps = {
   params: Promise<{ orgId: string }>;
@@ -63,7 +64,6 @@ export async function GET(request: Request, { params }: OrgRouteProps) {
       notes: notes ?? [],
     });
   } catch (error) {
-    console.error('/api/admin/orgs/[orgId] error:', error);
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    return handleAdminError(error, '/api/admin/orgs/[orgId]');
   }
 }

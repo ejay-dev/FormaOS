@@ -1,22 +1,33 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireFounderAccess } from '@/app/app/admin/access';
+import { handleAdminError, ADMIN_CACHE_HEADERS } from '@/app/api/admin/_helpers';
 
 export async function GET() {
   try {
     await requireFounderAccess();
     const admin = createSupabaseAdminClient();
 
-    const [{ data: orgs }, { data: subscriptions }, { data: plans }] =
-      await Promise.all([
-        admin.from('organizations').select('id, created_at'),
-        admin
-          .from('org_subscriptions')
-          .select(
-            'organization_id, status, plan_key, current_period_end, trial_expires_at',
-          ),
-        admin.from('plans').select('key, price_cents'),
-      ]);
+    const [orgsResult, subsResult, plansResult] = await Promise.all([
+      admin.from('organizations').select('id, created_at'),
+      admin
+        .from('org_subscriptions')
+        .select(
+          'organization_id, status, plan_key, current_period_end, trial_expires_at',
+        ),
+      admin.from('plans').select('key, price_cents'),
+    ]);
+
+    if (orgsResult.error || subsResult.error) {
+      console.error('/api/admin/overview query errors:', {
+        orgs: orgsResult.error,
+        subs: subsResult.error,
+      });
+    }
+
+    const orgs = orgsResult.data;
+    const subscriptions = subsResult.data;
+    const plans = plansResult.data;
 
     const totalOrgs = orgs?.length ?? 0;
     const planPriceMap = new Map<string, number>();
@@ -82,18 +93,32 @@ export async function GET() {
       return { date: key, count: dayCounts[key] ?? 0 };
     });
 
-    return NextResponse.json({
-      totalOrgs,
-      activeByPlan: planCounts,
-      trialsActive,
-      trialsExpiring,
-      mrrCents,
-      failedPayments,
-      orgsByDay: timeseries,
-      planPrices: Object.fromEntries(planPriceMap),
-    });
-  } catch (error) {
+    return NextResponse.json(
+      {
+        totalOrgs,
+        activeByPlan: planCounts,
+        trialsActive,
+        trialsExpiring,
+        mrrCents,
+        failedPayments,
+        orgsByDay: timeseries,
+        planPrices: Object.fromEntries(planPriceMap),
+      },
+      {
+        headers: {
+          'Cache-Control': 'private, s-maxage=30, stale-while-revalidate=60',
+        },
+      },
+    );
+  } catch (error: any) {
+    const msg = error?.message ?? '';
+    if (msg === 'Unauthorized' || msg === 'Forbidden') {
+      return NextResponse.json(
+        { error: 'Unavailable (permission)' },
+        { status: 403 },
+      );
+    }
     console.error('/api/admin/overview error:', error);
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 500 });
   }
 }

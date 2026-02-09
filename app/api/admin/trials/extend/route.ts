@@ -4,6 +4,7 @@ import { checkApiRateLimit, getClientIp } from '@/lib/ratelimit';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { MAX_TRIAL_EXTENSION_DAYS } from '@/lib/trial/constants';
 import { NextResponse, type NextRequest } from 'next/server';
+import { handleAdminError } from '@/app/api/admin/_helpers';
 
 /**
  * =========================================================
@@ -158,10 +159,6 @@ export async function PATCH(request: NextRequest) {
       additional_days,
     });
   } catch (error) {
-    console.error('[admin/trials/extend] error:', error);
-    return NextResponse.json(
-      { error: 'Failed to extend trial' },
-      { status: 500 },
-    );
+    return handleAdminError(error, '/api/admin/trials/extend');
   }
 }

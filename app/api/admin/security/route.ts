@@ -1,6 +1,7 @@
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
+import { handleAdminError, ADMIN_CACHE_HEADERS } from '@/app/api/admin/_helpers';
 
 /**
  * GET /api/admin/security — Real security events from admin_audit_log
@@ -71,21 +72,20 @@ export async function GET() {
       (e: any) => e.severity === 'medium',
     ).length;
 
-    return NextResponse.json({
-      events,
-      summary: {
-        total: totalEvents,
-        high: highSeverity,
-        medium: mediumSeverity,
-        low: totalEvents - highSeverity - mediumSeverity,
-        period: '7d',
-      },
-    });
-  } catch (error) {
-    console.error('/api/admin/security error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch security events' },
-      { status: 500 },
+      {
+        events,
+        summary: {
+          total: totalEvents,
+          high: highSeverity,
+          medium: mediumSeverity,
+          low: totalEvents - highSeverity - mediumSeverity,
+          period: '7d',
+        },
+      },
+      { headers: ADMIN_CACHE_HEADERS },
     );
+  } catch (error) {
+    return handleAdminError(error, '/api/admin/security');
   }
 }

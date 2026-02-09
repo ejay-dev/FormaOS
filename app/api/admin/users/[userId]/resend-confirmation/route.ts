@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireFounderAccess } from "@/app/app/admin/access";
 import { logAdminAction } from "@/lib/admin/audit";
+import { handleAdminError } from '@/app/api/admin/_helpers';
 
 type Params = {
   params: Promise<{ userId: string }>;
@@ -33,7 +34,6 @@ export async function POST(request: Request, { params }: Params) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error("/api/admin/users/[userId]/resend-confirmation error:", error);
-    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    return handleAdminError(error, '/api/admin/users/[userId]/resend-confirmation');
   }
 }

@@ -9,6 +9,7 @@ import { NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireFounderAccess } from "@/app/app/admin/access";
 import { enterpriseMonitor } from "@/lib/observability/enterprise-monitor";
+import { handleAdminError } from '@/app/api/admin/_helpers';
 
 interface AutomationFailure {
   id: string;
@@ -89,8 +90,7 @@ export async function GET(request: Request) {
       alerts,
     });
   } catch (error) {
-    console.error("[automation-failures] Error:", error);
-    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    return handleAdminError(error, '/api/admin/support/automation-failures');
   }
 }
 

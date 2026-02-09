@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { parsePageParams } from '@/app/api/admin/_utils';
+import { handleAdminError } from '@/app/api/admin/_helpers';
 
 export async function GET(request: Request) {
   try {
@@ -90,7 +91,6 @@ export async function GET(request: Request) {
       data: rows,
     });
   } catch (error) {
-    console.error('/api/admin/orgs error:', error);
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    return handleAdminError(error, '/api/admin/orgs');
   }
 }

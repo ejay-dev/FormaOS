@@ -13,10 +13,10 @@ import {
 
 type SystemStatus = {
   database_latency_ms: number;
-  total_organizations: number;
-  total_subscriptions: number;
-  total_members: number;
-  total_audit_entries: number;
+  total_organizations: number | null;
+  total_subscriptions: number | null;
+  total_members: number | null;
+  total_audit_entries: number | null;
   recent_admin_actions_24h: number;
   recent_billing_events_24h: number;
   build_version: string;
@@ -24,6 +24,12 @@ type SystemStatus = {
   environment: string;
   timestamp: string;
 };
+
+/** Display a metric value, showing ‘—’ when the query failed (null). */
+function metric(value: number | null | undefined): string {
+  if (value === null || value === undefined) return '—';
+  return value.toLocaleString();
+}
 
 async function fetchSystemStatus() {
   const { base, headers } = await getAdminFetchConfig();
@@ -98,7 +104,7 @@ export default async function AdminSystemPage() {
             <Building2 className="h-5 w-5 text-blue-500/50" />
           </div>
           <div className="text-3xl font-bold text-slate-100">
-            {data.total_organizations}
+            {metric(data.total_organizations)}
           </div>
           <p className="text-xs text-slate-500 mt-2">Total tenants</p>
         </div>
@@ -111,7 +117,7 @@ export default async function AdminSystemPage() {
             <Users className="h-5 w-5 text-purple-500/50" />
           </div>
           <div className="text-3xl font-bold text-slate-100">
-            {data.total_members}
+            {metric(data.total_members)}
           </div>
           <p className="text-xs text-slate-500 mt-2">Across all orgs</p>
         </div>
@@ -145,7 +151,7 @@ export default async function AdminSystemPage() {
             <div>
               <p className="text-sm text-slate-400">Subscriptions</p>
               <p className="text-2xl font-bold text-slate-100 mt-1">
-                {data.total_subscriptions}
+                {metric(data.total_subscriptions)}
               </p>
             </div>
             <Activity className="h-8 w-8 text-amber-500/30" />
@@ -180,7 +186,7 @@ export default async function AdminSystemPage() {
           <div className="flex items-center justify-between p-3 rounded-lg border border-slate-800/50 bg-slate-800/20">
             <span className="text-sm text-slate-400">Total Audit Entries</span>
             <span className="text-sm text-slate-100">
-              {data.total_audit_entries.toLocaleString()}
+              {metric(data.total_audit_entries)}
             </span>
           </div>
         </div>
@@ -214,8 +220,13 @@ export default async function AdminSystemPage() {
             {
               name: 'Audit System',
               status:
-                data.total_audit_entries > 0 ? 'healthy' : ('unknown' as const),
-              detail: `${data.total_audit_entries} entries`,
+                data.total_audit_entries != null && data.total_audit_entries > 0
+                  ? 'healthy'
+                  : ('unknown' as const),
+              detail:
+                data.total_audit_entries != null
+                  ? `${data.total_audit_entries} entries`
+                  : 'Unavailable',
               icon: FileText,
             },
           ].map((service) => {

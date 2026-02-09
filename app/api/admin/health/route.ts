@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireFounderAccess } from "@/app/app/admin/access";
+import { handleAdminError } from '@/app/api/admin/_helpers';
 
 export async function GET() {
   try {
@@ -25,7 +26,6 @@ export async function GET() {
       adminAudit: auditEvents ?? [],
     });
   } catch (error) {
-    console.error("/api/admin/health error:", error);
-    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    return handleAdminError(error, '/api/admin/health');
   }
 }

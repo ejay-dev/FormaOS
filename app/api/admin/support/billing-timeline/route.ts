@@ -8,6 +8,7 @@
 import { NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireFounderAccess } from "@/app/app/admin/access";
+import { handleAdminError } from '@/app/api/admin/_helpers';
 
 interface BillingEvent {
   id: string;
@@ -174,7 +175,6 @@ export async function GET(request: Request) {
       issues,
     });
   } catch (error) {
-    console.error("[billing-timeline] Error:", error);
-    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    return handleAdminError(error, '/api/admin/support/billing-timeline');
   }
 }
