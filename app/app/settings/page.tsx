@@ -1,5 +1,5 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { revalidatePath } from 'next/cache';
 import {
   Building2,
   Fingerprint,
@@ -10,48 +10,50 @@ import {
   Lock,
   AlertOctagon,
   Activity, // Upgrade: Icon for status
-} from "lucide-react";
+} from 'lucide-react';
 
 // ✅ Verify this path matches your project structure
-import { updateOrganization } from "@/app/app/actions/org";
-import { ExpiryAlertWidget } from "@/components/dashboard/expiry-alert-widget";
-import { SaveButton } from "@/components/ui/submit-button";
-import { AppearanceSettings } from "@/components/settings/appearance-settings";
+import { updateOrganization } from '@/app/app/actions/org';
+import { ExpiryAlertWidget } from '@/components/dashboard/expiry-alert-widget';
+import { SaveButton } from '@/components/ui/submit-button';
+import { AppearanceSettings } from '@/components/settings/appearance-settings';
 
 /**
  * ✅ GOVERNANCE UPDATE ACTION (UPGRADED)
  * Now handles the DB update AND writes to the Audit Trail simultaneously.
  */
 async function handleUpdateOrg(formData: FormData) {
-  "use server";
+  'use server';
 
   const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   // 1. Extract Data
-  const orgId = formData.get("orgId") as string;
-  const name = formData.get("name") as string;
-  const domain = formData.get("domain") as string;
-  const registrationNumber = formData.get("registrationNumber") as string;
+  const orgId = formData.get('orgId') as string;
+  const name = formData.get('name') as string;
+  const domain = formData.get('domain') as string;
+  const registrationNumber = formData.get('registrationNumber') as string;
 
   if (!user || !orgId) return;
 
   const { data: membership, error: membershipError } = await supabase
-    .from("org_members")
-    .select("organization_id")
-    .eq("user_id", user.id)
+    .from('org_members')
+    .select('organization_id')
+    .eq('user_id', user.id)
     .maybeSingle();
 
   if (membershipError || !membership?.organization_id) return;
   if (membership.organization_id !== orgId) {
-    throw new Error("Organization mismatch");
+    throw new Error('Organization mismatch');
   }
 
   await updateOrganization({ name, domain, registrationNumber });
 
   // 3. Refresh UI
-  revalidatePath("/app/settings");
-  revalidatePath("/app/audit");
+  revalidatePath('/app/settings');
+  revalidatePath('/app/audit');
 }
 
 export default async function SettingsPage() {
@@ -64,20 +66,22 @@ export default async function SettingsPage() {
 
   // 1. Fetch Membership + Joined Org details (Optimized Query)
   const { data: membership } = await supabase
-    .from("org_members")
-    .select(`
+    .from('org_members')
+    .select(
+      `
       role, 
       organization_id,
       organizations:organization_id (*)
-    `)
-    .eq("user_id", user.id)
+    `,
+    )
+    .eq('user_id', user.id)
     .maybeSingle();
 
   // 2. DATA EXTRACTION & TYPE GUARD
   // Handle case where join returns array or object
   // @ts-ignore
-  const activeOrganization = Array.isArray(membership?.organizations) 
-    ? membership.organizations[0] 
+  const activeOrganization = Array.isArray(membership?.organizations)
+    ? membership.organizations[0]
     : membership?.organizations;
 
   // 3. HARD ALERT: Configuration Error UI
@@ -92,7 +96,9 @@ export default async function SettingsPage() {
             Configuration Access Denied
           </h1>
           <p className="text-slate-400 mt-4 text-sm font-medium leading-relaxed max-w-lg mx-auto">
-            We could not verify your organization details. This usually indicates a <strong>Row-Level Security (RLS)</strong> policy restriction or a missing membership record.
+            We could not verify your organization details. This usually
+            indicates a <strong>Row-Level Security (RLS)</strong> policy
+            restriction or a missing membership record.
           </p>
           <div className="mt-10 pt-8 border-t border-white/10 flex flex-col gap-3">
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-left ml-1">
@@ -107,13 +113,13 @@ export default async function SettingsPage() {
     );
   }
 
-  const isAdmin = membership.role === "admin" || membership.role === "owner";
+  const isAdmin = membership.role === 'admin' || membership.role === 'owner';
 
   // ✅ UPGRADE: Fetch "At Risk" documents from the new view
   const { data: atRiskDocs } = await supabase
-    .from("at_risk_credentials")
-    .select("*")
-    .eq("organization_id", activeOrganization.id)
+    .from('at_risk_credentials')
+    .select('*')
+    .eq('organization_id', activeOrganization.id)
     .limit(3);
 
   return (
@@ -121,7 +127,6 @@ export default async function SettingsPage() {
       className="space-y-10 pb-24 max-w-6xl animate-in fade-in duration-700"
       data-tour="settings-header"
     >
-      
       {/* HEADER SECTION */}
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
@@ -129,12 +134,15 @@ export default async function SettingsPage() {
             Organization Governance
           </h1>
           <p className="text-slate-400 mt-2 font-medium tracking-tight max-w-xl">
-            Manage workspace identity, domain binding, and security infrastructure.
+            Manage workspace identity, domain binding, and security
+            infrastructure.
           </p>
         </div>
         <div className="hidden md:flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full border border-white/10 shadow-sm">
-           <Activity className="h-4 w-4 text-emerald-500" />
-           <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700">System Healthy</span>
+          <Activity className="h-4 w-4 text-emerald-500" />
+          <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700">
+            System Healthy
+          </span>
         </div>
       </header>
 
@@ -143,7 +151,6 @@ export default async function SettingsPage() {
         <input type="hidden" name="orgId" value={activeOrganization.id} />
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-          
           {/* LEFT COLUMN: Main Workspace Identity */}
           <div className="xl:col-span-2 space-y-8">
             <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-10 shadow-sm space-y-10 relative overflow-hidden">
@@ -182,7 +189,7 @@ export default async function SettingsPage() {
                   </label>
                   <input
                     name="registrationNumber"
-                    defaultValue={activeOrganization.registration_number || ""}
+                    defaultValue={activeOrganization.registration_number || ''}
                     placeholder="e.g. 12 345 678 901"
                     disabled={!isAdmin}
                     className="w-full p-5 rounded-2xl border border-white/10 bg-white/10 focus:bg-white/5 focus:outline-white/20 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
@@ -199,7 +206,7 @@ export default async function SettingsPage() {
                   <input
                     name="domain"
                     placeholder="company.com"
-                    defaultValue={activeOrganization.domain || ""}
+                    defaultValue={activeOrganization.domain || ''}
                     disabled={!isAdmin}
                     className="w-full pl-14 pr-4 py-5 rounded-2xl border border-white/10 bg-white/10 focus:bg-white/5 focus:outline-white/20 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
                   />
@@ -238,12 +245,11 @@ export default async function SettingsPage() {
 
           {/* RIGHT COLUMN: Security Node Sidebar */}
           <div className="space-y-6">
-            
             {/* Identity Card (Black) */}
             <div className="bg-white/10 rounded-[2.5rem] p-10 text-slate-100 space-y-10 shadow-2xl relative overflow-hidden group">
               {/* Background Blur Effect */}
               <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full blur-3xl -mr-24 -mt-24 group-hover:bg-white/10 transition-all duration-1000" />
-              
+
               <div className="flex items-center gap-3 relative z-10">
                 <Fingerprint className="h-6 w-6 text-blue-400" />
                 <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
@@ -269,9 +275,7 @@ export default async function SettingsPage() {
                 </div>
               </div>
 
-              {isAdmin && (
-                <SaveButton />
-              )}
+              {isAdmin && <SaveButton />}
             </div>
 
             {/* Access Level Indicator */}
@@ -304,7 +308,8 @@ export default async function SettingsPage() {
                 </h3>
               </div>
               <p className="text-[10px] text-red-800 leading-relaxed font-bold uppercase tracking-widest">
-                Deleting this organization will permanently erase the un-editable audit history. This action is irreversible.
+                Deleting this organization will permanently erase the
+                un-editable audit history. This action is irreversible.
               </p>
               <button
                 disabled
