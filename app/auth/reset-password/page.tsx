@@ -65,19 +65,26 @@ export default function ResetPasswordPage() {
       return;
     }
 
-    if (password.length < 8) {
-      setErrorMessage('Password must be at least 8 characters.');
+    if (password.length < 12) {
+      setErrorMessage('Password must be at least 12 characters.');
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const supabase = createSupabaseClient();
-      const { error } = await supabase.auth.updateUser({ password });
+      const response = await fetch('/api/auth/password/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
 
-      if (error) {
-        setErrorMessage(error.message);
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        const errors = Array.isArray(payload?.errors)
+          ? payload.errors
+          : [payload?.error || 'Unable to update password'];
+        setErrorMessage(errors.join(' '));
         setIsLoading(false);
         return;
       }
@@ -190,11 +197,11 @@ export default function ResetPasswordPage() {
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="At least 8 characters"
+                    placeholder="12+ chars, upper/lower, number, symbol"
                     className="w-full rounded-lg border border-white/20 bg-white/10 pl-10 pr-10 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
                     required
                     disabled={isLoading}
-                    minLength={8}
+                    minLength={12}
                   />
                   <button
                     type="button"
@@ -228,7 +235,7 @@ export default function ResetPasswordPage() {
                     className="w-full rounded-lg border border-white/20 bg-white/10 pl-10 pr-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
                     required
                     disabled={isLoading}
-                    minLength={8}
+                    minLength={12}
                   />
                 </div>
               </div>

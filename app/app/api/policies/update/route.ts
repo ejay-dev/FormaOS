@@ -2,21 +2,40 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
   rateLimitApi,
-  createRateLimitedResponse,
 } from '@/lib/security/rate-limiter';
 import { requirePermission } from '@/app/app/actions/rbac';
 import { logAuditEvent } from '@/app/app/actions/audit-events';
+import {
+  uuidSchema,
+  safeString,
+  validateBody,
+  formatZodError,
+} from '@/lib/security/api-validation';
+import { z } from 'zod';
+
+const htmlSchema = z
+  .string()
+  .min(1)
+  .max(200000)
+  .refine(
+    (val) => !/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi.test(val),
+    'Script tags not allowed',
+  );
+
+const updatePolicySchema = z.object({
+  policyId: uuidSchema,
+  html: htmlSchema,
+  title: safeString({ max: 200 }).optional(),
+});
 
 export async function POST(req: Request) {
   try {
-    const { policyId, html, title } = await req.json();
-
-    if (!policyId || typeof html !== 'string') {
-      return NextResponse.json(
-        { error: 'Missing policyId/html' },
-        { status: 400 },
-      );
+    const parsed = await validateBody(req, updatePolicySchema);
+    if (!parsed.success) {
+      return NextResponse.json(formatZodError(parsed.error), { status: 400 });
     }
+
+    const { policyId, html, title } = parsed.data;
 
     const supabase = await createSupabaseServerClient();
     const {
@@ -48,11 +67,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
+    const updatedTitle = title ?? policy.title;
+
     const { error } = await supabase
       .from('org_policies')
       .update({
         content: html,
-        title,
+        title: updatedTitle,
         last_updated_at: new Date().toISOString(),
         last_updated_by: user.id,
       })
@@ -71,7 +92,7 @@ export async function POST(req: Request) {
       actionType: 'POLICY_UPDATED',
       beforeState: { title: policy.title },
       afterState: {
-        title,
+        title: updatedTitle,
         content_length: typeof html === 'string' ? html.length : null,
       },
       reason: 'policy_editor_update',

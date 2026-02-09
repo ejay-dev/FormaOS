@@ -261,6 +261,21 @@ async function createTemporaryTestUser(): Promise<TestUser> {
     throw new Error(`Failed to add user to org: ${memberError.message}`);
   }
 
+  // Ensure MFA is enabled for privileged test users to satisfy enforcement
+  try {
+    await adminClient.from('user_security').upsert(
+      {
+        user_id: userData.user.id,
+        two_factor_enabled: true,
+        two_factor_enabled_at: nowIso,
+        updated_at: nowIso,
+      },
+      { onConflict: 'user_id' },
+    );
+  } catch (error) {
+    console.warn('[E2E] Failed to set MFA for test user:', error);
+  }
+
   // Create trial subscription (required by middleware)
   const trialEnd = new Date();
   trialEnd.setDate(trialEnd.getDate() + 14); // 14 day trial

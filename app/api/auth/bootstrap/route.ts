@@ -1,12 +1,26 @@
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { resolvePlanKey } from '@/lib/plans';
 import { ensureSubscription } from '@/lib/billing/subscriptions';
+import {
+  createTrackedSession,
+  generateDeviceFingerprint,
+  generateSessionToken,
+  extractClientIP,
+  logSecurityEvent,
+  SecurityEventTypes,
+} from '@/lib/security/session-security';
+import {
+  TRACKED_SESSION_COOKIE,
+  TRACKED_SESSION_MAX_AGE,
+} from '@/lib/security/session-constants';
+import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 
 export const runtime = 'nodejs';
 
-export async function POST() {
+export async function POST(request: Request) {
   const supabase = await createSupabaseServerClient();
   const admin = createSupabaseAdminClient();
 
@@ -31,11 +45,54 @@ export async function POST() {
       .eq('id', membership.organization_id)
       .maybeSingle();
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       ok: true,
       organizationId: membership.organization_id,
       next: org?.onboarding_completed ? '/app' : '/onboarding',
     });
+
+    await logSecurityEvent({
+      eventType: SecurityEventTypes.LOGIN_SUCCESS,
+      userId: user.id,
+      ipAddress: extractClientIP(request.headers),
+      userAgent: request.headers.get('user-agent') ?? undefined,
+      metadata: { source: 'bootstrap' },
+    });
+
+    const cookieStore = await cookies();
+    const existingToken = cookieStore.get(TRACKED_SESSION_COOKIE)?.value;
+    if (!existingToken) {
+      const userAgent = request.headers.get('user-agent') ?? '';
+      const fingerprint = generateDeviceFingerprint(
+        userAgent,
+        request.headers.get('accept-language') ?? '',
+        request.headers.get('accept-encoding') ?? '',
+      );
+      const sessionToken = generateSessionToken();
+      try {
+        await createTrackedSession({
+          userId: user.id,
+          sessionToken,
+          ipAddress: extractClientIP(request.headers),
+          userAgent,
+          deviceFingerprint: fingerprint,
+        });
+        const requestUrl = new URL(request.url);
+        const cookieDomain = getCookieDomain(requestUrl.hostname);
+        response.cookies.set(TRACKED_SESSION_COOKIE, sessionToken, {
+          httpOnly: true,
+          sameSite: 'lax',
+          path: '/',
+          secure: requestUrl.protocol === 'https:',
+          maxAge: TRACKED_SESSION_MAX_AGE,
+          ...(cookieDomain ? { domain: cookieDomain } : {}),
+        });
+      } catch (error) {
+        console.error('[auth/bootstrap] Session tracking failed:', error);
+      }
+    }
+
+    return response;
   }
 
   const now = new Date().toISOString();
@@ -97,9 +154,52 @@ export async function POST() {
     console.error('[auth/bootstrap] ensureSubscription failed:', err);
   }
 
-  return NextResponse.json({
+  const response = NextResponse.json({
     ok: true,
     organizationId: orgId,
     next: '/onboarding',
   });
+
+  await logSecurityEvent({
+    eventType: SecurityEventTypes.LOGIN_SUCCESS,
+    userId: user.id,
+    ipAddress: extractClientIP(request.headers),
+    userAgent: request.headers.get('user-agent') ?? undefined,
+    metadata: { source: 'bootstrap' },
+  });
+
+  const cookieStore = await cookies();
+  const existingToken = cookieStore.get(TRACKED_SESSION_COOKIE)?.value;
+  if (!existingToken) {
+    const userAgent = request.headers.get('user-agent') ?? '';
+    const fingerprint = generateDeviceFingerprint(
+      userAgent,
+      request.headers.get('accept-language') ?? '',
+      request.headers.get('accept-encoding') ?? '',
+    );
+    const sessionToken = generateSessionToken();
+    try {
+      await createTrackedSession({
+        userId: user.id,
+        sessionToken,
+        ipAddress: extractClientIP(request.headers),
+        userAgent,
+        deviceFingerprint: fingerprint,
+      });
+      const requestUrl = new URL(request.url);
+      const cookieDomain = getCookieDomain(requestUrl.hostname);
+      response.cookies.set(TRACKED_SESSION_COOKIE, sessionToken, {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: requestUrl.protocol === 'https:',
+        maxAge: TRACKED_SESSION_MAX_AGE,
+        ...(cookieDomain ? { domain: cookieDomain } : {}),
+      });
+    } catch (error) {
+      console.error('[auth/bootstrap] Session tracking failed:', error);
+    }
+  }
+
+  return response;
 }

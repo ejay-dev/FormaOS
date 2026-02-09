@@ -6,6 +6,8 @@
  */
 
 import { headers } from 'next/headers';
+import { logRateLimitEvent } from '@/lib/security/rate-limit-log';
+import { extractClientIP } from '@/lib/security/session-security';
 
 interface RateLimitConfig {
   windowMs: number;
@@ -170,6 +172,21 @@ export async function rateLimitAuth(request: Request): Promise<{
   const result = await checkRateLimit(RATE_LIMITS.AUTH, identifier);
   const headers = createRateLimitHeaders(result);
 
+  if (!result.success) {
+    const endpoint = new URL(request.url).pathname;
+    const ipAddress = extractClientIP(request.headers);
+    const userAgent = request.headers.get('user-agent');
+    void logRateLimitEvent({
+      identifier,
+      endpoint,
+      requestCount: RATE_LIMITS.AUTH.maxRequests,
+      windowStart: result.resetAt - RATE_LIMITS.AUTH.windowMs,
+      blocked: true,
+      ipAddress,
+      userAgent,
+    });
+  }
+
   return { allowed: result.success, headers };
 }
 
@@ -178,7 +195,25 @@ export async function rateLimitApi(
   userId?: string | null,
 ): Promise<RateLimitResult> {
   const identifier = await getClientIdentifier();
-  return checkRateLimit(RATE_LIMITS.API, identifier, userId);
+  const result = await checkRateLimit(RATE_LIMITS.API, identifier, userId);
+
+  if (!result.success) {
+    const endpoint = new URL(request.url).pathname;
+    const ipAddress = extractClientIP(request.headers);
+    const userAgent = request.headers.get('user-agent');
+    void logRateLimitEvent({
+      identifier: userId ?? identifier,
+      endpoint,
+      requestCount: RATE_LIMITS.API.maxRequests,
+      windowStart: result.resetAt - RATE_LIMITS.API.windowMs,
+      blocked: true,
+      userId: userId ?? undefined,
+      ipAddress,
+      userAgent,
+    });
+  }
+
+  return result;
 }
 
 export function createRateLimitedResponse(

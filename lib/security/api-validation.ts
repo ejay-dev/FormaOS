@@ -21,24 +21,46 @@ export const uuidSchema = z.string().uuid('Invalid UUID format');
  */
 export const emailSchema = z
   .string()
+  .trim()
   .email('Invalid email format')
   .max(255, 'Email too long')
-  .transform((email) => email.toLowerCase().trim());
+  .transform((email) => email.toLowerCase());
 
 /**
  * Safe string - no SQL injection, XSS, or command injection
  */
-export const safeStringSchema = z
-  .string()
-  .max(10000, 'String too long')
-  .refine(
-    (val) => !/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi.test(val),
-    'Script tags not allowed',
-  )
-  .refine(
-    (val) => !/(\-\-|;|\||&|\$\(|`)/g.test(val),
-    'Invalid characters detected',
-  );
+type SafeStringOptions = {
+  min?: number;
+  max?: number;
+};
+
+const applySafeStringRules = (schema: z.ZodString) =>
+  schema
+    .refine(
+      (val) =>
+        !/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi.test(val),
+      'Script tags not allowed',
+    )
+    .refine(
+      (val) => !/(\-\-|;|\||&|\$\(|`)/g.test(val),
+      'Invalid characters detected',
+    );
+
+export const safeString = (options: SafeStringOptions = {}) => {
+  let schema = z.string();
+  if (options.min !== undefined) {
+    schema = schema.min(
+      options.min,
+      `String must be at least ${options.min} characters`,
+    );
+  }
+  if (options.max !== undefined) {
+    schema = schema.max(options.max, 'String too long');
+  }
+  return applySafeStringRules(schema);
+};
+
+export const safeStringSchema = safeString({ max: 10000 });
 
 /**
  * Organization name validation
@@ -56,7 +78,7 @@ export const displayNameSchema = z
   .string()
   .min(1, 'Name is required')
   .max(100, 'Name must be less than 100 characters')
-  .regex(/^[\w\s\-\.\']+$/u, 'Name contains invalid characters');
+  .regex(/^[\w\s\-\.']+$/u, 'Name contains invalid characters');
 
 /**
  * URL validation
@@ -155,7 +177,7 @@ export const createUserSchema = z.object({
 export const inviteMemberSchema = z.object({
   email: emailSchema,
   role: z.enum(['admin', 'member', 'viewer']).default('member'),
-  message: safeStringSchema.max(500).optional(),
+  message: safeString({ max: 500 }).optional(),
 });
 
 /**
@@ -175,8 +197,8 @@ export const createControlSchema = z.object({
     .min(1)
     .max(50)
     .regex(/^[\w\-\.]+$/),
-  title: safeStringSchema.min(1).max(500),
-  description: safeStringSchema.max(5000).optional(),
+  title: safeString({ min: 1, max: 500 }),
+  description: safeString({ max: 5000 }).optional(),
   frameworkId: uuidSchema.optional(),
   categoryId: uuidSchema.optional(),
   priority: z.enum(['critical', 'high', 'medium', 'low']).default('medium'),
@@ -187,8 +209,8 @@ export const createControlSchema = z.object({
  */
 export const uploadEvidenceSchema = z.object({
   controlId: uuidSchema,
-  name: safeStringSchema.min(1).max(255),
-  description: safeStringSchema.max(2000).optional(),
+  name: safeString({ min: 1, max: 255 }),
+  description: safeString({ max: 2000 }).optional(),
   fileType: z.enum(['pdf', 'docx', 'xlsx', 'png', 'jpg', 'jpeg', 'gif']),
   fileSize: z
     .number()
@@ -212,7 +234,7 @@ export const generateReportSchema = z.object({
  * Automation trigger configuration
  */
 export const automationTriggerSchema = z.object({
-  name: safeStringSchema.min(1).max(100),
+  name: safeString({ min: 1, max: 100 }),
   triggerType: z.enum(['schedule', 'event', 'webhook']),
   schedule: z.string().max(100).optional(), // cron expression
   eventType: z.string().max(100).optional(),

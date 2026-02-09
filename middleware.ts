@@ -1,8 +1,21 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import crypto from 'crypto';
 import { createServerClient } from '@supabase/ssr';
 import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 import { isFounder } from '@/lib/utils/founder';
+import { roleRequiresMFA } from '@/lib/security/mfa-enforcement';
+import {
+  createTrackedSession,
+  generateDeviceFingerprint,
+  generateSessionToken,
+  validateSession,
+  extractClientIP,
+  logSecurityEvent,
+  SecurityEventTypes,
+} from '@/lib/security/session-security';
+import {
+  TRACKED_SESSION_COOKIE,
+  TRACKED_SESSION_MAX_AGE,
+} from '@/lib/security/session-constants';
 
 // Define public routes that don't require authentication
 const PUBLIC_ROUTES = [
@@ -45,7 +58,9 @@ function isPublicRoute(path: string): boolean {
 
 export async function middleware(request: NextRequest) {
   try {
-    const nonce = crypto.randomUUID();
+    const nonce =
+      globalThis.crypto?.randomUUID?.() ??
+      `nonce-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set('x-nonce', nonce);
     const response = NextResponse.next({ request: { headers: requestHeaders } });
@@ -284,6 +299,9 @@ export async function middleware(request: NextRequest) {
     }
 
     let user: { id: string; email?: string | null } | null = null;
+    let supabaseClient:
+      | ReturnType<typeof createServerClient>
+      | null = null;
 
     try {
       const supabase = createServerClient(supabaseUrl!, supabaseAnonKey!, {
@@ -314,6 +332,7 @@ export async function middleware(request: NextRequest) {
           },
         },
       });
+      supabaseClient = supabase;
 
       const { data, error } = await supabase.auth.getUser();
       if (!error) {
@@ -332,6 +351,123 @@ export async function middleware(request: NextRequest) {
     const userEmail = user?.email ?? '';
     const userId = user?.id ?? '';
     const isUserFounder = isFounder(userEmail, userId);
+
+    // ============================================================
+    // MFA ENFORCEMENT (ROLE-BASED)
+    // ============================================================
+    const mfaExemptPath =
+      pathname.startsWith('/onboarding') ||
+      pathname.startsWith('/app/settings/security');
+    const shouldCheckMfa =
+      Boolean(user) &&
+      Boolean(supabaseClient) &&
+      (isAppPath || isAdminPath) &&
+      !mfaExemptPath;
+
+    if (shouldCheckMfa && supabaseClient && user) {
+      try {
+        const { data: membership } = await supabaseClient
+          .from('org_members')
+          .select('role, mfa_required')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        const requiresMfa =
+          (membership?.mfa_required ??
+            roleRequiresMFA(membership?.role ?? null)) ||
+          isUserFounder;
+
+        if (requiresMfa) {
+          const { data: security } = await supabaseClient
+            .from('user_security')
+            .select('two_factor_enabled')
+            .eq('user_id', user.id)
+            .maybeSingle();
+
+          const enabled = security?.two_factor_enabled ?? false;
+
+          if (!enabled) {
+            const ipAddress = extractClientIP(request.headers);
+            const userAgent = request.headers.get('user-agent') ?? undefined;
+            await logSecurityEvent({
+              eventType: SecurityEventTypes.LOGIN_MFA_REQUIRED,
+              userId: user.id,
+              ipAddress,
+              userAgent,
+              metadata: { path: pathname },
+            });
+
+            const url = request.nextUrl.clone();
+            url.pathname = '/app/settings/security';
+            url.searchParams.set('mfa', 'required');
+            return redirectWithLoopGuard(url, true, 'mfa-required');
+          }
+        }
+      } catch (error) {
+        console.error('[Middleware] MFA enforcement check failed:', error);
+      }
+    }
+
+    // ============================================================
+    // SESSION TRACKING (DEVICE FINGERPRINT)
+    // ============================================================
+    if (user && (isAppPath || isAdminPath)) {
+      const existingToken = request.cookies.get(TRACKED_SESSION_COOKIE)?.value;
+      const userAgent = request.headers.get('user-agent') ?? '';
+      const fingerprint = generateDeviceFingerprint(
+        userAgent,
+        request.headers.get('accept-language') ?? '',
+        request.headers.get('accept-encoding') ?? '',
+      );
+      const ipAddress = extractClientIP(request.headers);
+      let sessionToken = existingToken;
+      let shouldSetSession = false;
+
+      try {
+        if (sessionToken) {
+          const validation = await validateSession(
+            sessionToken,
+            ipAddress,
+            fingerprint,
+          );
+          if (!validation.valid) {
+            sessionToken = generateSessionToken();
+            await createTrackedSession({
+              userId: user.id,
+              sessionToken,
+              ipAddress,
+              userAgent,
+              deviceFingerprint: fingerprint,
+            });
+            shouldSetSession = true;
+          }
+        } else {
+          sessionToken = generateSessionToken();
+          await createTrackedSession({
+            userId: user.id,
+            sessionToken,
+            ipAddress,
+            userAgent,
+            deviceFingerprint: fingerprint,
+          });
+          shouldSetSession = true;
+        }
+      } catch (error) {
+        console.error('[Middleware] Session tracking failed:', error);
+      }
+
+      if (shouldSetSession && sessionToken) {
+        const cookieOptions = {
+          httpOnly: true,
+          sameSite: 'lax' as const,
+          path: '/',
+          secure: isHttps,
+          maxAge: TRACKED_SESSION_MAX_AGE,
+          ...(cookieDomain ? { domain: cookieDomain } : {}),
+        };
+        response.cookies.set(TRACKED_SESSION_COOKIE, sessionToken, cookieOptions);
+      }
+    }
 
     // 🔍 FOUNDER DETECTION LOGGING (only log denials to reduce noise)
     if (pathname.startsWith('/admin') && !isUserFounder && user) {
@@ -361,13 +497,22 @@ export async function middleware(request: NextRequest) {
           redirecting: 'ALLOW (no redirect, founder gets access)',
         });
         logTiming('admin-allow');
-      response.headers.set('Server-Timing', serverTiming());
-      return response;
+        response.headers.set('Server-Timing', serverTiming());
+        return response;
       } else {
         // ❌ NOT A FOUNDER → DENY ACCESS
         console.log('[Middleware] ❌ NON-FOUNDER BLOCKED FROM /admin', {
           email: userEmail ? userEmail.substring(0, 3) + '***' : 'none',
           redirectTo: '/unauthorized',
+        });
+        const ipAddress = extractClientIP(request.headers);
+        const userAgent = request.headers.get('user-agent') ?? undefined;
+        await logSecurityEvent({
+          eventType: SecurityEventTypes.PRIVILEGE_ESCALATION_ATTEMPT,
+          userId: user?.id,
+          ipAddress,
+          userAgent,
+          metadata: { path: pathname },
         });
         const url = request.nextUrl.clone();
         url.pathname = '/unauthorized';

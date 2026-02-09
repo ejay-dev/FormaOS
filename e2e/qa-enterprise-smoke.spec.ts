@@ -4,7 +4,12 @@
  */
 
 import { test, expect, type Page } from '@playwright/test';
-import { getTestCredentials, cleanupTestUser } from './helpers/test-auth';
+import {
+  getTestCredentials,
+  cleanupTestUser,
+  createMagicLinkSession,
+  setPlaywrightSession,
+} from './helpers/test-auth';
 
 let testCredentials: { email: string; password: string } | null = null;
 
@@ -22,10 +27,27 @@ async function getCredentials(): Promise<{ email: string; password: string }> {
 }
 
 async function loginAs(page: Page, email: string, password: string) {
-  await page.goto('/auth/signin');
+  await page.goto('/');
   await page.evaluate(() => {
     localStorage.setItem('e2e_test_mode', 'true');
   });
+
+  const appBase = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000';
+
+  if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    try {
+      const session = await createMagicLinkSession(email);
+      await setPlaywrightSession(page.context(), session, appBase);
+      await page.goto('/app');
+      await page.waitForURL(/\/app/, { timeout: 15000 });
+      await dismissProductTour(page);
+      return;
+    } catch (error) {
+      console.warn('[E2E] Magic link session failed, falling back to UI login', error);
+    }
+  }
+
+  await page.goto('/auth/signin');
   await page.fill('input[type="email"]', email);
   await page.fill('input[type="password"]', password);
   await page.click('button[type="submit"]');

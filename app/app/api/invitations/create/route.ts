@@ -6,8 +6,20 @@ import { hasPermission, normalizeRole } from '@/app/app/actions/rbac';
 import { getEntitlementLimit } from '@/lib/billing/entitlements';
 import {
   rateLimitApi,
-  createRateLimitedResponse,
 } from '@/lib/security/rate-limiter';
+import {
+  emailSchema,
+  uuidSchema,
+  validateBody,
+  formatZodError,
+} from '@/lib/security/api-validation';
+import { z } from 'zod';
+
+const inviteSchema = z.object({
+  organizationId: uuidSchema,
+  email: emailSchema,
+  role: z.enum(['owner', 'admin', 'member', 'viewer']),
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,24 +39,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const body = await request.json();
-    const { organizationId, email, role } = body;
-
-    // Validate input
-    if (!organizationId || !email || !role) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 },
-      );
+    const parsed = await validateBody(request, inviteSchema);
+    if (!parsed.success) {
+      return NextResponse.json(formatZodError(parsed.error), { status: 400 });
     }
 
-    const allowedRoles = new Set(['owner', 'admin', 'member', 'viewer']);
-    if (!allowedRoles.has(role)) {
-      return NextResponse.json(
-        { error: 'Invalid role selection' },
-        { status: 400 },
-      );
-    }
+    const { organizationId, email, role } = parsed.data;
 
     // Check if user is admin/owner of the organization
     const { data: membership } = await supabase
@@ -92,10 +92,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (
-      data.user.email &&
-      data.user.email.toLowerCase() === email.toLowerCase()
-    ) {
+    if (data.user.email && data.user.email.toLowerCase() === email) {
       return NextResponse.json(
         { error: 'You are already a member of this organization' },
         { status: 400 },
@@ -107,7 +104,7 @@ export async function POST(request: NextRequest) {
       .from('team_invitations')
       .select('id')
       .eq('organization_id', organizationId)
-      .eq('email', email.toLowerCase())
+      .eq('email', email)
       .eq('status', 'pending')
       .single();
 

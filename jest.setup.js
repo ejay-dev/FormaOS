@@ -81,6 +81,13 @@ process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co';
 process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key';
 process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3000';
 
+// Ensure TextEncoder/TextDecoder are available for crypto helpers
+if (typeof TextEncoder === 'undefined') {
+  const { TextEncoder, TextDecoder } = require('util');
+  global.TextEncoder = TextEncoder;
+  global.TextDecoder = TextDecoder;
+}
+
 // Increase timeout for async tests
 jest.setTimeout(10000);
 

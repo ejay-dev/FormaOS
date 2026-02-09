@@ -6,7 +6,6 @@
  * - Session binding and rotation
  */
 
-import crypto from 'crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
 export interface SessionInfo {
@@ -27,18 +26,65 @@ export interface SessionValidationResult {
   };
 }
 
+const textEncoder = new TextEncoder();
+
+function toHex(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+function fallbackHash(input: string): string {
+  let hash1 = 2166136261;
+  let hash2 = 2166136261 ^ 0xdeadbeef;
+
+  for (let i = 0; i < input.length; i++) {
+    const char = input.charCodeAt(i);
+    hash1 ^= char;
+    hash1 = Math.imul(hash1, 16777619);
+    hash2 ^= char;
+    hash2 = Math.imul(hash2, 2166136261);
+  }
+
+  const h1 = (hash1 >>> 0).toString(16).padStart(8, '0');
+  const h2 = (hash2 >>> 0).toString(16).padStart(8, '0');
+  return `${h1}${h2}`.padEnd(64, '0');
+}
+
 /**
  * Generate a secure session token hash (for storage)
  */
-export function hashSessionToken(token: string): string {
-  return crypto.createHash('sha256').update(token).digest('hex');
+export async function hashSessionToken(token: string): Promise<string> {
+  if (!globalThis.crypto?.subtle) {
+    return fallbackHash(token);
+  }
+
+  const data = textEncoder.encode(token);
+  const digest = await globalThis.crypto.subtle.digest('SHA-256', data);
+  return toHex(digest);
 }
 
 /**
  * Generate a cryptographically secure session token
  */
 export function generateSessionToken(): string {
-  return crypto.randomBytes(32).toString('base64url');
+  const bytes = new Uint8Array(32);
+  if (globalThis.crypto?.getRandomValues) {
+    globalThis.crypto.getRandomValues(bytes);
+  } else {
+    for (let i = 0; i < bytes.length; i++) {
+      bytes[i] = Math.floor(Math.random() * 256);
+    }
+  }
+
+  let binary = '';
+  bytes.forEach((b) => {
+    binary += String.fromCharCode(b);
+  });
+  const base64 =
+    typeof btoa === 'function'
+      ? btoa(binary)
+      : Buffer.from(bytes).toString('base64');
+  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
 /**
@@ -55,12 +101,7 @@ export function generateDeviceFingerprint(
     acceptLanguage || '',
     acceptEncoding || '',
   ].join('|');
-
-  return crypto
-    .createHash('sha256')
-    .update(components)
-    .digest('hex')
-    .slice(0, 16);
+  return fallbackHash(components).slice(0, 16);
 }
 
 /**
@@ -95,12 +136,13 @@ export async function createTrackedSession(
 ): Promise<{ sessionId: string; expiresAt: Date }> {
   const admin = createSupabaseAdminClient();
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+  const tokenHash = await hashSessionToken(info.sessionToken);
 
   const { data, error } = await admin
     .from('user_sessions')
     .insert({
       user_id: info.userId,
-      session_token_hash: hashSessionToken(info.sessionToken),
+      session_token_hash: tokenHash,
       ip_address: info.ipAddress,
       user_agent: info.userAgent,
       device_fingerprint: info.deviceFingerprint,
@@ -126,7 +168,7 @@ export async function validateSession(
   currentFingerprint?: string,
 ): Promise<SessionValidationResult> {
   const admin = createSupabaseAdminClient();
-  const tokenHash = hashSessionToken(sessionToken);
+  const tokenHash = await hashSessionToken(sessionToken);
 
   const { data: session, error } = await admin
     .from('user_sessions')
@@ -194,6 +236,21 @@ export async function revokeSession(sessionId: string): Promise<void> {
     .from('user_sessions')
     .update({ revoked_at: new Date().toISOString() })
     .eq('id', sessionId);
+}
+
+/**
+ * Revoke a session by token
+ */
+export async function revokeSessionByToken(
+  sessionToken: string,
+): Promise<void> {
+  const admin = createSupabaseAdminClient();
+  const tokenHash = await hashSessionToken(sessionToken);
+
+  await admin
+    .from('user_sessions')
+    .update({ revoked_at: new Date().toISOString() })
+    .eq('session_token_hash', tokenHash);
 }
 
 /**

@@ -6,18 +6,15 @@
  * - Password security
  * - Session security
  * - API validation
- * - Rate limiting
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import crypto from 'crypto';
 import {
   validatePasswordStrength,
   checkPasswordBreached,
+  validatePassword,
 } from '@/lib/security/password-security';
-import {
-  roleRequiresMFA,
-  checkMFAStatus,
-} from '@/lib/security/mfa-enforcement';
+import { roleRequiresMFA } from '@/lib/security/mfa-enforcement';
 import {
   hashSessionToken,
   generateSessionToken,
@@ -32,6 +29,7 @@ import {
   validateBody,
   formatZodError,
 } from '@/lib/security/api-validation';
+import { hashPasswordForHistory } from '@/lib/security/password-history';
 import { z } from 'zod';
 
 // ============================================
@@ -101,12 +99,51 @@ describe('Password Security', () => {
 
   describe('checkPasswordBreached', () => {
     it('handles API failures gracefully', async () => {
-      // Mock fetch to simulate API failure
-      global.fetch = vi.fn().mockRejectedValue(new Error('Network error'));
+      global.fetch = jest.fn().mockRejectedValue(new Error('Network error'));
 
       const result = await checkPasswordBreached('testpassword');
       expect(result.breached).toBe(false);
       expect(result.count).toBe(0);
+    });
+
+    it('detects breached passwords when hash suffix matches', async () => {
+      const password = 'P@ssword123!Secure';
+      const sha1 = crypto
+        .createHash('sha1')
+        .update(password)
+        .digest('hex')
+        .toUpperCase();
+      const suffix = sha1.slice(5);
+
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        text: async () => `${suffix}:42\nOTHERHASH:5`,
+      } as Response);
+
+      const result = await checkPasswordBreached(password);
+      expect(result.breached).toBe(true);
+      expect(result.count).toBe(42);
+    });
+  });
+
+  describe('validatePassword', () => {
+    it('rejects breached passwords', async () => {
+      const password = 'P@ssword123!Secure';
+      const sha1 = crypto
+        .createHash('sha1')
+        .update(password)
+        .digest('hex')
+        .toUpperCase();
+      const suffix = sha1.slice(5);
+
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        text: async () => `${suffix}:99`,
+      } as Response);
+
+      const result = await validatePassword(password);
+      expect(result.valid).toBe(false);
+      expect(result.breached).toBe(true);
     });
   });
 });
@@ -150,21 +187,21 @@ describe('MFA Enforcement', () => {
 
 describe('Session Security', () => {
   describe('hashSessionToken', () => {
-    it('produces consistent hashes', () => {
+    it('produces consistent hashes', async () => {
       const token = 'test-token-123';
-      const hash1 = hashSessionToken(token);
-      const hash2 = hashSessionToken(token);
+      const hash1 = await hashSessionToken(token);
+      const hash2 = await hashSessionToken(token);
       expect(hash1).toBe(hash2);
     });
 
-    it('produces different hashes for different tokens', () => {
-      const hash1 = hashSessionToken('token-1');
-      const hash2 = hashSessionToken('token-2');
+    it('produces different hashes for different tokens', async () => {
+      const hash1 = await hashSessionToken('token-1');
+      const hash2 = await hashSessionToken('token-2');
       expect(hash1).not.toBe(hash2);
     });
 
-    it('produces 64-character hex strings', () => {
-      const hash = hashSessionToken('any-token');
+    it('produces 64-character hex strings', async () => {
+      const hash = await hashSessionToken('any-token');
       expect(hash).toMatch(/^[a-f0-9]{64}$/);
     });
   });
@@ -319,6 +356,43 @@ describe('API Validation', () => {
         const formatted = formatZodError(result.error);
         expect(formatted.message).toBe('Validation failed');
         expect(formatted.errors.length).toBeGreaterThan(0);
+      }
+    });
+  });
+
+  describe('validateBody', () => {
+    it('rejects invalid JSON body', async () => {
+      const request = {
+        json: async () => {
+          throw new Error('Invalid JSON');
+        },
+      } as unknown as Request;
+
+      const result = await validateBody(request, z.object({}));
+      expect(result.success).toBe(false);
+    });
+  });
+});
+
+// ============================================
+// Password History Tests
+// ============================================
+
+describe('Password History', () => {
+  it('creates stable hashes for the same password', () => {
+    const hash1 = hashPasswordForHistory('SecurePassword!123');
+    const hash2 = hashPasswordForHistory('SecurePassword!123');
+    expect(hash1).toBe(hash2);
+    expect(hash1).toMatch(/^[a-f0-9]{64}$/);
+  });
+});
+
+// ============================================
+// Additional Security Checks
+// ============================================
+
+describe('Security Invariants', () => {
+  it('rejects weak passwords by default', () => {
     const weakPasswords = [
       'password',
       '123456',

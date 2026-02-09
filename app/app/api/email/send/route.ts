@@ -3,10 +3,50 @@ import { sendEmail, EmailData } from '@/lib/email/send-email';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
   rateLimitApi,
-  createRateLimitedResponse,
-  createRateLimitHeaders,
 } from '@/lib/security/rate-limiter';
 import { requirePermission } from '@/app/app/actions/rbac';
+import {
+  emailSchema,
+  uuidSchema,
+  safeString,
+  urlSchema,
+  validateBody,
+  formatZodError,
+} from '@/lib/security/api-validation';
+import { z } from 'zod';
+
+const baseSchema = z.object({
+  to: emailSchema,
+  type: z.enum(['welcome', 'invite', 'alert']),
+  organizationId: uuidSchema.optional(),
+  userId: uuidSchema.optional(),
+});
+
+const emailPayloadSchema = z.discriminatedUnion('type', [
+  baseSchema.extend({
+    type: z.literal('welcome'),
+    userName: safeString({ max: 200 }),
+    organizationName: safeString({ max: 200 }),
+    loginUrl: urlSchema.optional(),
+  }),
+  baseSchema.extend({
+    type: z.literal('invite'),
+    inviterName: safeString({ max: 200 }),
+    inviterEmail: emailSchema,
+    organizationName: safeString({ max: 200 }),
+    inviteUrl: urlSchema,
+    role: safeString({ max: 50 }),
+  }),
+  baseSchema.extend({
+    type: z.literal('alert'),
+    userName: safeString({ max: 200 }),
+    alertType: z.enum(['info', 'warning', 'critical']),
+    alertTitle: safeString({ max: 200 }),
+    alertMessage: safeString({ max: 2000 }),
+    actionUrl: urlSchema.optional(),
+    actionText: safeString({ max: 100 }).optional(),
+  }),
+]);
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,16 +69,13 @@ export async function POST(request: NextRequest) {
 
     const permissionCtx = await requirePermission('MANAGE_USERS');
 
-    const body = await request.json();
-    const emailData = body as EmailData;
-    const normalizedEmail = emailData.to?.toLowerCase?.() ?? '';
-
-    if (!normalizedEmail || !emailData.type) {
-      return NextResponse.json(
-        { error: 'Invalid email payload' },
-        { status: 400 },
-      );
+    const parsed = await validateBody(request, emailPayloadSchema);
+    if (!parsed.success) {
+      return NextResponse.json(formatZodError(parsed.error), { status: 400 });
     }
+
+    const emailData = parsed.data as EmailData;
+    const normalizedEmail = emailData.to;
 
     if (
       emailData.organizationId &&

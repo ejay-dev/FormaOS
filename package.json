@@ -3,8 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "check-root": "node scripts/check-root.js",
+    "check-env": "node scripts/check-env.js",
+    "predev": "npm run check-root && npm run check-env",
     "dev": "next dev",
+    "prebuild": "npm run check-root && npm run check-env",
     "build": "__NEXT_PRIVATE_STANDALONE_CONFIG= next build --webpack",
+    "prestart": "npm run check-root && npm run check-env",
     "start": "next start",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx . --fix",
     "stylelint": "stylelint '**/*.{css,scss,sass}' --fix",

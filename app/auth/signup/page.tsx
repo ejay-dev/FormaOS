@@ -16,21 +16,36 @@ const SESSION_TIMEOUT_MS = 5000;
 
 const resolveAppBase = () => {
   const envBase = (process.env.NEXT_PUBLIC_APP_URL ?? '').replace(/\/$/, '');
+  if (typeof window !== 'undefined') {
+    const origin = window.location.origin.replace(/\/$/, '');
+    const host = window.location.hostname;
+    const isLocalhost =
+      host === 'localhost' ||
+      host.endsWith('.localhost') ||
+      host.startsWith('127.') ||
+      host === '0.0.0.0';
+    if (isLocalhost) return origin;
+  }
   if (envBase) return envBase;
   if (typeof window === 'undefined') return DEFAULT_APP_BASE;
   const origin = window.location.origin.replace(/\/$/, '');
   const host = window.location.hostname;
-  const isLocalhost =
-    host === 'localhost' ||
-    host.endsWith('.localhost') ||
-    host.startsWith('127.') ||
-    host === '0.0.0.0';
-  if (isLocalhost || host.startsWith('app.')) return origin;
+  if (host.startsWith('app.')) return origin;
   return DEFAULT_APP_BASE;
 };
 
 const resolveSiteBase = () => {
   const envBase = (process.env.NEXT_PUBLIC_SITE_URL ?? '').replace(/\/$/, '');
+  if (typeof window !== 'undefined') {
+    const origin = window.location.origin.replace(/\/$/, '');
+    const host = window.location.hostname;
+    const isLocalhost =
+      host === 'localhost' ||
+      host.endsWith('.localhost') ||
+      host.startsWith('127.') ||
+      host === '0.0.0.0';
+    if (isLocalhost) return origin;
+  }
   if (envBase) return envBase;
   if (typeof window === 'undefined') return DEFAULT_SITE_BASE;
   return window.location.origin.replace(/\/$/, '');
@@ -122,14 +137,32 @@ function SignUpContent() {
       return;
     }
 
-    if (password.length < 8) {
-      setErrorMessage('Password must be at least 8 characters long.');
+    if (password.length < 12) {
+      setErrorMessage('Password must be at least 12 characters long.');
       return;
     }
 
     setIsLoading(true);
 
     try {
+      const validationResponse = await fetch('/api/auth/password/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+
+      if (!validationResponse.ok) {
+        const validationPayload = await validationResponse
+          .json()
+          .catch(() => ({}));
+        const errors = Array.isArray(validationPayload?.errors)
+          ? validationPayload.errors
+          : ['Password does not meet security requirements'];
+        setErrorMessage(errors.join(' '));
+        setIsLoading(false);
+        return;
+      }
+
       const appBase = resolveAppBase();
       // 🔧 FIX: Email signup must route through /auth/callback (like Google OAuth)
       // so that org + membership + subscription + entitlements are created.
@@ -328,7 +361,7 @@ function SignUpContent() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Create a secure password"
+                  placeholder="12+ chars, upper/lower, number, symbol"
                   className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
                   required
                   disabled={isLoading}

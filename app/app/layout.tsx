@@ -18,6 +18,7 @@ import { Logo } from '@/components/brand/Logo';
 import { HelpAssistantProvider } from '@/components/help/help-assistant-context';
 import { HelpAssistant } from '@/components/help/HelpAssistant';
 import { AppShellErrorBoundary } from '@/components/app-shell-error-boundary';
+import { ProductTourProvider } from '@/lib/onboarding/product-tour';
 
 /**
  * =========================================================
@@ -104,100 +105,103 @@ export default async function AppLayout({
         entitlements: systemState.entitlements,
       }}
     >
-      <SystemStateProvider
-        initialState={{
-          user: systemState.user,
-          organization: systemState.organization,
-          entitlements: systemState.entitlements,
-          isFounder: systemState.isFounder,
-        }}
-      >
-        <CommandProvider>
-          <ComplianceSystemProvider>
-            <HelpAssistantProvider>
-              <AppShellErrorBoundary>
-                <div className="relative flex min-h-screen w-full overflow-hidden bg-background text-foreground">
-                  {/* Ambient background effects */}
-                  <div className="pointer-events-none absolute inset-x-0 -top-32 h-64 bg-gradient-glow blur-3xl opacity-40" />
+      <ProductTourProvider>
+        <SystemStateProvider
+          initialState={{
+            user: systemState.user,
+            organization: systemState.organization,
+            entitlements: systemState.entitlements,
+            isFounder: systemState.isFounder,
+          }}
+        >
+          <CommandProvider>
+            <ComplianceSystemProvider>
+              <HelpAssistantProvider>
+                <AppShellErrorBoundary>
+                  <div className="relative flex min-h-screen w-full overflow-hidden bg-background text-foreground">
+                    {/* Ambient background effects */}
+                    <div className="pointer-events-none absolute inset-x-0 -top-32 h-64 bg-gradient-glow blur-3xl opacity-40" />
 
-                  {/* App shell grid */}
-                  <div className="flex h-full w-full min-w-0">
-                    {/* Sidebar */}
-                    <aside className="relative z-30 hidden md:flex h-full w-[280px] shrink-0 flex-col glass-panel-strong border-r border-border">
-                      {/* Sidebar header */}
-                      <div className="flex h-20 items-center border-b border-border px-6">
-                        <div className="flex items-center gap-3">
-                          <Logo variant="mark" size={40} />
-                          <div>
-                            <div className="text-base font-bold font-display">
-                              {brand.appName}
-                            </div>
-                            <div className="text-xs text-muted-foreground uppercase tracking-wider">
-                              {brand.identity}
+                    {/* App shell grid */}
+                    <div className="flex h-full w-full min-w-0">
+                      {/* Sidebar */}
+                      <aside className="relative z-30 hidden md:flex h-full w-[280px] shrink-0 flex-col glass-panel-strong border-r border-border">
+                        {/* Sidebar header */}
+                        <div className="flex h-20 items-center border-b border-border px-6">
+                          <div className="flex items-center gap-3">
+                            <Logo variant="mark" size={40} />
+                            <div>
+                              <div className="text-base font-bold font-display">
+                                {brand.appName}
+                              </div>
+                              <div className="text-xs text-muted-foreground uppercase tracking-wider">
+                                {brand.identity}
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
 
-                      {/* Sidebar navigation */}
-                      <div className="flex flex-1 overflow-y-auto">
-                        <Sidebar role={systemState.role} />
-                      </div>
-
-                      {/* Sidebar footer */}
-                      <div className="border-t border-border px-6 py-5 text-xs text-muted-foreground">
-                        <div className="font-medium">
-                          © {new Date().getFullYear()} {brand.appName}
+                        {/* Sidebar navigation */}
+                        <div className="flex flex-1 overflow-y-auto">
+                          <Sidebar role={systemState.role} />
                         </div>
-                        <div className="mt-1.5">{brand.identity}</div>
-                      </div>
-                    </aside>
 
-                    {/* Main application area */}
-                    <section className="relative flex h-full flex-1 flex-col overflow-hidden">
-                      {/* Top bar */}
-                      <header className="sticky top-0 z-40 flex h-16 md:h-20 w-full items-center glass-panel-strong border-b border-border">
-                        <div className="flex h-full w-full items-center px-4 sm:px-6 lg:px-8">
-                          <TopBar
-                            orgName={
-                              systemState.organization.name || 'My Organization'
-                            }
-                            userEmail={systemState.user.email || ''}
-                            userId={systemState.user.id}
-                            orgId={systemState.organization.id}
-                            role={systemState.role}
-                          />
+                        {/* Sidebar footer */}
+                        <div className="border-t border-border px-6 py-5 text-xs text-muted-foreground">
+                          <div className="font-medium">
+                            © {new Date().getFullYear()} {brand.appName}
+                          </div>
+                          <div className="mt-1.5">{brand.identity}</div>
                         </div>
-                      </header>
+                      </aside>
 
-                      {/* Trial Countdown Banner (conversion system) */}
-                      <TrialCountdownBanner />
+                      {/* Main application area */}
+                      <section className="relative flex h-full flex-1 flex-col overflow-hidden">
+                        {/* Top bar */}
+                        <header className="sticky top-0 z-40 flex h-16 md:h-20 w-full items-center glass-panel-strong border-b border-border">
+                          <div className="flex h-full w-full items-center px-4 sm:px-6 lg:px-8">
+                            <TopBar
+                              orgName={
+                                systemState.organization.name ||
+                                'My Organization'
+                              }
+                              userEmail={systemState.user.email || ''}
+                              userId={systemState.user.id}
+                              orgId={systemState.organization.id}
+                              role={systemState.role}
+                            />
+                          </div>
+                        </header>
 
-                      {/* Main content */}
-                      <main className="relative flex flex-1 flex-col overflow-y-auto bg-background">
-                        {/* Page container with better spacing */}
-                        <div className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-                          {children}
-                        </div>
-                      </main>
-                    </section>
+                        {/* Trial Countdown Banner (conversion system) */}
+                        <TrialCountdownBanner />
+
+                        {/* Main content */}
+                        <main className="relative flex flex-1 flex-col overflow-y-auto bg-background">
+                          {/* Page container with better spacing */}
+                          <div className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
+                            {children}
+                          </div>
+                        </main>
+                      </section>
+                    </div>
+
+                    {/* Command palette */}
+                    <CommandMenu />
+
+                    {/* Trial conversion system (non-blocking) */}
+                    <UpgradeModal />
+                    <UpgradeSuggestionEngine />
+
+                    {/* In-app help */}
+                    <HelpAssistant />
                   </div>
-
-                  {/* Command palette */}
-                  <CommandMenu />
-
-                  {/* Trial conversion system (non-blocking) */}
-                  <UpgradeModal />
-                  <UpgradeSuggestionEngine />
-
-                  {/* In-app help */}
-                  <HelpAssistant />
-                </div>
-              </AppShellErrorBoundary>
-            </HelpAssistantProvider>
-          </ComplianceSystemProvider>
-        </CommandProvider>
-      </SystemStateProvider>
+                </AppShellErrorBoundary>
+              </HelpAssistantProvider>
+            </ComplianceSystemProvider>
+          </CommandProvider>
+        </SystemStateProvider>
+      </ProductTourProvider>
     </AppHydrator>
   );
 }

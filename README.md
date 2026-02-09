@@ -2,16 +2,12 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+First, make sure you are in the project root, then run the development server:
 
 ```bash
+cd ~/formaos
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open the URL shown in the dev server output (or your configured site URL) to see the result.

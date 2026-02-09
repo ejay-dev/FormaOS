@@ -19,16 +19,21 @@ const RENDER_APP_BASE = (process.env.NEXT_PUBLIC_APP_URL ?? '').replace(
 
 const resolveAppBase = () => {
   const envBase = (process.env.NEXT_PUBLIC_APP_URL ?? '').replace(/\/$/, '');
+  if (typeof window !== 'undefined') {
+    const origin = window.location.origin.replace(/\/$/, '');
+    const host = window.location.hostname;
+    const isLocalhost =
+      host === 'localhost' ||
+      host.endsWith('.localhost') ||
+      host.startsWith('127.') ||
+      host === '0.0.0.0';
+    if (isLocalhost) return origin;
+  }
   if (envBase) return envBase;
   if (typeof window === 'undefined') return DEFAULT_APP_BASE;
   const origin = window.location.origin.replace(/\/$/, '');
   const host = window.location.hostname;
-  const isLocalhost =
-    host === 'localhost' ||
-    host.endsWith('.localhost') ||
-    host.startsWith('127.') ||
-    host === '0.0.0.0';
-  if (isLocalhost || host.startsWith('app.')) return origin;
+  if (host.startsWith('app.')) return origin;
   return DEFAULT_APP_BASE;
 };
 
@@ -72,6 +77,28 @@ function SignInContent() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [sessionTimeout, setSessionTimeout] = useState(false);
+
+  const logLoginFailure = useCallback(
+    async (reason: string, provider: 'email' | 'google' = 'email') => {
+      try {
+        await fetch('/api/security/log', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            eventType: 'login_failure',
+            metadata: {
+              email: provider === 'email' ? email : undefined,
+              provider,
+              reason,
+            },
+          }),
+        });
+      } catch {
+        // Best-effort logging
+      }
+    },
+    [email],
+  );
 
   const bootstrapAndRedirect = useCallback(async () => {
     const base = resolveAppBase();
@@ -227,6 +254,7 @@ function SignInContent() {
         setErrorMessage(error.message ?? 'An unexpected error occurred.');
         setIsLoading(false);
         console.error('Google OAuth error:', error);
+        void logLoginFailure(error.message ?? 'oauth_error', 'google');
         return;
       }
       if (data?.url) {
@@ -234,11 +262,13 @@ function SignInContent() {
       } else {
         setErrorMessage('No redirect URL returned from Google OAuth.');
         setIsLoading(false);
+        void logLoginFailure('oauth_missing_redirect', 'google');
       }
     } catch (err) {
       console.error('[Auth] Google OAuth failed:', err);
       setErrorMessage('Unable to start Google sign in. Please try again.');
       setIsLoading(false);
+      void logLoginFailure('oauth_exception', 'google');
     }
   };
 
@@ -262,6 +292,7 @@ function SignInContent() {
 
       if (error) {
         setErrorMessage(error.message ?? 'Invalid email or password.');
+        void logLoginFailure(error.message ?? 'invalid_credentials', 'email');
         setIsLoading(false);
         return;
       }
@@ -279,8 +310,10 @@ function SignInContent() {
         setErrorMessage(
           'Having trouble signing you in. Please refresh and try again.',
         );
+        void logLoginFailure('session_timeout', 'email');
       } else {
         setErrorMessage('Authentication failed. Please sign in again.');
+        void logLoginFailure('auth_exception', 'email');
       }
       setIsLoading(false);
     }

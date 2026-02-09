@@ -5,6 +5,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { MAX_TRIAL_EXTENSION_DAYS } from '@/lib/trial/constants';
 import { NextResponse, type NextRequest } from 'next/server';
 import { handleAdminError } from '@/app/api/admin/_helpers';
+import { logRateLimitEvent } from '@/lib/security/rate-limit-log';
 
 /**
  * =========================================================
@@ -25,6 +26,14 @@ export async function PATCH(request: NextRequest) {
     const ip = getClientIp(request);
     const rl = await checkApiRateLimit(`admin:trials:extend:${ip}`);
     if (!rl.success) {
+      void logRateLimitEvent({
+        identifier: `admin:trials:extend:${ip}`,
+        endpoint: request.nextUrl.pathname,
+        requestCount: rl.limit,
+        windowStart: rl.reset - 60 * 1000,
+        blocked: true,
+        ipAddress: ip,
+      });
       return NextResponse.json(
         { error: 'Too many requests. Try again later.' },
         { status: 429, headers: { 'Retry-After': '60' } },
