@@ -100,10 +100,6 @@ export async function GET(request: Request) {
     );
   }
 
-  if (!code) {
-    return redirectWithCookies(`${appBase}/auth/signin`);
-  }
-
   // CRITICAL: Validate service role key is configured
   // Without this, user creation will fail and create orphaned auth users
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
@@ -158,6 +154,14 @@ export async function GET(request: Request) {
     },
   });
   const admin = createSupabaseAdminClient();
+
+  if (!code) {
+    const { data } = await supabase.auth.getUser();
+    if (data?.user) {
+      return redirectWithCookies(`${appBase}/app`);
+    }
+    return redirectWithCookies(`${appBase}/auth/signin`);
+  }
 
   // 1. Exchange the code for a session
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);

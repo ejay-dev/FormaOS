@@ -1,13 +1,20 @@
 import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { getCookieDomain } from "@/lib/supabase/cookie-domain";
 
 // REVERTED: Kept your original function name
 export async function createSupabaseServerClient() {
   const cookieStore = await cookies();
+  const headerStore = await headers();
+  const requestHost = headerStore.get("host") ?? undefined;
+  const forwardedProto = headerStore.get("x-forwarded-proto") ?? "";
   // In development, avoid forcing a cookie domain so localhost flows keep working.
-  const cookieDomain = process.env.NODE_ENV === "development" ? undefined : getCookieDomain();
+  const cookieDomain =
+    process.env.NODE_ENV === "development"
+      ? undefined
+      : getCookieDomain(requestHost);
   const isHttps = (() => {
+    if (forwardedProto) return forwardedProto === "https";
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "";
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
     return appUrl.startsWith("https://") || siteUrl.startsWith("https://");

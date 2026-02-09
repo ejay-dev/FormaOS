@@ -2,7 +2,6 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 import { isFounder } from '@/lib/utils/founder';
-import { autoProvisionTrialAccess } from '@/lib/middleware/auto-provision-trial';
 
 // Define public routes that don't require authentication
 const PUBLIC_ROUTES = [
@@ -46,8 +45,48 @@ function isPublicRoute(path: string): boolean {
 export async function middleware(request: NextRequest) {
   try {
     const response = NextResponse.next({ request });
+    const startTime = Date.now();
 
     const pathname = request.nextUrl.pathname;
+    const logTiming = (label: string) => {
+      if (pathname.startsWith('/app') || pathname.startsWith('/admin')) {
+        const ms = Date.now() - startTime;
+        console.log('[Middleware] timing', { label, path: pathname, ms });
+      }
+    };
+    const redirectWithLoopGuard = (
+      targetUrl: URL,
+      userExists: boolean,
+      reason: string,
+    ) => {
+      const LOOP_COUNT_PARAM = '__rl';
+      const LOOP_TARGET_PARAM = '__rlt';
+      const prevTarget = request.nextUrl.searchParams.get(LOOP_TARGET_PARAM);
+      const prevCountRaw = request.nextUrl.searchParams.get(LOOP_COUNT_PARAM);
+      const prevCount = prevCountRaw ? Number.parseInt(prevCountRaw, 10) : 0;
+      const targetPath = targetUrl.pathname;
+      const nextCount = prevTarget === targetPath ? prevCount + 1 : 1;
+
+      if (Number.isFinite(nextCount) && nextCount > 2) {
+        const safeUrl = request.nextUrl.clone();
+        safeUrl.searchParams.delete(LOOP_COUNT_PARAM);
+        safeUrl.searchParams.delete(LOOP_TARGET_PARAM);
+        safeUrl.pathname = userExists ? '/onboarding' : '/auth/signin';
+        console.warn('[Middleware] loop guard triggered', {
+          path: pathname,
+          targetPath,
+          safePath: safeUrl.pathname,
+          reason,
+        });
+        logTiming('loop-guard');
+        return NextResponse.redirect(safeUrl);
+      }
+
+      targetUrl.searchParams.set(LOOP_COUNT_PARAM, String(nextCount));
+      targetUrl.searchParams.set(LOOP_TARGET_PARAM, targetPath);
+      logTiming('redirect');
+      return NextResponse.redirect(targetUrl);
+    };
 
     // 🚨 CRITICAL: Verify FOUNDER_EMAILS is loaded (log ONCE per deployment)
     if (pathname === '/admin' || pathname.startsWith('/admin/')) {
@@ -103,7 +142,7 @@ export async function middleware(request: NextRequest) {
     if (pathname === '/auth') {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = '/auth/signin';
-      return NextResponse.redirect(redirectUrl);
+      return redirectWithLoopGuard(redirectUrl, false, '/auth -> /auth/signin');
     }
 
     // Handle OAuth errors (user denied permission, etc.)
@@ -116,15 +155,17 @@ export async function middleware(request: NextRequest) {
         'message',
         'Sign in was cancelled. Please try again.',
       );
-      return NextResponse.redirect(redirectUrl);
+      return redirectWithLoopGuard(redirectUrl, false, 'oauth-error');
     }
 
     const isAuthPath = pathname === '/auth' || pathname.startsWith('/auth/');
-    const isAuthCallback = pathname === '/auth/callback';
+    const isAdminPath = pathname.startsWith('/admin');
+    const isAppPath = pathname.startsWith('/app');
 
     // Skip auth checks for public routes (after OAuth handling),
     // but allow /auth/* to continue so we can redirect signed-in users.
     if (isPublicRoute(pathname) && !isAuthPath) {
+      logTiming('public');
       return response;
     }
 
@@ -148,14 +189,14 @@ export async function middleware(request: NextRequest) {
         const redirectUrl = request.nextUrl.clone();
         redirectUrl.protocol = appOrigin.protocol;
         redirectUrl.host = appOrigin.host;
-        return NextResponse.redirect(redirectUrl);
+        return redirectWithLoopGuard(redirectUrl, false, 'admin-domain');
       }
 
       if (host === siteOrigin.hostname && isAppPath) {
         const redirectUrl = request.nextUrl.clone();
         redirectUrl.protocol = appOrigin.protocol;
         redirectUrl.host = appOrigin.host;
-        return NextResponse.redirect(redirectUrl);
+        return redirectWithLoopGuard(redirectUrl, false, 'site->app-domain');
       }
 
       if (
@@ -166,8 +207,13 @@ export async function middleware(request: NextRequest) {
         const redirectUrl = request.nextUrl.clone();
         redirectUrl.protocol = siteOrigin.protocol;
         redirectUrl.host = siteOrigin.host;
-        return NextResponse.redirect(redirectUrl);
+        return redirectWithLoopGuard(redirectUrl, false, 'app->site-domain');
       }
+    }
+
+    if (!isAppPath && !isAdminPath) {
+      logTiming('no-auth-check');
+      return response;
     }
 
     const cookieDomain = getCookieDomain(request.nextUrl.hostname);
@@ -192,57 +238,54 @@ export async function middleware(request: NextRequest) {
     const hasSupabaseEnv = Boolean(hasValidSupabaseUrl && supabaseAnonKey);
 
     if (!hasSupabaseEnv) {
-      if (pathname.startsWith('/app') || pathname.startsWith('/admin')) {
+      if (isAppPath || isAdminPath) {
         const url = request.nextUrl.clone();
         url.pathname = '/auth/signin';
-        return NextResponse.redirect(url);
+        return redirectWithLoopGuard(url, false, 'missing-supabase-env');
       }
+      logTiming('no-supabase-env');
       return response;
     }
 
     let user: { id: string; email?: string | null } | null = null;
-    let supabase: ReturnType<typeof createServerClient> | null = null;
 
-    if (hasSupabaseEnv) {
-      try {
-        supabase = createServerClient(supabaseUrl!, supabaseAnonKey!, {
-          cookies: {
-            getAll: () => request.cookies.getAll(),
-            setAll: (cookiesToSet) => {
-              try {
-                cookiesToSet.forEach(({ name, value, options }) => {
-                  const normalized = { ...options };
-                  if (!normalized.sameSite) {
-                    normalized.sameSite = 'lax';
-                  }
-                  if (!normalized.path) {
-                    normalized.path = '/';
-                  }
-                  if (isHttps) {
-                    normalized.secure = true;
-                  }
-                  const cookieOptions = cookieDomain
-                    ? { ...normalized, domain: cookieDomain }
-                    : normalized;
-                  request.cookies.set(name, value);
-                  response.cookies.set(name, value, cookieOptions);
-                });
-              } catch {
-                // Ignore cookie set errors in middleware
-              }
-            },
+    try {
+      const supabase = createServerClient(supabaseUrl!, supabaseAnonKey!, {
+        cookies: {
+          getAll: () => request.cookies.getAll(),
+          setAll: (cookiesToSet) => {
+            try {
+              cookiesToSet.forEach(({ name, value, options }) => {
+                const normalized = { ...options };
+                if (!normalized.sameSite) {
+                  normalized.sameSite = 'lax';
+                }
+                if (!normalized.path) {
+                  normalized.path = '/';
+                }
+                if (isHttps) {
+                  normalized.secure = true;
+                }
+                const cookieOptions = cookieDomain
+                  ? { ...normalized, domain: cookieDomain }
+                  : normalized;
+                request.cookies.set(name, value);
+                response.cookies.set(name, value, cookieOptions);
+              });
+            } catch {
+              // Ignore cookie set errors in middleware
+            }
           },
-        });
+        },
+      });
 
-        const { data, error } = await supabase.auth.getUser();
-        if (!error) {
-          user = data.user ?? null;
-        }
-      } catch (error) {
-        console.error('[Middleware] Supabase init failed:', error);
-        supabase = null;
-        user = null;
+      const { data, error } = await supabase.auth.getUser();
+      if (!error) {
+        user = data.user ?? null;
       }
+    } catch (error) {
+      console.error('[Middleware] Supabase init failed:', error);
+      user = null;
     }
 
     // ============================================================
@@ -271,13 +314,13 @@ export async function middleware(request: NextRequest) {
     // 🚨 STEP 2: SHORT-CIRCUIT /admin FOR FOUNDERS
     // If founder accessing /admin → ALLOW IMMEDIATELY, bypass ALL guards
     // ============================================================
-    if (pathname.startsWith('/admin')) {
+    if (isAdminPath) {
       if (!user) {
         // Not authenticated → redirect to signin
         console.log('[Middleware] ❌ /admin requires authentication');
         const url = request.nextUrl.clone();
         url.pathname = '/auth/signin';
-        return NextResponse.redirect(url);
+        return redirectWithLoopGuard(url, false, '/admin-unauth');
       }
 
       if (isUserFounder) {
@@ -287,6 +330,7 @@ export async function middleware(request: NextRequest) {
           path: pathname,
           redirecting: 'ALLOW (no redirect, founder gets access)',
         });
+        logTiming('admin-allow');
         return response;
       } else {
         // ❌ NOT A FOUNDER → DENY ACCESS
@@ -296,157 +340,17 @@ export async function middleware(request: NextRequest) {
         });
         const url = request.nextUrl.clone();
         url.pathname = '/unauthorized';
-        return NextResponse.redirect(url);
+        return redirectWithLoopGuard(url, true, '/admin-non-founder');
       }
     }
 
     // ============================================================
     // STEP 3: BLOCK OTHER PROTECTED ROUTES IF NOT LOGGED IN
     // ============================================================
-    if (!user && pathname.startsWith('/app')) {
+    if (!user && isAppPath) {
       const url = request.nextUrl.clone();
       url.pathname = '/auth/signin';
-      return NextResponse.redirect(url);
-    }
-
-    // ============================================================
-    // STEP 4: HANDLE AUTH PAGES FOR LOGGED-IN USERS
-    // Skip interference for auth callback processing
-    // ============================================================
-    if (user && pathname.startsWith('/auth') && !isAuthCallback) {
-      const url = request.nextUrl.clone();
-
-      // Founders go directly to admin
-      if (isUserFounder) {
-        console.log('[Middleware] 👤 Founder on /auth → redirecting to /admin');
-        url.pathname = '/admin';
-        return NextResponse.redirect(url);
-      }
-
-      // Check if user has completed onboarding
-      const { data: membership } = await supabase
-        .from('org_members')
-        .select('organization_id, organizations(onboarding_completed)')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      const orgRecord = Array.isArray(membership?.organizations)
-        ? membership.organizations[0]
-        : membership?.organizations;
-
-      const onboardingCompleted = Boolean(orgRecord?.onboarding_completed);
-
-      // If onboarding is not completed, redirect to onboarding
-      if (!onboardingCompleted && membership?.organization_id) {
-        url.pathname = '/onboarding';
-        return NextResponse.redirect(url);
-      }
-
-      // Otherwise, redirect to app
-      url.pathname = '/app';
-      return NextResponse.redirect(url);
-    }
-
-    // ============================================================
-    // STEP 5: ROLE-BASED DASHBOARD GUARD (for /app paths)
-    // Founders are already handled above, this is for regular users
-    // ============================================================
-    if (
-      user &&
-      supabase &&
-      pathname.startsWith('/app') &&
-      !pathname.startsWith('/app/api') &&
-      !isUserFounder
-    ) {
-      let { data: membership } = await supabase
-        .from('org_members')
-        .select('organization_id, role')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      // Auto-provision trial access if user has no organization
-      if (!membership?.organization_id) {
-        const provisionResult = await autoProvisionTrialAccess(
-          supabase,
-          user.id,
-          user.email ?? null
-        );
-
-        if (provisionResult.success && provisionResult.organizationId) {
-          // Reload membership after provisioning
-          const { data: newMembership } = await supabase
-            .from('org_members')
-            .select('organization_id, role')
-            .eq('user_id', user.id)
-            .maybeSingle();
-          membership = newMembership;
-        }
-      }
-
-      const role = (membership?.role ?? '').toLowerCase();
-      const isStaff = role === 'staff' || role === 'member';
-      const orgId = membership?.organization_id ?? null;
-
-      if (isStaff) {
-        const allowedPrefixes = [
-          '/app/staff',
-          '/app/tasks',
-          '/app/patients',
-          '/app/progress-notes',
-          '/app/vault',
-          '/app/evidence',
-          '/app/accept-invite',
-        ];
-
-        const allowed = allowedPrefixes.some(
-          (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
-        );
-
-        if (!allowed) {
-          const url = request.nextUrl.clone();
-          url.pathname = '/app/staff';
-          return NextResponse.redirect(url);
-        }
-      }
-
-      const billingAllowed =
-        pathname.startsWith('/app/billing') ||
-        pathname.startsWith('/app/accept-invite');
-
-      // Skip billing check for E2E test users (identified by email pattern)
-      const isE2ETestUser = userEmail.includes('@test.formaos.local');
-
-      if (orgId && !billingAllowed && !isUserFounder && !isE2ETestUser) {
-        // Founders bypass subscription gating
-        const { data: subscription, error: subscriptionError } = await supabase
-          .from('org_subscriptions')
-          .select('status, current_period_end, trial_expires_at')
-          .eq('organization_id', orgId)
-          .maybeSingle();
-
-        let subscriptionActive = false;
-
-        if (!subscriptionError && subscription?.status) {
-          if (subscription.status === 'active') {
-            subscriptionActive = true;
-          } else if (subscription.status === 'trialing') {
-            const trialEndValue =
-              subscription.trial_expires_at ?? subscription.current_period_end;
-            if (trialEndValue) {
-              const trialEnd = new Date(trialEndValue).getTime();
-              subscriptionActive =
-                !Number.isNaN(trialEnd) && Date.now() <= trialEnd;
-            }
-          }
-        }
-
-        if (!subscriptionActive) {
-          const url = request.nextUrl.clone();
-          url.pathname = '/app/billing';
-          url.searchParams.set('status', 'blocked');
-          return NextResponse.redirect(url);
-        }
-      }
+      return redirectWithLoopGuard(url, false, '/app-unauth');
     }
 
     // -------------------------------
@@ -466,6 +370,7 @@ export async function middleware(request: NextRequest) {
     // 7. ALLOW ONBOARDING ALWAYS
     // -------------------------------
     // No redirects here. Onboarding is handled inside the app.
+    logTiming('allow');
     return response;
   } catch (err) {
     console.error('Middleware runtime error:', err);
