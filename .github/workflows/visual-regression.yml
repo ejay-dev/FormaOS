@@ -17,7 +17,7 @@ on:
       generate_references:
         description: 'Generate new reference images'
         required: false
-        default: 'false'
+        default: false
         type: boolean
 
 jobs:

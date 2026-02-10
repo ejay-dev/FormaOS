@@ -64,7 +64,7 @@ if (!fs.existsSync(envPath)) {
 let fileVars = {};
 try {
   fileVars = parseEnvFile(fs.readFileSync(envPath, 'utf8'));
-} catch (error) {
+} catch {
   console.error('\nUnable to read .env.local.');
   console.error('Check file permissions and try again.');
   process.exit(1);
