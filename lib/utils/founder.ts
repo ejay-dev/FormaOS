@@ -29,27 +29,30 @@ export function isFounder(email: string | undefined, userId: string): boolean {
   const normalizedEmail = (email ?? '').trim().toLowerCase();
   const normalizedId = (userId ?? '').trim().toLowerCase();
 
-  // Log for debugging (only in development)
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[isFounder] Debug info:', {
-      normalizedEmail,
-      normalizedId: normalizedId
-        ? normalizedId.substring(0, 8) + '...'
-        : 'none',
-      founderEmailsSize: founderEmails.size,
-      founderIdsSize: founderIds.size,
-      emailMatch: founderEmails.has(normalizedEmail),
-      idMatch: founderIds.has(normalizedId),
-      FOUNDER_EMAILS_RAW: process.env.FOUNDER_EMAILS,
-      FOUNDER_USER_IDS_RAW: process.env.FOUNDER_USER_IDS,
-    });
-  }
-
   // Check both email and ID
   const emailMatch = normalizedEmail
     ? founderEmails.has(normalizedEmail)
     : false;
   const idMatch = normalizedId ? founderIds.has(normalizedId) : false;
+
+  // Log for debugging - always log founder checks on server for troubleshooting
+  // Mask email for privacy but show enough to verify
+  const maskedEmail = normalizedEmail
+    ? normalizedEmail.substring(0, 3) + '***@' + normalizedEmail.split('@')[1]
+    : 'none';
+
+  // Only log when checking protected routes (reduce noise)
+  if (typeof window === 'undefined') {
+    console.log('[isFounder] Check:', {
+      maskedEmail,
+      hasId: !!normalizedId,
+      founderEmailsConfigured: founderEmails.size,
+      founderIdsConfigured: founderIds.size,
+      emailMatch,
+      idMatch,
+      result: emailMatch || idMatch,
+    });
+  }
 
   return emailMatch || idMatch;
 }

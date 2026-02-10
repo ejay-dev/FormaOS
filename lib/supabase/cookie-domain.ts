@@ -6,6 +6,13 @@ function isIpAddress(host: string) {
   return /^\d+\.\d+\.\d+\.\d+$/.test(host);
 }
 
+function isVercelPreview(host: string) {
+  // Vercel preview deployments use patterns like:
+  // - formaos-<hash>-<team>.vercel.app
+  // - formaos-git-<branch>-<team>.vercel.app
+  return host.endsWith('.vercel.app');
+}
+
 function normalizeHost(host: string) {
   return host.startsWith('.') ? host.slice(1) : host;
 }
@@ -68,6 +75,13 @@ export function getCookieDomain(requestHost?: string): string | undefined {
     }
 
     if (isLocalhost(requestHost) || isIpAddress(requestHost)) {
+      return undefined;
+    }
+
+    // CRITICAL: For Vercel preview deployments, NEVER set a domain cookie.
+    // Each preview gets a unique subdomain (e.g., formaos-abc123-team.vercel.app)
+    // Setting a domain cookie would cause cross-deployment cookie leakage.
+    if (isVercelPreview(requestHost)) {
       return undefined;
     }
 

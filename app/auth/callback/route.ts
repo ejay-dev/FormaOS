@@ -206,38 +206,85 @@ export async function GET(request: Request) {
   if (
     exchangeError &&
     (String(exchangeError?.code ?? '').includes('pkce') ||
-      String(exchangeError?.message ?? '').includes('code verifier'))
+      String(exchangeError?.message ?? '').includes('code verifier') ||
+      String(exchangeError?.message ?? '').includes('verifier'))
   ) {
     console.warn(
       '[auth/callback] PKCE verifier missing – attempting server-side fallback',
       {
         errorCode: exchangeError?.code,
+        errorMessage: exchangeError?.message,
         hasPkceVerifier,
         cookieNames: cookieNames.filter((n) => n.startsWith('sb-')),
+        allCookieNames: cookieNames,
+        cookieDomain,
+        requestHost: requestUrl.hostname,
       },
     );
 
-    // Try exchanging the code via the Supabase Auth admin REST endpoint.
-    // This bypasses the client-side PKCE check by talking directly to the auth server.
-    try {
-      const tokenRes = await fetch(
-        `${supabaseUrl}/auth/v1/token?grant_type=pkce`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            apikey: supabaseAnonKey,
-          },
-          body: JSON.stringify({
-            auth_code: code,
-            code_verifier: '', // empty verifier – server may accept for trusted origins
-          }),
-        },
-      );
+    // IMPROVED FALLBACK: Try to get the code verifier from all possible cookie locations
+    // Sometimes the verifier is stored under different names
+    const possibleVerifierCookies = cookieSnapshot.filter(
+      (c) =>
+        c.name.includes('code-verifier') || c.name.includes('code_verifier'),
+    );
 
-      // If the direct token exchange doesn't work, try the admin route
-      if (!tokenRes.ok) {
-        // Exchange code via admin endpoint (code grant without PKCE)
+    if (possibleVerifierCookies.length > 0) {
+      // Found a verifier cookie - try to use it
+      for (const verifierCookie of possibleVerifierCookies) {
+        try {
+          console.log(
+            '[auth/callback] Trying verifier from cookie:',
+            verifierCookie.name,
+          );
+          const tokenRes = await fetch(
+            `${supabaseUrl}/auth/v1/token?grant_type=pkce`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                apikey: supabaseAnonKey,
+              },
+              body: JSON.stringify({
+                auth_code: code,
+                code_verifier: verifierCookie.value,
+              }),
+            },
+          );
+
+          if (tokenRes.ok) {
+            const tokenData = await tokenRes.json();
+            if (tokenData?.access_token && tokenData?.refresh_token) {
+              const { data: sessionData, error: setErr } =
+                await supabase.auth.setSession({
+                  access_token: tokenData.access_token,
+                  refresh_token: tokenData.refresh_token,
+                });
+              if (!setErr && sessionData?.user) {
+                exchangeData = sessionData as any;
+                exchangeError = null;
+                console.log(
+                  '[auth/callback] ✅ PKCE exchange with found verifier succeeded for:',
+                  sessionData.user.email,
+                );
+                break;
+              }
+            }
+          }
+        } catch (verifierErr) {
+          console.error(
+            '[auth/callback] Verifier exchange failed:',
+            verifierErr,
+          );
+        }
+      }
+    }
+
+    // If still no success, try authorization_code grant with service role (Supabase Admin API)
+    if (!exchangeData?.user) {
+      try {
+        // Use the admin API to exchange the code directly
+        // This requires the service role key
         const adminTokenRes = await fetch(
           `${supabaseUrl}/auth/v1/token?grant_type=authorization_code`,
           {
@@ -247,14 +294,16 @@ export async function GET(request: Request) {
               apikey: supabaseAnonKey,
               Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
             },
-            body: JSON.stringify({ code }),
+            body: JSON.stringify({
+              code,
+              redirect_uri: `${appBase}/auth/callback`,
+            }),
           },
         );
 
         if (adminTokenRes.ok) {
           const tokenData = await adminTokenRes.json();
           if (tokenData?.access_token && tokenData?.refresh_token) {
-            // Set session via the supabase client so cookies are properly written
             const { data: sessionData, error: setErr } =
               await supabase.auth.setSession({
                 access_token: tokenData.access_token,
@@ -264,35 +313,24 @@ export async function GET(request: Request) {
               exchangeData = sessionData as any;
               exchangeError = null;
               console.log(
-                '[auth/callback] ✅ Server-side fallback succeeded for:',
+                '[auth/callback] ✅ Admin API token exchange succeeded for:',
                 sessionData.user.email,
               );
             }
           }
+        } else {
+          const errBody = await adminTokenRes.text();
+          console.error('[auth/callback] Admin token exchange failed:', {
+            status: adminTokenRes.status,
+            body: errBody,
+          });
         }
-      } else {
-        const tokenData = await tokenRes.json();
-        if (tokenData?.access_token && tokenData?.refresh_token) {
-          const { data: sessionData, error: setErr } =
-            await supabase.auth.setSession({
-              access_token: tokenData.access_token,
-              refresh_token: tokenData.refresh_token,
-            });
-          if (!setErr && sessionData?.user) {
-            exchangeData = sessionData as any;
-            exchangeError = null;
-            console.log(
-              '[auth/callback] ✅ PKCE-bypass token exchange succeeded for:',
-              sessionData.user.email,
-            );
-          }
-        }
+      } catch (fallbackErr) {
+        console.error(
+          '[auth/callback] Server-side fallback failed:',
+          fallbackErr,
+        );
       }
-    } catch (fallbackErr) {
-      console.error(
-        '[auth/callback] Server-side fallback failed:',
-        fallbackErr,
-      );
     }
   }
 
