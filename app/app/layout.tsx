@@ -77,10 +77,11 @@ export default async function AppLayout({
     console.error('[AppLayout] fetchSystemState crashed:', err);
   }
 
-  // If we can't build state, send to onboarding rather than crashing
+  // If we can't build state, send to onboarding rather than crashing.
+  // Add ?from=app to prevent /onboarding → /app → /onboarding infinite loop.
   if (!systemState) {
     console.warn('[AppLayout] No system state — redirecting to /onboarding');
-    redirect('/onboarding');
+    redirect('/onboarding?from=app');
   }
 
   // 🔧 FIX: Don't force founders to /admin when they visit /app intentionally.

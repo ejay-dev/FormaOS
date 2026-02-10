@@ -507,6 +507,7 @@ type OnboardingPageProps = {
     step?: string;
     plan?: string;
     error?: string;
+    from?: string;
   }>;
 };
 
@@ -514,10 +515,24 @@ export default async function OnboardingPage({
   searchParams,
 }: OnboardingPageProps) {
   const resolvedSearchParams = await searchParams;
+
+  // Loop break: if AppLayout sent us here because systemState failed,
+  // but onboarding is actually complete, don't bounce back to /app
+  // (which would just send us here again). Show error instead.
+  const cameFromApp = resolvedSearchParams?.from === 'app';
+
   const { orgId, orgRecord, supabase } = await getOrgContext();
   const status = await getOnboardingStatus(supabase, orgId);
 
   if (orgRecord?.onboarding_completed && status.completed_at) {
+    if (cameFromApp) {
+      // Break the loop — AppLayout couldn't load state but onboarding IS done.
+      // This means there's a transient DB/state issue. Redirect to a safe place.
+      console.error(
+        '[Onboarding] Loop detected: onboarding complete but AppLayout has no state. Retrying /app.',
+      );
+      redirect('/app?retry=1');
+    }
     redirect('/app');
   }
 

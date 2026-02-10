@@ -5,10 +5,15 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 export const runtime = 'nodejs';
 
 /**
- * Debug endpoint — only accessible by founders.
+ * Debug endpoint — only accessible by founders in development.
  * Never exposes raw env values in response.
  */
 export async function GET() {
+  // 0. Block in production
+  if (process.env.NODE_ENV !== 'development') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
+
   // 1. Require authenticated founder
   try {
     const supabase = await createSupabaseServerClient();
