@@ -5,6 +5,9 @@ import { logActivity } from '@/lib/logger';
 import Link from 'next/link';
 import { ShieldCheck, Mail, Calendar, AlertCircle, CheckCircle } from 'lucide-react';
 
+// Force dynamic rendering - this page uses cookies() for auth
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
   params?: Promise<{
     token: string;

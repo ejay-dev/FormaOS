@@ -2,6 +2,9 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { notFound, redirect } from "next/navigation"; // 1. Added redirect import
 import { ShieldCheck, CheckCircle2 } from "lucide-react";
 
+// Force dynamic rendering - this page uses cookies() for Supabase client
+export const dynamic = 'force-dynamic';
+
 export default async function PublicFormPage({ 
   params,
   searchParams // 2. Added searchParams to check for success status
