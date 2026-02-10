@@ -75,6 +75,7 @@ function SignInContent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [sessionTimeout, setSessionTimeout] = useState(false);
 
@@ -120,6 +121,14 @@ function SignInContent() {
       return { ok: false, status: 0 };
     }
   }, []);
+
+  // Check for success messages from URL params (e.g., session cleared after JWT rotation)
+  useEffect(() => {
+    const sessionCleared = searchParams.get('session_cleared');
+    if (sessionCleared === 'true') {
+      setSuccessMessage('Your session has been cleared. Please sign in again.');
+    }
+  }, [searchParams]);
 
   // Check for error messages from URL params (e.g., from auth callback)
   useEffect(() => {
@@ -364,6 +373,11 @@ function SignInContent() {
               </div>
             </div>
 
+            {successMessage && (
+              <div className="mb-6 rounded-lg border border-emerald-400/40 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
+                {successMessage}
+              </div>
+            )}
             {errorMessage && (
               <div className="mb-6 rounded-lg border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
                 {errorMessage}

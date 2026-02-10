@@ -329,6 +329,14 @@ export async function middleware(request: NextRequest) {
       const { data, error } = await supabase.auth.getUser();
       if (!error) {
         user = data.user ?? null;
+      } else {
+        // TEMP: Diagnostic logging for JWT rotation recovery
+        console.warn('[Middleware] getUser error:', {
+          code: error.code,
+          message: error.message,
+          status: error.status,
+          path: pathname,
+        });
       }
     } catch (error) {
       console.error('[Middleware] Supabase init failed:', error);
