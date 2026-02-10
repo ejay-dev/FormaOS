@@ -23,5 +23,5 @@
     "**/.next": true,
     "**/dist": true
   },
-  "CodeGPT.apiKey": "Claude Code"
+  "CodeGPT.apiKey": "Ollama"
 }

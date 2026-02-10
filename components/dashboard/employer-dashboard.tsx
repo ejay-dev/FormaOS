@@ -44,7 +44,7 @@ const QUICK_ACTIONS = [
   {
     label: 'Organization',
     description: 'Overview & KPIs',
-    href: '/app/org-overview',
+    href: '/app/executive',
     icon: Building2,
     color: 'text-blue-400',
   },
@@ -79,7 +79,7 @@ const QUICK_ACTIONS = [
   {
     label: 'Audit Logs',
     description: 'Activity history',
-    href: '/app/audit-logs',
+    href: '/app/audit',
     icon: Shield,
     color: 'text-rose-400',
   },
