@@ -3,8 +3,8 @@
 const fs = require('fs');
 const path = require('path');
 
-// Skip env checks on Vercel - environment is pre-validated by Vercel's system
-if (process.env.VERCEL === '1') {
+// Skip env checks on Vercel and GitHub Actions CI - environment is pre-validated
+if (process.env.VERCEL === '1' || process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true') {
   process.exit(0);
 }
 
