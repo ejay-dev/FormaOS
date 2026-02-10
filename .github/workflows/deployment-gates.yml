@@ -20,7 +20,7 @@ on:
         type: boolean
 
 env:
-  NODE_VERSION: '18'
+  NODE_VERSION: '20'
   DEPLOYMENT_TIMEOUT: 600 # 10 minutes
 
 jobs:
