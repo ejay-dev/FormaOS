@@ -1,22 +1,22 @@
-import { createBrowserClient } from "@supabase/ssr";
-import { getCookieDomain } from "@/lib/supabase/cookie-domain";
+import { createBrowserClient } from '@supabase/ssr';
+import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 
 type SupabaseClient = ReturnType<typeof createBrowserClient>;
 
 let cachedClient: SupabaseClient | null = null;
 
 function resolveBrowserCookieOptions() {
-  if (typeof window === "undefined") return undefined;
+  if (typeof window === 'undefined') return undefined;
   const domain = getCookieDomain(window.location.hostname);
-  const secure = window.location.protocol === "https:";
+  const secure = window.location.protocol === 'https:';
   const options: {
     domain?: string;
     path: string;
-    sameSite: "lax";
+    sameSite: 'lax';
     secure?: boolean;
   } = {
-    path: "/",
-    sameSite: "lax",
+    path: '/',
+    sameSite: 'lax',
   };
   if (domain) options.domain = domain;
   if (secure) options.secure = true;
@@ -24,19 +24,26 @@ function resolveBrowserCookieOptions() {
 }
 
 function getSupabaseKey() {
-  return (
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
-    ""
-  );
+  // Use ONLY the anon key — the publishable key (sb_publishable_*) is NOT a
+  // valid Supabase JWT and will silently break all client-side auth including
+  // signInWithOAuth if it takes priority.
+  return process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '';
 }
 
 function createFallbackClient() {
-  const error = { message: "Supabase is not configured." };
-  const emptyResult: { data: unknown; error: { message: string } } = { data: null, error };
-  const emptyListResult: { data: unknown[]; error: { message: string } } = { data: [], error };
+  const error = { message: 'Supabase is not configured.' };
+  const emptyResult: { data: unknown; error: { message: string } } = {
+    data: null,
+    error,
+  };
+  const emptyListResult: { data: unknown[]; error: { message: string } } = {
+    data: [],
+    error,
+  };
 
-  const buildQuery = (result: { data: unknown; error: { message: string } } = emptyListResult) => {
+  const buildQuery = (
+    result: { data: unknown; error: { message: string } } = emptyListResult,
+  ) => {
     const builder: any = {
       select: () => buildQuery(emptyListResult),
       insert: () => buildQuery(emptyResult),
@@ -56,9 +63,12 @@ function createFallbackClient() {
       lte: () => builder,
       single: () => Promise.resolve(emptyResult),
       maybeSingle: () => Promise.resolve(emptyResult),
-      then: (resolve: (value: typeof result) => void) => Promise.resolve(result).then(resolve),
-      catch: (reject: (reason?: unknown) => void) => Promise.resolve(result).catch(reject),
-      finally: (callback: () => void) => Promise.resolve(result).finally(callback),
+      then: (resolve: (value: typeof result) => void) =>
+        Promise.resolve(result).then(resolve),
+      catch: (reject: (reason?: unknown) => void) =>
+        Promise.resolve(result).catch(reject),
+      finally: (callback: () => void) =>
+        Promise.resolve(result).finally(callback),
     };
     return builder;
   };
@@ -75,7 +85,7 @@ function createFallbackClient() {
         upload: async () => emptyResult,
         remove: async () => emptyResult,
         createSignedUrl: async () => emptyResult,
-        getPublicUrl: () => ({ data: { publicUrl: "" }, error }),
+        getPublicUrl: () => ({ data: { publicUrl: '' }, error }),
         download: async () => emptyResult,
       }),
     },
@@ -85,12 +95,12 @@ function createFallbackClient() {
 export function createSupabaseClient() {
   if (cachedClient) return cachedClient;
   const isPresent = (value?: string | null) =>
-    Boolean(value && value !== "undefined" && value !== "null");
+    Boolean(value && value !== 'undefined' && value !== 'null');
   const url = isPresent(process.env.NEXT_PUBLIC_SUPABASE_URL)
     ? process.env.NEXT_PUBLIC_SUPABASE_URL!
-    : "";
+    : '';
   const keyRaw = getSupabaseKey();
-  const key = isPresent(keyRaw) ? keyRaw : "";
+  const key = isPresent(keyRaw) ? keyRaw : '';
   const hasValidUrl = (() => {
     if (!url) return false;
     try {
@@ -102,7 +112,7 @@ export function createSupabaseClient() {
   })();
 
   if (!hasValidUrl || !key) {
-    console.error("[Supabase] Missing NEXT_PUBLIC_SUPABASE_URL or public key.");
+    console.error('[Supabase] Missing NEXT_PUBLIC_SUPABASE_URL or public key.');
     cachedClient = createFallbackClient();
     return cachedClient;
   }
@@ -113,7 +123,7 @@ export function createSupabaseClient() {
     });
     return cachedClient;
   } catch (error) {
-    console.error("[Supabase] Failed to initialize browser client:", error);
+    console.error('[Supabase] Failed to initialize browser client:', error);
     cachedClient = createFallbackClient();
     return cachedClient;
   }

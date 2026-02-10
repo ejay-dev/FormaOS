@@ -394,6 +394,25 @@ export async function GET(request: Request) {
         status: 'active',
         updated_at: new Date().toISOString(),
       });
+    } else {
+      // Founder has NO org yet (first login) — bootstrap one
+      console.log(
+        '[auth/callback] 🆕 Founder first login — bootstrapping organization',
+      );
+      try {
+        await bootstrapOrganizationAtomic({
+          userId: user.id,
+          userEmail: user.email ?? null,
+          orgName: `${user.email?.split('@')[0] ?? 'Founder'}'s Organization`,
+          planKey: 'pro',
+        });
+        console.log('[auth/callback] ✅ Founder org bootstrapped successfully');
+      } catch (bootstrapErr) {
+        console.error(
+          '[auth/callback] ❌ Founder org bootstrap failed:',
+          bootstrapErr,
+        );
+      }
     }
 
     console.log(
