@@ -63,7 +63,9 @@ export async function middleware(request: NextRequest) {
       `nonce-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set('x-nonce', nonce);
-    const response = NextResponse.next({ request: { headers: requestHeaders } });
+    const response = NextResponse.next({
+      request: { headers: requestHeaders },
+    });
     const startTime = Date.now();
 
     const pathname = request.nextUrl.pathname;
@@ -112,16 +114,8 @@ export async function middleware(request: NextRequest) {
       return redirectResponse;
     };
 
-    // 🚨 ENV CHECK for admin routes (debug only — remove in stable production)
-    if (
-      (pathname === '/admin' || pathname === '/admin/dashboard') &&
-      process.env.NODE_ENV !== 'production'
-    ) {
-      console.log('[Middleware] ENV CHECK', {
-        FOUNDER_EMAILS_RAW: process.env.FOUNDER_EMAILS,
-        NODE_ENV: process.env.NODE_ENV,
-      });
-    }
+    // Environment variables are now validated at startup via lib/env-validation.ts
+    // Individual route logging reduced to security events only
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL;
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
@@ -299,9 +293,7 @@ export async function middleware(request: NextRequest) {
     }
 
     let user: { id: string; email?: string | null } | null = null;
-    let supabaseClient:
-      | ReturnType<typeof createServerClient>
-      | null = null;
+    let supabaseClient: ReturnType<typeof createServerClient> | null = null;
 
     try {
       const supabase = createServerClient(supabaseUrl!, supabaseAnonKey!, {
@@ -465,7 +457,11 @@ export async function middleware(request: NextRequest) {
           maxAge: TRACKED_SESSION_MAX_AGE,
           ...(cookieDomain ? { domain: cookieDomain } : {}),
         };
-        response.cookies.set(TRACKED_SESSION_COOKIE, sessionToken, cookieOptions);
+        response.cookies.set(
+          TRACKED_SESSION_COOKIE,
+          sessionToken,
+          cookieOptions,
+        );
       }
     }
 

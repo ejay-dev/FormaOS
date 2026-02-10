@@ -3,10 +3,18 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { parsePageParams } from '@/app/api/admin/_utils';
 import { handleAdminError } from '@/app/api/admin/_helpers';
+import { rateLimitApi } from '@/lib/security/rate-limiter';
 
 export async function GET(request: Request) {
   try {
-    await requireFounderAccess();
+    const { user } = await requireFounderAccess();
+
+    // Rate limiting for admin routes
+    const rateLimitResult = await rateLimitApi(request, user.id);
+    if (!rateLimitResult.success) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
+
     const admin = createSupabaseAdminClient();
     const url = new URL(request.url);
     const query = (url.searchParams.get('query') ?? '').trim();

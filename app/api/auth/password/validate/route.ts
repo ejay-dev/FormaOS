@@ -1,9 +1,22 @@
 import { NextResponse } from 'next/server';
 import { validatePassword } from '@/lib/security/password-security';
+import {
+  rateLimitAuth,
+  createRateLimitHeaders,
+} from '@/lib/security/rate-limiter';
 
 export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
+  // Rate limiting: Prevent brute force password validation attempts
+  const { allowed, headers } = await rateLimitAuth(request);
+  if (!allowed) {
+    return NextResponse.json(
+      { ok: false, errors: ['Too many requests. Please try again later.'] },
+      { status: 429, headers },
+    );
+  }
+
   try {
     const body = await request.json().catch(() => ({}));
     const password = typeof body?.password === 'string' ? body.password : '';
