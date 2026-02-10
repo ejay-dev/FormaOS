@@ -20,6 +20,10 @@ import { HelpAssistant } from '@/components/help/HelpAssistant';
 import { AppShellErrorBoundary } from '@/components/app-shell-error-boundary';
 import { ProductTourProvider } from '@/lib/onboarding/product-tour';
 
+// Force dynamic rendering for all /app/* routes
+// Required because this layout uses cookies() via Supabase auth
+export const dynamic = 'force-dynamic';
+
 /**
  * =========================================================
  * FORMAOS – ENTERPRISE APPLICATION SHELL
