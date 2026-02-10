@@ -1,7 +1,33 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { requireFounderAccess } from '@/app/app/admin/access';
+import {
+  rateLimitApi,
+  createRateLimitHeaders,
+} from '@/lib/security/rate-limiter';
+import { logAdminAction } from '@/lib/admin/audit';
 
 export async function GET(request: Request) {
+  // Security: Only founders can use this test endpoint
+  let founderId: string | undefined;
+  try {
+    const { user } = await requireFounderAccess();
+    founderId = user.id;
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unauthorized';
+    const status = message === 'Forbidden' ? 403 : 401;
+    return NextResponse.json({ error: message }, { status });
+  }
+
+  // Rate limiting: 5 emails per 10 minutes
+  const rateLimitResult = await rateLimitApi(request, founderId);
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429, headers: createRateLimitHeaders(rateLimitResult) },
+    );
+  }
+
   const url = new URL(request.url);
   const toParam = url.searchParams.get('to');
   const subject = url.searchParams.get('subject') || 'FormaOS Email Test';
@@ -73,6 +99,17 @@ export async function GET(request: Request) {
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    // Log the admin action for audit trail
+    if (founderId) {
+      await logAdminAction({
+        actorUserId: founderId,
+        action: 'email_test_sent',
+        targetType: 'system',
+        targetId: 'email-test',
+        metadata: { to: to.join(', '), subject },
+      }).catch((e) => console.error('Failed to log admin action:', e));
     }
 
     return NextResponse.json({ ok: true, id: data?.id }, { status: 200 });
