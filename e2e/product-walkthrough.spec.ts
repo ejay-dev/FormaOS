@@ -8,13 +8,30 @@
 import { test, expect, Page } from '@playwright/test';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-// Production URLs
-const MARKETING_URL = 'https://formaos.com.au';
-const APP_URL = 'https://app.formaos.com.au';
+// Production URLs - can be overridden via environment
+const MARKETING_URL =
+  process.env.PLAYWRIGHT_MARKETING_URL || 'https://formaos.com.au';
+const APP_URL = process.env.PLAYWRIGHT_BASE_URL || 'https://app.formaos.com.au';
 
-// Supabase config
-const SUPABASE_URL = 'https://bvfniosswcvuyfaaicze.supabase.co';
-const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ2Zm5pb3Nzd2N2dXlmYWFpY3plIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2Njg5NjQyNSwiZXhwIjoyMDgyNDcyNDI1fQ.486jhV7U5BM7B4Px4tGUQ_V3PP0s6tu15OZbMHT22Vg';
+// ⚠️ CRITICAL: E2E tests MUST use environment variables for Supabase credentials
+// Never hardcode Supabase URLs or keys - they will be rotated and tests will fail
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+// Fail fast if required environment variables are not set
+if (!SUPABASE_URL) {
+  throw new Error(
+    'NEXT_PUBLIC_SUPABASE_URL environment variable is required for E2E tests. ' +
+      'Set it in your .env.test file or via environment.',
+  );
+}
+
+if (!SERVICE_ROLE_KEY) {
+  throw new Error(
+    'SUPABASE_SERVICE_ROLE_KEY environment variable is required for E2E tests. ' +
+      'Set it in your .env.test file or via environment.',
+  );
+}
 
 const timestamp = Date.now();
 const QA_EMAIL_V1 = `qa.e2e.v1.${timestamp}@formaos.team`;
@@ -32,7 +49,7 @@ const consoleLogs: string[] = [];
 
 test.beforeAll(async () => {
   admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
-    auth: { autoRefreshToken: false, persistSession: false }
+    auth: { autoRefreshToken: false, persistSession: false },
   });
 });
 
@@ -44,9 +61,18 @@ test.afterAll(async () => {
     if (orgId) {
       await admin.from('org_tasks').delete().eq('organization_id', orgId);
       await admin.from('org_evidence').delete().eq('organization_id', orgId);
-      await admin.from('org_entitlements').delete().eq('organization_id', orgId);
-      await admin.from('org_subscriptions').delete().eq('organization_id', orgId);
-      await admin.from('org_onboarding_status').delete().eq('organization_id', orgId);
+      await admin
+        .from('org_entitlements')
+        .delete()
+        .eq('organization_id', orgId);
+      await admin
+        .from('org_subscriptions')
+        .delete()
+        .eq('organization_id', orgId);
+      await admin
+        .from('org_onboarding_status')
+        .delete()
+        .eq('organization_id', orgId);
       await admin.from('org_members').delete().eq('organization_id', orgId);
       await admin.from('orgs').delete().eq('id', orgId);
       await admin.from('organizations').delete().eq('id', orgId);
@@ -64,21 +90,25 @@ test.afterAll(async () => {
 
 // Helper to setup page with console logging
 async function setupPage(page: Page) {
-  page.on('console', msg => {
+  page.on('console', (msg) => {
     consoleLogs.push(`[${msg.type()}] ${msg.text()}`);
   });
-  page.on('pageerror', error => {
+  page.on('pageerror', (error) => {
     consoleLogs.push(`[ERROR] ${error.message}`);
   });
 }
 
 // Helper to create user via admin API (simulates signup)
-async function createQAUser(email: string, password: string): Promise<{ userId: string; orgId: string } | null> {
-  const { data: userData, error: createError } = await admin.auth.admin.createUser({
-    email,
-    password,
-    email_confirm: true,
-  });
+async function createQAUser(
+  email: string,
+  password: string,
+): Promise<{ userId: string; orgId: string } | null> {
+  const { data: userData, error: createError } =
+    await admin.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+    });
 
   if (createError || !userData.user) {
     console.error('Failed to create user:', createError);
@@ -112,13 +142,16 @@ async function createQAUser(email: string, password: string): Promise<{ userId: 
   const orgId = org.id;
 
   // Create legacy orgs entry
-  await admin.from('orgs').upsert({
-    id: orgId,
-    name: fallbackName,
-    created_by: userId,
-    created_at: now,
-    updated_at: now,
-  }, { onConflict: 'id' });
+  await admin.from('orgs').upsert(
+    {
+      id: orgId,
+      name: fallbackName,
+      created_by: userId,
+      created_at: now,
+      updated_at: now,
+    },
+    { onConflict: 'id' },
+  );
 
   // Create membership
   await admin.from('org_members').insert({
@@ -144,14 +177,22 @@ async function createQAUser(email: string, password: string): Promise<{ userId: 
   });
 
   // Create entitlements
-  const entitlements = ['audit_export', 'reports', 'framework_evaluations', 'team_limit'];
+  const entitlements = [
+    'audit_export',
+    'reports',
+    'framework_evaluations',
+    'team_limit',
+  ];
   for (const feature of entitlements) {
-    await admin.from('org_entitlements').upsert({
-      organization_id: orgId,
-      feature_key: feature,
-      enabled: true,
-      updated_at: now,
-    }, { onConflict: 'organization_id,feature_key' });
+    await admin.from('org_entitlements').upsert(
+      {
+        organization_id: orgId,
+        feature_key: feature,
+        enabled: true,
+        updated_at: now,
+      },
+      { onConflict: 'organization_id,feature_key' },
+    );
   }
 
   return { userId, orgId };
@@ -166,17 +207,26 @@ test.describe('A) Marketing → App Entry', () => {
     await page.waitForLoadState('networkidle');
 
     // Screenshot: Marketing homepage
-    await page.screenshot({ path: 'test-results/screenshots/A1-marketing-home.png', fullPage: true });
+    await page.screenshot({
+      path: 'test-results/screenshots/A1-marketing-home.png',
+      fullPage: true,
+    });
 
     // Find and click CTA (Start Free Trial or similar)
-    const ctaButton = page.locator('a:has-text("Start Free"), a:has-text("Sign Up"), a:has-text("Get Started")').first();
+    const ctaButton = page
+      .locator(
+        'a:has-text("Start Free"), a:has-text("Sign Up"), a:has-text("Get Started")',
+      )
+      .first();
     await expect(ctaButton).toBeVisible({ timeout: 10000 });
 
     // Verify CTA links to app domain
     const href = await ctaButton.getAttribute('href');
     expect(href).toContain('app.formaos.com.au');
 
-    await page.screenshot({ path: 'test-results/screenshots/A1-cta-visible.png' });
+    await page.screenshot({
+      path: 'test-results/screenshots/A1-cta-visible.png',
+    });
   });
 
   test('A2-A3: Signup and login flow (V1: New user)', async ({ page }) => {
@@ -192,7 +242,9 @@ test.describe('A) Marketing → App Entry', () => {
     await page.goto(`${APP_URL}/auth/signin`);
     await page.waitForLoadState('networkidle');
 
-    await page.screenshot({ path: 'test-results/screenshots/A3-signin-page.png' });
+    await page.screenshot({
+      path: 'test-results/screenshots/A3-signin-page.png',
+    });
 
     // Fill login form
     await page.fill('input[type="email"]', QA_EMAIL_V1);
@@ -204,7 +256,9 @@ test.describe('A) Marketing → App Entry', () => {
     // Wait for redirect to app
     await page.waitForURL(/\/(app|onboarding)/, { timeout: 30000 });
 
-    await page.screenshot({ path: 'test-results/screenshots/A3-post-login.png' });
+    await page.screenshot({
+      path: 'test-results/screenshots/A3-post-login.png',
+    });
 
     // Verify we landed correctly
     const url = page.url();
@@ -227,10 +281,13 @@ test.describe('B) In-App Core Routes & Nav', () => {
     await page.goto(`${APP_URL}/app`);
     await page.waitForLoadState('networkidle');
 
-    await page.screenshot({ path: 'test-results/screenshots/B4-dashboard.png', fullPage: true });
+    await page.screenshot({
+      path: 'test-results/screenshots/B4-dashboard.png',
+      fullPage: true,
+    });
 
     // Check for no console errors
-    const errors = consoleLogs.filter(log => log.includes('[ERROR]'));
+    const errors = consoleLogs.filter((log) => log.includes('[ERROR]'));
     expect(errors.length).toBe(0);
   });
 
@@ -252,7 +309,7 @@ test.describe('B) In-App Core Routes & Nav', () => {
       await page.waitForLoadState('networkidle');
 
       // Should not be 404
-      const is404 = await page.locator('text=404').count() > 0;
+      const is404 = (await page.locator('text=404').count()) > 0;
       expect(is404).toBe(false);
     }
   });
@@ -309,10 +366,13 @@ test.describe('C) Core Feature Smoke Tests', () => {
     await page.goto(`${APP_URL}/app/tasks`);
     await page.waitForLoadState('networkidle');
 
-    await page.screenshot({ path: 'test-results/screenshots/C9-tasks-page.png', fullPage: true });
+    await page.screenshot({
+      path: 'test-results/screenshots/C9-tasks-page.png',
+      fullPage: true,
+    });
 
     // Page should load
-    const hasTasksContent = await page.locator('text=/task/i').count() > 0;
+    const hasTasksContent = (await page.locator('text=/task/i').count()) > 0;
     expect(hasTasksContent).toBe(true);
   });
 
@@ -325,7 +385,9 @@ test.describe('C) Core Feature Smoke Tests', () => {
     // Should redirect to signin
     await page.waitForURL(/signin/, { timeout: 30000 });
 
-    await page.screenshot({ path: 'test-results/screenshots/C12-rbac-redirect.png' });
+    await page.screenshot({
+      path: 'test-results/screenshots/C12-rbac-redirect.png',
+    });
   });
 });
 
@@ -365,7 +427,10 @@ test.describe('E) Edge Cases', () => {
 
         // Login
         await page.goto(`${APP_URL}/auth/signin`);
-        await page.fill('input[type="email"]', `qa.onboarding.${timestamp}@formaos.team`);
+        await page.fill(
+          'input[type="email"]',
+          `qa.onboarding.${timestamp}@formaos.team`,
+        );
         await page.fill('input[type="password"]', QA_PASSWORD);
         await page.click('button[type="submit"]');
 
@@ -440,7 +505,8 @@ test.describe('Entitlements Verification', () => {
       .select('feature_key, enabled')
       .eq('organization_id', qaOrgIdV1);
 
-    const enabledFeatures = entitlements?.filter(e => e.enabled).map(e => e.feature_key) || [];
+    const enabledFeatures =
+      entitlements?.filter((e) => e.enabled).map((e) => e.feature_key) || [];
 
     // Basic plan should have these features
     expect(enabledFeatures).toContain('audit_export');
@@ -462,7 +528,9 @@ test.describe('Entitlements Verification', () => {
     // Trial should be 14 days from now
     const trialEnd = new Date(subscription?.trial_expires_at || '');
     const now = new Date();
-    const daysUntilExpiry = Math.round((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    const daysUntilExpiry = Math.round(
+      (trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
+    );
     expect(daysUntilExpiry).toBeGreaterThanOrEqual(13);
     expect(daysUntilExpiry).toBeLessThanOrEqual(14);
   });

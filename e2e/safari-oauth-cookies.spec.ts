@@ -2,13 +2,29 @@ import { test, expect, type BrowserContext } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
 
 const APP_URL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000';
-const SUPABASE_URL =
-  process.env.NEXT_PUBLIC_SUPABASE_URL ||
-  'https://bvfniosswcvuyfaaicze.supabase.co';
+
+// ⚠️ CRITICAL: E2E tests MUST use environment variables for Supabase credentials
+// Never hardcode Supabase URLs or keys - they will be rotated and tests will fail
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+// Support both SUPABASE_SERVICE_ROLE_KEY and SUPABASE_SERVICE_ROLE (for backward compatibility)
 const SERVICE_ROLE_KEY =
-  process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  process.env.SUPABASE_SERVICE_ROLE ||
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ2Zm5pb3Nzd2N2dXlmYWFpY3plIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2Njg5NjQyNSwiZXhwIjoyMDgyNDcyNDI1fQ.486jhV7U5BM7B4Px4tGUQ_V3PP0s6tu15OZbMHT22Vg';
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE;
+
+// Fail fast if required environment variables are not set
+if (!SUPABASE_URL) {
+  throw new Error(
+    'NEXT_PUBLIC_SUPABASE_URL environment variable is required for E2E tests. ' +
+      'Set it in your .env.test file or via environment.',
+  );
+}
+
+if (!SERVICE_ROLE_KEY) {
+  throw new Error(
+    'SUPABASE_SERVICE_ROLE_KEY environment variable is required for E2E tests. ' +
+      'Set it in your .env.test file or via environment.',
+  );
+}
 
 const timestamp = Date.now();
 

@@ -77,7 +77,7 @@ export function getCookieDomain(requestHost?: string): string | undefined {
     }
 
     // Only set domain cookie if we need cross-subdomain auth
-    let cookieHost = normalizedPrimary;
+    const cookieHost = normalizedPrimary;
     if (siteHost && appHost && siteHost !== appHost) {
       const common = longestCommonSuffixHost(siteHost, appHost);
       if (common && requestHost.endsWith(common)) {

@@ -3,57 +3,81 @@
  * Verifies export starts successfully and produces downloadable file
  */
 
-import { test, expect } from '@playwright/test'
-import { createClient } from '@supabase/supabase-js'
+import { test, expect } from '@playwright/test';
+import { createClient } from '@supabase/supabase-js';
 
-const APP_URL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000'
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://bvfniosswcvuyfaaicze.supabase.co'
-const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+const APP_URL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000';
 
-const PASSWORD = 'QaE2EExport123!Secure'
-const timestamp = Date.now()
+// ⚠️ CRITICAL: E2E tests MUST use environment variables for Supabase credentials
+// Never hardcode Supabase URLs or keys - they will be rotated and tests will fail
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-let admin: ReturnType<typeof createClient>
-const createdUserIds: string[] = []
-const createdOrgIds = new Set<string>()
+// Fail fast if required environment variables are not set
+if (!SUPABASE_URL) {
+  throw new Error(
+    'NEXT_PUBLIC_SUPABASE_URL environment variable is required for E2E tests. ' +
+      'Set it in your .env.test file or via environment.',
+  );
+}
+
+if (!SERVICE_ROLE_KEY) {
+  throw new Error(
+    'SUPABASE_SERVICE_ROLE_KEY environment variable is required for E2E tests. ' +
+      'Set it in your .env.test file or via environment.',
+  );
+}
+
+const PASSWORD = 'QaE2EExport123!Secure';
+const timestamp = Date.now();
+
+let admin: ReturnType<typeof createClient>;
+const createdUserIds: string[] = [];
+const createdOrgIds = new Set<string>();
 
 test.describe('Compliance Evidence Export', () => {
   test.beforeAll(() => {
     admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
       auth: { autoRefreshToken: false, persistSession: false },
-    })
-  })
+    });
+  });
 
   test.afterAll(async () => {
     // Cleanup
     for (const orgId of Array.from(createdOrgIds)) {
-      await admin.from('compliance_export_jobs').delete().eq('organization_id', orgId)
-      await admin.from('compliance_score_snapshots').delete().eq('organization_id', orgId)
-      await admin.from('org_frameworks').delete().eq('org_id', orgId)
-      await admin.from('org_members').delete().eq('organization_id', orgId)
-      await admin.from('organizations').delete().eq('id', orgId)
+      await admin
+        .from('compliance_export_jobs')
+        .delete()
+        .eq('organization_id', orgId);
+      await admin
+        .from('compliance_score_snapshots')
+        .delete()
+        .eq('organization_id', orgId);
+      await admin.from('org_frameworks').delete().eq('org_id', orgId);
+      await admin.from('org_members').delete().eq('organization_id', orgId);
+      await admin.from('organizations').delete().eq('id', orgId);
     }
 
     for (const userId of createdUserIds) {
-      await admin.auth.admin.deleteUser(userId)
+      await admin.auth.admin.deleteUser(userId);
     }
-  })
+  });
 
   test('Export job starts and produces downloadable file', async ({ page }) => {
-    const email = `qa.export.${timestamp}@formaos.team`
+    const email = `qa.export.${timestamp}@formaos.team`;
 
     // Create test user
     const { data, error } = await admin.auth.admin.createUser({
       email,
       password: PASSWORD,
       email_confirm: true,
-    })
+    });
 
-    expect(error).toBeNull()
-    expect(data?.user?.id).toBeTruthy()
+    expect(error).toBeNull();
+    expect(data?.user?.id).toBeTruthy();
 
-    const userId = data!.user!.id
-    createdUserIds.push(userId)
+    const userId = data!.user!.id;
+    createdUserIds.push(userId);
 
     // Create org with framework enabled
     const { data: org } = await admin
@@ -65,23 +89,23 @@ test.describe('Compliance Evidence Export', () => {
         onboarding_completed: true,
       })
       .select('id')
-      .single()
+      .single();
 
-    expect(org?.id).toBeTruthy()
-    const orgId = org!.id as string
-    createdOrgIds.add(orgId)
+    expect(org?.id).toBeTruthy();
+    const orgId = org!.id as string;
+    createdOrgIds.add(orgId);
 
     await admin.from('org_members').insert({
       organization_id: orgId,
       user_id: userId,
       role: 'owner',
-    })
+    });
 
     // Enable GDPR framework
     await admin.from('org_frameworks').insert({
       org_id: orgId,
       framework_slug: 'gdpr',
-    })
+    });
 
     // Create a compliance snapshot
     await admin.from('compliance_score_snapshots').insert({
@@ -93,77 +117,86 @@ test.describe('Compliance Evidence Export', () => {
       satisfied_controls: 7,
       partial_controls: 2,
       missing_controls: 1,
-    })
+    });
 
     // Login
-    await page.goto(`${APP_URL}/auth/signin`)
-    await page.fill('input[type="email"]', email)
-    await page.fill('input[type="password"]', PASSWORD)
-    await page.click('button[type="submit"]')
-    await page.waitForURL(/\/(app|dashboard)/, { timeout: 20000 })
+    await page.goto(`${APP_URL}/auth/signin`);
+    await page.fill('input[type="email"]', email);
+    await page.fill('input[type="password"]', PASSWORD);
+    await page.click('button[type="submit"]');
+    await page.waitForURL(/\/(app|dashboard)/, { timeout: 20000 });
 
     // Navigate to compliance frameworks page
-    await page.goto(`${APP_URL}/app/compliance/frameworks`)
+    await page.goto(`${APP_URL}/app/compliance/frameworks`);
 
     // Wait for page to load
-    await expect(page.locator('text=/Framework|Compliance/i').first()).toBeVisible({ timeout: 10000 })
+    await expect(
+      page.locator('text=/Framework|Compliance/i').first(),
+    ).toBeVisible({ timeout: 10000 });
 
     // Start export via API (simulating component action)
-    const createResponse = await page.request.post(`${APP_URL}/api/compliance/exports/create`, {
-      data: {
-        frameworkSlug: 'gdpr',
-        passwordProtected: false,
+    const createResponse = await page.request.post(
+      `${APP_URL}/api/compliance/exports/create`,
+      {
+        data: {
+          frameworkSlug: 'gdpr',
+          passwordProtected: false,
+        },
       },
-    })
+    );
 
-    expect(createResponse.ok()).toBeTruthy()
-    const { jobId } = await createResponse.json()
-    expect(jobId).toBeTruthy()
+    expect(createResponse.ok()).toBeTruthy();
+    const { jobId } = await createResponse.json();
+    expect(jobId).toBeTruthy();
 
     // Poll for job completion
-    let jobCompleted = false
-    let attempts = 0
-    const maxAttempts = 30 // 30 seconds max
+    let jobCompleted = false;
+    let attempts = 0;
+    const maxAttempts = 30; // 30 seconds max
 
     while (!jobCompleted && attempts < maxAttempts) {
-      await page.waitForTimeout(1000)
-      attempts++
+      await page.waitForTimeout(1000);
+      attempts++;
 
-      const statusResponse = await page.request.get(`${APP_URL}/api/compliance/exports/${jobId}/status`)
+      const statusResponse = await page.request.get(
+        `${APP_URL}/api/compliance/exports/${jobId}/status`,
+      );
 
       if (statusResponse.ok()) {
-        const { job } = await statusResponse.json()
+        const { job } = await statusResponse.json();
 
-        expect(job).toBeTruthy()
-        expect(['pending', 'processing', 'completed', 'failed']).toContain(job.status)
+        expect(job).toBeTruthy();
+        expect(['pending', 'processing', 'completed', 'failed']).toContain(
+          job.status,
+        );
 
         if (job.status === 'completed') {
-          jobCompleted = true
-          expect(job.fileUrl).toBeTruthy()
-          expect(job.progress).toBe(100)
+          jobCompleted = true;
+          expect(job.fileUrl).toBeTruthy();
+          expect(job.progress).toBe(100);
         } else if (job.status === 'failed') {
-          throw new Error(`Export job failed: ${job.errorMessage}`)
+          throw new Error(`Export job failed: ${job.errorMessage}`);
         }
       }
     }
 
     // Verify export completed
-    expect(jobCompleted).toBeTruthy()
-  })
+    expect(jobCompleted).toBeTruthy();
+  });
 
   test('Score history and regression detection works', async ({ page }) => {
-    const email = `qa.snapshot.${timestamp}@formaos.team`
+    const email = `qa.snapshot.${timestamp}@formaos.team`;
 
     // Create test user
     const { data, error } = await admin.auth.admin.createUser({
       email,
       password: PASSWORD,
       email_confirm: true,
-    })
+    });
 
-    expect(error).toBeNull()
-    const userId = data!.user!.id
-    createdUserIds.push(userId)
+    expect(error).toBeNull();
+    const userId = data!.user!.id;
+    createdUserIds.push(userId);
 
     // Create org
     const { data: org } = await admin
@@ -175,26 +208,26 @@ test.describe('Compliance Evidence Export', () => {
         onboarding_completed: true,
       })
       .select('id')
-      .single()
+      .single();
 
-    const orgId = org!.id as string
-    createdOrgIds.add(orgId)
+    const orgId = org!.id as string;
+    createdOrgIds.add(orgId);
 
     await admin.from('org_members').insert({
       organization_id: orgId,
       user_id: userId,
       role: 'owner',
-    })
+    });
 
     await admin.from('org_frameworks').insert({
       org_id: orgId,
       framework_slug: 'iso27001',
-    })
+    });
 
     // Create snapshots showing regression
-    const today = new Date()
-    const yesterday = new Date(today)
-    yesterday.setDate(yesterday.getDate() - 1)
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
 
     await admin.from('compliance_score_snapshots').insert([
       {
@@ -213,27 +246,27 @@ test.describe('Compliance Evidence Export', () => {
         total_controls: 10,
         satisfied_controls: 7,
       },
-    ])
+    ]);
 
     // Login
-    await page.goto(`${APP_URL}/auth/signin`)
-    await page.fill('input[type="email"]', email)
-    await page.fill('input[type="password"]', PASSWORD)
-    await page.click('button[type="submit"]')
-    await page.waitForURL(/\/(app|dashboard)/, { timeout: 20000 })
+    await page.goto(`${APP_URL}/auth/signin`);
+    await page.fill('input[type="email"]', email);
+    await page.fill('input[type="password"]', PASSWORD);
+    await page.click('button[type="submit"]');
+    await page.waitForURL(/\/(app|dashboard)/, { timeout: 20000 });
 
     // Check regression detection via API
     const regressionResponse = await page.request.get(
-      `${APP_URL}/api/compliance/snapshots/regression?orgId=${orgId}&framework=iso27001`
-    )
+      `${APP_URL}/api/compliance/snapshots/regression?orgId=${orgId}&framework=iso27001`,
+    );
 
-    expect(regressionResponse.ok()).toBeTruthy()
-    const { regression } = await regressionResponse.json()
+    expect(regressionResponse.ok()).toBeTruthy();
+    const { regression } = await regressionResponse.json();
 
-    expect(regression).toBeTruthy()
-    expect(regression.hasRegression).toBe(true)
-    expect(regression.currentScore).toBe(70)
-    expect(regression.previousScore).toBe(85)
-    expect(regression.drop).toBeGreaterThanOrEqual(10)
-  })
-})
+    expect(regression).toBeTruthy();
+    expect(regression.hasRegression).toBe(true);
+    expect(regression.currentScore).toBe(70);
+    expect(regression.previousScore).toBe(85);
+    expect(regression.drop).toBeGreaterThanOrEqual(10);
+  });
+});
