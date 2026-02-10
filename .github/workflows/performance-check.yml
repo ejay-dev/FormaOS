@@ -40,9 +40,9 @@ jobs:
 
       - name: Run Lighthouse CI
         run: lhci autorun
+        continue-on-error: true
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-        continue-on-error: true
 
       - name: Upload Lighthouse results
         uses: actions/upload-artifact@v3

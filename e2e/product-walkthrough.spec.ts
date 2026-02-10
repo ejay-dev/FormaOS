@@ -56,7 +56,7 @@ test.afterAll(async () => {
     console.log('Skipping cleanup - admin client not initialized');
     return;
   }
-  
+
   // Cleanup QA data
   console.log('Cleaning up QA test data...');
 

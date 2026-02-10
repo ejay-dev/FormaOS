@@ -46,3 +46,4 @@ scripts/
 !scripts/check-*.js
 !scripts/check-*.mjs
 !scripts/run-*.mjs
+.npm-cache/

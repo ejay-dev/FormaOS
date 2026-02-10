@@ -71,6 +71,7 @@ jobs:
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3
+        continue-on-error: true
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage/lcov.info
@@ -146,11 +147,11 @@ jobs:
 
       - name: Run Snyk security scan
         uses: snyk/actions/node@master
+        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=high
-        continue-on-error: true
 
   # Stage 5: Performance Validation
   performance_check:
