@@ -28,7 +28,7 @@ if (!SERVICE_ROLE_KEY) {
 
 const timestamp = Date.now();
 
-let admin: ReturnType<typeof createClient>;
+let admin: any; // Supabase admin client - using any to avoid type generation requirement
 const createdUserIds: string[] = [];
 const createdOrgIds = new Set<string>();
 
@@ -155,7 +155,8 @@ test.describe('Mobile Safari OAuth Cookie Persistence', () => {
       }
 
       // If sameSite=None, must be Secure
-      if (cookie.sameSite === 'None' || cookie.sameSite === 'none') {
+      const sameSite = cookie.sameSite as string;
+      if (sameSite === 'None' || sameSite === 'none') {
         expect(cookie.secure).toBe(true);
       }
 

@@ -96,7 +96,10 @@ function createCookieChunks(key: string, value: string, chunkSize = 3180) {
           encodedChunkHead.at(-3) === '%' &&
           encodedChunkHead.length > 3
         ) {
-          encodedChunkHead = encodedChunkHead.slice(0, encodedChunkHead.length - 3);
+          encodedChunkHead = encodedChunkHead.slice(
+            0,
+            encodedChunkHead.length - 3,
+          );
         } else {
           throw error;
         }
@@ -107,7 +110,10 @@ function createCookieChunks(key: string, value: string, chunkSize = 3180) {
     encodedValue = encodedValue.slice(encodedChunkHead.length);
   }
 
-  return chunks.map((chunk, index) => ({ name: `${key}.${index}`, value: chunk }));
+  return chunks.map((chunk, index) => ({
+    name: `${key}.${index}`,
+    value: chunk,
+  }));
 }
 
 function getStorageKey(supabaseUrl: string) {
@@ -136,10 +142,11 @@ export async function createMagicLinkSession(email: string): Promise<Session> {
     auth: { persistSession: false },
   });
 
-  const { data: verifyData, error: verifyError } = await userClient.auth.verifyOtp({
-    type: 'magiclink',
-    token_hash: linkData.properties.hashed_token,
-  });
+  const { data: verifyData, error: verifyError } =
+    await userClient.auth.verifyOtp({
+      type: 'magiclink',
+      token_hash: linkData.properties.hashed_token,
+    });
 
   if (verifyError || !verifyData?.session) {
     throw new Error(`Failed to verify magic link: ${verifyError?.message}`);
@@ -149,7 +156,7 @@ export async function createMagicLinkSession(email: string): Promise<Session> {
 }
 
 export async function setPlaywrightSession(
-  context: { addCookies: (cookies: Array<Record<string, any>>) => Promise<void> },
+  context: { addCookies: (cookies: any[]) => Promise<void> },
   session: Session,
   appBaseUrl: string,
 ) {
@@ -294,7 +301,10 @@ async function createTemporaryTestUser(): Promise<TestUser> {
     });
 
   if (subscriptionError) {
-    console.warn('[E2E] Failed to create subscription:', subscriptionError.message);
+    console.warn(
+      '[E2E] Failed to create subscription:',
+      subscriptionError.message,
+    );
     // Don't fail - subscription might already exist or be optional
   }
 

@@ -31,7 +31,7 @@ if (!SERVICE_ROLE_KEY) {
 const PASSWORD = 'QaE2EExport123!Secure';
 const timestamp = Date.now();
 
-let admin: ReturnType<typeof createClient>;
+let admin: any; // Supabase admin client - using any to avoid type generation requirement
 const createdUserIds: string[] = [];
 const createdOrgIds = new Set<string>();
 
