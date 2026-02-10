@@ -18,20 +18,12 @@ const APP_URL = process.env.PLAYWRIGHT_BASE_URL || 'https://app.formaos.com.au';
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-// Fail fast if required environment variables are not set
-if (!SUPABASE_URL) {
-  throw new Error(
-    'NEXT_PUBLIC_SUPABASE_URL environment variable is required for E2E tests. ' +
-      'Set it in your .env.test file or via environment.',
-  );
-}
-
-if (!SERVICE_ROLE_KEY) {
-  throw new Error(
-    'SUPABASE_SERVICE_ROLE_KEY environment variable is required for E2E tests. ' +
-      'Set it in your .env.test file or via environment.',
-  );
-}
+// Skip tests if required environment variables are not set (instead of throwing at module load)
+const SKIP_REASON = !SUPABASE_URL
+  ? 'NEXT_PUBLIC_SUPABASE_URL not set'
+  : !SERVICE_ROLE_KEY
+    ? 'SUPABASE_SERVICE_ROLE_KEY not set'
+    : null;
 
 const timestamp = Date.now();
 const QA_EMAIL_V1 = `qa.e2e.v1.${timestamp}@formaos.team`;
@@ -47,13 +39,24 @@ let qaOrgIdV2: string | null = null;
 // Helper to capture console logs
 const consoleLogs: string[] = [];
 
+// Skip test setup if env vars are missing
 test.beforeAll(async () => {
+  if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
+    console.log('Skipping test setup - missing environment variables');
+    return;
+  }
   admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 });
 
 test.afterAll(async () => {
+  // Skip cleanup if admin client wasn't initialized (env vars missing)
+  if (!admin) {
+    console.log('Skipping cleanup - admin client not initialized');
+    return;
+  }
+  
   // Cleanup QA data
   console.log('Cleaning up QA test data...');
 
@@ -199,6 +202,8 @@ async function createQAUser(
 }
 
 test.describe('A) Marketing → App Entry', () => {
+  test.skip(!!SKIP_REASON, SKIP_REASON || 'Missing environment variables');
+
   test('A1: Home hero CTA → signup page loads', async ({ page }) => {
     await setupPage(page);
 
@@ -267,6 +272,7 @@ test.describe('A) Marketing → App Entry', () => {
 });
 
 test.describe('B) In-App Core Routes & Nav', () => {
+  test.skip(!!SKIP_REASON, SKIP_REASON || 'Missing environment variables');
   test('B4: Dashboard loads', async ({ page }) => {
     await setupPage(page);
 
@@ -352,6 +358,7 @@ test.describe('B) In-App Core Routes & Nav', () => {
 });
 
 test.describe('C) Core Feature Smoke Tests', () => {
+  test.skip(!!SKIP_REASON, SKIP_REASON || 'Missing environment variables');
   test('C9: Create task', async ({ page }) => {
     await setupPage(page);
 
@@ -392,6 +399,7 @@ test.describe('C) Core Feature Smoke Tests', () => {
 });
 
 test.describe('E) Edge Cases', () => {
+  test.skip(!!SKIP_REASON, SKIP_REASON || 'Missing environment variables');
   test('E1: Refresh during onboarding', async ({ page }) => {
     await setupPage(page);
 
@@ -470,6 +478,7 @@ test.describe('E) Edge Cases', () => {
 });
 
 test.describe('V2: Existing User Login', () => {
+  test.skip(!!SKIP_REASON, SKIP_REASON || 'Missing environment variables');
   test('V2: Login with existing user', async ({ page }) => {
     await setupPage(page);
 
@@ -493,6 +502,7 @@ test.describe('V2: Existing User Login', () => {
 });
 
 test.describe('Entitlements Verification', () => {
+  test.skip(!!SKIP_REASON, SKIP_REASON || 'Missing environment variables');
   test('Trial entitlements are correct', async () => {
     // Verify entitlements via API
     if (!qaOrgIdV1) {
