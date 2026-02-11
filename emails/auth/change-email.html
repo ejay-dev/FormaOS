@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confirm your new email</title>
+    <style>
+      body {
+        background: #f3f5f9;
+        margin: 0;
+        padding: 0;
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+          Arial, sans-serif;
+        color: #111827;
+      }
+      .container {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 36px 20px;
+      }
+      .top {
+        background: #0f172a;
+        border-radius: 14px 14px 0 0;
+        padding: 18px 24px;
+      }
+      .card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-top: 0;
+        border-radius: 0 0 14px 14px;
+        padding: 26px 24px;
+      }
+      .pill {
+        display: inline-block;
+        border-radius: 999px;
+        background: #eef2ff;
+        color: #3730a3;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 4px 10px;
+      }
+      h1 {
+        margin: 14px 0 10px;
+        font-size: 24px;
+        color: #0f172a;
+      }
+      p {
+        margin: 0 0 14px;
+        color: #374151;
+        line-height: 1.7;
+      }
+      .cta {
+        display: inline-block;
+        background: #0f766e;
+        color: #ffffff !important;
+        text-decoration: none;
+        padding: 12px 18px;
+        border-radius: 10px;
+        font-weight: 700;
+      }
+      .muted {
+        color: #6b7280;
+        font-size: 12px;
+      }
+      .divider {
+        height: 1px;
+        background: #e5e7eb;
+        margin: 20px 0;
+      }
+      .security {
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 10px 12px;
+      }
+      .footer {
+        margin-top: 14px;
+        text-align: center;
+        color: #94a3b8;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="top">
+        <img
+          src="https://app.formaos.com.au/brand/formaos-wordmark-light.svg"
+          width="164"
+          height="30"
+          alt="FormaOS"
+          style="display: block"
+        />
+      </div>
+      <div class="card">
+        <span class="pill">Account update</span>
+        <h1>Confirm your new email</h1>
+        <p>
+          Please confirm your new email address to complete this account update.
+        </p>
+        <p class="muted">Requested new email: {{ .NewEmail }}</p>
+        <p style="margin: 22px 0">
+          <a
+            class="cta"
+            href="{{ .ActionLink }}"
+            target="_blank"
+            rel="noopener"
+            >Confirm new email</a
+          >
+        </p>
+        <p class="muted">If the button does not work, use this secure link:</p>
+        <p class="muted" style="word-break: break-all">{{ .ActionLink }}</p>
+        <div class="divider"></div>
+        <div class="security">
+          <p class="muted" style="margin: 0">
+            Security notice: If you did not request this change, ignore this
+            email and contact support at support@formaos.com.au.
+          </p>
+        </div>
+      </div>
+      <div class="footer">FormaOS · Compliance Operating System</div>
+    </div>
+  </body>
+</html>

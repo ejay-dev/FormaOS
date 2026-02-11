@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createSupabaseClient } from '@/lib/supabase/client';
 import { Logo } from '@/components/brand/Logo';
 import { Mail, RefreshCw, ArrowRight, CheckCircle2 } from 'lucide-react';
@@ -27,12 +27,15 @@ const withTimeout = async <T,>(
   }
 };
 
-export default function CheckEmailPage() {
+function CheckEmailContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isChecking, setIsChecking] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [resendMessage, setResendMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const email = searchParams.get('email') || '';
+  const plan = searchParams.get('plan');
 
   const handleContinue = async () => {
     setIsChecking(true);
@@ -87,24 +90,25 @@ export default function CheckEmailPage() {
     setErrorMessage(null);
 
     try {
-      const supabase = createSupabaseClient();
-      const { data: { user } } = await supabase.auth.getUser();
-
-      if (!user?.email) {
-        setErrorMessage('No email found. Please sign up again.');
+      if (!email) {
+        setErrorMessage('Email address missing. Please sign up again.');
         setIsResending(false);
         return;
       }
 
-      const { error } = await supabase.auth.resend({
-        type: 'signup',
-        email: user.email,
+      const response = await fetch('/api/auth/resend-confirmation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          plan,
+        }),
       });
 
-      if (error) {
-        setErrorMessage(error.message);
+      if (!response.ok) {
+        setErrorMessage('Failed to resend email. Please try again.');
       } else {
-        setResendMessage('Confirmation email resent! Check your inbox.');
+        setResendMessage('A fresh secure sign-in email has been sent.');
       }
     } catch (err) {
       console.error('Resend error:', err);
@@ -133,6 +137,11 @@ export default function CheckEmailPage() {
           <p className="text-gray-400 mb-8">
             We've sent a confirmation link to your email address. Click the link to verify your account and continue.
           </p>
+          {email && (
+            <p className="text-xs text-slate-500 mb-6">
+              Sent to <span className="text-slate-200">{email}</span>
+            </p>
+          )}
 
           {/* Error Message */}
           {errorMessage && (
@@ -195,5 +204,19 @@ export default function CheckEmailPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CheckEmailPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center text-slate-300">
+          Loading...
+        </div>
+      }
+    >
+      <CheckEmailContent />
+    </Suspense>
   );
 }

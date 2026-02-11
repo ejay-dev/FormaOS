@@ -41,7 +41,8 @@
     "test:qa:full": "bash tests/run-qa-suite.sh",
     "test:compliance:gdpr": "node tests/compliance/gdpr-compliance.js",
     "test:compliance:soc2": "node tests/compliance/soc2-compliance.js",
-    "test:compliance:all": "npm run test:compliance:gdpr && npm run test:compliance:soc2"
+    "test:compliance:all": "npm run test:compliance:gdpr && npm run test:compliance:soc2",
+    "email:preview:auth": "node scripts/preview-auth-emails.mjs"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",

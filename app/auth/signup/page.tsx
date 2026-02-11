@@ -164,46 +164,39 @@ function SignUpContent() {
       }
 
       const appBase = resolveAppBase();
-      // 🔧 FIX: Email signup must route through /auth/callback (like Google OAuth)
-      // so that org + membership + subscription + entitlements are created.
-      // The callback will then redirect to /onboarding or /app as appropriate.
-      const emailRedirectTo = `${appBase}/auth/callback`;
-      const options = plan
-        ? { emailRedirectTo, data: { selected_plan: plan.key } }
-        : { emailRedirectTo };
-
-      const supabase = createSupabaseClient();
-      const signupResult = (await withTimeout(
-        supabase.auth.signUp({
-          email,
-          password,
-          options,
+      const signupResponse = await withTimeout(
+        fetch('/api/auth/email-signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            password,
+            plan: plan?.key ?? null,
+          }),
         }),
         SESSION_TIMEOUT_MS,
-        'signup',
-      )) as Awaited<ReturnType<typeof supabase.auth.signUp>>;
-      const { data, error } = signupResult;
+        'signup_api',
+      );
 
-      if (error) {
-        setErrorMessage(error.message);
+      const payload = await signupResponse.json().catch(() => ({}));
+      if (!signupResponse.ok || !payload?.ok) {
+        const mappedMessage =
+          payload?.error === 'account_already_exists'
+            ? 'An account with this email already exists. Please sign in instead.'
+            : payload?.error === 'email_delivery_failed'
+              ? 'Account created but we could not deliver the confirmation email. Please use resend.'
+              : Array.isArray(payload?.errors)
+                ? payload.errors.join(' ')
+                : payload?.message || 'Unable to create your account right now.';
+        setErrorMessage(mappedMessage);
         setIsLoading(false);
         return;
       }
 
-      if (data?.session) {
-        // Session created immediately (auto-confirm enabled)
-        window.location.href = emailRedirectTo;
-        return;
-      }
-
-      if (data?.user) {
-        // Email confirmation required - redirect to check-email page
-        window.location.href = `${appBase}/auth/check-email`;
-        return;
-      }
-
-      // Fallback
-      window.location.href = `${appBase}/auth/check-email`;
+      const planParam = plan ? `&plan=${encodeURIComponent(plan.key)}` : '';
+      window.location.href = `${appBase}/auth/check-email?email=${encodeURIComponent(email)}${planParam}`;
     } catch (err) {
       if (err instanceof Error && err.message.includes('timeout')) {
         setErrorMessage(

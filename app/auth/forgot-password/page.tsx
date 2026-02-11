@@ -1,27 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { createSupabaseClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import { ArrowLeft, Mail, CheckCircle2 } from 'lucide-react';
 import { Logo } from '@/components/brand/Logo';
-
-const DEFAULT_APP_BASE = 'https://app.formaos.com.au';
-
-const resolveAppBase = () => {
-  const envBase = (process.env.NEXT_PUBLIC_APP_URL ?? '').replace(/\/$/, '');
-  if (envBase) return envBase;
-  if (typeof window === 'undefined') return DEFAULT_APP_BASE;
-  const origin = window.location.origin.replace(/\/$/, '');
-  const host = window.location.hostname;
-  const isLocalhost =
-    host === 'localhost' ||
-    host.endsWith('.localhost') ||
-    host.startsWith('127.') ||
-    host === '0.0.0.0';
-  if (isLocalhost || host.startsWith('app.')) return origin;
-  return DEFAULT_APP_BASE;
-};
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -35,15 +17,15 @@ export default function ForgotPasswordPage() {
     setIsLoading(true);
 
     try {
-      const supabase = createSupabaseClient();
-      const base = resolveAppBase();
-
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${base}/auth/reset-password`,
+      const response = await fetch('/api/auth/password/reset-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
       });
 
-      if (error) {
-        setErrorMessage(error.message);
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        setErrorMessage(payload?.error || 'Unable to send reset email.');
         setIsLoading(false);
         return;
       }
