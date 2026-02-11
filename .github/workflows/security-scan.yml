@@ -86,7 +86,7 @@ jobs:
         run: npm run build
 
       - name: Run admin security verification tests
-        run: npx playwright test e2e/admin-security-verification.spec.ts --reporter=json --output-file=security-test-results.json
+        run: npx playwright test e2e/admin-security-verification.spec.ts --reporter=json > security-test-results.json
         env:
           CI: true
 
