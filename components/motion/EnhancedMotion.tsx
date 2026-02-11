@@ -224,11 +224,14 @@ export function ScrollGradient({
     offset: ['start start', 'end start'],
   });
 
-  // Gradually shift gradient as user scrolls
-  const gradientPosition = useTransform(
+  const gradientBackground = useTransform(
     scrollYProgress,
-    [0, 1],
-    ['0%', '100%'],
+    [0, 0.5, 1],
+    [
+      'linear-gradient(to bottom, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
+      'linear-gradient(to bottom, #0f172a 0%, #0f2346 50%, #1e293b 100%)',
+      'linear-gradient(to bottom, #1e293b 0%, #1e1b4b 50%, #0f172a 100%)',
+    ],
   );
 
   if (shouldReduceMotion) {
@@ -246,15 +249,7 @@ export function ScrollGradient({
     <motion.div
       ref={ref}
       style={{
-        background: useTransform(
-          scrollYProgress,
-          [0, 0.5, 1],
-          [
-            'linear-gradient(to bottom, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
-            'linear-gradient(to bottom, #0f172a 0%, #0f2346 50%, #1e293b 100%)',
-            'linear-gradient(to bottom, #1e293b 0%, #1e1b4b 50%, #0f172a 100%)',
-          ],
-        ),
+        background: gradientBackground,
       }}
       className={className}
     >

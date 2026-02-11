@@ -159,11 +159,10 @@ export function ThemeToggle() {
 
   useEffect(() => setMounted(true), []);
 
-  if (!mounted) return <div className="h-9 w-9" />;
-
   const currentIdx = THEMES.indexOf((theme as ThemeId) ?? 'dark');
-  const nextIdx = (currentIdx + 1) % THEMES.length;
-  const nextTheme = THEMES[nextIdx];
+  const safeCurrentIdx = currentIdx >= 0 ? currentIdx : 0;
+  const nextIdx = (safeCurrentIdx + 1) % THEMES.length;
+  const nextTheme = THEMES[nextIdx] ?? 'dark';
   const nextMeta = THEME_META[nextTheme];
   const isDark = THEME_META[(theme as ThemeId) ?? 'dark']?.isDark ?? true;
 
@@ -171,6 +170,8 @@ export function ThemeToggle() {
     setTheme(nextTheme);
     persistTheme(nextTheme);
   }, [nextTheme, setTheme]);
+
+  if (!mounted) return <div className="h-9 w-9" />;
 
   return (
     <button

@@ -265,14 +265,19 @@ export function getPerformanceBudgetStatus(): Array<{
  * React hook for performance monitoring
  */
 export function usePerformanceMonitor(componentName: string) {
-  if (typeof window === 'undefined') return;
-
-  const mountTime = performance.now();
+  const isBrowser = typeof window !== 'undefined';
+  const mountTimeRef = React.useRef<number | null>(null);
+  if (isBrowser && mountTimeRef.current === null) {
+    mountTimeRef.current = performance.now();
+  }
 
   // Track mount on component load
   React.useEffect(() => {
-    trackComponentMount(componentName, mountTime);
-  }, [componentName, mountTime]);
+    if (!isBrowser || mountTimeRef.current === null) {
+      return;
+    }
+    trackComponentMount(componentName, mountTimeRef.current);
+  }, [componentName, isBrowser]);
 
   return {
     trackMetric: (
@@ -280,9 +285,13 @@ export function usePerformanceMonitor(componentName: string) {
       value: number,
       metadata?: Record<string, any>,
     ) => {
+      if (!isBrowser) return;
       trackCustomMetric(name, value, { ...metadata, component: componentName });
     },
     trackOperation: <T>(operationName: string, operation: () => Promise<T>) => {
+      if (!isBrowser) {
+        return operation();
+      }
       return trackAsyncOperation(operationName, operation, {
         component: componentName,
       });

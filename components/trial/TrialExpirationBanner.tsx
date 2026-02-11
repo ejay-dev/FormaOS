@@ -35,28 +35,43 @@ export function TrialExpirationBanner() {
   const [isLoading, setIsLoading] = useState(true);
   const [isDismissed, setIsDismissed] = useState(false);
 
-  // Don't render for non-trial users
-  if (!isTrialUser && !isExpired) return null;
-  if (isDismissed && daysRemaining > 3) return null; // Allow dismissal only for non-urgent
-
-  // Fetch value metrics
+  // Fetch value metrics for trial/expired users.
   useEffect(() => {
+    if (!isTrialUser && !isExpired) {
+      setIsLoading(false);
+      return;
+    }
+
+    let isActive = true;
+
     const fetchValue = async () => {
       try {
         const response = await fetch('/api/trial/value-recap');
         if (response.ok) {
           const data = await response.json();
-          setValueMetrics(data.metrics);
+          if (isActive) {
+            setValueMetrics(data.metrics);
+          }
         }
       } catch (error) {
         // Silent fail - banner still works without value data
       } finally {
-        setIsLoading(false);
+        if (isActive) {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchValue();
-  }, []);
+
+    return () => {
+      isActive = false;
+    };
+  }, [isExpired, isTrialUser]);
+
+  // Don't render for non-trial users
+  if (!isTrialUser && !isExpired) return null;
+  if (isDismissed && daysRemaining > 3) return null; // Allow dismissal only for non-urgent
 
   const isLastDay = status === 'last_day';
   const isUrgent = status === 'urgent' || daysRemaining <= 3;

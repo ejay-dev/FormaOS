@@ -21,9 +21,12 @@ export function CredentialInspectorModal({
   const [signedUrl, setSignedUrl] = useState<string | null>(null)
   const publicUrl = signedUrl ?? ""
 
-  if (!isOpen || !credential) return null
-
   useEffect(() => {
+    if (!isOpen || !credential) {
+      setBlocked(false)
+      return
+    }
+
     let mounted = true
     async function checkBlocks() {
       try {
@@ -37,13 +40,17 @@ export function CredentialInspectorModal({
     return () => {
       mounted = false
     }
-  }, [])
+  }, [isOpen, credential])
 
   useEffect(() => {
+    if (!isOpen || !credential?.file_path) {
+      setSignedUrl(null)
+      return
+    }
+
     let mounted = true
     async function loadSignedUrl() {
       try {
-        if (!credential?.file_path) return
         const result = await getEvidenceSignedUrl(credential.file_path)
         if (mounted) setSignedUrl(result.signedUrl)
       } catch {
@@ -54,7 +61,9 @@ export function CredentialInspectorModal({
     return () => {
       mounted = false
     }
-  }, [credential?.file_path])
+  }, [isOpen, credential?.file_path])
+
+  if (!isOpen || !credential) return null
 
   async function handleVerify(status: 'verified' | 'rejected') {
     if (blocked && status === "verified") {
