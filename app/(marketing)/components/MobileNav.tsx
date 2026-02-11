@@ -88,7 +88,7 @@ export function MobileNav() {
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex cursor-pointer items-center gap-2 rounded-xl glass-panel px-3 py-2 text-sm text-foreground font-medium transition-all hover:bg-white/10 active:scale-95"
+        className="flex cursor-pointer items-center gap-2 rounded-xl glass-panel px-3 py-2 text-sm text-white font-medium transition-all hover:bg-white/10 active:scale-95"
         aria-expanded={isOpen}
         aria-controls="mobile-menu"
         aria-label={isOpen ? "Close menu" : "Open menu"}

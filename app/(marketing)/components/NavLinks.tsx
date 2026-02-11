@@ -76,8 +76,8 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
             <Link
               href={l.href}
               className={clsx(
-                'mk-nav-link text-foreground/80 transition-colors',
-                isActive && 'text-foreground',
+                'mk-nav-link text-gray-300 transition-colors',
+                isActive && 'text-white',
               )}
               aria-current={isActive ? 'page' : undefined}
             >
