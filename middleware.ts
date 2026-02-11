@@ -204,6 +204,7 @@ export async function middleware(request: NextRequest) {
         '/admin',
         '/auth',
         '/onboarding',
+        '/workspace-recovery',
         '/accept-invite',
         '/join',
         '/submit',
