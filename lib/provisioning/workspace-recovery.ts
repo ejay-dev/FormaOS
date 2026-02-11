@@ -26,6 +26,10 @@ type OnboardingStatusRow = {
   completed_at: string | null;
 };
 
+type FrameworkRow = {
+  framework_slug: string | null;
+};
+
 export type OnboardingSnapshot = {
   hasPlan: boolean;
   hasIndustry: boolean;
@@ -69,6 +73,58 @@ function pickPrimaryMembership<
 function clampStep(step: number) {
   if (!Number.isFinite(step)) return 1;
   return Math.min(Math.max(Math.trunc(step), 1), TOTAL_ONBOARDING_STEPS);
+}
+
+function normalizeFrameworks(input: unknown): string[] {
+  if (!Array.isArray(input)) return [];
+  return Array.from(
+    new Set(
+      input
+        .map((value) => (typeof value === 'string' ? value.trim() : ''))
+        .filter(Boolean),
+    ),
+  );
+}
+
+async function resolveFrameworksForOrganization(
+  admin: ReturnType<typeof createSupabaseAdminClient>,
+  organizationId: string,
+  organizationFrameworks: unknown,
+) {
+  const directFrameworks = normalizeFrameworks(organizationFrameworks);
+  if (directFrameworks.length > 0) {
+    return {
+      frameworks: directFrameworks,
+      repairedFromOrgFrameworks: false,
+    };
+  }
+
+  const { data: frameworkRows } = await admin
+    .from('org_frameworks')
+    .select('framework_slug')
+    .eq('org_id', organizationId)
+    .limit(100);
+
+  const fallbackFrameworks = normalizeFrameworks(
+    (frameworkRows as FrameworkRow[] | null)?.map((row) => row.framework_slug),
+  );
+
+  if (!fallbackFrameworks.length) {
+    return {
+      frameworks: [],
+      repairedFromOrgFrameworks: false,
+    };
+  }
+
+  const { error: backfillError } = await admin
+    .from('organizations')
+    .update({ frameworks: fallbackFrameworks })
+    .eq('id', organizationId);
+
+  return {
+    frameworks: fallbackFrameworks,
+    repairedFromOrgFrameworks: !backfillError,
+  };
 }
 
 export function deriveOnboardingStep(snapshot: OnboardingSnapshot): number {
@@ -162,7 +218,7 @@ export async function recoverUserWorkspace({
   }
 
   const membership = membershipData as MembershipRow;
-  const organizationId = membership.organization_id;
+  const organizationId = membership.organization_id as string;
 
   if (!membership.role) {
     await admin
@@ -195,9 +251,15 @@ export async function recoverUserWorkspace({
   const organization = orgData as OrganizationRow;
   const hasPlan = Boolean(organization.plan_key);
   const hasIndustry = Boolean(organization.industry);
-  const frameworks = Array.isArray(organization.frameworks)
-    ? organization.frameworks.filter(Boolean)
-    : [];
+  const frameworkResolution = await resolveFrameworksForOrganization(
+    admin,
+    organizationId,
+    organization.frameworks,
+  );
+  if (frameworkResolution.repairedFromOrgFrameworks) {
+    actions.push('frameworks_backfilled_from_org_frameworks');
+  }
+  const frameworks = frameworkResolution.frameworks;
   const hasFrameworks = frameworks.length > 0;
 
   if (!hasPlan) missingRecords.push('organizations.plan_key');
@@ -212,12 +274,33 @@ export async function recoverUserWorkspace({
     .maybeSingle();
 
   const status = (statusData as OnboardingStatusRow | null) ?? null;
+  const statusMarkedComplete = Boolean(status?.completed_at) ||
+    Boolean(status?.completed_steps?.includes(TOTAL_ONBOARDING_STEPS));
+  let onboardingCompletedFlag = Boolean(organization.onboarding_completed);
+  const onboardingCanBeCompleted =
+    hasPlan && hasIndustry && hasFrameworks && Boolean(membership.role);
+
+  if (!onboardingCompletedFlag && onboardingCanBeCompleted && statusMarkedComplete) {
+    const { error: promoteError } = await admin
+      .from('organizations')
+      .update({
+        onboarding_completed: true,
+        onboarding_completed_at: new Date().toISOString(),
+      })
+      .eq('id', organizationId);
+
+    if (!promoteError) {
+      onboardingCompletedFlag = true;
+      actions.push('onboarding_flag_promoted');
+    }
+  }
+
   const onboardingSnapshot: OnboardingSnapshot = {
     hasPlan,
     hasIndustry,
     hasFrameworks,
     hasRole: Boolean(membership.role),
-    onboardingCompleted: Boolean(organization.onboarding_completed),
+    onboardingCompleted: onboardingCompletedFlag,
     storedStep: status?.current_step ?? null,
   };
   const onboardingComplete = isOnboardingComplete(onboardingSnapshot);
@@ -242,7 +325,7 @@ export async function recoverUserWorkspace({
     actions.push('onboarding_step_repaired');
   }
 
-  if (!onboardingComplete && organization.onboarding_completed) {
+  if (!onboardingComplete && onboardingCompletedFlag) {
     await admin
       .from('organizations')
       .update({ onboarding_completed: false })

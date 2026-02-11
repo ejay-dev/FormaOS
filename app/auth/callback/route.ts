@@ -32,6 +32,94 @@ function toLegacyPlanCode(planKey: string): string {
   return planKey === 'basic' ? 'starter' : planKey;
 }
 
+type MembershipRow = {
+  organization_id: string | null;
+  role: string | null;
+  created_at?: string | null;
+};
+
+type FrameworkRow = {
+  framework_slug: string | null;
+};
+
+function normalizeFrameworks(input: unknown): string[] {
+  if (!Array.isArray(input)) return [];
+  return Array.from(
+    new Set(
+      input
+        .map((value) => (typeof value === 'string' ? value.trim() : ''))
+        .filter(Boolean),
+    ),
+  );
+}
+
+function selectPrimaryMembership(
+  memberships: MembershipRow[],
+): MembershipRow | null {
+  if (!memberships.length) return null;
+
+  const weight = (role?: string | null) => {
+    const normalized = (role ?? '').toLowerCase();
+    if (normalized === 'owner') return 3;
+    if (normalized === 'admin') return 2;
+    return 1;
+  };
+
+  return (
+    memberships
+      .slice()
+      .sort((a, b) => {
+        const roleDelta = weight(b.role) - weight(a.role);
+        if (roleDelta !== 0) return roleDelta;
+        const aTime = a.created_at ? Date.parse(a.created_at) : 0;
+        const bTime = b.created_at ? Date.parse(b.created_at) : 0;
+        return bTime - aTime;
+      })
+      .at(0) ?? memberships[0]
+  );
+}
+
+async function resolveFrameworksForOrganization(
+  admin: ReturnType<typeof createSupabaseAdminClient>,
+  organizationId: string,
+  organizationFrameworks: unknown,
+) {
+  const directFrameworks = normalizeFrameworks(organizationFrameworks);
+  if (directFrameworks.length > 0) {
+    return {
+      frameworks: directFrameworks,
+      repairedFromOrgFrameworks: false,
+    };
+  }
+
+  const { data: frameworkRows } = await admin
+    .from('org_frameworks')
+    .select('framework_slug')
+    .eq('org_id', organizationId)
+    .limit(100);
+
+  const fallbackFrameworks = normalizeFrameworks(
+    (frameworkRows as FrameworkRow[] | null)?.map((row) => row.framework_slug),
+  );
+
+  if (!fallbackFrameworks.length) {
+    return {
+      frameworks: [],
+      repairedFromOrgFrameworks: false,
+    };
+  }
+
+  const { error: backfillError } = await admin
+    .from('organizations')
+    .update({ frameworks: fallbackFrameworks })
+    .eq('id', organizationId);
+
+  return {
+    frameworks: fallbackFrameworks,
+    repairedFromOrgFrameworks: !backfillError,
+  };
+}
+
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const { searchParams } = requestUrl;
@@ -439,12 +527,12 @@ export async function GET(request: Request) {
   }
 
   // 3. HANDLE EXISTING USERS - Check and fix their organization setup
-  const { data: membership, error: membershipError } = await supabase
+  const { data: membershipRows, error: membershipError } = await admin
     .from('org_members')
-    .select('organization_id, role')
+    .select('organization_id, role, created_at')
     .eq('user_id', user.id)
-    .limit(1)
-    .maybeSingle();
+    .limit(50);
+  const membership = selectPrimaryMembership((membershipRows ?? []) as MembershipRow[]);
 
   if (membershipError) {
     console.error('Membership lookup failed:', membershipError);
@@ -727,21 +815,57 @@ export async function GET(request: Request) {
 
   const hasPlan = Boolean(organization?.plan_key ?? resolvedPlan);
   const hasIndustry = Boolean(organization?.industry);
-  const hasFrameworks =
-    Array.isArray(organization?.frameworks) &&
-    organization.frameworks.length > 0;
+  const frameworkResolution = await resolveFrameworksForOrganization(
+    admin,
+    membership.organization_id,
+    organization?.frameworks ?? null,
+  );
+  if (frameworkResolution.repairedFromOrgFrameworks) {
+    console.log(
+      '[auth/callback] Repaired organization.frameworks from org_frameworks',
+      {
+        orgId: membership.organization_id,
+        frameworkCount: frameworkResolution.frameworks.length,
+      },
+    );
+  }
+  const hasFrameworks = frameworkResolution.frameworks.length > 0;
   const { data: onboardingStatus } = await admin
     .from('org_onboarding_status')
-    .select('current_step')
+    .select('current_step, completed_steps, completed_at')
     .eq('organization_id', membership.organization_id)
     .maybeSingle();
+
+  const statusMarkedComplete =
+    Boolean(onboardingStatus?.completed_at) ||
+    Boolean(onboardingStatus?.completed_steps?.includes(7));
+  let onboardingCompleted = Boolean(organization?.onboarding_completed);
+  const canPromoteOnboarding =
+    hasPlan && hasIndustry && hasFrameworks && Boolean(membership.role);
+
+  if (!onboardingCompleted && canPromoteOnboarding && statusMarkedComplete) {
+    const { error: promoteError } = await admin
+      .from('organizations')
+      .update({
+        onboarding_completed: true,
+        onboarding_completed_at: new Date().toISOString(),
+      })
+      .eq('id', membership.organization_id);
+
+    if (!promoteError) {
+      onboardingCompleted = true;
+      console.log('[auth/callback] Promoted onboarding_completed from status', {
+        orgId: membership.organization_id,
+      });
+    }
+  }
 
   const onboardingSnapshot = {
     hasPlan,
     hasIndustry,
     hasFrameworks,
     hasRole: Boolean(membership.role),
-    onboardingCompleted: Boolean(organization?.onboarding_completed),
+    onboardingCompleted,
     storedStep: onboardingStatus?.current_step ?? null,
   };
 

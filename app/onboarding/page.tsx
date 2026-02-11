@@ -56,6 +56,51 @@ type OnboardingStatusRow = {
   first_action: string | null;
 };
 
+type FrameworkRow = {
+  framework_slug: string | null;
+};
+
+function normalizeFrameworks(input: unknown): string[] {
+  if (!Array.isArray(input)) return [];
+  return Array.from(
+    new Set(
+      input
+        .map((value) => (typeof value === 'string' ? value.trim() : ''))
+        .filter(Boolean),
+    ),
+  );
+}
+
+async function resolveOrganizationFrameworks(
+  orgId: string,
+  frameworks: unknown,
+): Promise<string[]> {
+  const directFrameworks = normalizeFrameworks(frameworks);
+  if (directFrameworks.length > 0) {
+    return directFrameworks;
+  }
+
+  const admin = createSupabaseAdminClient();
+  const { data: frameworkRows } = await admin
+    .from('org_frameworks')
+    .select('framework_slug')
+    .eq('org_id', orgId)
+    .limit(100);
+
+  const fallbackFrameworks = normalizeFrameworks(
+    (frameworkRows as FrameworkRow[] | null)?.map((row) => row.framework_slug),
+  );
+
+  if (fallbackFrameworks.length > 0) {
+    await admin
+      .from('organizations')
+      .update({ frameworks: fallbackFrameworks })
+      .eq('id', orgId);
+  }
+
+  return fallbackFrameworks;
+}
+
 async function getOrgContext() {
   const supabase = await createSupabaseServerClient();
   const {
@@ -125,9 +170,17 @@ async function getOrgContext() {
     }
   }
 
-  const orgRecord = Array.isArray(membership.organizations)
+  const baseOrgRecord = Array.isArray(membership.organizations)
     ? membership.organizations[0]
     : membership.organizations;
+  const frameworks = await resolveOrganizationFrameworks(
+    membership.organization_id as string,
+    baseOrgRecord?.frameworks,
+  );
+  const orgRecord = {
+    ...(baseOrgRecord ?? {}),
+    frameworks,
+  };
 
   return {
     supabase,
@@ -307,6 +360,7 @@ async function saveRoleSelection(formData: FormData) {
 async function saveFrameworkSelection(formData: FormData) {
   'use server';
   const { supabase, orgId, canProvision } = await getOrgContext();
+  const admin = createSupabaseAdminClient();
   const frameworks = formData
     .getAll('frameworks')
     .map((item) => item.toString())
@@ -321,13 +375,22 @@ async function saveFrameworkSelection(formData: FormData) {
     redirect('/onboarding?step=5&error=1');
   }
 
-  await supabase.from('organizations').update({ frameworks }).eq('id', orgId);
+  const { error: frameworkUpdateError } = await supabase
+    .from('organizations')
+    .update({ frameworks })
+    .eq('id', orgId);
+  if (frameworkUpdateError) {
+    console.warn(
+      '[onboarding] organizations.frameworks update failed; retrying with admin client',
+      frameworkUpdateError,
+    );
+    await admin.from('organizations').update({ frameworks }).eq('id', orgId);
+  }
 
   try {
     const selectedFrameworks = getProvisioningFrameworkSlugs(frameworks);
 
     if (selectedFrameworks.length) {
-      const admin = createSupabaseAdminClient();
       const upsertPayload = selectedFrameworks.map((slug) => ({
         org_id: orgId,
         framework_slug: slug,
@@ -533,7 +596,24 @@ export default async function OnboardingPage({
   const { orgId, orgRecord, supabase } = await getOrgContext();
   const status = await getOnboardingStatus(supabase, orgId);
 
-  if (orgRecord?.onboarding_completed && status.completed_at) {
+  const onboardingStatusComplete =
+    Boolean(status.completed_at) || status.completed_steps.includes(TOTAL_STEPS);
+  const hasRequiredOnboardingData =
+    Boolean(orgRecord?.plan_key) &&
+    Boolean(orgRecord?.industry) &&
+    Array.isArray(orgRecord?.frameworks) &&
+    orgRecord.frameworks.length > 0;
+
+  if (onboardingStatusComplete && hasRequiredOnboardingData) {
+    if (!orgRecord?.onboarding_completed) {
+      await createSupabaseAdminClient()
+        .from('organizations')
+        .update({
+          onboarding_completed: true,
+          onboarding_completed_at: new Date().toISOString(),
+        })
+        .eq('id', orgId);
+    }
     if (cameFromApp) {
       console.error(
         '[Onboarding] Loop detected: onboarding complete but app state unavailable; invoking workspace recovery.',
