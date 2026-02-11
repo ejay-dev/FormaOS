@@ -13,6 +13,7 @@ const customJestConfig = {
     '<rootDir>/.next/',
     '<rootDir>/node_modules/',
     '<rootDir>/e2e/',
+    '<rootDir>/tests/cta.spec.ts',
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',

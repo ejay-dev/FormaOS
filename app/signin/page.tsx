@@ -11,7 +11,7 @@ import { Logo } from '@/components/brand/Logo';
 // See: https://supabase.com/docs/guides/auth/custom-domains
 
 const DEFAULT_APP_BASE = 'https://app.formaos.com.au';
-const SESSION_TIMEOUT_MS = 5000;
+const SESSION_TIMEOUT_MS = 240000;
 const RENDER_APP_BASE = (process.env.NEXT_PUBLIC_APP_URL ?? '').replace(
   /\/$/,
   '',

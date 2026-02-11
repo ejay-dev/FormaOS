@@ -54,26 +54,49 @@ async function cleanupUser(userId: string) {
       .maybeSingle();
 
     if (membership?.organization_id) {
-      await admin
+      const { error: entitlementsDeleteError } = await admin
         .from('org_entitlements')
         .delete()
-        .eq('organization_id', membership.organization_id)
-        .catch(() => null);
-      await admin
+        .eq('organization_id', membership.organization_id);
+      if (entitlementsDeleteError) {
+        console.warn(
+          '[trial-provisioning] cleanup org_entitlements failed:',
+          entitlementsDeleteError.message,
+        );
+      }
+
+      const { error: subscriptionsDeleteError } = await admin
         .from('org_subscriptions')
         .delete()
-        .eq('organization_id', membership.organization_id)
-        .catch(() => null);
-      await admin
+        .eq('organization_id', membership.organization_id);
+      if (subscriptionsDeleteError) {
+        console.warn(
+          '[trial-provisioning] cleanup org_subscriptions failed:',
+          subscriptionsDeleteError.message,
+        );
+      }
+
+      const { error: membersDeleteError } = await admin
         .from('org_members')
         .delete()
-        .eq('organization_id', membership.organization_id)
-        .catch(() => null);
-      await admin
+        .eq('organization_id', membership.organization_id);
+      if (membersDeleteError) {
+        console.warn(
+          '[trial-provisioning] cleanup org_members failed:',
+          membersDeleteError.message,
+        );
+      }
+
+      const { error: organizationsDeleteError } = await admin
         .from('organizations')
         .delete()
-        .eq('id', membership.organization_id)
-        .catch(() => null);
+        .eq('id', membership.organization_id);
+      if (organizationsDeleteError) {
+        console.warn(
+          '[trial-provisioning] cleanup organizations failed:',
+          organizationsDeleteError.message,
+        );
+      }
     }
 
     await admin.auth.admin.deleteUser(userId).catch(() => null);

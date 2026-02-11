@@ -12,7 +12,7 @@ import { Logo } from '@/components/brand/Logo';
 
 const DEFAULT_APP_BASE = 'https://app.formaos.com.au';
 const DEFAULT_SITE_BASE = 'https://www.formaos.com.au';
-const SESSION_TIMEOUT_MS = 5000;
+const SESSION_TIMEOUT_MS = 240000;
 
 const resolveAppBase = () => {
   const envBase = (process.env.NEXT_PUBLIC_APP_URL ?? '').replace(/\/$/, '');
