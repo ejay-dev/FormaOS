@@ -32,6 +32,7 @@ import {
   onFrameworksProvisioned,
   onOnboardingMilestone,
 } from '@/lib/automation/integration';
+import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
 
 // Force dynamic rendering - this page uses cookies() for auth
 export const dynamic = 'force-dynamic';
@@ -89,7 +90,7 @@ async function getOrgContext() {
     redirect('/admin');
   }
 
-  const { data: membership } = await supabase
+  let { data: membership } = await supabase
     .from('org_members')
     .select(
       'organization_id, role, organizations(name, plan_key, industry, team_size, frameworks, onboarding_completed, created_by)',
@@ -98,22 +99,28 @@ async function getOrgContext() {
     .maybeSingle();
 
   if (!membership?.organization_id) {
-    console.log(
-      '[onboarding] 🚨 NO ORGANIZATION FOUND - this indicates auth callback failed',
-    );
+    console.warn('[onboarding] Missing membership, triggering recovery', {
+      userId: user.id,
+    });
+    const recovery = await recoverUserWorkspace({
+      userId: user.id,
+      userEmail: user.email ?? null,
+      source: 'onboarding-getOrgContext',
+    });
 
-    // Auth callback should have created organization
-    // If we reach here, there was an issue in the auth callback process
-    console.error(
-      '[onboarding] Organization should have been created by auth callback',
-    );
+    const { data: recoveredMembership } = await supabase
+      .from('org_members')
+      .select(
+        'organization_id, role, organizations(name, plan_key, industry, team_size, frameworks, onboarding_completed, created_by)',
+      )
+      .eq('user_id', user.id)
+      .maybeSingle();
 
-    redirect(
-      '/auth/signin?error=setup_incomplete&message=' +
-        encodeURIComponent(
-          'Account setup is incomplete. Please sign in again to complete setup.',
-        ),
-    );
+    membership = recoveredMembership;
+
+    if (!membership?.organization_id) {
+      redirect(recovery.nextPath);
+    }
   }
 
   const orgRecord = Array.isArray(membership.organizations)
@@ -526,12 +533,10 @@ export default async function OnboardingPage({
 
   if (orgRecord?.onboarding_completed && status.completed_at) {
     if (cameFromApp) {
-      // Break the loop — AppLayout couldn't load state but onboarding IS done.
-      // This means there's a transient DB/state issue. Redirect to a safe place.
       console.error(
-        '[Onboarding] Loop detected: onboarding complete but AppLayout has no state. Retrying /app.',
+        '[Onboarding] Loop detected: onboarding complete but app state unavailable; invoking workspace recovery.',
       );
-      redirect('/app?retry=1');
+      redirect('/workspace-recovery?from=onboarding-loop');
     }
     redirect('/app');
   }

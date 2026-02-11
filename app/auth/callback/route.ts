@@ -8,6 +8,10 @@ import { resolvePlanKey } from '@/lib/plans';
 import { ensureSubscription } from '@/lib/billing/subscriptions';
 import { isFounder } from '@/lib/utils/founder';
 import {
+  deriveOnboardingStep,
+  isOnboardingComplete,
+} from '@/lib/provisioning/workspace-recovery';
+import {
   getSupabaseAnonKey,
   getSupabaseServiceRoleKey,
   getSupabaseUrl,
@@ -724,14 +728,40 @@ export async function GET(request: Request) {
   const hasFrameworks =
     Array.isArray(organization?.frameworks) &&
     organization.frameworks.length > 0;
-  const onboardingComplete = Boolean(organization?.onboarding_completed);
+  const { data: onboardingStatus } = await admin
+    .from('org_onboarding_status')
+    .select('current_step')
+    .eq('organization_id', membership.organization_id)
+    .maybeSingle();
 
-  if (!hasPlan || !hasIndustry || !hasFrameworks || !onboardingComplete) {
+  const onboardingSnapshot = {
+    hasPlan,
+    hasIndustry,
+    hasFrameworks,
+    hasRole: Boolean(membership.role),
+    onboardingCompleted: Boolean(organization?.onboarding_completed),
+    storedStep: onboardingStatus?.current_step ?? null,
+  };
+
+  if (!isOnboardingComplete(onboardingSnapshot)) {
+    const onboardingStep = deriveOnboardingStep(onboardingSnapshot);
+    await admin.from('org_onboarding_status').upsert({
+      organization_id: membership.organization_id,
+      current_step: onboardingStep,
+      updated_at: new Date().toISOString(),
+    });
     console.log(
-      '[auth/callback] 📋 Onboarding incomplete, redirecting to onboarding',
+      '[auth/callback] 📋 Onboarding incomplete, redirecting to onboarding step',
+      onboardingStep,
     );
-    const planQuery = resolvedPlan
-      ? `?plan=${encodeURIComponent(resolvedPlan)}`
+    const query = new URLSearchParams();
+    query.set('step', String(onboardingStep));
+    if (resolvedPlan) {
+      query.set('plan', resolvedPlan);
+    }
+    const queryString = query.toString();
+    const planQuery = queryString
+      ? `?${queryString}`
       : '';
     return redirectWithCookies(`${appBase}/onboarding${planQuery}`);
   }

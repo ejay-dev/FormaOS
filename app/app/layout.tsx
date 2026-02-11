@@ -8,8 +8,6 @@ import { ComplianceSystemProvider } from '@/components/compliance-system/provide
 import { SystemStateProvider } from '@/lib/system-state/context';
 import { AppHydrator } from '@/components/app-hydrator';
 import { fetchSystemState } from '@/lib/system-state/server';
-import { resolvePlanKey } from '@/lib/plans';
-import { normalizeRole } from '@/app/app/actions/rbac';
 import { TrialCountdownBanner } from '@/components/billing/TrialCountdownBanner';
 import { UpgradeModal } from '@/components/billing/UpgradeModal';
 import { UpgradeSuggestionEngine } from '@/components/billing/UpgradeSuggestionEngine';
@@ -19,6 +17,7 @@ import { HelpAssistantProvider } from '@/components/help/help-assistant-context'
 import { HelpAssistant } from '@/components/help/HelpAssistant';
 import { AppShellErrorBoundary } from '@/components/app-shell-error-boundary';
 import { ProductTourProvider } from '@/lib/onboarding/product-tour';
+import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
 
 // Force dynamic rendering for all /app/* routes
 // Required because this layout uses cookies() via Supabase auth
@@ -80,8 +79,13 @@ export default async function AppLayout({
   // If we can't build state, send to onboarding rather than crashing.
   // Add ?from=app to prevent /onboarding → /app → /onboarding infinite loop.
   if (!systemState) {
-    console.warn('[AppLayout] No system state — redirecting to /onboarding');
-    redirect('/onboarding?from=app');
+    console.warn(
+      '[AppLayout] No system state — redirecting to workspace recovery',
+      {
+        userId: user.id,
+      },
+    );
+    redirect('/workspace-recovery?from=app-layout-null-state');
   }
 
   // 🔧 FIX: Don't force founders to /admin when they visit /app intentionally.
@@ -91,7 +95,16 @@ export default async function AppLayout({
 
   // Validate onboarding completion
   if (!systemState.organization.onboardingCompleted) {
-    redirect('/onboarding');
+    const recovery = await recoverUserWorkspace({
+      userId: user.id,
+      userEmail: user.email ?? null,
+      source: 'app-layout-onboarding-guard',
+    });
+    redirect(
+      recovery.nextPath === '/app'
+        ? '/workspace-recovery?from=app-layout-onboarding-loop'
+        : recovery.nextPath,
+    );
   }
 
   /* -------------------------------------------------------

@@ -85,6 +85,12 @@ export class AppShellErrorBoundary extends Component<Props, State> {
                 Try again
               </button>
               <a
+                href="/workspace-recovery?from=app-shell-error"
+                className="rounded-lg border border-border px-4 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground"
+              >
+                Recover workspace
+              </a>
+              <a
                 href="/auth/signin"
                 className="rounded-lg border border-border px-4 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground"
               >

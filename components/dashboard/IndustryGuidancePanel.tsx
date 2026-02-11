@@ -49,33 +49,6 @@ export function IndustryGuidancePanel({
   isLoading = false,
   onActionClickAction,
 }: IndustryGuidancePanelProps) {
-  // Loading skeleton
-  if (isLoading) {
-    return (
-      <div
-        className={`space-y-4 ${className}`}
-        role="status"
-        aria-label="Loading industry guidance"
-      >
-        <div className="animate-pulse rounded-2xl border border-white/10 bg-white/5 p-6">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex items-start gap-3 flex-1">
-              <div className="h-12 w-12 rounded-xl bg-white/10" />
-              <div className="flex-1 space-y-2">
-                <div className="h-4 w-32 rounded bg-white/10" />
-                <div className="h-3 w-24 rounded bg-white/10" />
-              </div>
-            </div>
-            <div className="h-16 w-16 rounded-full bg-white/10" />
-          </div>
-          <div className="mt-6 space-y-3">
-            <div className="h-20 rounded-lg bg-white/5" />
-            <div className="h-4 w-48 rounded bg-white/10" />
-          </div>
-        </div>
-      </div>
-    );
-  }
   const roadmap: IndustryRoadmap = useMemo(
     () => getRoadmapForIndustry(industry),
     [industry],
@@ -206,6 +179,34 @@ export function IndustryGuidancePanel({
 
     return messages;
   }, [complianceScore, completionCounts, roadmap.keyFrameworks.length]);
+
+  // Keep hook order stable across loading -> loaded transitions.
+  if (isLoading) {
+    return (
+      <div
+        className={`space-y-4 ${className}`}
+        role="status"
+        aria-label="Loading industry guidance"
+      >
+        <div className="animate-pulse rounded-2xl border border-white/10 bg-white/5 p-6">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-3 flex-1">
+              <div className="h-12 w-12 rounded-xl bg-white/10" />
+              <div className="flex-1 space-y-2">
+                <div className="h-4 w-32 rounded bg-white/10" />
+                <div className="h-3 w-24 rounded bg-white/10" />
+              </div>
+            </div>
+            <div className="h-16 w-16 rounded-full bg-white/10" />
+          </div>
+          <div className="mt-6 space-y-3">
+            <div className="h-20 rounded-lg bg-white/5" />
+            <div className="h-4 w-48 rounded bg-white/10" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
