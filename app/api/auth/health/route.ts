@@ -2,6 +2,11 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import {
+  getSupabaseAnonKey,
+  getSupabaseServiceRoleKey,
+  getSupabaseUrl,
+} from '@/lib/supabase/env';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -36,9 +41,9 @@ export async function GET() {
   const cookieStore = await cookies();
   const allCookies = cookieStore.getAll();
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '';
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? '';
+  const supabaseUrl = getSupabaseUrl();
+  const anonKey = getSupabaseAnonKey();
+  const serviceRoleKey = getSupabaseServiceRoleKey();
 
   const projectRef = getProjectRef(supabaseUrl);
   const authCookiePrefix = `sb-${projectRef}`;

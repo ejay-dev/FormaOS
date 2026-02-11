@@ -1,14 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
+import { getSupabaseServiceRoleKey, getSupabaseUrl } from "@/lib/supabase/env";
 
 export function createSupabaseAdminClient() {
-  const isPresent = (value?: string | null) =>
-    Boolean(value && value !== "undefined" && value !== "null");
-  const url = isPresent(process.env.NEXT_PUBLIC_SUPABASE_URL)
-    ? process.env.NEXT_PUBLIC_SUPABASE_URL!
-    : "";
-  const serviceKey = isPresent(process.env.SUPABASE_SERVICE_ROLE_KEY)
-    ? process.env.SUPABASE_SERVICE_ROLE_KEY!
-    : "";
+  const url = getSupabaseUrl();
+  const serviceKey = getSupabaseServiceRoleKey();
   const hasValidUrl = (() => {
     if (!url) return false;
     try {

@@ -8,6 +8,11 @@ import { resolvePlanKey } from '@/lib/plans';
 import { ensureSubscription } from '@/lib/billing/subscriptions';
 import { isFounder } from '@/lib/utils/founder';
 import {
+  getSupabaseAnonKey,
+  getSupabaseServiceRoleKey,
+  getSupabaseUrl,
+} from '@/lib/supabase/env';
+import {
   initializeComplianceGraph,
   validateComplianceGraph,
 } from '@/lib/compliance-graph';
@@ -49,7 +54,7 @@ export async function GET(request: Request) {
 
     // Mobile Safari requires explicit cookie settings
     if (!normalized.sameSite) {
-      normalized.sameSite = 'lax';
+      normalized.sameSite = isHttps ? 'none' : 'lax';
     }
     if (!normalized.path) {
       normalized.path = '/';
@@ -113,7 +118,8 @@ export async function GET(request: Request) {
 
   // CRITICAL: Validate service role key is configured
   // Without this, user creation will fail and create orphaned auth users
-  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  const serviceRoleKey = getSupabaseServiceRoleKey();
+  if (!serviceRoleKey) {
     console.error(
       '[auth/callback] CRITICAL: SUPABASE_SERVICE_ROLE_KEY not configured. Cannot create user records.',
     );
@@ -125,14 +131,8 @@ export async function GET(request: Request) {
     );
   }
 
-  const isPresent = (value?: string | null) =>
-    Boolean(value && value !== 'undefined' && value !== 'null');
-  const supabaseUrl = isPresent(process.env.NEXT_PUBLIC_SUPABASE_URL)
-    ? process.env.NEXT_PUBLIC_SUPABASE_URL!
-    : '';
-  const supabaseAnonKey = isPresent(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
-    ? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    : '';
+  const supabaseUrl = getSupabaseUrl();
+  const supabaseAnonKey = getSupabaseAnonKey();
 
   if (!supabaseUrl || !supabaseAnonKey) {
     console.error(
@@ -292,7 +292,7 @@ export async function GET(request: Request) {
             headers: {
               'Content-Type': 'application/json',
               apikey: supabaseAnonKey,
-              Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+              Authorization: `Bearer ${serviceRoleKey}`,
             },
             body: JSON.stringify({
               code,

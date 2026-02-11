@@ -12,13 +12,23 @@ export async function GET(request: Request) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? null;
     const anon = Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
     const publishable = Boolean(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY);
+    const serviceRole = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
+    const serviceKeyLegacy = Boolean(process.env.SUPABASE_SERVICE_KEY);
+    const serviceRoleLegacy = Boolean(process.env.SUPABASE_SERVICE_ROLE);
 
     const cookieDomain = getCookieDomain();
     const host = new URL(request.url).hostname;
 
     return NextResponse.json({
       ok: true,
-      env: { appUrl, siteUrl, supabaseUrl, hasAnonKey: anon, hasPublishableKey: publishable },
+      env: {
+        appUrl,
+        siteUrl,
+        supabaseUrl,
+        hasAnonKey: anon,
+        hasPublishableKey: publishable,
+        hasServiceRoleKey: serviceRole || serviceKeyLegacy || serviceRoleLegacy,
+      },
       cookieDomain,
       requestHost: host,
       note:

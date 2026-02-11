@@ -1,5 +1,6 @@
 import { createBrowserClient } from '@supabase/ssr';
 import { getCookieDomain } from '@/lib/supabase/cookie-domain';
+import { getSupabaseAnonKey, getSupabaseUrl } from '@/lib/supabase/env';
 
 type SupabaseClient = ReturnType<typeof createBrowserClient>;
 
@@ -9,14 +10,15 @@ function resolveBrowserCookieOptions() {
   if (typeof window === 'undefined') return undefined;
   const domain = getCookieDomain(window.location.hostname);
   const secure = window.location.protocol === 'https:';
+  const sameSite = secure ? 'none' : 'lax';
   const options: {
     domain?: string;
     path: string;
-    sameSite: 'lax';
+    sameSite: 'lax' | 'none';
     secure?: boolean;
   } = {
     path: '/',
-    sameSite: 'lax',
+    sameSite,
   };
   if (domain) options.domain = domain;
   if (secure) options.secure = true;
@@ -27,7 +29,7 @@ function getSupabaseKey() {
   // Use ONLY the anon key — the publishable key (sb_publishable_*) is NOT a
   // valid Supabase JWT and will silently break all client-side auth including
   // signInWithOAuth if it takes priority.
-  return process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '';
+  return getSupabaseAnonKey();
 }
 
 function createFallbackClient() {
@@ -96,9 +98,7 @@ export function createSupabaseClient() {
   if (cachedClient) return cachedClient;
   const isPresent = (value?: string | null) =>
     Boolean(value && value !== 'undefined' && value !== 'null');
-  const url = isPresent(process.env.NEXT_PUBLIC_SUPABASE_URL)
-    ? process.env.NEXT_PUBLIC_SUPABASE_URL!
-    : '';
+  const url = getSupabaseUrl();
   const keyRaw = getSupabaseKey();
   const key = isPresent(keyRaw) ? keyRaw : '';
   const hasValidUrl = (() => {

@@ -11,6 +11,10 @@ export async function GET() {
     const hasUrl = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL);
     const hasAnon = Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
     const hasPublishable = Boolean(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY);
+    const hasServiceRole =
+      Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY) ||
+      Boolean(process.env.SUPABASE_SERVICE_KEY) ||
+      Boolean(process.env.SUPABASE_SERVICE_ROLE);
     const hasAny = hasUrl && (hasAnon || hasPublishable);
 
     return NextResponse.json({
@@ -19,6 +23,7 @@ export async function GET() {
         hasUrl,
         hasAnon,
         hasPublishable,
+        hasServiceRole,
         hasAny,
       },
       note: "This endpoint only reports presence of env vars, not their values. Redeploy required after changing Vercel env vars.",

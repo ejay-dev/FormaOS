@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import { checkRedisHealth } from '@/lib/redis/health';
+import { getSupabaseServiceRoleKey, getSupabaseUrl } from '@/lib/supabase/env';
 
 interface DetailedCheck {
   name: string;
@@ -81,10 +82,7 @@ async function testDatabase(checks: DetailedCheck[]) {
   const startTime = Date.now();
 
   try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    );
+    const supabase = createClient(getSupabaseUrl(), getSupabaseServiceRoleKey());
 
     // Test basic connection
     const { data: orgs, error: orgsError } = await supabase
@@ -132,10 +130,7 @@ async function testAuthentication(checks: DetailedCheck[]) {
   const startTime = Date.now();
 
   try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    );
+    const supabase = createClient(getSupabaseUrl(), getSupabaseServiceRoleKey());
 
     // Test auth service
     const {
@@ -194,12 +189,18 @@ async function testEnvironmentConfig(checks: DetailedCheck[]) {
     const requiredEnvVars = [
       'NEXT_PUBLIC_SUPABASE_URL',
       'NEXT_PUBLIC_SUPABASE_ANON_KEY',
-      'SUPABASE_SERVICE_ROLE_KEY',
     ];
+    const hasServiceRole =
+      Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY) ||
+      Boolean(process.env.SUPABASE_SERVICE_KEY) ||
+      Boolean(process.env.SUPABASE_SERVICE_ROLE);
 
     const missingVars = requiredEnvVars.filter(
       (varName) => !process.env[varName],
     );
+    if (!hasServiceRole) {
+      missingVars.push('SUPABASE_SERVICE_ROLE_KEY');
+    }
     const hasAllRequired = missingVars.length === 0;
 
     checks.push({
