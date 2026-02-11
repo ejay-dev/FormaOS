@@ -64,7 +64,7 @@ function CheckEmailContent() {
 
       if (session) {
         // Session valid - redirect to app
-        router.push('/app/onboarding');
+        router.push('/onboarding');
       } else {
         // No session yet
         setErrorMessage('Email not confirmed yet. Please check your inbox and click the confirmation link.');

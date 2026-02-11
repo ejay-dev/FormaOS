@@ -42,6 +42,9 @@ jobs:
         run: npm run lint
         continue-on-error: false # Block deployment on ESLint errors
 
+      - name: App route/link integrity check
+        run: npm run check:app-links
+
       - name: Code formatting check
         run: npx prettier --check "**/*.{ts,tsx,js,jsx,md,json}"
         continue-on-error: true # Warning only for formatting
