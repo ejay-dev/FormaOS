@@ -14,9 +14,12 @@ import {
   Activity,
 } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import { VisualDivider } from '@/components/motion';
 import CinematicField from '../components/motion/CinematicField';
 import { brand } from '@/config/brand';
+
+const DemoWorkflowTimeline = dynamic(() => import('@/components/marketing/demo/DemoWorkflowTimeline'), { ssr: false });
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -617,6 +620,25 @@ function CrossIndustryPrinciples() {
             );
           })}
         </div>
+
+        {/* Live compliance workflow demo */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="mb-12 max-w-2xl mx-auto"
+        >
+          <DemoWorkflowTimeline
+            steps={[
+              { id: 'map', label: 'Map', icon: FileCheck, title: 'Framework Mapped', detail: 'Industry obligations imported automatically', meta: 'Supports NDIS, AHPRA, ISO, SOC 2, HIPAA', color: 'text-cyan-400', bg: 'bg-cyan-500/15', border: 'border-cyan-500/20' },
+              { id: 'assign', label: 'Assign', icon: Users, title: 'Ownership Assigned', detail: 'Every control linked to an accountable person', meta: 'Role-based • Escalation rules • Delegation', color: 'text-blue-400', bg: 'bg-blue-500/15', border: 'border-blue-500/20' },
+              { id: 'execute', label: 'Execute', icon: Zap, title: 'Tasks Executed', detail: 'Compliance work happens inside the platform', meta: 'Automated reminders • Due dates • Priorities', color: 'text-purple-400', bg: 'bg-purple-500/15', border: 'border-purple-500/20' },
+              { id: 'prove', label: 'Prove', icon: Shield, title: 'Audit-Ready', detail: 'Full evidence chain for any regulator', meta: 'Immutable trail • Exportable • Zero gaps', color: 'text-emerald-400', bg: 'bg-emerald-500/15', border: 'border-emerald-500/20' },
+            ]}
+            glowColor="from-purple-500/15 to-pink-500/15"
+          />
+        </motion.div>
 
         {/* Design Philosophy Statement */}
         <motion.div

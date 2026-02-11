@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Lock, Plus, Upload, FileCheck, Clock, X } from 'lucide-react';
+import { Lock, Upload, FileCheck, Clock, X } from 'lucide-react';
 import { demoEvidence } from '../demo-data';
 import { easing, duration } from '@/config/motion';
 

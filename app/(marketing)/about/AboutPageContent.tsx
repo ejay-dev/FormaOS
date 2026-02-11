@@ -1,10 +1,12 @@
 'use client';
 
-import Link from 'next/link';
 import { useRef } from 'react';
-import { ArrowRight, Users, Target, Shield, Lightbulb } from 'lucide-react';
+import { ArrowRight, Users, Target, Lightbulb } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import CinematicField from '../components/motion/CinematicField';
+
+const DemoDashboardPreview = dynamic(() => import('@/components/marketing/demo/DemoDashboardPreview'), { ssr: false });
 
 function AboutHero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -206,6 +208,30 @@ export default function AboutPageContent() {
               </p>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* Platform Preview */}
+      <section className="relative py-16 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421]">
+        <div className="mx-auto max-w-xl px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-8"
+          >
+            <h3 className="text-xl font-bold text-white mb-2">The Command Center</h3>
+            <p className="text-sm text-gray-400">Real-time compliance visibility, built for regulated teams</p>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <DemoDashboardPreview glowColor="from-purple-500/15 to-pink-500/15" />
+          </motion.div>
         </div>
       </section>
 

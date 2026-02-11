@@ -19,9 +19,12 @@ import {
   Server,
 } from 'lucide-react';
 import { useRef } from 'react';
+import dynamic from 'next/dynamic';
 import CinematicField from '../components/motion/CinematicField';
 import { VisualDivider } from '@/components/motion';
 import { brand } from '@/config/brand';
+
+const DemoAuditTrailCard = dynamic(() => import('@/components/marketing/demo/DemoAuditTrailCard'), { ssr: false });
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -587,6 +590,17 @@ function EvidenceIntegrity() {
             </motion.div>
           ))}
         </div>
+
+        {/* Live audit trail demo */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          className="mt-12 max-w-xl mx-auto"
+        >
+          <DemoAuditTrailCard glowColor="from-orange-500/15 to-amber-500/15" />
+        </motion.div>
 
         {/* Quality Metrics */}
         <motion.div

@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { History, Shield, FileText, Upload, CheckSquare, Users, Settings, AlertTriangle } from 'lucide-react';
+import { History, Shield, FileText, Upload, CheckSquare, Users, Settings } from 'lucide-react';
 import { demoAuditLog } from '../demo-data';
 import { easing, duration } from '@/config/motion';
 

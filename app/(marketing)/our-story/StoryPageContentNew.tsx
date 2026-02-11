@@ -16,9 +16,12 @@ import {
   FileCheck,
 } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import { VisualDivider } from '@/components/motion';
 import CinematicField from '../components/motion/CinematicField';
 import { brand } from '@/config/brand';
+
+const DemoComplianceChain = dynamic(() => import('@/components/marketing/demo/DemoComplianceChain'), { ssr: false });
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -542,6 +545,17 @@ function TheApproach() {
               </motion.div>
             ))}
           </div>
+        </motion.div>
+
+        {/* Live compliance chain demo */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="mb-12 max-w-2xl mx-auto"
+        >
+          <DemoComplianceChain glowColor="from-indigo-500/15 to-purple-500/15" />
         </motion.div>
 
         {/* Closing */}

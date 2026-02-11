@@ -25,9 +25,13 @@ import {
 } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
+import dynamic from 'next/dynamic';
 import { VisualDivider } from '@/components/motion';
 import CinematicField from '../components/motion/CinematicField';
 import { brand } from '@/config/brand';
+
+const DemoComplianceChain = dynamic(() => import('@/components/marketing/demo/DemoComplianceChain'), { ssr: false });
+const DemoDashboardPreview = dynamic(() => import('@/components/marketing/demo/DemoDashboardPreview'), { ssr: false });
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -430,6 +434,17 @@ function ObligationToExecution() {
             </motion.div>
           ))}
         </div>
+
+        {/* Interactive compliance chain demo */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="mt-12 max-w-2xl mx-auto"
+        >
+          <DemoComplianceChain glowColor="from-purple-500/15 to-pink-500/15" />
+        </motion.div>
 
         {/* Key outcomes */}
         <motion.div
@@ -922,28 +937,43 @@ function ComplianceIntelligence() {
           </p>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {intelligenceFeatures.map((feature, index) => {
-            const Icon = feature.icon;
-            return (
-              <motion.div
-                key={feature.label}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-green-500/30 transition-all"
-              >
-                <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-4">
-                  <Icon className="w-6 h-6 text-green-400" />
-                </div>
-                <h3 className="text-base font-semibold text-white mb-2">
-                  {feature.label}
-                </h3>
-                <p className="text-sm text-gray-400">{feature.description}</p>
-              </motion.div>
-            );
-          })}
+        {/* Dashboard preview + feature grid */}
+        <div className="grid lg:grid-cols-5 gap-8 items-start">
+          {/* Live dashboard preview */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="lg:col-span-2"
+          >
+            <DemoDashboardPreview glowColor="from-green-500/15 to-emerald-500/15" />
+          </motion.div>
+
+          {/* Feature cards */}
+          <div className="lg:col-span-3 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {intelligenceFeatures.map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <motion.div
+                  key={feature.label}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.08 }}
+                  className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-5 hover:border-green-500/30 transition-all"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center mb-3">
+                    <Icon className="w-5 h-5 text-green-400" />
+                  </div>
+                  <h3 className="text-sm font-semibold text-white mb-1.5">
+                    {feature.label}
+                  </h3>
+                  <p className="text-xs text-gray-400 leading-relaxed">{feature.description}</p>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { CheckSquare, Plus, Filter, AlertTriangle, Clock, Check, Circle } from 'lucide-react';
-import { demoTasks, demoUsers } from '../demo-data';
+import { demoTasks } from '../demo-data';
 import { easing, duration } from '@/config/motion';
 
 const stagger = {

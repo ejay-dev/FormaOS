@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { TrendingUp, Minus, Activity, Shield, AlertTriangle } from 'lucide-react';
+import { TrendingUp, Minus, Activity, Shield } from 'lucide-react';
 import { demoOrg, demoKpis, demoFrameworks, demoAuditLog } from '../demo-data';
 import { easing, duration } from '@/config/motion';
 

@@ -25,9 +25,12 @@ import {
   AnimatePresence,
 } from 'framer-motion';
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { VisualDivider } from '@/components/motion';
 import CinematicField from '../components/motion/CinematicField';
 import { brand } from '@/config/brand';
+
+const DemoDashboardPreview = dynamic(() => import('@/components/marketing/demo/DemoDashboardPreview'), { ssr: false });
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -675,6 +678,20 @@ function AllPlansInclude() {
             </motion.div>
           ))}
         </div>
+
+        {/* Platform preview */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-12 max-w-md mx-auto"
+        >
+          <DemoDashboardPreview
+            complianceScore={87}
+            glowColor="from-emerald-500/15 to-cyan-500/15"
+          />
+        </motion.div>
 
         {/* Bottom Note */}
         <motion.div
