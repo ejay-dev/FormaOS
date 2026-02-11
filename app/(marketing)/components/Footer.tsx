@@ -68,7 +68,7 @@ function AnimatedFooterLink({
     >
       <Link
         href={href}
-        className="group flex items-center gap-1.5 text-foreground/60 hover:text-foreground transition-colors text-sm"
+        className="group flex items-center gap-1.5 text-gray-500 hover:text-white transition-colors text-sm"
         {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
       >
         <span>{label}</span>
@@ -87,11 +87,11 @@ function FooterCTA() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: duration.normal, ease: easing.signature }}
-      className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 border border-white/10 p-8 lg:p-10"
+      className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-500/10 via-blue-500/5 to-purple-500/10 border border-white/10 p-8 lg:p-10"
     >
       {/* Animated gradient orb */}
       <motion.div
-        className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-primary/20 blur-3xl"
+        className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-cyan-500/20 blur-3xl"
         animate={{
           scale: [1, 1.2, 1],
           opacity: [0.3, 0.5, 0.3],
@@ -99,7 +99,7 @@ function FooterCTA() {
         transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
-        className="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-secondary/20 blur-3xl"
+        className="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-blue-500/20 blur-3xl"
         animate={{
           scale: [1.2, 1, 1.2],
           opacity: [0.3, 0.5, 0.3],
@@ -116,7 +116,7 @@ function FooterCTA() {
         <h3 className="text-xl sm:text-2xl font-bold mb-3 font-display">
           Ready to transform your compliance?
         </h3>
-        <p className="text-foreground/70 mb-6 max-w-md">
+        <p className="text-gray-400 mb-6 max-w-md">
           Start your 14-day free trial. No credit card required. Full platform
           access.
         </p>
@@ -128,7 +128,7 @@ function FooterCTA() {
           >
             <Link
               href={`${appBase}/auth/signup`}
-              className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold shadow-[0_8px_32px_rgba(0,212,251,0.35)] hover:shadow-[0_12px_40px_rgba(0,212,251,0.5)] transition-shadow"
+              className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold shadow-[0_8px_32px_rgba(0,212,251,0.35)] hover:shadow-[0_12px_40px_rgba(0,212,251,0.5)] transition-shadow"
             >
               Start Free Trial
             </Link>
@@ -165,12 +165,12 @@ function TrustBadge({
   const colorClasses =
     {
       primary:
-        'bg-primary/20 text-primary shadow-[0_0_12px_rgba(0,212,251,0.3)]',
+        'bg-cyan-500/20 text-cyan-400 shadow-[0_0_12px_rgba(0,212,251,0.3)]',
       secondary:
-        'bg-secondary/20 text-secondary shadow-[0_0_12px_rgba(77,159,255,0.3)]',
+        'bg-blue-500/20 text-blue-400 shadow-[0_0_12px_rgba(77,159,255,0.3)]',
       accent:
-        'bg-accent/20 text-accent shadow-[0_0_12px_rgba(167,139,250,0.3)]',
-    }[color] || 'bg-primary/20 text-primary';
+        'bg-purple-500/20 text-purple-400 shadow-[0_0_12px_rgba(167,139,250,0.3)]',
+    }[color] || 'bg-cyan-500/20 text-cyan-400';
 
   return (
     <motion.div
@@ -183,7 +183,7 @@ function TrustBadge({
       <div className={`p-1.5 rounded-lg ${colorClasses}`}>
         <Icon className="h-3.5 w-3.5" />
       </div>
-      <span className="text-foreground/70">{label}</span>
+      <span className="text-gray-400">{label}</span>
     </motion.div>
   );
 }
@@ -192,11 +192,11 @@ export function Footer() {
   return (
     <footer className="relative overflow-hidden border-t border-white/10">
       {/* Animated background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0a0f1c]/95 to-[#0a0f1c]" />
 
       {/* Floating orbs */}
       <motion.div
-        className="absolute top-20 left-[10%] w-64 h-64 rounded-full bg-primary/5 blur-[100px]"
+        className="absolute top-20 left-[10%] w-64 h-64 rounded-full bg-cyan-500/5 blur-[100px]"
         animate={{
           y: [0, -30, 0],
           opacity: [0.3, 0.5, 0.3],
@@ -204,7 +204,7 @@ export function Footer() {
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
-        className="absolute bottom-20 right-[15%] w-80 h-80 rounded-full bg-secondary/5 blur-[120px]"
+        className="absolute bottom-20 right-[15%] w-80 h-80 rounded-full bg-blue-500/5 blur-[120px]"
         animate={{
           y: [0, 20, 0],
           opacity: [0.2, 0.4, 0.2],
@@ -253,7 +253,7 @@ export function Footer() {
               </Link>
             </motion.div>
 
-            <p className="text-sm text-foreground/60 leading-relaxed max-w-xs">
+            <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
               The compliance operating system for regulated industries. Govern,
               execute, and prove audit readiness.
             </p>
@@ -285,11 +285,11 @@ export function Footer() {
 
           {/* Platform Links */}
           <div className="space-y-4">
-            <h4 className="text-xs uppercase tracking-[0.2em] text-foreground/40 font-semibold">
+            <h4 className="text-xs uppercase tracking-[0.2em] text-gray-600 font-semibold">
               Platform
             </h4>
             <div className="space-y-3">
-              {footerLinks.platform.map((link, idx) => (
+              {footerLinks.platform.map((link) => (
                 <AnimatedFooterLink key={link.href} {...link} />
               ))}
             </div>
@@ -297,11 +297,11 @@ export function Footer() {
 
           {/* Use Cases Links */}
           <div className="space-y-4">
-            <h4 className="text-xs uppercase tracking-[0.2em] text-foreground/40 font-semibold">
+            <h4 className="text-xs uppercase tracking-[0.2em] text-gray-600 font-semibold">
               Use Cases
             </h4>
             <div className="space-y-3">
-              {footerLinks.useCases.map((link, idx) => (
+              {footerLinks.useCases.map((link) => (
                 <AnimatedFooterLink key={link.href} {...link} />
               ))}
             </div>
@@ -309,11 +309,11 @@ export function Footer() {
 
           {/* Resources Links */}
           <div className="space-y-4">
-            <h4 className="text-xs uppercase tracking-[0.2em] text-foreground/40 font-semibold">
+            <h4 className="text-xs uppercase tracking-[0.2em] text-gray-600 font-semibold">
               Resources
             </h4>
             <div className="space-y-3">
-              {footerLinks.resources.map((link, idx) => (
+              {footerLinks.resources.map((link) => (
                 <AnimatedFooterLink key={link.href} {...link} />
               ))}
             </div>
@@ -321,11 +321,11 @@ export function Footer() {
 
           {/* Company Links */}
           <div className="space-y-4">
-            <h4 className="text-xs uppercase tracking-[0.2em] text-foreground/40 font-semibold">
+            <h4 className="text-xs uppercase tracking-[0.2em] text-gray-600 font-semibold">
               Company
             </h4>
             <div className="space-y-3">
-              {footerLinks.company.map((link, idx) => (
+              {footerLinks.company.map((link) => (
                 <AnimatedFooterLink key={link.href} {...link} />
               ))}
             </div>
@@ -333,11 +333,11 @@ export function Footer() {
 
           {/* Legal Links */}
           <div className="space-y-4">
-            <h4 className="text-xs uppercase tracking-[0.2em] text-foreground/40 font-semibold">
+            <h4 className="text-xs uppercase tracking-[0.2em] text-gray-600 font-semibold">
               Legal
             </h4>
             <div className="space-y-3">
-              {footerLinks.legal.map((link, idx) => (
+              {footerLinks.legal.map((link) => (
                 <AnimatedFooterLink key={link.href} {...link} />
               ))}
             </div>
@@ -361,20 +361,20 @@ export function Footer() {
           transition={{ duration: duration.normal, ease: easing.signature }}
           className="py-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4"
         >
-          <p className="text-sm text-foreground/50">
+          <p className="text-sm text-gray-500">
             © {new Date().getFullYear()} FormaOS. All rights reserved.
           </p>
 
           <div className="flex items-center gap-6">
             <Link
               href="mailto:hello@formaos.com.au"
-              className="flex items-center gap-2 text-sm text-foreground/50 hover:text-foreground transition-colors"
+              className="flex items-center gap-2 text-sm text-gray-500 hover:text-white transition-colors"
             >
               <Mail className="h-4 w-4" />
               <span>hello@formaos.com.au</span>
             </Link>
-            <span className="text-foreground/20">|</span>
-            <div className="flex items-center gap-2 text-sm text-foreground/50">
+            <span className="text-gray-700">|</span>
+            <div className="flex items-center gap-2 text-sm text-gray-500">
               <MapPin className="h-4 w-4" />
               <span>Sydney, Australia</span>
             </div>
