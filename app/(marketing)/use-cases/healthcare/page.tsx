@@ -12,6 +12,10 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { brand } from '@/config/brand';
+import DemoPolicyLifecycle from '@/components/marketing/demo/DemoPolicyLifecycle';
+import DemoComplianceScore from '@/components/marketing/demo/DemoComplianceScore';
+import DemoCredentialTracker from '@/components/marketing/demo/DemoCredentialTracker';
+import DemoAuditTrailCard from '@/components/marketing/demo/DemoAuditTrailCard';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -139,6 +143,42 @@ export default function HealthcareUseCasePage() {
                   </p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Interactive Demo: Healthcare Compliance in Action */}
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-sm font-medium text-cyan-400 mb-4">
+                Live Platform Preview
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                See Healthcare Compliance in Action
+              </h2>
+              <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+                Interactive previews of FormaOS managing healthcare compliance workflows
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+              <DemoPolicyLifecycle glowColor="from-blue-500/15 to-cyan-500/15" />
+              <DemoCredentialTracker glowColor="from-emerald-500/15 to-cyan-500/15" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mt-6">
+              <DemoComplianceScore glowColor="from-cyan-500/15 to-blue-500/15" />
+              <DemoAuditTrailCard
+                glowColor="from-blue-500/15 to-cyan-500/15"
+                entries={[
+                  { action: 'Policy approved', user: 'Dr Sarah Chen', target: 'Clinical Governance v3.2', time: '09:14', type: 'policy' },
+                  { action: 'Evidence uploaded', user: 'James Wilson', target: 'AHPRA Cert Renewal', time: '08:42', type: 'evidence' },
+                  { action: 'Progress note signed', user: 'Dr Sarah Chen', target: 'Patient #1247', time: '08:38', type: 'task' },
+                  { action: 'Incident reported', user: 'Emma Rodriguez', target: 'Clinical #INC-089', time: '07:30', type: 'compliance' },
+                  { action: 'Training completed', user: 'Marcus Rivera', target: 'Infection Control', time: '07:00', type: 'task' },
+                  { action: 'Credential expiring', user: 'System', target: 'WWCC — James Wilson', time: '06:00', type: 'system' },
+                ]}
+              />
             </div>
           </div>
         </section>

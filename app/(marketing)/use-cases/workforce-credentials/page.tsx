@@ -13,6 +13,8 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { brand } from '@/config/brand';
+import DemoCredentialTracker from '@/components/marketing/demo/DemoCredentialTracker';
+import DemoComplianceScore from '@/components/marketing/demo/DemoComplianceScore';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -138,6 +140,30 @@ export default function WorkforceUseCasePage() {
                   </p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Interactive Demo: Credential Management in Action */}
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
+
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-sm font-medium text-emerald-400 mb-4">
+                Live Platform Preview
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                See Credential Management in Action
+              </h2>
+              <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+                Watch how FormaOS tracks and manages workforce credentials
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+              <DemoCredentialTracker />
+              <DemoComplianceScore glowColor="from-emerald-500/15 to-cyan-500/15" />
             </div>
           </div>
         </section>

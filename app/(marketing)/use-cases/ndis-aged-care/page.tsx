@@ -12,6 +12,9 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { brand } from '@/config/brand';
+import DemoPolicyLifecycle from '@/components/marketing/demo/DemoPolicyLifecycle';
+import DemoComplianceScore from '@/components/marketing/demo/DemoComplianceScore';
+import DemoIncidentFlow from '@/components/marketing/demo/DemoIncidentFlow';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -135,6 +138,31 @@ export default function NDISUseCasePage() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive Demo: NDIS Compliance in Action */}
+      <section className="relative py-24 sm:py-32">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
+
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center rounded-full border border-purple-500/20 bg-purple-500/10 px-3 py-1 text-sm font-medium text-purple-400 mb-4">
+              Live Platform Preview
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+              See NDIS Compliance in Action
+            </h2>
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+              Interactive previews of FormaOS managing NDIS and aged care compliance
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+            <DemoPolicyLifecycle glowColor="from-purple-500/15 to-pink-500/15" />
+            <DemoIncidentFlow glowColor="from-purple-500/15 to-red-500/15" />
+            <DemoComplianceScore glowColor="from-purple-500/15 to-pink-500/15" />
           </div>
         </div>
       </section>

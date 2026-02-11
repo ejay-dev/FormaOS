@@ -12,6 +12,8 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { brand } from '@/config/brand';
+import DemoIncidentFlow from '@/components/marketing/demo/DemoIncidentFlow';
+import DemoAuditTrailCard from '@/components/marketing/demo/DemoAuditTrailCard';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -169,6 +171,40 @@ export default function IncidentManagementPage() {
                   </ul>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Interactive Demo: Incident Management in Action */}
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
+
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1 text-sm font-medium text-red-400 mb-4">
+                Live Platform Preview
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                See Incident Management in Action
+              </h2>
+              <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+                Watch how FormaOS guides incidents from report to resolution
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+              <DemoIncidentFlow />
+              <DemoAuditTrailCard
+                glowColor="from-red-500/15 to-orange-500/15"
+                entries={[
+                  { action: 'Incident reported', user: 'James Wilson', target: 'WHS #INC-042', time: '09:14', type: 'compliance' },
+                  { action: 'Severity classified', user: 'Sarah Chen', target: 'SAC 3 — Moderate', time: '09:28', type: 'system' },
+                  { action: 'Investigation assigned', user: 'Sarah Chen', target: 'Marcus Rivera', time: '09:35', type: 'user' },
+                  { action: 'Witness statement', user: 'Marcus Rivera', target: 'Statement #1 uploaded', time: '10:15', type: 'evidence' },
+                  { action: 'CAPA created', user: 'Marcus Rivera', target: 'Install signage + Update SOP', time: '14:30', type: 'task' },
+                  { action: 'Investigation closed', user: 'Sarah Chen', target: 'WHS #INC-042 resolved', time: '16:00', type: 'policy' },
+                ]}
+              />
             </div>
           </div>
         </section>
