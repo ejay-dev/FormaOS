@@ -10,15 +10,6 @@ import {
   CheckCircle,
   Clock,
 } from 'lucide-react';
-import {
-  SystemBackground,
-  SectionGlow,
-  SectionHeader,
-  ScrollGradient,
-  Reveal,
-  Parallax,
-  AmbientOrbs,
-} from '@/components/motion';
 import Link from 'next/link';
 import { brand } from '@/config/brand';
 
@@ -33,11 +24,11 @@ export const metadata: Metadata = {
 
 export default function IncidentManagementPage() {
   return (
-    <ScrollGradient>
-      <main className="relative min-h-screen">
+    <div className="min-h-screen bg-[#0a0f1c] text-white overflow-hidden">
+      <main className="relative">
         {/* Hero Section */}
-        <SystemBackground variant="info" className="py-20 sm:py-28 lg:py-32">
-          <SectionGlow color="purple" intensity="medium" position="top" />
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
 
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
             <div className="text-center max-w-3xl mx-auto">
@@ -46,12 +37,12 @@ export default function IncidentManagementPage() {
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-                <span className="text-gradient-system">Professional</span>
+                <span className="bg-gradient-to-r from-red-400 to-orange-500 bg-clip-text text-transparent">Professional</span>
                 <br />
                 Incident Management
               </h1>
 
-              <p className="text-lg sm:text-xl text-muted-foreground mb-8">
+              <p className="text-lg sm:text-xl text-gray-400 mb-8">
                 Capture, investigate, and resolve workplace incidents with
                 confidence. Root cause analysis, corrective actions, regulator
                 templates by request, and complete audit trails.
@@ -60,30 +51,37 @@ export default function IncidentManagementPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href={`${appBase}/auth/signup?plan=pro`}
-                  className="inline-flex items-center justify-center rounded-md bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-red-500 to-orange-600 text-white font-semibold shadow-lg shadow-red-500/25 hover:shadow-red-500/40 transition-all"
                 >
                   Start Free Trial
                 </Link>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center justify-center rounded-md border border-input bg-background px-8 py-3 text-sm font-semibold shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-full border border-white/20 bg-white/5 text-white font-semibold hover:border-red-400/50 hover:bg-red-400/5 transition-all"
                 >
                   Book Demo
                 </Link>
               </div>
             </div>
           </div>
-        </SystemBackground>
+        </section>
 
         {/* Incident Types Section */}
-        <SystemBackground variant="info" className="py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeader
-              badge="Incident Types"
-              title="Comprehensive Incident Coverage"
-              subtitle="Manage all incident types in one system"
-              alignment="center"
-            />
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
+
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <div className="inline-flex items-center rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1 text-sm font-medium text-red-400 mb-4">
+                Incident Types
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                Comprehensive Incident Coverage
+              </h2>
+              <p className="text-lg text-gray-400">
+                Manage all incident types in one system
+              </p>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
               {[
@@ -150,19 +148,21 @@ export default function IncidentManagementPage() {
               ].map((category, idx) => (
                 <div
                   key={idx}
-                  className="rounded-lg border border-border bg-card p-6 hover:border-primary/50 transition-colors"
+                  className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-red-500/30 transition-all duration-300"
                 >
-                  <category.icon className="h-10 w-10 text-primary mb-4" />
-                  <h3 className="text-lg font-semibold mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-500/20 to-orange-500/20 border border-red-500/30 flex items-center justify-center mb-4">
+                    <category.icon className="h-6 w-6 text-red-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-4">
                     {category.title}
                   </h3>
                   <ul className="space-y-2">
                     {category.items.map((item, iIdx) => (
                       <li
                         key={iIdx}
-                        className="flex items-start gap-2 text-sm text-muted-foreground"
+                        className="flex items-start gap-2 text-sm text-gray-400"
                       >
-                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <CheckCircle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
                         {item}
                       </li>
                     ))}
@@ -171,19 +171,24 @@ export default function IncidentManagementPage() {
               ))}
             </div>
           </div>
-        </SystemBackground>
+        </section>
 
         {/* Investigation Workflow */}
-        <SystemBackground variant="info" className="py-16 sm:py-20">
-          <SectionGlow color="purple" intensity="low" position="center" />
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
 
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeader
-              badge="Investigation Process"
-              title="Structured Investigation Framework"
-              subtitle="Follow best-practice investigation methodology with built-in guidance"
-              alignment="center"
-            />
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <div className="inline-flex items-center rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1 text-sm font-medium text-red-400 mb-4">
+                Investigation Process
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                Structured Investigation Framework
+              </h2>
+              <p className="text-lg text-gray-400">
+                Follow best-practice investigation methodology with built-in guidance
+              </p>
+            </div>
 
             <div className="space-y-6 max-w-4xl mx-auto">
               {[
@@ -238,16 +243,16 @@ export default function IncidentManagementPage() {
               ].map((step, idx) => (
                 <div
                   key={idx}
-                  className="rounded-lg border border-border bg-card p-6 sm:p-8"
+                  className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 sm:p-8 hover:border-red-500/30 transition-all duration-300"
                 >
                   <div className="flex items-start justify-between gap-4 mb-3">
-                    <h3 className="text-xl font-semibold">{step.phase}</h3>
-                    <Clock className="h-6 w-6 text-primary shrink-0" />
+                    <h3 className="text-xl font-semibold text-white">{step.phase}</h3>
+                    <Clock className="h-6 w-6 text-red-400 shrink-0" />
                   </div>
-                  <p className="text-sm text-muted-foreground mb-3">
+                  <p className="text-sm text-gray-400 mb-3">
                     {step.description}
                   </p>
-                  <div className="inline-flex items-center gap-2 text-xs text-primary bg-primary/10 rounded-full px-3 py-1">
+                  <div className="inline-flex items-center gap-2 text-xs bg-red-500/10 text-red-400 rounded-full px-3 py-1">
                     <Clock className="h-3 w-3" />
                     {step.timeframe}
                   </div>
@@ -255,17 +260,24 @@ export default function IncidentManagementPage() {
               ))}
             </div>
           </div>
-        </SystemBackground>
+        </section>
 
         {/* Features Section */}
-        <SystemBackground variant="info" className="py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeader
-              badge="Features"
-              title="Professional Investigation Tools"
-              subtitle="Everything you need for thorough incident investigation"
-              alignment="center"
-            />
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
+
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <div className="inline-flex items-center rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1 text-sm font-medium text-red-400 mb-4">
+                Features
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                Professional Investigation Tools
+              </h2>
+              <p className="text-lg text-gray-400">
+                Everything you need for thorough incident investigation
+              </p>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
               {[
@@ -332,15 +344,15 @@ export default function IncidentManagementPage() {
               ].map((item, idx) => (
                 <div
                   key={idx}
-                  className="rounded-lg border border-border bg-card p-6"
+                  className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-red-500/30 transition-all duration-300"
                 >
                   <div className="flex items-start gap-4 mb-3">
-                    <CheckCircle className="h-6 w-6 text-primary shrink-0" />
+                    <CheckCircle className="h-6 w-6 text-red-400 shrink-0" />
                     <div>
-                      <h3 className="text-lg font-semibold mb-2">
+                      <h3 className="text-lg font-semibold text-white mb-2">
                         {item.feature}
                       </h3>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-gray-400">
                         {item.description}
                       </p>
                     </div>
@@ -349,19 +361,24 @@ export default function IncidentManagementPage() {
               ))}
             </div>
           </div>
-        </SystemBackground>
+        </section>
 
         {/* Regulatory Compliance */}
-        <SystemBackground variant="info" className="py-16 sm:py-20">
-          <SectionGlow color="blue" intensity="low" position="center" />
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
 
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeader
-              badge="Regulatory Compliance"
-              title="Aligned to Australian Regulators"
-              subtitle="Regulatory reference checklists; templates available by request"
-              alignment="center"
-            />
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <div className="inline-flex items-center rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1 text-sm font-medium text-red-400 mb-4">
+                Regulatory Compliance
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                Aligned to Australian Regulators
+              </h2>
+              <p className="text-lg text-gray-400">
+                Regulatory reference checklists; templates available by request
+              </p>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
@@ -422,18 +439,18 @@ export default function IncidentManagementPage() {
               ].map((reg, idx) => (
                 <div
                   key={idx}
-                  className="rounded-lg border border-border bg-card p-6"
+                  className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-red-500/30 transition-all duration-300"
                 >
-                  <h3 className="text-lg font-semibold mb-4">
+                  <h3 className="text-lg font-semibold text-white mb-4">
                     {reg.regulator}
                   </h3>
                   <ul className="space-y-2">
                     {reg.requirements.map((req, rIdx) => (
                       <li
                         key={rIdx}
-                        className="flex items-start gap-2 text-sm text-muted-foreground"
+                        className="flex items-start gap-2 text-sm text-gray-400"
                       >
-                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <CheckCircle className="h-4 w-4 text-orange-400 shrink-0 mt-0.5" />
                         {req}
                       </li>
                     ))}
@@ -442,17 +459,24 @@ export default function IncidentManagementPage() {
               ))}
             </div>
           </div>
-        </SystemBackground>
+        </section>
 
         {/* ROI Section */}
-        <SystemBackground variant="info" className="py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeader
-              badge="Impact"
-              title="Reduce Risk, Improve Response"
-              subtitle="Organizations using FormaOS for incident management"
-              alignment="center"
-            />
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
+
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <div className="inline-flex items-center rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1 text-sm font-medium text-red-400 mb-4">
+                Impact
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                Reduce Risk, Improve Response
+              </h2>
+              <p className="text-lg text-gray-400">
+                Organizations using FormaOS for incident management
+              </p>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
               {[
@@ -479,52 +503,54 @@ export default function IncidentManagementPage() {
               ].map((stat, idx) => (
                 <div
                   key={idx}
-                  className="text-center rounded-lg border border-border bg-card p-6"
+                  className="text-center backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-red-500/30 transition-all duration-300"
                 >
-                  <Shield className="h-10 w-10 text-primary mx-auto mb-4" />
-                  <div className="text-4xl font-bold text-primary mb-2">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-500/20 to-orange-500/20 border border-red-500/30 flex items-center justify-center mx-auto mb-4">
+                    <Shield className="h-6 w-6 text-red-400" />
+                  </div>
+                  <div className="text-4xl font-bold bg-gradient-to-r from-red-400 to-orange-500 bg-clip-text text-transparent mb-2">
                     {stat.metric}
                   </div>
-                  <div className="text-sm font-semibold mb-2">{stat.label}</div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-sm font-semibold text-white mb-2">{stat.label}</div>
+                  <div className="text-xs text-gray-500">
                     {stat.description}
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        </SystemBackground>
+        </section>
 
         {/* CTA Section */}
-        <SystemBackground variant="info" className="py-16 sm:py-20">
-          <SectionGlow color="purple" intensity="medium" position="bottom" />
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
 
-          <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+          <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center relative">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-white">
               Respond to incidents with{' '}
-              <span className="text-gradient-system">confidence</span>
+              <span className="bg-gradient-to-r from-red-400 to-orange-500 bg-clip-text text-transparent">confidence</span>
             </h2>
-            <p className="text-lg text-muted-foreground mb-8">
+            <p className="text-lg text-gray-400 mb-8">
               Start your 14-day free trial. No credit card required. Full
               platform access.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href={`${appBase}/auth/signup?plan=pro`}
-                className="inline-flex items-center justify-center rounded-md bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
+                className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-red-500 to-orange-600 text-white font-semibold shadow-lg shadow-red-500/25 hover:shadow-red-500/40 transition-all"
               >
                 Start Free Trial
               </Link>
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center rounded-md border border-input bg-background px-8 py-3 text-sm font-semibold shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+                className="inline-flex items-center justify-center px-8 py-4 rounded-full border border-white/20 bg-white/5 text-white font-semibold hover:border-red-400/50 hover:bg-red-400/5 transition-all"
               >
                 Schedule Demo
               </Link>
             </div>
           </div>
-        </SystemBackground>
+        </section>
       </main>
-    </ScrollGradient>
+    </div>
   );
 }

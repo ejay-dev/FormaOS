@@ -10,15 +10,6 @@ import {
   Clock,
   CheckCircle,
 } from 'lucide-react';
-import {
-  SystemBackground,
-  SectionGlow,
-  SectionHeader,
-  ScrollGradient,
-  Reveal,
-  Parallax,
-  AmbientOrbs,
-} from '@/components/motion';
 import Link from 'next/link';
 import { brand } from '@/config/brand';
 
@@ -32,11 +23,11 @@ export const metadata: Metadata = {
 
 export default function HealthcareUseCasePage() {
   return (
-    <ScrollGradient>
-      <main className="relative min-h-screen">
+    <div className="min-h-screen bg-[#0a0f1c] text-white overflow-hidden">
+      <main className="relative">
         {/* Hero Section */}
-        <SystemBackground variant="info" className="py-20 sm:py-28 lg:py-32">
-          <SectionGlow color="blue" intensity="medium" position="top" />
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-blue-600/5 via-[#0d1424] to-[#0a0f1c]" />
 
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
             <div className="text-center max-w-3xl mx-auto">
@@ -45,12 +36,14 @@ export default function HealthcareUseCasePage() {
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-                <span className="text-gradient-system">AHPRA-Aligned</span>
+                <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                  AHPRA-Aligned
+                </span>
                 <br />
                 Healthcare Compliance
               </h1>
 
-              <p className="text-lg sm:text-xl text-muted-foreground mb-8">
+              <p className="text-lg sm:text-xl text-gray-400 mb-8">
                 Complete compliance management for medical practices, allied
                 health clinics, and healthcare organizations. Meet AHPRA, RACGP,
                 and NDIS standards with aligned workflows.
@@ -59,30 +52,38 @@ export default function HealthcareUseCasePage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href={`${appBase}/auth/signup?plan=pro`}
-                  className="inline-flex items-center justify-center rounded-md bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all"
                 >
                   Start Free Trial
                 </Link>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center justify-center rounded-md border border-input bg-background px-8 py-3 text-sm font-semibold shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-full border border-white/20 bg-white/5 text-white font-semibold hover:border-blue-400/50 hover:bg-blue-400/5 transition-all"
                 >
                   Book Demo
                 </Link>
               </div>
             </div>
           </div>
-        </SystemBackground>
+        </section>
 
         {/* Key Challenges Section */}
-        <SystemBackground variant="info" className="py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeader
-              badge="Healthcare Challenges"
-              title="Built for Healthcare Compliance Reality"
-              subtitle="We understand the unique compliance challenges healthcare organizations face"
-              alignment="center"
-            />
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
+
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-400 mb-4">
+                Healthcare Challenges
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                Built for Healthcare Compliance Reality
+              </h2>
+              <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+                We understand the unique compliance challenges healthcare
+                organizations face
+              </p>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
               {[
@@ -125,32 +126,39 @@ export default function HealthcareUseCasePage() {
               ].map((challenge, idx) => (
                 <div
                   key={idx}
-                  className="rounded-lg border border-border bg-card p-6 hover:border-primary/50 transition-colors"
+                  className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-blue-500/30 transition-all duration-300"
                 >
-                  <challenge.icon className="h-10 w-10 text-primary mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30 flex items-center justify-center mb-4">
+                    <challenge.icon className="h-6 w-6 text-cyan-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">
                     {challenge.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-gray-400">
                     {challenge.description}
                   </p>
                 </div>
               ))}
             </div>
           </div>
-        </SystemBackground>
+        </section>
 
         {/* Workflow Section */}
-        <SystemBackground variant="info" className="py-16 sm:py-20">
-          <SectionGlow color="purple" intensity="low" position="center" />
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
 
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeader
-              badge="Healthcare Workflows"
-              title="Compliance Workflows Built for Healthcare"
-              subtitle="Streamlined processes for common healthcare compliance scenarios"
-              alignment="center"
-            />
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-400 mb-4">
+                Healthcare Workflows
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                Compliance Workflows Built for Healthcare
+              </h2>
+              <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+                Streamlined processes for common healthcare compliance scenarios
+              </p>
+            </div>
 
             <div className="space-y-8">
               {[
@@ -197,19 +205,19 @@ export default function HealthcareUseCasePage() {
               ].map((workflow, idx) => (
                 <div
                   key={idx}
-                  className="rounded-lg border border-border bg-card p-6 sm:p-8"
+                  className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 sm:p-8 hover:border-blue-500/30 transition-all duration-300"
                 >
-                  <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                    <CheckCircle className="h-6 w-6 text-primary" />
+                  <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                    <CheckCircle className="h-6 w-6 text-cyan-400" />
                     {workflow.title}
                   </h3>
                   <ol className="space-y-3">
                     {workflow.steps.map((step, stepIdx) => (
                       <li
                         key={stepIdx}
-                        className="flex items-start gap-3 text-sm text-muted-foreground"
+                        className="flex items-start gap-3 text-sm text-gray-400"
                       >
-                        <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                        <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cyan-500/15 text-xs font-semibold text-cyan-400">
                           {stepIdx + 1}
                         </span>
                         {step}
@@ -220,17 +228,25 @@ export default function HealthcareUseCasePage() {
               ))}
             </div>
           </div>
-        </SystemBackground>
+        </section>
 
         {/* Standards & Frameworks */}
-        <SystemBackground variant="info" className="py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeader
-              badge="Compliance Standards"
-              title="Built for Australian Healthcare Standards"
-              subtitle="Framework packs aligned with regulatory requirements (configurable)"
-              alignment="center"
-            />
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
+
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-400 mb-4">
+                Compliance Standards
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                Built for Australian Healthcare Standards
+              </h2>
+              <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+                Framework packs aligned with regulatory requirements
+                (configurable)
+              </p>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
@@ -303,21 +319,21 @@ export default function HealthcareUseCasePage() {
               ].map((standard, idx) => (
                 <div
                   key={idx}
-                  className="rounded-lg border border-border bg-card p-6"
+                  className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-blue-500/30 transition-all duration-300"
                 >
-                  <h3 className="text-lg font-semibold mb-2">
+                  <h3 className="text-lg font-semibold text-white mb-2">
                     {standard.standard}
                   </h3>
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <p className="text-sm text-gray-400 mb-4">
                     {standard.description}
                   </p>
                   <ul className="space-y-2">
                     {standard.features.map((feature, fIdx) => (
                       <li
                         key={fIdx}
-                        className="flex items-start gap-2 text-sm text-muted-foreground"
+                        className="flex items-start gap-2 text-sm text-gray-400"
                       >
-                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <CheckCircle className="h-4 w-4 text-cyan-400 shrink-0 mt-0.5" />
                         {feature}
                       </li>
                     ))}
@@ -326,19 +342,25 @@ export default function HealthcareUseCasePage() {
               ))}
             </div>
           </div>
-        </SystemBackground>
+        </section>
 
         {/* ROI Section */}
-        <SystemBackground variant="info" className="py-16 sm:py-20">
-          <SectionGlow color="blue" intensity="medium" position="bottom" />
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
 
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeader
-              badge="ROI & Impact"
-              title="Time Saved, Risk Reduced"
-              subtitle="Healthcare organizations using FormaOS report significant operational improvements"
-              alignment="center"
-            />
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-400 mb-4">
+                ROI & Impact
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                Time Saved, Risk Reduced
+              </h2>
+              <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+                Healthcare organizations using FormaOS report significant
+                operational improvements
+              </p>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
               {[
@@ -365,50 +387,58 @@ export default function HealthcareUseCasePage() {
               ].map((stat, idx) => (
                 <div
                   key={idx}
-                  className="text-center rounded-lg border border-border bg-card p-6"
+                  className="text-center backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-blue-500/30 transition-all duration-300"
                 >
-                  <Clock className="h-10 w-10 text-primary mx-auto mb-4" />
-                  <div className="text-4xl font-bold text-primary mb-2">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30 flex items-center justify-center mx-auto mb-4">
+                    <Clock className="h-6 w-6 text-cyan-400" />
+                  </div>
+                  <div className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-2">
                     {stat.metric}
                   </div>
-                  <div className="text-sm font-semibold mb-2">{stat.label}</div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-sm font-semibold text-white mb-2">
+                    {stat.label}
+                  </div>
+                  <div className="text-xs text-gray-500">
                     {stat.description}
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        </SystemBackground>
+        </section>
 
         {/* CTA Section */}
-        <SystemBackground variant="info" className="py-16 sm:py-20">
-          <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
+
+          <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center relative">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
               Ready for your next{' '}
-              <span className="text-gradient-system">AHPRA audit?</span>
+              <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                AHPRA audit?
+              </span>
             </h2>
-            <p className="text-lg text-muted-foreground mb-8">
+            <p className="text-lg text-gray-400 mb-8">
               Start your 14-day free trial. No credit card required. Full
               platform access.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href={`${appBase}/auth/signup?plan=pro`}
-                className="inline-flex items-center justify-center rounded-md bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
+                className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all"
               >
                 Start Free Trial
               </Link>
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center rounded-md border border-input bg-background px-8 py-3 text-sm font-semibold shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+                className="inline-flex items-center justify-center px-8 py-4 rounded-full border border-white/20 bg-white/5 text-white font-semibold hover:border-blue-400/50 hover:bg-blue-400/5 transition-all"
               >
                 Schedule Demo
               </Link>
             </div>
           </div>
-        </SystemBackground>
+        </section>
       </main>
-    </ScrollGradient>
+    </div>
   );
 }

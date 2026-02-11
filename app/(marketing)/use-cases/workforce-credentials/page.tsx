@@ -9,21 +9,12 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
+  ArrowRight,
 } from 'lucide-react';
-import {
-  SystemBackground,
-  SectionGlow,
-  SectionHeader,
-  ScrollGradient,
-  Reveal,
-  Parallax,
-  AmbientOrbs,
-} from '@/components/motion';
 import Link from 'next/link';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
-
 
 export const metadata: Metadata = {
   title: 'Workforce Credential Management | FormaOS',
@@ -33,24 +24,27 @@ export const metadata: Metadata = {
 
 export default function WorkforceUseCasePage() {
   return (
-    <ScrollGradient>
-      <main className="relative min-h-screen">
+    <div className="min-h-screen bg-[#0a0f1c] text-white overflow-hidden">
+      <main className="relative">
         {/* Hero Section */}
-        <SystemBackground variant="info" className="py-20 sm:py-28 lg:py-32">
-          <SectionGlow color="blue" intensity="medium" position="top" />
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-emerald-600/5 via-[#0d1424] to-[#0a0f1c]" />
 
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
             <div className="text-center max-w-3xl mx-auto">
-              <div className="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-400 mb-6">
+              <div className="inline-flex items-center rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-sm font-medium text-emerald-400 mb-6">
                 Workforce Management
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-                <span className="text-gradient-system">Stay Ahead</span>
-                <br />A Certificate Expiry
+                <span className="bg-gradient-to-r from-emerald-400 to-cyan-500 bg-clip-text text-transparent">
+                  Stay Ahead
+                </span>
+                <br />
+                A Certificate Expiry
               </h1>
 
-              <p className="text-lg sm:text-xl text-muted-foreground mb-8">
+              <p className="text-lg sm:text-xl text-gray-400 mb-8">
                 Credential tracking and workforce compliance management.
                 Professional registrations, certifications, training records,
                 and competency assessments in one place.
@@ -59,30 +53,37 @@ export default function WorkforceUseCasePage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href={`${appBase}/auth/signup?plan=pro`}
-                  className="inline-flex items-center justify-center rounded-md bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-600 text-white font-semibold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all"
                 >
                   Start Free Trial
                 </Link>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center justify-center rounded-md border border-input bg-background px-8 py-3 text-sm font-semibold shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-full border border-white/20 bg-white/5 text-white font-semibold hover:border-emerald-400/50 hover:bg-emerald-400/5 transition-all"
                 >
                   Book Demo
                 </Link>
               </div>
             </div>
           </div>
-        </SystemBackground>
+        </section>
 
         {/* Pain Points Section */}
-        <SystemBackground variant="info" className="py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeader
-              badge="The Challenge"
-              title="Workforce Compliance Complexity"
-              subtitle="Organizations managing credentials face constant challenges"
-              alignment="center"
-            />
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
+
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1 text-sm font-medium text-red-400 mb-4">
+                The Challenge
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                Workforce Compliance Complexity
+              </h2>
+              <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+                Organizations managing credentials face constant challenges
+              </p>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
               {[
@@ -90,7 +91,7 @@ export default function WorkforceUseCasePage() {
                   icon: AlertCircle,
                   title: 'Expired Credentials',
                   description:
-                    'Staff working with expired registrations, certificates, or licenses - creating legal and insurance liability.',
+                    'Staff working with expired registrations, certificates, or licenses — creating legal and insurance liability.',
                   risk: 'HIGH RISK',
                 },
                 {
@@ -104,7 +105,7 @@ export default function WorkforceUseCasePage() {
                   icon: Calendar,
                   title: 'Manual Tracking',
                   description:
-                    'Admin staff manually checking expiry dates, sending reminder emails, chasing staff for renewals - time-consuming and error-prone.',
+                    'Admin staff manually checking expiry dates, sending reminder emails, chasing staff for renewals — time-consuming and error-prone.',
                   risk: 'TIME DRAIN',
                 },
                 {
@@ -117,39 +118,46 @@ export default function WorkforceUseCasePage() {
               ].map((pain, idx) => (
                 <div
                   key={idx}
-                  className="rounded-lg border border-destructive/50 bg-destructive/5 p-6"
+                  className="backdrop-blur-xl bg-gradient-to-br from-red-500/[0.08] to-red-500/[0.02] rounded-2xl border border-red-500/20 p-6 hover:border-red-500/40 transition-all duration-300"
                 >
                   <div className="flex items-start gap-4 mb-3">
-                    <pain.icon className="h-10 w-10 text-destructive shrink-0" />
+                    <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0">
+                      <pain.icon className="h-5 w-5 text-red-400" />
+                    </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold mb-1">
+                      <h3 className="text-lg font-semibold text-white mb-1">
                         {pain.title}
                       </h3>
-                      <span className="inline-block text-xs font-semibold text-destructive bg-destructive/10 rounded-full px-2 py-0.5 mb-2">
+                      <span className="inline-block text-xs font-semibold text-red-400 bg-red-500/10 border border-red-500/20 rounded-full px-2 py-0.5">
                         {pain.risk}
                       </span>
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-gray-400 leading-relaxed">
                     {pain.description}
                   </p>
                 </div>
               ))}
             </div>
           </div>
-        </SystemBackground>
+        </section>
 
         {/* Solution Section */}
-        <SystemBackground variant="info" className="py-16 sm:py-20">
-          <SectionGlow color="purple" intensity="low" position="center" />
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
 
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeader
-              badge="The Solution"
-              title="Credential Management"
-              subtitle="Tracking, reminders, and complete audit trails"
-              alignment="center"
-            />
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-sm font-medium text-emerald-400 mb-4">
+                The Solution
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                Credential Management
+              </h2>
+              <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+                Tracking, reminders, and complete audit trails
+              </p>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
               {[
@@ -186,19 +194,21 @@ export default function WorkforceUseCasePage() {
               ].map((category, idx) => (
                 <div
                   key={idx}
-                  className="rounded-lg border border-border bg-card p-6"
+                  className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-emerald-500/30 transition-all duration-300"
                 >
-                  <category.icon className="h-10 w-10 text-primary mb-4" />
-                  <h3 className="text-lg font-semibold mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4">
+                    <category.icon className="h-5 w-5 text-emerald-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-4">
                     {category.title}
                   </h3>
                   <ul className="space-y-2">
                     {category.items.map((item, iIdx) => (
                       <li
                         key={iIdx}
-                        className="flex items-start gap-2 text-sm text-muted-foreground"
+                        className="flex items-start gap-2 text-sm text-gray-400"
                       >
-                        <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <CheckCircle className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
                         {item}
                       </li>
                     ))}
@@ -207,19 +217,26 @@ export default function WorkforceUseCasePage() {
               ))}
             </div>
           </div>
-        </SystemBackground>
+        </section>
 
         {/* Automation Features */}
-        <SystemBackground variant="info" className="py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeader
-              badge="Automation"
-              title="Credential Workflow Support"
-              subtitle="Configurable reminders and review workflows (by request)"
-              alignment="center"
-            />
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
 
-            <div className="space-y-6 max-w-4xl mx-auto">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-sm font-medium text-cyan-400 mb-4">
+                Automation
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                Credential Workflow Support
+              </h2>
+              <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+                Configurable reminders and review workflows (by request)
+              </p>
+            </div>
+
+            <div className="space-y-4 max-w-4xl mx-auto">
               {[
                 {
                   feature: 'Multi-Stage Expiry Reminders',
@@ -260,16 +277,18 @@ export default function WorkforceUseCasePage() {
               ].map((feature, idx) => (
                 <div
                   key={idx}
-                  className="rounded-lg border border-border bg-card p-6 sm:p-8"
+                  className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 sm:p-8 hover:border-cyan-500/30 transition-all duration-300"
                 >
                   <div className="flex items-start justify-between gap-4 mb-3">
-                    <h3 className="text-xl font-semibold">{feature.feature}</h3>
-                    <CheckCircle className="h-6 w-6 text-primary shrink-0" />
+                    <h3 className="text-xl font-semibold text-white">{feature.feature}</h3>
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                      <CheckCircle className="h-4 w-4 text-emerald-400" />
+                    </div>
                   </div>
-                  <p className="text-sm text-muted-foreground mb-3">
+                  <p className="text-sm text-gray-400 mb-3 leading-relaxed">
                     {feature.description}
                   </p>
-                  <div className="inline-flex items-center gap-2 text-xs font-semibold text-primary bg-primary/10 rounded-full px-3 py-1">
+                  <div className="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-3 py-1">
                     <TrendingUp className="h-3 w-3" />
                     {feature.benefit}
                   </div>
@@ -277,19 +296,24 @@ export default function WorkforceUseCasePage() {
               ))}
             </div>
           </div>
-        </SystemBackground>
+        </section>
 
         {/* Workflow Example */}
-        <SystemBackground variant="info" className="py-16 sm:py-20">
-          <SectionGlow color="blue" intensity="low" position="center" />
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
 
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeader
-              badge="Example Workflow"
-              title="AHPRA Registration Renewal"
-              subtitle="A configurable review flow for professional registrations"
-              alignment="center"
-            />
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-sm font-medium text-emerald-400 mb-4">
+                Example Workflow
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                AHPRA Registration Renewal
+              </h2>
+              <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+                A configurable review flow for professional registrations
+              </p>
+            </div>
 
             <div className="max-w-3xl mx-auto">
               <div className="space-y-4">
@@ -322,16 +346,16 @@ export default function WorkforceUseCasePage() {
                 ].map((item, idx) => (
                   <div
                     key={idx}
-                    className="flex items-start gap-4 rounded-lg border border-border bg-card p-6"
+                    className="flex items-start gap-4 backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-emerald-500/30 transition-all duration-300"
                   >
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 text-sm font-bold text-emerald-400">
                       {idx + 1}
                     </div>
                     <div>
-                      <div className="text-sm font-semibold text-primary mb-1">
+                      <div className="text-sm font-semibold text-emerald-400 mb-1">
                         {item.step}
                       </div>
-                      <div className="text-sm text-muted-foreground">
+                      <div className="text-sm text-gray-400">
                         {item.action}
                       </div>
                     </div>
@@ -340,17 +364,24 @@ export default function WorkforceUseCasePage() {
               </div>
             </div>
           </div>
-        </SystemBackground>
+        </section>
 
         {/* Industries Section */}
-        <SystemBackground variant="info" className="py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeader
-              badge="Industries"
-              title="Used Across Regulated Industries"
-              subtitle="Any organization managing workforce credentials"
-              alignment="center"
-            />
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
+
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-sm font-medium text-emerald-400 mb-4">
+                Industries
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                Used Across Regulated Industries
+              </h2>
+              <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+                Any organization managing workforce credentials
+              </p>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
@@ -429,18 +460,18 @@ export default function WorkforceUseCasePage() {
               ].map((sector, idx) => (
                 <div
                   key={idx}
-                  className="rounded-lg border border-border bg-card p-6"
+                  className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-emerald-500/30 transition-all duration-300"
                 >
-                  <h3 className="text-lg font-semibold mb-4">
+                  <h3 className="text-lg font-semibold text-white mb-4">
                     {sector.industry}
                   </h3>
                   <ul className="space-y-2">
                     {sector.examples.map((example, eIdx) => (
                       <li
                         key={eIdx}
-                        className="text-sm text-muted-foreground flex items-start gap-2"
+                        className="text-sm text-gray-400 flex items-start gap-2"
                       >
-                        <CheckCircle className="h-3 w-3 text-primary shrink-0 mt-1" />
+                        <CheckCircle className="h-3 w-3 text-emerald-400 shrink-0 mt-1" />
                         {example}
                       </li>
                     ))}
@@ -449,19 +480,24 @@ export default function WorkforceUseCasePage() {
               ))}
             </div>
           </div>
-        </SystemBackground>
+        </section>
 
         {/* ROI Section */}
-        <SystemBackground variant="info" className="py-16 sm:py-20">
-          <SectionGlow color="purple" intensity="medium" position="bottom" />
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
 
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeader
-              badge="ROI"
-              title="Time Saved, Risk Reduced"
-              subtitle="Organizations using FormaOS for credential management"
-              alignment="center"
-            />
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-sm font-medium text-emerald-400 mb-4">
+                ROI
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                Time Saved, Risk Reduced
+              </h2>
+              <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+                Organizations using FormaOS for credential management
+              </p>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
               {[
@@ -488,50 +524,59 @@ export default function WorkforceUseCasePage() {
               ].map((stat, idx) => (
                 <div
                   key={idx}
-                  className="text-center rounded-lg border border-border bg-card p-6"
+                  className="text-center backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-emerald-500/30 transition-all duration-300"
                 >
-                  <Clock className="h-10 w-10 text-primary mx-auto mb-4" />
-                  <div className="text-4xl font-bold text-primary mb-2">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-4">
+                    <Clock className="h-5 w-5 text-emerald-400" />
+                  </div>
+                  <div className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-500 bg-clip-text text-transparent mb-2">
                     {stat.metric}
                   </div>
-                  <div className="text-sm font-semibold mb-2">{stat.label}</div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-sm font-semibold text-white mb-2">{stat.label}</div>
+                  <div className="text-xs text-gray-500">
                     {stat.description}
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        </SystemBackground>
+        </section>
 
         {/* CTA Section */}
-        <SystemBackground variant="info" className="py-16 sm:py-20">
-          <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-              Stop chasing{' '}
-              <span className="text-gradient-system">expired credentials</span>
-            </h2>
-            <p className="text-lg text-muted-foreground mb-8">
-              Start your 14-day free trial. No credit card required. Full
-              platform access.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href={`${appBase}/auth/signup?plan=pro`}
-                className="inline-flex items-center justify-center rounded-md bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
-              >
-                Start Free Trial
-              </Link>
-              <Link
-                href="/contact"
-                className="inline-flex items-center justify-center rounded-md border border-input bg-background px-8 py-3 text-sm font-semibold shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors"
-              >
-                Schedule Demo
-              </Link>
+        <section className="relative py-24 sm:py-32">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
+
+          <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 relative">
+            <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-10 text-center">
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+                Stop chasing{' '}
+                <span className="bg-gradient-to-r from-emerald-400 to-cyan-500 bg-clip-text text-transparent">
+                  expired credentials
+                </span>
+              </h2>
+              <p className="text-lg text-gray-400 mb-8">
+                Start your 14-day free trial. No credit card required. Full
+                platform access.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  href={`${appBase}/auth/signup?plan=pro`}
+                  className="group inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-600 text-white font-semibold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all gap-2"
+                >
+                  Start Free Trial
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center justify-center px-8 py-4 rounded-full border border-white/20 bg-white/5 text-white font-semibold hover:border-emerald-400/50 hover:bg-emerald-400/5 transition-all"
+                >
+                  Schedule Demo
+                </Link>
+              </div>
             </div>
           </div>
-        </SystemBackground>
+        </section>
       </main>
-    </ScrollGradient>
+    </div>
   );
 }
