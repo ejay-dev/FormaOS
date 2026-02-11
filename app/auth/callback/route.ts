@@ -370,6 +370,7 @@ export async function GET(request: Request) {
       .from('org_members')
       .select('organization_id, role')
       .eq('user_id', user.id)
+      .limit(1)
       .maybeSingle();
 
     if (founderMembership?.organization_id) {
@@ -442,6 +443,7 @@ export async function GET(request: Request) {
     .from('org_members')
     .select('organization_id, role')
     .eq('user_id', user.id)
+    .limit(1)
     .maybeSingle();
 
   if (membershipError) {

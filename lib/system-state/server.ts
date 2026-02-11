@@ -207,6 +207,28 @@ export interface MembershipData {
   industry: string | null;
 }
 
+function pickPrimaryMembership<
+  T extends {
+    role?: string | null;
+    organization_id?: string | null;
+  },
+>(memberships: T[]): T | null {
+  if (!memberships.length) return null;
+  const weight = (role?: string | null) => {
+    const normalized = (role ?? '').toLowerCase();
+    if (normalized === 'owner') return 3;
+    if (normalized === 'admin') return 2;
+    return 1;
+  };
+  return (
+    memberships
+      .slice()
+      .sort((a, b) => weight(b.role) - weight(a.role))
+      .at(0) ??
+    memberships[0]
+  );
+}
+
 export async function getMembershipData(): Promise<MembershipData | null> {
   const supabase = await createSupabaseServerClient();
 
@@ -215,7 +237,7 @@ export async function getMembershipData(): Promise<MembershipData | null> {
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const { data: membership, error } = await supabase
+  const { data: membershipRows, error } = await supabase
     .from('org_members')
     .select(
       `
@@ -229,7 +251,9 @@ export async function getMembershipData(): Promise<MembershipData | null> {
     `,
     )
     .eq('user_id', user.id)
-    .maybeSingle();
+    .limit(50);
+
+  const membership = pickPrimaryMembership((membershipRows ?? []) as any[]);
 
   if (error || !membership?.organization_id) {
     return null;

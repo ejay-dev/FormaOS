@@ -27,6 +27,27 @@ type EnsureUserInput = {
   planKey?: string | null;
 };
 
+function pickPrimaryMembership<
+  T extends { role?: string | null; organization_id?: string | null },
+>(
+  memberships: T[],
+): T | null {
+  if (!memberships.length) return null;
+  const weight = (role?: string | null) => {
+    const normalized = (role ?? '').toLowerCase();
+    if (normalized === 'owner') return 3;
+    if (normalized === 'admin') return 2;
+    return 1;
+  };
+  return (
+    memberships
+      .slice()
+      .sort((a, b) => weight(b.role) - weight(a.role))
+      .at(0) ??
+    memberships[0]
+  );
+}
+
 async function ensureLegacyOrg(
   admin: ReturnType<typeof createSupabaseAdminClient>,
   orgId: string,
@@ -173,11 +194,13 @@ export async function ensureUserProvisioning(
   const admin = createSupabaseAdminClient();
   const nowIso = new Date().toISOString();
 
-  const { data: membership } = await admin
+  const { data: memberships } = await admin
     .from('org_members')
     .select('organization_id, role')
     .eq('user_id', input.userId)
-    .maybeSingle();
+    .limit(5);
+
+  const membership = pickPrimaryMembership(memberships ?? []);
 
   let orgId = membership?.organization_id ?? null;
   let resolvedPlan = resolvePlanKey(input.planKey ?? null) ?? DEFAULT_PLAN;

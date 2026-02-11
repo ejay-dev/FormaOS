@@ -45,6 +45,27 @@ export type WorkspaceRecoveryResult = {
   actions: string[];
 };
 
+function pickPrimaryMembership<
+  T extends { role?: string | null; organization_id?: string | null },
+>(
+  memberships: T[],
+): T | null {
+  if (!memberships.length) return null;
+  const weight = (role?: string | null) => {
+    const normalized = (role ?? '').toLowerCase();
+    if (normalized === 'owner') return 3;
+    if (normalized === 'admin') return 2;
+    return 1;
+  };
+  return (
+    memberships
+      .slice()
+      .sort((a, b) => weight(b.role) - weight(a.role))
+      .at(0) ??
+    memberships[0]
+  );
+}
+
 function clampStep(step: number) {
   if (!Number.isFinite(step)) return 1;
   return Math.min(Math.max(Math.trunc(step), 1), TOTAL_ONBOARDING_STEPS);
@@ -106,11 +127,21 @@ export async function recoverUserWorkspace({
     });
   }
 
-  const { data: membershipData, error: membershipError } = await admin
+  const { data: membershipRows, error: membershipError } = await admin
     .from('org_members')
     .select('organization_id, role')
     .eq('user_id', userId)
-    .maybeSingle();
+    .limit(50);
+
+  if ((membershipRows?.length ?? 0) > 1) {
+    console.warn('[BOOTSTRAP_RECOVERY] multiple memberships detected', {
+      source,
+      userId,
+      count: membershipRows?.length ?? 0,
+    });
+  }
+
+  const membershipData = pickPrimaryMembership(membershipRows ?? []);
 
   if (membershipError || !membershipData?.organization_id) {
     missingRecords.push('org_members');

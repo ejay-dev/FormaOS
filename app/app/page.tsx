@@ -2,6 +2,8 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { DashboardWrapper } from './dashboard-wrapper';
 import { type DatabaseRole } from '@/lib/roles';
 import { ShieldCheck } from 'lucide-react';
+import { redirect } from 'next/navigation';
+import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
 
 /**
  * =========================================================
@@ -71,6 +73,17 @@ export default async function DashboardPage() {
     );
   }
 
+  // Extra guard for partially provisioned users:
+  // if recovery indicates onboarding/integrity work is needed, redirect before rendering dashboard.
+  const recovery = await recoverUserWorkspace({
+    userId: user.id,
+    userEmail: user.email ?? null,
+    source: 'app-page',
+  });
+  if (recovery.ok && recovery.nextPath !== '/app') {
+    redirect(recovery.nextPath);
+  }
+
   // Fetch user's organization membership, role, and industry
   let membership: MembershipRow | null = null;
   let industry: string | null = null;
@@ -80,6 +93,7 @@ export default async function DashboardPage() {
       .from('org_members')
       .select('organization_id, role, organizations(name, industry)')
       .eq('user_id', user.id)
+      .limit(1)
       .maybeSingle();
 
     membership = (data as any) || null;

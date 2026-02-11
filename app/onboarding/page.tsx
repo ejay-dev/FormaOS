@@ -96,6 +96,7 @@ async function getOrgContext() {
       'organization_id, role, organizations(name, plan_key, industry, team_size, frameworks, onboarding_completed, created_by)',
     )
     .eq('user_id', user.id)
+    .limit(1)
     .maybeSingle();
 
   if (!membership?.organization_id) {
@@ -114,6 +115,7 @@ async function getOrgContext() {
         'organization_id, role, organizations(name, plan_key, industry, team_size, frameworks, onboarding_completed, created_by)',
       )
       .eq('user_id', user.id)
+      .limit(1)
       .maybeSingle();
 
     membership = recoveredMembership;
