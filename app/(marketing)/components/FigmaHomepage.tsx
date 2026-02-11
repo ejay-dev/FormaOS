@@ -35,7 +35,6 @@ import {
   Eye,
   Key,
   History,
-  RotateCcw,
   Sparkles,
   ChevronDown,
   AlertCircle,
@@ -57,68 +56,22 @@ const CinematicField = dynamic(() => import('./motion/CinematicField'), {
   loading: () => null,
 });
 import { brand } from '@/config/brand';
-import { ScrollShowcase } from '@/components/marketing/ScrollShowcase';
-import type { ScrollScene } from '@/components/marketing/ScrollShowcase';
+
+// Interactive demo components (lazy-loaded, client-only)
+const InteractiveDemo = dynamic(
+  () => import('@/components/marketing/demo/InteractiveDemo'),
+  { ssr: false, loading: () => null }
+);
+const EvidenceShowcase = dynamic(
+  () => import('@/components/marketing/demo/EvidenceShowcase'),
+  { ssr: false, loading: () => null }
+);
+const TaskShowcase = dynamic(
+  () => import('@/components/marketing/demo/TaskShowcase'),
+  { ssr: false, loading: () => null }
+);
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
-
-// =============================================================================
-// SCROLL SHOWCASE SCENE DATA
-// =============================================================================
-
-const showcaseScenes: ScrollScene[] = [
-  {
-    id: 'dashboard',
-    title: 'Command Center Overview',
-    description:
-      'Your compliance posture at a glance. Real-time scores, active tasks, and framework health — all in one unified dashboard.',
-    media: {
-      type: 'image',
-      src: '/marketing/screenshots/dashboard.png',
-      alt: 'FormaOS Dashboard showing compliance overview',
-    },
-    accentColor: 'from-cyan-400 to-blue-500',
-    features: [
-      'Real-time compliance scoring',
-      'Framework health indicators',
-      'Priority task queue',
-    ],
-  },
-  {
-    id: 'tasks',
-    title: 'Task Orchestration',
-    description:
-      'Every control has an owner. Every deadline has accountability. The OS ensures nothing falls through the cracks.',
-    media: {
-      type: 'image',
-      src: '/marketing/screenshots/tasks.png',
-      alt: 'FormaOS Task management interface',
-    },
-    accentColor: 'from-blue-500 to-purple-500',
-    features: [
-      'Automated task assignment',
-      'Deadline tracking with escalation',
-      'Immutable completion logs',
-    ],
-  },
-  {
-    id: 'vault',
-    title: 'Evidence Vault',
-    description:
-      'Audit-ready evidence, always. Every document timestamped, every chain of custody preserved, every export defensible.',
-    media: {
-      type: 'image',
-      src: '/marketing/screenshots/vault.png',
-      alt: 'FormaOS Evidence Vault with document management',
-    },
-    accentColor: 'from-purple-500 to-pink-500',
-    features: [
-      'Immutable audit trail',
-      'Chain-of-custody tracking',
-      'One-click regulatory export',
-    ],
-  },
-];
 
 // ============================================
 // HERO ENHANCEMENT COMPONENTS
@@ -951,116 +904,6 @@ function CapabilitiesGrid() {
   );
 }
 
-function VersionControlHighlight() {
-  const features = [
-    {
-      icon: History,
-      title: 'Audit Trail History',
-      description:
-        'Every evidence action is logged with timestamps and ownership.',
-    },
-    {
-      icon: Shield,
-      title: 'Integrity Context',
-      description:
-        'Audit logs preserve what changed and when, supporting defensible evidence.',
-    },
-    {
-      icon: RotateCcw,
-      title: 'Versioning (By Request)',
-      description:
-        'Optional versioning and rollback can be enabled for enterprise deployments.',
-    },
-  ];
-
-  return (
-    <section className="relative py-24 sm:py-28 lg:py-32 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421] overflow-hidden">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.4, 0.6, 0.4],
-          }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </div>
-
-      <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs sm:text-sm font-medium mb-4 sm:mb-6"
-          >
-            <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-cyan-400 animate-pulse" />
-            Available By Request
-          </motion.div>
-
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
-            Evidence Integrity &amp; Change History
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
-              {' '}
-              For audit defensibility
-            </span>
-          </h2>
-          <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Audit logs capture evidence activity today. Optional versioning and
-            rollback are available by request.
-          </p>
-        </motion.div>
-
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-          {features.map((feature, index) => {
-            const Icon = feature.icon;
-            return (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ scale: 1.03, y: -4 }}
-                className="relative p-6 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 border border-white/5 hover:border-cyan-500/30 transition-all backdrop-blur-sm"
-              >
-                <div className="inline-flex p-3 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 mb-4">
-                  <Icon className="w-6 h-6 text-cyan-300" />
-                </div>
-                <h3 className="text-lg sm:text-xl font-semibold mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-sm sm:text-base text-gray-400 leading-relaxed">
-                  {feature.description}
-                </p>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-8 p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-center"
-        >
-          <p className="text-xs sm:text-sm text-cyan-200">
-            Optional enterprise enhancements are available on request.
-          </p>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
 // ============================================
 // INDUSTRY SOLUTIONS - Built for High-Accountability Industries
 // ============================================
@@ -1527,103 +1370,6 @@ function Industries() {
             <ArrowRight className="w-5 h-5" />
           </Link>
         </motion.div>
-      </div>
-    </section>
-  );
-}
-
-function HealthcareHighlight() {
-  const categories = [
-    {
-      title: 'Patient Management',
-      features: [
-        'Patient management with automatic audit evidence generation',
-        'Progress notes become compliance proof with supervisor sign-off workflows',
-        'Care episode tracking and clinical governance workflows',
-      ],
-    },
-    {
-      title: 'NDIS & Aged Care',
-      features: [
-        'NDIS Practice Standards 1-8 controls pre-configured',
-        'Participant records with evidence-linked tracking',
-        'Worker screening and incident workflows aligned to NDIS requirements',
-      ],
-    },
-  ];
-
-  return (
-    <section className="relative py-16 sm:py-24 lg:py-32 bg-[#0a0f1c] overflow-hidden">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-r from-rose-500/10 to-pink-500/10 rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.08, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-12 sm:mb-16"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs sm:text-sm font-medium mb-4 sm:mb-6"
-          >
-            <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-rose-300 animate-pulse" />
-            Healthcare &amp; NDIS
-          </motion.div>
-
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
-            Built for
-            <span className="bg-gradient-to-r from-rose-300 via-pink-300 to-cyan-400 bg-clip-text text-transparent">
-              {' '}
-              Regulated Healthcare
-            </span>
-          </h2>
-          <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            Patient management, incident reporting, and clinical governance
-            workflows aligned to HIPAA and NDIS requirements.
-          </p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {categories.map((category, index) => (
-            <motion.div
-              key={category.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="p-6 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 border border-white/5 backdrop-blur-sm"
-            >
-              <h3 className="text-lg sm:text-xl font-semibold mb-4">
-                {category.title}
-              </h3>
-              <ul className="space-y-3">
-                {category.features.map((feature) => (
-                  <li
-                    key={feature}
-                    className="flex items-start gap-2 text-sm sm:text-base text-gray-400"
-                  >
-                    <CheckCircle className="w-4 h-4 text-rose-300 mt-0.5" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
-        </div>
       </div>
     </section>
   );
@@ -2779,17 +2525,12 @@ export default function FormaOSHomepage() {
           <div className="relative z-10">
             <Hero />
             <ValueProposition />
-            <ScrollShowcase
-              scenes={showcaseScenes}
-              badge="Product Tour"
-              sectionTitle="See FormaOS in Action"
-              sectionSubtitle="Scroll through the key capabilities that make compliance operational, not aspirational."
-            />
+            <InteractiveDemo />
             <ScrollStory />
             <CapabilitiesGrid />
-            <VersionControlHighlight />
+            <EvidenceShowcase />
             <Industries />
-            <HealthcareHighlight />
+            <TaskShowcase />
             <Security />
             <CTASection />
             <TrustSection />
