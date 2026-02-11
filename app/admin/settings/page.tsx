@@ -1,7 +1,11 @@
 import { Settings, CheckCircle, AlertCircle } from "lucide-react";
 
 export default function AdminSettingsPage() {
-  const founderEmail = process.env.NEXT_PUBLIC_FOUNDER_EMAIL || "ejazhussaini313@gmail.com";
+  const founderEmails = (process.env.FOUNDER_EMAILS ?? "ejazhussaini313@gmail.com")
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+  const founderPrimary = founderEmails[0] ?? "ejazhussaini313@gmail.com";
   
   return (
     <div className="space-y-6">
@@ -24,7 +28,7 @@ export default function AdminSettingsPage() {
               <CheckCircle className="h-5 w-5 text-emerald-400" />
               <div>
                 <p className="text-sm font-medium text-slate-100">Founder Access</p>
-                <p className="text-xs text-slate-500">{founderEmail}</p>
+                <p className="text-xs text-slate-500">{founderPrimary}</p>
               </div>
             </div>
             <span className="text-xs bg-emerald-500/10 text-emerald-300 px-2 py-1 rounded">
@@ -70,12 +74,12 @@ export default function AdminSettingsPage() {
         <div className="space-y-3 text-sm">
           <div className="p-4 rounded-lg border border-slate-800/50 bg-slate-800/20 font-mono text-xs">
             <p className="text-slate-400">
-              NEXT_PUBLIC_FOUNDER_EMAIL=
-              <span className="text-slate-300">{founderEmail}</span>
+              FOUNDER_EMAILS=
+              <span className="text-slate-300">{founderEmails.join(", ")}</span>
             </p>
           </div>
           <p className="text-slate-500">
-            Configure the founder email address for admin console access.
+            Founder access is controlled by server-side <code className="bg-slate-800 px-1.5 py-0.5 rounded text-xs">FOUNDER_EMAILS</code>.
           </p>
         </div>
       </div>

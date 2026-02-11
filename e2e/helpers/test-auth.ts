@@ -224,6 +224,7 @@ async function createTemporaryTestUser(): Promise<TestUser> {
       industry: 'healthcare',
       team_size: '1-10',
       plan_key: 'pro',
+      frameworks: ['soc2'],
       onboarding_completed: true, // Skip onboarding for tests
     })
     .select('id')
@@ -264,6 +265,36 @@ async function createTemporaryTestUser(): Promise<TestUser> {
     await adminClient.from('organizations').delete().eq('id', orgData.id);
     await adminClient.auth.admin.deleteUser(userData.user.id);
     throw new Error(`Failed to add user to org: ${memberError.message}`);
+  }
+
+  // Ensure onboarding framework prerequisites are present so auth callback
+  // never routes this test user back into onboarding step loops.
+  try {
+    await adminClient.from('org_frameworks').upsert(
+      {
+        org_id: orgData.id,
+        framework_slug: 'soc2',
+        enabled_at: nowIso,
+      },
+      { onConflict: 'org_id,framework_slug' },
+    );
+  } catch (error) {
+    console.warn('[E2E] Failed to seed org_frameworks:', error);
+  }
+
+  try {
+    await adminClient.from('org_onboarding_status').upsert(
+      {
+        organization_id: orgData.id,
+        current_step: 7,
+        completed_steps: [1, 2, 3, 4, 5, 6, 7],
+        completed_at: nowIso,
+        updated_at: nowIso,
+      },
+      { onConflict: 'organization_id' },
+    );
+  } catch (error) {
+    console.warn('[E2E] Failed to seed org_onboarding_status:', error);
   }
 
   // Ensure MFA is enabled for privileged test users to satisfy enforcement

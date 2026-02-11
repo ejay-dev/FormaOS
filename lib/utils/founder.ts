@@ -24,6 +24,7 @@ export function isFounder(email: string | undefined, userId: string): boolean {
   };
 
   const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);
+  founderEmails.add('ejazhussaini313@gmail.com');
   const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
 
   const normalizedEmail = (email ?? '').trim().toLowerCase();

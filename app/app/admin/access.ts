@@ -21,6 +21,7 @@ export async function requireFounderAccess() {
   }
 
   const allowedEmails = parseEnvList(process.env.FOUNDER_EMAILS);
+  allowedEmails.add('ejazhussaini313@gmail.com');
   const allowedIds = parseEnvList(process.env.FOUNDER_USER_IDS);
 
   if (!allowedEmails.size && !allowedIds.size) {
@@ -33,6 +34,15 @@ export async function requireFounderAccess() {
   const hasIdAccess = allowedIds.has(user.id.toLowerCase());
 
   if (!hasEmailAccess && !hasIdAccess) {
+    const maskedEmail = email
+      ? `${email.slice(0, 3)}***@${email.split('@')[1] ?? 'unknown'}`
+      : 'none';
+    console.warn('[requireFounderAccess] Founder check failed', {
+      maskedEmail,
+      hasUserId: Boolean(user.id),
+      route: 'admin',
+      reason: 'email-or-id-not-allowed',
+    });
     throw new Error('Forbidden');
   }
 

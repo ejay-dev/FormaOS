@@ -45,6 +45,9 @@ jobs:
       - name: App route/link integrity check
         run: npm run check:app-links
 
+      - name: Admin sidebar route integrity check
+        run: npm run check:admin-nav
+
       - name: Code formatting check
         run: npx prettier --check "**/*.{ts,tsx,js,jsx,md,json}"
         continue-on-error: true # Warning only for formatting

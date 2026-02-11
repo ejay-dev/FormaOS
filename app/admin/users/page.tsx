@@ -12,6 +12,13 @@ type UserRow = {
   organization: string;
 };
 
+type UsersResponse = {
+  page: number;
+  pageSize: number;
+  total: number;
+  data: UserRow[];
+};
+
 function formatDate(value?: string | null) {
   if (!value) return 'N/A';
   const date = new Date(value);
@@ -42,8 +49,27 @@ export default async function AdminUsersPage({
   searchParams?: Promise<{ query?: string; page?: string }>;
 }) {
   const resolved = await searchParams;
-  const data = await fetchUsers(resolved?.query, resolved?.page);
+  const data: UsersResponse | null = await fetchUsers(
+    resolved?.query,
+    resolved?.page,
+  );
   const rows: UserRow[] = data?.data ?? [];
+  const requestedPage = Number(resolved?.page ?? '1');
+  const fallbackPage =
+    Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+  const currentPage = data?.page ?? fallbackPage;
+  const pageSize = data?.pageSize ?? (rows.length > 0 ? rows.length : 25);
+  const total = data?.total ?? rows.length;
+  const totalPages = Math.max(1, Math.ceil(total / Math.max(pageSize, 1)));
+  const previousPage = Math.max(1, currentPage - 1);
+  const nextPage = Math.min(totalPages, currentPage + 1);
+
+  const pageHref = (page: number) => {
+    const params = new URLSearchParams();
+    if (resolved?.query) params.set('query', resolved.query);
+    params.set('page', String(page));
+    return `/admin/users?${params.toString()}`;
+  };
 
   return (
     <div className="space-y-6">
@@ -113,10 +139,14 @@ export default async function AdminUsersPage({
                       </div>
                       <div>
                         <div className="text-sm font-medium text-slate-100">
-                          {user.email.split('@')[0]}
+                          {user.email.includes('@')
+                            ? user.email.split('@')[0]
+                            : user.email}
                         </div>
                         <div className="text-xs text-slate-500">
-                          {user.email.split('@')[1]}
+                          {user.email.includes('@')
+                            ? user.email.split('@')[1]
+                            : 'No email domain'}
                         </div>
                       </div>
                     </div>
@@ -177,6 +207,43 @@ export default async function AdminUsersPage({
           </table>
         </div>
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 ? (
+        <div className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-3">
+          <p className="text-xs text-slate-400">
+            Showing {(currentPage - 1) * pageSize + 1}-
+            {Math.min(currentPage * pageSize, total)} of {total} users
+          </p>
+          <div className="flex items-center gap-2">
+            <a
+              href={pageHref(previousPage)}
+              aria-disabled={currentPage <= 1}
+              className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                currentPage <= 1
+                  ? 'pointer-events-none border-slate-800 text-slate-600'
+                  : 'border-slate-700 text-slate-200 hover:bg-slate-800/70'
+              }`}
+            >
+              Previous
+            </a>
+            <span className="text-xs text-slate-400">
+              Page {currentPage} of {totalPages}
+            </span>
+            <a
+              href={pageHref(nextPage)}
+              aria-disabled={currentPage >= totalPages}
+              className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                currentPage >= totalPages
+                  ? 'pointer-events-none border-slate-800 text-slate-600'
+                  : 'border-slate-700 text-slate-200 hover:bg-slate-800/70'
+              }`}
+            >
+              Next
+            </a>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { AdminShell } from '@/app/admin/components/admin-shell';
 import { requireFounderAccess } from '@/app/app/admin/access';
+import { ComplianceSystemProvider } from '@/components/compliance-system/provider';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,5 +25,9 @@ export default async function AdminLayout({
     redirect('/auth/signin');
   }
 
-  return <AdminShell email={userEmail}>{children}</AdminShell>;
+  return (
+    <ComplianceSystemProvider>
+      <AdminShell email={userEmail}>{children}</AdminShell>
+    </ComplianceSystemProvider>
+  );
 }

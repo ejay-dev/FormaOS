@@ -19,24 +19,55 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const query = (url.searchParams.get('query') ?? '').trim().toLowerCase();
     const { page, limit } = parsePageParams(url.searchParams);
+    const MAX_SEARCH_SCAN = 2000;
+    const PAGE_BATCH_SIZE = 100;
 
-    const { data, error } = await (admin as any).auth.admin.listUsers({
-      page,
-      perPage: limit,
-    });
+    let users: any[] = [];
+    let totalUsers = 0;
 
-    if (error) {
-      throw error;
+    if (query) {
+      let currentPage = 1;
+      while (users.length < MAX_SEARCH_SCAN) {
+        const { data, error } = await (admin as any).auth.admin.listUsers({
+          page: currentPage,
+          perPage: PAGE_BATCH_SIZE,
+        });
+        if (error) throw error;
+        const batch = data?.users ?? [];
+        totalUsers = data?.total ?? totalUsers;
+        users = users.concat(batch);
+        if (batch.length < PAGE_BATCH_SIZE) break;
+        currentPage += 1;
+      }
+    } else {
+      const { data, error } = await (admin as any).auth.admin.listUsers({
+        page,
+        perPage: limit,
+      });
+      if (error) throw error;
+      users = data?.users ?? [];
+      totalUsers = data?.total ?? users.length;
     }
 
-    const users = data?.users ?? [];
-    const filtered = query
-      ? users.filter((user: any) =>
-          (user.email ?? '').toLowerCase().includes(query),
-        )
+    const queryFilteredUsers = query
+      ? users.filter((candidate: any) => {
+          const email = (candidate.email ?? '').toLowerCase();
+          const fullName = (
+            candidate.user_metadata?.full_name ??
+            candidate.user_metadata?.name ??
+            ''
+          ).toLowerCase();
+          return email.includes(query) || fullName.includes(query);
+        })
       : users;
 
-    const userIds = filtered.map((user: any) => user.id);
+    const from = (page - 1) * limit;
+    const to = from + limit;
+    const pagedUsers = query
+      ? queryFilteredUsers.slice(from, to)
+      : queryFilteredUsers;
+
+    const userIds = pagedUsers.map((candidate: any) => candidate.id);
     const { data: memberships } = userIds.length
       ? await admin
           .from('org_members')
@@ -70,19 +101,20 @@ export async function GET(request: Request) {
       });
     });
 
-    const rows = filtered.map((user: any) => ({
-      id: user.id,
-      email: user.email ?? 'N/A',
-      provider: user.app_metadata?.provider ?? 'N/A',
-      email_confirmed: Boolean(user.email_confirmed_at),
-      last_sign_in_at: user.last_sign_in_at ?? null,
-      role: membershipMap.get(user.id)?.role ?? 'N/A',
-      organization: membershipMap.get(user.id)?.organization ?? 'N/A',
+    const rows = pagedUsers.map((candidate: any) => ({
+      id: candidate.id,
+      email: candidate.email ?? 'N/A',
+      provider: candidate.app_metadata?.provider ?? 'N/A',
+      email_confirmed: Boolean(candidate.email_confirmed_at),
+      last_sign_in_at: candidate.last_sign_in_at ?? null,
+      role: membershipMap.get(candidate.id)?.role ?? 'N/A',
+      organization: membershipMap.get(candidate.id)?.organization ?? 'N/A',
     }));
 
     return NextResponse.json({
       page,
       pageSize: limit,
+      total: query ? queryFilteredUsers.length : totalUsers,
       data: rows,
     });
   } catch (error) {

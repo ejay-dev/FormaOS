@@ -10,6 +10,16 @@ type SubscriptionRow = {
   stripe_customer_id: string | null;
   stripe_subscription_id: string | null;
   trial_expires_at: string | null;
+  current_period_end: string | null;
+  payment_failures: number | null;
+  grace_period_end: string | null;
+};
+
+type SubscriptionResponse = {
+  page: number;
+  pageSize: number;
+  total: number;
+  data: SubscriptionRow[];
 };
 
 function formatDate(value?: string | null) {
@@ -37,11 +47,12 @@ function getStatusIcon(status?: string | null) {
   }
 }
 
-async function fetchSubscriptions(status?: string, page?: string) {
+async function fetchSubscriptions(status?: string, page?: string, query?: string) {
   const { base, headers } = await getAdminFetchConfig();
   const params = new URLSearchParams();
   if (status) params.set('status', status);
   if (page) params.set('page', page);
+  if (query) params.set('query', query);
   const res = await fetch(
     `${base}/api/admin/subscriptions?${params.toString()}`,
     {
@@ -56,17 +67,38 @@ async function fetchSubscriptions(status?: string, page?: string) {
 export default async function AdminBillingPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ status?: string; page?: string }>;
+  searchParams?: Promise<{ status?: string; page?: string; query?: string }>;
 }) {
   const resolved = await searchParams;
-  const data = await fetchSubscriptions(resolved?.status, resolved?.page);
+  const data: SubscriptionResponse | null = await fetchSubscriptions(
+    resolved?.status,
+    resolved?.page,
+    resolved?.query,
+  );
   const rows: SubscriptionRow[] = data?.data ?? [];
+  const requestedPage = Number(resolved?.page ?? '1');
+  const fallbackPage =
+    Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+  const currentPage = data?.page ?? fallbackPage;
+  const pageSize = data?.pageSize ?? (rows.length > 0 ? rows.length : 25);
+  const total = data?.total ?? rows.length;
+  const totalPages = Math.max(1, Math.ceil(total / Math.max(pageSize, 1)));
+  const previousPage = Math.max(1, currentPage - 1);
+  const nextPage = Math.min(totalPages, currentPage + 1);
 
   const activeCount = rows.filter((r) => r.status === 'active').length;
   const trialsCount = rows.filter((r) => r.status === 'trialing').length;
   const failedCount = rows.filter((r) =>
     ['past_due', 'payment_failed'].includes(r.status?.toLowerCase() || ''),
   ).length;
+
+  const pageHref = (page: number) => {
+    const params = new URLSearchParams();
+    if (resolved?.status) params.set('status', resolved.status);
+    if (resolved?.query) params.set('query', resolved.query);
+    params.set('page', String(page));
+    return `/admin/billing?${params.toString()}`;
+  };
 
   return (
     <div className="space-y-6">
@@ -77,6 +109,35 @@ export default async function AdminBillingPage({
           Manage subscriptions, payments, and trial extensions
         </p>
       </div>
+
+      {/* Search */}
+      <form className="grid gap-2 sm:grid-cols-[1fr_auto_auto]">
+        <input
+          name="query"
+          defaultValue={resolved?.query ?? ''}
+          placeholder="Search by org, plan, customer ID, subscription ID"
+          className="rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:border-slate-600 focus:outline-none"
+        />
+        <select
+          name="status"
+          defaultValue={resolved?.status ?? ''}
+          className="rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-2 text-sm text-slate-200 focus:border-slate-600 focus:outline-none"
+        >
+          <option value="">All statuses</option>
+          <option value="active">Active</option>
+          <option value="trialing">Trialing</option>
+          <option value="past_due">Past Due</option>
+          <option value="blocked">Blocked</option>
+          <option value="canceled">Canceled</option>
+          <option value="pending">Pending</option>
+        </select>
+        <button
+          type="submit"
+          className="rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-slate-700/50"
+        >
+          Filter
+        </button>
+      </form>
 
       {/* Metrics Row */}
       <div className="grid gap-4 md:grid-cols-3">
@@ -128,7 +189,7 @@ export default async function AdminBillingPage({
                   Trial Ends
                 </th>
                 <th className="px-6 py-3 text-left font-semibold text-slate-300">
-                  Stripe ID
+                  Billing Details
                 </th>
                 <th className="px-6 py-3 text-right font-semibold text-slate-300">
                   Actions
@@ -169,11 +230,21 @@ export default async function AdminBillingPage({
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <code className="text-xs text-slate-500 bg-slate-900/50 px-2 py-1 rounded">
-                      {row.stripe_subscription_id
-                        ? row.stripe_subscription_id.slice(0, 8) + '...'
-                        : 'N/A'}
-                    </code>
+                    <div className="space-y-1">
+                      <code className="block text-xs text-slate-500 bg-slate-900/50 px-2 py-1 rounded">
+                        {row.stripe_subscription_id
+                          ? row.stripe_subscription_id.slice(0, 12) + '...'
+                          : 'No Stripe subscription'}
+                      </code>
+                      <p className="text-[11px] text-slate-500">
+                        Next renewal: {formatDate(row.current_period_end)}
+                      </p>
+                      {Number(row.payment_failures ?? 0) > 0 ? (
+                        <p className="text-[11px] text-red-300">
+                          Payment failures: {row.payment_failures}
+                        </p>
+                      ) : null}
+                    </div>
                   </td>
                   <td className="px-6 py-4 text-right">
                     <BillingActionButtons orgId={row.organization_id} />
@@ -194,6 +265,43 @@ export default async function AdminBillingPage({
           </table>
         </div>
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 ? (
+        <div className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-3">
+          <p className="text-xs text-slate-400">
+            Showing {(currentPage - 1) * pageSize + 1}-
+            {Math.min(currentPage * pageSize, total)} of {total} subscriptions
+          </p>
+          <div className="flex items-center gap-2">
+            <a
+              href={pageHref(previousPage)}
+              aria-disabled={currentPage <= 1}
+              className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                currentPage <= 1
+                  ? 'pointer-events-none border-slate-800 text-slate-600'
+                  : 'border-slate-700 text-slate-200 hover:bg-slate-800/70'
+              }`}
+            >
+              Previous
+            </a>
+            <span className="text-xs text-slate-400">
+              Page {currentPage} of {totalPages}
+            </span>
+            <a
+              href={pageHref(nextPage)}
+              aria-disabled={currentPage >= totalPages}
+              className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                currentPage >= totalPages
+                  ? 'pointer-events-none border-slate-800 text-slate-600'
+                  : 'border-slate-700 text-slate-200 hover:bg-slate-800/70'
+              }`}
+            >
+              Next
+            </a>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
