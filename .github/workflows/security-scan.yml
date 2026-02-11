@@ -42,7 +42,7 @@ jobs:
         run: npm audit --json > audit-report.json || true
 
       - name: Upload audit report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: security-audit-report
           path: audit-report.json
@@ -91,7 +91,7 @@ jobs:
           CI: true
 
       - name: Upload security test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: security-test-results
           path: security-test-results.json
