@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';
 import { easing, duration } from '@/config/motion';
+import { CURRENT_RELEASE_DISPLAY, CURRENT_RELEASE_TAG } from '@/config/release';
 import {
   ArrowUpRight,
   Mail,
@@ -364,6 +365,12 @@ export function Footer() {
           <p className="text-sm text-gray-500">
             © {new Date().getFullYear()} FormaOS. All rights reserved.
           </p>
+
+          <div className="flex items-center gap-2 text-xs">
+            <span className="text-gray-500">{CURRENT_RELEASE_DISPLAY}</span>
+            <span className="text-gray-700">|</span>
+            <span className="text-cyan-500/70">{CURRENT_RELEASE_TAG}</span>
+          </div>
 
           <div className="flex items-center gap-6">
             <Link
