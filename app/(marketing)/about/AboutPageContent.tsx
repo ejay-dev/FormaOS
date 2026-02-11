@@ -6,7 +6,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import CinematicField from '../components/motion/CinematicField';
 
-const DemoDashboardPreview = dynamic(() => import('@/components/marketing/demo/DemoDashboardPreview'), { ssr: false });
+const DemoAuditTrailCard = dynamic(() => import('@/components/marketing/demo/DemoAuditTrailCard'), { ssr: false });
 
 function AboutHero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -211,7 +211,7 @@ export default function AboutPageContent() {
         </div>
       </section>
 
-      {/* Platform Preview */}
+      {/* Live Activity Feed */}
       <section className="relative py-16 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421]">
         <div className="mx-auto max-w-xl px-6 lg:px-8">
           <motion.div
@@ -221,8 +221,8 @@ export default function AboutPageContent() {
             transition={{ duration: 0.6 }}
             className="text-center mb-8"
           >
-            <h3 className="text-xl font-bold text-white mb-2">The Command Center</h3>
-            <p className="text-sm text-gray-400">Real-time compliance visibility, built for regulated teams</p>
+            <h3 className="text-xl font-bold text-white mb-2">The Audit Trail</h3>
+            <p className="text-sm text-gray-400">Every action timestamped, every decision defensible</p>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -230,7 +230,16 @@ export default function AboutPageContent() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <DemoDashboardPreview glowColor="from-purple-500/15 to-pink-500/15" />
+            <DemoAuditTrailCard
+              glowColor="from-purple-500/15 to-pink-500/15"
+              entries={[
+                { action: 'Policy approved', user: 'Sarah Chen', target: 'Data Retention Policy v2.1', time: '09:14', type: 'policy' },
+                { action: 'Evidence uploaded', user: 'Marcus Rivera', target: 'SOC 2 — Access Controls', time: '08:42', type: 'evidence' },
+                { action: 'Risk assessed', user: 'Emma Rodriguez', target: 'Vendor Security Review', time: '08:15', type: 'compliance' },
+                { action: 'Task completed', user: 'James Wilson', target: 'Quarterly Access Review', time: '07:30', type: 'task' },
+                { action: 'Control mapped', user: 'System', target: 'ISO 27001 A.9.2.3', time: '07:00', type: 'system' },
+              ]}
+            />
           </motion.div>
         </div>
       </section>

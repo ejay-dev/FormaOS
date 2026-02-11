@@ -31,7 +31,7 @@ import CinematicField from '../components/motion/CinematicField';
 import { brand } from '@/config/brand';
 
 const DemoComplianceChain = dynamic(() => import('@/components/marketing/demo/DemoComplianceChain'), { ssr: false });
-const DemoDashboardPreview = dynamic(() => import('@/components/marketing/demo/DemoDashboardPreview'), { ssr: false });
+const DemoComplianceScore = dynamic(() => import('@/components/marketing/demo/DemoComplianceScore'), { ssr: false });
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -947,7 +947,7 @@ function ComplianceIntelligence() {
             transition={{ duration: 0.6 }}
             className="lg:col-span-2"
           >
-            <DemoDashboardPreview glowColor="from-green-500/15 to-emerald-500/15" />
+            <DemoComplianceScore glowColor="from-green-500/15 to-emerald-500/15" />
           </motion.div>
 
           {/* Feature cards */}

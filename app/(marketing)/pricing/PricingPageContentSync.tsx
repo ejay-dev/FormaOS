@@ -30,7 +30,7 @@ import { VisualDivider } from '@/components/motion';
 import CinematicField from '../components/motion/CinematicField';
 import { brand } from '@/config/brand';
 
-const DemoDashboardPreview = dynamic(() => import('@/components/marketing/demo/DemoDashboardPreview'), { ssr: false });
+const DemoComplianceChain = dynamic(() => import('@/components/marketing/demo/DemoComplianceChain'), { ssr: false });
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -679,18 +679,15 @@ function AllPlansInclude() {
           ))}
         </div>
 
-        {/* Platform preview */}
+        {/* Compliance workflow preview */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-12 max-w-md mx-auto"
+          className="mt-12 max-w-xl mx-auto"
         >
-          <DemoDashboardPreview
-            complianceScore={87}
-            glowColor="from-emerald-500/15 to-cyan-500/15"
-          />
+          <DemoComplianceChain glowColor="from-emerald-500/15 to-cyan-500/15" />
         </motion.div>
 
         {/* Bottom Note */}
