@@ -57,29 +57,29 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
           <div className="relative min-h-screen overflow-hidden">
             {/* Premium header with glass effect and micro-animations */}
             <header className="mk-header-premium sticky top-0 z-50">
-              {/* Top accent line with gradient animation */}
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="flex h-16 items-center justify-between">
+                <div className="flex h-[72px] items-center justify-between gap-6">
                   {/* Logo */}
-                  <div className="flex items-center">
+                  <div className="flex shrink-0 items-center">
                     <Link
                       href="/"
-                      className="flex items-center text-white"
+                      className="flex items-center text-white transition-opacity hover:opacity-90"
                     >
-                      <Logo size={32} />
+                      <Logo size={34} />
                     </Link>
                   </div>
 
                   {/* Desktop Navigation */}
                   <NavLinks />
 
+                  {/* Separator + CTA */}
+                  <div className="hidden md:flex items-center gap-4">
+                    <div className="mk-nav-separator" aria-hidden="true" />
+                    <HeaderCTA />
+                  </div>
+
                   {/* Mobile Navigation */}
                   <MobileNav />
-
-                  {/* CTA Buttons */}
-                  <HeaderCTA />
                 </div>
               </div>
             </header>
