@@ -111,7 +111,7 @@ FormaOS is a genuinely differentiated compliance operating system with deep regu
 | Workflow Orchestration (Model > Execute > Verify > Prove) | Homepage, Product | VERIFIED | `lib/workflow-engine.ts`, `app/workflows/` |
 | 7 Pre-Built Framework Packs | Homepage, Pricing, Product | VERIFIED | `lib/compliance/scanner.ts`, migration files |
 | Immutable Audit Logging | Homepage, Security, Pricing | VERIFIED | 3-layer system: `org_audit_log`, `org_audit_events`, `security_audit_log` |
-| Role-Based Access Control (6 roles) | Security, Pricing | VERIFIED | `lib/roles.ts` with full permission matrix |
+| Role-Based Access Control (RBAC) | Security, Pricing | VERIFIED | `app/app/actions/rbac.ts`, `lib/roles.ts` (owner/admin/member/viewer) |
 | Evidence Vault with Verification | Homepage, Product | VERIFIED | `app/vault/`, `lib/file-versioning.ts` |
 | Multi-Tenant Isolation | Security | VERIFIED | RLS on 60+ tables, storage path isolation |
 | REST API v1 | Docs, Pricing | VERIFIED | 4 endpoints: audit-logs, compliance, evidence, tasks |
@@ -565,6 +565,334 @@ FormaOS is a **genuinely differentiated product** in the compliance SaaS space. 
 
 ### Storage Buckets
 - `compliance-exports/`, `report-exports/`, `audit_bundles/`, `user-avatars/`, `workspace-artifacts/`
+
+---
+
+# APPENDIX B: COMMERCIAL VALUE AUDIT (CFO / PROCUREMENT)
+
+> Scope note: This section quantifies *commercial value* (time saved, cost avoided, risk reduced) rather than enumerating product features. All estimates are stated as ranges and can be tuned per prospect.
+
+## B.1 Operational Savings (Quantified)
+
+### 1) Hours Saved Per Audit Cycle (Estimate)
+
+**Audit cycle definition:** The concentrated period (typically 4-10 weeks) in which an org prepares for an external audit/assessment (NDIS, aged care, SOC 2, ISO 27001), then responds to auditor requests.
+
+**Primary time sinks (baseline):**
+- Evidence chase + reconciliation across tools (email, Drive, HR, spreadsheets)
+- Control/evidence mapping and “where is the latest version?”
+- Compiling auditor-ready bundles, narratives, and exports
+- Proving governance: approvals, reviews, sign-offs, and timelines
+
+**Estimated savings per audit cycle (midmarket organization):**
+- **Evidence collection + reconciliation:** 40-120 hours saved
+- **Evidence-to-control mapping + QA:** 30-90 hours saved
+- **Audit bundle compilation/export:** 10-30 hours saved
+- **Audit response (request fulfillment):** 20-60 hours saved
+
+**Total estimate:** **100-300 hours saved per audit cycle**
+
+**Enterprise (multi-site / multi-entity) multiplier:** +25-75% more savings, because “evidence sprawl” and ownership ambiguity grows non-linearly.
+
+### 2) Admin Time Saved Per Month (Estimate)
+
+**Recurring administrative work categories:**
+- Recurring compliance tasks and reminders (policy reviews, training refreshers, credential expiries)
+- Evidence intake, verification, and status tracking
+- Audit trail capture and monthly reporting prep
+- Cross-team follow-ups and status consolidation
+
+**Total estimate:** **20-80 admin hours saved per month**
+
+Interpretation:
+- That is **0.125-0.50 FTE** of recurring workload (assuming ~160 hours/month per FTE).
+
+### 3) Compliance Officer Workload Reduction (Estimate)
+
+Compliance roles tend to allocate effort across:
+- **Run-the-program:** “keep the wheels on” operational governance
+- **Audit-prep spikes:** compressing months of proof into weeks
+- **Fire drills:** incident response, regulator requests, credential crises
+
+**Estimated reduction in compliance officer workload:** **30-60%** on “run-the-program” + audit prep activities, *if* the org actually consolidates their evidence and runs workflows inside the system (not parallel spreadsheets).
+
+Rule-of-thumb conversion:
+- Small regulated orgs: **0.25-0.5 FTE equivalent** reclaimed
+- Multi-site operators: **0.5-1.0 FTE equivalent** reclaimed
+
+---
+
+## B.2 Risk Mitigation (Quantified)
+
+### 1) Penalties Avoided / Losses Avoided (NDIS, Aged Care, SOC 2, ISO)
+
+This breaks into two financial categories:
+
+1. **Direct regulatory penalties and enforcement outcomes**
+2. **Indirect financial losses**: lost contracts, delayed go-lives, higher insurance premiums, extended audit windows, reputational harm, and increased consulting spend
+
+**NDIS (Australia):**
+- The NDIS Quality and Safeguards Commission has issued **civil penalty orders in the high six- to seven-figure range** (AUD) in published matters.
+- Example civil penalties reported publicly include **$400,000**, **$778,800**, **$1.9 million**, and **$2.5 million**.
+  - References (public): https://www.ndiscommission.gov.au/news/media-releases ; https://www.ndiscommission.gov.au/news/media-releases/federal-court-orders-civil-penalty-400000-brisbane-based-ndis-provider ; https://www.ndiscommission.gov.au/news/media-releases/federal-court-orders-civil-penalty-778800-and-permanent-injunction-against-former ; https://www.ndiscommission.gov.au/news/media-releases/federal-court-orders-civil-penalty-over-19-million-against-former ; https://www.ndiscommission.gov.au/news/media-releases/federal-court-issues-civil-penalty-orders-over-25-million-against-registered-ndis
+
+**Aged care (Australia):**
+- Enforcement outcomes commonly include **directions, sanctions, compliance action, and other regulatory interventions**.
+- Commercial impact is frequently more “operational + funding + reputation” than a clean line-item fine, but the downside can be existential: service restriction, loss of registration status, or loss of referral trust.
+  - References (overview): https://www.agedcarequality.gov.au/providers/working-us/compliance-enforcement
+
+**SOC 2 / ISO 27001:**
+- These are not “regulator fine schedules” by default.
+- Financial downside is typically contractual and commercial:
+  - failed security reviews delaying revenue
+  - churn due to security/compliance gaps
+  - increased cost of sales (longer cycles, more bespoke questionnaires)
+  - higher audit fees due to messy evidence / remediation churn
+
+### 2) Audit Failure Scenarios Mitigated (Concrete)
+
+**Most common audit-failure patterns that FormaOS operationally mitigates:**
+- Evidence is present but **unverifiable** (no approval trail, no timestamps, unclear ownership)
+- Evidence is **stale** (policy not reviewed, training expired, old screenshots)
+- Controls are “implemented” in narrative but **not provable** (no linked artifacts)
+- Segregation-of-duties is **weak** (the same person can create/approve)
+- Multi-site audits fail due to **inconsistent execution** across sites
+- Incidents exist but are **not traceable to remediation** and follow-up
+
+Each scenario tends to produce:
+- adverse audit findings
+- more remediation work
+- longer time-to-pass
+- higher consulting and internal labor costs
+
+---
+
+## B.3 Replacement Cost (What FormaOS Replaces Financially)
+
+### 1) Versus Hiring 0.5–1.0 FTE Compliance Officer
+
+Compliance capacity is expensive because it is cross-functional, high-context, and audit-season spiky.
+
+**Model (plug your own numbers):**
+- Fully-loaded annual cost = Base salary + (tax/benefits/on-costs) + tooling + management overhead
+- Typical fully-loaded multiplier: **1.2x to 1.5x** of base salary (varies by region and benefits)
+
+**Decision framing (not a claim of headcount elimination):**
+- FormaOS can reduce “compliance ops grunt work” enough to avoid:
+  - hiring *an additional* 0.5-1.0 FTE as the org grows, or
+  - burning senior compliance time on administrative tasks
+
+### 2) Versus Consulting Fees for Audit Preparation
+
+Organizations often buy consulting when:
+- evidence is scattered and the “audit story” is unclear
+- internal owners cannot be held to deadlines
+- risk registers and SoA artifacts are not maintained continuously
+
+**Typical spend patterns (ranges):**
+- “Readiness” engagements (SOC 2 / ISO): **$20k-$120k+** depending on scope, maturity, and speed
+- Ongoing advisory retainers: **$2k-$15k/month**
+
+FormaOS reduces consulting reliance by making “continuous audit readiness” operational rather than project-based.
+
+---
+
+## B.4 ROI Calculator Logic (Use This in Sales + Website)
+
+### Core Inputs
+
+**Organization:**
+- `staff_count`
+- `sites_or_entities`
+- `audit_cycles_per_year` (e.g., 1-2)
+- `compliance_team_size`
+
+**Cost assumptions:**
+- `loaded_hourly_rate` (blended: compliance + ops + managers)
+- `consulting_cost_per_audit_cycle`
+- `audit_failure_cost` (expected value: probability-weighted)
+
+**Time baseline (current state):**
+- `audit_prep_hours_per_cycle_current`
+- `audit_response_hours_per_cycle_current`
+- `admin_hours_per_month_current`
+
+**Expected improvement with FormaOS (tunable sliders):**
+- `audit_hours_reduction_pct` (default 40-70%)
+- `admin_hours_reduction_pct` (default 30-60%)
+- `consulting_reduction_pct` (default 10-40%)
+- `audit_failure_probability_reduction_pct` (default 20-60%)
+
+### Outputs
+
+**Annual time savings ($):**
+- `audit_time_savings = audit_cycles_per_year * (audit_prep_hours_per_cycle_current + audit_response_hours_per_cycle_current) * audit_hours_reduction_pct`
+- `admin_time_savings = 12 * admin_hours_per_month_current * admin_hours_reduction_pct`
+- `time_savings_$ = (audit_time_savings + admin_time_savings) * loaded_hourly_rate`
+
+**Annual consulting savings ($):**
+- `consulting_savings_$ = audit_cycles_per_year * consulting_cost_per_audit_cycle * consulting_reduction_pct`
+
+**Annual risk reduction ($, expected value):**
+- `risk_savings_$ = audit_failure_cost * audit_failure_probability_reduction_pct`
+
+**Total annual value ($):**
+- `total_value_$ = time_savings_$ + consulting_savings_$ + risk_savings_$`
+
+**ROI and payback:**
+- `annual_cost_formaos = monthly_price * 12`
+- `net_value_$ = total_value_$ - annual_cost_formaos`
+- `roi_pct = (net_value_$ / annual_cost_formaos) * 100`
+- `payback_months = (annual_cost_formaos / (total_value_$ / 12))`
+
+### Default “CFO-Safe” Starting Assumptions
+
+Use conservative defaults to avoid credibility loss:
+- `loaded_hourly_rate`: $65-$120 (region dependent)
+- `audit_hours_reduction_pct`: 40%
+- `admin_hours_reduction_pct`: 30%
+- `consulting_reduction_pct`: 15%
+- `audit_failure_probability_reduction_pct`: 25%
+
+---
+
+## B.5 “What You Can Prove in 14 Days” (Enterprise Proof Framework)
+
+Goal: Give procurement/security/compliance a concrete proof packet in two weeks, not a promise.
+
+### Proof Packet (Deliverables)
+
+By day 14, a typical org can produce:
+- **Framework coverage snapshot**: enabled framework(s), control inventory, current implementation status
+- **Policy pack**: active policies + review timestamps + ownership
+- **Evidence register**: evidence list with approval status, age, and linkage to controls
+- **Audit trail extracts**: immutable activity history showing who did what and when
+- **Risk register + action plan**: top risks, mitigations, owners, due dates
+- **Operational compliance registers (where relevant):** workforce credentials, training records, incidents, visits/service logs
+- **Procurement Trust Packet**: security overview + compliance summary for stakeholder review
+
+### 14-Day Execution Plan
+
+**Day 1-2: Baseline**
+- Pick the primary framework (SOC 2 / ISO / NDIS / Aged Care)
+- Import critical policies and current evidence artifacts
+- Assign owners for top control domains
+
+**Day 3-5: Map and Normalize**
+- Map evidence to highest-risk controls first
+- Mark missing controls explicitly (no “papering over”)
+- Establish the approval/verification workflow for evidence
+
+**Day 6-8: Operationalize**
+- Create recurring governance tasks (policy review, training refresh, credential renewals)
+- Build the “audit calendar”: deadlines and required reporting cadence
+
+**Day 9-11: Governance Narrative**
+- Generate posture summary: score, top gaps, top risks, and expected time-to-ready
+- Confirm multi-site consistency (if applicable): owners per site, shared standards
+
+**Day 12-14: Produce and Share**
+- Export auditor-ready bundles / reports for internal review
+- Generate a procurement-oriented Trust Packet and share to stakeholders
+- Set the cadence: weekly compliance review meeting + monthly governance report
+
+---
+
+## B.6 Enterprise Procurement Justification Sheet (1-Pager Template)
+
+**Purchase Request:** FormaOS subscription
+
+**Business Problem:**
+- Audit readiness is currently project-based, manual, and dependent on key people.
+- Evidence is scattered; audit response time is slow and error-prone.
+- Compliance execution is inconsistent across teams/sites.
+
+**Financial Justification (Annualized):**
+- Labor savings: `(audit cycle hours saved + monthly admin hours saved) * loaded hourly rate`
+- Consulting savings: reduced readiness + remediation engagements
+- Risk reduction: lower expected cost of audit failure and enforcement events
+
+**Risk Justification:**
+- Reduced probability of audit failure due to stale/unverifiable evidence
+- Reduced probability of regulatory enforcement due to missed obligations (training, incidents, credentials)
+- Stronger defensibility for procurement/security due diligence (faster review, fewer exceptions)
+
+**Implementation Plan:**
+- 14-day proof packet delivered to procurement/security
+- 30-day operating cadence established (weekly review + monthly governance)
+
+**Decision Owner:** CFO / COO
+**Operational Owner:** Compliance lead
+**Security/IT Owner:** Security lead (or IT manager)
+
+---
+
+## B.7 CFO-Facing Value Summary (Short Form)
+
+**FormaOS is a cost avoidance and risk reduction instrument, not a “compliance checklist tool.”**
+
+Financial drivers:
+- Reduces recurring compliance admin workload by **20-80 hours/month**
+- Compresses audit preparation by **100-300 hours per audit cycle**
+- Lowers consulting reliance by shifting readiness from “projects” to “continuous operations”
+- Reduces probability of expensive audit failure/rework by making evidence verifiable and current
+
+Strategic drivers:
+- Faster enterprise procurement (shorter security reviews, fewer bespoke exceptions)
+- Lower key-person risk (compliance knowledge and artifacts live in the system, not inboxes)
+- Better governance reporting (board-level posture, trend, and risk narrative)
+
+---
+
+## B.8 Gaps Blocking Confident $499–$1,499/month Pricing
+
+This is not about “more features”; it is about *enterprise proof, trust signals, and procurement gate readiness*.
+
+### A) Proof Gaps (Hard blockers for premium)
+- No public, measured customer benchmarks (hours saved, audit cycle compression, audit pass rate uplift)
+- Limited named customer proof (logos, references, case studies with quantified outcomes)
+- No third-party assurance artifact for FormaOS itself (e.g., SOC 2 Type II report for the vendor)
+
+### B) Procurement Gate Gaps (Common enterprise requirements)
+- SAML SSO (and eventually SCIM) expected by many buyers
+- SLA and status history need to be externally verifiable (not just “targets 99.9%” copy)
+- Clearly packaged security documentation: pen test summary, security overview, incident response policy, subprocessor list, data residency options
+
+### C) Packaging Gaps (Why buyers won’t pay $1,499 for “software only”)
+- Premium tiers typically require a bundled outcome: onboarding, audit readiness advisory, quarterly governance reporting, and review cycles
+- Without “implementation + assurance” packaging, $499 may be reachable; $1,499 will be resisted unless you sell into high-risk verticals with high compliance costs
+
+---
+
+## B.9 Output Summary (Requested)
+
+### Pricing Confidence Score (1–10)
+
+**Score:** **6.5 / 10** for **$499/month**, **4.5 / 10** for **$1,499/month**.
+
+Rationale:
+- Value potential is high (time + consulting + risk), but premium pricing requires *proof* and *procurement-grade trust signals* at time of sale.
+- The platform can support premium positioning; the missing piece is repeatable, externally credible evidence of outcomes and vendor assurance.
+
+### Required Upgrades To Justify Premium Pricing
+
+**To justify $499/month confidently:**
+- Publish conservative ROI benchmarks + calculator defaults (validated with pilots)
+- Standardize a “14-day proof packet” and make it a sales motion (repeatable deliverables)
+- Tighten procurement artifacts (Trust Packet reliability, clear documentation set, externally verifiable SLA/status)
+
+**To justify $1,499/month confidently:**
+- Vendor assurance artifact (SOC 2 Type II for FormaOS or equivalent third-party assurance)
+- Enterprise identity (SAML SSO, roadmap to SCIM)
+- Named references and quantified case studies
+- Premium packaging: onboarding + audit-readiness advisory + quarterly governance reporting
+
+### Commercial Readiness Assessment
+
+**Commercial Readiness:** **Medium-High**
+- **Value reality:** HIGH (the underlying operational leverage is real)
+- **Value proof:** MEDIUM (needs measured benchmarks, repeatable proof motion)
+- **Enterprise gate readiness:** MEDIUM (needs SSO + vendor assurance + externally credible trust artifacts)
 
 ---
 

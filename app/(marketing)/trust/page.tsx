@@ -121,7 +121,7 @@ export default function TrustCenterPage() {
       </section>
 
       <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid gap-4 lg:grid-cols-4">
           <Link
             href="/security-review"
             className="group rounded-2xl border border-white/10 bg-white/5 p-6 transition-colors hover:bg-white/7"
@@ -174,6 +174,25 @@ export default function TrustCenterPage() {
             </p>
             <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200">
               See comparisons
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </div>
+          </Link>
+          <Link
+            href="/trust/packet"
+            className="group rounded-2xl border border-white/10 bg-white/5 p-6 transition-colors hover:bg-white/7"
+          >
+            <div className="mb-4 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
+              <FileLock2 className="h-5 w-5 text-cyan-300" />
+            </div>
+            <h2 className="text-lg font-semibold text-white">
+              Download Trust Packet
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-slate-300">
+              Procurement-ready vendor trust packet PDF generated from current
+              system status and maintained trust disclosures.
+            </p>
+            <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200">
+              Download PDF
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </div>
           </Link>

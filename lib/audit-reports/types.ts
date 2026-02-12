@@ -3,7 +3,7 @@
  * Common types for all audit certification reports
  */
 
-export type ReportType = 'soc2' | 'iso27001' | 'ndis' | 'hipaa';
+export type ReportType = 'soc2' | 'iso27001' | 'ndis' | 'hipaa' | 'trust';
 
 export interface BaseReportPayload {
   generatedAt: string;

@@ -29,6 +29,8 @@ export async function buildReport(
   | HipaaReportPayload
 > {
   switch (reportType) {
+    case 'trust':
+      return buildTrustPacketReport(orgId);
     case 'iso27001':
       return buildIso27001Report(orgId);
     case 'ndis':
@@ -39,6 +41,96 @@ export async function buildReport(
     default:
       return buildBaseReport(orgId, 'SOC2', 'SOC 2 Type II');
   }
+}
+
+async function buildTrustPacketReport(orgId: string): Promise<BaseReportPayload> {
+  const admin = createSupabaseAdminClient();
+
+  const { data: org } = await admin
+    .from('organizations')
+    .select('name')
+    .eq('id', orgId)
+    .single();
+
+  const readinessData = await calculateFrameworkReadiness(orgId);
+  const readinessScore = readinessData.length
+    ? Math.round(
+        readinessData.reduce((sum, fw) => sum + (fw.readinessScore ?? 0), 0) /
+          readinessData.length,
+      )
+    : 0;
+
+  const controlSummary = readinessData.reduce(
+    (acc, fw) => {
+      acc.total += Number(fw.totalControls ?? 0);
+      acc.satisfied += Number(fw.satisfiedControls ?? 0);
+      acc.missing += Number(fw.missingControls ?? 0);
+      acc.partial += Number(fw.partialControls ?? 0);
+      return acc;
+    },
+    { total: 0, satisfied: 0, missing: 0, partial: 0 },
+  );
+
+  const { data: evidence } = await admin
+    .from('org_evidence')
+    .select('verification_status')
+    .eq('organization_id', orgId);
+
+  const evidenceSummary = {
+    total: evidence?.length || 0,
+    verified:
+      evidence?.filter(
+        (e: { verification_status?: string }) =>
+          e.verification_status === 'verified',
+      ).length || 0,
+    pending:
+      evidence?.filter(
+        (e: { verification_status?: string }) =>
+          !e.verification_status || e.verification_status === 'pending',
+      ).length || 0,
+    rejected:
+      evidence?.filter(
+        (e: { verification_status?: string }) =>
+          e.verification_status === 'rejected',
+      ).length || 0,
+  };
+
+  const now = new Date();
+  const { data: tasks } = await admin
+    .from('org_tasks')
+    .select('status, due_date')
+    .eq('organization_id', orgId);
+
+  const taskSummary = {
+    total: tasks?.length || 0,
+    completed:
+      tasks?.filter((t: { status: string }) => t.status === 'completed')
+        .length || 0,
+    overdue:
+      tasks?.filter(
+        (t: { status: string; due_date?: string }) =>
+          t.status !== 'completed' && t.due_date && new Date(t.due_date) < now,
+      ).length || 0,
+  };
+
+  const criticalGaps = await getCriticalGaps(orgId, admin, 'TRUST');
+
+  return {
+    generatedAt: new Date().toISOString(),
+    organizationName: org?.name || 'Organization',
+    organizationId: orgId,
+    frameworkCode: 'TRUST',
+    frameworkName: 'Buyer Trust Packet',
+    readinessScore,
+    controlSummary,
+    evidenceSummary,
+    taskSummary,
+    gaps: {
+      missingControls: controlSummary.missing,
+      partialControls: controlSummary.partial,
+      criticalGaps,
+    },
+  };
 }
 
 /**

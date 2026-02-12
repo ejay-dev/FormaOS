@@ -3,6 +3,9 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { MFAEnrollment } from '@/components/settings/mfa-enrollment';
 import { roleRequiresMFA } from '@/lib/security/mfa-enforcement';
 import { ShieldCheck } from 'lucide-react';
+import { SsoSettings } from '@/components/settings/SsoSettings';
+import { getOrgSsoConfig } from '@/lib/sso/org-sso';
+import { buildServiceProviderUrls } from '@/lib/sso/saml';
 
 export default async function SecuritySettingsPage() {
   const supabase = await createSupabaseServerClient();
@@ -14,7 +17,7 @@ export default async function SecuritySettingsPage() {
 
   const { data: membership } = await supabase
     .from('org_members')
-    .select('role, mfa_required')
+    .select('organization_id, role, mfa_required')
     .eq('user_id', user.id)
     .maybeSingle();
 
@@ -28,6 +31,10 @@ export default async function SecuritySettingsPage() {
     membership?.mfa_required ??
     roleRequiresMFA(membership?.role ?? null);
   const enabled = security?.two_factor_enabled ?? false;
+  const orgId = (membership as any)?.organization_id as string | undefined;
+  const orgSso = orgId ? await getOrgSsoConfig(orgId) : null;
+  const sp = orgId ? buildServiceProviderUrls(orgId) : null;
+  const spSigningAvailable = Boolean((process.env.SAML_SP_PRIVATE_KEY ?? '').trim());
 
   return (
     <div className="space-y-8 pb-24 max-w-5xl animate-in fade-in duration-700">
@@ -54,6 +61,23 @@ export default async function SecuritySettingsPage() {
       </header>
 
       <MFAEnrollment initialEnabled={enabled} required={Boolean(required)} />
+
+      {orgId && sp ? (
+        <SsoSettings
+          orgId={orgId}
+          initial={{
+            enabled: orgSso?.enabled ?? false,
+            enforceSso: orgSso?.enforceSso ?? false,
+            allowedDomains: orgSso?.allowedDomains ?? [],
+            idpMetadataXml: orgSso?.idpMetadataXml ?? null,
+            idpEntityId: orgSso?.idpEntityId ?? null,
+            ssoUrl: orgSso?.ssoUrl ?? null,
+            certificatePresent: Boolean(orgSso?.certificate),
+          }}
+          sp={{ metadataUrl: sp.metadataUrl, acsUrl: sp.acsUrl }}
+          spSigningAvailable={spSigningAvailable}
+        />
+      ) : null}
     </div>
   );
 }

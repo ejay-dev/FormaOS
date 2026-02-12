@@ -168,6 +168,13 @@ export default function SecurityReviewPage() {
               Visit Trust Center
               <ArrowRight className="h-4 w-4" />
             </Link>
+            <Link
+              href="/security-review/faq"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-5 py-3 text-sm font-semibold text-white hover:bg-white/10"
+            >
+              Security Review FAQ
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
 
           <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -190,4 +197,3 @@ export default function SecurityReviewPage() {
     </div>
   );
 }
-

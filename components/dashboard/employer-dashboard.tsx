@@ -226,6 +226,8 @@ interface ActionQueueItem {
   href: string;
   icon: typeof CheckSquare;
   priority: ActionPriority;
+  ownerLabel?: string;
+  slaLabel?: string;
 }
 
 interface ActivationMilestone {
@@ -255,8 +257,8 @@ function PriorityActionQueue({
 
   return (
     <DashboardSectionCard
-      title="Priority Action Queue"
-      description="Most important actions to improve readiness now"
+      title="Operator Action Queue"
+      description="Owner-routed actions with explicit SLAs to improve readiness now"
       icon={AlertCircle}
     >
       <div className="space-y-3">
@@ -275,6 +277,20 @@ function PriorityActionQueue({
                   {item.title}
                 </p>
                 <p className="text-xs text-slate-400">{item.detail}</p>
+                {(item.ownerLabel || item.slaLabel) && (
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    {item.ownerLabel && (
+                      <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-300">
+                        Owner: {item.ownerLabel}
+                      </span>
+                    )}
+                    {item.slaLabel && (
+                      <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-300">
+                        SLA: {item.slaLabel}
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -857,6 +873,8 @@ export function EmployerDashboard({
       href: '/app/tasks',
       icon: CheckSquare,
       priority: openTasksCount > 10 ? 'critical' : openTasksCount > 0 ? 'high' : 'normal',
+      ownerLabel: 'Compliance Ops',
+      slaLabel: openTasksCount > 0 ? '24h' : 'Weekly',
     },
     {
       id: 'queue-expiring-evidence',
@@ -871,6 +889,8 @@ export function EmployerDashboard({
       href: '/app/certificates',
       icon: FileText,
       priority: expiringCertsCount > 5 ? 'critical' : expiringCertsCount > 0 ? 'high' : 'normal',
+      ownerLabel: 'Evidence Owners',
+      slaLabel: expiringCertsCount > 0 ? '7d' : 'Monthly',
     },
     {
       id: 'queue-evidence-verification',
@@ -880,6 +900,8 @@ export function EmployerDashboard({
       href: '/app/vault/review',
       icon: CheckCircle2,
       priority: 'high',
+      ownerLabel: 'Approvers',
+      slaLabel: '48h',
     },
     {
       id: 'queue-team-readiness',
@@ -889,6 +911,8 @@ export function EmployerDashboard({
       href: '/app/team',
       icon: Users,
       priority: complianceScore < 75 ? 'critical' : 'normal',
+      ownerLabel: 'Org Owner/Admin',
+      slaLabel: complianceScore < 75 ? '72h' : 'Weekly',
     },
   ];
 

@@ -134,7 +134,7 @@ const faqCategories = [
       },
       {
         q: 'Can FormaOS connect to our existing systems?',
-        a: 'FormaOS provides REST API and webhook capabilities to connect with external systems. HR and CRM integrations are available via API/webhook. Slack and Microsoft Teams integrations are available by request, and enterprise customers can request dedicated integration support.',
+        a: 'FormaOS provides REST API and webhook capabilities to connect with external systems. We do not ship native HRIS/CRM connectors (e.g., Workday/Salesforce) as first-party integrations today, but teams can integrate via API/webhooks and middleware (Zapier/Make/custom). Slack and Microsoft Teams integrations are available by request, and enterprise customers can request dedicated integration support.',
       },
     ],
   },

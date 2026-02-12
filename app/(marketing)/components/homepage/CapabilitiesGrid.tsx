@@ -122,9 +122,9 @@ const capabilities = [
   },
   {
     icon: Building,
-    title: 'Multi-Site Compliance',
+    title: 'Multi-Entity Compliance',
     description:
-      'Manage compliance across multiple entities, business units, and locations with centralized oversight and per-site controls.',
+      'Manage compliance across multiple entities with centralized oversight and organization-scoped controls and evidence.',
     color: 'from-violet-500 to-purple-500',
   },
   {

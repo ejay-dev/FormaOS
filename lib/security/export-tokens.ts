@@ -12,10 +12,10 @@ const EXPIRY_HOURS = 1;
 
 interface TokenPayload {
   jobId: string;
-  userId: string;
   orgId: string;
   iat: number;
   exp: number;
+  aud: 'enterprise_export';
 }
 
 /**
@@ -53,7 +53,6 @@ function base64UrlDecode(str: string): string {
  */
 export function generateExportToken(
   jobId: string,
-  userId: string,
   orgId: string,
   expiryHours: number = EXPIRY_HOURS
 ): string {
@@ -67,10 +66,10 @@ export function generateExportToken(
 
   const payload: TokenPayload = {
     jobId,
-    userId,
     orgId,
     iat: now,
     exp: now + expiryHours * 3600,
+    aud: 'enterprise_export',
   };
 
   const headerEncoded = base64UrlEncode(JSON.stringify(header));
@@ -80,7 +79,7 @@ export function generateExportToken(
   const signature = crypto
     .createHmac('sha256', secret)
     .update(signatureInput)
-    .digest('base64');
+    .digest();
 
   return `${signatureInput}.${base64UrlEncode(signature)}`;
 }
@@ -103,11 +102,11 @@ export function verifyExportToken(token: string): TokenPayload | null {
     const expectedSignature = crypto
       .createHmac('sha256', secret)
       .update(signatureInput)
-      .digest('base64');
+      .digest();
 
     const expectedSignatureEncoded = base64UrlEncode(expectedSignature);
-    const expectedBuffer = Buffer.from(expectedSignatureEncoded);
-    const providedBuffer = Buffer.from(signatureEncoded);
+    const expectedBuffer = Buffer.from(expectedSignatureEncoded, 'utf8');
+    const providedBuffer = Buffer.from(signatureEncoded, 'utf8');
     if (
       expectedBuffer.length !== providedBuffer.length ||
       !crypto.timingSafeEqual(expectedBuffer, providedBuffer)
@@ -121,11 +120,14 @@ export function verifyExportToken(token: string): TokenPayload | null {
     if (
       !payload ||
       typeof payload.jobId !== 'string' ||
-      typeof payload.userId !== 'string' ||
       typeof payload.orgId !== 'string' ||
       typeof payload.iat !== 'number' ||
       typeof payload.exp !== 'number'
     ) {
+      return null;
+    }
+
+    if (payload.aud !== 'enterprise_export') {
       return null;
     }
 
@@ -147,9 +149,8 @@ export function verifyExportToken(token: string): TokenPayload | null {
 export function generateSignedDownloadUrl(
   baseUrl: string,
   jobId: string,
-  userId: string,
   orgId: string
 ): string {
-  const token = generateExportToken(jobId, userId, orgId);
+  const token = generateExportToken(jobId, orgId);
   return `${baseUrl}/api/exports/enterprise/${jobId}?token=${encodeURIComponent(token)}`;
 }

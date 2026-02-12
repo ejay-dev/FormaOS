@@ -13,7 +13,7 @@ const faqs = [
   {
     question: 'Do you support enterprise identity requirements?',
     answer:
-      'Google OAuth is available now. Enterprise SSO requirements can be reviewed during your sales engineering process.',
+      'Google OAuth is available for all plans. Enterprise plans can enable SAML SSO (Okta/Azure AD and similar IdPs). If you need SCIM provisioning, raise it during security review so we can confirm scope and workarounds.',
   },
   {
     question: 'How does procurement and billing work?',

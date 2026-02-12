@@ -7,6 +7,8 @@ import {
   XCircle,
   AlertCircle,
   ArrowRight,
+  BadgeCheck,
+  Users,
 } from 'lucide-react';
 import { runGapAnalysis } from '@/app/app/actions/compliance';
 import { getOrgIdForUser, getComplianceBlocks } from '@/app/app/actions/enforcement';
@@ -64,16 +66,18 @@ export default async function ReportsPage() {
   let hasSubscription = false;
   let hasAuditExport = false;
   let hasFrameworkEval = false;
+  let hasAdminAccess = false;
 
   if (user) {
     const { data: membership } = await supabase
       .from('org_members')
-      .select('organization_id')
+      .select('organization_id, role')
       .eq('user_id', user.id)
       .maybeSingle();
 
     if (membership?.organization_id) {
       const orgId = membership.organization_id;
+      hasAdminAccess = membership.role === 'owner' || membership.role === 'admin';
       const [subscriptionResult, entitlementsResult] = await Promise.all([
         supabase
           .from('org_subscriptions')
@@ -122,7 +126,11 @@ export default async function ReportsPage() {
   const isExportBlocked = Boolean(complianceBlocks && complianceBlocks.length > 0);
   const isControlBlocked = requiredNonCompliantCount > 0;
   const disableExports =
-    isExportBlocked || isControlBlocked || !hasSubscription || !hasAuditExport;
+    isExportBlocked ||
+    isControlBlocked ||
+    !hasSubscription ||
+    !hasAuditExport ||
+    !hasAdminAccess;
 
   return (
     <div className="space-y-8 pb-12 animate-in fade-in duration-500">
@@ -148,6 +156,18 @@ export default async function ReportsPage() {
           </div>
           <Link href="/app/billing" className="mt-3 inline-flex text-xs font-semibold underline">
             Go to billing
+          </Link>
+        </div>
+      )}
+
+      {!hasAdminAccess && (
+        <div className="rounded-xl border border-sky-400/30 bg-sky-500/10 px-6 py-4 text-sky-100">
+          <div className="text-sm font-semibold">Admin access required</div>
+          <div className="mt-1 text-xs text-sky-200">
+            Reports and trust exports are restricted to organization owners and admins.
+          </div>
+          <Link href="/app/team" className="mt-3 inline-flex text-xs font-semibold underline">
+            Review team roles
           </Link>
         </div>
       )}
@@ -206,6 +226,78 @@ export default async function ReportsPage() {
           </div>
         </div>
       )}
+
+      <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-8">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-emerald-200">
+              <BadgeCheck className="h-3.5 w-3.5" />
+              Trust Artifacts
+            </div>
+            <h2 className="text-2xl font-black text-slate-100">
+              Buyer Trust Packet (PDF)
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm text-slate-400">
+              A shareable, procurement-ready snapshot that summarizes readiness,
+              control coverage, evidence verification posture, and critical gaps.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {[
+                'Executive summary',
+                'Control & evidence counts',
+                'Critical gaps list',
+                'Export timestamp',
+              ].map((badge) => (
+                <span
+                  key={badge}
+                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] text-slate-200"
+                >
+                  {badge}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
+            <Link
+              href="/api/reports/export?type=trust&format=pdf"
+              className={`inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold ${
+                disableExports
+                  ? 'pointer-events-none border border-white/10 bg-white/5 text-slate-500'
+                  : 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white'
+              }`}
+            >
+              Generate Trust Packet
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/app/governance"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 hover:bg-white/10"
+            >
+              Open Governance Packs
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/trust"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 hover:bg-white/10"
+            >
+              <Users className="h-4 w-4" />
+              Open Trust Center
+            </Link>
+          </div>
+        </div>
+
+        {disableExports ? (
+          <div className="mt-4 text-xs text-amber-300">
+            Trust exports require an active subscription, audit export entitlement,
+            owner/admin access, and no unresolved compliance blocks.
+          </div>
+        ) : (
+          <div className="mt-4 text-xs text-emerald-300 flex items-center gap-2">
+            <CheckCircle2 className="h-3.5 w-3.5" /> Trust packet export enabled
+          </div>
+        )}
+      </div>
 
       <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-8">
         <div className="mb-4 flex items-center gap-2 text-sky-300">

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'FormaOS | Security & Compliance',
     description:
-      'Certified security controls and privacy protection for compliance infrastructure.',
+      'Enterprise-grade security controls and privacy protection for regulated data.',
     type: 'website',
     url: `${siteUrl}/security`,
   },

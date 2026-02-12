@@ -1,15 +1,34 @@
 import { NextResponse } from 'next/server'
 import { createSupabaseAdminClient } from '@/lib/supabase/admin'
 import { processExportJob } from '@/lib/compliance/evidence-pack-export'
+import { timingSafeEqual } from 'crypto'
+import { getRedisConfig } from '@/lib/redis/client'
 
 const DEFAULT_LIMIT = 3
 
-export async function POST(request: Request) {
+async function handleComplianceExportsCron(request: Request) {
   const authHeader = request.headers.get('authorization')
   const cronSecret = process.env.CRON_SECRET
 
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+  if (!cronSecret) {
+    return NextResponse.json({ error: 'CRON_SECRET not configured' }, { status: 500 })
+  }
+
+  const token = authHeader?.replace('Bearer ', '') ?? ''
+  const tokenBuffer = Buffer.from(token, 'utf8')
+  const secretBuffer = Buffer.from(cronSecret, 'utf8')
+  const ok =
+    tokenBuffer.length === secretBuffer.length &&
+    timingSafeEqual(tokenBuffer, secretBuffer)
+
+  if (!ok) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  // If the Redis queue is configured, prefer the queue worker to avoid double-processing.
+  const redisCfg = getRedisConfig()
+  if (redisCfg.url && redisCfg.token) {
+    return NextResponse.json({ ok: true, skipped: true, reason: 'redis_queue_enabled' })
   }
 
   const url = new URL(request.url)
@@ -47,3 +66,10 @@ export async function POST(request: Request) {
   })
 }
 
+export async function GET(request: Request) {
+  return handleComplianceExportsCron(request)
+}
+
+export async function POST(request: Request) {
+  return handleComplianceExportsCron(request)
+}

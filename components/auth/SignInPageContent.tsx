@@ -78,6 +78,8 @@ function SignInContent() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [sessionTimeout, setSessionTimeout] = useState(false);
+  const [ssoOrgId, setSsoOrgId] = useState<string | null>(null);
+  const [ssoRequired, setSsoRequired] = useState(false);
 
   const logLoginFailure = useCallback(
     async (reason: string, provider: 'email' | 'google' = 'email') => {
@@ -241,6 +243,58 @@ function SignInContent() {
     handleAuthRedirect();
   }, [bootstrapAndRedirect, searchParams]);
 
+  // Enterprise SSO discovery (by email domain)
+  useEffect(() => {
+    const e = email.trim().toLowerCase();
+
+    if (!e || !e.includes('@')) {
+      setSsoOrgId(null);
+      setSsoRequired(false);
+      return;
+    }
+
+    const handle = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `/api/sso/discover?email=${encodeURIComponent(e)}`,
+        );
+        if (!res.ok) {
+          setSsoOrgId(null);
+          setSsoRequired(false);
+          return;
+        }
+        const json = (await res.json().catch(() => null)) as any;
+        if (!json?.ok || !json?.orgId) {
+          setSsoOrgId(null);
+          setSsoRequired(false);
+          return;
+        }
+        setSsoOrgId(String(json.orgId));
+        setSsoRequired(Boolean(json.enforceSso));
+      } catch {
+        setSsoOrgId(null);
+        setSsoRequired(false);
+      }
+    }, 450);
+
+    return () => clearTimeout(handle);
+  }, [email]);
+
+  const startSsoLogin = useCallback(
+    (next: string = '/app') => {
+      if (!ssoOrgId) {
+        setErrorMessage('No SSO configuration was found for this email domain.');
+        return;
+      }
+      const base = resolveAppBase();
+      const safeNext = next.startsWith('/') ? next : '/app';
+      window.location.href = `${base}/api/sso/saml/login/${encodeURIComponent(
+        ssoOrgId,
+      )}?next=${encodeURIComponent(safeNext)}`;
+    },
+    [ssoOrgId],
+  );
+
   const signInWithGoogle = async () => {
     setErrorMessage(null);
     setSessionTimeout(false);
@@ -286,6 +340,16 @@ function SignInContent() {
     setErrorMessage(null);
     setSessionTimeout(false);
     setIsLoading(true);
+
+    // Hard enforcement: if this domain requires SSO, block password sign-in.
+    if (ssoRequired && ssoOrgId) {
+      setIsLoading(false);
+      setErrorMessage(
+        'Your organization requires SSO. Please use “Continue with SSO”.',
+      );
+      void logLoginFailure('sso_required', 'email');
+      return;
+    }
 
     const supabase = createSupabaseClient();
     try {
@@ -454,7 +518,32 @@ function SignInContent() {
                 />
               </div>
 
-              <div>
+              {ssoOrgId ? (
+                <div className="rounded-lg border border-white/10 bg-white/5 p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="text-sm font-semibold text-white">
+                        Enterprise SSO detected
+                      </div>
+                      <div className="text-xs text-slate-400 mt-1">
+                        {ssoRequired
+                          ? 'This organization requires SSO for sign-in.'
+                          : 'You can sign in with SSO for faster enterprise access.'}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => startSsoLogin('/app')}
+                      disabled={isLoading}
+                      className="shrink-0 rounded-lg bg-white/10 hover:bg-white/15 border border-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors disabled:opacity-50"
+                    >
+                      Continue with SSO
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+
+              <div className={ssoRequired ? 'opacity-50 pointer-events-none' : ''}>
                 <div className="flex items-center justify-between mb-2">
                   <label
                     htmlFor="password"
@@ -476,7 +565,7 @@ function SignInContent() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
-                  required
+                  required={!ssoRequired}
                   disabled={isLoading}
                 />
               </div>

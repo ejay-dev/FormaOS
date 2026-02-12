@@ -102,9 +102,17 @@ export async function POST(request: NextRequest) {
 
 /**
  * GET /api/automation/cron
- * Health check endpoint
+ * If called with Authorization, runs the same cron work as POST.
+ * Without Authorization, returns a lightweight health response.
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Vercel Cron hits routes via GET by default. If Authorization is present,
+  // treat this as an authenticated run; otherwise act as a public health check.
+  const authHeader = request.headers.get('authorization');
+  if (authHeader) {
+    return POST(request);
+  }
+
   return NextResponse.json({
     status: 'ok',
     service: 'automation-cron',

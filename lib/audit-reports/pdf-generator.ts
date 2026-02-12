@@ -510,6 +510,7 @@ function getReportTitle(reportType: ReportType): string {
     iso27001: 'ISO 27001 Statement of Applicability',
     ndis: 'NDIS Compliance Report',
     hipaa: 'HIPAA Compliance Assessment',
+    trust: 'Enterprise Buyer Trust Packet',
   };
   return titles[reportType];
 }

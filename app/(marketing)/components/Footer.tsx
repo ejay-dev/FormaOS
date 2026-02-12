@@ -36,6 +36,8 @@ const footerLinks = {
     { href: '/blog', label: 'Blog' },
     { href: '/trust', label: 'Trust Center' },
     { href: '/security-review', label: 'Security Review Packet' },
+    { href: '/trust/packet', label: 'Trust Packet (PDF)' },
+    { href: '/status', label: 'Status' },
     { href: '/customer-stories', label: 'Customer Stories' },
     { href: '/compare', label: 'Compare' },
     { href: '/faq', label: 'FAQ' },
@@ -46,6 +48,7 @@ const footerLinks = {
     { href: '/contact', label: 'Contact' },
   ],
   legal: [
+    { href: '/legal', label: 'Legal' },
     { href: '/legal/privacy', label: 'Privacy Policy' },
     { href: '/legal/terms', label: 'Terms of Service' },
     { href: '/security', label: 'Security' },
