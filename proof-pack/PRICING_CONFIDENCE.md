@@ -21,20 +21,20 @@ What increases confidence:
 
 ### Tier: $499 / month
 
-**Confidence:** **6.8 / 10**
+**Confidence:** **7.4 / 10**
 
 Why:
 - Mid-market buyers will ask harder questions (security review, governance, proof artifacts).
 - Value is still easily justified if you can prove 100+ hours/month saved.
 
 What increases confidence:
-- Repeatable “14-day proof packet” delivered in pilots.
-- A standardized security packet and a procurement FAQ that avoids over-claims.
+- Repeatable “14-day proof packet” delivered in pilots (now productized via governance exports).
+- Standardized trust packet + procurement FAQ that avoids over-claims (now shipped).
 
 ### Tier: $899+ / month
 
-**Confidence:** **5.6 / 10** (today)  
-**Target confidence:** **8.0 / 10** (after required upgrades + proof)
+**Confidence:** **7.5 / 10** (post-upgrades as of 12 Feb 2026)  
+**Target confidence:** **8.2 / 10** (after remaining assurance + reference proof)
 
 Why:
 - $899+ buyers require enterprise identity, vendor assurance signals, and contractual readiness.
@@ -48,36 +48,41 @@ This is not a “feature wish list”. These are **enterprise purchase gates**.
 
 ### A) Vendor Assurance (Trust Signal)
 
-Ship one of:
+Remaining (not yet shipped):
 - SOC 2 Type II report for FormaOS as a vendor, or
 - an independent security assessment/pen test summary + a documented security program, delivered as a standard artifact
 
 ### B) Enterprise Identity
 
-Minimum:
-- SAML SSO (Okta/Azure AD) for enterprise plans
+Shipped:
+- SAML SSO (Okta/Azure AD) for enterprise plans (org-scoped metadata + ACS + assertion validation + enforce toggle)
 
 Next:
 - SCIM provisioning (or a documented workaround with admin controls) for customers with strict JML requirements
 
 ### C) Procurement Readiness Artifacts
 
-Minimum external artifacts:
-- Trust center kit + 25-question procurement FAQ
-- Subprocessor list maintained and dated
-- Incident response commitments and escalation process
-- Uptime/SLA statement and (ideally) a public status page
+Shipped:
+- Trust Center pages + Security Review + 25-question procurement FAQ
+- Subprocessor list page + template
+- Incident response and escalation summary page
+- SLA tier breakdown page + basic public status page
+- Downloadable Vendor Trust Packet PDF (auto-generated)
 
 ### D) Packaged Outcomes (Why $899 is “worth it”)
 
-Enterprise plans typically require bundled delivery, such as:
-- onboarding + evidence migration plan
-- 14-day proof packet delivery
-- monthly governance report template and cadence
+Shipped:
+- 14-day proof packet generator (zip export)
+- monthly executive compliance pack export
+- audit-ready export bundle (zip export)
+- governance export dashboard view for admins
+
+Remaining:
+- A documented onboarding + evidence migration plan template (services motion) for enterprise procurement packages
 
 ### E) Proof (Measured Outcomes)
 
-To sustain $899+, you need:
+Remaining (commercial, not product):
 - 3-5 named customer references (or at minimum, reference calls available under NDA)
 - quantified outcomes (audit prep hours saved; time-to-procurement approval; reduction in expired credentials; incident closure times)
 
@@ -109,4 +114,3 @@ These items slow procurement and can create legal/credibility risk if not precis
 - Data deletion timelines and “deletion certificates”
 - Incident notification timing (avoid absolute promises without contract language)
 - SLA guarantees (avoid stating as universal if only enterprise plans include them)
-
