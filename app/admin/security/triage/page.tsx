@@ -27,6 +27,8 @@ type SecurityData = {
   };
 };
 
+type SeverityFilter = 'all' | 'high' | 'medium' | 'low';
+
 async function fetchSecurity(): Promise<SecurityData | null> {
   const { base, headers } = await getAdminFetchConfig();
   const res = await fetch(`${base}/api/admin/security`, {
@@ -69,6 +71,28 @@ function triageRoute(event: SecurityEvent): string {
   return '/admin/security';
 }
 
+function normalizeSeverityFilter(value?: string): SeverityFilter {
+  if (value === 'high' || value === 'medium' || value === 'low') {
+    return value;
+  }
+  return 'all';
+}
+
+function routeLabel(route: string): string {
+  switch (route) {
+    case '/admin/billing':
+      return 'Billing Operations';
+    case '/admin/trials':
+      return 'Trial Operations';
+    case '/admin/users':
+      return 'Identity Operations';
+    case '/admin/orgs':
+      return 'Tenant Operations';
+    default:
+      return 'Security Operations';
+  }
+}
+
 const playbook = [
   {
     title: 'Acknowledge and classify',
@@ -87,11 +111,33 @@ const playbook = [
   },
 ] as const;
 
-export default async function AdminSecurityTriagePage() {
+export default async function AdminSecurityTriagePage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ severity?: string }>;
+}) {
+  const resolvedSearchParams = await searchParams;
   const data = await fetchSecurity();
   const events = data?.events ?? [];
+  const activeFilter = normalizeSeverityFilter(resolvedSearchParams?.severity);
+  const filteredEvents =
+    activeFilter === 'all'
+      ? events
+      : events.filter((event) => event.severity === activeFilter);
   const high = events.filter((e) => e.severity === 'high');
   const medium = events.filter((e) => e.severity === 'medium');
+  const routeTargets = [
+    '/admin/billing',
+    '/admin/trials',
+    '/admin/users',
+    '/admin/orgs',
+    '/admin/security',
+  ] as const;
+  const routingMatrix = routeTargets.map((route) => ({
+    route,
+    label: routeLabel(route),
+    count: filteredEvents.filter((event) => triageRoute(event) === route).length,
+  }));
 
   return (
     <div className="space-y-6">
@@ -159,15 +205,36 @@ export default async function AdminSecurityTriagePage() {
       </section>
 
       <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
-        <div className="mb-4 flex items-center gap-2">
-          <ShieldAlert className="h-5 w-5 text-amber-300" />
-          <h2 className="text-lg font-semibold text-slate-100">
-            Active Triage Items
-          </h2>
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2">
+            <ShieldAlert className="h-5 w-5 text-amber-300" />
+            <h2 className="text-lg font-semibold text-slate-100">
+              Active Triage Items
+            </h2>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {(['all', 'high', 'medium', 'low'] as const).map((filter) => (
+              <Link
+                key={filter}
+                href={
+                  filter === 'all'
+                    ? '/admin/security/triage'
+                    : `/admin/security/triage?severity=${filter}`
+                }
+                className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wider ${
+                  activeFilter === filter
+                    ? 'border-cyan-400/40 bg-cyan-500/15 text-cyan-100'
+                    : 'border-slate-600/40 bg-slate-800/40 text-slate-300 hover:bg-slate-700/50'
+                }`}
+              >
+                {filter}
+              </Link>
+            ))}
+          </div>
         </div>
         <div className="space-y-3">
-          {events.length > 0 ? (
-            events.map((event) => (
+          {filteredEvents.length > 0 ? (
+            filteredEvents.map((event) => (
               <Link
                 key={event.id}
                 href={triageRoute(event)}
@@ -204,9 +271,31 @@ export default async function AdminSecurityTriagePage() {
           ) : (
             <div className="rounded-lg border border-slate-800/60 bg-slate-900/60 px-4 py-8 text-center text-slate-500">
               <Clock className="mx-auto mb-2 h-6 w-6 opacity-40" />
-              No active triage items in the last 7 days.
+              No {activeFilter === 'all' ? '' : `${activeFilter} `}triage items
+              in the last 7 days.
             </div>
           )}
+        </div>
+      </section>
+
+      <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
+        <h2 className="mb-4 text-lg font-semibold text-slate-100">
+          Routing Matrix
+        </h2>
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+          {routingMatrix.map((item) => (
+            <Link
+              key={item.route}
+              href={item.route}
+              className="rounded-lg border border-slate-800 bg-slate-900/60 px-4 py-3 transition-colors hover:bg-slate-800/70"
+            >
+              <p className="text-xs uppercase tracking-wider text-slate-500">
+                {item.label}
+              </p>
+              <p className="mt-2 text-2xl font-bold text-slate-100">{item.count}</p>
+              <p className="text-xs text-slate-500">items routed</p>
+            </Link>
+          ))}
         </div>
       </section>
 

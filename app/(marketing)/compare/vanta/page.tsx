@@ -39,6 +39,24 @@ const idealIf = [
   'You want posture reporting that maps to operational reality',
 ] as const;
 
+const procurementChecks = [
+  {
+    title: 'Security review acceleration',
+    detail:
+      'Use the FormaOS security review packet to address architecture and control questions early.',
+  },
+  {
+    title: 'Defensible workflow proof',
+    detail:
+      'Demonstrate owner-level execution with tasks, approvals, and evidence history in one chain.',
+  },
+  {
+    title: 'Pilot-to-rollout confidence',
+    detail:
+      'Start with one business unit, validate outcomes, then scale to broader teams and entities.',
+  },
+] as const;
+
 export default function CompareVantaPage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#0a0f1c] text-slate-100">
@@ -104,6 +122,29 @@ export default function CompareVantaPage() {
         </div>
       </section>
 
+      <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-7">
+          <h2 className="text-lg font-semibold text-white">
+            Procurement Evaluation Focus
+          </h2>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            {procurementChecks.map((check) => (
+              <article
+                key={check.title}
+                className="rounded-xl border border-white/10 bg-white/5 p-4"
+              >
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-200">
+                  {check.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                  {check.detail}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="relative mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
         <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/7 via-white/4 to-transparent p-7 lg:p-10">
           <h3 className="text-lg font-semibold text-white">FormaOS is ideal if</h3>
@@ -139,4 +180,3 @@ export default function CompareVantaPage() {
     </div>
   );
 }
-

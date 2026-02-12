@@ -47,6 +47,24 @@ const differentiators = [
   'Built for regulated operators, not only security teams',
 ] as const;
 
+const evaluationPlaybook = [
+  {
+    title: '1. Define outcomes, not pages',
+    detail:
+      'Assess whether the platform helps your team evaluate risk, prove readiness, and operate controls continuously.',
+  },
+  {
+    title: '2. Validate workflow defensibility',
+    detail:
+      'Test if tasks, evidence, ownership, and approvals stay connected in one auditable chain-of-custody.',
+  },
+  {
+    title: '3. Run a buyer-grade trust review',
+    detail:
+      'Use a procurement lens: security review packet, trust artifacts, and objection handling for legal/security teams.',
+  },
+] as const;
+
 export default function CompareIndexPage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#0a0f1c] text-slate-100">
@@ -131,8 +149,23 @@ export default function CompareIndexPage() {
             feature parity varies by plan and deployment.
           </p>
         </div>
+
+        <div className="mt-6 grid gap-4 lg:grid-cols-3">
+          {evaluationPlaybook.map((step) => (
+            <article
+              key={step.title}
+              className="rounded-2xl border border-white/10 bg-white/5 p-6"
+            >
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-cyan-200">
+                {step.title}
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                {step.detail}
+              </p>
+            </article>
+          ))}
+        </div>
       </section>
     </div>
   );
 }
-

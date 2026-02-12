@@ -40,6 +40,24 @@ const trustSignals = [
   'Evidence chain integrity',
 ];
 
+const trustWorkflow = [
+  {
+    step: 'Evaluate',
+    detail:
+      'Security and procurement teams review architecture, data handling, and governance posture.',
+  },
+  {
+    step: 'Validate',
+    detail:
+      'Buyer stakeholders verify control ownership, evidence traceability, and operational accountability.',
+  },
+  {
+    step: 'Accelerate',
+    detail:
+      'Teams move into trial or procurement with fewer blockers and reusable trust artifacts.',
+  },
+] as const;
+
 export default function TrustCenterPage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#0a0f1c] text-slate-100">
@@ -153,6 +171,34 @@ export default function TrustCenterPage() {
             </p>
           </article>
         ))}
+      </section>
+
+      <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
+        <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/7 via-white/4 to-transparent p-7 lg:p-10">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-300">
+            Trust Workflow
+          </h3>
+          <p className="mt-2 max-w-2xl text-sm text-slate-400">
+            FormaOS trust artifacts are structured to support enterprise review
+            gates from early evaluation through procurement.
+          </p>
+
+          <div className="mt-6 grid gap-3 md:grid-cols-3">
+            {trustWorkflow.map((item) => (
+              <article
+                key={item.step}
+                className="rounded-xl border border-white/10 bg-white/5 p-4"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wider text-cyan-200">
+                  {item.step}
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                  {item.detail}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="relative mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">

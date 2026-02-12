@@ -228,6 +228,14 @@ interface ActionQueueItem {
   priority: ActionPriority;
 }
 
+interface ActivationMilestone {
+  id: string;
+  title: string;
+  detail: string;
+  done: boolean;
+  href: string;
+}
+
 function PriorityActionQueue({
   items,
 }: {
@@ -280,6 +288,84 @@ function PriorityActionQueue({
           </Link>
         ))}
       </div>
+    </DashboardSectionCard>
+  );
+}
+
+function ActivationMilestones({
+  milestones,
+  loading,
+}: {
+  milestones: ActivationMilestone[];
+  loading: boolean;
+}) {
+  const completed = milestones.filter((m) => m.done).length;
+  const progress = milestones.length
+    ? Math.round((completed / milestones.length) * 100)
+    : 0;
+
+  return (
+    <DashboardSectionCard
+      title="Activation Progress"
+      description="Milestone-driven path from setup to first defensible proof"
+      icon={TrendingUp}
+    >
+      {loading ? (
+        <div className="space-y-3">
+          {Array.from({ length: 4 }).map((_, idx) => (
+            <div
+              key={`loading-${idx}`}
+              className="h-16 animate-pulse rounded-xl border border-white/10 bg-white/5"
+            />
+          ))}
+        </div>
+      ) : (
+        <>
+          <div className="mb-4 rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-3">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-cyan-200">
+              Time-To-First-Proof Tracker
+            </p>
+            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/10">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            <p className="mt-2 text-xs text-slate-300">
+              {completed} of {milestones.length} milestones completed
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {milestones.map((milestone) => (
+              <Link
+                key={milestone.id}
+                href={milestone.href}
+                className="group flex items-start justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:bg-white/10"
+              >
+                <div className="flex items-start gap-3">
+                  <span
+                    className={`mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full border ${
+                      milestone.done
+                        ? 'border-emerald-400/40 bg-emerald-500/20 text-emerald-200'
+                        : 'border-slate-500/40 bg-slate-700/20 text-slate-300'
+                    }`}
+                  >
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-100">
+                      {milestone.title}
+                    </p>
+                    <p className="text-xs text-slate-400">{milestone.detail}</p>
+                  </div>
+                </div>
+                <ArrowRight className="mt-1 h-4 w-4 text-slate-500 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            ))}
+          </div>
+        </>
+      )}
     </DashboardSectionCard>
   );
 }
@@ -723,6 +809,39 @@ export function EmployerDashboard({
     });
   const [isLoadingCounts, setIsLoadingCounts] = useState(true);
   const [countsError, setCountsError] = useState<string | null>(null);
+  const activationMilestones: ActivationMilestone[] = [
+    {
+      id: 'foundation',
+      title: 'Foundation configured',
+      detail: 'Organization profile and framework baseline are in place.',
+      done: completionCounts.orgProfileComplete && completionCounts.frameworks > 0,
+      href: '/onboarding?step=2',
+    },
+    {
+      id: 'execution',
+      title: 'Execution workflows started',
+      detail: 'Tasks or workflows are actively driving control ownership.',
+      done: completionCounts.tasks > 0 || completionCounts.workflows > 0,
+      href: '/app/tasks',
+    },
+    {
+      id: 'evidence',
+      title: 'Evidence chain active',
+      detail: 'Artifacts are being captured and linked to control execution.',
+      done: completionCounts.evidence > 0,
+      href: '/app/vault',
+    },
+    {
+      id: 'readiness',
+      title: 'Readiness proof established',
+      detail: 'Checks or reports are available for buyer and auditor review.',
+      done:
+        completionCounts.complianceChecks > 0 ||
+        completionCounts.reports > 0 ||
+        complianceScore >= 70,
+      href: '/app/reports',
+    },
+  ];
 
   const actionQueue: ActionQueueItem[] = [
     {
@@ -866,6 +985,10 @@ export function EmployerDashboard({
       {/* Quick-action cards (replaces old sidebar-style middle column) */}
       <QuickActions />
       <PriorityActionQueue items={actionQueue} />
+      <ActivationMilestones
+        milestones={activationMilestones}
+        loading={isLoadingCounts}
+      />
 
       <GettingStartedChecklist industry={industry} />
 
