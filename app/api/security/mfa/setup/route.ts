@@ -19,7 +19,8 @@ export async function POST() {
     }
 
     const secret = await generate2FASecret(user.id, user.email);
-    return NextResponse.json({ ok: true, ...secret });
+    // Only return QR code and backup codes — never expose the raw TOTP secret
+    return NextResponse.json({ ok: true, qrCode: secret.qrCode, backupCodes: secret.backupCodes });
   } catch (error) {
     console.error('[security/mfa/setup] Error:', error);
     return NextResponse.json(

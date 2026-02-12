@@ -26,8 +26,6 @@ export async function GET() {
       },
     },
     version: process.env.npm_package_version || 'unknown',
-    uptime: process.uptime(),
-    memory: process.memoryUsage(),
   };
 
   try {

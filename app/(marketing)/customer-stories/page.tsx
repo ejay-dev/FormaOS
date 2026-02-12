@@ -7,16 +7,16 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 export const metadata: Metadata = {
-  title: 'FormaOS | Customer Stories',
+  title: 'FormaOS | Use Case Scenarios',
   description:
-    'Outcome-driven stories from regulated operators using FormaOS to govern controls, evidence, and audit readiness.',
+    'Example scenarios showing how regulated operators use FormaOS to govern controls, evidence, and audit readiness.',
   alternates: {
     canonical: `${siteUrl}/customer-stories`,
   },
   openGraph: {
-    title: 'FormaOS | Customer Stories',
+    title: 'FormaOS | Use Case Scenarios',
     description:
-      'Outcome-driven stories from regulated operators using FormaOS to govern controls, evidence, and audit readiness.',
+      'Example scenarios showing how regulated operators use FormaOS to govern controls, evidence, and audit readiness.',
     type: 'website',
     url: `${siteUrl}/customer-stories`,
   },
@@ -73,7 +73,7 @@ export default function CustomerStoriesPage() {
           Proof in Practice
         </div>
         <h1 className="mt-6 text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
-          Customer stories from regulated operators
+          Use case scenarios from regulated industries
         </h1>
         <p className="mt-5 max-w-3xl text-base leading-relaxed text-slate-300 sm:text-lg">
           These examples are anonymized by default. If you’re evaluating FormaOS

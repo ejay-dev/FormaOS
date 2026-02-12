@@ -5,9 +5,30 @@
  * Redis-based caching with intelligent invalidation
  */
 
-// In-memory cache fallback when Redis is not available
+// In-memory cache fallback when Redis is not available.
+// Uses LRU eviction to prevent unbounded memory growth.
+const MAX_CACHE_ENTRIES = 1000;
+
 class InMemoryCache {
   private cache: Map<string, { value: any; expiry: number }> = new Map();
+
+  private evictExpired(): void {
+    const now = Date.now();
+    for (const [key, item] of this.cache) {
+      if (now > item.expiry) this.cache.delete(key);
+    }
+  }
+
+  private evictIfNeeded(): void {
+    if (this.cache.size < MAX_CACHE_ENTRIES) return;
+    this.evictExpired();
+    // If still over limit, drop oldest entries (Map preserves insertion order)
+    while (this.cache.size >= MAX_CACHE_ENTRIES) {
+      const oldest = this.cache.keys().next().value;
+      if (oldest !== undefined) this.cache.delete(oldest);
+      else break;
+    }
+  }
 
   async get(key: string): Promise<string | null> {
     const item = this.cache.get(key);
@@ -18,10 +39,16 @@ class InMemoryCache {
       return null;
     }
 
+    // Move to end for LRU ordering
+    this.cache.delete(key);
+    this.cache.set(key, item);
+
     return JSON.stringify(item.value);
   }
 
   async set(key: string, value: string, ttl: number): Promise<void> {
+    this.evictIfNeeded();
+    this.cache.delete(key);
     this.cache.set(key, {
       value: JSON.parse(value),
       expiry: Date.now() + ttl * 1000,

@@ -29,17 +29,18 @@ export async function POST(request: Request) {
 
   const admin = createSupabaseAdminClient();
 
-  const { data: existingEvent } = await admin
+  // Idempotency: upsert with unique constraint on event id to prevent race conditions
+  const { error: upsertError } = await admin
     .from("billing_events")
-    .select("id")
-    .eq("id", event.id)
-    .maybeSingle();
+    .upsert(
+      { id: event.id, event_type: event.type },
+      { onConflict: "id", ignoreDuplicates: true },
+    );
 
-  if (existingEvent?.id) {
+  if (upsertError && upsertError.code === "23505") {
+    // Already processed (unique violation) — safe to skip
     return NextResponse.json({ received: true });
   }
-
-  await admin.from("billing_events").insert({ id: event.id, event_type: event.type });
 
   try {
     const upsertFromSubscription = async (subscription: Stripe.Subscription) => {

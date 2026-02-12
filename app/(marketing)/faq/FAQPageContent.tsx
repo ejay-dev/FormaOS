@@ -98,7 +98,7 @@ const faqCategories = [
       },
       {
         q: 'Is evidence immutable?',
-        a: 'Evidence records are tracked with audit logs and timestamps. Optional evidence versioning and enhanced integrity controls are available by request.',
+        a: 'Evidence records are tracked with audit logs and timestamps. Every upload, update, and approval is recorded for full traceability.',
       },
       {
         q: 'Can we export regulatory reports?',
@@ -130,7 +130,7 @@ const faqCategories = [
       },
       {
         q: 'Do you support webhooks?',
-        a: 'Webhook support is available by request for real-time event notifications. Contact us to discuss your integration needs.',
+        a: 'Yes — FormaOS includes webhook endpoints for real-time event notifications out of the box via our REST API v1.',
       },
       {
         q: 'Can FormaOS connect to our existing systems?',

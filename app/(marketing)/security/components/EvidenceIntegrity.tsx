@@ -46,7 +46,7 @@ const evidenceProperties = [
     icon: Archive,
     title: 'Audit-Preserved',
     description:
-      'Evidence updates are logged with a full audit trail; optional versioning is available by request.',
+      'Evidence updates are logged with a full audit trail for complete traceability.',
     detail: 'Audit history',
   },
 ];

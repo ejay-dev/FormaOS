@@ -101,15 +101,9 @@ export async function POST(request: NextRequest) {
 // ---------------------------------------------------------------------------
 
 export async function GET(request: NextRequest) {
-  // Stats endpoint also requires auth
   const auth = verifyCronSecret(request);
   if (!auth.valid) {
-    // For GET health-check, return basic status without auth
-    return NextResponse.json({
-      status: 'ok',
-      service: 'job-queue',
-      timestamp: new Date().toISOString(),
-    });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   // If authenticated, return full stats
