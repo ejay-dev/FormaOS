@@ -10,8 +10,20 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: read
+  security-events: write
+
 env:
   NODE_VERSION: '20'
+  # Provide runtime env for security verification + avoid CI-only 500s.
+  # Values must be supplied via repo/org secrets or variables.
+  NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL }}
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+  SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || vars.SUPABASE_SERVICE_ROLE_KEY }}
+  NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL || vars.NEXT_PUBLIC_APP_URL }}
+  NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL || vars.NEXT_PUBLIC_SITE_URL }}
 
 jobs:
   dependency_scan:
@@ -56,12 +68,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run CodeQL Analysis
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: javascript, typescript
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
 
   security_tests:
     name: 'Security Test Verification'
@@ -82,11 +94,27 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
+      - name: Validate required security test environment
+        run: |
+          missing=0
+          for key in NEXT_PUBLIC_SUPABASE_URL NEXT_PUBLIC_SUPABASE_ANON_KEY; do
+            if [ -z "${!key:-}" ]; then
+              echo "❌ Missing required env var: $key"
+              missing=1
+            fi
+          done
+          if [ "$missing" -eq 1 ]; then
+            echo ""
+            echo "Security tests require Supabase public env vars to boot the app safely."
+            echo "Set them as GitHub Secrets or Repo Variables."
+            exit 1
+          fi
+
       - name: Build application
         run: npm run build
 
       - name: Run admin security verification tests
-        run: npx playwright test e2e/admin-security-verification.spec.ts --reporter=json > security-test-results.json
+        run: npx playwright test e2e/admin-security-verification.spec.ts --reporter=list
         env:
           CI: true
 
@@ -94,25 +122,27 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: security-test-results
-          path: security-test-results.json
+          path: |
+            test-results/
+            playwright-report/
           retention-days: 30
 
-      - name: Verify security test results
+      - name: Verify security test results (json report)
         run: |
-          if [ -f security-test-results.json ]; then
-            PASSED=$(jq '.stats.passed' security-test-results.json)
-            TOTAL=$(jq '.stats.total' security-test-results.json)
-            echo "Security tests: $PASSED/$TOTAL passed"
-            if [ "$PASSED" != "$TOTAL" ]; then
-              echo "❌ Security tests failed - blocking deployment"
-              exit 1
-            else
-              echo "✅ All security tests passed"
-            fi
-          else
-            echo "❌ Security test results not found"
+          if [ ! -f test-results/results.json ]; then
+            echo "❌ Security test report not found at test-results/results.json"
             exit 1
           fi
+          unexpected=$(jq -r '.stats.unexpected // 0' test-results/results.json)
+          flaky=$(jq -r '.stats.flaky // 0' test-results/results.json)
+          skipped=$(jq -r '.stats.skipped // 0' test-results/results.json)
+          expected=$(jq -r '.stats.expected // 0' test-results/results.json)
+          echo "Security tests stats: expected=$expected unexpected=$unexpected flaky=$flaky skipped=$skipped"
+          if [ "$unexpected" != "0" ] || [ "$flaky" != "0" ]; then
+            echo "❌ Security tests failed or flaky - blocking deployment"
+            exit 1
+          fi
+          echo "✅ All security tests passed"
 
   secret_scan:
     name: 'Secret Detection'
@@ -251,7 +281,7 @@ jobs:
           echo "| Debug Route Check | ${{ needs.debug_route_check.result }} |" >> $GITHUB_STEP_SUMMARY
 
       - name: Critical security check
-        if: needs.security_tests.result == 'failure' || needs.secret_scan.result == 'failure' || needs.debug_route_check.result == 'failure'
+        if: needs.code_security.result == 'failure' || needs.security_tests.result == 'failure' || needs.secret_scan.result == 'failure' || needs.debug_route_check.result == 'failure'
         run: |
           echo "❌ CRITICAL: Security checks failed - deployment blocked"
           exit 1

@@ -35,6 +35,47 @@ export async function GET() {
     const dbStart = Date.now();
     const supabaseUrl = getSupabaseUrl();
     const serviceRoleKey = getSupabaseServiceRoleKey();
+    const hasValidSupabaseUrl = (() => {
+      if (!supabaseUrl) return false;
+      try {
+        new URL(supabaseUrl);
+        return true;
+      } catch {
+        return false;
+      }
+    })();
+
+    // In CI / preview contexts, Supabase env can be intentionally absent.
+    // Health should degrade (503) rather than crash (500), to keep security
+    // verification tests stable while still signaling misconfiguration.
+    if (!hasValidSupabaseUrl || !serviceRoleKey) {
+      health.checks.database = {
+        status: 'error',
+        responseTime: Date.now() - dbStart,
+        error: 'Supabase service role configuration missing',
+      };
+      health.checks.auth = {
+        status: 'error',
+        responseTime: 0,
+        error: 'Supabase service role configuration missing',
+      };
+      health.checks.api = {
+        status: 'healthy',
+        responseTime: Date.now() - startTime,
+        error: null,
+      };
+
+      health.status = 'degraded';
+
+      return NextResponse.json(health, {
+        status: 503,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Content-Type': 'application/json',
+        },
+      });
+    }
+
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
     try {
@@ -139,10 +180,28 @@ export async function GET() {
 // Support HEAD requests for simple up/down checks
 export async function HEAD() {
   try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    );
+    const supabaseUrl = getSupabaseUrl();
+    const serviceRoleKey = getSupabaseServiceRoleKey();
+    const hasValidSupabaseUrl = (() => {
+      if (!supabaseUrl) return false;
+      try {
+        new URL(supabaseUrl);
+        return true;
+      } catch {
+        return false;
+      }
+    })();
+
+    if (!hasValidSupabaseUrl || !serviceRoleKey) {
+      return new Response(null, {
+        status: 503,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+        },
+      });
+    }
+
+    const supabase = createClient(supabaseUrl, serviceRoleKey);
     await supabase.from('organizations').select('id').limit(1).single();
 
     return new Response(null, {
