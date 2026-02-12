@@ -18,7 +18,11 @@ const faqs = [
   },
   {
     q: 'Do you support SCIM provisioning?',
-    a: 'Not currently as a first-party implementation. If SCIM is required for your JML process, raise it during procurement so we can confirm scope and interim admin workflows.',
+    a: 'Not currently as a first-party implementation. If SCIM is required, raise it during procurement so we can confirm scope. In the meantime, FormaOS supports a JML (Joiner/Mover/Leaver) admin workflow: owners/admins bulk-invite users, adjust roles, and deactivate access, with actions recorded in the audit trail.',
+  },
+  {
+    q: 'What is your JML (Joiner/Mover/Leaver) workaround without SCIM?',
+    a: 'Owners/admins can manage identity lifecycle directly: (1) Joiner: bulk invite users by email with initial roles, (2) Mover: change roles and access permissions as responsibilities change, (3) Leaver: deactivate/lock users and revoke active sessions. These changes are auditable, and you can export audit logs as procurement evidence.',
   },
   {
     q: 'Do you support MFA?',
@@ -43,6 +47,10 @@ const faqs = [
   {
     q: 'Do you have a SOC 2 Type II report for FormaOS as a vendor?',
     a: 'If you require a vendor SOC 2 report, raise it during procurement. FormaOS uses “aligned vs certified” wording intentionally: aligned means controls are modeled and operational artifacts can be produced, certified requires an independent audit of FormaOS as a vendor.',
+  },
+  {
+    q: 'Do you provide a vendor assurance artifact (pen test / independent assessment)?',
+    a: 'We provide a vendor assurance process and can share independent assessment artifacts under NDA when available. See the Vendor Assurance page in the Trust Center for scope, cadence, and request process. We avoid public certification claims unless an independent audit report exists for FormaOS as a vendor.',
   },
   {
     q: 'Do your infrastructure providers have compliance reports?',
@@ -153,9 +161,11 @@ export default function SecurityReviewFaqPage() {
           <Link href="/trust" className="text-primary hover:underline">
             Visit Trust Center →
           </Link>
+          <Link href="/trust/vendor-assurance" className="text-primary hover:underline">
+            Vendor Assurance →
+          </Link>
         </div>
       </div>
     </main>
   );
 }
-

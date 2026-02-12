@@ -150,13 +150,15 @@ export async function processEnterpriseExportJob(
     requested_by: string;
     options: EnterpriseExportOptions | null;
     status?: string | null;
-    storage_path?: string | null;
+    file_url?: string | null;
+    expires_at?: string | null;
   } | null = null;
 
   // Try enterprise_export_jobs first
   const { data: enterpriseJob, error: enterpriseError } = await admin
     .from('enterprise_export_jobs')
-    .select('organization_id, requested_by, options, status, storage_path')
+    // NOTE: Do not select storage_* columns. Production schema may not include them yet.
+    .select('organization_id, requested_by, options, status, file_url, expires_at')
     .eq('id', jobId)
     .single();
 
@@ -181,8 +183,12 @@ export async function processEnterpriseExportJob(
 
   const { organization_id: orgId, requested_by: userId } = job;
 
-  // Idempotency: if already completed and stored, do not regenerate.
-  if (job.status === 'completed' && job.storage_path) {
+  // Idempotency: if already completed and a direct file URL is still valid, do not regenerate.
+  if (
+    job.status === 'completed' &&
+    job.file_url &&
+    (!job.expires_at || new Date(job.expires_at).getTime() > Date.now())
+  ) {
     const baseUrl =
       (process.env.NEXT_PUBLIC_APP_URL ?? '').trim() || 'http://localhost:3000';
     return { ok: true, downloadUrl: generateSignedDownloadUrl(baseUrl, jobId, orgId) };
@@ -260,7 +266,10 @@ export async function processEnterpriseExportJob(
     const zipBuffer = await createExportZip(exportData, reportPdfs);
     const fileSize = zipBuffer.length;
 
-    // Upload to Supabase Storage (private bucket) and store location in the job.
+    // Upload to Supabase Storage (private bucket) and store a short-lived signed URL
+    // in the legacy `file_url` column for backwards-compatible downloads.
+    //
+    // Production schema may not include `storage_bucket/storage_path/content_type` yet.
     const datePart = new Date().toISOString().slice(0, 10);
     const storagePath = `${orgId}/enterprise-exports/${bundleType}/${datePart}/${jobId}.zip`;
 
@@ -276,17 +285,25 @@ export async function processEnterpriseExportJob(
       throw new Error(`Storage upload failed: ${upload.error.message}`);
     }
 
+    // Create a signed URL (default: 24 hours) and persist it on the job row.
+    const ttlSeconds = 60 * 60 * 24;
+    const signed = await admin.storage
+      .from(DEFAULT_EXPORT_BUCKET)
+      .createSignedUrl(storagePath, ttlSeconds);
+    if (signed.error || !signed.data?.signedUrl) {
+      throw new Error(signed.error?.message ?? 'Failed to sign export URL');
+    }
+
     const baseUrl =
       (process.env.NEXT_PUBLIC_APP_URL ?? '').trim() || 'http://localhost:3000';
     const downloadUrl = generateSignedDownloadUrl(baseUrl, jobId, orgId);
+    const expiresAt = new Date(Date.now() + ttlSeconds * 1000).toISOString();
 
     // Update job as completed
     await updateJobStatus(jobId, 'completed', 100, {
-      file_url: null,
+      file_url: signed.data.signedUrl,
       file_size: fileSize,
-      storage_bucket: DEFAULT_EXPORT_BUCKET,
-      storage_path: storagePath,
-      content_type: 'application/zip',
+      expires_at: expiresAt,
       completed_at: new Date().toISOString(),
     });
 
@@ -315,7 +332,8 @@ export async function getExportJobStatus(jobId: string): Promise<ExportJobResult
   // Try enterprise table first
   const { data: job, error } = await admin
     .from('enterprise_export_jobs')
-    .select('id, organization_id, status, progress, file_url, file_size, expires_at, error_message, storage_path')
+    // NOTE: Do not select storage_* columns. Production schema may not include them yet.
+    .select('id, organization_id, status, progress, file_url, file_size, expires_at, error_message')
     .eq('id', jobId)
     .single();
 
@@ -345,7 +363,7 @@ export async function getExportJobStatus(jobId: string): Promise<ExportJobResult
   const baseUrl =
     (process.env.NEXT_PUBLIC_APP_URL ?? '').trim() || 'http://localhost:3000';
   const computedDownloadUrl =
-    job.status === 'completed' && Boolean((job as any).storage_path)
+    job.status === 'completed'
       ? generateSignedDownloadUrl(baseUrl, job.id, (job as any).organization_id ?? '')
       : undefined;
 
@@ -353,7 +371,9 @@ export async function getExportJobStatus(jobId: string): Promise<ExportJobResult
     jobId: job.id,
     status: job.status,
     progress: job.progress || 0,
-    downloadUrl: (job.file_url as string | null) ?? computedDownloadUrl,
+    // Prefer the auth-gated tokenized download endpoint. The endpoint will
+    // redirect to the stored signed file_url once authorization is verified.
+    downloadUrl: computedDownloadUrl ?? (job.file_url as string | null) ?? undefined,
     fileSize: job.file_size,
     expiresAt: job.expires_at,
     errorMessage: job.error_message,

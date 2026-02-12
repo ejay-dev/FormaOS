@@ -75,8 +75,21 @@ jobs:
           node -e "
             const { generateBrowserConfig } = require('./tests/visual/cross-browser.js');
             const backstop = require('backstopjs');
+            const fs = require('fs');
+            const path = require('path');
             const config = generateBrowserConfig('${{ matrix.browser }}');
-            backstop('test', { config })
+            const refDir = path.resolve(config.paths.bitmaps_reference);
+            const hasRefs = fs.existsSync(refDir) && fs.readdirSync(refDir).some(f => f.endsWith('.png'));
+
+            const run = async () => {
+              if (!hasRefs) {
+                console.log('ℹ️  No reference images found; generating references first...');
+                await backstop('reference', { config });
+              }
+              await backstop('test', { config });
+            };
+
+            run()
               .then(() => {
                 console.log('✅ Visual tests passed');
                 process.exit(0);
@@ -194,8 +207,21 @@ jobs:
           node -e "
             const { generateMobileConfig } = require('./tests/visual/cross-browser.js');
             const backstop = require('backstopjs');
+            const fs = require('fs');
+            const path = require('path');
             const config = generateMobileConfig('${{ matrix.device }}');
-            backstop('test', { config })
+            const refDir = path.resolve(config.paths.bitmaps_reference);
+            const hasRefs = fs.existsSync(refDir) && fs.readdirSync(refDir).some(f => f.endsWith('.png'));
+
+            const run = async () => {
+              if (!hasRefs) {
+                console.log('ℹ️  No reference images found; generating references first...');
+                await backstop('reference', { config });
+              }
+              await backstop('test', { config });
+            };
+
+            run()
               .then(() => {
                 console.log('✅ Mobile visual tests passed');
                 process.exit(0);

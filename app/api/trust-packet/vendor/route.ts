@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { TRUST_SUBPROCESSORS } from '@/lib/trust/subprocessors';
+import { fetchPublicUptimeChecks } from '@/lib/status/public-uptime';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -196,29 +197,15 @@ async function buildVendorTrustPacketPdf(payload: {
 }
 
 export async function GET() {
-  const admin = createSupabaseAdminClient();
   const generatedAt = new Date().toISOString();
 
   const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const since30d = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
-  const [{ data: d7 }, { data: d30 }] = await Promise.all([
-    admin
-      .from('public_uptime_checks')
-      .select('ok, checked_at')
-      .gte('checked_at', since7d)
-      .order('checked_at', { ascending: false })
-      .limit(5000),
-    admin
-      .from('public_uptime_checks')
-      .select('ok, checked_at')
-      .gte('checked_at', since30d)
-      .order('checked_at', { ascending: false })
-      .limit(20000),
+  const [rows7, rows30] = await Promise.all([
+    fetchPublicUptimeChecks({ sinceIso: since7d, limit: 5000 }),
+    fetchPublicUptimeChecks({ sinceIso: since30d, limit: 20000 }),
   ]);
-
-  const rows7 = (d7 ?? []) as Array<{ ok: boolean }>;
-  const rows30 = (d30 ?? []) as Array<{ ok: boolean }>;
 
   const uptime = {
     last7d: {

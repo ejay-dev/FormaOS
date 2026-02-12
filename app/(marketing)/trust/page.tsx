@@ -196,6 +196,25 @@ export default function TrustCenterPage() {
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </div>
           </Link>
+          <Link
+            href="/trust/vendor-assurance"
+            className="group rounded-2xl border border-white/10 bg-white/5 p-6 transition-colors hover:bg-white/7"
+          >
+            <div className="mb-4 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
+              <ShieldCheck className="h-5 w-5 text-cyan-300" />
+            </div>
+            <h2 className="text-lg font-semibold text-white">
+              Vendor Assurance
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-slate-300">
+              Procurement-ready process overview for independent assessment
+              artifacts and contract-accurate assurance wording.
+            </p>
+            <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200">
+              View process
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </div>
+          </Link>
         </div>
       </section>
 

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { CheckCircle2, XCircle, Clock, Activity } from 'lucide-react';
+import { fetchPublicUptimeChecks } from '@/lib/status/public-uptime';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
 
@@ -23,19 +23,14 @@ function pct(ok: number, total: number) {
 }
 
 export default async function StatusPage() {
-  const admin = createSupabaseAdminClient();
   const now = new Date();
   const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
-  const { data: last7d } = await admin
-    .from('public_uptime_checks')
-    .select('checked_at, ok, latency_ms, source')
-    .gte('checked_at', since7d)
-    .order('checked_at', { ascending: false })
-    .limit(4000);
-
-  const rows = (last7d ?? []) as Row[];
+  const rows = (await fetchPublicUptimeChecks({
+    sinceIso: since7d,
+    limit: 4000,
+  })) as Row[];
   const last24 = rows.filter((r) => r.checked_at >= since24h);
 
   const ok7 = rows.filter((r) => r.ok).length;
@@ -145,4 +140,3 @@ export default async function StatusPage() {
     </main>
   );
 }
-

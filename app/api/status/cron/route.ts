@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { timingSafeEqual } from 'crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { getRedisClient, getRedisConfig } from '@/lib/redis/client';
+import { appendPublicUptimeCheck } from '@/lib/status/public-uptime';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -80,23 +81,16 @@ async function handleStatusCron(request: Request) {
 
   const latencyMs = Date.now() - startedAt;
 
-  try {
-    const insert = await admin.from('public_uptime_checks').insert({
-      ok,
-      latency_ms: latencyMs,
-      source: 'vercel-cron',
-      details,
-    });
+  const stored = await appendPublicUptimeCheck({
+    ok,
+    latency_ms: latencyMs,
+    source: 'vercel-cron',
+    details,
+  });
 
-    if (insert.error) {
-      return NextResponse.json(
-        { ok: false, error: insert.error.message },
-        { status: 500 },
-      );
-    }
-  } catch (err) {
+  if (!stored.ok) {
     return NextResponse.json(
-      { ok: false, error: err instanceof Error ? err.message : String(err) },
+      { ok: false, error: stored.error ?? 'Failed to record uptime check' },
       { status: 500 },
     );
   }
@@ -104,6 +98,7 @@ async function handleStatusCron(request: Request) {
   return NextResponse.json({
     ok: true,
     recorded: { ok, latencyMs },
+    stored: stored.stored,
     details,
   });
 }

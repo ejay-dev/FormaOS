@@ -160,8 +160,66 @@ export default function CustomerStoriesPage() {
             </Link>
           </div>
         </div>
+
+        <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-7 lg:p-10">
+          <h3 className="text-lg font-semibold text-white">ROI Proof (Structure)</h3>
+          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-300">
+            Procurement teams typically approve when ROI inputs are explicit. We
+            recommend capturing hours saved by function (audit prep, evidence
+            collection, register tracking, incident handling) and converting to
+            fully loaded wage rates (low/median/high).
+          </p>
+          <div className="mt-5 grid gap-3 md:grid-cols-3">
+            <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+              <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                Inputs
+              </div>
+              <ul className="mt-2 space-y-2 text-sm text-slate-300">
+                <li>Hours saved per month (by workflow)</li>
+                <li>Audit cycle frequency</li>
+                <li>Wage assumptions (low/median/high)</li>
+              </ul>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+              <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                Outputs
+              </div>
+              <ul className="mt-2 space-y-2 text-sm text-slate-300">
+                <li>Monthly savings ($)</li>
+                <li>Annualized savings ($)</li>
+                <li>Payback period (months)</li>
+              </ul>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+              <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                Proof
+              </div>
+              <ul className="mt-2 space-y-2 text-sm text-slate-300">
+                <li>Export bundle timestamps</li>
+                <li>Audit log excerpts</li>
+                <li>Governance pack PDF/ZIP artifacts</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/customer-stories/template"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 text-sm font-semibold text-white"
+            >
+              Use Case Study Template
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/trust"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10"
+            >
+              Trust Center
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
       </section>
     </div>
   );
 }
-

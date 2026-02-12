@@ -187,13 +187,15 @@ jobs:
             --only-categories=accessibility \
             --output=html \
             --output-path=tests/accessibility/reports/lighthouse/homepage.html \
-            --chrome-flags="--headless --no-sandbox"
+            --max-wait-for-load=120000 \
+            --chrome-flags="--headless --no-sandbox --disable-gpu --disable-dev-shm-usage --no-zygote"
             
           npx lighthouse http://localhost:3000/pricing \
             --only-categories=accessibility \
             --output=html \
             --output-path=tests/accessibility/reports/lighthouse/pricing.html \
-            --chrome-flags="--headless --no-sandbox"
+            --max-wait-for-load=120000 \
+            --chrome-flags="--headless --no-sandbox --disable-gpu --disable-dev-shm-usage --no-zygote"
 
       - name: Stop application
         if: always()

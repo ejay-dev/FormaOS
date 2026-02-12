@@ -102,41 +102,27 @@ export async function GET(
       orgId: payload.orgId,
     });
 
-    // Resolve storage location and redirect to a short-lived signed URL.
+    // Prefer legacy file_url if present (production schema may not include storage_* columns yet).
     const admin = createSupabaseAdminClient();
-    const { data: row, error: rowError } = await admin
+    const { data: legacy, error: legacyError } = await admin
       .from('enterprise_export_jobs')
-      .select('storage_bucket, storage_path, content_type, file_size')
+      .select('file_url')
       .eq('id', jobId)
       .maybeSingle();
 
-    if (rowError) {
-      return NextResponse.json({ error: rowError.message }, { status: 500 });
+    if (legacyError) {
+      return NextResponse.json({ error: legacyError.message }, { status: 500 });
     }
 
-    const bucket = (row as any)?.storage_bucket;
-    const storagePath = (row as any)?.storage_path;
-
-    if (!bucket || !storagePath) {
-      return NextResponse.json(
-        {
-          error: 'Export file location unavailable',
-          jobId: job.jobId,
-          status: job.status,
-        },
-        { status: 500 },
-      );
+    const fileUrl = (legacy as any)?.file_url as string | null | undefined;
+    if (fileUrl && typeof fileUrl === 'string' && fileUrl.startsWith('http')) {
+      return NextResponse.redirect(fileUrl);
     }
 
-    const signed = await admin.storage.from(bucket).createSignedUrl(storagePath, 60 * 5);
-    if (signed.error || !signed.data?.signedUrl) {
-      return NextResponse.json(
-        { error: signed.error?.message ?? 'Failed to sign download URL' },
-        { status: 500 },
-      );
-    }
-
-    return NextResponse.redirect(signed.data.signedUrl);
+    return NextResponse.json(
+      { error: 'Export file URL unavailable' },
+      { status: 500 },
+    );
   } catch (error) {
     const err = error instanceof Error ? error : new Error(String(error));
     exportLogger.error('export_download_failed', err, { jobId });

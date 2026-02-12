@@ -22,8 +22,9 @@ module.exports = {
       height: 1440,
     },
   ],
-  onBeforeScript: 'tests/visual/scripts/onBefore.js',
-  onReadyScript: 'tests/visual/scripts/onReady.js',
+  // Backstop resolves scripts relative to `paths.engine_scripts`.
+  onBeforeScript: 'onBefore.js',
+  onReadyScript: 'onReady.js',
   scenarios: [
     // Marketing pages
     {
@@ -57,28 +58,28 @@ module.exports = {
       url: 'http://localhost:3000/app',
       delay: 2000,
       requireSameDimensions: true,
-      onBeforeScript: 'tests/visual/scripts/auth.js',
+      onBeforeScript: 'auth.js',
     },
     {
       label: 'app_policies',
       url: 'http://localhost:3000/app/policies',
       delay: 2000,
       requireSameDimensions: true,
-      onBeforeScript: 'tests/visual/scripts/auth.js',
+      onBeforeScript: 'auth.js',
     },
     {
       label: 'app_tasks',
       url: 'http://localhost:3000/app/tasks',
       delay: 2000,
       requireSameDimensions: true,
-      onBeforeScript: 'tests/visual/scripts/auth.js',
+      onBeforeScript: 'auth.js',
     },
     {
       label: 'app_team',
       url: 'http://localhost:3000/app/team',
       delay: 2000,
       requireSameDimensions: true,
-      onBeforeScript: 'tests/visual/scripts/auth.js',
+      onBeforeScript: 'auth.js',
     },
 
     // Admin pages (requires founder authentication)
@@ -87,7 +88,7 @@ module.exports = {
       url: 'http://localhost:3000/admin',
       delay: 2000,
       requireSameDimensions: true,
-      onBeforeScript: 'tests/visual/scripts/adminAuth.js',
+      onBeforeScript: 'adminAuth.js',
     },
 
     // Error pages
@@ -107,7 +108,7 @@ module.exports = {
   paths: {
     bitmaps_reference: 'tests/visual/backstop_data/bitmaps_reference',
     bitmaps_test: 'tests/visual/backstop_data/bitmaps_test',
-    engine_scripts: 'tests/visual/backstop_data/engine_scripts',
+    engine_scripts: 'tests/visual/scripts',
     html_report: 'tests/visual/backstop_data/html_report',
     ci_report: 'tests/visual/backstop_data/ci_report',
   },
