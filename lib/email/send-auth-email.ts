@@ -63,7 +63,7 @@ function renderActionBlock(
         href="${escapeHtml(actionLink)}"
         target="_blank"
         rel="noopener"
-        style="display:inline-block;background:#0f766e;color:#ffffff !important;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:700;letter-spacing:0.2px;"
+        style="display:inline-block;background:#0ea5e9;color:#031426 !important;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:700;letter-spacing:0.2px;"
       >${escapeHtml(label)}</a>
     </div>
     <p style="margin:0 0 10px;color:#6b7280;font-size:12px;">If the button does not work, use this secure link:</p>
@@ -216,14 +216,17 @@ function renderHtml(content: AuthEmailContent): string {
   <body style="margin:0;padding:0;background:#f3f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#111827;">
     <div style="display:none;max-height:0;overflow:hidden;opacity:0;">${escapeHtml(content.preheader)}</div>
     <div style="max-width:640px;margin:0 auto;padding:36px 20px;">
-      <div style="background:#0f172a;border-radius:14px 14px 0 0;padding:18px 24px;">
-        <img
-          src="https://app.formaos.com.au/brand/formaos-wordmark-light.svg"
-          width="164"
-          height="30"
-          alt="FormaOS"
-          style="display:block"
-        />
+      <div style="background:#0b1328;border-radius:14px 14px 0 0;padding:18px 24px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <img
+            src="https://app.formaos.com.au/icon-192x192.png"
+            width="28"
+            height="28"
+            alt="FormaOS logo"
+            style="display:block;border-radius:7px;"
+          />
+          <span style="font-size:20px;font-weight:700;color:#f8fafc;letter-spacing:0.2px;">FormaOS</span>
+        </div>
       </div>
       <div style="background:#ffffff;border:1px solid #e5e7eb;border-top:0;border-radius:0 0 14px 14px;padding:26px 24px 24px;">
         <div style="display:inline-block;background:#ecfeff;color:#155e75;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700;letter-spacing:0.2px;">${escapeHtml(content.badge)}</div>
@@ -240,7 +243,7 @@ function renderHtml(content: AuthEmailContent): string {
         </div>
       </div>
       <p style="margin:14px 0 0;text-align:center;font-size:12px;color:#94a3b8;">
-        ${escapeHtml(brand.appName)} &middot; Compliance Operating System
+        &copy; ${escapeHtml(brand.appName)} &middot; <a href="https://formaos.com.au" style="color:#64748b;text-decoration:none;">formaos.com.au</a> &middot; <a href="mailto:${escapeHtml(SUPPORT_EMAIL)}" style="color:#64748b;text-decoration:none;">${escapeHtml(SUPPORT_EMAIL)}</a>
       </p>
     </div>
   </body>
@@ -262,7 +265,8 @@ function renderText(content: AuthEmailContent): string {
 ${content.intro}${action}${code}${details}
 
 Security notice: FormaOS staff will never ask for your password or one-time code.
-Support: ${SUPPORT_EMAIL}`;
+Support: ${SUPPORT_EMAIL}
+Website: https://formaos.com.au`;
 }
 
 export async function sendAuthEmail(input: AuthEmailInput): Promise<{

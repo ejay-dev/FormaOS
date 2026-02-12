@@ -98,12 +98,13 @@
       <div class="card">
         <div class="header">
           <img
-            src="https://app.formaos.com.au/brand/formaos-wordmark-light.svg"
-            width="160"
-            height="32"
+            src="https://app.formaos.com.au/icon-192x192.png"
+            width="28"
+            height="28"
             alt="FormaOS"
-            style="display: block"
+            style="display: block; border-radius: 7px"
           />
+          <span class="brand">FormaOS</span>
         </div>
         <div class="content">
           <span class="pill">One‑time sign in</span>
@@ -115,7 +116,7 @@
           <p style="margin: 22px 0">
             <a
               class="cta"
-              href="{{ .ActionLink }}"
+              href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=magiclink"
               target="_blank"
               rel="noopener"
               >Sign in</a
@@ -125,7 +126,9 @@
           <p class="muted">
             If the button doesn’t work, copy and paste this link:
           </p>
-          <p class="muted" style="word-break: break-all">{{ .ActionLink }}</p>
+          <p class="muted" style="word-break: break-all">
+            {{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=magiclink
+          </p>
         </div>
       </div>
       <div class="footer">

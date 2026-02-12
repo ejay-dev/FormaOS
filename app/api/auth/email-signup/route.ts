@@ -6,6 +6,7 @@ import { validatePassword } from '@/lib/security/password-security';
 import { emailSchema } from '@/lib/security/api-validation';
 import { rateLimitAuth } from '@/lib/security/rate-limiter';
 import { sendAuthEmail } from '@/lib/email/send-auth-email';
+import { buildHostedAuthConfirmLink } from '@/lib/auth/hosted-auth-link';
 
 export const runtime = 'nodejs';
 
@@ -107,7 +108,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const actionLink = data?.properties?.action_link;
+    const actionLink = buildHostedAuthConfirmLink({
+      appBase,
+      properties: data?.properties,
+      fallbackType: 'signup',
+      fallbackRedirectTo: redirectTo,
+    });
     if (!actionLink) {
       return NextResponse.json(
         { ok: false, error: 'missing_confirmation_link' },

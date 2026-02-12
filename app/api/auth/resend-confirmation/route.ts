@@ -5,6 +5,7 @@ import { resolvePlanKey } from '@/lib/plans';
 import { emailSchema } from '@/lib/security/api-validation';
 import { rateLimitAuth } from '@/lib/security/rate-limiter';
 import { sendAuthEmail } from '@/lib/email/send-auth-email';
+import { buildHostedAuthConfirmLink } from '@/lib/auth/hosted-auth-link';
 
 export const runtime = 'nodejs';
 
@@ -73,7 +74,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const actionLink = data?.properties?.action_link;
+    const actionLink = buildHostedAuthConfirmLink({
+      appBase,
+      properties: data?.properties,
+      fallbackType: 'magiclink',
+      fallbackRedirectTo: redirectTo,
+    });
     if (!actionLink) {
       return NextResponse.json(
         {

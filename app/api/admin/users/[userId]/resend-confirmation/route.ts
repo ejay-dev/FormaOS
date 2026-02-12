@@ -4,6 +4,7 @@ import { requireFounderAccess } from '@/app/app/admin/access';
 import { logAdminAction } from '@/lib/admin/audit';
 import { handleAdminError } from '@/app/api/admin/_helpers';
 import { sendAuthEmail } from '@/lib/email/send-auth-email';
+import { buildHostedAuthConfirmLink } from '@/lib/auth/hosted-auth-link';
 
 type Params = {
   params: Promise<{ userId: string }>;
@@ -39,7 +40,12 @@ export async function POST(_request: Request, { params }: Params) {
       throw new Error(linkError.message || 'failed_to_generate_link');
     }
 
-    const actionLink = linkData?.properties?.action_link;
+    const actionLink = buildHostedAuthConfirmLink({
+      appBase,
+      properties: linkData?.properties,
+      fallbackType: 'magiclink',
+      fallbackRedirectTo: `${appBase}/auth/callback`,
+    });
     if (!actionLink) {
       throw new Error('missing_action_link');
     }

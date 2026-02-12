@@ -14,5 +14,13 @@ export function getResendClient() {
 }
 
 export function getFromEmail() {
-  return process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+  const configured = process.env.RESEND_FROM_EMAIL?.trim();
+  const fromName = process.env.RESEND_FROM_NAME?.trim() || "FormaOS";
+
+  if (configured) {
+    if (configured.includes("<")) return configured;
+    return `${fromName} <${configured}>`;
+  }
+
+  return `${fromName} <no-reply@formaos.com.au>`;
 }
