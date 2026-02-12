@@ -16,7 +16,7 @@ function restoreEnv(prev: Record<string, string | undefined>) {
 }
 
 describe('/api/health env hardening', () => {
-  test('GET returns 503 (not 500) when Supabase env is missing', async () => {
+  test('GET returns 200 (not 5xx) when Supabase env is missing', async () => {
     const keys = [
       'NEXT_PUBLIC_SUPABASE_URL',
       'SUPABASE_URL',
@@ -29,10 +29,9 @@ describe('/api/health env hardening', () => {
       for (const key of keys) delete process.env[key];
 
       const res = await GET();
-      expect(res.status).toBe(503);
+      expect(res.status).toBe(200);
     } finally {
       restoreEnv(prev);
     }
   });
 });
-

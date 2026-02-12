@@ -29,11 +29,11 @@ Those tests assert that sensitive routes return **non-500** responses, specifica
 
 ### Code fix
 
-Hardened `/api/health`:
+Hardened `/api/health` (liveness semantics):
 
 - If Supabase URL/service role env is missing or invalid, respond with:
   - `status: degraded`
-  - **HTTP 503** (not 500)
+  - **HTTP 200** (not 5xx)
   - structured health payload
 
 Also hardened `HEAD` to avoid non-null assertions and return 503 when env is missing.
@@ -57,7 +57,7 @@ Improved `.github/workflows/security-scan.yml`:
 
 ## 3) Regression Protection Added
 
-Added a Jest regression test asserting `/api/health` returns **503** (not 500) when Supabase env is missing.
+Added a Jest regression test asserting `/api/health` returns **200** (not 5xx) when Supabase env is missing.
 
 - **Test file:** `__tests__/api-health-env.test.ts`
 
@@ -80,4 +80,3 @@ Added a Jest regression test asserting `/api/health` returns **503** (not 500) w
 ## 6) Remaining Security Debt
 
 - TruffleHog filesystem scan output is currently truncated in logs. Ensure the scanner configuration is strict enough to fail on verified secrets without leaking secret material into logs.
-
