@@ -26,7 +26,7 @@ const capabilities = [
     icon: Workflow,
     title: 'Automation Engine',
     description:
-      '8 automation triggers for evidence, tasks, policies, and certifications with auto-task generation and escalation notifications.',
+      '12 automation triggers for evidence, tasks, policies, and certifications with auto-task generation and escalation notifications.',
     color: 'from-cyan-400 to-blue-500',
   },
   {
@@ -115,9 +115,9 @@ const capabilities = [
   },
   {
     icon: ShieldAlert,
-    title: 'Threat Correlation Engine',
+    title: 'Security Event Tracking',
     description:
-      'Correlate security events across your compliance infrastructure. Detect patterns, flag anomalies, and surface risks before they escalate.',
+      'Track and correlate security events across your compliance infrastructure with request-level correlation IDs, structured logging, and audit trail linkage.',
     color: 'from-red-500 to-rose-500',
   },
   {

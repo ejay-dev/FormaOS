@@ -5,11 +5,14 @@ import { motion } from 'framer-motion';
 
 const securityFeatures = [
   { label: 'SOC 2-aligned controls', icon: Shield },
-  { label: 'Encryption at rest (AES-256) and in transit (TLS 1.3)', icon: Lock },
+  {
+    label: 'Encryption at rest (AES-256) and in transit (TLS 1.3)',
+    icon: Lock,
+  },
   { label: 'Google OAuth + Enterprise SSO (SAML by request)', icon: Users },
-  { label: 'MFA options available by request', icon: UserCheck },
+  { label: 'MFA on roadmap (H2 2026)', icon: UserCheck },
   { label: 'Immutable Audit Logs', icon: Database },
-  { label: 'Role-Based Access Control (6 Roles)', icon: UserCheck },
+  { label: 'Role-Based Access Control (4 Roles)', icon: UserCheck },
   { label: 'Automated compliance score engine', icon: Shield },
   { label: 'Correlation ID tracking', icon: Lock },
   { label: 'Session management & rate limiting', icon: Database },
@@ -48,7 +51,8 @@ export function EnterpriseSecurity() {
               Built for Regulated Organizations
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              Security is embedded at the operating layer, not added as a feature.
+              Security is embedded at the operating layer, not added as a
+              feature.
             </p>
           </div>
 

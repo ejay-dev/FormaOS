@@ -1,0 +1,148 @@
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import {
+  Server,
+  Globe,
+  Shield,
+  Database,
+  Mail,
+  BarChart3,
+  Cloud,
+} from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'FormaOS | Sub-processors',
+  description:
+    'List of third-party sub-processors used by FormaOS for data processing.',
+};
+
+const subprocessors = [
+  {
+    name: 'Supabase (AWS)',
+    purpose: 'Database hosting, authentication, and real-time data',
+    location: 'Australia (ap-southeast-2)',
+    icon: Database,
+    category: 'Infrastructure',
+  },
+  {
+    name: 'Vercel',
+    purpose: 'Application hosting, edge functions, and CDN',
+    location: 'Global (Sydney edge)',
+    icon: Cloud,
+    category: 'Infrastructure',
+  },
+  {
+    name: 'Upstash',
+    purpose: 'Redis for rate limiting and caching',
+    location: 'Global',
+    icon: Server,
+    category: 'Infrastructure',
+  },
+  {
+    name: 'Stripe',
+    purpose: 'Payment processing and subscription management',
+    location: 'United States',
+    icon: BarChart3,
+    category: 'Payments',
+  },
+  {
+    name: 'Resend',
+    purpose: 'Transactional email delivery',
+    location: 'United States',
+    icon: Mail,
+    category: 'Communications',
+  },
+  {
+    name: 'Sentry',
+    purpose: 'Error monitoring and performance tracking',
+    location: 'United States',
+    icon: Shield,
+    category: 'Monitoring',
+  },
+  {
+    name: 'OpenAI',
+    purpose: 'AI-powered compliance suggestions and intelligence',
+    location: 'United States',
+    icon: Globe,
+    category: 'AI Services',
+  },
+];
+
+export default function SubprocessorsPage() {
+  return (
+    <main className="bg-background min-h-screen">
+      <div className="mx-auto max-w-4xl px-6 py-24">
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-4">
+            <Server className="h-8 w-8 text-primary" aria-hidden="true" />
+            <h1 className="text-3xl font-bold text-foreground">
+              Sub-processors
+            </h1>
+          </div>
+          <p className="text-muted-foreground text-lg">
+            FormaOS uses the following third-party service providers to deliver
+            our compliance management platform. We provide 30 days advance
+            notice before engaging new sub-processors.
+          </p>
+          <p className="text-sm text-muted-foreground mt-2">
+            Last updated: February 2026
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          {subprocessors.map((sp) => {
+            const Icon = sp.icon;
+            return (
+              <div
+                key={sp.name}
+                className="flex items-start gap-4 p-5 rounded-xl border border-border bg-card"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                  <Icon
+                    className="h-5 w-5 text-muted-foreground"
+                    aria-hidden="true"
+                  />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-1">
+                    <h3 className="font-semibold text-foreground">{sp.name}</h3>
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+                      {sp.category}
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{sp.purpose}</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1">
+                    Location: {sp.location}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-12 p-6 rounded-2xl border border-border bg-card">
+          <h3 className="text-lg font-semibold text-foreground mb-2">
+            Change notifications
+          </h3>
+          <p className="text-sm text-muted-foreground">
+            Enterprise customers on paid plans receive 30 days advance email
+            notification before any new sub-processor is engaged. Contact{' '}
+            <a
+              href="mailto:privacy@formaos.com.au"
+              className="text-primary hover:underline"
+            >
+              privacy@formaos.com.au
+            </a>{' '}
+            to subscribe to notifications or raise objections.
+          </p>
+        </div>
+
+        <div className="mt-8 text-sm text-muted-foreground">
+          <Link href="/trust" className="text-primary hover:underline">
+            ← Back to Trust Center
+          </Link>
+        </div>
+      </div>
+    </main>
+  );
+}

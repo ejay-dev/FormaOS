@@ -1,21 +1,73 @@
 'use client';
 
-import { Activity, FileCheck, AlertTriangle, BarChart3, GitBranch, Database, Sparkles, Shield, Eye } from 'lucide-react';
+import {
+  Activity,
+  FileCheck,
+  AlertTriangle,
+  BarChart3,
+  GitBranch,
+  Database,
+  Sparkles,
+  Shield,
+  Eye,
+} from 'lucide-react';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 
-const DemoComplianceScore = dynamic(() => import('@/components/marketing/demo/DemoComplianceScore'), { ssr: false });
+const DemoComplianceScore = dynamic(
+  () => import('@/components/marketing/demo/DemoComplianceScore'),
+  { ssr: false },
+);
 
 const intelligenceFeatures = [
-  { label: 'Compliance Score Trends', description: 'Rolling trend view with sparkline visualization', icon: Activity },
-  { label: 'Framework Health Monitoring', description: 'Per-framework readiness with gap visibility (when enabled)', icon: FileCheck },
-  { label: 'Regression Alerts', description: 'Regression insights and alerts (early access)', icon: AlertTriangle },
-  { label: 'Automation Analytics', description: 'Task velocity, completion rates, and trigger history', icon: BarChart3 },
-  { label: 'Master Control Deduplication', description: 'Cross-framework mapping planned to reduce duplicate controls', icon: GitBranch },
-  { label: 'Historical Compliance Snapshots', description: 'Snapshot history when captured (early access)', icon: Database },
-  { label: 'Evidence Intelligence AI Scoring', description: 'Compliance intelligence with real-time scoring', icon: Sparkles },
-  { label: 'Compliance Gate Enforcement', description: 'Block non-compliant actions before they happen with real-time validation against control requirements', icon: Shield },
-  { label: 'Executive Risk Narratives', description: 'Executive dashboard with compliance posture analytics', icon: Eye },
+  {
+    label: 'Compliance Score Trends',
+    description: 'Rolling trend view with sparkline visualization',
+    icon: Activity,
+  },
+  {
+    label: 'Framework Health Monitoring',
+    description: 'Per-framework readiness with gap visibility (when enabled)',
+    icon: FileCheck,
+  },
+  {
+    label: 'Regression Alerts',
+    description: 'Regression insights and alerts (early access)',
+    icon: AlertTriangle,
+  },
+  {
+    label: 'Automation Analytics',
+    description: 'Task velocity, completion rates, and trigger history',
+    icon: BarChart3,
+  },
+  {
+    label: 'Master Control Deduplication',
+    description:
+      'Cross-framework mapping to reduce duplicate controls (roadmap)',
+    icon: GitBranch,
+  },
+  {
+    label: 'Historical Compliance Snapshots',
+    description: 'Snapshot history when captured (early access)',
+    icon: Database,
+  },
+  {
+    label: 'Evidence Compliance Scoring',
+    description:
+      'Rule-based compliance scoring with real-time evidence validation',
+    icon: Sparkles,
+  },
+  {
+    label: 'Compliance Gate Enforcement',
+    description:
+      'Block non-compliant actions before they happen with real-time validation against control requirements',
+    icon: Shield,
+  },
+  {
+    label: 'Executive Risk Narratives',
+    description: 'Executive dashboard with compliance posture analytics',
+    icon: Eye,
+  },
 ];
 
 export function ComplianceIntelligence() {
@@ -43,7 +95,8 @@ export function ComplianceIntelligence() {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white">
             Live Visibility Into Your
             <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-              {' '}Compliance Posture
+              {' '}
+              Compliance Posture
             </span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
@@ -79,8 +132,12 @@ export function ComplianceIntelligence() {
                   <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center mb-3">
                     <Icon className="w-5 h-5 text-green-400" />
                   </div>
-                  <h3 className="text-sm font-semibold text-white mb-1.5">{feature.label}</h3>
-                  <p className="text-xs text-gray-400 leading-relaxed">{feature.description}</p>
+                  <h3 className="text-sm font-semibold text-white mb-1.5">
+                    {feature.label}
+                  </h3>
+                  <p className="text-xs text-gray-400 leading-relaxed">
+                    {feature.description}
+                  </p>
                 </motion.div>
               );
             })}

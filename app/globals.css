@@ -138,6 +138,22 @@
   --sidebar-accent-foreground: 210 40% 98%;
   --sidebar-border: 220 20% 14%;
   --sidebar-ring: 193 100% 49%;
+
+  /* Marketing surface tokens — use instead of hardcoded hex */
+  --marketing-bg: 228 55% 5%; /* #0a0f1c equivalent */
+  --marketing-bg-alt: 227 45% 7%; /* #0d1421 equivalent */
+  --marketing-surface: 228 50% 6%; /* #0b1022 equivalent */
+  --marketing-card: 228 40% 8%;
+  --marketing-card-border: 0 0% 100% / 0.08;
+  --marketing-glow: 193 100% 49% / 0.15;
+
+  /* Status semantic tokens */
+  --success: 142 76% 36%;
+  --success-foreground: 0 0% 100%;
+  --warning: 38 92% 50%;
+  --warning-foreground: 0 0% 0%;
+  --info: 213 100% 60%;
+  --info-foreground: 0 0% 100%;
 }
 
 /* =========================================================

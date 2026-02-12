@@ -411,10 +411,10 @@ export async function middleware(request: NextRequest) {
       'max-age=31536000; includeSubDomains; preload',
     );
     const allowInlineScripts =
-      (process.env.CSP_ALLOW_INLINE_SCRIPTS ?? 'true') === 'true';
+      (process.env.CSP_ALLOW_INLINE_SCRIPTS ?? 'false') === 'true';
     const allowEvalScripts =
       process.env.NODE_ENV !== 'production' &&
-      (process.env.CSP_ALLOW_EVAL_SCRIPTS ?? 'true') === 'true';
+      (process.env.CSP_ALLOW_EVAL_SCRIPTS ?? 'false') === 'true';
 
     const scriptSrc = [
       "'self'",

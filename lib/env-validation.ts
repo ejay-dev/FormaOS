@@ -35,12 +35,37 @@ export const REQUIRED_APP_VARS = [
 export const REQUIRED_ADMIN_VARS = ['FOUNDER_EMAILS'] as const;
 
 /**
+ * Optional but validated environment variables (warn if missing)
+ */
+export const OPTIONAL_VALIDATED_VARS = [
+  'ENABLE_STRICT_SESSION_SECURITY',
+  'CSP_ALLOW_INLINE_SCRIPTS',
+  'CSP_ALLOW_EVAL_SCRIPTS',
+  'CRON_SECRET',
+  'SAML_ENABLED',
+  'NEXT_PUBLIC_SENTRY_DSN',
+  'SENTRY_ORG',
+  'SENTRY_PROJECT',
+  'STRIPE_SECRET_KEY',
+  'STRIPE_WEBHOOK_SECRET',
+  'RESEND_API_KEY',
+  'NEXT_PUBLIC_GOOGLE_CLIENT_ID',
+  'UPSTASH_REDIS_REST_URL',
+  'UPSTASH_REDIS_REST_TOKEN',
+] as const;
+
+/**
  * All required environment variable names
  */
 export type RequiredEnvVar =
   | (typeof REQUIRED_SUPABASE_VARS)[number]
   | (typeof REQUIRED_APP_VARS)[number]
   | (typeof REQUIRED_ADMIN_VARS)[number];
+
+/**
+ * All optional validated environment variable names
+ */
+export type OptionalEnvVar = (typeof OPTIONAL_VALIDATED_VARS)[number];
 
 /**
  * Validate a single environment variable
@@ -268,6 +293,11 @@ export function getEnvSummary(): Record<string, string> {
   summary['FOUNDER_EMAILS'] = process.env.FOUNDER_EMAILS
     ? `(set: ${process.env.FOUNDER_EMAILS.split(',').length} email(s))`
     : '(not set)';
+
+  // Add optional service status
+  for (const varName of OPTIONAL_VALIDATED_VARS) {
+    summary[varName] = process.env[varName] ? '(set)' : '(not set)';
+  }
 
   return summary;
 }

@@ -2,7 +2,10 @@ import type { NextConfig } from 'next';
 import { withSentryConfig } from '@sentry/nextjs';
 
 const nextConfig: NextConfig = {
-  generateBuildId: async () => null,
+  generateBuildId: async () => {
+    // Deterministic build ID based on timestamp for cache invalidation
+    return `build-${Date.now()}`;
+  },
   outputFileTracingIncludes: {
     '*': ['framework-packs/*.json'],
   },

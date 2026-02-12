@@ -1,98 +1,56 @@
-import { ButtonHTMLAttributes, forwardRef } from 'react';
-import { cn } from '@/lib/utils';
+import { forwardRef } from 'react';
+import { Button, type ButtonProps } from './button';
 
 /**
  * =========================================================
- * LOADING BUTTON COMPONENT
+ * LOADING BUTTON COMPONENT (DEPRECATED)
  * =========================================================
  *
- * Button with integrated loading state.
- * Shows spinner when loading, disables interactions.
+ * This component now wraps the canonical Button component.
+ * Use <Button loading={true}> directly instead.
  *
- * Usage:
- * ```tsx
- * <LoadingButton
- *   loading={isSubmitting}
- *   onClick={handleSubmit}
- * >
- *   Save Changes
- * </LoadingButton>
- * ```
+ * @deprecated Use <Button loading={isLoading}> from '@/components/ui/button'
+ *
+ * Migration:
+ *   OLD: <LoadingButton loading={isSubmitting}>Save</LoadingButton>
+ *   NEW: <Button loading={isSubmitting}>Save</Button>
  */
 
-interface LoadingButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface LoadingButtonProps extends Omit<
+  ButtonProps,
+  'loading' | 'variant' | 'size'
+> {
   loading?: boolean;
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
 }
 
+// Map old variant names to canonical Button variants
+const VARIANT_MAP: Record<string, ButtonProps['variant']> = {
+  primary: 'default',
+  secondary: 'secondary',
+  outline: 'outline',
+  ghost: 'ghost',
+};
+
+const SIZE_MAP: Record<string, ButtonProps['size']> = {
+  sm: 'sm',
+  md: 'default',
+  lg: 'lg',
+};
+
 export const LoadingButton = forwardRef<HTMLButtonElement, LoadingButtonProps>(
-  (
-    {
-      children,
-      loading = false,
-      disabled,
-      variant = 'primary',
-      size = 'md',
-      className,
-      ...props
-    },
-    ref
-  ) => {
-    const variantStyles = {
-      primary:
-        'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 hover:scale-105',
-      secondary:
-        'bg-white/10 text-white border border-white/20 hover:bg-white/20 hover:border-white/30',
-      outline:
-        'border border-border bg-transparent hover:bg-accent hover:text-accent-foreground',
-      ghost: 'hover:bg-accent hover:text-accent-foreground',
-    };
-
-    const sizeStyles = {
-      sm: 'px-4 py-2 text-sm',
-      md: 'px-6 py-3 text-base',
-      lg: 'px-8 py-4 text-lg',
-    };
-
+  ({ loading = false, variant = 'primary', size = 'md', ...props }, ref) => {
     return (
-      <button
+      <Button
         ref={ref}
-        disabled={disabled || loading}
-        className={cn(
-          'relative inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-50',
-          variantStyles[variant],
-          sizeStyles[size],
-          className
-        )}
+        loading={loading}
+        variant={VARIANT_MAP[variant] || 'default'}
+        size={SIZE_MAP[size] || 'default'}
         {...props}
-      >
-        {loading && (
-          <svg
-            className="h-5 w-5 animate-spin text-current"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            />
-          </svg>
-        )}
-        <span className={loading ? 'opacity-70' : ''}>{children}</span>
-      </button>
+      />
     );
-  }
+  },
 );
 
 LoadingButton.displayName = 'LoadingButton';
