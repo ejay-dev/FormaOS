@@ -131,7 +131,7 @@ const NAVIGATION_ITEMS: CommandItem[] = [
     id: 'nav-billing',
     label: 'Billing',
     icon: CreditCard,
-    href: '/app/settings/billing',
+    href: '/app/billing',
     keywords: ['subscription', 'plan', 'payment', 'invoice'],
   },
 ];
@@ -172,7 +172,7 @@ const QUICK_LINK_ITEMS: CommandItem[] = [
     id: 'link-profile',
     label: 'Profile',
     icon: User,
-    href: '/app/settings/profile',
+    href: '/app/profile',
     keywords: ['account', 'my profile', 'personal'],
   },
   {
@@ -186,7 +186,7 @@ const QUICK_LINK_ITEMS: CommandItem[] = [
     id: 'link-help',
     label: 'Help & Support',
     icon: HelpCircle,
-    href: '/app/help',
+    href: '/docs',
     keywords: ['support', 'documentation', 'faq', 'contact'],
   },
 ];

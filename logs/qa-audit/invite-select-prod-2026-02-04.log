@@ -1,8 +1,0 @@
-invite select via anon {
-  id: '8b8e7a8b-54ae-4554-bc50-794db2111bd5',
-  email: 'qa-invited-1770204394918@example.com',
-  organization_id: '4714aa4a-cb31-4e05-a789-72215437870f',
-  role: 'member',
-  status: 'pending',
-  token: 'a04a39e169106def998018fd28dbfe9052ca6f7ae8d4cf932037ed67d2f608c2'
-} null
