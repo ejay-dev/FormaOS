@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion, type Transition } from 'framer-motion';
 import type { ReactNode } from 'react';
 import { getMotionLayerTransition, motionBudgets } from '@/config/motion';
 
@@ -24,7 +24,7 @@ export function OrientationReveal({
       initial={{ opacity: 0, y: motionBudgets.orientation.maxDistancePx / 2 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={getMotionLayerTransition('orientation', { delay }) as any}
+      transition={getMotionLayerTransition('orientation', { delay }) as Transition}
     >
       {children}
     </motion.div>
@@ -48,7 +48,7 @@ export function FeedbackScale({
       className={className}
       whileHover={{ scale: 1 + motionBudgets.feedback.maxScaleDelta / 2 }}
       whileTap={{ scale: 1 - motionBudgets.feedback.maxScaleDelta / 2 }}
-      transition={getMotionLayerTransition('feedback') as any}
+      transition={getMotionLayerTransition('feedback') as Transition}
     >
       {children}
     </motion.div>
@@ -83,7 +83,7 @@ export function DelightFloat({
         ...getMotionLayerTransition('delight'),
         repeat: Infinity,
         repeatType: 'mirror',
-      } as any}
+      } as Transition}
     >
       {children}
     </motion.div>

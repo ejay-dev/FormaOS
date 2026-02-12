@@ -1,0 +1,142 @@
+'use client';
+
+import { useRef } from 'react';
+import { BookOpen, Search, Rocket, Code, Shield, Zap } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import CinematicField from '../../components/motion/CinematicField';
+
+const quickLinks = [
+  { title: 'Quick Start', description: 'Get running in 15 minutes', icon: Rocket, href: '#getting-started' },
+  { title: 'API Reference', description: 'Complete API documentation', icon: Code, href: '#integrations' },
+  { title: 'Security Docs', description: 'Enterprise security details', icon: Shield, href: '#security' },
+  { title: 'Troubleshooting', description: 'Solve common issues', icon: Zap, href: '#support' },
+];
+
+export function DocsHero() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end start'],
+  });
+
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
+  const y = useTransform(scrollYProgress, [0, 0.5], [0, 100]);
+
+  return (
+    <section
+      ref={containerRef}
+      className="relative min-h-[80vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] pt-24"
+    >
+      <div className="absolute inset-0 overflow-hidden">
+        <motion.div
+          className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-gradient-to-br from-cyan-500/15 via-blue-500/10 to-transparent rounded-full blur-3xl"
+          animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.4, 0.3] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="absolute -bottom-40 -right-40 w-[700px] h-[700px] bg-gradient-to-tl from-emerald-500/15 via-teal-500/10 to-transparent rounded-full blur-3xl"
+          animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.3, 0.2] }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+        />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-cyan-500/5 to-transparent rounded-full" />
+      </div>
+
+      <div className="absolute inset-0 z-1">
+        <CinematicField />
+      </div>
+
+      <div
+        className="absolute inset-0 opacity-30"
+        style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(6, 182, 212, 0.15) 1px, transparent 0)',
+          backgroundSize: '40px 40px',
+        }}
+      />
+
+      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
+        <div className="flex flex-col items-center text-center">
+          <motion.div style={{ opacity, scale, y }}>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 backdrop-blur-sm"
+            >
+              <BookOpen className="w-4 h-4 text-cyan-400" />
+              <span className="text-sm text-cyan-400 font-medium tracking-wide">Knowledge Base</span>
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
+            >
+              FormaOS{' '}
+              <span className="bg-gradient-to-r from-cyan-400 via-teal-500 to-emerald-500 bg-clip-text text-transparent">
+                Documentation
+              </span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="text-lg sm:text-xl text-gray-400 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
+            >
+              Comprehensive guides, tutorials, and API references to help you
+              master the compliance operating system.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="w-full max-w-xl mx-auto mb-10"
+            >
+              <div className="relative">
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                <input
+                  type="text"
+                  placeholder="Search documentation..."
+                  className="w-full pl-14 pr-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all backdrop-blur-sm text-lg"
+                />
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-1 text-xs text-gray-500 bg-gray-800/50 px-2 py-1 rounded-md border border-gray-700/50">
+                  <span>⌘</span>
+                  <span>K</span>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.7 }}
+              className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-3xl mx-auto"
+            >
+              {quickLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <a
+                    key={link.title}
+                    href={link.href}
+                    className="group flex flex-col items-center text-center p-4 rounded-xl bg-gray-800/30 border border-gray-700/30 hover:border-cyan-500/30 hover:bg-gray-800/50 transition-all duration-300"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                      <Icon className="w-5 h-5 text-cyan-400" />
+                    </div>
+                    <span className="text-sm font-medium text-white group-hover:text-cyan-300 transition-colors">
+                      {link.title}
+                    </span>
+                    <span className="text-xs text-gray-500 mt-1">{link.description}</span>
+                  </a>
+                );
+              })}
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}

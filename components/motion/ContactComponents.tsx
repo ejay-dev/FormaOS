@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Mail, MapPin, Clock, Phone, LucideIcon } from "lucide-react";
 
 // Executive-grade contact form with premium styling
-export function ExecutiveContactForm({ action }: { action: any }) {
+export function ExecutiveContactForm({ action }: { action: string | ((formData: FormData) => void) }) {
   return (
     <motion.form
       initial={{ opacity: 0, y: 30 }}

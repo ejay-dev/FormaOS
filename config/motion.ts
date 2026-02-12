@@ -87,7 +87,7 @@ const motionLayerTransitions = {
 
 type MotionLayerTransition = {
   duration: number;
-  ease: number[];
+  ease: [number, number, number, number];
   delay?: number;
   repeat?: number;
   repeatType?: 'loop' | 'reverse' | 'mirror';
@@ -96,13 +96,13 @@ type MotionLayerTransition = {
 export function getMotionLayerTransition(
   layer: MotionLayer,
   overrides?: Partial<MotionLayerTransition>,
-) {
+): MotionLayerTransition {
   const base = motionLayerTransitions[layer];
   return {
     duration: base.duration,
-    ease: [...base.ease],
+    ease: [...base.ease] as [number, number, number, number],
     ...overrides,
-  } satisfies MotionLayerTransition;
+  };
 }
 
 // =========================================================
