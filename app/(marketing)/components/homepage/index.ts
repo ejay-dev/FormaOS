@@ -5,5 +5,7 @@ export { ComplianceEngineDemo } from './ComplianceEngineDemo';
 export { CapabilitiesGrid } from './CapabilitiesGrid';
 export { Industries } from './Industries';
 export { SecuritySection } from './SecuritySection';
+export { OutcomeProofSection } from './OutcomeProofSection';
+export { ObjectionHandlingSection } from './ObjectionHandlingSection';
 export { CTASection } from './CTASection';
 export { TrustSection } from './TrustSection';

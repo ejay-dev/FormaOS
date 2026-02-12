@@ -43,6 +43,7 @@ export function DashboardWrapper({
       <EmployeeDashboard
         employeeName={userEmail || 'Employee'}
         organizationName={orgName}
+        userRole={userRole}
       />
     </UnifiedDashboardLayout>
   );

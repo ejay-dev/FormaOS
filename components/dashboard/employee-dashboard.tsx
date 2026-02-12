@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import {
   ClipboardCheck,
   FileText,
@@ -14,6 +15,7 @@ import {
 import { DashboardSectionCard } from '@/components/dashboard/unified-dashboard-layout';
 import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedChecklist';
 import { AIComplianceAssistantPanel } from '@/components/intelligence/AIComplianceAssistantPanel';
+import type { DatabaseRole } from '@/lib/roles';
 
 /**
  * =========================================================
@@ -26,6 +28,7 @@ import { AIComplianceAssistantPanel } from '@/components/intelligence/AIComplian
 interface EmployeeDashboardProps {
   employeeName: string;
   organizationName: string;
+  userRole: DatabaseRole;
   complianceScore?: number;
   nextAuditDate?: string;
   tasksAssigned?: number;
@@ -444,16 +447,128 @@ export function Training({
   );
 }
 
+function RoleWorkflowBoard({
+  role,
+  tasksAssigned,
+  tasksPending,
+  complianceScore,
+}: {
+  role: DatabaseRole;
+  tasksAssigned: number;
+  tasksPending: number;
+  complianceScore: number;
+}) {
+  const isViewer = role === 'viewer';
+  const actions = isViewer
+    ? [
+        {
+          label: 'Review readiness dashboard',
+          detail: 'Start with posture and risk visibility before deep review.',
+          href: '/app',
+          icon: TrendingUp,
+        },
+        {
+          label: 'Inspect evidence vault',
+          detail: 'Check control evidence completeness and verification state.',
+          href: '/app/vault',
+          icon: FileText,
+        },
+        {
+          label: 'Read audit stream',
+          detail: 'Trace approvals and key operational control events.',
+          href: '/app/audit',
+          icon: Calendar,
+        },
+      ]
+    : [
+        {
+          label: 'Complete priority tasks',
+          detail: 'Focus on assigned controls with pending status first.',
+          href: '/app/tasks',
+          icon: CheckSquare,
+        },
+        {
+          label: 'Upload required evidence',
+          detail: 'Attach proof for current controls and close readiness gaps.',
+          href: '/app/vault',
+          icon: CheckCircle2,
+        },
+        {
+          label: 'Validate policy obligations',
+          detail: 'Review role-specific policy requirements before submission.',
+          href: '/app/policies',
+          icon: ClipboardCheck,
+        },
+      ];
+
+  return (
+    <DashboardSectionCard
+      title={isViewer ? 'Viewer Command Center' : 'Execution Command Center'}
+      description={
+        isViewer
+          ? 'Read-only workflow to validate posture and evidence'
+          : 'Role-specific actions to reach compliance proof faster'
+      }
+      icon={Briefcase}
+    >
+      <div className="mb-4 grid grid-cols-3 gap-2">
+        <div className="rounded-lg border border-white/10 bg-white/5 p-3 text-center">
+          <p className="text-lg font-bold text-slate-100">{tasksAssigned}</p>
+          <p className="text-[10px] uppercase tracking-wide text-slate-400">
+            Assigned
+          </p>
+        </div>
+        <div className="rounded-lg border border-white/10 bg-white/5 p-3 text-center">
+          <p className="text-lg font-bold text-slate-100">{tasksPending}</p>
+          <p className="text-[10px] uppercase tracking-wide text-slate-400">
+            Pending
+          </p>
+        </div>
+        <div className="rounded-lg border border-white/10 bg-white/5 p-3 text-center">
+          <p className="text-lg font-bold text-slate-100">{complianceScore}%</p>
+          <p className="text-[10px] uppercase tracking-wide text-slate-400">
+            Score
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        {actions.map((action) => (
+          <Link
+            key={action.label}
+            href={action.href}
+            className="group flex items-start justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:bg-white/10"
+          >
+            <div className="flex items-start gap-3">
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5">
+                <action.icon className="h-4 w-4 text-slate-300" />
+              </span>
+              <div>
+                <p className="text-sm font-semibold text-slate-100">
+                  {action.label}
+                </p>
+                <p className="text-xs text-slate-400">{action.detail}</p>
+              </div>
+            </div>
+            <CheckCircle2 className="mt-1 h-4 w-4 text-slate-500 transition-transform group-hover:scale-110" />
+          </Link>
+        ))}
+      </div>
+    </DashboardSectionCard>
+  );
+}
+
 /**
  * Complete employee dashboard
  */
 export function EmployeeDashboard({
   employeeName,
   organizationName,
+  userRole,
   complianceScore = 0,
   nextAuditDate = '',
-  tasksAssigned = 0,
-  tasksPending = 0,
+  tasksAssigned = 6,
+  tasksPending = 3,
 }: EmployeeDashboardProps) {
   const aiSuggestions = [
     {
@@ -478,8 +593,23 @@ export function EmployeeDashboard({
 
   return (
     <div className="space-y-8">
+      <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4">
+        <p className="text-xs uppercase tracking-wider text-slate-400">
+          Workspace Context
+        </p>
+        <p className="mt-1 text-sm text-slate-200">
+          {employeeName} operating in {organizationName}
+        </p>
+      </div>
+
       <GettingStartedChecklist />
       <AIComplianceAssistantPanel suggestions={aiSuggestions} />
+      <RoleWorkflowBoard
+        role={userRole}
+        tasksAssigned={tasksAssigned}
+        tasksPending={tasksPending}
+        complianceScore={complianceScore}
+      />
 
       <div data-tour="dashboard-overview">
         <MyComplianceStatus

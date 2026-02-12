@@ -12,6 +12,8 @@ import {
   CapabilitiesGrid,
   Industries,
   SecuritySection,
+  OutcomeProofSection,
+  ObjectionHandlingSection,
   CTASection,
   TrustSection,
 } from './homepage';
@@ -70,6 +72,8 @@ export default function FormaOSHomepage() {
             <Industries />
             <TaskShowcase />
             <SecuritySection />
+            <OutcomeProofSection />
+            <ObjectionHandlingSection />
             <CTASection />
             <TrustSection />
           </div>

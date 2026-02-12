@@ -138,6 +138,10 @@ export default async function AdminSecurityTriagePage({
     label: routeLabel(route),
     count: filteredEvents.filter((event) => triageRoute(event) === route).length,
   }));
+  const remediationShortcuts = routingMatrix
+    .filter((item) => item.count > 0)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 3);
 
   return (
     <div className="space-y-6">
@@ -180,6 +184,42 @@ export default async function AdminSecurityTriagePage({
           <p className="mt-1 text-xs text-slate-500">Standardized response</p>
         </div>
       </div>
+
+      <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
+        <h2 className="mb-4 text-lg font-semibold text-slate-100">
+          Incident-to-Remediation Shortcuts
+        </h2>
+        {remediationShortcuts.length > 0 ? (
+          <div className="grid gap-3 md:grid-cols-3">
+            {remediationShortcuts.map((shortcut) => (
+              <Link
+                key={shortcut.route}
+                href={shortcut.route}
+                className="group rounded-lg border border-slate-800 bg-slate-900/60 p-4 transition-colors hover:bg-slate-800/70"
+              >
+                <p className="text-xs uppercase tracking-wider text-slate-500">
+                  {shortcut.label}
+                </p>
+                <p className="mt-1 text-2xl font-bold text-slate-100">
+                  {shortcut.count}
+                </p>
+                <p className="mt-1 text-xs text-slate-400">
+                  open routed items
+                </p>
+                <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-cyan-200">
+                  Open remediation queue
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-lg border border-slate-800/60 bg-slate-900/60 px-4 py-6 text-sm text-slate-400">
+            No routed incidents for the selected filter. Adjust severity to
+            inspect additional queues.
+          </div>
+        )}
+      </section>
 
       <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
         <h2 className="mb-4 text-lg font-semibold text-slate-100">
