@@ -27,7 +27,7 @@ const mobileDevices = [
  * Generate BackstopJS config for specific browser
  */
 function generateBrowserConfig(browser) {
-  const baseConfig = require('../../../backstop.config.js');
+  const baseConfig = require('../../backstop.config.js');
   
   return {
     ...baseConfig,
@@ -53,7 +53,7 @@ function generateBrowserConfig(browser) {
  * Generate mobile device testing config
  */
 function generateMobileConfig(deviceName) {
-  const baseConfig = require('../../../backstop.config.js');
+  const baseConfig = require('../../backstop.config.js');
   const device = require('@playwright/test').devices[deviceName];
   
   return {
