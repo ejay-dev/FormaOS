@@ -84,6 +84,13 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
               </div>
             </header>
 
+            {/* Toggle .scrolled class on header for enhanced glass effect */}
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `(function(){var h=document.querySelector('.mk-header-premium');if(!h)return;var c='scrolled';function u(){h.classList.toggle(c,window.scrollY>10)}window.addEventListener('scroll',u,{passive:true});u()})()`,
+              }}
+            />
+
             <EnterpriseTrustStrip surface="marketing" />
 
             <main className="relative z-10">{children}</main>

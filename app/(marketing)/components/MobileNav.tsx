@@ -70,6 +70,16 @@ export function MobileNav() {
     };
   }, [isOpen]);
 
+  // Focus first link when menu opens
+  useEffect(() => {
+    if (isOpen && menuRef.current) {
+      const firstLink = menuRef.current.querySelector<HTMLElement>('a, button');
+      if (firstLink) {
+        requestAnimationFrame(() => firstLink.focus());
+      }
+    }
+  }, [isOpen]);
+
   // Close on click outside
   const handleBackdropClick = useCallback((e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -129,6 +139,9 @@ export function MobileNav() {
             className="fixed inset-0 z-[9999]"
             onClick={handleBackdropClick}
             id="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
           >
             {/* Backdrop with blur */}
             <motion.div 

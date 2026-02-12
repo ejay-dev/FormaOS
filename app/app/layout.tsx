@@ -177,7 +177,7 @@ export default async function AppLayout({
                       {/* Main application area */}
                       <section className="relative flex h-full flex-1 flex-col overflow-hidden">
                         {/* Top bar */}
-                        <header className="sticky top-0 z-40 flex h-16 md:h-20 w-full items-center glass-panel-strong border-b border-border">
+                        <header className="sticky top-0 z-40 flex h-16 w-full items-center glass-panel-strong border-b border-border">
                           <div className="flex h-full w-full items-center px-4 sm:px-6 lg:px-8">
                             <TopBar
                               orgName={

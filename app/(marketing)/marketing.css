@@ -141,6 +141,33 @@
   color: hsl(var(--mk-ink));
 }
 
+/* Active nav link - persistent underline + subtle glow */
+.mk-nav-link--active {
+  color: hsl(var(--mk-ink));
+  text-shadow: 0 0 20px rgba(0, 217, 255, 0.15);
+}
+
+.mk-nav-link--active::after {
+  transform: scaleX(1);
+}
+
+/* Nav dropdown entrance */
+.mk-dropdown-panel {
+  animation: mk-dropdown-in 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: top center;
+}
+
+@keyframes mk-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 /* Enhanced premium cards with enterprise depth */
 .mk-card {
   position: relative;
@@ -1005,6 +1032,9 @@ body {
   .mk-parallax-slow,
   .mk-parallax-fast,
   .mk-gradient-mesh {
+    animation: none;
+  }
+  .mk-dropdown-panel {
     animation: none;
   }
 }
