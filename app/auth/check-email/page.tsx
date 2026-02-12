@@ -36,6 +36,7 @@ function CheckEmailContent() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const email = searchParams.get('email') || '';
   const plan = searchParams.get('plan');
+  const journey = searchParams.get('journey');
 
   const handleContinue = async () => {
     setIsChecking(true);
@@ -64,7 +65,10 @@ function CheckEmailContent() {
 
       if (session) {
         // Session valid - redirect to app
-        router.push('/onboarding');
+        const onboardingTarget = journey
+          ? `/onboarding?journey=${encodeURIComponent(journey)}`
+          : '/onboarding';
+        router.push(onboardingTarget);
       } else {
         // No session yet
         setErrorMessage('Email not confirmed yet. Please check your inbox and click the confirmation link.');
@@ -102,6 +106,7 @@ function CheckEmailContent() {
         body: JSON.stringify({
           email,
           plan,
+          journey,
         }),
       });
 
@@ -119,7 +124,7 @@ function CheckEmailContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-6 py-12">
+    <div className="relative min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-6 py-12">
       {/* Header */}
       <div className="absolute top-6 left-6">
         <Logo size={36} />

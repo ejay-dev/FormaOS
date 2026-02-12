@@ -91,3 +91,10 @@ export {
   LoadingDots,
   PulseRing,
 } from './MicroInteractions';
+
+// Governed motion primitives (orientation/feedback/delight)
+export {
+  OrientationReveal,
+  FeedbackScale,
+  DelightFloat,
+} from './GovernedMotion';

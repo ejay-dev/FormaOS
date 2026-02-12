@@ -7,7 +7,7 @@ import { PLAN_CATALOG, resolvePlanKey } from '@/lib/plans';
 import Link from 'next/link';
 import { CheckCircle2, ArrowRight, Star } from 'lucide-react';
 import { Logo } from '@/components/brand/Logo';
-// TODO: For enterprise branding, use Supabase Custom Auth Domain instead of Google One Tap.
+// OAuth consent branding can be further customized via Supabase Auth custom domains.
 // See: https://supabase.com/docs/guides/auth/custom-domains
 
 const DEFAULT_APP_BASE = 'https://app.formaos.com.au';
@@ -73,6 +73,12 @@ const withTimeout = async <T,>(
 function SignUpContent() {
   const searchParams = useSearchParams();
   const planParam = resolvePlanKey(searchParams.get('plan'));
+  const journeyParamRaw = searchParams.get('journey');
+  const journeyParam =
+    journeyParamRaw &&
+    ['evaluate', 'prove', 'operate', 'govern'].includes(journeyParamRaw)
+      ? journeyParamRaw
+      : null;
   const plan = useMemo(
     () => (planParam ? PLAN_CATALOG[planParam] : null),
     [planParam],
@@ -89,9 +95,12 @@ function SignUpContent() {
     setErrorMessage(null);
     setIsLoading(true);
     const appBase = resolveAppBase();
+    const journeySuffix = journeyParam
+      ? `&journey=${encodeURIComponent(journeyParam)}`
+      : '';
     const redirectTo = plan
-      ? `${appBase}/auth/callback?plan=${encodeURIComponent(plan.key)}`
-      : `${appBase}/auth/callback`;
+      ? `${appBase}/auth/callback?plan=${encodeURIComponent(plan.key)}${journeySuffix}`
+      : `${appBase}/auth/callback${journeyParam ? `?journey=${encodeURIComponent(journeyParam)}` : ''}`;
     const supabase = createSupabaseClient();
     try {
       const oauthResult = (await withTimeout(
@@ -195,8 +204,11 @@ function SignUpContent() {
         return;
       }
 
-      const planParam = plan ? `&plan=${encodeURIComponent(plan.key)}` : '';
-      window.location.href = `${appBase}/auth/check-email?email=${encodeURIComponent(email)}${planParam}`;
+      const planQuery = plan ? `&plan=${encodeURIComponent(plan.key)}` : '';
+      const journeyQuery = journeyParam
+        ? `&journey=${encodeURIComponent(journeyParam)}`
+        : '';
+      window.location.href = `${appBase}/auth/check-email?email=${encodeURIComponent(email)}${planQuery}${journeyQuery}`;
     } catch (err) {
       if (err instanceof Error && err.message.includes('timeout')) {
         setErrorMessage(
@@ -251,6 +263,11 @@ function SignUpContent() {
                   <p className="text-slate-400">
                     Start building compliance into your organization
                   </p>
+                  {journeyParam ? (
+                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-cyan-300">
+                      Journey selected: {journeyParam}
+                    </p>
+                  ) : null}
                 </>
               )}
             </div>
@@ -284,8 +301,7 @@ function SignUpContent() {
               </div>
             )}
 
-            {/* Google Sign Up – standard Supabase OAuth flow.
-                TODO: For branded consent screen, enable Supabase Custom Auth Domain. */}
+            {/* Google Sign Up – standard Supabase OAuth flow. */}
             <button
               onClick={signUpWithGoogle}
               disabled={isLoading}

@@ -1,14 +1,13 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Download, AlertTriangle } from 'lucide-react'
+import { Download, AlertTriangle, ShieldCheck } from 'lucide-react'
 
 type Status = 'idle' | 'creating' | 'waiting' | 'ready' | 'error'
 
 type Props = {
   title: string
   description: string
-  icon: React.ComponentType<{ className?: string }>
   reportType: string
   color: 'sky' | 'indigo' | 'pink' | 'emerald'
   disabled?: boolean
@@ -17,7 +16,6 @@ type Props = {
 export function CertificationReportCard({
   title,
   description,
-  icon: Icon,
   reportType,
   color,
   disabled = false,
@@ -110,7 +108,7 @@ export function CertificationReportCard({
     >
       <div className="flex items-start justify-between mb-4">
         <div className="p-2 rounded-xl bg-white/10">
-          <Icon className="h-5 w-5" />
+          <ShieldCheck className="h-5 w-5" />
         </div>
         <div className="flex items-center gap-1">
           <Download className="h-4 w-4 text-slate-400" />

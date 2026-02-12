@@ -1,11 +1,11 @@
 import { Settings, CheckCircle, AlertCircle } from "lucide-react";
 
 export default function AdminSettingsPage() {
-  const founderEmails = (process.env.FOUNDER_EMAILS ?? "ejazhussaini313@gmail.com")
+  const founderEmails = (process.env.FOUNDER_EMAILS ?? "founder@formaos.com.au")
     .split(",")
     .map((entry) => entry.trim())
     .filter(Boolean);
-  const founderPrimary = founderEmails[0] ?? "ejazhussaini313@gmail.com";
+  const founderPrimary = founderEmails[0] ?? "founder@formaos.com.au";
   
   return (
     <div className="space-y-6">

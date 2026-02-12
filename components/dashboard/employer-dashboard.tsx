@@ -22,6 +22,7 @@ import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedC
 import { SystemStatusPanel } from '@/components/trust/SystemStatusPanel';
 import { ComplianceIntelligenceSummary } from '@/components/intelligence/ComplianceIntelligenceSummary';
 import { FrameworkHealthWidget } from '@/components/intelligence/FrameworkHealthWidget';
+import { AIComplianceAssistantPanel } from '@/components/intelligence/AIComplianceAssistantPanel';
 import { ComplianceScoreHistory } from '@/components/compliance/ComplianceScoreHistory';
 import { IndustryGuidancePanel } from '@/components/dashboard/IndustryGuidancePanel';
 import type { ChecklistCompletionCounts } from '@/lib/onboarding/industry-checklists';
@@ -549,6 +550,27 @@ export function EmployerDashboard({
   expiringCertsCount = 0,
   openTasksCount = 0,
 }: EmployerDashboardProps) {
+  const aiSuggestions = [
+    {
+      title: 'Draft remediation plan',
+      detail: 'Generate owner-ready remediation actions for at-risk controls.',
+      href: '/app/tasks',
+      icon: 'remediation' as const,
+    },
+    {
+      title: 'Find missing evidence',
+      detail: 'Locate high-priority controls with incomplete evidence chains.',
+      href: '/app/vault',
+      icon: 'evidence' as const,
+    },
+    {
+      title: 'Interpret policy gaps',
+      detail: 'Summarize policy coverage gaps against selected frameworks.',
+      href: '/app/policies',
+      icon: 'policy' as const,
+    },
+  ];
+
   const [completionCounts, setCompletionCounts] =
     useState<ChecklistCompletionCounts>({
       tasks: 0,
@@ -677,6 +699,7 @@ export function EmployerDashboard({
       )}
 
       <ComplianceIntelligenceSummary />
+      <AIComplianceAssistantPanel suggestions={aiSuggestions} />
       <FrameworkHealthWidget />
 
       {/* Compliance Score History with Trend Analytics */}

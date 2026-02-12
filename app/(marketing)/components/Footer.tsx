@@ -33,6 +33,7 @@ const footerLinks = {
   resources: [
     { href: '/docs', label: 'Documentation' },
     { href: '/blog', label: 'Blog' },
+    { href: '/trust', label: 'Trust Center' },
     { href: '/faq', label: 'FAQ' },
   ],
   company: [
@@ -44,6 +45,7 @@ const footerLinks = {
     { href: '/legal/privacy', label: 'Privacy Policy' },
     { href: '/legal/terms', label: 'Terms of Service' },
     { href: '/security', label: 'Security' },
+    { href: '/trust', label: 'Assurance Portal' },
   ],
 };
 

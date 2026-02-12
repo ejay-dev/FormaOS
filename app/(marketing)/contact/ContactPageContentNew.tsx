@@ -28,7 +28,6 @@ function ContactHero() {
     offset: ['start start', 'end start'],
   });
 
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
   const y = useTransform(scrollYProgress, [0, 0.5], [0, 100]);
 
@@ -80,7 +79,7 @@ function ContactHero() {
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <div className="flex flex-col items-center text-center">
-          <motion.div style={{ opacity, scale, y }}>
+          <motion.div style={{ scale, y }}>
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -131,15 +130,14 @@ function ContactHero() {
             </motion.p>
 
             {/* CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.7 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4"
-            >
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="#demo-form"
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-blue-500 hover:bg-blue-400 text-white font-medium transition-all duration-300"
+                className="inline-flex items-center gap-2 rounded-lg border border-blue-400/60 bg-[#020617] px-8 py-4 font-medium text-white transition-all duration-300 hover:bg-[#0b1736]"
+                style={{
+                  color: '#ffffff',
+                  WebkitTextFillColor: '#ffffff',
+                }}
               >
                 Request a Demo
                 <ArrowRight className="w-4 h-4" />
@@ -151,7 +149,7 @@ function ContactHero() {
                 Contact Our Team
                 <ArrowRight className="w-4 h-4" />
               </Link>
-            </motion.div>
+            </div>
           </motion.div>
         </div>
       </div>
@@ -196,10 +194,10 @@ function ContactInformation() {
             </div>
             <h3 className="text-lg font-semibold text-white mb-2">Email</h3>
             <a
-              href="mailto:formaos.team@gmail.com"
+              href="mailto:hello@formaos.com.au"
               className="text-blue-400 hover:text-blue-300 transition-colors"
             >
-              formaos.team@gmail.com
+              hello@formaos.com.au
             </a>
           </motion.div>
 
@@ -500,11 +498,11 @@ function EnterpriseInquiries() {
             strategic partnerships, contact us directly.
           </p>
           <a
-            href="mailto:formaos.team@gmail.com"
+            href="mailto:hello@formaos.com.au"
             className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-medium text-lg transition-colors"
           >
             <Mail className="w-5 h-5" />
-            formaos.team@gmail.com
+            hello@formaos.com.au
           </a>
         </motion.div>
       </div>

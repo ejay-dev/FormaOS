@@ -44,6 +44,68 @@ export const duration = {
 } as const;
 
 // =========================================================
+// MOTION GOVERNANCE (LAYERED SYSTEM)
+// =========================================================
+
+export const motionLayers = {
+  orientation: 'orientation',
+  feedback: 'feedback',
+  delight: 'delight',
+} as const;
+
+export type MotionLayer = keyof typeof motionLayers;
+
+export const motionBudgets = {
+  orientation: {
+    maxDistancePx: 24,
+    maxDuration: duration.slow,
+  },
+  feedback: {
+    maxScaleDelta: 0.04,
+    maxDuration: duration.fast,
+  },
+  delight: {
+    maxDistancePx: 12,
+    maxDuration: duration.slower,
+  },
+} as const;
+
+const motionLayerTransitions = {
+  orientation: {
+    duration: duration.normal,
+    ease: [...easing.signature],
+  },
+  feedback: {
+    duration: duration.fast,
+    ease: [...easing.smooth],
+  },
+  delight: {
+    duration: duration.slow,
+    ease: [...easing.signature],
+  },
+} as const;
+
+type MotionLayerTransition = {
+  duration: number;
+  ease: number[];
+  delay?: number;
+  repeat?: number;
+  repeatType?: 'loop' | 'reverse' | 'mirror';
+};
+
+export function getMotionLayerTransition(
+  layer: MotionLayer,
+  overrides?: Partial<MotionLayerTransition>,
+) {
+  const base = motionLayerTransitions[layer];
+  return {
+    duration: base.duration,
+    ease: [...base.ease],
+    ...overrides,
+  } satisfies MotionLayerTransition;
+}
+
+// =========================================================
 // STAGGER DELAYS
 // =========================================================
 

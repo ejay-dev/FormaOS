@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { MarketingAnchor } from './components/marketing-anchor';
 import { HomeClientMarker } from './components/home-client-marker';
 import FigmaHomepage from './components/FigmaHomepage';
 

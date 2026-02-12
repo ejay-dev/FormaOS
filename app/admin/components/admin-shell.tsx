@@ -25,6 +25,7 @@ import { useState } from 'react';
 import { createSupabaseClient } from '@/lib/supabase/client';
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';
+import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
 
 /* Admin Console Shell — Platform Operations Center */
 
@@ -171,6 +172,7 @@ export function AdminShell({
 
         {/* Main Content */}
         <main className="flex-1 min-w-0 h-[calc(100vh-4rem)] overflow-y-auto">
+          <EnterpriseTrustStrip surface="admin" />
           <div className="p-6 md:p-8 max-w-[1600px] mx-auto">{children}</div>
         </main>
       </div>

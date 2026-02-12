@@ -21,7 +21,7 @@ export async function requireFounderAccess() {
   }
 
   const allowedEmails = parseEnvList(process.env.FOUNDER_EMAILS);
-  allowedEmails.add('ejazhussaini313@gmail.com');
+  allowedEmails.add('founder@formaos.com.au');
   const allowedIds = parseEnvList(process.env.FOUNDER_USER_IDS);
 
   if (!allowedEmails.size && !allowedIds.size) {

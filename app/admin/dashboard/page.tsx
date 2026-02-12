@@ -1,4 +1,5 @@
 import { getAdminFetchConfig } from '@/app/admin/lib';
+import Link from 'next/link';
 import {
   TrendingUp,
   Users,
@@ -6,6 +7,9 @@ import {
   CreditCard,
   Zap,
   Activity,
+  AlertTriangle,
+  ArrowRight,
+  ShieldAlert,
 } from 'lucide-react';
 
 type OverviewData = {
@@ -90,6 +94,45 @@ export default async function AdminDashboard() {
     ...data.orgsByDay.map((d: { count: number }) => d.count),
     1,
   );
+  const riskQueue = [
+    {
+      label: 'Failed payments',
+      value: data.failedPayments,
+      href: '/admin/billing',
+      severity: data.failedPayments > 0 ? 'high' : 'low',
+      guidance:
+        data.failedPayments > 0
+          ? 'Immediate intervention required'
+          : 'No active payment incidents',
+    },
+    {
+      label: 'Trials expiring (< 7d)',
+      value: data.trialsExpiring,
+      href: '/admin/trials',
+      severity: data.trialsExpiring > 5 ? 'medium' : 'low',
+      guidance:
+        data.trialsExpiring > 0
+          ? 'Review renewal and outreach queue'
+          : 'No urgent trial churn risk',
+    },
+    {
+      label: 'Enterprise readiness',
+      value: enterpriseCount,
+      href: '/admin/security',
+      severity: enterpriseCount === 0 ? 'medium' : 'low',
+      guidance:
+        enterpriseCount === 0
+          ? 'No enterprise tenants detected'
+          : 'Enterprise footprint active',
+    },
+  ] as const;
+
+  const quickOps = [
+    { label: 'Triage incidents', href: '/admin/security' },
+    { label: 'Review audit stream', href: '/admin/audit' },
+    { label: 'Publish release notes', href: '/admin/releases' },
+    { label: 'Validate system health', href: '/admin/health' },
+  ] as const;
 
   return (
     <div className="space-y-8">
@@ -242,6 +285,74 @@ export default async function AdminDashboard() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
+          <div className="mb-4 flex items-center gap-2">
+            <ShieldAlert className="h-5 w-5 text-amber-300" />
+            <h2 className="text-lg font-semibold text-slate-100">
+              Risk Alert Triage
+            </h2>
+          </div>
+          <div className="space-y-3">
+            {riskQueue.map((risk) => (
+              <Link
+                key={risk.label}
+                href={risk.href}
+                className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/60 px-4 py-3 transition-colors hover:bg-slate-800/60"
+              >
+                <div>
+                  <p className="text-sm font-medium text-slate-100">
+                    {risk.label}
+                  </p>
+                  <p className="text-xs text-slate-400">{risk.guidance}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`rounded px-2 py-1 text-xs font-semibold ${
+                      risk.severity === 'high'
+                        ? 'bg-rose-500/15 text-rose-300'
+                        : risk.severity === 'medium'
+                          ? 'bg-amber-500/15 text-amber-300'
+                          : 'bg-emerald-500/15 text-emerald-300'
+                    }`}
+                  >
+                    {risk.value}
+                  </span>
+                  <ArrowRight className="h-4 w-4 text-slate-500" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
+          <div className="mb-4 flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-blue-300" />
+            <h2 className="text-lg font-semibold text-slate-100">
+              Operator Shortcuts
+            </h2>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {quickOps.map((shortcut) => (
+              <Link
+                key={shortcut.href}
+                href={shortcut.href}
+                className="rounded-lg border border-slate-800 bg-slate-900/60 px-4 py-3 text-sm text-slate-200 transition-colors hover:bg-slate-800/60"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span>{shortcut.label}</span>
+                  <ArrowRight className="h-4 w-4 text-slate-500" />
+                </div>
+              </Link>
+            ))}
+          </div>
+          <p className="mt-4 text-xs text-slate-500">
+            Command-center shortcuts prioritize the highest-frequency platform
+            operations workflows.
+          </p>
         </div>
       </div>
     </div>

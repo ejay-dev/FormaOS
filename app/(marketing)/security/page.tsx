@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import SecurityPageContentNew from './SecurityPageContentNew';
+import SecurityPageContent from './SecurityPageContent';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
 
@@ -20,5 +20,5 @@ export const metadata: Metadata = {
 };
 
 export default function SecurityPage() {
-  return <SecurityPageContentNew />;
+  return <SecurityPageContent />;
 }

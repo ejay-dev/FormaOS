@@ -1,8 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { easing, duration } from '@/config/motion';
+import { FeedbackScale } from '@/components/motion';
 
 const appBase = (process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.formaos.com.au')
   .replace(/\/$/, '');
@@ -17,30 +16,22 @@ export function HeaderCTA() {
       >
         Login
       </Link>
-      <motion.div
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        transition={{ duration: duration.fast, ease: easing.signature }}
-      >
+      <FeedbackScale>
         <Link
           href="/pricing"
           className="inline-flex items-center justify-center px-3 lg:px-4 py-2 rounded-lg border border-white/20 bg-white/5 font-medium hover:bg-white/10 transition-colors"
         >
           Plans
         </Link>
-      </motion.div>
-      <motion.div
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        transition={{ duration: duration.fast, ease: easing.signature }}
-      >
+      </FeedbackScale>
+      <FeedbackScale>
         <Link
-          href={`${appBase}/auth/signup?plan=pro`}
+          href={`${appBase}/auth/signup?plan=pro&source=header_cta`}
           className="inline-flex items-center justify-center px-4 lg:px-5 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium shadow-[0_0_20px_rgba(0,212,251,0.3)] hover:shadow-[0_0_30px_rgba(0,212,251,0.4)] transition-shadow"
         >
           Start Free
         </Link>
-      </motion.div>
+      </FeedbackScale>
     </div>
   );
 }

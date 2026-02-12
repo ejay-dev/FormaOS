@@ -431,11 +431,11 @@ function PrivacyContent() {
           </ul>
           <p className="mt-4">To exercise your rights, contact:</p>
           <a
-            href="mailto:formaos.team@gmail.com"
+            href="mailto:hello@formaos.com.au"
             className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors mt-2"
           >
             <Mail className="w-4 h-4" />
-            formaos.team@gmail.com
+            hello@formaos.com.au
           </a>
         </PrivacySection>
 
@@ -497,11 +497,11 @@ function PrivacyContent() {
           <p>For privacy concerns:</p>
           <div className="flex flex-col gap-2 mt-4">
             <a
-              href="mailto:formaos.team@gmail.com"
+              href="mailto:hello@formaos.com.au"
               className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors"
             >
               <Mail className="w-4 h-4" />
-              formaos.team@gmail.com
+              hello@formaos.com.au
             </a>
             <a
               href="tel:+61469715062"

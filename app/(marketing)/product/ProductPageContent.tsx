@@ -29,6 +29,7 @@ import dynamic from 'next/dynamic';
 import { VisualDivider } from '@/components/motion';
 import CinematicField from '../components/motion/CinematicField';
 import { brand } from '@/config/brand';
+import { OperationalScenarioProof } from '@/components/marketing/demo/OperationalScenarioProof';
 
 const DemoComplianceChain = dynamic(() => import('@/components/marketing/demo/DemoComplianceChain'), { ssr: false });
 const DemoComplianceScore = dynamic(() => import('@/components/marketing/demo/DemoComplianceScore'), { ssr: false });
@@ -1301,6 +1302,8 @@ export default function ProductPageContent() {
         <ComplianceIntelligence />
         <BuiltForComplex />
         <WhoIsFor />
+        <VisualDivider />
+        <OperationalScenarioProof />
         <VisualDivider />
         <TheOutcome />
         <FinalCTA />

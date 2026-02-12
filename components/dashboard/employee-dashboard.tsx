@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { DashboardSectionCard } from '@/components/dashboard/unified-dashboard-layout';
 import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedChecklist';
+import { AIComplianceAssistantPanel } from '@/components/intelligence/AIComplianceAssistantPanel';
 
 /**
  * =========================================================
@@ -454,9 +455,31 @@ export function EmployeeDashboard({
   tasksAssigned = 0,
   tasksPending = 0,
 }: EmployeeDashboardProps) {
+  const aiSuggestions = [
+    {
+      title: 'Review task priorities',
+      detail: 'AI groups your highest-risk pending compliance tasks first.',
+      href: '/app/tasks',
+      icon: 'remediation' as const,
+    },
+    {
+      title: 'Find required evidence',
+      detail: 'Identify the next evidence documents needed for your role.',
+      href: '/app/vault',
+      icon: 'evidence' as const,
+    },
+    {
+      title: 'Clarify policy duties',
+      detail: 'Summarize role-specific policy obligations before submission.',
+      href: '/app/policies',
+      icon: 'policy' as const,
+    },
+  ];
+
   return (
     <div className="space-y-8">
       <GettingStartedChecklist />
+      <AIComplianceAssistantPanel suggestions={aiSuggestions} />
 
       <div data-tour="dashboard-overview">
         <MyComplianceStatus

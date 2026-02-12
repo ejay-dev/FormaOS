@@ -18,6 +18,7 @@ import { HelpAssistant } from '@/components/help/HelpAssistant';
 import { AppShellErrorBoundary } from '@/components/app-shell-error-boundary';
 import { ProductTourProvider } from '@/lib/onboarding/product-tour';
 import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
+import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
 
 // Force dynamic rendering for all /app/* routes
 // Required because this layout uses cookies() via Supabase auth
@@ -190,6 +191,8 @@ export default async function AppLayout({
                             />
                           </div>
                         </header>
+
+                        <EnterpriseTrustStrip surface="app" />
 
                         {/* Trial Countdown Banner (conversion system) */}
                         <TrialCountdownBanner />

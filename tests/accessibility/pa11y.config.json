@@ -2,8 +2,11 @@
   "urls": [
     "http://localhost:3000",
     "http://localhost:3000/pricing",
-    "http://localhost:3000/features",
+    "http://localhost:3000/product",
+    "http://localhost:3000/security",
     "http://localhost:3000/contact",
+    "http://localhost:3000/auth/signin",
+    "http://localhost:3000/auth/signup",
     "http://localhost:3000/app",
     "http://localhost:3000/app/policies",
     "http://localhost:3000/app/tasks",

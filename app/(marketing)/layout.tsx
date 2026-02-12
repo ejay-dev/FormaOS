@@ -8,6 +8,7 @@ import { HeaderCTA } from './components/HeaderCTA';
 import { Footer } from './components/Footer';
 import { SystemStateHydrator } from '@/lib/system-state/hydrator';
 import { PublicAuthProvider } from '@/lib/auth/public-auth-provider';
+import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
 import './marketing.css';
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';
@@ -82,6 +83,8 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
                 </div>
               </div>
             </header>
+
+            <EnterpriseTrustStrip surface="marketing" />
 
             <main className="relative z-10">{children}</main>
             <script

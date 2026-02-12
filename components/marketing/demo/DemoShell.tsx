@@ -40,6 +40,8 @@ export default function DemoShell({ activeScreen, onNavigate, children }: DemoSh
               exit={{ opacity: 0, x: -20, filter: 'blur(4px)' }}
               transition={screenTransition}
               className="absolute inset-0 overflow-y-auto overflow-x-hidden p-3 md:p-4"
+              tabIndex={0}
+              aria-label="Interactive demo content"
             >
               {children}
             </motion.div>

@@ -598,13 +598,13 @@ function TermsContent() {
           <p>For legal inquiries:</p>
           <div className="flex flex-col gap-3 mt-4">
             <motion.a
-              href="mailto:formaos.team@gmail.com"
+              href="mailto:hello@formaos.com.au"
               whileHover={{ scale: 1.02, x: 5 }}
               className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors group"
             >
               <Mail className="w-4 h-4" />
               <span className="group-hover:underline decoration-cyan-400/50 underline-offset-4">
-                formaos.team@gmail.com
+                hello@formaos.com.au
               </span>
             </motion.a>
             <motion.a

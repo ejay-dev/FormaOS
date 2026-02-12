@@ -188,21 +188,33 @@ export default function InteractiveDemo() {
 
                 {/* Play/Pause */}
                 <button
+                  type="button"
                   onClick={toggleAutoPlay}
+                  aria-label={isAutoPlaying ? 'Pause auto-play demo' : 'Start auto-play demo'}
                   className="flex items-center gap-1 rounded bg-white/[0.04] px-1.5 py-0.5 text-[10px] text-slate-400 hover:text-slate-200 transition-colors"
                 >
                   {isAutoPlaying ? <Pause className="h-2.5 w-2.5" /> : <Play className="h-2.5 w-2.5" />}
+                  <span className="sr-only">{isAutoPlaying ? 'Pause' : 'Play'}</span>
                   <span className="hidden sm:inline">{isAutoPlaying ? 'Pause' : 'Play'}</span>
                 </button>
               </div>
             </div>
 
             {/* Mobile tab bar (visible below md) */}
-            <div className="flex md:hidden overflow-x-auto no-scrollbar border-b border-white/[0.06] bg-[#0d1225]/80">
+            <div
+              className="flex md:hidden overflow-x-auto no-scrollbar border-b border-white/[0.06] bg-[#0d1225]/80"
+              role="tablist"
+              aria-label="Product demo screens"
+              tabIndex={0}
+            >
               {demoScreenSequence.map((id) => (
                 <button
+                  type="button"
                   key={id}
                   onClick={() => handleNavigate(id)}
+                  role="tab"
+                  aria-selected={activeScreen === id}
+                  aria-label={`Show ${screenLabels[id]} screen`}
                   className={`flex-shrink-0 px-3 py-2 text-[11px] font-medium border-b-2 transition-colors ${
                     activeScreen === id
                       ? 'text-cyan-300 border-cyan-400'
@@ -236,8 +248,10 @@ export default function InteractiveDemo() {
         <div className="flex justify-center gap-1.5 mt-6">
           {demoScreenSequence.map((id) => (
             <button
+              type="button"
               key={id}
               onClick={() => handleNavigate(id)}
+              aria-label={`Show ${screenLabels[id]} screen`}
               className={`group flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium transition-all ${
                 activeScreen === id
                   ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/20'

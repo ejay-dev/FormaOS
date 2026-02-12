@@ -33,6 +33,7 @@ import {
   onOnboardingMilestone,
 } from '@/lib/automation/integration';
 import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
+import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
 
 // Force dynamic rendering - this page uses cookies() for auth
 export const dynamic = 'force-dynamic';
@@ -46,6 +47,12 @@ const PLAN_CHOICES = [
 const ROLE_OPTIONS = [
   { id: 'employer', label: 'Employer / Organization admin', role: 'owner' },
   { id: 'employee', label: 'Employee / Field staff', role: 'member' },
+];
+
+const ONBOARDING_MILESTONES = [
+  { id: 'foundation', label: 'Foundation', steps: [1, 2, 3] },
+  { id: 'operating-model', label: 'Operating Model', steps: [4, 5] },
+  { id: 'activation', label: 'Activation', steps: [6, 7] },
 ];
 
 type OnboardingStatusRow = {
@@ -339,7 +346,7 @@ async function saveIndustrySelection(formData: FormData) {
 
 async function saveRoleSelection(formData: FormData) {
   'use server';
-  const { supabase, orgId, user } = await getOrgContext();
+  const { supabase, orgId, user, orgRecord } = await getOrgContext();
   const roleSelection = (formData.get('role') as string | null) ?? '';
 
   const match = ROLE_OPTIONS.find((option) => option.id === roleSelection);
@@ -352,6 +359,25 @@ async function saveRoleSelection(formData: FormData) {
     .update({ role: match.role })
     .eq('organization_id', orgId)
     .eq('user_id', user.id);
+
+  // Fast-track member personas to first proof with defaults already
+  // managed by the organization profile.
+  if (!isProvisioningRole(match.role)) {
+    const defaultFrameworks =
+      Array.isArray(orgRecord?.frameworks) && orgRecord.frameworks.length > 0
+        ? orgRecord.frameworks
+        : ['iso27001'];
+
+    await createSupabaseAdminClient()
+      .from('organizations')
+      .update({ frameworks: defaultFrameworks })
+      .eq('id', orgId);
+
+    await markStepComplete(orgId, 4, 5);
+    await markStepComplete(orgId, 5, 6);
+    await markStepComplete(orgId, 6, 7);
+    redirect('/onboarding?step=7&fast_track=1');
+  }
 
   await markStepComplete(orgId, 4, 5);
   redirect('/onboarding?step=5');
@@ -580,6 +606,8 @@ type OnboardingPageProps = {
     plan?: string;
     error?: string;
     from?: string;
+    journey?: string;
+    fast_track?: string;
   }>;
 };
 
@@ -636,11 +664,22 @@ export default async function OnboardingPage({
   }
 
   const errorState = Boolean(resolvedSearchParams?.error);
+  const fastTrack = resolvedSearchParams?.fast_track === '1';
   const planLabel = planKey ? PLAN_CATALOG[planKey].name : 'Plan not selected';
+  const completedRatio = (safeStep / TOTAL_STEPS) * 100;
+  const journey = resolvedSearchParams?.journey ?? '';
+  const firstActionDefault =
+    journey === 'prove'
+      ? 'upload_evidence'
+      : journey === 'evaluate'
+        ? 'run_evaluation'
+        : 'create_task';
 
   return (
-    <div className="min-h-screen bg-[hsl(var(--background))] flex items-center justify-center p-6 font-sans">
-      <div className="w-full max-w-2xl">
+    <div className="min-h-screen bg-[hsl(var(--background))] font-sans">
+      <EnterpriseTrustStrip surface="onboarding" />
+      <div className="flex items-center justify-center p-6">
+        <div className="w-full max-w-2xl">
         <div className="bg-white/5 rounded-[2rem] p-10 shadow-2xl border border-white/10 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1.5 bg-[hsl(var(--card))]" />
 
@@ -654,9 +693,43 @@ export default async function OnboardingPage({
             <p className="text-slate-400 mt-2 font-medium leading-relaxed text-sm">
               Step {safeStep} of {TOTAL_STEPS} · {planLabel}
             </p>
+            <div className="mt-5 space-y-3">
+              <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
+                  style={{ width: `${completedRatio}%` }}
+                />
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                {ONBOARDING_MILESTONES.map((milestone) => {
+                  const isComplete = Math.max(...milestone.steps) < safeStep;
+                  const isActive = milestone.steps.includes(safeStep);
+                  return (
+                    <div
+                      key={milestone.id}
+                      className={`rounded-full border px-2 py-1 text-center ${
+                        isActive
+                          ? 'border-cyan-400/50 bg-cyan-500/10 text-cyan-200'
+                          : isComplete
+                            ? 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200'
+                            : 'border-white/10 bg-white/5'
+                      }`}
+                    >
+                      {milestone.label}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
             {errorState ? (
               <div className="mt-4 rounded-xl border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-xs text-rose-200">
                 Please complete the required fields before continuing.
+              </div>
+            ) : null}
+            {fastTrack ? (
+              <div className="mt-4 rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-3 text-xs text-cyan-100">
+                Fast-track enabled for member onboarding. Core governance
+                defaults are pre-configured.
               </div>
             ) : null}
           </div>
@@ -916,6 +989,7 @@ export default async function OnboardingPage({
                       value="create_task"
                       data-testid="first-action-create-task"
                       className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                      defaultChecked={firstActionDefault === 'create_task'}
                       required
                     />
                     <span>Create a kickoff compliance task</span>
@@ -927,6 +1001,7 @@ export default async function OnboardingPage({
                       value="upload_evidence"
                       data-testid="first-action-upload-evidence"
                       className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                      defaultChecked={firstActionDefault === 'upload_evidence'}
                     />
                     <span>Prepare an evidence upload task</span>
                   </label>
@@ -937,6 +1012,7 @@ export default async function OnboardingPage({
                       value="run_evaluation"
                       data-testid="first-action-run-evaluation"
                       className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                      defaultChecked={firstActionDefault === 'run_evaluation'}
                     />
                     <span>Run the first compliance evaluation</span>
                   </label>
@@ -955,6 +1031,7 @@ export default async function OnboardingPage({
             </p>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

@@ -138,7 +138,9 @@ export default function DemoIncidentFlow({
             return (
               <div key={step.id} className="flex items-center flex-1 min-w-0">
                 <button
+                  type="button"
                   onClick={() => handleClick(i)}
+                  aria-label={`Show ${step.label} phase`}
                   className={`
                     flex items-center gap-1 sm:gap-1.5 rounded-full px-1.5 sm:px-2.5 py-1 text-[9px] sm:text-[10px] font-medium transition-all w-full justify-center
                     ${isActive ? `${step.bg} ${step.color} border ${step.border}` :
@@ -146,6 +148,7 @@ export default function DemoIncidentFlow({
                   `}
                 >
                   <Icon className="h-3 w-3 flex-shrink-0" />
+                  <span className="sr-only">{step.label}</span>
                   <span className="hidden sm:inline truncate">{step.label}</span>
                 </button>
                 {i < steps.length - 1 && (

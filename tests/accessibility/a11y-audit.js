@@ -22,8 +22,11 @@ const config = {
   pages: [
     { url: '/', name: 'homepage', auth: false },
     { url: '/pricing', name: 'pricing', auth: false },
-    { url: '/features', name: 'features', auth: false },
+    { url: '/product', name: 'product', auth: false },
+    { url: '/security', name: 'security', auth: false },
     { url: '/contact', name: 'contact', auth: false },
+    { url: '/auth/signin', name: 'auth-signin', auth: false },
+    { url: '/auth/signup', name: 'auth-signup', auth: false },
     { url: '/app', name: 'dashboard', auth: true },
     { url: '/app/policies', name: 'policies', auth: true },
     { url: '/app/tasks', name: 'tasks', auth: true },

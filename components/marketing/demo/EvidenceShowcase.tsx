@@ -139,7 +139,9 @@ export default function EvidenceShowcase() {
                     return (
                       <div key={step.id} className="flex items-center flex-1">
                         <button
+                          type="button"
                           onClick={() => handleStepClick(i)}
+                          aria-label={`Show ${step.label} step`}
                           className={`
                             relative flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-medium transition-all w-full justify-center
                             ${isActive ? `${step.bg} ${step.color} border ${step.border}` :
@@ -147,6 +149,7 @@ export default function EvidenceShowcase() {
                           `}
                         >
                           <Icon className="h-3 w-3" />
+                          <span className="sr-only">{step.label}</span>
                           <span className="hidden sm:inline">{step.label}</span>
                         </button>
                         {i < steps.length - 1 && (
