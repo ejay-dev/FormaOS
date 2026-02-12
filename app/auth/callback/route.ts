@@ -194,6 +194,12 @@ export async function GET(request: Request) {
     }
     return requestUrl.origin.replace(/\/$/, '');
   })();
+  const requestedNextRaw = searchParams.get('next');
+  const requestedNext =
+    requestedNextRaw && requestedNextRaw.startsWith('/')
+      ? requestedNextRaw
+      : null;
+  const ssoOrgId = searchParams.get('sso_org');
 
   // Handle OAuth errors (user denied permission, etc.)
   if (oauthError) {
@@ -272,7 +278,7 @@ export async function GET(request: Request) {
         data.user.email,
         '→ /app',
       );
-      return redirectWithCookies(`${appBase}/app`);
+      return redirectWithCookies(`${appBase}${requestedNext ?? '/app'}`);
     }
 
     // No code, no session — redirect to sign-in
@@ -532,7 +538,12 @@ export async function GET(request: Request) {
     .select('organization_id, role, created_at')
     .eq('user_id', user.id)
     .limit(50);
-  const membership = selectPrimaryMembership((membershipRows ?? []) as MembershipRow[]);
+  const scopedMembershipRows = (() => {
+    const rows = (membershipRows ?? []) as MembershipRow[];
+    if (!ssoOrgId) return rows;
+    return rows.filter((r) => r.organization_id === ssoOrgId);
+  })();
+  const membership = selectPrimaryMembership(scopedMembershipRows);
 
   if (membershipError) {
     console.error('Membership lookup failed:', membershipError);
@@ -543,11 +554,15 @@ export async function GET(request: Request) {
     // 🆕 CHECK FOR PENDING INVITATIONS FIRST
     // If an admin invited this employee by email, auto-accept the invitation
     // so the employee joins the employer's org automatically on first login.
-    const { data: pendingInvite } = await admin
+    let inviteQuery = admin
       .from('team_invitations')
       .select('id, organization_id, role, email')
       .ilike('email', user.email || '')
-      .eq('status', 'pending')
+      .eq('status', 'pending');
+    if (ssoOrgId) {
+      inviteQuery = inviteQuery.eq('organization_id', ssoOrgId);
+    }
+    const { data: pendingInvite } = await inviteQuery
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -582,7 +597,7 @@ export async function GET(request: Request) {
 
         if (inviteOrg?.onboarding_completed) {
           console.log('[auth/callback] ✅ Auto-joined via invitation → /app');
-          return redirectWithCookies(`${appBase}/app`);
+          return redirectWithCookies(`${appBase}${requestedNext ?? '/app'}`);
         }
         console.log(
           '[auth/callback] ✅ Auto-joined via invitation → /onboarding',
@@ -592,6 +607,15 @@ export async function GET(request: Request) {
       console.error(
         '[auth/callback] Failed to auto-accept invitation:',
         joinError,
+      );
+    } else if (ssoOrgId) {
+      // Enterprise SSO is scoped to a specific org. If the user is not a member
+      // and does not have a pending invitation, do not create a new org.
+      await supabase.auth.signOut().catch(() => {});
+      return redirectWithCookies(
+        `${appBase}/auth/signin?error=sso_not_authorized&message=${encodeURIComponent(
+          'Your account is not authorized for this organization. Please contact your administrator.',
+        )}`,
       );
     }
 
@@ -651,7 +675,7 @@ export async function GET(request: Request) {
           return redirectWithCookies(`${appBase}/onboarding${planQuery}`);
         }
 
-        return redirectWithCookies(`${appBase}/app`);
+        return redirectWithCookies(`${appBase}${requestedNext ?? '/app'}`);
       }
     }
 
@@ -893,5 +917,5 @@ export async function GET(request: Request) {
   }
 
   console.log('[auth/callback] ✅ User fully onboarded, redirecting to app');
-  return redirectWithCookies(`${appBase}/app`);
+  return redirectWithCookies(`${appBase}${requestedNext ?? '/app'}`);
 }

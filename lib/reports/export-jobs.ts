@@ -2,6 +2,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin'
 import { buildReport } from '@/lib/audit-reports/report-builder'
 import { generateReportPdf } from '@/lib/audit-reports/pdf-generator'
 import type { ReportType } from '@/lib/audit-reports/types'
+import { getQueueClient } from '@/lib/queue'
 
 type ReportFormat = 'pdf' | 'json'
 
@@ -45,6 +46,24 @@ export async function createReportExportJob(params: {
     return { ok: false, error: error?.message ?? 'Failed to create report job' }
   }
 
+  // If the Redis-backed queue is configured, enqueue for background processing.
+  // This reduces reliance on scheduled DB claim cron and avoids long-running inline exports.
+  try {
+    const queue = getQueueClient()
+    await queue.enqueue(
+      'report-export',
+      {
+        jobId: job.id,
+        organizationId: params.organizationId,
+        reportType: params.reportType,
+        requestedBy: params.requestedBy,
+      },
+      { organizationId: params.organizationId },
+    )
+  } catch {
+    // No-op: cron/inline processing can still handle the job.
+  }
+
   return { ok: true, jobId: job.id }
 }
 
@@ -66,6 +85,11 @@ export async function processReportExportJob(
 
     if (!job) {
       throw new Error('Report job not found')
+    }
+
+    // Idempotency: if job already completed, do not regenerate.
+    if (job.status === 'completed' && job.file_url) {
+      return { ok: true, fileUrl: job.file_url }
     }
 
     const attempt = preclaimed ? job.attempt_count ?? 0 : (job.attempt_count ?? 0) + 1
@@ -179,4 +203,3 @@ export async function processReportExportJob(
     return { ok: false, error: message }
   }
 }
-

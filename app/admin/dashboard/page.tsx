@@ -341,6 +341,8 @@ export default async function AdminDashboard() {
     count: number;
     href: string;
     grade: RiskGrade;
+    ownerLabel: string;
+    slaLabel: string;
   }> = [
     {
       id: 'billing_intervention',
@@ -349,6 +351,8 @@ export default async function AdminDashboard() {
       count: data.failedPayments,
       href: '/admin/billing',
       grade: data.failedPayments > 3 ? 'critical' : data.failedPayments > 0 ? 'high' : 'low',
+      ownerLabel: 'Billing Operations',
+      slaLabel: data.failedPayments > 0 ? '4h' : 'Weekly',
     },
     {
       id: 'trial_outreach',
@@ -357,6 +361,8 @@ export default async function AdminDashboard() {
       count: data.trialsExpiring,
       href: '/admin/trials',
       grade: data.trialsExpiring > 5 ? 'high' : data.trialsExpiring > 0 ? 'watch' : 'low',
+      ownerLabel: 'Growth Operations',
+      slaLabel: data.trialsExpiring > 0 ? '24h' : 'Weekly',
     },
     {
       id: 'security_triage',
@@ -365,6 +371,8 @@ export default async function AdminDashboard() {
       count: riskQueue[2].value,
       href: '/admin/security/triage',
       grade: enterpriseCount === 0 ? 'watch' : 'low',
+      ownerLabel: 'Security Operations',
+      slaLabel: 'Same day',
     },
     {
       id: 'system_health',
@@ -373,6 +381,8 @@ export default async function AdminDashboard() {
       count: 1,
       href: '/admin/health',
       grade: 'watch',
+      ownerLabel: 'Platform Operations',
+      slaLabel: 'Same day',
     },
   ];
   const orchestrationQueue = orchestrationQueueItems
@@ -636,6 +646,14 @@ export default async function AdminDashboard() {
                   <p className="mt-1 text-xs leading-relaxed text-slate-400">
                     {item.detail}
                   </p>
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <span className="rounded-full border border-slate-700/60 bg-slate-800/40 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-200">
+                      Owner: {item.ownerLabel}
+                    </span>
+                    <span className="rounded-full border border-slate-700/60 bg-slate-800/40 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-200">
+                      SLA: {item.slaLabel}
+                    </span>
+                  </div>
                 </div>
                 <span
                   className={`rounded border px-2 py-1 text-[10px] font-semibold uppercase tracking-wider ${riskGradeStyles(item.grade)}`}

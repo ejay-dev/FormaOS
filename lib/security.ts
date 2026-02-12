@@ -229,50 +229,8 @@ export async function updateSecuritySettings(
   );
 }
 
-/**
- * Configure SSO for organization
- */
-export async function configureSAML(
-  organizationId: string,
-  config: {
-    entityId: string;
-    ssoUrl: string;
-    certificate: string;
-    emailDomain?: string;
-  },
-): Promise<void> {
-  const supabase = await createClient();
-
-  await supabase.from('organization_sso').upsert(
-    {
-      organization_id: organizationId,
-      provider: 'saml',
-      entity_id: config.entityId,
-      sso_url: config.ssoUrl,
-      certificate: config.certificate,
-      email_domain: config.emailDomain,
-      enabled: true,
-    },
-    {
-      onConflict: 'organization_id',
-    },
-  );
-}
-
-/**
- * Get SSO configuration for organization
- */
-export async function getSSOConfig(organizationId: string): Promise<any> {
-  const supabase = await createClient();
-
-  const { data } = await supabase
-    .from('organization_sso')
-    .select('*')
-    .eq('organization_id', organizationId)
-    .single();
-
-  return data;
-}
+// Organization-level SAML SSO is implemented in `lib/sso/*` and the `/api/sso/saml/*`
+// route handlers. Keep this module focused on user-level security settings (MFA, etc.).
 
 /**
  * Log security event

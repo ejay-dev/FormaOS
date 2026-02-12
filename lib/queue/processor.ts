@@ -171,15 +171,62 @@ export class QueueProcessor {
 
 const defaultHandlers: JobHandlerMap = {
   'compliance-export': async (job) => {
-    console.log(`[Handler:compliance-export] Processing job ${job.id}`, job.payload);
-    // Actual implementation would invoke the compliance export pipeline
-    return { status: 'exported' };
+    const payload = job.payload as any;
+    const jobId = payload?.jobId as string | undefined;
+    if (!jobId) {
+      throw new Error('Missing compliance export jobId');
+    }
+
+    const { processExportJob } = await import('@/lib/compliance/evidence-pack-export');
+    const result = await processExportJob(jobId, {
+      workerId: `queue:${job.id}`,
+      maxAttempts: job.maxAttempts,
+      preclaimed: false,
+    });
+
+    if (!result.ok) {
+      throw new Error(result.error ?? 'Compliance export failed');
+    }
+
+    return { status: 'completed', fileUrl: result.fileUrl ?? null };
   },
 
   'report-export': async (job) => {
-    console.log(`[Handler:report-export] Processing job ${job.id}`, job.payload);
-    // Actual implementation would generate the report
-    return { status: 'exported' };
+    const payload = job.payload as any;
+    const jobId = payload?.jobId as string | undefined;
+    if (!jobId) {
+      throw new Error('Missing report export jobId');
+    }
+
+    const { processReportExportJob } = await import('@/lib/reports/export-jobs');
+    const result = await processReportExportJob(jobId, {
+      workerId: `queue:${job.id}`,
+      maxAttempts: job.maxAttempts,
+      preclaimed: false,
+    });
+
+    if (!result.ok) {
+      throw new Error(result.error ?? 'Report export failed');
+    }
+
+    return { status: 'completed', fileUrl: result.fileUrl ?? null };
+  },
+
+  'enterprise-export': async (job) => {
+    const payload = job.payload as any;
+    const jobId = payload?.jobId as string | undefined;
+    if (!jobId) {
+      throw new Error('Missing enterprise export jobId');
+    }
+
+    const { processEnterpriseExportJob } = await import('@/lib/export/enterprise-export');
+    const result = await processEnterpriseExportJob(jobId);
+
+    if (!result.ok) {
+      throw new Error(result.error ?? 'Enterprise export failed');
+    }
+
+    return { status: 'completed', downloadUrl: result.downloadUrl ?? null };
   },
 
   'email-send': async (job) => {

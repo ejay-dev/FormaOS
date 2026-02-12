@@ -10,6 +10,10 @@ import { canStartExport, trackExportStart, trackExportEnd } from './throttle';
 import { generateSignedDownloadUrl } from '@/lib/security/export-tokens';
 import { exportLogger } from '@/lib/observability/structured-logger';
 import archiver from 'archiver';
+import { buildReport } from '@/lib/audit-reports/report-builder';
+import { generateReportPdf } from '@/lib/audit-reports/pdf-generator';
+import type { ReportType } from '@/lib/audit-reports/types';
+import { getQueueClient } from '@/lib/queue';
 
 export interface EnterpriseExportOptions {
   includeCompliance: boolean;
@@ -17,6 +21,15 @@ export interface EnterpriseExportOptions {
   includeAuditLogs: boolean;
   includeCareOps: boolean;
   includeTeam: boolean;
+  /**
+   * Packaged outcome exports used for enterprise onboarding/procurement.
+   * Stored in `enterprise_export_jobs.options.bundleType`.
+   */
+  bundleType?: 'enterprise_full' | 'audit_ready_bundle' | 'proof_packet_14d' | 'monthly_exec_pack';
+  /** Limit time-scoped datasets (audit logs, incidents, etc.) to last N days. */
+  dateRangeDays?: number;
+  /** Include report PDFs inside the zip. */
+  includeReportPdfs?: boolean;
 }
 
 export interface ExportJobResult {
@@ -27,6 +40,23 @@ export interface ExportJobResult {
   fileSize?: number;
   expiresAt?: string;
   errorMessage?: string;
+}
+
+const DEFAULT_EXPORT_BUCKET =
+  (process.env.ENTERPRISE_EXPORTS_BUCKET ?? '').trim() || 'audit-bundles';
+
+function safeIsoDate(value: Date): string {
+  try {
+    return value.toISOString();
+  } catch {
+    return new Date().toISOString();
+  }
+}
+
+function computeSinceIso(days?: number | null): string | null {
+  if (!days || !Number.isFinite(days) || days <= 0) return null;
+  const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+  return safeIsoDate(since);
 }
 
 /**
@@ -85,6 +115,19 @@ export async function createEnterpriseExportJob(
     }
 
     exportLogger.info('enterprise_export_created', { orgId, jobId: job.id });
+
+    // Enqueue for background processing when Redis queue is available.
+    try {
+      const queue = getQueueClient();
+      await queue.enqueue(
+        'enterprise-export',
+        { jobId: job.id, organizationId: orgId, requestedBy: userId },
+        { organizationId: orgId },
+      );
+    } catch {
+      // ignore (cron/manual trigger can still process)
+    }
+
     return { ok: true, jobId: job.id };
   } catch (error) {
     const err = error instanceof Error ? error : new Error(String(error));
@@ -106,12 +149,14 @@ export async function processEnterpriseExportJob(
     organization_id: string;
     requested_by: string;
     options: EnterpriseExportOptions | null;
+    status?: string | null;
+    storage_path?: string | null;
   } | null = null;
 
   // Try enterprise_export_jobs first
   const { data: enterpriseJob, error: enterpriseError } = await admin
     .from('enterprise_export_jobs')
-    .select('organization_id, requested_by, options')
+    .select('organization_id, requested_by, options, status, storage_path')
     .eq('id', jobId)
     .single();
 
@@ -135,6 +180,13 @@ export async function processEnterpriseExportJob(
   }
 
   const { organization_id: orgId, requested_by: userId } = job;
+
+  // Idempotency: if already completed and stored, do not regenerate.
+  if (job.status === 'completed' && job.storage_path) {
+    const baseUrl =
+      (process.env.NEXT_PUBLIC_APP_URL ?? '').trim() || 'http://localhost:3000';
+    return { ok: true, downloadUrl: generateSignedDownloadUrl(baseUrl, jobId, orgId) };
+  }
   const options: EnterpriseExportOptions = (job.options as EnterpriseExportOptions) || {
     includeCompliance: true,
     includeEvidence: true,
@@ -142,6 +194,14 @@ export async function processEnterpriseExportJob(
     includeCareOps: true,
     includeTeam: true,
   };
+
+  const bundleType = options.bundleType ?? 'enterprise_full';
+  const dateRangeDays =
+    options.dateRangeDays ??
+    (bundleType === 'proof_packet_14d' ? 14 : bundleType === 'monthly_exec_pack' ? 30 : 90);
+  const sinceIso = computeSinceIso(dateRangeDays);
+  const includeReportPdfs =
+    options.includeReportPdfs ?? bundleType !== 'enterprise_full';
 
   // Track export start
   trackExportStart(orgId, jobId);
@@ -160,6 +220,8 @@ export async function processEnterpriseExportJob(
         exportedAt: new Date().toISOString(),
         exportedBy: userId,
         options,
+        bundleType,
+        since: sinceIso,
       },
     };
 
@@ -175,12 +237,12 @@ export async function processEnterpriseExportJob(
 
     if (options.includeAuditLogs) {
       await updateJobStatus(jobId, 'processing', 50);
-      exportData.auditLogs = await getAuditLogs(orgId);
+      exportData.auditLogs = await getAuditLogs(orgId, sinceIso);
     }
 
     if (options.includeCareOps) {
       await updateJobStatus(jobId, 'processing', 70);
-      exportData.careOps = await getCareOpsData(orgId);
+      exportData.careOps = await getCareOpsData(orgId, sinceIso);
     }
 
     if (options.includeTeam) {
@@ -191,17 +253,40 @@ export async function processEnterpriseExportJob(
     await updateJobStatus(jobId, 'processing', 90);
 
     // Create ZIP bundle
-    const zipBuffer = await createExportZip(exportData);
+    const reportPdfs = includeReportPdfs
+      ? await buildIncludedReportPdfs(orgId, bundleType)
+      : [];
+
+    const zipBuffer = await createExportZip(exportData, reportPdfs);
     const fileSize = zipBuffer.length;
 
-    // Generate signed download URL
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://app.formaos.com';
-    const downloadUrl = generateSignedDownloadUrl(baseUrl, jobId, userId, orgId);
+    // Upload to Supabase Storage (private bucket) and store location in the job.
+    const datePart = new Date().toISOString().slice(0, 10);
+    const storagePath = `${orgId}/enterprise-exports/${bundleType}/${datePart}/${jobId}.zip`;
+
+    if (!('storage' in admin) || !admin.storage) {
+      throw new Error('Supabase storage client unavailable');
+    }
+
+    const upload = await admin.storage
+      .from(DEFAULT_EXPORT_BUCKET)
+      .upload(storagePath, zipBuffer, { contentType: 'application/zip', upsert: false });
+
+    if (upload.error) {
+      throw new Error(`Storage upload failed: ${upload.error.message}`);
+    }
+
+    const baseUrl =
+      (process.env.NEXT_PUBLIC_APP_URL ?? '').trim() || 'http://localhost:3000';
+    const downloadUrl = generateSignedDownloadUrl(baseUrl, jobId, orgId);
 
     // Update job as completed
     await updateJobStatus(jobId, 'completed', 100, {
-      file_url: downloadUrl,
+      file_url: null,
       file_size: fileSize,
+      storage_bucket: DEFAULT_EXPORT_BUCKET,
+      storage_path: storagePath,
+      content_type: 'application/zip',
       completed_at: new Date().toISOString(),
     });
 
@@ -230,7 +315,7 @@ export async function getExportJobStatus(jobId: string): Promise<ExportJobResult
   // Try enterprise table first
   const { data: job, error } = await admin
     .from('enterprise_export_jobs')
-    .select('id, status, progress, file_url, file_size, expires_at, error_message')
+    .select('id, organization_id, status, progress, file_url, file_size, expires_at, error_message, storage_path')
     .eq('id', jobId)
     .single();
 
@@ -257,11 +342,18 @@ export async function getExportJobStatus(jobId: string): Promise<ExportJobResult
 
   if (!job) return null;
 
+  const baseUrl =
+    (process.env.NEXT_PUBLIC_APP_URL ?? '').trim() || 'http://localhost:3000';
+  const computedDownloadUrl =
+    job.status === 'completed' && Boolean((job as any).storage_path)
+      ? generateSignedDownloadUrl(baseUrl, job.id, (job as any).organization_id ?? '')
+      : undefined;
+
   return {
     jobId: job.id,
     status: job.status,
     progress: job.progress || 0,
-    downloadUrl: job.file_url,
+    downloadUrl: (job.file_url as string | null) ?? computedDownloadUrl,
     fileSize: job.file_size,
     expiresAt: job.expires_at,
     errorMessage: job.error_message,
@@ -294,16 +386,36 @@ async function updateJobStatus(
 async function getComplianceData(orgId: string): Promise<Record<string, unknown>> {
   const admin = createSupabaseAdminClient();
 
-  const [controls, evaluations, snapshots] = await Promise.all([
-    admin.from('org_control_evaluations').select('*').eq('organization_id', orgId),
-    admin.from('compliance_scores').select('*').eq('organization_id', orgId).order('created_at', { ascending: false }).limit(100),
-    admin.from('compliance_snapshots').select('*').eq('organization_id', orgId).order('snapshot_date', { ascending: false }).limit(30),
+  const safe = async <T>(fn: () => Promise<T>): Promise<T | null> => {
+    try {
+      return await fn();
+    } catch {
+      return null;
+    }
+  };
+
+  const [evaluations, snapshots] = await Promise.all([
+    safe(() =>
+      admin
+        .from('org_control_evaluations')
+        .select('*')
+        .eq('organization_id', orgId)
+        .order('created_at', { ascending: false })
+        .limit(500),
+    ),
+    safe(() =>
+      admin
+        .from('compliance_score_snapshots')
+        .select('*')
+        .eq('organization_id', orgId)
+        .order('created_at', { ascending: false })
+        .limit(120),
+    ),
   ]);
 
   return {
-    controls: controls.data || [],
-    evaluations: evaluations.data || [],
-    snapshots: snapshots.data || [],
+    evaluations: (evaluations as any)?.data || [],
+    snapshots: (snapshots as any)?.data || [],
   };
 }
 
@@ -325,55 +437,85 @@ async function getEvidenceMetadata(orgId: string): Promise<Record<string, unknow
   };
 }
 
-async function getAuditLogs(orgId: string): Promise<Record<string, unknown>> {
+async function getAuditLogs(
+  orgId: string,
+  sinceIso: string | null,
+): Promise<Record<string, unknown>> {
   const admin = createSupabaseAdminClient();
 
-  // Get last 90 days of audit logs
-  const since = new Date();
-  since.setDate(since.getDate() - 90);
+  const safeQuery = async (table: string, select: string) => {
+    try {
+      const q = admin.from(table).select(select).eq('organization_id', orgId);
+      return await q.order('created_at', { ascending: false }).limit(10_000);
+    } catch {
+      return { data: null as any, error: null as any };
+    }
+  };
 
-  const { data } = await admin
-    .from('org_audit_logs')
-    .select('id, action, actor_id, target_resource, metadata, created_at')
-    .eq('organization_id', orgId)
-    .gte('created_at', since.toISOString())
-    .order('created_at', { ascending: false })
-    .limit(10000);
+  // Prefer org_audit_events (structured) then fall back to legacy org_audit_logs.
+  const { data: events } = await safeQuery(
+    'org_audit_events',
+    'id, action, actor_user_id, entity_type, entity_id, before_state, after_state, created_at',
+  );
 
-  return { auditLogs: data || [] };
+  if (events && events.length > 0) {
+    const filtered = sinceIso
+      ? events.filter((e: any) => e.created_at && e.created_at >= sinceIso)
+      : events;
+    return { auditEvents: filtered };
+  }
+
+  const { data: logs } = await safeQuery(
+    'org_audit_logs',
+    'id, action, actor_id, target_resource, metadata, created_at',
+  );
+
+  const filtered = sinceIso
+    ? (logs ?? []).filter((e: any) => e.created_at && e.created_at >= sinceIso)
+    : (logs ?? []);
+
+  return { auditLogs: filtered };
 }
 
-async function getCareOpsData(orgId: string): Promise<Record<string, unknown>> {
+async function getCareOpsData(orgId: string, sinceIso: string | null): Promise<Record<string, unknown>> {
   const admin = createSupabaseAdminClient();
 
   // This may return empty if care ops tables don't exist for this org
   const results: Record<string, unknown> = {};
 
   try {
-    const { data: patients } = await admin
-      .from('patients')
-      .select('id, name, status, created_at, updated_at')
+    let q = admin
+      .from('org_patients')
+      .select('id, full_name, status, created_at, updated_at')
       .eq('organization_id', orgId);
+    if (sinceIso) q = q.gte('created_at', sinceIso);
+    const { data: patients } = await q;
     results.patients = patients || [];
   } catch {
     results.patients = [];
   }
 
   try {
+    // org_visits may not exist; keep best-effort.
     const { data: visits } = await admin
-      .from('visits')
-      .select('id, patient_id, status, scheduled_at, completed_at')
+      .from('org_visits')
+      .select('id, patient_id, status, scheduled_at, completed_at, created_at')
       .eq('organization_id', orgId);
-    results.visits = visits || [];
+    const filtered = sinceIso
+      ? (visits ?? []).filter((v: any) => v.created_at && v.created_at >= sinceIso)
+      : (visits ?? []);
+    results.visits = filtered;
   } catch {
     results.visits = [];
   }
 
   try {
-    const { data: incidents } = await admin
-      .from('incidents')
-      .select('id, type, status, severity, reported_at, resolved_at')
+    let q = admin
+      .from('org_incidents')
+      .select('id, incident_type, status, severity, created_at, resolved_at, is_reportable')
       .eq('organization_id', orgId);
+    if (sinceIso) q = q.gte('created_at', sinceIso);
+    const { data: incidents } = await q;
     results.incidents = incidents || [];
   } catch {
     results.incidents = [];
@@ -390,31 +532,73 @@ async function getTeamData(orgId: string): Promise<Record<string, unknown>> {
     .select('id, role, invited_at, joined_at, user_id')
     .eq('organization_id', orgId);
 
-  // Get user details (without sensitive data)
-  const userIds = (members || []).map((m: { user_id: string }) => m.user_id).filter(Boolean);
+  const userIds = (members || [])
+    .map((m: { user_id: string }) => m.user_id)
+    .filter(Boolean);
 
+  // Best-effort enrichment via profiles (if present).
   if (userIds.length > 0) {
-    const { data: users } = await admin
-      .from('users')
-      .select('id, name, email, created_at')
-      .in('id', userIds);
+    try {
+      const { data: profiles } = await admin
+        .from('profiles')
+        .select('id, full_name, avatar_url')
+        .in('id', userIds);
 
-    return {
-      members: (members || []).map((m: { user_id: string }) => {
-        const user = users?.find((u: { id: string }) => u.id === m.user_id);
-        return {
-          ...m,
-          userName: user?.name,
-          userEmail: user?.email,
-        };
-      }),
-    };
+      return {
+        members: (members || []).map((m: { user_id: string }) => {
+          const p = (profiles ?? []).find((u: any) => u.id === m.user_id);
+          return {
+            ...m,
+            fullName: p?.full_name ?? null,
+            avatarUrl: p?.avatar_url ?? null,
+          };
+        }),
+      };
+    } catch {
+      // ignore
+    }
   }
 
   return { members: members || [] };
 }
 
-async function createExportZip(data: Record<string, unknown>): Promise<Buffer> {
+async function buildIncludedReportPdfs(
+  orgId: string,
+  bundleType: EnterpriseExportOptions['bundleType'],
+): Promise<Array<{ name: string; buffer: Buffer }>> {
+  const pdfs: Array<{ name: string; buffer: Buffer }> = [];
+  const types: ReportType[] =
+    bundleType === 'monthly_exec_pack'
+      ? ['trust', 'iso27001']
+      : bundleType === 'audit_ready_bundle'
+        ? ['trust', 'iso27001', 'soc2']
+        : ['trust'];
+
+  for (const reportType of types) {
+    try {
+      const report = await buildReport(orgId, reportType);
+      const pdfBlob = generateReportPdf(report as any, reportType);
+      const ab = await pdfBlob.arrayBuffer();
+      pdfs.push({
+        name: `reports/${reportType}.pdf`,
+        buffer: Buffer.from(ab),
+      });
+    } catch (err) {
+      exportLogger.warn('enterprise_export_report_pdf_failed', {
+        orgId,
+        reportType,
+        error: err instanceof Error ? err.message : String(err),
+      });
+    }
+  }
+
+  return pdfs;
+}
+
+async function createExportZip(
+  data: Record<string, unknown>,
+  extraFiles: Array<{ name: string; buffer: Buffer }> = [],
+): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
     const archive = archiver('zip', { zlib: { level: 9 } });
@@ -425,6 +609,25 @@ async function createExportZip(data: Record<string, unknown>): Promise<Buffer> {
 
     // Add metadata
     archive.append(JSON.stringify(data.metadata, null, 2), { name: 'manifest.json' });
+    archive.append(
+      [
+        'FormaOS Enterprise Export Bundle',
+        '',
+        'This zip is generated from your live FormaOS org state.',
+        'It is access-controlled and export actions are recorded in the audit trail.',
+        '',
+        'Contents:',
+        '- manifest.json',
+        '- compliance/data.json (if included)',
+        '- evidence/metadata.json (if included)',
+        '- audit-logs/*.json (if included)',
+        '- care-ops/data.json (if included)',
+        '- team/members.json (if included)',
+        '- reports/*.pdf (if configured)',
+        '',
+      ].join('\n'),
+      { name: 'README.txt' },
+    );
 
     // Add each data section
     if (data.compliance) {
@@ -441,6 +644,10 @@ async function createExportZip(data: Record<string, unknown>): Promise<Buffer> {
     }
     if (data.team) {
       archive.append(JSON.stringify(data.team, null, 2), { name: 'team/members.json' });
+    }
+
+    for (const f of extraFiles) {
+      archive.append(f.buffer, { name: f.name });
     }
 
     archive.finalize();

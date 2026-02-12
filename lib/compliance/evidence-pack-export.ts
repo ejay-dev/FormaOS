@@ -6,6 +6,7 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin'
 import { getSnapshotHistory } from './snapshot-service'
 import archiver from 'archiver'
+import { getQueueClient } from '@/lib/queue'
 
 export type ExportManifest = {
   exportId: string
@@ -63,6 +64,25 @@ export async function createExportJob(
       return { ok: false, error: error.message }
     }
 
+    // Enqueue the job for background processing when Redis queue is configured.
+    // (The DB-backed cron worker remains a fallback.)
+    try {
+      const queue = getQueueClient()
+      await queue.enqueue(
+        'compliance-export',
+        {
+          jobId: job.id,
+          organizationId: orgId,
+          frameworkId: frameworkSlug,
+          format: 'json',
+          requestedBy: userId,
+        },
+        { organizationId: orgId },
+      )
+    } catch {
+      // ignore
+    }
+
     return { ok: true, jobId: job.id }
   } catch (error) {
     return {
@@ -110,6 +130,11 @@ export async function processExportJob(
 
     if (!job) {
       throw new Error('Export job not found')
+    }
+
+    // Idempotency: if already completed, return existing URL.
+    if (job.status === 'completed' && job.file_url) {
+      return { ok: true, fileUrl: job.file_url }
     }
 
     const attempt = preclaimed ? job.attempt_count ?? 0 : (job.attempt_count ?? 0) + 1

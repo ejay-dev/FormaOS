@@ -5,13 +5,13 @@ import { generateReportPdf } from '@/lib/audit-reports/pdf-generator';
 import type { ReportType } from '@/lib/audit-reports/types';
 import { createReportExportJob, processReportExportJob } from '@/lib/reports/export-jobs';
 
-const VALID_REPORT_TYPES: ReportType[] = ['soc2', 'iso27001', 'ndis', 'hipaa'];
+const VALID_REPORT_TYPES: ReportType[] = ['soc2', 'iso27001', 'ndis', 'hipaa', 'trust'];
 
 /**
  * GET /api/reports/export
  * Generate and download an audit report
  * Query params:
- *   - type: soc2 | iso27001 | ndis | hipaa
+ *   - type: soc2 | iso27001 | ndis | hipaa | trust
  *   - format: pdf | json (default: pdf)
  */
 export async function GET(request: NextRequest) {

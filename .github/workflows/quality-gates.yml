@@ -72,7 +72,6 @@ jobs:
 
       - name: Run Jest unit tests
         run: npm test -- --coverage --watchAll=false
-        continue-on-error: true # TODO: Remove after fixing failing tests
         env:
           CI: true
 
@@ -153,7 +152,7 @@ jobs:
         continue-on-error: true
 
       - name: Run Snyk security scan
-        uses: snyk/actions/node@master
+        uses: snyk/actions/node@9adf32b1121593767fc3c057af55b55db032dc04 # pin to SHA
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}

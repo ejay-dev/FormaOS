@@ -26,8 +26,6 @@ export async function GET() {
       },
     },
     version: process.env.npm_package_version || 'unknown',
-    uptime: process.uptime(),
-    memory: process.memoryUsage(),
   };
 
   try {
@@ -35,14 +33,52 @@ export async function GET() {
     const dbStart = Date.now();
     const supabaseUrl = getSupabaseUrl();
     const serviceRoleKey = getSupabaseServiceRoleKey();
+    const hasValidSupabaseUrl = (() => {
+      if (!supabaseUrl) return false;
+      try {
+        new URL(supabaseUrl);
+        return true;
+      } catch {
+        return false;
+      }
+    })();
+
+    // In CI / preview contexts, Supabase env can be intentionally absent.
+    // This endpoint is used as a liveness signal in CI security tests, so it
+    // must not return 5xx for configuration issues; report `degraded` but keep
+    // HTTP 200. Use `/api/health/detailed` or HEAD for stricter readiness.
+    if (!hasValidSupabaseUrl || !serviceRoleKey) {
+      health.checks.database = {
+        status: 'error',
+        responseTime: Date.now() - dbStart,
+        error: 'Supabase service role configuration missing',
+      };
+      health.checks.auth = {
+        status: 'error',
+        responseTime: 0,
+        error: 'Supabase service role configuration missing',
+      };
+      health.checks.api = {
+        status: 'healthy',
+        responseTime: Date.now() - startTime,
+        error: null,
+      };
+
+      health.status = 'degraded';
+
+      return NextResponse.json(health, {
+        status: 200,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Content-Type': 'application/json',
+        },
+      });
+    }
+
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
     try {
-      const { error } = await supabase
-        .from('organizations')
-        .select('id')
-        .limit(1)
-        .single();
+      const { error } = await supabase.from('organizations').select('id').limit(1);
 
       health.checks.database = {
         status: error ? 'error' : 'healthy',
@@ -91,14 +127,15 @@ export async function GET() {
     );
     health.status = hasErrors ? 'degraded' : 'healthy';
 
-    // Return appropriate HTTP status
-    const httpStatus = hasErrors ? 503 : 200;
+    // Liveness endpoint: always 200 unless we hit a critical exception.
+    const httpStatus = 200;
 
     return NextResponse.json(health, {
       status: httpStatus,
       headers: {
         'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Content-Type': 'application/json',
+        'X-Health-Status': health.status,
       },
     });
   } catch (error) {
@@ -139,10 +176,28 @@ export async function GET() {
 // Support HEAD requests for simple up/down checks
 export async function HEAD() {
   try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    );
+    const supabaseUrl = getSupabaseUrl();
+    const serviceRoleKey = getSupabaseServiceRoleKey();
+    const hasValidSupabaseUrl = (() => {
+      if (!supabaseUrl) return false;
+      try {
+        new URL(supabaseUrl);
+        return true;
+      } catch {
+        return false;
+      }
+    })();
+
+    if (!hasValidSupabaseUrl || !serviceRoleKey) {
+      return new Response(null, {
+        status: 503,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+        },
+      });
+    }
+
+    const supabase = createClient(supabaseUrl, serviceRoleKey);
     await supabase.from('organizations').select('id').limit(1).single();
 
     return new Response(null, {

@@ -92,6 +92,13 @@ export async function POST(request: NextRequest) {
         ? Math.round((implementedControls / totalControls) * 100)
         : 0;
 
+    const { data: subscriptionRow } = await supabase
+      .from('org_subscriptions')
+      .select('plan_key, status')
+      .eq('organization_id', membership.org_id)
+      .maybeSingle();
+    const isEnterprisePlan = (subscriptionRow as any)?.plan_key === 'enterprise';
+
     const packetData = {
       generated_at: new Date().toISOString(),
       org_id: membership.org_id,
@@ -103,7 +110,7 @@ export async function POST(request: NextRequest) {
         audit_logging: true,
         encryption_at_rest: true,
         encryption_in_transit: true,
-        sso_available: false,
+        sso_available: Boolean(isEnterprisePlan),
         mfa_available: true,
       },
       compliance_summary: {

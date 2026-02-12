@@ -35,12 +35,12 @@ const securityFeatures = [
     icon: History,
     title: 'Evidence Integrity',
     description:
-      'Audit trail context protects evidence defensibility; versioning available by request',
+      'Audit trail context protects evidence defensibility with full traceability',
   },
   {
     icon: Key,
     title: 'SSO & MFA',
-    description: 'Google OAuth today; enterprise SSO/MFA available by request',
+    description: 'Google OAuth and MFA included; enterprise SSO (SAML) on roadmap',
   },
 ];
 

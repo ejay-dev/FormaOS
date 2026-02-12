@@ -12,17 +12,17 @@ const faqs = [
   {
     question: 'What compliance frameworks does FormaOS support?',
     answer:
-      'FormaOS supports ISO 27001, SOC 2 Type II, GDPR, HIPAA, PCI DSS, NIST CSF, and CIS Controls. Each framework includes pre-mapped controls, evidence requirements, and audit-ready reporting.',
+      'FormaOS supports ISO 27001, SOC 2, GDPR, HIPAA, PCI DSS, NIST CSF, and CIS Controls. Each pack includes mapped controls, evidence requirements, and audit-ready reporting outputs.',
   },
   {
     question: 'Where is customer data stored?',
     answer:
-      'Customer data is stored in Supabase (hosted on AWS ap-southeast-2 in Sydney, Australia). All data is encrypted at rest using AES-256 and in transit using TLS 1.3.',
+      'Customer data is stored in Supabase (PostgreSQL + object storage). Data is encrypted at rest and in transit. If your procurement process requires the exact hosting region, contact us and we will provide your current project region and subprocessor details.',
   },
   {
     question: 'Do you have a SOC 2 report?',
     answer:
-      'FormaOS is built on SOC 2 Type II certified infrastructure (Supabase/AWS, Vercel). Our own SOC 2 Type II report is on our certifications roadmap. Contact us for our current security posture documentation.',
+      'FormaOS is built on infrastructure providers that maintain their own SOC 2 reports (e.g., hosting). FormaOS provides a procurement-ready security packet describing our application controls and data handling. If you require a vendor attestation beyond “aligned”, we can share current third-party assessment artifacts available under NDA.',
   },
   {
     question: 'Can we sign a DPA?',
@@ -32,22 +32,22 @@ const faqs = [
   {
     question: 'What are your data retention policies?',
     answer:
-      'Data is retained for the duration of the service agreement plus 90 days. Upon contract termination, all customer data is securely deleted with certification available upon request.',
+      'Data retention and deletion timelines are defined contractually. By default, data is retained for the duration of your subscription. On termination, we support deletion requests and can provide written confirmation of deletion completion for your records.',
   },
   {
     question: 'Do you support SSO/SAML?',
     answer:
-      'Google OAuth is available for all plans. Enterprise SSO via SAML is on our roadmap for H2 2026. Contact us to discuss your SSO requirements.',
+      'Google OAuth is available for all plans. Enterprise plans can enable SAML SSO (metadata-based configuration, SP metadata + ACS endpoints, and signed assertion validation).',
   },
   {
     question: 'How do you handle security incidents?',
     answer:
-      'We notify affected customers within 72 hours of confirming a security incident, provide detailed impact assessments, and publish post-incident reports. Our incident history is available on the Trust Center.',
+      'We follow a documented incident response process and notify customers in accordance with contract terms and applicable law. We provide impact assessments, mitigation actions, and post-incident learnings where appropriate.',
   },
   {
     question: 'What is your uptime SLA?',
     answer:
-      'FormaOS targets 99.9% uptime. Real-time status and historical uptime data is available on our status page. Enterprise plans include SLA-backed uptime guarantees.',
+      'FormaOS targets high uptime and publishes status and uptime checks on our status page. Enterprise agreements can include SLA terms in your MSA/SOW.',
   },
   {
     question: 'How long does security review take?',

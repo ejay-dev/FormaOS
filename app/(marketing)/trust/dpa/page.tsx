@@ -71,7 +71,7 @@ export default function DPAPage() {
                 { icon: Globe, label: 'TLS 1.3 encryption in transit' },
                 { icon: Users, label: 'Role-based access controls' },
                 { icon: FileText, label: 'Immutable audit logging' },
-                { icon: Server, label: 'SOC 2 Type II infrastructure' },
+                { icon: Server, label: 'SOC 2 reports available from hosting providers' },
                 { icon: Clock, label: 'Automated backup & recovery' },
               ].map(({ icon: Icon, label }) => (
                 <div
@@ -120,17 +120,19 @@ export default function DPAPage() {
 
           <Section title="6. Data Retention & Deletion">
             <p>
-              Data is retained for the duration of the service agreement plus 90
-              days. Upon termination, all customer data is securely deleted
-              within 90 days, with certification available upon request.
+              Data retention and deletion timelines are defined in the service
+              agreement (and may be tailored to regulatory requirements).
+              Upon termination, FormaOS supports deletion requests and can
+              provide written confirmation of deletion completion upon request.
             </p>
           </Section>
 
           <Section title="7. Breach Notification">
             <p>
               In the event of a personal data breach, FormaOS will notify the
-              Controller within 72 hours of becoming aware, providing details of
-              the breach, likely consequences, and mitigation measures taken.
+              Controller in accordance with applicable law and contractual
+              notification terms, providing details of the breach, likely
+              consequences, and mitigation measures taken.
             </p>
           </Section>
 

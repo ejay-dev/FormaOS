@@ -101,8 +101,8 @@ export function ComplianceIntelligence() {
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
             Built-in analytics engine provides real-time compliance insights,
-            historical trends, and predictive regression alerts—no manual
-            reporting required.
+            historical trends, and early regression alerts (where enabled), so
+            teams spend less time building manual reports.
           </p>
         </motion.div>
 

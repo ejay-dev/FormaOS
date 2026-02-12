@@ -26,14 +26,14 @@ const capabilities = [
     icon: Workflow,
     title: 'Automation Engine',
     description:
-      '12 automation triggers for evidence, tasks, policies, and certifications with auto-task generation and escalation notifications.',
+      'Automation triggers for evidence, tasks, policies, and certifications with auto-task generation and escalation notifications.',
     color: 'from-cyan-400 to-blue-500',
   },
   {
     icon: Database,
     title: 'Evidence Versioning',
     description:
-      'Evidence activity is logged with audit trail context. Optional versioning and rollback available by request.',
+      'Evidence activity is logged with full audit trail context. Every upload, review, and approval is tracked for compliance readiness.',
     color: 'from-blue-500 to-purple-500',
   },
   {
@@ -75,7 +75,7 @@ const capabilities = [
     icon: Clock,
     title: 'REST API v1',
     description:
-      'REST API v1 for compliance data, evidence uploads, and tasks. Webhooks available by request.',
+      'REST API v1 for compliance data, evidence uploads, and tasks. Webhook endpoints included for real-time event notifications.',
     color: 'from-yellow-500 to-green-500',
   },
   {
@@ -96,21 +96,21 @@ const capabilities = [
     icon: ScanSearch,
     title: 'Automated Compliance Gap Analysis',
     description:
-      'Scan across 6 frameworks simultaneously to identify compliance gaps, missing evidence, and control weaknesses before auditors do.',
+      'Run gap analysis per framework to identify compliance gaps, missing evidence, and control weaknesses before auditors do.',
     color: 'from-teal-500 to-emerald-500',
   },
   {
     icon: FileStack,
-    title: 'Full Document Version History',
+    title: 'Document Audit Trail',
     description:
-      'Every document change is tracked with complete version history. Compare revisions, restore previous versions, and maintain audit-ready records.',
+      'Every document change is tracked with a complete audit log. Maintain audit-ready records with full visibility into who changed what and when.',
     color: 'from-indigo-500 to-blue-500',
   },
   {
     icon: Activity,
-    title: 'Live Compliance Activity Stream',
+    title: 'Compliance Activity Logging',
     description:
-      'Real-time feed of compliance events across your organization. Track evidence uploads, task completions, and control changes as they happen.',
+      'Comprehensive logging of compliance events across your organization. Track evidence uploads, task completions, and control changes in your audit log.',
     color: 'from-emerald-500 to-teal-500',
   },
   {
@@ -122,9 +122,9 @@ const capabilities = [
   },
   {
     icon: Building,
-    title: 'Multi-Site Compliance',
+    title: 'Multi-Entity Compliance',
     description:
-      'Manage compliance across multiple entities, business units, and locations with centralized oversight and per-site controls.',
+      'Manage compliance across multiple entities with centralized oversight and organization-scoped controls and evidence.',
     color: 'from-violet-500 to-purple-500',
   },
   {

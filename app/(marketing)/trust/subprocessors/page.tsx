@@ -1,14 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import {
-  Server,
-  Globe,
-  Shield,
-  Database,
-  Mail,
-  BarChart3,
-  Cloud,
-} from 'lucide-react';
+import { Server } from 'lucide-react';
+import { TRUST_SUBPROCESSORS } from '@/lib/trust/subprocessors';
 
 export const metadata: Metadata = {
   title: 'FormaOS | Sub-processors',
@@ -17,55 +10,7 @@ export const metadata: Metadata = {
 };
 
 const subprocessors = [
-  {
-    name: 'Supabase (AWS)',
-    purpose: 'Database hosting, authentication, and real-time data',
-    location: 'Australia (ap-southeast-2)',
-    icon: Database,
-    category: 'Infrastructure',
-  },
-  {
-    name: 'Vercel',
-    purpose: 'Application hosting, edge functions, and CDN',
-    location: 'Global (Sydney edge)',
-    icon: Cloud,
-    category: 'Infrastructure',
-  },
-  {
-    name: 'Upstash',
-    purpose: 'Redis for rate limiting and caching',
-    location: 'Global',
-    icon: Server,
-    category: 'Infrastructure',
-  },
-  {
-    name: 'Stripe',
-    purpose: 'Payment processing and subscription management',
-    location: 'United States',
-    icon: BarChart3,
-    category: 'Payments',
-  },
-  {
-    name: 'Resend',
-    purpose: 'Transactional email delivery',
-    location: 'United States',
-    icon: Mail,
-    category: 'Communications',
-  },
-  {
-    name: 'Sentry',
-    purpose: 'Error monitoring and performance tracking',
-    location: 'United States',
-    icon: Shield,
-    category: 'Monitoring',
-  },
-  {
-    name: 'OpenAI',
-    purpose: 'AI-powered compliance suggestions and intelligence',
-    location: 'United States',
-    icon: Globe,
-    category: 'AI Services',
-  },
+  ...TRUST_SUBPROCESSORS,
 ];
 
 export default function SubprocessorsPage() {

@@ -13,6 +13,7 @@
 export type JobType =
   | 'compliance-export'
   | 'report-export'
+  | 'enterprise-export'
   | 'email-send'
   | 'webhook-delivery'
   | 'automation-trigger';
@@ -33,6 +34,8 @@ export type JobState =
 // ---------------------------------------------------------------------------
 
 export interface ComplianceExportPayload {
+  /** Compliance export job ID in `compliance_export_jobs`. */
+  jobId?: string;
   organizationId: string;
   frameworkId: string;
   format: 'pdf' | 'csv' | 'json';
@@ -40,9 +43,18 @@ export interface ComplianceExportPayload {
 }
 
 export interface ReportExportPayload {
+  /** Report export job ID in `report_export_jobs`. */
+  jobId?: string;
   organizationId: string;
   reportType: string;
   dateRange?: { start: string; end: string };
+  requestedBy: string;
+}
+
+export interface EnterpriseExportPayload {
+  /** Enterprise export job ID in `enterprise_export_jobs`. */
+  jobId: string;
+  organizationId: string;
   requestedBy: string;
 }
 
@@ -72,6 +84,7 @@ export interface AutomationTriggerPayload {
 export type JobPayload =
   | ComplianceExportPayload
   | ReportExportPayload
+  | EnterpriseExportPayload
   | EmailSendPayload
   | WebhookDeliveryPayload
   | AutomationTriggerPayload;

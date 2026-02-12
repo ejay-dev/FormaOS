@@ -10,6 +10,8 @@ import { verifyExportToken } from '@/lib/security/export-tokens';
 import { getExportJobStatus } from '@/lib/export/enterprise-export';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { exportLogger } from '@/lib/observability/structured-logger';
+import { timingSafeEqual } from 'crypto';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export async function GET(
   request: NextRequest,
@@ -46,6 +48,27 @@ export async function GET(
       );
     }
 
+    // Verify the caller is an owner/admin of this org (enterprise buyers expect org-scoped sharing).
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { data: membership } = await supabase
+      .from('org_members')
+      .select('organization_id, role')
+      .eq('user_id', user.id)
+      .eq('organization_id', payload.orgId)
+      .maybeSingle();
+
+    if (!membership || !['owner', 'admin'].includes((membership as any).role)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     // Get job status
     const job = await getExportJobStatus(jobId);
 
@@ -76,19 +99,44 @@ export async function GET(
     // Log download
     exportLogger.info('export_downloaded', {
       jobId,
-      userId: payload.userId,
       orgId: payload.orgId,
     });
 
-    // In production, this would stream from S3/storage
-    // For now, return job info with download instructions
-    return NextResponse.json({
-      jobId: job.jobId,
-      status: job.status,
-      fileSize: job.fileSize,
-      message: 'Export ready for download',
-      // In production, return a pre-signed S3 URL here
-    });
+    // Resolve storage location and redirect to a short-lived signed URL.
+    const admin = createSupabaseAdminClient();
+    const { data: row, error: rowError } = await admin
+      .from('enterprise_export_jobs')
+      .select('storage_bucket, storage_path, content_type, file_size')
+      .eq('id', jobId)
+      .maybeSingle();
+
+    if (rowError) {
+      return NextResponse.json({ error: rowError.message }, { status: 500 });
+    }
+
+    const bucket = (row as any)?.storage_bucket;
+    const storagePath = (row as any)?.storage_path;
+
+    if (!bucket || !storagePath) {
+      return NextResponse.json(
+        {
+          error: 'Export file location unavailable',
+          jobId: job.jobId,
+          status: job.status,
+        },
+        { status: 500 },
+      );
+    }
+
+    const signed = await admin.storage.from(bucket).createSignedUrl(storagePath, 60 * 5);
+    if (signed.error || !signed.data?.signedUrl) {
+      return NextResponse.json(
+        { error: signed.error?.message ?? 'Failed to sign download URL' },
+        { status: 500 },
+      );
+    }
+
+    return NextResponse.redirect(signed.data.signedUrl);
   } catch (error) {
     const err = error instanceof Error ? error : new Error(String(error));
     exportLogger.error('export_download_failed', err, { jobId });
@@ -116,7 +164,18 @@ export async function POST(
     const authHeader = request.headers.get('authorization');
     const cronSecret = process.env.CRON_SECRET;
 
-    if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+    const token = authHeader?.replace('Bearer ', '') ?? '';
+    if (!cronSecret) {
+      return NextResponse.json({ error: 'CRON_SECRET not configured' }, { status: 500 });
+    }
+
+    const tokenBuffer = Buffer.from(token, 'utf8');
+    const secretBuffer = Buffer.from(cronSecret, 'utf8');
+    const ok =
+      tokenBuffer.length === secretBuffer.length &&
+      timingSafeEqual(tokenBuffer, secretBuffer);
+
+    if (!ok) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
