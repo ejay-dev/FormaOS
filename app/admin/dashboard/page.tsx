@@ -133,6 +133,60 @@ export default async function AdminDashboard() {
     { label: 'Publish release notes', href: '/admin/releases' },
     { label: 'Validate system health', href: '/admin/health' },
   ] as const;
+  const trialRiskRatio =
+    data.trialsActive > 0 ? data.trialsExpiring / data.trialsActive : 0;
+  const crossTenantHealth = [
+    {
+      key: 'revenue',
+      area: 'Revenue Stability',
+      status:
+        data.failedPayments > 3
+          ? 'critical'
+          : data.failedPayments > 0
+            ? 'watch'
+            : 'healthy',
+      note:
+        data.failedPayments > 0
+          ? `${data.failedPayments} payment failures require intervention`
+          : 'No active payment failures',
+      href: '/admin/billing',
+    },
+    {
+      key: 'trials',
+      area: 'Trial Conversion Pressure',
+      status: trialRiskRatio > 0.45 ? 'critical' : trialRiskRatio > 0.2 ? 'watch' : 'healthy',
+      note:
+        data.trialsExpiring > 0
+          ? `${data.trialsExpiring} of ${data.trialsActive} trials nearing expiry`
+          : 'No immediate trial churn risk',
+      href: '/admin/trials',
+    },
+    {
+      key: 'enterprise',
+      area: 'Enterprise Footprint',
+      status: enterpriseCount === 0 ? 'watch' : 'healthy',
+      note:
+        enterpriseCount === 0
+          ? 'No enterprise tenants detected yet'
+          : `${enterpriseCount} enterprise tenants active`,
+      href: '/admin/security/triage',
+    },
+    {
+      key: 'growth',
+      area: 'Tenant Growth Load',
+      status: data.totalOrgs > 200 ? 'watch' : 'healthy',
+      note:
+        data.totalOrgs > 200
+          ? 'Validate support and operations capacity'
+          : 'Growth load currently within expected range',
+      href: '/admin/orgs',
+    },
+  ] as const;
+  const statusStyles = {
+    healthy: 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200',
+    watch: 'border-amber-400/30 bg-amber-500/10 text-amber-200',
+    critical: 'border-rose-400/30 bg-rose-500/10 text-rose-200',
+  } as const;
 
   return (
     <div className="space-y-8">
@@ -353,6 +407,48 @@ export default async function AdminDashboard() {
             Command-center shortcuts prioritize the highest-frequency platform
             operations workflows.
           </p>
+        </div>
+      </div>
+
+      <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div>
+            <h2 className="text-lg font-semibold text-slate-100">
+              Cross-Tenant Health View
+            </h2>
+            <p className="mt-1 text-xs text-slate-500">
+              Aggregated platform risk posture across revenue, conversion, and
+              enterprise operations.
+            </p>
+          </div>
+          <Link
+            href="/admin/security/triage"
+            className="inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/60 px-3 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-700/60"
+          >
+            Open Triage
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {crossTenantHealth.map((item) => (
+            <Link
+              key={item.key}
+              href={item.href}
+              className="rounded-lg border border-slate-800 bg-slate-900/60 p-4 transition-colors hover:bg-slate-800/70"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-sm font-semibold text-slate-100">{item.area}</p>
+                <span
+                  className={`rounded border px-2 py-1 text-[10px] font-semibold uppercase tracking-wider ${statusStyles[item.status]}`}
+                >
+                  {item.status}
+                </span>
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-slate-400">
+                {item.note}
+              </p>
+            </Link>
+          ))}
         </div>
       </div>
     </div>

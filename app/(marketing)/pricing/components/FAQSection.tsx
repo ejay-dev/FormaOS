@@ -6,34 +6,34 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const faqs = [
   {
-    question: 'Can I change plans anytime?',
+    question: 'Can we run a security review before purchase?',
     answer:
-      "Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately and we'll prorate any billing adjustments.",
+      'Yes. Start with the FormaOS security review packet and request a guided walkthrough for your security or procurement team.',
   },
   {
-    question: 'Is there a setup fee?',
+    question: 'Do you support enterprise identity requirements?',
     answer:
-      'No setup fees, ever. You can start with our free Starter plan and upgrade when your team grows or needs additional features.',
+      'Google OAuth is available now. Enterprise SSO requirements can be reviewed during your sales engineering process.',
   },
   {
-    question: 'What payment methods do you accept?',
+    question: 'How does procurement and billing work?',
     answer:
-      'We accept all major credit cards and can arrange invoicing for Enterprise customers. All transactions are processed securely through Stripe.',
+      'Self-serve plans use card billing. Enterprise engagements can include invoice-based procurement and implementation planning.',
   },
   {
-    question: 'How does data migration work?',
+    question: 'Can we pilot first and expand later?',
     answer:
-      'Our customer success team provides guided migration assistance for Enterprise customers. We also offer import tools and API access for bulk data transfer.',
+      'Yes. Most teams start with one operating unit, prove workflow fit, and then expand to additional entities or sites.',
   },
   {
-    question: 'Can I cancel anytime?',
+    question: 'What happens after the trial ends?',
     answer:
-      'Yes, you can cancel your subscription at any time. Your data remains accessible for 30 days after cancellation to ensure smooth transitions.',
+      'You can choose a plan, continue with procurement, or pause and restart when ready. No long-term lock-in is required to evaluate fit.',
   },
   {
-    question: 'Do you offer training?',
+    question: 'Do you provide onboarding support?',
     answer:
-      'All plans include self-service resources. Professional and Enterprise plans include live onboarding sessions and ongoing training support.',
+      'Yes. All plans include guided resources, and higher tiers include deeper implementation and operational enablement support.',
   },
 ];
 
@@ -86,7 +86,7 @@ export function FAQSection() {
           </h2>
 
           <p className="text-lg text-gray-400">
-            Common questions about FormaOS pricing and plans
+            Answers for buyers evaluating platform fit, risk, and rollout
           </p>
         </motion.div>
 

@@ -1,6 +1,8 @@
 'use client';
 
+import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { ArrowRight, ClipboardCheck, FileLock2, ShieldCheck } from 'lucide-react';
 
 const trustedBy = [
   'Healthcare & NDIS teams',
@@ -14,6 +16,13 @@ const trustedBy = [
 ];
 
 export function TrustSection() {
+  const trustSignals = [
+    { value: '7 packs', label: 'Framework mappings available' },
+    { value: 'Immutable', label: 'Audit event history' },
+    { value: 'RBAC', label: 'Least-privilege access control' },
+    { value: 'Buyer-ready', label: 'Security review workflow' },
+  ] as const;
+
   return (
     <section className="relative py-20 bg-gradient-to-b from-[#0a0f1c] to-[#080c16] border-y border-white/5 overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -49,7 +58,14 @@ export function TrustSection() {
           className="text-center mb-12"
         >
           <p className="text-sm uppercase tracking-wider text-gray-500 mb-8">
-            Built for regulated teams
+            Built for regulated teams and enterprise buyers
+          </p>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white">
+            Trust architecture that holds up under review
+          </h2>
+          <p className="mt-3 text-sm text-slate-400 max-w-2xl mx-auto">
+            Move from first conversation to procurement confidence with
+            structure, evidence traceability, and review-ready context.
           </p>
         </motion.div>
 
@@ -81,12 +97,7 @@ export function TrustSection() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto"
         >
-          {[
-            { value: 'Reliable uptime', label: 'High availability' },
-            { value: 'Evidence-first', label: 'Operational traceability' },
-            { value: 'Audit-ready', label: 'Continuous readiness' },
-            { value: 'Fast access', label: 'Retrieval at speed' },
-          ].map((stat, index) => (
+          {trustSignals.map((stat, index) => (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, scale: 0.9 }}
@@ -97,7 +108,7 @@ export function TrustSection() {
               className="text-center p-4 rounded-xl hover:bg-white/5 transition-all duration-300 cursor-default"
             >
               <motion.div
-                className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-2"
+                className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-2"
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -110,6 +121,45 @@ export function TrustSection() {
               </div>
             </motion.div>
           ))}
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.55 }}
+          className="mt-12 grid gap-3 md:grid-cols-3"
+        >
+          <Link
+            href="/security-review"
+            className="group flex items-center justify-between rounded-2xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-3 text-sm text-cyan-100 hover:bg-cyan-500/20"
+          >
+            <span className="inline-flex items-center gap-2 font-medium">
+              <FileLock2 className="h-4 w-4" />
+              Security Review Packet
+            </span>
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </Link>
+          <Link
+            href="/frameworks"
+            className="group flex items-center justify-between rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100 hover:bg-emerald-500/20"
+          >
+            <span className="inline-flex items-center gap-2 font-medium">
+              <ShieldCheck className="h-4 w-4" />
+              Framework Coverage
+            </span>
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </Link>
+          <Link
+            href="/customer-stories"
+            className="group flex items-center justify-between rounded-2xl border border-blue-400/30 bg-blue-500/10 px-4 py-3 text-sm text-blue-100 hover:bg-blue-500/20"
+          >
+            <span className="inline-flex items-center gap-2 font-medium">
+              <ClipboardCheck className="h-4 w-4" />
+              Outcome Stories
+            </span>
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </Link>
         </motion.div>
       </div>
     </section>

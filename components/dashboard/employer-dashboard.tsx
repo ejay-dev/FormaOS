@@ -131,6 +131,74 @@ function QuickActions() {
   );
 }
 
+function MobileReadinessCheckpoint({
+  complianceScore,
+  openTasksCount,
+  expiringCertsCount,
+}: {
+  complianceScore: number;
+  openTasksCount: number;
+  expiringCertsCount: number;
+}) {
+  return (
+    <div className="rounded-2xl border border-cyan-400/30 bg-cyan-500/10 p-4 lg:hidden">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-cyan-200">
+            Readiness Checkpoint
+          </p>
+          <p className="mt-1 text-sm text-slate-100">
+            One-screen status before you dive into workflows.
+          </p>
+        </div>
+        <Shield className="h-5 w-5 text-cyan-300" />
+      </div>
+
+      <div className="mt-4 grid grid-cols-3 gap-2 text-center">
+        <div className="rounded-lg border border-white/10 bg-white/5 px-2 py-3">
+          <p className="text-lg font-bold text-slate-100">{complianceScore}%</p>
+          <p className="text-[10px] uppercase tracking-wide text-slate-400">
+            Score
+          </p>
+        </div>
+        <div className="rounded-lg border border-white/10 bg-white/5 px-2 py-3">
+          <p className="text-lg font-bold text-slate-100">{openTasksCount}</p>
+          <p className="text-[10px] uppercase tracking-wide text-slate-400">
+            Open Tasks
+          </p>
+        </div>
+        <div className="rounded-lg border border-white/10 bg-white/5 px-2 py-3">
+          <p className="text-lg font-bold text-slate-100">{expiringCertsCount}</p>
+          <p className="text-[10px] uppercase tracking-wide text-slate-400">
+            Expiring
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3 flex flex-wrap gap-2">
+        <Link
+          href="/app/tasks"
+          className="rounded-lg border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-200"
+        >
+          Tasks
+        </Link>
+        <Link
+          href="/app/vault/review"
+          className="rounded-lg border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-200"
+        >
+          Evidence Review
+        </Link>
+        <Link
+          href="/app/audit"
+          className="rounded-lg border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-200"
+        >
+          Audit Stream
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 /**
  * =========================================================
  * EMPLOYER DASHBOARD SECTIONS
@@ -789,6 +857,12 @@ export function EmployerDashboard({
 
   return (
     <div className="space-y-8">
+      <MobileReadinessCheckpoint
+        complianceScore={complianceScore}
+        openTasksCount={openTasksCount}
+        expiringCertsCount={expiringCertsCount}
+      />
+
       {/* Quick-action cards (replaces old sidebar-style middle column) */}
       <QuickActions />
       <PriorityActionQueue items={actionQueue} />

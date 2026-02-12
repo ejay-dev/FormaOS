@@ -82,7 +82,7 @@ const pricingTiers = [
       'Built for healthcare providers, NDIS operators, financial institutions, education bodies, and government agencies.',
     professionalPlus: true,
     features: [
-      'Google OAuth + enterprise SSO (SAML by request)',
+      'Google OAuth included; enterprise SSO rollout support by request',
       'MFA options available by request',
       'Executive dashboard with risk analytics',
       'Compliance score engine with trend insights',

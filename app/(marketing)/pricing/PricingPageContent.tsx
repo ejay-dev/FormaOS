@@ -5,6 +5,7 @@ import {
   PricingHero,
   PricingTiers,
   AllPlansInclude,
+  ProcurementReadiness,
   FreeTrial,
   FAQSection,
   FinalCTA,
@@ -19,6 +20,8 @@ export default function PricingPageContent() {
       <VisualDivider />
       <AllPlansInclude />
       <VisualDivider gradient />
+      <ProcurementReadiness />
+      <VisualDivider />
       <FreeTrial />
       <VisualDivider />
       <FAQSection />

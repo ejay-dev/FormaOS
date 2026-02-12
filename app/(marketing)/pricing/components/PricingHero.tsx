@@ -148,7 +148,7 @@ export function PricingHero() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.7 }}
-              className="flex flex-col items-center gap-4 mb-10"
+              className="mb-10 flex flex-col items-center gap-4"
             >
               <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
                 <span className="flex items-center gap-2">
@@ -162,6 +162,17 @@ export function PricingHero() {
                 <span className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-400" />
                   Upgrade any time
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-slate-300">
+                <span className="rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1">
+                  Security review packet
+                </span>
+                <span className="rounded-full border border-cyan-400/30 bg-cyan-500/10 px-3 py-1">
+                  No setup fee
+                </span>
+                <span className="rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-1">
+                  14-day trial
                 </span>
               </div>
             </motion.div>
@@ -187,6 +198,19 @@ export function PricingHero() {
               >
                 <span>Contact Sales</span>
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+              </Link>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.9 }}
+              className="mt-4"
+            >
+              <Link
+                href="/security-review"
+                className="text-sm font-medium text-cyan-300 underline decoration-cyan-500/60 underline-offset-4 hover:text-cyan-200"
+              >
+                Review procurement security packet
               </Link>
             </motion.div>
           </motion.div>
