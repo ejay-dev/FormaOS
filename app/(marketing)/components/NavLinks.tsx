@@ -7,14 +7,11 @@ import clsx from 'clsx';
 import { ChevronDown } from 'lucide-react';
 
 const links = [
-  { href: '/', label: 'Home' },
   { href: '/product', label: 'Product' },
   { href: '/industries', label: 'Industries' },
   { href: '/security', label: 'Security' },
   { href: '/trust', label: 'Trust' },
   { href: '/pricing', label: 'Pricing' },
-  { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
 ];
 
 const outcomeLinks = [
@@ -33,6 +30,8 @@ const resourceLinks = [
   { href: '/compare', label: 'Compare' },
   { href: '/status', label: 'Status' },
   { href: '/docs', label: 'Documentation' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' },
 ];
 
 /* ─── Accessible dropdown for desktop nav ────────────────── */
@@ -95,7 +94,7 @@ function NavDropdown({
         aria-expanded={open}
         aria-haspopup="true"
         className={clsx(
-          'mk-nav-link flex cursor-pointer items-center gap-1.5 text-gray-300 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40 focus-visible:rounded-md',
+          'mk-nav-link flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-slate-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
           hasActiveChild && 'mk-nav-link--active text-white',
         )}
       >
@@ -238,7 +237,7 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
   }
 
   return (
-    <nav className="hidden md:flex items-center gap-4 lg:gap-6 text-[14px] lg:text-[15px] font-medium">
+    <nav className="hidden md:flex items-center gap-1 lg:gap-1.5 text-[13.5px] lg:text-[14px] font-medium tracking-[0.01em]">
       <NavDropdown label="Outcomes" items={outcomeLinks} pathname={pathname} />
       <NavDropdown label="Resources" items={resourceLinks} pathname={pathname} wide />
       {links.map((l) => {
@@ -248,7 +247,7 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
             key={l.href}
             href={l.href}
             className={clsx(
-              'mk-nav-link text-gray-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40 focus-visible:rounded-md',
+              'mk-nav-link rounded-lg px-3 py-1.5 text-slate-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
               isActive && 'mk-nav-link--active text-white',
             )}
             aria-current={isActive ? 'page' : undefined}
