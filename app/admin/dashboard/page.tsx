@@ -10,6 +10,7 @@ import {
   AlertTriangle,
   ArrowRight,
   ShieldAlert,
+  Layers,
 } from 'lucide-react';
 
 type OverviewData = {
@@ -21,6 +22,8 @@ type OverviewData = {
   failedPayments: number;
   orgsByDay: Array<{ date: string; count: number }>;
 };
+
+type RiskGrade = 'low' | 'watch' | 'high' | 'critical';
 
 async function fetchOverview() {
   const { base, headers } = await getAdminFetchConfig();
@@ -65,6 +68,107 @@ function KPICard({
       </div>
       <div className="text-3xl font-bold text-slate-100">{value}</div>
       {detail && <div className="text-xs text-slate-400">{detail}</div>}
+    </div>
+  );
+}
+
+function riskGradeFromRatio(ratio: number): RiskGrade {
+  if (ratio >= 0.66) return 'critical';
+  if (ratio >= 0.4) return 'high';
+  if (ratio >= 0.18) return 'watch';
+  return 'low';
+}
+
+function riskGradeLabel(grade: RiskGrade): string {
+  switch (grade) {
+    case 'critical':
+      return 'Critical';
+    case 'high':
+      return 'High';
+    case 'watch':
+      return 'Watch';
+    default:
+      return 'Low';
+  }
+}
+
+function riskGradeStyles(grade: RiskGrade): string {
+  switch (grade) {
+    case 'critical':
+      return 'border-rose-400/35 bg-rose-500/10 text-rose-200';
+    case 'high':
+      return 'border-amber-400/35 bg-amber-500/10 text-amber-200';
+    case 'watch':
+      return 'border-sky-400/30 bg-sky-500/10 text-sky-200';
+    default:
+      return 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200';
+  }
+}
+
+function RiskHeatmap({
+  cells,
+}: {
+  cells: Array<{
+    key: string;
+    label: string;
+    grade: RiskGrade;
+    ratio: number;
+    metric: string;
+    href: string;
+  }>;
+}) {
+  const intensity = {
+    low: 'bg-emerald-500/10',
+    watch: 'bg-sky-500/10',
+    high: 'bg-amber-500/10',
+    critical: 'bg-rose-500/10',
+  } as const;
+
+  return (
+    <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <Layers className="h-5 w-5 text-cyan-200" />
+          <h2 className="text-lg font-semibold text-slate-100">Risk Heatmap</h2>
+        </div>
+        <p className="text-xs text-slate-500">
+          Cross-tenant pressure indicators (normalized)
+        </p>
+      </div>
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        {cells.map((cell) => (
+          <Link
+            key={cell.key}
+            href={cell.href}
+            className={`rounded-lg border border-slate-800 p-4 transition-colors hover:bg-slate-800/60 ${intensity[cell.grade]}`}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-sm font-semibold text-slate-100">
+                  {cell.label}
+                </p>
+                <p className="mt-1 text-xs text-slate-400">{cell.metric}</p>
+              </div>
+              <span
+                className={`rounded border px-2 py-1 text-[10px] font-semibold uppercase tracking-wider ${riskGradeStyles(cell.grade)}`}
+              >
+                {riskGradeLabel(cell.grade)}
+              </span>
+            </div>
+            <div className="mt-3">
+              <div className="h-2 w-full rounded-full bg-slate-800">
+                <div
+                  className="h-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600"
+                  style={{ width: `${Math.min(Math.round(cell.ratio * 100), 100)}%` }}
+                />
+              </div>
+              <p className="mt-2 text-xs text-slate-500">
+                {Math.round(cell.ratio * 100)}% normalized pressure
+              </p>
+            </div>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
@@ -187,6 +291,93 @@ export default async function AdminDashboard() {
     watch: 'border-amber-400/30 bg-amber-500/10 text-amber-200',
     critical: 'border-rose-400/30 bg-rose-500/10 text-rose-200',
   } as const;
+  const healthRatio =
+    data.totalOrgs > 0 ? Math.min(data.failedPayments / data.totalOrgs, 1) : 0;
+  const enterpriseRatio =
+    data.totalOrgs > 0 ? Math.min(enterpriseCount / data.totalOrgs, 1) : 0;
+  const growthRatio =
+    data.totalOrgs > 0
+      ? Math.min(data.orgsByDay[data.orgsByDay.length - 1]?.count / data.totalOrgs, 1)
+      : 0;
+  const riskHeatmapCells = [
+    {
+      key: 'revenue_pressure',
+      label: 'Revenue Pressure',
+      ratio: healthRatio,
+      grade: riskGradeFromRatio(healthRatio),
+      metric: `${data.failedPayments} failed payments`,
+      href: '/admin/billing',
+    },
+    {
+      key: 'trial_churn_pressure',
+      label: 'Trial Churn Pressure',
+      ratio: trialRiskRatio,
+      grade: riskGradeFromRatio(trialRiskRatio),
+      metric: `${data.trialsExpiring} trials expiring`,
+      href: '/admin/trials',
+    },
+    {
+      key: 'enterprise_footprint',
+      label: 'Enterprise Footprint',
+      ratio: enterpriseRatio,
+      grade: enterpriseRatio === 0 ? 'watch' : enterpriseRatio > 0.25 ? 'low' : 'watch',
+      metric: `${enterpriseCount} enterprise tenants`,
+      href: '/admin/security/triage',
+    },
+    {
+      key: 'growth_load',
+      label: 'Growth Load',
+      ratio: growthRatio,
+      grade: riskGradeFromRatio(growthRatio),
+      metric: `${data.orgsByDay[data.orgsByDay.length - 1]?.count ?? 0} orgs added (latest day)`,
+      href: '/admin/orgs',
+    },
+  ] as const;
+
+  const orchestrationQueueItems: Array<{
+    id: string;
+    label: string;
+    detail: string;
+    count: number;
+    href: string;
+    grade: RiskGrade;
+  }> = [
+    {
+      id: 'billing_intervention',
+      label: 'Resolve billing incidents',
+      detail: 'Failed payments and subscription interventions requiring owner attention.',
+      count: data.failedPayments,
+      href: '/admin/billing',
+      grade: data.failedPayments > 3 ? 'critical' : data.failedPayments > 0 ? 'high' : 'low',
+    },
+    {
+      id: 'trial_outreach',
+      label: 'Trial renewal outreach',
+      detail: 'Expiring trials needing guided conversion and procurement help.',
+      count: data.trialsExpiring,
+      href: '/admin/trials',
+      grade: data.trialsExpiring > 5 ? 'high' : data.trialsExpiring > 0 ? 'watch' : 'low',
+    },
+    {
+      id: 'security_triage',
+      label: 'Security triage routing',
+      detail: 'Route incidents to the correct operational owner queues.',
+      count: riskQueue[2].value,
+      href: '/admin/security/triage',
+      grade: enterpriseCount === 0 ? 'watch' : 'low',
+    },
+    {
+      id: 'system_health',
+      label: 'Validate system health',
+      detail: 'Confirm platform uptime, error rates, and health checks.',
+      count: 1,
+      href: '/admin/health',
+      grade: 'watch',
+    },
+  ];
+  const orchestrationQueue = orchestrationQueueItems
+    .slice()
+    .sort((a, b) => b.count - a.count);
 
   return (
     <div className="space-y-8">
@@ -342,6 +533,8 @@ export default async function AdminDashboard() {
         </div>
       </div>
 
+      <RiskHeatmap cells={[...riskHeatmapCells]} />
+
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
           <div className="mb-4 flex items-center gap-2">
@@ -407,6 +600,60 @@ export default async function AdminDashboard() {
             Command-center shortcuts prioritize the highest-frequency platform
             operations workflows.
           </p>
+        </div>
+      </div>
+
+      <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div>
+            <h2 className="text-lg font-semibold text-slate-100">
+              Orchestration Queue
+            </h2>
+            <p className="mt-1 text-xs text-slate-500">
+              Highest-impact operator workflows ranked by live counts.
+            </p>
+          </div>
+          <Link
+            href="/admin/support"
+            className="inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/60 px-3 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-700/60"
+          >
+            Open Support
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {orchestrationQueue.map((item) => (
+            <Link
+              key={item.id}
+              href={item.href}
+              className="rounded-lg border border-slate-800 bg-slate-900/60 p-4 transition-colors hover:bg-slate-800/70"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold text-slate-100">
+                    {item.label}
+                  </p>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-400">
+                    {item.detail}
+                  </p>
+                </div>
+                <span
+                  className={`rounded border px-2 py-1 text-[10px] font-semibold uppercase tracking-wider ${riskGradeStyles(item.grade)}`}
+                >
+                  {riskGradeLabel(item.grade)}
+                </span>
+              </div>
+              <div className="mt-3 flex items-center justify-between gap-3">
+                <span className="text-2xl font-bold text-slate-100">
+                  {item.count}
+                </span>
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-cyan-200">
+                  Open queue
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </span>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
 

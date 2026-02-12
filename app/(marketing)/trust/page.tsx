@@ -58,6 +58,30 @@ const trustWorkflow = [
   },
 ] as const;
 
+const questionnaireFastLane = [
+  {
+    title: 'Security questionnaire mapping',
+    detail:
+      'Map common diligence questions to reusable control and evidence references so teams avoid starting from zero.',
+  },
+  {
+    title: 'Stakeholder-specific packet paths',
+    detail:
+      'Provide architecture context for security, governance posture for compliance, and procurement readiness for buyer teams.',
+  },
+  {
+    title: 'Operational proof for approval',
+    detail:
+      'Show live workflow ownership, evidence state, and audit timeline for board and executive confidence.',
+  },
+] as const;
+
+const stakeholderTracks = [
+  { persona: 'Security', artifact: 'Architecture + access control packet' },
+  { persona: 'Compliance', artifact: 'Framework control + evidence mapping' },
+  { persona: 'Procurement', artifact: 'Trust artifacts + implementation scope' },
+] as const;
+
 export default function TrustCenterPage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#0a0f1c] text-slate-100">
@@ -196,6 +220,57 @@ export default function TrustCenterPage() {
                   {item.detail}
                 </p>
               </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-7 lg:p-10">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-300">
+                Security Questionnaire Fast-Lane
+              </h3>
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
+                Designed to reduce back-and-forth during enterprise review by
+                packaging answers around the actual buyer workflow.
+              </p>
+            </div>
+            <Link
+              href="/security-review"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-5 py-3 text-sm font-semibold text-white hover:bg-white/10"
+            >
+              Review Security Packet
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="mt-6 grid gap-3 md:grid-cols-3">
+            {questionnaireFastLane.map((item) => (
+              <article
+                key={item.title}
+                className="rounded-xl border border-white/10 bg-slate-900/40 p-4"
+              >
+                <p className="text-sm font-semibold text-slate-100">{item.title}</p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-400">
+                  {item.detail}
+                </p>
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-6 grid gap-3 md:grid-cols-3">
+            {stakeholderTracks.map((track) => (
+              <div
+                key={track.persona}
+                className="rounded-xl border border-cyan-400/20 bg-cyan-500/10 px-4 py-3"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wider text-cyan-200">
+                  {track.persona}
+                </p>
+                <p className="mt-1 text-sm text-cyan-100">{track.artifact}</p>
+              </div>
             ))}
           </div>
         </div>

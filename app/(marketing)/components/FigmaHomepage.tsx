@@ -14,6 +14,7 @@ import {
   SecuritySection,
   OutcomeProofSection,
   ObjectionHandlingSection,
+  ProcurementFlowSection,
   CTASection,
   TrustSection,
 } from './homepage';
@@ -74,6 +75,7 @@ export default function FormaOSHomepage() {
             <SecuritySection />
             <OutcomeProofSection />
             <ObjectionHandlingSection />
+            <ProcurementFlowSection />
             <CTASection />
             <TrustSection />
           </div>
