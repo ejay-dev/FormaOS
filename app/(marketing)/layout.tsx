@@ -58,7 +58,7 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
             {/* Premium header with glass effect and micro-animations */}
             <header className="mk-header-premium sticky top-0 z-50">
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="flex h-[72px] items-center justify-between gap-6">
+                <div className="flex h-[72px] items-center justify-between gap-4 lg:gap-6">
                   {/* Logo */}
                   <div className="flex shrink-0 items-center">
                     <Link
@@ -73,8 +73,8 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
                   <NavLinks />
 
                   {/* Separator + CTA */}
-                  <div className="hidden md:flex items-center gap-4">
-                    <div className="mk-nav-separator" aria-hidden="true" />
+                  <div className="hidden md:flex items-center gap-3">
+                    <div className="mk-nav-divider" aria-hidden="true" />
                     <HeaderCTA />
                   </div>
 
@@ -84,7 +84,7 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
               </div>
             </header>
 
-            {/* Toggle .scrolled class on header for enhanced glass effect */}
+            {/* Scrolled state for header glass enhancement */}
             <script
               dangerouslySetInnerHTML={{
                 __html: `(function(){var h=document.querySelector('.mk-header-premium');if(!h)return;var c='scrolled';function u(){h.classList.toggle(c,window.scrollY>10)}window.addEventListener('scroll',u,{passive:true});u()})()`,

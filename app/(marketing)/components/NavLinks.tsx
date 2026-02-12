@@ -6,7 +6,10 @@ import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { ChevronDown } from 'lucide-react';
 
-const links = [
+/* ── Link data ───────────────────────────────────────────── */
+
+const primaryLinks = [
+  { href: '/', label: 'Home' },
   { href: '/product', label: 'Product' },
   { href: '/industries', label: 'Industries' },
   { href: '/security', label: 'Security' },
@@ -34,7 +37,7 @@ const resourceLinks = [
   { href: '/contact', label: 'Contact' },
 ];
 
-/* ─── Accessible dropdown for desktop nav ────────────────── */
+/* ── Accessible dropdown ─────────────────────────────────── */
 
 function NavDropdown({
   label,
@@ -51,7 +54,6 @@ function NavDropdown({
   const ref = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
-  // Close on outside click
   useEffect(() => {
     if (!open) return;
     function handleClick(e: MouseEvent) {
@@ -70,8 +72,8 @@ function NavDropdown({
     }
     if (e.key === 'ArrowDown' && open) {
       e.preventDefault();
-      const firstItem = ref.current?.querySelector<HTMLElement>('[role="menuitem"]');
-      firstItem?.focus();
+      const first = ref.current?.querySelector<HTMLElement>('[role="menuitem"]');
+      first?.focus();
     }
   }
 
@@ -94,14 +96,14 @@ function NavDropdown({
         aria-expanded={open}
         aria-haspopup="true"
         className={clsx(
-          'mk-nav-link flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-slate-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
-          hasActiveChild && 'mk-nav-link--active text-white',
+          'mk-nav-item flex cursor-pointer items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
+          hasActiveChild && 'mk-nav-item--active',
         )}
       >
         {label}
         <ChevronDown
           className={clsx(
-            'h-3.5 w-3.5 transition-transform duration-200',
+            'h-3 w-3 opacity-50 transition-transform duration-200',
             open && 'rotate-180',
           )}
         />
@@ -109,9 +111,14 @@ function NavDropdown({
       {open && (
         <div
           className={clsx(
-            'mk-dropdown-panel absolute left-1/2 -translate-x-1/2 top-full mt-2 z-50 rounded-xl border border-white/10 bg-slate-950/95 p-2 shadow-2xl backdrop-blur-lg',
-            wide ? 'min-w-[14rem]' : 'min-w-[12rem]',
+            'mk-dropdown-panel absolute right-0 top-full mt-3 z-50 rounded-xl border border-white/[0.08] p-1.5 shadow-2xl',
+            wide ? 'min-w-[15rem]' : 'min-w-[11rem]',
           )}
+          style={{
+            background:
+              'linear-gradient(135deg, rgba(10, 16, 31, 0.97) 0%, rgba(5, 7, 17, 0.98) 100%)',
+            backdropFilter: 'blur(20px) saturate(180%)',
+          }}
           role="menu"
           tabIndex={-1}
           onKeyDown={handleMenuKeyDown}
@@ -128,20 +135,18 @@ function NavDropdown({
                 onKeyDown={(e) => {
                   if (e.key === 'ArrowDown') {
                     e.preventDefault();
-                    const next = e.currentTarget.nextElementSibling as HTMLElement | null;
-                    next?.focus();
+                    (e.currentTarget.nextElementSibling as HTMLElement | null)?.focus();
                   }
                   if (e.key === 'ArrowUp') {
                     e.preventDefault();
-                    const prev = e.currentTarget.previousElementSibling as HTMLElement | null;
-                    prev?.focus();
+                    (e.currentTarget.previousElementSibling as HTMLElement | null)?.focus();
                   }
                 }}
                 className={clsx(
-                  'block rounded-lg px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
+                  'block rounded-lg px-3 py-2 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
                   isActive
                     ? 'bg-cyan-500/10 text-cyan-200'
-                    : 'text-slate-300 hover:bg-white/5 hover:text-white',
+                    : 'text-slate-400 hover:bg-white/[0.06] hover:text-white',
                 )}
               >
                 {l.label}
@@ -154,7 +159,7 @@ function NavDropdown({
   );
 }
 
-/* ─── NavLinks ───────────────────────────────────────────── */
+/* ── NavLinks ────────────────────────────────────────────── */
 
 interface NavLinksProps {
   variant?: 'desktop' | 'mobile';
@@ -164,9 +169,33 @@ interface NavLinksProps {
 export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
   const pathname = usePathname() || '/';
 
+  /* ── Mobile ──────────────────────────────────────────── */
   if (variant === 'mobile') {
     return (
       <div className="text-sm space-y-1">
+        <div className="px-4 py-2 text-[11px] uppercase tracking-wider text-slate-500">
+          Pages
+        </div>
+        {primaryLinks.map((l) => {
+          const isActive = pathname === l.href;
+          return (
+            <Link
+              key={l.href}
+              href={l.href}
+              onClick={onLinkClick}
+              className={clsx(
+                'block rounded-xl px-4 py-3 transition-all',
+                isActive
+                  ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
+                  : 'hover:bg-white/5 text-slate-300 hover:text-white',
+              )}
+              aria-current={isActive ? 'page' : undefined}
+            >
+              {l.label}
+            </Link>
+          );
+        })}
+        <div className="mx-4 my-2 h-px bg-white/10" />
         <div className="px-4 py-2 text-[11px] uppercase tracking-wider text-slate-500">
           Outcome Journeys
         </div>
@@ -212,43 +241,23 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
             </Link>
           );
         })}
-        <div className="mx-4 my-2 h-px bg-white/10" />
-        {links.map((l) => {
-          const isActive = pathname === l.href;
-          return (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={onLinkClick}
-              className={clsx(
-                'block rounded-xl px-4 py-3 transition-all',
-                isActive
-                  ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
-                  : 'hover:bg-white/5 text-slate-300 hover:text-white',
-              )}
-              aria-current={isActive ? 'page' : undefined}
-            >
-              {l.label}
-            </Link>
-          );
-        })}
       </div>
     );
   }
 
+  /* ── Desktop ─────────────────────────────────────────── */
   return (
-    <nav className="hidden md:flex items-center gap-1 lg:gap-1.5 text-[13.5px] lg:text-[14px] font-medium tracking-[0.01em]">
-      <NavDropdown label="Outcomes" items={outcomeLinks} pathname={pathname} />
-      <NavDropdown label="Resources" items={resourceLinks} pathname={pathname} wide />
-      {links.map((l) => {
+    <nav className="hidden md:flex flex-1 items-center justify-center gap-0.5 lg:gap-1 text-[13.5px] lg:text-[14px] font-medium tracking-[0.01em]">
+      {/* Primary links */}
+      {primaryLinks.map((l) => {
         const isActive = pathname === l.href;
         return (
           <Link
             key={l.href}
             href={l.href}
             className={clsx(
-              'mk-nav-link rounded-lg px-3 py-1.5 text-slate-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
-              isActive && 'mk-nav-link--active text-white',
+              'mk-nav-item focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
+              isActive && 'mk-nav-item--active',
             )}
             aria-current={isActive ? 'page' : undefined}
           >
@@ -256,6 +265,13 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
           </Link>
         );
       })}
+
+      {/* Divider */}
+      <div className="mk-nav-divider" aria-hidden="true" />
+
+      {/* Dropdowns on the right */}
+      <NavDropdown label="Outcomes" items={outcomeLinks} pathname={pathname} />
+      <NavDropdown label="Resources" items={resourceLinks} pathname={pathname} wide />
     </nav>
   );
 }
