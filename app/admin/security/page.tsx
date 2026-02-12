@@ -1,5 +1,6 @@
+import Link from 'next/link';
 import { getAdminFetchConfig } from '@/app/admin/lib';
-import { AlertTriangle, Shield, Lock, Activity } from 'lucide-react';
+import { AlertTriangle, Shield, Lock, Activity, ArrowRight } from 'lucide-react';
 
 type SecurityEvent = {
   id: string;
@@ -85,12 +86,21 @@ export default async function AdminSecurityPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-slate-100">Security</h1>
-        <p className="mt-2 text-sm text-slate-400">
-          Admin audit trail — actions taken through the platform console (last 7
-          days)
-        </p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-100">Security</h1>
+          <p className="mt-2 text-sm text-slate-400">
+            Admin audit trail — actions taken through the platform console (last 7
+            days)
+          </p>
+        </div>
+        <Link
+          href="/admin/security/triage"
+          className="inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/60 px-4 py-2 text-sm font-semibold text-slate-200 hover:bg-slate-700/60"
+        >
+          Open Risk Triage Queue
+          <ArrowRight className="h-4 w-4" />
+        </Link>
       </div>
 
       {/* Alert Banner */}

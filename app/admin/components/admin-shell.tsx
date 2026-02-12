@@ -20,6 +20,7 @@ import {
   LifeBuoy,
   Settings,
   Tag,
+  ShieldAlert,
 } from 'lucide-react';
 import { useState } from 'react';
 import { createSupabaseClient } from '@/lib/supabase/client';
@@ -52,6 +53,7 @@ const NAV_SECTIONS = [
     items: [
       { name: 'Features', href: '/admin/features', icon: Zap },
       { name: 'Security', href: '/admin/security', icon: Shield },
+      { name: 'Risk Triage', href: '/admin/security/triage', icon: ShieldAlert },
       { name: 'System', href: '/admin/system', icon: Activity },
       { name: 'Audit', href: '/admin/audit', icon: FileText },
       { name: 'Releases', href: '/admin/releases', icon: Tag },

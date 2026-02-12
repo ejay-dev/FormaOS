@@ -44,10 +44,48 @@ const PLAN_CHOICES = [
   PLAN_CATALOG.pro,
   PLAN_CATALOG.enterprise,
 ];
+
+type OnboardingRole = 'owner' | 'admin' | 'member' | 'viewer';
+type JourneyType = 'full' | 'fast-track' | 'read-only';
+
+type RoleOption = {
+  id: string;
+  label: string;
+  role: OnboardingRole;
+  description: string;
+  journey: JourneyType;
+};
+
 const ROLE_OPTIONS = [
-  { id: 'employer', label: 'Employer / Organization admin', role: 'owner' },
-  { id: 'employee', label: 'Employee / Field staff', role: 'member' },
-];
+  {
+    id: 'employer',
+    label: 'Employer / Organization owner',
+    role: 'owner',
+    description: 'Full governance setup, framework provisioning, and team activation.',
+    journey: 'full',
+  },
+  {
+    id: 'compliance_lead',
+    label: 'Compliance lead / Admin',
+    role: 'admin',
+    description: 'Configure controls and readiness workflows without billing ownership.',
+    journey: 'full',
+  },
+  {
+    id: 'employee',
+    label: 'Employee / Field staff',
+    role: 'member',
+    description: 'Fast-track to assigned tasks, evidence, and day-to-day execution.',
+    journey: 'fast-track',
+  },
+  {
+    id: 'external_auditor',
+    label: 'External auditor / Viewer',
+    role: 'viewer',
+    description: 'Read-only trust and readiness visibility with guided first review.',
+    journey: 'read-only',
+  },
+] as const satisfies readonly RoleOption[];
 
 const ONBOARDING_MILESTONES = [
   { id: 'foundation', label: 'Foundation', steps: [1, 2, 3] },
@@ -360,7 +398,7 @@ async function saveRoleSelection(formData: FormData) {
     .eq('organization_id', orgId)
     .eq('user_id', user.id);
 
-  // Fast-track member personas to first proof with defaults already
+  // Fast-track non-provisioning personas to first proof with defaults already
   // managed by the organization profile.
   if (!isProvisioningRole(match.role)) {
     const defaultFrameworks =
@@ -376,7 +414,9 @@ async function saveRoleSelection(formData: FormData) {
     await markStepComplete(orgId, 4, 5);
     await markStepComplete(orgId, 5, 6);
     await markStepComplete(orgId, 6, 7);
-    redirect('/onboarding?step=7&fast_track=1');
+    redirect(
+      `/onboarding?step=7&fast_track=1&persona=${encodeURIComponent(match.role)}`,
+    );
   }
 
   await markStepComplete(orgId, 4, 5);
@@ -547,6 +587,10 @@ async function completeFirstAction(formData: FormData) {
     );
   }
 
+  if (action === 'review_dashboard') {
+    // Read-only onboarding action; no mutation required.
+  }
+
   await admin
     .from('organizations')
     .update({
@@ -608,6 +652,7 @@ type OnboardingPageProps = {
     from?: string;
     journey?: string;
     fast_track?: string;
+    persona?: string;
   }>;
 };
 
@@ -621,7 +666,7 @@ export default async function OnboardingPage({
   // (which would just send us here again). Show error instead.
   const cameFromApp = resolvedSearchParams?.from === 'app';
 
-  const { orgId, orgRecord, supabase } = await getOrgContext();
+  const { orgId, orgRecord, supabase, role } = await getOrgContext();
   const status = await getOnboardingStatus(supabase, orgId);
 
   const onboardingStatusComplete =
@@ -665,11 +710,17 @@ export default async function OnboardingPage({
 
   const errorState = Boolean(resolvedSearchParams?.error);
   const fastTrack = resolvedSearchParams?.fast_track === '1';
+  const persona = resolvedSearchParams?.persona ?? '';
+  const isReadOnlyPersona = role === 'viewer' || persona === 'viewer';
+  const defaultRoleOptionId =
+    ROLE_OPTIONS.find((option) => option.role === role)?.id ?? 'employer';
   const planLabel = planKey ? PLAN_CATALOG[planKey].name : 'Plan not selected';
   const completedRatio = (safeStep / TOTAL_STEPS) * 100;
   const journey = resolvedSearchParams?.journey ?? '';
   const firstActionDefault =
-    journey === 'prove'
+    isReadOnlyPersona
+      ? 'review_dashboard'
+      : journey === 'prove'
       ? 'upload_evidence'
       : journey === 'evaluate'
         ? 'run_evaluation'
@@ -678,9 +729,9 @@ export default async function OnboardingPage({
   return (
     <div className="min-h-screen bg-[hsl(var(--background))] font-sans">
       <EnterpriseTrustStrip surface="onboarding" />
-      <div className="flex items-center justify-center p-6">
+      <div className="flex items-center justify-center p-4 sm:p-6">
         <div className="w-full max-w-2xl">
-        <div className="bg-white/5 rounded-[2rem] p-10 shadow-2xl border border-white/10 relative overflow-hidden">
+        <div className="bg-white/5 rounded-[2rem] p-6 sm:p-8 md:p-10 shadow-2xl border border-white/10 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1.5 bg-[hsl(var(--card))]" />
 
           <div className="mb-8 text-center md:text-left">
@@ -728,8 +779,8 @@ export default async function OnboardingPage({
             ) : null}
             {fastTrack ? (
               <div className="mt-4 rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-3 text-xs text-cyan-100">
-                Fast-track enabled for member onboarding. Core governance
-                defaults are pre-configured.
+                Fast-track enabled for this persona. Core governance defaults
+                are pre-configured so you can reach first proof faster.
               </div>
             ) : null}
           </div>
@@ -879,24 +930,46 @@ export default async function OnboardingPage({
             >
               <div className="space-y-3">
                 <div className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
-                  Your role
+                  Choose your onboarding persona
                 </div>
                 <div className="grid gap-3 md:grid-cols-2">
                   {ROLE_OPTIONS.map((option) => (
                     <label
                       key={option.id}
-                      className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
+                      className="flex gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
                     >
                       <input
                         required
                         type="radio"
                         name="role"
                         value={option.id}
-                        defaultChecked={option.role === 'owner'}
+                        defaultChecked={defaultRoleOptionId === option.id}
                         data-testid={`role-option-${option.id}`}
-                        className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                        className="mt-1 h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
                       />
-                      <span>{option.label}</span>
+                      <div className="space-y-1">
+                        <div className="font-semibold text-slate-100">
+                          {option.label}
+                        </div>
+                        <div className="text-xs text-slate-400">
+                          {option.description}
+                        </div>
+                        <span
+                          className={`inline-flex rounded border px-2 py-0.5 text-[10px] uppercase tracking-wider ${
+                            option.journey === 'full'
+                              ? 'border-cyan-400/30 bg-cyan-500/10 text-cyan-200'
+                              : option.journey === 'read-only'
+                                ? 'border-slate-400/30 bg-slate-500/10 text-slate-200'
+                                : 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200'
+                          }`}
+                        >
+                          {option.journey === 'full'
+                            ? 'Full setup'
+                            : option.journey === 'read-only'
+                              ? 'Read-only fast track'
+                              : 'Execution fast track'}
+                        </span>
+                      </div>
                     </label>
                   ))}
                 </div>
@@ -981,30 +1054,40 @@ export default async function OnboardingPage({
                 <div className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
                   First system action
                 </div>
+                {isReadOnlyPersona ? (
+                  <div className="rounded-xl border border-slate-400/30 bg-slate-500/10 px-4 py-3 text-xs text-slate-300">
+                    Read-only persona detected. Choose a review-first action to
+                    enter the workspace safely.
+                  </div>
+                ) : null}
                 <div className="space-y-3">
-                  <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
-                    <input
-                      type="radio"
-                      name="firstAction"
-                      value="create_task"
-                      data-testid="first-action-create-task"
-                      className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
-                      defaultChecked={firstActionDefault === 'create_task'}
-                      required
-                    />
-                    <span>Create a kickoff compliance task</span>
-                  </label>
-                  <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
-                    <input
-                      type="radio"
-                      name="firstAction"
-                      value="upload_evidence"
-                      data-testid="first-action-upload-evidence"
-                      className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
-                      defaultChecked={firstActionDefault === 'upload_evidence'}
-                    />
-                    <span>Prepare an evidence upload task</span>
-                  </label>
+                  {!isReadOnlyPersona ? (
+                    <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
+                      <input
+                        type="radio"
+                        name="firstAction"
+                        value="create_task"
+                        data-testid="first-action-create-task"
+                        className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                        defaultChecked={firstActionDefault === 'create_task'}
+                        required
+                      />
+                      <span>Create a kickoff compliance task</span>
+                    </label>
+                  ) : null}
+                  {!isReadOnlyPersona ? (
+                    <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
+                      <input
+                        type="radio"
+                        name="firstAction"
+                        value="upload_evidence"
+                        data-testid="first-action-upload-evidence"
+                        className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                        defaultChecked={firstActionDefault === 'upload_evidence'}
+                      />
+                      <span>Prepare an evidence upload task</span>
+                    </label>
+                  ) : null}
                   <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
                     <input
                       type="radio"
@@ -1013,9 +1096,23 @@ export default async function OnboardingPage({
                       data-testid="first-action-run-evaluation"
                       className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
                       defaultChecked={firstActionDefault === 'run_evaluation'}
+                      required={isReadOnlyPersona}
                     />
                     <span>Run the first compliance evaluation</span>
                   </label>
+                  {isReadOnlyPersona ? (
+                    <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
+                      <input
+                        type="radio"
+                        name="firstAction"
+                        value="review_dashboard"
+                        data-testid="first-action-review-dashboard"
+                        className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                        defaultChecked={firstActionDefault === 'review_dashboard'}
+                      />
+                      <span>Open readiness dashboard and review posture</span>
+                    </label>
+                  ) : null}
                 </div>
               </div>
               <SubmitButton loadingText="Completing setup...">

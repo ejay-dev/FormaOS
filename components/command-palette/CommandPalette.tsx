@@ -241,6 +241,13 @@ const ADMIN_NAV_ITEMS: CommandItem[] = [
     keywords: ['incidents', 'alerts'],
   },
   {
+    id: 'admin-security-triage',
+    label: 'Risk Triage',
+    icon: ShieldCheck,
+    href: '/admin/security/triage',
+    keywords: ['triage', 'response', 'incident queue'],
+  },
+  {
     id: 'admin-system',
     label: 'System Health',
     icon: Activity,
@@ -282,7 +289,7 @@ const ADMIN_ACTION_ITEMS: CommandItem[] = [
     id: 'admin-action-risk-triage',
     label: 'Open Risk Triage',
     icon: ShieldCheck,
-    href: '/admin/security',
+    href: '/admin/security/triage',
     keywords: ['triage', 'risk', 'alerts'],
   },
   {

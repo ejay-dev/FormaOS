@@ -118,7 +118,7 @@ export default async function AdminDashboard() {
     {
       label: 'Enterprise readiness',
       value: enterpriseCount,
-      href: '/admin/security',
+      href: '/admin/security/triage',
       severity: enterpriseCount === 0 ? 'medium' : 'low',
       guidance:
         enterpriseCount === 0
@@ -128,7 +128,7 @@ export default async function AdminDashboard() {
   ] as const;
 
   const quickOps = [
-    { label: 'Triage incidents', href: '/admin/security' },
+    { label: 'Triage incidents', href: '/admin/security/triage' },
     { label: 'Review audit stream', href: '/admin/audit' },
     { label: 'Publish release notes', href: '/admin/releases' },
     { label: 'Validate system health', href: '/admin/health' },
