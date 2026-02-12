@@ -9,6 +9,10 @@ import {
   Zap,
   ArrowLeft,
   RefreshCw,
+  AlertTriangle,
+  CalendarClock,
+  FileCheck2,
+  ListChecks,
 } from 'lucide-react';
 import { KPICard } from '@/components/dashboard/kpi-card';
 import { CompliancePostureRing } from './components/CompliancePostureRing';
@@ -33,6 +37,41 @@ interface DashboardData {
   auditForecast: AuditReadinessForecast | null;
   automationMetrics: AutomationMetrics | null;
   actionDeadlines: ComplianceDeadline[];
+}
+
+type CommandSeverity = 'low' | 'watch' | 'high' | 'critical';
+
+function severityLabel(severity: CommandSeverity) {
+  switch (severity) {
+    case 'critical':
+      return 'Critical';
+    case 'high':
+      return 'High';
+    case 'watch':
+      return 'Watch';
+    default:
+      return 'Low';
+  }
+}
+
+function severityStyles(severity: CommandSeverity) {
+  switch (severity) {
+    case 'critical':
+      return 'border-rose-400/30 bg-rose-500/10 text-rose-200';
+    case 'high':
+      return 'border-amber-400/30 bg-amber-500/10 text-amber-200';
+    case 'watch':
+      return 'border-sky-400/30 bg-sky-500/10 text-sky-200';
+    default:
+      return 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200';
+  }
+}
+
+function commandSeverityFromCount(count: number): CommandSeverity {
+  if (count >= 8) return 'critical';
+  if (count >= 4) return 'high';
+  if (count >= 1) return 'watch';
+  return 'low';
 }
 
 export function ExecutiveDashboardClient({
@@ -82,6 +121,93 @@ export function ExecutiveDashboardClient({
     return () => clearInterval(interval);
   }, []);
 
+  const posture = data.posture;
+  const criticalFailures = posture?.criticalFailures ?? [];
+  const deadlines = posture?.upcomingDeadlines ?? [];
+  const deadlineCounts = deadlines.reduce(
+    (acc, item) => {
+      acc[item.status] = (acc[item.status] ?? 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+  const overdueCount = deadlineCounts.overdue ?? 0;
+  const dueSoonCount = deadlineCounts.due_soon ?? 0;
+  const missingControls =
+    posture?.frameworkRollup?.reduce((sum, fw) => sum + (fw.controlsMissing ?? 0), 0) ??
+    0;
+  const automationSuccess = data.automationMetrics?.successRate ?? 0;
+
+  const riskHeatmap = [
+    {
+      key: 'critical_failures',
+      label: 'Critical Control Gaps',
+      metric: `${criticalFailures.length} flagged`,
+      count: criticalFailures.length,
+      href: '/app/compliance',
+      icon: AlertTriangle,
+    },
+    {
+      key: 'deadline_pressure',
+      label: 'Deadline Pressure',
+      metric: `${overdueCount} overdue, ${dueSoonCount} due soon`,
+      count: overdueCount + dueSoonCount,
+      href: '/app/reports',
+      icon: CalendarClock,
+    },
+    {
+      key: 'framework_missing',
+      label: 'Missing Controls',
+      metric: `${missingControls} missing across frameworks`,
+      count: missingControls,
+      href: '/app/compliance/frameworks',
+      icon: FileCheck2,
+    },
+    {
+      key: 'automation_reliability',
+      label: 'Automation Reliability',
+      metric: `${automationSuccess}% workflow success`,
+      count: automationSuccess < 90 ? Math.round((90 - automationSuccess) / 2) : 0,
+      href: '/app/workflows',
+      icon: Zap,
+    },
+  ] as const;
+
+  const actionQueue = [
+    {
+      id: 'close_critical',
+      label: 'Close critical control gaps',
+      detail:
+        criticalFailures.length > 0
+          ? 'Assign owners and complete evidence for at-risk controls first.'
+          : 'No critical gaps detected. Validate evidence freshness and cadence.',
+      count: criticalFailures.length,
+      href: '/app/compliance',
+    },
+    {
+      id: 'resolve_deadlines',
+      label: 'Resolve due-soon and overdue deadlines',
+      detail:
+        overdueCount + dueSoonCount > 0
+          ? 'Clear overdue items and pre-empt due-soon submissions.'
+          : 'Deadlines are stable. Maintain weekly readiness review.',
+      count: overdueCount + dueSoonCount,
+      href: '/app/reports',
+    },
+    {
+      id: 'tighten_frameworks',
+      label: 'Tighten framework execution coverage',
+      detail:
+        missingControls > 0
+          ? 'Reduce missing controls to improve audit readiness probability.'
+          : 'Framework execution coverage looks complete. Monitor drift.',
+      count: missingControls,
+      href: '/app/compliance/frameworks',
+    },
+  ]
+    .slice()
+    .sort((a, b) => b.count - a.count);
+
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       {/* Header */}
@@ -126,22 +252,22 @@ export function ExecutiveDashboardClient({
         <div className="grid gap-4 md:grid-cols-4 mb-8">
           <KPICard
             title="Overall Score"
-            value={`${data.posture?.overallScore ?? 0}%`}
+            value={`${posture?.overallScore ?? 0}%`}
             description="compliance"
             icon={Shield}
             trend={
-              data.posture?.trend !== 'stable'
+              posture?.trend !== 'stable'
                 ? {
-                    value: data.posture?.trendPercentage ?? 0,
-                    isPositive: data.posture?.trend === 'up',
+                    value: posture?.trendPercentage ?? 0,
+                    isPositive: posture?.trend === 'up',
                     label: '30d',
                   }
                 : undefined
             }
             status={
-              (data.posture?.overallScore ?? 0) >= 80
+              (posture?.overallScore ?? 0) >= 80
                 ? 'SUCCESS'
-                : (data.posture?.overallScore ?? 0) >= 50
+                : (posture?.overallScore ?? 0) >= 50
                 ? 'WARNING'
                 : 'DANGER'
             }
@@ -149,7 +275,7 @@ export function ExecutiveDashboardClient({
           />
           <KPICard
             title="Framework Coverage"
-            value={`${data.posture?.frameworkCoverage ?? 0}%`}
+            value={`${posture?.frameworkCoverage ?? 0}%`}
             description="frameworks active"
             icon={TrendingUp}
             isLoading={isLoading}
@@ -172,13 +298,13 @@ export function ExecutiveDashboardClient({
           />
           <KPICard
             title="Critical Gaps"
-            value={data.posture?.criticalFailures.length ?? 0}
+            value={criticalFailures.length}
             description="controls at risk"
             icon={Shield}
             status={
-              (data.posture?.criticalFailures.length ?? 0) === 0
+              criticalFailures.length === 0
                 ? 'SUCCESS'
-                : (data.posture?.criticalFailures.length ?? 0) <= 3
+                : criticalFailures.length <= 3
                 ? 'WARNING'
                 : 'DANGER'
             }
@@ -186,16 +312,107 @@ export function ExecutiveDashboardClient({
           />
         </div>
 
+        <section className="mb-8 grid gap-6 lg:grid-cols-3">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-5 lg:col-span-2">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="flex items-center gap-2">
+                <ListChecks className="h-5 w-5 text-cyan-300" />
+                <div>
+                  <h2 className="text-lg font-semibold text-slate-100">
+                    Executive Command Center
+                  </h2>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Prioritized operator actions and risk posture at a glance.
+                  </p>
+                </div>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-slate-950/40 px-4 py-3 text-xs text-slate-400">
+                <p className="font-semibold text-slate-200">Data Freshness</p>
+                <p className="mt-1">
+                  Last evaluated:{' '}
+                  <span className="text-slate-200">
+                    {posture?.lastEvaluated
+                      ? new Date(posture.lastEvaluated).toLocaleString()
+                      : 'N/A'}
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-5 grid gap-3 md:grid-cols-4">
+              {riskHeatmap.map((cell) => {
+                const severity = commandSeverityFromCount(cell.count);
+                return (
+                  <Link
+                    key={cell.key}
+                    href={cell.href}
+                    className="rounded-xl border border-white/10 bg-slate-950/40 p-4 transition-colors hover:bg-white/10"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                          {cell.label}
+                        </p>
+                        <p className="mt-2 text-sm font-semibold text-slate-100">
+                          {cell.metric}
+                        </p>
+                      </div>
+                      <div className="flex flex-col items-end gap-2">
+                        <span
+                          className={`rounded border px-2 py-1 text-[10px] font-semibold uppercase tracking-wider ${severityStyles(severity)}`}
+                        >
+                          {severityLabel(severity)}
+                        </span>
+                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5">
+                          <cell.icon className="h-4 w-4 text-slate-200" />
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+            <h3 className="text-sm font-semibold text-slate-100">Action Queue</h3>
+            <p className="mt-1 text-xs text-slate-500">
+              Ranked by impact and urgency.
+            </p>
+            <div className="mt-4 space-y-3">
+              {actionQueue.map((item) => (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className="group flex items-start justify-between gap-3 rounded-xl border border-white/10 bg-slate-950/40 px-4 py-3 transition-colors hover:bg-white/10"
+                >
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-slate-100">
+                      {item.label}
+                    </p>
+                    <p className="mt-1 text-xs leading-relaxed text-slate-400">
+                      {item.detail}
+                    </p>
+                  </div>
+                  <span className="mt-0.5 inline-flex items-center justify-center rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-semibold text-slate-200">
+                    {item.count}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Main Grid */}
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Left Column - Posture Ring */}
           <div className="lg:col-span-1">
             <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))]">
               <CompliancePostureRing
-                score={data.posture?.overallScore ?? 0}
-                previousScore={data.posture?.previousScore ?? 0}
-                trend={data.posture?.trend ?? 'stable'}
-                trendPercentage={data.posture?.trendPercentage ?? 0}
+                score={posture?.overallScore ?? 0}
+                previousScore={posture?.previousScore ?? 0}
+                trend={posture?.trend ?? 'stable'}
+                trendPercentage={posture?.trendPercentage ?? 0}
                 isLoading={isLoading}
               />
             </div>
@@ -238,13 +455,13 @@ export function ExecutiveDashboardClient({
           <div className="lg:col-span-2 space-y-6">
             {/* Framework Rollup */}
             <FrameworkRollupWidget
-              frameworks={data.posture?.frameworkRollup ?? []}
+              frameworks={posture?.frameworkRollup ?? []}
               isLoading={isLoading}
             />
 
             {/* Critical Controls */}
             <CriticalControlsTable
-              controls={data.posture?.criticalFailures ?? []}
+              controls={criticalFailures}
               isLoading={isLoading}
             />
           </div>
@@ -259,7 +476,7 @@ export function ExecutiveDashboardClient({
 
           {/* Deadlines */}
           <DeadlineCalendar
-            deadlines={data.posture?.upcomingDeadlines ?? []}
+            deadlines={deadlines}
             isLoading={isLoading}
           />
         </div>
