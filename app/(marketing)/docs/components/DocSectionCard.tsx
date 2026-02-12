@@ -49,7 +49,7 @@ export const docSections: DocSection[] = [
       { title: 'Authentication & SSO', description: 'Google OAuth today; enterprise SSO by request', icon: Key },
       { title: 'Access Control (RBAC)', description: 'Role-based permission management', icon: Lock },
       { title: 'Encryption & Data Protection', description: 'At-rest and in-transit security', icon: Shield },
-      { title: 'Compliance Certifications', description: 'SOC 2, GDPR, and regulatory alignment', icon: FileText },
+      { title: 'Compliance Alignment', description: 'SOC 2-aligned, GDPR-ready, and regulatory framework support', icon: FileText },
     ],
   },
   {
@@ -59,7 +59,7 @@ export const docSections: DocSection[] = [
       { title: 'REST API Overview', description: 'Programmatic access to FormaOS', icon: Code },
       { title: 'API Authentication', description: 'API keys and OAuth flows', icon: Key },
       { title: 'Webhooks', description: 'Webhook integrations (by request)', icon: Bell },
-      { title: 'HR System Integration', description: 'Sync users and organizational data', icon: Users },
+      { title: 'HR System Integration', description: 'Sync users and organizational data (via API/webhook)', icon: Users },
       { title: 'Identity Provider Setup', description: 'Okta, Azure AD, Google Workspace (by request)', icon: Globe },
     ],
   },

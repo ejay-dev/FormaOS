@@ -65,8 +65,8 @@ const faqCategories = [
     color: 'purple',
     questions: [
       {
-        q: 'Is FormaOS SOC 2 compliant?',
-        a: 'FormaOS is built with SOC 2-aligned controls and security best practices. We implement encryption, access management, audit logging, and incident response procedures designed to support audit readiness. Security documentation can be provided on request.',
+        q: 'Is FormaOS SOC 2 aligned?',
+        a: 'FormaOS is built with SOC 2-aligned controls and security best practices. We implement encryption, access management, audit logging, and incident response procedures designed to support audit readiness. We have not yet obtained formal SOC 2 certification, but our controls follow the framework. Security documentation can be provided on request.',
       },
       {
         q: 'How is data encrypted?',
@@ -134,7 +134,7 @@ const faqCategories = [
       },
       {
         q: 'Can FormaOS connect to our existing systems?',
-        a: 'FormaOS provides REST API capabilities to connect with HR, CRM, and other systems. Slack and Microsoft Teams integrations are available by request, and enterprise customers can request dedicated integration support.',
+        a: 'FormaOS provides REST API and webhook capabilities to connect with external systems. HR and CRM integrations are available via API/webhook. Slack and Microsoft Teams integrations are available by request, and enterprise customers can request dedicated integration support.',
       },
     ],
   },

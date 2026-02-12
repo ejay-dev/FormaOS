@@ -363,7 +363,7 @@
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-.glass-panel {
+.mk-glass-panel {
   background: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.06) 0%,
@@ -730,7 +730,7 @@ body {
   /* Reduce glow intensity on mobile */
   .glass-intense,
   .glass-panel-strong,
-  .glass-panel {
+  .mk-glass-panel {
     backdrop-filter: blur(12px);
   }
 

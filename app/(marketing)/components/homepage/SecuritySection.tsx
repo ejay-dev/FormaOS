@@ -23,8 +23,8 @@ const securityFeatures = [
   },
   {
     icon: Lock,
-    title: 'End-to-End Encryption',
-    description: 'Encryption at rest and in transit',
+    title: 'Encryption at Rest & In Transit',
+    description: 'AES-256 encryption at rest, TLS 1.3 in transit',
   },
   {
     icon: Eye,

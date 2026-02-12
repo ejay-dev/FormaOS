@@ -24,7 +24,8 @@ export function isFounder(email: string | undefined, userId: string): boolean {
   };
 
   const founderEmails = parseEnvList(process.env.FOUNDER_EMAILS);
-  founderEmails.add('ejazhussaini313@gmail.com');
+  // Founder emails configured exclusively via FOUNDER_EMAILS env variable
+  // No hardcoded fallback emails — all founder access managed through environment config
   const founderIds = parseEnvList(process.env.FOUNDER_USER_IDS);
 
   const normalizedEmail = (email ?? '').trim().toLowerCase();

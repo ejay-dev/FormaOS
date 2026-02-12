@@ -1,13 +1,20 @@
 /**
  * FormaOS Security Module - Rate Limiter
  *
- * Provides in-memory rate limiting for auth and API routes.
+ * Provides rate limiting for auth and API routes using Upstash Redis
+ * with graceful fallback to in-memory storage.
  * Protects from brute force attacks.
+ *
+ * Redis is preferred because it persists across deployments and
+ * is shared across all serverless function instances. If Redis is
+ * unavailable (no credentials or network error), the in-memory Map
+ * is used as a degraded but functional fallback.
  */
 
 import { headers } from 'next/headers';
 import { logRateLimitEvent } from '@/lib/security/rate-limit-log';
 import { extractClientIP } from '@/lib/security/session-security';
+import { getRedisClient } from '@/lib/redis/client';
 
 interface RateLimitConfig {
   windowMs: number;
@@ -54,7 +61,198 @@ const RATE_LIMITS = {
   } as RateLimitConfig,
 } as const;
 
+// ---------------------------------------------------------------------------
+// In-memory fallback store (used when Redis is unavailable)
+// ---------------------------------------------------------------------------
+
 const memoryStore = new Map<string, { count: number; resetAt: number }>();
+
+function cleanExpiredEntries(): void {
+  const now = Date.now();
+  for (const [key, value] of memoryStore.entries()) {
+    if (value.resetAt < now) {
+      memoryStore.delete(key);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Key helpers
+// ---------------------------------------------------------------------------
+
+function buildKey(
+  config: RateLimitConfig,
+  identifier: string,
+  userId?: string | null,
+): string {
+  return userId
+    ? `${config.keyPrefix}:user:${userId}`
+    : `${config.keyPrefix}:ip:${identifier}`;
+}
+
+// ---------------------------------------------------------------------------
+// Redis-backed rate limiting
+// ---------------------------------------------------------------------------
+
+/**
+ * Attempt rate-limit check via Redis using atomic INCR + EXPIRE.
+ * Returns null if Redis is unavailable so the caller can fall back.
+ */
+async function checkRateLimitRedis(
+  config: RateLimitConfig,
+  key: string,
+): Promise<RateLimitResult | null> {
+  const redis = getRedisClient();
+  if (!redis) return null;
+
+  try {
+    const ttlSeconds = Math.ceil(config.windowMs / 1000);
+
+    // Atomically increment the counter
+    const count = await redis.incr(key);
+
+    // If this is the first request in the window, set the TTL
+    if (count === 1) {
+      await redis.expire(key, ttlSeconds);
+    }
+
+    // Retrieve the actual TTL so we can compute resetAt accurately.
+    // If EXPIRE failed or the key has no TTL, fall back to the full window.
+    const currentTtl = await redis.ttl(key);
+    const effectiveTtl = currentTtl > 0 ? currentTtl : ttlSeconds;
+    const resetAt = Date.now() + effectiveTtl * 1000;
+
+    if (count > config.maxRequests) {
+      return {
+        success: false,
+        limit: config.maxRequests,
+        remaining: 0,
+        resetAt,
+        retryAfter: effectiveTtl,
+      };
+    }
+
+    return {
+      success: true,
+      limit: config.maxRequests,
+      remaining: config.maxRequests - count,
+      resetAt,
+    };
+  } catch {
+    // Redis error -- signal fallback
+    return null;
+  }
+}
+
+/**
+ * Read the current rate-limit status from Redis without incrementing.
+ * Returns null if Redis is unavailable.
+ */
+async function getRateLimitStatusRedis(
+  config: RateLimitConfig,
+  key: string,
+): Promise<RateLimitResult | null> {
+  const redis = getRedisClient();
+  if (!redis) return null;
+
+  try {
+    const ttlSeconds = Math.ceil(config.windowMs / 1000);
+
+    const [countRaw, currentTtl] = await Promise.all([
+      redis.get<number>(key),
+      redis.ttl(key),
+    ]);
+
+    const count = countRaw ?? 0;
+    const effectiveTtl = currentTtl > 0 ? currentTtl : ttlSeconds;
+    const resetAt = Date.now() + effectiveTtl * 1000;
+    const remaining = Math.max(0, config.maxRequests - count);
+
+    return {
+      success: count < config.maxRequests,
+      limit: config.maxRequests,
+      remaining,
+      resetAt,
+    };
+  } catch {
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// In-memory rate limiting (fallback)
+// ---------------------------------------------------------------------------
+
+function checkRateLimitMemory(
+  config: RateLimitConfig,
+  key: string,
+): RateLimitResult {
+  const now = Date.now();
+  const existing = memoryStore.get(key);
+
+  // Probabilistic cleanup to avoid unbounded growth
+  if (Math.random() < 0.05) {
+    cleanExpiredEntries();
+  }
+
+  if (!existing || now > existing.resetAt) {
+    memoryStore.set(key, { count: 1, resetAt: now + config.windowMs });
+    return {
+      success: true,
+      limit: config.maxRequests,
+      remaining: config.maxRequests - 1,
+      resetAt: now + config.windowMs,
+    };
+  }
+
+  if (existing.count >= config.maxRequests) {
+    const retryAfter = existing.resetAt - now;
+    return {
+      success: false,
+      limit: config.maxRequests,
+      remaining: 0,
+      resetAt: existing.resetAt,
+      retryAfter: Math.ceil(retryAfter / 1000),
+    };
+  }
+
+  existing.count++;
+  return {
+    success: true,
+    limit: config.maxRequests,
+    remaining: config.maxRequests - existing.count,
+    resetAt: existing.resetAt,
+  };
+}
+
+function getRateLimitStatusMemory(
+  config: RateLimitConfig,
+  key: string,
+): RateLimitResult {
+  const now = Date.now();
+  const existing = memoryStore.get(key);
+
+  if (!existing || now > existing.resetAt) {
+    return {
+      success: true,
+      limit: config.maxRequests,
+      remaining: config.maxRequests,
+      resetAt: now + config.windowMs,
+    };
+  }
+
+  const remaining = Math.max(0, config.maxRequests - existing.count);
+  return {
+    success: existing.count < config.maxRequests,
+    limit: config.maxRequests,
+    remaining,
+    resetAt: existing.resetAt,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Client identifier helpers
+// ---------------------------------------------------------------------------
 
 export async function getClientIdentifier(): Promise<string> {
   try {
@@ -88,69 +286,25 @@ export async function getUserIdentifier(): Promise<string | null> {
   }
 }
 
-function cleanExpiredEntries(): void {
-  const now = Date.now();
-  for (const [key, value] of memoryStore.entries()) {
-    if (value.resetAt < now) {
-      memoryStore.delete(key);
-    }
-  }
-}
+// ---------------------------------------------------------------------------
+// Public API  (unchanged signatures)
+// ---------------------------------------------------------------------------
 
 export async function checkRateLimit(
   config: RateLimitConfig,
   identifier: string,
   userId?: string | null,
 ): Promise<RateLimitResult> {
-  const key = userId
-    ? `${config.keyPrefix}:user:${userId}`
-    : `${config.keyPrefix}:ip:${identifier}`;
+  const key = buildKey(config, identifier, userId);
 
-  const now = Date.now();
-  const existing = memoryStore.get(key);
-
-  if (Math.random() < 0.05) {
-    cleanExpiredEntries();
+  // Try Redis first
+  const redisResult = await checkRateLimitRedis(config, key);
+  if (redisResult !== null) {
+    return redisResult;
   }
 
-  if (!existing) {
-    memoryStore.set(key, { count: 1, resetAt: now + config.windowMs });
-    return {
-      success: true,
-      limit: config.maxRequests,
-      remaining: config.maxRequests - 1,
-      resetAt: now + config.windowMs,
-    };
-  }
-
-  if (now > existing.resetAt) {
-    memoryStore.set(key, { count: 1, resetAt: now + config.windowMs });
-    return {
-      success: true,
-      limit: config.maxRequests,
-      remaining: config.maxRequests - 1,
-      resetAt: now + config.windowMs,
-    };
-  }
-
-  if (existing.count >= config.maxRequests) {
-    const retryAfter = existing.resetAt - now;
-    return {
-      success: false,
-      limit: config.maxRequests,
-      remaining: 0,
-      resetAt: existing.resetAt,
-      retryAfter: Math.ceil(retryAfter / 1000),
-    };
-  }
-
-  existing.count++;
-  return {
-    success: true,
-    limit: config.maxRequests,
-    remaining: config.maxRequests - existing.count,
-    resetAt: existing.resetAt,
-  };
+  // Fall back to in-memory
+  return checkRateLimitMemory(config, key);
 }
 
 export function createRateLimitHeaders(
@@ -238,29 +392,16 @@ export async function getRateLimitStatus(
   identifier: string,
   userId?: string | null,
 ): Promise<RateLimitResult> {
-  const key = userId
-    ? `${config.keyPrefix}:user:${userId}`
-    : `${config.keyPrefix}:ip:${identifier}`;
+  const key = buildKey(config, identifier, userId);
 
-  const now = Date.now();
-  const existing = memoryStore.get(key);
-
-  if (!existing || now > existing.resetAt) {
-    return {
-      success: true,
-      limit: config.maxRequests,
-      remaining: config.maxRequests,
-      resetAt: now + config.windowMs,
-    };
+  // Try Redis first
+  const redisResult = await getRateLimitStatusRedis(config, key);
+  if (redisResult !== null) {
+    return redisResult;
   }
 
-  const remaining = Math.max(0, config.maxRequests - existing.count);
-  return {
-    success: existing.count < config.maxRequests,
-    limit: config.maxRequests,
-    remaining,
-    resetAt: existing.resetAt,
-  };
+  // Fall back to in-memory
+  return getRateLimitStatusMemory(config, key);
 }
 
 export type { RateLimitConfig, RateLimitResult };

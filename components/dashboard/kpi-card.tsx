@@ -53,7 +53,11 @@ export function KPICard({
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-white/10 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.35)] animate-pulse">
+      <div
+        role="status"
+        aria-label={`Loading ${title}`}
+        className="rounded-2xl border border-white/10 bg-white/10 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.35)] animate-pulse"
+      >
         <div className="h-5 w-1/3 bg-white/10 rounded mb-4" />
         <div className="h-8 w-1/2 bg-white/10 rounded mb-2" />
         <div className="h-4 w-2/3 bg-white/10 rounded" />
@@ -61,9 +65,20 @@ export function KPICard({
     );
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (onClick && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
   return (
     <div
       onClick={onClick}
+      onKeyDown={onClick ? handleKeyDown : undefined}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      aria-label={onClick ? `${title}: ${value}` : undefined}
       className={clsx(
         "rounded-2xl border border-white/10 bg-white/10 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.35)] transition-all duration-200",
         "hover:shadow-[0_24px_70px_rgba(0,0,0,0.45)] hover:-translate-y-0.5",
@@ -76,7 +91,7 @@ export function KPICard({
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-xl border border-white/10 bg-white/10 shadow-[0_0_18px_rgba(59,130,246,0.2)]">
-            <Icon className="h-5 w-5 text-sky-300" />
+            <Icon className="h-5 w-5 text-sky-300" aria-hidden="true" />
           </div>
           <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">
             {title}

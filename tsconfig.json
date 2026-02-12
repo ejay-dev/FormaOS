@@ -36,10 +36,15 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "./.next/types/**/*.ts",
-    "./.next/types/**/*.ts"
+    "./.next/types/**/*.ts",
+    "./.next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
-    "mobile"
+    "mobile",
+    "__tests__",
+    "**/__tests__",
+    "tests",
+    "e2e"
   ]
 }

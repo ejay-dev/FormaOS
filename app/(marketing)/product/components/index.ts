@@ -9,3 +9,4 @@ export { BuiltForComplex } from './BuiltForComplex';
 export { WhoIsFor } from './WhoIsFor';
 export { TheOutcome } from './TheOutcome';
 export { FinalCTA } from './FinalCTA';
+export { InteractiveProductTour } from '@/components/marketing/demo/InteractiveProductTour';

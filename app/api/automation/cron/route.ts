@@ -6,7 +6,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { timingSafeEqual } from 'crypto';
 import { runScheduledAutomation } from '@/lib/automation/scheduled-processor';
+import { processQueueJobs } from '@/lib/queue';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -34,7 +36,14 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (token !== cronSecret) {
+  // Use constant-time comparison to prevent timing attacks
+  const tokenBuffer = Buffer.from(token ?? '', 'utf8');
+  const secretBuffer = Buffer.from(cronSecret, 'utf8');
+  const isValid =
+    tokenBuffer.length === secretBuffer.length &&
+    timingSafeEqual(tokenBuffer, secretBuffer);
+
+  if (!isValid) {
     console.error('[Cron] Invalid cron secret');
     return NextResponse.json(
       { error: 'Unauthorized' },
@@ -48,19 +57,35 @@ export async function POST(request: NextRequest) {
     const startTime = Date.now();
 
     // Run all automation checks
-    const result = await runScheduledAutomation();
+    const automationResult = await runScheduledAutomation();
+
+    // Process pending queue jobs
+    console.log('[Cron] Processing job queue...');
+    const queueResult = await processQueueJobs();
 
     const duration = Date.now() - startTime;
 
     console.log('[Cron] Automation completed:', {
       duration: `${duration}ms`,
-      ...result,
+      automation: automationResult,
+      queue: queueResult,
     });
 
     return NextResponse.json({
       success: true,
       duration,
-      ...result,
+      automation: {
+        checksRun: automationResult.checksRun,
+        triggersExecuted: automationResult.triggersExecuted,
+        errors: automationResult.errors,
+      },
+      queue: {
+        processed: queueResult.processed,
+        succeeded: queueResult.succeeded,
+        failed: queueResult.failed,
+        movedToDead: queueResult.movedToDead,
+        errors: queueResult.errors,
+      },
     });
   } catch (error) {
     console.error('[Cron] Automation failed:', error);

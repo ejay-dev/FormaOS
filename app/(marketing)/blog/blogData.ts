@@ -311,7 +311,7 @@ export const blogPosts: BlogPost[] = [
           'These signals can be captured automatically and stored as evidence inside audit-readiness workflows.',
         ],
         bullets: [
-          'Integrations with identity, ticketing, and HR systems',
+          'Integrations with identity and ticketing systems (HR via API/webhook)',
           'Webhooks or scheduled jobs for recurring controls',
           'Unified evidence metadata for audits and reporting',
         ],
@@ -505,9 +505,9 @@ export const blogPosts: BlogPost[] = [
   },
   {
     id: 'security-soc2-journey',
-    title: 'Our SOC 2 Journey: Lessons Learned Building FormaOS',
+    title: 'Our SOC 2 Alignment Journey: Lessons Learned Building FormaOS',
     excerpt:
-      'An inside look at how we achieved SOC 2 compliance, what we prioritized, where we struggled, and how we built repeatable evidence along the way.',
+      'An inside look at how we aligned to SOC 2 controls, what we prioritized, where we struggled, and how we built repeatable evidence along the way.',
     author: 'Engineering Team',
     date: 'November 22, 2025',
     readTime: '9 min read',
@@ -517,7 +517,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: 'Scope, timeline, and expectations',
         paragraphs: [
-          'We scoped our first SOC 2 to the Security and Availability trust services criteria.',
+          'We scoped our initial SOC 2 alignment effort to the Security and Availability trust services criteria.',
           'The goal was a timeline we could actually hit without disrupting delivery.',
           'The biggest challenge was not documentation. It was proving ongoing control execution with verifiable evidence.',
         ],
@@ -558,7 +558,7 @@ export const blogPosts: BlogPost[] = [
         ],
       },
       {
-        heading: 'Takeaways for teams starting SOC 2',
+        heading: 'Takeaways for teams starting SOC 2 alignment',
         paragraphs: [
           'Treat SOC 2 as an operating system, not a once-a-year project.',
           'Build evidence capture into everyday workflows, keep ownership explicit, and use RBAC governance to protect control changes.',

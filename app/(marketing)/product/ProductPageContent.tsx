@@ -15,6 +15,7 @@ import {
   WhoIsFor,
   TheOutcome,
   FinalCTA,
+  InteractiveProductTour,
 } from './components';
 
 export default function ProductPageContent() {
@@ -40,6 +41,8 @@ export default function ProductPageContent() {
       <div className="relative z-10">
         <ProductHero />
         <WhatIsFormaOS />
+        <VisualDivider />
+        <InteractiveProductTour />
         <VisualDivider />
         <ObligationToExecution />
         <VisualDivider />

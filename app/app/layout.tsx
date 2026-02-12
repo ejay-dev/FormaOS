@@ -2,7 +2,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { Sidebar } from '@/components/sidebar';
 import { TopBar } from '@/components/topbar';
-import { CommandMenu } from '@/components/command-menu';
+import { CommandPalette } from '@/components/command-palette/CommandPalette';
 import { CommandProvider } from '@/components/ui/command-provider';
 import { ComplianceSystemProvider } from '@/components/compliance-system/provider';
 import { SystemStateProvider } from '@/lib/system-state/context';
@@ -208,7 +208,7 @@ export default async function AppLayout({
                     </div>
 
                     {/* Command palette */}
-                    <CommandMenu />
+                    <CommandPalette />
 
                     {/* Trial conversion system (non-blocking) */}
                     <UpgradeModal />

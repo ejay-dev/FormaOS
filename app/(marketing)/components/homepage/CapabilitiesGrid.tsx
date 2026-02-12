@@ -12,6 +12,13 @@ import {
   Clock,
   Globe,
   Shield,
+  ScanSearch,
+  FileStack,
+  Activity,
+  ShieldAlert,
+  Building,
+  ClipboardList,
+  HeartPulse,
 } from 'lucide-react';
 
 const capabilities = [
@@ -84,6 +91,55 @@ const capabilities = [
     description:
       'Block non-compliant actions before they happen. Real-time validation ensures controls are satisfied before proceeding.',
     color: 'from-cyan-500 to-blue-500',
+  },
+  {
+    icon: ScanSearch,
+    title: 'Automated Compliance Gap Analysis',
+    description:
+      'Scan across 6 frameworks simultaneously to identify compliance gaps, missing evidence, and control weaknesses before auditors do.',
+    color: 'from-teal-500 to-emerald-500',
+  },
+  {
+    icon: FileStack,
+    title: 'Full Document Version History',
+    description:
+      'Every document change is tracked with complete version history. Compare revisions, restore previous versions, and maintain audit-ready records.',
+    color: 'from-indigo-500 to-blue-500',
+  },
+  {
+    icon: Activity,
+    title: 'Live Compliance Activity Stream',
+    description:
+      'Real-time feed of compliance events across your organization. Track evidence uploads, task completions, and control changes as they happen.',
+    color: 'from-emerald-500 to-teal-500',
+  },
+  {
+    icon: ShieldAlert,
+    title: 'Threat Correlation Engine',
+    description:
+      'Correlate security events across your compliance infrastructure. Detect patterns, flag anomalies, and surface risks before they escalate.',
+    color: 'from-red-500 to-rose-500',
+  },
+  {
+    icon: Building,
+    title: 'Multi-Site Compliance',
+    description:
+      'Manage compliance across multiple entities, business units, and locations with centralized oversight and per-site controls.',
+    color: 'from-violet-500 to-purple-500',
+  },
+  {
+    icon: ClipboardList,
+    title: 'Operational Registers',
+    description:
+      'Built-in training registers and asset registers to track staff certifications, equipment, and operational readiness in one place.',
+    color: 'from-amber-500 to-orange-500',
+  },
+  {
+    icon: HeartPulse,
+    title: 'Healthcare & Patient Management',
+    description:
+      'Purpose-built modules for progress notes, patient management, and clinical workflows designed for healthcare and allied health providers.',
+    color: 'from-pink-500 to-rose-500',
   },
 ];
 

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 const securityFeatures = [
   { label: 'SOC 2-aligned controls', icon: Shield },
-  { label: 'End-to-end encryption', icon: Lock },
+  { label: 'Encryption at rest (AES-256) and in transit (TLS 1.3)', icon: Lock },
   { label: 'Google OAuth + Enterprise SSO (SAML by request)', icon: Users },
   { label: 'MFA options available by request', icon: UserCheck },
   { label: 'Immutable Audit Logs', icon: Database },
