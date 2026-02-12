@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { AdminShell } from '@/app/admin/components/admin-shell';
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { ComplianceSystemProvider } from '@/components/compliance-system/provider';
+import { CommandPalette } from '@/components/command-palette/CommandPalette';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,7 +28,10 @@ export default async function AdminLayout({
 
   return (
     <ComplianceSystemProvider>
-      <AdminShell email={userEmail}>{children}</AdminShell>
+      <AdminShell email={userEmail}>
+        {children}
+        <CommandPalette />
+      </AdminShell>
     </ComplianceSystemProvider>
   );
 }

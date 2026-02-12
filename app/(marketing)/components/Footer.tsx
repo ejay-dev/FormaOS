@@ -22,6 +22,7 @@ const footerLinks = {
     { href: '/product', label: 'How it works' },
     { href: '/industries', label: 'Industries' },
     { href: '/security', label: 'Security' },
+    { href: '/frameworks', label: 'Framework Coverage' },
     { href: '/pricing', label: 'Pricing' },
   ],
   useCases: [
@@ -34,6 +35,9 @@ const footerLinks = {
     { href: '/docs', label: 'Documentation' },
     { href: '/blog', label: 'Blog' },
     { href: '/trust', label: 'Trust Center' },
+    { href: '/security-review', label: 'Security Review Packet' },
+    { href: '/customer-stories', label: 'Customer Stories' },
+    { href: '/compare', label: 'Compare' },
     { href: '/faq', label: 'FAQ' },
   ],
   company: [

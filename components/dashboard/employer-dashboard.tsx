@@ -149,6 +149,73 @@ interface EmployerDashboardProps {
   openTasksCount?: number;
 }
 
+type ActionPriority = 'critical' | 'high' | 'normal';
+
+interface ActionQueueItem {
+  id: string;
+  title: string;
+  detail: string;
+  href: string;
+  icon: typeof CheckSquare;
+  priority: ActionPriority;
+}
+
+function PriorityActionQueue({
+  items,
+}: {
+  items: ActionQueueItem[];
+}) {
+  const badgeClass: Record<ActionPriority, string> = {
+    critical: 'bg-rose-500/15 text-rose-300 border-rose-400/30',
+    high: 'bg-amber-500/15 text-amber-300 border-amber-400/30',
+    normal: 'bg-sky-500/15 text-sky-300 border-sky-400/30',
+  };
+
+  const label: Record<ActionPriority, string> = {
+    critical: 'Critical',
+    high: 'High',
+    normal: 'Normal',
+  };
+
+  return (
+    <DashboardSectionCard
+      title="Priority Action Queue"
+      description="Most important actions to improve readiness now"
+      icon={AlertCircle}
+    >
+      <div className="space-y-3">
+        {items.map((item) => (
+          <Link
+            key={item.id}
+            href={item.href}
+            className="group flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:bg-white/10"
+          >
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5">
+                <item.icon className="h-4 w-4 text-slate-300" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-slate-100">
+                  {item.title}
+                </p>
+                <p className="text-xs text-slate-400">{item.detail}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <span
+                className={`rounded border px-2 py-1 text-[10px] font-semibold uppercase tracking-wider ${badgeClass[item.priority]}`}
+              >
+                {label[item.priority]}
+              </span>
+              <ArrowRight className="h-4 w-4 text-slate-500 transition-transform group-hover:translate-x-0.5" />
+            </div>
+          </Link>
+        ))}
+      </div>
+    </DashboardSectionCard>
+  );
+}
+
 /**
  * Organization health overview
  */
@@ -589,6 +656,55 @@ export function EmployerDashboard({
   const [isLoadingCounts, setIsLoadingCounts] = useState(true);
   const [countsError, setCountsError] = useState<string | null>(null);
 
+  const actionQueue: ActionQueueItem[] = [
+    {
+      id: 'queue-open-tasks',
+      title:
+        openTasksCount > 0
+          ? `${openTasksCount} open control tasks require action`
+          : 'Review active control tasks',
+      detail:
+        openTasksCount > 0
+          ? 'Prioritize overdue controls and assign owners.'
+          : 'No backlog detected. Confirm this week’s control cadence.',
+      href: '/app/tasks',
+      icon: CheckSquare,
+      priority: openTasksCount > 10 ? 'critical' : openTasksCount > 0 ? 'high' : 'normal',
+    },
+    {
+      id: 'queue-expiring-evidence',
+      title:
+        expiringCertsCount > 0
+          ? `${expiringCertsCount} certifications are expiring soon`
+          : 'Validate certificate and evidence expiry status',
+      detail:
+        expiringCertsCount > 0
+          ? 'Renew or replace evidence before renewal windows close.'
+          : 'No urgent expiries. Keep monthly checks scheduled.',
+      href: '/app/certificates',
+      icon: FileText,
+      priority: expiringCertsCount > 5 ? 'critical' : expiringCertsCount > 0 ? 'high' : 'normal',
+    },
+    {
+      id: 'queue-evidence-verification',
+      title: 'Verify pending evidence submissions',
+      detail:
+        'Move pending artifacts through approval to keep chain-of-custody current.',
+      href: '/app/vault/review',
+      icon: CheckCircle2,
+      priority: 'high',
+    },
+    {
+      id: 'queue-team-readiness',
+      title: 'Review team assignment coverage',
+      detail:
+        'Confirm control ownership and reduce unassigned accountability gaps.',
+      href: '/app/team',
+      icon: Users,
+      priority: complianceScore < 75 ? 'critical' : 'normal',
+    },
+  ];
+
   // Fetch completion counts for industry guidance
   useEffect(() => {
     if (!organizationId) return;
@@ -675,6 +791,7 @@ export function EmployerDashboard({
     <div className="space-y-8">
       {/* Quick-action cards (replaces old sidebar-style middle column) */}
       <QuickActions />
+      <PriorityActionQueue items={actionQueue} />
 
       <GettingStartedChecklist industry={industry} />
 

@@ -16,7 +16,7 @@
     "start": "next start",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx . --fix",
     "stylelint": "stylelint '**/*.{css,scss,sass}' --fix",
-    "type-check": "tsc --noEmit",
+    "type-check": "tsc -p tsconfig.typecheck.json",
     "typecheck": "npm run type-check",
     "test": "jest",
     "test:watch": "jest --watch",

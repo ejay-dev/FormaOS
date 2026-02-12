@@ -78,6 +78,66 @@ export default function TrustCenterPage() {
         </div>
       </section>
 
+      <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
+        <div className="grid gap-4 lg:grid-cols-3">
+          <Link
+            href="/security-review"
+            className="group rounded-2xl border border-white/10 bg-white/5 p-6 transition-colors hover:bg-white/7"
+          >
+            <div className="mb-4 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
+              <ShieldCheck className="h-5 w-5 text-cyan-300" />
+            </div>
+            <h2 className="text-lg font-semibold text-white">
+              Security Review Packet
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-slate-300">
+              Procurement-ready walkthrough covering architecture, access
+              controls, audit logging, and evidence defensibility.
+            </p>
+            <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200">
+              Review packet
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </div>
+          </Link>
+          <Link
+            href="/frameworks"
+            className="group rounded-2xl border border-white/10 bg-white/5 p-6 transition-colors hover:bg-white/7"
+          >
+            <div className="mb-4 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
+              <FileLock2 className="h-5 w-5 text-cyan-300" />
+            </div>
+            <h2 className="text-lg font-semibold text-white">
+              Framework Coverage
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-slate-300">
+              See mapped framework packs and how controls become executable work
+              with contextual evidence.
+            </p>
+            <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200">
+              View coverage
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </div>
+          </Link>
+          <Link
+            href="/compare"
+            className="group rounded-2xl border border-white/10 bg-white/5 p-6 transition-colors hover:bg-white/7"
+          >
+            <div className="mb-4 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
+              <CheckCircle2 className="h-5 w-5 text-cyan-300" />
+            </div>
+            <h2 className="text-lg font-semibold text-white">Compare</h2>
+            <p className="mt-3 text-sm leading-relaxed text-slate-300">
+              Compare FormaOS against popular compliance tools and evaluate the
+              execution-first difference.
+            </p>
+            <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200">
+              See comparisons
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </div>
+          </Link>
+        </div>
+      </section>
+
       <section className="relative mx-auto grid max-w-7xl gap-4 px-4 pb-16 sm:px-6 lg:grid-cols-3 lg:px-8 lg:pb-24">
         {assuranceModules.map((module) => (
           <article

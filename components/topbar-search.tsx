@@ -1,18 +1,15 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { createSupabaseClient } from "@/lib/supabase/client"
-import { Search, FileText, CheckSquare, Loader2, X } from "lucide-react"
+import { Search, FileText, CheckSquare, Loader2, Lock, X } from "lucide-react"
 import Link from "next/link"
 
 export function TopbarSearch() {
   const [query, setQuery] = useState("")
-  const [results, setResults] = useState<{ id: string; title: string; type: 'policy' | 'task' }[]>([])
+  const [results, setResults] = useState<{ id: string; title: string; type: 'policy' | 'task' | 'evidence' }[]>([])
   const [loading, setLoading] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
-  const [orgId, setOrgId] = useState<string | null>(null)
   const wrapperRef = useRef<HTMLDivElement>(null)
-  const supabase = createSupabaseClient()
 
   // Close search results when clicking outside
   useEffect(() => {
@@ -26,47 +23,45 @@ export function TopbarSearch() {
   }, [])
 
   useEffect(() => {
-    async function loadOrg() {
-      const { data: auth } = await supabase.auth.getUser()
-      if (!auth?.user?.id) return
-      const { data: membership } = await supabase
-        .from("org_members")
-        .select("organization_id")
-        .eq("user_id", auth.user.id)
-        .maybeSingle()
-      if (membership?.organization_id) setOrgId(membership.organization_id)
-    }
-    loadOrg()
-  }, [supabase])
+    const controller = new AbortController()
 
-  useEffect(() => {
     const searchData = async () => {
-      if (query.length < 2 || !orgId) {
+      if (query.length < 2) {
         setResults([])
         return
       }
 
       setLoading(true)
       
-      // ✅ FIX: Search "title" instead of "name" to match your DB Schema
-      const [policies, tasks] = await Promise.all([
-        supabase.from("org_policies").select("id, title").eq("organization_id", orgId).ilike("title", `%${query}%`).limit(3),
-        supabase.from("org_tasks").select("id, title").eq("organization_id", orgId).ilike("title", `%${query}%`).limit(3)
-      ])
-
-      const combined = [
-        ...(policies.data?.map((p: { id: string; title: string }) => ({ id: p.id, title: p.title, type: 'policy' as const })) || []),
-        ...(tasks.data?.map((t: { id: string; title: string }) => ({ id: t.id, title: t.title, type: 'task' as const })) || [])
-      ]
-
-      setResults(combined)
-      setLoading(false)
-      setIsOpen(true)
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}&limit=3`, {
+          method: 'GET',
+          signal: controller.signal,
+        })
+        if (!res.ok) {
+          setResults([])
+          setLoading(false)
+          setIsOpen(false)
+          return
+        }
+        const json = await res.json()
+        const combined = (json?.results ?? []) as { id: string; title: string; type: 'policy' | 'task' | 'evidence' }[]
+        setResults(combined)
+        setLoading(false)
+        setIsOpen(true)
+      } catch {
+        setResults([])
+        setLoading(false)
+        setIsOpen(false)
+      }
     }
 
     const timer = setTimeout(searchData, 300)
-    return () => clearTimeout(timer)
-  }, [query, orgId, supabase])
+    return () => {
+      controller.abort()
+      clearTimeout(timer)
+    }
+  }, [query])
 
   return (
     <div className="relative w-full max-w-md hidden md:block" ref={wrapperRef}>
@@ -96,7 +91,13 @@ export function TopbarSearch() {
           {results.map((result) => (
             <Link
               key={result.id}
-              href={result.type === 'policy' ? `/app/policies/${result.id}` : `/app/tasks`} // Link to actual pages
+              href={
+                result.type === 'policy'
+                  ? `/app/policies/${result.id}`
+                  : result.type === 'task'
+                    ? `/app/tasks`
+                    : `/app/vault`
+              }
               onClick={() => setIsOpen(false)}
               className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm hover:bg-card/8 transition-colors group"
             >
@@ -104,9 +105,13 @@ export function TopbarSearch() {
                 <div className="h-8 w-8 rounded-lg bg-card/8 text-sky-200 flex items-center justify-center">
                     <FileText className="h-4 w-4" />
                 </div>
-              ) : (
+              ) : result.type === 'task' ? (
                 <div className="h-8 w-8 rounded-lg bg-card/8 text-emerald-200 flex items-center justify-center">
                     <CheckSquare className="h-4 w-4" />
+                </div>
+              ) : (
+                <div className="h-8 w-8 rounded-lg bg-card/8 text-purple-200 flex items-center justify-center">
+                    <Lock className="h-4 w-4" />
                 </div>
               )}
               <div className="flex-1 truncate">

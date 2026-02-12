@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Command } from 'cmdk';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
@@ -23,6 +23,11 @@ import {
   HelpCircle,
   History,
   ArrowRight,
+  Building2,
+  DollarSign,
+  Activity,
+  Tag,
+  LifeBuoy,
   type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -45,6 +50,14 @@ interface CommandGroup {
   heading: string;
   items: CommandItem[];
 }
+
+type SearchResultType = 'policy' | 'task' | 'evidence';
+
+type SearchResultItem = {
+  id: string;
+  title: string;
+  type: SearchResultType;
+};
 
 // ---------------------------------------------------------------------------
 // Data
@@ -178,10 +191,119 @@ const QUICK_LINK_ITEMS: CommandItem[] = [
   },
 ];
 
-const COMMAND_GROUPS: CommandGroup[] = [
+const APP_COMMAND_GROUPS: CommandGroup[] = [
   { heading: 'Navigation', items: NAVIGATION_ITEMS },
   { heading: 'Actions', items: ACTION_ITEMS },
   { heading: 'Quick Links', items: QUICK_LINK_ITEMS },
+];
+
+const ADMIN_NAV_ITEMS: CommandItem[] = [
+  {
+    id: 'admin-dashboard',
+    label: 'Platform Dashboard',
+    icon: LayoutDashboard,
+    href: '/admin/dashboard',
+    keywords: ['overview', 'platform', 'metrics'],
+  },
+  {
+    id: 'admin-orgs',
+    label: 'Organizations',
+    icon: Building2,
+    href: '/admin/orgs',
+    keywords: ['tenants', 'customers', 'accounts'],
+  },
+  {
+    id: 'admin-users',
+    label: 'Users',
+    icon: Users,
+    href: '/admin/users',
+    keywords: ['members', 'accounts', 'identity'],
+  },
+  {
+    id: 'admin-revenue',
+    label: 'Revenue',
+    icon: DollarSign,
+    href: '/admin/revenue',
+    keywords: ['mrr', 'arr', 'billing'],
+  },
+  {
+    id: 'admin-trials',
+    label: 'Trials',
+    icon: CreditCard,
+    href: '/admin/trials',
+    keywords: ['conversion', 'trialing'],
+  },
+  {
+    id: 'admin-security',
+    label: 'Security',
+    icon: Shield,
+    href: '/admin/security',
+    keywords: ['incidents', 'alerts'],
+  },
+  {
+    id: 'admin-system',
+    label: 'System Health',
+    icon: Activity,
+    href: '/admin/system',
+    keywords: ['status', 'ops', 'runtime'],
+  },
+  {
+    id: 'admin-audit',
+    label: 'Audit Stream',
+    icon: History,
+    href: '/admin/audit',
+    keywords: ['changes', 'activity', 'trail'],
+  },
+  {
+    id: 'admin-releases',
+    label: 'Releases',
+    icon: Tag,
+    href: '/admin/releases',
+    keywords: ['deploy', 'release', 'version'],
+  },
+  {
+    id: 'admin-support',
+    label: 'Support',
+    icon: LifeBuoy,
+    href: '/admin/support',
+    keywords: ['tickets', 'helpdesk'],
+  },
+  {
+    id: 'admin-settings',
+    label: 'Admin Settings',
+    icon: Settings,
+    href: '/admin/settings',
+    keywords: ['preferences', 'configuration'],
+  },
+];
+
+const ADMIN_ACTION_ITEMS: CommandItem[] = [
+  {
+    id: 'admin-action-risk-triage',
+    label: 'Open Risk Triage',
+    icon: ShieldCheck,
+    href: '/admin/security',
+    keywords: ['triage', 'risk', 'alerts'],
+  },
+  {
+    id: 'admin-action-org-search',
+    label: 'Search Organizations',
+    icon: Search,
+    href: '/admin/orgs',
+    keywords: ['tenant lookup', 'org search'],
+  },
+  {
+    id: 'admin-action-user-search',
+    label: 'Search Users',
+    icon: User,
+    href: '/admin/users',
+    keywords: ['user lookup', 'email search'],
+  },
+];
+
+const ADMIN_COMMAND_GROUPS: CommandGroup[] = [
+  { heading: 'Admin Navigation', items: ADMIN_NAV_ITEMS },
+  { heading: 'Operator Actions', items: ADMIN_ACTION_ITEMS },
 ];
 
 // ---------------------------------------------------------------------------
@@ -217,8 +339,16 @@ const dialogVariants = {
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const [remoteResults, setRemoteResults] = useState<SearchResultItem[]>([]);
+  const [remoteLoading, setRemoteLoading] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
   const inputRef = useRef<HTMLInputElement>(null);
+  const isAdminContext = pathname?.startsWith('/admin') ?? false;
+  const commandGroups = useMemo(
+    () => (isAdminContext ? ADMIN_COMMAND_GROUPS : APP_COMMAND_GROUPS),
+    [isAdminContext],
+  );
 
   // Platform detection for shortcut display
   const isMac = useMemo(() => {
@@ -255,8 +385,53 @@ export function CommandPalette() {
   useEffect(() => {
     if (!open) {
       setSearch('');
+      setRemoteResults([]);
+      setRemoteLoading(false);
     }
   }, [open]);
+
+  // -----------------------------------------------------------------------
+  // Org-scoped remote search (server-backed)
+  // -----------------------------------------------------------------------
+  useEffect(() => {
+    if (!open || isAdminContext) return;
+
+    const q = search.trim();
+    if (q.length < 2) {
+      setRemoteResults([]);
+      setRemoteLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    const t = window.setTimeout(async () => {
+      setRemoteLoading(true);
+      try {
+        const res = await fetch(
+          `/api/search?q=${encodeURIComponent(q)}&limit=6`,
+          { method: 'GET', signal: controller.signal },
+        );
+        if (!res.ok) {
+          setRemoteResults([]);
+          setRemoteLoading(false);
+          return;
+        }
+        const json = await res.json();
+        const results = (json?.results ?? []) as SearchResultItem[];
+        setRemoteResults(results);
+        setRemoteLoading(false);
+      } catch (err) {
+        if ((err as any)?.name === 'AbortError') return;
+        setRemoteResults([]);
+        setRemoteLoading(false);
+      }
+    }, 220);
+
+    return () => {
+      controller.abort();
+      window.clearTimeout(t);
+    };
+  }, [open, search, isAdminContext]);
 
   // -----------------------------------------------------------------------
   // Run a command (navigate or execute action) and close
@@ -322,7 +497,11 @@ export function CommandPalette() {
                     ref={inputRef}
                     value={search}
                     onValueChange={setSearch}
-                    placeholder="Type a command or search..."
+                    placeholder={
+                      isAdminContext
+                        ? 'Type an admin command or route...'
+                        : 'Type a command or search...'
+                    }
                     autoFocus
                     className="h-14 w-full border-none bg-transparent text-sm text-slate-200 outline-none placeholder:text-slate-500"
                   />
@@ -348,7 +527,123 @@ export function CommandPalette() {
                     </p>
                   </Command.Empty>
 
-                  {COMMAND_GROUPS.map((group) => (
+                  {!isAdminContext && search.trim().length >= 2 ? (
+                    <Command.Group
+                      heading="Results"
+                      className={cn(
+                        '[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-2',
+                        '[&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:font-bold',
+                        '[&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-widest',
+                        '[&_[cmdk-group-heading]]:text-slate-500',
+                      )}
+                    >
+                      {remoteLoading ? (
+                        <Command.Item
+                          value="Loading results"
+                          disabled
+                          className={cn(
+                            'flex cursor-default items-center gap-3 rounded-xl px-3 py-2.5',
+                            'text-sm font-medium text-slate-500',
+                          )}
+                        >
+                          <div
+                            className={cn(
+                              'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
+                              'bg-white/[0.04] text-slate-600',
+                            )}
+                          >
+                            <Search className="h-4 w-4" />
+                          </div>
+                          <span className="flex-1 truncate">
+                            Searching your workspace...
+                          </span>
+                        </Command.Item>
+                      ) : null}
+
+                      {!remoteLoading && remoteResults.length === 0 ? (
+                        <Command.Item
+                          value="No workspace results"
+                          disabled
+                          className={cn(
+                            'flex cursor-default items-center gap-3 rounded-xl px-3 py-2.5',
+                            'text-sm font-medium text-slate-600',
+                          )}
+                        >
+                          <div
+                            className={cn(
+                              'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
+                              'bg-white/[0.04] text-slate-700',
+                            )}
+                          >
+                            <Search className="h-4 w-4" />
+                          </div>
+                          <span className="flex-1 truncate">
+                            No workspace matches
+                          </span>
+                        </Command.Item>
+                      ) : null}
+
+                      {!remoteLoading
+                        ? remoteResults.map((r) => {
+                            const icon =
+                              r.type === 'policy'
+                                ? FileText
+                                : r.type === 'task'
+                                  ? CheckSquare
+                                  : Lock;
+                            const href =
+                              r.type === 'policy'
+                                ? `/app/policies/${r.id}`
+                                : r.type === 'task'
+                                  ? '/app/tasks'
+                                  : '/app/vault';
+
+                            return (
+                              <Command.Item
+                                key={`${r.type}:${r.id}`}
+                                value={[r.title, r.type].join(' ')}
+                                onSelect={() =>
+                                  runCommand({
+                                    id: `result-${r.type}-${r.id}`,
+                                    label: r.title,
+                                    icon,
+                                    href,
+                                  })
+                                }
+                                className={cn(
+                                  'group flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5',
+                                  'text-sm font-medium text-slate-400',
+                                  'transition-colors duration-100',
+                                  'aria-selected:bg-white/[0.06] aria-selected:text-slate-100',
+                                )}
+                              >
+                                <div
+                                  className={cn(
+                                    'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
+                                    'bg-white/[0.04] text-slate-500',
+                                    'transition-colors duration-100',
+                                    'group-aria-selected:bg-cyan-500/10 group-aria-selected:text-cyan-400',
+                                  )}
+                                >
+                                  {React.createElement(icon, {
+                                    className: 'h-4 w-4',
+                                  })}
+                                </div>
+                                <span className="flex-1 truncate">
+                                  {r.title}
+                                </span>
+                                <span className="shrink-0 rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 text-[10px] font-medium text-slate-600">
+                                  {r.type}
+                                </span>
+                                <ArrowRight className="h-3 w-3 shrink-0 text-slate-600 opacity-0 transition-opacity group-aria-selected:opacity-100" />
+                              </Command.Item>
+                            );
+                          })
+                        : null}
+                    </Command.Group>
+                  ) : null}
+
+                  {commandGroups.map((group) => (
                     <Command.Group
                       key={group.heading}
                       heading={group.heading}

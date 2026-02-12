@@ -26,6 +26,7 @@ import { createSupabaseClient } from '@/lib/supabase/client';
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';
 import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
+import { AdminQuickSearch } from '@/app/admin/components/admin-quick-search';
 
 /* Admin Console Shell — Platform Operations Center */
 
@@ -91,6 +92,7 @@ export function AdminShell({
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="lg:hidden p-2 hover:bg-slate-800 rounded-lg transition-colors"
+            aria-label={sidebarOpen ? 'Close navigation' : 'Open navigation'}
           >
             {sidebarOpen ? (
               <X className="h-5 w-5" />
@@ -109,6 +111,7 @@ export function AdminShell({
 
         {/* Right: Status + User + Logout */}
         <div className="flex items-center gap-4">
+          <AdminQuickSearch />
           <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 text-xs font-medium">
             <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
             <span>Healthy</span>
@@ -120,6 +123,7 @@ export function AdminShell({
             onClick={handleLogout}
             className="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-100"
             title="Logout"
+            aria-label="Log out"
           >
             <LogOut className="h-5 w-5" />
           </button>
