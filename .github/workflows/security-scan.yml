@@ -19,9 +19,11 @@ env:
   NODE_VERSION: '20'
   # Provide runtime env for security verification + avoid CI-only 500s.
   # Values must be supplied via repo/org secrets or variables.
-  NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL }}
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-  SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || vars.SUPABASE_SERVICE_ROLE_KEY }}
+  # Repo currently uses SUPABASE_URL / SUPABASE_ANON_KEY secrets; map them into NEXT_PUBLIC_* too.
+  NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL || secrets.SUPABASE_URL || vars.SUPABASE_URL }}
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || secrets.SUPABASE_ANON_KEY || vars.SUPABASE_ANON_KEY }}
+  # Prefer SUPABASE_SERVICE_ROLE_KEY, but accept legacy SUPABASE_SERVICE_KEY.
+  SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || vars.SUPABASE_SERVICE_ROLE_KEY || secrets.SUPABASE_SERVICE_KEY || vars.SUPABASE_SERVICE_KEY }}
   NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL || vars.NEXT_PUBLIC_APP_URL }}
   NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL || vars.NEXT_PUBLIC_SITE_URL }}
 
@@ -106,7 +108,8 @@ jobs:
           if [ "$missing" -eq 1 ]; then
             echo ""
             echo "Security tests require Supabase public env vars to boot the app safely."
-            echo "Set them as GitHub Secrets or Repo Variables."
+            echo "Set them as GitHub Secrets or Repo Variables (NEXT_PUBLIC_SUPABASE_URL/NEXT_PUBLIC_SUPABASE_ANON_KEY)"
+            echo "or provide SUPABASE_URL/SUPABASE_ANON_KEY which will be mapped into NEXT_PUBLIC_*."
             exit 1
           fi
 
