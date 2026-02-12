@@ -7,6 +7,9 @@ const reuseExistingServer =
   process.env.PLAYWRIGHT_REUSE_SERVER === 'true' ||
   process.env.PLAYWRIGHT_REUSE_SERVER === '1' ||
   (!process.env.CI && useDevServer);
+const skipWebServer =
+  process.env.PW_SKIP_WEBSERVER === 'true' ||
+  process.env.PW_SKIP_WEBSERVER === '1';
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -81,12 +84,16 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command: useDevServer ? 'npm run dev' : 'npm run build && npm run start',
-    url: 'http://localhost:3000',
-    reuseExistingServer,
-    timeout: 240000,
-  },
+  webServer: skipWebServer
+    ? undefined
+    : {
+        command: useDevServer
+          ? 'npm run dev'
+          : 'npm run build && npm run start',
+        url: 'http://localhost:3000',
+        reuseExistingServer,
+        timeout: 240000,
+      },
 
   /* Global setup */
   // globalSetup: './e2e/global-setup.ts', // Commented out for initial testing

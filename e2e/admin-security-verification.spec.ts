@@ -1,6 +1,12 @@
 import { test, expect } from '@playwright/test';
 
-const APP_URL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000';
+/**
+ * Security verification tests for admin route protection.
+ * These tests verify that unauthenticated users cannot access admin routes
+ * and that security headers/configurations are properly set.
+ *
+ * Uses baseURL from playwright.config.ts (PLAYWRIGHT_BASE_URL || localhost:3000)
+ */
 
 test.describe('SECURITY VERIFICATION: Admin Route Protection', () => {
   test('Non-authenticated users cannot access /admin routes', async ({
@@ -18,8 +24,9 @@ test.describe('SECURITY VERIFICATION: Admin Route Protection', () => {
     ];
 
     for (const route of adminRoutes) {
-      const response = await page.goto(`${APP_URL}${route}`, {
+      const response = await page.goto(route, {
         waitUntil: 'domcontentloaded',
+        timeout: 30000,
       });
 
       // Should redirect to login or show unauthorized, not return 200 with admin content
@@ -43,8 +50,9 @@ test.describe('SECURITY VERIFICATION: Admin Route Protection', () => {
     page,
   }) => {
     // Check that admin protection middleware is active
-    await page.goto(`${APP_URL}/admin`, {
+    await page.goto('/admin', {
       waitUntil: 'domcontentloaded',
+      timeout: 30000,
     });
 
     // Should not allow unauthenticated access
@@ -53,8 +61,9 @@ test.describe('SECURITY VERIFICATION: Admin Route Protection', () => {
 
   test('Admin page shows "unauthorized" for non-founders', async ({ page }) => {
     // Access admin without proper role should be denied
-    await page.goto(`${APP_URL}/admin`, {
+    await page.goto('/admin', {
       waitUntil: 'domcontentloaded',
+      timeout: 30000,
     });
 
     // Page should redirect away from admin or show unauthorized message
@@ -77,8 +86,9 @@ test.describe('SECURITY AUDIT: Environment Configuration', () => {
     page,
   }) => {
     // Verify the app responds correctly (basic health check)
-    const response = await page.goto(APP_URL, {
+    const response = await page.goto('/', {
       waitUntil: 'domcontentloaded',
+      timeout: 30000,
     });
 
     expect(response?.status()).toBeLessThan(500);
@@ -87,8 +97,9 @@ test.describe('SECURITY AUDIT: Environment Configuration', () => {
     const sensitiveRoutes = ['/api/health', '/'];
 
     for (const route of sensitiveRoutes) {
-      const resp = await page.goto(`${APP_URL}${route}`, {
+      const resp = await page.goto(route, {
         waitUntil: 'domcontentloaded',
+        timeout: 30000,
       });
 
       // Should not return server error
@@ -107,8 +118,9 @@ test.describe('SECURITY AUDIT: Environment Configuration', () => {
     ];
 
     for (const route of debugRoutes) {
-      const response = await page.goto(`${APP_URL}${route}`, {
+      const response = await page.goto(route, {
         waitUntil: 'domcontentloaded',
+        timeout: 30000,
       });
 
       const status = response?.status();
@@ -127,7 +139,7 @@ test.describe('SECURITY: API Endpoint Protection', () => {
     const protectedEndpoints = ['/api/user/profile', '/api/admin/users'];
 
     for (const endpoint of protectedEndpoints) {
-      const response = await request.get(`${APP_URL}${endpoint}`);
+      const response = await request.get(endpoint);
       const status = response.status();
 
       // Should return 401, 403, or redirect (3xx)
@@ -141,7 +153,7 @@ test.describe('SECURITY: API Endpoint Protection', () => {
   });
 
   test('CORS headers are properly configured', async ({ request }) => {
-    const response = await request.get(`${APP_URL}/`);
+    const response = await request.get('/');
 
     // Basic response check - CORS specifics depend on configuration
     expect(response.status()).toBeLessThan(500);
