@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef, useEffect } from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { brand } from '@/config/brand';
+import { SnowParticles } from '@/components/motion/SnowParticles';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -179,9 +180,11 @@ export function CTASection() {
   return (
     <section
       ref={containerRef}
-      className="relative py-32 bg-gradient-to-b from-[#0d1421] to-[#0a0f1c] overflow-hidden"
+      className="relative py-32 overflow-hidden"
       style={{ position: 'relative' }}
     >
+      <SnowParticles />
+
       <motion.div
         style={{ opacity: glow }}
         className="fixed inset-0 bg-gradient-to-br from-cyan-500/20 via-blue-500/15 to-purple-500/20 pointer-events-none"
@@ -339,7 +342,7 @@ export function CTASection() {
         </motion.div>
       </div>
 
-      <div className="fixed inset-0 bg-gradient-to-t from-[#0a0f1c]/50 via-transparent to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[var(--figma-bg-dark,#050711)]/50 via-transparent to-transparent pointer-events-none" />
     </section>
   );
 }

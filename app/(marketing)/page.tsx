@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <div className="relative min-h-screen bg-[#0a0f1c] overflow-x-hidden">
+    <div className="relative min-h-screen overflow-x-hidden">
       <HomeClientMarker />
 
       {/* New Figma-based design implementation */}

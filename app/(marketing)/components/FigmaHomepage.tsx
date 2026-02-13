@@ -47,7 +47,7 @@ export default function FormaOSHomepage() {
   return (
     <MotionProvider>
       <ComplianceProvider>
-        <div className="figma-homepage relative min-h-screen bg-[#0a0f1c] overflow-x-hidden">
+        <div className="figma-homepage relative min-h-screen overflow-x-hidden">
           {/* Global Particle Field */}
           <div className="fixed inset-0 z-0">
             <div className="opacity-40">

@@ -22,6 +22,7 @@ import {
 import { useCompliance } from '../webgl/useComplianceState';
 import dynamic from 'next/dynamic';
 import { brand } from '@/config/brand';
+import { SnowParticles } from '@/components/motion/SnowParticles';
 
 const WebGLNodeField = dynamic(() => import('../webgl/NodeField'), {
   ssr: false,
@@ -91,9 +92,9 @@ export function HeroSection() {
   const { state } = useCompliance();
   const router = useRouter();
 
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
-  const y = useTransform(scrollYProgress, [0, 0.5], [0, 100]);
+  const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.7], [1, 0.95]);
+  const y = useTransform(scrollYProgress, [0, 0.7], [0, 80]);
   const handleRequestDemoClick = (
     event: React.MouseEvent<HTMLAnchorElement>,
   ) => {
@@ -114,8 +115,12 @@ export function HeroSection() {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] pt-24"
+      className="relative flex items-center justify-center overflow-hidden pt-24 pb-32"
+      style={{ minHeight: '110vh' }}
     >
+      {/* Snow particles */}
+      <SnowParticles />
+
       {/* Premium Background Effects - Cinematic Gradient Layers */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
