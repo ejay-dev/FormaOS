@@ -124,7 +124,7 @@ export default function ProductPageContent() {
           <ObligationToExecution />
         </DeferredSection>
         <VisualDivider />
-        <DeferredSection minHeight={620}>
+        <DeferredSection minHeight={700}>
           <OperatingModel />
         </DeferredSection>
         <VisualDivider />
