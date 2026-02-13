@@ -1,16 +1,24 @@
 'use client';
 
 import Link from 'next/link';
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Check, DollarSign, ArrowRight } from 'lucide-react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import CinematicField from '../../components/motion/CinematicField';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import { brand } from '@/config/brand';
+import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
+const CinematicField = dynamic(() => import('../../components/motion/CinematicField'), {
+  ssr: false,
+  loading: () => null,
+});
 
 export function PricingHero() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const shouldReduceMotion = useReducedMotion();
+  const [allowHeavyVisuals, setAllowHeavyVisuals] = useState(false);
+  const [enableHeavyVisuals, setEnableHeavyVisuals] = useState(false);
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
@@ -19,54 +27,111 @@ export function PricingHero() {
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
   const y = useTransform(scrollYProgress, [0, 0.5], [0, 100]);
+  const shouldAnimateIntro = !shouldReduceMotion && allowHeavyVisuals;
+
+  useEffect(() => {
+    const update = () => setAllowHeavyVisuals(window.innerWidth >= 1024);
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  useEffect(() => {
+    if (shouldReduceMotion || !allowHeavyVisuals) {
+      setEnableHeavyVisuals(false);
+      return;
+    }
+
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    let idleId: number | null = null;
+    const onIdle = () => setEnableHeavyVisuals(true);
+
+    if ('requestIdleCallback' in window) {
+      idleId = (window as Window & {
+        requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => number;
+      }).requestIdleCallback(onIdle, { timeout: 1100 });
+    } else {
+      timeoutId = setTimeout(onIdle, 450);
+    }
+
+    return () => {
+      if (timeoutId !== null) clearTimeout(timeoutId);
+      if (idleId !== null && 'cancelIdleCallback' in window) {
+        (window as Window & { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(idleId);
+      }
+    };
+  }, [allowHeavyVisuals, shouldReduceMotion]);
 
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] pt-24"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24"
     >
+      <AmbientParticleLayer intensity="subtle" />
       {/* Premium Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
           className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-gradient-to-br from-emerald-500/15 via-cyan-500/10 to-transparent rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.3, 0.4, 0.3],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+          animate={
+            shouldAnimateIntro
+              ? {
+                  scale: [1, 1.1, 1],
+                  opacity: [0.3, 0.4, 0.3],
+                }
+              : undefined
+          }
+          transition={shouldAnimateIntro ? { duration: 8, repeat: Infinity, ease: 'easeInOut' } : undefined}
         />
         <motion.div
           className="absolute -bottom-40 -right-40 w-[700px] h-[700px] bg-gradient-to-tl from-blue-500/15 via-purple-500/10 to-transparent rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.15, 1],
-            opacity: [0.2, 0.3, 0.2],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 2,
-          }}
+          animate={
+            shouldAnimateIntro
+              ? {
+                  scale: [1, 1.15, 1],
+                  opacity: [0.2, 0.3, 0.2],
+                }
+              : undefined
+          }
+          transition={
+            shouldAnimateIntro
+              ? {
+                  duration: 10,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                  delay: 2,
+                }
+              : undefined
+          }
         />
         <motion.div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-emerald-500/5 to-transparent rounded-full"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.2, 0.1],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 4,
-          }}
+          animate={
+            shouldAnimateIntro
+              ? {
+                  scale: [1, 1.2, 1],
+                  opacity: [0.1, 0.2, 0.1],
+                }
+              : undefined
+          }
+          transition={
+            shouldAnimateIntro
+              ? {
+                  duration: 12,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                  delay: 4,
+                }
+              : undefined
+          }
         />
       </div>
 
       {/* Cinematic Particle Field */}
-      <div className="absolute inset-0 z-1 opacity-40">
-        <CinematicField />
-      </div>
+      {!shouldReduceMotion && allowHeavyVisuals && enableHeavyVisuals && (
+        <div className="absolute inset-0 z-1 opacity-40">
+          <CinematicField />
+        </div>
+      )}
 
       {/* Grid Pattern */}
       <div
@@ -84,9 +149,9 @@ export function PricingHero() {
           <motion.div style={{ opacity, scale, y }}>
             {/* Badge */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={shouldAnimateIntro ? { duration: 0.6, delay: 0.2 } : { duration: 0 }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 mb-8 backdrop-blur-sm"
             >
               <DollarSign className="w-4 h-4 text-emerald-400" />
@@ -97,9 +162,9 @@ export function PricingHero() {
 
             {/* Headline */}
             <motion.h1
-              initial={{ opacity: 0, y: 30 }}
+              initial={shouldAnimateIntro ? { opacity: 0, y: 30 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
+              transition={shouldAnimateIntro ? { duration: 0.8, delay: 0.3 } : { duration: 0 }}
               className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
             >
               Compliance Infrastructure,
@@ -111,9 +176,9 @@ export function PricingHero() {
 
             {/* Subheadline */}
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
+              initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
+              transition={shouldAnimateIntro ? { duration: 0.8, delay: 0.5 } : { duration: 0 }}
               className="text-lg sm:text-xl text-gray-400 mb-4 max-w-3xl mx-auto text-center leading-relaxed"
             >
               FormaOS is not a productivity tool.
@@ -123,9 +188,9 @@ export function PricingHero() {
 
             {/* Supporting Copy */}
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
+              initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
+              transition={shouldAnimateIntro ? { duration: 0.8, delay: 0.6 } : { duration: 0 }}
               className="text-base text-gray-500 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
             >
               Our pricing reflects the level of governance, automation, and
@@ -134,9 +199,9 @@ export function PricingHero() {
               infrastructure.
             </motion.p>
             <motion.p
-              initial={{ opacity: 0, y: 10 }}
+              initial={shouldAnimateIntro ? { opacity: 0, y: 10 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.7 }}
+              transition={shouldAnimateIntro ? { duration: 0.8, delay: 0.7 } : { duration: 0 }}
               className="text-xs text-gray-500 mb-6 max-w-2xl mx-auto text-center"
             >
               Used by compliance teams. Aligned to ISO/SOC frameworks. Built for
@@ -145,9 +210,9 @@ export function PricingHero() {
 
             {/* Value Props */}
             <motion.div
-              initial={{ opacity: 0 }}
+              initial={shouldAnimateIntro ? { opacity: 0 } : false}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.7 }}
+              transition={shouldAnimateIntro ? { duration: 0.8, delay: 0.7 } : { duration: 0 }}
               className="mb-10 flex flex-col items-center gap-4"
             >
               <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
@@ -179,9 +244,9 @@ export function PricingHero() {
 
             {/* CTA Buttons */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
+              transition={shouldAnimateIntro ? { duration: 0.8, delay: 0.8 } : { duration: 0 }}
               className="flex flex-col sm:flex-row gap-4 justify-center"
             >
               <Link
@@ -201,9 +266,9 @@ export function PricingHero() {
               </Link>
             </motion.div>
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              initial={shouldAnimateIntro ? { opacity: 0, y: 10 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.9 }}
+              transition={shouldAnimateIntro ? { duration: 0.8, delay: 0.9 } : { duration: 0 }}
               className="mt-4"
             >
               <Link

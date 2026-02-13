@@ -436,6 +436,7 @@ function EndpointCard({
 }) {
   const [isOpen, setIsOpen] = useState(index === 0);
   const Icon = endpoint.icon;
+  const panelId = `${endpoint.id}-details`;
 
   return (
     <motion.div
@@ -451,6 +452,8 @@ function EndpointCard({
       {/* Header - always visible, acts as toggle */}
       <button
         onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
+        aria-controls={panelId}
         className="w-full flex items-center gap-4 p-6 text-left hover:bg-white/[0.02] transition-colors cursor-pointer"
       >
         <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-cyan-500/15 flex items-center justify-center">
@@ -491,6 +494,7 @@ function EndpointCard({
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+            id={panelId}
             className="overflow-hidden"
           >
             <div className="px-6 pb-6 space-y-6 border-t border-gray-800/50 pt-6">

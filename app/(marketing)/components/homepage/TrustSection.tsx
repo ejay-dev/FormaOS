@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, ClipboardCheck, FileLock2, ShieldCheck } from 'lucide-react';
+import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 
 const trustedBy = [
   'Healthcare & NDIS teams',
@@ -24,7 +25,8 @@ export function TrustSection() {
   ] as const;
 
   return (
-    <section className="relative py-20 bg-gradient-to-b from-[#0a0f1c] to-[#080c16] border-y border-white/5 overflow-hidden">
+    <section className="mk-section relative border-y border-white/5 overflow-hidden">
+      <AmbientParticleLayer intensity="subtle" />
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-cyan-500/5 blur-3xl"
@@ -132,7 +134,7 @@ export function TrustSection() {
         >
           <Link
             href="/security-review"
-            className="group flex items-center justify-between rounded-2xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-3 text-sm text-cyan-100 hover:bg-cyan-500/20"
+            className="mk-btn mk-btn-primary group flex items-center justify-between rounded-2xl px-4 py-3 text-sm text-cyan-100"
           >
             <span className="inline-flex items-center gap-2 font-medium">
               <FileLock2 className="h-4 w-4" />
@@ -142,7 +144,7 @@ export function TrustSection() {
           </Link>
           <Link
             href="/frameworks"
-            className="group flex items-center justify-between rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100 hover:bg-emerald-500/20"
+            className="mk-btn mk-btn-secondary group flex items-center justify-between rounded-2xl px-4 py-3 text-sm"
           >
             <span className="inline-flex items-center gap-2 font-medium">
               <ShieldCheck className="h-4 w-4" />
@@ -152,7 +154,7 @@ export function TrustSection() {
           </Link>
           <Link
             href="/customer-stories"
-            className="group flex items-center justify-between rounded-2xl border border-blue-400/30 bg-blue-500/10 px-4 py-3 text-sm text-blue-100 hover:bg-blue-500/20"
+            className="mk-btn mk-btn-secondary group flex items-center justify-between rounded-2xl px-4 py-3 text-sm"
           >
             <span className="inline-flex items-center gap-2 font-medium">
               <ClipboardCheck className="h-4 w-4" />

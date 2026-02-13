@@ -7,21 +7,23 @@ const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-body',
-  weight: ['400', '500', '600', '700'],
+  weight: ['400'],
 });
 
 const sora = Sora({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-heading',
-  weight: ['400', '500', '600', '700'],
+  variable: '--font-display',
+  preload: false,
+  weight: ['700'],
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-mono',
-  weight: ['400', '500'],
+  preload: false,
+  weight: ['400'],
 });
 
 export const metadata: Metadata = {

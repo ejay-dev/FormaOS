@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Lock, Shield, Eye, FileCheck, ArrowRight } from "lucide-react";
 import { AnimatedSystemGrid, ParallaxLayer, PulsingNode } from "@/components/motion";
+import { AmbientParticleLayer } from "@/components/motion/AmbientParticleLayer";
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
@@ -12,6 +13,7 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 export function SecurityHero() {
   return (
     <section className="relative min-h-[75vh] flex items-center justify-center overflow-hidden">
+      <AmbientParticleLayer intensity="subtle" />
       {/* Animated background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
       <div className="absolute inset-0 opacity-50">
@@ -100,11 +102,11 @@ export function SecurityHero() {
               transition={{ delay: 0.7 }}
               className="flex flex-col sm:flex-row gap-4 justify-center pt-4"
             >
-              <Link href={`${appBase}/auth/signup`} className="btn btn-primary text-lg px-8 py-4 shadow-premium-xl group">
+              <Link href={`${appBase}/auth/signup`} className="mk-btn mk-btn-primary text-lg px-8 py-4 group">
                 <span>Start Free Trial</span>
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link href="/contact" className="btn btn-secondary text-lg px-8 py-4">
+              <Link href="/contact" className="mk-btn mk-btn-secondary text-lg px-8 py-4">
                 Security Briefing
               </Link>
             </motion.div>

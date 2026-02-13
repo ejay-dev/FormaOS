@@ -9,6 +9,7 @@ import {
   FileCheck2,
   ShieldCheck,
 } from 'lucide-react';
+import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 
 const procurementFlow = [
   {
@@ -44,7 +45,8 @@ const artifactBadges = [
 
 export function ProcurementFlowSection() {
   return (
-    <section className="relative overflow-hidden border-y border-white/10 bg-gradient-to-b from-[#08101b] via-[#0b1322] to-[#08101b] py-20">
+    <section className="mk-section relative overflow-hidden border-y border-white/10">
+      <AmbientParticleLayer intensity="subtle" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,0.10),transparent_40%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_60%,rgba(59,130,246,0.12),transparent_42%)]" />
 
@@ -116,14 +118,14 @@ export function ProcurementFlowSection() {
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <Link
             href="/trust"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 text-sm font-semibold text-white"
+            className="mk-btn mk-btn-primary inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white"
           >
             Open Trust Center
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link
             href="/security-review"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10"
+            className="mk-btn mk-btn-secondary inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white"
           >
             Review Security Packet
           </Link>

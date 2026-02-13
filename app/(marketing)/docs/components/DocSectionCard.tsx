@@ -98,6 +98,7 @@ export function DocSectionCard({ section, index }: { section: DocSection; index:
   const [isExpanded, setIsExpanded] = useState(index === 0);
   const Icon = section.icon;
   const colors = colorMap[section.color] || colorMap.cyan;
+  const panelId = `${section.id}-panel`;
 
   return (
     <motion.div
@@ -113,6 +114,8 @@ export function DocSectionCard({ section, index }: { section: DocSection; index:
 
         <button
           onClick={() => setIsExpanded(!isExpanded)}
+          aria-expanded={isExpanded}
+          aria-controls={panelId}
           className="w-full flex items-center justify-between text-left group"
         >
           <div className="flex items-center gap-4">
@@ -142,6 +145,7 @@ export function DocSectionCard({ section, index }: { section: DocSection; index:
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.4 }}
+              id={panelId}
               className="overflow-hidden"
             >
               <div className="grid sm:grid-cols-2 gap-4 pt-6 mt-6 border-t border-white/5">

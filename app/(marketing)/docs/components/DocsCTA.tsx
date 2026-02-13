@@ -39,7 +39,7 @@ export function DocsCTA() {
                 href="/contact"
                 whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(6, 182, 212, 0.4)' }}
                 whileTap={{ scale: 0.98 }}
-                className="group px-8 py-4 rounded-full bg-gradient-to-r from-cyan-500 to-teal-600 text-white font-semibold text-lg flex items-center gap-3 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all"
+                className="mk-btn mk-btn-primary group px-8 py-4 text-lg"
               >
                 <span>Contact Support</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -47,7 +47,7 @@ export function DocsCTA() {
 
               <Link
                 href="/faq"
-                className="group px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white font-semibold text-lg flex items-center gap-3 hover:border-cyan-400/50 hover:bg-cyan-400/5 transition-all"
+                className="mk-btn mk-btn-secondary group px-8 py-4 text-lg"
               >
                 <span>Browse FAQ</span>
                 <ExternalLink className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />

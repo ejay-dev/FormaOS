@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 export function ValueProposition() {
   return (
-    <section className="relative py-24 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421] overflow-hidden">
+    <section className="mk-section relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl"

@@ -259,7 +259,7 @@ export function Industries() {
   };
 
   return (
-    <section className="relative py-20 sm:py-28 lg:py-36 bg-[#0a0f1c] overflow-hidden">
+    <section className="mk-section relative overflow-hidden">
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-950/5 to-transparent" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-r from-cyan-500/5 via-blue-500/5 to-purple-500/5 rounded-full blur-3xl" />
@@ -463,7 +463,7 @@ export function Industries() {
           </p>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 hover:-translate-y-0.5"
+            className="mk-btn mk-btn-primary inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold"
           >
             Talk to a Compliance Expert
             <ArrowRight className="w-5 h-5" />

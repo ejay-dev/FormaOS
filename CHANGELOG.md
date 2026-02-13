@@ -1,5 +1,16 @@
 # 📋 FormaOS QA Audit Changelog
 
+## [2.0.0] - 2026-02-13
+
+- Mobile LCP optimization pass for marketing routes `/`, `/pricing`, `/product`.
+- Deferred non-critical hero/background effects to idle or interaction-safe windows.
+- Split below-the-fold marketing sections into deferred dynamic chunks to reduce initial JS.
+- Tightened font critical path (above-fold-first preload strategy).
+- Unified marketing release version surface:
+  - Footer release badge now reflects `v2.0.0` (`FormaOS Citadel`).
+  - Admin System page now shows product release metadata alongside build hash.
+- Release tag prepared: `v2.0.0`.
+
 **Date:** January 14, 2026  
 **Audit Type:** Enterprise QA Validation  
 **Systems Reviewed:** Authentication, User Journeys, Compliance Graph, Performance, Security

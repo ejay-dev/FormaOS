@@ -1,7 +1,7 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef, useEffect } from 'react';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { useRef, useEffect, useState } from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { brand } from '@/config/brand';
 import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
@@ -12,6 +12,9 @@ export function CTASection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ctaButtonRef = useRef<HTMLAnchorElement>(null);
+  const shouldReduceMotion = useReducedMotion();
+  const [isInView, setIsInView] = useState(false);
+  const [allowHeavyEffects, setAllowHeavyEffects] = useState(false);
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start end', 'end start'],
@@ -23,8 +26,27 @@ export function CTASection() {
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
   useEffect(() => {
+    const target = containerRef.current;
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { rootMargin: '300px 0px' },
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const update = () => setAllowHeavyEffects(window.innerWidth >= 1024);
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || shouldReduceMotion || !isInView || !allowHeavyEffects) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -33,7 +55,7 @@ export function CTASection() {
       const dpr = window.devicePixelRatio || 1;
       canvas.width = 800 * dpr;
       canvas.height = 600 * dpr;
-      ctx.scale(dpr, dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       canvas.style.width = '800px';
       canvas.style.height = '600px';
     };
@@ -161,11 +183,11 @@ export function CTASection() {
     return () => {
       cancelAnimationFrame(animId);
     };
-  }, []);
+  }, [allowHeavyEffects, isInView, shouldReduceMotion]);
 
   useEffect(() => {
     const button = ctaButtonRef.current;
-    if (!button) return;
+    if (!button || shouldReduceMotion || !isInView || !allowHeavyEffects) return;
 
     const pulseInterval = setInterval(() => {
       button.style.boxShadow = '0 0 40px rgba(6, 182, 212, 0.7)';
@@ -175,37 +197,43 @@ export function CTASection() {
     }, 7000);
 
     return () => clearInterval(pulseInterval);
-  }, []);
+  }, [allowHeavyEffects, isInView, shouldReduceMotion]);
 
   return (
     <section
       ref={containerRef}
-      className="relative py-32 overflow-hidden"
+      className="mk-section relative overflow-hidden"
       style={{ position: 'relative' }}
     >
       <AmbientParticleLayer intensity="strong" />
 
-      <motion.div
-        style={{ opacity: glow }}
-        className="fixed inset-0 bg-gradient-to-br from-cyan-500/20 via-blue-500/15 to-purple-500/20 pointer-events-none"
-      />
+      {!shouldReduceMotion && allowHeavyEffects && isInView && (
+        <motion.div
+          style={{ opacity: glow }}
+          className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-blue-500/15 to-purple-500/20 pointer-events-none"
+        />
+      )}
 
-      <motion.div
-        style={{ y: backgroundY }}
-        className="fixed inset-0 pointer-events-none"
-      >
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-blue-500/10 to-purple-500/10" />
-        <div className="absolute top-1/4 left-1/4 w-[50vw] h-[50vh] bg-cyan-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-[50vw] h-[50vh] bg-blue-500/5 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] bg-purple-500/3 rounded-full blur-3xl" />
-      </motion.div>
+      {!shouldReduceMotion && allowHeavyEffects && isInView && (
+        <motion.div
+          style={{ y: backgroundY }}
+          className="absolute inset-0 pointer-events-none"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-blue-500/10 to-purple-500/10" />
+          <div className="absolute top-1/4 left-1/4 w-[50vw] h-[50vh] bg-cyan-500/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-[50vw] h-[50vh] bg-blue-500/5 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] bg-purple-500/3 rounded-full blur-3xl" />
+        </motion.div>
+      )}
 
-      <motion.div
-        style={{ opacity }}
-        className="fixed inset-0 flex items-center justify-center pointer-events-none"
-      >
-        <canvas ref={canvasRef} className="opacity-60" />
-      </motion.div>
+      {!shouldReduceMotion && allowHeavyEffects && isInView && (
+        <motion.div
+          style={{ opacity }}
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        >
+          <canvas ref={canvasRef} className="opacity-60" />
+        </motion.div>
+      )}
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12 text-center">
         <motion.div
@@ -223,8 +251,12 @@ export function CTASection() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-8"
           >
             <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+              animate={shouldReduceMotion ? undefined : { rotate: 360 }}
+              transition={
+                shouldReduceMotion
+                  ? undefined
+                  : { duration: 3, repeat: Infinity, ease: 'linear' }
+              }
             >
               <Sparkles className="w-4 h-4 text-cyan-400" />
             </motion.div>
@@ -271,13 +303,17 @@ export function CTASection() {
             <motion.a
               ref={ctaButtonRef}
               href={`${appBase}/auth/signup?plan=pro`}
-              whileHover={{
-                scale: 1.05,
-                boxShadow:
-                  '0 0 40px rgba(6, 182, 212, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.1)',
-              }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-lg flex items-center gap-2 transition-all duration-300 shadow-lg shadow-cyan-500/25"
+              whileHover={
+                shouldReduceMotion
+                  ? undefined
+                  : {
+                      scale: 1.03,
+                      boxShadow:
+                        '0 0 40px rgba(6, 182, 212, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.1)',
+                    }
+              }
+              whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+              className="mk-btn mk-btn-primary px-8 py-4 text-lg"
             >
               Get Started Free
               <ArrowRight className="w-5 h-5" />
@@ -285,13 +321,16 @@ export function CTASection() {
 
             <motion.a
               href="/contact"
-              whileHover={{
-                scale: 1.05,
-                boxShadow: '0 0 20px rgba(6, 182, 212, 0.3)',
-                backgroundColor: 'rgba(6, 182, 212, 0.05)',
-              }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 rounded-full border-2 border-gray-600 text-white font-semibold text-lg hover:border-cyan-400 transition-all duration-300"
+              whileHover={
+                shouldReduceMotion
+                  ? undefined
+                  : {
+                      scale: 1.03,
+                      boxShadow: '0 0 20px rgba(6, 182, 212, 0.3)',
+                    }
+              }
+              whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+              className="mk-btn mk-btn-secondary px-8 py-4 text-lg"
             >
               Schedule Demo
             </motion.a>

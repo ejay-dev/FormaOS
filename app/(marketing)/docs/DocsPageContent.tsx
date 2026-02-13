@@ -6,7 +6,7 @@ import { DocsHero, DocsContent, APIPreview, DocsCTA } from './components';
 
 export default function DocsPageContent() {
   return (
-    <div className="relative min-h-screen bg-[#0a0f1c]">
+    <div className="relative min-h-screen mk-page-bg">
       {/* Fixed particle background */}
       <div className="fixed inset-0 z-0">
         <div className="opacity-30">

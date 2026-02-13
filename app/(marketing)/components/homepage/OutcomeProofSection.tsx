@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, BarChart3, ShieldCheck, TimerReset } from 'lucide-react';
+import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 
 const proofScenarios = [
   {
@@ -33,7 +34,8 @@ const outcomeStats = [
 
 export function OutcomeProofSection() {
   return (
-    <section className="relative overflow-hidden border-y border-white/10 bg-gradient-to-b from-[#080d19] via-[#0a1220] to-[#080d19] py-24">
+    <section className="mk-section relative overflow-hidden border-y border-white/10">
+      <AmbientParticleLayer intensity="subtle" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,0.12),transparent_42%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_80%,rgba(16,185,129,0.10),transparent_40%)]" />
 
@@ -104,21 +106,21 @@ export function OutcomeProofSection() {
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
           <Link
             href="/customer-stories"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 text-sm font-semibold text-white"
+            className="mk-btn mk-btn-primary inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white"
           >
             Review Customer Outcomes
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link
             href="/security-review"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10"
+            className="mk-btn mk-btn-secondary inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white"
           >
             <ShieldCheck className="h-4 w-4" />
             Security Review Packet
           </Link>
           <Link
             href="/compare"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10"
+            className="mk-btn mk-btn-secondary inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white"
           >
             <TimerReset className="h-4 w-4" />
             Compare Platforms

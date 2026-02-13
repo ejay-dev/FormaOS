@@ -143,7 +143,7 @@ export function ScrollStory() {
   return (
     <section
       ref={containerRef}
-      className="relative py-32 bg-gradient-to-b from-[#0d1421] via-[#0a0f1c] to-[#0a0f1c] overflow-hidden"
+      className="mk-section relative overflow-hidden"
       style={{ position: 'relative' }}
     >
       <div className="relative max-w-7xl mx-auto px-6 lg:px-12">

@@ -6,10 +6,9 @@ import { NavLinks } from './components/NavLinks';
 import { MobileNav } from './components/MobileNav';
 import { HeaderCTA } from './components/HeaderCTA';
 import { Footer } from './components/Footer';
-import { SystemStateHydrator } from '@/lib/system-state/hydrator';
-import { PublicAuthProvider } from '@/lib/auth/public-auth-provider';
 import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
 import './marketing.css';
+import './design-system.css';
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';
 import MarketingBackgroundLayer from '@/components/motion/MarketingBackgroundLayer';
@@ -49,91 +48,91 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="mk-shell font-[var(--font-body)]">
-      {/* Add PublicAuthProvider for lightweight auth context */}
-      <PublicAuthProvider>
-        {/* Add SystemStateHydrator with publicRoute flag */}
-        <SystemStateHydrator publicRoute={true}>
-          {/* Add OAuthRedirectWrapper to handle OAuth redirects */}
-          <OAuthRedirectWrapper />
-          <div className="relative min-h-screen overflow-hidden">
-            {/* Shared background layer: gradient + grid + grain + vignette */}
-            <MarketingBackgroundLayer />
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[10000] mk-btn mk-btn-secondary px-4 py-2"
+      >
+        Skip to main content
+      </a>
+      {/* Add OAuthRedirectWrapper to handle OAuth redirects */}
+      <OAuthRedirectWrapper />
+      <div className="relative min-h-screen overflow-hidden">
+        {/* Shared background layer: gradient + grid + grain + vignette */}
+        <MarketingBackgroundLayer />
 
-            {/* Premium header with glass effect and micro-animations */}
-            <header className="mk-header-premium sticky top-0 z-50">
-              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="flex h-[72px] items-center justify-between gap-4 lg:gap-6">
-                  {/* Logo */}
-                  <div className="flex shrink-0 items-center">
-                    <Link
-                      href="/"
-                      className="flex items-center text-white transition-opacity hover:opacity-90"
-                    >
-                      <Logo size={34} />
-                    </Link>
-                  </div>
-
-                  {/* Desktop Navigation */}
-                  <NavLinks />
-
-                  {/* Separator + CTA */}
-                  <div className="hidden md:flex items-center gap-3">
-                    <div className="mk-nav-divider" aria-hidden="true" />
-                    <HeaderCTA />
-                  </div>
-
-                  {/* Mobile Navigation */}
-                  <MobileNav />
-                </div>
+        {/* Premium header with glass effect and micro-animations */}
+        <header className="mk-header-premium sticky top-0 z-50">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex h-[68px] sm:h-[72px] lg:h-[76px] items-center justify-between gap-3 sm:gap-4 lg:gap-6">
+              {/* Logo */}
+              <div className="flex shrink-0 items-center">
+                <Link
+                  href="/"
+                  className="flex items-center text-white transition-opacity hover:opacity-90"
+                >
+                  <Logo size={34} />
+                </Link>
               </div>
-            </header>
 
-            {/* Scrolled state for header glass enhancement */}
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `(function(){var h=document.querySelector('.mk-header-premium');if(!h)return;var c='scrolled';function u(){h.classList.toggle(c,window.scrollY>10)}window.addEventListener('scroll',u,{passive:true});u()})()`,
-              }}
-            />
+              {/* Desktop Navigation */}
+              <NavLinks />
 
-            <EnterpriseTrustStrip surface="marketing" />
+              {/* Separator + CTA */}
+              <div className="hidden md:flex items-center gap-2.5 lg:gap-3">
+                <div className="mk-nav-divider" aria-hidden="true" />
+                <HeaderCTA />
+              </div>
 
-            <main className="relative z-10">{children}</main>
-            <script
-              type="application/ld+json"
-              dangerouslySetInnerHTML={{
-                __html: JSON.stringify([
-                  {
-                    '@context': 'https://schema.org',
-                    '@type': 'Organization',
-                    name: 'FormaOS',
-                    url: siteUrl,
-                    contactPoint: [
-                      {
-                        '@type': 'ContactPoint',
-                        contactType: 'sales',
-                        email: `sales@${brand.domain}`,
-                      },
-                    ],
-                  },
-                  {
-                    '@context': 'https://schema.org',
-                    '@type': 'SoftwareApplication',
-                    name: 'FormaOS',
-                    applicationCategory: 'BusinessApplication',
-                    operatingSystem: 'Web',
-                    url: siteUrl,
-                    description:
-                      'Compliance and governance operating system for regulated industries.',
-                  },
-                ]),
-              }}
-            />
-
-            {/* Premium animated footer */}
-            <Footer />
+              {/* Mobile Navigation */}
+              <MobileNav />
+            </div>
           </div>
-        </SystemStateHydrator>
-      </PublicAuthProvider>
+        </header>
+
+        {/* Scrolled state for header glass enhancement */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var h=document.querySelector('.mk-header-premium');if(!h)return;var c='scrolled';function u(){h.classList.toggle(c,window.scrollY>10)}window.addEventListener('scroll',u,{passive:true});u()})()`,
+          }}
+        />
+
+        <EnterpriseTrustStrip surface="marketing" />
+
+        <main id="main-content" className="relative z-10 mk-page-bg">{children}</main>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([
+              {
+                '@context': 'https://schema.org',
+                '@type': 'Organization',
+                name: 'FormaOS',
+                url: siteUrl,
+                contactPoint: [
+                  {
+                    '@type': 'ContactPoint',
+                    contactType: 'sales',
+                    email: `sales@${brand.domain}`,
+                  },
+                ],
+              },
+              {
+                '@context': 'https://schema.org',
+                '@type': 'SoftwareApplication',
+                name: 'FormaOS',
+                applicationCategory: 'BusinessApplication',
+                operatingSystem: 'Web',
+                url: siteUrl,
+                description:
+                  'Compliance and governance operating system for regulated industries.',
+              },
+            ]),
+          }}
+        />
+
+        {/* Premium animated footer */}
+        <Footer />
+      </div>
     </div>
   );
 }

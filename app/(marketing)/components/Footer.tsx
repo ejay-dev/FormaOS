@@ -14,6 +14,7 @@ import {
   Lock,
   FileCheck,
 } from 'lucide-react';
+import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -138,7 +139,7 @@ function FooterCTA() {
           >
             <Link
               href={`${appBase}/auth/signup`}
-              className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold shadow-[0_8px_32px_rgba(0,212,251,0.35)] hover:shadow-[0_12px_40px_rgba(0,212,251,0.5)] transition-shadow"
+              className="mk-btn mk-btn-primary rounded-xl px-6 py-3"
             >
               Start Free Trial
             </Link>
@@ -150,7 +151,7 @@ function FooterCTA() {
           >
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-white/20 bg-white/5 font-semibold hover:bg-white/10 transition-colors"
+              className="mk-btn mk-btn-secondary rounded-xl px-6 py-3"
             >
               Request Demo
             </Link>
@@ -200,7 +201,8 @@ function TrustBadge({
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden border-t border-white/10">
+    <footer className="mk-footer-premium mk-page-bg-alt relative overflow-hidden border-t border-white/10">
+      <AmbientParticleLayer intensity="subtle" />
       {/* Animated background */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0a0f1c]/95 to-[#0a0f1c]" />
 

@@ -145,7 +145,7 @@ const capabilities = [
 
 export function CapabilitiesGrid() {
   return (
-    <section className="relative py-32 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421] overflow-hidden">
+    <section className="mk-section relative overflow-hidden">
       <motion.div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl"
         animate={{

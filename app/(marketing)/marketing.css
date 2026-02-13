@@ -39,8 +39,6 @@
 }
 
 .mk-shell {
-  --font-display: 'Sora', 'Inter', system-ui, sans-serif;
-  --font-body: 'IBM Plex Sans', 'Inter', system-ui, sans-serif;
   background-color: #0a0f1c;
   background-image:
     radial-gradient(
@@ -470,22 +468,8 @@
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
 }
 
-.text-gradient {
-  background: linear-gradient(135deg, #00d9ff 0%, #4d9fff 50%, #a78bfa 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
 .text-glow-subtle {
   text-shadow: 0 0 30px rgba(0, 217, 255, 0.3);
-}
-
-.security-grid {
-  background-image:
-    linear-gradient(to right, rgba(0, 217, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 217, 255, 0.05) 1px, transparent 1px);
-  background-size: 40px 40px;
 }
 
 /* Enhanced enterprise badges and status indicators */
@@ -1105,21 +1089,6 @@ body {
    CINEMATIC GLASS SURFACES
    ========================================================= */
 
-.glass-intense {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.12) 0%,
-    rgba(255, 255, 255, 0.05) 50%,
-    rgba(255, 255, 255, 0.08) 100%
-  );
-  backdrop-filter: blur(24px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-}
-
 .glass-ultra {
   background: linear-gradient(
     180deg,
@@ -1301,18 +1270,6 @@ body {
 
 .neon-border:hover::after {
   opacity: 1;
-}
-
-.glow-cyan {
-  box-shadow:
-    0 0 20px rgba(0, 217, 255, 0.3),
-    0 0 40px rgba(0, 217, 255, 0.15);
-}
-
-.glow-violet {
-  box-shadow:
-    0 0 20px rgba(139, 92, 246, 0.3),
-    0 0 40px rgba(139, 92, 246, 0.15);
 }
 
 .glow-teal {

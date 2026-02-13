@@ -26,7 +26,7 @@ const objectionCards = [
 
 export function ObjectionHandlingSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-[#090f1b] to-[#0b1220] py-20">
+    <section className="mk-section relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(59,130,246,0.14),transparent_45%)]" />
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-12">

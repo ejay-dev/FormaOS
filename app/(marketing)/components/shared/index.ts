@@ -11,3 +11,4 @@ export {
   PremiumBadge,
   HeroBackground,
 } from './UnifiedBackground';
+export { DeferredSection } from './DeferredSection';

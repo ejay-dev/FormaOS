@@ -5,6 +5,7 @@ import {
   handleAdminError,
   ADMIN_CACHE_HEADERS,
 } from '@/app/api/admin/_helpers';
+import { CURRENT_RELEASE_NAME, CURRENT_VERSION } from '@/config/release';
 
 /**
  * GET /api/admin/system — Real system metrics
@@ -72,6 +73,8 @@ export async function GET() {
         build_version: buildVersion,
         build_timestamp: buildTimestamp,
         environment,
+        product_release_version: CURRENT_VERSION,
+        product_release_name: CURRENT_RELEASE_NAME,
         timestamp: new Date().toISOString(),
       },
       {

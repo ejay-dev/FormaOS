@@ -18,10 +18,20 @@ export default function CinematicField() {
 
     let animationId: number;
     let isVisible = true;
+    let lastFrameTs = 0;
+    const frameIntervalMs = 1000 / 30;
+    let viewportWidth = window.innerWidth;
+    let viewportHeight = window.innerHeight;
 
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      viewportWidth = window.innerWidth;
+      viewportHeight = window.innerHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(viewportWidth * dpr);
+      canvas.height = Math.floor(viewportHeight * dpr);
+      canvas.style.width = `${viewportWidth}px`;
+      canvas.style.height = `${viewportHeight}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
     resizeCanvas();
@@ -35,13 +45,19 @@ export default function CinematicField() {
       speed: Math.random() * 0.2 + 0.05,
     }));
 
-    const animate = () => {
+    const animate = (ts: number) => {
       if (!isVisible) {
         animationId = requestAnimationFrame(animate);
         return;
       }
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (ts - lastFrameTs < frameIntervalMs) {
+        animationId = requestAnimationFrame(animate);
+        return;
+      }
+      lastFrameTs = ts;
+
+      ctx.clearRect(0, 0, viewportWidth, viewportHeight);
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
@@ -66,7 +82,7 @@ export default function CinematicField() {
     };
     document.addEventListener('visibilitychange', handleVisibility);
 
-    animate();
+    animationId = requestAnimationFrame(animate);
 
     return () => {
       cancelAnimationFrame(animationId);

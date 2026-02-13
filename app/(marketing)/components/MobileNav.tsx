@@ -28,6 +28,32 @@ export function MobileNav() {
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
+  const trapFocus = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "Tab" || !menuRef.current) return;
+
+    const focusable = menuRef.current.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    );
+    if (focusable.length === 0) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement as HTMLElement | null;
+
+    if (event.shiftKey) {
+      if (active === first) {
+        event.preventDefault();
+        last.focus();
+      }
+      return;
+    }
+
+    if (active === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }, []);
+
   // Close on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -98,7 +124,7 @@ export function MobileNav() {
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex cursor-pointer items-center gap-2 rounded-xl glass-panel px-3 py-2 text-sm text-white font-medium transition-all hover:bg-white/10 active:scale-95"
+        className="mk-btn mk-btn-secondary flex cursor-pointer items-center gap-2 rounded-xl px-3 py-2 text-sm text-white font-medium active:scale-95"
         aria-expanded={isOpen}
         aria-controls="mobile-menu"
         aria-label={isOpen ? "Close menu" : "Open menu"}
@@ -158,12 +184,9 @@ export function MobileNav() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.95 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute left-3 right-3 top-[calc(env(safe-area-inset-top)+4.5rem)] max-h-[calc(100vh-6rem)] rounded-2xl overflow-hidden shadow-2xl"
-              style={{
-                background: "linear-gradient(180deg, rgba(10, 16, 31, 0.98) 0%, rgba(5, 7, 17, 0.98) 100%)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-              }}
+              className="mk-mobile-sheet absolute left-3 right-3 top-[calc(env(safe-area-inset-top)+4.5rem)] max-h-[calc(100vh-6rem)] rounded-2xl overflow-hidden"
               onClick={(e) => e.stopPropagation()}
+              onKeyDown={trapFocus}
             >
               {/* Decorative top line */}
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
@@ -194,7 +217,7 @@ export function MobileNav() {
                   <Link
                     href={`${appBase}/auth/signin`}
                     onClick={handleLinkClick}
-                    className="flex items-center justify-between w-full rounded-xl px-4 py-3.5 text-sm font-medium text-white/90 hover:bg-white/5 transition-colors border border-white/10"
+                    className="mk-btn mk-btn-secondary flex items-center justify-between w-full rounded-xl px-4 py-3.5 text-sm"
                   >
                     <span>Login</span>
                     <ChevronRight className="h-4 w-4 text-white/50" />
@@ -202,7 +225,7 @@ export function MobileNav() {
                   <Link
                     href={`${appBase}/auth/signup?plan=pro&source=mobile_nav`}
                     onClick={handleLinkClick}
-                    className="flex items-center justify-center w-full rounded-xl px-4 py-3.5 text-sm font-bold text-white bg-gradient-to-r from-primary/90 to-secondary/90 hover:from-primary hover:to-secondary transition-all shadow-[0_0_20px_rgba(0,212,251,0.3)]"
+                    className="mk-btn mk-btn-primary flex items-center justify-center w-full rounded-xl px-4 py-3.5 text-sm font-bold"
                   >
                     Start Free Trial
                   </Link>

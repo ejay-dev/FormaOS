@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ShieldCheck, FileLock2, CheckCircle2, ArrowRight } from 'lucide-react';
 import { brand } from '@/config/brand';
+import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
@@ -84,7 +85,8 @@ const stakeholderTracks = [
 
 export default function TrustCenterPage() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#0a0f1c] text-slate-100">
+    <div className="relative min-h-screen overflow-hidden mk-page-bg text-slate-100">
+      <AmbientParticleLayer intensity="subtle" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(34,211,238,0.18),_transparent_45%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(59,130,246,0.14),_transparent_40%)]" />
 
@@ -106,7 +108,7 @@ export default function TrustCenterPage() {
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link
             href={`${appBase}/auth/signup?source=trust_center`}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 text-sm font-semibold text-white"
+            className="mk-btn mk-btn-primary inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white"
           >
             Start Trust-Ready Trial
             <ArrowRight className="h-4 w-4" />
@@ -277,7 +279,7 @@ export default function TrustCenterPage() {
             </div>
             <Link
               href="/security-review"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-5 py-3 text-sm font-semibold text-white hover:bg-white/10"
+              className="mk-btn mk-btn-secondary inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white"
             >
               Review Security Packet
               <ArrowRight className="h-4 w-4" />

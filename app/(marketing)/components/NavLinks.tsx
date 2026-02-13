@@ -53,6 +53,9 @@ function NavDropdown({
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const baseId = label.toLowerCase().replace(/\s+/g, '-');
+  const triggerId = `${baseId}-trigger`;
+  const menuId = `${baseId}-menu`;
 
   useEffect(() => {
     if (!open) return;
@@ -90,13 +93,15 @@ function NavDropdown({
     <div ref={ref} className="relative">
       <button
         ref={triggerRef}
+        id={triggerId}
         type="button"
         onClick={() => setOpen((v) => !v)}
         onKeyDown={handleTriggerKeyDown}
         aria-expanded={open}
-        aria-haspopup="true"
+        aria-controls={menuId}
+        aria-haspopup="menu"
         className={clsx(
-          'mk-nav-item flex cursor-pointer items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
+          'mk-nav-item flex cursor-pointer items-center gap-1.5 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
           hasActiveChild && 'mk-nav-item--active',
         )}
       >
@@ -111,15 +116,12 @@ function NavDropdown({
       {open && (
         <div
           className={clsx(
-            'mk-dropdown-panel absolute right-0 top-full mt-3 z-50 rounded-xl border border-white/[0.08] p-1.5 shadow-2xl',
+            'mk-dropdown-panel mk-dropdown-surface absolute right-0 top-full mt-3 z-50 rounded-xl p-1.5',
             wide ? 'min-w-[15rem]' : 'min-w-[11rem]',
           )}
-          style={{
-            background:
-              'linear-gradient(135deg, rgba(10, 16, 31, 0.97) 0%, rgba(5, 7, 17, 0.98) 100%)',
-            backdropFilter: 'blur(20px) saturate(180%)',
-          }}
           role="menu"
+          id={menuId}
+          aria-labelledby={triggerId}
           tabIndex={-1}
           onKeyDown={handleMenuKeyDown}
         >
@@ -189,6 +191,7 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
                   ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
                   : 'hover:bg-white/5 text-slate-300 hover:text-white',
               )}
+              style={{ whiteSpace: 'nowrap' }}
               aria-current={isActive ? 'page' : undefined}
             >
               {l.label}
@@ -212,6 +215,7 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
                   ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
                   : 'hover:bg-white/5 text-slate-300 hover:text-white',
               )}
+              style={{ whiteSpace: 'nowrap' }}
               aria-current={isActive ? 'page' : undefined}
             >
               {l.label}
@@ -235,6 +239,7 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
                   ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
                   : 'hover:bg-white/5 text-slate-300 hover:text-white',
               )}
+              style={{ whiteSpace: 'nowrap' }}
               aria-current={isActive ? 'page' : undefined}
             >
               {l.label}

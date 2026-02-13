@@ -22,6 +22,8 @@ type SystemStatus = {
   build_version: string;
   build_timestamp: string | null;
   environment: string;
+  product_release_version: string;
+  product_release_name: string;
   timestamp: string;
 };
 
@@ -169,6 +171,12 @@ export default async function AdminSystemPage() {
             <span className="text-sm text-slate-400">Version</span>
             <code className="text-xs bg-slate-900 px-2 py-1 rounded font-mono text-slate-100">
               {data.build_version}
+            </code>
+          </div>
+          <div className="flex items-center justify-between p-3 rounded-lg border border-slate-800/50 bg-slate-800/20">
+            <span className="text-sm text-slate-400">Product Release</span>
+            <code className="text-xs bg-slate-900 px-2 py-1 rounded font-mono text-slate-100">
+              FormaOS {data.product_release_name} — v{data.product_release_version}
             </code>
           </div>
           <div className="flex items-center justify-between p-3 rounded-lg border border-slate-800/50 bg-slate-800/20">

@@ -47,7 +47,7 @@ const securityFeatures = [
 
 export function SecuritySection() {
   return (
-    <section className="relative py-16 sm:py-24 lg:py-32 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421] overflow-hidden">
+    <section className="mk-section relative overflow-hidden">
       <AmbientParticleLayer intensity="subtle" />
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[450px] lg:w-[600px] h-[300px] sm:h-[450px] lg:h-[600px] bg-cyan-500/5 rounded-full blur-2xl sm:blur-3xl" />
