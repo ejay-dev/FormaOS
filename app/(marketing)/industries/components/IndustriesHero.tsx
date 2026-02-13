@@ -2,14 +2,14 @@
 
 import { useRef } from 'react';
 import { Building2, ArrowRight } from 'lucide-react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { duration, easing } from '@/config/motion';
-import CinematicField from '../../components/motion/CinematicField';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 export function IndustriesHero() {
+  const shouldReduceMotion = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -51,11 +51,6 @@ export function IndustriesHero() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-cyan-500/5 to-transparent rounded-full" />
       </div>
 
-      {/* Cinematic Particle Field */}
-      <div className="absolute inset-0 z-1 opacity-40">
-        <CinematicField />
-      </div>
-
       {/* Grid Pattern */}
       <div
         className="absolute inset-0 opacity-20"
@@ -69,7 +64,7 @@ export function IndustriesHero() {
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <div className="flex flex-col items-center text-center">
-          <motion.div style={{ opacity, scale, y }}>
+          <motion.div style={shouldReduceMotion ? undefined : { opacity, scale, y }}>
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}

@@ -1,10 +1,14 @@
 'use client';
 
 import { useRef } from 'react';
+import dynamic from 'next/dynamic';
 import { BookOpen, Search, Rocket, Code, Shield, Zap } from 'lucide-react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { duration } from '@/config/motion';
-import CinematicField from '../../components/motion/CinematicField';
+
+const CinematicField = dynamic(() => import('../../components/motion/CinematicField'), {
+  ssr: false,
+});
 
 const quickLinks = [
   { title: 'Quick Start', description: 'Get running in 15 minutes', icon: Rocket, href: '#getting-started' },
@@ -14,6 +18,7 @@ const quickLinks = [
 ];
 
 export function DocsHero() {
+  const shouldReduceMotion = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -57,7 +62,7 @@ export function DocsHero() {
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <div className="flex flex-col items-center text-center">
-          <motion.div style={{ opacity, scale, y }}>
+          <motion.div style={shouldReduceMotion ? undefined : { opacity, scale, y }}>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
