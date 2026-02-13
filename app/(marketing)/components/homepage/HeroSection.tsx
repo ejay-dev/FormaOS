@@ -22,7 +22,8 @@ import {
 import { useCompliance } from '../webgl/useComplianceState';
 import dynamic from 'next/dynamic';
 import { brand } from '@/config/brand';
-import { SnowParticles } from '@/components/motion/SnowParticles';
+import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
+import { HeroScrollRetentionController } from '@/components/motion/HeroScrollRetentionController';
 
 const WebGLNodeField = dynamic(() => import('../webgl/NodeField'), {
   ssr: false,
@@ -92,9 +93,12 @@ export function HeroSection() {
   const { state } = useCompliance();
   const router = useRouter();
 
-  const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.7], [1, 0.95]);
-  const y = useTransform(scrollYProgress, [0, 0.7], [0, 80]);
+  // Parallax: content fades slowly, bg elements drift at different rates
+  const opacity = useTransform(scrollYProgress, [0, 0.65], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.65], [1, 0.96]);
+  const y = useTransform(scrollYProgress, [0, 0.65], [0, 60]);
+  // Floating metrics drift faster for depth parallax
+  const metricY = useTransform(scrollYProgress, [0, 0.5], [0, -40]);
   const handleRequestDemoClick = (
     event: React.MouseEvent<HTMLAnchorElement>,
   ) => {
@@ -115,11 +119,11 @@ export function HeroSection() {
   return (
     <section
       ref={containerRef}
-      className="relative flex items-center justify-center overflow-hidden pt-24 pb-32"
-      style={{ minHeight: '110vh' }}
+      className="relative flex items-center justify-center overflow-hidden pt-24 pb-40 md:pb-48"
+      style={{ minHeight: 'clamp(100vh, 110vh, 1200px)' }}
     >
-      {/* Snow particles */}
-      <SnowParticles />
+      {/* Cinematic ambient particles */}
+      <AmbientParticleLayer intensity="subtle" />
 
       {/* Premium Background Effects - Cinematic Gradient Layers */}
       <div className="absolute inset-0 overflow-hidden">
@@ -157,8 +161,8 @@ export function HeroSection() {
         <CinematicField />
       </div>
 
-      {/* Floating Metrics - Left Side */}
-      <div className="absolute left-8 lg:left-16 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6 z-20">
+      {/* Floating Metrics - Left Side (parallax drift) */}
+      <motion.div style={{ y: metricY }} className="absolute left-8 lg:left-16 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6 z-20">
         <FloatingMetricCard
           value="Real-time"
           label="Compliance Monitoring"
@@ -175,10 +179,10 @@ export function HeroSection() {
           delay={1.0}
           direction="left"
         />
-      </div>
+      </motion.div>
 
-      {/* Floating Metrics - Right Side */}
-      <div className="absolute right-8 lg:right-16 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6 z-20">
+      {/* Floating Metrics - Right Side (parallax drift) */}
+      <motion.div style={{ y: metricY }} className="absolute right-8 lg:right-16 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6 z-20">
         <FloatingMetricCard
           value="Faster"
           label="Audit Defense"
@@ -195,7 +199,7 @@ export function HeroSection() {
           delay={1.4}
           direction="right"
         />
-      </div>
+      </motion.div>
 
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
@@ -314,6 +318,12 @@ export function HeroSection() {
           </motion.div>
         </div>
       </div>
+
+      {/* Gradient bridge — smooth depth transition to next section */}
+      <div className="hero-exit-gradient" />
+
+      {/* Sticky CTA that re-appears after hero CTAs scroll away */}
+      <HeroScrollRetentionController heroRef={containerRef} />
     </section>
   );
 }

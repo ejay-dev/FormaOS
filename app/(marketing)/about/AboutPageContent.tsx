@@ -148,7 +148,7 @@ function AboutHero() {
 
 export default function AboutPageContent() {
   return (
-    <div className="bg-[#0a0f1c]">
+    <div className="relative">
       <AboutHero />
 
       {/* Mission & Purpose */}

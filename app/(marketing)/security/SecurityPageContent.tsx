@@ -11,7 +11,7 @@ import {
 
 export default function SecurityPageContent() {
   return (
-    <div className="min-h-screen bg-[#0a0f1c] text-white overflow-hidden">
+    <div className="min-h-screen text-white overflow-hidden">
       <SecurityHero />
       <VisualDivider gradient />
       <SecurityArchitecture />

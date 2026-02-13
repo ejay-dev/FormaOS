@@ -12,6 +12,7 @@ import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
 import './marketing.css';
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';
+import MarketingBackgroundLayer from '@/components/motion/MarketingBackgroundLayer';
 
 // Force static rendering for all marketing pages
 export const dynamic = 'force-static';
@@ -55,6 +56,9 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
           {/* Add OAuthRedirectWrapper to handle OAuth redirects */}
           <OAuthRedirectWrapper />
           <div className="relative min-h-screen overflow-hidden">
+            {/* Shared background layer: gradient + grid + grain + vignette */}
+            <MarketingBackgroundLayer />
+
             {/* Premium header with glass effect and micro-animations */}
             <header className="mk-header-premium sticky top-0 z-50">
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

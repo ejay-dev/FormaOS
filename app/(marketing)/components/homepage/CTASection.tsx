@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef, useEffect } from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { brand } from '@/config/brand';
-import { SnowParticles } from '@/components/motion/SnowParticles';
+import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -183,7 +183,7 @@ export function CTASection() {
       className="relative py-32 overflow-hidden"
       style={{ position: 'relative' }}
     >
-      <SnowParticles />
+      <AmbientParticleLayer intensity="strong" />
 
       <motion.div
         style={{ opacity: glow }}

@@ -1113,7 +1113,7 @@ function FinalCTA() {
 
 export default function IndustriesPageContent() {
   return (
-    <div className="relative bg-[#0a0f1c]">
+    <div className="relative">
       <IndustriesHero />
       <VisualDivider />
       <MissionCriticalContext />

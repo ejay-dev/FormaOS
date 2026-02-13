@@ -20,7 +20,7 @@ import {
 
 export default function ProductPageContent() {
   return (
-    <div className="relative min-h-screen bg-[#0a0f1c] overflow-x-hidden">
+    <div className="relative min-h-screen overflow-x-hidden">
       {/* Fixed Background Layer */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c]" />
