@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import {
   motion,
+  useReducedMotion,
   useScroll,
   useTransform,
   AnimatePresence,
@@ -204,6 +205,7 @@ const faqCategories = [
 
 function FAQHero() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const shouldReduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
@@ -257,7 +259,7 @@ function FAQHero() {
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <div className="flex flex-col items-center text-center">
-          <motion.div style={{ opacity, scale, y }}>
+          <motion.div style={shouldReduceMotion ? undefined : { opacity, scale, y }}>
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -355,7 +357,7 @@ function FAQItem({
         </span>
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: duration.fast }}
           className="flex-shrink-0 w-8 h-8 rounded-full bg-white/5 group-hover:bg-cyan-500/20 flex items-center justify-center transition-colors"
         >
           <ChevronDown className="w-4 h-4 text-gray-400 group-hover:text-cyan-400 transition-colors" />
@@ -367,7 +369,7 @@ function FAQItem({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: duration.fast }}
             className="overflow-hidden"
           >
             <p className="pb-5 text-gray-400 leading-relaxed">{answer}</p>

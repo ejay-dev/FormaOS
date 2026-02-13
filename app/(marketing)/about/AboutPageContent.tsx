@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import { ArrowRight, Users, Target, Lightbulb } from 'lucide-react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { duration } from '@/config/motion';
 import dynamic from 'next/dynamic';
 import { VisualDivider } from '@/components/motion';
@@ -13,6 +13,7 @@ const DemoAuditTrailCard = dynamic(() => import('@/components/marketing/demo/Dem
 
 function AboutHero() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const shouldReduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
@@ -66,7 +67,7 @@ function AboutHero() {
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <div className="flex flex-col items-center text-center">
-          <motion.div style={{ opacity, scale, y }}>
+          <motion.div style={shouldReduceMotion ? undefined : { opacity, scale, y }}>
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}

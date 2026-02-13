@@ -11,7 +11,7 @@ import {
   Shield,
   Building2,
 } from 'lucide-react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { duration } from '@/config/motion';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
@@ -26,6 +26,7 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 function ContactHero() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const shouldReduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
@@ -77,7 +78,7 @@ function ContactHero() {
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <div className="flex flex-col items-center text-center">
-          <motion.div style={{ scale, y }}>
+          <motion.div style={shouldReduceMotion ? undefined : { scale, y }}>
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -184,7 +185,7 @@ function ContactInformation() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: duration.normal }}
             className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl"
           >
             <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-blue-500/20 flex items-center justify-center">
@@ -204,7 +205,7 @@ function ContactInformation() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            transition={{ duration: duration.normal, delay: 0.1 }}
             className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl"
           >
             <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-cyan-500/20 flex items-center justify-center">
@@ -224,7 +225,7 @@ function ContactInformation() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: duration.normal, delay: 0.2 }}
             className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl"
           >
             <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-purple-500/20 flex items-center justify-center">

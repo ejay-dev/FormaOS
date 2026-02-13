@@ -14,7 +14,7 @@ import {
   CalendarDays,
   Search,
 } from 'lucide-react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { duration } from '@/config/motion';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
@@ -39,6 +39,7 @@ const parseDate = (value: string) => new Date(value).getTime();
 
 function BlogHero() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const shouldReduceMotion = useReducedMotion();
   const latestPostDate = useMemo(() => {
     const sorted = [...blogPosts].sort(
       (a, b) => parseDate(b.date) - parseDate(a.date),
@@ -99,7 +100,7 @@ function BlogHero() {
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <div className="flex flex-col items-center text-center">
-          <motion.div style={{ opacity, scale, y }}>
+          <motion.div style={shouldReduceMotion ? undefined : { opacity, scale, y }}>
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -350,7 +351,7 @@ function BlogCard({
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: index * 0.1 }}
+        transition={{ duration: duration.normal, delay: index * 0.1 }}
         className="h-full"
       >
         <div className="relative h-full p-6 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-purple-500/30 transition-all duration-500 shadow-xl shadow-black/20">

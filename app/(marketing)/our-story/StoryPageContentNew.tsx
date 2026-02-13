@@ -15,7 +15,7 @@ import {
   Users,
   FileCheck,
 } from 'lucide-react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { duration } from '@/config/motion';
 import dynamic from 'next/dynamic';
 import { VisualDivider } from '@/components/motion';
@@ -35,6 +35,7 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 // ----------------------------------------------------------------------------
 export function StoryHero() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const shouldReduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
@@ -100,7 +101,7 @@ export function StoryHero() {
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <div className="flex flex-col items-center text-center">
-          <motion.div style={{ opacity, scale, y }}>
+          <motion.div style={shouldReduceMotion ? undefined : { opacity, scale, y }}>
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -761,8 +762,8 @@ function WhatMakesUsDifferent() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.2 + idx * 0.1 }}
-                whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                transition={{ duration: duration.normal, delay: 0.2 + idx * 0.1 }}
+                whileHover={{ y: -8, transition: { duration: duration.fast } }}
                 className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-indigo-500/30 transition-all duration-500"
               >
                 {/* Hover glow */}

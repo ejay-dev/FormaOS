@@ -137,7 +137,7 @@ export function SecurityContent() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                transition={{ duration: duration.normal, delay: idx * 0.1 }}
                 className="card-radial-glow section-metrics"
               >
                 <GlassCard variant="default" glow glowColor="purple" className="p-6 sm:p-8 h-full">

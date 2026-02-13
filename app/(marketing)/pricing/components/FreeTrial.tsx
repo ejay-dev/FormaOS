@@ -81,7 +81,7 @@ export function FreeTrial() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.3 + idx * 0.1, duration: 0.5 }}
+                transition={{ delay: 0.3 + idx * 0.1, duration: duration.normal }}
                 className="p-4 rounded-xl bg-white/[0.06] border border-white/10"
               >
                 <div className="flex items-center justify-center gap-2 mb-2">
@@ -96,7 +96,7 @@ export function FreeTrial() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.6, duration: 0.5 }}
+            transition={{ delay: 0.6, duration: duration.normal }}
           >
             <Link
               href={`${appBase}/auth/signup`}

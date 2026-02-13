@@ -115,7 +115,7 @@ export function FAQSection() {
                   </h3>
                   <motion.div
                     animate={{ rotate: openIndex === idx ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: duration.fast }}
                     className="flex-shrink-0"
                   >
                     <ChevronDown className="w-5 h-5 text-gray-400" />
@@ -128,7 +128,7 @@ export function FAQSection() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
+                      transition={{ duration: duration.fast }}
                       className="overflow-hidden"
                     >
                       <p className="text-gray-400 mt-4 leading-relaxed">
