@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Layers, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { duration } from '@/config/motion';
 import {
   AnimatedSystemGrid,
   PulsingNode,
@@ -45,7 +46,7 @@ export function ProductHero() {
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
+              transition={{ delay: 0.2, duration: duration.slow }}
               className="inline-flex items-center gap-2 sm:gap-2.5 glass-intense rounded-full px-4 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs font-semibold uppercase tracking-wider mb-6 sm:mb-8 border border-secondary/30"
             >
               <motion.div
@@ -60,7 +61,7 @@ export function ProductHero() {
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
+              transition={{ delay: 0.3, duration: duration.slower }}
               className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] sm:leading-[1.08] font-display tracking-tight mb-4 sm:mb-6"
             >
               Compliance Infrastructure<br />
@@ -69,7 +70,7 @@ export function ProductHero() {
                 <motion.div
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.8, duration: 0.8 }}
+                  transition={{ delay: 0.8, duration: duration.slower }}
                   className="absolute -bottom-1 sm:-bottom-2 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-secondary via-primary to-accent rounded-full origin-left"
                 />
               </span>
@@ -78,7 +79,7 @@ export function ProductHero() {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
+              transition={{ delay: 0.5, duration: duration.slower }}
               className="text-base sm:text-xl md:text-2xl text-foreground/70 leading-relaxed max-w-3xl mx-auto mb-8 sm:mb-10"
             >
               Connect policies, tasks, evidence, and audit trails into a defensible compliance workflow. Built for organizations that answer to regulators.
@@ -87,7 +88,7 @@ export function ProductHero() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.8 }}
+              transition={{ delay: 0.7, duration: duration.slower }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6"
             >
               <Link href={`${appBase}/auth/signup`} className="w-full sm:w-auto rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors">

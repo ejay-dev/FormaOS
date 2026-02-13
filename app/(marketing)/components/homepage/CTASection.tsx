@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { duration } from '@/config/motion';
 import { useRef, useEffect, useState } from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { brand } from '@/config/brand';
@@ -241,13 +242,13 @@ export function CTASection() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: duration.slow, delay: 0.2 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-8"
           >
             <motion.div
@@ -269,7 +270,7 @@ export function CTASection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            transition={{ duration: duration.slower, delay: 0.3 }}
             className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight"
           >
             Install the{' '}
@@ -286,7 +287,7 @@ export function CTASection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: duration.slower, delay: 0.4 }}
             className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed"
           >
             Stop managing compliance manually. FormaOS enforces controls,
@@ -297,7 +298,7 @@ export function CTASection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.5 }}
+            transition={{ duration: duration.slower, delay: 0.5 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <motion.a
@@ -340,7 +341,7 @@ export function CTASection() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.6 }}
+            transition={{ duration: duration.slow, delay: 0.6 }}
             className="text-sm text-gray-500 mt-8"
           >
             No credit card required • 14-day free trial • Cancel anytime
@@ -350,7 +351,7 @@ export function CTASection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.7 }}
+            transition={{ duration: duration.slower, delay: 0.7 }}
             className="mt-16 pt-8 border-t border-white/5"
           >
             <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-center">

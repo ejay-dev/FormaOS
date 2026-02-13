@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { duration } from '@/config/motion';
 import {
   Shield,
   Lock,
@@ -59,7 +60,7 @@ export function SecuritySection() {
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: duration.slow }}
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -122,7 +123,7 @@ export function SecuritySection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: duration.slow, delay: 0.1 }}
             className="flex items-center justify-center order-first lg:order-last"
           >
             <div className="w-full max-w-[500px]">

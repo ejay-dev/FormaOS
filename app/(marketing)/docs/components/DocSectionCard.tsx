@@ -8,6 +8,7 @@ import {
   Sparkles, CheckCircle2, PlayCircle, BookMarked,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { duration } from '@/config/motion';
 import type { LucideIcon } from 'lucide-react';
 
 export interface DocSection {
@@ -106,7 +107,7 @@ export function DocSectionCard({ section, index }: { section: DocSection; index:
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
+      transition={{ duration: duration.slow, delay: index * 0.1 }}
       className="scroll-mt-24"
     >
       <div className="relative p-6 lg:p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-white/10 transition-all duration-500 shadow-2xl shadow-black/30">
@@ -144,7 +145,7 @@ export function DocSectionCard({ section, index }: { section: DocSection; index:
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.4 }}
+              transition={{ duration: duration.normal }}
               id={panelId}
               className="overflow-hidden"
             >

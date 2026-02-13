@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
+import { duration } from '@/config/motion';
 import { useState } from 'react';
 import Link from 'next/link';
 import type { LucideIcon } from 'lucide-react';
@@ -270,7 +271,7 @@ export function Industries() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="text-center mb-16 lg:mb-20"
         >
           <motion.div
@@ -359,7 +360,7 @@ export function Industries() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.4, ease: 'easeInOut' }}
+                      transition={{ duration: duration.normal, ease: 'easeInOut' }}
                       className="overflow-hidden"
                     >
                       <div className="p-6 lg:p-10 mt-2 rounded-2xl bg-gradient-to-br from-gray-900/80 to-gray-950/80 border border-white/5">
@@ -455,7 +456,7 @@ export function Industries() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          transition={{ duration: duration.slow, delay: 0.3 }}
           className="mt-16 text-center"
         >
           <p className="text-gray-400 mb-6">

@@ -12,6 +12,7 @@ import {
 import { FadeInView } from "@/components/motion";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { duration } from '@/config/motion';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
@@ -102,7 +103,7 @@ function SystemDivider() {
       initial={{ opacity: 0, scaleX: 0 }}
       whileInView={{ opacity: 1, scaleX: 1 }}
       viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: duration.slower }}
       className="relative h-px w-full"
       style={{
         background: "linear-gradient(90deg, transparent, rgba(0, 180, 220, 0.3), rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.3), transparent)"
@@ -176,7 +177,7 @@ export function SecurityContent() {
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: idx * 0.15 }}
+                transition={{ duration: duration.slow, delay: idx * 0.15 }}
                 className="card-radial-glow section-process"
               >
                 <ArchitectureCard

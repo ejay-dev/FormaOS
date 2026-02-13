@@ -3,8 +3,11 @@
 import { useRef } from 'react';
 import { ArrowRight, Users, Target, Lightbulb } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { duration } from '@/config/motion';
 import dynamic from 'next/dynamic';
-import CinematicField from '../components/motion/CinematicField';
+import { VisualDivider } from '@/components/motion';
+import { DeferredSection } from '../components/shared';
+import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 
 const DemoAuditTrailCard = dynamic(() => import('@/components/marketing/demo/DemoAuditTrailCard'), { ssr: false });
 
@@ -50,11 +53,6 @@ function AboutHero() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-purple-500/5 to-transparent rounded-full" />
       </div>
 
-      {/* Cinematic Particle Field */}
-      <div className="absolute inset-0 z-1 opacity-40">
-        <CinematicField />
-      </div>
-
       {/* Grid Pattern */}
       <div
         className="absolute inset-0 opacity-20"
@@ -73,7 +71,7 @@ function AboutHero() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: duration.slow, delay: 0.2 }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 mb-8 backdrop-blur-sm"
             >
               <Users className="w-4 h-4 text-purple-400" />
@@ -86,7 +84,7 @@ function AboutHero() {
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
+              transition={{ duration: duration.slower, delay: 0.3 }}
               className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
             >
               Built for teams
@@ -100,7 +98,7 @@ function AboutHero() {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
+              transition={{ duration: duration.slower, delay: 0.5 }}
               className="text-lg sm:text-xl text-gray-400 mb-10 max-w-2xl mx-auto text-center leading-relaxed"
             >
               FormaOS exists to help regulated organizations operate with
@@ -113,7 +111,7 @@ function AboutHero() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.7 }}
+              transition={{ duration: duration.slower, delay: 0.7 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
             >
               <motion.a
@@ -148,10 +146,13 @@ function AboutHero() {
 
 export default function AboutPageContent() {
   return (
-    <div className="relative">
+    <MarketingPageShell>
       <AboutHero />
 
+      <VisualDivider gradient />
+
       {/* Mission & Purpose */}
+      <DeferredSection minHeight={300}>
       <section className="relative py-24 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421]">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid gap-8 md:grid-cols-2">
@@ -159,7 +160,7 @@ export default function AboutPageContent() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: duration.slow }}
               className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 hover:border-purple-500/30 transition-all duration-300"
             >
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -177,7 +178,7 @@ export default function AboutPageContent() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: duration.slow, delay: 0.2 }}
               className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 hover:border-cyan-500/30 transition-all duration-300"
             >
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -195,15 +196,19 @@ export default function AboutPageContent() {
           </div>
         </div>
       </section>
+      </DeferredSection>
+
+      <VisualDivider />
 
       {/* Live Activity Feed */}
+      <DeferredSection minHeight={300}>
       <section className="relative py-16 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421]">
         <div className="mx-auto max-w-xl px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: duration.slow }}
             className="text-center mb-8"
           >
             <h3 className="text-xl font-bold text-white mb-2">The Audit Trail</h3>
@@ -213,7 +218,7 @@ export default function AboutPageContent() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: duration.slow, delay: 0.2 }}
           >
             <DemoAuditTrailCard
               glowColor="from-purple-500/15 to-pink-500/15"
@@ -228,15 +233,19 @@ export default function AboutPageContent() {
           </motion.div>
         </div>
       </section>
+      </DeferredSection>
+
+      <VisualDivider />
 
       {/* CTA Section */}
+      <DeferredSection minHeight={250}>
       <section className="relative py-24 bg-gradient-to-b from-[#0d1421] to-[#0a0f1c]">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: duration.slower }}
             className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-10 shadow-2xl"
           >
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
@@ -267,6 +276,7 @@ export default function AboutPageContent() {
           </motion.div>
         </div>
       </section>
-    </div>
+      </DeferredSection>
+    </MarketingPageShell>
   );
 }

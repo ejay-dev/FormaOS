@@ -2,6 +2,7 @@
 
 import { TrendingUp, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { duration } from '@/config/motion';
 
 const outcomes = [
   'Continuous compliance, not periodic checks',
@@ -25,7 +26,7 @@ export function TheOutcome() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 sm:p-12"
         >
           <div className="text-center mb-10">

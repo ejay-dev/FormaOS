@@ -2,6 +2,7 @@
 
 import { Database, FileCheck, Archive, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { duration } from '@/config/motion';
 
 const transparencyPrinciples = [
   {
@@ -66,7 +67,7 @@ export function ComplianceByDesign() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="text-center mb-20"
         >
           <motion.div
@@ -102,7 +103,7 @@ export function ComplianceByDesign() {
               initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.15, duration: 0.6 }}
+              transition={{ delay: index * 0.15, duration: duration.slow }}
               className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 lg:p-10 hover:border-amber-500/30 transition-all duration-500"
             >
               <div className="flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10">

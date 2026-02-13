@@ -9,6 +9,7 @@ import {
   CheckCircle,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { duration } from '@/config/motion';
 import dynamic from 'next/dynamic';
 
 const DemoAuditTrailCard = dynamic(
@@ -84,7 +85,7 @@ export function EvidenceIntegrity() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="text-center mb-20"
         >
           <motion.div
@@ -120,7 +121,7 @@ export function EvidenceIntegrity() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.6 }}
+              transition={{ delay: index * 0.1, duration: duration.slow }}
               className="group relative backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 hover:border-orange-500/30 transition-all duration-500"
             >
               {/* Number indicator */}
@@ -159,7 +160,7 @@ export function EvidenceIntegrity() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.3, duration: 0.6 }}
+          transition={{ delay: 0.3, duration: duration.slow }}
           className="mt-12 max-w-xl mx-auto"
         >
           <DemoAuditTrailCard glowColor="from-orange-500/15 to-amber-500/15" />
@@ -170,7 +171,7 @@ export function EvidenceIntegrity() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.4, duration: 0.8 }}
+          transition={{ delay: 0.4, duration: duration.slower }}
           className="mt-16 backdrop-blur-xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] rounded-3xl border border-white/10 p-8 lg:p-10"
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">

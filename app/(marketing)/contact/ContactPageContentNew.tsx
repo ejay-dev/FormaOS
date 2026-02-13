@@ -12,7 +12,10 @@ import {
   Building2,
 } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import CinematicField from '../components/motion/CinematicField';
+import { duration } from '@/config/motion';
+import { VisualDivider } from '@/components/motion';
+import { DeferredSection } from '../components/shared';
+import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
@@ -61,11 +64,6 @@ function ContactHero() {
         />
       </div>
 
-      {/* Cinematic Particle Field */}
-      <div className="absolute inset-0 z-1 opacity-40">
-        <CinematicField />
-      </div>
-
       {/* Grid Pattern */}
       <div
         className="absolute inset-0 opacity-20"
@@ -84,7 +82,7 @@ function ContactHero() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: duration.slow, delay: 0.2 }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/30 mb-8 backdrop-blur-sm"
             >
               <Mail className="w-4 h-4 text-blue-400" />
@@ -97,7 +95,7 @@ function ContactHero() {
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
+              transition={{ duration: duration.slower, delay: 0.3 }}
               className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
             >
               Let&apos;s Talk About Your
@@ -111,7 +109,7 @@ function ContactHero() {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
+              transition={{ duration: duration.slower, delay: 0.5 }}
               className="text-lg sm:text-xl text-gray-400 mb-4 max-w-3xl mx-auto text-center leading-relaxed"
             >
               Whether you&apos;re exploring FormaOS, preparing for audits, or
@@ -122,7 +120,7 @@ function ContactHero() {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
+              transition={{ duration: duration.slower, delay: 0.6 }}
               className="text-base text-gray-500 mb-10 max-w-2xl mx-auto text-center"
             >
               We work with regulated organizations that require precision,
@@ -171,7 +169,7 @@ function ContactInformation() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: duration.slow }}
           className="text-center mb-16"
         >
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
@@ -279,7 +277,7 @@ function ContactForm({ submitAction, searchParams }: ContactFormProps) {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: duration.slow }}
           className="text-center mb-12"
         >
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
@@ -297,7 +295,7 @@ function ContactForm({ submitAction, searchParams }: ContactFormProps) {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
+          transition={{ duration: duration.slow, delay: 0.1 }}
           className="p-8 sm:p-12 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl"
         >
           <form action={handleSubmit} className="space-y-6">
@@ -484,7 +482,7 @@ function EnterpriseInquiries() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: duration.slow }}
           className="text-center p-12 rounded-2xl bg-gradient-to-br from-purple-500/20 via-white/[0.08] to-white/[0.04] border border-purple-500/30 backdrop-blur-xl"
         >
           <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-purple-500/20 flex items-center justify-center">
@@ -522,7 +520,7 @@ function SecurityTrust() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: duration.slow }}
           className="text-center"
         >
           <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-cyan-500/20 flex items-center justify-center">
@@ -554,7 +552,7 @@ function ClosingCTA() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: duration.slow }}
         >
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
             Operational Compliance Starts With
@@ -609,13 +607,28 @@ export default function ContactPageContent({
   submitAction,
 }: ContactPageContentProps) {
   return (
-    <div className="relative">
+    <MarketingPageShell>
       <ContactHero />
-      <ContactInformation />
-      <ContactForm submitAction={submitAction} searchParams={searchParams} />
-      <EnterpriseInquiries />
-      <SecurityTrust />
-      <ClosingCTA />
-    </div>
+      <VisualDivider gradient />
+      <DeferredSection minHeight={300}>
+        <ContactInformation />
+      </DeferredSection>
+      <VisualDivider />
+      <DeferredSection minHeight={500}>
+        <ContactForm submitAction={submitAction} searchParams={searchParams} />
+      </DeferredSection>
+      <VisualDivider />
+      <DeferredSection minHeight={250}>
+        <EnterpriseInquiries />
+      </DeferredSection>
+      <VisualDivider />
+      <DeferredSection minHeight={200}>
+        <SecurityTrust />
+      </DeferredSection>
+      <VisualDivider />
+      <DeferredSection minHeight={250}>
+        <ClosingCTA />
+      </DeferredSection>
+    </MarketingPageShell>
   );
 }

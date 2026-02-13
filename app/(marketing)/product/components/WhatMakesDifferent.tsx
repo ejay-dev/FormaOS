@@ -2,6 +2,7 @@
 
 import { Layers, Building2, Database, UserCheck, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { duration } from '@/config/motion';
 
 const differentiators = [
   { icon: Layers, title: 'A True Compliance Operating System', description: 'FormaOS is infrastructure, not a tool. It orchestrates governance, execution, and evidence across your organization.', color: 'from-cyan-500 to-blue-500' },
@@ -19,7 +20,7 @@ export function WhatMakesDifferent() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="text-center mb-16"
         >
           <motion.div

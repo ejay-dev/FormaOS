@@ -3,6 +3,7 @@
 import { useRef, useEffect, useState } from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { duration } from '@/config/motion';
 import dynamic from 'next/dynamic';
 import { brand } from '@/config/brand';
 import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
@@ -124,7 +125,7 @@ export function ProductHero() {
             <motion.div
               initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={shouldAnimateIntro ? { duration: 0.6, delay: 0.2 } : { duration: 0 }}
+              transition={shouldAnimateIntro ? { duration: duration.slow, delay: 0.2 } : { duration: 0 }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 backdrop-blur-sm"
             >
               <Sparkles className="w-4 h-4 text-cyan-400" />
@@ -136,7 +137,7 @@ export function ProductHero() {
             <motion.h1
               initial={shouldAnimateIntro ? { opacity: 0, y: 30 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={shouldAnimateIntro ? { duration: 0.8, delay: 0.3 } : { duration: 0 }}
+              transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.3 } : { duration: 0 }}
               className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
             >
               The Compliance OS
@@ -149,7 +150,7 @@ export function ProductHero() {
             <motion.p
               initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={shouldAnimateIntro ? { duration: 0.8, delay: 0.5 } : { duration: 0 }}
+              transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.5 } : { duration: 0 }}
               className="text-lg sm:text-xl text-gray-400 mb-4 max-w-3xl mx-auto text-center leading-relaxed"
             >
               FormaOS is not a document manager. It is a purpose-built operating
@@ -159,7 +160,7 @@ export function ProductHero() {
             <motion.p
               initial={shouldAnimateIntro ? { opacity: 0, y: 10 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={shouldAnimateIntro ? { duration: 0.8, delay: 0.6 } : { duration: 0 }}
+              transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.6 } : { duration: 0 }}
               className="text-xs sm:text-sm text-gray-500 mb-6 max-w-3xl mx-auto text-center"
             >
               Used by compliance teams. Aligned to ISO/SOC frameworks. Built for
@@ -169,7 +170,7 @@ export function ProductHero() {
             <motion.div
               initial={shouldAnimateIntro ? { opacity: 0 } : false}
               animate={{ opacity: 1 }}
-              transition={shouldAnimateIntro ? { duration: 0.8, delay: 0.65 } : { duration: 0 }}
+              transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.65 } : { duration: 0 }}
               className="mb-10 max-w-2xl mx-auto text-center"
             >
               <p className="text-sm text-gray-500 mb-4">
@@ -195,7 +196,7 @@ export function ProductHero() {
             <motion.div
               initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={shouldAnimateIntro ? { duration: 0.8, delay: 0.7 } : { duration: 0 }}
+              transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.7 } : { duration: 0 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
             >
               <motion.a

@@ -19,8 +19,10 @@ import {
   useTransform,
   AnimatePresence,
 } from 'framer-motion';
+import { duration } from '@/config/motion';
 import { VisualDivider } from '@/components/motion';
-import CinematicField from '../components/motion/CinematicField';
+import { DeferredSection } from '../components/shared';
+import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
@@ -242,11 +244,6 @@ function FAQHero() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-cyan-500/5 to-transparent rounded-full" />
       </div>
 
-      {/* Cinematic Particle Field */}
-      <div className="absolute inset-0 z-1">
-        <CinematicField />
-      </div>
-
       {/* Grid Pattern */}
       <div
         className="absolute inset-0 opacity-30"
@@ -265,7 +262,7 @@ function FAQHero() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: duration.slow, delay: 0.2 }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 backdrop-blur-sm"
             >
               <HelpCircle className="w-4 h-4 text-cyan-400" />
@@ -278,7 +275,7 @@ function FAQHero() {
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
+              transition={{ duration: duration.slower, delay: 0.3 }}
               className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
             >
               Frequently Asked{' '}
@@ -291,7 +288,7 @@ function FAQHero() {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
+              transition={{ duration: duration.slower, delay: 0.5 }}
               className="text-lg sm:text-xl text-gray-400 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
             >
               Everything you need to know about FormaOS, from platform
@@ -302,7 +299,7 @@ function FAQHero() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
+              transition={{ duration: duration.slower, delay: 0.6 }}
               className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600"
             >
               {faqCategories.map((cat) => (
@@ -346,7 +343,7 @@ function FAQItem({
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.4, delay: index * 0.05 }}
+      transition={{ duration: duration.normal, delay: index * 0.05 }}
       className="border-b border-white/5 last:border-b-0"
     >
       <button
@@ -437,7 +434,7 @@ function FAQCategory({
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
+      transition={{ duration: duration.slow, delay: index * 0.1 }}
       className="scroll-mt-24"
     >
       <div className="relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-white/10 transition-all duration-500 shadow-2xl shadow-black/30">
@@ -533,7 +530,7 @@ function FAQCTA() {
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/30"
         >
           <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
@@ -582,23 +579,16 @@ function FAQCTA() {
 
 export default function FAQPageContent() {
   return (
-    <div className="relative min-h-screen bg-[#0a0f1c]">
-      {/* Fixed particle background */}
-      <div className="fixed inset-0 z-0">
-        <div className="opacity-30">
-          <CinematicField />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/3 via-transparent to-purple-500/3" />
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10">
-        <FAQHero />
-        <VisualDivider gradient />
+    <MarketingPageShell className="bg-[#0a0f1c]">
+      <FAQHero />
+      <VisualDivider gradient />
+      <DeferredSection minHeight={800}>
         <FAQContent />
-        <VisualDivider gradient />
+      </DeferredSection>
+      <VisualDivider gradient />
+      <DeferredSection minHeight={250}>
         <FAQCTA />
-      </div>
-    </div>
+      </DeferredSection>
+    </MarketingPageShell>
   );
 }

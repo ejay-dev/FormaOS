@@ -11,6 +11,7 @@ import {
 import { FadeInView } from "@/components/motion";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { duration } from '@/config/motion';
 
 const industries = [
   {
@@ -85,7 +86,7 @@ function SystemDivider() {
       initial={{ opacity: 0, scaleX: 0 }}
       whileInView={{ opacity: 1, scaleX: 1 }}
       viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: duration.slower }}
       className="relative h-px w-full"
       style={{
         background: "linear-gradient(90deg, transparent, rgba(0, 180, 220, 0.3), rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.3), transparent)"
@@ -226,7 +227,7 @@ export function IndustriesContent() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.6 }}
+                  transition={{ duration: duration.slow }}
                   className="inline-flex items-center gap-2 glass-system rounded-full px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider mb-6 sm:mb-8"
                 >
                   <Briefcase className="h-4 w-4 sm:h-5 sm:w-5 text-accent" />

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { duration } from '@/config/motion';
 import { ArrowRight, BarChart3, ShieldCheck, TimerReset } from 'lucide-react';
 import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 
@@ -44,7 +45,7 @@ export function OutcomeProofSection() {
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: duration.slow }}
           className="mx-auto max-w-3xl text-center"
         >
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-cyan-200">

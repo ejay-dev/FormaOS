@@ -16,9 +16,10 @@ import {
   FileCheck,
 } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { duration } from '@/config/motion';
 import dynamic from 'next/dynamic';
 import { VisualDivider } from '@/components/motion';
-import CinematicField from '../components/motion/CinematicField';
+import { DeferredSection } from '../components/shared';
 import { brand } from '@/config/brand';
 
 const DemoComplianceChain = dynamic(() => import('@/components/marketing/demo/DemoComplianceChain'), { ssr: false });
@@ -86,11 +87,6 @@ export function StoryHero() {
         />
       </div>
 
-      {/* Cinematic Particle Field */}
-      <div className="absolute inset-0 z-1 opacity-40">
-        <CinematicField />
-      </div>
-
       {/* Grid Pattern */}
       <div
         className="absolute inset-0 opacity-20"
@@ -109,7 +105,7 @@ export function StoryHero() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: duration.slow, delay: 0.2 }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/30 mb-8 backdrop-blur-sm"
             >
               <Sparkles className="w-4 h-4 text-indigo-400" />
@@ -122,7 +118,7 @@ export function StoryHero() {
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
+              transition={{ duration: duration.slower, delay: 0.3 }}
               className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
             >
               Built for Organizations Where
@@ -136,7 +132,7 @@ export function StoryHero() {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
+              transition={{ duration: duration.slower, delay: 0.5 }}
               className="text-lg sm:text-xl text-gray-400 mb-10 max-w-3xl mx-auto text-center leading-relaxed"
             >
               FormaOS was created for teams that operate in environments where
@@ -150,7 +146,7 @@ export function StoryHero() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.7 }}
+              transition={{ duration: duration.slower, delay: 0.7 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
               <Link
@@ -220,7 +216,7 @@ function FounderQuote() {
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="relative"
         >
           {/* Glassmorphism Panel */}
@@ -233,7 +229,7 @@ function FounderQuote() {
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.6 }}
+              transition={{ delay: 0.2, duration: duration.slow }}
               className="relative inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 mb-8"
             >
               <Quote className="w-10 h-10 text-indigo-400" />
@@ -244,7 +240,7 @@ function FounderQuote() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.3, duration: 0.8 }}
+              transition={{ delay: 0.3, duration: duration.slower }}
               className="relative text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight mb-8"
             >
               We didn&apos;t build FormaOS to manage compliance.
@@ -259,7 +255,7 @@ function FounderQuote() {
               initial={{ scaleX: 0 }}
               whileInView={{ scaleX: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.6, duration: 0.8 }}
+              transition={{ delay: 0.6, duration: duration.slower }}
               className="w-32 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 mx-auto rounded-full mb-8"
             />
 
@@ -268,7 +264,7 @@ function FounderQuote() {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.8, duration: 0.6 }}
+              transition={{ delay: 0.8, duration: duration.slow }}
               className="relative text-gray-400"
             >
               <span className="font-semibold text-white">Ejaz Hussain</span>
@@ -320,7 +316,7 @@ function TheProblem() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="mb-16"
         >
           <motion.div
@@ -345,7 +341,7 @@ function TheProblem() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
+          transition={{ duration: duration.slow, delay: 0.1 }}
           className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 lg:p-10 mb-10"
         >
           <div className="space-y-6">
@@ -367,7 +363,7 @@ function TheProblem() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: duration.slow, delay: 0.2 }}
           className="mb-10"
         >
           <p className="text-xl text-white font-semibold mb-6">The result?</p>
@@ -378,7 +374,7 @@ function TheProblem() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.3 + idx * 0.1 }}
+                transition={{ duration: duration.normal, delay: 0.3 + idx * 0.1 }}
                 className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20"
               >
                 <span className="w-2 h-2 rounded-full bg-red-400 flex-shrink-0" />
@@ -393,7 +389,7 @@ function TheProblem() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.8 }}
+          transition={{ duration: duration.slow, delay: 0.8 }}
           className="text-xl text-indigo-400 font-medium"
         >
           We believed there had to be a better way.
@@ -459,7 +455,7 @@ function TheApproach() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="mb-16"
         >
           <motion.div
@@ -486,7 +482,7 @@ function TheApproach() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
+          transition={{ duration: duration.slow, delay: 0.1 }}
           className="backdrop-blur-xl bg-gradient-to-br from-indigo-500/20 via-white/[0.08] to-white/[0.04] rounded-3xl border border-indigo-500/30 p-8 lg:p-10 mb-12"
         >
           <p className="text-lg text-gray-400 mb-4">
@@ -507,7 +503,7 @@ function TheApproach() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: duration.slow, delay: 0.2 }}
           className="mb-12"
         >
           <p className="text-lg text-white font-medium mb-6">
@@ -520,7 +516,7 @@ function TheApproach() {
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.3 + idx * 0.1 }}
+                transition={{ duration: duration.normal, delay: 0.3 + idx * 0.1 }}
                 className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] border border-white/10 hover:border-indigo-500/30 transition-all duration-300"
               >
                 <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -537,7 +533,7 @@ function TheApproach() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.6 }}
+          transition={{ duration: duration.slow, delay: 0.6 }}
           className="mb-12 max-w-2xl mx-auto"
         >
           <DemoComplianceChain glowColor="from-indigo-500/15 to-purple-500/15" />
@@ -548,7 +544,7 @@ function TheApproach() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.8 }}
+          transition={{ duration: duration.slow, delay: 0.8 }}
           className="text-xl text-gray-400"
         >
           Compliance becomes part of the{' '}
@@ -589,7 +585,7 @@ function WhyWeBuiltIt() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="mb-16"
         >
           <motion.div
@@ -614,7 +610,7 @@ function WhyWeBuiltIt() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
+          transition={{ duration: duration.slow, delay: 0.1 }}
           className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 lg:p-10"
         >
           <div className="space-y-6">
@@ -723,7 +719,7 @@ function WhatMakesUsDifferent() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="mb-16"
         >
           <motion.div
@@ -754,7 +750,7 @@ function WhatMakesUsDifferent() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
+          transition={{ duration: duration.slow, delay: 0.1 }}
           className="mb-12"
         >
           <p className="text-lg text-white font-medium mb-8">Key principles:</p>
@@ -793,7 +789,7 @@ function WhatMakesUsDifferent() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.6 }}
+          transition={{ duration: duration.slow, delay: 0.6 }}
           className="space-y-3 text-lg"
         >
           <p className="text-gray-500">This is not about passing audits.</p>
@@ -846,7 +842,7 @@ function OurMission() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="mb-16"
         >
           <motion.div
@@ -871,7 +867,7 @@ function OurMission() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
+          transition={{ duration: duration.slow, delay: 0.1 }}
           className="backdrop-blur-xl bg-gradient-to-br from-cyan-500/20 via-white/[0.08] to-white/[0.04] rounded-3xl border border-cyan-500/30 p-8 lg:p-10 mb-12 text-center"
         >
           <p className="text-xl text-white font-medium mb-4">
@@ -888,7 +884,7 @@ function OurMission() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: duration.slow, delay: 0.2 }}
           className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 lg:p-10 mb-12"
         >
           <p className="text-lg text-gray-400 mb-6">
@@ -902,7 +898,7 @@ function OurMission() {
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.3 + idx * 0.1 }}
+                transition={{ duration: duration.normal, delay: 0.3 + idx * 0.1 }}
                 className="flex items-center gap-3 p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20"
               >
                 <CheckCircle className="w-5 h-5 text-cyan-400 flex-shrink-0" />
@@ -917,7 +913,7 @@ function OurMission() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.6 }}
+          transition={{ duration: duration.slow, delay: 0.6 }}
           className="space-y-4"
         >
           <p className="text-lg text-gray-400">
@@ -978,7 +974,7 @@ function FinalCTA() {
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="relative"
         >
           {/* Executive Panel */}
@@ -990,7 +986,7 @@ function FinalCTA() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.2, duration: 0.6 }}
+                  transition={{ delay: 0.2, duration: duration.slow }}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.12] border border-white/20 text-xs font-semibold uppercase tracking-wider mb-6 text-indigo-400"
                 >
                   <Building2 className="h-3 w-3" />
@@ -1001,7 +997,7 @@ function FinalCTA() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.3, duration: 0.8 }}
+                  transition={{ delay: 0.3, duration: duration.slower }}
                   className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-6"
                 >
                   <span className="text-white">Build Compliance Into</span>
@@ -1015,7 +1011,7 @@ function FinalCTA() {
                   initial={{ scaleX: 0 }}
                   whileInView={{ scaleX: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.8, duration: 0.8 }}
+                  transition={{ delay: 0.8, duration: duration.slower }}
                   className="w-24 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 mx-auto rounded-full"
                 />
               </div>
@@ -1040,7 +1036,7 @@ function FinalCTA() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.6, duration: 0.8 }}
+                transition={{ delay: 0.6, duration: duration.slower }}
                 className="flex flex-col sm:flex-row items-center justify-center gap-4"
               >
                 <Link
@@ -1081,17 +1077,29 @@ export function StoryContent() {
     <div className="min-h-screen text-white overflow-hidden">
       <FounderQuote />
       <VisualDivider gradient />
-      <TheProblem />
+      <DeferredSection minHeight={400}>
+        <TheProblem />
+      </DeferredSection>
       <VisualDivider />
-      <TheApproach />
+      <DeferredSection minHeight={500}>
+        <TheApproach />
+      </DeferredSection>
       <VisualDivider gradient />
-      <WhyWeBuiltIt />
+      <DeferredSection minHeight={400}>
+        <WhyWeBuiltIt />
+      </DeferredSection>
       <VisualDivider />
-      <WhatMakesUsDifferent />
+      <DeferredSection minHeight={600}>
+        <WhatMakesUsDifferent />
+      </DeferredSection>
       <VisualDivider gradient />
-      <OurMission />
+      <DeferredSection minHeight={400}>
+        <OurMission />
+      </DeferredSection>
       <VisualDivider />
-      <FinalCTA />
+      <DeferredSection minHeight={300}>
+        <FinalCTA />
+      </DeferredSection>
     </div>
   );
 }

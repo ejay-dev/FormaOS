@@ -19,6 +19,7 @@ import {
   Lock,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { duration, easing } from '@/config/motion';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -68,7 +69,8 @@ const endpoints: Endpoint[] = [
         name: 'action',
         type: 'string',
         required: false,
-        description: 'Filter by action type (e.g. "policy.updated", "user.login")',
+        description:
+          'Filter by action type (e.g. "policy.updated", "user.login")',
       },
       {
         name: 'startDate',
@@ -126,7 +128,7 @@ const endpoints: Endpoint[] = [
     path: '/api/v1/compliance',
     title: 'Get Compliance Metrics',
     description:
-      'Returns a real-time snapshot of your organization\'s compliance posture including overall score, risk level, policy coverage, task completion, and evidence collection rates.',
+      "Returns a real-time snapshot of your organization's compliance posture including overall score, risk level, policy coverage, task completion, and evidence collection rates.",
     rateLimit: '60 requests / minute',
     permission: 'VIEW_CONTROLS',
     icon: BarChart3,
@@ -272,8 +274,7 @@ const endpoints: Endpoint[] = [
           {
             id: 'task_m1n2o3',
             title: 'Complete Q1 access review',
-            description:
-              'Review and certify user access for SOC 2 compliance',
+            description: 'Review and certify user access for SOC 2 compliance',
             status: 'open',
             priority: 'high',
             due_date: '2026-03-01T00:00:00Z',
@@ -443,7 +444,7 @@ function EndpointCard({
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
+      transition={{ duration: duration.slow, delay: index * 0.1 }}
       className="relative rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 overflow-hidden shadow-xl shadow-black/20"
     >
       {/* Top accent line */}
@@ -467,9 +468,7 @@ function EndpointCard({
               {endpoint.path}
             </code>
           </div>
-          <h3 className="text-lg font-semibold text-white">
-            {endpoint.title}
-          </h3>
+          <h3 className="text-lg font-semibold text-white">{endpoint.title}</h3>
         </div>
 
         <div className="flex items-center gap-3 flex-shrink-0">
@@ -493,7 +492,7 @@ function EndpointCard({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+            transition={{ duration: 0.35, ease: [...easing.smooth] }}
             id={panelId}
             className="overflow-hidden"
           >
@@ -656,7 +655,7 @@ export function APIPreview() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="text-center mb-16"
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-6 backdrop-blur-sm">
@@ -683,7 +682,7 @@ export function APIPreview() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: duration.slow }}
           className="mb-8 rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 p-6 lg:p-8 shadow-xl shadow-black/20"
         >
           <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
@@ -732,8 +731,8 @@ curl -X GET "https://api.formaos.com/v1/compliance" \\
               <h4 className="font-semibold text-white">Rate Limiting</h4>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-3">
-              Requests are rate-limited per endpoint. Exceeding the limit returns
-              a{' '}
+              Requests are rate-limited per endpoint. Exceeding the limit
+              returns a{' '}
               <code className="text-orange-400 bg-orange-500/10 px-1.5 py-0.5 rounded text-xs font-mono">
                 429
               </code>{' '}
@@ -748,9 +747,7 @@ curl -X GET "https://api.formaos.com/v1/compliance" \\
                 <span className="text-gray-500 font-mono">
                   /audit-logs, /compliance
                 </span>
-                <span className="text-amber-400 font-medium">
-                  60 req/min
-                </span>
+                <span className="text-amber-400 font-medium">60 req/min</span>
               </div>
               <div className="flex justify-between text-xs">
                 <span className="text-gray-500 font-mono">
@@ -774,7 +771,9 @@ curl -X GET "https://api.formaos.com/v1/compliance" \\
               <div className="w-8 h-8 rounded-lg bg-cyan-500/15 flex items-center justify-center">
                 <Lock className="w-4 h-4 text-cyan-400" />
               </div>
-              <h4 className="font-semibold text-white">Base URL &amp; Security</h4>
+              <h4 className="font-semibold text-white">
+                Base URL &amp; Security
+              </h4>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-3">
               All endpoints are served over HTTPS at the base URL below.
@@ -800,7 +799,7 @@ curl -X GET "https://api.formaos.com/v1/compliance" \\
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: duration.slow }}
           className="rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 p-6 lg:p-8 shadow-xl shadow-black/20"
         >
           <div className="flex items-start gap-4 mb-6">

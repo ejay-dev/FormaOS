@@ -40,7 +40,7 @@ import {
   AnimatedLink,
 } from '@/components/motion';
 import { motion } from 'framer-motion';
-import { spacing, radius, depth } from '@/config/motion';
+import { spacing, radius, depth, duration } from '@/config/motion';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
@@ -181,7 +181,7 @@ function SystemDivider() {
       initial={{ opacity: 0, scaleX: 0 }}
       whileInView={{ opacity: 1, scaleX: 1 }}
       viewport={{ once: true, margin: '-100px' }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: duration.slower }}
       className="relative h-px w-full my-0"
       style={{
         background:
@@ -520,7 +520,7 @@ export function HomePageContent() {
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: idx * 0.05 }}
+                transition={{ duration: duration.normal, delay: idx * 0.05 }}
                 className="flex items-start gap-3 p-4 rounded-lg border border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/50 hover:bg-card transition-colors"
               >
                 <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
@@ -892,7 +892,7 @@ export function HomePageContent() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.6 }}
+                  transition={{ duration: duration.slow }}
                   className="inline-flex items-center gap-2 glass-system rounded-full px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider mb-6 sm:mb-8"
                 >
                   <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />

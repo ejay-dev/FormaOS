@@ -1,30 +1,26 @@
 'use client';
 
 import { VisualDivider } from '@/components/motion';
-import CinematicField from '../components/motion/CinematicField';
+import { DeferredSection } from '../components/shared';
+import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DocsHero, DocsContent, APIPreview, DocsCTA } from './components';
 
 export default function DocsPageContent() {
   return (
-    <div className="relative min-h-screen mk-page-bg">
-      {/* Fixed particle background */}
-      <div className="fixed inset-0 z-0">
-        <div className="opacity-30">
-          <CinematicField />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/3 via-transparent to-emerald-500/3" />
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10">
-        <DocsHero />
-        <VisualDivider gradient />
+    <MarketingPageShell className="mk-page-bg" enableCinematicField={false}>
+      <DocsHero />
+      <VisualDivider gradient />
+      <DeferredSection minHeight={600}>
         <DocsContent />
-        <VisualDivider gradient />
+      </DeferredSection>
+      <VisualDivider gradient />
+      <DeferredSection minHeight={400}>
         <APIPreview />
-        <VisualDivider gradient />
+      </DeferredSection>
+      <VisualDivider gradient />
+      <DeferredSection minHeight={250}>
         <DocsCTA />
-      </div>
-    </div>
+      </DeferredSection>
+    </MarketingPageShell>
   );
 }

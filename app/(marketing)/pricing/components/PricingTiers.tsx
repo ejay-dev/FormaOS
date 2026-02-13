@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { ArrowRight, Check, Target } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { brand } from '@/config/brand';
+import { easing, duration } from '@/config/motion';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -107,35 +108,53 @@ const pricingTiers = [
 ];
 
 export function PricingTiers() {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <section className="relative py-32 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-[#0a0f1c]">
         <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.15, 0.25, 0.15],
-            x: [0, 50, 0],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          animate={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  scale: [1, 1.2, 1],
+                  opacity: [0.15, 0.25, 0.15],
+                  x: [0, 50, 0],
+                }
+          }
+          transition={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  duration: 15,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }
+          }
           className="absolute top-1/4 -left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-emerald-500/20 to-transparent blur-3xl"
         />
         <motion.div
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.1, 0.2, 0.1],
-            x: [0, -30, 0],
-          }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 3,
-          }}
+          animate={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  scale: [1, 1.3, 1],
+                  opacity: [0.1, 0.2, 0.1],
+                  x: [0, -30, 0],
+                }
+          }
+          transition={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  duration: 18,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                  delay: 3,
+                }
+          }
           className="absolute bottom-1/4 -right-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-tl from-purple-500/20 to-transparent blur-3xl"
         />
       </div>
@@ -146,14 +165,14 @@ export function PricingTiers() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower, ease: easing.signature }}
           className="text-center mb-16"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-semibold uppercase tracking-wider mb-6"
           >
             <Target className="h-3 w-3 text-emerald-400" />
             <span className="text-gray-300">Choose Your Plan</span>
@@ -181,10 +200,10 @@ export function PricingTiers() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: idx * 0.15 }}
+              transition={{ duration: duration.slow, delay: idx * 0.15, ease: easing.signature }}
               whileHover={{
                 y: tier.featured ? -16 : -8,
-                transition: { duration: 0.3 },
+                transition: { duration: duration.fast, ease: easing.smooth },
               }}
               className={`group relative ${tier.featured ? 'lg:-mt-4 lg:mb-4' : ''}`}
             >
@@ -195,7 +214,7 @@ export function PricingTiers() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
-                    transition={{ delay: 0.4, duration: 0.5 }}
+                    transition={{ delay: 0.4, duration: duration.normal, ease: easing.signature }}
                     className="px-6 py-2 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full text-sm font-bold text-white shadow-lg shadow-emerald-500/30"
                   >
                     Most Popular
@@ -205,7 +224,7 @@ export function PricingTiers() {
 
               {/* Card */}
               <div
-                className={`relative backdrop-blur-xl bg-gradient-to-br ${tier.gradientFrom} ${tier.gradientTo} rounded-3xl p-8 border-2 ${tier.featured ? tier.borderColor : 'border-white/10'} shadow-2xl transition-all duration-500 group-hover:shadow-3xl ${tier.featured ? 'group-hover:shadow-emerald-500/20' : ''} group-hover:border-opacity-100 overflow-hidden h-full`}
+                className={`relative backdrop-blur-xl bg-gradient-to-br ${tier.gradientFrom} ${tier.gradientTo} rounded-3xl p-8 border-2 ${tier.featured ? tier.borderColor : 'border-white/[0.08]'} shadow-2xl transition-all duration-500 group-hover:shadow-3xl ${tier.featured ? 'group-hover:shadow-emerald-500/20' : ''} group-hover:border-opacity-100 overflow-hidden h-full`}
               >
                 {/* Hover glow effect */}
                 <div
@@ -268,7 +287,7 @@ export function PricingTiers() {
                       initial={{ opacity: 0, x: -10 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
-                      transition={{ delay: 0.3 + i * 0.05, duration: 0.4 }}
+                      transition={{ delay: 0.3 + i * 0.05, duration: duration.normal, ease: easing.signature }}
                       className="flex items-start gap-3 text-sm text-gray-300"
                     >
                       <div
@@ -282,7 +301,7 @@ export function PricingTiers() {
                 </ul>
 
                 {/* Use When */}
-                <div className="mb-8 p-4 rounded-2xl bg-white/[0.04] border border-white/10">
+                <div className="mb-8 p-4 rounded-2xl bg-white/[0.04] border border-white/[0.08]">
                   <p className="text-xs text-gray-500 uppercase tracking-wider mb-2 font-semibold">
                     Use when:
                   </p>

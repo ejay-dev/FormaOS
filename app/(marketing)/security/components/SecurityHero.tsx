@@ -10,6 +10,7 @@ import {
   CheckCircle,
 } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { duration } from '@/config/motion';
 import CinematicField from '../../components/motion/CinematicField';
 import { brand } from '@/config/brand';
 
@@ -85,7 +86,7 @@ export function SecurityHero() {
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: duration.slow }}
           className="flex justify-center mb-8"
         >
           <div className="relative">
@@ -111,7 +112,7 @@ export function SecurityHero() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
+          transition={{ delay: 0.2, duration: duration.slower }}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-8 backdrop-blur-sm"
         >
           <Lock className="h-3 w-3 text-red-400" />
@@ -122,7 +123,7 @@ export function SecurityHero() {
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.8 }}
+          transition={{ delay: 0.4, duration: duration.slower }}
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight mb-8"
         >
           <span className="text-white">Security that protects</span>
@@ -136,7 +137,7 @@ export function SecurityHero() {
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.8 }}
+          transition={{ delay: 0.6, duration: duration.slower }}
           className="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed"
         >
           Enterprise-grade security architecture designed for healthcare,
@@ -148,7 +149,7 @@ export function SecurityHero() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.8 }}
+          transition={{ delay: 0.8, duration: duration.slower }}
           className="flex flex-wrap justify-center gap-6 sm:gap-10 mb-12"
         >
           {[
@@ -176,7 +177,7 @@ export function SecurityHero() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.0, duration: 0.8 }}
+          transition={{ delay: 1.0, duration: duration.slower }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
           <Link

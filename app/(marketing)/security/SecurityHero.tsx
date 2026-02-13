@@ -1,14 +1,18 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { motion } from "framer-motion";
-import { Lock, Shield, Eye, FileCheck, ArrowRight } from "lucide-react";
-import { AnimatedSystemGrid, ParallaxLayer, PulsingNode } from "@/components/motion";
-import { AmbientParticleLayer } from "@/components/motion/AmbientParticleLayer";
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { Lock, Shield, Eye, FileCheck, ArrowRight } from 'lucide-react';
+import { duration, easing } from '@/config/motion';
+import {
+  AnimatedSystemGrid,
+  ParallaxLayer,
+  PulsingNode,
+} from '@/components/motion';
+import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
-
 
 export function SecurityHero() {
   return (
@@ -19,23 +23,26 @@ export function SecurityHero() {
       <div className="absolute inset-0 opacity-50">
         <AnimatedSystemGrid />
       </div>
-      
+
       {/* Ambient lights - more accent color for security theme */}
       <div className="pointer-events-none absolute top-20 left-1/4 h-[500px] w-[500px] rounded-full bg-accent/15 blur-[100px]" />
       <div className="pointer-events-none absolute bottom-20 right-1/3 h-[400px] w-[400px] rounded-full bg-primary/10 blur-[80px]" />
-      
+
       {/* Pulsing nodes */}
       <PulsingNode x="15%" y="25%" delay={0} color="rgb(6, 182, 212)" />
       <PulsingNode x="85%" y="35%" delay={0.5} color="rgb(56, 189, 248)" />
       <PulsingNode x="50%" y="70%" delay={1} />
-      
+
       {/* Content */}
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8 py-20">
         <ParallaxLayer speed={0.3}>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            transition={{
+              duration: duration.slower,
+              ease: [...easing.signature],
+            }}
             className="text-center max-w-4xl mx-auto space-y-8"
           >
             {/* Badge */}
@@ -48,7 +55,7 @@ export function SecurityHero() {
               <Shield className="h-4 w-4 text-accent" />
               Security Architecture
             </motion.div>
-            
+
             {/* Headline */}
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] font-display tracking-tight">
               Enterprise Security
@@ -58,18 +65,19 @@ export function SecurityHero() {
                 <motion.div
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.8, duration: 0.8 }}
+                  transition={{ delay: 0.8, duration: duration.slower }}
                   className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-accent via-primary to-secondary rounded-full origin-left"
                 />
               </span>
             </h1>
-            
+
             {/* Subtitle */}
             <p className="text-xl md:text-2xl text-foreground/80 leading-relaxed">
-              Audit-grade logging, tenant isolation, and compliance gates engineered 
-              for organizations where security and data integrity are regulatory requirements.
+              Audit-grade logging, tenant isolation, and compliance gates
+              engineered for organizations where security and data integrity are
+              regulatory requirements.
             </p>
-            
+
             {/* Security feature pills */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -78,9 +86,9 @@ export function SecurityHero() {
               className="flex flex-wrap justify-center gap-4"
             >
               {[
-                { icon: Lock, label: "Tenant Isolation" },
-                { icon: FileCheck, label: "Immutable Logs" },
-                { icon: Eye, label: "Evidence Chain" },
+                { icon: Lock, label: 'Tenant Isolation' },
+                { icon: FileCheck, label: 'Immutable Logs' },
+                { icon: Eye, label: 'Evidence Chain' },
               ].map((item, i) => (
                 <motion.div
                   key={item.label}
@@ -94,7 +102,7 @@ export function SecurityHero() {
                 </motion.div>
               ))}
             </motion.div>
-            
+
             {/* CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -102,11 +110,17 @@ export function SecurityHero() {
               transition={{ delay: 0.7 }}
               className="flex flex-col sm:flex-row gap-4 justify-center pt-4"
             >
-              <Link href={`${appBase}/auth/signup`} className="mk-btn mk-btn-primary text-lg px-8 py-4 group">
+              <Link
+                href={`${appBase}/auth/signup`}
+                className="mk-btn mk-btn-primary text-lg px-8 py-4 group"
+              >
                 <span>Start Free Trial</span>
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link href="/contact" className="mk-btn mk-btn-secondary text-lg px-8 py-4">
+              <Link
+                href="/contact"
+                className="mk-btn mk-btn-secondary text-lg px-8 py-4"
+              >
                 Security Briefing
               </Link>
             </motion.div>

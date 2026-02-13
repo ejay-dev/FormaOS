@@ -2,6 +2,7 @@
 
 import { Shield, TrendingUp, Settings, FileCheck, AlertTriangle, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { duration } from '@/config/motion';
 
 const audiences = [
   { label: 'Compliance leaders who need certainty', icon: Shield },
@@ -19,7 +20,7 @@ export function WhoIsFor() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="text-center mb-12"
         >
           <motion.div

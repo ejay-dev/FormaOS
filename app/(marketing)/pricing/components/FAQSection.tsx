@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ChevronDown, HelpCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { duration } from '@/config/motion';
 
 const faqs = [
   {
@@ -64,7 +65,7 @@ export function FAQSection() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="text-center mb-16"
         >
           <motion.div
@@ -98,7 +99,7 @@ export function FAQSection() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: idx * 0.1, duration: 0.5 }}
+              transition={{ delay: idx * 0.1, duration: duration.normal }}
             >
               <button
                 onClick={() => setOpenIndex(openIndex === idx ? null : idx)}

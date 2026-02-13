@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { duration } from '@/config/motion';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
@@ -15,7 +16,7 @@ export function FinalCTA() {
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-2xl overflow-hidden"
         >
           <div className="bg-gradient-to-r from-white/[0.08] to-white/[0.04] border-b border-white/10 px-8 sm:px-12 py-10 text-center">
@@ -23,7 +24,7 @@ export function FinalCTA() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.8 }}
+              transition={{ delay: 0.2, duration: duration.slower }}
               className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white"
             >
               Most platforms <span className="text-gray-500">store</span> compliance.
@@ -37,7 +38,7 @@ export function FinalCTA() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.8 }}
+              transition={{ delay: 0.4, duration: duration.slower }}
               className="text-lg text-gray-400 max-w-2xl mx-auto"
             >
               From obligation to execution, validation, and defense. FormaOS is
@@ -50,7 +51,7 @@ export function FinalCTA() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.6, duration: 0.8 }}
+              transition={{ delay: 0.6, duration: duration.slower }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6"
             >
               <Link
@@ -73,7 +74,7 @@ export function FinalCTA() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.8, duration: 0.8 }}
+              transition={{ delay: 0.8, duration: duration.slower }}
               className="flex flex-wrap items-center justify-center gap-6 mt-8 text-sm text-gray-500"
             >
               <span className="flex items-center gap-2">

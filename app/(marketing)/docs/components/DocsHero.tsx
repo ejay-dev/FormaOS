@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import { BookOpen, Search, Rocket, Code, Shield, Zap } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { duration } from '@/config/motion';
 import CinematicField from '../../components/motion/CinematicField';
 
 const quickLinks = [
@@ -60,7 +61,7 @@ export function DocsHero() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: duration.slow, delay: 0.2 }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 backdrop-blur-sm"
             >
               <BookOpen className="w-4 h-4 text-cyan-400" />
@@ -70,7 +71,7 @@ export function DocsHero() {
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
+              transition={{ duration: duration.slower, delay: 0.3 }}
               className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
             >
               FormaOS{' '}
@@ -82,7 +83,7 @@ export function DocsHero() {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
+              transition={{ duration: duration.slower, delay: 0.5 }}
               className="text-lg sm:text-xl text-gray-400 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
             >
               Comprehensive guides, tutorials, and API references to help you
@@ -92,7 +93,7 @@ export function DocsHero() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
+              transition={{ duration: duration.slower, delay: 0.6 }}
               className="w-full max-w-xl mx-auto mb-10"
             >
               <div className="relative">
@@ -112,7 +113,7 @@ export function DocsHero() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.7 }}
+              transition={{ duration: duration.slower, delay: 0.7 }}
               className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-3xl mx-auto"
             >
               {quickLinks.map((link) => {

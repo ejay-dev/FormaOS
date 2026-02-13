@@ -21,8 +21,10 @@ import {
   UserCheck,
 } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { duration } from '@/config/motion';
 import { VisualDivider } from '@/components/motion';
-import CinematicField from '../../components/motion/CinematicField';
+import { DeferredSection } from '../../components/shared';
+import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
 
 // ============================================================================
 // HERO SECTION
@@ -69,11 +71,6 @@ function PrivacyHero() {
         />
       </div>
 
-      {/* Cinematic Particle Field */}
-      <div className="absolute inset-0 z-1 opacity-40">
-        <CinematicField />
-      </div>
-
       {/* Grid Pattern */}
       <div
         className="absolute inset-0 opacity-20"
@@ -92,7 +89,7 @@ function PrivacyHero() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: duration.slow, delay: 0.2 }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 mb-8 backdrop-blur-sm"
             >
               <Shield className="w-4 h-4 text-emerald-400" />
@@ -105,7 +102,7 @@ function PrivacyHero() {
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
+              transition={{ duration: duration.slower, delay: 0.3 }}
               className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-[1.1] text-white"
             >
               Privacy{' '}
@@ -118,7 +115,7 @@ function PrivacyHero() {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
+              transition={{ duration: duration.slower, delay: 0.5 }}
               className="text-lg sm:text-xl text-gray-400 mb-6 max-w-2xl mx-auto text-center leading-relaxed"
             >
               FormaOS is designed for regulated industries where
@@ -131,7 +128,7 @@ function PrivacyHero() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
+              transition={{ duration: duration.slower, delay: 0.6 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-gray-500"
             >
               <span>Effective Date: January 16, 2026</span>
@@ -174,7 +171,7 @@ function TableOfContents() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: duration.slow }}
           className="p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl"
         >
           <button
@@ -522,12 +519,17 @@ function PrivacyContent() {
 
 export default function PrivacyPageContent() {
   return (
-    <div className="relative">
+    <MarketingPageShell>
       <PrivacyHero />
       <VisualDivider />
-      <TableOfContents />
-      <PrivacyContent />
+      <DeferredSection minHeight={260}>
+        <TableOfContents />
+      </DeferredSection>
       <VisualDivider />
-    </div>
+      <DeferredSection minHeight={1600}>
+        <PrivacyContent />
+      </DeferredSection>
+      <VisualDivider />
+    </MarketingPageShell>
   );
 }

@@ -15,8 +15,10 @@ import {
   Search,
 } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { duration } from '@/config/motion';
 import { VisualDivider } from '@/components/motion';
-import CinematicField from '../components/motion/CinematicField';
+import { DeferredSection } from '../components/shared';
+import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import {
   blogPosts,
   featuredPost,
@@ -84,11 +86,6 @@ function BlogHero() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-purple-500/5 to-transparent rounded-full" />
       </div>
 
-      {/* Cinematic Particle Field */}
-      <div className="absolute inset-0 z-1">
-        <CinematicField />
-      </div>
-
       {/* Grid Pattern */}
       <div
         className="absolute inset-0 opacity-30"
@@ -107,7 +104,7 @@ function BlogHero() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: duration.slow, delay: 0.2 }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 mb-8 backdrop-blur-sm"
             >
               <BookOpen className="w-4 h-4 text-purple-400" />
@@ -120,7 +117,7 @@ function BlogHero() {
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
+              transition={{ duration: duration.slower, delay: 0.3 }}
               className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
             >
               FormaOS{' '}
@@ -133,7 +130,7 @@ function BlogHero() {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
+              transition={{ duration: duration.slower, delay: 0.5 }}
               className="text-lg sm:text-xl text-gray-400 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
             >
               Expert perspectives on compliance management, regulatory
@@ -145,7 +142,7 @@ function BlogHero() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
+              transition={{ duration: duration.slower, delay: 0.6 }}
               className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500"
             >
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-800/50 border border-gray-700/50">
@@ -190,7 +187,7 @@ function FeaturedPost() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: duration.slower }}
             className="relative"
           >
             <div className="relative p-8 lg:p-12 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-purple-500/20 transition-all duration-500 shadow-2xl shadow-black/30 overflow-hidden">
@@ -288,7 +285,7 @@ function CategoryFilter({
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: duration.slow }}
           className="flex flex-wrap items-center gap-3 justify-center"
         >
           {categories.map((category) => (
@@ -311,7 +308,7 @@ function CategoryFilter({
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
+          transition={{ duration: duration.slow, delay: 0.1 }}
           className="max-w-xl mx-auto"
         >
           <div className="flex items-center gap-3 px-4 py-3 rounded-full bg-gray-900/60 border border-white/10 text-gray-300 focus-within:border-purple-500/40 focus-within:ring-2 focus-within:ring-purple-500/20 transition">
@@ -454,7 +451,7 @@ function BlogGrid({
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: duration.slow }}
           className="text-2xl font-bold text-white mb-8"
         >
           Latest Articles
@@ -478,7 +475,7 @@ function BlogGrid({
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: duration.slow, delay: 0.3 }}
             className="flex justify-center mt-12"
           >
             <button
@@ -518,7 +515,7 @@ function NewsletterCTA() {
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/30"
         >
           <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-purple-400/40 to-transparent" />
@@ -610,34 +607,29 @@ export default function BlogPageContent() {
   }, [activeCategory, searchQuery]);
 
   return (
-    <div className="relative min-h-screen mk-page-bg">
-      {/* Fixed particle background */}
-      <div className="fixed inset-0 z-0">
-        <div className="opacity-30">
-          <CinematicField />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/3 via-transparent to-cyan-500/3" />
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10">
-        <BlogHero />
-        <VisualDivider gradient />
+    <MarketingPageShell className="mk-page-bg">
+      <BlogHero />
+      <VisualDivider gradient />
+      <DeferredSection minHeight={400}>
         <FeaturedPost />
-        <CategoryFilter
-          activeCategory={activeCategory}
-          onCategoryChange={setActiveCategory}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-        />
+      </DeferredSection>
+      <CategoryFilter
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+      />
+      <DeferredSection minHeight={600}>
         <BlogGrid
           posts={visiblePosts}
           hasMore={hasMore}
           onLoadMore={() => setVisibleCount((count) => count + 6)}
         />
-        <VisualDivider gradient />
+      </DeferredSection>
+      <VisualDivider gradient />
+      <DeferredSection minHeight={250}>
         <NewsletterCTA />
-      </div>
-    </div>
+      </DeferredSection>
+    </MarketingPageShell>
   );
 }

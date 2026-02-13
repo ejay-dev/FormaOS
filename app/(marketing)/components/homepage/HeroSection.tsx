@@ -6,6 +6,7 @@ import {
   useScroll,
   useTransform,
 } from 'framer-motion';
+import { duration } from '@/config/motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -56,7 +57,7 @@ function FloatingMetricCard({
     <motion.div
       initial={{ opacity: 0, x: direction === 'left' ? -40 : 40 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.8, delay }}
+      transition={{ duration: duration.slower, delay }}
       whileHover={{ scale: 1.05, y: -5 }}
       className="relative p-5 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all shadow-2xl shadow-black/30"
     >
@@ -281,7 +282,7 @@ export function HeroSection() {
             <motion.div
               initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={shouldAnimateIntro ? { duration: 0.6, delay: 0.2 } : { duration: 0 }}
+              transition={shouldAnimateIntro ? { duration: duration.slow, delay: 0.2 } : { duration: 0 }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 backdrop-blur-sm"
             >
               <Sparkles className="w-4 h-4 text-cyan-400" />
@@ -294,7 +295,7 @@ export function HeroSection() {
             <motion.h1
               initial={shouldAnimateIntro ? { opacity: 0, y: 30 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={shouldAnimateIntro ? { duration: 0.8, delay: 0.3 } : { duration: 0 }}
+              transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.3 } : { duration: 0 }}
               className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
             >
               Operational Compliance,
@@ -308,7 +309,7 @@ export function HeroSection() {
             <motion.p
               initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={shouldAnimateIntro ? { duration: 0.8, delay: 0.5 } : { duration: 0 }}
+              transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.5 } : { duration: 0 }}
               className="text-lg sm:text-xl text-gray-400 mb-4 max-w-2xl mx-auto text-center leading-relaxed"
             >
               The operating system for governance, controls, evidence, and audit
@@ -320,7 +321,7 @@ export function HeroSection() {
             <motion.div
               initial={shouldAnimateIntro ? { opacity: 0 } : false}
               animate={{ opacity: 1 }}
-              transition={shouldAnimateIntro ? { duration: 0.8, delay: 0.65 } : { duration: 0 }}
+              transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.65 } : { duration: 0 }}
               className="mb-10 max-w-2xl mx-auto text-center"
             >
               <p className="text-sm text-gray-500 mb-3">
@@ -351,7 +352,7 @@ export function HeroSection() {
               style={heroCtaStyle}
               initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={shouldAnimateIntro ? { duration: 0.8, delay: 0.7 } : { duration: 0 }}
+              transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.7 } : { duration: 0 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
             >
               <motion.a
@@ -386,7 +387,7 @@ export function HeroSection() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
+            transition={{ duration: duration.slower, delay: 0.9 }}
             className="xl:hidden grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-lg"
           >
             <ProofMetric value="Real-time" label="Compliance" />

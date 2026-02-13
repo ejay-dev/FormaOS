@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, ClipboardCheck, FileCheck2, ShieldCheck, Sparkles } from 'lucide-react';
+import { easing, duration } from '@/config/motion';
 
 const assurancePillars = [
   {
@@ -37,7 +38,7 @@ export function ProcurementReadiness() {
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
+          transition={{ duration: duration.slower, ease: easing.signature }}
           className="mx-auto max-w-3xl text-center"
         >
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-emerald-200">
@@ -60,8 +61,8 @@ export function ProcurementReadiness() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.55, delay: idx * 0.1 }}
-              className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm"
+              transition={{ duration: duration.slow, delay: idx * 0.1, ease: easing.signature }}
+              className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-sm"
             >
               <div className="inline-flex rounded-lg border border-emerald-400/30 bg-emerald-500/10 p-2">
                 <pillar.icon className="h-5 w-5 text-emerald-200" />
@@ -80,7 +81,7 @@ export function ProcurementReadiness() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.25 }}
+          transition={{ duration: duration.slow, delay: 0.25, ease: easing.signature }}
           className="mt-10 flex flex-col justify-center gap-3 sm:flex-row"
         >
           <Link
@@ -92,7 +93,7 @@ export function ProcurementReadiness() {
           </Link>
           <Link
             href="/contact"
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-6 py-3 text-sm font-semibold text-white hover:bg-white/[0.08]"
           >
             Talk with Sales Engineering
           </Link>

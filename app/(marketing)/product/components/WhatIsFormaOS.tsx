@@ -2,6 +2,7 @@
 
 import { Building2, FileCheck, Database, AlertTriangle, Shield, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { duration } from '@/config/motion';
 
 export function WhatIsFormaOS() {
   const unifies = [
@@ -25,7 +26,7 @@ export function WhatIsFormaOS() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="text-center mb-16"
         >
           <motion.div
@@ -57,7 +58,7 @@ export function WhatIsFormaOS() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          transition={{ duration: duration.slower, delay: 0.2 }}
           className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 sm:p-12"
         >
           <h3 className="text-xl font-semibold text-white text-center mb-8">

@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { ArrowRight, CheckCircle, Zap } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { brand } from '@/config/brand';
+import { easing, duration } from '@/config/motion';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -15,20 +16,30 @@ const trialFeatures = [
 ];
 
 export function FreeTrial() {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <section className="relative py-32 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-[#0a0f1c]">
         <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.2, 0.3, 0.2],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          animate={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  scale: [1, 1.2, 1],
+                  opacity: [0.2, 0.3, 0.2],
+                }
+          }
+          transition={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  duration: 10,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }
+          }
           className="absolute top-1/4 left-1/3 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-cyan-500/20 via-emerald-500/10 to-transparent blur-3xl"
         />
       </div>
@@ -38,8 +49,8 @@ export function FreeTrial() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="backdrop-blur-xl bg-gradient-to-br from-cyan-500/20 via-white/[0.08] to-white/[0.04] rounded-3xl border border-cyan-500/30 p-12 text-center shadow-2xl"
+          transition={{ duration: duration.slower, ease: easing.signature }}
+          className="backdrop-blur-xl bg-gradient-to-br from-cyan-500/20 via-white/[0.04] to-white/[0.02] rounded-3xl border border-cyan-500/30 p-12 text-center shadow-2xl"
         >
           {/* Floating glow effect */}
           <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-emerald-500/5 rounded-3xl blur-2xl -z-10" />
@@ -48,8 +59,8 @@ export function FreeTrial() {
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.12] border border-white/20 text-xs font-semibold uppercase tracking-wider mb-6"
+            transition={{ delay: 0.2, duration: duration.normal, ease: easing.signature }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-semibold uppercase tracking-wider mb-6"
           >
             <Zap className="h-3 w-3 text-cyan-400" />
             <span className="text-cyan-300">Risk-Free</span>

@@ -2,6 +2,7 @@
 
 import { ArrowRight, CheckCircle, Activity, UserCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { duration } from '@/config/motion';
 import dynamic from 'next/dynamic';
 
 const DemoComplianceChain = dynamic(() => import('@/components/marketing/demo/DemoComplianceChain'), { ssr: false });
@@ -21,7 +22,7 @@ export function ObligationToExecution() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="text-center mb-16"
         >
           <motion.div
@@ -81,7 +82,7 @@ export function ObligationToExecution() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          transition={{ duration: duration.slow, delay: 0.3 }}
           className="mt-12 max-w-2xl mx-auto"
         >
           <DemoComplianceChain glowColor="from-purple-500/15 to-pink-500/15" />
@@ -91,7 +92,7 @@ export function ObligationToExecution() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.4 }}
+          transition={{ duration: duration.slower, delay: 0.4 }}
           className="mt-12 grid sm:grid-cols-3 gap-6 text-center"
         >
           <div className="flex items-center justify-center gap-2 text-sm text-gray-400">

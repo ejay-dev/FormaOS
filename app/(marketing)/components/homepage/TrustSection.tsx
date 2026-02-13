@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { duration } from '@/config/motion';
 import { ArrowRight, ClipboardCheck, FileLock2, ShieldCheck } from 'lucide-react';
 import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 
@@ -56,7 +57,7 @@ export function TrustSection() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: duration.slow }}
           className="text-center mb-12"
         >
           <p className="text-sm uppercase tracking-wider text-gray-500 mb-8">
@@ -96,7 +97,7 @@ export function TrustSection() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          transition={{ duration: duration.slow, delay: 0.4 }}
           className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto"
         >
           {trustSignals.map((stat, index) => (
@@ -129,7 +130,7 @@ export function TrustSection() {
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.55 }}
+          transition={{ duration: duration.slow, delay: 0.55 }}
           className="mt-12 grid gap-3 md:grid-cols-3"
         >
           <Link

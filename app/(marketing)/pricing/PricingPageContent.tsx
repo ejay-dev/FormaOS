@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
+import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { PricingHero } from './components';
 
 const PricingTiers = dynamic(() => import('./components/PricingTiers').then((m) => m.PricingTiers), {
@@ -32,7 +33,7 @@ const FinalCTA = dynamic(() => import('./components/FinalCTA').then((m) => m.Fin
 
 export default function PricingPageContent() {
   return (
-    <div className="min-h-screen text-white overflow-hidden mk-page-bg">
+    <MarketingPageShell className="text-white" enableCinematicField={false}>
       <PricingHero />
       <VisualDivider gradient />
       <DeferredSection minHeight={920}>
@@ -58,6 +59,6 @@ export default function PricingPageContent() {
       <DeferredSection minHeight={460}>
         <FinalCTA />
       </DeferredSection>
-    </div>
+    </MarketingPageShell>
   );
 }

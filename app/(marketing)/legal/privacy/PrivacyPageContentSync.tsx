@@ -21,8 +21,10 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { duration } from '@/config/motion';
 import { VisualDivider } from '@/components/motion';
-import CinematicField from '../../components/motion/CinematicField';
+import { DeferredSection } from '../../components/shared';
+import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
 
 // ============================================================================
 // HERO SECTION - Synced with Home Page Design
@@ -73,11 +75,6 @@ function PrivacyHero() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-emerald-500/5 to-transparent rounded-full" />
       </div>
 
-      {/* Cinematic Particle Field */}
-      <div className="absolute inset-0 z-1">
-        <CinematicField />
-      </div>
-
       {/* Grid Pattern - Home Page Style */}
       <div
         className="absolute inset-0 opacity-30"
@@ -96,7 +93,7 @@ function PrivacyHero() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: duration.slow, delay: 0.2 }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 backdrop-blur-sm"
             >
               <Shield className="w-4 h-4 text-cyan-400" />
@@ -109,7 +106,7 @@ function PrivacyHero() {
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
+              transition={{ duration: duration.slower, delay: 0.3 }}
               className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
             >
               Privacy{' '}
@@ -122,7 +119,7 @@ function PrivacyHero() {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
+              transition={{ duration: duration.slower, delay: 0.5 }}
               className="text-lg sm:text-xl text-gray-400 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
             >
               FormaOS is designed for regulated industries where
@@ -135,7 +132,7 @@ function PrivacyHero() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
+              transition={{ duration: duration.slower, delay: 0.6 }}
               className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600"
             >
               <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
@@ -197,7 +194,7 @@ function TableOfContents() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: duration.slow }}
           className="relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all shadow-2xl shadow-black/30"
         >
           {/* Top accent line */}
@@ -224,7 +221,7 @@ function TableOfContents() {
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
-              transition={{ duration: 0.4 }}
+              transition={{ duration: duration.normal }}
               className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2"
             >
               {sections.map((section, index) => (
@@ -279,7 +276,7 @@ function PrivacySection({
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.6, delay }}
+      transition={{ duration: duration.slow, delay }}
       className="scroll-mt-24"
     >
       {/* Section Card - Glassmorphism */}
@@ -626,7 +623,7 @@ function PrivacyCTA() {
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all duration-500 shadow-2xl shadow-black/30"
         >
           {/* Top accent line */}
@@ -671,24 +668,20 @@ function PrivacyCTA() {
 
 export default function PrivacyPageContentSync() {
   return (
-    <div className="relative min-h-screen bg-[#0a0f1c]">
-      {/* Fixed particle background - Home Page Pattern */}
-      <div className="fixed inset-0 z-0">
-        <div className="opacity-30">
-          <CinematicField />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/3 via-transparent to-blue-500/3" />
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10">
-        <PrivacyHero />
-        <VisualDivider gradient />
+    <MarketingPageShell className="bg-[#0a0f1c]">
+      <PrivacyHero />
+      <VisualDivider gradient />
+      <DeferredSection minHeight={260}>
         <TableOfContents />
+      </DeferredSection>
+      <VisualDivider />
+      <DeferredSection minHeight={1600}>
         <PrivacyContent />
-        <VisualDivider gradient />
+      </DeferredSection>
+      <VisualDivider gradient />
+      <DeferredSection minHeight={300}>
         <PrivacyCTA />
-      </div>
-    </div>
+      </DeferredSection>
+    </MarketingPageShell>
   );
 }

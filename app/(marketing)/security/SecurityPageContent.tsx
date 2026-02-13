@@ -1,26 +1,24 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { VisualDivider } from '@/components/motion';
-import {
-  SecurityHero,
-  SecurityArchitecture,
-  EvidenceIntegrity,
-  ComplianceByDesign,
-  FinalSecurityCTA,
-} from './components';
+import { MarketingPageShell } from '../components/shared/MarketingPageShell';
+import { DeferredSection } from '../components/shared';
+import { SecurityHero } from './SecurityHero';
+
+const SecurityContent = dynamic(
+  () => import('./SecurityContent').then((m) => m.SecurityContent),
+  { ssr: false, loading: () => null },
+);
 
 export default function SecurityPageContent() {
   return (
-    <div className="min-h-screen text-white overflow-hidden mk-page-bg">
+    <MarketingPageShell>
       <SecurityHero />
       <VisualDivider gradient />
-      <SecurityArchitecture />
-      <VisualDivider />
-      <EvidenceIntegrity />
-      <VisualDivider gradient />
-      <ComplianceByDesign />
-      <VisualDivider />
-      <FinalSecurityCTA />
-    </div>
+      <DeferredSection minHeight={1200}>
+        <SecurityContent />
+      </DeferredSection>
+    </MarketingPageShell>
   );
 }

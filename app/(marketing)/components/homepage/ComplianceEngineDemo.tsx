@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { duration } from '@/config/motion';
 import dynamic from 'next/dynamic';
 
 const DemoComplianceChain = dynamic(
@@ -24,7 +25,7 @@ export function ComplianceEngineDemo() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="text-center mb-16"
         >
           <motion.div
@@ -55,7 +56,7 @@ export function ComplianceEngineDemo() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: duration.slow }}
           >
             <DemoComplianceChain />
           </motion.div>
@@ -63,7 +64,7 @@ export function ComplianceEngineDemo() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: duration.slow, delay: 0.1 }}
           >
             <DemoComplianceScore />
           </motion.div>

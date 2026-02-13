@@ -1,8 +1,9 @@
 'use client';
 
 import { Shield, Lock, Database, Users, FileCheck, Zap } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import dynamic from 'next/dynamic';
+import { easing, duration } from '@/config/motion';
 
 const DemoComplianceChain = dynamic(
   () => import('@/components/marketing/demo/DemoComplianceChain'),
@@ -38,6 +39,8 @@ const allPlansFeatures = [
 ];
 
 export function AllPlansInclude() {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <section className="relative py-32 overflow-hidden">
       {/* Background */}
@@ -51,15 +54,23 @@ export function AllPlansInclude() {
           }}
         />
         <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.2, 0.1],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          animate={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  scale: [1, 1.2, 1],
+                  opacity: [0.1, 0.2, 0.1],
+                }
+          }
+          transition={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  duration: 12,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }
+          }
           className="absolute top-1/2 left-1/4 -translate-y-1/2 w-1/3 h-1/3 rounded-full bg-gradient-to-br from-cyan-500/15 to-transparent blur-3xl"
         />
       </div>
@@ -70,14 +81,14 @@ export function AllPlansInclude() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower, ease: easing.signature }}
           className="text-center mb-16"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-semibold uppercase tracking-wider mb-6"
           >
             <Zap className="h-3 w-3 text-cyan-400" />
             <span className="text-gray-300">Core Foundation</span>
@@ -100,9 +111,9 @@ export function AllPlansInclude() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
-              whileHover={{ y: -8, transition: { duration: 0.3 } }}
-              className="group text-center p-6 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 hover:border-emerald-500/30 transition-all duration-500"
+              transition={{ duration: duration.normal, delay: idx * 0.1, ease: easing.signature }}
+              whileHover={{ y: -8, transition: { duration: duration.fast, ease: easing.smooth } }}
+              className="group text-center p-6 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/[0.04] to-white/[0.02] border border-white/[0.08] hover:border-emerald-500/30 transition-all duration-500"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10" />
 
@@ -122,7 +133,7 @@ export function AllPlansInclude() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          transition={{ duration: duration.slow, delay: 0.4, ease: easing.signature }}
           className="mt-12 max-w-xl mx-auto"
         >
           <DemoComplianceChain glowColor="from-emerald-500/15 to-cyan-500/15" />
@@ -133,8 +144,8 @@ export function AllPlansInclude() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-16 backdrop-blur-xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] rounded-3xl border border-white/10 p-8 text-center"
+          transition={{ duration: duration.slow, delay: 0.5, ease: easing.signature }}
+          className="mt-16 backdrop-blur-xl bg-gradient-to-br from-white/[0.04] to-white/[0.02] rounded-3xl border border-white/[0.08] p-8 text-center"
         >
           <p className="text-gray-400 text-base">
             No tier compromises your ability to meet regulatory expectations.

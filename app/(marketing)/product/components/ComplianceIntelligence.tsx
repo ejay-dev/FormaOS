@@ -12,6 +12,7 @@ import {
   Eye,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { duration } from '@/config/motion';
 import dynamic from 'next/dynamic';
 
 const DemoComplianceScore = dynamic(
@@ -78,7 +79,7 @@ export function ComplianceIntelligence() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="text-center mb-16"
         >
           <motion.div
@@ -111,7 +112,7 @@ export function ComplianceIntelligence() {
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: duration.slow }}
             className="lg:col-span-2"
           >
             <DemoComplianceScore glowColor="from-green-500/15 to-emerald-500/15" />

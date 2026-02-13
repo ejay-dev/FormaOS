@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { duration } from '@/config/motion';
 
 export function ValueProposition() {
   return (
@@ -42,7 +43,7 @@ export function ValueProposition() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}

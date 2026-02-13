@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { StoryHero, StoryContent } from './StoryPageContentNew';
+import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
 
@@ -21,9 +22,9 @@ export const metadata: Metadata = {
 
 export default function OurStoryPage() {
   return (
-    <div>
+    <MarketingPageShell>
       <StoryHero />
       <StoryContent />
-    </div>
+    </MarketingPageShell>
   );
 }

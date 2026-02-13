@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight, Building2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { duration } from '@/config/motion';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
@@ -44,7 +45,7 @@ export function FinalCTA() {
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: duration.slower }}
           className="relative"
         >
           {/* Executive Panel */}
@@ -56,7 +57,7 @@ export function FinalCTA() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.2, duration: 0.6 }}
+                  transition={{ delay: 0.2, duration: duration.slow }}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.12] border border-white/20 text-xs font-semibold uppercase tracking-wider mb-6 text-emerald-400"
                 >
                   <Building2 className="h-3 w-3" />
@@ -67,7 +68,7 @@ export function FinalCTA() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.3, duration: 0.8 }}
+                  transition={{ delay: 0.3, duration: duration.slower }}
                   className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-6"
                 >
                   <span className="text-white">
@@ -83,7 +84,7 @@ export function FinalCTA() {
                   initial={{ scaleX: 0 }}
                   whileInView={{ scaleX: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.8, duration: 0.8 }}
+                  transition={{ delay: 0.8, duration: duration.slower }}
                   className="w-24 h-1 bg-gradient-to-r from-emerald-500 via-cyan-500 to-blue-500 mx-auto rounded-full"
                 />
               </div>
@@ -97,7 +98,7 @@ export function FinalCTA() {
                   initial={{ opacity: 0, x: -30 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.4, duration: 0.8 }}
+                  transition={{ delay: 0.4, duration: duration.slower }}
                   className="text-center lg:text-left"
                 >
                   <h3 className="text-xl sm:text-2xl font-bold text-white mb-6">
@@ -136,7 +137,7 @@ export function FinalCTA() {
                   initial={{ opacity: 0, x: 30 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.6, duration: 0.8 }}
+                  transition={{ delay: 0.6, duration: duration.slower }}
                   className="text-center"
                 >
                   <div className="space-y-4 mb-8">
