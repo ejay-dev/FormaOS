@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { validatePassword } from '@/lib/security/password-security';
 import {
   rateLimitAuth,
-  createRateLimitHeaders,
 } from '@/lib/security/rate-limiter';
 
 export const runtime = 'nodejs';

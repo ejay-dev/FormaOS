@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { TRUST_SUBPROCESSORS } from '@/lib/trust/subprocessors';
 import { fetchPublicUptimeChecks } from '@/lib/status/public-uptime';
 

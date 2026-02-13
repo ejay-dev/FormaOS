@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { getAdminOverviewMetrics } from '@/lib/admin/metrics-service';
 import {
-  handleAdminError,
   ADMIN_CACHE_HEADERS,
 } from '@/app/api/admin/_helpers';
 

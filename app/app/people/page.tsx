@@ -9,7 +9,6 @@ import {
   MoreHorizontal, 
   CheckSquare, 
   ShieldCheck, 
-  Activity,
   Search,
   Filter,
   AlertCircle
@@ -20,7 +19,7 @@ export default function PeoplePage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [members, setMembers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [orgId, setOrgId] = useState<string | null>(null)
+  const [_orgId, setOrgId] = useState<string | null>(null)
 
   useEffect(() => {
     async function getPersonnelData() {

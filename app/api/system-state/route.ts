@@ -22,7 +22,7 @@ import { fetchSystemState } from '@/lib/system-state/server';
  * ⚡ Performance: ~80-120ms (one Supabase multi-query)
  */
 
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     // Check if user is authenticated
     const systemState = await fetchSystemState();

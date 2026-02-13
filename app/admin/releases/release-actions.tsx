@@ -14,7 +14,6 @@ import {
   Lock,
   Unlock,
   AlertTriangle,
-  RotateCcw,
   Loader2,
 } from 'lucide-react';
 

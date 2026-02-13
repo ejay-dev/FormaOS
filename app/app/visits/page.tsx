@@ -6,7 +6,7 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Plus, Calendar, Clock, MapPin, User, CheckCircle, XCircle, AlertCircle } from "lucide-react";
+import { Plus, Calendar, Clock, MapPin, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { fetchSystemState } from "@/lib/system-state/server";
 
 function formatDateTime(date: string | null) {

@@ -1,4 +1,4 @@
-import { Settings, CheckCircle, AlertCircle } from "lucide-react";
+import { CheckCircle, AlertCircle } from "lucide-react";
 
 export default function AdminSettingsPage() {
   const founderEmails = (process.env.FOUNDER_EMAILS ?? "founder@formaos.com.au")

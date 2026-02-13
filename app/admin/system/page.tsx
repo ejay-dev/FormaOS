@@ -2,7 +2,6 @@ import { getAdminFetchConfig } from '@/app/admin/lib';
 import {
   Activity,
   CheckCircle,
-  AlertCircle,
   Zap,
   Database,
   Server,

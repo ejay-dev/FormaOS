@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Loader2, Lock, Unlock, Mail, MoreVertical } from "lucide-react"
+import { Loader2, Lock, Unlock, Mail } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useComplianceAction } from "@/components/compliance-system"
 
@@ -18,7 +18,7 @@ interface UserActionButtonsProps {
  * Replaces native form POST with fetch + proper loading states.
  * Uses compliance feedback system for success/error notifications.
  */
-export function UserActionButtons({ userId, initialLocked = false }: UserActionButtonsProps) {
+export function UserActionButtons({ userId, initialLocked: _initialLocked = false }: UserActionButtonsProps) {
   const [loading, setLoading] = useState<UserAction | null>(null)
   const { reportSuccess, reportError } = useComplianceAction()
 

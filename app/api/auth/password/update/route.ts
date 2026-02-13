@@ -11,7 +11,6 @@ import {
 } from '@/lib/security/session-security';
 import {
   rateLimitAuth,
-  createRateLimitHeaders,
 } from '@/lib/security/rate-limiter';
 
 export const runtime = 'nodejs';
