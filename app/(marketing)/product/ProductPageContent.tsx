@@ -11,10 +11,6 @@ const CinematicField = dynamic(() => import('../components/motion/CinematicField
   ssr: false,
   loading: () => null,
 });
-const InteractiveProductTour = dynamic(
-  () => import('@/components/marketing/demo/InteractiveProductTour').then((m) => m.InteractiveProductTour),
-  { ssr: false, loading: () => null },
-);
 const OperationalScenarioProof = dynamic(
   () => import('@/components/marketing/demo/OperationalScenarioProof').then((m) => m.OperationalScenarioProof),
   { ssr: false, loading: () => null },
@@ -114,10 +110,6 @@ export default function ProductPageContent() {
         <ProductHero />
         <DeferredSection minHeight={640}>
           <WhatIsFormaOS />
-        </DeferredSection>
-        <VisualDivider />
-        <DeferredSection minHeight={760}>
-          <InteractiveProductTour />
         </DeferredSection>
         <VisualDivider />
         <DeferredSection minHeight={620}>
