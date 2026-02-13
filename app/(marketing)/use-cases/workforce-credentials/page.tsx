@@ -1,10 +1,5 @@
 import { Metadata } from 'next';
-import dynamic from 'next/dynamic';
-
-const WorkforceContent = dynamic(
-  () => import('./WorkforceContent').then((m) => m.default),
-  { ssr: false },
-);
+import WorkforceContent from './WorkforceContent';
 
 export const metadata: Metadata = {
   title: 'Workforce Credential Management | FormaOS',

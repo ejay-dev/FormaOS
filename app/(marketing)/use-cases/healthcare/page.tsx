@@ -1,10 +1,5 @@
 import { Metadata } from 'next';
-import dynamic from 'next/dynamic';
-
-const HealthcareContent = dynamic(
-  () => import('./HealthcareContent').then((m) => m.default),
-  { ssr: false },
-);
+import HealthcareContent from './HealthcareContent';
 
 export const metadata: Metadata = {
   title: 'Healthcare Compliance Management | FormaOS',

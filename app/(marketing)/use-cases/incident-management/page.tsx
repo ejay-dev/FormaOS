@@ -1,10 +1,5 @@
 import { Metadata } from 'next';
-import dynamic from 'next/dynamic';
-
-const IncidentContent = dynamic(
-  () => import('./IncidentContent').then((m) => m.default),
-  { ssr: false },
-);
+import IncidentContent from './IncidentContent';
 
 export const metadata: Metadata = {
   title: 'Incident Management & Investigation | FormaOS',
