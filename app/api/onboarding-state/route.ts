@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
-async function resolveOrgId(userId: string) {
-  const admin = createSupabaseAdminClient();
-  const { data, error } = await admin
+async function resolveOrgId(
+  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
+  userId: string,
+) {
+  const { data, error } = await supabase
     .from('org_members')
     .select('organization_id')
     .eq('user_id', userId)
@@ -28,13 +29,12 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const orgId = await resolveOrgId(user.id);
+  const orgId = await resolveOrgId(supabase, user.id);
   if (!orgId) {
     return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
   }
 
-  const admin = createSupabaseAdminClient();
-  const { data } = await admin
+  const { data } = await supabase
     .from('user_onboarding_state')
     .select('completed, skipped, last_step, updated_at')
     .eq('user_id', user.id)
@@ -51,7 +51,7 @@ export async function GET() {
   }
 
   const now = new Date().toISOString();
-  await admin.from('user_onboarding_state').insert({
+  await supabase.from('user_onboarding_state').insert({
     user_id: user.id,
     org_id: orgId,
     completed: false,
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const orgId = await resolveOrgId(user.id);
+  const orgId = await resolveOrgId(supabase, user.id);
   if (!orgId) {
     return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
   }
@@ -90,9 +90,8 @@ export async function POST(request: Request) {
   const lastStep = Number.isFinite(lastStepRaw) ? lastStepRaw : 0;
 
   const now = new Date().toISOString();
-  const admin = createSupabaseAdminClient();
 
-  await admin.from('user_onboarding_state').upsert(
+  await supabase.from('user_onboarding_state').upsert(
     {
       user_id: user.id,
       org_id: orgId,

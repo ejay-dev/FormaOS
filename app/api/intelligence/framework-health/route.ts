@@ -9,7 +9,6 @@ import {
 import { calculateFrameworkReadiness } from '@/lib/audit/readiness-calculator'
 import { detectComplianceGaps } from '@/lib/intelligence/gap-detector'
 import { buildComplianceRecommendations } from '@/lib/intelligence/recommendations'
-import { createSupabaseAdminClient } from '@/lib/supabase/admin'
 
 export async function GET() {
   const supabase = await createSupabaseServerClient()
@@ -60,8 +59,7 @@ export async function GET() {
     buildComplianceRecommendations(orgId),
   ])
 
-  const admin = createSupabaseAdminClient()
-  const { data: snapshots } = await admin
+  const { data: snapshots } = await supabase
     .from('org_control_evaluations')
     .select('compliance_score, last_evaluated_at')
     .eq('organization_id', orgId)
@@ -89,7 +87,7 @@ export async function GET() {
   const readinessTrend =
     latestAverage !== null && previousAverage !== null ? latestAverage - previousAverage : null
 
-  const { data: controlEvals } = await admin
+  const { data: controlEvals } = await supabase
     .from('org_control_evaluations')
     .select('status, details')
     .eq('organization_id', orgId)

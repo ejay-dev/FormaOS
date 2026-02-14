@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     next: recovery.nextPath,
   });
 
-  await logSecurityEvent({
+  logSecurityEvent({
     eventType: SecurityEventTypes.LOGIN_SUCCESS,
     userId: user.id,
     ipAddress: extractClientIP(request.headers),

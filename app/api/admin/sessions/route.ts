@@ -74,10 +74,10 @@ async function loadUserContext(
   return { profileByUserId, emailByUserId };
 }
 
-async function logUnauthorizedSessionsAccess(request: Request, userId?: string) {
+function logUnauthorizedSessionsAccess(request: Request, userId?: string) {
   const ip = extractClientIP(request.headers);
   const userAgent = request.headers.get('user-agent') ?? 'unknown';
-  await logUnauthorizedAccess({
+  logUnauthorizedAccess({
     userId,
     ip,
     userAgent,
@@ -100,7 +100,7 @@ export async function GET(request: Request) {
     } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      await logUnauthorizedSessionsAccess(request);
+      logUnauthorizedSessionsAccess(request);
       return NextResponse.json(
         { ok: false, error: 'unauthorized' },
         { status: 401 },
@@ -108,7 +108,7 @@ export async function GET(request: Request) {
     }
 
     if (!isFounder(user.email, user.id)) {
-      await logUnauthorizedSessionsAccess(request, user.id);
+      logUnauthorizedSessionsAccess(request, user.id);
       return NextResponse.json({ ok: false, error: 'forbidden' }, { status: 403 });
     }
 
@@ -156,9 +156,12 @@ export async function GET(request: Request) {
       const profile = userContext.profileByUserId.get(session.user_id);
       const email = userContext.emailByUserId.get(session.user_id) ?? null;
       const organization = session.org_id ? orgById.get(session.org_id) : null;
+      const isOnline =
+        Date.now() - new Date(session.last_seen_at).getTime() < 3 * 60 * 1000;
 
       return {
         ...session,
+        is_online: isOnline,
         user: {
           id: session.user_id,
           full_name: profile?.full_name ?? null,

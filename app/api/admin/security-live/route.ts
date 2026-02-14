@@ -103,10 +103,10 @@ async function loadUserContext(
   return { profileByUserId, emailByUserId };
 }
 
-async function logUnauthorizedSecurityAccess(request: Request, userId?: string) {
+function logUnauthorizedSecurityAccess(request: Request, userId?: string) {
   const ip = extractClientIP(request.headers);
   const userAgent = request.headers.get('user-agent') ?? 'unknown';
-  await logUnauthorizedAccess({
+  logUnauthorizedAccess({
     userId,
     ip,
     userAgent,
@@ -129,7 +129,7 @@ export async function GET(request: Request) {
     } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      await logUnauthorizedSecurityAccess(request);
+      logUnauthorizedSecurityAccess(request);
       return NextResponse.json(
         { ok: false, error: 'unauthorized' },
         { status: 401 },
@@ -137,7 +137,7 @@ export async function GET(request: Request) {
     }
 
     if (!isFounder(user.email, user.id)) {
-      await logUnauthorizedSecurityAccess(request, user.id);
+      logUnauthorizedSecurityAccess(request, user.id);
       return NextResponse.json(
         { ok: false, error: 'forbidden' },
         { status: 403 },
@@ -324,7 +324,7 @@ export async function PATCH(request: Request) {
     } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      await logUnauthorizedSecurityAccess(request);
+      logUnauthorizedSecurityAccess(request);
       return NextResponse.json(
         { ok: false, error: 'unauthorized' },
         { status: 401 },
@@ -332,7 +332,7 @@ export async function PATCH(request: Request) {
     }
 
     if (!isFounder(user.email, user.id)) {
-      await logUnauthorizedSecurityAccess(request, user.id);
+      logUnauthorizedSecurityAccess(request, user.id);
       return NextResponse.json(
         { ok: false, error: 'forbidden' },
         { status: 403 },
@@ -387,7 +387,7 @@ export async function PATCH(request: Request) {
       .eq('id', alert.event_id)
       .single();
 
-    await logUserActivity({
+    logUserActivity({
       userId: user.id,
       orgId: event?.org_id ?? undefined,
       action: 'bulk_action',

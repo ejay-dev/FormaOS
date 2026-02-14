@@ -71,7 +71,7 @@ export async function POST(request: Request) {
     );
 
     if (!rateLimitResult.success) {
-      await logRateLimitExceeded({
+      logRateLimitExceeded({
         userId: user.id,
         ip,
         userAgent: headers.get('user-agent') || 'unknown',
@@ -108,7 +108,7 @@ export async function POST(request: Request) {
       .limit(1)
       .maybeSingle();
 
-    const success = await logUserActivity({
+    logUserActivity({
       userId: user.id,
       orgId: membership?.organization_id,
       action: body.action,
@@ -117,13 +117,6 @@ export async function POST(request: Request) {
       route: body.route,
       metadata: body.metadata,
     });
-
-    if (!success) {
-      return NextResponse.json(
-        { ok: false, error: 'log_failed' },
-        { status: 500 },
-      );
-    }
 
     return NextResponse.json({ ok: true });
   } catch (error) {

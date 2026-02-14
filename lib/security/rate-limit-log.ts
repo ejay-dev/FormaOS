@@ -13,20 +13,45 @@ type RateLimitLogInput = {
   userAgent?: string | null;
 };
 
-export async function logRateLimitEvent(input: RateLimitLogInput): Promise<void> {
+const DB_WRITE_TIMEOUT_MS = 200;
+
+async function withDbTimeout<T>(
+  promise: Promise<T>,
+  operationName: string,
+): Promise<void> {
+  let timeoutId: NodeJS.Timeout | undefined;
+  const timeoutPromise = new Promise<null>((resolve) => {
+    timeoutId = setTimeout(() => {
+      console.warn(`[RateLimit] ${operationName} exceeded ${DB_WRITE_TIMEOUT_MS}ms; skipping write`);
+      resolve(null);
+    }, DB_WRITE_TIMEOUT_MS);
+  });
+
+  try {
+    await Promise.race([promise, timeoutPromise]);
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId);
+  }
+}
+
+export function logRateLimitEvent(input: RateLimitLogInput): void {
   try {
     const admin = createSupabaseAdminClient();
-    await admin.from('rate_limit_log').insert({
-      identifier: input.identifier,
-      endpoint: input.endpoint,
-      request_count: input.requestCount,
-      window_start: new Date(input.windowStart).toISOString(),
-      blocked_at: input.blocked ? new Date().toISOString() : null,
-      created_at: new Date().toISOString(),
-    });
+
+    void withDbTimeout(
+      admin.from('rate_limit_log').insert({
+        identifier: input.identifier,
+        endpoint: input.endpoint,
+        request_count: input.requestCount,
+        window_start: new Date(input.windowStart).toISOString(),
+        blocked_at: input.blocked ? new Date().toISOString() : null,
+        created_at: new Date().toISOString(),
+      }),
+      'rate_limit_log.insert',
+    );
 
     if (input.blocked) {
-      await logSecurityEvent({
+      logSecurityEvent({
         eventType: SecurityEventTypes.RATE_LIMIT_EXCEEDED,
         userId: input.userId ?? undefined,
         organizationId: input.organizationId ?? undefined,
@@ -40,8 +65,8 @@ export async function logRateLimitEvent(input: RateLimitLogInput): Promise<void>
         },
       });
     }
-  } catch (error) {
-    console.error('[RateLimit] Failed to log rate limit event:', error);
+  } catch {
+    // Best-effort logging only.
   }
 }
 
@@ -52,9 +77,9 @@ type RateLimitFailOpenInput = {
   userId?: string | null;
 };
 
-export async function logRateLimitFailOpenWarning(
+export function logRateLimitFailOpenWarning(
   input: RateLimitFailOpenInput,
-): Promise<void> {
+): void {
   const message =
     input.reason === 'redis_unavailable'
       ? '[RateLimit] Redis unavailable. Falling back to in-memory limiter (degraded enforcement).'
@@ -68,18 +93,21 @@ export async function logRateLimitFailOpenWarning(
 
   try {
     const admin = createSupabaseAdminClient();
-    await admin.from('rate_limit_log').insert({
-      identifier:
-        input.userId ??
-        input.identifier ??
-        `degraded:${input.keyPrefix.replaceAll(':', '_')}`,
-      endpoint: `[fail_open:${input.reason}] ${input.keyPrefix}`,
-      request_count: 0,
-      window_start: new Date().toISOString(),
-      blocked_at: null,
-      created_at: new Date().toISOString(),
-    });
-  } catch (error) {
-    console.error('[RateLimit] Failed to persist fail-open warning:', error);
+    void withDbTimeout(
+      admin.from('rate_limit_log').insert({
+        identifier:
+          input.userId ??
+          input.identifier ??
+          `degraded:${input.keyPrefix.replaceAll(':', '_')}`,
+        endpoint: `[fail_open:${input.reason}] ${input.keyPrefix}`,
+        request_count: 0,
+        window_start: new Date().toISOString(),
+        blocked_at: null,
+        created_at: new Date().toISOString(),
+      }),
+      'rate_limit_log.fail_open_insert',
+    );
+  } catch {
+    // Best-effort logging only.
   }
 }

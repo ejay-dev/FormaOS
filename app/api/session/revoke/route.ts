@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      await logUnauthorizedAccess({
+      logUnauthorizedAccess({
         ip: extractClientIP(request.headers),
         userAgent: request.headers.get('user-agent') ?? 'unknown',
         path: '/api/session/revoke',
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
 
     // Only founders can revoke sessions
     if (!isFounder(user.email, user.id)) {
-      await logUnauthorizedAccess({
+      logUnauthorizedAccess({
         userId: user.id,
         ip: extractClientIP(request.headers),
         userAgent: request.headers.get('user-agent') ?? 'unknown',
@@ -95,7 +95,7 @@ export async function POST(request: Request) {
     const ip = extractClientIP(request.headers);
     const userAgent = request.headers.get('user-agent') ?? 'unknown';
 
-    await logSecurityEventEnhanced({
+    logSecurityEventEnhanced({
       type: 'session_revoked',
       severity: 'high',
       userId: user.id,
@@ -111,7 +111,7 @@ export async function POST(request: Request) {
       },
     });
 
-    await logUserActivity({
+    logUserActivity({
       userId: user.id,
       orgId: sessionRecord?.org_id ?? undefined,
       action: 'role_change',

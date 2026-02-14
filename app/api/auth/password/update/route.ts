@@ -86,7 +86,7 @@ export async function POST(request: Request) {
     }
 
     await recordPasswordHistory(user.id, password);
-    await logSecurityEvent({
+    logSecurityEvent({
       eventType: SecurityEventTypes.PASSWORD_CHANGE,
       userId: user.id,
       metadata: {

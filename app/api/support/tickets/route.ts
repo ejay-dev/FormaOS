@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
 export async function POST(request: Request) {
   const supabase = await createSupabaseServerClient();
@@ -12,8 +11,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const admin = createSupabaseAdminClient();
-  const { data: membership } = await admin
+  const { data: membership } = await supabase
     .from('org_members')
     .select('organization_id')
     .eq('user_id', user.id)
@@ -31,7 +29,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Message is required' }, { status: 400 });
   }
 
-  const { error } = await admin.from('support_tickets').insert({
+  const { error } = await supabase.from('support_tickets').insert({
     user_id: user.id,
     org_id: orgId,
     route,

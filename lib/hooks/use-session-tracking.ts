@@ -1,44 +1,70 @@
 /**
  * Client-side Session Heartbeat
  *
- * Automatically sends heartbeat every 60 seconds to track active sessions
+ * Event-driven heartbeat for active session tracking
  * Call this from main app layout after authentication
  */
 
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 export function useSessionHeartbeat(enabled = true) {
-  const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const lastSentAtRef = useRef(0);
 
-  useEffect(() => {
-    if (!enabled) return;
+  const sendHeartbeat = useCallback(
+    async (reason: 'login' | 'focus' | 'route_change' | 'logout' = 'focus') => {
+      if (!enabled) return;
 
-    const sendHeartbeat = async () => {
+      const now = Date.now();
+      const minIntervalMs = 15_000;
+
+      if (now - lastSentAtRef.current < minIntervalMs && reason !== 'logout') {
+        return;
+      }
+
+      lastSentAtRef.current = now;
+
       try {
         await fetch('/api/session/heartbeat', {
           method: 'POST',
           credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reason }),
         });
       } catch (error) {
         // Silently fail - non-critical
         console.debug('[Heartbeat] Failed:', error);
       }
+    },
+    [enabled],
+  );
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    void sendHeartbeat('login');
+
+    const onFocus = () => {
+      void sendHeartbeat('focus');
     };
 
-    // Send immediately on mount
-    sendHeartbeat();
-
-    // Then every 60 seconds
-    intervalRef.current = setInterval(sendHeartbeat, 60000);
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        void sendHeartbeat('focus');
       }
     };
-  }, [enabled]);
+
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
+  }, [enabled, sendHeartbeat]);
+
+  return { sendHeartbeat };
 }
 
 /**

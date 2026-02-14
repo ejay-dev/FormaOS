@@ -70,10 +70,10 @@ async function loadUserContext(
   return { profileByUserId, emailByUserId };
 }
 
-async function logUnauthorizedActivityAccess(request: Request, userId?: string) {
+function logUnauthorizedActivityAccess(request: Request, userId?: string) {
   const ip = extractClientIP(request.headers);
   const userAgent = request.headers.get('user-agent') ?? 'unknown';
-  await logUnauthorizedAccess({
+  logUnauthorizedAccess({
     userId,
     ip,
     userAgent,
@@ -96,7 +96,7 @@ export async function GET(request: Request) {
     } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      await logUnauthorizedActivityAccess(request);
+      logUnauthorizedActivityAccess(request);
       return NextResponse.json(
         { ok: false, error: 'unauthorized' },
         { status: 401 },
@@ -104,7 +104,7 @@ export async function GET(request: Request) {
     }
 
     if (!isFounder(user.email, user.id)) {
-      await logUnauthorizedActivityAccess(request, user.id);
+      logUnauthorizedActivityAccess(request, user.id);
       return NextResponse.json({ ok: false, error: 'forbidden' }, { status: 403 });
     }
 

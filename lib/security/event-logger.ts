@@ -1,8 +1,8 @@
 /**
  * Enhanced Security Event Logger
  *
- * Writes forensic security events, runs detection rules, and opens actionable
- * alerts for high-severity incidents.
+ * Best-effort buffered writer for security events and activity records.
+ * Request handlers should enqueue and return immediately.
  */
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
@@ -33,6 +33,22 @@ const REDACTED = '[REDACTED]';
 const SENSITIVE_KEY_PATTERN =
   /(token|password|otp|secret|authorization|cookie|session|refresh)/i;
 
+const DB_WRITE_TIMEOUT_MS = 200;
+const DEFAULT_FLUSH_INTERVAL_MS = 3000;
+const DEFAULT_BATCH_SIZE = 100;
+
+const flushIntervalMs = (() => {
+  const parsed = Number(process.env.SECURITY_LOG_FLUSH_MS ?? DEFAULT_FLUSH_INTERVAL_MS);
+  if (!Number.isFinite(parsed)) return DEFAULT_FLUSH_INTERVAL_MS;
+  return Math.min(5000, Math.max(2000, Math.floor(parsed)));
+})();
+
+const maxBatchSize = (() => {
+  const parsed = Number(process.env.SECURITY_LOG_BATCH_SIZE ?? DEFAULT_BATCH_SIZE);
+  if (!Number.isFinite(parsed) || parsed <= 0) return DEFAULT_BATCH_SIZE;
+  return Math.min(500, Math.max(10, Math.floor(parsed)));
+})();
+
 export interface SecurityEventPayload {
   type: string;
   severity?: Severity;
@@ -46,6 +62,29 @@ export interface SecurityEventPayload {
   statusCode?: number;
   metadata?: Record<string, unknown>;
 }
+
+type UserActivityPayload = {
+  userId: string;
+  orgId?: string;
+  action: string;
+  entityType?: string;
+  entityId?: string;
+  route?: string;
+  metadata?: Record<string, unknown>;
+};
+
+type EnrichedSecurityEvent = {
+  payload: SecurityEventPayload;
+  baseSeverity: Severity;
+  baseMetadata: Record<string, unknown>;
+  geo: { country?: string; region?: string; city?: string };
+};
+
+const securityEventQueue: SecurityEventPayload[] = [];
+const userActivityQueue: UserActivityPayload[] = [];
+
+let flushTimer: NodeJS.Timeout | null = null;
+let flushInProgress = false;
 
 function maxSeverity(...severities: Severity[]): Severity {
   return severities.reduce((current, candidate) =>
@@ -179,70 +218,152 @@ async function runDetectionRules(
   return results.filter((result) => result.triggered);
 }
 
-/**
- * Log a security event with automatic detection rule execution.
- */
-export async function logSecurityEventEnhanced(
-  payload: SecurityEventPayload,
-): Promise<{ eventId: string; alertCreated: boolean } | null> {
+async function withDbTimeout<T>(
+  promise: Promise<T>,
+  operationName: string,
+): Promise<T | null> {
+  let timeoutId: NodeJS.Timeout | undefined;
+
+  const timeoutPromise = new Promise<null>((resolve) => {
+    timeoutId = setTimeout(() => {
+      console.warn(
+        `[Security] ${operationName} exceeded ${DB_WRITE_TIMEOUT_MS}ms; dropping batch write`,
+      );
+      resolve(null);
+    }, DB_WRITE_TIMEOUT_MS);
+  });
+
   try {
-    const admin = createSupabaseAdminClient();
+    const result = await Promise.race([promise, timeoutPromise]);
+    return result as T | null;
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId);
+  }
+}
 
-    const geo: { country?: string; region?: string; city?: string } =
-      await enrichGeoData(payload.ip).catch(() => ({}));
-    const deviceInfo = parseUserAgent(payload.userAgent);
-    const baseSeverity: Severity = payload.severity ?? 'info';
-    const baseMetadata = sanitizeMetadata({
-      ...(payload.metadata ?? {}),
-      ...deviceInfo,
-    });
+function scheduleFlush(): void {
+  if (flushTimer) return;
 
-    const { data: insertedEvent, error: insertError } = await admin
-      .from('security_events')
-      .insert({
-        type: payload.type,
-        severity: baseSeverity,
-        user_id: payload.userId,
-        org_id: payload.orgId,
-        ip_address: payload.ip,
-        user_agent: payload.userAgent,
-        device_fingerprint: payload.deviceFingerprint,
-        geo_country: geo.country,
-        geo_region: geo.region,
-        geo_city: geo.city,
-        request_path: payload.path,
-        request_method: payload.method,
-        status_code: payload.statusCode,
-        metadata: baseMetadata,
-      })
-      .select('id')
-      .single();
+  flushTimer = setTimeout(() => {
+    flushTimer = null;
+    void flushQueues();
+  }, flushIntervalMs);
+}
 
-    if (insertError || !insertedEvent) {
-      console.error('[Security] Failed to log event:', insertError);
-      return null;
-    }
+function triggerImmediateFlushIfNeeded(): void {
+  if (
+    securityEventQueue.length < maxBatchSize &&
+    userActivityQueue.length < maxBatchSize
+  ) {
+    scheduleFlush();
+    return;
+  }
+
+  if (flushTimer) {
+    clearTimeout(flushTimer);
+    flushTimer = null;
+  }
+
+  void flushQueues();
+}
+
+function drainBatch<T>(queue: T[]): T[] {
+  if (!queue.length) return [];
+  return queue.splice(0, maxBatchSize);
+}
+
+async function enrichSecurityEvents(
+  batch: SecurityEventPayload[],
+): Promise<EnrichedSecurityEvent[]> {
+  return Promise.all(
+    batch.map(async (payload) => {
+      const geo: { country?: string; region?: string; city?: string } =
+        await enrichGeoData(payload.ip).catch(() => ({}));
+      const deviceInfo = parseUserAgent(payload.userAgent);
+      const baseSeverity: Severity = payload.severity ?? 'info';
+      const baseMetadata = sanitizeMetadata({
+        ...(payload.metadata ?? {}),
+        ...deviceInfo,
+      });
+
+      return {
+        payload,
+        geo,
+        baseSeverity,
+        baseMetadata,
+      };
+    }),
+  );
+}
+
+async function flushSecurityEventsBatch(
+  admin: ReturnType<typeof createSupabaseAdminClient>,
+  batch: SecurityEventPayload[],
+): Promise<void> {
+  if (!batch.length) return;
+
+  const enrichedBatch = await enrichSecurityEvents(batch);
+
+  const insertPayload = enrichedBatch.map((entry) => ({
+    type: entry.payload.type,
+    severity: entry.baseSeverity,
+    user_id: entry.payload.userId,
+    org_id: entry.payload.orgId,
+    ip_address: entry.payload.ip,
+    user_agent: entry.payload.userAgent,
+    device_fingerprint: entry.payload.deviceFingerprint,
+    geo_country: entry.geo.country,
+    geo_region: entry.geo.region,
+    geo_city: entry.geo.city,
+    request_path: entry.payload.path,
+    request_method: entry.payload.method,
+    status_code: entry.payload.statusCode,
+    metadata: entry.baseMetadata,
+  }));
+
+  const inserted = await withDbTimeout(
+    admin.from('security_events').insert(insertPayload).select('id'),
+    'security_events.insert',
+  );
+
+  if (!inserted || (inserted as any).error || !(inserted as any).data) {
+    return;
+  }
+
+  const insertedRows = (inserted as any).data as Array<{ id: string }>;
+  if (!insertedRows.length) return;
+
+  const updates: Array<{ id: string; severity: Severity; metadata: Record<string, unknown> }> = [];
+  const alerts: Array<{ event_id: string; notes: string }> = [];
+
+  for (let index = 0; index < enrichedBatch.length; index += 1) {
+    const entry = enrichedBatch[index];
+    const insertedEventId = insertedRows[index]?.id;
+    if (!insertedEventId) continue;
 
     const context: DetectionContext = {
-      userId: payload.userId,
-      orgId: payload.orgId,
-      ip: payload.ip,
-      userAgent: payload.userAgent,
-      deviceFingerprint: payload.deviceFingerprint,
-      geoCountry: geo.country,
-      path: payload.path,
-      method: payload.method,
-      statusCode: payload.statusCode,
+      userId: entry.payload.userId,
+      orgId: entry.payload.orgId,
+      ip: entry.payload.ip,
+      userAgent: entry.payload.userAgent,
+      deviceFingerprint: entry.payload.deviceFingerprint,
+      geoCountry: entry.geo.country,
+      path: entry.payload.path,
+      method: entry.payload.method,
+      statusCode: entry.payload.statusCode,
     };
 
-    const detections = await runDetectionRules(payload, context);
+    const detections = await runDetectionRules(entry.payload, context);
     const strongestDetectionSeverity = detections.reduce<Severity>(
       (current, detection) => maxSeverity(current, detection.severity),
       'info',
     );
-    const finalSeverity = maxSeverity(baseSeverity, strongestDetectionSeverity);
+    const finalSeverity = maxSeverity(
+      entry.baseSeverity,
+      strongestDetectionSeverity,
+    );
 
-    if (detections.length > 0 || finalSeverity !== baseSeverity) {
+    if (detections.length > 0 || finalSeverity !== entry.baseSeverity) {
       const detectionDetails = detections.map((detection) => ({
         severity: detection.severity,
         reason: detection.reason,
@@ -251,93 +372,144 @@ export async function logSecurityEventEnhanced(
         ),
       }));
 
-      const metadataUpdate = {
-        ...baseMetadata,
-        detection: detectionDetails,
-      };
-
-      const { error: updateError } = await admin
-        .from('security_events')
-        .update({
-          severity: finalSeverity,
-          metadata: metadataUpdate,
-        })
-        .eq('id', insertedEvent.id);
-
-      if (updateError) {
-        console.error('[Security] Failed to update detected event:', updateError);
-      }
+      updates.push({
+        id: insertedEventId,
+        severity: finalSeverity,
+        metadata: {
+          ...entry.baseMetadata,
+          detection: detectionDetails,
+        },
+      });
     }
 
     if (shouldCreateAlert(finalSeverity)) {
       const alertReason =
         detections[0]?.reason ?? `Auto-generated ${finalSeverity} event`;
-
-      const { error: alertError } = await admin.from('security_alerts').insert({
-        event_id: insertedEvent.id,
+      alerts.push({
+        event_id: insertedEventId,
         notes: `Auto-generated: ${alertReason}`,
       });
-
-      if (alertError) {
-        console.error('[Security] Failed to create alert:', alertError);
-      }
-
-      return { eventId: insertedEvent.id, alertCreated: !alertError };
     }
+  }
 
-    return { eventId: insertedEvent.id, alertCreated: false };
-  } catch (error) {
-    console.error('[Security] logSecurityEventEnhanced error:', error);
-    return null;
+  if (updates.length > 0) {
+    await withDbTimeout(
+      Promise.all(
+        updates.map((update) =>
+          admin
+            .from('security_events')
+            .update({
+              severity: update.severity,
+              metadata: update.metadata,
+            })
+            .eq('id', update.id),
+        ),
+      ),
+      'security_events.update',
+    );
+  }
+
+  if (alerts.length > 0) {
+    await withDbTimeout(
+      admin.from('security_alerts').insert(alerts),
+      'security_alerts.insert',
+    );
   }
 }
 
-/**
- * Log high-level user activity.
- */
-export async function logUserActivity(params: {
-  userId: string;
-  orgId?: string;
-  action: string;
-  entityType?: string;
-  entityId?: string;
-  route?: string;
-  metadata?: Record<string, unknown>;
-}): Promise<boolean> {
+async function flushUserActivityBatch(
+  admin: ReturnType<typeof createSupabaseAdminClient>,
+  batch: UserActivityPayload[],
+): Promise<void> {
+  if (!batch.length) return;
+
+  const rows = batch.map((params) => ({
+    user_id: params.userId,
+    org_id: params.orgId,
+    action: params.action,
+    entity_type: params.entityType,
+    entity_id: params.entityId,
+    route: params.route,
+    metadata: sanitizeMetadata(params.metadata),
+  }));
+
+  await withDbTimeout(
+    admin.from('user_activity').insert(rows),
+    'user_activity.insert',
+  );
+}
+
+async function flushQueues(): Promise<void> {
+  if (flushInProgress) return;
+  flushInProgress = true;
+
   try {
     const admin = createSupabaseAdminClient();
 
-    const { error } = await admin.from('user_activity').insert({
-      user_id: params.userId,
-      org_id: params.orgId,
-      action: params.action,
-      entity_type: params.entityType,
-      entity_id: params.entityId,
-      route: params.route,
-      metadata: sanitizeMetadata(params.metadata),
-    });
+    while (securityEventQueue.length > 0 || userActivityQueue.length > 0) {
+      const securityBatch = drainBatch(securityEventQueue);
+      const activityBatch = drainBatch(userActivityQueue);
 
-    if (error) {
-      console.error('[Activity] Failed to log user activity:', error);
-      return false;
+      await Promise.all([
+        flushSecurityEventsBatch(admin, securityBatch),
+        flushUserActivityBatch(admin, activityBatch),
+      ]);
     }
-
-    return true;
-  } catch (error) {
-    console.error('[Activity] logUserActivity error:', error);
-    return false;
+  } catch {
+    // Best-effort logging only.
+  } finally {
+    flushInProgress = false;
+    if (securityEventQueue.length > 0 || userActivityQueue.length > 0) {
+      scheduleFlush();
+    }
   }
 }
 
-export async function logLoginAttempt(params: {
+function enqueueSecurityEvent(payload: SecurityEventPayload): void {
+  securityEventQueue.push(payload);
+  triggerImmediateFlushIfNeeded();
+}
+
+function enqueueUserActivity(payload: UserActivityPayload): void {
+  userActivityQueue.push(payload);
+  triggerImmediateFlushIfNeeded();
+}
+
+export function dispatchSecurityEventEnhanced(payload: SecurityEventPayload): void {
+  try {
+    enqueueSecurityEvent(payload);
+  } catch {
+    // Best-effort logging only.
+  }
+}
+
+export function dispatchUserActivity(params: UserActivityPayload): void {
+  try {
+    enqueueUserActivity(params);
+  } catch {
+    // Best-effort logging only.
+  }
+}
+
+export function logSecurityEventEnhanced(
+  payload: SecurityEventPayload,
+): void {
+  dispatchSecurityEventEnhanced(payload);
+}
+
+export function logUserActivity(params: UserActivityPayload): void {
+  dispatchUserActivity(params);
+}
+
+export function logLoginAttempt(params: {
   success: boolean;
   userId?: string;
   ip: string;
   userAgent: string;
   deviceFingerprint?: string;
   reason?: string;
-}) {
-  return logSecurityEventEnhanced({
+}): void {
+  dispatchSecurityEventEnhanced({
     type: params.success ? 'login_success' : 'login_failure',
     severity: params.success ? 'info' : 'medium',
     userId: params.userId,
@@ -348,7 +520,7 @@ export async function logLoginAttempt(params: {
   });
 }
 
-export async function logUnauthorizedAccess(params: {
+export function logUnauthorizedAccess(params: {
   userId?: string;
   orgId?: string;
   ip: string;
@@ -356,8 +528,8 @@ export async function logUnauthorizedAccess(params: {
   path: string;
   method: string;
   userRole?: string;
-}) {
-  return logSecurityEventEnhanced({
+}): void {
+  dispatchSecurityEventEnhanced({
     type: 'unauthorized_access_attempt',
     severity: 'high',
     userId: params.userId,
@@ -370,13 +542,13 @@ export async function logUnauthorizedAccess(params: {
   });
 }
 
-export async function logRateLimitExceeded(params: {
+export function logRateLimitExceeded(params: {
   userId?: string;
   ip: string;
   userAgent: string;
   path?: string;
-}) {
-  return logSecurityEventEnhanced({
+}): void {
+  dispatchSecurityEventEnhanced({
     type: 'rate_limit_exceeded',
     severity: 'medium',
     userId: params.userId,

@@ -34,7 +34,7 @@ export async function POST(request: Request) {
       );
     }
 
-    await logSecurityEvent({
+    logSecurityEvent({
       eventType: SecurityEventTypes.MFA_DISABLED,
       userId: user.id,
       metadata: { source: 'settings' },

@@ -70,7 +70,7 @@ const RATE_LIMITS = {
 
   HEARTBEAT: {
     windowMs: 60 * 1000, // 1 minute
-    maxRequests: 2, // Allow 2 requests per minute (60s interval + buffer)
+    maxRequests: 20, // Event-driven heartbeats can cluster on focus/navigation
     keyPrefix: 'rl:heartbeat',
   } as RateLimitConfig,
 

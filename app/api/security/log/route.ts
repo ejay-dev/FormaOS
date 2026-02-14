@@ -54,7 +54,7 @@ export async function POST(request: Request) {
     const ipAddress = extractClientIP(request.headers);
     const userAgent = request.headers.get('user-agent') ?? undefined;
 
-    await logSecurityEvent({
+    logSecurityEvent({
       eventType,
       userId: user?.id,
       ipAddress,

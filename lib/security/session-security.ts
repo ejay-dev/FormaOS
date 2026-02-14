@@ -7,7 +7,7 @@
  */
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { logSecurityEventEnhanced } from '@/lib/security/event-logger';
+import { dispatchSecurityEventEnhanced } from '@/lib/security/event-logger';
 
 export interface SessionInfo {
   userId: string;
@@ -198,7 +198,7 @@ export async function validateSession(
       });
 
       // Log security event
-      await logSecurityEvent({
+      logSecurityEvent({
         eventType: 'session_fingerprint_mismatch',
         userId: session.user_id,
         ipAddress: currentIP,
@@ -322,28 +322,29 @@ export async function getUserActiveSessions(userId: string): Promise<
 /**
  * Log a security event
  */
-export async function logSecurityEvent(event: {
+export function logSecurityEvent(event: {
   eventType: string;
   userId?: string;
   organizationId?: string;
   ipAddress?: string;
   userAgent?: string;
   metadata?: Record<string, any>;
-}): Promise<void> {
-  const admin = createSupabaseAdminClient();
+}): void {
+  const withTimeout = async <T,>(promise: Promise<T>, operationName: string) => {
+    let timeoutId: NodeJS.Timeout | undefined;
+    const timeoutPromise = new Promise<null>((resolve) => {
+      timeoutId = setTimeout(() => {
+        console.warn(`[Security] ${operationName} exceeded 200ms; skipping write`);
+        resolve(null);
+      }, 200);
+    });
 
-  const { error } = await admin.from('security_audit_log').insert({
-    event_type: event.eventType,
-    user_id: event.userId,
-    organization_id: event.organizationId,
-    ip_address: event.ipAddress,
-    user_agent: event.userAgent,
-    metadata: event.metadata || {},
-  });
-
-  if (error) {
-    console.error('[Security] Failed to log security event:', error);
-  }
+    try {
+      await Promise.race([promise, timeoutPromise]);
+    } finally {
+      if (timeoutId) clearTimeout(timeoutId);
+    }
+  };
 
   const ip = event.ipAddress || '0.0.0.0';
   const userAgent = event.userAgent || 'unknown';
@@ -375,27 +376,44 @@ export async function logSecurityEvent(event: {
     [SecurityEventTypes.PASSWORD_RESET_REQUEST]: 'medium',
   };
 
-  await logSecurityEventEnhanced({
-    type: mappedEventType,
-    severity: severityByType[event.eventType] ?? 'medium',
-    userId: event.userId,
-    orgId: event.organizationId,
-    ip,
-    userAgent,
-    path:
-      typeof event.metadata?.path === 'string'
-        ? event.metadata.path
-        : undefined,
-    method:
-      typeof event.metadata?.method === 'string'
-        ? event.metadata.method
-        : undefined,
-    statusCode:
-      typeof event.metadata?.statusCode === 'number'
-        ? event.metadata.statusCode
-        : undefined,
-    metadata: event.metadata,
-  });
+  try {
+    const admin = createSupabaseAdminClient();
+    void withTimeout(
+      admin.from('security_audit_log').insert({
+        event_type: event.eventType,
+        user_id: event.userId,
+        organization_id: event.organizationId,
+        ip_address: event.ipAddress,
+        user_agent: event.userAgent,
+        metadata: event.metadata || {},
+      }),
+      'security_audit_log.insert',
+    );
+
+    dispatchSecurityEventEnhanced({
+      type: mappedEventType,
+      severity: severityByType[event.eventType] ?? 'medium',
+      userId: event.userId,
+      orgId: event.organizationId,
+      ip,
+      userAgent,
+      path:
+        typeof event.metadata?.path === 'string'
+          ? event.metadata.path
+          : undefined,
+      method:
+        typeof event.metadata?.method === 'string'
+          ? event.metadata.method
+          : undefined,
+      statusCode:
+        typeof event.metadata?.statusCode === 'number'
+          ? event.metadata.statusCode
+          : undefined,
+      metadata: event.metadata,
+    });
+  } catch {
+    // Best-effort logging only.
+  }
 }
 
 /**

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { createHash } from 'crypto';
 import { cookies } from 'next/headers';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
@@ -53,6 +54,32 @@ async function clearSupabaseCookies(response: NextResponse) {
   }
 }
 
+async function persistLogoutHeartbeat(
+  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
+  userId?: string,
+) {
+  if (!userId) return;
+
+  try {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session?.access_token) return;
+
+    const sessionId = createHash('sha256')
+      .update(session.access_token)
+      .digest('hex');
+
+    await supabase.rpc('update_session_heartbeat', {
+      p_session_id: sessionId,
+      p_user_id: userId,
+    });
+  } catch {
+    // Best-effort heartbeat only.
+  }
+}
+
 export async function GET(request: Request) {
   const supabase = await createSupabaseServerClient();
   let user = null;
@@ -76,8 +103,10 @@ export async function GET(request: Request) {
     await revokeSessionByToken(sessionToken);
   }
 
+  await persistLogoutHeartbeat(supabase, user?.id);
+
   if (user) {
-    await logSecurityEvent({
+    logSecurityEvent({
       eventType: SecurityEventTypes.LOGOUT,
       userId: user.id,
       metadata: { source: 'signout' },
@@ -125,8 +154,10 @@ export async function POST(request: Request) {
     await revokeSessionByToken(sessionToken);
   }
 
+  await persistLogoutHeartbeat(supabase, user?.id);
+
   if (user) {
-    await logSecurityEvent({
+    logSecurityEvent({
       eventType: SecurityEventTypes.LOGOUT,
       userId: user.id,
       metadata: { source: 'signout' },

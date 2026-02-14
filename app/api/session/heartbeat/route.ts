@@ -1,20 +1,16 @@
 /**
  * Session Heartbeat API
  *
- * Tracks active sessions in real-time:
- * - Updates last_seen_at every ~60 seconds
- * - Creates/updates active_sessions records
- * - Logs session context (IP, UA, device, geo)
- * - Rate limited: 2 requests per minute per user
+ * Event-driven active session tracking:
+ * - Writes on login, focus regain, route change, and logout
+ * - Uses authenticated RPC (no service-role client in user route)
+ * - Rate limited to prevent noisy writes
  */
 
 import { NextResponse } from 'next/server';
 import { createHash } from 'crypto';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { extractClientIP } from '@/lib/security/session-security';
-import { generateDeviceFingerprint } from '@/lib/security/session-security';
-import { enrichGeoData, parseUserAgent } from '@/lib/security/detection-rules';
 import { isSecurityMonitoringEnabled } from '@/lib/security/monitoring-flags';
 import { logRateLimitExceeded } from '@/lib/security/event-logger';
 import {
@@ -26,7 +22,7 @@ import {
 const RATE_LIMITS = {
   HEARTBEAT: {
     windowMs: 60 * 1000, // 1 minute
-    maxRequests: 2, // Allow 2 requests per minute
+    maxRequests: 20, // Event-driven writes can cluster during navigation/focus
     keyPrefix: 'rl:heartbeat',
   },
 };
@@ -60,7 +56,7 @@ export async function POST(request: Request) {
     );
 
     if (!rateLimitResult.success) {
-      await logRateLimitExceeded({
+      logRateLimitExceeded({
         userId: user.id,
         ip,
         userAgent: headers.get('user-agent') || 'unknown',
@@ -73,16 +69,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Extract request context
-    const userAgent = headers.get('user-agent') || 'unknown';
-    const acceptLanguage = headers.get('accept-language') || undefined;
-    const acceptEncoding = headers.get('accept-encoding') || undefined;
-
-    const deviceFingerprint = generateDeviceFingerprint(
-      userAgent,
-      acceptLanguage,
-      acceptEncoding,
-    );
+    const body = (await request.json().catch(() => ({}))) as {
+      reason?: 'login' | 'focus' | 'route_change' | 'logout';
+    };
+    const reason = body.reason ?? 'focus';
 
     // Get Supabase session ID from access token
     const {
@@ -100,44 +90,12 @@ export async function POST(request: Request) {
       .update(session.access_token)
       .digest('hex');
 
-    // Get org_id if user is in an org
-    const admin = createSupabaseAdminClient();
-    const { data: membership } = await admin
-      .from('org_members')
-      .select('organization_id')
-      .eq('user_id', user.id)
-      .limit(1)
-      .maybeSingle();
-
-    const orgId = membership?.organization_id;
-
-    // Enrich with geo data (non-blocking)
-    const geo = await enrichGeoData(ip).catch(() => ({
-      country: undefined,
-      region: undefined,
-      city: undefined,
-    }));
-    const deviceInfo = parseUserAgent(userAgent);
-
-    // Update or create active session
-    const { error: sessionError } = await admin.from('active_sessions').upsert(
+    const { error: sessionError } = await supabase.rpc(
+      'update_session_heartbeat',
       {
-        session_id: sessionId,
-        user_id: user.id,
-        org_id: orgId,
-        last_seen_at: new Date().toISOString(),
-        ip_address: ip,
-        user_agent: userAgent,
-        device_fingerprint: deviceFingerprint,
-        geo_country: geo.country,
-        geo_region: geo.region,
-        geo_city: geo.city,
-        metadata: deviceInfo,
-        expires_at: new Date(
-          Date.now() + 7 * 24 * 60 * 60 * 1000,
-        ).toISOString(), // 7 days
+        p_session_id: sessionId,
+        p_user_id: user.id,
       },
-      { onConflict: 'session_id' },
     );
 
     if (sessionError) {
@@ -148,7 +106,7 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, reason });
   } catch (error) {
     console.error('[Heartbeat] Error:', error);
     return NextResponse.json(

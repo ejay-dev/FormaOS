@@ -21,7 +21,7 @@ export function SecurityTrackingBootstrap() {
   const lastTrackedPathRef = useRef<string | null>(null);
   const enabled = isClientTrackingEnabled();
 
-  useSessionHeartbeat(enabled);
+  const { sendHeartbeat } = useSessionHeartbeat(enabled);
   const { trackActivity } = useActivityTracker(enabled);
 
   useEffect(() => {
@@ -30,6 +30,7 @@ export function SecurityTrackingBootstrap() {
     if (lastTrackedPathRef.current === pathname) return;
 
     lastTrackedPathRef.current = pathname;
+    void sendHeartbeat('route_change');
     void trackActivity({
       action: 'page_view',
       route: pathname,
@@ -37,7 +38,7 @@ export function SecurityTrackingBootstrap() {
         source: 'security_tracking_bootstrap',
       },
     });
-  }, [enabled, pathname, trackActivity]);
+  }, [enabled, pathname, sendHeartbeat, trackActivity]);
 
   return null;
 }
