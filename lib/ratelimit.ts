@@ -31,6 +31,27 @@ interface RateLimitResult {
   reset: number;
 }
 
+const FAIL_OPEN_WARNING_COOLDOWN_MS = 5 * 60 * 1000;
+const failOpenWarningTimestamps = new Map<string, number>();
+
+function logFailOpenWarning(
+  reason: string,
+  metadata: Record<string, unknown> = {}
+): void {
+  const now = Date.now();
+  const lastLogAt = failOpenWarningTimestamps.get(reason) ?? 0;
+  if (now - lastLogAt < FAIL_OPEN_WARNING_COOLDOWN_MS) {
+    return;
+  }
+
+  failOpenWarningTimestamps.set(reason, now);
+  console.warn('[RateLimit][FailOpen]', {
+    reason,
+    metadata,
+    timestamp: new Date(now).toISOString(),
+  });
+}
+
 /**
  * Generic rate limiter using sliding window
  */
@@ -42,7 +63,7 @@ async function rateLimit(
   // If Redis not configured, allow all requests (dev mode)
   const { url, token } = getRedisConfig();
   if (!url || !token) {
-    console.warn('[RateLimit] Redis not configured, allowing all requests');
+    logFailOpenWarning('redis_not_configured', { key, limit, windowMs });
     return {
       success: true,
       limit,
@@ -54,7 +75,7 @@ async function rateLimit(
   try {
     const redis = getRedisClient();
     if (!redis) {
-      console.warn('[RateLimit] Redis client unavailable, allowing all requests');
+      logFailOpenWarning('redis_client_unavailable', { key, limit, windowMs });
       return {
         success: true,
         limit,
@@ -108,6 +129,12 @@ async function rateLimit(
     };
   } catch (error) {
     console.error('[RateLimit] Error:', error);
+    logFailOpenWarning('redis_rate_limit_error', {
+      key,
+      limit,
+      windowMs,
+      error: error instanceof Error ? error.message : String(error),
+    });
     // On error, allow the request (fail open)
     return {
       success: true,

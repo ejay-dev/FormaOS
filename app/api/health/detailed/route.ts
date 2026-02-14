@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { timingSafeEqual } from 'crypto';
 import { createClient } from '@supabase/supabase-js';
 import { checkRedisHealth } from '@/lib/redis/health';
 import { getSupabaseServiceRoleKey, getSupabaseUrl } from '@/lib/supabase/env';
@@ -11,7 +12,85 @@ interface DetailedCheck {
   error?: string;
 }
 
-export async function GET() {
+const FOUNDER_TOKEN_HEADER = 'x-founder-token';
+
+function isDetailedHealthProtectionEnabled(): boolean {
+  return process.env.HEALTH_DETAILED_PROTECT === '1';
+}
+
+function extractFounderToken(request: Request): string {
+  const headerToken = request.headers.get(FOUNDER_TOKEN_HEADER)?.trim();
+  if (headerToken) return headerToken;
+
+  const authHeader = request.headers.get('authorization')?.trim();
+  if (!authHeader) return '';
+  if (!authHeader.toLowerCase().startsWith('bearer ')) return '';
+  return authHeader.slice(7).trim();
+}
+
+function timingSafeTokenMatch(provided: string, expected: string): boolean {
+  const providedBuffer = Buffer.from(provided, 'utf8');
+  const expectedBuffer = Buffer.from(expected, 'utf8');
+
+  return (
+    providedBuffer.length === expectedBuffer.length &&
+    timingSafeEqual(providedBuffer, expectedBuffer)
+  );
+}
+
+function verifyFounderToken(request: Request): { ok: boolean; status: number; error?: string } {
+  const expectedToken =
+    process.env.HEALTH_DETAILED_FOUNDER_TOKEN ??
+    process.env.FOUNDER_API_TOKEN ??
+    '';
+
+  if (!expectedToken) {
+    return {
+      ok: false,
+      status: 500,
+      error:
+        'HEALTH_DETAILED_FOUNDER_TOKEN not configured while HEALTH_DETAILED_PROTECT=1',
+    };
+  }
+
+  const providedToken = extractFounderToken(request);
+  if (!providedToken) {
+    return { ok: false, status: 401, error: 'Unauthorized' };
+  }
+
+  if (!timingSafeTokenMatch(providedToken, expectedToken)) {
+    return { ok: false, status: 401, error: 'Unauthorized' };
+  }
+
+  return { ok: true, status: 200 };
+}
+
+export async function GET(request: Request) {
+  if (isDetailedHealthProtectionEnabled()) {
+    const verification = verifyFounderToken(request);
+    if (!verification.ok) {
+      return NextResponse.json(
+        {
+          error: verification.error ?? 'Unauthorized',
+          code:
+            verification.status === 500
+              ? 'HEALTH_DETAILED_TOKEN_CONFIG_ERROR'
+              : 'FOUNDER_TOKEN_REQUIRED',
+        },
+        {
+          status: verification.status,
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Content-Type': 'application/json',
+            ...(verification.status === 401
+              ? { 'WWW-Authenticate': 'Bearer realm="health-detailed"' }
+              : {}),
+          },
+        },
+      );
+    }
+  }
+
   const startTime = Date.now();
   const checks: DetailedCheck[] = [];
 

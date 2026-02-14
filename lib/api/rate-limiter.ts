@@ -9,10 +9,32 @@ import { createSupabaseServerClient as createClient } from '@/lib/supabase/serve
 import { logActivity } from '@/lib/audit-trail';
 import { getRedisClient, getRedisConfig } from '@/lib/redis/client';
 
+const FAIL_OPEN_WARNING_COOLDOWN_MS = 5 * 60 * 1000;
+const failOpenWarningTimestamps = new Map<string, number>();
+
 const hasRedisConfig = () => {
   const { url, token } = getRedisConfig();
   return Boolean(url && token);
 };
+
+function logFailOpenWarning(
+  reason: string,
+  metadata: Record<string, unknown> = {},
+): void {
+  const now = Date.now();
+  const lastLogAt = failOpenWarningTimestamps.get(reason) ?? 0;
+
+  if (now - lastLogAt < FAIL_OPEN_WARNING_COOLDOWN_MS) {
+    return;
+  }
+
+  failOpenWarningTimestamps.set(reason, now);
+  console.warn('[rate-limit][fail-open]', {
+    reason,
+    metadata,
+    timestamp: new Date(now).toISOString(),
+  });
+}
 
 export type RateLimitTier = 'free' | 'starter' | 'professional' | 'enterprise';
 
@@ -85,6 +107,12 @@ export async function checkRateLimit(
 
   try {
     if (!hasRedisConfig()) {
+      logFailOpenWarning('redis_not_configured', {
+        area: 'organization_rate_limit',
+        organizationId,
+        tier,
+        endpoint,
+      });
       return {
         allowed: true,
         remaining: config.requestsPerMinute,
@@ -93,6 +121,12 @@ export async function checkRateLimit(
     }
     const redis = getRedisClient();
     if (!redis) {
+      logFailOpenWarning('redis_client_unavailable', {
+        area: 'organization_rate_limit',
+        organizationId,
+        tier,
+        endpoint,
+      });
       return {
         allowed: true,
         remaining: config.requestsPerMinute,
@@ -149,6 +183,13 @@ export async function checkRateLimit(
     };
   } catch (error) {
     console.error('Rate limit check failed:', error);
+    logFailOpenWarning('redis_rate_limit_error', {
+      area: 'organization_rate_limit',
+      organizationId,
+      tier,
+      endpoint,
+      error: error instanceof Error ? error.message : String(error),
+    });
     // Fail open - allow request if Redis is down
     return {
       allowed: true,
@@ -168,10 +209,16 @@ export async function checkIpRateLimit(ipAddress: string): Promise<boolean> {
 
   try {
     if (!hasRedisConfig()) {
+      logFailOpenWarning('redis_not_configured', {
+        area: 'ip_rate_limit',
+      });
       return true;
     }
     const redis = getRedisClient();
     if (!redis) {
+      logFailOpenWarning('redis_client_unavailable', {
+        area: 'ip_rate_limit',
+      });
       return true;
     }
     const count = await redis.incr(key);
@@ -182,6 +229,10 @@ export async function checkIpRateLimit(ipAddress: string): Promise<boolean> {
     return count <= limit;
   } catch (error) {
     console.error('IP rate limit check failed:', error);
+    logFailOpenWarning('redis_rate_limit_error', {
+      area: 'ip_rate_limit',
+      error: error instanceof Error ? error.message : String(error),
+    });
     return true; // Fail open
   }
 }

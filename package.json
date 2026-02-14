@@ -8,6 +8,7 @@
     "design:check": "node scripts/design-governance-check.mjs",
     "check:app-links": "node scripts/app-link-integrity-audit.mjs",
     "check:admin-nav": "node scripts/check-admin-nav-integrity.mjs",
+    "check:security-baseline": "node scripts/check-security-baseline.mjs",
     "predev": "npm run check-root && npm run check-env",
     "dev": "next dev",
     "prebuild": "npm run check-root && npm run check-env",

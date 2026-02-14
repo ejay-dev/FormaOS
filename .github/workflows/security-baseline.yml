@@ -1,0 +1,40 @@
+name: Security Baseline (Phase A)
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  security-baseline-audit:
+    name: Security Baseline Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Run baseline audit (non-blocking mode)
+        run: node scripts/check-security-baseline.mjs
+        env:
+          SECURITY_BASELINE_STRICT: "0"
+
+      - name: Upload baseline report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-baseline-report
+          path: artifacts/security-baseline-report.json
+          retention-days: 30
