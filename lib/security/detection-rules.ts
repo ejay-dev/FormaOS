@@ -11,6 +11,7 @@
  */
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { getGeoIpProvider } from './geo-ip';
 
 export interface DetectionContext {
   userId?: string;
@@ -108,10 +109,11 @@ export async function detectImpossibleTravel(
     .from('security_events')
     .select('geo_country, created_at')
     .eq('user_id', context.userId)
+    .eq('type', 'login_success')
     .not('geo_country', 'is', null)
     .gte('created_at', twoHoursAgo)
     .order('created_at', { ascending: false })
-    .limit(5);
+    .limit(20);
 
   if (error || !data || data.length === 0) {
     return { triggered: false, severity: 'info' };
@@ -119,7 +121,7 @@ export async function detectImpossibleTravel(
 
   // Check if user has logged in from a different country recently
   const countries = new Set(data.map((e: any) => e.geo_country));
-  if (countries.size > 1 && !countries.has(context.geoCountry)) {
+  if (countries.size > 1) {
     return {
       triggered: true,
       severity: 'medium',
@@ -152,12 +154,12 @@ export async function detectNewDevice(
 
   const admin = createSupabaseAdminClient();
 
-  const { data, error } = await admin
+  const { count, error } = await admin
     .from('security_events')
-    .select('id')
+    .select('id', { head: true, count: 'exact' })
     .eq('user_id', context.userId)
     .eq('device_fingerprint', context.deviceFingerprint)
-    .limit(1);
+    .eq('type', 'login_success');
 
   if (error) {
     console.error('[Detection] New device check failed:', error);
@@ -165,7 +167,7 @@ export async function detectNewDevice(
   }
 
   // New device if no previous events found
-  if (!data || data.length === 0) {
+  if ((count ?? 0) <= 1) {
     return {
       triggered: true,
       severity: 'low',
@@ -262,7 +264,7 @@ export async function detectPrivilegeEscalation(
     const admin = createSupabaseAdminClient();
 
     const { data, error } = await admin
-      .from('organization_members')
+      .from('org_members')
       .select('id')
       .eq('user_id', context.userId)
       .eq('organization_id', context.orgId)
@@ -321,11 +323,25 @@ export async function detectRateLimitViolation(
     return { triggered: false, severity: 'info' };
   }
 
-  // Trigger alert if multiple violations in short window
-  if ((count ?? 0) >= 5) {
+  // Trigger MEDIUM warning if multiple violations in short window
+  if ((count ?? 0) >= 5 && (count ?? 0) < 10) {
     return {
       triggered: true,
       severity: 'medium',
+      reason: `${count} rate limit violations from IP within 5 minutes`,
+      metadata: {
+        count,
+        ip: context.ip,
+        path: context.path,
+      },
+    };
+  }
+
+  // Escalate to HIGH when abuse pattern is persistent.
+  if ((count ?? 0) >= 10) {
+    return {
+      triggered: true,
+      severity: 'high',
       reason: `${count} rate limit violations from IP within 5 minutes`,
       metadata: {
         count,
@@ -351,9 +367,23 @@ export async function enrichGeoData(_ip: string): Promise<{
   region?: string;
   city?: string;
 }> {
-  // TODO: Integrate with geo IP service (MaxMind, ipapi, etc.)
-  // For now, return empty to not block requests
-  return {};
+  const ip = _ip.trim();
+  if (!ip || ip === '0.0.0.0' || ip === '::1' || ip === '127.0.0.1') {
+    return {};
+  }
+
+  try {
+    const provider = getGeoIpProvider();
+    const result = await provider.lookup(ip);
+    if (!result) return {};
+    return {
+      country: result.country,
+      region: result.region,
+      city: result.city,
+    };
+  } catch {
+    return {};
+  }
 }
 
 /**

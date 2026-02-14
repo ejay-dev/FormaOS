@@ -2,19 +2,26 @@
  * Session Heartbeat API
  *
  * Tracks active sessions in real-time:
- * - Updates last_seen_at every ~5 minutes
+ * - Updates last_seen_at every ~60 seconds
  * - Creates/updates active_sessions records
  * - Logs session context (IP, UA, device, geo)
  * - Rate limited: 2 requests per minute per user
  */
 
 import { NextResponse } from 'next/server';
+import { createHash } from 'crypto';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { extractClientIP } from '@/lib/security/session-security';
 import { generateDeviceFingerprint } from '@/lib/security/session-security';
 import { enrichGeoData, parseUserAgent } from '@/lib/security/detection-rules';
-import { checkRateLimit, createRateLimitHeaders, createRateLimitedResponse } from '@/lib/security/rate-limiter';
+import { isSecurityMonitoringEnabled } from '@/lib/security/monitoring-flags';
+import { logRateLimitExceeded } from '@/lib/security/event-logger';
+import {
+  checkRateLimit,
+  createRateLimitHeaders,
+  createRateLimitedResponse,
+} from '@/lib/security/rate-limiter';
 
 const RATE_LIMITS = {
   HEARTBEAT: {
@@ -25,6 +32,10 @@ const RATE_LIMITS = {
 };
 
 export async function POST(request: Request) {
+  if (!isSecurityMonitoringEnabled()) {
+    return NextResponse.json({ ok: true, disabled: true });
+  }
+
   try {
     const supabase = await createSupabaseServerClient();
     const {
@@ -49,6 +60,12 @@ export async function POST(request: Request) {
     );
 
     if (!rateLimitResult.success) {
+      await logRateLimitExceeded({
+        userId: user.id,
+        ip,
+        userAgent: headers.get('user-agent') || 'unknown',
+        path: '/api/session/heartbeat',
+      });
       return createRateLimitedResponse(
         'Too many heartbeat requests. Please wait before trying again.',
         429,
@@ -79,16 +96,18 @@ export async function POST(request: Request) {
       );
     }
 
-    const sessionId = session.access_token.substring(0, 32); // Use first 32 chars as session ID
+    const sessionId = createHash('sha256')
+      .update(session.access_token)
+      .digest('hex');
 
     // Get org_id if user is in an org
     const admin = createSupabaseAdminClient();
     const { data: membership } = await admin
-      .from('organization_members')
+      .from('org_members')
       .select('organization_id')
       .eq('user_id', user.id)
       .limit(1)
-      .single();
+      .maybeSingle();
 
     const orgId = membership?.organization_id;
 

@@ -3,6 +3,7 @@ import { AdminShell } from '@/app/admin/components/admin-shell';
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { ComplianceSystemProvider } from '@/components/compliance-system/provider';
 import { CommandPalette } from '@/components/command-palette/CommandPalette';
+import { SecurityTrackingBootstrap } from '@/components/security/SecurityTrackingBootstrap';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,6 +30,7 @@ export default async function AdminLayout({
   return (
     <ComplianceSystemProvider>
       <AdminShell email={userEmail}>
+        <SecurityTrackingBootstrap />
         {children}
         <CommandPalette />
       </AdminShell>

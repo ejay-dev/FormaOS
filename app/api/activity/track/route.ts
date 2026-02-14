@@ -8,9 +8,17 @@
 
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { logUserActivity } from '@/lib/security/event-logger';
+import {
+  logRateLimitExceeded,
+  logUserActivity,
+} from '@/lib/security/event-logger';
 import { extractClientIP } from '@/lib/security/session-security';
-import { checkRateLimit, createRateLimitHeaders, createRateLimitedResponse } from '@/lib/security/rate-limiter';
+import { isSecurityMonitoringEnabled } from '@/lib/security/monitoring-flags';
+import {
+  checkRateLimit,
+  createRateLimitHeaders,
+  createRateLimitedResponse,
+} from '@/lib/security/rate-limiter';
 
 const RATE_LIMITS = {
   ACTIVITY: {
@@ -35,6 +43,10 @@ const ALLOWED_ACTIONS = [
 ] as const;
 
 export async function POST(request: Request) {
+  if (!isSecurityMonitoringEnabled()) {
+    return NextResponse.json({ ok: true, disabled: true });
+  }
+
   try {
     const supabase = await createSupabaseServerClient();
     const {
@@ -59,6 +71,12 @@ export async function POST(request: Request) {
     );
 
     if (!rateLimitResult.success) {
+      await logRateLimitExceeded({
+        userId: user.id,
+        ip,
+        userAgent: headers.get('user-agent') || 'unknown',
+        path: '/api/activity/track',
+      });
       return createRateLimitedResponse(
         'Too many activity tracking requests. Please slow down.',
         429,
@@ -84,7 +102,7 @@ export async function POST(request: Request) {
 
     // Get org context if available
     const { data: membership } = await supabase
-      .from('organization_members')
+      .from('org_members')
       .select('organization_id')
       .eq('user_id', user.id)
       .limit(1)

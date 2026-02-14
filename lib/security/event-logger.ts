@@ -1,8 +1,8 @@
 /**
  * Enhanced Security Event Logger
  *
- * Integrates with detection rules to log security events and create alerts
- * Extends existing session-security logging with enterprise features
+ * Writes forensic security events, runs detection rules, and opens actionable
+ * alerts for high-severity incidents.
  */
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
@@ -16,11 +16,26 @@ import {
   enrichGeoData,
   parseUserAgent,
   type DetectionContext,
+  type DetectionResult,
 } from './detection-rules';
+
+type Severity = 'info' | 'low' | 'medium' | 'high' | 'critical';
+
+const SEVERITY_RANK: Record<Severity, number> = {
+  info: 0,
+  low: 1,
+  medium: 2,
+  high: 3,
+  critical: 4,
+};
+
+const REDACTED = '[REDACTED]';
+const SENSITIVE_KEY_PATTERN =
+  /(token|password|otp|secret|authorization|cookie|session|refresh)/i;
 
 export interface SecurityEventPayload {
   type: string;
-  severity?: 'info' | 'low' | 'medium' | 'high' | 'critical';
+  severity?: Severity;
   userId?: string;
   orgId?: string;
   ip: string;
@@ -29,11 +44,143 @@ export interface SecurityEventPayload {
   path?: string;
   method?: string;
   statusCode?: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
+}
+
+function maxSeverity(...severities: Severity[]): Severity {
+  return severities.reduce((current, candidate) =>
+    SEVERITY_RANK[candidate] > SEVERITY_RANK[current] ? candidate : current,
+  );
+}
+
+function shouldCreateAlert(severity: Severity): boolean {
+  return severity === 'high' || severity === 'critical';
+}
+
+function partiallyMaskEmail(value: string): string {
+  const normalized = value.trim();
+  const atIndex = normalized.indexOf('@');
+  if (atIndex <= 1) return REDACTED;
+  const local = normalized.slice(0, atIndex);
+  const domain = normalized.slice(atIndex + 1);
+  if (!domain) return REDACTED;
+  return `${local.slice(0, 2)}***@${domain}`;
+}
+
+function sanitizeMetadataValue(
+  key: string,
+  value: unknown,
+  depth = 0,
+): unknown {
+  if (depth > 3) return '[TRUNCATED]';
+
+  if (value == null) return value;
+
+  if (SENSITIVE_KEY_PATTERN.test(key)) return REDACTED;
+
+  if (typeof value === 'string') {
+    if (SENSITIVE_KEY_PATTERN.test(value)) return REDACTED;
+    if (key.toLowerCase().includes('email') || value.includes('@')) {
+      return partiallyMaskEmail(value);
+    }
+    return value.slice(0, 1000);
+  }
+
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    return value
+      .slice(0, 20)
+      .map((item) => sanitizeMetadataValue(key, item, depth + 1));
+  }
+
+  if (typeof value === 'object') {
+    const obj = value as Record<string, unknown>;
+    const sanitized: Record<string, unknown> = {};
+    for (const [nestedKey, nestedValue] of Object.entries(obj)) {
+      sanitized[nestedKey] = sanitizeMetadataValue(
+        nestedKey,
+        nestedValue,
+        depth + 1,
+      );
+    }
+    return sanitized;
+  }
+
+  return String(value);
+}
+
+function sanitizeMetadata(
+  metadata: Record<string, unknown> | undefined,
+): Record<string, unknown> {
+  if (!metadata) return {};
+  const sanitized: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(metadata)) {
+    sanitized[key] = sanitizeMetadataValue(key, value);
+  }
+  return sanitized;
+}
+
+async function runDetectionRules(
+  payload: SecurityEventPayload,
+  context: DetectionContext,
+): Promise<DetectionResult[]> {
+  const results: DetectionResult[] = [];
+
+  if (payload.type === 'login_failure') {
+    results.push(
+      await detectBruteForce(context, {
+        by: 'ip',
+        value: payload.ip,
+      }),
+    );
+
+    if (payload.userId) {
+      results.push(
+        await detectBruteForce(context, {
+          by: 'user',
+          value: payload.userId,
+        }),
+      );
+    }
+  }
+
+  if (payload.type === 'login_success') {
+    results.push(await detectImpossibleTravel(context));
+    results.push(await detectNewDevice(context));
+  }
+
+  if (payload.type === 'token_refresh' && payload.metadata?.sessionId) {
+    results.push(
+      await detectSessionAnomaly(
+        String(payload.metadata.sessionId),
+        context,
+      ),
+    );
+  }
+
+  if (payload.type === 'unauthorized_access_attempt') {
+    results.push(
+      await detectPrivilegeEscalation(
+        context,
+        typeof payload.metadata?.userRole === 'string'
+          ? payload.metadata.userRole
+          : undefined,
+      ),
+    );
+  }
+
+  if (payload.type === 'rate_limit_exceeded') {
+    results.push(await detectRateLimitViolation(context));
+  }
+
+  return results.filter((result) => result.triggered);
 }
 
 /**
- * Log a security event with automatic detection rule execution
+ * Log a security event with automatic detection rule execution.
  */
 export async function logSecurityEventEnhanced(
   payload: SecurityEventPayload,
@@ -41,20 +188,20 @@ export async function logSecurityEventEnhanced(
   try {
     const admin = createSupabaseAdminClient();
 
-    // Enrich with geo data (best-effort, non-blocking)
-    const geo = await enrichGeoData(payload.ip).catch(() => ({
-      country: undefined,
-      region: undefined,
-      city: undefined,
-    }));
+    const geo: { country?: string; region?: string; city?: string } =
+      await enrichGeoData(payload.ip).catch(() => ({}));
     const deviceInfo = parseUserAgent(payload.userAgent);
+    const baseSeverity: Severity = payload.severity ?? 'info';
+    const baseMetadata = sanitizeMetadata({
+      ...(payload.metadata ?? {}),
+      ...deviceInfo,
+    });
 
-    // Insert security event
-    const { data: event, error: insertError } = await admin
+    const { data: insertedEvent, error: insertError } = await admin
       .from('security_events')
       .insert({
         type: payload.type,
-        severity: payload.severity || 'info',
+        severity: baseSeverity,
         user_id: payload.userId,
         org_id: payload.orgId,
         ip_address: payload.ip,
@@ -66,24 +213,15 @@ export async function logSecurityEventEnhanced(
         request_path: payload.path,
         request_method: payload.method,
         status_code: payload.statusCode,
-        metadata: {
-          ...payload.metadata,
-          ...deviceInfo,
-        },
+        metadata: baseMetadata,
       })
       .select('id')
       .single();
 
-    if (insertError || !event) {
+    if (insertError || !insertedEvent) {
       console.error('[Security] Failed to log event:', insertError);
       return null;
     }
-
-    const eventId = event.id;
-
-    // Run detection rules for specific event types
-    let shouldAlert = false;
-    let alertReason = '';
 
     const context: DetectionContext = {
       userId: payload.userId,
@@ -97,84 +235,46 @@ export async function logSecurityEventEnhanced(
       statusCode: payload.statusCode,
     };
 
-    // Run appropriate detection rules based on event type
-    if (payload.type === 'login_failure') {
-      // Check brute force by IP
-      const bruteForceIP = await detectBruteForce(context, {
-        by: 'ip',
-        value: payload.ip,
-      });
-      if (bruteForceIP.triggered) {
-        shouldAlert = true;
-        alertReason = bruteForceIP.reason || 'Brute force detected';
-      }
+    const detections = await runDetectionRules(payload, context);
+    const strongestDetectionSeverity = detections.reduce<Severity>(
+      (current, detection) => maxSeverity(current, detection.severity),
+      'info',
+    );
+    const finalSeverity = maxSeverity(baseSeverity, strongestDetectionSeverity);
 
-      // Check brute force by user
-      if (payload.userId) {
-        const bruteForceUser = await detectBruteForce(context, {
-          by: 'user',
-          value: payload.userId,
-        });
-        if (bruteForceUser.triggered) {
-          shouldAlert = true;
-          alertReason = bruteForceUser.reason || 'Brute force detected';
-        }
-      }
-    }
+    if (detections.length > 0 || finalSeverity !== baseSeverity) {
+      const detectionDetails = detections.map((detection) => ({
+        severity: detection.severity,
+        reason: detection.reason,
+        metadata: sanitizeMetadata(
+          (detection.metadata ?? {}) as Record<string, unknown>,
+        ),
+      }));
 
-    if (payload.type === 'login_success') {
-      // Check impossible travel
-      const impossibleTravel = await detectImpossibleTravel(context);
-      if (impossibleTravel.triggered) {
-        shouldAlert = true;
-        alertReason = impossibleTravel.reason || 'Impossible travel detected';
-      }
+      const metadataUpdate = {
+        ...baseMetadata,
+        detection: detectionDetails,
+      };
 
-      // Check new device
-      const newDevice = await detectNewDevice(context);
-      if (newDevice.triggered) {
-        shouldAlert = true;
-        alertReason = newDevice.reason || 'New device login';
+      const { error: updateError } = await admin
+        .from('security_events')
+        .update({
+          severity: finalSeverity,
+          metadata: metadataUpdate,
+        })
+        .eq('id', insertedEvent.id);
+
+      if (updateError) {
+        console.error('[Security] Failed to update detected event:', updateError);
       }
     }
 
-    if (payload.type === 'token_refresh' && payload.metadata?.sessionId) {
-      // Check session anomaly
-      const sessionAnomaly = await detectSessionAnomaly(
-        payload.metadata.sessionId as string,
-        context,
-      );
-      if (sessionAnomaly.triggered) {
-        shouldAlert = true;
-        alertReason = sessionAnomaly.reason || 'Session anomaly detected';
-      }
-    }
+    if (shouldCreateAlert(finalSeverity)) {
+      const alertReason =
+        detections[0]?.reason ?? `Auto-generated ${finalSeverity} event`;
 
-    if (payload.type === 'unauthorized_access_attempt') {
-      // Check privilege escalation
-      const privEscalation = await detectPrivilegeEscalation(
-        context,
-        payload.metadata?.userRole as string,
-      );
-      if (privEscalation.triggered) {
-        shouldAlert = true;
-        alertReason = privEscalation.reason || 'Privilege escalation attempt';
-      }
-    }
-
-    if (payload.type === 'rate_limit_exceeded') {
-      // Check rate limit violations
-      const rateLimit = await detectRateLimitViolation(context);
-      if (rateLimit.triggered) {
-        shouldAlert = true;
-        alertReason = rateLimit.reason || 'Rate limit violation';
-      }
-    }
-
-    // Create alert if any detection rule triggered
-    if (shouldAlert) {
       const { error: alertError } = await admin.from('security_alerts').insert({
-        event_id: eventId,
+        event_id: insertedEvent.id,
         notes: `Auto-generated: ${alertReason}`,
       });
 
@@ -182,10 +282,10 @@ export async function logSecurityEventEnhanced(
         console.error('[Security] Failed to create alert:', alertError);
       }
 
-      return { eventId, alertCreated: true };
+      return { eventId: insertedEvent.id, alertCreated: !alertError };
     }
 
-    return { eventId, alertCreated: false };
+    return { eventId: insertedEvent.id, alertCreated: false };
   } catch (error) {
     console.error('[Security] logSecurityEventEnhanced error:', error);
     return null;
@@ -193,7 +293,7 @@ export async function logSecurityEventEnhanced(
 }
 
 /**
- * Log user activity (high-level actions)
+ * Log high-level user activity.
  */
 export async function logUserActivity(params: {
   userId: string;
@@ -202,7 +302,7 @@ export async function logUserActivity(params: {
   entityType?: string;
   entityId?: string;
   route?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }): Promise<boolean> {
   try {
     const admin = createSupabaseAdminClient();
@@ -214,7 +314,7 @@ export async function logUserActivity(params: {
       entity_type: params.entityType,
       entity_id: params.entityId,
       route: params.route,
-      metadata: params.metadata || {},
+      metadata: sanitizeMetadata(params.metadata),
     });
 
     if (error) {
@@ -228,10 +328,6 @@ export async function logUserActivity(params: {
     return false;
   }
 }
-
-/**
- * Helper: Log specific security event types
- */
 
 export async function logLoginAttempt(params: {
   success: boolean;

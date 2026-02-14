@@ -1,117 +1,60 @@
-/**
- * Real-time Security Monitoring Hook
- *
- * Subscribes to security_alerts and security_events tables
- * Provides live updates to security dashboard
- */
-
 'use client';
 
 import { useEffect, useState } from 'react';
 import { createSupabaseClient } from '@/lib/supabase/client';
 
-export type SecurityEvent = {
-  id: string;
-  created_at: string;
-  type: string;
-  severity: string;
-  user_id?: string;
-  org_id?: string;
-  ip_address?: string;
-  geo_country?: string;
-  request_path?: string;
-  metadata?: any;
-};
+type RealtimeCallback = () => void;
 
-export type SecurityAlert = {
-  id: string;
-  created_at: string;
-  event_id: string;
-  status: string;
-  notes?: string;
-};
-
-export function useRealtimeSecurity() {
-  const [events, setEvents] = useState<SecurityEvent[]>([]);
-  const [alerts, setAlerts] = useState<SecurityAlert[]>([]);
-  const [connected, setConnected] = useState(false);
-
-  useEffect(() => {
-    const supabase = createSupabaseClient();
-
-    // Subscribe to security_events
-    const eventsChannel = supabase
-      .channel('security_events_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'security_events',
-        },
-        (payload: any) => {
-          console.log('[Realtime] New security event:', payload.new);
-          setEvents((prev) =>
-            [payload.new as SecurityEvent, ...prev].slice(0, 50),
-          );
-        },
-      )
-      .subscribe((status: any) => {
-        console.log('[Realtime] Events subscription status:', status);
-        setConnected(status === 'SUBSCRIBED');
-      });
-
-    // Subscribe to security_alerts
-    const alertsChannel = supabase
-      .channel('security_alerts_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*', // INSERT, UPDATE, DELETE
-          schema: 'public',
-          table: 'security_alerts',
-        },
-        (payload: any) => {
-          console.log('[Realtime] Security alert change:', payload);
-
-          if (payload.eventType === 'INSERT') {
-            setAlerts((prev) => [payload.new as SecurityAlert, ...prev]);
-          } else if (payload.eventType === 'UPDATE' && payload.new) {
-            setAlerts((prev) =>
-              prev.map((a) =>
-                a.id === payload.new.id ? (payload.new as SecurityAlert) : a,
-              ),
-            );
-          } else if (payload.eventType === 'DELETE' && payload.old) {
-            setAlerts((prev) => prev.filter((a) => a.id !== payload.old.id));
-          }
-        },
-      )
-      .subscribe();
-
-    return () => {
-      eventsChannel.unsubscribe();
-      alertsChannel.unsubscribe();
-    };
-  }, []);
-
-  return { events, alerts, connected };
+function createChannelName(prefix: string): string {
+  return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 }
 
-/**
- * Real-time Session Monitoring Hook
- *
- * Subscribes to active_sessions table
- */
-export function useRealtimeSessions() {
-  const [sessions, setSessions] = useState<any[]>([]);
+export function useRealtimeSecurity(onChange?: RealtimeCallback) {
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
     const supabase = createSupabaseClient();
 
     const channel = supabase
-      .channel('active_sessions_changes')
+      .channel(createChannelName('security_live'))
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'security_events',
+        },
+        () => onChange?.(),
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'security_alerts',
+        },
+        () => onChange?.(),
+      )
+      .subscribe((status: string) => {
+        setConnected(status === 'SUBSCRIBED');
+      });
+
+    return () => {
+      void channel.unsubscribe();
+    };
+  }, [onChange]);
+
+  return { connected };
+}
+
+export function useRealtimeSessions(onChange?: RealtimeCallback) {
+  const [connected, setConnected] = useState(false);
+
+  useEffect(() => {
+    const supabase = createSupabaseClient();
+
+    const channel = supabase
+      .channel(createChannelName('active_sessions'))
       .on(
         'postgres_changes',
         {
@@ -119,53 +62,28 @@ export function useRealtimeSessions() {
           schema: 'public',
           table: 'active_sessions',
         },
-        (payload: any) => {
-          console.log('[Realtime] Session change:', payload);
-
-          if (
-            payload.eventType === 'INSERT' ||
-            payload.eventType === 'UPDATE'
-          ) {
-            setSessions((prev) => {
-              const existing = prev.find((s) => s.id === payload.new.id);
-              if (existing) {
-                return prev.map((s) =>
-                  s.id === payload.new.id ? payload.new : s,
-                );
-              }
-              return [payload.new, ...prev];
-            });
-          } else if (payload.eventType === 'DELETE' && payload.old) {
-            setSessions((prev) => prev.filter((s) => s.id !== payload.old.id));
-          }
-        },
+        () => onChange?.(),
       )
-      .subscribe((status: any) => {
+      .subscribe((status: string) => {
         setConnected(status === 'SUBSCRIBED');
       });
 
     return () => {
-      channel.unsubscribe();
+      void channel.unsubscribe();
     };
-  }, []);
+  }, [onChange]);
 
-  return { sessions, connected };
+  return { connected };
 }
 
-/**
- * Real-time Activity Feed Hook
- *
- * Subscribes to user_activity table
- */
-export function useRealtimeActivity() {
-  const [activity, setActivity] = useState<any[]>([]);
+export function useRealtimeActivity(onChange?: RealtimeCallback) {
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
     const supabase = createSupabaseClient();
 
     const channel = supabase
-      .channel('user_activity_changes')
+      .channel(createChannelName('user_activity'))
       .on(
         'postgres_changes',
         {
@@ -173,19 +91,16 @@ export function useRealtimeActivity() {
           schema: 'public',
           table: 'user_activity',
         },
-        (payload: any) => {
-          console.log('[Realtime] New activity:', payload.new);
-          setActivity((prev) => [payload.new, ...prev].slice(0, 100));
-        },
+        () => onChange?.(),
       )
-      .subscribe((status: any) => {
+      .subscribe((status: string) => {
         setConnected(status === 'SUBSCRIBED');
       });
 
     return () => {
-      channel.unsubscribe();
+      void channel.unsubscribe();
     };
-  }, []);
+  }, [onChange]);
 
-  return { activity, connected };
+  return { connected };
 }

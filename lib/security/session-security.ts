@@ -7,6 +7,7 @@
  */
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { logSecurityEventEnhanced } from '@/lib/security/event-logger';
 
 export interface SessionInfo {
   userId: string;
@@ -343,6 +344,58 @@ export async function logSecurityEvent(event: {
   if (error) {
     console.error('[Security] Failed to log security event:', error);
   }
+
+  const ip = event.ipAddress || '0.0.0.0';
+  const userAgent = event.userAgent || 'unknown';
+
+  const mappedEventType =
+    event.eventType === SecurityEventTypes.SESSION_FINGERPRINT_MISMATCH
+      ? 'fingerprint_mismatch'
+      : event.eventType === SecurityEventTypes.SUSPICIOUS_ACTIVITY
+        ? 'suspicious_api_pattern'
+        : event.eventType === SecurityEventTypes.PASSWORD_RESET_REQUEST
+          ? 'token_anomaly'
+          : event.eventType;
+
+  const severityByType: Record<string, 'info' | 'low' | 'medium' | 'high' | 'critical'> = {
+    [SecurityEventTypes.LOGIN_SUCCESS]: 'info',
+    [SecurityEventTypes.LOGIN_FAILURE]: 'medium',
+    [SecurityEventTypes.LOGIN_MFA_REQUIRED]: 'low',
+    [SecurityEventTypes.LOGOUT]: 'info',
+    [SecurityEventTypes.PASSWORD_CHANGE]: 'high',
+    [SecurityEventTypes.EMAIL_CHANGE]: 'high',
+    [SecurityEventTypes.MFA_ENABLED]: 'medium',
+    [SecurityEventTypes.MFA_DISABLED]: 'high',
+    [SecurityEventTypes.SESSION_REVOKED]: 'high',
+    [SecurityEventTypes.SESSION_FINGERPRINT_MISMATCH]: 'high',
+    [SecurityEventTypes.PRIVILEGE_ESCALATION_ATTEMPT]: 'high',
+    [SecurityEventTypes.RATE_LIMIT_EXCEEDED]: 'medium',
+    [SecurityEventTypes.TOKEN_REFRESH]: 'info',
+    [SecurityEventTypes.SUSPICIOUS_ACTIVITY]: 'high',
+    [SecurityEventTypes.PASSWORD_RESET_REQUEST]: 'medium',
+  };
+
+  await logSecurityEventEnhanced({
+    type: mappedEventType,
+    severity: severityByType[event.eventType] ?? 'medium',
+    userId: event.userId,
+    orgId: event.organizationId,
+    ip,
+    userAgent,
+    path:
+      typeof event.metadata?.path === 'string'
+        ? event.metadata.path
+        : undefined,
+    method:
+      typeof event.metadata?.method === 'string'
+        ? event.metadata.method
+        : undefined,
+    statusCode:
+      typeof event.metadata?.statusCode === 'number'
+        ? event.metadata.statusCode
+        : undefined,
+    metadata: event.metadata,
+  });
 }
 
 /**
@@ -354,6 +407,7 @@ export const SecurityEventTypes = {
   LOGIN_MFA_REQUIRED: 'login_mfa_required',
   LOGOUT: 'logout',
   PASSWORD_CHANGE: 'password_change',
+  EMAIL_CHANGE: 'email_change',
   PASSWORD_RESET_REQUEST: 'password_reset_request',
   MFA_ENABLED: 'mfa_enabled',
   MFA_DISABLED: 'mfa_disabled',
@@ -361,5 +415,6 @@ export const SecurityEventTypes = {
   SESSION_FINGERPRINT_MISMATCH: 'session_fingerprint_mismatch',
   PRIVILEGE_ESCALATION_ATTEMPT: 'privilege_escalation_attempt',
   RATE_LIMIT_EXCEEDED: 'rate_limit_exceeded',
+  TOKEN_REFRESH: 'token_refresh',
   SUSPICIOUS_ACTIVITY: 'suspicious_activity',
 } as const;

@@ -1,7 +1,7 @@
 /**
  * Client-side Session Heartbeat
  *
- * Automatically sends heartbeat every 5 minutes to track active sessions
+ * Automatically sends heartbeat every 60 seconds to track active sessions
  * Call this from main app layout after authentication
  */
 
@@ -30,8 +30,8 @@ export function useSessionHeartbeat(enabled = true) {
     // Send immediately on mount
     sendHeartbeat();
 
-    // Then every 5 minutes (300 seconds)
-    intervalRef.current = setInterval(sendHeartbeat, 300000);
+    // Then every 60 seconds
+    intervalRef.current = setInterval(sendHeartbeat, 60000);
 
     return () => {
       if (intervalRef.current) {
@@ -46,7 +46,7 @@ export function useSessionHeartbeat(enabled = true) {
  *
  * Logs high-level user actions
  */
-export function useActivityTracker(_enabled = true) {
+export function useActivityTracker(enabled = true) {
   const trackActivity = async (params: {
     action: string;
     entityType?: string;
@@ -54,6 +54,8 @@ export function useActivityTracker(_enabled = true) {
     route?: string;
     metadata?: Record<string, any>;
   }) => {
+    if (!enabled) return;
+
     try {
       await fetch('/api/activity/track', {
         method: 'POST',

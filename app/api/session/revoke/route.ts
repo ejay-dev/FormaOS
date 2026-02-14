@@ -8,8 +8,19 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { isFounder } from '@/lib/utils/founder';
+import { extractClientIP } from '@/lib/security/session-security';
+import {
+  logSecurityEventEnhanced,
+  logUnauthorizedAccess,
+  logUserActivity,
+} from '@/lib/security/event-logger';
+import { isSecurityMonitoringEnabled } from '@/lib/security/monitoring-flags';
 
 export async function POST(request: Request) {
+  if (!isSecurityMonitoringEnabled()) {
+    return NextResponse.json({ ok: false, error: 'disabled' }, { status: 404 });
+  }
+
   try {
     const supabase = await createSupabaseServerClient();
     const {
@@ -18,6 +29,13 @@ export async function POST(request: Request) {
     } = await supabase.auth.getUser();
 
     if (authError || !user) {
+      await logUnauthorizedAccess({
+        ip: extractClientIP(request.headers),
+        userAgent: request.headers.get('user-agent') ?? 'unknown',
+        path: '/api/session/revoke',
+        method: request.method,
+        userRole: 'anonymous',
+      });
       return NextResponse.json(
         { ok: false, error: 'unauthorized' },
         { status: 401 },
@@ -26,6 +44,14 @@ export async function POST(request: Request) {
 
     // Only founders can revoke sessions
     if (!isFounder(user.email, user.id)) {
+      await logUnauthorizedAccess({
+        userId: user.id,
+        ip: extractClientIP(request.headers),
+        userAgent: request.headers.get('user-agent') ?? 'unknown',
+        path: '/api/session/revoke',
+        method: request.method,
+        userRole: 'non_founder',
+      });
       return NextResponse.json(
         { ok: false, error: 'forbidden' },
         { status: 403 },
@@ -45,6 +71,13 @@ export async function POST(request: Request) {
 
     const admin = createSupabaseAdminClient();
 
+    const { data: sessionRecord } = await admin
+      .from('active_sessions')
+      .select('session_id, user_id, org_id')
+      .eq('session_id', body.sessionId)
+      .is('revoked_at', null)
+      .single();
+
     // Revoke the session
     const { error: revokeError } = await admin
       .from('active_sessions')
@@ -58,6 +91,38 @@ export async function POST(request: Request) {
         { status: 500 },
       );
     }
+
+    const ip = extractClientIP(request.headers);
+    const userAgent = request.headers.get('user-agent') ?? 'unknown';
+
+    await logSecurityEventEnhanced({
+      type: 'session_revoked',
+      severity: 'high',
+      userId: user.id,
+      orgId: sessionRecord?.org_id ?? undefined,
+      ip,
+      userAgent,
+      path: '/api/session/revoke',
+      method: request.method,
+      metadata: {
+        revokedSessionId: body.sessionId,
+        revokedUserId: sessionRecord?.user_id ?? null,
+        initiatedBy: 'founder_dashboard',
+      },
+    });
+
+    await logUserActivity({
+      userId: user.id,
+      orgId: sessionRecord?.org_id ?? undefined,
+      action: 'role_change',
+      entityType: 'session',
+      entityId: body.sessionId,
+      route: '/admin/sessions',
+      metadata: {
+        operation: 'session_revoke',
+        targetUserId: sessionRecord?.user_id ?? null,
+      },
+    });
 
     return NextResponse.json({ ok: true });
   } catch (error) {

@@ -12,7 +12,10 @@
  */
 
 import { headers } from 'next/headers';
-import { logRateLimitEvent } from '@/lib/security/rate-limit-log';
+import {
+  logRateLimitEvent,
+  logRateLimitFailOpenWarning,
+} from '@/lib/security/rate-limit-log';
 import { extractClientIP } from '@/lib/security/session-security';
 import { getRedisClient } from '@/lib/redis/client';
 
@@ -29,6 +32,11 @@ interface RateLimitResult {
   resetAt: number;
   retryAfter?: number;
 }
+
+type RedisCheckOutcome = {
+  result: RateLimitResult | null;
+  failOpenReason?: 'redis_unavailable' | 'redis_error';
+};
 
 const RATE_LIMITS = {
   AUTH: {
@@ -78,6 +86,8 @@ const RATE_LIMITS = {
 // ---------------------------------------------------------------------------
 
 const memoryStore = new Map<string, { count: number; resetAt: number }>();
+const failOpenWarningAtByScope = new Map<string, number>();
+const FAIL_OPEN_WARNING_COOLDOWN_MS = 60 * 1000;
 
 function cleanExpiredEntries(): void {
   const now = Date.now();
@@ -113,9 +123,11 @@ function buildKey(
 async function checkRateLimitRedis(
   config: RateLimitConfig,
   key: string,
-): Promise<RateLimitResult | null> {
+): Promise<RedisCheckOutcome> {
   const redis = getRedisClient();
-  if (!redis) return null;
+  if (!redis) {
+    return { result: null, failOpenReason: 'redis_unavailable' };
+  }
 
   try {
     const ttlSeconds = Math.ceil(config.windowMs / 1000);
@@ -136,23 +148,27 @@ async function checkRateLimitRedis(
 
     if (count > config.maxRequests) {
       return {
-        success: false,
-        limit: config.maxRequests,
-        remaining: 0,
-        resetAt,
-        retryAfter: effectiveTtl,
+        result: {
+          success: false,
+          limit: config.maxRequests,
+          remaining: 0,
+          resetAt,
+          retryAfter: effectiveTtl,
+        },
       };
     }
 
     return {
-      success: true,
-      limit: config.maxRequests,
-      remaining: config.maxRequests - count,
-      resetAt,
+      result: {
+        success: true,
+        limit: config.maxRequests,
+        remaining: config.maxRequests - count,
+        resetAt,
+      },
     };
   } catch {
     // Redis error -- signal fallback
-    return null;
+    return { result: null, failOpenReason: 'redis_error' };
   }
 }
 
@@ -310,9 +326,25 @@ export async function checkRateLimit(
   const key = buildKey(config, identifier, userId);
 
   // Try Redis first
-  const redisResult = await checkRateLimitRedis(config, key);
-  if (redisResult !== null) {
-    return redisResult;
+  const redisOutcome = await checkRateLimitRedis(config, key);
+  if (redisOutcome.result !== null) {
+    return redisOutcome.result;
+  }
+
+  if (redisOutcome.failOpenReason) {
+    const scope = `${config.keyPrefix}:${redisOutcome.failOpenReason}`;
+    const now = Date.now();
+    const lastWarningAt = failOpenWarningAtByScope.get(scope) ?? 0;
+
+    if (now - lastWarningAt > FAIL_OPEN_WARNING_COOLDOWN_MS) {
+      failOpenWarningAtByScope.set(scope, now);
+      void logRateLimitFailOpenWarning({
+        reason: redisOutcome.failOpenReason,
+        keyPrefix: config.keyPrefix,
+        identifier,
+        userId,
+      });
+    }
   }
 
   // Fall back to in-memory

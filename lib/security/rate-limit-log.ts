@@ -45,3 +45,41 @@ export async function logRateLimitEvent(input: RateLimitLogInput): Promise<void>
   }
 }
 
+type RateLimitFailOpenInput = {
+  reason: 'redis_unavailable' | 'redis_error';
+  keyPrefix: string;
+  identifier?: string;
+  userId?: string | null;
+};
+
+export async function logRateLimitFailOpenWarning(
+  input: RateLimitFailOpenInput,
+): Promise<void> {
+  const message =
+    input.reason === 'redis_unavailable'
+      ? '[RateLimit] Redis unavailable. Falling back to in-memory limiter (degraded enforcement).'
+      : '[RateLimit] Redis error. Falling back to in-memory limiter (degraded enforcement).';
+
+  console.warn(message, {
+    keyPrefix: input.keyPrefix,
+    userId: input.userId ?? null,
+    identifier: input.identifier ?? null,
+  });
+
+  try {
+    const admin = createSupabaseAdminClient();
+    await admin.from('rate_limit_log').insert({
+      identifier:
+        input.userId ??
+        input.identifier ??
+        `degraded:${input.keyPrefix.replaceAll(':', '_')}`,
+      endpoint: `[fail_open:${input.reason}] ${input.keyPrefix}`,
+      request_count: 0,
+      window_start: new Date().toISOString(),
+      blocked_at: null,
+      created_at: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('[RateLimit] Failed to persist fail-open warning:', error);
+  }
+}
