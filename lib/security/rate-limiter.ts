@@ -59,6 +59,18 @@ const RATE_LIMITS = {
     maxRequests: 5,
     keyPrefix: 'rl:export',
   } as RateLimitConfig,
+
+  HEARTBEAT: {
+    windowMs: 60 * 1000, // 1 minute
+    maxRequests: 2, // Allow 2 requests per minute (60s interval + buffer)
+    keyPrefix: 'rl:heartbeat',
+  } as RateLimitConfig,
+
+  ACTIVITY: {
+    windowMs: 60 * 1000, // 1 minute
+    maxRequests: 20, // Allow 20 activity logs per minute
+    keyPrefix: 'rl:activity',
+  } as RateLimitConfig,
 } as const;
 
 // ---------------------------------------------------------------------------
