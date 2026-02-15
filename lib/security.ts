@@ -32,12 +32,21 @@ export interface SecuritySettings {
 function generateSecureBackupCode(): string {
   // Generate 8 random bytes (64 bits of entropy)
   const bytes = randomBytes(8);
-  // Convert to base32-like string (without ambiguous characters)
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Removed I, O, 0, 1
   let code = '';
+  
+  // Use rejection sampling for uniform distribution
   for (let i = 0; i < 8; i++) {
-    code += chars[bytes[i] % chars.length];
+    // Keep generating until we get a value in valid range
+    let value = bytes[i];
+    while (value >= 256 - (256 % chars.length)) {
+      // Rejection sampling: get new byte if current is biased
+      const newBytes = randomBytes(1);
+      value = newBytes[0];
+    }
+    code += chars[value % chars.length];
   }
+  
   // Format as XXXX-XXXX for readability
   return `${code.slice(0, 4)}-${code.slice(4)}`;
 }

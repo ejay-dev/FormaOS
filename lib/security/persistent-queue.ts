@@ -54,7 +54,7 @@ export async function enqueueFailedEvent(
     await ensureQueueDir();
     
     const event: QueuedEvent = {
-      id: `${Date.now()}-${crypto.randomUUID()}`,
+      id: crypto.randomUUID(),
       timestamp: Date.now(),
       attempts: 0,
       payload,
