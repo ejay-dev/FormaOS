@@ -93,10 +93,11 @@ All 8 critical security vulnerabilities identified in the external audit have be
 
 **Fix**:
 - **Persistent Queue**: File-based queue for failed events
-  - Location: Configurable via `SECURITY_QUEUE_DIR` (required in production)
+  - Location: Configurable via `SECURITY_QUEUE_DIR` (optional, uses `/tmp` by default)
   - ID Generation: `crypto.randomUUID()` for uniqueness
   - Capacity: 1000 events max
   - Retry: 3 attempts per event
+  - Graceful degradation: Logs warning if directory can't be created
 - **Selective Persistence**: Only critical/high severity events queued
 - **Processing API**: `/api/security/queue/process` endpoint
   - GET: Returns queue statistics
@@ -186,18 +187,25 @@ All critical issues addressed:
 ## Deployment Instructions
 
 ### Prerequisites
-1. Ensure all environment variables are set:
+1. **Recommended** environment variables:
    ```bash
-   SECURITY_QUEUE_DIR=/var/lib/formaos/security-queue
-   SSO_FLOW_TOKEN_SECRET=<random-secret>
+   SECURITY_QUEUE_DIR=/var/lib/formaos/security-queue  # Optional but recommended
+   SSO_FLOW_TOKEN_SECRET=<random-secret>  # Or use NEXTAUTH_SECRET
    HEALTH_DETAILED_FOUNDER_TOKEN=<founder-token>
    ```
 
-2. Create queue directory:
+   **Note on SECURITY_QUEUE_DIR**: 
+   - **Optional** but recommended for production
+   - If not set: System uses `/tmp/formaos-security-queue` (logs warning in production)
+   - Queue provides enhanced durability for failed security events
+   - System functions normally without it (graceful degradation)
+
+2. **(Optional)** Create persistent queue directory:
    ```bash
    mkdir -p /var/lib/formaos/security-queue
    chmod 700 /var/lib/formaos/security-queue
    ```
+   Skip this if you prefer using the default `/tmp` location.
 
 ### Database Migrations
 Run migrations in order:

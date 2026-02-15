@@ -9,14 +9,29 @@ import { writeFile, readFile, unlink, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import { join } from 'path';
 
-const QUEUE_DIR = process.env.SECURITY_QUEUE_DIR || (() => {
-  // Default to a safer location in production
-  if (process.env.NODE_ENV === 'production') {
-    // Require explicit configuration in production
-    throw new Error('SECURITY_QUEUE_DIR environment variable must be set in production');
+// Lazy initialization of queue directory
+function getQueueDir(): string {
+  const envDir = process.env.SECURITY_QUEUE_DIR;
+  
+  if (envDir) {
+    return envDir;
   }
-  return '/tmp/formaos-security-queue';
-})();
+  
+  // Default fallback for all environments
+  const defaultDir = '/tmp/formaos-security-queue';
+  
+  // Log warning in production if using default
+  if (process.env.NODE_ENV === 'production') {
+    console.warn(
+      '[PersistentQueue] SECURITY_QUEUE_DIR not set in production. ' +
+      `Using default: ${defaultDir}. ` +
+      'For production deployments, set SECURITY_QUEUE_DIR to a persistent location.'
+    );
+  }
+  
+  return defaultDir;
+}
+
 const MAX_QUEUE_SIZE = 1000; // Maximum events to queue
 const MAX_RETRY_ATTEMPTS = 3;
 
@@ -29,17 +44,24 @@ interface QueuedEvent {
 }
 
 let queueInitialized = false;
+let queueDisabled = false; // Flag to disable queue if initialization fails
 
-async function ensureQueueDir(): Promise<void> {
-  if (queueInitialized) return;
+async function ensureQueueDir(): Promise<boolean> {
+  if (queueInitialized) return true;
+  if (queueDisabled) return false;
   
   try {
-    if (!existsSync(QUEUE_DIR)) {
-      await mkdir(QUEUE_DIR, { recursive: true });
+    const queueDir = getQueueDir();
+    if (!existsSync(queueDir)) {
+      await mkdir(queueDir, { recursive: true });
     }
     queueInitialized = true;
+    return true;
   } catch (error) {
     console.error('[PersistentQueue] Failed to create queue directory:', error);
+    console.error('[PersistentQueue] Queue functionality disabled. Security events will be logged but not persisted on failure.');
+    queueDisabled = true;
+    return false;
   }
 }
 
@@ -51,7 +73,12 @@ export async function enqueueFailedEvent(
   payload: any,
 ): Promise<void> {
   try {
-    await ensureQueueDir();
+    const canQueue = await ensureQueueDir();
+    if (!canQueue) {
+      // Queue disabled, just log
+      console.error('[PersistentQueue] Queue disabled, event not persisted:', { type, payload });
+      return;
+    }
     
     const event: QueuedEvent = {
       id: crypto.randomUUID(),
@@ -61,7 +88,8 @@ export async function enqueueFailedEvent(
       type,
     };
 
-    const filename = join(QUEUE_DIR, `${event.id}.json`);
+    const queueDir = getQueueDir();
+    const filename = join(queueDir, `${event.id}.json`);
     await writeFile(filename, JSON.stringify(event), 'utf8');
   } catch (error) {
     console.error('[PersistentQueue] Failed to enqueue event:', error);
@@ -80,17 +108,21 @@ export async function processQueuedEvents(
   let failed = 0;
 
   try {
-    await ensureQueueDir();
+    const canQueue = await ensureQueueDir();
+    if (!canQueue) {
+      return { processed: 0, failed: 0 };
+    }
     
+    const queueDir = getQueueDir();
     const fs = await import('fs/promises');
-    const files = await fs.readdir(QUEUE_DIR);
+    const files = await fs.readdir(queueDir);
     
     // Limit processing to avoid overwhelming the system
     const filesToProcess = files.filter(f => f.endsWith('.json')).slice(0, 100);
     
     for (const file of filesToProcess) {
       try {
-        const filepath = join(QUEUE_DIR, file);
+        const filepath = join(queueDir, file);
         const content = await readFile(filepath, 'utf8');
         const event: QueuedEvent = JSON.parse(content);
         
@@ -132,12 +164,17 @@ export async function processQueuedEvents(
 export async function getQueueStats(): Promise<{
   size: number;
   oldestTimestamp?: number;
+  disabled?: boolean;
 }> {
   try {
-    await ensureQueueDir();
+    const canQueue = await ensureQueueDir();
+    if (!canQueue) {
+      return { size: 0, disabled: true };
+    }
     
+    const queueDir = getQueueDir();
     const fs = await import('fs/promises');
-    const files = await fs.readdir(QUEUE_DIR);
+    const files = await fs.readdir(queueDir);
     const jsonFiles = files.filter(f => f.endsWith('.json'));
     
     let oldestTimestamp: number | undefined;
@@ -145,7 +182,7 @@ export async function getQueueStats(): Promise<{
     if (jsonFiles.length > 0) {
       // Check first file for oldest timestamp
       try {
-        const firstFile = join(QUEUE_DIR, jsonFiles[0]);
+        const firstFile = join(queueDir, jsonFiles[0]);
         const content = await readFile(firstFile, 'utf8');
         const event: QueuedEvent = JSON.parse(content);
         oldestTimestamp = event.timestamp;
@@ -157,8 +194,9 @@ export async function getQueueStats(): Promise<{
     return {
       size: jsonFiles.length,
       oldestTimestamp,
+      disabled: false,
     };
   } catch {
-    return { size: 0 };
+    return { size: 0, disabled: true };
   }
 }
