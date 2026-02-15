@@ -161,6 +161,31 @@ export async function verifyMrr(): Promise<MrrVerificationResult> {
     result.db_mrr_cents = db_mrr_cents;
     result.db_active_count = dbActiveSubscriptions.length;
 
+    // Prepare per-subscription data structures
+    const dbSubsByStripeId = new Map<string, any>();
+    const dbSubsWithoutStripeId: any[] = [];
+
+    for (const sub of dbActiveSubscriptions) {
+      if (sub.stripe_subscription_id) {
+        dbSubsByStripeId.set(sub.stripe_subscription_id, sub);
+      } else {
+        dbSubsWithoutStripeId.push(sub);
+      }
+    }
+
+    // Find DB-only subscriptions (active in DB but no stripe_subscription_id)
+    for (const dbSub of dbSubsWithoutStripeId) {
+      const planKey = dbSub.plan_key;
+      const dbAmountCents = planPriceMap.get(planKey) ?? 0;
+
+      result.db_only.push({
+        organization_id: dbSub.organization_id,
+        plan_key: planKey,
+        db_status: dbSub.status,
+        db_amount_cents: dbAmountCents,
+      });
+    }
+
     // Step 2: Query Stripe for active subscriptions
     const stripe = getStripeClient();
     if (!stripe) {
@@ -238,17 +263,6 @@ export async function verifyMrr(): Promise<MrrVerificationResult> {
     result.match = result.delta_cents === 0;
 
     // Step 3: Build per-subscription comparison
-    const dbSubsByStripeId = new Map<string, any>();
-    const dbSubsWithoutStripeId: any[] = [];
-
-    for (const sub of dbActiveSubscriptions) {
-      if (sub.stripe_subscription_id) {
-        dbSubsByStripeId.set(sub.stripe_subscription_id, sub);
-      } else {
-        dbSubsWithoutStripeId.push(sub);
-      }
-    }
-
     // Match DB subs with Stripe subs
     for (const dbSub of dbActiveSubscriptions) {
       const stripeSubId = dbSub.stripe_subscription_id;
@@ -319,19 +333,6 @@ export async function verifyMrr(): Promise<MrrVerificationResult> {
           stripe_customer_id: stripeSub.customer as string | null,
         });
       }
-    }
-
-    // Find DB-only subscriptions (active in DB but no stripe_subscription_id)
-    for (const dbSub of dbSubsWithoutStripeId) {
-      const planKey = dbSub.plan_key;
-      const dbAmountCents = planPriceMap.get(planKey) ?? 0;
-
-      result.db_only.push({
-        organization_id: dbSub.organization_id,
-        plan_key: planKey,
-        db_status: dbSub.status,
-        db_amount_cents: dbAmountCents,
-      });
     }
   } catch (error: any) {
     errors.push(`Verification error: ${error.message ?? 'Unknown error'}`);
