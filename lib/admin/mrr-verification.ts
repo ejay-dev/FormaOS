@@ -4,6 +4,25 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { getStripeClient } from '@/lib/billing/stripe';
 import type Stripe from 'stripe';
 
+// Type definitions for better type safety
+interface Organization {
+  id: string;
+  name: string | null;
+}
+
+interface OrgSubscription {
+  organization_id: string;
+  status: string | null;
+  plan_key: string | null;
+  stripe_subscription_id: string | null;
+  stripe_customer_id: string | null;
+}
+
+interface Plan {
+  key: string;
+  price_cents: number | null;
+}
+
 export interface MrrVerificationResult {
   verified_at: string; // ISO timestamp
   stripe_configured: boolean;
@@ -62,6 +81,22 @@ function isSyntheticOrgName(name: string | null | undefined): boolean {
     normalized.startsWith('qa smoke ') ||
     normalized.endsWith('@test.formaos.local')
   );
+}
+
+/**
+ * Normalizes a subscription amount to monthly MRR.
+ * For yearly subscriptions, divides by 12 and rounds.
+ * For monthly subscriptions, returns the amount as-is.
+ * For other intervals, returns the amount as-is.
+ */
+function normalizeToMonthlyMrr(
+  unitAmount: number,
+  interval: string | undefined,
+): number {
+  if (interval === 'year') {
+    return Math.round(unitAmount / 12);
+  }
+  return unitAmount;
 }
 
 /**
@@ -133,19 +168,19 @@ export async function verifyMrr(): Promise<MrrVerificationResult> {
 
     // Filter out synthetic orgs
     const filteredOrgs = organizations.filter(
-      (org: any) => !isSyntheticOrgName(org.name),
+      (org: Organization) => !isSyntheticOrgName(org.name),
     );
-    const filteredOrgIds = new Set(filteredOrgs.map((org: any) => org.id));
+    const filteredOrgIds = new Set(filteredOrgs.map((org: Organization) => org.id));
 
     // Build plan price map
     const planPriceMap = new Map<string, number>();
-    plans.forEach((plan: any) => {
+    plans.forEach((plan: Plan) => {
       planPriceMap.set(plan.key, plan.price_cents ?? 0);
     });
 
     // Filter subscriptions to only include non-synthetic orgs with active status
     const dbActiveSubscriptions = subscriptions.filter(
-      (sub: any) =>
+      (sub: OrgSubscription) =>
         filteredOrgIds.has(sub.organization_id) &&
         (sub.status ?? '').toLowerCase() === 'active',
     );
@@ -161,29 +196,26 @@ export async function verifyMrr(): Promise<MrrVerificationResult> {
     result.db_mrr_cents = db_mrr_cents;
     result.db_active_count = dbActiveSubscriptions.length;
 
-    // Prepare per-subscription data structures
-    const dbSubsByStripeId = new Map<string, any>();
-    const dbSubsWithoutStripeId: any[] = [];
+    // Prepare per-subscription data structures and populate db_only
+    const dbSubsByStripeId = new Map<string, OrgSubscription>();
+    const dbSubsWithoutStripeId: OrgSubscription[] = [];
 
     for (const sub of dbActiveSubscriptions) {
       if (sub.stripe_subscription_id) {
         dbSubsByStripeId.set(sub.stripe_subscription_id, sub);
       } else {
         dbSubsWithoutStripeId.push(sub);
+        // Add to db_only immediately since these have no Stripe subscription ID
+        const planKey = sub.plan_key;
+        const dbAmountCents = planPriceMap.get(planKey ?? '') ?? 0;
+
+        result.db_only.push({
+          organization_id: sub.organization_id,
+          plan_key: planKey,
+          db_status: sub.status ?? 'unknown',
+          db_amount_cents: dbAmountCents,
+        });
       }
-    }
-
-    // Find DB-only subscriptions (active in DB but no stripe_subscription_id)
-    for (const dbSub of dbSubsWithoutStripeId) {
-      const planKey = dbSub.plan_key;
-      const dbAmountCents = planPriceMap.get(planKey) ?? 0;
-
-      result.db_only.push({
-        organization_id: dbSub.organization_id,
-        plan_key: planKey,
-        db_status: dbSub.status,
-        db_amount_cents: dbAmountCents,
-      });
     }
 
     // Step 2: Query Stripe for active subscriptions
@@ -246,14 +278,7 @@ export async function verifyMrr(): Promise<MrrVerificationResult> {
           const interval = item.price.recurring?.interval;
 
           // Normalize to monthly
-          if (interval === 'year') {
-            stripe_mrr_cents += Math.round(unitAmount / 12);
-          } else if (interval === 'month') {
-            stripe_mrr_cents += unitAmount;
-          } else {
-            // For other intervals, just add the unit amount
-            stripe_mrr_cents += unitAmount;
-          }
+          stripe_mrr_cents += normalizeToMonthlyMrr(unitAmount, interval);
         }
       }
     }
@@ -281,15 +306,7 @@ export async function verifyMrr(): Promise<MrrVerificationResult> {
           if (item.price && typeof item.price === 'object') {
             const unitAmount = item.price.unit_amount ?? 0;
             const interval = item.price.recurring?.interval;
-
-            // Normalize to monthly
-            if (interval === 'year') {
-              stripeAmountCents = Math.round(unitAmount / 12);
-            } else if (interval === 'month') {
-              stripeAmountCents = unitAmount;
-            } else {
-              stripeAmountCents = unitAmount;
-            }
+            stripeAmountCents = normalizeToMonthlyMrr(unitAmount, interval);
           }
         }
       }
@@ -315,14 +332,7 @@ export async function verifyMrr(): Promise<MrrVerificationResult> {
           if (item.price && typeof item.price === 'object') {
             const unitAmount = item.price.unit_amount ?? 0;
             const interval = item.price.recurring?.interval;
-
-            if (interval === 'year') {
-              stripeAmountCents = Math.round(unitAmount / 12);
-            } else if (interval === 'month') {
-              stripeAmountCents = unitAmount;
-            } else {
-              stripeAmountCents = unitAmount;
-            }
+            stripeAmountCents = normalizeToMonthlyMrr(unitAmount, interval);
           }
         }
 
