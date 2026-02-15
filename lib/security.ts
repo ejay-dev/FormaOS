@@ -204,6 +204,11 @@ export async function verify2FAToken(
 
 /**
  * Disable 2FA
+ * 
+ * Note: This function verifies the password by attempting a sign-in.
+ * While not ideal (creates a session), Supabase doesn't provide a direct
+ * password verification API. This is acceptable for the disable 2FA flow
+ * as it ensures strong authentication before removing security settings.
  */
 export async function disable2FA(
   userId: string,

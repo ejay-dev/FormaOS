@@ -9,7 +9,14 @@ import { writeFile, readFile, unlink, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import { join } from 'path';
 
-const QUEUE_DIR = process.env.SECURITY_QUEUE_DIR || '/tmp/formaos-security-queue';
+const QUEUE_DIR = process.env.SECURITY_QUEUE_DIR || (() => {
+  // Default to a safer location in production
+  if (process.env.NODE_ENV === 'production') {
+    // Require explicit configuration in production
+    throw new Error('SECURITY_QUEUE_DIR environment variable must be set in production');
+  }
+  return '/tmp/formaos-security-queue';
+})();
 const MAX_QUEUE_SIZE = 1000; // Maximum events to queue
 const MAX_RETRY_ATTEMPTS = 3;
 
@@ -47,7 +54,7 @@ export async function enqueueFailedEvent(
     await ensureQueueDir();
     
     const event: QueuedEvent = {
-      id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+      id: `${Date.now()}-${crypto.randomUUID()}`,
       timestamp: Date.now(),
       attempts: 0,
       payload,
