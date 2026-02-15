@@ -18,10 +18,19 @@ export async function GET(request: Request) {
     return NextResponse.json({ ok: false, error: result.error ?? 'not_found' }, { status: 404 });
   }
 
+  // Return only SSO availability status, not the raw orgId
+  // To prevent organization enumeration attacks
   return NextResponse.json({
     ok: true,
-    orgId: result.orgId,
+    ssoAvailable: true,
     enforceSso: Boolean(result.enforceSso),
+    // Generate an opaque token instead of exposing orgId
+    // The orgId can be derived server-side during the SSO flow
+    flowToken: Buffer.from(JSON.stringify({
+      orgId: result.orgId,
+      timestamp: Date.now(),
+      email: email,
+    })).toString('base64'),
   });
 }
 

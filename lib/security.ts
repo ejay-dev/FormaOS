@@ -8,6 +8,7 @@
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
+import { randomBytes, pbkdf2Sync } from 'crypto';
 
 export interface TwoFactorSecret {
   secret: string;
@@ -23,6 +24,42 @@ export interface SecuritySettings {
   ipWhitelist?: string[];
   requireStrongPassword: boolean;
   passwordExpiryDays?: number;
+}
+
+/**
+ * Generate cryptographically secure backup code
+ */
+function generateSecureBackupCode(): string {
+  // Generate 8 random bytes (64 bits of entropy)
+  const bytes = randomBytes(8);
+  // Convert to base32-like string (without ambiguous characters)
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Removed I, O, 0, 1
+  let code = '';
+  for (let i = 0; i < 8; i++) {
+    code += chars[bytes[i] % chars.length];
+  }
+  // Format as XXXX-XXXX for readability
+  return `${code.slice(0, 4)}-${code.slice(4)}`;
+}
+
+/**
+ * Hash backup code for secure storage
+ */
+function hashBackupCode(code: string): string {
+  // Use PBKDF2 with random salt for each code
+  const salt = randomBytes(16).toString('hex');
+  const hash = pbkdf2Sync(code, salt, 100000, 32, 'sha256').toString('hex');
+  return `${salt}:${hash}`;
+}
+
+/**
+ * Verify backup code against hash
+ */
+function verifyBackupCode(code: string, storedHash: string): boolean {
+  const [salt, hash] = storedHash.split(':');
+  if (!salt || !hash) return false;
+  const codeHash = pbkdf2Sync(code, salt, 100000, 32, 'sha256').toString('hex');
+  return codeHash === hash;
 }
 
 /**
@@ -42,18 +79,20 @@ export async function generate2FASecret(
   // Generate QR code
   const qrCode = await QRCode.toDataURL(secret.otpauth_url || '');
 
-  // Generate backup codes
-  const backupCodes = Array.from({ length: 8 }, () =>
-    Math.random().toString(36).substring(2, 10).toUpperCase(),
-  );
+  // Generate cryptographically secure backup codes
+  const backupCodes = Array.from({ length: 8 }, () => generateSecureBackupCode());
+  
+  // Hash backup codes for storage
+  const hashedBackupCodes = backupCodes.map(hashBackupCode);
 
-  // Store secret (encrypted)
+  // TODO: Encrypt TOTP secret at rest before storing
+  // For now, store as-is but add comment indicating encryption needed
   const supabase = await createClient();
   await supabase.from('user_security').upsert(
     {
       user_id: userId,
-      two_factor_secret: secret.base32,
-      backup_codes: backupCodes,
+      two_factor_secret: secret.base32, // TODO: Encrypt this value
+      backup_codes: hashedBackupCodes, // Store hashed backup codes
       two_factor_enabled: false,
       updated_at: new Date().toISOString(),
     },
@@ -134,18 +173,24 @@ export async function verify2FAToken(
     return false;
   }
 
-  // Check if it's a backup code
-  if (security.backup_codes?.includes(token)) {
-    // Remove used backup code
-    const updatedCodes = security.backup_codes.filter(
-      (code: any) => code !== token,
+  // Check if it's a backup code (compare against hashed codes)
+  if (security.backup_codes && security.backup_codes.length > 0) {
+    const matchedIndex = security.backup_codes.findIndex(
+      (hashedCode: string) => verifyBackupCode(token, hashedCode)
     );
-    await supabase
-      .from('user_security')
-      .update({ backup_codes: updatedCodes })
-      .eq('user_id', userId);
+    
+    if (matchedIndex !== -1) {
+      // Remove used backup code
+      const updatedCodes = security.backup_codes.filter(
+        (_: any, index: number) => index !== matchedIndex,
+      );
+      await supabase
+        .from('user_security')
+        .update({ backup_codes: updatedCodes })
+        .eq('user_id', userId);
 
-    return true;
+      return true;
+    }
   }
 
   // Verify TOTP token
@@ -166,9 +211,23 @@ export async function disable2FA(
 ): Promise<boolean> {
   const supabase = await createClient();
 
-  // Verify password (implement password verification)
-  // const passwordValid = await verifyPassword(userId, password);
-  // if (!passwordValid) return false;
+  // Get user email for password verification
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError || !user?.email) {
+    return false;
+  }
+
+  // Verify password by attempting sign-in
+  // This ensures the user must re-authenticate before disabling 2FA
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: password,
+  });
+
+  if (signInError) {
+    // Password is incorrect
+    return false;
+  }
 
   // Disable 2FA
   await supabase

@@ -15,7 +15,8 @@ interface DetailedCheck {
 const FOUNDER_TOKEN_HEADER = 'x-founder-token';
 
 function isDetailedHealthProtectionEnabled(): boolean {
-  return process.env.HEALTH_DETAILED_PROTECT === '1';
+  // Enable protection by default, can be explicitly disabled with '0'
+  return process.env.HEALTH_DETAILED_PROTECT !== '0';
 }
 
 function extractFounderToken(request: Request): string {
@@ -136,12 +137,13 @@ export async function GET(request: Request) {
       degraded: degradedCount,
       errors: errorCount,
     },
-    system: {
-      memory: process.memoryUsage(),
-      pid: process.pid,
-      platform: process.platform,
-      nodeVersion: process.version,
-    },
+    // Remove detailed system internals for security
+    // system: {
+    //   memory: process.memoryUsage(),
+    //   pid: process.pid,
+    //   platform: process.platform,
+    //   nodeVersion: process.version,
+    // },
   };
 
   const httpStatus =

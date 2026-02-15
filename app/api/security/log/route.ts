@@ -5,11 +5,30 @@ import {
   SecurityEventTypes,
 } from '@/lib/security/session-security';
 import { extractClientIP } from '@/lib/security/session-security';
+import {
+  checkRateLimit,
+  createRateLimitHeaders,
+  createRateLimitedResponse,
+} from '@/lib/security/rate-limiter';
+import { logRateLimitExceeded } from '@/lib/security/event-logger';
 
 const allowedEvents = new Set(Object.values(SecurityEventTypes));
 const invalidMetadataPattern =
   /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
 const invalidCharsPattern = /(\-\-|;|\||&|\$\(|`)/g;
+
+const RATE_LIMITS = {
+  SECURITY_LOG: {
+    windowMs: 60 * 1000, // 1 minute
+    maxRequests: 10, // Allow 10 security log events per minute
+    keyPrefix: 'rl:security-log',
+  },
+  SECURITY_LOG_UNAUTH: {
+    windowMs: 60 * 1000, // 1 minute
+    maxRequests: 5, // Stricter limit for unauthenticated (login failures)
+    keyPrefix: 'rl:security-log-unauth',
+  },
+};
 
 const sanitizeMetadata = (meta: unknown) => {
   if (!meta || typeof meta !== 'object') return {};
@@ -54,6 +73,28 @@ export async function POST(request: Request) {
     const ipAddress = extractClientIP(request.headers);
     const userAgent = request.headers.get('user-agent') ?? undefined;
 
+    // Rate limiting: different limits for authenticated vs unauthenticated
+    const rateLimitConfig = user ? RATE_LIMITS.SECURITY_LOG : RATE_LIMITS.SECURITY_LOG_UNAUTH;
+    const rateLimitResult = await checkRateLimit(
+      rateLimitConfig,
+      ipAddress,
+      user?.id,
+    );
+
+    if (!rateLimitResult.success) {
+      logRateLimitExceeded({
+        userId: user?.id,
+        ip: ipAddress,
+        userAgent: userAgent || 'unknown',
+        path: '/api/security/log',
+      });
+      return createRateLimitedResponse(
+        'Too many security log requests. Please wait before trying again.',
+        429,
+        createRateLimitHeaders(rateLimitResult),
+      );
+    }
+
     logSecurityEvent({
       eventType,
       userId: user?.id,
@@ -62,7 +103,9 @@ export async function POST(request: Request) {
       metadata: metadata ?? {},
     });
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true }, {
+      headers: createRateLimitHeaders(rateLimitResult),
+    });
   } catch (error) {
     console.error('[security/log] Error:', error);
     return NextResponse.json(
