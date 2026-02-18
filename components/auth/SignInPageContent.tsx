@@ -396,7 +396,7 @@ function SignInContent() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-6">
-        <Logo size={36} />
+        <Logo variant="mark" size={44} />
         <div className="text-xs sm:text-sm text-slate-400 text-center sm:text-left">
           Secure · Compliance-First · Enterprise-Ready
         </div>
@@ -603,7 +603,7 @@ function SignInContent() {
           {/* Security Notice */}
           <div className="mt-6 text-center text-xs text-slate-500">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <Logo variant="mark" size={12} />
+              <Logo variant="mark" size={14} />
               <span>Enterprise-grade security</span>
             </div>
             <p>
@@ -623,7 +623,7 @@ export default function SignInPage() {
       fallback={
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
           <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm px-6 py-4 text-sm text-slate-300">
-            <Logo variant="mark" size={16} />
+            <Logo variant="mark" size={18} />
             <span>Loading FormaOS...</span>
           </div>
         </div>

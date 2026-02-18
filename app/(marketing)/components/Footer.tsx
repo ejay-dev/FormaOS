@@ -258,10 +258,7 @@ export function Footer() {
               transition={{ duration: duration.fast, ease: easing.signature }}
             >
               <Link href="/" className="flex items-center gap-2.5 group">
-                <Logo
-                  size={32}
-                  textClassName="text-lg font-semibold tracking-tight"
-                />
+                <Logo variant="mark" size={40} />
               </Link>
             </motion.div>
 

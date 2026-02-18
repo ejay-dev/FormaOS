@@ -149,7 +149,7 @@ export default async function AppLayout({
                         {/* Sidebar header */}
                         <div className="flex h-20 items-center border-b border-border px-6">
                           <div className="flex items-center gap-3">
-                            <Logo variant="mark" size={40} />
+                            <Logo variant="mark" size={48} />
                             <div>
                               <div className="text-base font-bold font-display">
                                 {brand.appName}

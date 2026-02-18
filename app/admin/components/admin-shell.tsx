@@ -103,7 +103,7 @@ export function AdminShell({
             )}
           </button>
           <Link href="/admin/dashboard" className="flex items-center gap-2">
-            <Logo variant="mark" size={32} />
+            <Logo variant="mark" size={40} />
             <div className="hidden sm:block">
               <div className="text-sm font-bold">{brand.appName} Admin</div>
               <div className="text-xs text-slate-500">Platform Console</div>

@@ -127,7 +127,7 @@ function CheckEmailContent() {
     <div className="relative min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-6 py-12">
       {/* Header */}
       <div className="absolute top-6 left-6">
-        <Logo size={36} />
+        <Logo variant="mark" size={44} />
       </div>
 
       <div className="w-full max-w-md">

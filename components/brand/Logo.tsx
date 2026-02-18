@@ -1,95 +1,83 @@
-'use client';
-
-import Image from 'next/image';
 import { brand } from '@/config/brand';
+import { FoShieldMark } from '@/components/brand/FoShieldMark';
 
 type LogoVariant = 'full' | 'mark' | 'wordmark';
 
 interface LogoProps {
   /** Which variant to render */
   variant?: LogoVariant;
-  /** Size in pixels (applies to the mark; wordmark scales proportionally) */
+  /** Shield size in pixels */
   size?: number;
   /** Additional CSS classes */
   className?: string;
   /** Override the default alt text */
   alt?: string;
-  /** Use light wordmark (for dark backgrounds). Default: true */
+  /** Controls accent tint when optional text is shown. Default: true */
   darkBackground?: boolean;
-  /** Show the app name text next to the mark (only for variant="full") */
+  /** Show app name text next to the mark (opt-in only) */
   showText?: boolean;
   /** Text size class override */
   textClassName?: string;
+  /** Enable subtle mark animation */
+  animated?: boolean;
 }
 
 /**
  * Unified FormaOS logo component.
- * Single source of truth for brand rendering across the entire app.
+ * Shield-only by default to enforce monogram consistency across app + marketing.
  *
  * Usage:
- *   <Logo />                           — Full: mark + "FormaOS" text
+ *   <Logo />                           — FO shield mark (animated)
  *   <Logo variant="mark" size={40} />  — Icon only
- *   <Logo variant="wordmark" />        — SVG wordmark (mark + text baked in)
+ *   <Logo variant="full" showText />   — Optional legacy text lockup
  */
 export function Logo({
-  variant = 'full',
-  size = 32,
+  variant = 'mark',
+  size = 36,
   className = '',
   alt,
-  darkBackground = true,
-  showText = true,
+  darkBackground = true, // retained for API compatibility
+  showText = false,
   textClassName = '',
+  animated = true,
 }: LogoProps) {
   const altText = alt ?? brand.appName;
+  const motionEnabled = animated && size >= 24;
+  const renderMark = () => (
+    <FoShieldMark
+      size={size}
+      title={altText}
+      animated={motionEnabled}
+      className="select-none shrink-0"
+    />
+  );
 
-  /* ---- Mark only (icon/symbol) ---- */
+  /* ---- Mark only (default) ---- */
   if (variant === 'mark') {
-    return (
-      <Image
-        src={brand.logo.mark}
-        alt={altText}
-        width={size}
-        height={size}
-        className={`select-none ${className}`}
-        priority
-      />
-    );
+    return <span className={`inline-flex select-none ${className}`}>{renderMark()}</span>;
   }
 
-  /* ---- Wordmark (SVG with mark + text) ---- */
+  /* ---- Legacy wordmark variant now resolves to shield-only ---- */
   if (variant === 'wordmark') {
-    const src = darkBackground
-      ? brand.logo.wordmarkDark
-      : brand.logo.wordmarkLight;
     return (
-      <Image
-        src={src}
-        alt={altText}
-        width={size * 5}
-        height={size}
-        className={`select-none ${className}`}
-        priority
-      />
+      <span className={`inline-flex items-center select-none ${className}`}>
+        {renderMark()}
+      </span>
     );
   }
 
-  /* ---- Full (mark + text span) ---- */
+  /* ---- Full variant: mark-only unless text is explicitly requested ---- */
   return (
     <span className={`inline-flex items-center gap-2 select-none ${className}`}>
-      <Image
-        src={brand.logo.mark}
-        alt={altText}
-        width={size}
-        height={size}
-        className="select-none"
-        priority
-      />
+      {renderMark()}
       {showText && (
         <span
           className={textClassName || 'text-lg font-semibold tracking-tight'}
         >
           Forma
-          <span className="text-blue-500">OS</span>
+          <span className={darkBackground ? 'text-primary' : 'text-secondary'}>
+            OS
+          </span>
         </span>
       )}
     </span>

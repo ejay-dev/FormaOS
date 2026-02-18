@@ -1,10 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
-  <rect width="128" height="128" rx="28" fill="transparent"/>
-  <circle cx="64" cy="64" r="38" stroke="white" stroke-width="2.5" fill="none" opacity="0.2"/>
-  <rect x="38" y="36" width="10" height="56" rx="5" fill="white"/>
-  <rect x="59" y="44" width="10" height="48" rx="5" fill="white" opacity="0.7"/>
-  <rect x="80" y="36" width="10" height="56" rx="5" fill="white"/>
-  <rect x="48" y="50" width="11" height="3.5" rx="1.75" fill="white" opacity="0.4"/>
-  <rect x="69" y="66" width="11" height="3.5" rx="1.75" fill="white" opacity="0.4"/>
-  <circle cx="92" cy="36" r="4.5" fill="white" opacity="0.9"/>
+  <path d="M64 8L108 28V66C108 89 92 109 64 120C36 109 20 89 20 66V28L64 8Z" stroke="white" stroke-opacity="0.95" stroke-width="3" fill="white" fill-opacity="0.04" />
+  <path d="M64 15L102 32.5V65.3C102 86 87.5 103.3 64 111.4C40.5 103.3 26 86 26 65.3V32.5L64 15Z" stroke="white" stroke-opacity="0.24" stroke-width="1.5" />
+  <path d="M36 38C36 35.8 37.8 34 40 34H71C73.2 34 75 35.8 75 38V40C75 42.2 73.2 44 71 44H48V57H66C68.2 57 70 58.8 70 61V63C70 65.2 68.2 67 66 67H48V88C48 90.2 46.2 92 44 92H40C37.8 92 36 90.2 36 88V38Z" fill="white" fill-opacity="0.96" />
+  <circle cx="81" cy="63" r="20" stroke="white" stroke-opacity="0.96" stroke-width="10" />
+  <circle cx="81" cy="63" r="14.5" stroke="white" stroke-opacity="0.24" stroke-width="1.8" />
+  <path d="M66 84L93 69.5" stroke="white" stroke-opacity="0.3" stroke-width="2.2" stroke-linecap="round" />
 </svg>

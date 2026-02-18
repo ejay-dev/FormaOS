@@ -111,7 +111,7 @@ export default function JoinOrCreatePage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Header */}
       <div className="flex items-center justify-between p-6">
-        <Logo size={36} />
+        <Logo variant="mark" size={44} />
         {userEmail && (
           <span className="text-xs text-slate-400 truncate max-w-[200px]">
             {userEmail}

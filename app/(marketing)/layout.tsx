@@ -53,7 +53,7 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
                   href="/"
                   className="flex items-center text-white transition-opacity hover:opacity-90"
                 >
-                  <Logo size={34} />
+                  <Logo variant="mark" size={42} />
                 </Link>
               </div>
 

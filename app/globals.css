@@ -748,7 +748,7 @@
 
 /* =========================================================
  * CHAMPAGNE — Warm light, premium ivory/boardroom
- * Cream/sand backgrounds, warm charcoal text, soft gold accents
+ * Cream/sand backgrounds, warm charcoal text, soft cool accents
  * ======================================================== */
 [data-theme='champagne'] {
   color-scheme: light;
@@ -1436,5 +1436,71 @@
   100% {
     transform: translateY(220px) rotate(220deg);
     opacity: 0;
+  }
+}
+
+/* FO shield motion system (subtle, transform/opacity-only) */
+.fo-logo-root {
+  display: block;
+  overflow: visible;
+}
+
+.fo-logo-visual-scale {
+  transform: translateZ(0) scale(1.08);
+  transform-origin: center;
+}
+
+.fo-logo-motion .fo-logo-breathe {
+  transform-origin: 64px 64px;
+  animation: fo-logo-breathe 3s ease-in-out infinite;
+}
+
+.fo-logo-motion .fo-logo-sweep {
+  transform: translate3d(-154px, 0, 0);
+  animation: fo-logo-sweep 6.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  will-change: transform, opacity;
+}
+
+.fo-logo-motion:hover .fo-logo-sweep {
+  animation-duration: 4.8s;
+}
+
+@keyframes fo-logo-breathe {
+  0%,
+  100% {
+    opacity: 0.985;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes fo-logo-sweep {
+  0%,
+  68% {
+    opacity: 0;
+    transform: translate3d(-154px, 0, 0);
+  }
+  78% {
+    opacity: 0.08;
+  }
+  88% {
+    opacity: 0.18;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(154px, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fo-logo-motion .fo-logo-breathe,
+  .fo-logo-motion .fo-logo-sweep {
+    animation: none !important;
+  }
+
+  .fo-logo-motion .fo-logo-sweep {
+    opacity: 0 !important;
+    transform: none !important;
   }
 }

@@ -10,8 +10,9 @@ export const brand = {
     mark: '/brand/formaos-mark.svg',
     markLight: '/brand/formaos-mark-light.svg',
     markWhite: '/brand/formaos-mark-white.svg',
-    wordmarkLight: '/brand/formaos-wordmark-light.svg',
-    wordmarkDark: '/brand/formaos-wordmark-dark.svg',
+    // Legacy fields intentionally point to monogram assets.
+    wordmarkLight: '/brand/formaos-mark-light.svg',
+    wordmarkDark: '/brand/formaos-mark.svg',
     favicon: '/favicon.ico',
     icon: '/icon.svg',
     appleTouchIcon: '/apple-touch-icon.png',
