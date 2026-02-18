@@ -9,14 +9,14 @@ export const metadata: Metadata = {
   description:
     'Model workflows. Execute with precision. Verify in real-time. Prove compliance. Enterprise-grade process evidence platform for regulated industries.',
   alternates: {
-    canonical: siteUrl,
+    canonical: `${siteUrl.replace(/\/$/, '')}/`,
   },
   openGraph: {
     title: 'FormaOS | Turn Process Into Provable Truth',
     description:
       'Enterprise-grade process evidence platform for regulated industries. Model workflows, execute with precision, verify in real-time, prove compliance.',
     type: 'website',
-    url: siteUrl,
+    url: `${siteUrl.replace(/\/$/, '')}/`,
   },
 };
 
