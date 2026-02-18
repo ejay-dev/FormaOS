@@ -12,7 +12,7 @@ const ProductHero3D = dynamic(
 );
 
 const PRODUCT_HERO_EXPERIMENT =
-  typeof process !== 'undefined' && process.env.NEXT_PUBLIC_PRODUCT_HERO_EXPERIMENT === '1';
+  process.env.NEXT_PUBLIC_PRODUCT_HERO_EXPERIMENT !== '0';
 const OperationalScenarioProof = dynamic(
   () => import('@/components/marketing/demo/OperationalScenarioProof').then((m) => m.OperationalScenarioProof),
   { ssr: false, loading: () => null },
