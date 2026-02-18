@@ -9,6 +9,13 @@ export const metadata: Metadata = {
   description:
     'Incident response summary and communication expectations for enterprise procurement.',
   alternates: { canonical: `${siteUrl}/trust/incident-response` },
+  openGraph: {
+    title: 'FormaOS | Incident Response',
+    description:
+      'Incident response summary and communication expectations for enterprise procurement.',
+    type: 'website',
+    url: `${siteUrl}/trust/incident-response`,
+  },
 };
 
 export default function IncidentResponsePage() {
@@ -72,4 +79,3 @@ export default function IncidentResponsePage() {
     </main>
   );
 }
-

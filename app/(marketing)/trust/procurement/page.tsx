@@ -2,10 +2,20 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { CheckCircle, Clock, FileText } from 'lucide-react';
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
+
 export const metadata: Metadata = {
   title: 'FormaOS | Procurement FAQ',
   description:
     'Answers to common procurement and security review questions for enterprise buyers.',
+  alternates: { canonical: `${siteUrl}/trust/procurement` },
+  openGraph: {
+    title: 'FormaOS | Procurement FAQ',
+    description:
+      'Answers to common procurement and security review questions for enterprise buyers.',
+    type: 'website',
+    url: `${siteUrl}/trust/procurement`,
+  },
 };
 
 const faqs = [

@@ -8,6 +8,13 @@ export const metadata: Metadata = {
   description:
     'Customer-facing assurance portal for compliance posture, security controls, and audit readiness artifacts.',
   alternates: { canonical: `${siteUrl}/trust` },
+  openGraph: {
+    title: 'FormaOS | Trust Center',
+    description:
+      'Customer-facing assurance portal for compliance posture, security controls, and audit readiness artifacts.',
+    type: 'website',
+    url: `${siteUrl}/trust`,
+  },
 };
 
 export default function TrustCenterPage() {

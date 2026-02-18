@@ -10,6 +10,13 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${siteUrl}/compare/drata`,
   },
+  openGraph: {
+    title: 'FormaOS | Compare: Drata',
+    description:
+      'FormaOS vs Drata: operational workflow governance with evidence verification and audit-ready execution.',
+    type: 'website',
+    url: `${siteUrl}/compare/drata`,
+  },
 };
 
 const points = [

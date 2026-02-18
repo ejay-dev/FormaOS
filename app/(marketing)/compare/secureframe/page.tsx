@@ -10,6 +10,13 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${siteUrl}/compare/secureframe`,
   },
+  openGraph: {
+    title: 'FormaOS | Compare: Secureframe',
+    description:
+      'FormaOS vs Secureframe: compliance program setup plus operational execution with evidence verification and audit-ready governance.',
+    type: 'website',
+    url: `${siteUrl}/compare/secureframe`,
+  },
 };
 
 const points = [

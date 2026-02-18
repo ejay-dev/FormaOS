@@ -9,6 +9,13 @@ export const metadata: Metadata = {
   description:
     'Data handling, retention, and deletion summary for enterprise procurement.',
   alternates: { canonical: `${siteUrl}/trust/data-handling` },
+  openGraph: {
+    title: 'FormaOS | Data Handling',
+    description:
+      'Data handling, retention, and deletion summary for enterprise procurement.',
+    type: 'website',
+    url: `${siteUrl}/trust/data-handling`,
+  },
 };
 
 export default function DataHandlingPage() {
@@ -72,4 +79,3 @@ export default function DataHandlingPage() {
     </main>
   );
 }
-

@@ -3,10 +3,20 @@ import Link from 'next/link';
 import { Server } from 'lucide-react';
 import { TRUST_SUBPROCESSORS } from '@/lib/trust/subprocessors';
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
+
 export const metadata: Metadata = {
   title: 'FormaOS | Sub-processors',
   description:
     'List of third-party sub-processors used by FormaOS for data processing.',
+  alternates: { canonical: `${siteUrl}/trust/subprocessors` },
+  openGraph: {
+    title: 'FormaOS | Sub-processors',
+    description:
+      'List of third-party sub-processors used by FormaOS for data processing.',
+    type: 'website',
+    url: `${siteUrl}/trust/subprocessors`,
+  },
 };
 
 const subprocessors = [

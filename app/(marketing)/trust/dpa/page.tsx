@@ -11,10 +11,20 @@ import {
   Lock,
 } from 'lucide-react';
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
+
 export const metadata: Metadata = {
   title: 'FormaOS | Data Processing Agreement',
   description:
     'FormaOS Data Processing Agreement for enterprise customers. GDPR-compliant data handling terms.',
+  alternates: { canonical: `${siteUrl}/trust/dpa` },
+  openGraph: {
+    title: 'FormaOS | Data Processing Agreement',
+    description:
+      'FormaOS Data Processing Agreement for enterprise customers. GDPR-compliant data handling terms.',
+    type: 'website',
+    url: `${siteUrl}/trust/dpa`,
+  },
 };
 
 export default function DPAPage() {

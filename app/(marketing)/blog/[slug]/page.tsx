@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import { CalendarDays, Clock, User } from 'lucide-react';
 import { blogPosts, getCategoryId } from '../blogData';
 import { BlogHeroVisual } from '@/components/blog/BlogHeroVisual';
@@ -8,8 +9,45 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
+
 export const generateStaticParams = () =>
   blogPosts.map((post) => ({ slug: post.id }));
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const post = blogPosts.find((item) => item.id === slug);
+
+  if (!post) {
+    return {
+      title: 'Blog',
+      description: 'Insights and analysis from the FormaOS compliance team.',
+      alternates: {
+        canonical: `${siteUrl}/blog`,
+      },
+      openGraph: {
+        title: 'FormaOS Blog',
+        description: 'Insights and analysis from the FormaOS compliance team.',
+        type: 'website',
+        url: `${siteUrl}/blog`,
+      },
+    };
+  }
+
+  return {
+    title: post.title,
+    description: post.excerpt,
+    alternates: {
+      canonical: `${siteUrl}/blog/${post.id}`,
+    },
+    openGraph: {
+      title: `${post.title} | FormaOS`,
+      description: post.excerpt,
+      type: 'article',
+      url: `${siteUrl}/blog/${post.id}`,
+    },
+  };
+}
 
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;

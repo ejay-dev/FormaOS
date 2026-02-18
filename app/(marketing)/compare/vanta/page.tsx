@@ -10,6 +10,13 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${siteUrl}/compare/vanta`,
   },
+  openGraph: {
+    title: 'FormaOS | Compare: Vanta',
+    description:
+      'FormaOS vs Vanta: operational compliance execution with defensible evidence workflows and audit-ready governance.',
+    type: 'website',
+    url: `${siteUrl}/compare/vanta`,
+  },
 };
 
 const points = [

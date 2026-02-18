@@ -9,6 +9,13 @@ export const metadata: Metadata = {
   description:
     'Download the FormaOS vendor trust packet for enterprise procurement and security review.',
   alternates: { canonical: `${siteUrl}/trust/packet` },
+  openGraph: {
+    title: 'FormaOS | Trust Packet',
+    description:
+      'Download the FormaOS vendor trust packet for enterprise procurement and security review.',
+    type: 'website',
+    url: `${siteUrl}/trust/packet`,
+  },
 };
 
 export default function TrustPacketPage() {
@@ -62,4 +69,3 @@ export default function TrustPacketPage() {
     </main>
   );
 }
-

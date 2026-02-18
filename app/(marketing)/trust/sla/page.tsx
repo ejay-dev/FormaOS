@@ -8,6 +8,12 @@ export const metadata: Metadata = {
   title: 'FormaOS | SLA',
   description: 'SLA and availability expectations for FormaOS enterprise plans.',
   alternates: { canonical: `${siteUrl}/trust/sla` },
+  openGraph: {
+    title: 'FormaOS | SLA',
+    description: 'SLA and availability expectations for FormaOS enterprise plans.',
+    type: 'website',
+    url: `${siteUrl}/trust/sla`,
+  },
 };
 
 const tiers = [
@@ -96,4 +102,3 @@ export default function SlaPage() {
     </main>
   );
 }
-

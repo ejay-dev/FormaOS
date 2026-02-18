@@ -9,6 +9,10 @@ export const metadata: Metadata = {
   description:
     'Buyer-grade case study template for regulated operators: before/after, mechanism, measurable metrics, and timeframe.',
   alternates: { canonical: `${siteUrl}/customer-stories/template` },
+  robots: {
+    index: false,
+    follow: false,
+  },
   openGraph: {
     title: 'FormaOS | Case Study Template',
     description:
@@ -132,4 +136,3 @@ export default function CaseStudyTemplatePage() {
     </main>
   );
 }
-

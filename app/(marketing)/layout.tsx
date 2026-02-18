@@ -24,23 +24,6 @@ export const metadata: Metadata = {
   description:
     'FormaOS is the compliance operating system for regulated industries. Manage frameworks, policies, controls, and evidence in a single platform.',
   metadataBase: new URL(brand.seo.siteUrl),
-  openGraph: {
-    type: 'website',
-    locale: 'en_AU',
-    url: brand.seo.siteUrl,
-    siteName: 'FormaOS',
-    title: 'FormaOS | Compliance Operating System',
-    description:
-      'FormaOS is the compliance operating system for regulated industries. Manage frameworks, policies, controls, and evidence in a single platform.',
-    images: [
-      {
-        url: `${brand.seo.siteUrl}/og-image.png`,
-        width: 1200,
-        height: 630,
-        alt: 'FormaOS',
-      },
-    ],
-  },
 };
 
 export default function MarketingLayout({ children }: { children: ReactNode }) {
