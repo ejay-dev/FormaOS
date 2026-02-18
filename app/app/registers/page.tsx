@@ -72,15 +72,23 @@ export default function RegistersPage() {
 
   useEffect(() => {
     fetchRegisters();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [organization?.id]);
 
   async function fetchRegisters() {
     try {
+      const orgId = organization?.id;
+      if (!orgId) {
+        setRegisters([]);
+        return;
+      }
       const supabase = createSupabaseClient();
       const { data, error } = await supabase
         .from("org_registers")
-        .select("*")
-        .order("created_at", { ascending: false });
+        .select("id, name, description, type, category, risk_level, created_at")
+        .eq("organization_id", orgId)
+        .order("created_at", { ascending: false })
+        .limit(100);
 
       if (error) throw error;
       setRegisters(data || []);

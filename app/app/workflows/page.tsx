@@ -22,12 +22,13 @@ export default async function WorkflowsPage() {
     return null;
   }
 
-  // Fetch existing workflows
+  // Fetch existing workflows (limited for performance)
   const { data: workflows } = await supabase
     .from('org_workflows')
-    .select('*')
+    .select('id, name, description, trigger_type, action_type, enabled, created_at')
     .eq('organization_id', membership.organization_id)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(100);
 
   return (
     <div className="space-y-8 pb-24">

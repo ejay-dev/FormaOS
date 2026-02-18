@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, Sora, JetBrains_Mono } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
+import NextTopLoader from 'nextjs-toploader';
 import './globals.css';
 
 const inter = Inter({
@@ -61,6 +62,7 @@ export default function RootLayout({
       className={`${inter.variable} ${sora.variable} ${jetbrainsMono.variable}`}
     >
       <body className={inter.className}>
+        <NextTopLoader color="#22d3ee" height={2} showSpinner={false} />
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

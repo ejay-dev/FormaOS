@@ -41,8 +41,8 @@ export default async function TeamPage() {
     { data: subscription },
     { data: entitlements }
   ] = await Promise.all([
-    supabase.from('org_members').select('*').eq('organization_id', orgId).order('created_at', { ascending: true }),
-    supabase.from('team_invitations').select('*').eq('organization_id', orgId).eq('status', 'pending').order('created_at', { ascending: false }),
+    supabase.from('org_members').select('id, user_id, role, created_at').eq('organization_id', orgId).order('created_at', { ascending: true }).limit(100),
+    supabase.from('team_invitations').select('id, email, role, created_at').eq('organization_id', orgId).eq('status', 'pending').order('created_at', { ascending: false }).limit(50),
     supabase.from('org_subscriptions').select('status').eq('organization_id', orgId).maybeSingle(),
     supabase.from('org_entitlements').select('feature_key, enabled, limit_value').eq('organization_id', orgId)
   ]);

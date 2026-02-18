@@ -1,16 +1,17 @@
+import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { ExecutiveDashboardClient } from './ExecutiveDashboardClient';
+import { PageSkeleton } from '@/components/ui/skeleton';
 
 export const metadata = {
   title: 'Executive Dashboard | FormaOS',
   description: 'C-level visibility into organization-wide compliance posture',
 };
 
-export default async function ExecutiveDashboardPage() {
+async function ExecutiveContent() {
   const supabase = await createSupabaseServerClient();
 
-  // Get current user
   const {
     data: { user },
     error: userError,
@@ -48,5 +49,13 @@ export default async function ExecutiveDashboardPage() {
       organizationName={org?.name || 'Organization'}
       industry={org?.industry || null}
     />
+  );
+}
+
+export default function ExecutiveDashboardPage() {
+  return (
+    <Suspense fallback={<PageSkeleton title="Executive Dashboard" cards={4} tableRows={4} />}>
+      <ExecutiveContent />
+    </Suspense>
   );
 }

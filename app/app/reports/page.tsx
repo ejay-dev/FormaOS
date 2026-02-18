@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 import {
   FileText,
@@ -11,12 +12,13 @@ import {
   Users,
 } from 'lucide-react';
 import { runGapAnalysis } from '@/app/app/actions/compliance';
-import { getOrgIdForUser, getComplianceBlocks } from '@/app/app/actions/enforcement';
+import { getComplianceBlocks } from '@/app/app/actions/enforcement';
 import {
   evaluateOrgCompliance,
   fetchComplianceSummary,
 } from '@/app/app/actions/control-evaluations';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { Skeleton, SkeletonCard } from '@/components/ui/skeleton';
 
 type EntitlementRow = {
   feature_key: string;
@@ -57,52 +59,66 @@ const EXPORT_CARDS: ExportCard[] = [
   },
 ];
 
-export default async function ReportsPage() {
+/** Resolves org context — fast path, just auth + membership lookup */
+async function resolveOrgContext() {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  let hasSubscription = false;
-  let hasAuditExport = false;
-  let hasFrameworkEval = false;
-  let hasAdminAccess = false;
+  if (!user) return null;
 
-  if (user) {
-    const { data: membership } = await supabase
-      .from('org_members')
-      .select('organization_id, role')
-      .eq('user_id', user.id)
-      .maybeSingle();
+  const { data: membership } = await supabase
+    .from('org_members')
+    .select('organization_id, role')
+    .eq('user_id', user.id)
+    .maybeSingle();
 
-    if (membership?.organization_id) {
-      const orgId = membership.organization_id;
-      hasAdminAccess = membership.role === 'owner' || membership.role === 'admin';
-      const [subscriptionResult, entitlementsResult] = await Promise.all([
-        supabase
-          .from('org_subscriptions')
-          .select('status')
-          .eq('organization_id', orgId)
-          .maybeSingle(),
-        supabase
-          .from('org_entitlements')
-          .select('feature_key, enabled')
-          .eq('organization_id', orgId),
-      ]);
+  if (!membership?.organization_id) return null;
 
-      const subscription = subscriptionResult.data;
-      hasSubscription =
-        subscription?.status === 'active' || subscription?.status === 'trialing';
+  const orgId = membership.organization_id;
+  const hasAdminAccess = membership.role === 'owner' || membership.role === 'admin';
 
-      const entitlementRows: EntitlementRow[] = entitlementsResult.data ?? [];
-      const entitlementSet = new Set(
-        entitlementRows.filter((entry) => entry.enabled).map((entry) => entry.feature_key),
-      );
-      hasAuditExport = entitlementSet.has('audit_export');
-      hasFrameworkEval = entitlementSet.has('framework_evaluations');
-    }
-  }
+  const [subscriptionResult, entitlementsResult] = await Promise.all([
+    supabase
+      .from('org_subscriptions')
+      .select('status')
+      .eq('organization_id', orgId)
+      .maybeSingle(),
+    supabase
+      .from('org_entitlements')
+      .select('feature_key, enabled')
+      .eq('organization_id', orgId),
+  ]);
 
+  const subscription = subscriptionResult.data;
+  const hasSubscription =
+    subscription?.status === 'active' || subscription?.status === 'trialing';
+
+  const entitlementRows: EntitlementRow[] = entitlementsResult.data ?? [];
+  const entitlementSet = new Set(
+    entitlementRows.filter((entry) => entry.enabled).map((entry) => entry.feature_key),
+  );
+
+  return {
+    orgId,
+    hasAdminAccess,
+    hasSubscription,
+    hasAuditExport: entitlementSet.has('audit_export'),
+    hasFrameworkEval: entitlementSet.has('framework_evaluations'),
+  };
+}
+
+/** Streamed: ISO compliance score + gap analysis */
+async function ComplianceScoreSection({
+  orgId,
+  hasSubscription,
+  hasFrameworkEval,
+}: {
+  orgId: string;
+  hasSubscription: boolean;
+  hasFrameworkEval: boolean;
+}) {
   const isoResult =
     hasSubscription && hasFrameworkEval ? await runGapAnalysis('ISO27001') : null;
   const complianceScore = isoResult?.score ?? 0;
@@ -113,7 +129,6 @@ export default async function ReportsPage() {
   let complianceBlocks: any[] = [];
   let requiredNonCompliantCount = 0;
   try {
-    const { orgId } = await getOrgIdForUser();
     complianceBlocks = await getComplianceBlocks(orgId, 'AUDIT_EXPORT');
     await evaluateOrgCompliance(orgId);
     const summary = await fetchComplianceSummary(orgId);
@@ -125,15 +140,9 @@ export default async function ReportsPage() {
 
   const isExportBlocked = Boolean(complianceBlocks && complianceBlocks.length > 0);
   const isControlBlocked = requiredNonCompliantCount > 0;
-  const disableExports =
-    isExportBlocked ||
-    isControlBlocked ||
-    !hasSubscription ||
-    !hasAuditExport ||
-    !hasAdminAccess;
 
   return (
-    <div className="space-y-8 pb-12 animate-in fade-in duration-500">
+    <>
       {(isExportBlocked || isControlBlocked) && (
         <div className="rounded-xl border border-rose-700 bg-rose-950/40 px-6 py-4">
           <div className="flex items-start gap-3 text-rose-200">
@@ -147,37 +156,6 @@ export default async function ReportsPage() {
           </div>
         </div>
       )}
-
-      {!hasSubscription && (
-        <div className="rounded-xl border border-amber-400/30 bg-amber-500/10 px-6 py-4 text-amber-100">
-          <div className="text-sm font-semibold">Subscription required</div>
-          <div className="mt-1 text-xs text-amber-200">
-            Activate your plan to unlock report exports and framework evaluations.
-          </div>
-          <Link href="/app/billing" className="mt-3 inline-flex text-xs font-semibold underline">
-            Go to billing
-          </Link>
-        </div>
-      )}
-
-      {!hasAdminAccess && (
-        <div className="rounded-xl border border-sky-400/30 bg-sky-500/10 px-6 py-4 text-sky-100">
-          <div className="text-sm font-semibold">Admin access required</div>
-          <div className="mt-1 text-xs text-sky-200">
-            Reports and trust exports are restricted to organization owners and admins.
-          </div>
-          <Link href="/app/team" className="mt-3 inline-flex text-xs font-semibold underline">
-            Review team roles
-          </Link>
-        </div>
-      )}
-
-      <div>
-        <h1 className="text-3xl font-black text-slate-100 tracking-tight">Reports Center</h1>
-        <p className="mt-1 text-slate-400">
-          Generate audit-ready compliance artifacts and regulatory assessments.
-        </p>
-      </div>
 
       <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-8">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
@@ -226,7 +204,14 @@ export default async function ReportsPage() {
           </div>
         </div>
       )}
+    </>
+  );
+}
 
+/** Streamed: Trust packet + export cards (depends on compliance state) */
+function ExportSection({ disableExports }: { disableExports: boolean }) {
+  return (
+    <>
       <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div>
@@ -332,6 +317,74 @@ export default async function ReportsPage() {
           </div>
         )}
       </div>
+    </>
+  );
+}
+
+function ComplianceScoreFallback() {
+  return (
+    <div className="space-y-6">
+      <SkeletonCard className="h-40" />
+    </div>
+  );
+}
+
+export default async function ReportsPage() {
+  const ctx = await resolveOrgContext();
+
+  const hasSubscription = ctx?.hasSubscription ?? false;
+  const hasAuditExport = ctx?.hasAuditExport ?? false;
+  const hasAdminAccess = ctx?.hasAdminAccess ?? false;
+  const hasFrameworkEval = ctx?.hasFrameworkEval ?? false;
+  const disableExports = !hasSubscription || !hasAuditExport || !hasAdminAccess;
+
+  return (
+    <div className="space-y-8 pb-12 animate-in fade-in duration-500">
+      {!hasSubscription && (
+        <div className="rounded-xl border border-amber-400/30 bg-amber-500/10 px-6 py-4 text-amber-100">
+          <div className="text-sm font-semibold">Subscription required</div>
+          <div className="mt-1 text-xs text-amber-200">
+            Activate your plan to unlock report exports and framework evaluations.
+          </div>
+          <Link href="/app/billing" className="mt-3 inline-flex text-xs font-semibold underline">
+            Go to billing
+          </Link>
+        </div>
+      )}
+
+      {!hasAdminAccess && (
+        <div className="rounded-xl border border-sky-400/30 bg-sky-500/10 px-6 py-4 text-sky-100">
+          <div className="text-sm font-semibold">Admin access required</div>
+          <div className="mt-1 text-xs text-sky-200">
+            Reports and trust exports are restricted to organization owners and admins.
+          </div>
+          <Link href="/app/team" className="mt-3 inline-flex text-xs font-semibold underline">
+            Review team roles
+          </Link>
+        </div>
+      )}
+
+      {/* Header — renders instantly */}
+      <div>
+        <h1 className="text-3xl font-black text-slate-100 tracking-tight">Reports Center</h1>
+        <p className="mt-1 text-slate-400">
+          Generate audit-ready compliance artifacts and regulatory assessments.
+        </p>
+      </div>
+
+      {/* Compliance score — streams when gap analysis completes */}
+      {ctx?.orgId ? (
+        <Suspense fallback={<ComplianceScoreFallback />}>
+          <ComplianceScoreSection
+            orgId={ctx.orgId}
+            hasSubscription={hasSubscription}
+            hasFrameworkEval={hasFrameworkEval}
+          />
+        </Suspense>
+      ) : null}
+
+      {/* Export section — renders with known permission state */}
+      <ExportSection disableExports={disableExports} />
     </div>
   );
 }

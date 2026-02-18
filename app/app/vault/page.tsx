@@ -62,18 +62,21 @@ export default async function VaultPage() {
 
   const isAuditor = ['admin', 'manager'].includes(membership.role);
 
-  // 2) Fetch All Evidence (upgrade adds joins)
+  // 2) Fetch Evidence with joins (limited to 100 for performance)
   const { data: artifacts } = await supabase
     .from('org_evidence')
     .select(
       `
-      *,
+      id, title, file_name, file_type, file_size, name,
+      verification_status, quality_score, risk_flag,
+      verified_at, created_at,
       task:task_id (title),
       policy:policy_id (title)
     `,
     )
     .eq('organization_id', membership.organization_id)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .limit(100);
 
   const allArtifacts = artifacts || [];
 

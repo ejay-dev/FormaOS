@@ -1,5 +1,7 @@
 import 'server-only';
 
+import { cache } from 'react';
+import { unstable_cache } from 'next/cache';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { resolvePlanKey, type PlanKey } from '@/lib/plans';
 import { normalizeRole, type RoleKey } from '@/app/app/actions/rbac';
@@ -103,10 +105,23 @@ export interface SubscriptionData {
   trialDaysRemaining: number;
   stripeCustomerId: string | null;
   stripeSubscriptionId: string | null;
-  currentPeriodEnd: Date | null;
+  currentPeriodEnd: string | null;
 }
 
-export async function getSubscriptionData(
+/**
+ * Layered caching:
+ * 1. unstable_cache: cross-request TTL (300s) with tag-based invalidation
+ * 2. React.cache: per-request deduplication within the RSC render tree
+ * Use getSubscriptionDataFresh() for post-mutation refetches that bypass cache.
+ */
+const getSubscriptionDataCached = unstable_cache(
+  async (orgId: string) => getSubscriptionDataFresh(orgId),
+  ['subscription-data'],
+  { revalidate: 300, tags: ['subscription'] },
+);
+export const getSubscriptionData = cache(getSubscriptionDataCached);
+
+async function getSubscriptionDataFresh(
   orgId: string,
 ): Promise<SubscriptionData | null> {
   const supabase = await createSupabaseServerClient();
@@ -156,9 +171,7 @@ export async function getSubscriptionData(
     trialDaysRemaining,
     stripeCustomerId: data.stripe_customer_id ?? null,
     stripeSubscriptionId: data.stripe_subscription_id ?? null,
-    currentPeriodEnd: data.current_period_end
-      ? new Date(data.current_period_end)
-      : null,
+    currentPeriodEnd: data.current_period_end ?? null,
   };
 }
 
@@ -172,7 +185,20 @@ export interface EntitlementData {
   limitValue: number | null;
 }
 
-export async function getEntitlements(
+/**
+ * Layered caching (same pattern as subscription):
+ * 1. unstable_cache: cross-request TTL (300s) with tag-based invalidation
+ * 2. React.cache: per-request deduplication
+ * Use getEntitlementsFresh() for post-mutation refetches.
+ */
+const getEntitlementsCached = unstable_cache(
+  async (orgId: string) => getEntitlementsFresh(orgId),
+  ['entitlements-data'],
+  { revalidate: 300, tags: ['entitlements'] },
+);
+export const getEntitlements = cache(getEntitlementsCached);
+
+async function getEntitlementsFresh(
   orgId: string,
 ): Promise<EntitlementData[]> {
   const supabase = await createSupabaseServerClient();
@@ -229,12 +255,18 @@ function pickPrimaryMembership<
   );
 }
 
-export async function getMembershipData(): Promise<MembershipData | null> {
+export async function getMembershipData(preloadedUser?: {
+  id: string;
+}): Promise<MembershipData | null> {
   const supabase = await createSupabaseServerClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user: { id: string } | null = preloadedUser ?? null;
+  if (!user) {
+    const {
+      data: { user: fetchedUser },
+    } = await supabase.auth.getUser();
+    user = fetchedUser ?? null;
+  }
   if (!user) return null;
 
   const { data: membershipRows, error } = await supabase
@@ -323,8 +355,8 @@ export async function fetchSystemState(preloadedUser?: {
   }
   if (!user) return null;
 
-  // Get membership data
-  let membership = await getMembershipData();
+  // Get membership data (pass user to avoid duplicate getUser() call)
+  let membership = await getMembershipData(user);
   if (!membership) {
     try {
       await ensureUserProvisioning({
@@ -334,7 +366,7 @@ export async function fetchSystemState(preloadedUser?: {
     } catch (err) {
       console.error('[fetchSystemState] ensureUserProvisioning failed:', err);
     }
-    membership = await getMembershipData();
+    membership = await getMembershipData(user);
   }
   if (!membership) return null;
 
@@ -367,11 +399,13 @@ export async function fetchSystemState(preloadedUser?: {
     } catch (err) {
       console.error('[fetchSystemState] ensureOrgProvisioning failed:', err);
     }
-    subscription = await getSubscriptionData(membership.orgId);
+    [subscription, dbEntitlements] = await Promise.all([
+      getSubscriptionDataFresh(membership.orgId),
+      getEntitlementsFresh(membership.orgId),
+    ]);
     planTier = subscription?.planTier ?? planTier;
     trialActive = subscription?.trialActive ?? trialActive;
     trialDaysRemaining = subscription?.trialDaysRemaining ?? trialDaysRemaining;
-    dbEntitlements = await getEntitlements(membership.orgId);
   }
 
   // Check if founder
