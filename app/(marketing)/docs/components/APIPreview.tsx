@@ -371,7 +371,7 @@ function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all bg-gray-800/60 border border-gray-700/50 hover:border-cyan-500/40 hover:bg-gray-800 text-gray-400 hover:text-cyan-400"
+      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all bg-white/[0.06] border border-white/[0.1] hover:border-cyan-500/40 hover:bg-white/[0.1] text-gray-400 hover:text-cyan-400"
       aria-label="Copy to clipboard"
     >
       {copied ? (

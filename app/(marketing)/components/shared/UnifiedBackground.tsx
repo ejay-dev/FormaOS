@@ -155,20 +155,20 @@ export function GradientOrbs({
   );
 }
 
-// Grid Pattern Overlay
-export function GridPattern({ opacity = 0.3 }: { opacity?: number }) {
-  return (
-    <div
-      className="absolute inset-0 pointer-events-none"
-      style={{
-        opacity,
-        backgroundImage:
-          'radial-gradient(circle at 1px 1px, rgba(6, 182, 212, 0.15) 1px, transparent 0)',
-        backgroundSize: '40px 40px',
-      }}
-    />
-  );
-}
+// Grid Pattern Overlay - REMOVED (deprecated dot grid pattern)
+// export function GridPattern({ opacity = 0.3 }: { opacity?: number }) {
+//   return (
+//     <div
+//       className="absolute inset-0 pointer-events-none"
+//       style={{
+//         opacity,
+//         backgroundImage:
+//           'radial-gradient(circle at 1px 1px, rgba(6, 182, 212, 0.15) 1px, transparent 0)',
+//         backgroundSize: '40px 40px',
+//       }}
+//     />
+//   );
+// }
 
 // Unified Page Background - combines all effects
 export function UnifiedPageBackground({
@@ -203,12 +203,6 @@ export function UnifiedPageBackground({
         </div>
       )}
 
-      {/* Grid pattern */}
-      {showGrid && (
-        <div className="fixed inset-0 z-1">
-          <GridPattern opacity={0.2} />
-        </div>
-      )}
     </>
   );
 }

@@ -15,6 +15,8 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion
 import { duration } from '@/config/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { VisualDivider } from '@/components/motion';
+import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
+import { CursorTilt } from '@/components/motion/CursorTilt';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { brand } from '@/config/brand';
@@ -41,43 +43,11 @@ function ContactHero() {
       ref={containerRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] pt-24"
     >
-      {/* Premium Background Effects */}
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-gradient-to-br from-blue-500/15 via-cyan-500/10 to-transparent rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.3, 0.4, 0.3],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute -bottom-40 -right-40 w-[700px] h-[700px] bg-gradient-to-tl from-purple-500/15 via-indigo-500/10 to-transparent rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.15, 1],
-            opacity: [0.2, 0.3, 0.2],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 2,
-          }}
-        />
-      </div>
-
-      {/* Grid Pattern */}
-      <div
-        className="absolute inset-0 opacity-20"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle at 1px 1px, rgba(59, 130, 246, 0.15) 1px, transparent 0)',
-          backgroundSize: '40px 40px',
-        }}
-      />
+      <HeroAtmosphere topColor="blue" bottomColor="violet" />
 
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
+        <CursorTilt intensity={3} glowFollow glowColor="59,130,246" className="w-full">
         <div className="flex flex-col items-center text-center">
           <motion.div style={shouldReduceMotion ? undefined : { scale, y }}>
             {/* Badge */}
@@ -152,6 +122,7 @@ function ContactHero() {
             </div>
           </motion.div>
         </div>
+        </CursorTilt>
       </div>
 
     </section>

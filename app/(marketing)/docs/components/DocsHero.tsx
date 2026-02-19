@@ -106,7 +106,7 @@ export function DocsHero() {
                   whileFocus={shouldReduceMotion ? undefined : { scale: 1.02, borderColor: 'rgba(34,211,238,0.4)' }}
                   transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                 />
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-1 text-xs text-gray-500 bg-gray-800/50 px-2 py-1 rounded-md border border-gray-700/50">
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-1 text-xs text-gray-500 bg-white/[0.06] px-2 py-1 rounded-md border border-white/[0.1]">
                   <span>⌘</span>
                   <span>K</span>
                 </div>
@@ -125,7 +125,7 @@ export function DocsHero() {
                   <a
                     key={link.title}
                     href={link.href}
-                    className="group flex flex-col items-center text-center p-4 rounded-xl bg-gray-800/30 border border-gray-700/30 hover:border-cyan-500/30 hover:bg-gray-800/50 transition-all duration-300"
+                    className="group flex flex-col items-center text-center p-4 rounded-xl backdrop-blur-xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] border border-white/[0.08] hover:border-cyan-500/30 hover:bg-white/[0.06] transition-all duration-300"
                   >
                     <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
                       <Icon className="w-5 h-5 text-cyan-400" />

@@ -65,7 +65,7 @@ export function QuestionnaireAccelerator() {
             <div className="mt-6 grid gap-3 md:grid-cols-3">
               {questionnaireFastLane.map((item, i) => (
                 <ScrollReveal key={item.title} variant="scaleUp" range={[i * 0.04, 0.3 + i * 0.04]}>
-                  <article className="rounded-xl border border-white/[0.06] bg-slate-900/40 p-4">
+                  <article className="rounded-xl border border-white/[0.08] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] p-4">
                     <p className="text-sm font-semibold text-slate-100">
                       {item.title}
                     </p>

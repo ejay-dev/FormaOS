@@ -7,6 +7,8 @@ import { ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { brand } from '@/config/brand';
 import { SectionHeader, Reveal, VisualDivider } from '@/components/motion';
+import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
+import { CursorTilt } from '@/components/motion/CursorTilt';
 import { GlassCard, HoverLift } from '@/components/motion/EnhancedMotion';
 import { DeferredSection } from '../../components/shared';
 import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
@@ -78,23 +80,26 @@ export function UseCasePageTemplate({
 }: UseCasePageTemplateProps) {
   return (
     <MarketingPageShell>
-      <section className="relative mx-auto max-w-7xl px-4 pb-12 pt-28 sm:px-6 lg:px-8 lg:pb-16 lg:pt-36">
-        <Reveal variant="fadeInUp">
-          <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-cyan-100">
-            {badgeIcon ?? <ShieldCheck className="h-4 w-4" />}
-            {badge}
-          </div>
-        </Reveal>
-        <Reveal variant="fadeInUp" delay={0.1}>
-          <h1 className="mt-6 text-4xl font-black leading-tight text-white sm:text-5xl lg:text-6xl">
-            {title}
-          </h1>
-        </Reveal>
-        <Reveal variant="fadeInUp" delay={0.2}>
-          <p className="mt-5 max-w-3xl text-base leading-relaxed text-slate-300 sm:text-lg">
-            {description}
-          </p>
-        </Reveal>
+      <section className="relative mx-auto max-w-7xl px-4 pb-12 pt-28 sm:px-6 lg:px-8 lg:pb-16 lg:pt-36 overflow-hidden">
+        <HeroAtmosphere topColor="cyan" bottomColor="blue" />
+        <CursorTilt intensity={3} glowFollow glowColor="34,211,238" className="relative z-10">
+          <Reveal variant="fadeInUp">
+            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-cyan-100">
+              {badgeIcon ?? <ShieldCheck className="h-4 w-4" />}
+              {badge}
+            </div>
+          </Reveal>
+          <Reveal variant="fadeInUp" delay={0.1}>
+            <h1 className="mt-6 text-4xl font-black leading-tight text-white sm:text-5xl lg:text-6xl">
+              {title}
+            </h1>
+          </Reveal>
+          <Reveal variant="fadeInUp" delay={0.2}>
+            <p className="mt-5 max-w-3xl text-base leading-relaxed text-slate-300 sm:text-lg">
+              {description}
+            </p>
+          </Reveal>
+        </CursorTilt>
       </section>
 
       <VisualDivider />

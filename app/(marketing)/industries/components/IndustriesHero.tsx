@@ -27,7 +27,7 @@ export function IndustriesHero() {
       ref={containerRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] pt-24"
     >
-      <HeroAtmosphere topColor="amber" bottomColor="rose" gridColor="amber" />
+      <HeroAtmosphere topColor="amber" bottomColor="rose" />
 
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
@@ -83,15 +83,15 @@ export function IndustriesHero() {
                 Framework-agnostic compliance infrastructure
               </p>
               <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600">
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1]">
                   <span className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse" />
                   NDIS & Aged Care
                 </span>
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1]">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
                   Healthcare
                 </span>
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1]">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
                   Financial Services
                 </span>

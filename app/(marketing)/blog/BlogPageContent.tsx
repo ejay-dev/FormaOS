@@ -63,7 +63,7 @@ function BlogHero() {
       ref={containerRef}
       className="relative min-h-[80vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] pt-24"
     >
-      <HeroAtmosphere topColor="blue" bottomColor="violet" gridColor="blue" />
+      <HeroAtmosphere topColor="blue" bottomColor="violet" />
 
       {/* Editorial floating blobs */}
       <motion.div
@@ -143,16 +143,16 @@ function BlogHero() {
               transition={{ duration: duration.slower, delay: 0.6 }}
               className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500"
             >
-              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-800/50 border border-gray-700/50">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1]">
                 <Tag className="w-4 h-4 text-purple-400" />
                 <span>{blogPosts.length} Articles</span>
               </div>
-              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-800/50 border border-gray-700/50">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1]">
                 <BookOpen className="w-4 h-4 text-pink-400" />
                 <span>{categories.length - 1} Categories</span>
               </div>
               {latestPostDate ? (
-                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-800/50 border border-gray-700/50">
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1]">
                   <TrendingUp className="w-4 h-4 text-cyan-400" />
                   <span>Last updated {latestPostDate}</span>
                 </div>
@@ -210,7 +210,7 @@ function FeaturedPost() {
                     <span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-400 text-xs font-medium">
                       Featured
                     </span>
-                    <span className="px-3 py-1 rounded-full bg-gray-800/50 text-gray-400 text-xs">
+                    <span className="px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.08] text-gray-400 text-xs">
                       {featuredPost.category}
                     </span>
                   </div>
@@ -281,7 +281,7 @@ function CategoryFilter({
               className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeCategory === category.id
                   ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
-                  : 'bg-gray-800/50 text-gray-400 border border-gray-700/50 hover:border-purple-500/30 hover:text-purple-300'
+                  : 'bg-white/[0.06] text-gray-400 border border-white/[0.1] hover:border-purple-500/30 hover:text-purple-300'
               }`}
             >
               <span>{category.name}</span>
@@ -345,7 +345,7 @@ function BlogCard({
             <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
               <Icon className="w-5 h-5 text-purple-400" />
             </div>
-            <span className="px-2.5 py-1 rounded-full bg-gray-800/50 text-gray-400 text-xs">
+            <span className="px-2.5 py-1 rounded-full bg-white/[0.06] border border-white/[0.08] text-gray-400 text-xs">
               {post.category}
             </span>
           </div>
@@ -434,7 +434,7 @@ function BlogGrid({
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl border border-white/5 bg-gray-900/50 p-10 text-center text-gray-400">
+          <div className="rounded-2xl border border-white/[0.08] backdrop-blur-xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] p-10 text-center text-gray-400">
             No articles match your search. Try a different keyword or category.
           </div>
         )}

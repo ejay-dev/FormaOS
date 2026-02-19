@@ -114,17 +114,16 @@ export function FinalSecurityCTA() {
                     <div className="space-y-4 mb-8">
                       <Link
                         href="/contact"
-                        className="group w-full relative overflow-hidden rounded-2xl bg-gradient-to-r from-red-500 to-orange-500 px-8 py-4 text-base font-semibold text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 inline-block"
+                        className="mk-btn mk-btn-primary group w-full inline-block px-8 py-4 text-base"
                       >
                         <span className="relative z-10">
                           Request Security Overview
                         </span>
-                        <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </Link>
 
                       <Link
                         href={`${appBase}/auth/signup`}
-                        className="group w-full flex items-center justify-center gap-2 px-8 py-4 rounded-2xl border-2 border-white/20 text-base font-semibold text-white hover:bg-white/[0.08] hover:border-white/30 transition-all duration-300 backdrop-blur-sm"
+                        className="mk-btn mk-btn-secondary group w-full flex items-center justify-center gap-2 px-8 py-4 text-base"
                       >
                         <span>Start Secure Trial</span>
                         <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />

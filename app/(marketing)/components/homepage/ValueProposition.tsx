@@ -31,16 +31,6 @@ export function ValueProposition() {
         </ParallaxDepth>
       </div>
 
-      <div className="absolute inset-0 opacity-30">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              'radial-gradient(circle at 1px 1px, rgba(6, 182, 212, 0.15) 1px, transparent 0)',
-            backgroundSize: '40px 40px',
-          }}
-        />
-      </div>
 
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12 text-center">
         <ScrollReveal variant="blurIn" range={[0, 0.3]}>

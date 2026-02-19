@@ -6,9 +6,7 @@ import { duration, easing } from '@/config/motion';
 import { useEffect, useState } from 'react';
 import { Sparkles, ArrowRight, Zap, Shield, Activity } from 'lucide-react';
 import {
-  FloatingUIPanel,
   ParallaxLayer,
-  ComplianceCoreVisualization,
 } from '@/components/motion';
 
 const appBase = (
@@ -217,17 +215,77 @@ export function CinematicHero() {
             </motion.div>
           </ParallaxLayer>
 
-          {/* Right: Compliance Core Visualization */}
+          {/* Right: Live Compliance Dashboard Preview */}
           <ParallaxLayer speed={0.5}>
             <div className="w-full max-w-xs sm:max-w-sm md:max-w-none mx-auto md:mx-0 flex justify-center md:block">
               <div className="w-full" style={{ maxWidth: '500px' }}>
-                {/* <ComplianceCoreVisualization /> */}
-                <div className="w-full h-[400px] bg-gradient-to-br from-primary/20 to-secondary/20 rounded-lg flex items-center justify-center">
-                  <div className="text-center text-muted-foreground">
-                    <div className="text-2xl font-bold mb-2">Compliance OS</div>
-                    <div className="text-sm">Interactive visualization</div>
+                <motion.div
+                  initial={{ opacity: 0, y: 40, rotateY: -8 }}
+                  animate={{ opacity: 1, y: 0, rotateY: 0 }}
+                  transition={{ duration: 1.2, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  className="relative rounded-2xl overflow-hidden border border-white/[0.12] shadow-[0_24px_80px_rgba(0,0,0,0.5)]"
+                  style={{ perspective: '1000px' }}
+                >
+                  {/* Glass header bar */}
+                  <div className="flex items-center gap-2 px-4 py-3 bg-white/[0.06] backdrop-blur-xl border-b border-white/[0.08]">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80" />
+                    <span className="ml-3 text-[11px] text-white/40 font-mono">formaos — compliance dashboard</span>
                   </div>
-                </div>
+                  {/* Dashboard content */}
+                  <div className="p-5 bg-gradient-to-br from-[#0d1320]/90 to-[#111827]/90 backdrop-blur-xl space-y-4">
+                    {/* Posture score */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-[11px] uppercase tracking-wider text-white/40 mb-1">Compliance Posture</div>
+                        <div className="text-3xl font-bold text-white">94<span className="text-lg text-emerald-400">%</span></div>
+                      </div>
+                      <div className="w-16 h-16 rounded-full border-[3px] border-emerald-400/60 flex items-center justify-center">
+                        <Shield className="w-6 h-6 text-emerald-400" />
+                      </div>
+                    </div>
+                    {/* Control bars */}
+                    <div className="space-y-2.5">
+                      {[
+                        { label: 'Access Controls', pct: 96, color: 'bg-cyan-400' },
+                        { label: 'Evidence Chain', pct: 91, color: 'bg-blue-400' },
+                        { label: 'Policy Reviews', pct: 88, color: 'bg-purple-400' },
+                      ].map((bar) => (
+                        <div key={bar.label}>
+                          <div className="flex justify-between text-[11px] mb-1">
+                            <span className="text-white/60">{bar.label}</span>
+                            <span className="text-white/80 font-medium">{bar.pct}%</span>
+                          </div>
+                          <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+                            <motion.div
+                              className={`h-full rounded-full ${bar.color}`}
+                              initial={{ width: 0 }}
+                              animate={{ width: `${bar.pct}%` }}
+                              transition={{ duration: 1.4, delay: 1 + Math.random() * 0.3, ease: [0.22, 1, 0.36, 1] }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {/* Activity feed */}
+                    <div className="pt-2 border-t border-white/[0.06] space-y-2">
+                      {[
+                        { action: 'Evidence verified', time: '2m ago', dot: 'bg-emerald-400' },
+                        { action: 'Control mapped to ISO 27001', time: '8m ago', dot: 'bg-cyan-400' },
+                        { action: 'Audit export generated', time: '14m ago', dot: 'bg-blue-400' },
+                      ].map((item) => (
+                        <div key={item.action} className="flex items-center gap-2.5 text-[11px]">
+                          <span className={`w-1.5 h-1.5 rounded-full ${item.dot} shrink-0`} />
+                          <span className="text-white/60 truncate">{item.action}</span>
+                          <span className="text-white/30 ml-auto shrink-0">{item.time}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Glow overlay */}
+                  <div className="absolute inset-0 pointer-events-none rounded-2xl" style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1), 0 0 60px rgba(6,182,212,0.08)' }} />
+                </motion.div>
               </div>
             </div>
           </ParallaxLayer>

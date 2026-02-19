@@ -159,7 +159,7 @@ export function DocSectionCard({ section, index }: { section: DocSection; index:
                       transition={{ duration: 0.3, delay: i * 0.05 }}
                       className="group/article flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-cyan-500/30 hover:bg-cyan-500/5 transition-all duration-300"
                     >
-                      <div className="w-9 h-9 rounded-lg bg-gray-800/50 flex items-center justify-center flex-shrink-0 group-hover/article:bg-cyan-500/20 transition-colors">
+                      <div className="w-9 h-9 rounded-lg bg-white/[0.06] flex items-center justify-center flex-shrink-0 group-hover/article:bg-cyan-500/20 transition-colors">
                         <ArticleIcon className="w-4 h-4 text-gray-400 group-hover/article:text-cyan-400 transition-colors" />
                       </div>
                       <div className="flex-1 min-w-0">

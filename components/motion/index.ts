@@ -2,7 +2,6 @@ export { FadeInView } from './FadeInView';
 export { StaggerContainer, StaggerItem } from './StaggerContainer';
 export { FloatingCard } from './FloatingCard';
 export {
-  FloatingUIPanel,
   ParallaxLayer,
 } from './AnimatedBackground';
 export {

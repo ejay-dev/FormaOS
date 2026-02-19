@@ -29,7 +29,7 @@ export function PricingHero() {
       ref={containerRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24"
     >
-      <HeroAtmosphere topColor="emerald" bottomColor="cyan" gridColor="emerald" />
+      <HeroAtmosphere topColor="emerald" bottomColor="cyan" />
 
       {/* Gradient mesh — shifts slowly on scroll */}
       <motion.div
@@ -152,14 +152,13 @@ export function PricingHero() {
               <Link
                 href={`${appBase}/auth/signup`}
                 data-testid="pricing-hero-start-trial"
-                className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-8 py-4 text-base font-semibold text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+                className="mk-btn mk-btn-primary group px-8 py-4 text-base"
               >
                 <span className="relative z-10">Start Free Trial</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-cyan-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </Link>
               <Link
                 href="/contact"
-                className="group flex items-center justify-center gap-2 px-8 py-4 rounded-2xl border-2 border-white/20 text-base font-semibold text-white hover:bg-white/[0.08] hover:border-white/30 transition-all duration-300"
+                className="mk-btn mk-btn-secondary group flex items-center justify-center gap-2 px-8 py-4 text-base"
               >
                 <span>Contact Sales</span>
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />

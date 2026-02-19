@@ -88,11 +88,10 @@ export function FreeTrial() {
           <ScrollReveal variant="slideUp" range={[0.1, 0.45]}>
             <Link
               href={`${appBase}/auth/signup`}
-              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-500 to-emerald-500 px-10 py-4 text-lg font-semibold text-white shadow-xl hover:shadow-2xl hover:shadow-cyan-500/30 transition-all duration-300 hover:scale-105"
+              className="mk-btn mk-btn-primary group inline-flex items-center gap-2 px-10 py-4 text-lg"
             >
               <span className="relative z-10">Start Your Free Trial</span>
               <ArrowRight className="h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </Link>
 
             <p className="text-sm text-gray-500 mt-4">

@@ -35,9 +35,9 @@ interface HeroAtmosphereProps {
   topColor?: GlowColor;
   /** Bottom glow accent (default: blue) */
   bottomColor?: GlowColor;
-  /** Dot grid accent color — set to null to hide grid (default: matches topColor) */
+  /** @deprecated Dot grid removed — parameter kept for backward compat, ignored. */
   gridColor?: GlowColor | null;
-  /** Grid opacity 0–1 (default: 0.06) */
+  /** @deprecated Grid removed — parameter kept for backward compat, ignored. */
   gridOpacity?: number;
   /** Particle intensity (default: subtle) */
   particleIntensity?: 'subtle' | 'normal' | 'strong';
@@ -56,14 +56,12 @@ const COLOR_MAP: Record<GlowColor, { glow: string; grid: string }> = {
 function HeroAtmosphereInner({
   topColor = 'cyan',
   bottomColor = 'blue',
-  gridColor,
-  gridOpacity = 0.06,
+  // gridColor/gridOpacity kept for backward compat but no longer rendered
   particleIntensity = 'subtle',
   className = '',
 }: HeroAtmosphereProps) {
   const top = COLOR_MAP[topColor];
   const bottom = COLOR_MAP[bottomColor];
-  const gc = gridColor === null ? null : COLOR_MAP[gridColor ?? topColor];
   const prefersReducedMotion = useReducedMotion();
   const reducedMotion = prefersReducedMotion ?? false;
   const [enableParallax, setEnableParallax] = useState(false);
@@ -73,8 +71,6 @@ function HeroAtmosphereInner({
   const farY = useTransform(mouseY, [0, 1], [-12, 12]);
   const nearX = useTransform(mouseX, [0, 1], [10, -10]);
   const nearY = useTransform(mouseY, [0, 1], [8, -8]);
-  const gridX = useTransform(mouseX, [0, 1], [-4, 4]);
-  const gridY = useTransform(mouseY, [0, 1], [-4, 4]);
 
   useEffect(() => {
     if (reducedMotion) return;
@@ -113,18 +109,22 @@ function HeroAtmosphereInner({
         }}
       />
 
-      {/* Dot grid */}
-      {gc && (
-        <motion.div
-          className="absolute inset-0"
-          style={{
-            ...(enableParallax && !reducedMotion ? { x: gridX, y: gridY } : {}),
-            opacity: gridOpacity,
-            backgroundImage: `radial-gradient(circle at 1px 1px, ${gc.grid} 1px, transparent 0)`,
-            backgroundSize: '40px 40px',
-          }}
-        />
-      )}
+      {/* Subtle noise grain for depth */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.035]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          mixBlendMode: 'overlay',
+        }}
+      />
+
+      {/* Bottom vignette fade */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(to bottom, transparent 60%, rgba(10,15,28,0.6) 100%)',
+        }}
+      />
 
       {/* Deferred ambient particles (unified engine) */}
       <AmbientParticleLayer intensity={particleIntensity} deferMode="idle" />

@@ -32,7 +32,7 @@ export function SecurityHero() {
       ref={heroRef}
       className="relative min-h-[100vh] flex items-center justify-center overflow-hidden"
     >
-      <HeroAtmosphere topColor="rose" bottomColor="violet" gridColor="rose" />
+      <HeroAtmosphere topColor="rose" bottomColor="violet" />
 
       <CursorTilt intensity={3} glowFollow glowColor="244,63,94" className="relative z-10 w-full">
       <motion.div
@@ -139,14 +139,13 @@ export function SecurityHero() {
         >
           <Link
             href="/contact"
-            className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-red-500 to-orange-500 px-8 py-4 text-base font-semibold text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+            className="mk-btn mk-btn-primary group px-8 py-4 text-base"
           >
             <span className="relative z-10">Request Security Overview</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </Link>
           <Link
             href={`${appBase}/auth/signup`}
-            className="group flex items-center justify-center gap-2 rounded-2xl border border-red-300/40 bg-[#0b1225] px-8 py-4 text-base font-semibold text-white transition-all duration-300 hover:bg-[#13203f]"
+            className="mk-btn mk-btn-secondary group flex items-center justify-center gap-2 px-8 py-4 text-base"
           >
             <span>Start Secure Trial</span>
             <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />

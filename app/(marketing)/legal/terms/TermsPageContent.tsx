@@ -72,15 +72,6 @@ function TermsHero() {
         />
       </div>
 
-      {/* Grid Pattern */}
-      <div
-        className="absolute inset-0 opacity-20"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle at 1px 1px, rgba(99, 102, 241, 0.15) 1px, transparent 0)',
-          backgroundSize: '40px 40px',
-        }}
-      />
 
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12">

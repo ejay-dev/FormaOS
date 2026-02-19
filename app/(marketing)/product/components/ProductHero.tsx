@@ -36,7 +36,7 @@ export function ProductHero() {
       ref={containerRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24"
     >
-      <HeroAtmosphere topColor="cyan" bottomColor="violet" gridColor="cyan" particleIntensity="normal" />
+      <HeroAtmosphere topColor="cyan" bottomColor="violet" particleIntensity="normal" />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <CursorTilt intensity={3} glowFollow glowColor="6,182,212" className="w-full">
@@ -98,15 +98,15 @@ export function ProductHero() {
                   across your organization in real time.
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600">
-                  <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+                  <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1]">
                     <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
                     Structured Controls
                   </span>
-                  <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+                  <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1]">
                     <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
                     Owned Actions
                   </span>
-                  <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+                  <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1]">
                     <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
                     Live Evidence
                   </span>

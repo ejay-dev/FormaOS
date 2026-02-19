@@ -4,7 +4,6 @@
 export {
   DustParticleField,
   GradientOrbs,
-  GridPattern,
   UnifiedPageBackground,
   GlassCard,
   UnifiedSection,
