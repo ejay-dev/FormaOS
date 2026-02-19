@@ -1,15 +1,18 @@
 'use client';
 
 /**
- * ProductHeroShowcase — Premium interactive hero for /product
+ * ProductHeroShowcase — /product page hero + interactive showcase
+ *
+ * Exports:
+ *   ProductHero     — Traditional marketing hero (headline, gradient, CTAs)
+ *   ProductShowcase — Interactive tabs + app panel below the hero
  *
  * Architecture:
- *   TabsRail (native scroll, CSS snap) | AppPanel (memoized, overflow-clipped)
- *   - Flexbox layout — no overlap at any breakpoint
- *   - Instant click: state updates synchronously, no portal/morph overlay
- *   - Native scroll: no custom RAF loop, no per-frame React re-renders
- *   - No per-tab blur/backdropFilter — only panel gets glass effect
- *   - AnimatePresence for content transitions (transform+opacity only)
+ *   - Flexbox layout — tabs left, panel right, guaranteed no overlap
+ *   - Native scroll for tabs (no custom RAF loops)
+ *   - Instant click: synchronous state + startTransition for view content
+ *   - All animations use transform/opacity only — 60fps budget
+ *   - Memoized: TabsRail, AppPanel, all 6 view renderers
  */
 
 import { useRef, useEffect, useState, useCallback, memo, startTransition } from 'react';
@@ -47,7 +50,7 @@ const VIEWS: ViewMeta[] = [
 const VIEW_MAP = Object.fromEntries(VIEWS.map((v) => [v.id, v])) as Record<ViewId, ViewMeta>;
 
 /* ═══════════════════════════════════════════════════════════════════════
-   TAB DATA (24 cards)
+   TAB DATA (24 cards — all with real data)
    ═══════════════════════════════════════════════════════════════════════ */
 
 interface Tab {
@@ -175,7 +178,144 @@ const STATS: Record<ViewId, { label: string; value: string; sub: string }[]> = {
 };
 
 /* ═══════════════════════════════════════════════════════════════════════
-   TABS RAIL — native scroll, CSS snap, zero JS scroll logic
+   HERO SECTION — traditional marketing hero at the top
+   ═══════════════════════════════════════════════════════════════════════ */
+
+export function ProductHero() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const shouldReduceMotion = useReducedMotion();
+  const sa = !shouldReduceMotion;
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end start'],
+  });
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.6, 1], [1, 0.9, 0.3]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.6, 1], [1, 1, 0.97]);
+
+  return (
+    <motion.section
+      ref={containerRef}
+      className="relative min-h-[85vh] flex items-center justify-center overflow-hidden pt-28 pb-20"
+      style={{ opacity: heroOpacity, scale: heroScale }}
+    >
+      {/* Background orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
+        <div
+          className="absolute -top-40 -left-40 w-[700px] h-[700px] rounded-full opacity-25"
+          style={{ background: 'radial-gradient(ellipse at center, rgba(6,182,212,0.2), transparent 65%)', filter: 'blur(80px)' }}
+        />
+        <div
+          className="absolute -bottom-40 -right-40 w-[600px] h-[600px] rounded-full opacity-20"
+          style={{ background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.2), transparent 65%)', filter: 'blur(80px)' }}
+        />
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full opacity-10"
+          style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.15), transparent 60%)' }}
+        />
+      </div>
+
+      {/* Dot grid */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.06]"
+        aria-hidden
+        style={{
+          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(6,182,212,0.15) 1px, transparent 0)',
+          backgroundSize: '40px 40px',
+        }}
+      />
+
+      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12 text-center">
+        <motion.div
+          initial={sa ? { opacity: 0, y: 16 } : false}
+          animate={{ opacity: 1, y: 0 }}
+          transition={sa ? { duration: duration.slow, delay: 0.15 } : { duration: 0 }}
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-cyan-500/[0.08] border border-cyan-500/25 mb-8"
+        >
+          <Sparkles className="w-4 h-4 text-cyan-400" />
+          <span className="text-sm text-cyan-400 font-medium tracking-wide">Compliance Operating System</span>
+        </motion.div>
+
+        <motion.h1
+          initial={sa ? { opacity: 0, y: 28 } : false}
+          animate={{ opacity: 1, y: 0 }}
+          transition={sa ? { duration: duration.slower, delay: 0.25 } : { duration: 0 }}
+          className="text-4xl sm:text-5xl lg:text-7xl xl:text-[5.2rem] font-bold mb-8 leading-[1.05] tracking-tight text-white"
+        >
+          The Compliance OS
+          <br />
+          <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
+            for Real Organizations
+          </span>
+        </motion.h1>
+
+        <motion.p
+          initial={sa ? { opacity: 0, y: 16 } : false}
+          animate={{ opacity: 1, y: 0 }}
+          transition={sa ? { duration: duration.slower, delay: 0.4 } : { duration: 0 }}
+          className="text-lg sm:text-xl lg:text-2xl text-slate-400 mb-6 max-w-3xl mx-auto leading-relaxed"
+        >
+          Transform regulatory obligations into structured controls, owned actions, and audit-ready outcomes — in real time.
+        </motion.p>
+
+        <motion.p
+          initial={sa ? { opacity: 0, y: 10 } : false}
+          animate={{ opacity: 1, y: 0 }}
+          transition={sa ? { duration: duration.slower, delay: 0.5 } : { duration: 0 }}
+          className="text-sm sm:text-base text-slate-500 mb-12 max-w-xl mx-auto"
+        >
+          Used by compliance teams. Aligned to ISO &amp; SOC frameworks. Built for audit defensibility.
+        </motion.p>
+
+        <motion.div
+          initial={sa ? { opacity: 0, y: 16 } : false}
+          animate={{ opacity: 1, y: 0 }}
+          transition={sa ? { duration: duration.slower, delay: 0.55 } : { duration: 0 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
+        >
+          <motion.a
+            href={`${appBase}/auth/signup`}
+            whileHover={sa ? { scale: 1.03, boxShadow: '0 0 40px rgba(6,182,212,0.3)' } : undefined}
+            whileTap={sa ? { scale: 0.98 } : undefined}
+            className="mk-btn mk-btn-primary group px-10 py-4 text-base lg:text-lg"
+          >
+            <span>Start Free Trial</span>
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </motion.a>
+          <motion.a
+            href="/contact"
+            whileHover={sa ? { scale: 1.03 } : undefined}
+            whileTap={sa ? { scale: 0.98 } : undefined}
+            className="mk-btn mk-btn-secondary group px-10 py-4 text-base lg:text-lg"
+          >
+            <span>Request Demo</span>
+          </motion.a>
+        </motion.div>
+
+        <motion.div
+          initial={sa ? { opacity: 0 } : false}
+          animate={{ opacity: 1 }}
+          transition={sa ? { duration: duration.slower, delay: 0.65 } : { duration: 0 }}
+          className="flex flex-wrap items-center justify-center gap-3 text-sm text-slate-500"
+        >
+          {[
+            { label: 'Structured Controls', color: 'bg-cyan-400' },
+            { label: 'Owned Actions', color: 'bg-blue-400' },
+            { label: 'Live Evidence', color: 'bg-violet-400' },
+          ].map((chip) => (
+            <span key={chip.label} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.08]">
+              <span className={`w-1.5 h-1.5 rounded-full ${chip.color}/60`} />
+              {chip.label}
+            </span>
+          ))}
+        </motion.div>
+      </div>
+    </motion.section>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TABS RAIL — native scroll, CSS snap, wider & brighter
    ═══════════════════════════════════════════════════════════════════════ */
 
 const TabsRail = memo(function TabsRail({
@@ -187,7 +327,6 @@ const TabsRail = memo(function TabsRail({
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Scroll active tab into view on mount
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -196,21 +335,21 @@ const TabsRail = memo(function TabsRail({
   }, [activeTabId]);
 
   return (
-    <div className="relative w-[340px] lg:w-[380px] shrink-0 self-stretch flex flex-col">
+    <div className="relative w-[380px] lg:w-[420px] xl:w-[440px] shrink-0 self-stretch flex flex-col">
       {/* Top fade */}
-      <div className="absolute top-0 left-0 right-0 h-8 z-10 pointer-events-none" style={{ background: 'linear-gradient(to bottom, rgba(10,15,28,0.95), transparent)' }} />
+      <div className="absolute top-0 left-0 right-0 h-10 z-10 pointer-events-none" style={{ background: 'linear-gradient(to bottom, rgba(10,15,28,0.95), transparent)' }} />
       {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-8 z-10 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(10,15,28,0.95), transparent)' }} />
+      <div className="absolute bottom-0 left-0 right-0 h-10 z-10 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(10,15,28,0.95), transparent)' }} />
 
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto overflow-x-hidden py-4 px-1 space-y-1.5"
+        className="flex-1 overflow-y-auto overflow-x-hidden py-5 px-1.5 space-y-2"
         role="listbox"
         aria-label="Feature modules"
         style={{
           scrollSnapType: 'y proximity',
           scrollbarWidth: 'thin',
-          scrollbarColor: 'rgba(255,255,255,0.08) transparent',
+          scrollbarColor: 'rgba(255,255,255,0.1) transparent',
         }}
       >
         {TABS.map((tab) => {
@@ -225,13 +364,13 @@ const TabsRail = memo(function TabsRail({
               data-active={isActive}
               onClick={() => onTabClick(tab)}
               className={`
-                w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left
+                w-full flex items-center gap-3.5 px-5 py-3.5 rounded-xl text-left
                 transition-all duration-150 ease-out
                 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40
                 group relative overflow-hidden
                 ${isActive
-                  ? 'bg-white/[0.06] border border-white/[0.12] shadow-lg shadow-black/20'
-                  : 'bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.05] hover:border-white/[0.09]'
+                  ? 'bg-white/[0.07] border border-white/[0.14] shadow-lg shadow-black/25'
+                  : 'bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.10]'
                 }
               `}
               style={{ scrollSnapAlign: 'start' }}
@@ -240,23 +379,21 @@ const TabsRail = memo(function TabsRail({
               {isActive && (
                 <div
                   className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full"
-                  style={{ background: `rgba(${vm.glow},0.6)` }}
+                  style={{ background: `rgba(${vm.glow},0.7)` }}
                 />
               )}
-              {/* Hover shimmer */}
-              <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.03) 49%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.03) 51%, transparent 60%)' }} />
 
               <div
-                className={`w-8 h-8 rounded-lg flex items-center justify-center text-[15px] shrink-0 ${vm.accent}`}
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
+                className={`w-9 h-9 rounded-lg flex items-center justify-center text-base shrink-0 ${vm.accent}`}
+                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
               >
                 {vm.icon}
               </div>
               <div className="flex-1 min-w-0">
-                <div className={`text-[13px] font-medium truncate leading-tight ${isActive ? 'text-white/85' : 'text-white/60'}`}>{tab.title}</div>
-                <div className="text-[12px] text-white/30 truncate leading-tight mt-0.5">{tab.sub}</div>
+                <div className={`text-sm font-medium truncate leading-tight ${isActive ? 'text-white/90' : 'text-white/65'}`}>{tab.title}</div>
+                <div className="text-[13px] text-white/35 truncate leading-tight mt-0.5">{tab.sub}</div>
               </div>
-              <div className={`text-[16px] font-bold shrink-0 ${isActive ? vm.accent : 'text-white/40'}`}>{tab.stat}</div>
+              <div className={`text-lg font-bold shrink-0 ${isActive ? vm.accent : 'text-white/45'}`}>{tab.stat}</div>
             </button>
           );
         })}
@@ -269,19 +406,19 @@ const TabsRail = memo(function TabsRail({
    PANEL VIEW CONTENT — memoized per-view renderers
    ═══════════════════════════════════════════════════════════════════════ */
 
-const ROW_CLS = 'flex items-center gap-2.5 rounded-lg bg-white/[0.02] border border-white/[0.05] px-4 py-2.5 hover:bg-white/[0.04] hover:border-white/[0.10] transition-colors cursor-default';
+const ROW_CLS = 'flex items-center gap-3 rounded-lg bg-white/[0.02] border border-white/[0.06] px-5 py-3 hover:bg-white/[0.04] hover:border-white/[0.10] transition-colors cursor-default';
 
 const DashboardView = memo(function DashboardView() {
   return (
     <>
       {DASHBOARD_ROWS.map((r) => (
         <div key={r.title} className={ROW_CLS}>
-          <div className={`w-2 h-2 rounded-full ${r.dot} shrink-0`} />
-          <div className="flex-1 min-w-0 text-[13px] text-white/60 truncate">{r.title}</div>
-          <div className="w-6 h-6 rounded-full bg-white/[0.04] flex items-center justify-center shrink-0"><span className="text-[12px] font-semibold text-white/40">{r.assignee}</span></div>
-          <div className={`text-[12px] px-2 py-0.5 rounded-full shrink-0 ${r.badgeCls}`}>{r.badge}</div>
+          <div className={`w-2.5 h-2.5 rounded-full ${r.dot} shrink-0`} />
+          <div className="flex-1 min-w-0 text-sm text-white/65 truncate">{r.title}</div>
+          <div className="w-7 h-7 rounded-full bg-white/[0.05] flex items-center justify-center shrink-0"><span className="text-[13px] font-semibold text-white/45">{r.assignee}</span></div>
+          <div className={`text-[13px] px-2.5 py-0.5 rounded-full shrink-0 ${r.badgeCls}`}>{r.badge}</div>
           {r.pct > 0 && r.pct < 100 && (
-            <div className="w-14 h-1.5 rounded-full bg-white/[0.05] overflow-hidden shrink-0">
+            <div className="w-16 h-1.5 rounded-full bg-white/[0.06] overflow-hidden shrink-0">
               <div className="h-full rounded-full bg-gradient-to-r from-cyan-400/40 to-blue-400/25" style={{ width: `${r.pct}%` }} />
             </div>
           )}
@@ -296,12 +433,12 @@ const EvidenceView = memo(function EvidenceView() {
     <>
       {EVIDENCE_ROWS.map((r) => (
         <div key={r.name} className={ROW_CLS}>
-          <div className="w-7 h-7 rounded-lg bg-violet-400/10 flex items-center justify-center shrink-0"><span className="text-[12px] text-violet-300 font-mono">{r.type}</span></div>
+          <div className="w-8 h-8 rounded-lg bg-violet-400/10 flex items-center justify-center shrink-0"><span className="text-[13px] text-violet-300 font-mono">{r.type}</span></div>
           <div className="flex-1 min-w-0">
-            <div className="text-[13px] text-white/60 truncate">{r.name}</div>
-            <div className="text-[12px] text-white/22">{r.size} · {r.date}</div>
+            <div className="text-sm text-white/65 truncate">{r.name}</div>
+            <div className="text-[13px] text-white/25">{r.size} · {r.date}</div>
           </div>
-          <div className="text-[12px] px-2 py-0.5 rounded-full bg-violet-400/12 text-violet-300 shrink-0">{r.tag}</div>
+          <div className="text-[13px] px-2.5 py-0.5 rounded-full bg-violet-400/12 text-violet-300 shrink-0">{r.tag}</div>
         </div>
       ))}
     </>
@@ -313,10 +450,10 @@ const ControlsView = memo(function ControlsView() {
     <>
       {CONTROLS_ROWS.map((r) => (
         <div key={r.code} className={ROW_CLS}>
-          <div className="text-[12px] font-mono text-blue-300/70 w-12 shrink-0">{r.code}</div>
-          <div className="flex-1 min-w-0 text-[13px] text-white/60 truncate">{r.name}</div>
-          <div className="text-[12px] text-white/22 shrink-0">{r.framework}</div>
-          <div className={`text-[12px] px-2 py-0.5 rounded-full shrink-0 ${r.statusCls}`}>{r.status}</div>
+          <div className="text-[13px] font-mono text-blue-300/80 w-14 shrink-0">{r.code}</div>
+          <div className="flex-1 min-w-0 text-sm text-white/65 truncate">{r.name}</div>
+          <div className="text-[13px] text-white/25 shrink-0">{r.framework}</div>
+          <div className={`text-[13px] px-2.5 py-0.5 rounded-full shrink-0 ${r.statusCls}`}>{r.status}</div>
         </div>
       ))}
     </>
@@ -328,12 +465,12 @@ const ReportsView = memo(function ReportsView() {
     <>
       {REPORTS_ROWS.map((r) => (
         <div key={r.name} className={ROW_CLS}>
-          <div className="w-7 h-7 rounded-lg bg-emerald-400/10 flex items-center justify-center shrink-0"><span className="text-[13px] text-emerald-300">◈</span></div>
+          <div className="w-8 h-8 rounded-lg bg-emerald-400/10 flex items-center justify-center shrink-0"><span className="text-sm text-emerald-300">◈</span></div>
           <div className="flex-1 min-w-0">
-            <div className="text-[13px] text-white/60 truncate">{r.name}</div>
-            <div className="text-[12px] text-white/22">{r.date} · {r.pages} pages</div>
+            <div className="text-sm text-white/65 truncate">{r.name}</div>
+            <div className="text-[13px] text-white/25">{r.date} · {r.pages} pages</div>
           </div>
-          <div className={`text-[12px] px-2 py-0.5 rounded-full shrink-0 ${r.statusCls}`}>{r.status}</div>
+          <div className={`text-[13px] px-2.5 py-0.5 rounded-full shrink-0 ${r.statusCls}`}>{r.status}</div>
         </div>
       ))}
     </>
@@ -345,11 +482,11 @@ const RiskView = memo(function RiskView() {
     <>
       {RISK_ROWS.map((r) => (
         <div key={r.name} className={ROW_CLS}>
-          <div className={`w-2 h-2 rounded-full shrink-0 ${r.sevDot}`} />
-          <div className="flex-1 min-w-0 text-[13px] text-white/60 truncate">{r.name}</div>
-          <div className="text-[12px] text-white/22 shrink-0">{r.age}</div>
-          <div className="w-6 h-6 rounded-full bg-white/[0.04] flex items-center justify-center shrink-0"><span className="text-[12px] font-semibold text-white/40">{r.owner}</span></div>
-          <div className={`text-[12px] px-2 py-0.5 rounded-full shrink-0 ${r.sevCls}`}>{r.sev}</div>
+          <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${r.sevDot}`} />
+          <div className="flex-1 min-w-0 text-sm text-white/65 truncate">{r.name}</div>
+          <div className="text-[13px] text-white/25 shrink-0">{r.age}</div>
+          <div className="w-7 h-7 rounded-full bg-white/[0.05] flex items-center justify-center shrink-0"><span className="text-[13px] font-semibold text-white/45">{r.owner}</span></div>
+          <div className={`text-[13px] px-2.5 py-0.5 rounded-full shrink-0 ${r.sevCls}`}>{r.sev}</div>
         </div>
       ))}
     </>
@@ -361,12 +498,12 @@ const PolicyView = memo(function PolicyView() {
     <>
       {POLICY_ROWS.map((r) => (
         <div key={r.name} className={ROW_CLS}>
-          <div className="w-7 h-7 rounded-lg bg-rose-400/10 flex items-center justify-center shrink-0"><span className="text-[13px] text-rose-300">▣</span></div>
+          <div className="w-8 h-8 rounded-lg bg-rose-400/10 flex items-center justify-center shrink-0"><span className="text-sm text-rose-300">▣</span></div>
           <div className="flex-1 min-w-0">
-            <div className="text-[13px] text-white/60 truncate">{r.name}</div>
-            <div className="text-[12px] text-white/22">{r.ver} · {r.review} · {r.owner}</div>
+            <div className="text-sm text-white/65 truncate">{r.name}</div>
+            <div className="text-[13px] text-white/25">{r.ver} · {r.review} · {r.owner}</div>
           </div>
-          <div className={`text-[12px] px-2 py-0.5 rounded-full shrink-0 ${r.statusCls}`}>{r.status}</div>
+          <div className={`text-[13px] px-2.5 py-0.5 rounded-full shrink-0 ${r.statusCls}`}>{r.status}</div>
         </div>
       ))}
     </>
@@ -392,7 +529,7 @@ const VIEW_LABELS: Record<ViewId, string> = {
 };
 
 /* ═══════════════════════════════════════════════════════════════════════
-   APP PANEL — big focal window, overflow-clipped
+   APP PANEL — big focal window, overflow-clipped, larger
    ═══════════════════════════════════════════════════════════════════════ */
 
 const AppPanel = memo(function AppPanel({
@@ -410,49 +547,49 @@ const AppPanel = memo(function AppPanel({
 
   return (
     <div
-      className="relative overflow-hidden rounded-[20px] w-full h-full"
+      className="relative overflow-hidden rounded-2xl w-full h-full"
       style={{
         background: 'linear-gradient(145deg, rgba(15,22,40,0.98) 0%, rgba(10,15,28,0.99) 100%)',
-        border: `1px solid rgba(${glowColor},0.18)`,
-        boxShadow: `0 0 40px rgba(${glowColor},0.04), 0 24px 48px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04)`,
+        border: `1px solid rgba(${glowColor},0.20)`,
+        boxShadow: `0 0 50px rgba(${glowColor},0.05), 0 28px 56px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05)`,
         backdropFilter: 'blur(16px)',
         transition: 'border-color 0.25s ease-out, box-shadow 0.25s ease-out',
       }}
     >
-      {/* Glass top */}
-      <div className="absolute inset-0 pointer-events-none rounded-[20px]" style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.04) 0%, transparent 18%)' }} />
+      {/* Glass highlight */}
+      <div className="absolute inset-0 pointer-events-none rounded-2xl" style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.04) 0%, transparent 18%)' }} />
 
       <div className="absolute inset-0 flex flex-col overflow-hidden">
         {/* Chrome bar */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.06] bg-white/[0.015] shrink-0">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between px-6 py-3.5 border-b border-white/[0.07] bg-white/[0.015] shrink-0">
+          <div className="flex items-center gap-3.5">
             <div className="flex gap-1.5">
               <div className="w-3 h-3 rounded-full bg-red-400/50" />
               <div className="w-3 h-3 rounded-full bg-amber-400/50" />
               <div className="w-3 h-3 rounded-full bg-emerald-400/50" />
             </div>
-            <div className="text-[12px] text-white/25 font-mono tracking-wider">app.formaos.com.au / {activeView}</div>
+            <div className="text-[13px] text-white/28 font-mono tracking-wider">app.formaos.com.au / {activeView}</div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="w-24 h-7 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center px-3">
-              <span className="text-[12px] text-white/20">Search…</span>
+            <div className="w-28 h-8 rounded-lg bg-white/[0.03] border border-white/[0.07] flex items-center px-3">
+              <span className="text-[13px] text-white/22">Search…</span>
             </div>
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-cyan-400/25 to-blue-500/15 flex items-center justify-center">
-              <span className="text-[12px] font-bold text-white/55">FO</span>
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400/25 to-blue-500/15 flex items-center justify-center">
+              <span className="text-[13px] font-bold text-white/55">FO</span>
             </div>
           </div>
         </div>
 
         <div className="flex flex-1 min-h-0 overflow-hidden">
           {/* Sidebar */}
-          <div className="w-[150px] shrink-0 border-r border-white/[0.05] bg-white/[0.01] py-3 px-2 flex flex-col overflow-hidden">
-            <div className="flex items-center gap-2 px-2 mb-4">
-              <div className="w-6 h-6 rounded-md bg-gradient-to-br from-cyan-400/25 to-blue-500/15 flex items-center justify-center">
-                <span className="text-[12px] font-bold text-cyan-400/80">FO</span>
+          <div className="w-[160px] shrink-0 border-r border-white/[0.06] bg-white/[0.01] py-3.5 px-2.5 flex flex-col overflow-hidden">
+            <div className="flex items-center gap-2.5 px-2.5 mb-5">
+              <div className="w-7 h-7 rounded-md bg-gradient-to-br from-cyan-400/25 to-blue-500/15 flex items-center justify-center">
+                <span className="text-[13px] font-bold text-cyan-400/80">FO</span>
               </div>
               <div>
-                <div className="text-[12px] font-semibold text-white/50">FormaOS</div>
-                <div className="text-[12px] text-white/18">Enterprise</div>
+                <div className="text-[13px] font-semibold text-white/55">FormaOS</div>
+                <div className="text-[12px] text-white/20">Enterprise</div>
               </div>
             </div>
             <div className="space-y-0.5">
@@ -461,57 +598,57 @@ const AppPanel = memo(function AppPanel({
                   key={v.id}
                   type="button"
                   onClick={() => onViewChange(v.id)}
-                  className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-[12px] text-left transition-colors duration-100 ${
+                  className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-left transition-colors duration-100 ${
                     activeView === v.id
                       ? 'bg-cyan-400/[0.08] text-cyan-300 border border-cyan-400/12'
-                      : 'text-white/28 hover:text-white/50 hover:bg-white/[0.03] border border-transparent'
+                      : 'text-white/30 hover:text-white/55 hover:bg-white/[0.03] border border-transparent'
                   }`}
                 >
-                  <span className="text-[13px] opacity-70 w-3.5 text-center">{v.icon}</span>
+                  <span className="text-sm opacity-70 w-4 text-center">{v.icon}</span>
                   <span className="truncate">{v.label}</span>
                 </button>
               ))}
             </div>
-            <div className="mt-auto pt-3 border-t border-white/[0.05]">
-              <div className="flex items-center gap-2 px-2 mt-1">
-                <div className="w-5 h-5 rounded-full bg-gradient-to-br from-violet-400/25 to-blue-400/15 shrink-0" />
+            <div className="mt-auto pt-3 border-t border-white/[0.06]">
+              <div className="flex items-center gap-2 px-2.5 mt-1">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-400/25 to-blue-400/15 shrink-0" />
                 <div className="min-w-0">
-                  <div className="text-[12px] text-white/30 truncate">Nancy M.</div>
+                  <div className="text-[13px] text-white/30 truncate">Nancy M.</div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Main content */}
-          <div className="flex-1 p-4 min-w-0 overflow-hidden flex flex-col">
-            <div className="flex items-center justify-between mb-4 shrink-0">
+          <div className="flex-1 p-5 min-w-0 overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between mb-5 shrink-0">
               <div>
-                <div className="text-[16px] font-semibold text-white/85">{view.label}</div>
-                <div className="text-[12px] text-white/22">Last synced 2 min ago</div>
+                <div className="text-lg font-semibold text-white/90">{view.label}</div>
+                <div className="text-[13px] text-white/25">Last synced 2 min ago</div>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="px-3 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06] text-[12px] text-white/28 cursor-pointer hover:bg-white/[0.05] transition-colors">Export</div>
-                <div className="px-3 py-1 rounded-lg bg-cyan-400/10 border border-cyan-400/20 text-[12px] text-cyan-300 cursor-pointer hover:bg-cyan-400/15 transition-colors">+ New</div>
+              <div className="flex items-center gap-2.5">
+                <div className="px-3.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.07] text-[13px] text-white/30 cursor-pointer hover:bg-white/[0.05] transition-colors">Export</div>
+                <div className="px-3.5 py-1.5 rounded-lg bg-cyan-400/10 border border-cyan-400/20 text-[13px] text-cyan-300 cursor-pointer hover:bg-cyan-400/15 transition-colors">+ New</div>
               </div>
             </div>
 
             {/* Stat cards */}
-            <div className="grid grid-cols-3 gap-2 mb-4 shrink-0">
+            <div className="grid grid-cols-3 gap-2.5 mb-5 shrink-0">
               {stats.map((s) => (
-                <div key={s.label} className="rounded-lg bg-white/[0.02] border border-white/[0.05] p-3">
-                  <div className="text-[12px] text-white/22 uppercase tracking-wider">{s.label}</div>
-                  <div className="text-[18px] font-bold text-white/80 mt-0.5">{s.value}</div>
-                  <div className="text-[12px] text-white/18">{s.sub}</div>
+                <div key={s.label} className="rounded-lg bg-white/[0.025] border border-white/[0.06] p-3.5">
+                  <div className="text-[13px] text-white/25 uppercase tracking-wider">{s.label}</div>
+                  <div className="text-xl font-bold text-white/85 mt-0.5">{s.value}</div>
+                  <div className="text-[13px] text-white/20">{s.sub}</div>
                 </div>
               ))}
             </div>
 
             {/* Content area */}
-            <div className="text-[12px] text-white/22 font-medium uppercase tracking-wider mb-2 shrink-0">
+            <div className="text-[13px] text-white/25 font-medium uppercase tracking-wider mb-2.5 shrink-0">
               {VIEW_LABELS[activeView]}
             </div>
 
-            <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.06) transparent' }}>
+            <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.07) transparent' }}>
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeView}
@@ -519,7 +656,7 @@ const AppPanel = memo(function AppPanel({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.15, ease: 'easeOut' }}
-                  className="space-y-1.5"
+                  className="space-y-2"
                 >
                   <ViewContent />
                 </motion.div>
@@ -533,7 +670,7 @@ const AppPanel = memo(function AppPanel({
 });
 
 /* ═══════════════════════════════════════════════════════════════════════
-   DESKTOP SCENE — flexbox layout, no overlap
+   DESKTOP SCENE — flexbox layout, no overlap, bigger scale
    ═══════════════════════════════════════════════════════════════════════ */
 
 function DesktopScene({
@@ -555,34 +692,32 @@ function DesktopScene({
   mouseY: number;
   shouldAnimate: boolean;
 }) {
-  const rx = shouldAnimate ? mouseX * 2.5 : 0;
-  const ry = shouldAnimate ? mouseY * 1.5 : 0;
+  const rx = shouldAnimate ? mouseX * 2 : 0;
+  const ry = shouldAnimate ? mouseY * 1.2 : 0;
 
   return (
     <div className="relative w-full h-full">
-      {/* Ambient glows — lightweight, no blur filter stack */}
+      {/* Ambient glows */}
       <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[10%] left-[2%] w-[40%] h-[50%] rounded-full opacity-[0.12]" style={{ background: 'radial-gradient(ellipse at center, rgba(0,212,251,0.3), transparent 65%)', filter: 'blur(80px)' }} />
-        <div className="absolute top-[30%] right-[5%] w-[35%] h-[40%] rounded-full opacity-[0.10]" style={{ background: 'radial-gradient(ellipse at center, rgba(160,131,255,0.25), transparent 65%)', filter: 'blur(80px)' }} />
+        <div className="absolute top-[8%] left-[1%] w-[42%] h-[55%] rounded-full opacity-[0.14]" style={{ background: 'radial-gradient(ellipse at center, rgba(0,212,251,0.3), transparent 65%)', filter: 'blur(80px)' }} />
+        <div className="absolute top-[25%] right-[3%] w-[38%] h-[45%] rounded-full opacity-[0.10]" style={{ background: 'radial-gradient(ellipse at center, rgba(160,131,255,0.25), transparent 65%)', filter: 'blur(80px)' }} />
       </div>
 
       {/* Dot grid */}
-      <div aria-hidden className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 0.5px, transparent 0)', backgroundSize: '44px 44px' }} />
+      <div aria-hidden className="absolute inset-0 pointer-events-none opacity-[0.035]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 0.5px, transparent 0)', backgroundSize: '44px 44px' }} />
 
-      {/* Flex layout — tabs left, panel right, guaranteed no overlap */}
+      {/* Flex layout — tabs left, panel right */}
       <div
-        className="absolute inset-0 flex items-center justify-center px-8 gap-6 lg:gap-10"
-        style={{
-          perspective: '1400px',
-        }}
+        className="absolute inset-0 flex items-center justify-center px-8 lg:px-12 gap-6 lg:gap-8 xl:gap-10"
+        style={{ perspective: '1400px' }}
       >
         {/* Tabs column */}
         <div
           style={{
-            transform: `rotateY(${4 + rx}deg) rotateX(${-2 + ry}deg)`,
+            transform: `rotateY(${3.5 + rx}deg) rotateX(${-1.5 + ry}deg)`,
             transition: shouldAnimate ? 'transform 0.12s linear' : 'none',
             transformStyle: 'preserve-3d',
-            height: 'min(80vh, 640px)',
+            height: 'min(82vh, 700px)',
           }}
         >
           <TabsRail activeTabId={activeTabId} onTabClick={onTabClick} />
@@ -592,9 +727,9 @@ function DesktopScene({
         <div
           className="flex-1 min-w-0"
           style={{
-            maxWidth: '820px',
-            height: 'min(80vh, 640px)',
-            transform: `rotateY(${-2 + rx * 0.4}deg) rotateX(${1 + ry * 0.3}deg)`,
+            maxWidth: '900px',
+            height: 'min(82vh, 700px)',
+            transform: `rotateY(${-1.5 + rx * 0.4}deg) rotateX(${0.8 + ry * 0.3}deg)`,
             transition: shouldAnimate ? 'transform 0.12s linear' : 'none',
             transformStyle: 'preserve-3d',
           }}
@@ -612,22 +747,22 @@ function DesktopScene({
 
 function MobileLayout({ activeView, glowColor, onViewChange }: { activeView: ViewId; glowColor: string; onViewChange: (v: ViewId) => void }) {
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center px-4 gap-3">
-      <div className="flex gap-1.5 z-10 overflow-x-auto pb-1 shrink-0" style={{ maxWidth: '100%', scrollbarWidth: 'none' }}>
+    <div className="relative w-full h-full flex flex-col items-center justify-center px-4 gap-4">
+      <div className="flex gap-2 z-10 overflow-x-auto pb-1 shrink-0" style={{ maxWidth: '100%', scrollbarWidth: 'none' }}>
         {VIEWS.map((v) => (
           <button
             key={v.id}
             type="button"
             onClick={() => onViewChange(v.id)}
-            className={`px-3 py-2 rounded-lg text-[13px] shrink-0 transition-all border ${
-              activeView === v.id ? 'bg-cyan-400/12 text-cyan-300 border-cyan-400/25' : 'bg-white/[0.03] text-white/35 border-white/[0.07] hover:text-white/55'
+            className={`px-4 py-2.5 rounded-lg text-sm shrink-0 transition-all border ${
+              activeView === v.id ? 'bg-cyan-400/12 text-cyan-300 border-cyan-400/25' : 'bg-white/[0.03] text-white/40 border-white/[0.08] hover:text-white/60'
             }`}
           >
             <span className="mr-1.5">{v.icon}</span>{v.label}
           </button>
         ))}
       </div>
-      <div className="w-full max-w-[520px] flex-1 min-h-0" style={{ maxHeight: '440px' }}>
+      <div className="w-full max-w-[560px] flex-1 min-h-0" style={{ maxHeight: '480px' }}>
         <AppPanel activeView={activeView} onViewChange={onViewChange} glowColor={glowColor} />
       </div>
     </div>
@@ -635,10 +770,10 @@ function MobileLayout({ activeView, glowColor, onViewChange }: { activeView: Vie
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   MAIN EXPORT — ProductHeroAnimation
+   SHOWCASE SECTION — interactive tabs + panel, sits BELOW hero
    ═══════════════════════════════════════════════════════════════════════ */
 
-export function ProductHeroAnimation() {
+export function ProductShowcase() {
   const containerRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
   const [isDesktop, setIsDesktop] = useState(false);
@@ -648,10 +783,6 @@ export function ProductHeroAnimation() {
 
   const shouldAnimate = !shouldReduceMotion;
   const glowColor = VIEW_MAP[activeView].glow;
-
-  const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start start', 'end start'] });
-  const sectionOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.85, 0]);
-  const sectionScale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.98, 0.94]);
 
   useEffect(() => {
     const check = () => setIsDesktop(window.innerWidth >= 1024);
@@ -666,7 +797,6 @@ export function ProductHeroAnimation() {
     setMousePos({ x: (e.clientX - rect.left) / rect.width - 0.5, y: (e.clientY - rect.top) / rect.height - 0.5 });
   }, [isDesktop, shouldReduceMotion]);
 
-  // Instant tab click — update state synchronously, no blocking
   const handleTabClick = useCallback((tab: Tab) => {
     setActiveTabId(tab.id);
     startTransition(() => {
@@ -683,19 +813,19 @@ export function ProductHeroAnimation() {
   }, []);
 
   return (
-    <motion.section
+    <section
       ref={containerRef}
       className="relative w-full overflow-hidden"
       style={{
-        height: isDesktop ? '94vh' : '82vh',
-        minHeight: isDesktop ? '720px' : '520px',
-        maxHeight: '1080px',
-        opacity: sectionOpacity,
-        scale: sectionScale,
+        height: isDesktop ? '88vh' : '75vh',
+        minHeight: isDesktop ? '680px' : '480px',
+        maxHeight: '1020px',
       }}
       onMouseMove={handleMouseMove}
-      role="presentation"
     >
+      {/* Section top border line */}
+      <div aria-hidden className="absolute top-0 left-1/2 -translate-x-1/2 w-[50%] h-[1px]" style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(0,212,251,0.15) 50%, transparent 100%)' }} />
+
       <div className="absolute inset-0">
         {isDesktop ? (
           <DesktopScene
@@ -712,135 +842,15 @@ export function ProductHeroAnimation() {
           <MobileLayout activeView={activeView} glowColor={glowColor} onViewChange={handleViewChange} />
         )}
       </div>
-
-      {/* Scroll indicator */}
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 z-20">
-        <div className="text-[12px] tracking-[0.25em] text-white/12 uppercase">Scroll</div>
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden className="animate-bounce opacity-15">
-          <path d="M7 2v10M3 8l4 4 4-4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </div>
-    </motion.section>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
-   HERO COPY — below the animation
-   ═══════════════════════════════════════════════════════════════════════ */
-
-export function ProductHeroCopy() {
-  const shouldReduceMotion = useReducedMotion();
-  const sa = !shouldReduceMotion;
-
-  return (
-    <section className="relative py-20 lg:py-28">
-      <div aria-hidden className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-[1px]" style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(0,212,251,0.18) 50%, transparent 100%)' }} />
-
-      <div className="max-w-4xl mx-auto px-6 lg:px-12 text-center">
-        <motion.div
-          initial={sa ? { opacity: 0 } : false}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={sa ? { duration: duration.slow } : { duration: 0 }}
-          className="text-[12px] tracking-[0.3em] text-white/22 uppercase font-mono mb-6"
-        >
-          001 — Product
-        </motion.div>
-
-        <motion.div
-          initial={sa ? { opacity: 0, y: 14 } : false}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={sa ? { duration: duration.slow, delay: 0.1 } : { duration: 0 }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/[0.08] border border-cyan-500/22 mb-8 mx-auto"
-        >
-          <Sparkles className="w-4 h-4 text-cyan-400" />
-          <span className="text-sm text-cyan-400 font-medium tracking-wide">Compliance Operating System</span>
-        </motion.div>
-
-        <motion.h1
-          initial={sa ? { opacity: 0, y: 24 } : false}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={sa ? { duration: duration.slower, delay: 0.15 } : { duration: 0 }}
-          className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-8 leading-[1.05] tracking-tight text-white"
-        >
-          Your team&apos;s command center
-          <br />
-          <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-violet-400 bg-clip-text text-transparent">for compliance.</span>
-        </motion.h1>
-
-        <motion.p
-          initial={sa ? { opacity: 0, y: 14 } : false}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={sa ? { duration: duration.slower, delay: 0.25 } : { duration: 0 }}
-          className="text-lg sm:text-xl text-slate-400 mb-6 max-w-2xl mx-auto leading-relaxed"
-        >
-          Transform regulatory obligations into structured controls, owned actions, and audit-ready outcomes — in real time.
-        </motion.p>
-
-        <motion.p
-          initial={sa ? { opacity: 0, y: 10 } : false}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={sa ? { duration: duration.slower, delay: 0.3 } : { duration: 0 }}
-          className="text-sm text-slate-500 mb-10 max-w-xl mx-auto"
-        >
-          Used by compliance teams. Aligned to ISO &amp; SOC frameworks. Built for audit defensibility.
-        </motion.p>
-
-        <motion.div
-          initial={sa ? { opacity: 0, y: 14 } : false}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={sa ? { duration: duration.slower, delay: 0.35 } : { duration: 0 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10"
-        >
-          <motion.a
-            href={`${appBase}/auth/signup`}
-            whileHover={sa ? { scale: 1.03, boxShadow: '0 0 40px rgba(6, 182, 212, 0.3)' } : undefined}
-            whileTap={sa ? { scale: 0.98 } : undefined}
-            className="mk-btn mk-btn-primary group px-10 py-4 text-base"
-          >
-            <span>Start Free Trial</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </motion.a>
-          <motion.a
-            href="/contact"
-            whileHover={sa ? { scale: 1.03 } : undefined}
-            whileTap={sa ? { scale: 0.98 } : undefined}
-            className="mk-btn mk-btn-secondary group px-10 py-4 text-base"
-          >
-            <span>Request Demo</span>
-          </motion.a>
-        </motion.div>
-
-        <motion.div
-          initial={sa ? { opacity: 0 } : false}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={sa ? { duration: duration.slower, delay: 0.45 } : { duration: 0 }}
-          className="flex flex-wrap items-center justify-center gap-3 text-xs text-slate-500"
-        >
-          {[
-            { label: 'Structured Controls', color: 'bg-cyan-400' },
-            { label: 'Owned Actions', color: 'bg-blue-400' },
-            { label: 'Live Evidence', color: 'bg-violet-400' },
-          ].map((chip) => (
-            <span key={chip.label} className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.07]">
-              <span className={`w-1.5 h-1.5 rounded-full ${chip.color}/60`} />
-              {chip.label}
-            </span>
-          ))}
-        </motion.div>
-      </div>
     </section>
   );
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   EXPORTS
+   BACKWARD-COMPAT ALIASES (used by ProductPageContent dynamic imports)
    ═══════════════════════════════════════════════════════════════════════ */
 
-export default ProductHeroAnimation;
+export { ProductHero as ProductHeroAnimation };
+export { ProductShowcase as ProductHeroCopy };
+
+export default ProductHero;

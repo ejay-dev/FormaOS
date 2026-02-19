@@ -5,14 +5,14 @@ import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 
-/* ── Split hero: full-bleed animation + copy section below ── */
-const ProductHeroAnimation = dynamic(
-  () => import('@/components/marketing/ProductHeroShowcase').then((m) => m.ProductHeroAnimation),
-  { ssr: false, loading: () => <div className="w-full" style={{ height: '96vh', minHeight: '780px' }} /> },
+/* ── Hero (headline + CTAs) then Showcase (interactive tabs + panel) ── */
+const ProductHero = dynamic(
+  () => import('@/components/marketing/ProductHeroShowcase').then((m) => m.ProductHero),
+  { ssr: false, loading: () => <div className="w-full" style={{ height: '85vh', minHeight: '600px' }} /> },
 );
-const ProductHeroCopy = dynamic(
-  () => import('@/components/marketing/ProductHeroShowcase').then((m) => m.ProductHeroCopy),
-  { ssr: false, loading: () => null },
+const ProductShowcase = dynamic(
+  () => import('@/components/marketing/ProductHeroShowcase').then((m) => m.ProductShowcase),
+  { ssr: false, loading: () => <div className="w-full" style={{ height: '88vh', minHeight: '680px' }} /> },
 );
 
 const OperationalScenarioProof = dynamic(
@@ -63,10 +63,10 @@ const FinalCTA = dynamic(() => import('./components/FinalCTA').then((m) => m.Fin
 export default function ProductPageContent() {
   return (
     <MarketingPageShell enableCinematicField={false}>
-      {/* Full-bleed animation — takes most of first viewport */}
-      <ProductHeroAnimation />
-      {/* Copy section below the animation */}
-      <ProductHeroCopy />
+      {/* Hero — headline, gradient text, CTAs */}
+      <ProductHero />
+      {/* Interactive showcase — tabs left, app panel right */}
+      <ProductShowcase />
 
       <DeferredSection minHeight={640}>
         <WhatIsFormaOS />
