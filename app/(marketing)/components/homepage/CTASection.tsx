@@ -207,7 +207,7 @@ export function CTASection() {
       className="mk-section relative overflow-hidden"
       style={{ position: 'relative' }}
     >
-      <AmbientParticleLayer intensity="strong" />
+      <AmbientParticleLayer intensity="subtle" />
 
       {!shouldReduceMotion && allowHeavyEffects && isInView && (
         <motion.div
@@ -243,16 +243,7 @@ export function CTASection() {
         >
           <ScrollReveal variant="scaleUp" range={[0, 0.25]}>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-8">
-              <motion.div
-                animate={shouldReduceMotion ? undefined : { rotate: 360 }}
-                transition={
-                  shouldReduceMotion
-                    ? undefined
-                    : { duration: 3, repeat: Infinity, ease: 'linear' }
-                }
-              >
-                <Sparkles className="w-4 h-4 text-cyan-400" />
-              </motion.div>
+              <Sparkles className="w-4 h-4 text-cyan-400" />
               <span className="text-sm text-cyan-400 font-medium">
                 Start Your Free Trial
               </span>
