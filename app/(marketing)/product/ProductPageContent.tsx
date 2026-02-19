@@ -1,23 +1,19 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useSearchParams } from 'next/navigation';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
-import { ProductHero } from './components';
 
-/* ── New split hero: full-bleed animation + copy section below ── */
+/* ── Split hero: full-bleed animation + copy section below ── */
 const ProductHeroAnimation = dynamic(
   () => import('@/components/marketing/ProductHeroLargeObject').then((m) => m.ProductHeroAnimation),
-  { ssr: false, loading: () => <div className="w-full" style={{ height: '92vh', minHeight: '680px' }} /> },
+  { ssr: false, loading: () => <div className="w-full" style={{ height: '96vh', minHeight: '780px' }} /> },
 );
 const ProductHeroCopy = dynamic(
   () => import('@/components/marketing/ProductHeroLargeObject').then((m) => m.ProductHeroCopy),
   { ssr: false, loading: () => null },
 );
-
-const ENV_FLAG = process.env.NEXT_PUBLIC_PRODUCT_HERO_EXPERIMENT !== '0';
 
 const OperationalScenarioProof = dynamic(
   () => import('@/components/marketing/demo/OperationalScenarioProof').then((m) => m.OperationalScenarioProof),
@@ -64,31 +60,13 @@ const FinalCTA = dynamic(() => import('./components/FinalCTA').then((m) => m.Fin
   loading: () => null,
 });
 
-function useHero3DEnabled(): boolean {
-  const params = useSearchParams();
-  const qp = params.get('hero3d');
-  if (qp === '1') return true;
-  if (qp === '0') return false;
-  return ENV_FLAG;
-}
-
 export default function ProductPageContent() {
-  const hero3d = useHero3DEnabled();
-
   return (
     <MarketingPageShell enableCinematicField={false}>
-      <div dangerouslySetInnerHTML={{ __html: `<!-- hero3d:${hero3d ? 'on' : 'off'} -->` }} />
-
-      {hero3d ? (
-        <>
-          {/* Full-bleed animation — takes most of first viewport */}
-          <ProductHeroAnimation />
-          {/* Copy section below the animation */}
-          <ProductHeroCopy />
-        </>
-      ) : (
-        <ProductHero />
-      )}
+      {/* Full-bleed animation — takes most of first viewport */}
+      <ProductHeroAnimation />
+      {/* Copy section below the animation */}
+      <ProductHeroCopy />
 
       <DeferredSection minHeight={640}>
         <WhatIsFormaOS />
