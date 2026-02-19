@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { ShieldCheck, ArrowRight } from 'lucide-react';
 import { Reveal } from '@/components/motion';
-import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
+import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
 import { brand } from '@/config/brand';
 import { easing, duration } from '@/config/motion';
 
@@ -28,10 +28,7 @@ export function TrustHero() {
       ref={sectionRef}
       className="relative min-h-[70vh] overflow-hidden"
     >
-      {/* Background layers */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(34,211,238,0.18),_transparent_45%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(59,130,246,0.14),_transparent_40%)]" />
-      <AmbientParticleLayer intensity="subtle" />
+      <HeroAtmosphere topColor="cyan" bottomColor="blue" />
 
       {/* Hero content */}
       <motion.div

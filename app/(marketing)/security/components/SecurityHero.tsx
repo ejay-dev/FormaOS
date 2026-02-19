@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { duration } from '@/config/motion';
-import CinematicField from '../../components/motion/CinematicField';
+import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
@@ -31,52 +31,7 @@ export function SecurityHero() {
       ref={heroRef}
       className="relative min-h-[100vh] flex items-center justify-center overflow-hidden"
     >
-      {/* Cinematic Background */}
-      <div className="absolute inset-0 bg-[#0a0f1c]">
-        <CinematicField />
-      </div>
-
-      {/* Security-themed gradient orbs */}
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-red-500/30 via-orange-500/20 to-transparent blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.2, 0.4, 0.2],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 2,
-          }}
-          className="absolute -bottom-1/4 -right-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-tl from-orange-500/30 via-red-500/20 to-transparent blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.15, 1],
-            opacity: [0.15, 0.3, 0.15],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 4,
-          }}
-          className="absolute top-1/3 left-1/2 -translate-x-1/2 w-1/3 h-1/3 rounded-full bg-gradient-to-br from-amber-500/25 via-red-600/15 to-transparent blur-3xl"
-        />
-      </div>
+      <HeroAtmosphere topColor="rose" bottomColor="violet" gridColor="rose" />
 
       <motion.div
         style={{ scale: heroScale, y: heroY }}

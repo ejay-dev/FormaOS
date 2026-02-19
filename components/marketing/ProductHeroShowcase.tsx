@@ -20,6 +20,7 @@ import { ArrowRight, Sparkles } from 'lucide-react';
 import { motion, useReducedMotion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { duration } from '@/config/motion';
 import { brand } from '@/config/brand';
+import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -199,31 +200,7 @@ export function ProductHero() {
       className="relative min-h-[85vh] flex items-center justify-center overflow-hidden pt-28 pb-20"
       style={{ opacity: heroOpacity, scale: heroScale }}
     >
-      {/* Background orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
-        <div
-          className="absolute -top-40 -left-40 w-[700px] h-[700px] rounded-full opacity-25"
-          style={{ background: 'radial-gradient(ellipse at center, rgba(6,182,212,0.2), transparent 65%)', filter: 'blur(80px)' }}
-        />
-        <div
-          className="absolute -bottom-40 -right-40 w-[600px] h-[600px] rounded-full opacity-20"
-          style={{ background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.2), transparent 65%)', filter: 'blur(80px)' }}
-        />
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full opacity-10"
-          style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.15), transparent 60%)' }}
-        />
-      </div>
-
-      {/* Dot grid */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.06]"
-        aria-hidden
-        style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(6,182,212,0.15) 1px, transparent 0)',
-          backgroundSize: '40px 40px',
-        }}
-      />
+      <HeroAtmosphere topColor="cyan" bottomColor="violet" />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12 text-center">
         <motion.div
@@ -334,8 +311,28 @@ const TabsRail = memo(function TabsRail({
     if (active) active.scrollIntoView({ block: 'nearest' });
   }, [activeTabId]);
 
+  // Keyboard navigation: arrow keys move focus, Enter/Space activates
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const items = Array.from(el.querySelectorAll<HTMLButtonElement>('[role="option"]'));
+    const focused = document.activeElement as HTMLButtonElement;
+    const idx = items.indexOf(focused);
+    if (idx < 0) return;
+
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+      e.preventDefault();
+      const next = items[idx + 1];
+      if (next) { next.focus(); next.scrollIntoView({ block: 'nearest' }); }
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      const prev = items[idx - 1];
+      if (prev) { prev.focus(); prev.scrollIntoView({ block: 'nearest' }); }
+    }
+  }, []);
+
   return (
-    <div className="relative w-[380px] lg:w-[420px] xl:w-[440px] shrink-0 self-stretch flex flex-col">
+    <div className="relative w-[380px] lg:w-[420px] xl:w-[460px] shrink-0 self-stretch flex flex-col">
       {/* Top fade */}
       <div className="absolute top-0 left-0 right-0 h-10 z-10 pointer-events-none" style={{ background: 'linear-gradient(to bottom, rgba(10,15,28,0.95), transparent)' }} />
       {/* Bottom fade */}
@@ -345,11 +342,15 @@ const TabsRail = memo(function TabsRail({
         ref={scrollRef}
         className="flex-1 overflow-y-auto overflow-x-hidden py-5 px-1.5 space-y-2"
         role="listbox"
+        tabIndex={0}
         aria-label="Feature modules"
+        onKeyDown={handleKeyDown}
         style={{
           scrollSnapType: 'y proximity',
           scrollbarWidth: 'thin',
           scrollbarColor: 'rgba(255,255,255,0.1) transparent',
+          overscrollBehavior: 'contain',
+          WebkitOverflowScrolling: 'touch',
         }}
       >
         {TABS.map((tab) => {
@@ -362,6 +363,7 @@ const TabsRail = memo(function TabsRail({
               role="option"
               aria-selected={isActive}
               data-active={isActive}
+              tabIndex={isActive ? 0 : -1}
               onClick={() => onTabClick(tab)}
               className={`
                 w-full flex items-center gap-3.5 px-5 py-3.5 rounded-xl text-left
@@ -706,9 +708,9 @@ function DesktopScene({
       {/* Dot grid */}
       <div aria-hidden className="absolute inset-0 pointer-events-none opacity-[0.035]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 0.5px, transparent 0)', backgroundSize: '44px 44px' }} />
 
-      {/* Flex layout — tabs left, panel right */}
+      {/* Flex layout — tabs left, panel right, fill the width */}
       <div
-        className="absolute inset-0 flex items-center justify-center px-8 lg:px-12 gap-6 lg:gap-8 xl:gap-10"
+        className="absolute inset-0 flex items-center justify-center px-6 lg:px-10 xl:px-16 gap-5 lg:gap-8 xl:gap-10"
         style={{ perspective: '1400px' }}
       >
         {/* Tabs column */}
@@ -717,18 +719,18 @@ function DesktopScene({
             transform: `rotateY(${3.5 + rx}deg) rotateX(${-1.5 + ry}deg)`,
             transition: shouldAnimate ? 'transform 0.12s linear' : 'none',
             transformStyle: 'preserve-3d',
-            height: 'min(82vh, 700px)',
+            height: 'min(84vh, 720px)',
           }}
         >
           <TabsRail activeTabId={activeTabId} onTabClick={onTabClick} />
         </div>
 
-        {/* Panel column */}
+        {/* Panel column — wider, fills remaining space */}
         <div
           className="flex-1 min-w-0"
           style={{
-            maxWidth: '900px',
-            height: 'min(82vh, 700px)',
+            maxWidth: '1000px',
+            height: 'min(84vh, 720px)',
             transform: `rotateY(${-1.5 + rx * 0.4}deg) rotateX(${0.8 + ry * 0.3}deg)`,
             transition: shouldAnimate ? 'transform 0.12s linear' : 'none',
             transformStyle: 'preserve-3d',
@@ -817,11 +819,12 @@ export function ProductShowcase() {
       ref={containerRef}
       className="relative w-full overflow-hidden"
       style={{
-        height: isDesktop ? '88vh' : '75vh',
-        minHeight: isDesktop ? '680px' : '480px',
-        maxHeight: '1020px',
+        height: isDesktop ? '90vh' : '78vh',
+        minHeight: isDesktop ? '700px' : '500px',
+        maxHeight: '1080px',
       }}
       onMouseMove={handleMouseMove}
+      role="presentation"
     >
       {/* Section top border line */}
       <div aria-hidden className="absolute top-0 left-1/2 -translate-x-1/2 w-[50%] h-[1px]" style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(0,212,251,0.15) 50%, transparent 100%)' }} />
