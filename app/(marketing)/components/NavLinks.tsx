@@ -4,11 +4,31 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { ChevronDown } from 'lucide-react';
+import {
+  ChevronDown,
+  ScanSearch,
+  FileCheck,
+  Zap,
+  Shield,
+  Lock,
+  GitBranch,
+  BookOpen,
+  Users,
+  BarChart2,
+  Activity,
+  type LucideIcon,
+} from 'lucide-react';
 
 /* ── Link data ───────────────────────────────────────────── */
 
-const primaryLinks = [
+interface NavItem {
+  href: string;
+  label: string;
+  icon?: LucideIcon;
+  description?: string;
+}
+
+const primaryLinks: NavItem[] = [
   { href: '/', label: 'Home' },
   { href: '/product', label: 'Product' },
   { href: '/industries', label: 'Industries' },
@@ -17,22 +37,42 @@ const primaryLinks = [
   { href: '/pricing', label: 'Pricing' },
 ];
 
-const outcomeLinks = [
-  { href: '/evaluate', label: 'Evaluate' },
-  { href: '/prove', label: 'Prove' },
-  { href: '/operate', label: 'Operate' },
-  { href: '/govern', label: 'Govern' },
+const outcomeLinks: NavItem[] = [
+  {
+    href: '/evaluate',
+    label: 'Evaluate',
+    icon: ScanSearch,
+    description: 'Assess your compliance posture and gap analysis',
+  },
+  {
+    href: '/prove',
+    label: 'Prove',
+    icon: FileCheck,
+    description: 'Generate audit-ready evidence packages on demand',
+  },
+  {
+    href: '/operate',
+    label: 'Operate',
+    icon: Zap,
+    description: 'Run compliance workflows with enforced accountability',
+  },
+  {
+    href: '/govern',
+    label: 'Govern',
+    icon: Shield,
+    description: 'Structure policies, controls, and ownership hierarchies',
+  },
 ];
 
-const resourceLinks = [
-  { href: '/security-review', label: 'Security Review Packet' },
+const resourceLinks: NavItem[] = [
+  { href: '/security-review', label: 'Security Review Packet', icon: Lock },
+  { href: '/frameworks', label: 'Framework Coverage', icon: GitBranch },
+  { href: '/docs', label: 'Documentation', icon: BookOpen },
+  { href: '/customer-stories', label: 'Customer Stories', icon: Users },
+  { href: '/compare', label: 'Compare', icon: BarChart2 },
+  { href: '/status', label: 'Status', icon: Activity },
   { href: '/security-review/faq', label: 'Security Review FAQ' },
   { href: '/trust/packet', label: 'Trust Packet (PDF)' },
-  { href: '/frameworks', label: 'Framework Coverage' },
-  { href: '/customer-stories', label: 'Customer Stories' },
-  { href: '/compare', label: 'Compare' },
-  { href: '/status', label: 'Status' },
-  { href: '/docs', label: 'Documentation' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ];
@@ -46,7 +86,7 @@ function NavDropdown({
   wide,
 }: {
   label: string;
-  items: { href: string; label: string }[];
+  items: NavItem[];
   pathname: string;
   wide?: boolean;
 }) {
@@ -116,8 +156,10 @@ function NavDropdown({
       {open && (
         <div
           className={clsx(
-            'mk-dropdown-panel mk-dropdown-surface absolute right-0 top-full mt-3 z-50 rounded-xl p-1.5',
-            wide ? 'min-w-[15rem]' : 'min-w-[11rem]',
+            'mk-dropdown-panel absolute right-0 top-full mt-3 z-50 rounded-xl p-1.5',
+            'bg-gradient-to-b from-gray-900/95 to-gray-950/95 backdrop-blur-xl',
+            'border border-white/[0.08] shadow-2xl shadow-black/50',
+            wide ? 'min-w-[22rem]' : 'min-w-[11rem]',
           )}
           role="menu"
           id={menuId}
@@ -127,6 +169,72 @@ function NavDropdown({
         >
           {items.map((l) => {
             const isActive = pathname === l.href;
+            const Icon = l.icon;
+            if (Icon && l.description) {
+              return (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  role="menuitem"
+                  tabIndex={0}
+                  onClick={() => setOpen(false)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'ArrowDown') {
+                      e.preventDefault();
+                      (e.currentTarget.nextElementSibling as HTMLElement | null)?.focus();
+                    }
+                    if (e.key === 'ArrowUp') {
+                      e.preventDefault();
+                      (e.currentTarget.previousElementSibling as HTMLElement | null)?.focus();
+                    }
+                  }}
+                  className={clsx(
+                    'flex items-start gap-3 rounded-lg px-3 py-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
+                    isActive
+                      ? 'bg-cyan-500/10 text-cyan-200'
+                      : 'text-slate-300 hover:bg-white/[0.06] hover:text-white',
+                  )}
+                >
+                  <div className="mt-0.5 flex-shrink-0 w-7 h-7 rounded-md bg-white/[0.06] flex items-center justify-center">
+                    <Icon className="w-4 h-4 text-cyan-400" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-[13px] font-medium leading-snug">{l.label}</div>
+                    <div className="text-[11.5px] text-slate-500 leading-snug mt-0.5">{l.description}</div>
+                  </div>
+                </Link>
+              );
+            }
+            if (Icon) {
+              return (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  role="menuitem"
+                  tabIndex={0}
+                  onClick={() => setOpen(false)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'ArrowDown') {
+                      e.preventDefault();
+                      (e.currentTarget.nextElementSibling as HTMLElement | null)?.focus();
+                    }
+                    if (e.key === 'ArrowUp') {
+                      e.preventDefault();
+                      (e.currentTarget.previousElementSibling as HTMLElement | null)?.focus();
+                    }
+                  }}
+                  className={clsx(
+                    'flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
+                    isActive
+                      ? 'bg-cyan-500/10 text-cyan-200'
+                      : 'text-slate-300 hover:bg-white/[0.06] hover:text-white',
+                  )}
+                >
+                  <Icon className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
+                  {l.label}
+                </Link>
+              );
+            }
             return (
               <Link
                 key={l.href}
@@ -145,10 +253,10 @@ function NavDropdown({
                   }
                 }}
                 className={clsx(
-                  'block rounded-lg px-3 py-2 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
+                  'block rounded-lg px-3 py-1.5 text-[12px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
                   isActive
                     ? 'bg-cyan-500/10 text-cyan-200'
-                    : 'text-slate-400 hover:bg-white/[0.06] hover:text-white',
+                    : 'text-slate-500 hover:bg-white/[0.06] hover:text-slate-300',
                 )}
               >
                 {l.label}

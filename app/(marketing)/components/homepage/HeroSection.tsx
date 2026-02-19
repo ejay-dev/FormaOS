@@ -288,7 +288,8 @@ export function HeroSection() {
               initial={shouldAnimateIntro ? { opacity: 0, y: 30 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.3 } : { duration: 0 }}
-              className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
+              className="font-black mb-6 leading-[1.05] text-white"
+              style={{ fontSize: 'clamp(2.5rem, 6vw, 5.5rem)' }}
             >
               The Compliance OS
               <br />
