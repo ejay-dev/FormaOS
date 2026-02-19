@@ -100,7 +100,7 @@ function AboutHero() {
 
               <motion.a
                 href="/product"
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
                 className="group px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white font-semibold text-lg flex items-center gap-3 hover:border-purple-400/50 hover:bg-purple-400/5 transition-all"
               >

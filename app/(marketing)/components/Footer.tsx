@@ -15,7 +15,6 @@ import {
   Lock,
   FileCheck,
 } from 'lucide-react';
-import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -192,32 +191,8 @@ function TrustBadge({
 export function Footer() {
   return (
     <footer className="mk-footer-premium mk-page-bg-alt relative overflow-hidden border-t border-white/10">
-      <AmbientParticleLayer intensity="subtle" />
-      {/* Animated background */}
+      {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0a0f1c]/95 to-[#0a0f1c]" />
-
-      {/* Floating orbs */}
-      <motion.div
-        className="absolute top-20 left-[10%] w-64 h-64 rounded-full bg-cyan-500/5 blur-[100px]"
-        animate={{
-          y: [0, -30, 0],
-          opacity: [0.3, 0.5, 0.3],
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute bottom-20 right-[15%] w-80 h-80 rounded-full bg-blue-500/5 blur-[120px]"
-        animate={{
-          y: [0, 20, 0],
-          opacity: [0.2, 0.4, 0.2],
-        }}
-        transition={{
-          duration: 10,
-          repeat: Infinity,
-          ease: 'easeInOut',
-          delay: 2,
-        }}
-      />
 
       {/* Grid pattern overlay */}
       <div

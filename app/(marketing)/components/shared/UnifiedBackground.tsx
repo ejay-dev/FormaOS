@@ -325,7 +325,7 @@ export function PremiumBadge({
         className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium ${colorStyles[color]}`}
       >
         {icon && (
-          <span className="w-2 h-2 rounded-full bg-current animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-current" />
         )}
         {children}
       </div>

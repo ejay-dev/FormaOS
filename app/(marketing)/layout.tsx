@@ -8,6 +8,7 @@ import { HeaderCTA } from './components/HeaderCTA';
 import { Footer } from './components/Footer';
 import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
 import './marketing.css';
+import './snow-field.css';
 import './design-system.css';
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';

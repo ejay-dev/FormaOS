@@ -99,15 +99,15 @@ export function ProductHero() {
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600">
                   <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
                     Structured Controls
                   </span>
                   <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
                     Owned Actions
                   </span>
                   <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
                     Live Evidence
                   </span>
                 </div>

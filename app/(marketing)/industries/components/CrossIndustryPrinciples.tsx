@@ -70,16 +70,6 @@ const principles = [
 export function CrossIndustryPrinciples() {
   return (
     <section className="relative py-32 overflow-hidden">
-      {/* Ambient Background */}
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-purple-500/10 to-cyan-500/10 rounded-full blur-3xl"
-        animate={{
-          scale: [1, 1.1, 1],
-          opacity: [0.2, 0.4, 0.2],
-        }}
-        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-      />
-
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="blurIn" range={[0, 0.35]}>
           <div className="text-center mb-16">
@@ -87,7 +77,7 @@ export function CrossIndustryPrinciples() {
               <div
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium mb-6"
               >
-                <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-purple-400" />
                 Why It Works Across Industries
               </div>
             </ScrollReveal>
@@ -114,7 +104,7 @@ export function CrossIndustryPrinciples() {
             return (
               <ScrollReveal key={principle.title} variant="scaleUp" range={[index * 0.04, 0.3 + index * 0.04]}>
                 <motion.div
-                  whileHover={{ y: -6, scale: 1.02 }}
+                  whileHover={{ y: -4 }}
                   className="group text-center backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] hover:border-purple-500/30 p-6 transition-all duration-300"
                 >
                   <div className="flex flex-col items-center mb-6">

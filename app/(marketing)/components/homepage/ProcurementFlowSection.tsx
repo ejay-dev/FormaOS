@@ -9,8 +9,6 @@ import {
   FileCheck2,
   ShieldCheck,
 } from 'lucide-react';
-import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
-
 const procurementFlow = [
   {
     step: '01',
@@ -46,7 +44,6 @@ const artifactBadges = [
 export function ProcurementFlowSection() {
   return (
     <section className="mk-section relative overflow-hidden border-y border-white/10">
-      <AmbientParticleLayer intensity="subtle" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,0.10),transparent_40%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_60%,rgba(59,130,246,0.12),transparent_42%)]" />
 
@@ -69,7 +66,7 @@ export function ProcurementFlowSection() {
           {procurementFlow.map((item, idx) => (
             <ScrollReveal
               key={item.title}
-              variant="fadeUp"
+              variant="rotateIn"
               range={[idx * 0.04, 0.3 + idx * 0.04]}
             >
               <article className="rounded-2xl border border-white/10 bg-white/5 p-6">

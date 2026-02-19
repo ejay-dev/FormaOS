@@ -3,7 +3,7 @@
 import { useRef, type ReactNode } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 
-type RevealVariant = 'fadeUp' | 'fadeDown' | 'fadeLeft' | 'fadeRight' | 'scaleUp' | 'blurIn' | 'slideUp';
+type RevealVariant = 'fadeUp' | 'fadeDown' | 'fadeLeft' | 'fadeRight' | 'scaleUp' | 'blurIn' | 'slideUp' | 'clipUp' | 'rotateIn' | 'staggerFade';
 
 interface ScrollRevealProps {
   children: ReactNode;
@@ -27,6 +27,9 @@ const VARIANT_CONFIG: Record<RevealVariant, { from: Record<string, number>; to: 
   scaleUp: { from: { opacity: 0, scale: 0.92 }, to: { opacity: 1, scale: 1 } },
   blurIn: { from: { opacity: 0, filter: 'blur(8px)' as unknown as number }, to: { opacity: 1, filter: 'blur(0px)' as unknown as number } },
   slideUp: { from: { opacity: 0, y: 60 }, to: { opacity: 1, y: 0 } },
+  clipUp: { from: { opacity: 0, y: 30, scale: 0.97 }, to: { opacity: 1, y: 0, scale: 1 } },
+  rotateIn: { from: { opacity: 0, rotate: -3, y: 20 }, to: { opacity: 1, rotate: 0, y: 0 } },
+  staggerFade: { from: { opacity: 0, y: 16 }, to: { opacity: 1, y: 0 } },
 };
 
 export function ScrollReveal({
@@ -52,6 +55,7 @@ export function ScrollReveal({
   const y = useTransform(scrollYProgress, [range[0], range[1]], [config.from.y ?? 0, config.to.y ?? 0]);
   const x = useTransform(scrollYProgress, [range[0], range[1]], [config.from.x ?? 0, config.to.x ?? 0]);
   const scale = useTransform(scrollYProgress, [range[0], range[1]], [config.from.scale ?? 1, config.to.scale ?? 1]);
+  const rotate = useTransform(scrollYProgress, [range[0], range[1]], [config.from.rotate ?? 0, config.to.rotate ?? 0]);
 
   // Parallax effect (continues after reveal)
   const parallaxY = useTransform(scrollYProgress, [0, 1], [parallaxDistance, -parallaxDistance]);
@@ -68,6 +72,7 @@ export function ScrollReveal({
           y: parallax ? parallaxY : y,
           x,
           scale,
+          rotate,
           willChange: 'opacity, transform',
         }}
       >

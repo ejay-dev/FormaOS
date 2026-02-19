@@ -26,7 +26,7 @@ export function WhatIsFormaOS() {
           <div className="text-center mb-16">
             <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-6">
-                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-blue-400" />
                 What Is FormaOS?
               </div>
             </ScrollReveal>

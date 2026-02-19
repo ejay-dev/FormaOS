@@ -84,15 +84,15 @@ export function IndustriesHero() {
               </p>
               <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600">
                 <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-pink-400" />
                   NDIS & Aged Care
                 </span>
                 <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
                   Healthcare
                 </span>
                 <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
                   Financial Services
                 </span>
               </div>
@@ -156,7 +156,7 @@ export function IndustriesHero() {
 
               <motion.a
                 href="/contact"
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
                 className="group px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white font-semibold text-lg flex items-center gap-3 hover:border-amber-400/50 hover:bg-amber-400/5 transition-all"
               >

@@ -147,21 +147,12 @@ const capabilities = [
 export function CapabilitiesGrid() {
   return (
     <section className="mk-section relative overflow-hidden">
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl"
-        animate={{
-          scale: [1, 1.1, 1],
-          opacity: [0.5, 0.7, 0.5],
-        }}
-        transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
-      />
-
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="scaleUp" range={[0, 0.3]} className="text-center mb-16">
           <div
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium mb-6"
           >
-            <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-purple-400" />
             Platform Capabilities
           </div>
 
@@ -189,8 +180,8 @@ export function CapabilitiesGrid() {
                 range={[index * 0.04, 0.3 + index * 0.04]}
               >
                 <motion.div
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  className="group relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 border border-white/5 hover:border-cyan-500/30 transition-all cursor-pointer backdrop-blur-sm"
+                  whileHover={{ y: -4 }}
+                  className="group relative p-8 rounded-xl bg-gray-950/50 border-l-2 border-l-white/10 border border-white/[0.04] hover:border-l-cyan-500/50 transition-all cursor-pointer backdrop-blur-sm"
                 >
                   <div
                     className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${capability.color} opacity-0 group-hover:opacity-5 transition-opacity`}

@@ -135,7 +135,7 @@ export function NDISDeepDive() {
                 <div className="flex flex-col sm:flex-row gap-4">
                   <motion.a
                     href="/contact"
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.98 }}
                     className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold shadow-lg shadow-pink-500/25 hover:shadow-pink-500/40 transition-all"
                   >
@@ -144,7 +144,7 @@ export function NDISDeepDive() {
                   </motion.a>
                   <motion.a
                     href={`${appBase}/auth/signup`}
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.98 }}
                     className="inline-flex items-center justify-center px-6 py-3 rounded-full border border-white/20 bg-white/5 text-white font-semibold hover:bg-white/10 transition-all"
                   >

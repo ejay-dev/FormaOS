@@ -7,7 +7,6 @@ import { duration, easing } from '@/config/motion';
 import {
   ParallaxLayer,
 } from '@/components/motion';
-import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
@@ -15,7 +14,6 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 export function SecurityHero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <AmbientParticleLayer intensity="subtle" />
       {/* Animated background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
       {/* Ambient lights - more accent color for security theme */}

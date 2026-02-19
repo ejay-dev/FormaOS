@@ -128,11 +128,11 @@ function PrivacyHero() {
               className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600"
             >
               <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
                 Effective: January 16, 2026
               </span>
               <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
                 Last Updated: January 16, 2026
               </span>
             </motion.div>
@@ -194,7 +194,7 @@ function TableOfContents() {
             className="w-full flex items-center justify-between text-left group"
           >
             <h2 className="text-xl font-semibold text-white flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-cyan-400" />
               Table of Contents
             </h2>
             <motion.div
@@ -528,7 +528,7 @@ function PrivacyContent() {
           </ul>
           <div className="p-4 rounded-xl bg-gradient-to-br from-cyan-500/10 to-blue-500/5 border border-cyan-500/20 mt-4">
             <p className="text-cyan-400 font-medium flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-cyan-400" />
               No third-party advertising trackers are used.
             </p>
           </div>
@@ -614,7 +614,7 @@ function PrivacyCTA() {
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-medium mb-4">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
                 Privacy-first platform
               </div>
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">

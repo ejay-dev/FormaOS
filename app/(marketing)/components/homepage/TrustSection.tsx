@@ -4,8 +4,6 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { ArrowRight, ClipboardCheck, FileLock2, ShieldCheck } from 'lucide-react';
-import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
-
 const trustedBy = [
   'Healthcare & NDIS teams',
   'Aged care operators',
@@ -27,33 +25,9 @@ export function TrustSection() {
 
   return (
     <section className="mk-section relative border-y border-white/5 overflow-hidden">
-      <AmbientParticleLayer intensity="subtle" />
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-cyan-500/5 blur-3xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute top-1/2 right-1/4 translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-blue-500/5 blur-3xl"
-          animate={{
-            scale: [1, 1.15, 1],
-            opacity: [0.3, 0.4, 0.3],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 1,
-          }}
-        />
-      </div>
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="fadeUp" range={[0, 0.3]} className="text-center mb-12">
+        <ScrollReveal variant="blurIn" range={[0, 0.3]} className="text-center mb-12">
           <p className="text-sm uppercase tracking-wider text-gray-500 mb-8">
             Built for regulated teams and enterprise buyers
           </p>
@@ -74,8 +48,8 @@ export function TrustSection() {
               range={[index * 0.04, 0.3 + index * 0.04]}
             >
               <motion.div
-                whileHover={{ scale: 1.05, y: -5 }}
-                className="group relative flex items-center justify-center p-6 rounded-2xl bg-gradient-to-br from-gray-900/30 to-gray-950/30 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all duration-300 cursor-pointer shadow-lg shadow-black/10"
+                whileHover={{ y: -4 }}
+                className="group relative flex items-center justify-center p-6 rounded-lg bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] hover:border-cyan-500/20 transition-all duration-300 cursor-pointer"
               >
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-blue-500/0 group-hover:from-cyan-500/10 group-hover:to-blue-500/5 transition-all duration-500" />
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/0 group-hover:via-cyan-400/40 to-transparent transition-all duration-500" />
@@ -93,7 +67,7 @@ export function TrustSection() {
           {trustSignals.map((stat, index) => (
             <motion.div
               key={stat.label}
-              whileHover={{ scale: 1.05, y: -3 }}
+              whileHover={{ y: -2 }}
               className="text-center p-4 rounded-xl hover:bg-white/5 transition-all duration-300 cursor-default"
             >
               <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-2">

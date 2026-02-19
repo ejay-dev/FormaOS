@@ -116,7 +116,7 @@ export function IndustriesCTA() {
 
                       <motion.a
                         href={`${appBase}/auth/signup`}
-                        whileHover={{ scale: 1.05 }}
+                        whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.98 }}
                         className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border-2 border-white/20 text-white font-semibold hover:bg-white/[0.08] hover:border-white/30 transition-all"
                       >

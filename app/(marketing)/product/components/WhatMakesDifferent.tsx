@@ -20,7 +20,7 @@ export function WhatMakesDifferent() {
           <div className="text-center mb-16">
             <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-sm font-medium mb-6">
-                <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-orange-400" />
                 What Makes FormaOS Different
               </div>
             </ScrollReveal>
@@ -44,7 +44,7 @@ export function WhatMakesDifferent() {
                 range={[index * 0.04, 0.3 + index * 0.04]}
               >
                 <motion.div
-                  whileHover={{ scale: 1.03, y: -5 }}
+                  whileHover={{ y: -4 }}
                   className={`group relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 border border-white/5 hover:border-orange-500/30 transition-all cursor-pointer backdrop-blur-sm ${index === 4 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
                 >
                   <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${item.color} mb-5 group-hover:scale-110 transition-transform`}>

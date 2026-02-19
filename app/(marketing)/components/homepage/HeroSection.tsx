@@ -21,20 +21,9 @@ import {
   Sparkles,
 } from 'lucide-react';
 
-import { useCompliance } from '../webgl/useComplianceState';
-import dynamic from 'next/dynamic';
 import { brand } from '@/config/brand';
 import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 import { HeroScrollRetentionController } from '@/components/motion/HeroScrollRetentionController';
-
-const WebGLNodeField = dynamic(() => import('../webgl/NodeField'), {
-  ssr: false,
-  loading: () => null,
-});
-const UnifiedParticles = dynamic(
-  () => import('@/components/motion/UnifiedParticles').then((m) => m.UnifiedParticles),
-  { ssr: false, loading: () => null },
-);
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -58,7 +47,7 @@ function FloatingMetricCard({
       initial={{ opacity: 0, x: direction === 'left' ? -40 : 40 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: duration.slower, delay }}
-      whileHover={{ scale: 1.05, y: -5 }}
+      whileHover={{ scale: 1.03 }}
       className="relative p-5 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all shadow-2xl shadow-black/30"
     >
       <div className="flex items-center gap-4">
@@ -89,13 +78,11 @@ function ProofMetric({ value, label }: { value: string; label: string }) {
 export function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
-  const [enableHeavyVisuals, setEnableHeavyVisuals] = useState(false);
   const [allowHeavyVisuals, setAllowHeavyVisuals] = useState(false);
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end -20%'],
   });
-  const { state } = useCompliance();
   const router = useRouter();
 
   // Buffered hero exit: hold fully visible first, then progressive cinematic fade.
@@ -139,33 +126,6 @@ export function HeroSection() {
     return () => window.removeEventListener('resize', update);
   }, []);
 
-  useEffect(() => {
-    if (shouldReduceMotion) return;
-    if (!allowHeavyVisuals) {
-      setEnableHeavyVisuals(false);
-      return;
-    }
-
-    let timeoutId: ReturnType<typeof setTimeout> | null = null;
-    let idleId: number | null = null;
-
-    const onIdle = () => setEnableHeavyVisuals(true);
-
-    if ('requestIdleCallback' in window) {
-      idleId = (window as Window & {
-        requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => number;
-      }).requestIdleCallback(onIdle, { timeout: 900 });
-    } else {
-      timeoutId = setTimeout(onIdle, 280);
-    }
-
-    return () => {
-      if (timeoutId !== null) clearTimeout(timeoutId);
-      if (idleId !== null && 'cancelIdleCallback' in window) {
-        (window as Window & { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(idleId);
-      }
-    };
-  }, [allowHeavyVisuals, shouldReduceMotion]);
 
   return (
     <section
@@ -219,20 +179,6 @@ export function HeroSection() {
         />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-cyan-500/5 to-transparent rounded-full" />
       </div>
-
-      {/* WebGL 3D Node Field */}
-      {!shouldReduceMotion && allowHeavyVisuals && enableHeavyVisuals && (
-        <div className="absolute inset-0 z-0">
-          <WebGLNodeField state={state} />
-        </div>
-      )}
-
-      {/* Unified Particle Field */}
-      {!shouldReduceMotion && allowHeavyVisuals && enableHeavyVisuals && (
-        <div className="absolute inset-0 z-1">
-          <UnifiedParticles preset="constellation" count={60} color="6,182,212" connections opacity={0.5} />
-        </div>
-      )}
 
       {/* Floating Metrics - Left Side (parallax drift) */}
       <motion.div style={heroMetricStyle} className="absolute left-8 lg:left-16 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6 z-20">
@@ -360,8 +306,8 @@ export function HeroSection() {
                 whileHover={
                   shouldAnimateIntro
                     ? {
-                        scale: 1.05,
-                        boxShadow: '0 0 40px rgba(6, 182, 212, 0.4)',
+                        scale: 1.03,
+                        boxShadow: '0 0 30px rgba(6, 182, 212, 0.3)',
                       }
                     : undefined
                 }

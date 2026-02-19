@@ -33,7 +33,7 @@ export function DocsCTA() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <motion.a
                   href="/contact"
-                  whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(6, 182, 212, 0.4)' }}
+                  whileHover={{ scale: 1.03, boxShadow: '0 0 30px rgba(6, 182, 212, 0.3)' }}
                   whileTap={{ scale: 0.98 }}
                   className="mk-btn mk-btn-primary group px-8 py-4 text-lg"
                 >

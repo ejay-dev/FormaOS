@@ -13,7 +13,6 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 export function CTASection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const ctaButtonRef = useRef<HTMLAnchorElement>(null);
   const shouldReduceMotion = useReducedMotion();
   const [isInView, setIsInView] = useState(false);
   const [allowHeavyEffects, setAllowHeavyEffects] = useState(false);
@@ -187,19 +186,6 @@ export function CTASection() {
     };
   }, [allowHeavyEffects, isInView, shouldReduceMotion]);
 
-  useEffect(() => {
-    const button = ctaButtonRef.current;
-    if (!button || shouldReduceMotion || !isInView || !allowHeavyEffects) return;
-
-    const pulseInterval = setInterval(() => {
-      button.style.boxShadow = '0 0 40px rgba(6, 182, 212, 0.7)';
-      setTimeout(() => {
-        button.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.3)';
-      }, 800);
-    }, 7000);
-
-    return () => clearInterval(pulseInterval);
-  }, [allowHeavyEffects, isInView, shouldReduceMotion]);
 
   return (
     <section
@@ -243,16 +229,7 @@ export function CTASection() {
         >
           <ScrollReveal variant="scaleUp" range={[0, 0.25]}>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-8">
-              <motion.div
-                animate={shouldReduceMotion ? undefined : { rotate: 360 }}
-                transition={
-                  shouldReduceMotion
-                    ? undefined
-                    : { duration: 3, repeat: Infinity, ease: 'linear' }
-                }
-              >
-                <Sparkles className="w-4 h-4 text-cyan-400" />
-              </motion.div>
+              <Sparkles className="w-4 h-4 text-cyan-400" />
               <span className="text-sm text-cyan-400 font-medium">
                 Start Your Free Trial
               </span>
@@ -283,7 +260,6 @@ export function CTASection() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
 
             <motion.a
-              ref={ctaButtonRef}
               href={`${appBase}/auth/signup?plan=pro`}
               whileHover={
                 shouldReduceMotion

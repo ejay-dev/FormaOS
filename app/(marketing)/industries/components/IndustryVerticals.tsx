@@ -125,7 +125,7 @@ export function IndustryVerticals() {
               <div
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-6"
               >
-                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-blue-400" />
                 Example Verticals
               </div>
             </ScrollReveal>
@@ -151,7 +151,7 @@ export function IndustryVerticals() {
             return (
               <ScrollReveal key={industry.title} variant={index % 2 === 0 ? 'fadeLeft' : 'fadeRight'} range={[index * 0.04, 0.3 + index * 0.04]}>
                 <motion.div
-                  whileHover={{ y: -6, scale: 1.02 }}
+                  whileHover={{ y: -4 }}
                   className={`group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] ${industry.hoverBorder} p-6 transition-all duration-300`}
                 >
                   <div className="flex items-start gap-4 mb-4">

@@ -93,9 +93,9 @@ function CompactStoryStep({
   );
 
   return (
-    <ScrollReveal variant="fadeUp" range={[index * 0.04, 0.35 + index * 0.04]}>
+    <ScrollReveal variant="clipUp" range={[index * 0.04, 0.35 + index * 0.04]}>
       <motion.div
-        whileHover={{ scale: 1.02, y: -8 }}
+        whileHover={{ y: -4 }}
         style={{ opacity: stageOpacity, scale: stageScale }}
         className="group relative pt-4 mt-4 p-8 rounded-3xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all duration-500 shadow-xl shadow-black/20"
       >
@@ -166,7 +166,7 @@ export function ScrollStory() {
           <div
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-medium mb-6"
           >
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-cyan-400" />
             How It Works
           </div>
 

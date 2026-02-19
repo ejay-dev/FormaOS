@@ -48,7 +48,7 @@ export function ObjectionHandlingSection() {
           {objectionCards.map((card, idx) => (
             <ScrollReveal
               key={card.objection}
-              variant="fadeUp"
+              variant="clipUp"
               range={[idx * 0.04, 0.3 + idx * 0.04]}
             >
               <article className="rounded-2xl border border-white/10 bg-white/5 p-6">

@@ -1,0 +1,88 @@
+/* ── Snow / falling particles ───────────────────────────── */
+.snow-field {
+  --snow-color: rgba(255, 255, 255, 0.35);
+  --snow-speed: 18s;
+  --snow-speed-slow: 26s;
+  z-index: 1;
+}
+
+/* Intensity: subtle — lighter, slower */
+.snow-field--subtle {
+  --snow-color: rgba(255, 255, 255, 0.2);
+  --snow-speed: 22s;
+  --snow-speed-slow: 32s;
+}
+
+/* Intensity: strong — denser, slightly faster */
+.snow-field--strong {
+  --snow-color: rgba(255, 255, 255, 0.45);
+  --snow-speed: 14s;
+  --snow-speed-slow: 20s;
+}
+
+.snow-field::before,
+.snow-field::after {
+  content: '';
+  position: absolute;
+  inset: -50% 0 0 0;
+  width: 100%;
+  height: 200%;
+  pointer-events: none;
+  will-change: transform;
+  /* Layer 1: medium particles — foreground drift */
+  background-image:
+    radial-gradient(1.5px 1.5px at  8% 12%, var(--snow-color), transparent),
+    radial-gradient(1px   1px   at 22% 38%, var(--snow-color), transparent),
+    radial-gradient(1.5px 1.5px at 37% 58%, var(--snow-color), transparent),
+    radial-gradient(1px   1px   at 53% 14%, var(--snow-color), transparent),
+    radial-gradient(2px   2px   at 68% 72%, var(--snow-color), transparent),
+    radial-gradient(1px   1px   at 78% 28%, var(--snow-color), transparent),
+    radial-gradient(1.5px 1.5px at 91% 62%, var(--snow-color), transparent),
+    radial-gradient(1px   1px   at 12% 82%, var(--snow-color), transparent),
+    radial-gradient(1.5px 1.5px at 48% 42%, var(--snow-color), transparent),
+    radial-gradient(1px   1px   at 63% 92%, var(--snow-color), transparent),
+    radial-gradient(1.5px 1.5px at 33%  8%, var(--snow-color), transparent),
+    radial-gradient(1px   1px   at 83% 52%, var(--snow-color), transparent);
+  background-size: 650px 900px;
+  animation: snow-fall var(--snow-speed) linear infinite;
+}
+
+.snow-field::after {
+  /* Layer 2: smaller particles — slower background depth layer */
+  background-image:
+    radial-gradient(0.8px 0.8px at  5% 28%, var(--snow-color), transparent),
+    radial-gradient(1px   1px   at 18% 68%, var(--snow-color), transparent),
+    radial-gradient(0.8px 0.8px at 42% 18%, var(--snow-color), transparent),
+    radial-gradient(1.2px 1.2px at 58% 88%, var(--snow-color), transparent),
+    radial-gradient(0.8px 0.8px at 73% 38%, var(--snow-color), transparent),
+    radial-gradient(1px   1px   at 92% 12%, var(--snow-color), transparent),
+    radial-gradient(0.8px 0.8px at 28% 78%, var(--snow-color), transparent),
+    radial-gradient(1px   1px   at 47% 98%, var(--snow-color), transparent);
+  background-size: 500px 700px;
+  animation-duration: var(--snow-speed-slow);
+  animation-delay: -9s;
+  opacity: 0.5;
+}
+
+@keyframes snow-fall {
+  from { transform: translateY(-50%); }
+  to   { transform: translateY(0); }
+}
+
+/* Disable snow on small screens */
+@media (max-width: 767px) {
+  .snow-field::before,
+  .snow-field::after {
+    animation: none;
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .snow-field::before,
+  .snow-field::after {
+    animation: none;
+    opacity: 0.1;
+    transform: none;
+  }
+}

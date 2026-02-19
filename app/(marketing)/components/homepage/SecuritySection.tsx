@@ -9,7 +9,6 @@ import {
   Key,
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 
 const SecurityWorkflowCard = dynamic(
   () => import('@/components/marketing/demo/SecurityWorkflowCard'),
@@ -48,7 +47,6 @@ const securityFeatures = [
 export function SecuritySection() {
   return (
     <section className="mk-section relative overflow-hidden">
-      <AmbientParticleLayer intensity="subtle" />
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[450px] lg:w-[600px] h-[300px] sm:h-[450px] lg:h-[600px] bg-cyan-500/5 rounded-full blur-2xl sm:blur-3xl" />
       </div>
@@ -60,7 +58,7 @@ export function SecuritySection() {
             <div
               className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs sm:text-sm font-medium mb-4 sm:mb-6"
             >
-              <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-blue-400 animate-pulse" />
+              <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-blue-400" />
               Enterprise Security
             </div>
 

@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { ArrowRight, BarChart3, ShieldCheck, TimerReset } from 'lucide-react';
-import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 
 const proofScenarios = [
   {
@@ -35,7 +34,6 @@ const outcomeStats = [
 export function OutcomeProofSection() {
   return (
     <section className="mk-section relative overflow-hidden border-y border-white/10">
-      <AmbientParticleLayer intensity="subtle" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,0.12),transparent_42%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_80%,rgba(16,185,129,0.10),transparent_40%)]" />
 
@@ -62,7 +60,7 @@ export function OutcomeProofSection() {
               variant="fadeLeft"
               range={[idx * 0.04, 0.3 + idx * 0.04]}
             >
-              <article className="rounded-2xl border border-white/10 bg-white/5 p-6">
+              <article className="rounded-2xl border border-white/[0.06] bg-gradient-to-b from-white/[0.06] to-transparent p-6 border-t-2 border-t-cyan-500/20">
                 <h3 className="text-sm font-semibold uppercase tracking-wider text-cyan-200">
                   {scenario.title}
                 </h3>
