@@ -7,8 +7,13 @@ import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { ProductHero } from './components';
 
-const ProductHero3D = dynamic(
-  () => import('@/components/marketing/ProductHero3D').then((m) => m.ProductHero3D),
+/* ── New split hero: full-bleed animation + copy section below ── */
+const ProductHeroAnimation = dynamic(
+  () => import('@/components/marketing/ProductHeroLargeObject').then((m) => m.ProductHeroAnimation),
+  { ssr: false, loading: () => <div className="w-full" style={{ height: '92vh', minHeight: '680px' }} /> },
+);
+const ProductHeroCopy = dynamic(
+  () => import('@/components/marketing/ProductHeroLargeObject').then((m) => m.ProductHeroCopy),
   { ssr: false, loading: () => null },
 );
 
@@ -62,7 +67,6 @@ const FinalCTA = dynamic(() => import('./components/FinalCTA').then((m) => m.Fin
 function useHero3DEnabled(): boolean {
   const params = useSearchParams();
   const qp = params.get('hero3d');
-  // ?hero3d=1 forces on, ?hero3d=0 forces off, otherwise env flag
   if (qp === '1') return true;
   if (qp === '0') return false;
   return ENV_FLAG;
@@ -73,13 +77,19 @@ export default function ProductPageContent() {
 
   return (
     <MarketingPageShell enableCinematicField={false}>
-      {/* <!-- hero3d:{hero3d ? 'on' : 'off'} --> */}
-      <div
-        dangerouslySetInnerHTML={{
-          __html: `<!-- hero3d:${hero3d ? 'on' : 'off'} -->`,
-        }}
-      />
-      {hero3d ? <ProductHero3D /> : <ProductHero />}
+      <div dangerouslySetInnerHTML={{ __html: `<!-- hero3d:${hero3d ? 'on' : 'off'} -->` }} />
+
+      {hero3d ? (
+        <>
+          {/* Full-bleed animation — takes most of first viewport */}
+          <ProductHeroAnimation />
+          {/* Copy section below the animation */}
+          <ProductHeroCopy />
+        </>
+      ) : (
+        <ProductHero />
+      )}
+
       <DeferredSection minHeight={640}>
         <WhatIsFormaOS />
       </DeferredSection>
