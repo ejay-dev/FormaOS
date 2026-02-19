@@ -4,24 +4,17 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Lock, Shield, Eye, FileCheck, ArrowRight } from 'lucide-react';
 import { duration, easing } from '@/config/motion';
-import {
-  ParallaxLayer,
-} from '@/components/motion';
-import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 
 export function SecurityHero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <AmbientParticleLayer intensity="subtle" />
-      {/* Animated background */}
+    <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
+      {/* Lightweight static background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
-      {/* Ambient lights - more accent color for security theme */}
-      <div className="pointer-events-none absolute top-20 left-1/4 h-[500px] w-[500px] rounded-full bg-accent/15 blur-[100px]" />
-      <div className="pointer-events-none absolute bottom-20 right-1/3 h-[400px] w-[400px] rounded-full bg-primary/10 blur-[80px]" />
+      <div className="pointer-events-none absolute top-20 left-1/4 h-[400px] w-[400px] rounded-full bg-purple-500/10 blur-[80px]" />
+      <div className="pointer-events-none absolute bottom-20 right-1/3 h-[300px] w-[300px] rounded-full bg-cyan-500/8 blur-[60px]" />
 
       {/* Content */}
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8 py-20">
-        <ParallaxLayer speed={0.3}>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -105,7 +98,6 @@ export function SecurityHero() {
               </Link>
             </motion.div>
           </motion.div>
-        </ParallaxLayer>
       </div>
     </section>
   );
