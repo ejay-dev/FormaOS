@@ -4,9 +4,8 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { brand } from '@/config/brand';
-import { duration, easing, stagger } from '@/config/motion';
 import { SectionHeader, Reveal, VisualDivider } from '@/components/motion';
 import { GlassCard, HoverLift } from '@/components/motion/EnhancedMotion';
 import { DeferredSection } from '../../components/shared';
@@ -109,12 +108,10 @@ export function UseCasePageTemplate({
           />
           <div className="grid gap-4 md:grid-cols-2">
             {challenges.map((item, idx) => (
-              <motion.div
+              <ScrollReveal
                 key={item.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: duration.normal, delay: idx * stagger.normal, ease: easing.signature }}
+                variant={idx % 2 === 0 ? 'fadeLeft' : 'fadeRight'}
+                range={[0, 0.3 + idx * 0.05]}
               >
                 <HoverLift>
                   <GlassCard intensity="normal" className="h-full p-6">
@@ -125,7 +122,7 @@ export function UseCasePageTemplate({
                     </p>
                   </GlassCard>
                 </HoverLift>
-              </motion.div>
+              </ScrollReveal>
             ))}
           </div>
         </section>
@@ -151,12 +148,10 @@ export function UseCasePageTemplate({
           />
           <div className="space-y-4">
             {workflows.map((workflow, idx) => (
-              <motion.div
+              <ScrollReveal
                 key={workflow.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: duration.normal, delay: idx * stagger.normal, ease: easing.signature }}
+                variant="slideUp"
+                range={[0, 0.3 + idx * 0.05]}
               >
                 <GlassCard intensity="normal" className="p-6">
                   <h3 className="text-lg font-semibold text-white">{workflow.title}</h3>
@@ -172,7 +167,7 @@ export function UseCasePageTemplate({
                     </ul>
                   )}
                 </GlassCard>
-              </motion.div>
+              </ScrollReveal>
             ))}
           </div>
         </section>
@@ -189,12 +184,10 @@ export function UseCasePageTemplate({
           />
           <div className="grid gap-4 md:grid-cols-2">
             {standards.map((standard, idx) => (
-              <motion.div
+              <ScrollReveal
                 key={standard.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: duration.normal, delay: idx * stagger.normal, ease: easing.signature }}
+                variant={idx % 2 === 0 ? 'fadeLeft' : 'fadeRight'}
+                range={[0, 0.3 + idx * 0.05]}
               >
                 <GlassCard className="h-full p-6" intensity="subtle">
                   <h3 className="text-lg font-semibold text-white">{standard.name}</h3>
@@ -210,7 +203,7 @@ export function UseCasePageTemplate({
                     ))}
                   </ul>
                 </GlassCard>
-              </motion.div>
+              </ScrollReveal>
             ))}
           </div>
         </section>
@@ -227,12 +220,10 @@ export function UseCasePageTemplate({
           />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {metrics.map((metric, idx) => (
-              <motion.div
+              <ScrollReveal
                 key={metric.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: duration.normal, delay: idx * stagger.tight, ease: easing.signature }}
+                variant="scaleUp"
+                range={[0, 0.3 + idx * 0.04]}
               >
                 <GlassCard className="h-full p-6 text-center" intensity="strong">
                   <div className="text-3xl font-bold text-white">{metric.value}</div>
@@ -243,7 +234,7 @@ export function UseCasePageTemplate({
                     <p className="mt-3 text-xs text-slate-300">{metric.description}</p>
                   )}
                 </GlassCard>
-              </motion.div>
+              </ScrollReveal>
             ))}
           </div>
         </section>

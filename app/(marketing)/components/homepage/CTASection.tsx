@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { useRef, useEffect, useState } from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { brand } from '@/config/brand';
@@ -239,68 +240,48 @@ export function CTASection() {
       <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12 text-center">
         <motion.div
           style={{ scale }}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower }}
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: duration.slow, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-8"
-          >
-            <motion.div
-              animate={shouldReduceMotion ? undefined : { rotate: 360 }}
-              transition={
-                shouldReduceMotion
-                  ? undefined
-                  : { duration: 3, repeat: Infinity, ease: 'linear' }
-              }
-            >
-              <Sparkles className="w-4 h-4 text-cyan-400" />
-            </motion.div>
-            <span className="text-sm text-cyan-400 font-medium">
-              Start Your Free Trial
-            </span>
-          </motion.div>
+          <ScrollReveal variant="scaleUp" range={[0, 0.25]}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-8">
+              <motion.div
+                animate={shouldReduceMotion ? undefined : { rotate: 360 }}
+                transition={
+                  shouldReduceMotion
+                    ? undefined
+                    : { duration: 3, repeat: Infinity, ease: 'linear' }
+                }
+              >
+                <Sparkles className="w-4 h-4 text-cyan-400" />
+              </motion.div>
+              <span className="text-sm text-cyan-400 font-medium">
+                Start Your Free Trial
+              </span>
+            </div>
+          </ScrollReveal>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: duration.slower, delay: 0.3 }}
-            className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight"
-          >
-            Install the{' '}
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-              Operating System
-            </span>
-            <br />
-            <span className="bg-gradient-to-r from-green-400 via-cyan-500 to-blue-600 bg-clip-text text-transparent">
-              Your Compliance Deserves
-            </span>
-          </motion.h2>
+          <ScrollReveal variant="blurIn" range={[0, 0.3]}>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              Install the{' '}
+              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+                Operating System
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-green-400 via-cyan-500 to-blue-600 bg-clip-text text-transparent">
+                Your Compliance Deserves
+              </span>
+            </h2>
+          </ScrollReveal>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: duration.slower, delay: 0.4 }}
-            className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed"
-          >
-            Stop managing compliance manually. FormaOS enforces controls,
-            captures evidence, and keeps you audit-ready. Every single day.
-          </motion.p>
+          <ScrollReveal variant="fadeUp" range={[0.02, 0.32]}>
+            <p className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed">
+              Stop managing compliance manually. FormaOS enforces controls,
+              captures evidence, and keeps you audit-ready. Every single day.
+            </p>
+          </ScrollReveal>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: duration.slower, delay: 0.5 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
+          <ScrollReveal variant="slideUp" range={[0.04, 0.34]}>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+
             <motion.a
               ref={ctaButtonRef}
               href={`${appBase}/auth/signup?plan=pro`}
@@ -335,25 +316,16 @@ export function CTASection() {
             >
               Schedule Demo
             </motion.a>
-          </motion.div>
+            </div>
+          </ScrollReveal>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: duration.slow, delay: 0.6 }}
-            className="text-sm text-gray-500 mt-8"
-          >
-            No credit card required • 14-day free trial • Cancel anytime
-          </motion.p>
+          <ScrollReveal variant="fadeUp" range={[0.06, 0.36]}>
+            <p className="text-sm text-gray-500 mt-8">
+              No credit card required • 14-day free trial • Cancel anytime
+            </p>
+          </ScrollReveal>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: duration.slower, delay: 0.7 }}
-            className="mt-16 pt-8 border-t border-white/5"
-          >
+          <ScrollReveal variant="fadeUp" range={[0.08, 0.38]} className="mt-16 pt-8 border-t border-white/5">
             <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-center">
               {[
                 { value: 'Audit-ready', label: 'Evidence workflows' },
@@ -361,24 +333,23 @@ export function CTASection() {
                 { value: 'SOC 2-aligned', label: 'Trust framework' },
                 { value: 'Priority', label: 'Support coverage' },
               ].map((stat, index) => (
-                <motion.div
+                <ScrollReveal
                   key={stat.label}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.8 + index * 0.1 }}
-                  className="flex flex-col items-center min-w-0"
+                  variant="scaleUp"
+                  range={[index * 0.04 + 0.08, 0.35 + index * 0.04]}
                 >
-                  <div className="text-lg sm:text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-1">
-                    {stat.value}
+                  <div className="flex flex-col items-center min-w-0">
+                    <div className="text-lg sm:text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-1">
+                      {stat.value}
+                    </div>
+                    <div className="text-xs sm:text-sm text-gray-500 uppercase tracking-wide font-medium">
+                      {stat.label}
+                    </div>
                   </div>
-                  <div className="text-xs sm:text-sm text-gray-500 uppercase tracking-wide font-medium">
-                    {stat.label}
-                  </div>
-                </motion.div>
+                </ScrollReveal>
               ))}
             </div>
-          </motion.div>
+          </ScrollReveal>
         </motion.div>
       </div>
 

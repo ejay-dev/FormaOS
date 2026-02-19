@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { HomeClientMarker } from './components/home-client-marker';
 import FigmaHomepage from './components/FigmaHomepage';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
 export const metadata: Metadata = {
   title: 'FormaOS | Turn Process Into Provable Truth',

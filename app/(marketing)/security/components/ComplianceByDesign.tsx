@@ -2,7 +2,7 @@
 
 import { Database, FileCheck, Archive, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
 const transparencyPrinciples = [
   {
@@ -63,83 +63,75 @@ export function ComplianceByDesign() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower }}
-          className="text-center mb-20"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6"
-          >
-            <CheckCircle className="h-3 w-3 text-amber-400" />
-            <span className="text-gray-300">Compliance by Design</span>
-          </motion.div>
+        <ScrollReveal variant="blurIn" range={[0, 0.35]} className="text-center mb-20">
+          <div>
+            <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6">
+                <CheckCircle className="h-3 w-3 text-amber-400" />
+                <span className="text-gray-300">Compliance by Design</span>
+              </div>
+            </ScrollReveal>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
-            <span className="text-white">Transparency is not optional.</span>
-            <br />
-            <span className="bg-gradient-to-r from-amber-400 via-yellow-400 to-lime-400 bg-clip-text text-transparent">
-              It is the architecture.
-            </span>
-          </h2>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
+              <span className="text-white">Transparency is not optional.</span>
+              <br />
+              <span className="bg-gradient-to-r from-amber-400 via-yellow-400 to-lime-400 bg-clip-text text-transparent">
+                It is the architecture.
+              </span>
+            </h2>
 
-          <p className="text-lg text-gray-400 max-w-3xl mx-auto">
-            FormaOS is built on the principle that governance systems must be
-            inherently transparent. Security through obscurity has no place in
-            compliance.
-          </p>
-        </motion.div>
+            <p className="text-lg text-gray-400 max-w-3xl mx-auto">
+              FormaOS is built on the principle that governance systems must be
+              inherently transparent. Security through obscurity has no place in
+              compliance.
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* Transparency Principles */}
         <div className="space-y-6">
           {transparencyPrinciples.map((principle, index) => (
-            <motion.div
+            <ScrollReveal
               key={principle.title}
-              initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.15, duration: duration.slow }}
-              className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 lg:p-10 hover:border-amber-500/30 transition-all duration-500"
+              variant="fadeRight"
+              range={[index * 0.04, 0.3 + index * 0.04]}
             >
-              <div className="flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10">
-                {/* Icon */}
-                <div className="flex-shrink-0">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-yellow-500/20 border border-amber-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <principle.icon className="h-8 w-8 text-amber-400" />
+              <div className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 lg:p-10 hover:border-amber-500/30 transition-all duration-500">
+                <div className="flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10">
+                  {/* Icon */}
+                  <div className="flex-shrink-0">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-yellow-500/20 border border-amber-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <principle.icon className="h-8 w-8 text-amber-400" />
+                    </div>
                   </div>
-                </div>
 
-                {/* Content */}
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-white mb-3">
-                    {principle.title}
-                  </h3>
-                  <p className="text-gray-400 leading-relaxed mb-4">
-                    {principle.description}
-                  </p>
+                  {/* Content */}
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-white mb-3">
+                      {principle.title}
+                    </h3>
+                    <p className="text-gray-400 leading-relaxed mb-4">
+                      {principle.description}
+                    </p>
 
-                  {/* Metrics */}
-                  <div className="flex flex-wrap gap-3">
-                    {principle.metrics.map((metric) => (
-                      <div
-                        key={metric}
-                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20"
-                      >
-                        <CheckCircle className="h-3 w-3 text-amber-400" />
-                        <span className="text-xs font-medium text-amber-300">
-                          {metric}
-                        </span>
-                      </div>
-                    ))}
+                    {/* Metrics */}
+                    <div className="flex flex-wrap gap-3">
+                      {principle.metrics.map((metric) => (
+                        <div
+                          key={metric}
+                          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20"
+                        >
+                          <CheckCircle className="h-3 w-3 text-amber-400" />
+                          <span className="text-xs font-medium text-amber-300">
+                            {metric}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

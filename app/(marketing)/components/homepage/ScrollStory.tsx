@@ -1,8 +1,8 @@
 'use client';
 
-import { motion, useScroll } from 'framer-motion';
-import { duration } from '@/config/motion';
+import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
 import { useRef } from 'react';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import {
   Box,
   Zap,
@@ -72,74 +72,88 @@ const steps = [
 function CompactStoryStep({
   step,
   index,
+  progress,
 }: {
   step: (typeof steps)[0];
   index: number;
+  progress: MotionValue<number>;
 }) {
   const Icon = step.icon;
+  const start = index * 0.2;
+  const end = start + 0.35;
+  const stageOpacity = useTransform(
+    progress,
+    [Math.max(0, start - 0.12), start, start + 0.16, end],
+    [0.45, 1, 1, 0.6],
+  );
+  const stageScale = useTransform(
+    progress,
+    [Math.max(0, start - 0.12), start + 0.16, end],
+    [0.95, 1, 0.98],
+  );
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.7, delay: index * 0.15, ease: 'easeOut' }}
-      whileHover={{ scale: 1.02, y: -8 }}
-      className="group relative pt-4 mt-4 p-8 rounded-3xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all duration-500 shadow-xl shadow-black/20"
-    >
+    <ScrollReveal variant="fadeUp" range={[index * 0.04, 0.35 + index * 0.04]}>
       <motion.div
-        className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${step.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
-      />
+        whileHover={{ scale: 1.02, y: -8 }}
+        style={{ opacity: stageOpacity, scale: stageScale }}
+        className="group relative pt-4 mt-4 p-8 rounded-3xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all duration-500 shadow-xl shadow-black/20"
+      >
+        <div
+          className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${step.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
+        />
 
-      <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent" />
-      </div>
+        <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent" />
+        </div>
 
-      <div className="flex items-center gap-4 mb-6">
-        <motion.div
-          className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300`}
-          whileHover={{ scale: 1.1, rotate: 5 }}
-          transition={{ type: 'spring', stiffness: 300 }}
-        >
-          <Icon className="w-8 h-8 text-white" />
-        </motion.div>
-        <h3 className="text-2xl font-bold group-hover:text-cyan-400 transition-colors duration-300">
-          {step.title}
-        </h3>
-      </div>
-
-      <p className="text-gray-400 leading-relaxed mb-6">{step.description}</p>
-
-      <div className="space-y-3">
-        {step.features.map((feature, featureIdx) => (
+        <div className="flex items-center gap-4 mb-6">
           <motion.div
-            key={feature}
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.1 + featureIdx * 0.08 }}
-            className="flex items-center gap-3 group/feature"
+            className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300`}
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            transition={{ type: 'spring', stiffness: 300 }}
           >
-            <motion.div
-              className={`w-2 h-2 rounded-full bg-gradient-to-r ${step.color}`}
-              whileHover={{ scale: 1.5 }}
-            />
-            <span className="text-sm text-gray-500 group-hover/feature:text-gray-300 transition-colors">
-              {feature}
-            </span>
+            <Icon className="w-8 h-8 text-white" />
           </motion.div>
-        ))}
-      </div>
-    </motion.div>
+          <h3 className="text-2xl font-bold group-hover:text-cyan-400 transition-colors duration-300">
+            {step.title}
+          </h3>
+        </div>
+
+        <p className="text-gray-400 leading-relaxed mb-6">{step.description}</p>
+
+        <div className="space-y-3">
+          {step.features.map((feature, featureIdx) => (
+            <ScrollReveal
+              key={feature}
+              variant="fadeLeft"
+              range={[index * 0.04 + featureIdx * 0.03, 0.3 + index * 0.04 + featureIdx * 0.03]}
+            >
+              <div className="flex items-center gap-3 group/feature">
+                <motion.div
+                  className={`w-2 h-2 rounded-full bg-gradient-to-r ${step.color}`}
+                  whileHover={{ scale: 1.5 }}
+                />
+                <span className="text-sm text-gray-500 group-hover/feature:text-gray-300 transition-colors">
+                  {feature}
+                </span>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+      </motion.div>
+    </ScrollReveal>
   );
 }
 
 export function ScrollStory() {
   const containerRef = useRef<HTMLDivElement>(null);
-  useScroll({
+  const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start end', 'end start'],
   });
+  const progressScale = useTransform(scrollYProgress, [0, 1], [0.08, 1]);
+  const progressOpacity = useTransform(scrollYProgress, [0, 0.2, 1], [0.35, 1, 0.85]);
 
   return (
     <section
@@ -148,23 +162,13 @@ export function ScrollStory() {
       style={{ position: 'relative' }}
     >
       <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower }}
-          className="text-center mb-20"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+        <ScrollReveal variant="blurIn" range={[0, 0.3]} className="text-center mb-20">
+          <div
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-medium mb-6"
           >
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
             How It Works
-          </motion.div>
+          </div>
 
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
             The Compliance
@@ -178,7 +182,14 @@ export function ScrollStory() {
             transforms obligations into enforceable controls with clear
             ownership.
           </p>
-        </motion.div>
+        </ScrollReveal>
+
+        <div className="mb-10 h-1 w-full overflow-hidden rounded-full bg-white/10">
+          <motion.div
+            className="h-full origin-left bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500"
+            style={{ scaleX: progressScale, opacity: progressOpacity }}
+          />
+        </div>
 
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
           {steps.map((step, index) => (
@@ -186,6 +197,7 @@ export function ScrollStory() {
               key={step.id}
               step={step}
               index={index}
+              progress={scrollYProgress}
             />
           ))}
         </div>

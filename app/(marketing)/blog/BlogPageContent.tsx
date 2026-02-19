@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
@@ -62,7 +63,36 @@ function BlogHero() {
       ref={containerRef}
       className="relative min-h-[80vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] pt-24"
     >
-      <HeroAtmosphere topColor="violet" bottomColor="cyan" gridColor="violet" />
+      <HeroAtmosphere topColor="blue" bottomColor="violet" gridColor="blue" />
+
+      {/* Editorial floating blobs */}
+      <motion.div
+        className="pointer-events-none absolute -left-16 top-24 h-64 w-64 rounded-full bg-violet-500/12 blur-3xl"
+        animate={
+          shouldReduceMotion
+            ? undefined
+            : { x: [0, 28, 0], y: [0, -18, 0], scale: [1, 1.08, 1] }
+        }
+        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="pointer-events-none absolute right-0 top-40 h-72 w-72 rounded-full bg-pink-500/10 blur-3xl"
+        animate={
+          shouldReduceMotion
+            ? undefined
+            : { x: [0, -22, 0], y: [0, 20, 0], scale: [1, 1.1, 1] }
+        }
+        transition={{ duration: 14, delay: 0.8, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="pointer-events-none absolute bottom-10 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-cyan-500/10 blur-3xl"
+        animate={
+          shouldReduceMotion
+            ? undefined
+            : { y: [0, -16, 0], opacity: [0.5, 0.85, 0.5] }
+        }
+        transition={{ duration: 10, delay: 0.35, repeat: Infinity, ease: 'easeInOut' }}
+      />
 
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
@@ -151,13 +181,7 @@ function FeaturedPost() {
           className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/60 rounded-3xl"
           aria-label={`Read ${featuredPost.title}`}
         >
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: duration.slower }}
-            className="relative"
-          >
+          <ScrollReveal variant="fadeUp" range={[0, 0.3]} className="relative">
             <div className="relative p-8 lg:p-12 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-purple-500/20 transition-all duration-500 shadow-2xl shadow-black/30 overflow-hidden">
               {/* Top accent */}
               <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-purple-400/40 to-transparent" />
@@ -224,7 +248,7 @@ function FeaturedPost() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </ScrollReveal>
         </Link>
       </div>
     </section>
@@ -249,13 +273,7 @@ function CategoryFilter({
   return (
     <section className="relative py-8 bg-gradient-to-b from-[#0d1421] to-[#0a0f1c]">
       <div className="max-w-6xl mx-auto px-6 lg:px-12 space-y-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slow }}
-          className="flex flex-wrap items-center gap-3 justify-center"
-        >
+        <ScrollReveal variant="fadeUp" range={[0, 0.3]} className="flex flex-wrap items-center gap-3 justify-center">
           {categories.map((category) => (
             <button
               key={category.id}
@@ -270,15 +288,9 @@ function CategoryFilter({
               <span className="text-xs opacity-60">({category.count})</span>
             </button>
           ))}
-        </motion.div>
+        </ScrollReveal>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slow, delay: 0.1 }}
-          className="max-w-xl mx-auto"
-        >
+        <ScrollReveal variant="fadeUp" range={[0.04, 0.34]} className="max-w-xl mx-auto">
           <div className="flex items-center gap-3 px-4 py-3 rounded-full bg-gray-900/60 border border-white/10 text-gray-300 focus-within:border-purple-500/40 focus-within:ring-2 focus-within:ring-purple-500/20 transition">
             <Search className="w-4 h-4 text-gray-400" />
             <input
@@ -289,7 +301,7 @@ function CategoryFilter({
               type="search"
             />
           </div>
-        </motion.div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -314,13 +326,7 @@ function BlogCard({
       className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/60 rounded-2xl"
       aria-label={`Read ${post.title}`}
     >
-      <motion.article
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: duration.normal, delay: index * 0.1 }}
-        className="h-full"
-      >
+      <ScrollReveal variant="scaleUp" range={[index * 0.04, 0.3 + index * 0.04]} className="h-full">
         <div className="relative h-full p-6 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-purple-500/30 transition-all duration-500 shadow-xl shadow-black/20">
           {/* Top accent */}
           <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-purple-400/30 transition-colors" />
@@ -374,7 +380,7 @@ function BlogCard({
             </span>
           </div>
         </div>
-      </motion.article>
+      </ScrollReveal>
     </Link>
   );
 }
@@ -415,15 +421,11 @@ function BlogGrid({
       </div>
 
       <div className="relative max-w-6xl mx-auto px-6 lg:px-12">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slow }}
-          className="text-2xl font-bold text-white mb-8"
-        >
-          Latest Articles
-        </motion.h2>
+        <ScrollReveal variant="blurIn" range={[0, 0.3]}>
+          <h2 className="text-2xl font-bold text-white mb-8">
+            Latest Articles
+          </h2>
+        </ScrollReveal>
 
         {posts.length ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -439,13 +441,7 @@ function BlogGrid({
 
         {/* Load more */}
         {hasMore ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: duration.slow, delay: 0.3 }}
-            className="flex justify-center mt-12"
-          >
+          <ScrollReveal variant="slideUp" range={[0.04, 0.34]} className="flex justify-center mt-12">
             <button
               onClick={onLoadMore}
               className="flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-white font-medium hover:border-purple-500/30 hover:bg-purple-500/10 transition-all"
@@ -453,7 +449,7 @@ function BlogGrid({
               <span>Load More Articles</span>
               <ChevronRight className="w-4 h-4" />
             </button>
-          </motion.div>
+          </ScrollReveal>
         ) : null}
       </div>
     </section>
@@ -479,13 +475,8 @@ function NewsletterCTA() {
       </div>
 
       <div className="relative max-w-4xl mx-auto px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower }}
-          className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/30"
-        >
+        <ScrollReveal variant="slideUp" range={[0, 0.3]}>
+          <div className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/30">
           <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-purple-400/40 to-transparent" />
 
           <div className="text-center">
@@ -528,7 +519,8 @@ function NewsletterCTA() {
               No spam. Unsubscribe anytime.
             </p>
           </div>
-        </motion.div>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );

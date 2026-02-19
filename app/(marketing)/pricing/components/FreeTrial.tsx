@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { ArrowRight, CheckCircle, Zap } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { brand } from '@/config/brand';
-import { easing, duration } from '@/config/motion';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -45,26 +45,20 @@ export function FreeTrial() {
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower, ease: easing.signature }}
+        <ScrollReveal
+          variant="slideUp"
+          range={[0, 0.35]}
           className="backdrop-blur-xl bg-gradient-to-br from-cyan-500/20 via-white/[0.04] to-white/[0.02] rounded-3xl border border-cyan-500/30 p-12 text-center shadow-2xl"
         >
           {/* Floating glow effect */}
           <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-emerald-500/5 rounded-3xl blur-2xl -z-10" />
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: duration.normal, ease: easing.signature }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-semibold uppercase tracking-wider mb-6"
-          >
-            <Zap className="h-3 w-3 text-cyan-400" />
-            <span className="text-cyan-300">Risk-Free</span>
-          </motion.div>
+          <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-semibold uppercase tracking-wider mb-6">
+              <Zap className="h-3 w-3 text-cyan-400" />
+              <span className="text-cyan-300">Risk-Free</span>
+            </div>
+          </ScrollReveal>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
             14-Day Free Trial
@@ -76,28 +70,22 @@ export function FreeTrial() {
           {/* Trial features */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
             {trialFeatures.map((feature, idx) => (
-              <motion.div
+              <ScrollReveal
                 key={feature}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3 + idx * 0.1, duration: duration.normal }}
-                className="p-4 rounded-xl bg-white/[0.06] border border-white/10"
+                variant="fadeUp"
+                range={[0.03 + idx * 0.04, 0.28 + idx * 0.04]}
               >
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <CheckCircle className="w-4 h-4 text-cyan-400" />
+                <div className="p-4 rounded-xl bg-white/[0.06] border border-white/10">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <CheckCircle className="w-4 h-4 text-cyan-400" />
+                  </div>
+                  <p className="text-sm text-gray-300">{feature}</p>
                 </div>
-                <p className="text-sm text-gray-300">{feature}</p>
-              </motion.div>
+              </ScrollReveal>
             ))}
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.6, duration: duration.normal }}
-          >
+          <ScrollReveal variant="slideUp" range={[0.1, 0.45]}>
             <Link
               href={`${appBase}/auth/signup`}
               className="group relative inline-flex items-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-500 to-emerald-500 px-10 py-4 text-lg font-semibold text-white shadow-xl hover:shadow-2xl hover:shadow-cyan-500/30 transition-all duration-300 hover:scale-105"
@@ -110,8 +98,8 @@ export function FreeTrial() {
             <p className="text-sm text-gray-500 mt-4">
               No credit card • Full access • Cancel anytime
             </p>
-          </motion.div>
-        </motion.div>
+          </ScrollReveal>
+        </ScrollReveal>
       </div>
     </section>
   );

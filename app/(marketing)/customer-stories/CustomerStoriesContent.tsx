@@ -8,6 +8,7 @@ import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DeferredSection } from '../components/shared';
 import { easing, duration } from '@/config/motion';
 import { motion } from 'framer-motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -98,48 +99,45 @@ export default function CustomerStoriesContent() {
         <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
           <div className="grid gap-4 lg:grid-cols-3">
             {stories.map((s, i) => (
-              <motion.article
-                key={s.title}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: duration.normal, delay: i * 0.1, ease: easing.signature }}
-                whileHover={{ y: -6 }}
-                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
-              >
-                <h2 className="text-lg font-semibold text-white">{s.title}</h2>
-                <div className="mt-3 text-sm leading-relaxed text-slate-300">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    Situation
-                  </div>
-                  <p className="mt-2">{s.situation}</p>
-                </div>
-
-                <div className="mt-5">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    Outcomes
-                  </div>
-                  <ul className="mt-2 space-y-2 text-sm text-slate-300">
-                    {s.outcome.map((o) => (
-                      <li key={o} className="flex items-start gap-2">
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-300" />
-                        <span>{o}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="mt-6 rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="mt-0.5 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
-                      <Quote className="h-4 w-4 text-cyan-200" />
+              <ScrollReveal key={s.title} variant="fadeUp" range={[i * 0.04, 0.3 + i * 0.04]}>
+                <motion.article
+                  whileHover={{ y: -6 }}
+                  className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
+                >
+                  <h2 className="text-lg font-semibold text-white">{s.title}</h2>
+                  <div className="mt-3 text-sm leading-relaxed text-slate-300">
+                    <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                      Situation
                     </div>
-                    <p className="text-sm leading-relaxed text-slate-200">
-                      {s.quote}
-                    </p>
+                    <p className="mt-2">{s.situation}</p>
                   </div>
-                </div>
-              </motion.article>
+
+                  <div className="mt-5">
+                    <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                      Outcomes
+                    </div>
+                    <ul className="mt-2 space-y-2 text-sm text-slate-300">
+                      {s.outcome.map((o) => (
+                        <li key={o} className="flex items-start gap-2">
+                          <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-300" />
+                          <span>{o}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="mt-6 rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
+                        <Quote className="h-4 w-4 text-cyan-200" />
+                      </div>
+                      <p className="text-sm leading-relaxed text-slate-200">
+                        {s.quote}
+                      </p>
+                    </div>
+                  </div>
+                </motion.article>
+              </ScrollReveal>
             ))}
           </div>
         </section>

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
 export function DocsCTA() {
   return (
@@ -17,45 +17,41 @@ export function DocsCTA() {
       </div>
 
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower }}
-          className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/30"
-        >
-          <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
+        <ScrollReveal variant="slideUp" range={[0, 0.35]}>
+          <div className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/30">
+            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
 
-          <div className="text-center">
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-              Can&apos;t find what you&apos;re looking for?
-            </h2>
-            <p className="text-gray-400 mb-8 max-w-xl mx-auto">
-              Our support team is here to help. Reach out for personalized
-              guidance or schedule a technical consultation.
-            </p>
+            <div className="text-center">
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+                Can&apos;t find what you&apos;re looking for?
+              </h2>
+              <p className="text-gray-400 mb-8 max-w-xl mx-auto">
+                Our support team is here to help. Reach out for personalized
+                guidance or schedule a technical consultation.
+              </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <motion.a
-                href="/contact"
-                whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(6, 182, 212, 0.4)' }}
-                whileTap={{ scale: 0.98 }}
-                className="mk-btn mk-btn-primary group px-8 py-4 text-lg"
-              >
-                <span>Contact Support</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </motion.a>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <motion.a
+                  href="/contact"
+                  whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(6, 182, 212, 0.4)' }}
+                  whileTap={{ scale: 0.98 }}
+                  className="mk-btn mk-btn-primary group px-8 py-4 text-lg"
+                >
+                  <span>Contact Support</span>
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </motion.a>
 
-              <Link
-                href="/faq"
-                className="mk-btn mk-btn-secondary group px-8 py-4 text-lg"
-              >
-                <span>Browse FAQ</span>
-                <ExternalLink className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </Link>
+                <Link
+                  href="/faq"
+                  className="mk-btn mk-btn-secondary group px-8 py-4 text-lg"
+                >
+                  <span>Browse FAQ</span>
+                  <ExternalLink className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </Link>
+              </div>
             </div>
           </div>
-        </motion.div>
+        </ScrollReveal>
       </div>
     </section>
   );

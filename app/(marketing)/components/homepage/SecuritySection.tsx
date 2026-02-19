@@ -1,7 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import {
   Shield,
   Lock,
@@ -56,22 +55,14 @@ export function SecuritySection() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: duration.slow }}
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
+          <ScrollReveal variant="fadeLeft" range={[0, 0.35]}>
+          <div>
+            <div
               className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs sm:text-sm font-medium mb-4 sm:mb-6"
             >
               <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-blue-400 animate-pulse" />
               Enterprise Security
-            </motion.div>
+            </div>
 
             <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
               Security Built Into
@@ -94,42 +85,36 @@ export function SecuritySection() {
               {securityFeatures.map((feature, index) => {
                 const Icon = feature.icon;
                 return (
-                  <motion.div
+                  <ScrollReveal
                     key={feature.title}
-                    initial={{ opacity: 0, y: 15 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.08 }}
-                    className="flex gap-3 sm:gap-4 group sm:hover:scale-105 transition-transform duration-200 will-change-transform"
+                    variant="blurIn"
+                    range={[index * 0.04, 0.3 + index * 0.04]}
                   >
-                    <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center sm:group-hover:shadow-lg sm:group-hover:shadow-cyan-500/25 transition-shadow">
-                      <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                    <div className="flex gap-3 sm:gap-4 group sm:hover:scale-105 transition-transform duration-200 will-change-transform">
+                      <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center sm:group-hover:shadow-lg sm:group-hover:shadow-cyan-500/25 transition-shadow">
+                        <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-sm sm:text-base mb-0.5 sm:mb-1 group-hover:text-cyan-300 transition-colors">
+                          {feature.title}
+                        </h3>
+                        <p className="text-xs sm:text-sm text-gray-400">
+                          {feature.description}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-sm sm:text-base mb-0.5 sm:mb-1 group-hover:text-cyan-300 transition-colors">
-                        {feature.title}
-                      </h3>
-                      <p className="text-xs sm:text-sm text-gray-400">
-                        {feature.description}
-                      </p>
-                    </div>
-                  </motion.div>
+                  </ScrollReveal>
                 );
               })}
             </div>
-          </motion.div>
+          </div>
+          </ScrollReveal>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: duration.slow, delay: 0.1 }}
-            className="flex items-center justify-center order-first lg:order-last"
-          >
+          <ScrollReveal variant="fadeRight" range={[0, 0.35]} className="flex items-center justify-center order-first lg:order-last">
             <div className="w-full max-w-[500px]">
               <SecurityWorkflowCard />
             </div>
-          </motion.div>
+          </ScrollReveal>
         </div>
       </div>
     </section>

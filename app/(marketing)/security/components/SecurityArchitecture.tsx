@@ -11,7 +11,7 @@ import {
   Server,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
 const securityLayers = [
   {
@@ -111,110 +111,99 @@ export function SecurityArchitecture() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower }}
-          className="text-center mb-20"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6"
-          >
-            <Lock className="h-3 w-3 text-red-400" />
-            <span className="text-gray-300">Security Architecture</span>
-          </motion.div>
+        <ScrollReveal variant="fadeUp" range={[0, 0.35]} className="text-center mb-20">
+          <div>
+            <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6">
+                <Lock className="h-3 w-3 text-red-400" />
+                <span className="text-gray-300">Security Architecture</span>
+              </div>
+            </ScrollReveal>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
-            <span className="text-white">Defense in depth.</span>
-            <br />
-            <span className="bg-gradient-to-r from-red-400 via-orange-400 to-amber-400 bg-clip-text text-transparent">
-              Protection at every layer.
-            </span>
-          </h2>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
+              <span className="text-white">Defense in depth.</span>
+              <br />
+              <span className="bg-gradient-to-r from-red-400 via-orange-400 to-amber-400 bg-clip-text text-transparent">
+                Protection at every layer.
+              </span>
+            </h2>
 
-          <p className="text-lg text-gray-400 max-w-3xl mx-auto">
-            Our security architecture implements multiple layers of protection,
-            ensuring that no single point of failure can compromise your data.
-          </p>
-        </motion.div>
+            <p className="text-lg text-gray-400 max-w-3xl mx-auto">
+              Our security architecture implements multiple layers of protection,
+              ensuring that no single point of failure can compromise your data.
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* Security Layers Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-20">
           {securityLayers.map((layer, index) => (
-            <motion.div
+            <ScrollReveal
               key={layer.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: duration.slow }}
-              className={`group relative backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border ${layer.borderColor} p-8 hover:from-white/[0.12] hover:to-white/[0.04] transition-all duration-500`}
+              variant="blurIn"
+              range={[index * 0.04, 0.3 + index * 0.04]}
             >
               <div
-                className={`absolute inset-0 bg-gradient-to-br ${layer.color} rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10`}
-              />
-
-              <div className="flex items-start gap-5">
+                className={`group relative backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border ${layer.borderColor} p-8 hover:from-white/[0.12] hover:to-white/[0.04] transition-all duration-500`}
+              >
                 <div
-                  className={`flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br ${layer.color} border ${layer.borderColor} flex items-center justify-center`}
-                >
-                  <layer.icon className={`h-7 w-7 ${layer.iconColor}`} />
-                </div>
+                  className={`absolute inset-0 bg-gradient-to-br ${layer.color} rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10`}
+                />
 
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-white mb-3">
-                    {layer.title}
-                  </h3>
-                  <p className="text-gray-400 leading-relaxed">
-                    {layer.description}
-                  </p>
+                <div className="flex items-start gap-5">
+                  <div
+                    className={`flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br ${layer.color} border ${layer.borderColor} flex items-center justify-center`}
+                  >
+                    <layer.icon className={`h-7 w-7 ${layer.iconColor}`} />
+                  </div>
+
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-white mb-3">
+                      {layer.title}
+                    </h3>
+                    <p className="text-gray-400 leading-relaxed">
+                      {layer.description}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </motion.div>
+            </ScrollReveal>
           ))}
         </div>
 
         {/* Certifications */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower }}
-          className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 lg:p-10"
-        >
-          <div className="text-center mb-10">
-            <h3 className="text-2xl font-bold text-white mb-3">
-              Compliance & Certifications
-            </h3>
-            <p className="text-gray-400">
-              Enterprise-grade security aligned to leading standards
-            </p>
-          </div>
+        <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
+          <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 lg:p-10">
+            <div className="text-center mb-10">
+              <h3 className="text-2xl font-bold text-white mb-3">
+                Compliance & Certifications
+              </h3>
+              <p className="text-gray-400">
+                Enterprise-grade security aligned to leading standards
+              </p>
+            </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {certifications.map((cert, index) => (
-              <motion.div
-                key={cert.name}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                className="group text-center p-6 rounded-2xl bg-white/[0.04] border border-white/10 hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300"
-              >
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/20 to-orange-500/20 border border-red-500/30 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <cert.icon className="h-6 w-6 text-red-400" />
-                </div>
-                <h4 className="text-sm font-bold text-white mb-1">
-                  {cert.name}
-                </h4>
-                <p className="text-xs text-gray-500">{cert.description}</p>
-              </motion.div>
-            ))}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {certifications.map((cert, index) => (
+                <ScrollReveal
+                  key={cert.name}
+                  variant="scaleUp"
+                  range={[index * 0.04, 0.3 + index * 0.04]}
+                >
+                  <div className="group text-center p-6 rounded-2xl bg-white/[0.04] border border-white/10 hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/20 to-orange-500/20 border border-red-500/30 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <cert.icon className="h-6 w-6 text-red-400" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1">
+                      {cert.name}
+                    </h4>
+                    <p className="text-xs text-gray-500">{cert.description}</p>
+                  </div>
+                </ScrollReveal>
+              ))}
+            </div>
           </div>
-        </motion.div>
+        </ScrollReveal>
       </div>
     </section>
   );

@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import NDISContent from './NDISContent';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
 export const metadata: Metadata = {
   title: 'NDIS & Aged Care Compliance | FormaOS',

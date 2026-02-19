@@ -4,6 +4,10 @@ import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 import { isFounder } from '@/lib/utils/founder';
 import { getSupabaseAnonKey, getSupabaseUrl } from '@/lib/supabase/env';
 
+const CANONICAL_MARKETING_HOST = 'www.formaos.com.au';
+const LEGACY_MARKETING_HOST = 'formaos.com.au';
+const CANONICAL_PRIVACY_URL = 'https://www.formaos.com.au/legal/privacy';
+
 // Define public routes that don't require authentication
 const PUBLIC_ROUTES = [
   '/',
@@ -41,6 +45,15 @@ function isPublicRoute(path: string): boolean {
   }
 
   return false;
+}
+
+function redirectToCanonicalPrivacy(): NextResponse {
+  return new NextResponse(null, {
+    status: 301,
+    headers: {
+      Location: CANONICAL_PRIVACY_URL,
+    },
+  });
 }
 
 export async function middleware(request: NextRequest) {
@@ -117,6 +130,28 @@ export async function middleware(request: NextRequest) {
     const appOrigin = safeUrl(appUrl);
     const siteOrigin = safeUrl(siteUrl);
     const host = request.nextUrl.hostname;
+    const protocol = request.nextUrl.protocol;
+
+    const isMarketingHost =
+      host === CANONICAL_MARKETING_HOST || host === LEGACY_MARKETING_HOST;
+    const isLegacyPrivacyPath =
+      pathname === '/privacy' || pathname === '/privacy/';
+    const isNonCanonicalPrivacyPath =
+      isLegacyPrivacyPath || pathname === '/legal/privacy/';
+
+    if (isMarketingHost && isNonCanonicalPrivacyPath) {
+      return redirectToCanonicalPrivacy();
+    }
+
+    if (
+      isMarketingHost &&
+      (host !== CANONICAL_MARKETING_HOST || protocol !== 'https:')
+    ) {
+      const canonicalUrl = request.nextUrl.clone();
+      canonicalUrl.protocol = 'https:';
+      canonicalUrl.host = CANONICAL_MARKETING_HOST;
+      return NextResponse.redirect(canonicalUrl, 301);
+    }
 
     const oauthCode = request.nextUrl.searchParams.get('code');
     const oauthState = request.nextUrl.searchParams.get('state');

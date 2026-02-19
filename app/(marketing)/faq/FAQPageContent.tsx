@@ -21,6 +21,7 @@ import {
   AnimatePresence,
 } from 'framer-motion';
 import { duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
@@ -341,42 +342,38 @@ function FAQItem({
   index: number;
 }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: duration.normal, delay: index * 0.05 }}
-      className="border-b border-white/5 last:border-b-0"
-    >
-      <button
-        onClick={onClick}
-        className="w-full flex items-center justify-between py-5 text-left group"
-      >
-        <span className="text-base sm:text-lg font-medium text-white group-hover:text-cyan-400 transition-colors pr-8">
-          {question}
-        </span>
-        <motion.div
-          animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: duration.fast }}
-          className="flex-shrink-0 w-8 h-8 rounded-full bg-white/5 group-hover:bg-cyan-500/20 flex items-center justify-center transition-colors"
+    <ScrollReveal variant="blurIn" range={[index * 0.04, 0.3 + index * 0.04]}>
+      <div className="border-b border-white/5 last:border-b-0">
+        <button
+          onClick={onClick}
+          className="w-full flex items-center justify-between py-5 text-left group"
         >
-          <ChevronDown className="w-4 h-4 text-gray-400 group-hover:text-cyan-400 transition-colors" />
-        </motion.div>
-      </button>
-      <AnimatePresence>
-        {isOpen && (
+          <span className="text-base sm:text-lg font-medium text-white group-hover:text-cyan-400 transition-colors pr-8">
+            {question}
+          </span>
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            animate={{ rotate: isOpen ? 180 : 0 }}
             transition={{ duration: duration.fast }}
-            className="overflow-hidden"
+            className="flex-shrink-0 w-8 h-8 rounded-full bg-white/5 group-hover:bg-cyan-500/20 flex items-center justify-center transition-colors"
           >
-            <p className="pb-5 text-gray-400 leading-relaxed">{answer}</p>
+            <ChevronDown className="w-4 h-4 text-gray-400 group-hover:text-cyan-400 transition-colors" />
           </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+        </button>
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: duration.fast }}
+              className="overflow-hidden"
+            >
+              <p className="pb-5 text-gray-400 leading-relaxed">{answer}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </ScrollReveal>
   );
 }
 
@@ -431,14 +428,14 @@ function FAQCategory({
   const colors = colorMap[category.color] || colorMap.cyan;
 
   return (
-    <motion.div
-      id={category.id}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: duration.slow, delay: index * 0.1 }}
-      className="scroll-mt-24"
+    <ScrollReveal
+      variant="blurIn"
+      range={[index * 0.04, 0.3 + index * 0.04]}
     >
+      <div
+        id={category.id}
+        className="scroll-mt-24"
+      >
       <div className="relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-white/10 transition-all duration-500 shadow-2xl shadow-black/30">
         {/* Top accent line */}
         <div
@@ -469,7 +466,8 @@ function FAQCategory({
           ))}
         </div>
       </div>
-    </motion.div>
+      </div>
+    </ScrollReveal>
   );
 }
 
@@ -528,13 +526,8 @@ function FAQCTA() {
       </div>
 
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower }}
-          className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/30"
-        >
+        <ScrollReveal variant="slideUp" range={[0, 0.3]}>
+          <div className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/30">
           <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
 
           <div className="text-center">
@@ -569,7 +562,8 @@ function FAQCTA() {
               </Link>
             </div>
           </div>
-        </motion.div>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );

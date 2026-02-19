@@ -8,10 +8,10 @@ import {
   Sparkles,
   Target,
 } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { brand } from '@/config/brand';
 import { Reveal, VisualDivider } from '@/components/motion';
 import { easing, duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { MarketingPageShell } from './shared/MarketingPageShell';
 import { DeferredSection } from './shared';
 
@@ -102,19 +102,18 @@ export function OutcomeJourneyPage({
               </p>
               <div className="mt-6 space-y-3">
                 {workflow.map((step, idx) => (
-                  <motion.div
+                  <ScrollReveal
                     key={step}
-                    initial={{ opacity: 0, x: -12 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: duration.normal, delay: 0.3 + idx * 0.08, ease: easing.signature }}
-                    className="flex items-center gap-3 rounded-xl border border-white/[0.06] bg-slate-950/40 px-3 py-2.5 text-sm text-slate-200"
+                    variant="fadeLeft"
+                    range={[idx * 0.04, 0.3 + idx * 0.04]}
                   >
-                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-cyan-500/20 text-xs font-semibold text-cyan-200">
-                      {idx + 1}
-                    </span>
-                    <span>{step}</span>
-                  </motion.div>
+                    <div className="flex items-center gap-3 rounded-xl border border-white/[0.06] bg-slate-950/40 px-3 py-2.5 text-sm text-slate-200">
+                      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-cyan-500/20 text-xs font-semibold text-cyan-200">
+                        {idx + 1}
+                      </span>
+                      <span>{step}</span>
+                    </div>
+                  </ScrollReveal>
                 ))}
               </div>
             </div>
@@ -129,21 +128,20 @@ export function OutcomeJourneyPage({
         <section className="relative mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8 lg:pb-20">
           <div className="grid gap-4 md:grid-cols-2">
             {outcomes.map((outcome, i) => (
-              <motion.div
+              <ScrollReveal
                 key={outcome}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: duration.normal, delay: i * 0.06, ease: easing.signature }}
-                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-5 transition-colors hover:border-cyan-500/15"
+                variant="fadeUp"
+                range={[i * 0.04, 0.3 + i * 0.04]}
               >
-                <div className="flex items-start gap-3">
-                  <Target className="mt-0.5 h-5 w-5 text-cyan-300 flex-shrink-0" />
-                  <p className="text-sm leading-relaxed text-slate-200">
-                    {outcome}
-                  </p>
+                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-5 transition-colors hover:border-cyan-500/15">
+                  <div className="flex items-start gap-3">
+                    <Target className="mt-0.5 h-5 w-5 text-cyan-300 flex-shrink-0" />
+                    <p className="text-sm leading-relaxed text-slate-200">
+                      {outcome}
+                    </p>
+                  </div>
                 </div>
-              </motion.div>
+              </ScrollReveal>
             ))}
           </div>
 

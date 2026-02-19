@@ -9,8 +9,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
-import { Reveal } from '@/components/motion';
-import { duration, easing, stagger } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
 const DemoWorkflowTimeline = dynamic(
   () => import('@/components/marketing/demo/DemoWorkflowTimeline'),
@@ -82,24 +81,16 @@ export function CrossIndustryPrinciples() {
       />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-        <Reveal>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: duration.slower, ease: ([...easing.signature] as [number, number, number, number]) }}
-            className="text-center mb-16"
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: duration.normal, ease: ([...easing.signature] as [number, number, number, number]) }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium mb-6"
-            >
-              <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-              Why It Works Across Industries
-            </motion.div>
+        <ScrollReveal variant="blurIn" range={[0, 0.35]}>
+          <div className="text-center mb-16">
+            <ScrollReveal variant="scaleUp" range={[0.02, 0.3]}>
+              <div
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium mb-6"
+              >
+                <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+                Why It Works Across Industries
+              </div>
+            </ScrollReveal>
 
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
               Universal Compliance
@@ -113,89 +104,80 @@ export function CrossIndustryPrinciples() {
               Four core principles that make FormaOS effective across all
               regulated environments
             </p>
-          </motion.div>
-        </Reveal>
+          </div>
+        </ScrollReveal>
 
         {/* Principles Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {principles.map((principle, index) => {
             const Icon = principle.icon;
             return (
-              <motion.div
-                key={principle.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: duration.normal, delay: index * stagger.normal, ease: ([...easing.signature] as [number, number, number, number]) }}
-                whileHover={{ y: -6, scale: 1.02 }}
-                className="group text-center backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] hover:border-purple-500/30 p-6 transition-all duration-300"
-              >
-                <div className="flex flex-col items-center mb-6">
-                  <div className="relative">
-                    <div
-                      className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${principle.iconBg} ${principle.iconBorder} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
-                    >
-                      <Icon className={`h-8 w-8 ${principle.iconColor}`} />
-                    </div>
-                    <div
-                      className={`absolute -top-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-br ${principle.color} text-white text-xs font-bold flex items-center justify-center`}
-                    >
-                      {principle.number}
+              <ScrollReveal key={principle.title} variant="scaleUp" range={[index * 0.04, 0.3 + index * 0.04]}>
+                <motion.div
+                  whileHover={{ y: -6, scale: 1.02 }}
+                  className="group text-center backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] hover:border-purple-500/30 p-6 transition-all duration-300"
+                >
+                  <div className="flex flex-col items-center mb-6">
+                    <div className="relative">
+                      <div
+                        className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${principle.iconBg} ${principle.iconBorder} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
+                      >
+                        <Icon className={`h-8 w-8 ${principle.iconColor}`} />
+                      </div>
+                      <div
+                        className={`absolute -top-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-br ${principle.color} text-white text-xs font-bold flex items-center justify-center`}
+                      >
+                        {principle.number}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <h4
-                  className={`font-bold text-base mb-3 text-white ${principle.hoverColor} transition-colors duration-300`}
-                >
-                  {principle.title}
-                </h4>
-                <p className="text-sm text-gray-400 leading-relaxed">
-                  {principle.description}
-                </p>
-              </motion.div>
+                  <h4
+                    className={`font-bold text-base mb-3 text-white ${principle.hoverColor} transition-colors duration-300`}
+                  >
+                    {principle.title}
+                  </h4>
+                  <p className="text-sm text-gray-400 leading-relaxed">
+                    {principle.description}
+                  </p>
+                </motion.div>
+              </ScrollReveal>
             );
           })}
         </div>
 
         {/* Live compliance workflow demo */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slow, delay: 0.3, ease: ([...easing.signature] as [number, number, number, number]) }}
-          className="mb-12 max-w-2xl mx-auto"
-        >
-          <DemoWorkflowTimeline
-            steps={[
-              { id: 'map', label: 'Map', icon: FileCheck, title: 'Framework Mapped', detail: 'Industry obligations imported automatically', meta: 'Supports NDIS, AHPRA, ISO, SOC 2, HIPAA', color: 'text-cyan-400', bg: 'bg-cyan-500/15', border: 'border-cyan-500/20' },
-              { id: 'assign', label: 'Assign', icon: Users, title: 'Ownership Assigned', detail: 'Every control linked to an accountable person', meta: 'Role-based • Escalation rules • Delegation', color: 'text-blue-400', bg: 'bg-blue-500/15', border: 'border-blue-500/20' },
-              { id: 'execute', label: 'Execute', icon: Zap, title: 'Tasks Executed', detail: 'Compliance work happens inside the platform', meta: 'Automated reminders • Due dates • Priorities', color: 'text-purple-400', bg: 'bg-purple-500/15', border: 'border-purple-500/20' },
-              { id: 'prove', label: 'Prove', icon: Shield, title: 'Audit-Ready', detail: 'Full evidence chain for any regulator', meta: 'Immutable trail • Exportable • Zero gaps', color: 'text-emerald-400', bg: 'bg-emerald-500/15', border: 'border-emerald-500/20' },
-            ]}
-            glowColor="from-purple-500/15 to-pink-500/15"
-          />
-        </motion.div>
+        <ScrollReveal variant="fadeUp" range={[0.04, 0.38]}>
+          <div className="mb-12 max-w-2xl mx-auto">
+            <DemoWorkflowTimeline
+              steps={[
+                { id: 'map', label: 'Map', icon: FileCheck, title: 'Framework Mapped', detail: 'Industry obligations imported automatically', meta: 'Supports NDIS, AHPRA, ISO, SOC 2, HIPAA', color: 'text-cyan-400', bg: 'bg-cyan-500/15', border: 'border-cyan-500/20' },
+                { id: 'assign', label: 'Assign', icon: Users, title: 'Ownership Assigned', detail: 'Every control linked to an accountable person', meta: 'Role-based • Escalation rules • Delegation', color: 'text-blue-400', bg: 'bg-blue-500/15', border: 'border-blue-500/20' },
+                { id: 'execute', label: 'Execute', icon: Zap, title: 'Tasks Executed', detail: 'Compliance work happens inside the platform', meta: 'Automated reminders • Due dates • Priorities', color: 'text-purple-400', bg: 'bg-purple-500/15', border: 'border-purple-500/20' },
+                { id: 'prove', label: 'Prove', icon: Shield, title: 'Audit-Ready', detail: 'Full evidence chain for any regulator', meta: 'Immutable trail • Exportable • Zero gaps', color: 'text-emerald-400', bg: 'bg-emerald-500/15', border: 'border-emerald-500/20' },
+              ]}
+              glowColor="from-purple-500/15 to-pink-500/15"
+            />
+          </div>
+        </ScrollReveal>
 
         {/* Design Philosophy Statement */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower, delay: 0.4, ease: ([...easing.signature] as [number, number, number, number]) }}
-          className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/[0.08] p-8 sm:p-12 text-center"
-        >
-          <h4 className="text-xl font-bold mb-4 text-white">
-            This design philosophy makes FormaOS effective across any regulatory
-            environment
-          </h4>
-          <p className="text-gray-400 max-w-3xl mx-auto">
-            Whether managing NDIS obligations, healthcare accreditation,
-            financial regulations, or construction safety – the core principle
-            remains the same: compliance should be operational, not
-            administrative.
-          </p>
-        </motion.div>
+        <ScrollReveal variant="slideUp" range={[0.06, 0.4]}>
+          <div
+            className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/[0.08] p-8 sm:p-12 text-center"
+          >
+            <h4 className="text-xl font-bold mb-4 text-white">
+              This design philosophy makes FormaOS effective across any regulatory
+              environment
+            </h4>
+            <p className="text-gray-400 max-w-3xl mx-auto">
+              Whether managing NDIS obligations, healthcare accreditation,
+              financial regulations, or construction safety – the core principle
+              remains the same: compliance should be operational, not
+              administrative.
+            </p>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );

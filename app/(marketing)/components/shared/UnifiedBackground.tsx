@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useRef, useEffect } from 'react';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
 // ============================================
 // UNIFIED BACKGROUND SYSTEM
@@ -325,18 +326,16 @@ export function PremiumBadge({
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-      className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium ${colorStyles[color]}`}
-    >
-      {icon && (
-        <span className="w-2 h-2 rounded-full bg-current animate-pulse" />
-      )}
-      {children}
-    </motion.div>
+    <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
+      <div
+        className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium ${colorStyles[color]}`}
+      >
+        {icon && (
+          <span className="w-2 h-2 rounded-full bg-current animate-pulse" />
+        )}
+        {children}
+      </div>
+    </ScrollReveal>
   );
 }
 

@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../../components/shared';
 import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
@@ -190,11 +191,8 @@ function TableOfContents() {
       </div>
 
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slow }}
+        <ScrollReveal variant="blurIn">
+        <div
           className="relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all shadow-2xl shadow-black/30"
         >
           {/* Top accent line */}
@@ -243,7 +241,8 @@ function TableOfContents() {
               ))}
             </motion.div>
           )}
-        </motion.div>
+        </div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -268,17 +267,10 @@ function PrivacySection({
   title,
   icon: Icon,
   children,
-  delay = 0,
 }: PrivacySectionProps) {
   return (
-    <motion.div
-      id={id}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: duration.slow, delay }}
-      className="scroll-mt-24"
-    >
+    <ScrollReveal variant="fadeUp" className="scroll-mt-24">
+      <div id={id}>
       {/* Section Card - Glassmorphism */}
       <div className="relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all duration-500 group">
         {/* Hover glow effect */}
@@ -305,7 +297,8 @@ function PrivacySection({
           </div>
         </div>
       </div>
-    </motion.div>
+      </div>
+    </ScrollReveal>
   );
 }
 
@@ -431,17 +424,18 @@ function PrivacyContent() {
               { icon: Server, label: 'Immutable audit logs' },
               { icon: Database, label: 'Secure infrastructure environments' },
             ].map((item, i) => (
-              <motion.div
+              <ScrollReveal
                 key={i}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-                className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 hover:border-cyan-500/30 transition-colors"
+                variant="fadeUp"
+                range={[0, 0.3 + i * 0.05]}
               >
-                <item.icon className="w-4 h-4 text-cyan-400" />
-                <span className="text-sm text-gray-300">{item.label}</span>
-              </motion.div>
+                <div
+                  className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 hover:border-cyan-500/30 transition-colors"
+                >
+                  <item.icon className="w-4 h-4 text-cyan-400" />
+                  <span className="text-sm text-gray-300">{item.label}</span>
+                </div>
+              </ScrollReveal>
             ))}
           </div>
           <p className="mt-4">
@@ -619,11 +613,8 @@ function PrivacyCTA() {
       </div>
 
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower }}
+        <ScrollReveal variant="scaleUp">
+        <div
           className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all duration-500 shadow-2xl shadow-black/30"
         >
           {/* Top accent line */}
@@ -656,7 +647,8 @@ function PrivacyCTA() {
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </motion.a>
           </div>
-        </motion.div>
+        </div>
+        </ScrollReveal>
       </div>
     </section>
   );

@@ -7,9 +7,17 @@ import {
   Building2,
   Users,
 } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { Reveal } from '@/components/motion';
-import { duration, easing, stagger } from '@/config/motion';
+import { motion, useReducedMotion } from 'framer-motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
+
+/** Inline pulse color values for each industry (Tailwind can't animate these dynamically) */
+const pulseColors: Record<string, string> = {
+  pink: 'rgb(244,114,182)',    // rose/pink-400
+  blue: 'rgb(96,165,250)',     // blue-400
+  green: 'rgb(52,211,153)',    // emerald-400
+  orange: 'rgb(251,146,60)',   // amber/orange-400
+  purple: 'rgb(192,132,252)',  // purple-400
+};
 
 const industries = [
   {
@@ -84,6 +92,9 @@ const industries = [
 ];
 
 export function IndustryVerticals() {
+  const prefersReducedMotion = useReducedMotion();
+  const reducedMotion = prefersReducedMotion ?? false;
+
   return (
     <section className="relative py-32 overflow-hidden">
       {/* Ambient Background */}
@@ -108,24 +119,16 @@ export function IndustryVerticals() {
       />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-        <Reveal>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: duration.slower, ease: ([...easing.signature] as [number, number, number, number]) }}
-            className="text-center mb-16"
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: duration.normal, ease: ([...easing.signature] as [number, number, number, number]) }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-6"
-            >
-              <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-              Example Verticals
-            </motion.div>
+        <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
+          <div className="text-center mb-16">
+            <ScrollReveal variant="scaleUp" range={[0.02, 0.3]}>
+              <div
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-6"
+              >
+                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                Example Verticals
+              </div>
+            </ScrollReveal>
 
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
               Compliance Infrastructure
@@ -138,56 +141,79 @@ export function IndustryVerticals() {
             <p className="text-lg text-gray-400 max-w-3xl mx-auto">
               Pre-built frameworks tailored to specific regulatory environments
             </p>
-          </motion.div>
-        </Reveal>
+          </div>
+        </ScrollReveal>
 
         {/* Industries Grid */}
         <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
           {industries.map((industry, index) => {
             const Icon = industry.icon;
             return (
-              <motion.div
-                key={industry.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: duration.normal, delay: index * stagger.normal, ease: ([...easing.signature] as [number, number, number, number]) }}
-                whileHover={{ y: -6, scale: 1.02 }}
-                className={`group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] ${industry.hoverBorder} p-6 transition-all duration-300`}
-              >
-                <div className="flex items-start gap-4 mb-4">
-                  <div
-                    className={`flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br ${industry.gradient} ${industry.border} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
-                  >
-                    <Icon className={`h-6 w-6 ${industry.textColor}`} />
-                  </div>
-                  <div className="flex-1">
-                    <h4
-                      className={`font-bold text-lg mb-1 text-white group-hover:${industry.textColor} transition-colors duration-300`}
-                    >
-                      {industry.title}
-                    </h4>
-                  </div>
-                </div>
-
-                <p className="text-gray-400 text-sm leading-relaxed mb-4">
-                  {industry.description}
-                </p>
-
-                <div className="space-y-2">
-                  {industry.features.map((feature) => (
+              <ScrollReveal key={industry.title} variant={index % 2 === 0 ? 'fadeLeft' : 'fadeRight'} range={[index * 0.04, 0.3 + index * 0.04]}>
+                <motion.div
+                  whileHover={{ y: -6, scale: 1.02 }}
+                  className={`group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] ${industry.hoverBorder} p-6 transition-all duration-300`}
+                >
+                  <div className="flex items-start gap-4 mb-4">
                     <div
-                      key={feature}
-                      className="flex items-center gap-2 text-xs text-gray-500"
+                      className={`flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br ${industry.gradient} ${industry.border} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
                     >
-                      <div
-                        className={`w-1.5 h-1.5 ${industry.dotColor} rounded-full`}
-                      />
-                      <span>{feature}</span>
+                      <Icon className={`h-6 w-6 ${industry.textColor}`} />
                     </div>
-                  ))}
-                </div>
-              </motion.div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        {/* Industry-specific animated pulse dot */}
+                        <motion.div
+                          className="flex-shrink-0 w-2.5 h-2.5 rounded-full"
+                          style={{ backgroundColor: pulseColors[industry.color] ?? 'rgb(34,211,238)' }}
+                          animate={
+                            reducedMotion
+                              ? undefined
+                              : {
+                                  scale: [1, 1.3, 1],
+                                  opacity: [0.5, 1, 0.5],
+                                  boxShadow: [
+                                    `0 0 0 0 ${pulseColors[industry.color] ?? 'rgb(34,211,238)'}40`,
+                                    `0 0 8px 3px ${pulseColors[industry.color] ?? 'rgb(34,211,238)'}30`,
+                                    `0 0 0 0 ${pulseColors[industry.color] ?? 'rgb(34,211,238)'}40`,
+                                  ],
+                                }
+                          }
+                          transition={{
+                            duration: 2.5,
+                            delay: index * 0.4,
+                            repeat: Infinity,
+                            ease: 'easeInOut',
+                          }}
+                        />
+                        <h4
+                          className={`font-bold text-lg mb-1 text-white group-hover:${industry.textColor} transition-colors duration-300`}
+                        >
+                          {industry.title}
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                    {industry.description}
+                  </p>
+
+                  <div className="space-y-2">
+                    {industry.features.map((feature) => (
+                      <div
+                        key={feature}
+                        className="flex items-center gap-2 text-xs text-gray-500"
+                      >
+                        <div
+                          className={`w-1.5 h-1.5 ${industry.dotColor} rounded-full`}
+                        />
+                        <span>{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              </ScrollReveal>
             );
           })}
         </div>

@@ -2,17 +2,9 @@ export { FadeInView } from './FadeInView';
 export { StaggerContainer, StaggerItem } from './StaggerContainer';
 export { FloatingCard } from './FloatingCard';
 export {
-  AnimatedSystemGrid,
   FloatingUIPanel,
-  DataFlowLines,
   ParallaxLayer,
-  PulsingNode,
 } from './AnimatedBackground';
-export {
-  Floating3DPanel,
-  FloatingWorkflowDiagram,
-  FloatingSecurityModule,
-} from './Floating3DModules';
 export {
   CinematicSection,
   VisualDivider,
@@ -98,3 +90,15 @@ export {
   FeedbackScale,
   DelightFloat,
 } from './GovernedMotion';
+
+// Cursor-driven 3D tilt interaction
+export { CursorTilt } from './CursorTilt';
+
+// Page transition wrapper for marketing routes
+export { PageTransition } from './PageTransition';
+
+// Scroll-progress-driven reveal animations
+export { ScrollReveal, ParallaxDepth } from './ScrollReveal';
+
+// Unified canvas particle system (consolidates ParticleField + MicroParticles)
+export { UnifiedParticles } from './UnifiedParticles';

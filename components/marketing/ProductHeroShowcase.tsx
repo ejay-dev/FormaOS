@@ -21,6 +21,7 @@ import { motion, useReducedMotion, useScroll, useTransform, AnimatePresence } fr
 import { duration } from '@/config/motion';
 import { brand } from '@/config/brand';
 import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
+import { CursorTilt } from '@/components/motion/CursorTilt';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -203,6 +204,7 @@ export function ProductHero() {
       <HeroAtmosphere topColor="cyan" bottomColor="violet" />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12 text-center">
+        <CursorTilt intensity={3} glowFollow glowColor="6,182,212">
         <motion.div
           initial={sa ? { opacity: 0, y: 16 } : false}
           animate={{ opacity: 1, y: 0 }}
@@ -286,6 +288,7 @@ export function ProductHero() {
             </span>
           ))}
         </motion.div>
+        </CursorTilt>
       </div>
     </motion.section>
   );
@@ -393,7 +396,7 @@ const TabsRail = memo(function TabsRail({
               </div>
               <div className="flex-1 min-w-0">
                 <div className={`text-sm font-medium truncate leading-tight ${isActive ? 'text-white/90' : 'text-white/65'}`}>{tab.title}</div>
-                <div className="text-[13px] text-white/40 truncate leading-tight mt-0.5">{tab.sub}</div>
+                <div className="text-sm text-white/40 truncate leading-tight mt-0.5">{tab.sub}</div>
               </div>
               <div className={`text-lg font-bold shrink-0 ${isActive ? vm.accent : 'text-white/45'}`}>{tab.stat}</div>
             </button>
@@ -408,7 +411,7 @@ const TabsRail = memo(function TabsRail({
    PANEL VIEW CONTENT — memoized per-view renderers
    ═══════════════════════════════════════════════════════════════════════ */
 
-const ROW_CLS = 'flex items-center gap-3 rounded-lg bg-white/[0.02] border border-white/[0.06] px-5 py-3 hover:bg-white/[0.04] hover:border-white/[0.10] transition-colors cursor-default';
+const ROW_CLS = 'flex items-center gap-3 rounded-lg bg-white/[0.02] border border-white/[0.06] px-5 py-3.5 hover:bg-white/[0.04] hover:border-white/[0.10] transition-colors cursor-default';
 
 const DashboardView = memo(function DashboardView() {
   return (
@@ -416,9 +419,9 @@ const DashboardView = memo(function DashboardView() {
       {DASHBOARD_ROWS.map((r) => (
         <div key={r.title} className={ROW_CLS}>
           <div className={`w-2.5 h-2.5 rounded-full ${r.dot} shrink-0`} />
-          <div className="flex-1 min-w-0 text-sm text-white/65 truncate">{r.title}</div>
-          <div className="w-7 h-7 rounded-full bg-white/[0.05] flex items-center justify-center shrink-0"><span className="text-[13px] font-semibold text-white/45">{r.assignee}</span></div>
-          <div className={`text-[13px] px-2.5 py-0.5 rounded-full shrink-0 ${r.badgeCls}`}>{r.badge}</div>
+          <div className="flex-1 min-w-0 text-sm text-white/70 truncate">{r.title}</div>
+          <div className="w-7 h-7 rounded-full bg-white/[0.05] flex items-center justify-center shrink-0"><span className="text-xs font-semibold text-white/45">{r.assignee}</span></div>
+          <div className={`text-xs px-2.5 py-0.5 rounded-full shrink-0 ${r.badgeCls}`}>{r.badge}</div>
           {r.pct > 0 && r.pct < 100 && (
             <div className="w-16 h-1.5 rounded-full bg-white/[0.06] overflow-hidden shrink-0">
               <div className="h-full rounded-full bg-gradient-to-r from-cyan-400/40 to-blue-400/25" style={{ width: `${r.pct}%` }} />
@@ -435,12 +438,12 @@ const EvidenceView = memo(function EvidenceView() {
     <>
       {EVIDENCE_ROWS.map((r) => (
         <div key={r.name} className={ROW_CLS}>
-          <div className="w-8 h-8 rounded-lg bg-violet-400/10 flex items-center justify-center shrink-0"><span className="text-[13px] text-violet-300 font-mono">{r.type}</span></div>
+          <div className="w-8 h-8 rounded-lg bg-violet-400/10 flex items-center justify-center shrink-0"><span className="text-sm text-violet-300 font-mono">{r.type}</span></div>
           <div className="flex-1 min-w-0">
             <div className="text-sm text-white/65 truncate">{r.name}</div>
-            <div className="text-[13px] text-white/25">{r.size} · {r.date}</div>
+            <div className="text-sm text-white/25">{r.size} · {r.date}</div>
           </div>
-          <div className="text-[13px] px-2.5 py-0.5 rounded-full bg-violet-400/12 text-violet-300 shrink-0">{r.tag}</div>
+          <div className="text-sm px-2.5 py-0.5 rounded-full bg-violet-400/12 text-violet-300 shrink-0">{r.tag}</div>
         </div>
       ))}
     </>
@@ -452,10 +455,10 @@ const ControlsView = memo(function ControlsView() {
     <>
       {CONTROLS_ROWS.map((r) => (
         <div key={r.code} className={ROW_CLS}>
-          <div className="text-[13px] font-mono text-blue-300/80 w-14 shrink-0">{r.code}</div>
-          <div className="flex-1 min-w-0 text-sm text-white/65 truncate">{r.name}</div>
-          <div className="text-[13px] text-white/25 shrink-0">{r.framework}</div>
-          <div className={`text-[13px] px-2.5 py-0.5 rounded-full shrink-0 ${r.statusCls}`}>{r.status}</div>
+          <div className="text-[15px] font-mono text-blue-300/80 w-14 shrink-0">{r.code}</div>
+          <div className="flex-1 min-w-0 text-[15px] text-white/65 truncate">{r.name}</div>
+          <div className="text-[15px] text-white/25 shrink-0">{r.framework}</div>
+          <div className={`text-[15px] px-2.5 py-0.5 rounded-full shrink-0 ${r.statusCls}`}>{r.status}</div>
         </div>
       ))}
     </>
@@ -470,9 +473,9 @@ const ReportsView = memo(function ReportsView() {
           <div className="w-8 h-8 rounded-lg bg-emerald-400/10 flex items-center justify-center shrink-0"><span className="text-sm text-emerald-300">◈</span></div>
           <div className="flex-1 min-w-0">
             <div className="text-sm text-white/65 truncate">{r.name}</div>
-            <div className="text-[13px] text-white/25">{r.date} · {r.pages} pages</div>
+            <div className="text-[15px] text-white/25">{r.date} · {r.pages} pages</div>
           </div>
-          <div className={`text-[13px] px-2.5 py-0.5 rounded-full shrink-0 ${r.statusCls}`}>{r.status}</div>
+          <div className={`text-[15px] px-2.5 py-0.5 rounded-full shrink-0 ${r.statusCls}`}>{r.status}</div>
         </div>
       ))}
     </>
@@ -486,9 +489,9 @@ const RiskView = memo(function RiskView() {
         <div key={r.name} className={ROW_CLS}>
           <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${r.sevDot}`} />
           <div className="flex-1 min-w-0 text-sm text-white/65 truncate">{r.name}</div>
-          <div className="text-[13px] text-white/25 shrink-0">{r.age}</div>
-          <div className="w-7 h-7 rounded-full bg-white/[0.05] flex items-center justify-center shrink-0"><span className="text-[13px] font-semibold text-white/45">{r.owner}</span></div>
-          <div className={`text-[13px] px-2.5 py-0.5 rounded-full shrink-0 ${r.sevCls}`}>{r.sev}</div>
+          <div className="text-[15px] text-white/25 shrink-0">{r.age}</div>
+          <div className="w-7 h-7 rounded-full bg-white/[0.05] flex items-center justify-center shrink-0"><span className="text-[15px] font-semibold text-white/45">{r.owner}</span></div>
+          <div className={`text-[15px] px-2.5 py-0.5 rounded-full shrink-0 ${r.sevCls}`}>{r.sev}</div>
         </div>
       ))}
     </>
@@ -503,9 +506,9 @@ const PolicyView = memo(function PolicyView() {
           <div className="w-8 h-8 rounded-lg bg-rose-400/10 flex items-center justify-center shrink-0"><span className="text-sm text-rose-300">▣</span></div>
           <div className="flex-1 min-w-0">
             <div className="text-sm text-white/65 truncate">{r.name}</div>
-            <div className="text-[13px] text-white/25">{r.ver} · {r.review} · {r.owner}</div>
+            <div className="text-[15px] text-white/25">{r.ver} · {r.review} · {r.owner}</div>
           </div>
-          <div className={`text-[13px] px-2.5 py-0.5 rounded-full shrink-0 ${r.statusCls}`}>{r.status}</div>
+          <div className={`text-[15px] px-2.5 py-0.5 rounded-full shrink-0 ${r.statusCls}`}>{r.status}</div>
         </div>
       ))}
     </>
@@ -577,7 +580,7 @@ const AppPanel = memo(function AppPanel({
               <span className="text-[13px] text-white/22">Search…</span>
             </div>
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400/25 to-blue-500/15 flex items-center justify-center">
-              <span className="text-[13px] font-bold text-white/55">FO</span>
+              <span className="text-[15px] font-bold text-white/55">FO</span>
             </div>
           </div>
         </div>
@@ -587,11 +590,11 @@ const AppPanel = memo(function AppPanel({
           <div className="w-[160px] shrink-0 border-r border-white/[0.06] bg-white/[0.03] py-3.5 px-2.5 flex flex-col overflow-hidden">
             <div className="flex items-center gap-2.5 px-2.5 mb-5">
               <div className="w-7 h-7 rounded-md bg-gradient-to-br from-cyan-400/25 to-blue-500/15 flex items-center justify-center">
-                <span className="text-[13px] font-bold text-cyan-400/80">FO</span>
+                <span className="text-[15px] font-bold text-cyan-400/80">FO</span>
               </div>
               <div>
-                <div className="text-[13px] font-semibold text-white/55">FormaOS</div>
-                <div className="text-[12px] text-white/20">Enterprise</div>
+                <div className="text-sm font-semibold text-white/55">FormaOS</div>
+                <div className="text-[15px] text-white/20">Enterprise</div>
               </div>
             </div>
             <div className="space-y-0.5">
@@ -600,7 +603,7 @@ const AppPanel = memo(function AppPanel({
                   key={v.id}
                   type="button"
                   onClick={() => onViewChange(v.id)}
-                  className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-left transition-colors duration-100 ${
+                  className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm text-left transition-colors duration-100 ${
                     activeView === v.id
                       ? 'bg-cyan-400/[0.08] text-cyan-300 border border-cyan-400/12'
                       : 'text-white/30 hover:text-white/55 hover:bg-white/[0.03] border border-transparent'
@@ -615,7 +618,7 @@ const AppPanel = memo(function AppPanel({
               <div className="flex items-center gap-2 px-2.5 mt-1">
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-400/25 to-blue-400/15 shrink-0" />
                 <div className="min-w-0">
-                  <div className="text-[13px] text-white/30 truncate">Nancy M.</div>
+                  <div className="text-sm text-white/30 truncate">Nancy M.</div>
                 </div>
               </div>
             </div>
@@ -626,11 +629,11 @@ const AppPanel = memo(function AppPanel({
             <div className="flex items-center justify-between mb-5 shrink-0">
               <div>
                 <div className="text-lg font-semibold text-white/90">{view.label}</div>
-                <div className="text-[13px] text-white/25">Last synced 2 min ago</div>
+                <div className="text-[15px] text-white/25">Last synced 2 min ago</div>
               </div>
               <div className="flex items-center gap-2.5">
-                <div className="px-3.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.07] text-[13px] text-white/30 cursor-pointer hover:bg-white/[0.05] transition-colors">Export</div>
-                <div className="px-3.5 py-1.5 rounded-lg bg-cyan-400/10 border border-cyan-400/20 text-[13px] text-cyan-300 cursor-pointer hover:bg-cyan-400/15 transition-colors">+ New</div>
+                <div className="px-3.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.07] text-[15px] text-white/30 cursor-pointer hover:bg-white/[0.05] transition-colors">Export</div>
+                <div className="px-3.5 py-1.5 rounded-lg bg-cyan-400/10 border border-cyan-400/20 text-[15px] text-cyan-300 cursor-pointer hover:bg-cyan-400/15 transition-colors">+ New</div>
               </div>
             </div>
 
@@ -638,15 +641,15 @@ const AppPanel = memo(function AppPanel({
             <div className="grid grid-cols-3 gap-2.5 mb-5 shrink-0">
               {stats.map((s) => (
                 <div key={s.label} className="rounded-lg bg-white/[0.025] border border-white/[0.06] p-3.5">
-                  <div className="text-[13px] text-white/25 uppercase tracking-wider">{s.label}</div>
+                  <div className="text-sm text-white/25 uppercase tracking-wider">{s.label}</div>
                   <div className="text-xl font-bold text-white/85 mt-0.5">{s.value}</div>
-                  <div className="text-[13px] text-white/20">{s.sub}</div>
+                  <div className="text-sm text-white/20">{s.sub}</div>
                 </div>
               ))}
             </div>
 
             {/* Content area */}
-            <div className="text-[13px] text-white/25 font-medium uppercase tracking-wider mb-2.5 shrink-0">
+            <div className="text-sm text-white/25 font-medium uppercase tracking-wider mb-2.5 shrink-0">
               {VIEW_LABELS[activeView]}
             </div>
 
@@ -694,8 +697,8 @@ function DesktopScene({
   mouseY: number;
   shouldAnimate: boolean;
 }) {
-  const rx = shouldAnimate ? mouseX * 0.4 : 0;
-  const ry = shouldAnimate ? mouseY * 0.25 : 0;
+  const rx = shouldAnimate ? mouseX * 1.2 : 0;
+  const ry = shouldAnimate ? mouseY * 1.2 : 0;
 
   return (
     <div className="relative w-full h-full">
@@ -716,7 +719,7 @@ function DesktopScene({
         {/* Tabs column */}
         <div
           style={{
-            transform: `rotateY(${0.5 + rx}deg) rotateX(${-0.3 + ry}deg)`,
+            transform: `rotateY(${0.2 + rx}deg) rotateX(${-0.2 + ry * 0.9}deg)`,
             transition: shouldAnimate ? 'transform 0.12s linear' : 'none',
             transformStyle: 'preserve-3d',
             height: 'min(84vh, 720px)',
@@ -731,7 +734,7 @@ function DesktopScene({
           style={{
             maxWidth: '1000px',
             height: 'min(84vh, 720px)',
-            transform: `rotateY(${-0.5 + rx * 0.2}deg) rotateX(${0.4 + ry * 0.15}deg)`,
+            transform: `rotateY(${-0.2 + rx * 0.8}deg) rotateX(${0.2 + ry * 0.75}deg)`,
             transition: shouldAnimate ? 'transform 0.12s linear' : 'none',
             transformStyle: 'preserve-3d',
           }}
@@ -782,6 +785,13 @@ export function ProductShowcase() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [activeView, setActiveView] = useState<ViewId>('dashboard');
   const [activeTabId, setActiveTabId] = useState('t01');
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start end', 'end start'],
+  });
+  const sceneOpacity = useTransform(scrollYProgress, [0, 0.2, 0.85, 1], [0.72, 1, 1, 0.78]);
+  const sceneScale = useTransform(scrollYProgress, [0, 0.3, 0.85, 1], [0.96, 1, 1, 0.97]);
+  const progressScale = useTransform(scrollYProgress, [0, 1], [0.08, 1]);
 
   const shouldAnimate = !shouldReduceMotion;
   const glowColor = VIEW_MAP[activeView].glow;
@@ -825,7 +835,21 @@ export function ProductShowcase() {
       {/* Section top border line */}
       <div aria-hidden className="absolute top-0 left-1/2 -translate-x-1/2 w-[50%] h-[1px]" style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(0,212,251,0.15) 50%, transparent 100%)' }} />
 
-      <div className="absolute inset-0">
+      <div className="absolute top-6 left-1/2 z-20 w-[min(760px,90%)] -translate-x-1/2">
+        <div className="mb-2 flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-white/45">
+          <span>Observe</span>
+          <span>Explore</span>
+          <span>Deploy</span>
+        </div>
+        <div className="h-px w-full overflow-hidden rounded-full bg-white/15">
+          <motion.div
+            className="h-full origin-left bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500"
+            style={{ scaleX: progressScale }}
+          />
+        </div>
+      </div>
+
+      <motion.div className="absolute inset-0" style={{ opacity: sceneOpacity, scale: sceneScale }}>
         {isDesktop ? (
           <DesktopScene
             activeView={activeView}
@@ -840,7 +864,7 @@ export function ProductShowcase() {
         ) : (
           <MobileLayout activeView={activeView} glowColor={glowColor} onViewChange={handleViewChange} />
         )}
-      </div>
+      </motion.div>
     </section>
   );
 }

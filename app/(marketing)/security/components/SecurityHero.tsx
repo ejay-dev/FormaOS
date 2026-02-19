@@ -12,6 +12,7 @@ import {
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { duration } from '@/config/motion';
 import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
+import { CursorTilt } from '@/components/motion/CursorTilt';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
@@ -33,9 +34,10 @@ export function SecurityHero() {
     >
       <HeroAtmosphere topColor="rose" bottomColor="violet" gridColor="rose" />
 
+      <CursorTilt intensity={3} glowFollow glowColor="244,63,94" className="relative z-10 w-full">
       <motion.div
         style={{ scale: heroScale, y: heroY }}
-        className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-32 pb-24"
+        className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-32 pb-24"
       >
         {/* Security Shield Badge */}
         <motion.div
@@ -151,6 +153,7 @@ export function SecurityHero() {
           </Link>
         </motion.div>
       </motion.div>
+      </CursorTilt>
     </section>
   );
 }

@@ -1,10 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
 import { Reveal } from '@/components/motion';
-import { easing, duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
 const questionnaireFastLane = [
   {
@@ -37,32 +36,6 @@ const trustSignals = [
   'Evidence chain integrity',
 ];
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.08,
-      duration: duration.normal,
-      ease: easing.signature,
-    },
-  }),
-};
-
-const pillVariants = {
-  hidden: { opacity: 0, scale: 0.9 },
-  visible: (i: number) => ({
-    opacity: 1,
-    scale: 1,
-    transition: {
-      delay: i * 0.06,
-      duration: duration.fast,
-      ease: easing.signature,
-    },
-  }),
-};
-
 export function QuestionnaireAccelerator() {
   return (
     <>
@@ -91,43 +64,31 @@ export function QuestionnaireAccelerator() {
 
             <div className="mt-6 grid gap-3 md:grid-cols-3">
               {questionnaireFastLane.map((item, i) => (
-                <motion.article
-                  key={item.title}
-                  custom={i}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  variants={cardVariants}
-                  className="rounded-xl border border-white/[0.06] bg-slate-900/40 p-4"
-                >
-                  <p className="text-sm font-semibold text-slate-100">
-                    {item.title}
-                  </p>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-400">
-                    {item.detail}
-                  </p>
-                </motion.article>
+                <ScrollReveal key={item.title} variant="scaleUp" range={[i * 0.04, 0.3 + i * 0.04]}>
+                  <article className="rounded-xl border border-white/[0.06] bg-slate-900/40 p-4">
+                    <p className="text-sm font-semibold text-slate-100">
+                      {item.title}
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-400">
+                      {item.detail}
+                    </p>
+                  </article>
+                </ScrollReveal>
               ))}
             </div>
 
             <div className="mt-6 grid gap-3 md:grid-cols-3">
               {stakeholderTracks.map((track, i) => (
-                <motion.div
-                  key={track.persona}
-                  custom={i}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  variants={cardVariants}
-                  className="rounded-xl border border-cyan-400/20 bg-cyan-500/10 px-4 py-3"
-                >
-                  <p className="text-xs font-semibold uppercase tracking-wider text-cyan-200">
-                    {track.persona}
-                  </p>
-                  <p className="mt-1 text-sm text-cyan-100">
-                    {track.artifact}
-                  </p>
-                </motion.div>
+                <ScrollReveal key={track.persona} variant="scaleUp" range={[i * 0.04, 0.3 + i * 0.04]}>
+                  <div className="rounded-xl border border-cyan-400/20 bg-cyan-500/10 px-4 py-3">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-cyan-200">
+                      {track.persona}
+                    </p>
+                    <p className="mt-1 text-sm text-cyan-100">
+                      {track.artifact}
+                    </p>
+                  </div>
+                </ScrollReveal>
               ))}
             </div>
           </div>
@@ -144,18 +105,12 @@ export function QuestionnaireAccelerator() {
             </div>
             <div className="mt-4 flex flex-wrap gap-2.5">
               {trustSignals.map((signal, i) => (
-                <motion.span
-                  key={signal}
-                  custom={i}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  variants={pillVariants}
-                  className="inline-flex items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-500/10 px-3 py-1.5 text-xs text-emerald-100"
-                >
-                  <CheckCircle2 className="h-3.5 w-3.5" />
-                  {signal}
-                </motion.span>
+                <ScrollReveal key={signal} variant="scaleUp" range={[i * 0.04, 0.3 + i * 0.04]}>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-500/10 px-3 py-1.5 text-xs text-emerald-100">
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                    {signal}
+                  </span>
+                </ScrollReveal>
               ))}
             </div>
           </div>

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import BlogPageContent from './BlogPageContent';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
 export const metadata: Metadata = {
   title: 'Blog & Insights | FormaOS',

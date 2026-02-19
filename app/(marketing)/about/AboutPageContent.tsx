@@ -4,8 +4,10 @@ import { useRef } from 'react';
 import { ArrowRight, Users, Target, Lightbulb } from 'lucide-react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import dynamic from 'next/dynamic';
 import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
+import { CursorTilt } from '@/components/motion/CursorTilt';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
@@ -29,10 +31,11 @@ function AboutHero() {
       ref={containerRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] pt-24"
     >
-      <HeroAtmosphere topColor="violet" bottomColor="blue" gridColor="violet" />
+      <HeroAtmosphere topColor="violet" bottomColor="rose" gridColor="violet" />
 
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
+        <CursorTilt intensity={3} glowFollow glowColor="139,92,246" className="w-full">
         <div className="flex flex-col items-center text-center">
           <motion.div style={shouldReduceMotion ? undefined : { opacity, scale, y }}>
             {/* Badge */}
@@ -106,6 +109,7 @@ function AboutHero() {
             </motion.div>
           </motion.div>
         </div>
+        </CursorTilt>
       </div>
 
     </section>
@@ -124,43 +128,35 @@ export default function AboutPageContent() {
       <section className="relative py-24 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421]">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid gap-8 md:grid-cols-2">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: duration.slow }}
-              className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 hover:border-purple-500/30 transition-all duration-300"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Target className="h-6 w-6 text-purple-400" />
+            <ScrollReveal variant="fadeUp" range={[0, 0.3]}>
+              <div className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 hover:border-purple-500/30 transition-all duration-300">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <Target className="h-6 w-6 text-purple-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white mb-4">Mission</h2>
+                <p className="text-gray-400 leading-relaxed">
+                  Deliver operational clarity for regulated industries by
+                  connecting controls, evidence, and accountability in a single
+                  compliance operating system.
+                </p>
               </div>
-              <h2 className="text-2xl font-bold text-white mb-4">Mission</h2>
-              <p className="text-gray-400 leading-relaxed">
-                Deliver operational clarity for regulated industries by
-                connecting controls, evidence, and accountability in a single
-                compliance operating system.
-              </p>
-            </motion.div>
+            </ScrollReveal>
 
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: duration.slow, delay: 0.2 }}
-              className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 hover:border-cyan-500/30 transition-all duration-300"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Lightbulb className="h-6 w-6 text-cyan-400" />
+            <ScrollReveal variant="fadeLeft" range={[0.04, 0.34]}>
+              <div className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 hover:border-cyan-500/30 transition-all duration-300">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <Lightbulb className="h-6 w-6 text-cyan-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white mb-4">
+                  Why it matters
+                </h2>
+                <p className="text-gray-400 leading-relaxed">
+                  Regulators expect defensible evidence, not just documentation.
+                  FormaOS provides the audit trail and proof required to protect
+                  leadership teams and their organizations.
+                </p>
               </div>
-              <h2 className="text-2xl font-bold text-white mb-4">
-                Why it matters
-              </h2>
-              <p className="text-gray-400 leading-relaxed">
-                Regulators expect defensible evidence, not just documentation.
-                FormaOS provides the audit trail and proof required to protect
-                leadership teams and their organizations.
-              </p>
-            </motion.div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -172,22 +168,11 @@ export default function AboutPageContent() {
       <DeferredSection minHeight={300}>
       <section className="relative py-16 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421]">
         <div className="mx-auto max-w-xl px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: duration.slow }}
-            className="text-center mb-8"
-          >
+          <ScrollReveal variant="blurIn" range={[0, 0.3]} className="text-center mb-8">
             <h3 className="text-xl font-bold text-white mb-2">The Audit Trail</h3>
             <p className="text-sm text-gray-400">Every action timestamped, every decision defensible</p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: duration.slow, delay: 0.2 }}
-          >
+          </ScrollReveal>
+          <ScrollReveal variant="fadeUp" range={[0.04, 0.34]}>
             <DemoAuditTrailCard
               glowColor="from-purple-500/15 to-pink-500/15"
               entries={[
@@ -198,7 +183,7 @@ export default function AboutPageContent() {
                 { action: 'Control mapped', user: 'System', target: 'ISO 27001 A.9.2.3', time: '07:00', type: 'system' },
               ]}
             />
-          </motion.div>
+          </ScrollReveal>
         </div>
       </section>
       </DeferredSection>
@@ -209,13 +194,8 @@ export default function AboutPageContent() {
       <DeferredSection minHeight={250}>
       <section className="relative py-24 bg-gradient-to-b from-[#0d1421] to-[#0a0f1c]">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: duration.slower }}
-            className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-10 shadow-2xl"
-          >
+          <ScrollReveal variant="slideUp" range={[0, 0.3]}>
+            <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-10 shadow-2xl">
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <div className="text-xs uppercase tracking-wider text-purple-400 font-semibold mb-3">
@@ -241,7 +221,8 @@ export default function AboutPageContent() {
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </motion.a>
             </div>
-          </motion.div>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
       </DeferredSection>

@@ -25,7 +25,7 @@ export const brand = {
     defaultTitle: 'FormaOS — Compliance Operating System',
     description:
       'FormaOS is the Compliance Operating System for regulated organizations — unify governance, evidence, and audits in one platform.',
-    siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://formaos.com.au',
+    siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://www.formaos.com.au',
     appUrl: process.env.NEXT_PUBLIC_APP_URL || 'https://app.formaos.com.au',
     ogImage: '/og-image.png',
   },

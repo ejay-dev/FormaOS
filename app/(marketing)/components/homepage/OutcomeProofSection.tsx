@@ -1,8 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { ArrowRight, BarChart3, ShieldCheck, TimerReset } from 'lucide-react';
 import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 
@@ -41,13 +40,7 @@ export function OutcomeProofSection() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_80%,rgba(16,185,129,0.10),transparent_40%)]" />
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slow }}
-          className="mx-auto max-w-3xl text-center"
-        >
+        <ScrollReveal variant="slideUp" range={[0, 0.3]} className="mx-auto max-w-3xl text-center">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-cyan-200">
             <BarChart3 className="h-3.5 w-3.5" />
             Outcome Proof
@@ -60,47 +53,49 @@ export function OutcomeProofSection() {
             buyers and operators can validate maturity with real execution
             signals.
           </p>
-        </motion.div>
+        </ScrollReveal>
 
         <div className="mt-10 grid gap-4 lg:grid-cols-3">
           {proofScenarios.map((scenario, idx) => (
-            <motion.article
+            <ScrollReveal
               key={scenario.title}
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.55, delay: idx * 0.1 }}
-              className="rounded-2xl border border-white/10 bg-white/5 p-6"
+              variant="fadeLeft"
+              range={[idx * 0.04, 0.3 + idx * 0.04]}
             >
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-cyan-200">
-                {scenario.title}
-              </h3>
-              <div className="mt-4 space-y-3 text-sm">
-                <p className="rounded-lg border border-rose-400/20 bg-rose-500/10 px-3 py-2 text-slate-200">
-                  <span className="font-semibold text-rose-200">Before:</span>{' '}
-                  {scenario.before}
-                </p>
-                <p className="rounded-lg border border-emerald-400/20 bg-emerald-500/10 px-3 py-2 text-slate-100">
-                  <span className="font-semibold text-emerald-200">After:</span>{' '}
-                  {scenario.after}
-                </p>
-              </div>
-              <div className="mt-4 inline-flex rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-200">
-                {scenario.impact}
-              </div>
-            </motion.article>
+              <article className="rounded-2xl border border-white/10 bg-white/5 p-6">
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-cyan-200">
+                  {scenario.title}
+                </h3>
+                <div className="mt-4 space-y-3 text-sm">
+                  <p className="rounded-lg border border-rose-400/20 bg-rose-500/10 px-3 py-2 text-slate-200">
+                    <span className="font-semibold text-rose-200">Before:</span>{' '}
+                    {scenario.before}
+                  </p>
+                  <p className="rounded-lg border border-emerald-400/20 bg-emerald-500/10 px-3 py-2 text-slate-100">
+                    <span className="font-semibold text-emerald-200">After:</span>{' '}
+                    {scenario.after}
+                  </p>
+                </div>
+                <div className="mt-4 inline-flex rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-200">
+                  {scenario.impact}
+                </div>
+              </article>
+            </ScrollReveal>
           ))}
         </div>
 
         <div className="mt-8 grid gap-3 sm:grid-cols-3">
-          {outcomeStats.map((stat) => (
-            <div
+          {outcomeStats.map((stat, idx) => (
+            <ScrollReveal
               key={stat.label}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center"
+              variant="fadeRight"
+              range={[idx * 0.04, 0.3 + idx * 0.04]}
             >
-              <p className="text-sm font-semibold text-white">{stat.value}</p>
-              <p className="mt-1 text-xs text-slate-400">{stat.label}</p>
-            </div>
+              <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center">
+                <p className="text-sm font-semibold text-white">{stat.value}</p>
+                <p className="mt-1 text-xs text-slate-400">{stat.label}</p>
+              </div>
+            </ScrollReveal>
           ))}
         </div>
 

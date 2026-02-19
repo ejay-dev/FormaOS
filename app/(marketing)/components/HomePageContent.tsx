@@ -41,6 +41,7 @@ import {
 } from '@/components/motion';
 import { motion } from 'framer-motion';
 import { spacing, radius, depth, duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
@@ -177,21 +178,19 @@ const metrics = [
 // Enhanced Visual Divider with system theme
 function SystemDivider() {
   return (
-    <motion.div
-      initial={{ opacity: 0, scaleX: 0 }}
-      whileInView={{ opacity: 1, scaleX: 1 }}
-      viewport={{ once: true, margin: '-100px' }}
-      transition={{ duration: duration.slower }}
-      className="relative h-px w-full my-0"
-      style={{
-        background:
-          'linear-gradient(90deg, transparent, rgba(0, 180, 220, 0.3), rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.3), transparent)',
-      }}
-    >
-      {/* Center glow */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-8 bg-[rgba(0,180,220,0.2)] blur-xl" />
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-4 bg-[rgba(59,130,246,0.3)] blur-md" />
-    </motion.div>
+    <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
+      <div
+        className="relative h-px w-full my-0"
+        style={{
+          background:
+            'linear-gradient(90deg, transparent, rgba(0, 180, 220, 0.3), rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.3), transparent)',
+        }}
+      >
+        {/* Center glow */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-8 bg-[rgba(0,180,220,0.2)] blur-xl" />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-4 bg-[rgba(59,130,246,0.3)] blur-md" />
+      </div>
+    </ScrollReveal>
   );
 }
 
@@ -515,17 +514,16 @@ export function HomePageContent() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
             {capabilities.map((capability, idx) => (
-              <motion.div
+              <ScrollReveal
                 key={capability}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: duration.normal, delay: idx * 0.05 }}
-                className="flex items-start gap-3 p-4 rounded-lg border border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/50 hover:bg-card transition-colors"
+                variant="fadeLeft"
+                range={[idx * 0.04, 0.3 + idx * 0.04]}
               >
-                <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                <span className="text-sm text-foreground">{capability}</span>
-              </motion.div>
+                <div className="flex items-start gap-3 p-4 rounded-lg border border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/50 hover:bg-card transition-colors">
+                  <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground">{capability}</span>
+                </div>
+              </ScrollReveal>
             ))}
           </div>
 
@@ -591,20 +589,19 @@ export function HomePageContent() {
                   'Framework health, control coverage, and risk level insights for leadership reporting',
               },
             ].map((feature, idx) => (
-              <motion.div
+              <ScrollReveal
                 key={feature.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="p-6 rounded-xl bg-card/50 border border-border/50 backdrop-blur-sm hover:border-primary/50 transition-colors"
+                variant="fadeUp"
+                range={[idx * 0.04, 0.3 + idx * 0.04]}
               >
-                <feature.icon className="h-8 w-8 text-primary mb-4" />
-                <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {feature.description}
-                </p>
-              </motion.div>
+                <div className="p-6 rounded-xl bg-card/50 border border-border/50 backdrop-blur-sm hover:border-primary/50 transition-colors">
+                  <feature.icon className="h-8 w-8 text-primary mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {feature.description}
+                  </p>
+                </div>
+              </ScrollReveal>
             ))}
           </div>
 
@@ -651,12 +648,10 @@ export function HomePageContent() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {industries.map((industry, idx) => (
-              <motion.div
+              <ScrollReveal
                 key={industry.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                variant="fadeUp"
+                range={[idx * 0.04, 0.3 + idx * 0.04]}
               >
                 <FeatureCard
                   icon={industry.icon}
@@ -666,7 +661,7 @@ export function HomePageContent() {
                   variant="default"
                   accentColor="secondary"
                 />
-              </motion.div>
+              </ScrollReveal>
             ))}
           </div>
 
@@ -824,12 +819,10 @@ export function HomePageContent() {
                   'Integrity checksums and version control detect tampering and support audit defensibility',
               },
             ].map((point, idx) => (
-              <motion.div
+              <ScrollReveal
                 key={point.title}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                variant="scaleUp"
+                range={[idx * 0.04, 0.3 + idx * 0.04]}
                 className="card-radial-glow section-metrics"
               >
                 <FeatureCard
@@ -840,7 +833,7 @@ export function HomePageContent() {
                   variant="frosted"
                   accentColor="accent"
                 />
-              </motion.div>
+              </ScrollReveal>
             ))}
           </div>
 
@@ -888,16 +881,12 @@ export function HomePageContent() {
               </div>
 
               <div className="relative z-10">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: duration.slow }}
-                  className="inline-flex items-center gap-2 glass-system rounded-full px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider mb-6 sm:mb-8"
-                >
-                  <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-                  Start Your Trial
-                </motion.div>
+                <ScrollReveal variant="scaleUp" range={[0, 0.25]}>
+                  <div className="inline-flex items-center gap-2 glass-system rounded-full px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider mb-6 sm:mb-8">
+                    <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                    Start Your Trial
+                  </div>
+                </ScrollReveal>
 
                 <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold font-display mb-4 sm:mb-6">
                   Ready to operate with

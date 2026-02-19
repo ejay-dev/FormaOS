@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight, Check, Target } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { brand } from '@/config/brand';
 import { easing, duration } from '@/config/motion';
 
@@ -161,22 +162,13 @@ export function PricingTiers() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower, ease: easing.signature }}
-          className="text-center mb-16"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-semibold uppercase tracking-wider mb-6"
-          >
-            <Target className="h-3 w-3 text-emerald-400" />
-            <span className="text-gray-300">Choose Your Plan</span>
-          </motion.div>
+        <ScrollReveal variant="blurIn" range={[0, 0.35]} className="text-center mb-16">
+          <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-semibold uppercase tracking-wider mb-6">
+              <Target className="h-3 w-3 text-emerald-400" />
+              <span className="text-gray-300">Choose Your Plan</span>
+            </div>
+          </ScrollReveal>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
             Choose Your Compliance
@@ -190,35 +182,31 @@ export function PricingTiers() {
             All plans include the complete FormaOS compliance engine with
             transparent monthly pricing.
           </p>
-        </motion.div>
+        </ScrollReveal>
 
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {pricingTiers.map((tier, idx) => (
-            <motion.div
+            <ScrollReveal
               key={tier.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: duration.slow, delay: idx * 0.15, ease: easing.signature }}
-              whileHover={{
-                y: tier.featured ? -16 : -8,
-                transition: { duration: duration.fast, ease: easing.smooth },
-              }}
+              variant="scaleUp"
+              range={[idx * 0.05, 0.3 + idx * 0.05]}
               className={`group relative ${tier.featured ? 'lg:-mt-4 lg:mb-4' : ''}`}
             >
+              <motion.div
+                whileHover={{
+                  y: tier.featured ? -16 : -8,
+                  transition: { duration: duration.fast, ease: easing.smooth },
+                }}
+              >
               {/* Featured badge */}
               {tier.featured && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.4, duration: duration.normal, ease: easing.signature }}
-                    className="px-6 py-2 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full text-sm font-bold text-white shadow-lg shadow-emerald-500/30"
-                  >
-                    Most Popular
-                  </motion.div>
+                  <ScrollReveal variant="scaleUp" range={[0.1, 0.4]}>
+                    <div className="px-6 py-2 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full text-sm font-bold text-white shadow-lg shadow-emerald-500/30">
+                      Most Popular
+                    </div>
+                  </ScrollReveal>
                 </div>
               )}
 
@@ -282,21 +270,20 @@ export function PricingTiers() {
                 {/* Features */}
                 <ul className="space-y-3 mb-6">
                   {tier.features.map((feature, i) => (
-                    <motion.li
+                    <ScrollReveal
                       key={i}
-                      initial={{ opacity: 0, x: -10 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.3 + i * 0.05, duration: duration.normal, ease: easing.signature }}
-                      className="flex items-start gap-3 text-sm text-gray-300"
+                      variant="fadeLeft"
+                      range={[0.05 + i * 0.02, 0.3 + i * 0.02]}
                     >
-                      <div
-                        className={`flex-shrink-0 w-5 h-5 rounded-full ${tier.iconBg} flex items-center justify-center mt-0.5`}
-                      >
-                        <Check className={`w-3 h-3 ${tier.accentColor}`} />
-                      </div>
-                      <span>{feature}</span>
-                    </motion.li>
+                      <li className="flex items-start gap-3 text-sm text-gray-300">
+                        <div
+                          className={`flex-shrink-0 w-5 h-5 rounded-full ${tier.iconBg} flex items-center justify-center mt-0.5`}
+                        >
+                          <Check className={`w-3 h-3 ${tier.accentColor}`} />
+                        </div>
+                        <span>{feature}</span>
+                      </li>
+                    </ScrollReveal>
                   ))}
                 </ul>
 
@@ -331,7 +318,8 @@ export function PricingTiers() {
                   )}
                 </Link>
               </div>
-            </motion.div>
+              </motion.div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

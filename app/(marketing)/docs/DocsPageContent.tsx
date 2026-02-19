@@ -7,7 +7,7 @@ import { DocsHero, DocsContent, APIPreview, DocsCTA } from './components';
 
 export default function DocsPageContent() {
   return (
-    <MarketingPageShell className="mk-page-bg" enableCinematicField={false}>
+    <MarketingPageShell className="mk-page-bg">
       <DocsHero />
       <VisualDivider gradient />
       <DeferredSection minHeight={600}>

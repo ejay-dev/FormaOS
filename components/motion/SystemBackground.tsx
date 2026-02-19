@@ -6,7 +6,8 @@ import {
   useTransform,
   useReducedMotion,
 } from 'framer-motion';
-import { useRef, useEffect, useState, ReactNode, useMemo } from 'react';
+import { useRef, type ReactNode, useMemo } from 'react';
+import { UnifiedParticles } from './UnifiedParticles';
 
 /**
  * =========================================================
@@ -171,152 +172,24 @@ function MicroParticles({
   variant: SystemBackgroundVariant;
   reducedMotion: boolean;
 }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number | null>(null);
-  const [mounted, setMounted] = useState(false);
+  if (reducedMotion) return null;
 
-  // Ensure component only runs on client
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const particleConfig = useMemo(
-    () => ({
-      count: variant === 'info' ? 20 : variant === 'metrics' ? 40 : 60,
-      speed: variant === 'process' ? 0.4 : 0.25,
-      maxSize: variant === 'metrics' ? 3 : 2,
-      colors: ['rgb(0, 180, 220)', 'rgb(59, 130, 246)', 'rgb(139, 92, 246)'],
-    }),
-    [variant],
-  );
-
-  useEffect(() => {
-    if (reducedMotion || !mounted) return;
-
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // Safely access window APIs
-    if (typeof window === 'undefined') return;
-
-    const resizeCanvas = () => {
-      try {
-        const rect = canvas.getBoundingClientRect();
-        const dpr = window.devicePixelRatio || 1;
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
-        ctx.scale(dpr, dpr);
-      } catch {
-        // Ignore resize errors
-      }
-    };
-
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    interface Particle {
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      size: number;
-      opacity: number;
-      color: string;
-      breathPhase: number;
-      breathSpeed: number;
-    }
-
-    const particles: Particle[] = [];
-    const rect = canvas.getBoundingClientRect();
-
-    for (let i = 0; i < particleConfig.count; i++) {
-      particles.push({
-        x: Math.random() * rect.width,
-        y: Math.random() * rect.height,
-        vx: (Math.random() - 0.5) * particleConfig.speed,
-        vy: (Math.random() - 0.5) * particleConfig.speed - 0.1, // Slight upward drift
-        size: Math.random() * particleConfig.maxSize + 0.5,
-        opacity: Math.random() * 0.5 + 0.2,
-        color:
-          particleConfig.colors[
-            Math.floor(Math.random() * particleConfig.colors.length)
-          ],
-        breathPhase: Math.random() * Math.PI * 2,
-        breathSpeed: 0.01 + Math.random() * 0.02,
-      });
-    }
-
-    const animate = () => {
-      const rect = canvas.getBoundingClientRect();
-      ctx.clearRect(0, 0, rect.width, rect.height);
-
-      particles.forEach((p) => {
-        // Update position
-        p.x += p.vx;
-        p.y += p.vy;
-
-        // Breathing effect
-        p.breathPhase += p.breathSpeed;
-        const breathScale = 0.7 + Math.sin(p.breathPhase) * 0.3;
-
-        // Wrap around edges
-        if (p.x < -10) p.x = rect.width + 10;
-        if (p.x > rect.width + 10) p.x = -10;
-        if (p.y < -10) p.y = rect.height + 10;
-        if (p.y > rect.height + 10) p.y = -10;
-
-        // Draw particle with glow
-        const gradient = ctx.createRadialGradient(
-          p.x,
-          p.y,
-          0,
-          p.x,
-          p.y,
-          p.size * 3,
-        );
-        const alphaValue = p.opacity * breathScale;
-        gradient.addColorStop(
-          0,
-          p.color.replace('rgb(', 'rgba(').replace(')', `, ${alphaValue})`),
-        );
-        gradient.addColorStop(1, 'transparent');
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
-        ctx.fillStyle = gradient;
-        ctx.fill();
-
-        // Core particle
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * breathScale, 0, Math.PI * 2);
-        ctx.fillStyle = p.color
-          .replace('rgb(', 'rgba(')
-          .replace(')', `, ${alphaValue})`);
-        ctx.fill();
-      });
-
-      animationRef.current = requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    return () => {
-      window.removeEventListener('resize', resizeCanvas);
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-    };
-  }, [variant, reducedMotion, particleConfig, mounted]);
-
-  // Don't render until mounted (avoid SSR issues)
-  if (!mounted || reducedMotion) return null;
+  const config =
+    variant === 'info'
+      ? { preset: 'drift' as const, count: 20, opacity: 0.3 }
+      : variant === 'metrics'
+        ? { preset: 'breathing' as const, count: 40, opacity: 0.42 }
+        : { preset: 'constellation' as const, count: 60, opacity: 0.55 };
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full pointer-events-none"
-      style={{ width: '100%', height: '100%' }}
+    <UnifiedParticles
+      preset={config.preset}
+      count={config.count}
+      opacity={config.opacity}
+      connections={variant === 'process'}
+      connectionDistance={130}
+      color="0,180,220"
+      secondaryColor="139,92,246"
     />
   );
 }

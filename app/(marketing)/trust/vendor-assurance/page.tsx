@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ShieldCheck, ArrowRight, FileText, CalendarDays } from 'lucide-react';
 import { brand } from '@/config/brand';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 export const metadata: Metadata = {

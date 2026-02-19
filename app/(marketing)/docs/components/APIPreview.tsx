@@ -19,7 +19,8 @@ import {
   Lock,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { duration, easing } from '@/config/motion';
+import { easing } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -440,183 +441,179 @@ function EndpointCard({
   const panelId = `${endpoint.id}-details`;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: duration.slow, delay: index * 0.1 }}
-      className="relative rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 overflow-hidden shadow-xl shadow-black/20"
-    >
-      {/* Top accent line */}
-      <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
+    <ScrollReveal variant="fadeUp" range={[index * 0.04, 0.3 + index * 0.04]}>
+      <div className="relative rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 overflow-hidden shadow-xl shadow-black/20">
+        {/* Top accent line */}
+        <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
 
-      {/* Header - always visible, acts as toggle */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        aria-expanded={isOpen}
-        aria-controls={panelId}
-        className="w-full flex items-center gap-4 p-6 text-left hover:bg-white/[0.02] transition-colors cursor-pointer"
-      >
-        <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-cyan-500/15 flex items-center justify-center">
-          <Icon className="w-5 h-5 text-cyan-400" />
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-3 mb-1 flex-wrap">
-            <MethodBadge method={endpoint.method} />
-            <code className="text-sm font-mono text-gray-300 truncate">
-              {endpoint.path}
-            </code>
+        {/* Header - always visible, acts as toggle */}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          aria-expanded={isOpen}
+          aria-controls={panelId}
+          className="w-full flex items-center gap-4 p-6 text-left hover:bg-white/[0.02] transition-colors cursor-pointer"
+        >
+          <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-cyan-500/15 flex items-center justify-center">
+            <Icon className="w-5 h-5 text-cyan-400" />
           </div>
-          <h3 className="text-lg font-semibold text-white">{endpoint.title}</h3>
-        </div>
 
-        <div className="flex items-center gap-3 flex-shrink-0">
-          <span className="hidden md:inline-flex items-center gap-1.5 text-xs text-gray-500">
-            <Clock className="w-3.5 h-3.5" />
-            {endpoint.rateLimit}
-          </span>
-          <motion.div
-            animate={{ rotate: isOpen ? 180 : 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <ChevronDown className="w-5 h-5 text-gray-500" />
-          </motion.div>
-        </div>
-      </button>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-3 mb-1 flex-wrap">
+              <MethodBadge method={endpoint.method} />
+              <code className="text-sm font-mono text-gray-300 truncate">
+                {endpoint.path}
+              </code>
+            </div>
+            <h3 className="text-lg font-semibold text-white">{endpoint.title}</h3>
+          </div>
 
-      {/* Expandable detail */}
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.35, ease: [...easing.smooth] }}
-            id={panelId}
-            className="overflow-hidden"
-          >
-            <div className="px-6 pb-6 space-y-6 border-t border-gray-800/50 pt-6">
-              {/* Description */}
-              <p className="text-gray-400 leading-relaxed">
-                {endpoint.description}
-              </p>
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <span className="hidden md:inline-flex items-center gap-1.5 text-xs text-gray-500">
+              <Clock className="w-3.5 h-3.5" />
+              {endpoint.rateLimit}
+            </span>
+            <motion.div
+              animate={{ rotate: isOpen ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ChevronDown className="w-5 h-5 text-gray-500" />
+            </motion.div>
+          </div>
+        </button>
 
-              {/* Meta badges */}
-              <div className="flex flex-wrap gap-3">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-                  <Shield className="w-3.5 h-3.5" />
-                  {endpoint.permission}
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                  <Clock className="w-3.5 h-3.5" />
-                  {endpoint.rateLimit}
-                </span>
-              </div>
+        {/* Expandable detail */}
+        <AnimatePresence initial={false}>
+          {isOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.35, ease: [...easing.smooth] }}
+              id={panelId}
+              className="overflow-hidden"
+            >
+              <div className="px-6 pb-6 space-y-6 border-t border-gray-800/50 pt-6">
+                {/* Description */}
+                <p className="text-gray-400 leading-relaxed">
+                  {endpoint.description}
+                </p>
 
-              {/* Query Parameters */}
-              {endpoint.queryParams.length > 0 && (
+                {/* Meta badges */}
+                <div className="flex flex-wrap gap-3">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                    <Shield className="w-3.5 h-3.5" />
+                    {endpoint.permission}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                    <Clock className="w-3.5 h-3.5" />
+                    {endpoint.rateLimit}
+                  </span>
+                </div>
+
+                {/* Query Parameters */}
+                {endpoint.queryParams.length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                      <ChevronRight className="w-4 h-4 text-cyan-400" />
+                      Query Parameters
+                    </h4>
+                    <div className="rounded-xl border border-gray-800/50 overflow-hidden">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="bg-gray-900/60 border-b border-gray-800/50">
+                            <th className="text-left px-4 py-2.5 text-gray-400 font-medium text-xs uppercase tracking-wider">
+                              Parameter
+                            </th>
+                            <th className="text-left px-4 py-2.5 text-gray-400 font-medium text-xs uppercase tracking-wider">
+                              Type
+                            </th>
+                            <th className="text-left px-4 py-2.5 text-gray-400 font-medium text-xs uppercase tracking-wider hidden md:table-cell">
+                              Required
+                            </th>
+                            <th className="text-left px-4 py-2.5 text-gray-400 font-medium text-xs uppercase tracking-wider">
+                              Description
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {endpoint.queryParams.map((param, i) => (
+                            <tr
+                              key={param.name}
+                              className={
+                                i !== endpoint.queryParams.length - 1
+                                  ? 'border-b border-gray-800/30'
+                                  : ''
+                              }
+                            >
+                              <td className="px-4 py-3">
+                                <code className="text-cyan-400 text-xs font-mono bg-cyan-500/10 px-1.5 py-0.5 rounded">
+                                  {param.name}
+                                </code>
+                              </td>
+                              <td className="px-4 py-3 text-gray-500 text-xs font-mono">
+                                {param.type}
+                              </td>
+                              <td className="px-4 py-3 hidden md:table-cell">
+                                {param.required ? (
+                                  <span className="text-amber-400 text-xs">
+                                    Required
+                                  </span>
+                                ) : (
+                                  <span className="text-gray-600 text-xs">
+                                    Optional
+                                  </span>
+                                )}
+                              </td>
+                              <td className="px-4 py-3 text-gray-400 text-xs">
+                                {param.description}
+                                {param.default && (
+                                  <span className="text-gray-600 ml-1">
+                                    (default: {param.default})
+                                  </span>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* Request example */}
                 <div>
                   <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
                     <ChevronRight className="w-4 h-4 text-cyan-400" />
-                    Query Parameters
+                    Request Example
                   </h4>
-                  <div className="rounded-xl border border-gray-800/50 overflow-hidden">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="bg-gray-900/60 border-b border-gray-800/50">
-                          <th className="text-left px-4 py-2.5 text-gray-400 font-medium text-xs uppercase tracking-wider">
-                            Parameter
-                          </th>
-                          <th className="text-left px-4 py-2.5 text-gray-400 font-medium text-xs uppercase tracking-wider">
-                            Type
-                          </th>
-                          <th className="text-left px-4 py-2.5 text-gray-400 font-medium text-xs uppercase tracking-wider hidden md:table-cell">
-                            Required
-                          </th>
-                          <th className="text-left px-4 py-2.5 text-gray-400 font-medium text-xs uppercase tracking-wider">
-                            Description
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {endpoint.queryParams.map((param, i) => (
-                          <tr
-                            key={param.name}
-                            className={
-                              i !== endpoint.queryParams.length - 1
-                                ? 'border-b border-gray-800/30'
-                                : ''
-                            }
-                          >
-                            <td className="px-4 py-3">
-                              <code className="text-cyan-400 text-xs font-mono bg-cyan-500/10 px-1.5 py-0.5 rounded">
-                                {param.name}
-                              </code>
-                            </td>
-                            <td className="px-4 py-3 text-gray-500 text-xs font-mono">
-                              {param.type}
-                            </td>
-                            <td className="px-4 py-3 hidden md:table-cell">
-                              {param.required ? (
-                                <span className="text-amber-400 text-xs">
-                                  Required
-                                </span>
-                              ) : (
-                                <span className="text-gray-600 text-xs">
-                                  Optional
-                                </span>
-                              )}
-                            </td>
-                            <td className="px-4 py-3 text-gray-400 text-xs">
-                              {param.description}
-                              {param.default && (
-                                <span className="text-gray-600 ml-1">
-                                  (default: {param.default})
-                                </span>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                  <CodeBlock
+                    code={endpoint.curlExample}
+                    filename="request.sh"
+                    language="bash"
+                  />
                 </div>
-              )}
 
-              {/* Request example */}
-              <div>
-                <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-                  <ChevronRight className="w-4 h-4 text-cyan-400" />
-                  Request Example
-                </h4>
-                <CodeBlock
-                  code={endpoint.curlExample}
-                  filename="request.sh"
-                  language="bash"
-                />
+                {/* Response example */}
+                <div>
+                  <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                    <ChevronRight className="w-4 h-4 text-emerald-400" />
+                    Response{' '}
+                    <span className="text-emerald-400 text-xs font-mono">
+                      200 OK
+                    </span>
+                  </h4>
+                  <CodeBlock
+                    code={endpoint.responseExample}
+                    filename="response.json"
+                    language="json"
+                  />
+                </div>
               </div>
-
-              {/* Response example */}
-              <div>
-                <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-                  <ChevronRight className="w-4 h-4 text-emerald-400" />
-                  Response{' '}
-                  <span className="text-emerald-400 text-xs font-mono">
-                    200 OK
-                  </span>
-                </h4>
-                <CodeBlock
-                  code={endpoint.responseExample}
-                  filename="response.json"
-                  language="json"
-                />
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </ScrollReveal>
   );
 }
 
@@ -651,140 +648,124 @@ export function APIPreview() {
 
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
         {/* -------- Section header -------- */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower }}
-          className="text-center mb-16"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-6 backdrop-blur-sm">
-            <Code className="w-4 h-4 text-cyan-400" />
-            <span className="text-sm text-cyan-400 font-medium tracking-wide">
-              REST API v1
-            </span>
+        <ScrollReveal variant="blurIn" range={[0, 0.35]} className="text-center mb-16">
+          <div>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-6 backdrop-blur-sm">
+              <Code className="w-4 h-4 text-cyan-400" />
+              <span className="text-sm text-cyan-400 font-medium tracking-wide">
+                REST API v1
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
+              API{' '}
+              <span className="bg-gradient-to-r from-cyan-400 via-teal-500 to-emerald-500 bg-clip-text text-transparent">
+                Reference
+              </span>
+            </h2>
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
+              Programmatic access to audit logs, compliance metrics, evidence, and
+              tasks. All endpoints return JSON and require Bearer token
+              authentication.
+            </p>
           </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
-            API{' '}
-            <span className="bg-gradient-to-r from-cyan-400 via-teal-500 to-emerald-500 bg-clip-text text-transparent">
-              Reference
-            </span>
-          </h2>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
-            Programmatic access to audit logs, compliance metrics, evidence, and
-            tasks. All endpoints return JSON and require Bearer token
-            authentication.
-          </p>
-        </motion.div>
+        </ScrollReveal>
 
         {/* -------- Authentication card -------- */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slow }}
-          className="mb-8 rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 p-6 lg:p-8 shadow-xl shadow-black/20"
-        >
-          <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
-          <div className="flex items-start gap-4 mb-6">
-            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-amber-500/15 flex items-center justify-center">
-              <Key className="w-5 h-5 text-amber-400" />
+        <ScrollReveal variant="fadeUp" range={[0, 0.35]} className="mb-8">
+          <div className="rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 p-6 lg:p-8 shadow-xl shadow-black/20">
+            <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
+            <div className="flex items-start gap-4 mb-6">
+              <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-amber-500/15 flex items-center justify-center">
+                <Key className="w-5 h-5 text-amber-400" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white mb-1">
+                  Authentication
+                </h3>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  All API requests require a valid Bearer token in the{' '}
+                  <code className="text-cyan-400 bg-cyan-500/10 px-1.5 py-0.5 rounded text-xs font-mono">
+                    Authorization
+                  </code>{' '}
+                  header. Tokens are issued as Supabase JWTs when a user
+                  authenticates. Include the token with every request.
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-xl font-bold text-white mb-1">
-                Authentication
-              </h3>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                All API requests require a valid Bearer token in the{' '}
-                <code className="text-cyan-400 bg-cyan-500/10 px-1.5 py-0.5 rounded text-xs font-mono">
-                  Authorization
-                </code>{' '}
-                header. Tokens are issued as Supabase JWTs when a user
-                authenticates. Include the token with every request.
-              </p>
-            </div>
-          </div>
 
-          <CodeBlock
-            code={`# Include your Bearer token in every request
+            <CodeBlock
+              code={`# Include your Bearer token in every request
 curl -X GET "https://api.formaos.com/v1/compliance" \\
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..." \\
   -H "Content-Type: application/json"`}
-            filename="auth-example.sh"
-            language="bash"
-          />
-        </motion.div>
+              filename="auth-example.sh"
+              language="bash"
+            />
+          </div>
+        </ScrollReveal>
 
         {/* -------- Rate limiting + Base URL info -------- */}
         <div className="grid md:grid-cols-2 gap-4 mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 p-6 shadow-xl shadow-black/20"
-          >
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-orange-500/15 flex items-center justify-center">
-                <Zap className="w-4 h-4 text-orange-400" />
+          <ScrollReveal variant="fadeLeft" range={[0, 0.35]}>
+            <div className="rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 p-6 shadow-xl shadow-black/20">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-8 h-8 rounded-lg bg-orange-500/15 flex items-center justify-center">
+                  <Zap className="w-4 h-4 text-orange-400" />
+                </div>
+                <h4 className="font-semibold text-white">Rate Limiting</h4>
               </div>
-              <h4 className="font-semibold text-white">Rate Limiting</h4>
-            </div>
-            <p className="text-gray-400 text-sm leading-relaxed mb-3">
-              Requests are rate-limited per endpoint. Exceeding the limit
-              returns a{' '}
-              <code className="text-orange-400 bg-orange-500/10 px-1.5 py-0.5 rounded text-xs font-mono">
-                429
-              </code>{' '}
-              status with a{' '}
-              <code className="text-gray-300 bg-gray-800/80 px-1.5 py-0.5 rounded text-xs font-mono">
-                retryAfter
-              </code>{' '}
-              timestamp.
-            </p>
-            <div className="space-y-2">
-              <div className="flex justify-between text-xs">
-                <span className="text-gray-500 font-mono">
-                  /audit-logs, /compliance
-                </span>
-                <span className="text-amber-400 font-medium">60 req/min</span>
-              </div>
-              <div className="flex justify-between text-xs">
-                <span className="text-gray-500 font-mono">
-                  /evidence, /tasks
-                </span>
-                <span className="text-emerald-400 font-medium">
-                  100 req/min
-                </span>
+              <p className="text-gray-400 text-sm leading-relaxed mb-3">
+                Requests are rate-limited per endpoint. Exceeding the limit
+                returns a{' '}
+                <code className="text-orange-400 bg-orange-500/10 px-1.5 py-0.5 rounded text-xs font-mono">
+                  429
+                </code>{' '}
+                status with a{' '}
+                <code className="text-gray-300 bg-gray-800/80 px-1.5 py-0.5 rounded text-xs font-mono">
+                  retryAfter
+                </code>{' '}
+                timestamp.
+              </p>
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-500 font-mono">
+                    /audit-logs, /compliance
+                  </span>
+                  <span className="text-amber-400 font-medium">60 req/min</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-500 font-mono">
+                    /evidence, /tasks
+                  </span>
+                  <span className="text-emerald-400 font-medium">
+                    100 req/min
+                  </span>
+                </div>
               </div>
             </div>
-          </motion.div>
+          </ScrollReveal>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 p-6 shadow-xl shadow-black/20"
-          >
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-cyan-500/15 flex items-center justify-center">
-                <Lock className="w-4 h-4 text-cyan-400" />
+          <ScrollReveal variant="fadeRight" range={[0.04, 0.39]}>
+            <div className="rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 p-6 shadow-xl shadow-black/20">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-8 h-8 rounded-lg bg-cyan-500/15 flex items-center justify-center">
+                  <Lock className="w-4 h-4 text-cyan-400" />
+                </div>
+                <h4 className="font-semibold text-white">
+                  Base URL &amp; Security
+                </h4>
               </div>
-              <h4 className="font-semibold text-white">
-                Base URL &amp; Security
-              </h4>
+              <p className="text-gray-400 text-sm leading-relaxed mb-3">
+                All endpoints are served over HTTPS at the base URL below.
+                Requests over plain HTTP are rejected.
+              </p>
+              <div className="rounded-lg bg-gray-950/60 border border-gray-800/50 px-4 py-3">
+                <code className="text-cyan-400 text-sm font-mono">
+                  https://api.formaos.com/v1
+                </code>
+              </div>
             </div>
-            <p className="text-gray-400 text-sm leading-relaxed mb-3">
-              All endpoints are served over HTTPS at the base URL below.
-              Requests over plain HTTP are rejected.
-            </p>
-            <div className="rounded-lg bg-gray-950/60 border border-gray-800/50 px-4 py-3">
-              <code className="text-cyan-400 text-sm font-mono">
-                https://api.formaos.com/v1
-              </code>
-            </div>
-          </motion.div>
+          </ScrollReveal>
         </div>
 
         {/* -------- Endpoint cards -------- */}
@@ -795,61 +776,57 @@ curl -X GET "https://api.formaos.com/v1/compliance" \\
         </div>
 
         {/* -------- Error responses -------- */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slow }}
-          className="rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 p-6 lg:p-8 shadow-xl shadow-black/20"
-        >
-          <div className="flex items-start gap-4 mb-6">
-            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-red-500/15 flex items-center justify-center">
-              <AlertTriangle className="w-5 h-5 text-red-400" />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-white mb-1">
-                Error Responses
-              </h3>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                All errors return a JSON object with an{' '}
-                <code className="text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded text-xs font-mono">
-                  error
-                </code>{' '}
-                field describing the issue. Use the HTTP status code to
-                determine the category.
-              </p>
-            </div>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-3">
-            {errorExamples.map((err) => (
-              <div
-                key={err.status}
-                className="rounded-xl bg-gray-950/60 border border-gray-800/40 p-4"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <span
-                    className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-bold font-mono ${
-                      err.status === 429
-                        ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
-                        : err.status >= 500
-                          ? 'bg-red-500/20 text-red-400 border border-red-500/30'
-                          : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                    }`}
-                  >
-                    {err.status}
-                  </span>
-                  <span className="text-sm text-gray-400 font-medium">
-                    {err.label}
-                  </span>
-                </div>
-                <pre className="text-xs font-mono text-gray-500 whitespace-pre overflow-x-auto">
-                  {err.body}
-                </pre>
+        <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
+          <div className="rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 p-6 lg:p-8 shadow-xl shadow-black/20">
+            <div className="flex items-start gap-4 mb-6">
+              <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-red-500/15 flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5 text-red-400" />
               </div>
-            ))}
+              <div>
+                <h3 className="text-xl font-bold text-white mb-1">
+                  Error Responses
+                </h3>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  All errors return a JSON object with an{' '}
+                  <code className="text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded text-xs font-mono">
+                    error
+                  </code>{' '}
+                  field describing the issue. Use the HTTP status code to
+                  determine the category.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-3">
+              {errorExamples.map((err) => (
+                <div
+                  key={err.status}
+                  className="rounded-xl bg-gray-950/60 border border-gray-800/40 p-4"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-bold font-mono ${
+                        err.status === 429
+                          ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
+                          : err.status >= 500
+                            ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                            : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                      }`}
+                    >
+                      {err.status}
+                    </span>
+                    <span className="text-sm text-gray-400 font-medium">
+                      {err.label}
+                    </span>
+                  </div>
+                  <pre className="text-xs font-mono text-gray-500 whitespace-pre overflow-x-auto">
+                    {err.body}
+                  </pre>
+                </div>
+              ))}
+            </div>
           </div>
-        </motion.div>
+        </ScrollReveal>
       </div>
     </section>
   );

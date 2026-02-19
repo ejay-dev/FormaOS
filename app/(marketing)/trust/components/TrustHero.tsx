@@ -6,6 +6,7 @@ import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion
 import { ShieldCheck, ArrowRight } from 'lucide-react';
 import { Reveal } from '@/components/motion';
 import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
+import { CursorTilt } from '@/components/motion/CursorTilt';
 import { brand } from '@/config/brand';
 import { easing, duration } from '@/config/motion';
 
@@ -28,9 +29,18 @@ export function TrustHero() {
       ref={sectionRef}
       className="relative min-h-[70vh] overflow-hidden"
     >
-      <HeroAtmosphere topColor="cyan" bottomColor="blue" />
+      <HeroAtmosphere topColor="blue" bottomColor="amber" />
+
+      {/* Pulsing trust glow */}
+      <motion.div
+        className="absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+        animate={{ scale: [1, 1.15, 1], opacity: [0.08, 0.15, 0.08] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(34,211,238,0.2) 0%, transparent 70%)' }}
+      />
 
       {/* Hero content */}
+      <CursorTilt intensity={3} glowFollow glowColor="59,130,246" className="relative z-10">
       <motion.div
         style={
           shouldReduceMotion
@@ -78,6 +88,7 @@ export function TrustHero() {
           </div>
         </Reveal>
       </motion.div>
+      </CursorTilt>
     </section>
   );
 }

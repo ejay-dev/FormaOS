@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';
 import { easing, duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { CURRENT_RELEASE_DISPLAY, CURRENT_RELEASE_TAG } from '@/config/release';
 import {
   ArrowUpRight,
@@ -50,7 +51,10 @@ const footerLinks = {
   ],
   legal: [
     { href: '/legal', label: 'Legal' },
-    { href: '/legal/privacy', label: 'Privacy Policy' },
+    {
+      href: 'https://www.formaos.com.au/legal/privacy',
+      label: 'Privacy Policy',
+    },
     { href: '/legal/terms', label: 'Terms of Service' },
     { href: '/security', label: 'Security' },
     { href: '/trust', label: 'Assurance Portal' },
@@ -93,13 +97,7 @@ function AnimatedFooterLink({
 
 function FooterCTA() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: duration.normal, ease: easing.signature }}
-      className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-500/10 via-blue-500/5 to-purple-500/10 border border-white/10 p-8 lg:p-10"
-    >
+    <ScrollReveal variant="fadeUp" className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-500/10 via-blue-500/5 to-purple-500/10 border border-white/10 p-8 lg:p-10">
       {/* Animated gradient orb */}
       <motion.div
         className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-cyan-500/20 blur-3xl"
@@ -158,7 +156,7 @@ function FooterCTA() {
           </motion.div>
         </div>
       </div>
-    </motion.div>
+    </ScrollReveal>
   );
 }
 
@@ -166,12 +164,10 @@ function TrustBadge({
   icon: Icon,
   label,
   color,
-  delay,
 }: {
   icon: typeof Shield;
   label: string;
   color: string;
-  delay: number;
 }) {
   const colorClasses =
     {
@@ -184,18 +180,12 @@ function TrustBadge({
     }[color] || 'bg-cyan-500/20 text-cyan-400';
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: duration.fast, ease: easing.signature, delay }}
-      className="flex items-center gap-2 text-sm"
-    >
+    <ScrollReveal variant="fadeUp" className="flex items-center gap-2 text-sm">
       <div className={`p-1.5 rounded-lg ${colorClasses}`}>
         <Icon className="h-3.5 w-3.5" />
       </div>
       <span className="text-gray-400">{label}</span>
-    </motion.div>
+    </ScrollReveal>
   );
 }
 
@@ -251,16 +241,11 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12 py-12 border-t border-white/10">
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-1 space-y-6">
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: duration.fast, ease: easing.signature }}
-            >
+            <ScrollReveal variant="blurIn">
               <Link href="/" className="flex items-center gap-2.5 group">
                 <Logo variant="mark" size={40} />
               </Link>
-            </motion.div>
+            </ScrollReveal>
 
             <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
               The compliance operating system for regulated industries. Govern,
@@ -268,13 +253,7 @@ export function Footer() {
             </p>
 
             {/* Status indicator */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: duration.fast, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20"
-            >
+            <ScrollReveal variant="blurIn" className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20">
               <motion.span
                 className="h-2 w-2 rounded-full bg-green-500"
                 animate={{
@@ -289,7 +268,7 @@ export function Footer() {
               <span className="text-xs font-medium text-green-400">
                 All systems operational
               </span>
-            </motion.div>
+            </ScrollReveal>
           </div>
 
           {/* Platform Links */}
@@ -356,20 +335,14 @@ export function Footer() {
         {/* Trust Badges */}
         <div className="py-8 border-t border-white/10">
           <div className="flex flex-wrap items-center justify-center gap-6 lg:gap-10">
-            {trustBadges.map((badge, idx) => (
-              <TrustBadge key={badge.label} {...badge} delay={idx * 0.1} />
+            {trustBadges.map((badge) => (
+              <TrustBadge key={badge.label} {...badge} />
             ))}
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.normal, ease: easing.signature }}
-          className="py-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4"
-        >
+        <ScrollReveal variant="fadeUp" className="py-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-gray-500">
             © {new Date().getFullYear()} FormaOS. All rights reserved.
           </p>
@@ -394,7 +367,7 @@ export function Footer() {
               <span>Sydney, Australia</span>
             </div>
           </div>
-        </motion.div>
+        </ScrollReveal>
       </div>
     </footer>
   );

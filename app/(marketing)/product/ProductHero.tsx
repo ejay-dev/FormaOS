@@ -5,8 +5,6 @@ import { Layers, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { duration } from '@/config/motion';
 import {
-  AnimatedSystemGrid,
-  PulsingNode,
   ParallaxLayer,
 } from "@/components/motion";
 
@@ -18,19 +16,6 @@ export function ProductHero() {
     <section className="relative min-h-[70vh] sm:min-h-[80vh] lg:min-h-[90vh] flex items-center overflow-hidden">
       {/* Multi-layer animated background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
-      
-      {/* Animated system grid layer */}
-      <div className="absolute inset-0 opacity-40 sm:opacity-60">
-        <AnimatedSystemGrid />
-      </div>
-      
-      {/* Pulsing nodes - hidden on mobile */}
-      <div className="hidden sm:block">
-        <PulsingNode x="12%" y="25%" delay={0} color="rgb(139, 92, 246)" />
-        <PulsingNode x="88%" y="35%" delay={0.5} />
-        <PulsingNode x="18%" y="75%" delay={1} />
-        <PulsingNode x="82%" y="85%" delay={1.5} color="rgb(6, 182, 212)" />
-      </div>
       
       {/* Radial gradient overlays - reduced on mobile */}
       <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[300px] sm:h-[600px] w-[300px] sm:w-[600px] rounded-full bg-secondary/20 blur-[60px] sm:blur-[120px]" />

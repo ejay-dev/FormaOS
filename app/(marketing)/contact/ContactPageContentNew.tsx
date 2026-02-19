@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
@@ -166,77 +167,59 @@ function ContactInformation() {
     <section id="contact-info" className="relative py-32 bg-[#0a0f1c]">
       <div className="max-w-5xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slow }}
-          className="text-center mb-16"
-        >
+        <ScrollReveal variant="blurIn" range={[0, 0.3]} className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
             Direct Contact
           </h2>
-        </motion.div>
+        </ScrollReveal>
 
         {/* Contact Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Email */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: duration.normal }}
-            className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl"
-          >
-            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-blue-500/20 flex items-center justify-center">
-              <Mail className="w-8 h-8 text-blue-400" />
+          <ScrollReveal variant="fadeUp" range={[0, 0.3]}>
+            <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
+              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-blue-500/20 flex items-center justify-center">
+                <Mail className="w-8 h-8 text-blue-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">Email</h3>
+              <a
+                href="mailto:hello@formaos.com.au"
+                className="text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                hello@formaos.com.au
+              </a>
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Email</h3>
-            <a
-              href="mailto:hello@formaos.com.au"
-              className="text-blue-400 hover:text-blue-300 transition-colors"
-            >
-              hello@formaos.com.au
-            </a>
-          </motion.div>
+          </ScrollReveal>
 
           {/* Phone */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: duration.normal, delay: 0.1 }}
-            className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl"
-          >
-            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-cyan-500/20 flex items-center justify-center">
-              <Phone className="w-8 h-8 text-cyan-400" />
+          <ScrollReveal variant="fadeRight" range={[0.04, 0.34]}>
+            <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
+              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-cyan-500/20 flex items-center justify-center">
+                <Phone className="w-8 h-8 text-cyan-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">Phone</h3>
+              <a
+                href="tel:+61469715062"
+                className="text-cyan-400 hover:text-cyan-300 transition-colors"
+              >
+                +61 469 715 062
+              </a>
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Phone</h3>
-            <a
-              href="tel:+61469715062"
-              className="text-cyan-400 hover:text-cyan-300 transition-colors"
-            >
-              +61 469 715 062
-            </a>
-          </motion.div>
+          </ScrollReveal>
 
           {/* Availability */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: duration.normal, delay: 0.2 }}
-            className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl"
-          >
-            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-purple-500/20 flex items-center justify-center">
-              <Clock className="w-8 h-8 text-purple-400" />
+          <ScrollReveal variant="fadeRight" range={[0.08, 0.38]}>
+            <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
+              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-purple-500/20 flex items-center justify-center">
+                <Clock className="w-8 h-8 text-purple-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                Availability
+              </h3>
+              <p className="text-gray-400">Monday – Friday</p>
+              <p className="text-gray-400">9:00 AM – 6:00 PM (AEST)</p>
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">
-              Availability
-            </h3>
-            <p className="text-gray-400">Monday – Friday</p>
-            <p className="text-gray-400">9:00 AM – 6:00 PM (AEST)</p>
-          </motion.div>
+          </ScrollReveal>
         </div>
       </div>
     </section>
@@ -274,13 +257,7 @@ function ContactForm({ submitAction, searchParams }: ContactFormProps) {
     >
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slow }}
-          className="text-center mb-12"
-        >
+        <ScrollReveal variant="blurIn" range={[0, 0.3]} className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
             Start the Conversation
           </h2>
@@ -289,16 +266,11 @@ function ContactForm({ submitAction, searchParams }: ContactFormProps) {
             what you&apos;re trying to achieve. A FormaOS specialist will
             respond promptly.
           </p>
-        </motion.div>
+        </ScrollReveal>
 
         {/* Form Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slow, delay: 0.1 }}
-          className="p-8 sm:p-12 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl"
-        >
+        <ScrollReveal variant="fadeUp" range={[0.04, 0.34]}>
+          <div className="p-8 sm:p-12 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
           <form action={handleSubmit} className="space-y-6">
             {/* Name & Email Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -465,7 +437,8 @@ function ContactForm({ submitAction, searchParams }: ContactFormProps) {
               </p>
             </motion.div>
           )}
-        </motion.div>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -479,31 +452,27 @@ function EnterpriseInquiries() {
   return (
     <section className="relative py-32 bg-[#0a0f1c]">
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slow }}
-          className="text-center p-12 rounded-2xl bg-gradient-to-br from-purple-500/20 via-white/[0.08] to-white/[0.04] border border-purple-500/30 backdrop-blur-xl"
-        >
-          <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-purple-500/20 flex items-center justify-center">
-            <Building2 className="w-8 h-8 text-purple-400" />
+        <ScrollReveal variant="fadeUp" range={[0, 0.3]}>
+          <div className="text-center p-12 rounded-2xl bg-gradient-to-br from-purple-500/20 via-white/[0.08] to-white/[0.04] border border-purple-500/30 backdrop-blur-xl">
+            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-purple-500/20 flex items-center justify-center">
+              <Building2 className="w-8 h-8 text-purple-400" />
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+              Enterprise & Partnership Requests
+            </h2>
+            <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
+              For large-scale deployments, compliance architecture discussions, or
+              strategic partnerships, contact us directly.
+            </p>
+            <a
+              href="mailto:hello@formaos.com.au"
+              className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-medium text-lg transition-colors"
+            >
+              <Mail className="w-5 h-5" />
+              hello@formaos.com.au
+            </a>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-            Enterprise & Partnership Requests
-          </h2>
-          <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
-            For large-scale deployments, compliance architecture discussions, or
-            strategic partnerships, contact us directly.
-          </p>
-          <a
-            href="mailto:hello@formaos.com.au"
-            className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-medium text-lg transition-colors"
-          >
-            <Mail className="w-5 h-5" />
-            hello@formaos.com.au
-          </a>
-        </motion.div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -517,13 +486,7 @@ function SecurityTrust() {
   return (
     <section className="relative py-32 bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c]">
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slow }}
-          className="text-center"
-        >
+        <ScrollReveal variant="fadeUp" range={[0, 0.3]} className="text-center">
           <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-cyan-500/20 flex items-center justify-center">
             <Shield className="w-8 h-8 text-cyan-400" />
           </div>
@@ -535,7 +498,7 @@ function SecurityTrust() {
             standards. FormaOS is built for regulated environments where
             confidentiality, data integrity, and auditability are essential.
           </p>
-        </motion.div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -549,12 +512,7 @@ function ClosingCTA() {
   return (
     <section className="relative py-32 bg-[#0a0f1c]">
       <div className="max-w-4xl mx-auto px-6 lg:px-12 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slow }}
-        >
+        <ScrollReveal variant="slideUp" range={[0, 0.3]}>
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
             Operational Compliance Starts With
             <br />
@@ -585,7 +543,7 @@ function ClosingCTA() {
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-        </motion.div>
+        </ScrollReveal>
       </div>
     </section>
   );

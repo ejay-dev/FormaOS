@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import type { LucideIcon } from 'lucide-react';
 
 export interface DocSection {
@@ -102,15 +103,12 @@ export function DocSectionCard({ section, index }: { section: DocSection; index:
   const panelId = `${section.id}-panel`;
 
   return (
-    <motion.div
-      id={section.id}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: duration.slow, delay: index * 0.1 }}
+    <ScrollReveal
+      variant="blurIn"
+      range={[index * 0.04, 0.3 + index * 0.04]}
       className="scroll-mt-24"
     >
-      <div className="relative p-6 lg:p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-white/10 transition-all duration-500 shadow-2xl shadow-black/30">
+      <div id={section.id} className="relative p-6 lg:p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-white/10 transition-all duration-500 shadow-2xl shadow-black/30">
         <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
         <button
@@ -179,6 +177,6 @@ export function DocSectionCard({ section, index }: { section: DocSection; index:
           )}
         </AnimatePresence>
       </div>
-    </motion.div>
+    </ScrollReveal>
   );
 }

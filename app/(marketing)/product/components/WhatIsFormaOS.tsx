@@ -2,7 +2,7 @@
 
 import { Building2, FileCheck, Database, AlertTriangle, Shield, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
 export function WhatIsFormaOS() {
   const unifies = [
@@ -22,89 +22,76 @@ export function WhatIsFormaOS() {
       />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower }}
-          className="text-center mb-16"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-6"
-          >
-            <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-            What Is FormaOS?
-          </motion.div>
+        <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
+          <div className="text-center mb-16">
+            <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-6">
+                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                What Is FormaOS?
+              </div>
+            </ScrollReveal>
 
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
-            An End-to-End
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
-              {' '}
-              Compliance Operating System
-            </span>
-          </h2>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
+              An End-to-End
+              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
+                {' '}
+                Compliance Operating System
+              </span>
+            </h2>
 
-          <p className="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed mb-12">
-            Designed for regulated teams that need certainty, accountability,
-            and defensible audit outcomes.
-          </p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower, delay: 0.2 }}
-          className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 sm:p-12"
-        >
-          <h3 className="text-xl font-semibold text-white text-center mb-8">
-            FormaOS unifies:
-          </h3>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
-            {unifies.map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <motion.div
-                  key={item.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="flex flex-col items-center text-center group"
-                >
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/10 border border-cyan-500/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                    <Icon className="w-6 h-6 text-cyan-400" />
-                  </div>
-                  <span className="text-sm text-gray-400">{item.label}</span>
-                </motion.div>
-              );
-            })}
+            <p className="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed mb-12">
+              Designed for regulated teams that need certainty, accountability,
+              and defensible audit outcomes.
+            </p>
           </div>
+        </ScrollReveal>
 
-          <p className="text-center text-gray-500 mt-8 text-sm">
-            …into a single, continuously operating system.
-          </p>
+        <ScrollReveal variant="blurIn" range={[0.05, 0.4]}>
+          <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 sm:p-12">
+            <h3 className="text-xl font-semibold text-white text-center mb-8">
+              FormaOS unifies:
+            </h3>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-8 text-sm text-gray-400">
-            <span className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-green-400" />
-              No silos
-            </span>
-            <span className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-green-400" />
-              No manual reconciliation
-            </span>
-            <span className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-green-400" />
-              No last-minute audit panic
-            </span>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+              {unifies.map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <ScrollReveal
+                    key={item.label}
+                    variant="fadeUp"
+                    range={[index * 0.04, 0.3 + index * 0.04]}
+                  >
+                    <div className="flex flex-col items-center text-center group">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/10 border border-cyan-500/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <Icon className="w-6 h-6 text-cyan-400" />
+                      </div>
+                      <span className="text-sm text-gray-400">{item.label}</span>
+                    </div>
+                  </ScrollReveal>
+                );
+              })}
+            </div>
+
+            <p className="text-center text-gray-500 mt-8 text-sm">
+              ...into a single, continuously operating system.
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center gap-4 mt-8 text-sm text-gray-400">
+              <span className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-400" />
+                No silos
+              </span>
+              <span className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-400" />
+                No manual reconciliation
+              </span>
+              <span className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-400" />
+                No last-minute audit panic
+              </span>
+            </div>
           </div>
-        </motion.div>
+        </ScrollReveal>
       </div>
     </section>
   );

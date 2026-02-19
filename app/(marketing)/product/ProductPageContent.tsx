@@ -62,7 +62,7 @@ const FinalCTA = dynamic(() => import('./components/FinalCTA').then((m) => m.Fin
 
 export default function ProductPageContent() {
   return (
-    <MarketingPageShell enableCinematicField={false}>
+    <MarketingPageShell>
       {/* Hero — headline, gradient text, CTAs */}
       <ProductHero />
       {/* Interactive showcase — tabs left, app panel right */}

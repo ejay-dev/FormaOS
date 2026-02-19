@@ -1,30 +1,34 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { duration } from '@/config/motion';
+import { ScrollReveal, ParallaxDepth } from '@/components/motion/ScrollReveal';
 
 export function ValueProposition() {
   return (
     <section className="mk-section relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl"
-          animate={{
-            x: [0, 50, 0],
-            y: [0, 30, 0],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-blue-500/10 blur-3xl"
-          animate={{
-            x: [0, -50, 0],
-            y: [0, -30, 0],
-            scale: [1, 1.15, 1],
-          }}
-          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-        />
+        <ParallaxDepth layer="slow">
+          <motion.div
+            className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl"
+            animate={{
+              x: [0, 50, 0],
+              y: [0, 30, 0],
+              scale: [1, 1.1, 1],
+            }}
+            transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        </ParallaxDepth>
+        <ParallaxDepth layer="slow">
+          <motion.div
+            className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-blue-500/10 blur-3xl"
+            animate={{
+              x: [0, -50, 0],
+              y: [0, -30, 0],
+              scale: [1, 1.15, 1],
+            }}
+            transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        </ParallaxDepth>
       </div>
 
       <div className="absolute inset-0 opacity-30">
@@ -39,52 +43,31 @@ export function ValueProposition() {
       </div>
 
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower }}
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+        <ScrollReveal variant="blurIn" range={[0, 0.3]}>
+          <div
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-medium mb-6"
           >
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
             Operating System Architecture
-          </motion.div>
+          </div>
+        </ScrollReveal>
 
-          <motion.p
-            className="text-lg sm:text-xl text-gray-400 mb-6 leading-relaxed"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, delay: 0.2 }}
-          >
+        <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
+          <p className="text-lg sm:text-xl text-gray-400 mb-6 leading-relaxed">
             FormaOS is the operating system that runs your compliance program.
             Not a repository. Not a checklist. A live system that enforces
             governance, tracks accountability, and produces defensible evidence.
-          </motion.p>
+          </p>
 
-          <motion.p
-            className="text-sm text-gray-500 mb-12 max-w-2xl mx-auto"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, delay: 0.3 }}
-          >
+          <p className="text-sm text-gray-500 mb-12 max-w-2xl mx-auto">
             Real-time compliance state. Immutable evidence chains.
             System-enforced accountability, not spreadsheet-level tracking.
-          </motion.p>
+          </p>
+        </ScrollReveal>
 
-          <div className="grid md:grid-cols-2 gap-8 text-left">
+        <div className="grid md:grid-cols-2 gap-8 text-left">
+          <ScrollReveal variant="fadeLeft" range={[0, 0.35]}>
             <motion.div
-              initial={{ opacity: 0, x: -30, y: 20 }}
-              whileInView={{ opacity: 1, x: 0, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.2 }}
               whileHover={{ scale: 1.02, y: -5 }}
               className="relative p-6 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 backdrop-blur-xl border border-white/5 hover:border-red-500/20 transition-all duration-500 group"
             >
@@ -114,12 +97,10 @@ export function ValueProposition() {
                 </li>
               </ul>
             </motion.div>
+          </ScrollReveal>
 
+          <ScrollReveal variant="fadeRight" range={[0, 0.35]}>
             <motion.div
-              initial={{ opacity: 0, x: 30, y: 20 }}
-              whileInView={{ opacity: 1, x: 0, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.4 }}
               whileHover={{ scale: 1.02, y: -5 }}
               className="relative p-6 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all duration-500 group shadow-lg shadow-cyan-500/5"
             >
@@ -149,8 +130,8 @@ export function ValueProposition() {
                 </li>
               </ul>
             </motion.div>
-          </div>
-        </motion.div>
+          </ScrollReveal>
+        </div>
       </div>
     </section>
   );

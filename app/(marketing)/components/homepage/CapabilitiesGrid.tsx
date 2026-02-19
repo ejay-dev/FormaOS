@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import {
   Workflow,
   Database,
@@ -157,23 +157,13 @@ export function CapabilitiesGrid() {
       />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower }}
-          className="text-center mb-16"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+        <ScrollReveal variant="scaleUp" range={[0, 0.3]} className="text-center mb-16">
+          <div
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium mb-6"
           >
             <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
             Platform Capabilities
-          </motion.div>
+          </div>
 
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
             Complete Compliance
@@ -187,38 +177,39 @@ export function CapabilitiesGrid() {
             controls trigger tasks, tasks produce evidence. One system. One
             truth.
           </p>
-        </motion.div>
+        </ScrollReveal>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {capabilities.map((capability, index) => {
             const Icon = capability.icon;
             return (
-              <motion.div
+              <ScrollReveal
                 key={capability.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
-                whileHover={{ scale: 1.05, y: -5 }}
-                className="group relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 border border-white/5 hover:border-cyan-500/30 transition-all cursor-pointer backdrop-blur-sm"
+                variant="blurIn"
+                range={[index * 0.04, 0.3 + index * 0.04]}
               >
-                <div
-                  className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${capability.color} opacity-0 group-hover:opacity-5 transition-opacity`}
-                />
-
-                <div
-                  className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${capability.color} mb-4 group-hover:scale-110 transition-transform`}
+                <motion.div
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  className="group relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 border border-white/5 hover:border-cyan-500/30 transition-all cursor-pointer backdrop-blur-sm"
                 >
-                  <Icon className="w-6 h-6 text-white" />
-                </div>
+                  <div
+                    className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${capability.color} opacity-0 group-hover:opacity-5 transition-opacity`}
+                  />
 
-                <h3 className="text-xl font-semibold mb-3 group-hover:text-cyan-400 transition-colors">
-                  {capability.title}
-                </h3>
-                <p className="text-gray-400 leading-relaxed">
-                  {capability.description}
-                </p>
-              </motion.div>
+                  <div
+                    className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${capability.color} mb-4 group-hover:scale-110 transition-transform`}
+                  >
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+
+                  <h3 className="text-xl font-semibold mb-3 group-hover:text-cyan-400 transition-colors">
+                    {capability.title}
+                  </h3>
+                  <p className="text-gray-400 leading-relaxed">
+                    {capability.description}
+                  </p>
+                </motion.div>
+              </ScrollReveal>
             );
           })}
         </div>

@@ -1,28 +1,45 @@
 'use client';
 
 import { memo, useEffect, useState } from 'react';
+import { UnifiedParticles } from './UnifiedParticles';
 
 /**
  * AmbientParticleLayer
  * ────────────────────
- * Cinematic slow-drift snow / particle effect — CSS-only rendering.
- * GPU-friendly (transform + opacity), no JS animation loop.
+ * Backward-compatible wrapper around `UnifiedParticles`.
  *
- * Auto-disables on:
- *  · prefers-reduced-motion
- *  · viewports < 768 px
- *  · low battery (< 20 %, discharging)
- *
- * Intensity variants control density and speed via CSS class modifiers.
+ * This preserves the historical API (`intensity`, `deferMode`) while routing
+ * all particle rendering through a single implementation.
  */
 
 interface AmbientParticleLayerProps {
   className?: string;
-  /** Visual density: subtle (hero bg), normal (default), strong (CTA zones) */
+  /** Visual density: subtle (hero bg), normal (default), strong (CTA zones). */
   intensity?: 'subtle' | 'normal' | 'strong';
   /** Defer rendering to protect first paint on marketing routes. */
   deferMode?: 'none' | 'idle' | 'interaction';
 }
+
+const INTENSITY_CONFIG = {
+  subtle: {
+    preset: 'drift' as const,
+    count: 24,
+    opacity: 0.32,
+    connections: false,
+  },
+  normal: {
+    preset: 'breathing' as const,
+    count: 36,
+    opacity: 0.4,
+    connections: false,
+  },
+  strong: {
+    preset: 'constellation' as const,
+    count: 52,
+    opacity: 0.5,
+    connections: true,
+  },
+};
 
 function AmbientParticleLayerInner({
   className = '',
@@ -121,17 +138,17 @@ function AmbientParticleLayerInner({
 
   if (!enabled || !ready) return null;
 
-  const mod =
-    intensity === 'subtle'
-      ? 'snow-field--subtle'
-      : intensity === 'strong'
-        ? 'snow-field--strong'
-        : '';
+  const config = INTENSITY_CONFIG[intensity];
 
   return (
-    <div
-      aria-hidden
-      className={`snow-field ${mod} pointer-events-none absolute inset-0 overflow-hidden ${className}`}
+    <UnifiedParticles
+      preset={config.preset}
+      count={config.count}
+      opacity={config.opacity}
+      connections={config.connections}
+      color="34,211,238"
+      secondaryColor="59,130,246"
+      className={className}
     />
   );
 }

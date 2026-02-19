@@ -5,9 +5,7 @@ import { motion } from 'framer-motion';
 import { duration, easing } from '@/config/motion';
 import { Globe, Shield, Heart, Users, ArrowRight } from 'lucide-react';
 import {
-  AnimatedSystemGrid,
   ParallaxLayer,
-  PulsingNode,
 } from '@/components/motion';
 import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 import { brand } from '@/config/brand';
@@ -20,18 +18,9 @@ export function IndustriesHero() {
       <AmbientParticleLayer intensity="subtle" />
       {/* Animated background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
-      <div className="absolute inset-0 opacity-50">
-        <AnimatedSystemGrid />
-      </div>
-
       {/* Ambient lights */}
       <div className="pointer-events-none absolute top-20 right-1/4 h-[500px] w-[500px] rounded-full bg-secondary/15 blur-[100px]" />
       <div className="pointer-events-none absolute bottom-20 left-1/4 h-[400px] w-[400px] rounded-full bg-accent/10 blur-[80px]" />
-
-      {/* Pulsing nodes */}
-      <PulsingNode x="20%" y="30%" delay={0} color="rgb(139, 92, 246)" />
-      <PulsingNode x="80%" y="40%" delay={0.5} />
-      <PulsingNode x="50%" y="75%" delay={1} color="rgb(6, 182, 212)" />
 
       {/* Content */}
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8 py-20">

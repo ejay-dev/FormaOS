@@ -9,7 +9,7 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
 export const generateStaticParams = () =>
   blogPosts.map((post) => ({ slug: post.id }));

@@ -7,6 +7,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion
 import { brand } from '@/config/brand';
 import { easing, duration } from '@/config/motion';
 import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
+import { CursorTilt } from '@/components/motion/CursorTilt';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -28,10 +29,22 @@ export function PricingHero() {
       ref={containerRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24"
     >
-      <HeroAtmosphere topColor="emerald" bottomColor="blue" gridColor="emerald" />
+      <HeroAtmosphere topColor="emerald" bottomColor="cyan" gridColor="emerald" />
+
+      {/* Gradient mesh — shifts slowly on scroll */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        animate={{ backgroundPosition: ['0% 0%', '100% 100%'] }}
+        transition={{ duration: 20, repeat: Infinity, repeatType: 'reverse', ease: 'linear' }}
+        style={{
+          background: 'radial-gradient(ellipse at 30% 50%, rgba(52,211,153,0.06) 0%, transparent 50%), radial-gradient(ellipse at 70% 50%, rgba(34,211,238,0.04) 0%, transparent 50%)',
+          backgroundSize: '200% 200%',
+        }}
+      />
 
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
+        <CursorTilt intensity={3} glowFollow glowColor="52,211,153" className="w-full">
         <div className="flex flex-col items-center text-center">
           <motion.div style={{ opacity, scale, y }}>
             {/* Badge */}
@@ -167,6 +180,7 @@ export function PricingHero() {
             </motion.div>
           </motion.div>
         </div>
+        </CursorTilt>
       </div>
     </section>
   );

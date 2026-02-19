@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ShieldCheck, FileLock2, CheckCircle2, ArrowRight } from 'lucide-react';
 import { Reveal } from '@/components/motion';
-import { easing, duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
 const navCards = [
   {
@@ -67,19 +67,6 @@ const assuranceModules = [
   },
 ];
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.08,
-      duration: duration.normal,
-      ease: easing.signature,
-    },
-  }),
-};
-
 export function TrustModules() {
   return (
     <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
@@ -89,35 +76,30 @@ export function TrustModules() {
           {navCards.map((card, i) => {
             const Icon = card.icon;
             return (
-              <motion.div
-                key={card.href}
-                custom={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={cardVariants}
-                whileHover={{ y: -6 }}
-                transition={{ duration: duration.fast, ease: easing.signature }}
-              >
-                <Link
-                  href={card.href}
-                  className="group flex h-full flex-col rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-sm transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
+              <ScrollReveal key={card.href} variant="blurIn" range={[i * 0.04, 0.3 + i * 0.04]}>
+                <motion.div
+                  whileHover={{ y: -6 }}
                 >
-                  <div className="mb-4 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
-                    <Icon className="h-5 w-5 text-cyan-300" />
-                  </div>
-                  <h2 className="text-lg font-semibold text-white">
-                    {card.title}
-                  </h2>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-300">
-                    {card.description}
-                  </p>
-                  <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200">
-                    {card.linkText}
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                  </div>
-                </Link>
-              </motion.div>
+                  <Link
+                    href={card.href}
+                    className="group flex h-full flex-col rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-sm transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
+                  >
+                    <div className="mb-4 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
+                      <Icon className="h-5 w-5 text-cyan-300" />
+                    </div>
+                    <h2 className="text-lg font-semibold text-white">
+                      {card.title}
+                    </h2>
+                    <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                      {card.description}
+                    </p>
+                    <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200">
+                      {card.linkText}
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                    </div>
+                  </Link>
+                </motion.div>
+              </ScrollReveal>
             );
           })}
         </div>
@@ -126,23 +108,17 @@ export function TrustModules() {
       {/* Assurance module cards */}
       <div className="mt-10 grid gap-4 lg:grid-cols-3">
         {assuranceModules.map((mod, i) => (
-          <motion.article
-            key={mod.title}
-            custom={i}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={cardVariants}
-            className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-sm"
-          >
-            <div className="mb-4 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
-              <FileLock2 className="h-5 w-5 text-cyan-300" />
-            </div>
-            <h2 className="text-lg font-semibold text-white">{mod.title}</h2>
-            <p className="mt-3 text-sm leading-relaxed text-slate-300">
-              {mod.detail}
-            </p>
-          </motion.article>
+          <ScrollReveal key={mod.title} variant="blurIn" range={[i * 0.04, 0.3 + i * 0.04]}>
+            <article className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-sm">
+              <div className="mb-4 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
+                <FileLock2 className="h-5 w-5 text-cyan-300" />
+              </div>
+              <h2 className="text-lg font-semibold text-white">{mod.title}</h2>
+              <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                {mod.detail}
+              </p>
+            </article>
+          </ScrollReveal>
         ))}
       </div>
     </section>

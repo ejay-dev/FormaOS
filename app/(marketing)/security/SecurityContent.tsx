@@ -10,9 +10,8 @@ import {
   SectionGlow,
 } from "@/components/motion";
 import { FadeInView } from "@/components/motion";
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { duration } from '@/config/motion';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
@@ -112,12 +111,10 @@ export function SecuritySafeguards() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {safeguards.map((safeguard, idx) => (
-            <motion.div
+            <ScrollReveal
               key={safeguard.title}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: duration.normal, delay: idx * 0.1 }}
+              variant="scaleUp"
+              range={[idx * 0.04, 0.3 + idx * 0.04]}
               className="card-radial-glow section-metrics"
             >
               <GlassCard variant="default" glow glowColor="purple" className="p-6 sm:p-8 h-full">
@@ -129,7 +126,7 @@ export function SecuritySafeguards() {
                   <p className="text-foreground/70 text-sm leading-relaxed">{safeguard.description}</p>
                 </div>
               </GlassCard>
-            </motion.div>
+            </ScrollReveal>
           ))}
         </div>
       </div>
@@ -153,12 +150,10 @@ export function SecurityArchitectureLayers() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
           {Object.entries(securityLayers).map(([title, components], idx) => (
-            <motion.div
+            <ScrollReveal
               key={title}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: duration.slow, delay: idx * 0.15 }}
+              variant="fadeUp"
+              range={[idx * 0.04, 0.3 + idx * 0.04]}
               className="card-radial-glow section-process"
             >
               <ArchitectureCard
@@ -172,7 +167,7 @@ export function SecurityArchitectureLayers() {
                 }
                 delay={0}
               />
-            </motion.div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

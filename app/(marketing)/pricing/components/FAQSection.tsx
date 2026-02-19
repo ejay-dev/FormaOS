@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ChevronDown, HelpCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { duration } from '@/config/motion';
 
 const faqs = [
@@ -61,22 +62,13 @@ export function FAQSection() {
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower }}
-          className="text-center mb-16"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6"
-          >
-            <HelpCircle className="h-3 w-3 text-purple-400" />
-            <span className="text-gray-300">FAQ</span>
-          </motion.div>
+        <ScrollReveal variant="blurIn" range={[0, 0.35]} className="text-center mb-16">
+          <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6">
+              <HelpCircle className="h-3 w-3 text-purple-400" />
+              <span className="text-gray-300">FAQ</span>
+            </div>
+          </ScrollReveal>
 
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
             Frequently Asked
@@ -89,17 +81,15 @@ export function FAQSection() {
           <p className="text-lg text-gray-400">
             Answers for buyers evaluating platform fit, risk, and rollout
           </p>
-        </motion.div>
+        </ScrollReveal>
 
         {/* FAQ Items */}
         <div className="space-y-4">
           {faqs.map((faq, idx) => (
-            <motion.div
+            <ScrollReveal
               key={idx}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1, duration: duration.normal }}
+              variant="blurIn"
+              range={[idx * 0.03, 0.25 + idx * 0.03]}
             >
               <button
                 onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
@@ -138,7 +128,7 @@ export function FAQSection() {
                   )}
                 </AnimatePresence>
               </button>
-            </motion.div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

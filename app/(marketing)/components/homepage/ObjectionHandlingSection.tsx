@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { CircleCheckBig, FileCheck2, HelpCircle, ShieldAlert } from 'lucide-react';
 
 const objectionCards = [
@@ -30,13 +30,7 @@ export function ObjectionHandlingSection() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(59,130,246,0.14),transparent_45%)]" />
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.55 }}
-          className="mx-auto max-w-3xl text-center"
-        >
+        <ScrollReveal variant="blurIn" range={[0, 0.3]} className="mx-auto max-w-3xl text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-blue-200">
             <HelpCircle className="h-3.5 w-3.5" />
             Buyer Objections
@@ -48,28 +42,27 @@ export function ObjectionHandlingSection() {
             Objection handling is built into the product narrative so security,
             compliance, and procurement stakeholders can move in sync.
           </p>
-        </motion.div>
+        </ScrollReveal>
 
         <div className="mt-8 grid gap-4 lg:grid-cols-3">
           {objectionCards.map((card, idx) => (
-            <motion.article
+            <ScrollReveal
               key={card.objection}
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.08 }}
-              className="rounded-2xl border border-white/10 bg-white/5 p-6"
+              variant="fadeUp"
+              range={[idx * 0.04, 0.3 + idx * 0.04]}
             >
-              <div className="inline-flex rounded-lg border border-blue-400/30 bg-blue-500/10 p-2">
-                <card.icon className="h-5 w-5 text-blue-200" />
-              </div>
-              <p className="mt-4 text-sm font-semibold text-white">
-                {card.objection}
-              </p>
-              <p className="mt-3 text-sm leading-relaxed text-slate-300">
-                {card.response}
-              </p>
-            </motion.article>
+              <article className="rounded-2xl border border-white/10 bg-white/5 p-6">
+                <div className="inline-flex rounded-lg border border-blue-400/30 bg-blue-500/10 p-2">
+                  <card.icon className="h-5 w-5 text-blue-200" />
+                </div>
+                <p className="mt-4 text-sm font-semibold text-white">
+                  {card.objection}
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                  {card.response}
+                </p>
+              </article>
+            </ScrollReveal>
           ))}
         </div>
       </div>

@@ -9,10 +9,6 @@ import { DeferredSection } from './shared';
 import { HeroSection, ValueProposition } from './homepage';
 
 // Lazy-load heavy rendering components
-const CinematicField = dynamic(() => import('./motion/CinematicField'), {
-  ssr: false,
-  loading: () => null,
-});
 const WebGLNodeField = dynamic(() => import('./webgl/NodeField'), {
   ssr: false,
   loading: () => null,
@@ -118,10 +114,7 @@ export default function FormaOSHomepage() {
         <div className="figma-homepage mk-page-bg relative min-h-screen overflow-x-hidden">
           {/* Global Particle Field */}
           {!shouldReduceMotion && allowHeavyVisuals && enableHeavyVisuals && (
-            <div className="fixed inset-0 z-0">
-              <div className="opacity-40">
-                <CinematicField />
-              </div>
+            <div className="fixed inset-0 z-0 pointer-events-none">
               <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5" />
             </div>
           )}

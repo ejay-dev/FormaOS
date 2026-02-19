@@ -6,8 +6,8 @@ import { brand } from '@/config/brand';
 import { Reveal, VisualDivider } from '@/components/motion';
 import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
 import { DeferredSection } from '../../components/shared';
-import { easing, duration } from '@/config/motion';
 import { motion } from 'framer-motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -87,21 +87,18 @@ export function ComparePageTemplate({
         <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
           <div className="grid gap-4 lg:grid-cols-3">
             {points.map((p, i) => (
-              <motion.article
-                key={p.title}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: duration.normal, delay: i * 0.1, ease: easing.signature }}
-                whileHover={{ y: -6 }}
-                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
-              >
-                <div className="mb-4 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
-                  <ShieldCheck className="h-5 w-5 text-cyan-200" />
-                </div>
-                <h2 className="text-lg font-semibold text-white">{p.title}</h2>
-                <p className="mt-3 text-sm leading-relaxed text-slate-300">{p.detail}</p>
-              </motion.article>
+              <ScrollReveal key={p.title} variant="fadeUp" range={[i * 0.04, 0.3 + i * 0.04]}>
+                <motion.article
+                  whileHover={{ y: -6 }}
+                  className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
+                >
+                  <div className="mb-4 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
+                    <ShieldCheck className="h-5 w-5 text-cyan-200" />
+                  </div>
+                  <h2 className="text-lg font-semibold text-white">{p.title}</h2>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-300">{p.detail}</p>
+                </motion.article>
+              </ScrollReveal>
             ))}
           </div>
         </section>
@@ -119,21 +116,16 @@ export function ComparePageTemplate({
               </h2>
               <div className="mt-4 grid gap-3 md:grid-cols-3">
                 {procurementChecks.map((check, i) => (
-                  <motion.article
-                    key={check.title}
-                    initial={{ opacity: 0, y: 16 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: duration.normal, delay: 0.15 + i * 0.08, ease: easing.signature }}
-                    className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4"
-                  >
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-200">
-                      {check.title}
-                    </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                      {check.detail}
-                    </p>
-                  </motion.article>
+                  <ScrollReveal key={check.title} variant="fadeUp" range={[i * 0.04, 0.3 + i * 0.04]}>
+                    <article className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4">
+                      <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-200">
+                        {check.title}
+                      </h3>
+                      <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                        {check.detail}
+                      </p>
+                    </article>
+                  </ScrollReveal>
                 ))}
               </div>
             </div>

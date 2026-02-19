@@ -1,9 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { ArrowRight, ClipboardCheck, FileCheck2, ShieldCheck, Sparkles } from 'lucide-react';
-import { easing, duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
 const assurancePillars = [
   {
@@ -34,13 +33,7 @@ export function ProcurementReadiness() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_80%,rgba(56,189,248,0.12),transparent_40%)]" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower, ease: easing.signature }}
-          className="mx-auto max-w-3xl text-center"
-        >
+        <ScrollReveal variant="blurIn" range={[0, 0.35]} className="mx-auto max-w-3xl text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-emerald-200">
             <Sparkles className="h-3.5 w-3.5" />
             Procurement Assurance
@@ -52,38 +45,31 @@ export function ProcurementReadiness() {
             Move from vendor questionnaire to buyer confidence faster with a
             clear review path and defensible operational proof.
           </p>
-        </motion.div>
+        </ScrollReveal>
 
         <div className="mt-10 grid gap-4 lg:grid-cols-3">
           {assurancePillars.map((pillar, idx) => (
-            <motion.article
+            <ScrollReveal
               key={pillar.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: duration.slow, delay: idx * 0.1, ease: easing.signature }}
-              className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-sm"
+              variant="fadeUp"
+              range={[idx * 0.05, 0.3 + idx * 0.05]}
             >
-              <div className="inline-flex rounded-lg border border-emerald-400/30 bg-emerald-500/10 p-2">
-                <pillar.icon className="h-5 w-5 text-emerald-200" />
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-white">
-                {pillar.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                {pillar.detail}
-              </p>
-            </motion.article>
+              <article className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-sm">
+                <div className="inline-flex rounded-lg border border-emerald-400/30 bg-emerald-500/10 p-2">
+                  <pillar.icon className="h-5 w-5 text-emerald-200" />
+                </div>
+                <h3 className="mt-4 text-lg font-semibold text-white">
+                  {pillar.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                  {pillar.detail}
+                </p>
+              </article>
+            </ScrollReveal>
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slow, delay: 0.25, ease: easing.signature }}
-          className="mt-10 flex flex-col justify-center gap-3 sm:flex-row"
-        >
+        <ScrollReveal variant="slideUp" range={[0.1, 0.4]} className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
           <Link
             href="/security-review"
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-6 py-3 text-sm font-semibold text-white"
@@ -97,7 +83,7 @@ export function ProcurementReadiness() {
           >
             Talk with Sales Engineering
           </Link>
-        </motion.div>
+        </ScrollReveal>
       </div>
     </section>
   );

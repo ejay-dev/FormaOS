@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../../components/shared';
 import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
@@ -167,11 +168,8 @@ function TableOfContents() {
   return (
     <section className="relative py-16 bg-[#0a0f1c]">
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slow }}
+        <ScrollReveal variant="blurIn">
+        <div
           className="p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl"
         >
           <button
@@ -206,7 +204,8 @@ function TableOfContents() {
               ))}
             </motion.div>
           )}
-        </motion.div>
+        </div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -231,17 +230,10 @@ function PrivacySection({
   title,
   icon: Icon,
   children,
-  delay = 0,
 }: PrivacySectionProps) {
   return (
-    <motion.div
-      id={id}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay }}
-      className="scroll-mt-24"
-    >
+    <ScrollReveal variant="fadeUp" className="scroll-mt-24">
+      <div id={id}>
       <div className="flex items-start gap-4 mb-4">
         <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
           <Icon className="w-5 h-5 text-emerald-400" />
@@ -254,7 +246,8 @@ function PrivacySection({
       <div className="ml-14 text-gray-400 leading-relaxed space-y-4">
         {children}
       </div>
-    </motion.div>
+      </div>
+    </ScrollReveal>
   );
 }
 

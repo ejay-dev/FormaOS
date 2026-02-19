@@ -6,10 +6,8 @@ import { duration, easing } from '@/config/motion';
 import { useEffect, useState } from 'react';
 import { Sparkles, ArrowRight, Zap, Shield, Activity } from 'lucide-react';
 import {
-  AnimatedSystemGrid,
   FloatingUIPanel,
   ParallaxLayer,
-  PulsingNode,
   ComplianceCoreVisualization,
 } from '@/components/motion';
 
@@ -29,19 +27,6 @@ export function CinematicHero() {
     <section className="home-hero relative min-h-[100svh] md:min-h-[90vh] flex items-center justify-center overflow-hidden pt-20 md:pt-0">
       {/* Multi-layer animated background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
-
-      {/* Animated system grid layer */}
-      <div className="absolute inset-0 md:opacity-60 opacity-30">
-        <AnimatedSystemGrid />
-      </div>
-
-      {/* Pulsing nodes */}
-      <div className="hidden md:block">
-        <PulsingNode x="10%" y="20%" delay={0} />
-        <PulsingNode x="90%" y="30%" delay={0.5} color="rgb(139, 92, 246)" />
-        <PulsingNode x="15%" y="70%" delay={1} color="rgb(6, 182, 212)" />
-        <PulsingNode x="85%" y="80%" delay={1.5} />
-      </div>
 
       {/* Radial gradient overlays */}
       <div className="pointer-events-none absolute md:-top-40 md:left-1/2 md:-translate-x-1/2 md:h-[600px] md:w-[600px] md:blur-[120px] hidden md:block rounded-full bg-primary/20" />

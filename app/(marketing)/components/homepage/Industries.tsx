@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { duration } from '@/config/motion';
 import { useState } from 'react';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import Link from 'next/link';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -267,23 +268,13 @@ export function Industries() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower }}
-          className="text-center mb-16 lg:mb-20"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+        <ScrollReveal variant="blurIn" range={[0, 0.3]} className="text-center mb-16 lg:mb-20">
+          <div
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-medium mb-6"
           >
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
             Industry Solutions
-          </motion.div>
+          </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
             Built for{' '}
@@ -298,7 +289,7 @@ export function Industries() {
             or operational shutdown, FormaOS delivers the evidence
             infrastructure your industry demands.
           </p>
-        </motion.div>
+        </ScrollReveal>
 
         <div className="space-y-4">
           {industrySolutions.map((solution, index) => {
@@ -306,12 +297,10 @@ export function Industries() {
             const isExpanded = expandedIndex === index;
 
             return (
-              <motion.div
+              <ScrollReveal
                 key={solution.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                variant="fadeUp"
+                range={[index * 0.04, 0.3 + index * 0.04]}
                 className="group"
               >
                 <motion.button
@@ -447,18 +436,12 @@ export function Industries() {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </motion.div>
+              </ScrollReveal>
             );
           })}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slow, delay: 0.3 }}
-          className="mt-16 text-center"
-        >
+        <ScrollReveal variant="slideUp" range={[0.05, 0.35]} className="mt-16 text-center">
           <p className="text-gray-400 mb-6">
             Not sure which solution fits your organization?
           </p>
@@ -469,7 +452,7 @@ export function Industries() {
             Talk to a Compliance Expert
             <ArrowRight className="w-5 h-5" />
           </Link>
-        </motion.div>
+        </ScrollReveal>
       </div>
     </section>
   );

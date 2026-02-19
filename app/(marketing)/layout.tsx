@@ -12,6 +12,7 @@ import './design-system.css';
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';
 import MarketingBackgroundLayer from '@/components/motion/MarketingBackgroundLayer';
+import { PageTransition } from '@/components/motion/PageTransition';
 
 // Force static rendering for all marketing pages
 export const dynamic = 'force-static';
@@ -81,7 +82,9 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
 
         <EnterpriseTrustStrip surface="marketing" />
 
-        <main id="main-content" className="relative z-10 mk-page-bg">{children}</main>
+        <main id="main-content" className="relative z-10 mk-page-bg">
+          <PageTransition>{children}</PageTransition>
+        </main>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

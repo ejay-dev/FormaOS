@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight, Building2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { duration } from '@/config/motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
@@ -41,52 +41,34 @@ export function FinalCTA() {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: duration.slower }}
-          className="relative"
-        >
+        <ScrollReveal variant="slideUp" range={[0, 0.35]} className="relative">
           {/* Executive Panel */}
           <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-2xl overflow-hidden max-w-4xl mx-auto">
             {/* Header */}
             <div className="bg-gradient-to-r from-white/[0.08] to-white/[0.04] border-b border-white/10 px-8 sm:px-12 py-8 sm:py-10">
               <div className="text-center">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2, duration: duration.slow }}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.12] border border-white/20 text-xs font-semibold uppercase tracking-wider mb-6 text-emerald-400"
-                >
-                  <Building2 className="h-3 w-3" />
-                  Ready to Start
-                </motion.div>
+                <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.12] border border-white/20 text-xs font-semibold uppercase tracking-wider mb-6 text-emerald-400">
+                    <Building2 className="h-3 w-3" />
+                    Ready to Start
+                  </div>
+                </ScrollReveal>
 
-                <motion.h2
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3, duration: duration.slower }}
-                  className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-6"
-                >
-                  <span className="text-white">
-                    Build your compliance foundation
-                  </span>
-                  <br className="hidden sm:inline" />
-                  <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                    with FormaOS
-                  </span>
-                </motion.h2>
+                <ScrollReveal variant="blurIn" range={[0.05, 0.4]}>
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-6">
+                    <span className="text-white">
+                      Build your compliance foundation
+                    </span>
+                    <br className="hidden sm:inline" />
+                    <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                      with FormaOS
+                    </span>
+                  </h2>
+                </ScrollReveal>
 
-                <motion.div
-                  initial={{ scaleX: 0 }}
-                  whileInView={{ scaleX: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.8, duration: duration.slower }}
-                  className="w-24 h-1 bg-gradient-to-r from-emerald-500 via-cyan-500 to-blue-500 mx-auto rounded-full"
-                />
+                <ScrollReveal variant="scaleUp" range={[0.1, 0.45]}>
+                  <div className="w-24 h-1 bg-gradient-to-r from-emerald-500 via-cyan-500 to-blue-500 mx-auto rounded-full" />
+                </ScrollReveal>
               </div>
             </div>
 
@@ -94,13 +76,7 @@ export function FinalCTA() {
             <div className="px-8 sm:px-12 py-10 sm:py-12">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                 {/* Value Props */}
-                <motion.div
-                  initial={{ opacity: 0, x: -30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.4, duration: duration.slower }}
-                  className="text-center lg:text-left"
-                >
+                <ScrollReveal variant="fadeLeft" range={[0.05, 0.4]} className="text-center lg:text-left">
                   <h3 className="text-xl sm:text-2xl font-bold text-white mb-6">
                     Start transforming compliance today
                   </h3>
@@ -130,16 +106,10 @@ export function FinalCTA() {
                     Join organizations building audit-ready compliance
                     infrastructure with FormaOS.
                   </p>
-                </motion.div>
+                </ScrollReveal>
 
                 {/* CTA Actions */}
-                <motion.div
-                  initial={{ opacity: 0, x: 30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.6, duration: duration.slower }}
-                  className="text-center"
-                >
+                <ScrollReveal variant="fadeRight" range={[0.1, 0.45]} className="text-center">
                   <div className="space-y-4 mb-8">
                     <Link
                       href={`${appBase}/auth/signup`}
@@ -162,11 +132,11 @@ export function FinalCTA() {
                     Region-aware hosting • GDPR-ready workflows •
                     Enterprise-ready
                   </div>
-                </motion.div>
+                </ScrollReveal>
               </div>
             </div>
           </div>
-        </motion.div>
+        </ScrollReveal>
       </div>
     </section>
   );

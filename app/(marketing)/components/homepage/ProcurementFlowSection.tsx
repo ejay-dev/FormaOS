@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import {
   ArrowRight,
   BadgeCheck,
@@ -51,13 +51,7 @@ export function ProcurementFlowSection() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_60%,rgba(59,130,246,0.12),transparent_42%)]" />
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.55 }}
-          className="mx-auto max-w-3xl text-center"
-        >
+        <ScrollReveal variant="blurIn" range={[0, 0.3]} className="mx-auto max-w-3xl text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-emerald-200">
             <BadgeCheck className="h-3.5 w-3.5" />
             Procurement Workflow
@@ -69,33 +63,32 @@ export function ProcurementFlowSection() {
             FormaOS connects trust artifacts, product workflows, and buyer
             assurance so enterprise deals progress with fewer blockers.
           </p>
-        </motion.div>
+        </ScrollReveal>
 
         <div className="mt-8 grid gap-4 lg:grid-cols-3">
           {procurementFlow.map((item, idx) => (
-            <motion.article
+            <ScrollReveal
               key={item.title}
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.08 }}
-              className="rounded-2xl border border-white/10 bg-white/5 p-6"
+              variant="fadeUp"
+              range={[idx * 0.04, 0.3 + idx * 0.04]}
             >
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-xs font-semibold uppercase tracking-wider text-cyan-200">
-                  Step {item.step}
-                </span>
-                <span className="inline-flex rounded-lg border border-white/15 bg-white/5 p-2">
-                  <item.icon className="h-4 w-4 text-slate-200" />
-                </span>
-              </div>
-              <p className="mt-4 text-base font-semibold text-white">
-                {item.title}
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                {item.detail}
-              </p>
-            </motion.article>
+              <article className="rounded-2xl border border-white/10 bg-white/5 p-6">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-cyan-200">
+                    Step {item.step}
+                  </span>
+                  <span className="inline-flex rounded-lg border border-white/15 bg-white/5 p-2">
+                    <item.icon className="h-4 w-4 text-slate-200" />
+                  </span>
+                </div>
+                <p className="mt-4 text-base font-semibold text-white">
+                  {item.title}
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                  {item.detail}
+                </p>
+              </article>
+            </ScrollReveal>
           ))}
         </div>
 

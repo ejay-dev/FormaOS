@@ -31,10 +31,10 @@ const WebGLNodeField = dynamic(() => import('../webgl/NodeField'), {
   ssr: false,
   loading: () => null,
 });
-const CinematicField = dynamic(() => import('../motion/CinematicField'), {
-  ssr: false,
-  loading: () => null,
-});
+const UnifiedParticles = dynamic(
+  () => import('@/components/motion/UnifiedParticles').then((m) => m.UnifiedParticles),
+  { ssr: false, loading: () => null },
+);
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -227,10 +227,10 @@ export function HeroSection() {
         </div>
       )}
 
-      {/* Cinematic Particle Field */}
+      {/* Unified Particle Field */}
       {!shouldReduceMotion && allowHeavyVisuals && enableHeavyVisuals && (
         <div className="absolute inset-0 z-1">
-          <CinematicField />
+          <UnifiedParticles preset="constellation" count={60} color="6,182,212" connections opacity={0.5} />
         </div>
       )}
 
