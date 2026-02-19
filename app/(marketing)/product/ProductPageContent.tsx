@@ -7,11 +7,11 @@ import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 
 /* ── Split hero: full-bleed animation + copy section below ── */
 const ProductHeroAnimation = dynamic(
-  () => import('@/components/marketing/ProductHeroLargeObject').then((m) => m.ProductHeroAnimation),
+  () => import('@/components/marketing/ProductHeroShowcase').then((m) => m.ProductHeroAnimation),
   { ssr: false, loading: () => <div className="w-full" style={{ height: '96vh', minHeight: '780px' }} /> },
 );
 const ProductHeroCopy = dynamic(
-  () => import('@/components/marketing/ProductHeroLargeObject').then((m) => m.ProductHeroCopy),
+  () => import('@/components/marketing/ProductHeroShowcase').then((m) => m.ProductHeroCopy),
   { ssr: false, loading: () => null },
 );
 
