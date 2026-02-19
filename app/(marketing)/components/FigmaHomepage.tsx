@@ -72,7 +72,7 @@ export default function FormaOSHomepage() {
           <DeferredSection minHeight={720}>
             <InteractiveDemo />
           </DeferredSection>
-          <DeferredSection minHeight={620}>
+          <DeferredSection minHeight={2400}>
             <ScrollStory />
           </DeferredSection>
           <DeferredSection minHeight={720}>
