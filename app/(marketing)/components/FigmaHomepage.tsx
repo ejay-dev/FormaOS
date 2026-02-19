@@ -63,6 +63,10 @@ const EvidenceShowcase = dynamic(
   () => import('@/components/marketing/demo/EvidenceShowcase'),
   { ssr: false, loading: () => null }
 );
+const FrameworkMap = dynamic(() => import('./homepage/FrameworkMap').then((m) => m.FrameworkMap), {
+  ssr: false,
+  loading: () => null,
+});
 const TaskShowcase = dynamic(
   () => import('@/components/marketing/demo/TaskShowcase'),
   { ssr: false, loading: () => null }
@@ -119,13 +123,6 @@ export default function FormaOSHomepage() {
             </div>
           )}
 
-          {/* Global WebGL Node System */}
-          {!shouldReduceMotion && allowHeavyVisuals && enableHeavyVisuals && (
-            <div className="fixed inset-0 z-1 opacity-20 pointer-events-none">
-              <WebGLNodeField state="model" />
-            </div>
-          )}
-
           {/* Page Sections */}
           <div className="mk-marketing-flow relative z-10">
             <HeroSection />
@@ -141,6 +138,9 @@ export default function FormaOSHomepage() {
             </DeferredSection>
             <DeferredSection minHeight={640}>
               <CapabilitiesGrid />
+            </DeferredSection>
+            <DeferredSection minHeight={700}>
+              <FrameworkMap />
             </DeferredSection>
             <DeferredSection minHeight={640}>
               <EvidenceShowcase />

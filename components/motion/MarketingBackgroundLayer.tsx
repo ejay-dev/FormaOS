@@ -2,6 +2,7 @@
 
 import { memo, useEffect, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
+import { CanvasShaderBackground } from './CanvasShaderBackground';
 
 /**
  * MarketingBackgroundLayer
@@ -76,23 +77,14 @@ function MarketingBackgroundLayerInner() {
       aria-hidden
       className="mk-bg-layer pointer-events-none fixed inset-0 z-0"
     >
+      {/* Canvas aurora + data streams (replaces dot-grid) */}
+      {!shouldReduceMotion && !isMobile && <CanvasShaderBackground />}
+
       {/* Vertical depth gradient */}
       <div className="mk-bg-depth mk-bg-depth--far absolute inset-0 bg-gradient-to-b from-transparent via-[#0d1421]/30 to-transparent" />
 
-      {/* Dot-grid pattern (product-page consistency) */}
-      {enhancedReady && !isMobile && (
-        <div
-          className="mk-bg-depth mk-bg-depth--near absolute inset-0 opacity-[0.07]"
-          style={{
-            backgroundImage:
-              'radial-gradient(circle at 1px 1px, rgba(6, 182, 212, 0.15) 1px, transparent 0)',
-            backgroundSize: '40px 40px',
-          }}
-        />
-      )}
-
-      {/* Radial bloom — soft center light */}
-      {enhancedReady && (
+      {/* Radial bloom fallback for mobile / reduced motion */}
+      {(isMobile || shouldReduceMotion) && (
         <div
           className="mk-bg-depth mk-bg-depth--mid absolute inset-0"
           style={{

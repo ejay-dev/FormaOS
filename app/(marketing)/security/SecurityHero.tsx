@@ -8,9 +8,6 @@ import {
   ParallaxLayer,
 } from '@/components/motion';
 import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
-import { brand } from '@/config/brand';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 export function SecurityHero() {
   return (
@@ -51,12 +48,6 @@ export function SecurityHero() {
               <br />
               <span className="relative">
                 <span className="text-gradient">by Design</span>
-                <motion.div
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.8, duration: duration.slower }}
-                  className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-accent via-primary to-secondary rounded-full origin-left"
-                />
               </span>
             </h1>
 
@@ -100,17 +91,17 @@ export function SecurityHero() {
               className="flex flex-col sm:flex-row gap-4 justify-center pt-4"
             >
               <Link
-                href={`${appBase}/auth/signup`}
+                href="/contact"
                 className="mk-btn mk-btn-primary text-lg px-8 py-4 group"
               >
-                <span>Start Free Trial</span>
+                <span>Request Security Briefing</span>
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
-                href="/contact"
+                href="/security-review"
                 className="mk-btn mk-btn-secondary text-lg px-8 py-4"
               >
-                Security Briefing
+                Download Security Packet
               </Link>
             </motion.div>
           </motion.div>

@@ -51,12 +51,6 @@ export function IndustriesHero() {
               <br />
               <span className="relative">
                 <span className="text-gradient">for Your Sector</span>
-                <motion.div
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.8, duration: duration.slower }}
-                  className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-secondary via-accent to-primary rounded-full origin-left"
-                />
               </span>
             </h1>
 

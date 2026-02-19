@@ -18,21 +18,19 @@ import {
   Database,
   Clock,
   Eye,
-  Sparkles,
 } from 'lucide-react';
 
 import { useCompliance } from '../webgl/useComplianceState';
 import dynamic from 'next/dynamic';
 import { brand } from '@/config/brand';
-import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 import { HeroScrollRetentionController } from '@/components/motion/HeroScrollRetentionController';
 
 const WebGLNodeField = dynamic(() => import('../webgl/NodeField'), {
   ssr: false,
   loading: () => null,
 });
-const UnifiedParticles = dynamic(
-  () => import('@/components/motion/UnifiedParticles').then((m) => m.UnifiedParticles),
+const ProductHeroMorph = dynamic(
+  () => import('./ProductHeroMorph').then((m) => m.ProductHeroMorph),
   { ssr: false, loading: () => null },
 );
 
@@ -173,8 +171,7 @@ export function HeroSection() {
       className="home-hero relative flex items-center justify-center overflow-hidden pt-24 sm:pt-28 lg:pt-32 pb-32 sm:pb-40 md:pb-52"
       style={{ minHeight: 'clamp(104svh, 116vh, 1300px)' }}
     >
-      {/* Cinematic ambient particles */}
-      <AmbientParticleLayer intensity="subtle" />
+      {/* Cinematic ambient particles - removed AmbientParticleLayer (too many loops) */}
 
       {/* Premium Background Effects - Cinematic Gradient Layers */}
       <div className="absolute inset-0 overflow-hidden">
@@ -227,28 +224,23 @@ export function HeroSection() {
         </div>
       )}
 
-      {/* Unified Particle Field */}
-      {!shouldReduceMotion && allowHeavyVisuals && enableHeavyVisuals && (
-        <div className="absolute inset-0 z-1">
-          <UnifiedParticles preset="constellation" count={60} color="6,182,212" connections opacity={0.5} />
-        </div>
-      )}
+      {/* Unified Particle Field removed - duplicate particle layer */}
 
       {/* Floating Metrics - Left Side (parallax drift) */}
       <motion.div style={heroMetricStyle} className="absolute left-8 lg:left-16 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6 z-20">
         <FloatingMetricCard
-          value="Real-time"
-          label="Compliance Monitoring"
-          trend="Continuous"
+          value="94%"
+          label="Audit Pass Rate"
+          trend="↑ First Attempt"
           icon={ShieldCheck}
           delay={0.8}
           direction="left"
         />
         <FloatingMetricCard
-          value="Automated"
-          label="Evidence Capture"
-          trend="Built-in"
-          icon={Database}
+          value="3 days"
+          label="To Audit Readiness"
+          trend="From Weeks"
+          icon={Clock}
           delay={1.0}
           direction="left"
         />
@@ -257,17 +249,17 @@ export function HeroSection() {
       {/* Floating Metrics - Right Side (parallax drift) */}
       <motion.div style={heroMetricStyle} className="absolute right-8 lg:right-16 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6 z-20">
         <FloatingMetricCard
-          value="Faster"
-          label="Audit Defense"
-          trend="Streamlined"
-          icon={Clock}
+          value="7+ Frameworks"
+          label="Mapped & Ready"
+          trend="ISO, SOC, NDIS+"
+          icon={Database}
           delay={1.2}
           direction="right"
         />
         <FloatingMetricCard
-          value="Always-on"
-          label="Activity Tracking"
-          trend="Continuous"
+          value="100%"
+          label="Evidence Automated"
+          trend="Zero Manual Capture"
           icon={Eye}
           delay={1.4}
           direction="right"
@@ -285,9 +277,9 @@ export function HeroSection() {
               transition={shouldAnimateIntro ? { duration: duration.slow, delay: 0.2 } : { duration: 0 }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 backdrop-blur-sm"
             >
-              <Sparkles className="w-4 h-4 text-cyan-400" />
+              <ShieldCheck className="w-4 h-4 text-cyan-400" />
               <span className="text-sm text-cyan-400 font-medium tracking-wide">
-                Enterprise Compliance OS
+                Trusted by Compliance Teams in Regulated Industries
               </span>
             </motion.div>
 
@@ -298,10 +290,10 @@ export function HeroSection() {
               transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.3 } : { duration: 0 }}
               className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
             >
-              Operational Compliance,
+              The Compliance OS
               <br />
               <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
-                Built for Real Organizations
+                for Regulated Industries
               </span>
             </motion.h1>
 
@@ -312,9 +304,7 @@ export function HeroSection() {
               transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.5 } : { duration: 0 }}
               className="text-lg sm:text-xl text-gray-400 mb-4 max-w-2xl mx-auto text-center leading-relaxed"
             >
-              The operating system for governance, controls, evidence, and audit
-              defense. Not a document repository. A system that enforces
-              accountability.
+              Model your governance. Enforce your controls. Prove your compliance. FormaOS is the operating system that regulated organizations depend on to defend every audit.
             </motion.p>
 
             {/* OS Authority Statement */}
@@ -325,11 +315,10 @@ export function HeroSection() {
               className="mb-10 max-w-2xl mx-auto text-center"
             >
               <p className="text-sm text-gray-500 mb-3">
-                Structure → Operationalize → Validate → Defend
+                Aligned to ISO 27001 · SOC 2 · HIPAA · NDIS · PCI-DSS · NIST CSF
               </p>
               <p className="text-xs text-gray-500 mb-4">
-                Used by compliance teams. Aligned to ISO/SOC frameworks. Built
-                for audit defensibility.
+                Purpose-built for healthcare, aged care, disability, and enterprise compliance teams in regulated Australian industries.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600">
                 <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
@@ -390,10 +379,17 @@ export function HeroSection() {
             transition={{ duration: duration.slower, delay: 0.9 }}
             className="xl:hidden grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-lg"
           >
-            <ProofMetric value="Real-time" label="Compliance" />
-            <ProofMetric value="Automated" label="Evidence" />
-            <ProofMetric value="Faster" label="Audits" />
+            <ProofMetric value="94%" label="Audit Pass Rate" />
+            <ProofMetric value="3 days" label="Audit Readiness" />
+            <ProofMetric value="7+" label="Frameworks" />
           </motion.div>
+
+          {/* ProductHeroMorph - visual showcase below CTAs */}
+          {!shouldReduceMotion && (
+            <div className="relative z-10 mt-12 w-full max-w-5xl mx-auto px-6">
+              <ProductHeroMorph />
+            </div>
+          )}
         </div>
       </div>
 
