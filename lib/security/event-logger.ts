@@ -3,9 +3,12 @@
  *
  * Best-effort buffered writer for security events and activity records.
  * Request handlers should enqueue and return immediately.
+ * 
+ * Enhanced with persistent queue fallback for critical events.
  */
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { enqueueFailedEvent } from './persistent-queue';
 import {
   detectBruteForce,
   detectImpossibleTravel,
@@ -327,6 +330,14 @@ async function flushSecurityEventsBatch(
   );
 
   if (!inserted || (inserted as any).error || !(inserted as any).data) {
+    // DB write failed or timed out - enqueue critical events to persistent queue
+    console.warn(`[Security] DB write failed, enqueuing ${batch.length} events to persistent queue`);
+    for (const payload of batch) {
+      const severity = payload.severity || 'info';
+      if (severity === 'critical' || severity === 'high') {
+        await enqueueFailedEvent('security_event', payload);
+      }
+    }
     return;
   }
 
@@ -433,10 +444,18 @@ async function flushUserActivityBatch(
     metadata: sanitizeMetadata(params.metadata),
   }));
 
-  await withDbTimeout(
+  const result = await withDbTimeout(
     admin.from('user_activity').insert(rows),
     'user_activity.insert',
   );
+  
+  if (!result) {
+    // DB write timed out - enqueue to persistent queue
+    console.warn(`[Security] DB write timeout, enqueuing ${batch.length} activity events to persistent queue`);
+    for (const payload of batch) {
+      await enqueueFailedEvent('user_activity', payload);
+    }
+  }
 }
 
 async function flushQueues(): Promise<void> {

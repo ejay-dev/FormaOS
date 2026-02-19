@@ -73,7 +73,6 @@ async function persistLogoutHeartbeat(
 
     await supabase.rpc('update_session_heartbeat', {
       p_session_id: sessionId,
-      p_user_id: userId,
     });
   } catch {
     // Best-effort heartbeat only.

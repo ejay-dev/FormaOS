@@ -94,7 +94,6 @@ export async function POST(request: Request) {
       'update_session_heartbeat',
       {
         p_session_id: sessionId,
-        p_user_id: user.id,
       },
     );
 
