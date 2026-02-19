@@ -15,7 +15,7 @@
  *   - Memoized: TabsRail, AppPanel, all 6 view renderers
  */
 
-import { useRef, useEffect, useState, useCallback, memo, startTransition } from 'react';
+import { useRef, useEffect, useState, useCallback, memo } from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { motion, useReducedMotion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { duration } from '@/config/motion';
@@ -393,7 +393,7 @@ const TabsRail = memo(function TabsRail({
               </div>
               <div className="flex-1 min-w-0">
                 <div className={`text-sm font-medium truncate leading-tight ${isActive ? 'text-white/90' : 'text-white/65'}`}>{tab.title}</div>
-                <div className="text-[13px] text-white/35 truncate leading-tight mt-0.5">{tab.sub}</div>
+                <div className="text-[13px] text-white/40 truncate leading-tight mt-0.5">{tab.sub}</div>
               </div>
               <div className={`text-lg font-bold shrink-0 ${isActive ? vm.accent : 'text-white/45'}`}>{tab.stat}</div>
             </button>
@@ -552,9 +552,9 @@ const AppPanel = memo(function AppPanel({
       className="relative overflow-hidden rounded-2xl w-full h-full"
       style={{
         background: 'linear-gradient(145deg, rgba(15,22,40,0.98) 0%, rgba(10,15,28,0.99) 100%)',
-        border: `1px solid rgba(${glowColor},0.20)`,
+        border: `1px solid rgba(${glowColor},0.40)`,
         boxShadow: `0 0 50px rgba(${glowColor},0.05), 0 28px 56px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05)`,
-        backdropFilter: 'blur(16px)',
+        backdropFilter: 'blur(10px)',
         transition: 'border-color 0.25s ease-out, box-shadow 0.25s ease-out',
       }}
     >
@@ -584,7 +584,7 @@ const AppPanel = memo(function AppPanel({
 
         <div className="flex flex-1 min-h-0 overflow-hidden">
           {/* Sidebar */}
-          <div className="w-[160px] shrink-0 border-r border-white/[0.06] bg-white/[0.01] py-3.5 px-2.5 flex flex-col overflow-hidden">
+          <div className="w-[160px] shrink-0 border-r border-white/[0.06] bg-white/[0.03] py-3.5 px-2.5 flex flex-col overflow-hidden">
             <div className="flex items-center gap-2.5 px-2.5 mb-5">
               <div className="w-7 h-7 rounded-md bg-gradient-to-br from-cyan-400/25 to-blue-500/15 flex items-center justify-center">
                 <span className="text-[13px] font-bold text-cyan-400/80">FO</span>
@@ -694,8 +694,8 @@ function DesktopScene({
   mouseY: number;
   shouldAnimate: boolean;
 }) {
-  const rx = shouldAnimate ? mouseX * 2 : 0;
-  const ry = shouldAnimate ? mouseY * 1.2 : 0;
+  const rx = shouldAnimate ? mouseX * 0.4 : 0;
+  const ry = shouldAnimate ? mouseY * 0.25 : 0;
 
   return (
     <div className="relative w-full h-full">
@@ -710,13 +710,13 @@ function DesktopScene({
 
       {/* Flex layout — tabs left, panel right, fill the width */}
       <div
-        className="absolute inset-0 flex items-center justify-center px-6 lg:px-10 xl:px-16 gap-5 lg:gap-8 xl:gap-10"
+        className="absolute inset-0 flex items-center justify-center px-6 lg:px-10 xl:px-16 gap-6 lg:gap-10 xl:gap-14"
         style={{ perspective: '1400px' }}
       >
         {/* Tabs column */}
         <div
           style={{
-            transform: `rotateY(${3.5 + rx}deg) rotateX(${-1.5 + ry}deg)`,
+            transform: `rotateY(${0.5 + rx}deg) rotateX(${-0.3 + ry}deg)`,
             transition: shouldAnimate ? 'transform 0.12s linear' : 'none',
             transformStyle: 'preserve-3d',
             height: 'min(84vh, 720px)',
@@ -731,7 +731,7 @@ function DesktopScene({
           style={{
             maxWidth: '1000px',
             height: 'min(84vh, 720px)',
-            transform: `rotateY(${-1.5 + rx * 0.4}deg) rotateX(${0.8 + ry * 0.3}deg)`,
+            transform: `rotateY(${-0.5 + rx * 0.2}deg) rotateX(${0.4 + ry * 0.15}deg)`,
             transition: shouldAnimate ? 'transform 0.12s linear' : 'none',
             transformStyle: 'preserve-3d',
           }}
@@ -801,15 +801,11 @@ export function ProductShowcase() {
 
   const handleTabClick = useCallback((tab: Tab) => {
     setActiveTabId(tab.id);
-    startTransition(() => {
-      setActiveView(tab.view);
-    });
+    setActiveView(tab.view);
   }, []);
 
   const handleViewChange = useCallback((v: ViewId) => {
-    startTransition(() => {
-      setActiveView(v);
-    });
+    setActiveView(v);
     const match = TABS.find((t) => t.view === v);
     if (match) setActiveTabId(match.id);
   }, []);
