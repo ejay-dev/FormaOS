@@ -1,6 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { useSearchParams } from 'next/navigation';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
@@ -11,8 +12,8 @@ const ProductHero3D = dynamic(
   { ssr: false, loading: () => null },
 );
 
-const PRODUCT_HERO_EXPERIMENT =
-  process.env.NEXT_PUBLIC_PRODUCT_HERO_EXPERIMENT !== '0';
+const ENV_FLAG = process.env.NEXT_PUBLIC_PRODUCT_HERO_EXPERIMENT !== '0';
+
 const OperationalScenarioProof = dynamic(
   () => import('@/components/marketing/demo/OperationalScenarioProof').then((m) => m.OperationalScenarioProof),
   { ssr: false, loading: () => null },
@@ -58,10 +59,27 @@ const FinalCTA = dynamic(() => import('./components/FinalCTA').then((m) => m.Fin
   loading: () => null,
 });
 
+function useHero3DEnabled(): boolean {
+  const params = useSearchParams();
+  const qp = params.get('hero3d');
+  // ?hero3d=1 forces on, ?hero3d=0 forces off, otherwise env flag
+  if (qp === '1') return true;
+  if (qp === '0') return false;
+  return ENV_FLAG;
+}
+
 export default function ProductPageContent() {
+  const hero3d = useHero3DEnabled();
+
   return (
     <MarketingPageShell enableCinematicField={false}>
-      {PRODUCT_HERO_EXPERIMENT ? <ProductHero3D /> : <ProductHero />}
+      {/* <!-- hero3d:{hero3d ? 'on' : 'off'} --> */}
+      <div
+        dangerouslySetInnerHTML={{
+          __html: `<!-- hero3d:${hero3d ? 'on' : 'off'} -->`,
+        }}
+      />
+      {hero3d ? <ProductHero3D /> : <ProductHero />}
       <DeferredSection minHeight={640}>
         <WhatIsFormaOS />
       </DeferredSection>
