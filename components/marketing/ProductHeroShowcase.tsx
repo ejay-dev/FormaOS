@@ -3,16 +3,16 @@
 /**
  * ProductHeroShowcase — Premium interactive hero for /product
  *
- * - 24 scrollable tab cards (vertical stack, inertia scroll)
- * - Clicking a tab morphs it into the main app panel (spring physics portal)
- * - 6 distinct views with realistic fake data
- * - All text >= 12px, high contrast
- * - prefers-reduced-motion: instant state, no animation
- * - CSS transforms, no WebGL
+ * Architecture:
+ *   TabsRail (native scroll, CSS snap) | AppPanel (memoized, overflow-clipped)
+ *   - Flexbox layout — no overlap at any breakpoint
+ *   - Instant click: state updates synchronously, no portal/morph overlay
+ *   - Native scroll: no custom RAF loop, no per-frame React re-renders
+ *   - No per-tab blur/backdropFilter — only panel gets glass effect
+ *   - AnimatePresence for content transitions (transform+opacity only)
  */
 
-import { useRef, useEffect, useState, useCallback } from 'react';
-import { createPortal } from 'react-dom';
+import { useRef, useEffect, useState, useCallback, memo, startTransition } from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { motion, useReducedMotion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { duration } from '@/config/motion';
@@ -86,7 +86,7 @@ const TABS: Tab[] = [
 ];
 
 /* ═══════════════════════════════════════════════════════════════════════
-   VIEW-SPECIFIC DATA (6 views)
+   VIEW DATA
    ═══════════════════════════════════════════════════════════════════════ */
 
 const DASHBOARD_ROWS = [
@@ -175,327 +175,256 @@ const STATS: Record<ViewId, { label: string; value: string; sub: string }[]> = {
 };
 
 /* ═══════════════════════════════════════════════════════════════════════
-   GRAIN OVERLAY
+   TABS RAIL — native scroll, CSS snap, zero JS scroll logic
    ═══════════════════════════════════════════════════════════════════════ */
 
-function GrainOverlay() {
-  return (
-    <div
-      aria-hidden
-      className="pointer-events-none absolute inset-0 z-[60] opacity-[0.025] mix-blend-overlay"
-      style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-        backgroundRepeat: 'repeat',
-        backgroundSize: '128px 128px',
-      }}
-    />
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
-   INERTIA SCROLL
-   ═══════════════════════════════════════════════════════════════════════ */
-
-function useInertiaScroll(itemCount: number, itemH: number, visibleH: number) {
-  const posRef = useRef(0);
-  const velRef = useRef(0);
-  const rafRef = useRef(0);
-  const lastWheelRef = useRef(0);
-  const runningRef = useRef(false);
-  const [scrollY, setScrollY] = useState(0);
-
-  const maxScroll = Math.max(0, itemCount * itemH - visibleH);
-
-  const tick = useCallback(() => {
-    const pos = posRef.current;
-    if (pos < 0) {
-      posRef.current += (0 - pos) * 0.15;
-      velRef.current *= 0.6;
-    } else if (pos > maxScroll) {
-      posRef.current += (maxScroll - pos) * 0.15;
-      velRef.current *= 0.6;
-    } else {
-      velRef.current *= 0.92;
-    }
-    posRef.current += velRef.current;
-    setScrollY(posRef.current);
-
-    if (Math.abs(velRef.current) > 0.2 || posRef.current < -2 || posRef.current > maxScroll + 2) {
-      rafRef.current = requestAnimationFrame(tick);
-    } else {
-      runningRef.current = false;
-      posRef.current = Math.max(0, Math.min(maxScroll, posRef.current));
-      setScrollY(posRef.current);
-    }
-  }, [maxScroll]);
-
-  const onWheel = useCallback((e: WheelEvent) => {
-    e.preventDefault();
-    const now = Date.now();
-    const dt = Math.max(8, now - lastWheelRef.current);
-    lastWheelRef.current = now;
-    velRef.current = e.deltaY * 0.6 * Math.min(1, 16 / dt);
-    if (!runningRef.current) {
-      runningRef.current = true;
-      rafRef.current = requestAnimationFrame(tick);
-    }
-  }, [tick]);
-
-  useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
-
-  return { scrollY, onWheel };
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
-   MORPH OVERLAY — portal that flies from tab to panel
-   ═══════════════════════════════════════════════════════════════════════ */
-
-interface MorphRect { x: number; y: number; w: number; h: number }
-interface MorphData { from: MorphRect; to: MorphRect; glow: string }
-
-function MorphOverlay({ morph, onDone }: { morph: MorphData; onDone: () => void }) {
-  const dx = morph.to.x + morph.to.w / 2 - morph.from.x - morph.from.w / 2;
-  const dy = morph.to.y + morph.to.h / 2 - morph.from.y - morph.from.h / 2;
-  const sx = morph.to.w / morph.from.w;
-  const sy = morph.to.h / morph.from.h;
-
-  return createPortal(
-    <motion.div
-      className="pointer-events-none"
-      style={{
-        position: 'fixed',
-        zIndex: 9999,
-        left: morph.from.x,
-        top: morph.from.y,
-        width: morph.from.w,
-        height: morph.from.h,
-        transformOrigin: 'center center',
-        borderRadius: '16px',
-        willChange: 'transform',
-      }}
-      initial={{ x: 0, y: 0, scaleX: 1, scaleY: 1, opacity: 0.95 }}
-      animate={{ x: dx, y: dy, scaleX: sx, scaleY: sy, opacity: 0.85 }}
-      transition={{ type: 'spring', stiffness: 170, damping: 24, mass: 0.8 }}
-      onAnimationComplete={onDone}
-    >
-      {/* Gradient fill */}
-      <div
-        className="absolute inset-0 rounded-[inherit]"
-        style={{
-          background: `linear-gradient(145deg, rgba(${morph.glow},0.12) 0%, rgba(10,15,28,0.92) 40%)`,
-          border: `1px solid rgba(${morph.glow},0.3)`,
-          boxShadow: `0 0 60px rgba(${morph.glow},0.2), 0 30px 60px rgba(0,0,0,0.4)`,
-        }}
-      />
-      {/* Glow pulse */}
-      <motion.div
-        className="absolute inset-0 rounded-[inherit]"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: [0, 0.7, 0] }}
-        transition={{ duration: 0.45, ease: 'easeInOut' }}
-        style={{ border: `2px solid rgba(${morph.glow},0.5)`, boxShadow: `inset 0 0 30px rgba(${morph.glow},0.15)` }}
-      />
-      {/* Light sweep */}
-      <div className="absolute inset-0 overflow-hidden rounded-[inherit]">
-        <motion.div
-          className="absolute inset-y-0 w-1/3"
-          initial={{ x: '-100%' }}
-          animate={{ x: '400%' }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
-          style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)' }}
-        />
-      </div>
-    </motion.div>,
-    document.body,
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
-   TAB STACK — scrollable with morph on click
-   ═══════════════════════════════════════════════════════════════════════ */
-
-const TAB_H = 70;
-const VISIBLE_COUNT = 8;
-const STACK_H = TAB_H * VISIBLE_COUNT;
-
-function TabStack({
+const TabsRail = memo(function TabsRail({
   activeTabId,
-  liftedTabId,
   onTabClick,
-  shouldAnimate,
-  entranceProgress,
-  tabRefs,
 }: {
   activeTabId: string;
-  liftedTabId: string | null;
-  onTabClick: (tab: Tab, el: HTMLButtonElement) => void;
-  shouldAnimate: boolean;
-  entranceProgress: number;
-  tabRefs: React.MutableRefObject<Map<string, HTMLButtonElement>>;
+  onTabClick: (tab: Tab) => void;
 }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollY, onWheel } = useInertiaScroll(TABS.length, TAB_H, STACK_H);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Scroll active tab into view on mount
   useEffect(() => {
-    const el = containerRef.current;
+    const el = scrollRef.current;
     if (!el) return;
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
-  }, [onWheel]);
-
-  const ease3 = (t: number) => 1 - Math.pow(1 - t, 3);
-  const entrance = shouldAnimate ? ease3(Math.min(1, entranceProgress / 0.8)) : 1;
+    const active = el.querySelector('[data-active="true"]');
+    if (active) active.scrollIntoView({ block: 'nearest' });
+  }, [activeTabId]);
 
   return (
-    <div
-      ref={containerRef}
-      className="relative overflow-hidden"
-      style={{
-        width: '400px',
-        height: `${STACK_H}px`,
-        maskImage: 'linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%)',
-        WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%)',
-      }}
-      role="listbox"
-      aria-label="Feature modules"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-          e.preventDefault();
-          const curIdx = TABS.findIndex((t) => t.id === activeTabId);
-          const next = e.key === 'ArrowDown' ? Math.min(curIdx + 1, TABS.length - 1) : Math.max(curIdx - 1, 0);
-          const tab = TABS[next];
-          const el = tabRefs.current.get(tab.id);
-          if (el) onTabClick(tab, el);
-        }
-      }}
-    >
-      <div className="absolute left-0 right-0" style={{ transform: `translateY(${-scrollY}px)`, willChange: 'transform' }}>
-        {TABS.map((tab, i) => {
-          const viewMeta = VIEW_MAP[tab.view];
-          const cardTop = i * TAB_H;
-          const dist = Math.abs(cardTop - scrollY - STACK_H / 2 + TAB_H / 2);
-          const depthBlur = Math.max(0, (dist - STACK_H * 0.3) / (STACK_H * 0.4));
-          const isActive = tab.id === activeTabId;
-          const isLifted = tab.id === liftedTabId;
-          const entDelay = shouldAnimate ? (1 - entrance) * (50 + i * 6) : 0;
+    <div className="relative w-[340px] lg:w-[380px] shrink-0 self-stretch flex flex-col">
+      {/* Top fade */}
+      <div className="absolute top-0 left-0 right-0 h-8 z-10 pointer-events-none" style={{ background: 'linear-gradient(to bottom, rgba(10,15,28,0.95), transparent)' }} />
+      {/* Bottom fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-8 z-10 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(10,15,28,0.95), transparent)' }} />
 
+      <div
+        ref={scrollRef}
+        className="flex-1 overflow-y-auto overflow-x-hidden py-4 px-1 space-y-1.5"
+        role="listbox"
+        aria-label="Feature modules"
+        style={{
+          scrollSnapType: 'y proximity',
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'rgba(255,255,255,0.08) transparent',
+        }}
+      >
+        {TABS.map((tab) => {
+          const vm = VIEW_MAP[tab.view];
+          const isActive = tab.id === activeTabId;
           return (
             <button
               key={tab.id}
-              ref={(el) => { if (el) tabRefs.current.set(tab.id, el); }}
               type="button"
               role="option"
               aria-selected={isActive}
-              onClick={(e) => onTabClick(tab, e.currentTarget)}
-              className="absolute left-0 right-0 mx-2 flex items-center gap-3 px-5 overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40 group"
-              style={{
-                top: `${cardTop}px`,
-                height: `${TAB_H - 6}px`,
-                borderRadius: '14px',
-                background: `linear-gradient(135deg, rgba(${viewMeta.glow},${isActive ? 0.12 : 0.07}) 0%, rgba(51,153,255,0.03) 100%)`,
-                border: `1px solid rgba(${viewMeta.glow},${isActive ? 0.35 : 0.12})`,
-                boxShadow: isLifted
-                  ? `0 0 40px rgba(${viewMeta.glow},0.25), 0 12px 32px rgba(0,0,0,0.4)`
-                  : isActive
-                    ? `0 0 20px rgba(${viewMeta.glow},0.12), 0 4px 16px rgba(0,0,0,0.25)`
-                    : '0 2px 8px rgba(0,0,0,0.15)',
-                filter: depthBlur > 0 ? `blur(${depthBlur * 3}px)` : 'none',
-                opacity: isLifted ? 0.4 : Math.max(0.3, 1 - depthBlur * 0.7) * entrance,
-                transform: `translateY(${entDelay}px) scale(${isLifted ? 1.04 : 1})`,
-                backdropFilter: 'blur(8px)',
-                willChange: 'transform, opacity, filter',
-                cursor: 'pointer',
-                transition: 'border-color 0.2s, box-shadow 0.25s, opacity 0.2s, transform 0.25s',
-              }}
+              data-active={isActive}
+              onClick={() => onTabClick(tab)}
+              className={`
+                w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left
+                transition-all duration-150 ease-out
+                focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40
+                group relative overflow-hidden
+                ${isActive
+                  ? 'bg-white/[0.06] border border-white/[0.12] shadow-lg shadow-black/20'
+                  : 'bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.05] hover:border-white/[0.09]'
+                }
+              `}
+              style={{ scrollSnapAlign: 'start' }}
             >
+              {/* Active accent bar */}
+              {isActive && (
+                <div
+                  className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full"
+                  style={{ background: `rgba(${vm.glow},0.6)` }}
+                />
+              )}
               {/* Hover shimmer */}
-              <div
-                className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{
-                  background: 'linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.04) 48%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.04) 52%, transparent 65%)',
-                  animation: 'none',
-                }}
-              />
-              {/* Glass top edge */}
-              <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(168deg, rgba(255,255,255,0.05) 0%, transparent 30%)' }} />
-              {/* Active ring */}
-              <div
-                className={`absolute inset-0 rounded-[14px] pointer-events-none transition-opacity duration-200 ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
-                style={{ boxShadow: `inset 0 0 0 1px rgba(${viewMeta.glow},0.2)` }}
-              />
+              <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.03) 49%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.03) 51%, transparent 60%)' }} />
 
               <div
-                className={`w-8 h-8 rounded-lg flex items-center justify-center text-[15px] shrink-0 ${viewMeta.accent}`}
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+                className={`w-8 h-8 rounded-lg flex items-center justify-center text-[15px] shrink-0 ${vm.accent}`}
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
               >
-                {viewMeta.icon}
+                {vm.icon}
               </div>
-              <div className="flex-1 min-w-0 text-left">
-                <div className="text-[13px] text-white/75 font-medium truncate leading-tight">{tab.title}</div>
-                <div className="text-[12px] text-white/35 truncate leading-tight mt-0.5">{tab.sub}</div>
+              <div className="flex-1 min-w-0">
+                <div className={`text-[13px] font-medium truncate leading-tight ${isActive ? 'text-white/85' : 'text-white/60'}`}>{tab.title}</div>
+                <div className="text-[12px] text-white/30 truncate leading-tight mt-0.5">{tab.sub}</div>
               </div>
-              <div className={`text-[17px] font-bold shrink-0 ${viewMeta.accent}`}>{tab.stat}</div>
-              <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${viewMeta.dot} opacity-50`} />
+              <div className={`text-[16px] font-bold shrink-0 ${isActive ? vm.accent : 'text-white/40'}`}>{tab.stat}</div>
             </button>
           );
         })}
       </div>
-
-      {/* Scroll track */}
-      <div className="absolute right-0 top-[6%] bottom-[6%] w-[3px] rounded-full bg-white/[0.04] z-20">
-        <div
-          className="absolute top-0 w-full rounded-full bg-white/[0.12]"
-          style={{
-            height: `${Math.max(20, (STACK_H / (TABS.length * TAB_H)) * 100)}%`,
-            top: `${(scrollY / Math.max(1, TABS.length * TAB_H - STACK_H)) * (100 - Math.max(20, (STACK_H / (TABS.length * TAB_H)) * 100))}%`,
-            transition: 'top 0.06s linear',
-          }}
-        />
-      </div>
     </div>
   );
-}
+});
 
 /* ═══════════════════════════════════════════════════════════════════════
-   APP PANEL — big focal window, 6 interactive views
+   PANEL VIEW CONTENT — memoized per-view renderers
    ═══════════════════════════════════════════════════════════════════════ */
 
-function AppPanel({
+const ROW_CLS = 'flex items-center gap-2.5 rounded-lg bg-white/[0.02] border border-white/[0.05] px-4 py-2.5 hover:bg-white/[0.04] hover:border-white/[0.10] transition-colors cursor-default';
+
+const DashboardView = memo(function DashboardView() {
+  return (
+    <>
+      {DASHBOARD_ROWS.map((r) => (
+        <div key={r.title} className={ROW_CLS}>
+          <div className={`w-2 h-2 rounded-full ${r.dot} shrink-0`} />
+          <div className="flex-1 min-w-0 text-[13px] text-white/60 truncate">{r.title}</div>
+          <div className="w-6 h-6 rounded-full bg-white/[0.04] flex items-center justify-center shrink-0"><span className="text-[12px] font-semibold text-white/40">{r.assignee}</span></div>
+          <div className={`text-[12px] px-2 py-0.5 rounded-full shrink-0 ${r.badgeCls}`}>{r.badge}</div>
+          {r.pct > 0 && r.pct < 100 && (
+            <div className="w-14 h-1.5 rounded-full bg-white/[0.05] overflow-hidden shrink-0">
+              <div className="h-full rounded-full bg-gradient-to-r from-cyan-400/40 to-blue-400/25" style={{ width: `${r.pct}%` }} />
+            </div>
+          )}
+        </div>
+      ))}
+    </>
+  );
+});
+
+const EvidenceView = memo(function EvidenceView() {
+  return (
+    <>
+      {EVIDENCE_ROWS.map((r) => (
+        <div key={r.name} className={ROW_CLS}>
+          <div className="w-7 h-7 rounded-lg bg-violet-400/10 flex items-center justify-center shrink-0"><span className="text-[12px] text-violet-300 font-mono">{r.type}</span></div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[13px] text-white/60 truncate">{r.name}</div>
+            <div className="text-[12px] text-white/22">{r.size} · {r.date}</div>
+          </div>
+          <div className="text-[12px] px-2 py-0.5 rounded-full bg-violet-400/12 text-violet-300 shrink-0">{r.tag}</div>
+        </div>
+      ))}
+    </>
+  );
+});
+
+const ControlsView = memo(function ControlsView() {
+  return (
+    <>
+      {CONTROLS_ROWS.map((r) => (
+        <div key={r.code} className={ROW_CLS}>
+          <div className="text-[12px] font-mono text-blue-300/70 w-12 shrink-0">{r.code}</div>
+          <div className="flex-1 min-w-0 text-[13px] text-white/60 truncate">{r.name}</div>
+          <div className="text-[12px] text-white/22 shrink-0">{r.framework}</div>
+          <div className={`text-[12px] px-2 py-0.5 rounded-full shrink-0 ${r.statusCls}`}>{r.status}</div>
+        </div>
+      ))}
+    </>
+  );
+});
+
+const ReportsView = memo(function ReportsView() {
+  return (
+    <>
+      {REPORTS_ROWS.map((r) => (
+        <div key={r.name} className={ROW_CLS}>
+          <div className="w-7 h-7 rounded-lg bg-emerald-400/10 flex items-center justify-center shrink-0"><span className="text-[13px] text-emerald-300">◈</span></div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[13px] text-white/60 truncate">{r.name}</div>
+            <div className="text-[12px] text-white/22">{r.date} · {r.pages} pages</div>
+          </div>
+          <div className={`text-[12px] px-2 py-0.5 rounded-full shrink-0 ${r.statusCls}`}>{r.status}</div>
+        </div>
+      ))}
+    </>
+  );
+});
+
+const RiskView = memo(function RiskView() {
+  return (
+    <>
+      {RISK_ROWS.map((r) => (
+        <div key={r.name} className={ROW_CLS}>
+          <div className={`w-2 h-2 rounded-full shrink-0 ${r.sevDot}`} />
+          <div className="flex-1 min-w-0 text-[13px] text-white/60 truncate">{r.name}</div>
+          <div className="text-[12px] text-white/22 shrink-0">{r.age}</div>
+          <div className="w-6 h-6 rounded-full bg-white/[0.04] flex items-center justify-center shrink-0"><span className="text-[12px] font-semibold text-white/40">{r.owner}</span></div>
+          <div className={`text-[12px] px-2 py-0.5 rounded-full shrink-0 ${r.sevCls}`}>{r.sev}</div>
+        </div>
+      ))}
+    </>
+  );
+});
+
+const PolicyView = memo(function PolicyView() {
+  return (
+    <>
+      {POLICY_ROWS.map((r) => (
+        <div key={r.name} className={ROW_CLS}>
+          <div className="w-7 h-7 rounded-lg bg-rose-400/10 flex items-center justify-center shrink-0"><span className="text-[13px] text-rose-300">▣</span></div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[13px] text-white/60 truncate">{r.name}</div>
+            <div className="text-[12px] text-white/22">{r.ver} · {r.review} · {r.owner}</div>
+          </div>
+          <div className={`text-[12px] px-2 py-0.5 rounded-full shrink-0 ${r.statusCls}`}>{r.status}</div>
+        </div>
+      ))}
+    </>
+  );
+});
+
+const VIEW_COMPONENTS: Record<ViewId, React.ComponentType> = {
+  dashboard: DashboardView,
+  evidence: EvidenceView,
+  controls: ControlsView,
+  reports: ReportsView,
+  risk: RiskView,
+  policies: PolicyView,
+};
+
+const VIEW_LABELS: Record<ViewId, string> = {
+  dashboard: 'Active Tasks',
+  evidence: 'Recent Artifacts',
+  controls: 'Control Mapping',
+  reports: 'Recent Reports',
+  risk: 'Open Risk Items',
+  policies: 'Policy Library',
+};
+
+/* ═══════════════════════════════════════════════════════════════════════
+   APP PANEL — big focal window, overflow-clipped
+   ═══════════════════════════════════════════════════════════════════════ */
+
+const AppPanel = memo(function AppPanel({
   activeView,
   onViewChange,
-  isMorphing,
-  panelRef,
+  glowColor,
 }: {
   activeView: ViewId;
   onViewChange: (v: ViewId) => void;
-  isMorphing: boolean;
-  panelRef: React.RefObject<HTMLDivElement | null>;
+  glowColor: string;
 }) {
   const view = VIEW_MAP[activeView];
   const stats = STATS[activeView];
+  const ViewContent = VIEW_COMPONENTS[activeView];
 
   return (
     <div
-      ref={panelRef}
-      className="relative overflow-hidden rounded-[22px]"
+      className="relative overflow-hidden rounded-[20px] w-full h-full"
       style={{
-        width: '920px',
-        height: '620px',
-        background: 'linear-gradient(145deg, rgba(0,212,251,0.05) 0%, rgba(10,15,28,0.95) 10%, rgba(10,15,28,0.98) 100%)',
-        border: `1px solid rgba(${view.glow},${isMorphing ? 0.35 : 0.15})`,
-        boxShadow: `0 0 80px rgba(${view.glow},0.06), 0 40px 80px rgba(0,0,0,0.35), 0 80px 120px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05)`,
-        backdropFilter: 'blur(24px) saturate(1.1)',
-        transition: 'border-color 0.4s, box-shadow 0.4s',
-        opacity: isMorphing ? 0.6 : 1,
+        background: 'linear-gradient(145deg, rgba(15,22,40,0.98) 0%, rgba(10,15,28,0.99) 100%)',
+        border: `1px solid rgba(${glowColor},0.18)`,
+        boxShadow: `0 0 40px rgba(${glowColor},0.04), 0 24px 48px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04)`,
+        backdropFilter: 'blur(16px)',
+        transition: 'border-color 0.25s ease-out, box-shadow 0.25s ease-out',
       }}
     >
-      {/* Glass reflection */}
-      <div className="absolute inset-0 pointer-events-none rounded-[22px]" style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.05) 0%, transparent 20%)' }} />
+      {/* Glass top */}
+      <div className="absolute inset-0 pointer-events-none rounded-[20px]" style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.04) 0%, transparent 18%)' }} />
 
-      <div className="absolute inset-0 flex flex-col">
+      <div className="absolute inset-0 flex flex-col overflow-hidden">
         {/* Chrome bar */}
-        <div className="flex items-center justify-between px-6 py-3.5 border-b border-white/[0.07] bg-white/[0.02] shrink-0">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.06] bg-white/[0.015] shrink-0">
           <div className="flex items-center gap-3">
             <div className="flex gap-1.5">
               <div className="w-3 h-3 rounded-full bg-red-400/50" />
@@ -505,25 +434,25 @@ function AppPanel({
             <div className="text-[12px] text-white/25 font-mono tracking-wider">app.formaos.com.au / {activeView}</div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="w-28 h-7 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center px-3 hover:border-white/[0.12] transition-colors">
+            <div className="w-24 h-7 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center px-3">
               <span className="text-[12px] text-white/20">Search…</span>
             </div>
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-cyan-400/30 to-blue-500/20 flex items-center justify-center">
-              <span className="text-[12px] font-bold text-white/60">FO</span>
+            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-cyan-400/25 to-blue-500/15 flex items-center justify-center">
+              <span className="text-[12px] font-bold text-white/55">FO</span>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-1 min-h-0">
+        <div className="flex flex-1 min-h-0 overflow-hidden">
           {/* Sidebar */}
-          <div className="w-[170px] shrink-0 border-r border-white/[0.06] bg-white/[0.015] py-4 px-3 flex flex-col">
-            <div className="flex items-center gap-2 px-2 mb-5">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-400/25 to-blue-500/15 flex items-center justify-center">
+          <div className="w-[150px] shrink-0 border-r border-white/[0.05] bg-white/[0.01] py-3 px-2 flex flex-col overflow-hidden">
+            <div className="flex items-center gap-2 px-2 mb-4">
+              <div className="w-6 h-6 rounded-md bg-gradient-to-br from-cyan-400/25 to-blue-500/15 flex items-center justify-center">
                 <span className="text-[12px] font-bold text-cyan-400/80">FO</span>
               </div>
               <div>
-                <div className="text-[13px] font-semibold text-white/55">FormaOS</div>
-                <div className="text-[12px] text-white/20">Enterprise</div>
+                <div className="text-[12px] font-semibold text-white/50">FormaOS</div>
+                <div className="text-[12px] text-white/18">Enterprise</div>
               </div>
             </div>
             <div className="space-y-0.5">
@@ -532,227 +461,145 @@ function AppPanel({
                   key={v.id}
                   type="button"
                   onClick={() => onViewChange(v.id)}
-                  className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-left transition-all duration-150 ${
+                  className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-[12px] text-left transition-colors duration-100 ${
                     activeView === v.id
-                      ? 'bg-cyan-400/[0.10] text-cyan-300 border border-cyan-400/15'
-                      : 'text-white/30 hover:text-white/55 hover:bg-white/[0.04] border border-transparent'
+                      ? 'bg-cyan-400/[0.08] text-cyan-300 border border-cyan-400/12'
+                      : 'text-white/28 hover:text-white/50 hover:bg-white/[0.03] border border-transparent'
                   }`}
                 >
-                  <span className="text-[14px] opacity-70 w-4 text-center">{v.icon}</span>
-                  <span>{v.label}</span>
+                  <span className="text-[13px] opacity-70 w-3.5 text-center">{v.icon}</span>
+                  <span className="truncate">{v.label}</span>
                 </button>
               ))}
             </div>
-            <div className="mt-auto pt-4 border-t border-white/[0.06]">
-              <div className="flex items-center gap-2 px-2.5 mt-2 pt-2 border-t border-white/[0.06]">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-400/30 to-blue-400/20" />
-                <div>
-                  <div className="text-[12px] text-white/35">Nancy M.</div>
-                  <div className="text-[12px] text-white/15">Admin</div>
+            <div className="mt-auto pt-3 border-t border-white/[0.05]">
+              <div className="flex items-center gap-2 px-2 mt-1">
+                <div className="w-5 h-5 rounded-full bg-gradient-to-br from-violet-400/25 to-blue-400/15 shrink-0" />
+                <div className="min-w-0">
+                  <div className="text-[12px] text-white/30 truncate">Nancy M.</div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Main content area */}
-          <div className="flex-1 p-5 overflow-hidden">
-            <div className="flex items-center justify-between mb-5">
+          {/* Main content */}
+          <div className="flex-1 p-4 min-w-0 overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between mb-4 shrink-0">
               <div>
-                <div className="text-[17px] font-semibold text-white/85">{view.label}</div>
-                <div className="text-[12px] text-white/25">Last synced 2 min ago</div>
+                <div className="text-[16px] font-semibold text-white/85">{view.label}</div>
+                <div className="text-[12px] text-white/22">Last synced 2 min ago</div>
               </div>
               <div className="flex items-center gap-2">
-                <div className="px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.07] text-[12px] text-white/30 cursor-pointer hover:bg-white/[0.06] transition-colors">Export</div>
-                <div className="px-3 py-1.5 rounded-lg bg-cyan-400/12 border border-cyan-400/25 text-[12px] text-cyan-300 cursor-pointer hover:bg-cyan-400/18 transition-colors">+ New</div>
+                <div className="px-3 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06] text-[12px] text-white/28 cursor-pointer hover:bg-white/[0.05] transition-colors">Export</div>
+                <div className="px-3 py-1 rounded-lg bg-cyan-400/10 border border-cyan-400/20 text-[12px] text-cyan-300 cursor-pointer hover:bg-cyan-400/15 transition-colors">+ New</div>
               </div>
             </div>
 
             {/* Stat cards */}
-            <div className="grid grid-cols-3 gap-3 mb-5">
+            <div className="grid grid-cols-3 gap-2 mb-4 shrink-0">
               {stats.map((s) => (
-                <div key={s.label} className="rounded-xl bg-white/[0.025] border border-white/[0.06] p-3.5 hover:border-white/[0.12] transition-colors cursor-default">
-                  <div className="text-[12px] text-white/25 uppercase tracking-wider">{s.label}</div>
-                  <div className="text-[20px] font-bold text-white/85 mt-1">{s.value}</div>
-                  <div className="text-[12px] text-white/20 mt-0.5">{s.sub}</div>
+                <div key={s.label} className="rounded-lg bg-white/[0.02] border border-white/[0.05] p-3">
+                  <div className="text-[12px] text-white/22 uppercase tracking-wider">{s.label}</div>
+                  <div className="text-[18px] font-bold text-white/80 mt-0.5">{s.value}</div>
+                  <div className="text-[12px] text-white/18">{s.sub}</div>
                 </div>
               ))}
             </div>
 
-            {/* Content list */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeView}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className="space-y-1.5 overflow-y-auto"
-                style={{ maxHeight: '250px' }}
-              >
-                <div className="text-[12px] text-white/25 font-medium uppercase tracking-wider mb-2">
-                  {activeView === 'dashboard' && 'Active Tasks'}
-                  {activeView === 'evidence' && 'Recent Artifacts'}
-                  {activeView === 'controls' && 'Control Mapping'}
-                  {activeView === 'reports' && 'Recent Reports'}
-                  {activeView === 'risk' && 'Open Risk Items'}
-                  {activeView === 'policies' && 'Policy Library'}
-                </div>
+            {/* Content area */}
+            <div className="text-[12px] text-white/22 font-medium uppercase tracking-wider mb-2 shrink-0">
+              {VIEW_LABELS[activeView]}
+            </div>
 
-                {activeView === 'dashboard' && DASHBOARD_ROWS.map((r) => (
-                  <div key={r.title} className="flex items-center gap-2.5 rounded-lg bg-white/[0.015] border border-white/[0.04] px-4 py-2.5 hover:bg-white/[0.04] hover:border-white/[0.10] transition-all cursor-pointer">
-                    <div className={`w-2 h-2 rounded-full ${r.dot} shrink-0`} />
-                    <div className="flex-1 min-w-0 text-[13px] text-white/60 truncate">{r.title}</div>
-                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-slate-500/30 to-slate-700/30 flex items-center justify-center shrink-0"><span className="text-[12px] font-semibold text-white/40">{r.assignee}</span></div>
-                    <div className={`text-[12px] px-2 py-0.5 rounded-full shrink-0 ${r.badgeCls}`}>{r.badge}</div>
-                    {r.pct > 0 && r.pct < 100 && (
-                      <div className="w-14 h-1.5 rounded-full bg-white/[0.05] overflow-hidden shrink-0">
-                        <div className="h-full rounded-full bg-gradient-to-r from-cyan-400/40 to-blue-400/25" style={{ width: `${r.pct}%` }} />
-                      </div>
-                    )}
-                  </div>
-                ))}
-
-                {activeView === 'evidence' && EVIDENCE_ROWS.map((r) => (
-                  <div key={r.name} className="flex items-center gap-2.5 rounded-lg bg-white/[0.015] border border-white/[0.04] px-4 py-2.5 hover:bg-white/[0.04] hover:border-white/[0.10] transition-all cursor-pointer">
-                    <div className="w-7 h-7 rounded-lg bg-violet-400/12 flex items-center justify-center shrink-0"><span className="text-[12px] text-violet-300 font-mono">{r.type}</span></div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[13px] text-white/60 truncate">{r.name}</div>
-                      <div className="text-[12px] text-white/22">{r.size} · {r.date}</div>
-                    </div>
-                    <div className="text-[12px] px-2 py-0.5 rounded-full bg-violet-400/12 text-violet-300 shrink-0">{r.tag}</div>
-                  </div>
-                ))}
-
-                {activeView === 'controls' && CONTROLS_ROWS.map((r) => (
-                  <div key={r.code} className="flex items-center gap-2.5 rounded-lg bg-white/[0.015] border border-white/[0.04] px-4 py-2.5 hover:bg-white/[0.04] hover:border-white/[0.10] transition-all cursor-pointer">
-                    <div className="text-[12px] font-mono text-blue-300/70 w-12 shrink-0">{r.code}</div>
-                    <div className="flex-1 min-w-0 text-[13px] text-white/60 truncate">{r.name}</div>
-                    <div className="text-[12px] text-white/22 shrink-0">{r.framework}</div>
-                    <div className={`text-[12px] px-2 py-0.5 rounded-full shrink-0 ${r.statusCls}`}>{r.status}</div>
-                  </div>
-                ))}
-
-                {activeView === 'reports' && REPORTS_ROWS.map((r) => (
-                  <div key={r.name} className="flex items-center gap-2.5 rounded-lg bg-white/[0.015] border border-white/[0.04] px-4 py-2.5 hover:bg-white/[0.04] hover:border-white/[0.10] transition-all cursor-pointer">
-                    <div className="w-7 h-7 rounded-lg bg-emerald-400/12 flex items-center justify-center shrink-0"><span className="text-[13px] text-emerald-300">◈</span></div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[13px] text-white/60 truncate">{r.name}</div>
-                      <div className="text-[12px] text-white/22">{r.date} · {r.pages} pages</div>
-                    </div>
-                    <div className={`text-[12px] px-2 py-0.5 rounded-full shrink-0 ${r.statusCls}`}>{r.status}</div>
-                  </div>
-                ))}
-
-                {activeView === 'risk' && RISK_ROWS.map((r) => (
-                  <div key={r.name} className="flex items-center gap-2.5 rounded-lg bg-white/[0.015] border border-white/[0.04] px-4 py-2.5 hover:bg-white/[0.04] hover:border-white/[0.10] transition-all cursor-pointer">
-                    <div className={`w-2 h-2 rounded-full shrink-0 ${r.sevDot}`} />
-                    <div className="flex-1 min-w-0 text-[13px] text-white/60 truncate">{r.name}</div>
-                    <div className="text-[12px] text-white/22 shrink-0">{r.age}</div>
-                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-slate-500/30 to-slate-700/30 flex items-center justify-center shrink-0"><span className="text-[12px] font-semibold text-white/40">{r.owner}</span></div>
-                    <div className={`text-[12px] px-2 py-0.5 rounded-full shrink-0 ${r.sevCls}`}>{r.sev}</div>
-                  </div>
-                ))}
-
-                {activeView === 'policies' && POLICY_ROWS.map((r) => (
-                  <div key={r.name} className="flex items-center gap-2.5 rounded-lg bg-white/[0.015] border border-white/[0.04] px-4 py-2.5 hover:bg-white/[0.04] hover:border-white/[0.10] transition-all cursor-pointer">
-                    <div className="w-7 h-7 rounded-lg bg-rose-400/10 flex items-center justify-center shrink-0"><span className="text-[13px] text-rose-300">▣</span></div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[13px] text-white/60 truncate">{r.name}</div>
-                      <div className="text-[12px] text-white/22">{r.ver} · {r.review} · {r.owner}</div>
-                    </div>
-                    <div className={`text-[12px] px-2 py-0.5 rounded-full shrink-0 ${r.statusCls}`}>{r.status}</div>
-                  </div>
-                ))}
-              </motion.div>
-            </AnimatePresence>
+            <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.06) transparent' }}>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeView}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15, ease: 'easeOut' }}
+                  className="space-y-1.5"
+                >
+                  <ViewContent />
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
+});
 
 /* ═══════════════════════════════════════════════════════════════════════
-   DESKTOP 3D SCENE
+   DESKTOP SCENE — flexbox layout, no overlap
    ═══════════════════════════════════════════════════════════════════════ */
 
 function DesktopScene({
   activeView,
   activeTabId,
-  liftedTabId,
+  glowColor,
   onTabClick,
   onViewChange,
   mouseX,
   mouseY,
   shouldAnimate,
-  entranceProgress,
-  isMorphing,
-  tabRefs,
-  panelRef,
 }: {
   activeView: ViewId;
   activeTabId: string;
-  liftedTabId: string | null;
-  onTabClick: (tab: Tab, el: HTMLButtonElement) => void;
+  glowColor: string;
+  onTabClick: (tab: Tab) => void;
   onViewChange: (v: ViewId) => void;
   mouseX: number;
   mouseY: number;
   shouldAnimate: boolean;
-  entranceProgress: number;
-  isMorphing: boolean;
-  tabRefs: React.MutableRefObject<Map<string, HTMLButtonElement>>;
-  panelRef: React.RefObject<HTMLDivElement | null>;
 }) {
-  const px = shouldAnimate ? mouseX * 3.5 : 0;
-  const py = shouldAnimate ? mouseY * 2 : 0;
-  const ease3 = (t: number) => 1 - Math.pow(1 - t, 3);
-  const winEnt = shouldAnimate ? ease3(Math.min(1, Math.max(0, (entranceProgress - 0.35) / 0.6))) : 1;
+  const rx = shouldAnimate ? mouseX * 2.5 : 0;
+  const ry = shouldAnimate ? mouseY * 1.5 : 0;
 
   return (
-    <div className="relative w-full h-full" style={{ perspective: '1800px' }}>
-      {/* Ambient glows */}
-      <div aria-hidden className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[12%] left-[5%] w-[45%] h-[55%] rounded-full blur-[130px] opacity-[0.2]" style={{ background: 'radial-gradient(ellipse at center, rgba(0,212,251,0.35), transparent 70%)' }} />
-        <div className="absolute top-[35%] left-[50%] w-[40%] h-[45%] rounded-full blur-[110px] opacity-[0.16]" style={{ background: 'radial-gradient(ellipse at center, rgba(160,131,255,0.3), transparent 70%)' }} />
-        <div className="absolute bottom-[8%] left-[25%] w-[30%] h-[30%] rounded-full blur-[90px] opacity-[0.10]" style={{ background: 'radial-gradient(ellipse at center, rgba(251,113,133,0.2), transparent 70%)' }} />
+    <div className="relative w-full h-full">
+      {/* Ambient glows — lightweight, no blur filter stack */}
+      <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[10%] left-[2%] w-[40%] h-[50%] rounded-full opacity-[0.12]" style={{ background: 'radial-gradient(ellipse at center, rgba(0,212,251,0.3), transparent 65%)', filter: 'blur(80px)' }} />
+        <div className="absolute top-[30%] right-[5%] w-[35%] h-[40%] rounded-full opacity-[0.10]" style={{ background: 'radial-gradient(ellipse at center, rgba(160,131,255,0.25), transparent 65%)', filter: 'blur(80px)' }} />
       </div>
 
       {/* Dot grid */}
-      <div aria-hidden className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.35) 0.5px, transparent 0)', backgroundSize: '42px 42px' }} />
+      <div aria-hidden className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 0.5px, transparent 0)', backgroundSize: '44px 44px' }} />
 
-      {/* 3D container */}
+      {/* Flex layout — tabs left, panel right, guaranteed no overlap */}
       <div
-        className="absolute inset-0 flex items-center justify-center"
+        className="absolute inset-0 flex items-center justify-center px-8 gap-6 lg:gap-10"
         style={{
-          transformStyle: 'preserve-3d',
-          transform: `rotateX(${7 + py}deg) rotateY(${-8 + px}deg)`,
-          transition: shouldAnimate ? 'transform 0.1s linear' : 'none',
+          perspective: '1400px',
         }}
       >
-        {/* Tab stack */}
-        <div className="absolute" style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%) translate3d(-360px, 0px, -8px) rotateX(1deg) rotateY(-4deg)' }}>
-          <TabStack
-            activeTabId={activeTabId}
-            liftedTabId={liftedTabId}
-            onTabClick={onTabClick}
-            shouldAnimate={shouldAnimate}
-            entranceProgress={entranceProgress}
-            tabRefs={tabRefs}
-          />
-        </div>
-
-        {/* App panel */}
+        {/* Tabs column */}
         <div
-          className="absolute"
           style={{
-            left: '50%',
-            top: '50%',
-            transform: `translate(-50%, -50%) translate3d(240px, ${(1 - winEnt) * 35}px, 50px) rotateX(0.5deg) rotateY(-1.5deg)`,
-            opacity: winEnt,
-            willChange: 'transform, opacity',
+            transform: `rotateY(${4 + rx}deg) rotateX(${-2 + ry}deg)`,
+            transition: shouldAnimate ? 'transform 0.12s linear' : 'none',
+            transformStyle: 'preserve-3d',
+            height: 'min(80vh, 640px)',
           }}
         >
-          <AppPanel activeView={activeView} onViewChange={onViewChange} isMorphing={isMorphing} panelRef={panelRef} />
+          <TabsRail activeTabId={activeTabId} onTabClick={onTabClick} />
+        </div>
+
+        {/* Panel column */}
+        <div
+          className="flex-1 min-w-0"
+          style={{
+            maxWidth: '820px',
+            height: 'min(80vh, 640px)',
+            transform: `rotateY(${-2 + rx * 0.4}deg) rotateX(${1 + ry * 0.3}deg)`,
+            transition: shouldAnimate ? 'transform 0.12s linear' : 'none',
+            transformStyle: 'preserve-3d',
+          }}
+        >
+          <AppPanel activeView={activeView} onViewChange={onViewChange} glowColor={glowColor} />
         </div>
       </div>
     </div>
@@ -763,10 +610,10 @@ function DesktopScene({
    MOBILE LAYOUT
    ═══════════════════════════════════════════════════════════════════════ */
 
-function MobileLayout({ activeView, onViewChange }: { activeView: ViewId; onViewChange: (v: ViewId) => void }) {
+function MobileLayout({ activeView, glowColor, onViewChange }: { activeView: ViewId; glowColor: string; onViewChange: (v: ViewId) => void }) {
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center px-4">
-      <div className="flex gap-1.5 mb-4 z-10 overflow-x-auto pb-1" style={{ maxWidth: '100%' }}>
+    <div className="relative w-full h-full flex flex-col items-center justify-center px-4 gap-3">
+      <div className="flex gap-1.5 z-10 overflow-x-auto pb-1 shrink-0" style={{ maxWidth: '100%', scrollbarWidth: 'none' }}>
         {VIEWS.map((v) => (
           <button
             key={v.id}
@@ -780,16 +627,8 @@ function MobileLayout({ activeView, onViewChange }: { activeView: ViewId; onView
           </button>
         ))}
       </div>
-      <div
-        className="relative w-full max-w-[500px] rounded-2xl border border-cyan-400/15 overflow-hidden"
-        style={{
-          height: '420px',
-          background: 'linear-gradient(145deg, rgba(0,212,251,0.05) 0%, rgba(10,15,28,0.94) 12%, rgba(10,15,28,0.97) 100%)',
-          boxShadow: '0 0 50px rgba(0,212,251,0.05), 0 24px 48px rgba(0,0,0,0.35)',
-          backdropFilter: 'blur(16px)',
-        }}
-      >
-        <AppPanel activeView={activeView} onViewChange={onViewChange} isMorphing={false} panelRef={useRef(null)} />
+      <div className="w-full max-w-[520px] flex-1 min-h-0" style={{ maxHeight: '440px' }}>
+        <AppPanel activeView={activeView} onViewChange={onViewChange} glowColor={glowColor} />
       </div>
     </div>
   );
@@ -801,29 +640,18 @@ function MobileLayout({ activeView, onViewChange }: { activeView: ViewId; onView
 
 export function ProductHeroAnimation() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const tabRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
-  const panelRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
-  const [mounted, setMounted] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [activeView, setActiveView] = useState<ViewId>('dashboard');
   const [activeTabId, setActiveTabId] = useState('t01');
-  const [liftedTabId, setLiftedTabId] = useState<string | null>(null);
-  const [morphData, setMorphData] = useState<MorphData | null>(null);
-  const [entrancePhase, setEntrancePhase] = useState(0);
-  const startTimeRef = useRef<number | null>(null);
-  const rafRef = useRef<number>(0);
-  const morphTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const shouldAnimate = !shouldReduceMotion;
+  const glowColor = VIEW_MAP[activeView].glow;
 
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start start', 'end start'] });
   const sectionOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.85, 0]);
   const sectionScale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.98, 0.94]);
-
-  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     const check = () => setIsDesktop(window.innerWidth >= 1024);
@@ -832,136 +660,66 @@ export function ProductHeroAnimation() {
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const obs = new IntersectionObserver(([e]) => setIsVisible(e.isIntersecting), { threshold: 0.05 });
-    obs.observe(containerRef.current);
-    return () => obs.disconnect();
-  }, []);
-
-  // Entrance animation
-  useEffect(() => {
-    if (!shouldAnimate) { setEntrancePhase(2); return; }
-    if (!isVisible) return;
-    const tick = (now: number) => {
-      if (startTimeRef.current === null) startTimeRef.current = now;
-      const elapsed = (now - startTimeRef.current) / 1000;
-      if (elapsed <= 1.4) { setEntrancePhase(elapsed); rafRef.current = requestAnimationFrame(tick); }
-      else setEntrancePhase(2);
-    };
-    const id = setTimeout(() => { rafRef.current = requestAnimationFrame(tick); }, 50);
-    return () => { clearTimeout(id); cancelAnimationFrame(rafRef.current); };
-  }, [shouldAnimate, isVisible]);
-
-  useEffect(() => {
-    const h = () => { if (document.hidden) cancelAnimationFrame(rafRef.current); };
-    document.addEventListener('visibilitychange', h);
-    return () => document.removeEventListener('visibilitychange', h);
-  }, []);
-
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (!isDesktop || shouldReduceMotion) return;
     const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
     setMousePos({ x: (e.clientX - rect.left) / rect.width - 0.5, y: (e.clientY - rect.top) / rect.height - 0.5 });
   }, [isDesktop, shouldReduceMotion]);
 
-  const handleTabClick = useCallback((tab: Tab, el: HTMLButtonElement) => {
-    if (morphData || tab.id === activeTabId) return;
-    const tabRect = el.getBoundingClientRect();
-    const panelEl = panelRef.current;
-    const viewMeta = VIEW_MAP[tab.view];
-
-    if (!shouldAnimate || !panelEl) {
-      setActiveTabId(tab.id);
+  // Instant tab click — update state synchronously, no blocking
+  const handleTabClick = useCallback((tab: Tab) => {
+    setActiveTabId(tab.id);
+    startTransition(() => {
       setActiveView(tab.view);
-      return;
-    }
-
-    const pRect = panelEl.getBoundingClientRect();
-    setLiftedTabId(tab.id);
-    setMorphData({
-      from: { x: tabRect.left, y: tabRect.top, w: tabRect.width, h: tabRect.height },
-      to: { x: pRect.left, y: pRect.top, w: pRect.width, h: pRect.height },
-      glow: viewMeta.glow,
     });
-
-    // Update the view partway through the morph for smooth content transition
-    morphTimeoutRef.current = setTimeout(() => {
-      setActiveTabId(tab.id);
-      setActiveView(tab.view);
-    }, 200);
-  }, [activeTabId, morphData, shouldAnimate]);
-
-  const handleMorphDone = useCallback(() => {
-    setMorphData(null);
-    setLiftedTabId(null);
   }, []);
 
   const handleViewChange = useCallback((v: ViewId) => {
-    setActiveView(v);
+    startTransition(() => {
+      setActiveView(v);
+    });
     const match = TABS.find((t) => t.view === v);
     if (match) setActiveTabId(match.id);
   }, []);
-
-  useEffect(() => () => { if (morphTimeoutRef.current) clearTimeout(morphTimeoutRef.current); }, []);
 
   return (
     <motion.section
       ref={containerRef}
       className="relative w-full overflow-hidden"
       style={{
-        height: isDesktop ? '96vh' : '82vh',
-        minHeight: isDesktop ? '780px' : '560px',
-        maxHeight: '1120px',
+        height: isDesktop ? '94vh' : '82vh',
+        minHeight: isDesktop ? '720px' : '520px',
+        maxHeight: '1080px',
         opacity: sectionOpacity,
         scale: sectionScale,
       }}
       onMouseMove={handleMouseMove}
       role="presentation"
     >
-      <GrainOverlay />
-
-      <div aria-hidden className="absolute inset-0">
-        <div className="absolute top-[-10%] left-[-5%] w-[50%] h-[60%] rounded-full blur-[140px] opacity-[0.14]" style={{ background: 'radial-gradient(ellipse at center, rgba(0,212,251,0.3), transparent 70%)' }} />
-        <div className="absolute bottom-[-5%] right-[-3%] w-[45%] h-[55%] rounded-full blur-[120px] opacity-[0.10]" style={{ background: 'radial-gradient(ellipse at center, rgba(160,131,255,0.25), transparent 70%)' }} />
-      </div>
-
       <div className="absolute inset-0">
         {isDesktop ? (
           <DesktopScene
             activeView={activeView}
             activeTabId={activeTabId}
-            liftedTabId={liftedTabId}
+            glowColor={glowColor}
             onTabClick={handleTabClick}
             onViewChange={handleViewChange}
             mouseX={mousePos.x}
             mouseY={mousePos.y}
             shouldAnimate={shouldAnimate}
-            entranceProgress={entrancePhase}
-            isMorphing={!!morphData}
-            tabRefs={tabRefs}
-            panelRef={panelRef}
           />
         ) : (
-          <MobileLayout activeView={activeView} onViewChange={handleViewChange} />
+          <MobileLayout activeView={activeView} glowColor={glowColor} onViewChange={handleViewChange} />
         )}
       </div>
 
-      {/* Morph overlay (portal) */}
-      {mounted && morphData && <MorphOverlay morph={morphData} onDone={handleMorphDone} />}
-
       {/* Scroll indicator */}
-      <motion.div
-        initial={shouldAnimate ? { opacity: 0 } : false}
-        animate={{ opacity: 1 }}
-        transition={shouldAnimate ? { duration: 0.8, delay: 1.2 } : { duration: 0 }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 z-20"
-      >
-        <div className="text-[12px] tracking-[0.25em] text-white/15 uppercase">Scroll</div>
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden className="animate-bounce opacity-20">
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 z-20">
+        <div className="text-[12px] tracking-[0.25em] text-white/12 uppercase">Scroll</div>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden className="animate-bounce opacity-15">
           <path d="M7 2v10M3 8l4 4 4-4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-      </motion.div>
+      </div>
     </motion.section>
   );
 }
