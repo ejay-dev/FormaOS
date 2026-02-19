@@ -109,6 +109,8 @@ export default function SecurityLivePage() {
     () => alerts.find((alert) => alert.id === selectedAlertId) ?? null,
     [alerts, selectedAlertId],
   );
+  const visibleAlerts = useMemo(() => alerts.slice(0, 100), [alerts]);
+  const visibleEvents = useMemo(() => events.slice(0, 40), [events]);
 
   const fetchData = useCallback(async () => {
     try {
@@ -144,19 +146,35 @@ export default function SecurityLivePage() {
     }
   }, [timeRange, statusFilter, severityFilter, orgFilter, userFilter]);
 
-  useEffect(() => {
-    void fetchData();
-    const interval = setInterval(() => {
-      void fetchData();
-    }, 30000);
-    return () => clearInterval(interval);
-  }, [fetchData]);
-
   const { connected } = useRealtimeSecurity(
     useCallback(() => {
       void fetchData();
     }, [fetchData]),
+    { minIntervalMs: 4000 },
   );
+
+  useEffect(() => {
+    void fetchData();
+  }, [fetchData]);
+
+  useEffect(() => {
+    if (connected) return;
+    const interval = setInterval(() => {
+      void fetchData();
+    }, 90000);
+    return () => clearInterval(interval);
+  }, [connected, fetchData]);
+
+  useEffect(() => {
+    if (!selectedAlertId) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setSelectedAlertId(null);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [selectedAlertId]);
 
   const updateAlertStatus = useCallback(
     async (alertId: string, status: string, notes?: string) => {
@@ -208,8 +226,15 @@ export default function SecurityLivePage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[420px] items-center justify-center">
-        <div className="text-slate-400">Loading security data...</div>
+      <div className="space-y-6 p-6">
+        <div className="h-8 w-56 animate-pulse rounded-md bg-slate-800" />
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="h-24 animate-pulse rounded-lg bg-slate-900/60" />
+          <div className="h-24 animate-pulse rounded-lg bg-slate-900/60" />
+          <div className="h-24 animate-pulse rounded-lg bg-slate-900/60" />
+        </div>
+        <div className="h-24 animate-pulse rounded-lg bg-slate-900/60" />
+        <div className="h-64 animate-pulse rounded-lg bg-slate-900/60" />
       </div>
     );
   }
@@ -350,9 +375,14 @@ export default function SecurityLivePage() {
 
       <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
         <h2 className="mb-4 text-lg font-semibold text-slate-100">Alerts</h2>
+        {alerts.length > visibleAlerts.length && (
+          <p className="mb-3 text-xs text-slate-400">
+            Showing {visibleAlerts.length} most recent alerts.
+          </p>
+        )}
         <div className="space-y-3">
-          {alerts.length ? (
-            alerts.map((alert) => (
+          {visibleAlerts.length ? (
+            visibleAlerts.map((alert) => (
               <div
                 key={alert.id}
                 className={`rounded-lg border p-4 ${getSeverityClass(alert.event.severity)}`}
@@ -432,8 +462,13 @@ export default function SecurityLivePage() {
 
       <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
         <h2 className="mb-4 text-lg font-semibold text-slate-100">Recent Events</h2>
+        {events.length > visibleEvents.length && (
+          <p className="mb-3 text-xs text-slate-400">
+            Showing {visibleEvents.length} most recent events.
+          </p>
+        )}
         <div className="space-y-2">
-          {events.slice(0, 30).map((event) => (
+          {visibleEvents.map((event) => (
             <div
               key={event.id}
               className="flex flex-col gap-2 rounded-lg border border-slate-800/70 bg-slate-900/30 p-3 text-sm sm:flex-row sm:items-center sm:justify-between"
@@ -467,10 +502,15 @@ export default function SecurityLivePage() {
 
       {selectedAlert && (
         <div className="fixed inset-0 z-50 flex justify-end bg-black/40">
-          <div className="h-full w-full max-w-xl overflow-y-auto border-l border-slate-800 bg-slate-950 p-6">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="security-alert-dialog-title"
+            className="h-full w-full max-w-xl overflow-y-auto border-l border-slate-800 bg-slate-950 p-6"
+          >
             <div className="mb-5 flex items-start justify-between gap-3">
               <div>
-                <h3 className="text-xl font-semibold text-slate-100">
+                <h3 id="security-alert-dialog-title" className="text-xl font-semibold text-slate-100">
                   Alert Details
                 </h3>
                 <p className="text-sm text-slate-400">

@@ -1,11 +1,15 @@
 import { CheckCircle, AlertCircle } from "lucide-react";
 
 export default function AdminSettingsPage() {
-  const founderEmails = (process.env.FOUNDER_EMAILS ?? "founder@formaos.com.au")
+  const founderEmails = (process.env.FOUNDER_EMAILS ?? "")
     .split(",")
     .map((entry) => entry.trim())
     .filter(Boolean);
-  const founderPrimary = founderEmails[0] ?? "founder@formaos.com.au";
+  const founderIds = (process.env.FOUNDER_USER_IDS ?? "")
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+  const founderConfigured = founderEmails.length > 0 || founderIds.length > 0;
   
   return (
     <div className="space-y-6">
@@ -28,11 +32,21 @@ export default function AdminSettingsPage() {
               <CheckCircle className="h-5 w-5 text-emerald-400" />
               <div>
                 <p className="text-sm font-medium text-slate-100">Founder Access</p>
-                <p className="text-xs text-slate-500">{founderPrimary}</p>
+                <p className="text-xs text-slate-500">
+                  {founderConfigured
+                    ? `${founderEmails.length} founder email(s), ${founderIds.length} founder ID(s)`
+                    : "Not configured"}
+                </p>
               </div>
             </div>
-            <span className="text-xs bg-emerald-500/10 text-emerald-300 px-2 py-1 rounded">
-              Active
+            <span
+              className={`text-xs px-2 py-1 rounded ${
+                founderConfigured
+                  ? "bg-emerald-500/10 text-emerald-300"
+                  : "bg-amber-500/10 text-amber-300"
+              }`}
+            >
+              {founderConfigured ? "Active" : "Action Required"}
             </span>
           </div>
 
@@ -74,12 +88,11 @@ export default function AdminSettingsPage() {
         <div className="space-y-3 text-sm">
           <div className="p-4 rounded-lg border border-slate-800/50 bg-slate-800/20 font-mono text-xs">
             <p className="text-slate-400">
-              FOUNDER_EMAILS=
-              <span className="text-slate-300">{founderEmails.join(", ")}</span>
+              FOUNDER_EMAILS / FOUNDER_USER_IDS are server-side only and intentionally redacted in UI.
             </p>
           </div>
           <p className="text-slate-500">
-            Founder access is controlled by server-side <code className="bg-slate-800 px-1.5 py-0.5 rounded text-xs">FOUNDER_EMAILS</code>.
+            Founder access is controlled by server-side <code className="bg-slate-800 px-1.5 py-0.5 rounded text-xs">FOUNDER_EMAILS</code> and <code className="bg-slate-800 px-1.5 py-0.5 rounded text-xs">FOUNDER_USER_IDS</code>.
           </p>
         </div>
       </div>

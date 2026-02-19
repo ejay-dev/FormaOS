@@ -44,7 +44,7 @@ export async function GET() {
     /* ── Fetch all entitlements ─────────────────────────── */
     const { data: entitlements, error } = await admin
       .from('org_entitlements')
-      .select('feature_key, enabled, value_limit, organization_id');
+      .select('feature_key, enabled, value_limit');
 
     if (error) {
       console.error('/api/admin/features query error:', error);

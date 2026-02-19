@@ -23,27 +23,27 @@ export async function GET() {
     /* ── Table counts ──────────────────────────────────── */
     const [orgsResult, subsResult, membersResult, auditResult] =
       await Promise.all([
-        admin.from('organizations').select('*', { count: 'exact', head: true }),
+        admin.from('organizations').select('id', { count: 'exact', head: true }),
         admin
           .from('org_subscriptions')
-          .select('*', { count: 'exact', head: true }),
-        admin.from('org_members').select('*', { count: 'exact', head: true }),
+          .select('organization_id', { count: 'exact', head: true }),
+        admin.from('org_members').select('id', { count: 'exact', head: true }),
         admin
           .from('admin_audit_log')
-          .select('*', { count: 'exact', head: true }),
+          .select('id', { count: 'exact', head: true }),
       ]);
 
     /* ── Recent admin actions (last 24 h) ─────────────── */
     const oneDayAgo = new Date(Date.now() - 86_400_000).toISOString();
     const { count: recentAdminActions } = await admin
       .from('admin_audit_log')
-      .select('*', { count: 'exact', head: true })
+      .select('id', { count: 'exact', head: true })
       .gte('created_at', oneDayAgo);
 
     /* ── Recent billing events (last 24 h) ────────────── */
     const { count: recentBillingEvents } = await admin
       .from('billing_events')
-      .select('*', { count: 'exact', head: true })
+      .select('id', { count: 'exact', head: true })
       .gte('processed_at', oneDayAgo);
 
     /* ── Build information from Vercel env ────────────── */

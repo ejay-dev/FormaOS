@@ -8,6 +8,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { isFounder } from '@/lib/utils/founder';
+import { fetchAuthEmailsByIds } from '@/app/api/admin/_auth-users';
 import { extractClientIP } from '@/lib/security/session-security';
 import { logUnauthorizedAccess } from '@/lib/security/event-logger';
 import {
@@ -51,21 +52,7 @@ async function loadUserContext(
     });
   });
 
-  const emailByUserId = new Map<string, string>();
-  await Promise.all(
-    uniqueUserIds.map(async (userId) => {
-      try {
-        const { data, error } = await (admin as any).auth.admin.getUserById(
-          userId,
-        );
-        if (!error && data?.user?.email) {
-          emailByUserId.set(userId, data.user.email);
-        }
-      } catch {
-        // Best-effort enrichment only.
-      }
-    }),
-  );
+  const emailByUserId = await fetchAuthEmailsByIds(admin, uniqueUserIds);
 
   return { profileByUserId, emailByUserId };
 }
@@ -122,10 +109,12 @@ export async function GET(request: Request) {
 
     let query = admin
       .from('user_activity')
-      .select('*')
+      .select(
+        'id, created_at, user_id, org_id, action, entity_type, entity_id, route, metadata',
+      )
       .gte('created_at', since)
       .order('created_at', { ascending: false })
-      .limit(250);
+      .limit(150);
 
     if (action) {
       query = query.eq('action', action);

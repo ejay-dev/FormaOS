@@ -23,8 +23,9 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const reportType = searchParams.get('type') as ReportType | null;
   const format = searchParams.get('format') || 'pdf';
-  const asyncMode =
-    searchParams.get('mode') === 'async' || searchParams.get('async') === '1';
+  const syncRequested =
+    searchParams.get('mode') === 'sync' || searchParams.get('sync') === '1';
+  const asyncMode = !syncRequested;
 
   // Validate report type
   if (!reportType || !VALID_REPORT_TYPES.includes(reportType)) {

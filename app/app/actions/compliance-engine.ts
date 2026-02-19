@@ -716,9 +716,15 @@ export async function getOrgComplianceSnapshot(orgId: string, strict: boolean = 
 
   const frameworks = await safeSelectFrameworks(supabase, orgId, strict);
   const controlsByFramework: Record<string, any[]> = {};
-  for (const framework of frameworks) {
-    controlsByFramework[framework.id] = await safeSelectControls(supabase, framework.id, strict);
-  }
+  await Promise.all(
+    frameworks.map(async (framework) => {
+      controlsByFramework[framework.id] = await safeSelectControls(
+        supabase,
+        framework.id,
+        strict,
+      );
+    }),
+  );
 
   const allControls = frameworks.flatMap((fw) => controlsByFramework[fw.id] || []);
   const controlIds = allControls.map((c: any) => c.id);

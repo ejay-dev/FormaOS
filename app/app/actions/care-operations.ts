@@ -4,6 +4,23 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+async function requireUserOrganization(
+  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
+  userId: string
+) {
+  const { data: membership } = await supabase
+    .from("org_members")
+    .select("organization_id")
+    .eq("user_id", userId)
+    .single();
+
+  if (!membership?.organization_id) {
+    throw new Error("No organization found");
+  }
+
+  return membership.organization_id as string;
+}
+
 // =========================================================
 // PARTICIPANT / CLIENT ACTIONS
 // =========================================================
@@ -51,7 +68,7 @@ export async function createParticipant(formData: FormData) {
     created_by: user.id,
   };
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("org_patients")
     .insert(participant)
     .select()
@@ -70,6 +87,7 @@ export async function updateParticipant(id: string, formData: FormData) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect("/auth/signin");
+  const organizationId = await requireUserOrganization(supabase, user.id);
 
   const updates = {
     full_name: formData.get("full_name") as string,
@@ -96,7 +114,8 @@ export async function updateParticipant(id: string, formData: FormData) {
   const { error } = await supabase
     .from("org_patients")
     .update(updates)
-    .eq("id", id);
+    .eq("id", id)
+    .eq("organization_id", organizationId);
 
   if (error) throw new Error(error.message);
 
@@ -141,7 +160,7 @@ export async function createVisit(formData: FormData) {
     created_by: user.id,
   };
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("org_visits")
     .insert(visit)
     .select()
@@ -160,6 +179,7 @@ export async function updateVisitStatus(id: string, status: string, notes?: stri
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect("/auth/signin");
+  const organizationId = await requireUserOrganization(supabase, user.id);
 
   const updates: Record<string, any> = { status };
 
@@ -175,7 +195,8 @@ export async function updateVisitStatus(id: string, status: string, notes?: stri
   const { error } = await supabase
     .from("org_visits")
     .update(updates)
-    .eq("id", id);
+    .eq("id", id)
+    .eq("organization_id", organizationId);
 
   if (error) throw new Error(error.message);
 
@@ -218,7 +239,7 @@ export async function createIncident(formData: FormData) {
     follow_up_due_date: formData.get("follow_up_due_date") as string || null,
   };
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("org_incidents")
     .insert(incident)
     .select()
@@ -251,6 +272,7 @@ export async function resolveIncident(id: string, formData: FormData) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect("/auth/signin");
+  const organizationId = await requireUserOrganization(supabase, user.id);
 
   const { error } = await supabase
     .from("org_incidents")
@@ -262,7 +284,8 @@ export async function resolveIncident(id: string, formData: FormData) {
       preventive_measures: formData.get("preventive_measures") as string || null,
       follow_up_completed_at: new Date().toISOString(),
     })
-    .eq("id", id);
+    .eq("id", id)
+    .eq("organization_id", organizationId);
 
   if (error) throw new Error(error.message);
 
@@ -304,7 +327,7 @@ export async function createStaffCredential(formData: FormData) {
     created_by: user.id,
   };
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("org_staff_credentials")
     .insert(credential)
     .select()
@@ -340,6 +363,7 @@ export async function verifyStaffCredential(id: string) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect("/auth/signin");
+  const organizationId = await requireUserOrganization(supabase, user.id);
 
   const { error } = await supabase
     .from("org_staff_credentials")
@@ -348,7 +372,8 @@ export async function verifyStaffCredential(id: string) {
       verified_at: new Date().toISOString(),
       verified_by: user.id,
     })
-    .eq("id", id);
+    .eq("id", id)
+    .eq("organization_id", organizationId);
 
   if (error) throw new Error(error.message);
 
@@ -390,7 +415,7 @@ export async function createCarePlan(formData: FormData) {
     created_by: user.id,
   };
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("org_care_plans")
     .insert(carePlan)
     .select()

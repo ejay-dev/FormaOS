@@ -8,6 +8,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { isFounder } from '@/lib/utils/founder';
+import { fetchAuthEmailsByIds } from '@/app/api/admin/_auth-users';
 import { extractClientIP } from '@/lib/security/session-security';
 import { logUnauthorizedAccess } from '@/lib/security/event-logger';
 import {
@@ -55,21 +56,7 @@ async function loadUserContext(
     });
   });
 
-  const emailByUserId = new Map<string, string>();
-  await Promise.all(
-    uniqueUserIds.map(async (userId) => {
-      try {
-        const { data, error } = await (admin as any).auth.admin.getUserById(
-          userId,
-        );
-        if (!error && data?.user?.email) {
-          emailByUserId.set(userId, data.user.email);
-        }
-      } catch {
-        // Best-effort enrichment only.
-      }
-    }),
-  );
+  const emailByUserId = await fetchAuthEmailsByIds(admin, uniqueUserIds);
 
   return { profileByUserId, emailByUserId };
 }
@@ -117,10 +104,12 @@ export async function GET(request: Request) {
     // Get active sessions and enrich user/org context in-process.
     const { data: sessions, error } = await admin
       .from('active_sessions')
-      .select('*')
+      .select(
+        'id, session_id, user_id, org_id, created_at, last_seen_at, ip_address, user_agent, device_fingerprint, geo_country, geo_region, geo_city, metadata',
+      )
       .is('revoked_at', null)
       .order('last_seen_at', { ascending: false })
-      .limit(150);
+      .limit(100);
 
     if (error) {
       console.error('[Sessions] Failed to fetch:', error);

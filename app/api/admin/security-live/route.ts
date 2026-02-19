@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { isFounder } from '@/lib/utils/founder';
+import { fetchAuthEmailsByIds } from '@/app/api/admin/_auth-users';
 import { extractClientIP } from '@/lib/security/session-security';
 import {
   logUnauthorizedAccess,
@@ -84,21 +85,7 @@ async function loadUserContext(
     });
   });
 
-  const emailByUserId = new Map<string, string>();
-  await Promise.all(
-    uniqueUserIds.map(async (userId) => {
-      try {
-        const { data, error } = await (admin as any).auth.admin.getUserById(
-          userId,
-        );
-        if (!error && data?.user?.email) {
-          emailByUserId.set(userId, data.user.email);
-        }
-      } catch {
-        // Best-effort enrichment only.
-      }
-    }),
-  );
+  const emailByUserId = await fetchAuthEmailsByIds(admin, uniqueUserIds);
 
   return { profileByUserId, emailByUserId };
 }
@@ -160,10 +147,12 @@ export async function GET(request: Request) {
 
     let eventQuery = admin
       .from('security_events')
-      .select('*')
+      .select(
+        'id, created_at, type, severity, user_id, org_id, ip_address, geo_country, request_path, user_agent, metadata',
+      )
       .gte('created_at', since)
       .order('created_at', { ascending: false })
-      .limit(200);
+      .limit(120);
 
     if (severity && ALLOWED_SEVERITIES.has(severity)) {
       eventQuery = eventQuery.eq('severity', severity);
@@ -189,10 +178,12 @@ export async function GET(request: Request) {
 
     let alertQuery = admin
       .from('security_alerts')
-      .select('*')
+      .select(
+        'id, created_at, status, event_id, notes, assigned_to, resolved_at, resolved_by, resolution_notes',
+      )
       .gte('created_at', since)
       .order('created_at', { ascending: false })
-      .limit(200);
+      .limit(120);
 
     if (status && ALLOWED_STATUSES.has(status)) {
       alertQuery = alertQuery.eq('status', status);

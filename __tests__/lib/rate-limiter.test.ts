@@ -23,6 +23,7 @@ jest.mock('next/headers', () => ({
 // Mock rate-limit-log to avoid Supabase calls
 jest.mock('@/lib/security/rate-limit-log', () => ({
   logRateLimitEvent: jest.fn(),
+  logRateLimitFailOpenWarning: jest.fn(),
 }));
 
 // Mock session-security

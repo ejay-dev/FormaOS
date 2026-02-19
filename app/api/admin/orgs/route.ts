@@ -3,6 +3,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { parsePageParams } from '@/app/api/admin/_utils';
 import { handleAdminError } from '@/app/api/admin/_helpers';
+import { fetchAuthEmailsByIds } from '@/app/api/admin/_auth-users';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 
 export async function GET(request: Request) {
@@ -58,14 +59,7 @@ export async function GET(request: Request) {
     });
 
     const ownerIds = Array.from(new Set(Array.from(ownersByOrg.values())));
-    const ownerEmails = new Map<string, string>();
-
-    await Promise.all(
-      ownerIds.map(async (ownerId) => {
-        const { data } = await (admin as any).auth.admin.getUserById(ownerId);
-        ownerEmails.set(ownerId, data?.user?.email ?? 'N/A');
-      }),
-    );
+    const ownerEmails = await fetchAuthEmailsByIds(admin, ownerIds);
 
     const subscriptionByOrg = new Map<
       string,

@@ -2,6 +2,39 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { randomBytes } from 'crypto';
 
+async function getMembershipOrganization(
+  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
+  userId: string,
+): Promise<{ organizationId: string; role: string | null } | null> {
+  const modern = await supabase
+    .from('org_members')
+    .select('organization_id, role')
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  if (!modern.error && modern.data?.organization_id) {
+    return {
+      organizationId: modern.data.organization_id,
+      role: modern.data.role ?? null,
+    };
+  }
+
+  const legacy = await supabase
+    .from('org_members')
+    .select('org_id, role')
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  if (!legacy.error && (legacy.data as any)?.org_id) {
+    return {
+      organizationId: (legacy.data as any).org_id,
+      role: (legacy.data as any).role ?? null,
+    };
+  }
+
+  return null;
+}
+
 /**
  * POST /api/trust-packet/generate
  *
@@ -28,11 +61,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get the user's organization
-    const { data: membership } = await supabase
-      .from('org_members')
-      .select('org_id, role')
-      .eq('user_id', user.id)
-      .single();
+    const membership = await getMembershipOrganization(supabase, user.id);
 
     if (!membership) {
       return NextResponse.json(
@@ -42,12 +71,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Only owners and admins can generate trust packets
-    if (!['owner', 'admin'].includes(membership.role)) {
+    if (!membership.role || !['owner', 'admin'].includes(membership.role)) {
       return NextResponse.json(
         { error: 'Insufficient permissions' },
         { status: 403 },
       );
     }
+    const organizationId = membership.organizationId;
 
     const body = await request.json().catch(() => ({}));
     const expiresInDays = body.expiresInDays ?? 7;
@@ -65,16 +95,16 @@ export async function POST(request: NextRequest) {
         supabase
           .from('org_frameworks')
           .select('framework_key, status, created_at')
-          .eq('org_id', membership.org_id),
+          .eq('org_id', organizationId),
         supabase
           .from('policies')
           .select('id, title, status, last_reviewed_at')
-          .eq('org_id', membership.org_id)
+          .eq('org_id', organizationId)
           .eq('status', 'active'),
         supabase
           .from('controls')
           .select('id, status, framework_key')
-          .eq('org_id', membership.org_id),
+          .eq('org_id', organizationId),
       ]);
 
     const frameworks = frameworksResult.data ?? [];
@@ -95,13 +125,13 @@ export async function POST(request: NextRequest) {
     const { data: subscriptionRow } = await supabase
       .from('org_subscriptions')
       .select('plan_key, status')
-      .eq('organization_id', membership.org_id)
+      .eq('organization_id', organizationId)
       .maybeSingle();
     const isEnterprisePlan = (subscriptionRow as any)?.plan_key === 'enterprise';
 
     const packetData = {
       generated_at: new Date().toISOString(),
-      org_id: membership.org_id,
+      org_id: organizationId,
       generated_by: user.id,
       recipient_email: recipientEmail,
       note,
@@ -149,7 +179,7 @@ export async function POST(request: NextRequest) {
     // Store the trust packet
     const { error: insertError } = await supabase.from('trust_packets').insert({
       token,
-      org_id: membership.org_id,
+      org_id: organizationId,
       generated_by: user.id,
       recipient_email: recipientEmail,
       note,

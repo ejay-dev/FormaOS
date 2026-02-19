@@ -37,24 +37,5 @@ export function isFounder(email: string | undefined, userId: string): boolean {
     : false;
   const idMatch = normalizedId ? founderIds.has(normalizedId) : false;
 
-  // Log for debugging - always log founder checks on server for troubleshooting
-  // Mask email for privacy but show enough to verify
-  const maskedEmail = normalizedEmail
-    ? normalizedEmail.substring(0, 3) + '***@' + normalizedEmail.split('@')[1]
-    : 'none';
-
-  // Only log when checking protected routes (reduce noise)
-  if (typeof window === 'undefined') {
-    console.log('[isFounder] Check:', {
-      maskedEmail,
-      hasId: !!normalizedId,
-      founderEmailsConfigured: founderEmails.size,
-      founderIdsConfigured: founderIds.size,
-      emailMatch,
-      idMatch,
-      result: emailMatch || idMatch,
-    });
-  }
-
   return emailMatch || idMatch;
 }

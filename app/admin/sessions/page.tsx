@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Clock, MapPin, Monitor, ShieldCheck, XCircle } from 'lucide-react';
 import { useRealtimeSessions } from '@/lib/hooks/use-realtime-security';
 
@@ -36,6 +36,8 @@ export default function ActiveSessionsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const visibleSessions = useMemo(() => sessions.slice(0, 100), [sessions]);
+
   const fetchSessions = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/sessions', { cache: 'no-store' });
@@ -54,19 +56,24 @@ export default function ActiveSessionsPage() {
     }
   }, []);
 
-  useEffect(() => {
-    void fetchSessions();
-    const interval = setInterval(() => {
-      void fetchSessions();
-    }, 30000);
-    return () => clearInterval(interval);
-  }, [fetchSessions]);
-
   const { connected } = useRealtimeSessions(
     useCallback(() => {
       void fetchSessions();
     }, [fetchSessions]),
+    { minIntervalMs: 4000 },
   );
+
+  useEffect(() => {
+    void fetchSessions();
+  }, [fetchSessions]);
+
+  useEffect(() => {
+    if (connected) return;
+    const interval = setInterval(() => {
+      void fetchSessions();
+    }, 90000);
+    return () => clearInterval(interval);
+  }, [connected, fetchSessions]);
 
   const revokeSession = useCallback(
     async (sessionId: string) => {
@@ -114,8 +121,11 @@ export default function ActiveSessionsPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[420px] items-center justify-center">
-        <div className="text-slate-400">Loading sessions...</div>
+      <div className="space-y-6 p-6">
+        <div className="h-8 w-56 animate-pulse rounded-md bg-slate-800" />
+        <div className="h-24 animate-pulse rounded-lg bg-slate-900/60" />
+        <div className="h-24 animate-pulse rounded-lg bg-slate-900/60" />
+        <div className="h-24 animate-pulse rounded-lg bg-slate-900/60" />
       </div>
     );
   }
@@ -147,8 +157,8 @@ export default function ActiveSessionsPage() {
       )}
 
       <div className="space-y-3">
-        {sessions.length ? (
-          sessions.map((session) => (
+        {visibleSessions.length ? (
+          visibleSessions.map((session) => (
             <div
               key={session.id}
               className="rounded-lg border border-slate-800 bg-slate-900/50 p-4 transition-colors hover:bg-slate-900/70"
@@ -220,6 +230,11 @@ export default function ActiveSessionsPage() {
             <ShieldCheck className="mx-auto mb-4 h-16 w-16 text-slate-500/30" />
             <p className="text-slate-400">No active sessions found.</p>
           </div>
+        )}
+        {sessions.length > visibleSessions.length && (
+          <p className="text-xs text-slate-500">
+            Showing {visibleSessions.length} most recent sessions.
+          </p>
         )}
       </div>
     </div>

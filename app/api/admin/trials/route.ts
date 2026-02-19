@@ -3,6 +3,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
 import { handleAdminError } from '@/app/api/admin/_helpers';
 import { parsePageParams } from '@/app/api/admin/_utils';
+import { fetchAuthEmailsByIds } from '@/app/api/admin/_auth-users';
 
 export async function GET(request: Request) {
   try {
@@ -91,13 +92,7 @@ export async function GET(request: Request) {
           .filter(Boolean),
       ),
     );
-    const ownerEmailMap = new Map<string, string>();
-    await Promise.all(
-      ownerIds.map(async (ownerId: string) => {
-        const { data } = await (admin as any).auth.admin.getUserById(ownerId);
-        ownerEmailMap.set(ownerId, data?.user?.email ?? 'N/A');
-      }),
-    );
+    const ownerEmailMap = await fetchAuthEmailsByIds(admin, ownerIds);
 
     const orgOwnerMap = new Map(
       (ownerships ?? []).map((o: any) => [

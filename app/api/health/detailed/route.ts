@@ -15,7 +15,7 @@ interface DetailedCheck {
 const FOUNDER_TOKEN_HEADER = 'x-founder-token';
 
 function isDetailedHealthProtectionEnabled(): boolean {
-  return process.env.HEALTH_DETAILED_PROTECT === '1';
+  return process.env.HEALTH_DETAILED_PROTECT !== '0';
 }
 
 function extractFounderToken(request: Request): string {
@@ -49,7 +49,7 @@ function verifyFounderToken(request: Request): { ok: boolean; status: number; er
       ok: false,
       status: 500,
       error:
-        'HEALTH_DETAILED_FOUNDER_TOKEN not configured while HEALTH_DETAILED_PROTECT=1',
+        'HEALTH_DETAILED_FOUNDER_TOKEN not configured',
     };
   }
 
@@ -122,7 +122,9 @@ export async function GET(request: Request) {
     overallStatus = 'healthy';
   }
 
-  const response = {
+  const includeSystemDetails = process.env.HEALTH_DETAILED_INCLUDE_SYSTEM === '1';
+
+  const response: Record<string, unknown> = {
     status: overallStatus,
     timestamp: new Date().toISOString(),
     totalResponseTime: Date.now() - startTime,
@@ -136,13 +138,16 @@ export async function GET(request: Request) {
       degraded: degradedCount,
       errors: errorCount,
     },
-    system: {
+  };
+
+  if (includeSystemDetails) {
+    response.system = {
       memory: process.memoryUsage(),
       pid: process.pid,
       platform: process.platform,
       nodeVersion: process.version,
-    },
-  };
+    };
+  }
 
   const httpStatus =
     overallStatus === 'error' ? 503 : overallStatus === 'degraded' ? 200 : 200;

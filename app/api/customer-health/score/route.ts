@@ -77,124 +77,119 @@ export async function GET() {
   }
 
   try {
-    // Fetch organization details
-    const { data: org, error: orgError } = await supabase
-      .from('organizations')
-      .select('id, name, industry, created_at')
-      .eq('id', orgId)
-      .single();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const nowIso = new Date().toISOString();
+
+    const [
+      { data: org, error: orgError },
+      { data: subscription },
+      { count: memberCount },
+      { data: recentLogins },
+      { data: activityLogs },
+      { data: complianceSnapshots },
+      { count: workflowsConfigured },
+      { count: workflowsTriggered },
+      { count: overdueTasksCount },
+      { count: overdueEvidenceCount },
+      { count: overdueReviewsCount },
+    ] = await Promise.all([
+      supabase
+        .from('organizations')
+        .select('id, name, industry, created_at')
+        .eq('id', orgId)
+        .single(),
+      supabase
+        .from('org_subscriptions')
+        .select('plan_key, status, trial_expires_at')
+        .eq('organization_id', orgId)
+        .maybeSingle(),
+      supabase
+        .from('org_members')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId),
+      supabase
+        .from('org_audit_logs')
+        .select('created_at')
+        .eq('organization_id', orgId)
+        .eq('action', 'user.login')
+        .gte('created_at', thirtyDaysAgo.toISOString()),
+      supabase
+        .from('org_audit_logs')
+        .select('action')
+        .eq('organization_id', orgId)
+        .gte('created_at', thirtyDaysAgo.toISOString()),
+      supabase
+        .from('org_compliance_snapshots')
+        .select('compliance_score, captured_at')
+        .eq('organization_id', orgId)
+        .order('captured_at', { ascending: false })
+        .limit(30),
+      supabase
+        .from('org_workflows')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId)
+        .eq('status', 'active'),
+      supabase
+        .from('org_workflow_runs')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId)
+        .gte('triggered_at', thirtyDaysAgo.toISOString()),
+      supabase
+        .from('org_tasks')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId)
+        .eq('status', 'open')
+        .lt('due_date', nowIso),
+      supabase
+        .from('org_evidence')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId)
+        .lt('expires_at', nowIso),
+      supabase
+        .from('org_care_plans')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId)
+        .eq('status', 'active')
+        .lt('review_date', nowIso),
+    ]);
 
     if (orgError || !org) {
       throw new Error('Organization not found');
     }
 
-    // Fetch subscription data
-    const { data: subscription } = await supabase
-      .from('org_subscriptions')
-      .select('plan_key, status, trial_expires_at')
-      .eq('organization_id', orgId)
-      .maybeSingle();
-
     const isTrialing = subscription?.status === 'trialing';
     let trialDaysRemaining: number | null = null;
-
     if (isTrialing && subscription?.trial_expires_at) {
       const trialEnd = new Date(subscription.trial_expires_at);
-      const now = new Date();
       trialDaysRemaining = Math.max(
         0,
-        Math.ceil((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+        Math.ceil(
+          (trialEnd.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24),
+        ),
       );
     }
 
-    // Fetch member count
-    const { count: memberCount } = await supabase
-      .from('org_members')
-      .select('*', { count: 'exact', head: true })
-      .eq('organization_id', orgId);
-
-    // Fetch login activity (from audit logs)
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-    const { data: recentLogins } = await supabase
-      .from('org_audit_logs')
-      .select('created_at')
-      .eq('organization_id', orgId)
-      .eq('action', 'user.login')
-      .gte('created_at', thirtyDaysAgo.toISOString());
-
-    const loginCountLast7Days = recentLogins?.filter(
-      (log: { created_at: string }) => new Date(log.created_at) >= sevenDaysAgo
-    ).length || 0;
-
+    const loginCountLast7Days =
+      recentLogins?.filter(
+        (log: { created_at: string }) => new Date(log.created_at) >= sevenDaysAgo,
+      ).length || 0;
     const loginCountLast30Days = recentLogins?.length || 0;
-
-    // Determine features used based on activity
-    const { data: activityLogs } = await supabase
-      .from('org_audit_logs')
-      .select('action')
-      .eq('organization_id', orgId)
-      .gte('created_at', thirtyDaysAgo.toISOString());
 
     const featuresUsed = new Set<string>();
     const totalFeatures = 12; // tasks, evidence, policies, controls, frameworks, team, vault, reports, workflows, patients, incidents, registers
-
     activityLogs?.forEach((log: { action?: string }) => {
       const action = log.action?.split('.')[0];
       if (action) featuresUsed.add(action);
     });
 
-    // Fetch compliance scores (current and 30 days ago)
-    const { data: complianceSnapshots } = await supabase
-      .from('org_compliance_snapshots')
-      .select('compliance_score, captured_at')
-      .eq('organization_id', orgId)
-      .order('captured_at', { ascending: false })
-      .limit(30);
-
-    const currentComplianceScore = complianceSnapshots?.[0]?.compliance_score || 0;
+    const currentComplianceScore =
+      complianceSnapshots?.[0]?.compliance_score || 0;
     const previousComplianceScore =
       complianceSnapshots?.[complianceSnapshots.length - 1]?.compliance_score ||
       currentComplianceScore;
-
-    // Fetch workflow data
-    const { count: workflowsConfigured } = await supabase
-      .from('org_workflows')
-      .select('*', { count: 'exact', head: true })
-      .eq('organization_id', orgId)
-      .eq('status', 'active');
-
-    const { count: workflowsTriggered } = await supabase
-      .from('org_workflow_runs')
-      .select('*', { count: 'exact', head: true })
-      .eq('organization_id', orgId)
-      .gte('triggered_at', thirtyDaysAgo.toISOString());
-
-    // Fetch overdue items
-    const now = new Date().toISOString();
-
-    const { count: overdueTasksCount } = await supabase
-      .from('org_tasks')
-      .select('*', { count: 'exact', head: true })
-      .eq('organization_id', orgId)
-      .eq('status', 'open')
-      .lt('due_date', now);
-
-    const { count: overdueEvidenceCount } = await supabase
-      .from('org_evidence')
-      .select('*', { count: 'exact', head: true })
-      .eq('organization_id', orgId)
-      .lt('expires_at', now);
-
-    const { count: overdueReviewsCount } = await supabase
-      .from('org_care_plans')
-      .select('*', { count: 'exact', head: true })
-      .eq('organization_id', orgId)
-      .eq('status', 'active')
-      .lt('review_date', now);
 
     // Build input for health score calculation
     const input: HealthScoreInput = {
@@ -225,7 +220,7 @@ export async function GET() {
     const healthScore = calculateHealthScore(input);
 
     // Optionally cache the score
-    await supabase.from('org_health_scores').upsert(
+    void supabase.from('org_health_scores').upsert(
       {
         organization_id: orgId,
         score: healthScore.score,
@@ -238,7 +233,9 @@ export async function GET() {
         calculated_at: new Date().toISOString(),
       },
       { onConflict: 'organization_id' }
-    );
+    ).catch((upsertError: unknown) => {
+      console.error('[Health Score] Failed to cache score:', upsertError);
+    });
 
     return NextResponse.json({
       healthScore,

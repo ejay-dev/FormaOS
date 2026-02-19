@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useReducer, useCallback, useEffect, useRef, useState } from "react";
+import React, { createContext, useContext, useReducer, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { 
   SystemState, 
   ModuleId, 
@@ -359,9 +359,6 @@ function generateId(prefix: string): string {
   return `${prefix}_${Date.now()}_${++idCounter}`;
 }
 
-// Track founder status outside of reducer (immutable during session)
-let _isFounder = false;
-
 export function SystemStateProvider({ 
   children,
   initialState 
@@ -377,12 +374,13 @@ export function SystemStateProvider({
   const [state, dispatch] = useReducer(systemReducer, undefined, createInitialState);
   const [isHydrated, setIsHydrated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [founderState, setFounderState] = useState(initialState?.isFounder ?? false);
   const flowTimeouts = useRef<Map<string, NodeJS.Timeout>>(new Map());
 
   // Hydrate from initial state if provided (SSR)
   useEffect(() => {
     if (initialState && !isHydrated) {
-      _isFounder = initialState.isFounder;
+      setFounderState(initialState.isFounder);
       dispatch({
         type: "HYDRATE_FROM_SERVER",
         payload: initialState,
@@ -420,7 +418,7 @@ export function SystemStateProvider({
       const result = await getSystemState();
       
       if (result.success && result.data) {
-        _isFounder = result.data.isFounder;
+        setFounderState(result.data.isFounder);
         dispatch({
           type: "HYDRATE_FROM_SERVER",
           payload: {
@@ -447,7 +445,7 @@ export function SystemStateProvider({
       const result = await getSystemState();
       
       if (result.success && result.data) {
-        _isFounder = result.data.isFounder;
+        setFounderState(result.data.isFounder);
         dispatch({
           type: "HYDRATE_FROM_SERVER",
           payload: {
@@ -649,10 +647,10 @@ export function SystemStateProvider({
   }, [state.entitlements.role]);
 
   const isFounder = useCallback((): boolean => {
-    return _isFounder;
-  }, []);
+    return founderState;
+  }, [founderState]);
 
-  const value: SystemContextType = {
+  const value: SystemContextType = useMemo(() => ({
     state,
     isHydrated,
     isLoading,
@@ -677,7 +675,32 @@ export function SystemStateProvider({
     getPlan,
     getRole,
     isFounder,
-  };
+  }), [
+    state,
+    isHydrated,
+    isLoading,
+    initialize,
+    hydrateFromServer,
+    refreshFromServer,
+    upgradePlan,
+    changeRole,
+    getModuleState,
+    isModuleAccessible,
+    validateModuleAccess,
+    setModuleState,
+    startFlow,
+    updateFlow,
+    endFlow,
+    startOperation,
+    updateOperation,
+    endOperation,
+    hasPermission,
+    checkPermissionServer,
+    isTrialUser,
+    getPlan,
+    getRole,
+    isFounder,
+  ]);
 
   return (
     <SystemContext.Provider value={value}>

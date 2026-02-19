@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Activity,
   Download,
@@ -38,6 +38,8 @@ export default function UserActivityPage() {
   const [error, setError] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState('24h');
 
+  const visibleActivity = useMemo(() => activity.slice(0, 120), [activity]);
+
   const fetchActivity = useCallback(async () => {
     try {
       const params = new URLSearchParams({ range: timeRange });
@@ -59,19 +61,24 @@ export default function UserActivityPage() {
     }
   }, [timeRange]);
 
-  useEffect(() => {
-    void fetchActivity();
-    const interval = setInterval(() => {
-      void fetchActivity();
-    }, 15000);
-    return () => clearInterval(interval);
-  }, [fetchActivity]);
-
   const { connected } = useRealtimeActivity(
     useCallback(() => {
       void fetchActivity();
     }, [fetchActivity]),
+    { minIntervalMs: 3000 },
   );
+
+  useEffect(() => {
+    void fetchActivity();
+  }, [fetchActivity]);
+
+  useEffect(() => {
+    if (connected) return;
+    const interval = setInterval(() => {
+      void fetchActivity();
+    }, 90000);
+    return () => clearInterval(interval);
+  }, [connected, fetchActivity]);
 
   const getActionIcon = (action: string) => {
     if (action.includes('export')) return <Download className="h-4 w-4" />;
@@ -101,8 +108,11 @@ export default function UserActivityPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[420px] items-center justify-center">
-        <div className="text-slate-400">Loading activity...</div>
+      <div className="space-y-6 p-6">
+        <div className="h-8 w-56 animate-pulse rounded-md bg-slate-800" />
+        <div className="h-24 animate-pulse rounded-lg bg-slate-900/60" />
+        <div className="h-24 animate-pulse rounded-lg bg-slate-900/60" />
+        <div className="h-24 animate-pulse rounded-lg bg-slate-900/60" />
       </div>
     );
   }
@@ -145,8 +155,8 @@ export default function UserActivityPage() {
       )}
 
       <div className="space-y-2">
-        {activity.length ? (
-          activity.map((item) => (
+        {visibleActivity.length ? (
+          visibleActivity.map((item) => (
             <div
               key={item.id}
               className="rounded-lg border border-slate-800 bg-slate-900/50 p-4 transition-colors hover:bg-slate-900/70"
@@ -195,6 +205,11 @@ export default function UserActivityPage() {
             <Activity className="mx-auto mb-4 h-16 w-16 text-slate-500/30" />
             <p className="text-slate-400">No activity recorded.</p>
           </div>
+        )}
+        {activity.length > visibleActivity.length && (
+          <p className="text-xs text-slate-500">
+            Showing {visibleActivity.length} most recent events.
+          </p>
         )}
       </div>
     </div>
