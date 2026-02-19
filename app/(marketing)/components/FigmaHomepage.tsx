@@ -46,6 +46,10 @@ const TrustSection = dynamic(() => import('./homepage/TrustSection').then((m) =>
   ssr: false,
   loading: () => null,
 });
+const ComplianceNetworkSection = dynamic(
+  () => import('./homepage/ComplianceNetworkSection').then((m) => m.ComplianceNetworkSection),
+  { ssr: false, loading: () => null },
+);
 
 // Interactive demo components (lazy-loaded, client-only)
 const InteractiveDemo = dynamic(
@@ -69,6 +73,9 @@ export default function FormaOSHomepage() {
         <div className="mk-marketing-flow relative z-10">
           <HeroSection />
           <ValueProposition />
+          <DeferredSection minHeight={620}>
+            <ComplianceNetworkSection />
+          </DeferredSection>
           <DeferredSection minHeight={720}>
             <InteractiveDemo />
           </DeferredSection>

@@ -144,6 +144,14 @@ const capabilities = [
   },
 ];
 
+// Group capabilities into categories for visual differentiation
+const capabilityCategories = [
+  { label: 'Core Engine', range: [0, 4] as const },
+  { label: 'Framework Intelligence', range: [4, 8] as const },
+  { label: 'Operational Infrastructure', range: [8, 12] as const },
+  { label: 'Domain Modules', range: [12, 16] as const },
+];
+
 export function CapabilitiesGrid() {
   return (
     <section className="mk-section relative overflow-hidden">
@@ -170,37 +178,61 @@ export function CapabilitiesGrid() {
           </p>
         </ScrollReveal>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {capabilities.map((capability, index) => {
-            const Icon = capability.icon;
+        <div className="space-y-10">
+          {capabilityCategories.map((category, catIdx) => {
+            const categoryCapabilities = capabilities.slice(category.range[0], category.range[1]);
             return (
-              <ScrollReveal
-                key={capability.title}
-                variant="blurIn"
-                range={[index * 0.04, 0.3 + index * 0.04]}
-              >
-                <motion.div
-                  whileHover={{ y: -4 }}
-                  className="group relative p-8 rounded-xl bg-gray-950/50 border-l-2 border-l-white/10 border border-white/[0.04] hover:border-l-cyan-500/50 transition-all cursor-pointer backdrop-blur-sm"
-                >
-                  <div
-                    className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${capability.color} opacity-0 group-hover:opacity-5 transition-opacity`}
-                  />
-
-                  <div
-                    className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${capability.color} mb-4 group-hover:scale-110 transition-transform`}
-                  >
-                    <Icon className="w-6 h-6 text-white" />
+              <div key={category.label}>
+                {/* Category label */}
+                <ScrollReveal variant="fadeLeft" range={[catIdx * 0.06, 0.2 + catIdx * 0.06]}>
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="h-px flex-1 max-w-[40px] bg-gradient-to-r from-purple-500/40 to-transparent" />
+                    <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-purple-400/60">
+                      {category.label}
+                    </span>
+                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
                   </div>
+                </ScrollReveal>
 
-                  <h3 className="text-xl font-semibold mb-3 group-hover:text-cyan-400 transition-colors">
-                    {capability.title}
-                  </h3>
-                  <p className="text-gray-400 leading-relaxed">
-                    {capability.description}
-                  </p>
-                </motion.div>
-              </ScrollReveal>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {categoryCapabilities.map((capability, index) => {
+                    const Icon = capability.icon;
+                    const globalIndex = category.range[0] + index;
+                    return (
+                      <ScrollReveal
+                        key={capability.title}
+                        variant="blurIn"
+                        range={[globalIndex * 0.025, 0.25 + globalIndex * 0.025]}
+                      >
+                        <motion.div
+                          whileHover={{ y: -4 }}
+                          className="group relative p-6 rounded-xl bg-gray-950/50 border-l-2 border-l-white/10 border border-white/[0.04] hover:border-l-cyan-500/50 transition-all cursor-pointer"
+                        >
+                          <div
+                            className={`absolute inset-0 rounded-xl bg-gradient-to-br ${capability.color} opacity-0 group-hover:opacity-5 transition-opacity`}
+                          />
+
+                          <div className="flex items-start gap-4">
+                            <div
+                              className={`inline-flex p-2.5 rounded-lg bg-gradient-to-br ${capability.color} flex-shrink-0 group-hover:scale-110 transition-transform`}
+                            >
+                              <Icon className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                              <h3 className="text-base font-semibold mb-1.5 group-hover:text-cyan-400 transition-colors">
+                                {capability.title}
+                              </h3>
+                              <p className="text-sm text-gray-500 leading-relaxed">
+                                {capability.description}
+                              </p>
+                            </div>
+                          </div>
+                        </motion.div>
+                      </ScrollReveal>
+                    );
+                  })}
+                </div>
+              </div>
             );
           })}
         </div>
