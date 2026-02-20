@@ -83,7 +83,10 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
 
         <EnterpriseTrustStrip surface="marketing" />
 
-        <main id="main-content" className="relative z-10 mk-page-bg">
+        <main
+          id="main-content"
+          className="relative z-10 mk-page-bg mk-marketing-flow"
+        >
           <PageTransition>{children}</PageTransition>
         </main>
         <script

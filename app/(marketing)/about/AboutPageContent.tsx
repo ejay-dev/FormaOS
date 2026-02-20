@@ -2,7 +2,12 @@
 
 import { useRef } from 'react';
 import { ArrowRight, Users, Target, Lightbulb } from 'lucide-react';
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from 'framer-motion';
 import { duration } from '@/config/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import dynamic from 'next/dynamic';
@@ -12,7 +17,10 @@ import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 
-const DemoAuditTrailCard = dynamic(() => import('@/components/marketing/demo/DemoAuditTrailCard'), { ssr: false });
+const DemoAuditTrailCard = dynamic(
+  () => import('@/components/marketing/demo/DemoAuditTrailCard'),
+  { ssr: false },
+);
 
 function AboutHero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -22,96 +30,119 @@ function AboutHero() {
     offset: ['start start', 'end start'],
   });
 
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
-  const y = useTransform(scrollYProgress, [0, 0.5], [0, 100]);
+  // Buffered hero exit: hold fully visible first, then progressive cinematic fade
+  const contentOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.24, 0.82, 0.96],
+    [1, 1, 0.35, 0],
+  );
+  const contentScale = useTransform(
+    scrollYProgress,
+    [0, 0.24, 0.82, 0.96],
+    [1, 1, 0.97, 0.94],
+  );
+  const contentY = useTransform(scrollYProgress, [0, 0.82, 1], [0, 52, 110]);
 
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] pt-24"
+      className="mk-hero relative flex items-center justify-center overflow-hidden"
     >
       <HeroAtmosphere topColor="violet" bottomColor="rose" />
 
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <CursorTilt intensity={3} glowFollow glowColor="139,92,246" className="w-full">
-        <div className="flex flex-col items-center text-center">
-          <motion.div style={shouldReduceMotion ? undefined : { opacity, scale, y }}>
-            {/* Badge */}
+        <CursorTilt
+          intensity={3}
+          glowFollow
+          glowColor="139,92,246"
+          className="w-full"
+        >
+          <div className="flex flex-col items-center text-center">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slow, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 mb-8 backdrop-blur-sm"
+              style={
+                shouldReduceMotion
+                  ? undefined
+                  : {
+                      opacity: contentOpacity,
+                      scale: contentScale,
+                      y: contentY,
+                    }
+              }
             >
-              <Users className="w-4 h-4 text-purple-400" />
-              <span className="text-sm text-purple-400 font-medium tracking-wide">
-                About FormaOS
-              </span>
-            </motion.div>
-
-            {/* Headline */}
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.3 }}
-              className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
-            >
-              Built for teams
-              <br />
-              <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-rose-500 bg-clip-text text-transparent">
-                accountable to regulators
-              </span>
-            </motion.h1>
-
-            {/* Subheadline */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.5 }}
-              className="text-lg sm:text-xl text-gray-400 mb-10 max-w-2xl mx-auto text-center leading-relaxed"
-            >
-              FormaOS exists to help regulated organizations operate with
-              confidence. Compliance teams need more than spreadsheets. They
-              need a defensible system that proves governance, evidence, and
-              oversight.
-            </motion.p>
-
-            {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.7 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
-            >
-              <motion.a
-                href="/our-story"
-                whileHover={{
-                  scale: 1.05,
-                  boxShadow: '0 0 40px rgba(139, 92, 246, 0.4)',
-                }}
-                whileTap={{ scale: 0.98 }}
-                className="group px-8 py-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold text-lg flex items-center gap-3 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all"
+              {/* Badge */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slow, delay: 0.2 }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 mb-8 backdrop-blur-sm"
               >
-                <span>Read Our Story</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </motion.a>
+                <Users className="w-4 h-4 text-purple-400" />
+                <span className="text-sm text-purple-400 font-medium tracking-wide">
+                  About FormaOS
+                </span>
+              </motion.div>
 
-              <motion.a
-                href="/product"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-                className="group px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white font-semibold text-lg flex items-center gap-3 hover:border-purple-400/50 hover:bg-purple-400/5 transition-all"
+              {/* Headline */}
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slower, delay: 0.3 }}
+                className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
               >
-                <span>See How It Works</span>
-              </motion.a>
+                Built for teams
+                <br />
+                <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-rose-500 bg-clip-text text-transparent">
+                  accountable to regulators
+                </span>
+              </motion.h1>
+
+              {/* Subheadline */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slower, delay: 0.5 }}
+                className="text-lg sm:text-xl text-gray-400 mb-10 max-w-2xl mx-auto text-center leading-relaxed"
+              >
+                FormaOS exists to help regulated organizations operate with
+                confidence. Compliance teams need more than spreadsheets. They
+                need a defensible system that proves governance, evidence, and
+                oversight.
+              </motion.p>
+
+              {/* CTA Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slower, delay: 0.7 }}
+                className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+              >
+                <motion.a
+                  href="/our-story"
+                  whileHover={{
+                    scale: 1.05,
+                    boxShadow: '0 0 40px rgba(139, 92, 246, 0.4)',
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group px-8 py-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold text-lg flex items-center gap-3 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all"
+                >
+                  <span>Read Our Story</span>
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </motion.a>
+
+                <motion.a
+                  href="/product"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white font-semibold text-lg flex items-center gap-3 hover:border-purple-400/50 hover:bg-purple-400/5 transition-all"
+                >
+                  <span>See How It Works</span>
+                </motion.a>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        </div>
+          </div>
         </CursorTilt>
       </div>
-
     </section>
   );
 }
@@ -125,106 +156,148 @@ export default function AboutPageContent() {
 
       {/* Mission & Purpose */}
       <DeferredSection minHeight={300}>
-      <section className="relative py-24 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421]">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="grid gap-8 md:grid-cols-2">
-            <ScrollReveal variant="fadeUp" range={[0, 0.3]}>
-              <div className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 hover:border-purple-500/30 transition-all duration-300">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <Target className="h-6 w-6 text-purple-400" />
+        <section className="mk-section relative">
+          <div className="mx-auto max-w-7xl px-6 lg:px-8">
+            <div className="grid gap-8 md:grid-cols-2">
+              <ScrollReveal variant="fadeUp" range={[0, 0.3]}>
+                <div className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 hover:border-purple-500/30 transition-all duration-300">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <Target className="h-6 w-6 text-purple-400" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-white mb-4">
+                    Mission
+                  </h2>
+                  <p className="text-gray-400 leading-relaxed">
+                    Deliver operational clarity for regulated industries by
+                    connecting controls, evidence, and accountability in a
+                    single compliance operating system.
+                  </p>
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-4">Mission</h2>
-                <p className="text-gray-400 leading-relaxed">
-                  Deliver operational clarity for regulated industries by
-                  connecting controls, evidence, and accountability in a single
-                  compliance operating system.
-                </p>
-              </div>
-            </ScrollReveal>
+              </ScrollReveal>
 
-            <ScrollReveal variant="fadeLeft" range={[0.04, 0.34]}>
-              <div className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 hover:border-cyan-500/30 transition-all duration-300">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <Lightbulb className="h-6 w-6 text-cyan-400" />
+              <ScrollReveal variant="fadeLeft" range={[0.04, 0.34]}>
+                <div className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 hover:border-cyan-500/30 transition-all duration-300">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <Lightbulb className="h-6 w-6 text-cyan-400" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-white mb-4">
+                    Why it matters
+                  </h2>
+                  <p className="text-gray-400 leading-relaxed">
+                    Regulators expect defensible evidence, not just
+                    documentation. FormaOS provides the audit trail and proof
+                    required to protect leadership teams and their
+                    organizations.
+                  </p>
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-4">
-                  Why it matters
-                </h2>
-                <p className="text-gray-400 leading-relaxed">
-                  Regulators expect defensible evidence, not just documentation.
-                  FormaOS provides the audit trail and proof required to protect
-                  leadership teams and their organizations.
-                </p>
-              </div>
-            </ScrollReveal>
+              </ScrollReveal>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
       </DeferredSection>
 
       <VisualDivider />
 
       {/* Live Activity Feed */}
       <DeferredSection minHeight={300}>
-      <section className="relative py-16 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421]">
-        <div className="mx-auto max-w-xl px-6 lg:px-8">
-          <ScrollReveal variant="blurIn" range={[0, 0.3]} className="text-center mb-8">
-            <h3 className="text-xl font-bold text-white mb-2">The Audit Trail</h3>
-            <p className="text-sm text-gray-400">Every action timestamped, every decision defensible</p>
-          </ScrollReveal>
-          <ScrollReveal variant="fadeUp" range={[0.04, 0.34]}>
-            <DemoAuditTrailCard
-              glowColor="from-purple-500/15 to-pink-500/15"
-              entries={[
-                { action: 'Policy approved', user: 'Sarah Chen', target: 'Data Retention Policy v2.1', time: '09:14', type: 'policy' },
-                { action: 'Evidence uploaded', user: 'Marcus Rivera', target: 'SOC 2 — Access Controls', time: '08:42', type: 'evidence' },
-                { action: 'Risk assessed', user: 'Emma Rodriguez', target: 'Vendor Security Review', time: '08:15', type: 'compliance' },
-                { action: 'Task completed', user: 'James Wilson', target: 'Quarterly Access Review', time: '07:30', type: 'task' },
-                { action: 'Control mapped', user: 'System', target: 'ISO 27001 A.9.2.3', time: '07:00', type: 'system' },
-              ]}
-            />
-          </ScrollReveal>
-        </div>
-      </section>
+        <section className="mk-section relative">
+          <div className="mx-auto max-w-xl px-6 lg:px-8">
+            <ScrollReveal
+              variant="blurIn"
+              range={[0, 0.3]}
+              className="text-center mb-8"
+            >
+              <h3 className="text-xl font-bold text-white mb-2">
+                The Audit Trail
+              </h3>
+              <p className="text-sm text-gray-400">
+                Every action timestamped, every decision defensible
+              </p>
+            </ScrollReveal>
+            <ScrollReveal variant="fadeUp" range={[0.04, 0.34]}>
+              <DemoAuditTrailCard
+                glowColor="from-purple-500/15 to-pink-500/15"
+                entries={[
+                  {
+                    action: 'Policy approved',
+                    user: 'Sarah Chen',
+                    target: 'Data Retention Policy v2.1',
+                    time: '09:14',
+                    type: 'policy',
+                  },
+                  {
+                    action: 'Evidence uploaded',
+                    user: 'Marcus Rivera',
+                    target: 'SOC 2 — Access Controls',
+                    time: '08:42',
+                    type: 'evidence',
+                  },
+                  {
+                    action: 'Risk assessed',
+                    user: 'Emma Rodriguez',
+                    target: 'Vendor Security Review',
+                    time: '08:15',
+                    type: 'compliance',
+                  },
+                  {
+                    action: 'Task completed',
+                    user: 'James Wilson',
+                    target: 'Quarterly Access Review',
+                    time: '07:30',
+                    type: 'task',
+                  },
+                  {
+                    action: 'Control mapped',
+                    user: 'System',
+                    target: 'ISO 27001 A.9.2.3',
+                    time: '07:00',
+                    type: 'system',
+                  },
+                ]}
+              />
+            </ScrollReveal>
+          </div>
+        </section>
       </DeferredSection>
 
       <VisualDivider />
 
       {/* CTA Section */}
       <DeferredSection minHeight={250}>
-      <section className="relative py-24 bg-gradient-to-b from-[#0d1421] to-[#0a0f1c]">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <ScrollReveal variant="slideUp" range={[0, 0.3]}>
-            <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-10 shadow-2xl">
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <div className="text-xs uppercase tracking-wider text-purple-400 font-semibold mb-3">
-                  Ready to talk?
+        <section className="mk-section relative">
+          <div className="mx-auto max-w-7xl px-6 lg:px-8">
+            <ScrollReveal variant="slideUp" range={[0, 0.3]}>
+              <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-10 shadow-2xl">
+                <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                  <div>
+                    <div className="text-xs uppercase tracking-wider text-purple-400 font-semibold mb-3">
+                      Ready to talk?
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                      Let us show you the FormaOS command center
+                    </h2>
+                    <p className="text-gray-400 leading-relaxed">
+                      We work with regulated operators who need certainty and
+                      speed.
+                    </p>
+                  </div>
+                  <motion.a
+                    href="/contact"
+                    whileHover={{
+                      scale: 1.05,
+                      boxShadow: '0 0 40px rgba(139, 92, 246, 0.4)',
+                    }}
+                    whileTap={{ scale: 0.98 }}
+                    className="group px-8 py-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold text-lg flex items-center gap-3 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all whitespace-nowrap"
+                  >
+                    <span>Get Started</span>
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </motion.a>
                 </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
-                  Let us show you the FormaOS command center
-                </h2>
-                <p className="text-gray-400 leading-relaxed">
-                  We work with regulated operators who need certainty and speed.
-                </p>
               </div>
-              <motion.a
-                href="/contact"
-                whileHover={{
-                  scale: 1.05,
-                  boxShadow: '0 0 40px rgba(139, 92, 246, 0.4)',
-                }}
-                whileTap={{ scale: 0.98 }}
-                className="group px-8 py-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold text-lg flex items-center gap-3 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all whitespace-nowrap"
-              >
-                <span>Get Started</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </motion.a>
-            </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
+            </ScrollReveal>
+          </div>
+        </section>
       </DeferredSection>
     </MarketingPageShell>
   );

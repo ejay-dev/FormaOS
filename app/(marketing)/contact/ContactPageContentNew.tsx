@@ -11,7 +11,12 @@ import {
   Shield,
   Building2,
 } from 'lucide-react';
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from 'framer-motion';
 import { duration } from '@/config/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { VisualDivider } from '@/components/motion';
@@ -35,96 +40,120 @@ function ContactHero() {
     offset: ['start start', 'end start'],
   });
 
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
-  const y = useTransform(scrollYProgress, [0, 0.5], [0, 100]);
+  // Buffered hero exit: hold fully visible first, then progressive cinematic fade
+  const contentOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.24, 0.82, 0.96],
+    [1, 1, 0.35, 0],
+  );
+  const contentScale = useTransform(
+    scrollYProgress,
+    [0, 0.24, 0.82, 0.96],
+    [1, 1, 0.97, 0.94],
+  );
+  const contentY = useTransform(scrollYProgress, [0, 0.82, 1], [0, 52, 110]);
 
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] pt-24"
+      className="mk-hero relative flex items-center justify-center overflow-hidden"
     >
       <HeroAtmosphere topColor="blue" bottomColor="violet" />
 
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <CursorTilt intensity={3} glowFollow glowColor="59,130,246" className="w-full">
-        <div className="flex flex-col items-center text-center">
-          <motion.div style={shouldReduceMotion ? undefined : { scale, y }}>
-            {/* Badge */}
+        <CursorTilt
+          intensity={3}
+          glowFollow
+          glowColor="59,130,246"
+          className="w-full"
+        >
+          <div className="flex flex-col items-center text-center">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slow, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/30 mb-8 backdrop-blur-sm"
+              style={
+                shouldReduceMotion
+                  ? undefined
+                  : {
+                      opacity: contentOpacity,
+                      scale: contentScale,
+                      y: contentY,
+                    }
+              }
             >
-              <Mail className="w-4 h-4 text-blue-400" />
-              <span className="text-sm text-blue-400 font-medium tracking-wide">
-                Contact
-              </span>
+              {/* Badge */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slow, delay: 0.2 }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/30 mb-8 backdrop-blur-sm"
+              >
+                <Mail className="w-4 h-4 text-blue-400" />
+                <span className="text-sm text-blue-400 font-medium tracking-wide">
+                  Contact
+                </span>
+              </motion.div>
+
+              {/* Headline */}
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slower, delay: 0.3 }}
+                className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
+              >
+                Let&apos;s Talk About Your
+                <br />
+                <span className="bg-gradient-to-r from-blue-400 via-cyan-500 to-purple-500 bg-clip-text text-transparent">
+                  Compliance Strategy
+                </span>
+              </motion.h1>
+
+              {/* Subheadline */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slower, delay: 0.5 }}
+                className="text-lg sm:text-xl text-gray-400 mb-4 max-w-3xl mx-auto text-center leading-relaxed"
+              >
+                Whether you&apos;re exploring FormaOS, preparing for audits, or
+                designing governance at scale, our team is here to help.
+              </motion.p>
+
+              {/* Support Line */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slower, delay: 0.6 }}
+                className="text-base text-gray-500 mb-10 max-w-2xl mx-auto text-center"
+              >
+                We work with regulated organizations that require precision,
+                accountability, and operational proof.
+              </motion.p>
+
+              {/* CTAs */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link
+                  href="#demo-form"
+                  className="inline-flex items-center gap-2 rounded-lg border border-blue-400/60 bg-[#020617] px-8 py-4 font-medium text-white transition-all duration-300 hover:bg-[#0b1736]"
+                  style={{
+                    color: '#ffffff',
+                    WebkitTextFillColor: '#ffffff',
+                  }}
+                >
+                  Request a Demo
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  href="#contact-info"
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium border border-white/20 transition-all duration-300"
+                >
+                  Contact Our Team
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
             </motion.div>
-
-            {/* Headline */}
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.3 }}
-              className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
-            >
-              Let&apos;s Talk About Your
-              <br />
-              <span className="bg-gradient-to-r from-blue-400 via-cyan-500 to-purple-500 bg-clip-text text-transparent">
-                Compliance Strategy
-              </span>
-            </motion.h1>
-
-            {/* Subheadline */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.5 }}
-              className="text-lg sm:text-xl text-gray-400 mb-4 max-w-3xl mx-auto text-center leading-relaxed"
-            >
-              Whether you&apos;re exploring FormaOS, preparing for audits, or
-              designing governance at scale, our team is here to help.
-            </motion.p>
-
-            {/* Support Line */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.6 }}
-              className="text-base text-gray-500 mb-10 max-w-2xl mx-auto text-center"
-            >
-              We work with regulated organizations that require precision,
-              accountability, and operational proof.
-            </motion.p>
-
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="#demo-form"
-                className="inline-flex items-center gap-2 rounded-lg border border-blue-400/60 bg-[#020617] px-8 py-4 font-medium text-white transition-all duration-300 hover:bg-[#0b1736]"
-                style={{
-                  color: '#ffffff',
-                  WebkitTextFillColor: '#ffffff',
-                }}
-              >
-                Request a Demo
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link
-                href="#contact-info"
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium border border-white/20 transition-all duration-300"
-              >
-                Contact Our Team
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </motion.div>
-        </div>
+          </div>
         </CursorTilt>
       </div>
-
     </section>
   );
 }
@@ -135,10 +164,14 @@ function ContactHero() {
 
 function ContactInformation() {
   return (
-    <section id="contact-info" className="relative py-32 bg-[#0a0f1c]">
+    <section id="contact-info" className="mk-section relative">
       <div className="max-w-5xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
-        <ScrollReveal variant="blurIn" range={[0, 0.3]} className="text-center mb-16">
+        <ScrollReveal
+          variant="blurIn"
+          range={[0, 0.3]}
+          className="text-center mb-16"
+        >
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
             Direct Contact
           </h2>
@@ -222,13 +255,14 @@ function ContactForm({ submitAction, searchParams }: ContactFormProps) {
   };
 
   return (
-    <section
-      id="demo-form"
-      className="relative py-32 bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c]"
-    >
+    <section id="demo-form" className="mk-section relative">
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
-        <ScrollReveal variant="blurIn" range={[0, 0.3]} className="text-center mb-12">
+        <ScrollReveal
+          variant="blurIn"
+          range={[0, 0.3]}
+          className="text-center mb-12"
+        >
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
             Start the Conversation
           </h2>
@@ -242,172 +276,172 @@ function ContactForm({ submitAction, searchParams }: ContactFormProps) {
         {/* Form Card */}
         <ScrollReveal variant="fadeUp" range={[0.04, 0.34]}>
           <div className="p-8 sm:p-12 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
-          <form action={handleSubmit} className="space-y-6">
-            {/* Name & Email Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-300 mb-2"
-                >
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  required
-                  className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                  placeholder="Your full name"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-300 mb-2"
-                >
-                  Work Email *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  required
-                  className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                  placeholder="you@organization.com"
-                />
-              </div>
-            </div>
-
-            {/* Organization & Industry Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label
-                  htmlFor="company"
-                  className="block text-sm font-medium text-gray-300 mb-2"
-                >
-                  Organization
-                </label>
-                <input
-                  type="text"
-                  id="company"
-                  name="company"
-                  className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                  placeholder="Your organization name"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="industry"
-                  className="block text-sm font-medium text-gray-300 mb-2"
-                >
-                  Industry
-                </label>
-                <select
-                  id="industry"
-                  name="industry"
-                  className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-                >
-                  <option value="" className="bg-[#0a0f1c]">
-                    Select industry
-                  </option>
-                  <option value="healthcare" className="bg-[#0a0f1c]">
-                    Healthcare
-                  </option>
-                  <option value="ndis" className="bg-[#0a0f1c]">
-                    NDIS
-                  </option>
-                  <option value="finance" className="bg-[#0a0f1c]">
-                    Finance
-                  </option>
-                  <option value="education" className="bg-[#0a0f1c]">
-                    Education
-                  </option>
-                  <option value="government" className="bg-[#0a0f1c]">
-                    Government
-                  </option>
-                  <option value="other" className="bg-[#0a0f1c]">
-                    Other
-                  </option>
-                </select>
-              </div>
-            </div>
-
-            {/* Message */}
-            <div>
-              <label
-                htmlFor="message"
-                className="block text-sm font-medium text-gray-300 mb-2"
-              >
-                Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                rows={5}
-                className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none"
-                placeholder="Tell us about your compliance challenges and goals..."
-              />
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full py-4 px-6 rounded-lg bg-blue-500 hover:bg-blue-400 disabled:bg-blue-500/50 text-white font-medium transition-all duration-300 flex items-center justify-center gap-2"
-            >
-              {isSubmitting ? (
-                <>
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{
-                      duration: 1,
-                      repeat: Infinity,
-                      ease: 'linear',
-                    }}
-                    className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+            <form action={handleSubmit} className="space-y-6">
+              {/* Name & Email Row */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-300 mb-2"
+                  >
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    required
+                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    placeholder="Your full name"
                   />
-                  Sending...
-                </>
-              ) : (
-                <>
-                  Send Message
-                  <Send className="w-4 h-4" />
-                </>
-              )}
-            </button>
+                </div>
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-300 mb-2"
+                  >
+                    Work Email *
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    placeholder="you@organization.com"
+                  />
+                </div>
+              </div>
 
-            {/* Trust Note */}
-            <p className="text-center text-sm text-gray-500">
-              Your information is handled securely and never shared.
-            </p>
-          </form>
+              {/* Organization & Industry Row */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label
+                    htmlFor="company"
+                    className="block text-sm font-medium text-gray-300 mb-2"
+                  >
+                    Organization
+                  </label>
+                  <input
+                    type="text"
+                    id="company"
+                    name="company"
+                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    placeholder="Your organization name"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="industry"
+                    className="block text-sm font-medium text-gray-300 mb-2"
+                  >
+                    Industry
+                  </label>
+                  <select
+                    id="industry"
+                    name="industry"
+                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  >
+                    <option value="" className="bg-[#0a0f1c]">
+                      Select industry
+                    </option>
+                    <option value="healthcare" className="bg-[#0a0f1c]">
+                      Healthcare
+                    </option>
+                    <option value="ndis" className="bg-[#0a0f1c]">
+                      NDIS
+                    </option>
+                    <option value="finance" className="bg-[#0a0f1c]">
+                      Finance
+                    </option>
+                    <option value="education" className="bg-[#0a0f1c]">
+                      Education
+                    </option>
+                    <option value="government" className="bg-[#0a0f1c]">
+                      Government
+                    </option>
+                    <option value="other" className="bg-[#0a0f1c]">
+                      Other
+                    </option>
+                  </select>
+                </div>
+              </div>
 
-          {/* Status Messages */}
-          {searchParams?.success && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-6 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg"
-            >
-              <p className="text-emerald-400 text-sm text-center">
-                ✅ Thank you! We&apos;ll be in touch within 24 hours.
+              {/* Message */}
+              <div>
+                <label
+                  htmlFor="message"
+                  className="block text-sm font-medium text-gray-300 mb-2"
+                >
+                  Message
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows={5}
+                  className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none"
+                  placeholder="Tell us about your compliance challenges and goals..."
+                />
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-4 px-6 rounded-lg bg-blue-500 hover:bg-blue-400 disabled:bg-blue-500/50 text-white font-medium transition-all duration-300 flex items-center justify-center gap-2"
+              >
+                {isSubmitting ? (
+                  <>
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: 'linear',
+                      }}
+                      className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+                    />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    Send Message
+                    <Send className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+
+              {/* Trust Note */}
+              <p className="text-center text-sm text-gray-500">
+                Your information is handled securely and never shared.
               </p>
-            </motion.div>
-          )}
+            </form>
 
-          {searchParams?.error && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg"
-            >
-              <p className="text-red-400 text-sm text-center">
-                ❌ Something went wrong. Please try again or contact us
-                directly.
-              </p>
-            </motion.div>
-          )}
+            {/* Status Messages */}
+            {searchParams?.success && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-6 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg"
+              >
+                <p className="text-emerald-400 text-sm text-center">
+                  ✅ Thank you! We&apos;ll be in touch within 24 hours.
+                </p>
+              </motion.div>
+            )}
+
+            {searchParams?.error && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg"
+              >
+                <p className="text-red-400 text-sm text-center">
+                  ❌ Something went wrong. Please try again or contact us
+                  directly.
+                </p>
+              </motion.div>
+            )}
           </div>
         </ScrollReveal>
       </div>
@@ -421,7 +455,7 @@ function ContactForm({ submitAction, searchParams }: ContactFormProps) {
 
 function EnterpriseInquiries() {
   return (
-    <section className="relative py-32 bg-[#0a0f1c]">
+    <section className="mk-section relative">
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="fadeUp" range={[0, 0.3]}>
           <div className="text-center p-12 rounded-2xl bg-gradient-to-br from-purple-500/20 via-white/[0.08] to-white/[0.04] border border-purple-500/30 backdrop-blur-xl">
@@ -432,8 +466,8 @@ function EnterpriseInquiries() {
               Enterprise & Partnership Requests
             </h2>
             <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
-              For large-scale deployments, compliance architecture discussions, or
-              strategic partnerships, contact us directly.
+              For large-scale deployments, compliance architecture discussions,
+              or strategic partnerships, contact us directly.
             </p>
             <a
               href="mailto:hello@formaos.com.au"
@@ -455,7 +489,7 @@ function EnterpriseInquiries() {
 
 function SecurityTrust() {
   return (
-    <section className="relative py-32 bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c]">
+    <section className="mk-section relative">
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="fadeUp" range={[0, 0.3]} className="text-center">
           <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-cyan-500/20 flex items-center justify-center">
@@ -481,7 +515,7 @@ function SecurityTrust() {
 
 function ClosingCTA() {
   return (
-    <section className="relative py-32 bg-[#0a0f1c]">
+    <section className="mk-section relative">
       <div className="max-w-4xl mx-auto px-6 lg:px-12 text-center">
         <ScrollReveal variant="slideUp" range={[0, 0.3]}>
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">

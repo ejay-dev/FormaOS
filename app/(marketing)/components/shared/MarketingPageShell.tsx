@@ -12,7 +12,9 @@ export function MarketingPageShell({
   className = '',
 }: MarketingPageShellProps) {
   return (
-    <div className={`relative min-h-screen overflow-x-hidden mk-page-bg ${className}`}>
+    <div
+      className={`relative min-h-screen overflow-x-hidden mk-page-bg mk-marketing-flow ${className}`}
+    >
       {children}
     </div>
   );

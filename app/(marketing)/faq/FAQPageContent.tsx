@@ -23,6 +23,7 @@ import {
 import { duration } from '@/config/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
+import { CursorTilt } from '@/components/motion/CursorTilt';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
@@ -213,80 +214,105 @@ function FAQHero() {
     offset: ['start start', 'end start'],
   });
 
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
-  const y = useTransform(scrollYProgress, [0, 0.5], [0, 100]);
+  // Buffered hero exit: hold fully visible first, then progressive cinematic fade
+  const contentOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.24, 0.82, 0.96],
+    [1, 1, 0.35, 0],
+  );
+  const contentScale = useTransform(
+    scrollYProgress,
+    [0, 0.24, 0.82, 0.96],
+    [1, 1, 0.97, 0.94],
+  );
+  const contentY = useTransform(scrollYProgress, [0, 0.82, 1], [0, 52, 110]);
 
   return (
     <section
       ref={containerRef}
-      className="relative min-h-[80vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] pt-24"
+      className="mk-hero relative flex items-center justify-center overflow-hidden"
     >
       <HeroAtmosphere topColor="cyan" bottomColor="emerald" />
 
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <div className="flex flex-col items-center text-center">
-          <motion.div style={shouldReduceMotion ? undefined : { opacity, scale, y }}>
-            {/* Badge */}
+        <CursorTilt
+          intensity={3}
+          glowFollow
+          glowColor="34,211,238"
+          className="w-full"
+        >
+          <div className="flex flex-col items-center text-center">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slow, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 backdrop-blur-sm"
+              style={
+                shouldReduceMotion
+                  ? undefined
+                  : {
+                      opacity: contentOpacity,
+                      scale: contentScale,
+                      y: contentY,
+                    }
+              }
             >
-              <HelpCircle className="w-4 h-4 text-cyan-400" />
-              <span className="text-sm text-cyan-400 font-medium tracking-wide">
-                Help Center
-              </span>
+              {/* Badge */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slow, delay: 0.2 }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 backdrop-blur-sm"
+              >
+                <HelpCircle className="w-4 h-4 text-cyan-400" />
+                <span className="text-sm text-cyan-400 font-medium tracking-wide">
+                  Help Center
+                </span>
+              </motion.div>
+
+              {/* Headline */}
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slower, delay: 0.3 }}
+                className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
+              >
+                Frequently Asked{' '}
+                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+                  Questions
+                </span>
+              </motion.h1>
+
+              {/* Subheadline */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slower, delay: 0.5 }}
+                className="text-lg sm:text-xl text-gray-400 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
+              >
+                Everything you need to know about FormaOS, from platform
+                capabilities and security to integrations, pricing, and support.
+              </motion.p>
+
+              {/* Category Pills */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slower, delay: 0.6 }}
+                className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600"
+              >
+                {faqCategories.map((cat) => (
+                  <a
+                    key={cat.id}
+                    href={`#${cat.id}`}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/[0.1] hover:border-cyan-500/30 hover:bg-white/[0.08] transition-all duration-300"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                    {cat.title}
+                  </a>
+                ))}
+              </motion.div>
             </motion.div>
-
-            {/* Headline */}
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.3 }}
-              className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
-            >
-              Frequently Asked{' '}
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
-                Questions
-              </span>
-            </motion.h1>
-
-            {/* Subheadline */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.5 }}
-              className="text-lg sm:text-xl text-gray-400 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
-            >
-              Everything you need to know about FormaOS, from platform
-              capabilities and security to integrations, pricing, and support.
-            </motion.p>
-
-            {/* Category Pills */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.6 }}
-              className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600"
-            >
-              {faqCategories.map((cat) => (
-                <a
-                  key={cat.id}
-                  href={`#${cat.id}`}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/[0.1] hover:border-cyan-500/30 hover:bg-white/[0.08] transition-all duration-300"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-                  {cat.title}
-                </a>
-              ))}
-            </motion.div>
-          </motion.div>
-        </div>
+          </div>
+        </CursorTilt>
       </div>
-
     </section>
   );
 }
@@ -395,44 +421,38 @@ function FAQCategory({
   const colors = colorMap[category.color] || colorMap.cyan;
 
   return (
-    <ScrollReveal
-      variant="blurIn"
-      range={[index * 0.04, 0.3 + index * 0.04]}
-    >
-      <div
-        id={category.id}
-        className="scroll-mt-24"
-      >
-      <div className="relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-white/10 transition-all duration-500 shadow-2xl shadow-black/30">
-        {/* Top accent line */}
-        <div
-          className={`absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent`}
-        />
-
-        {/* Category Header */}
-        <div className="flex items-center gap-4 mb-6 pb-6 border-b border-white/5">
+    <ScrollReveal variant="blurIn" range={[index * 0.04, 0.3 + index * 0.04]}>
+      <div id={category.id} className="scroll-mt-24">
+        <div className="relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-white/10 transition-all duration-500 shadow-2xl shadow-black/30">
+          {/* Top accent line */}
           <div
-            className={`w-12 h-12 rounded-xl ${colors.bg} flex items-center justify-center`}
-          >
-            <Icon className={`w-6 h-6 ${colors.text}`} />
-          </div>
-          <h2 className="text-2xl font-bold text-white">{category.title}</h2>
-        </div>
+            className={`absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent`}
+          />
 
-        {/* Questions */}
-        <div>
-          {category.questions.map((faq, i) => (
-            <FAQItem
-              key={i}
-              question={faq.q}
-              answer={faq.a}
-              isOpen={openIndex === i}
-              onClick={() => setOpenIndex(openIndex === i ? null : i)}
-              index={i}
-            />
-          ))}
+          {/* Category Header */}
+          <div className="flex items-center gap-4 mb-6 pb-6 border-b border-white/5">
+            <div
+              className={`w-12 h-12 rounded-xl ${colors.bg} flex items-center justify-center`}
+            >
+              <Icon className={`w-6 h-6 ${colors.text}`} />
+            </div>
+            <h2 className="text-2xl font-bold text-white">{category.title}</h2>
+          </div>
+
+          {/* Questions */}
+          <div>
+            {category.questions.map((faq, i) => (
+              <FAQItem
+                key={i}
+                question={faq.q}
+                answer={faq.a}
+                isOpen={openIndex === i}
+                onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                index={i}
+              />
+            ))}
+          </div>
         </div>
-      </div>
       </div>
     </ScrollReveal>
   );
@@ -495,40 +515,40 @@ function FAQCTA() {
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.3]}>
           <div className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/30">
-          <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
+            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
 
-          <div className="text-center">
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-              Still have questions?
-            </h2>
-            <p className="text-gray-400 mb-8 max-w-xl mx-auto">
-              Our team is ready to help. Contact us for personalized answers or
-              schedule a demo to see FormaOS in action.
-            </p>
+            <div className="text-center">
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+                Still have questions?
+              </h2>
+              <p className="text-gray-400 mb-8 max-w-xl mx-auto">
+                Our team is ready to help. Contact us for personalized answers
+                or schedule a demo to see FormaOS in action.
+              </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <motion.a
-                href="/contact"
-                whileHover={{
-                  scale: 1.05,
-                  boxShadow: '0 0 40px rgba(6, 182, 212, 0.4)',
-                }}
-                whileTap={{ scale: 0.98 }}
-                className="group px-8 py-4 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-lg flex items-center gap-3 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all"
-              >
-                <span>Contact Us</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </motion.a>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <motion.a
+                  href="/contact"
+                  whileHover={{
+                    scale: 1.05,
+                    boxShadow: '0 0 40px rgba(6, 182, 212, 0.4)',
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group px-8 py-4 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-lg flex items-center gap-3 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all"
+                >
+                  <span>Contact Us</span>
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </motion.a>
 
-              <Link
-                href={`${appBase}/auth/signup`}
-                className="group px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white font-semibold text-lg flex items-center gap-3 hover:border-cyan-400/50 hover:bg-cyan-400/5 transition-all"
-              >
-                <span>Start Free Trial</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
+                <Link
+                  href={`${appBase}/auth/signup`}
+                  className="group px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white font-semibold text-lg flex items-center gap-3 hover:border-cyan-400/50 hover:bg-cyan-400/5 transition-all"
+                >
+                  <span>Start Free Trial</span>
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
             </div>
-          </div>
           </div>
         </ScrollReveal>
       </div>

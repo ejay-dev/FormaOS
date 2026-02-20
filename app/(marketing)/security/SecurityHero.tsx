@@ -1,118 +1,226 @@
 'use client';
 
+import { useRef } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+} from 'framer-motion';
 import { Lock, Shield, Eye, FileCheck, ArrowRight } from 'lucide-react';
 import { duration, easing } from '@/config/motion';
-import {
-  ParallaxLayer,
-} from '@/components/motion';
+import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
+import { CursorTilt } from '@/components/motion/CursorTilt';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 export function SecurityHero() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const shouldReduceMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end start'],
+  });
+
+  // Buffered hero exit: hold fully visible first, then progressive cinematic fade
+  const contentOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.24, 0.82, 0.96],
+    [1, 1, 0.35, 0],
+  );
+  const contentScale = useTransform(
+    scrollYProgress,
+    [0, 0.24, 0.82, 0.96],
+    [1, 1, 0.97, 0.94],
+  );
+  const contentY = useTransform(scrollYProgress, [0, 0.82, 1], [0, 52, 110]);
+  const sa = !shouldReduceMotion;
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Animated background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
-      {/* Ambient lights - more accent color for security theme */}
-      <div className="pointer-events-none absolute top-20 left-1/4 h-[500px] w-[500px] rounded-full bg-accent/15 blur-[100px]" />
-      <div className="pointer-events-none absolute bottom-20 right-1/3 h-[400px] w-[400px] rounded-full bg-primary/10 blur-[80px]" />
+    <section
+      ref={containerRef}
+      className="mk-hero relative flex items-center justify-center overflow-hidden"
+    >
+      <HeroAtmosphere topColor="cyan" bottomColor="blue" />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8 py-20">
-        <ParallaxLayer speed={0.3}>
+      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
+        <CursorTilt
+          intensity={3}
+          glowFollow
+          glowColor="34,211,238"
+          className="w-full"
+        >
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: duration.slower,
-              ease: [...easing.signature],
-            }}
-            className="text-center max-w-4xl mx-auto space-y-8"
+            style={
+              sa
+                ? { opacity: contentOpacity, scale: contentScale, y: contentY }
+                : undefined
+            }
+            className="text-center flex flex-col items-center"
           >
             {/* Badge */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2.5 rounded-full glass-intense px-5 py-2.5 text-xs font-bold uppercase tracking-wider border border-accent/30"
+              initial={sa ? { opacity: 0, y: 20 } : false}
+              animate={{ opacity: 1, y: 0 }}
+              transition={
+                sa
+                  ? {
+                      duration: duration.slow,
+                      delay: 0.2,
+                      ease: [...easing.signature] as [
+                        number,
+                        number,
+                        number,
+                        number,
+                      ],
+                    }
+                  : { duration: 0 }
+              }
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 backdrop-blur-sm"
             >
-              <Shield className="h-4 w-4 text-accent" />
-              Security Architecture
+              <Shield className="w-4 h-4 text-cyan-400" />
+              <span className="text-sm text-cyan-400 font-medium tracking-wide">
+                Security Architecture
+              </span>
             </motion.div>
 
             {/* Headline */}
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] font-display tracking-tight">
+            <motion.h1
+              initial={sa ? { opacity: 0, y: 30 } : false}
+              animate={{ opacity: 1, y: 0 }}
+              transition={
+                sa
+                  ? {
+                      duration: duration.slower,
+                      delay: 0.3,
+                      ease: [...easing.signature] as [
+                        number,
+                        number,
+                        number,
+                        number,
+                      ],
+                    }
+                  : { duration: 0 }
+              }
+              className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
+            >
               Enterprise Security
               <br />
-              <span className="relative">
-                <span className="text-gradient">by Design</span>
-                <motion.div
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.8, duration: duration.slower }}
-                  className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-accent via-primary to-secondary rounded-full origin-left"
-                />
+              <span className="bg-gradient-to-r from-cyan-400 via-teal-400 to-blue-500 bg-clip-text text-transparent">
+                by Design
               </span>
-            </h1>
+            </motion.h1>
 
             {/* Subtitle */}
-            <p className="text-xl md:text-2xl text-foreground/80 leading-relaxed">
+            <motion.p
+              initial={sa ? { opacity: 0, y: 20 } : false}
+              animate={{ opacity: 1, y: 0 }}
+              transition={
+                sa
+                  ? {
+                      duration: duration.slower,
+                      delay: 0.5,
+                      ease: [...easing.signature] as [
+                        number,
+                        number,
+                        number,
+                        number,
+                      ],
+                    }
+                  : { duration: 0 }
+              }
+              className="text-lg sm:text-xl text-gray-400 mb-4 max-w-2xl mx-auto text-center leading-relaxed"
+            >
               Audit-grade logging, tenant isolation, and compliance gates
               engineered for organizations where security and data integrity are
               regulatory requirements.
-            </p>
+            </motion.p>
 
             {/* Security feature pills */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={sa ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="flex flex-wrap justify-center gap-4"
+              transition={
+                sa
+                  ? {
+                      duration: duration.slower,
+                      delay: 0.6,
+                      ease: [...easing.signature] as [
+                        number,
+                        number,
+                        number,
+                        number,
+                      ],
+                    }
+                  : { duration: 0 }
+              }
+              className="flex flex-wrap justify-center gap-3 mb-10"
             >
               {[
                 { icon: Lock, label: 'Tenant Isolation' },
                 { icon: FileCheck, label: 'Immutable Logs' },
                 { icon: Eye, label: 'Evidence Chain' },
-              ].map((item, i) => (
-                <motion.div
+              ].map((item) => (
+                <div
                   key={item.label}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.6 + i * 0.1 }}
-                  className="glass-panel rounded-full px-5 py-3 flex items-center gap-2 hover:glass-intense transition-all group"
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1] backdrop-blur-sm"
                 >
-                  <item.icon className="h-4 w-4 text-accent group-hover:scale-110 transition-transform" />
-                  <span className="text-sm font-semibold">{item.label}</span>
-                </motion.div>
+                  <item.icon className="h-4 w-4 text-cyan-400" />
+                  <span className="text-sm font-medium text-gray-300">
+                    {item.label}
+                  </span>
+                </div>
               ))}
             </motion.div>
 
             {/* CTAs */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={sa ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center pt-4"
+              transition={
+                sa
+                  ? {
+                      duration: duration.slower,
+                      delay: 0.7,
+                      ease: [...easing.signature] as [
+                        number,
+                        number,
+                        number,
+                        number,
+                      ],
+                    }
+                  : { duration: 0 }
+              }
+              className="flex flex-col sm:flex-row gap-4 justify-center"
             >
-              <Link
+              <motion.a
                 href={`${appBase}/auth/signup`}
-                className="mk-btn mk-btn-primary text-lg px-8 py-4 group"
+                whileHover={
+                  sa
+                    ? {
+                        scale: 1.03,
+                        boxShadow: '0 0 30px rgba(34, 211, 238, 0.3)',
+                      }
+                    : undefined
+                }
+                whileTap={sa ? { scale: 0.98 } : undefined}
+                className="mk-btn mk-btn-primary group px-8 py-4 text-lg"
               >
                 <span>Start Free Trial</span>
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
+              </motion.a>
               <Link
                 href="/contact"
-                className="mk-btn mk-btn-secondary text-lg px-8 py-4"
+                className="mk-btn mk-btn-secondary group px-8 py-4 text-lg"
               >
                 Security Briefing
               </Link>
             </motion.div>
           </motion.div>
-        </ParallaxLayer>
+        </CursorTilt>
       </div>
     </section>
   );

@@ -14,10 +14,16 @@ import {
   CalendarDays,
   Search,
 } from 'lucide-react';
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from 'framer-motion';
 import { duration } from '@/config/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
+import { CursorTilt } from '@/components/motion/CursorTilt';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
@@ -54,114 +60,111 @@ function BlogHero() {
     offset: ['start start', 'end start'],
   });
 
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
-  const y = useTransform(scrollYProgress, [0, 0.5], [0, 100]);
+  // Buffered hero exit: hold fully visible first, then progressive cinematic fade
+  const contentOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.24, 0.82, 0.96],
+    [1, 1, 0.35, 0],
+  );
+  const contentScale = useTransform(
+    scrollYProgress,
+    [0, 0.24, 0.82, 0.96],
+    [1, 1, 0.97, 0.94],
+  );
+  const contentY = useTransform(scrollYProgress, [0, 0.82, 1], [0, 52, 110]);
+  const sa = !shouldReduceMotion;
 
   return (
     <section
       ref={containerRef}
-      className="relative min-h-[80vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] pt-24"
+      className="mk-hero relative flex items-center justify-center overflow-hidden"
     >
       <HeroAtmosphere topColor="blue" bottomColor="violet" />
 
-      {/* Editorial floating blobs */}
-      <motion.div
-        className="pointer-events-none absolute -left-16 top-24 h-64 w-64 rounded-full bg-violet-500/12 blur-3xl"
-        animate={
-          shouldReduceMotion
-            ? undefined
-            : { x: [0, 28, 0], y: [0, -18, 0], scale: [1, 1.08, 1] }
-        }
-        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="pointer-events-none absolute right-0 top-40 h-72 w-72 rounded-full bg-pink-500/10 blur-3xl"
-        animate={
-          shouldReduceMotion
-            ? undefined
-            : { x: [0, -22, 0], y: [0, 20, 0], scale: [1, 1.1, 1] }
-        }
-        transition={{ duration: 14, delay: 0.8, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="pointer-events-none absolute bottom-10 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-cyan-500/10 blur-3xl"
-        animate={
-          shouldReduceMotion
-            ? undefined
-            : { y: [0, -16, 0], opacity: [0.5, 0.85, 0.5] }
-        }
-        transition={{ duration: 10, delay: 0.35, repeat: Infinity, ease: 'easeInOut' }}
-      />
-
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <div className="flex flex-col items-center text-center">
-          <motion.div style={shouldReduceMotion ? undefined : { opacity, scale, y }}>
-            {/* Badge */}
+        <CursorTilt
+          intensity={3}
+          glowFollow
+          glowColor="139,92,246"
+          className="w-full"
+        >
+          <div className="flex flex-col items-center text-center">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slow, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 mb-8 backdrop-blur-sm"
+              style={
+                sa
+                  ? {
+                      opacity: contentOpacity,
+                      scale: contentScale,
+                      y: contentY,
+                    }
+                  : undefined
+              }
             >
-              <BookOpen className="w-4 h-4 text-purple-400" />
-              <span className="text-sm text-purple-400 font-medium tracking-wide">
-                Insights & Updates
-              </span>
-            </motion.div>
+              {/* Badge */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slow, delay: 0.2 }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 mb-8 backdrop-blur-sm"
+              >
+                <BookOpen className="w-4 h-4 text-purple-400" />
+                <span className="text-sm text-purple-400 font-medium tracking-wide">
+                  Insights & Updates
+                </span>
+              </motion.div>
 
-            {/* Headline */}
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.3 }}
-              className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
-            >
-              FormaOS{' '}
-              <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">
-                Blog
-              </span>
-            </motion.h1>
+              {/* Headline */}
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slower, delay: 0.3 }}
+                className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
+              >
+                FormaOS{' '}
+                <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">
+                  Blog
+                </span>
+              </motion.h1>
 
-            {/* Subheadline */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.5 }}
-              className="text-lg sm:text-xl text-gray-400 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
-            >
-              Expert perspectives on compliance management, regulatory
-              technology, and building operational excellence in regulated
-              industries.
-            </motion.p>
+              {/* Subheadline */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slower, delay: 0.5 }}
+                className="text-lg sm:text-xl text-gray-400 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
+              >
+                Expert perspectives on compliance management, regulatory
+                technology, and building operational excellence in regulated
+                industries.
+              </motion.p>
 
-            {/* Stats Row */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.6 }}
-              className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500"
-            >
-              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1]">
-                <Tag className="w-4 h-4 text-purple-400" />
-                <span>{blogPosts.length} Articles</span>
-              </div>
-              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1]">
-                <BookOpen className="w-4 h-4 text-pink-400" />
-                <span>{categories.length - 1} Categories</span>
-              </div>
-              {latestPostDate ? (
+              {/* Stats Row */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slower, delay: 0.6 }}
+                className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500"
+              >
                 <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1]">
-                  <TrendingUp className="w-4 h-4 text-cyan-400" />
-                  <span>Last updated {latestPostDate}</span>
+                  <Tag className="w-4 h-4 text-purple-400" />
+                  <span>{blogPosts.length} Articles</span>
                 </div>
-              ) : null}
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1]">
+                  <BookOpen className="w-4 h-4 text-pink-400" />
+                  <span>{categories.length - 1} Categories</span>
+                </div>
+                {latestPostDate ? (
+                  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1]">
+                    <TrendingUp className="w-4 h-4 text-cyan-400" />
+                    <span>Last updated {latestPostDate}</span>
+                  </div>
+                ) : null}
+              </motion.div>
             </motion.div>
-          </motion.div>
-        </div>
+          </div>
+        </CursorTilt>
       </div>
-
     </section>
   );
 }
@@ -174,7 +177,7 @@ function FeaturedPost() {
   const FeaturedIcon = featuredPost.icon;
 
   return (
-    <section className="relative py-16 bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c]">
+    <section className="mk-section relative">
       <div className="max-w-6xl mx-auto px-6 lg:px-12">
         <Link
           href={`/blog/${featuredPost.id}`}
@@ -271,9 +274,13 @@ function CategoryFilter({
   onSearchChange: (value: string) => void;
 }) {
   return (
-    <section className="relative py-8 bg-gradient-to-b from-[#0d1421] to-[#0a0f1c]">
+    <section className="mk-section relative">
       <div className="max-w-6xl mx-auto px-6 lg:px-12 space-y-6">
-        <ScrollReveal variant="fadeUp" range={[0, 0.3]} className="flex flex-wrap items-center gap-3 justify-center">
+        <ScrollReveal
+          variant="fadeUp"
+          range={[0, 0.3]}
+          className="flex flex-wrap items-center gap-3 justify-center"
+        >
           {categories.map((category) => (
             <button
               key={category.id}
@@ -290,7 +297,11 @@ function CategoryFilter({
           ))}
         </ScrollReveal>
 
-        <ScrollReveal variant="fadeUp" range={[0.04, 0.34]} className="max-w-xl mx-auto">
+        <ScrollReveal
+          variant="fadeUp"
+          range={[0.04, 0.34]}
+          className="max-w-xl mx-auto"
+        >
           <div className="flex items-center gap-3 px-4 py-3 rounded-full bg-gray-900/60 border border-white/10 text-gray-300 focus-within:border-purple-500/40 focus-within:ring-2 focus-within:ring-purple-500/20 transition">
             <Search className="w-4 h-4 text-gray-400" />
             <input
@@ -326,7 +337,11 @@ function BlogCard({
       className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/60 rounded-2xl"
       aria-label={`Read ${post.title}`}
     >
-      <ScrollReveal variant="scaleUp" range={[index * 0.04, 0.3 + index * 0.04]} className="h-full">
+      <ScrollReveal
+        variant="scaleUp"
+        range={[index * 0.04, 0.3 + index * 0.04]}
+        className="h-full"
+      >
         <div className="relative h-full p-6 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-purple-500/30 transition-all duration-500 shadow-xl shadow-black/20">
           {/* Top accent */}
           <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-purple-400/30 transition-colors" />
@@ -399,7 +414,7 @@ function BlogGrid({
   hasMore: boolean;
 }) {
   return (
-    <section className="relative py-16 bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c]">
+    <section className="mk-section relative">
       {/* Animated background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -441,7 +456,11 @@ function BlogGrid({
 
         {/* Load more */}
         {hasMore ? (
-          <ScrollReveal variant="slideUp" range={[0.04, 0.34]} className="flex justify-center mt-12">
+          <ScrollReveal
+            variant="slideUp"
+            range={[0.04, 0.34]}
+            className="flex justify-center mt-12"
+          >
             <button
               onClick={onLoadMore}
               className="flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-white font-medium hover:border-purple-500/30 hover:bg-purple-500/10 transition-all"
@@ -462,7 +481,7 @@ function BlogGrid({
 
 function NewsletterCTA() {
   return (
-    <section className="relative py-24 bg-gradient-to-b from-[#0d1421] to-[#0a0f1c]">
+    <section className="mk-section relative">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-purple-500/5 blur-3xl"
@@ -477,48 +496,48 @@ function NewsletterCTA() {
       <div className="relative max-w-4xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.3]}>
           <div className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/30">
-          <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-purple-400/40 to-transparent" />
+            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-purple-400/40 to-transparent" />
 
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 mb-6">
-              <BookOpen className="w-4 h-4 text-purple-400" />
-              <span className="text-sm text-purple-400 font-medium">
-                Stay Informed
-              </span>
+            <div className="text-center">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 mb-6">
+                <BookOpen className="w-4 h-4 text-purple-400" />
+                <span className="text-sm text-purple-400 font-medium">
+                  Stay Informed
+                </span>
+              </div>
+
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+                Subscribe to Our Newsletter
+              </h2>
+              <p className="text-gray-400 mb-8 max-w-xl mx-auto">
+                Get the latest insights on compliance management, regulatory
+                updates, and product news delivered to your inbox.
+              </p>
+
+              <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="flex-1 px-5 py-3 rounded-full bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                />
+                <motion.button
+                  type="submit"
+                  whileHover={{
+                    scale: 1.05,
+                    boxShadow: '0 0 40px rgba(168, 85, 247, 0.4)',
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold flex items-center justify-center gap-2 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all"
+                >
+                  <span>Subscribe</span>
+                  <ArrowRight className="w-4 h-4" />
+                </motion.button>
+              </form>
+
+              <p className="text-xs text-gray-500 mt-4">
+                No spam. Unsubscribe anytime.
+              </p>
             </div>
-
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-              Subscribe to Our Newsletter
-            </h2>
-            <p className="text-gray-400 mb-8 max-w-xl mx-auto">
-              Get the latest insights on compliance management, regulatory
-              updates, and product news delivered to your inbox.
-            </p>
-
-            <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-5 py-3 rounded-full bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 transition-all"
-              />
-              <motion.button
-                type="submit"
-                whileHover={{
-                  scale: 1.05,
-                  boxShadow: '0 0 40px rgba(168, 85, 247, 0.4)',
-                }}
-                whileTap={{ scale: 0.98 }}
-                className="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold flex items-center justify-center gap-2 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all"
-              >
-                <span>Subscribe</span>
-                <ArrowRight className="w-4 h-4" />
-              </motion.button>
-            </form>
-
-            <p className="text-xs text-gray-500 mt-4">
-              No spam. Unsubscribe anytime.
-            </p>
-          </div>
           </div>
         </ScrollReveal>
       </div>

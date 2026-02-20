@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import type { ReactNode } from 'react';
+import { useRef, type ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { useScroll, useTransform, motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { brand } from '@/config/brand';
 import { SectionHeader, Reveal, VisualDivider } from '@/components/motion';
@@ -78,28 +79,55 @@ export function UseCasePageTemplate({
   ctaSecondaryLabel = 'Schedule Demo',
   ctaSecondaryHref = '/contact',
 }: UseCasePageTemplateProps) {
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  });
+  const contentOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.24, 0.82, 0.96],
+    [1, 1, 0.35, 0],
+  );
+  const contentScale = useTransform(
+    scrollYProgress,
+    [0, 0.24, 0.82, 0.96],
+    [1, 1, 0.97, 0.94],
+  );
+  const contentY = useTransform(scrollYProgress, [0, 0.82, 1], [0, 52, 110]);
+
   return (
     <MarketingPageShell>
-      <section className="relative mx-auto max-w-7xl px-4 pb-12 pt-28 sm:px-6 lg:px-8 lg:pb-16 lg:pt-36 overflow-hidden">
+      <section
+        ref={heroRef}
+        className="mk-hero relative flex items-center justify-center overflow-hidden"
+      >
         <HeroAtmosphere topColor="cyan" bottomColor="blue" />
-        <CursorTilt intensity={3} glowFollow glowColor="34,211,238" className="relative z-10">
-          <Reveal variant="fadeInUp">
-            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-cyan-100">
-              {badgeIcon ?? <ShieldCheck className="h-4 w-4" />}
-              {badge}
+        <motion.div
+          style={{ opacity: contentOpacity, scale: contentScale, y: contentY }}
+          className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8"
+        >
+          <CursorTilt intensity={3} glowFollow glowColor="34,211,238">
+            <div className="flex flex-col items-center text-center">
+              <Reveal variant="fadeInUp">
+                <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-cyan-100">
+                  {badgeIcon ?? <ShieldCheck className="h-4 w-4" />}
+                  {badge}
+                </div>
+              </Reveal>
+              <Reveal variant="fadeInUp" delay={0.1}>
+                <h1 className="mt-6 text-4xl sm:text-5xl lg:text-7xl font-bold leading-[1.1] text-white">
+                  {title}
+                </h1>
+              </Reveal>
+              <Reveal variant="fadeInUp" delay={0.2}>
+                <p className="mt-5 max-w-3xl text-lg sm:text-xl leading-relaxed text-slate-300">
+                  {description}
+                </p>
+              </Reveal>
             </div>
-          </Reveal>
-          <Reveal variant="fadeInUp" delay={0.1}>
-            <h1 className="mt-6 text-4xl font-black leading-tight text-white sm:text-5xl lg:text-6xl">
-              {title}
-            </h1>
-          </Reveal>
-          <Reveal variant="fadeInUp" delay={0.2}>
-            <p className="mt-5 max-w-3xl text-base leading-relaxed text-slate-300 sm:text-lg">
-              {description}
-            </p>
-          </Reveal>
-        </CursorTilt>
+          </CursorTilt>
+        </motion.div>
       </section>
 
       <VisualDivider />
@@ -121,7 +149,9 @@ export function UseCasePageTemplate({
                 <HoverLift>
                   <GlassCard intensity="normal" className="h-full p-6">
                     <item.icon className="mb-4 h-6 w-6 text-cyan-300" />
-                    <h3 className="text-lg font-semibold text-white">{item.title}</h3>
+                    <h3 className="text-lg font-semibold text-white">
+                      {item.title}
+                    </h3>
                     <p className="mt-3 text-sm leading-relaxed text-slate-300">
                       {item.description}
                     </p>
@@ -137,7 +167,11 @@ export function UseCasePageTemplate({
 
       <DeferredSection minHeight={520}>
         <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-          <SectionHeader badge="Interactive Demo" title={demoTitle} subtitle={demoDescription} />
+          <SectionHeader
+            badge="Interactive Demo"
+            title={demoTitle}
+            subtitle={demoDescription}
+          />
           <div className="grid gap-5 lg:grid-cols-2">{demoSlot}</div>
         </section>
       </DeferredSection>
@@ -159,8 +193,12 @@ export function UseCasePageTemplate({
                 range={[0, 0.3 + idx * 0.05]}
               >
                 <GlassCard intensity="normal" className="p-6">
-                  <h3 className="text-lg font-semibold text-white">{workflow.title}</h3>
-                  <p className="mt-3 text-sm text-slate-300">{workflow.description}</p>
+                  <h3 className="text-lg font-semibold text-white">
+                    {workflow.title}
+                  </h3>
+                  <p className="mt-3 text-sm text-slate-300">
+                    {workflow.description}
+                  </p>
                   {workflow.steps && workflow.steps.length > 0 && (
                     <ul className="mt-4 space-y-2 text-sm text-slate-300">
                       {workflow.steps.map((step) => (
@@ -195,9 +233,13 @@ export function UseCasePageTemplate({
                 range={[0, 0.3 + idx * 0.05]}
               >
                 <GlassCard className="h-full p-6" intensity="subtle">
-                  <h3 className="text-lg font-semibold text-white">{standard.name}</h3>
+                  <h3 className="text-lg font-semibold text-white">
+                    {standard.name}
+                  </h3>
                   {standard.description && (
-                    <p className="mt-2 text-sm text-slate-300">{standard.description}</p>
+                    <p className="mt-2 text-sm text-slate-300">
+                      {standard.description}
+                    </p>
                   )}
                   <ul className="mt-4 space-y-2 text-sm text-slate-300">
                     {standard.features.map((feature) => (
@@ -230,13 +272,20 @@ export function UseCasePageTemplate({
                 variant="scaleUp"
                 range={[0, 0.3 + idx * 0.04]}
               >
-                <GlassCard className="h-full p-6 text-center" intensity="strong">
-                  <div className="text-3xl font-bold text-white">{metric.value}</div>
+                <GlassCard
+                  className="h-full p-6 text-center"
+                  intensity="strong"
+                >
+                  <div className="text-3xl font-bold text-white">
+                    {metric.value}
+                  </div>
                   <div className="mt-2 text-sm font-semibold uppercase tracking-wide text-cyan-200">
                     {metric.label}
                   </div>
                   {metric.description && (
-                    <p className="mt-3 text-xs text-slate-300">{metric.description}</p>
+                    <p className="mt-3 text-xs text-slate-300">
+                      {metric.description}
+                    </p>
                   )}
                 </GlassCard>
               </ScrollReveal>
@@ -249,8 +298,12 @@ export function UseCasePageTemplate({
 
       <section className="relative mx-auto max-w-5xl px-4 pb-24 sm:px-6 lg:px-8">
         <GlassCard intensity="intense" glow className="p-8 text-center sm:p-10">
-          <h2 className="text-3xl font-bold text-white sm:text-4xl">{ctaTitle}</h2>
-          <p className="mx-auto mt-4 max-w-3xl text-slate-300">{ctaDescription}</p>
+          <h2 className="text-3xl font-bold text-white sm:text-4xl">
+            {ctaTitle}
+          </h2>
+          <p className="mx-auto mt-4 max-w-3xl text-slate-300">
+            {ctaDescription}
+          </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href={ctaPrimaryHref}

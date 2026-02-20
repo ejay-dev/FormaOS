@@ -15,14 +15,24 @@ import {
   Users,
   FileCheck,
 } from 'lucide-react';
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from 'framer-motion';
 import { duration } from '@/config/motion';
 import dynamic from 'next/dynamic';
 import { VisualDivider } from '@/components/motion';
+import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
+import { CursorTilt } from '@/components/motion/CursorTilt';
 import { DeferredSection } from '../components/shared';
 import { brand } from '@/config/brand';
 
-const DemoComplianceChain = dynamic(() => import('@/components/marketing/demo/DemoComplianceChain'), { ssr: false });
+const DemoComplianceChain = dynamic(
+  () => import('@/components/marketing/demo/DemoComplianceChain'),
+  { ssr: false },
+);
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -41,128 +51,116 @@ export function StoryHero() {
     offset: ['start start', 'end start'],
   });
 
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
-  const y = useTransform(scrollYProgress, [0, 0.5], [0, 100]);
+  // Buffered hero exit: hold fully visible first, then progressive cinematic fade
+  const contentOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.24, 0.82, 0.96],
+    [1, 1, 0.35, 0],
+  );
+  const contentScale = useTransform(
+    scrollYProgress,
+    [0, 0.24, 0.82, 0.96],
+    [1, 1, 0.97, 0.94],
+  );
+  const contentY = useTransform(scrollYProgress, [0, 0.82, 1], [0, 52, 110]);
 
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] pt-24"
+      className="mk-hero relative flex items-center justify-center overflow-hidden"
     >
-      {/* Premium Background Effects */}
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-gradient-to-br from-indigo-500/15 via-violet-500/10 to-transparent rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.3, 0.4, 0.3],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute -bottom-40 -right-40 w-[700px] h-[700px] bg-gradient-to-tl from-cyan-500/15 via-blue-500/10 to-transparent rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.15, 1],
-            opacity: [0.2, 0.3, 0.2],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 2,
-          }}
-        />
-        <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-purple-500/8 to-transparent rounded-full"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.2, 0.1],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 4,
-          }}
-        />
-      </div>
-
+      <HeroAtmosphere topColor="violet" bottomColor="cyan" />
 
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <div className="flex flex-col items-center text-center">
-          <motion.div style={shouldReduceMotion ? undefined : { opacity, scale, y }}>
-            {/* Badge */}
+        <CursorTilt
+          intensity={3}
+          glowFollow
+          glowColor="139,92,246"
+          className="w-full"
+        >
+          <div className="flex flex-col items-center text-center">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slow, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/30 mb-8 backdrop-blur-sm"
+              style={
+                shouldReduceMotion
+                  ? undefined
+                  : {
+                      opacity: contentOpacity,
+                      scale: contentScale,
+                      y: contentY,
+                    }
+              }
             >
-              <Sparkles className="w-4 h-4 text-indigo-400" />
-              <span className="text-sm text-indigo-400 font-medium tracking-wide">
-                Our Story
-              </span>
-            </motion.div>
-
-            {/* Headline */}
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.3 }}
-              className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
-            >
-              Built for Organizations Where
-              <br />
-              <span className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                Compliance Is Mission-Critical
-              </span>
-            </motion.h1>
-
-            {/* Subheadline */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.5 }}
-              className="text-lg sm:text-xl text-gray-400 mb-10 max-w-3xl mx-auto text-center leading-relaxed"
-            >
-              FormaOS was created for teams that operate in environments where
-              failure is not an option. Healthcare, disability services,
-              finance, education, and government don&apos;t just need software,
-              they need systems that can withstand scrutiny, audits, and
-              real-world consequences.
-            </motion.p>
-
-            {/* CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.7 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4"
-            >
-              <Link
-                href={`${appBase}/auth/signup`}
-                className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 px-8 py-4 text-base font-semibold text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+              {/* Badge */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slow, delay: 0.2 }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/30 mb-8 backdrop-blur-sm"
               >
-                <span className="relative z-10 flex items-center gap-2">
-                  Start Free Trial
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                <Sparkles className="w-4 h-4 text-indigo-400" />
+                <span className="text-sm text-indigo-400 font-medium tracking-wide">
+                  Our Story
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </Link>
-              <Link
-                href="/contact"
-                className="group flex items-center gap-2 px-8 py-4 rounded-2xl border-2 border-white/20 text-base font-semibold text-white hover:bg-white/[0.08] hover:border-white/30 transition-all duration-300 backdrop-blur-sm"
-              >
-                Request a Demo
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-      </div>
+              </motion.div>
 
+              {/* Headline */}
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slower, delay: 0.3 }}
+                className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
+              >
+                Built for Organizations Where
+                <br />
+                <span className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                  Compliance Is Mission-Critical
+                </span>
+              </motion.h1>
+
+              {/* Subheadline */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slower, delay: 0.5 }}
+                className="text-lg sm:text-xl text-gray-400 mb-10 max-w-3xl mx-auto text-center leading-relaxed"
+              >
+                FormaOS was created for teams that operate in environments where
+                failure is not an option. Healthcare, disability services,
+                finance, education, and government don&apos;t just need
+                software, they need systems that can withstand scrutiny, audits,
+                and real-world consequences.
+              </motion.p>
+
+              {/* CTAs */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: duration.slower, delay: 0.7 }}
+                className="flex flex-col sm:flex-row items-center justify-center gap-4"
+              >
+                <Link
+                  href={`${appBase}/auth/signup`}
+                  className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 px-8 py-4 text-base font-semibold text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+                >
+                  <span className="relative z-10 flex items-center gap-2">
+                    Start Free Trial
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </Link>
+                <Link
+                  href="/contact"
+                  className="group flex items-center gap-2 px-8 py-4 rounded-2xl border-2 border-white/20 text-base font-semibold text-white hover:bg-white/[0.08] hover:border-white/30 transition-all duration-300 backdrop-blur-sm"
+                >
+                  Request a Demo
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                </Link>
+              </motion.div>
+            </motion.div>
+          </div>
+        </CursorTilt>
+      </div>
     </section>
   );
 }
@@ -366,7 +364,10 @@ function TheProblem() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: duration.normal, delay: 0.3 + idx * 0.1 }}
+                transition={{
+                  duration: duration.normal,
+                  delay: 0.3 + idx * 0.1,
+                }}
                 className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20"
               >
                 <span className="w-2 h-2 rounded-full bg-red-400 flex-shrink-0" />
@@ -508,7 +509,10 @@ function TheApproach() {
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: duration.normal, delay: 0.3 + idx * 0.1 }}
+                transition={{
+                  duration: duration.normal,
+                  delay: 0.3 + idx * 0.1,
+                }}
                 className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] border border-white/10 hover:border-indigo-500/30 transition-all duration-300"
               >
                 <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -753,7 +757,10 @@ function WhatMakesUsDifferent() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: duration.normal, delay: 0.2 + idx * 0.1 }}
+                transition={{
+                  duration: duration.normal,
+                  delay: 0.2 + idx * 0.1,
+                }}
                 whileHover={{ y: -8, transition: { duration: duration.fast } }}
                 className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-indigo-500/30 transition-all duration-500"
               >
@@ -890,7 +897,10 @@ function OurMission() {
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: duration.normal, delay: 0.3 + idx * 0.1 }}
+                transition={{
+                  duration: duration.normal,
+                  delay: 0.3 + idx * 0.1,
+                }}
                 className="flex items-center gap-3 p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20"
               >
                 <CheckCircle className="w-5 h-5 text-cyan-400 flex-shrink-0" />

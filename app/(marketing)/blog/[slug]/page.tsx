@@ -4,17 +4,22 @@ import type { Metadata } from 'next';
 import { CalendarDays, Clock, User } from 'lucide-react';
 import { blogPosts, getCategoryId } from '../blogData';
 import { BlogHeroVisual } from '@/components/blog/BlogHeroVisual';
+import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
+import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
 export const generateStaticParams = () =>
   blogPosts.map((post) => ({ slug: post.id }));
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const post = blogPosts.find((item) => item.id === slug);
 
@@ -58,62 +63,61 @@ export default async function BlogPostPage({ params }: PageProps) {
   }
 
   return (
-    <main className="relative min-h-screen bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] pt-24">
-      <div className="absolute inset-0 opacity-30">
-        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-transparent rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] bg-gradient-to-tl from-cyan-500/10 via-blue-500/10 to-transparent rounded-full blur-3xl" />
-      </div>
-
+    <MarketingPageShell>
       <div className="relative z-10">
-        <section className="max-w-4xl mx-auto px-6 lg:px-12">
-          <Link
-            href="/blog"
-            className="inline-flex items-center gap-2 text-sm text-purple-300 hover:text-purple-200 transition"
-          >
-            <span>← Back to Blog</span>
-          </Link>
+        <section className="mk-hero relative overflow-hidden">
+          <HeroAtmosphere
+            topColor="violet"
+            bottomColor="cyan"
+            particleIntensity="subtle"
+          />
+          <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12">
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-2 text-sm text-purple-300 hover:text-purple-200 transition"
+            >
+              <span>← Back to Blog</span>
+            </Link>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3 text-xs text-gray-400">
-            <span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
-              {post.category}
-            </span>
-            <span className="px-3 py-1 rounded-full bg-gray-800/60 border border-white/5">
-              {getCategoryId(post.category).toUpperCase()}
-            </span>
-          </div>
-
-          <h1 className="mt-6 text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
-            {post.title}
-          </h1>
-
-          <p className="mt-4 text-lg text-gray-400 leading-relaxed">
-            {post.excerpt}
-          </p>
-
-          <div className="mt-6 flex flex-wrap items-center gap-6 text-sm text-gray-500">
-            <div className="flex items-center gap-2">
-              <User className="w-4 h-4" />
-              <span>{post.author}</span>
+            <div className="mt-8 flex flex-wrap items-center gap-3 text-xs text-gray-400">
+              <span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                {post.category}
+              </span>
+              <span className="px-3 py-1 rounded-full bg-gray-800/60 border border-white/5">
+                {getCategoryId(post.category).toUpperCase()}
+              </span>
             </div>
-            <div className="flex items-center gap-2">
-              <CalendarDays className="w-4 h-4" />
-              <span>{post.date}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              <span>{post.readTime}</span>
-            </div>
-          </div>
 
-          <div className="mt-10">
-            <BlogHeroVisual
-              category={post.category}
-              title={post.title}
-            />
+            <h1 className="mt-6 text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
+              {post.title}
+            </h1>
+
+            <p className="mt-4 text-lg text-gray-400 leading-relaxed">
+              {post.excerpt}
+            </p>
+
+            <div className="mt-6 flex flex-wrap items-center gap-6 text-sm text-gray-500">
+              <div className="flex items-center gap-2">
+                <User className="w-4 h-4" />
+                <span>{post.author}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CalendarDays className="w-4 h-4" />
+                <span>{post.date}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4" />
+                <span>{post.readTime}</span>
+              </div>
+            </div>
+
+            <div className="mt-10">
+              <BlogHeroVisual category={post.category} title={post.title} />
+            </div>
           </div>
         </section>
 
-        <section className="max-w-4xl mx-auto px-6 lg:px-12 mt-16 pb-24">
+        <section className="mk-section relative max-w-4xl mx-auto px-6 lg:px-12">
           <div className="space-y-14">
             {post.sections.map((section) => (
               <div key={section.heading} className="space-y-6">
@@ -198,6 +202,6 @@ export default async function BlogPostPage({ params }: PageProps) {
           </div>
         </section>
       </div>
-    </main>
+    </MarketingPageShell>
   );
 }
