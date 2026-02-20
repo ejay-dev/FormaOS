@@ -7,7 +7,6 @@ import {
   useTransform,
 } from 'framer-motion';
 import { duration } from '@/config/motion';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -76,67 +75,6 @@ function ProofMetric({ value, label }: { value: string; label: string }) {
   );
 }
 
-function ProductScreenshotReveal({
-  style,
-  shouldAnimate,
-}: {
-  style: Record<string, unknown> | undefined;
-  shouldAnimate: boolean;
-}) {
-  return (
-    <motion.div
-      style={style}
-      className="absolute bottom-16 md:bottom-24 inset-x-0 z-[8] px-4 sm:px-8 pointer-events-none"
-    >
-      <div className="relative max-w-5xl mx-auto">
-        {/* Outer glow */}
-        <div className="absolute -inset-1 rounded-2xl bg-gradient-to-b from-cyan-500/20 via-blue-500/15 to-purple-500/20 blur-lg" />
-
-        {/* Screenshot frame */}
-        <div className="relative rounded-2xl border border-white/[0.12] overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.5)]">
-          {/* Browser chrome — desktop only */}
-          <div className="hidden md:flex items-center justify-between bg-[#0d1225] border-b border-white/[0.06] px-4 py-2.5">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1.5">
-                <div className="h-3 w-3 rounded-full bg-red-500/70" />
-                <div className="h-3 w-3 rounded-full bg-yellow-500/70" />
-                <div className="h-3 w-3 rounded-full bg-green-500/70" />
-              </div>
-              <div className="flex items-center gap-2 rounded-md bg-white/[0.04] px-3 py-1.5 text-xs text-slate-500">
-                <span className="text-emerald-400">&#128274;</span>
-                <span>app.formaos.com.au/dashboard</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <motion.div
-                className="h-1.5 w-1.5 rounded-full bg-emerald-400"
-                animate={shouldAnimate ? { opacity: [1, 0.3, 1] } : undefined}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-              <span className="text-[10px] font-medium text-emerald-400/80 uppercase tracking-wider">
-                Live
-              </span>
-            </div>
-          </div>
-
-          {/* Dashboard screenshot */}
-          <div className="relative bg-[#0a0e1a]">
-            <Image
-              src="/marketing/screenshots/dashboard.png"
-              alt="FormaOS Dashboard — Real-time compliance monitoring"
-              width={1440}
-              height={900}
-              quality={90}
-              priority={false}
-              className="w-full h-auto"
-              sizes="(max-width: 768px) 100vw, 1152px"
-            />
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
 
 export function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -160,14 +98,6 @@ export function HeroSection() {
   const heroContentStyle = shouldReduceMotion
     ? undefined
     : { opacity: contentOpacity, scale: contentScale, y: contentY };
-  // Product screenshot reveal (inverse of content fade)
-  const screenshotOpacity = useTransform(scrollYProgress, [0.3, 0.55, 0.82], [0, 0.8, 1]);
-  const screenshotScale = useTransform(scrollYProgress, [0.3, 0.82], [0.92, 1]);
-  const screenshotY = useTransform(scrollYProgress, [0.3, 0.82], [120, 0]);
-  const screenshotStyle = shouldReduceMotion
-    ? undefined
-    : { opacity: screenshotOpacity, scale: screenshotScale, y: screenshotY };
-
   const heroCtaStyle = shouldReduceMotion ? undefined : { opacity: ctaOpacity, y: ctaY };
   const heroMetricStyle = shouldReduceMotion ? undefined : { y: metricY };
   const bgFarStyle = shouldReduceMotion ? undefined : { y: bgFarY };
@@ -413,12 +343,6 @@ export function HeroSection() {
           </motion.div>
         </div>
       </div>
-
-      {/* Product Screenshot Reveal — emerges as hero text fades */}
-      <ProductScreenshotReveal
-        style={screenshotStyle}
-        shouldAnimate={shouldAnimateIntro}
-      />
 
       {/* Gradient bridge — smooth depth transition to next section */}
       <div className="hero-exit-gradient" />
