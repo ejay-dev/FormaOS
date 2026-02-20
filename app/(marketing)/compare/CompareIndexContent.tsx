@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, Scale, ShieldCheck } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Scale, ShieldCheck, Info } from 'lucide-react';
 import { brand } from '@/config/brand';
 import { Reveal, VisualDivider } from '@/components/motion';
 import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
@@ -10,8 +10,10 @@ import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DeferredSection } from '../components/shared';
 import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { isCareLaunchMode } from '@/lib/vertical-launch';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
+const careLaunchMode = isCareLaunchMode();
 
 const comparisons = [
   {
@@ -81,6 +83,21 @@ export default function CompareIndexContent() {
               keep evidence defensible by default.
             </p>
           </Reveal>
+
+          {/* Care-launch notice — shown when comparisons are not care-specific */}
+          {careLaunchMode && (
+            <Reveal variant="fadeInUp" delay={0.25}>
+              <div className="mt-6 inline-flex items-start gap-3 rounded-xl border border-amber-500/20 bg-amber-500/10 px-5 py-4 text-sm text-amber-200 max-w-2xl">
+                <Info className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-400" />
+                <span>
+                  These comparison pages were designed for a general enterprise audience. FormaOS is currently
+                  focused on care providers (NDIS, Aged Care, Healthcare & Child Care). The comparisons below
+                  remain accessible but are not our primary promotional focus right now.
+                </span>
+              </div>
+            </Reveal>
+          )}
+
           <Reveal variant="fadeInUp" delay={0.3}>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link

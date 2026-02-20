@@ -3,13 +3,15 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { duration, easing } from '@/config/motion';
-import { Globe, Shield, Heart, Users, ArrowRight } from 'lucide-react';
+import { Globe, Shield, Heart, Users, ArrowRight, GraduationCap } from 'lucide-react';
 import {
   ParallaxLayer,
 } from '@/components/motion';
 import { brand } from '@/config/brand';
+import { isCareLaunchMode } from '@/lib/vertical-launch';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
+const careLaunchMode = isCareLaunchMode();
 
 export function IndustriesHero() {
   return (
@@ -40,29 +42,47 @@ export function IndustriesHero() {
               className="inline-flex items-center gap-2.5 rounded-full glass-intense px-5 py-2.5 text-xs font-bold uppercase tracking-wider border border-secondary/30"
             >
               <Globe className="h-4 w-4 text-secondary" />
-              Industry Frameworks
+              {careLaunchMode ? 'Care Provider Compliance' : 'Industry Frameworks'}
             </motion.div>
 
             {/* Headline */}
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] font-display tracking-tight">
-              Frameworks Engineered
-              <br />
-              <span className="relative">
-                <span className="text-gradient">for Your Sector</span>
-                <motion.div
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.8, duration: duration.slower }}
-                  className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-secondary via-accent to-primary rounded-full origin-left"
-                />
-              </span>
+              {careLaunchMode ? (
+                <>
+                  Compliance Built
+                  <br />
+                  <span className="relative">
+                    <span className="text-gradient">for Care Providers</span>
+                    <motion.div
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ delay: 0.8, duration: duration.slower }}
+                      className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-secondary via-accent to-primary rounded-full origin-left"
+                    />
+                  </span>
+                </>
+              ) : (
+                <>
+                  Frameworks Engineered
+                  <br />
+                  <span className="relative">
+                    <span className="text-gradient">for Your Sector</span>
+                    <motion.div
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ delay: 0.8, duration: duration.slower }}
+                      className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-secondary via-accent to-primary rounded-full origin-left"
+                    />
+                  </span>
+                </>
+              )}
             </h1>
 
             {/* Subtitle */}
             <p className="text-xl md:text-2xl text-foreground/80 leading-relaxed">
-              Pre-configured compliance frameworks for Australian health,
-              disability, aged care, and community services. Audit-ready from
-              day one.
+              {careLaunchMode
+                ? 'Purpose-built compliance for NDIS providers, Aged Care facilities, Healthcare practices, and Child Care centres. Audit-ready from day one.'
+                : 'Pre-configured compliance frameworks for Australian health, disability, aged care, and community services. Audit-ready from day one.'}
             </p>
 
             {/* Industry pills */}
@@ -72,24 +92,50 @@ export function IndustriesHero() {
               transition={{ delay: 0.5 }}
               className="flex flex-wrap justify-center gap-4"
             >
-              {[
-                { icon: Shield, label: 'NDIS', color: 'text-blue-400' },
-                { icon: Heart, label: 'Healthcare', color: 'text-rose-400' },
-                { icon: Users, label: 'Aged Care', color: 'text-purple-400' },
-              ].map((item, i) => (
-                <motion.div
-                  key={item.label}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.6 + i * 0.1 }}
-                  className="glass-panel rounded-full px-5 py-3 flex items-center gap-2 hover:glass-intense transition-all group"
-                >
-                  <item.icon
-                    className={`h-4 w-4 ${item.color} group-hover:scale-110 transition-transform`}
-                  />
-                  <span className="text-sm font-semibold">{item.label}</span>
-                </motion.div>
-              ))}
+              {careLaunchMode ? (
+                <>
+                  {[
+                    { icon: Users, label: 'NDIS', color: 'text-blue-400' },
+                    { icon: Users, label: 'Aged Care', color: 'text-purple-400' },
+                    { icon: Heart, label: 'Healthcare', color: 'text-rose-400' },
+                    { icon: GraduationCap, label: 'Child Care', color: 'text-amber-400' },
+                  ].map((item, i) => (
+                    <motion.div
+                      key={item.label}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.6 + i * 0.1 }}
+                      className="glass-panel rounded-full px-5 py-3 flex items-center gap-2 hover:glass-intense transition-all group"
+                    >
+                      <item.icon
+                        className={`h-4 w-4 ${item.color} group-hover:scale-110 transition-transform`}
+                      />
+                      <span className="text-sm font-semibold">{item.label}</span>
+                    </motion.div>
+                  ))}
+                </>
+              ) : (
+                <>
+                  {[
+                    { icon: Shield, label: 'NDIS', color: 'text-blue-400' },
+                    { icon: Heart, label: 'Healthcare', color: 'text-rose-400' },
+                    { icon: Users, label: 'Aged Care', color: 'text-purple-400' },
+                  ].map((item, i) => (
+                    <motion.div
+                      key={item.label}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.6 + i * 0.1 }}
+                      className="glass-panel rounded-full px-5 py-3 flex items-center gap-2 hover:glass-intense transition-all group"
+                    >
+                      <item.icon
+                        className={`h-4 w-4 ${item.color} group-hover:scale-110 transition-transform`}
+                      />
+                      <span className="text-sm font-semibold">{item.label}</span>
+                    </motion.div>
+                  ))}
+                </>
+              )}
             </motion.div>
 
             {/* CTAs */}
@@ -110,7 +156,7 @@ export function IndustriesHero() {
                 href="/contact"
                 className="mk-btn mk-btn-secondary text-lg px-8 py-4"
               >
-                Talk to Specialist
+                {careLaunchMode ? 'Talk to a Care Specialist' : 'Talk to Specialist'}
               </Link>
             </motion.div>
           </motion.div>

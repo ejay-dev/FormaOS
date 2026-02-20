@@ -19,6 +19,7 @@ import {
   ArrowRight,
   ChevronDown,
 } from 'lucide-react';
+import { isCareLaunchMode } from '@/lib/vertical-launch';
 
 interface IndustrySolution {
   icon: LucideIcon;
@@ -251,9 +252,95 @@ const industrySolutions: IndustrySolution[] = [
       href: '/use-cases/government',
     },
   },
+  {
+    icon: Heart,
+    title: 'Aged Care',
+    subtitle: 'Aged Care Quality Standards, SIRS',
+    color: 'from-orange-400 to-amber-600',
+    accentColor: 'orange',
+    problemStatement:
+      'Aged care facilities operate under the Aged Care Quality Standards and mandatory Serious Incident Response Scheme (SIRS). Staffing ratios, clinical governance gaps, and missing evidence during Commission audits carry severe consequences for providers.',
+    solutionMapping: {
+      title: 'FormaOS Aged Care Module',
+      features: [
+        'Resident care plan management with review workflows',
+        'SIRS incident reporting with mandatory notification tracking',
+        'Staff credential and training records',
+        'Audit evidence bundles aligned to Aged Care Quality Standards',
+      ],
+    },
+    capabilities: [
+      {
+        icon: Shield,
+        title: 'Clinical Governance',
+        description: 'Resident safety registers, incident capture, and clinical audit trails',
+      },
+      {
+        icon: FileText,
+        title: 'SIRS Compliance',
+        description: 'Mandatory SIRS incident reporting with configurable timelines and notifications',
+      },
+      {
+        icon: CheckCircle,
+        title: 'Quality Standards Ready',
+        description: 'Evidence organised by Aged Care Quality Standards for instant Commission retrieval',
+      },
+    ],
+    cta: {
+      text: 'Explore Aged Care Solution',
+      href: '/use-cases/ndis-aged-care',
+    },
+  },
+  {
+    icon: GraduationCap,
+    title: 'Child Care',
+    subtitle: 'National Quality Framework (NQF), Working with Children',
+    color: 'from-violet-400 to-purple-600',
+    accentColor: 'violet',
+    problemStatement:
+      'Child care and early learning centres must demonstrate continuous NQF compliance, maintain staff Working with Children clearances, and keep rigorous child protection records. Assessment and rating visits require instant evidence retrieval.',
+    solutionMapping: {
+      title: 'FormaOS Child Care Module',
+      features: [
+        'Child enrollment and attendance records with access controls',
+        'NQF self-assessment and quality improvement planning',
+        'Educator credential and WWCC tracking with automated reminders',
+        'Incident, injury, and illness reporting workflows',
+      ],
+    },
+    capabilities: [
+      {
+        icon: Shield,
+        title: 'Child Protection',
+        description: 'Mandatory reporting workflows and child safety policy management',
+      },
+      {
+        icon: FileText,
+        title: 'NQF Quality Areas',
+        description: 'Evidence mapped to all 7 NQF quality areas for Assessment & Rating visits',
+      },
+      {
+        icon: CheckCircle,
+        title: 'Staff Compliance',
+        description: 'Automated WWCC and first-aid certificate tracking with expiry reminders',
+      },
+    ],
+    cta: {
+      text: 'Explore Child Care Solution',
+      href: '/use-cases/healthcare',
+    },
+  },
 ];
 
+/** IDs matching the care-vertical — used to filter in care-launch mode */
+const CARE_SOLUTION_IDS = new Set(['Healthcare', 'NDIS Providers', 'Aged Care', 'Child Care']);
+
 export function Industries() {
+  const careLaunchMode = isCareLaunchMode();
+  const visibleSolutions = careLaunchMode
+    ? industrySolutions.filter((s) => CARE_SOLUTION_IDS.has(s.title))
+    : industrySolutions;
+
   const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
 
   const toggleExpand = (index: number) => {
@@ -271,26 +358,37 @@ export function Industries() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-sm font-medium mb-6"
           >
             <span className="w-2 h-2 rounded-full bg-teal-400" />
-            Industry Solutions
+            {careLaunchMode ? 'Care Provider Solutions' : 'Industry Solutions'}
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            Built for{' '}
-            <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
-              High-Accountability
-            </span>
-            <br />
-            Industries
+            {careLaunchMode ? (
+              <>
+                Built for{' '}
+                <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
+                  Care Providers
+                </span>
+              </>
+            ) : (
+              <>
+                Built for{' '}
+                <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
+                  High-Accountability
+                </span>
+                <br />
+                Industries
+              </>
+            )}
           </h2>
           <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
-            When compliance failure means regulatory action, accreditation loss,
-            or operational shutdown, FormaOS delivers the evidence
-            infrastructure your industry demands.
+            {careLaunchMode
+              ? 'NDIS providers, Aged Care facilities, Healthcare practices, and Child Care centres trust FormaOS to manage compliance, evidence, and audit readiness.'
+              : 'When compliance failure means regulatory action, accreditation loss, or operational shutdown, FormaOS delivers the evidence infrastructure your industry demands.'}
           </p>
         </ScrollReveal>
 
         <div className="space-y-4">
-          {industrySolutions.map((solution, index) => {
+          {visibleSolutions.map((solution, index) => {
             const Icon = solution.icon;
             const isExpanded = expandedIndex === index;
 
@@ -441,13 +539,15 @@ export function Industries() {
 
         <ScrollReveal variant="slideUp" range={[0.05, 0.35]} className="mt-16 text-center">
           <p className="text-gray-400 mb-6">
-            Not sure which solution fits your organization?
+            {careLaunchMode
+              ? 'Not sure which care solution fits your organisation?'
+              : 'Not sure which solution fits your organization?'}
           </p>
           <Link
             href="/contact"
             className="mk-btn mk-btn-primary inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold"
           >
-            Talk to a Compliance Expert
+            {careLaunchMode ? 'Talk to a Care Compliance Expert' : 'Talk to a Compliance Expert'}
             <ArrowRight className="w-5 h-5" />
           </Link>
         </ScrollReveal>

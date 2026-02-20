@@ -24,8 +24,10 @@ import {
 import { brand } from '@/config/brand';
 import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 import { HeroScrollRetentionController } from '@/components/motion/HeroScrollRetentionController';
+import { isCareLaunchMode } from '@/lib/vertical-launch';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
+const careLaunchMode = isCareLaunchMode();
 
 function FloatingMetricCard({
   value,
@@ -184,16 +186,16 @@ export function HeroSection() {
       {/* Floating Metrics - Left Side (parallax drift) */}
       <motion.div style={heroMetricStyle} className="absolute left-8 lg:left-16 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6 z-20">
         <FloatingMetricCard
-          value="Real-time"
-          label="Compliance Monitoring"
+          value={careLaunchMode ? 'Participant' : 'Real-time'}
+          label={careLaunchMode ? 'Record Management' : 'Compliance Monitoring'}
           trend="Continuous"
           icon={ShieldCheck}
           delay={0.8}
           direction="left"
         />
         <FloatingMetricCard
-          value="Automated"
-          label="Evidence Capture"
+          value={careLaunchMode ? 'Incident' : 'Automated'}
+          label={careLaunchMode ? 'Reporting & Evidence' : 'Evidence Capture'}
           trend="Built-in"
           icon={Database}
           delay={1.0}
@@ -204,16 +206,16 @@ export function HeroSection() {
       {/* Floating Metrics - Right Side (parallax drift) */}
       <motion.div style={heroMetricStyle} className="absolute right-8 lg:right-16 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6 z-20">
         <FloatingMetricCard
-          value="Faster"
-          label="Audit Defense"
+          value={careLaunchMode ? 'NDIS Audit' : 'Faster'}
+          label={careLaunchMode ? 'Defense Ready' : 'Audit Defense'}
           trend="Streamlined"
           icon={Clock}
           delay={1.2}
           direction="right"
         />
         <FloatingMetricCard
-          value="Always-on"
-          label="Activity Tracking"
+          value={careLaunchMode ? 'Staff Task' : 'Always-on'}
+          label={careLaunchMode ? 'Tracking & Rostering' : 'Activity Tracking'}
           trend="Continuous"
           icon={Eye}
           delay={1.4}
@@ -234,7 +236,7 @@ export function HeroSection() {
             >
               <Sparkles className="w-4 h-4 text-teal-400" />
               <span className="text-sm text-teal-400 font-medium tracking-wide">
-                Enterprise Compliance OS
+                {careLaunchMode ? 'Built for Care Providers' : 'Enterprise Compliance OS'}
               </span>
             </motion.div>
 
@@ -245,11 +247,23 @@ export function HeroSection() {
               transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.3 } : { duration: 0 }}
               className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
             >
-              Operational Compliance,
-              <br />
-              <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
-                Built for Real Organizations
-              </span>
+              {careLaunchMode ? (
+                <>
+                  Compliance for
+                  <br />
+                  <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
+                    Care Providers
+                  </span>
+                </>
+              ) : (
+                <>
+                  Operational Compliance,
+                  <br />
+                  <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
+                    Built for Real Organizations
+                  </span>
+                </>
+              )}
             </motion.h1>
 
             {/* Subheadline */}
@@ -259,9 +273,9 @@ export function HeroSection() {
               transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.5 } : { duration: 0 }}
               className="text-lg sm:text-xl text-gray-400 mb-4 max-w-2xl mx-auto text-center leading-relaxed"
             >
-              The operating system for governance, controls, evidence, and audit
-              defense. Not a document repository. A system that enforces
-              accountability.
+              {careLaunchMode
+                ? 'Purpose-built for NDIS providers, Aged Care, Healthcare & Child Care. Manage workflows, capture evidence, and stay audit-ready — every day.'
+                : 'The operating system for governance, controls, evidence, and audit defense. Not a document repository. A system that enforces accountability.'}
             </motion.p>
 
             {/* OS Authority Statement */}
@@ -272,25 +286,47 @@ export function HeroSection() {
               className="mb-10 max-w-2xl mx-auto text-center"
             >
               <p className="text-sm text-gray-500 mb-3">
-                Structure → Operationalize → Validate → Defend
+                {careLaunchMode
+                  ? 'Plan → Assign → Evidence → Report'
+                  : 'Structure → Operationalize → Validate → Defend'}
               </p>
               <p className="text-xs text-gray-500 mb-4">
-                Used by compliance teams. Aligned to ISO/SOC frameworks. Built
-                for audit defensibility.
+                {careLaunchMode
+                  ? 'Used by care teams & compliance leads. Aligned to NDIS Practice Standards, Aged Care Quality Standards & RACGP.'
+                  : 'Used by compliance teams. Aligned to ISO/SOC frameworks. Built for audit defensibility.'}
               </p>
               <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600">
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
-                  <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
-                  Workflow Orchestration
-                </span>
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  Control Ownership
-                </span>
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                  Evidence Chains
-                </span>
+                {careLaunchMode ? (
+                  <>
+                    <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+                      <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
+                      NDIS Practice Standards
+                    </span>
+                    <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      Aged Care Quality Standards
+                    </span>
+                    <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                      RACGP / Healthcare
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+                      <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
+                      Workflow Orchestration
+                    </span>
+                    <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      Control Ownership
+                    </span>
+                    <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                      Evidence Chains
+                    </span>
+                  </>
+                )}
               </div>
             </motion.div>
 
@@ -337,9 +373,19 @@ export function HeroSection() {
             transition={{ duration: duration.slower, delay: 0.9 }}
             className="xl:hidden grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-lg"
           >
-            <ProofMetric value="Real-time" label="Compliance" />
-            <ProofMetric value="Automated" label="Evidence" />
-            <ProofMetric value="Faster" label="Audits" />
+            {careLaunchMode ? (
+              <>
+                <ProofMetric value="NDIS" label="Practice Standards" />
+                <ProofMetric value="Aged Care" label="Quality Standards" />
+                <ProofMetric value="RACGP" label="Healthcare Ready" />
+              </>
+            ) : (
+              <>
+                <ProofMetric value="Real-time" label="Compliance" />
+                <ProofMetric value="Automated" label="Evidence" />
+                <ProofMetric value="Faster" label="Audits" />
+              </>
+            )}
           </motion.div>
         </div>
       </div>
