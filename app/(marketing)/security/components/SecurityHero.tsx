@@ -14,10 +14,8 @@ import { duration } from '@/config/motion';
 import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
 import { CursorTilt } from '@/components/motion/CursorTilt';
 import { brand } from '@/config/brand';
-import { isCareLaunchMode } from '@/lib/vertical-launch';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
-const careLaunchMode = isCareLaunchMode();
 
 export function SecurityHero() {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -75,7 +73,7 @@ export function SecurityHero() {
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-8 backdrop-blur-sm"
         >
           <Lock className="h-3 w-3 text-red-400" />
-          <span className="text-gray-300">{careLaunchMode ? 'Care Provider Security' : 'Enterprise Security'}</span>
+          <span className="text-gray-300">Enterprise Security</span>
         </motion.div>
 
         {/* Main Headline */}
@@ -99,9 +97,9 @@ export function SecurityHero() {
           transition={{ delay: 0.6, duration: duration.slower }}
           className="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed"
         >
-          {careLaunchMode
-            ? 'Security architecture designed to protect participant records, care data, and NDIS compliance evidence. Every layer built for care provider data protection.'
-            : 'Enterprise-grade security architecture designed for healthcare, government, and regulated industries. Every layer built to protect sensitive data and ensure compliance.'}
+          Enterprise-grade security architecture designed for healthcare,
+          government, and regulated industries. Every layer built to protect
+          sensitive data and ensure compliance.
         </motion.p>
 
         {/* Trust Indicators */}
@@ -111,20 +109,12 @@ export function SecurityHero() {
           transition={{ delay: 0.8, duration: duration.slower }}
           className="flex flex-wrap justify-center gap-6 sm:gap-10 mb-12"
         >
-          {(careLaunchMode
-            ? [
-                { label: 'NDIS Compliance Support', icon: CheckCircle },
-                { label: 'HIPAA Aligned', icon: FileCheck },
-                { label: 'Care Data Encryption', icon: Lock },
-                { label: 'ISO 27001-aligned', icon: Shield },
-              ]
-            : [
-                { label: 'SOC 2-aligned', icon: CheckCircle },
-                { label: 'ISO 27001-aligned', icon: Shield },
-                { label: 'GDPR-ready workflows', icon: Lock },
-                { label: 'HIPAA Aligned', icon: FileCheck },
-              ]
-          ).map((cert, index) => (
+          {[
+            { label: 'SOC 2-aligned', icon: CheckCircle },
+            { label: 'ISO 27001-aligned', icon: Shield },
+            { label: 'GDPR-ready workflows', icon: Lock },
+            { label: 'HIPAA Aligned', icon: FileCheck },
+          ].map((cert, index) => (
             <motion.div
               key={cert.label}
               initial={{ opacity: 0, scale: 0.9 }}

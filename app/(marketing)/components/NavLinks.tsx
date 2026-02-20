@@ -5,17 +5,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { ChevronDown } from 'lucide-react';
-import { isCareLaunchMode } from '@/lib/vertical-launch';
 
 /* ── Link data ───────────────────────────────────────────── */
-
-const careLaunchMode = isCareLaunchMode();
 
 const primaryLinks = [
   { href: '/', label: 'Home' },
   { href: '/product', label: 'Product' },
-  // In care-launch mode we show "Care Providers" instead of the generic "Industries" label
-  { href: '/industries', label: careLaunchMode ? 'Care Providers' : 'Industries' },
+  { href: '/industries', label: 'Industries' },
   { href: '/security', label: 'Security' },
   { href: '/trust', label: 'Trust' },
   { href: '/pricing', label: 'Pricing' },
@@ -28,14 +24,13 @@ const outcomeLinks = [
   { href: '/govern', label: 'Govern' },
 ];
 
-// In care-launch mode hide the Compare link from the nav (page still exists at /compare)
 const resourceLinks = [
   { href: '/security-review', label: 'Security Review Packet' },
   { href: '/security-review/faq', label: 'Security Review FAQ' },
   { href: '/trust/packet', label: 'Trust Packet (PDF)' },
   { href: '/frameworks', label: 'Framework Coverage' },
   { href: '/customer-stories', label: 'Customer Stories' },
-  ...(!careLaunchMode ? [{ href: '/compare', label: 'Compare' }] : []),
+  { href: '/compare', label: 'Compare' },
   { href: '/status', label: 'Status' },
   { href: '/docs', label: 'Documentation' },
   { href: '/about', label: 'About' },

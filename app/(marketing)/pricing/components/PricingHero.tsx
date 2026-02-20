@@ -8,10 +8,8 @@ import { brand } from '@/config/brand';
 import { easing, duration } from '@/config/motion';
 import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
 import { CursorTilt } from '@/components/motion/CursorTilt';
-import { isCareLaunchMode } from '@/lib/vertical-launch';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
-const careLaunchMode = isCareLaunchMode();
 
 export function PricingHero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -69,10 +67,10 @@ export function PricingHero() {
               transition={sa ? { duration: duration.slower, delay: 0.3, ease: easing.signature } : { duration: 0 }}
               className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
             >
-              {careLaunchMode ? 'Care Provider Compliance,' : 'Compliance Infrastructure,'}
+              Compliance Infrastructure,
               <br />
               <span className="bg-gradient-to-r from-emerald-400 via-cyan-500 to-blue-500 bg-clip-text text-transparent">
-                {careLaunchMode ? 'Scaled to Your Practice' : 'Scaled to Your Organization'}
+                Scaled to Your Organization
               </span>
             </motion.h1>
 
@@ -95,9 +93,10 @@ export function PricingHero() {
               transition={sa ? { duration: duration.slower, delay: 0.6, ease: easing.signature } : { duration: 0 }}
               className="text-base text-gray-500 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
             >
-              {careLaunchMode
-                ? 'Our pricing reflects the level of governance, automation, and regulatory accountability your care organisation requires — from foundational NDIS compliance to multi-site audit infrastructure.'
-                : 'Our pricing reflects the level of governance, automation, and regulatory accountability your organization requires, from foundational process tracking to enterprise-wide audit infrastructure.'}
+              Our pricing reflects the level of governance, automation, and
+              regulatory accountability your organization requires, from
+              foundational process tracking to enterprise-wide audit
+              infrastructure.
             </motion.p>
             <motion.p
               initial={sa ? { opacity: 0, y: 10 } : false}
@@ -105,9 +104,8 @@ export function PricingHero() {
               transition={sa ? { duration: duration.slower, delay: 0.7, ease: easing.signature } : { duration: 0 }}
               className="text-xs text-gray-500 mb-6 max-w-2xl mx-auto text-center"
             >
-              {careLaunchMode
-                ? 'Used by care teams & compliance leads. Aligned to NDIS Practice Standards, Aged Care Quality Standards & RACGP.'
-                : 'Used by compliance teams. Aligned to ISO/SOC frameworks. Built for audit defensibility.'}
+              Used by compliance teams. Aligned to ISO/SOC frameworks. Built for
+              audit defensibility.
             </motion.p>
 
             {/* Value Props */}

@@ -5,10 +5,8 @@ import { ArrowRight, Building2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { brand } from '@/config/brand';
-import { isCareLaunchMode } from '@/lib/vertical-launch';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
-const careLaunchMode = isCareLaunchMode();
 
 export function FinalCTA() {
   return (
@@ -105,9 +103,8 @@ export function FinalCTA() {
                   </div>
 
                   <p className="text-base text-gray-500 leading-relaxed">
-                    {careLaunchMode
-                      ? 'Join care providers building audit-ready compliance infrastructure with FormaOS.'
-                      : 'Join organizations building audit-ready compliance infrastructure with FormaOS.'}
+                    Join organizations building audit-ready compliance
+                    infrastructure with FormaOS.
                   </p>
                 </ScrollReveal>
 
@@ -131,9 +128,8 @@ export function FinalCTA() {
                   </div>
 
                   <div className="text-xs text-gray-500">
-                    {careLaunchMode
-                      ? 'Australian-hosted • NDIS-aligned workflows • Care provider ready'
-                      : 'Region-aware hosting • GDPR-ready workflows • Enterprise-ready'}
+                    Region-aware hosting • GDPR-ready workflows •
+                    Enterprise-ready
                   </div>
                 </ScrollReveal>
               </div>

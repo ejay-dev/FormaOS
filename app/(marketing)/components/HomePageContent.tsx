@@ -43,9 +43,6 @@ import { motion } from 'framer-motion';
 import { spacing, radius, depth, duration } from '@/config/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { brand } from '@/config/brand';
-import { isCareLaunchMode } from '@/lib/vertical-launch';
-
-const careLaunchMode = isCareLaunchMode();
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -511,9 +508,7 @@ export function HomePageContent() {
                 <span className="text-gradient-system">out of the box</span>
               </>
             }
-            subtitle={careLaunchMode
-              ? "Evidence version control, workflow automation, and care provider compliance. Built-in from $159/mo"
-              : "Evidence version control, workflow automation, and enterprise compliance. Built-in from $159/mo"}
+            subtitle="Evidence version control, workflow automation, and enterprise compliance. Built-in from $159/mo"
             alignment="center"
           />
 
@@ -781,9 +776,7 @@ export function HomePageContent() {
                 </span>
               </>
             }
-            subtitle={careLaunchMode
-              ? "Security architecture designed for care providers that answer to regulators"
-              : "Security architecture designed for organizations that answer to regulators"}
+            subtitle="Security architecture designed for organizations that answer to regulators"
             alignment="center"
           />
 

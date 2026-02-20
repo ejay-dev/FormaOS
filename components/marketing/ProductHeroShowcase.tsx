@@ -22,10 +22,8 @@ import { duration } from '@/config/motion';
 import { brand } from '@/config/brand';
 import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
 import { CursorTilt } from '@/components/motion/CursorTilt';
-import { isCareLaunchMode } from '@/lib/vertical-launch';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
-const careLaunchMode = isCareLaunchMode();
 
 /* ═══════════════════════════════════════════════════════════════════════
    TYPES & VIEW CONFIG
@@ -65,32 +63,7 @@ interface Tab {
   sub: string;
 }
 
-const TABS: Tab[] = careLaunchMode ? [
-  { id: 't01', view: 'dashboard', title: 'Compliance Score', stat: '94%', sub: 'Overall posture' },
-  { id: 't02', view: 'evidence', title: 'Incident Reports', stat: '14', sub: 'Filed this quarter' },
-  { id: 't03', view: 'controls', title: 'Practice Standards', stat: '7/8', sub: 'Standards covered' },
-  { id: 't04', view: 'reports', title: 'Audit Evidence', stat: '312', sub: 'Artefacts ready' },
-  { id: 't05', view: 'risk', title: 'Safeguarding Register', stat: '2', sub: 'Open items' },
-  { id: 't06', view: 'policies', title: 'Policy Library', stat: '24', sub: 'Active policies' },
-  { id: 't07', view: 'dashboard', title: 'Staff Tasks', stat: '31', sub: 'Active tasks' },
-  { id: 't08', view: 'evidence', title: 'Audit Trail', stat: '4,210', sub: 'Log entries' },
-  { id: 't09', view: 'controls', title: 'NDIS Standards', stat: '91%', sub: 'Coverage' },
-  { id: 't10', view: 'reports', title: 'Commission Reports', stat: '2', sub: 'Ready to send' },
-  { id: 't11', view: 'risk', title: 'Worker Screening', stat: '1', sub: 'Expiring soon' },
-  { id: 't12', view: 'policies', title: 'Review Queue', stat: '3', sub: 'Policies pending' },
-  { id: 't13', view: 'dashboard', title: 'Team Activity', stat: '87', sub: 'Actions this week' },
-  { id: 't14', view: 'evidence', title: 'Evidence Gaps', stat: '5', sub: 'Missing artefacts' },
-  { id: 't15', view: 'controls', title: 'Aged Care Standards', stat: '96%', sub: 'Quality Standards' },
-  { id: 't16', view: 'reports', title: 'Gap Analysis', stat: '1', sub: 'In progress' },
-  { id: 't17', view: 'risk', title: 'Incident Log', stat: '0', sub: 'Active incidents' },
-  { id: 't18', view: 'policies', title: 'Compliance Calendar', stat: '9', sub: 'Upcoming deadlines' },
-  { id: 't19', view: 'dashboard', title: 'Notifications', stat: '4', sub: 'Unread alerts' },
-  { id: 't20', view: 'evidence', title: 'Participant Notes', stat: '6', sub: 'Pending sign-off' },
-  { id: 't21', view: 'controls', title: 'RACGP Standards', stat: '88%', sub: 'Standards coverage' },
-  { id: 't22', view: 'reports', title: 'Compliance Trends', stat: '+8%', sub: 'Month over month' },
-  { id: 't23', view: 'risk', title: 'Medication Risk', stat: '1', sub: 'Items flagged' },
-  { id: 't24', view: 'policies', title: 'Access Reviews', stat: '1', sub: 'Overdue reviews' },
-] : [
+const TABS: Tab[] = [
   { id: 't01', view: 'dashboard', title: 'Compliance Score', stat: '94%', sub: 'Overall posture' },
   { id: 't02', view: 'evidence', title: 'Evidence Vault', stat: '1,247', sub: 'Artifacts collected' },
   { id: 't03', view: 'controls', title: 'Control Mapping', stat: '142/156', sub: 'Controls mapped' },
@@ -121,14 +94,7 @@ const TABS: Tab[] = careLaunchMode ? [
    VIEW DATA
    ═══════════════════════════════════════════════════════════════════════ */
 
-const DASHBOARD_ROWS = careLaunchMode ? [
-  { title: 'Complete NDIS worker screening checks', badge: 'In Progress', badgeCls: 'bg-teal-400/15 text-teal-300', dot: 'bg-teal-400/60', assignee: 'SC', pct: 65 },
-  { title: 'Upload SIRS incident report — Feb', badge: 'Pending', badgeCls: 'bg-amber-400/15 text-amber-300', dot: 'bg-amber-400/60', assignee: 'ME', pct: 0 },
-  { title: 'Review participant care plan — J. Smith', badge: 'Complete', badgeCls: 'bg-emerald-400/15 text-emerald-300', dot: 'bg-emerald-400/60', assignee: 'PL', pct: 100 },
-  { title: 'Aged Care quality standard audit prep', badge: 'In Review', badgeCls: 'bg-emerald-400/15 text-emerald-300', dot: 'bg-emerald-400/60', assignee: 'TK', pct: 80 },
-  { title: 'Staff induction & code of conduct sign-off', badge: 'In Progress', badgeCls: 'bg-teal-400/15 text-teal-300', dot: 'bg-teal-400/60', assignee: 'SC', pct: 50 },
-  { title: 'Update infection control policy', badge: 'Pending', badgeCls: 'bg-amber-400/15 text-amber-300', dot: 'bg-amber-400/60', assignee: 'ME', pct: 0 },
-] : [
+const DASHBOARD_ROWS = [
   { title: 'Review SOC 2 Type II controls', badge: 'In Progress', badgeCls: 'bg-teal-400/15 text-teal-300', dot: 'bg-teal-400/60', assignee: 'AK', pct: 72 },
   { title: 'Upload penetration test report', badge: 'Pending', badgeCls: 'bg-amber-400/15 text-amber-300', dot: 'bg-amber-400/60', assignee: 'SM', pct: 0 },
   { title: 'Map ISO 27001 Annex A controls', badge: 'Complete', badgeCls: 'bg-emerald-400/15 text-emerald-300', dot: 'bg-emerald-400/60', assignee: 'JR', pct: 100 },
@@ -137,14 +103,7 @@ const DASHBOARD_ROWS = careLaunchMode ? [
   { title: 'Update data retention policy', badge: 'Pending', badgeCls: 'bg-amber-400/15 text-amber-300', dot: 'bg-amber-400/60', assignee: 'AK', pct: 0 },
 ];
 
-const EVIDENCE_ROWS = careLaunchMode ? [
-  { name: 'NDIS-Incident-Report-Feb2026.pdf', type: 'PDF', size: '1.2 MB', date: 'Feb 14', tag: 'NDIS' },
-  { name: 'ParticipantCareNotes-JSmith-Q1.pdf', type: 'PDF', size: '890 KB', date: 'Feb 10', tag: 'Care Plans' },
-  { name: 'WorkerScreening-Register-2026.xlsx', type: 'XLSX', size: '420 KB', date: 'Feb 8', tag: 'Screening' },
-  { name: 'AgedCare-QualityStandards-Evidence.pdf', type: 'PDF', size: '3.1 MB', date: 'Feb 5', tag: 'Aged Care' },
-  { name: 'StaffCredentials-Register-Feb26.xlsx', type: 'XLSX', size: '560 KB', date: 'Feb 1', tag: 'HR' },
-  { name: 'InfectionControl-Policy-v2.pdf', type: 'PDF', size: '210 KB', date: 'Jan 28', tag: 'Policy' },
-] : [
+const EVIDENCE_ROWS = [
   { name: 'SOC2-AuditLog-2026Q1.pdf', type: 'PDF', size: '2.4 MB', date: 'Feb 14', tag: 'SOC 2' },
   { name: 'PenTest-Report-External.pdf', type: 'PDF', size: '5.1 MB', date: 'Feb 10', tag: 'ISO 27001' },
   { name: 'AccessReview-Jan2026.xlsx', type: 'XLSX', size: '890 KB', date: 'Feb 8', tag: 'Access' },
@@ -153,14 +112,7 @@ const EVIDENCE_ROWS = careLaunchMode ? [
   { name: 'DataClassification-Matrix.xlsx', type: 'XLSX', size: '340 KB', date: 'Jan 28', tag: 'Data' },
 ];
 
-const CONTROLS_ROWS = careLaunchMode ? [
-  { code: 'NDIS 1.1', name: 'Rights & Responsibilities', status: 'Mapped', statusCls: 'bg-emerald-400/15 text-emerald-300', framework: 'NDIS' },
-  { code: 'NDIS 2.1', name: 'Governance & Operations', status: 'Mapped', statusCls: 'bg-emerald-400/15 text-emerald-300', framework: 'NDIS' },
-  { code: 'NDIS 4.1', name: 'Support Provision', status: 'Partial', statusCls: 'bg-amber-400/15 text-amber-300', framework: 'NDIS' },
-  { code: 'ACS 1', name: 'Consumer Dignity & Choice', status: 'Mapped', statusCls: 'bg-emerald-400/15 text-emerald-300', framework: 'Aged Care' },
-  { code: 'ACS 2', name: 'Ongoing Assessment', status: 'Unmapped', statusCls: 'bg-red-400/15 text-red-300', framework: 'Aged Care' },
-  { code: 'RACGP 1.1', name: 'Practice Governance', status: 'Mapped', statusCls: 'bg-emerald-400/15 text-emerald-300', framework: 'RACGP' },
-] : [
+const CONTROLS_ROWS = [
   { code: 'CC6.1', name: 'Logical Access Controls', status: 'Mapped', statusCls: 'bg-emerald-400/15 text-emerald-300', framework: 'SOC 2' },
   { code: 'CC7.2', name: 'System Monitoring', status: 'Mapped', statusCls: 'bg-emerald-400/15 text-emerald-300', framework: 'SOC 2' },
   { code: 'A.8.1', name: 'Asset Inventory', status: 'Partial', statusCls: 'bg-amber-400/15 text-amber-300', framework: 'ISO 27001' },
@@ -260,9 +212,7 @@ export function ProductHero() {
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-teal-500/[0.08] border border-teal-500/25 mb-8"
         >
           <Sparkles className="w-4 h-4 text-teal-400" />
-          <span className="text-sm text-teal-400 font-medium tracking-wide">
-            {careLaunchMode ? 'Care Provider Compliance OS' : 'Compliance Operating System'}
-          </span>
+          <span className="text-sm text-teal-400 font-medium tracking-wide">Compliance Operating System</span>
         </motion.div>
 
         <motion.h1
@@ -271,23 +221,11 @@ export function ProductHero() {
           transition={sa ? { duration: duration.slower, delay: 0.25 } : { duration: 0 }}
           className="text-4xl sm:text-5xl lg:text-7xl xl:text-[5.2rem] font-bold mb-8 leading-[1.05] tracking-tight text-white"
         >
-          {careLaunchMode ? (
-            <>
-              The Compliance OS
-              <br />
-              <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
-                for Care Providers
-              </span>
-            </>
-          ) : (
-            <>
-              The Compliance OS
-              <br />
-              <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
-                for Real Organizations
-              </span>
-            </>
-          )}
+          The Compliance OS
+          <br />
+          <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
+            for Real Organizations
+          </span>
         </motion.h1>
 
         <motion.p
@@ -296,9 +234,7 @@ export function ProductHero() {
           transition={sa ? { duration: duration.slower, delay: 0.4 } : { duration: 0 }}
           className="text-lg sm:text-xl lg:text-2xl text-slate-400 mb-6 max-w-3xl mx-auto leading-relaxed"
         >
-          {careLaunchMode
-            ? 'Built for NDIS providers, Aged Care facilities, Healthcare practices & Child Care centres — turn obligations into evidence and stay audit-ready every day.'
-            : 'Transform regulatory obligations into structured controls, owned actions, and audit-ready outcomes — in real time.'}
+          Transform regulatory obligations into structured controls, owned actions, and audit-ready outcomes — in real time.
         </motion.p>
 
         <motion.p
@@ -307,9 +243,7 @@ export function ProductHero() {
           transition={sa ? { duration: duration.slower, delay: 0.5 } : { duration: 0 }}
           className="text-sm sm:text-base text-slate-500 mb-12 max-w-xl mx-auto"
         >
-          {careLaunchMode
-            ? 'Used by care teams & compliance leads. Aligned to NDIS Practice Standards, Aged Care Quality Standards & RACGP.'
-            : 'Used by compliance teams. Aligned to ISO & SOC frameworks. Built for audit defensibility.'}
+          Used by compliance teams. Aligned to ISO &amp; SOC frameworks. Built for audit defensibility.
         </motion.p>
 
         <motion.div
@@ -343,18 +277,11 @@ export function ProductHero() {
           transition={sa ? { duration: duration.slower, delay: 0.65 } : { duration: 0 }}
           className="flex flex-wrap items-center justify-center gap-3 text-sm text-slate-500"
         >
-          {(careLaunchMode
-            ? [
-                { label: 'Participant & Resident Records', color: 'bg-teal-400' },
-                { label: 'Incident & Evidence Capture', color: 'bg-emerald-400' },
-                { label: 'NDIS / Aged Care Audit Ready', color: 'bg-amber-400' },
-              ]
-            : [
-                { label: 'Structured Controls', color: 'bg-teal-400' },
-                { label: 'Owned Actions', color: 'bg-emerald-400' },
-                { label: 'Live Evidence', color: 'bg-amber-400' },
-              ]
-          ).map((chip) => (
+          {[
+            { label: 'Structured Controls', color: 'bg-teal-400' },
+            { label: 'Owned Actions', color: 'bg-emerald-400' },
+            { label: 'Live Evidence', color: 'bg-amber-400' },
+          ].map((chip) => (
             <span key={chip.label} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.08]">
               <span className={`w-1.5 h-1.5 rounded-full ${chip.color}/60`} />
               {chip.label}

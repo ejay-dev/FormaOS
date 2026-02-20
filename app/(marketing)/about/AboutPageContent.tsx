@@ -11,9 +11,6 @@ import { CursorTilt } from '@/components/motion/CursorTilt';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
-import { isCareLaunchMode } from '@/lib/vertical-launch';
-
-const careLaunchMode = isCareLaunchMode();
 
 const DemoAuditTrailCard = dynamic(() => import('@/components/marketing/demo/DemoAuditTrailCard'), { ssr: false });
 
@@ -75,9 +72,10 @@ function AboutHero() {
               transition={{ duration: duration.slower, delay: 0.5 }}
               className="text-lg sm:text-xl text-gray-400 mb-10 max-w-2xl mx-auto text-center leading-relaxed"
             >
-              {careLaunchMode
-                ? 'FormaOS exists to help care providers operate with confidence. Care teams need more than spreadsheets. They need a defensible system that proves governance, evidence, and oversight.'
-                : 'FormaOS exists to help regulated organizations operate with confidence. Compliance teams need more than spreadsheets. They need a defensible system that proves governance, evidence, and oversight.'}
+              FormaOS exists to help regulated organizations operate with
+              confidence. Compliance teams need more than spreadsheets. They
+              need a defensible system that proves governance, evidence, and
+              oversight.
             </motion.p>
 
             {/* CTA Buttons */}

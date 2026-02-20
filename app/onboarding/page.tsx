@@ -1,7 +1,7 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { redirect } from 'next/navigation';
-import { Building2, ShieldCheck, Sparkles, Info } from 'lucide-react';
+import { Building2, ShieldCheck, Sparkles } from 'lucide-react';
 import { SubmitButton } from '@/components/ui/submit-button';
 import { applyIndustryPack } from '@/app/app/onboarding/actions';
 import { createInvitation } from '@/lib/invitations/create-invitation';
@@ -33,7 +33,6 @@ import {
   onOnboardingMilestone,
 } from '@/lib/automation/integration';
 import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
-import { isCareLaunchMode, isIndustryAllowed, CARE_INDUSTRY_IDS } from '@/lib/vertical-launch';
 import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
 
 // Force dynamic rendering - this page uses cookies() for auth
@@ -893,24 +892,12 @@ export default async function OnboardingPage({
               className="space-y-8"
               data-testid="onboarding-step-industry"
             >
-              {/* Show banner if org already has a non-care industry (admin override path) */}
-              {isCareLaunchMode() && orgRecord?.industry && !isIndustryAllowed(orgRecord.industry) && (
-                <div className="flex items-start gap-3 rounded-xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
-                  <Info className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-400" />
-                  <span>
-                    This organization is currently set to an industry that is not in our launch focus. Your existing access and data remain intact. To switch to a supported care provider vertical, select one below.
-                  </span>
-                </div>
-              )}
               <div className="space-y-3">
                 <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
                   Industry
                 </label>
                 <div className="grid gap-3 md:grid-cols-2">
-                  {(isCareLaunchMode()
-                    ? INDUSTRY_OPTIONS.filter((o) => (CARE_INDUSTRY_IDS as readonly string[]).includes(o.id))
-                    : INDUSTRY_OPTIONS
-                  ).map((option) => (
+                  {INDUSTRY_OPTIONS.map((option) => (
                     <label
                       key={option.id}
                       className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
@@ -920,11 +907,7 @@ export default async function OnboardingPage({
                         type="radio"
                         name="industry"
                         value={option.id}
-                        defaultChecked={
-                          orgRecord?.industry
-                            ? orgRecord.industry === option.id
-                            : isCareLaunchMode() && option.id === 'ndis'
-                        }
+                        defaultChecked={orgRecord?.industry === option.id}
                         data-testid={`industry-option-${option.id}`}
                         className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
                       />

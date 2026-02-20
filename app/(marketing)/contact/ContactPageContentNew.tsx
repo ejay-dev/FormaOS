@@ -20,10 +20,8 @@ import { CursorTilt } from '@/components/motion/CursorTilt';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { brand } from '@/config/brand';
-import { isCareLaunchMode } from '@/lib/vertical-launch';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
-const careLaunchMode = isCareLaunchMode();
 
 // ============================================================================
 // HERO SECTION
@@ -97,9 +95,8 @@ function ContactHero() {
               transition={{ duration: duration.slower, delay: 0.6 }}
               className="text-base text-gray-500 mb-10 max-w-2xl mx-auto text-center"
             >
-              {careLaunchMode
-                ? 'We work with care providers that require precision, accountability, and operational proof.'
-                : 'We work with regulated organizations that require precision, accountability, and operational proof.'}
+              We work with regulated organizations that require precision,
+              accountability, and operational proof.
             </motion.p>
 
             {/* CTAs */}

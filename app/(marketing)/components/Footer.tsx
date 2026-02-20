@@ -7,7 +7,6 @@ import { Logo } from '@/components/brand/Logo';
 import { easing, duration } from '@/config/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { CURRENT_RELEASE_DISPLAY, CURRENT_RELEASE_TAG } from '@/config/release';
-import { isCareLaunchMode } from '@/lib/vertical-launch';
 import {
   ArrowUpRight,
   Mail,
@@ -18,29 +17,21 @@ import {
 } from 'lucide-react';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
-const careLaunchMode = isCareLaunchMode();
 
 const footerLinks = {
   platform: [
     { href: '/product', label: 'How it works' },
-    { href: '/industries', label: careLaunchMode ? 'Care Providers' : 'Industries' },
+    { href: '/industries', label: 'Industries' },
     { href: '/security', label: 'Security' },
     { href: '/frameworks', label: 'Framework Coverage' },
     { href: '/pricing', label: 'Pricing' },
   ],
-  useCases: careLaunchMode
-    ? [
-        { href: '/use-cases/ndis-aged-care', label: 'NDIS & Aged Care' },
-        { href: '/use-cases/healthcare', label: 'Healthcare' },
-        { href: '/use-cases/workforce-credentials', label: 'Workforce Credentials' },
-        { href: '/use-cases/incident-management', label: 'Incident Management' },
-      ]
-    : [
-        { href: '/use-cases/healthcare', label: 'Healthcare' },
-        { href: '/use-cases/ndis-aged-care', label: 'NDIS & Aged Care' },
-        { href: '/use-cases/workforce-credentials', label: 'Workforce' },
-        { href: '/use-cases/incident-management', label: 'Incidents' },
-      ],
+  useCases: [
+    { href: '/use-cases/healthcare', label: 'Healthcare' },
+    { href: '/use-cases/ndis-aged-care', label: 'NDIS & Aged Care' },
+    { href: '/use-cases/workforce-credentials', label: 'Workforce' },
+    { href: '/use-cases/incident-management', label: 'Incidents' },
+  ],
   resources: [
     { href: '/docs', label: 'Documentation' },
     { href: '/blog', label: 'Blog' },
@@ -49,8 +40,7 @@ const footerLinks = {
     { href: '/trust/packet', label: 'Trust Packet (PDF)' },
     { href: '/status', label: 'Status' },
     { href: '/customer-stories', label: 'Customer Stories' },
-    // Compare is hidden from footer in care-launch mode (page still accessible via direct URL)
-    ...(!careLaunchMode ? [{ href: '/compare', label: 'Compare' }] : []),
+    { href: '/compare', label: 'Compare' },
     { href: '/faq', label: 'FAQ' },
   ],
   company: [
@@ -132,14 +122,11 @@ function FooterCTA() {
 
       <div className="relative z-10">
         <h3 className="text-xl sm:text-2xl font-bold mb-3 font-display">
-          {careLaunchMode
-            ? 'Ready to transform your care operations?'
-            : 'Ready to transform your compliance?'}
+          Ready to transform your compliance?
         </h3>
         <p className="text-gray-400 mb-6 max-w-md">
-          {careLaunchMode
-            ? 'Start your 14-day free trial. Built for NDIS, Aged Care, Healthcare & Child Care providers. No credit card required.'
-            : 'Start your 14-day free trial. No credit card required. Full platform access.'}
+          Start your 14-day free trial. No credit card required. Full platform
+          access.
         </p>
         <div className="flex flex-col sm:flex-row gap-3">
           <motion.div
@@ -236,9 +223,8 @@ export function Footer() {
             </ScrollReveal>
 
             <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
-              {careLaunchMode
-                ? 'The compliance operating system for care providers. NDIS, Aged Care, Healthcare & Child Care.'
-                : 'The compliance operating system for regulated industries. Govern, execute, and prove audit readiness.'}
+              The compliance operating system for regulated industries. Govern,
+              execute, and prove audit readiness.
             </p>
 
             {/* Status indicator */}
