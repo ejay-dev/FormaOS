@@ -18,7 +18,7 @@ export function FinalCTA() {
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white">
                   Most platforms <span className="text-gray-500">store</span> compliance.
                   <br />
-                  <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
                     FormaOS operates it.
                   </span>
                 </h2>

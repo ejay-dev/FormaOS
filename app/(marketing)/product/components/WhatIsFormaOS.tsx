@@ -16,7 +16,7 @@ export function WhatIsFormaOS() {
   return (
     <section className="relative py-32 overflow-hidden">
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full blur-3xl"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-teal-500/10 to-emerald-500/10 rounded-full blur-3xl"
         animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
         transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
       />
@@ -25,15 +25,15 @@ export function WhatIsFormaOS() {
         <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
           <div className="text-center mb-16">
             <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-6">
-                <span className="w-2 h-2 rounded-full bg-blue-400" />
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-sm font-medium mb-6">
+                <span className="w-2 h-2 rounded-full bg-teal-400" />
                 What Is FormaOS?
               </div>
             </ScrollReveal>
 
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
               An End-to-End
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
                 {' '}
                 Compliance Operating System
               </span>
@@ -62,8 +62,8 @@ export function WhatIsFormaOS() {
                     range={[index * 0.04, 0.3 + index * 0.04]}
                   >
                     <div className="flex flex-col items-center text-center group">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/10 border border-cyan-500/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                        <Icon className="w-6 h-6 text-cyan-400" />
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500/20 to-emerald-500/10 border border-teal-500/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <Icon className="w-6 h-6 text-teal-400" />
                       </div>
                       <span className="text-sm text-gray-400">{item.label}</span>
                     </div>

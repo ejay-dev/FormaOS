@@ -51,25 +51,25 @@ const screenTransition = {
 };
 
 const phaseActiveColors: Record<string, { tab: string; border: string; glow: string }> = {
-  cyan: {
-    tab: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30',
-    border: 'border-cyan-500/25',
-    glow: 'shadow-[0_0_60px_rgba(6,182,212,0.12)]',
+  teal: {
+    tab: 'bg-teal-500/15 text-teal-300 border-teal-500/30',
+    border: 'border-teal-500/25',
+    glow: 'shadow-[0_0_60px_rgba(20,184,166,0.12)]',
   },
-  blue: {
-    tab: 'bg-blue-500/15 text-blue-300 border-blue-500/30',
-    border: 'border-blue-500/25',
-    glow: 'shadow-[0_0_60px_rgba(59,130,246,0.12)]',
+  emerald: {
+    tab: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+    border: 'border-emerald-500/25',
+    glow: 'shadow-[0_0_60px_rgba(52,211,153,0.12)]',
   },
-  purple: {
-    tab: 'bg-purple-500/15 text-purple-300 border-purple-500/30',
-    border: 'border-purple-500/25',
-    glow: 'shadow-[0_0_60px_rgba(139,92,246,0.12)]',
+  tealAlt: {
+    tab: 'bg-teal-500/15 text-teal-300 border-teal-500/30',
+    border: 'border-teal-500/25',
+    glow: 'shadow-[0_0_60px_rgba(20,184,166,0.12)]',
   },
-  pink: {
-    tab: 'bg-pink-500/15 text-pink-300 border-pink-500/30',
-    border: 'border-pink-500/25',
-    glow: 'shadow-[0_0_60px_rgba(236,72,153,0.12)]',
+  amber: {
+    tab: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+    border: 'border-amber-500/25',
+    glow: 'shadow-[0_0_60px_rgba(245,158,11,0.12)]',
   },
 };
 
@@ -362,13 +362,13 @@ export default function PhaseDemo() {
           transition={{ duration: duration.slow, ease: easing.signature }}
           className="text-center mb-10 sm:mb-14"
         >
-          <div className="inline-flex items-center gap-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-3.5 py-1.5 mb-5">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-            <span className="text-xs font-medium text-cyan-300">The FormaOS Operating Model</span>
+          <div className="inline-flex items-center gap-2 rounded-full bg-teal-500/10 border border-teal-500/20 px-3.5 py-1.5 mb-5">
+            <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
+            <span className="text-xs font-medium text-teal-300">The FormaOS Operating Model</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 tracking-tight">
             Four Phases.
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
               {' '}Complete Control.
             </span>
           </h2>
@@ -547,7 +547,7 @@ export default function PhaseDemo() {
                       aria-selected={activePhase === id}
                       className={`flex-shrink-0 px-3 py-2 text-[11px] font-medium border-b-2 transition-colors ${
                         activePhase === id
-                          ? 'text-cyan-300 border-cyan-400'
+                          ? 'text-teal-300 border-teal-400'
                           : 'text-slate-500 border-transparent hover:text-slate-300'
                       }`}
                     >
@@ -650,7 +650,7 @@ export default function PhaseDemo() {
                     <Suspense fallback={
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="flex flex-col items-center gap-2">
-                          <div className="h-6 w-6 rounded-full border-2 border-cyan-500 border-t-transparent animate-spin" />
+                          <div className="h-6 w-6 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" />
                           <span className="text-[11px] text-slate-500">Loading sandbox...</span>
                         </div>
                       </div>
@@ -700,7 +700,7 @@ export default function PhaseDemo() {
             {!isSimulation && (
               <div className="flex items-center justify-between bg-[#0d1225] border-t border-white/[0.06] px-4 py-1.5">
                 <div className="flex items-center gap-1.5">
-                  <MousePointer className="h-3 w-3 text-cyan-400" />
+                  <MousePointer className="h-3 w-3 text-teal-400" />
                   <span className="text-[9px] text-slate-500">Click any item to explore — open tasks, evidence, and audit trails</span>
                 </div>
                 <div className="flex items-center gap-1.5">
@@ -755,7 +755,7 @@ export default function PhaseDemo() {
               <a
                 href="/signup?source=phase_demo"
                 onClick={handleCtaClick}
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_30px_rgba(6,182,212,0.3)] hover:brightness-110 transition-all"
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 via-emerald-500 to-teal-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_30px_rgba(20,184,166,0.3)] hover:brightness-110 transition-all"
               >
                 Try the Live Trial
                 <ArrowRight className="h-4 w-4" />

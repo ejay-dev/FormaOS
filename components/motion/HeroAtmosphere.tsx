@@ -28,7 +28,7 @@ import { AmbientParticleLayer } from './AmbientParticleLayer';
  *   </section>
  */
 
-type GlowColor = 'cyan' | 'blue' | 'violet' | 'emerald' | 'rose' | 'amber';
+type GlowColor = 'cyan' | 'teal' | 'blue' | 'violet' | 'emerald' | 'rose' | 'amber';
 
 interface HeroAtmosphereProps {
   /** Top glow accent (default: cyan) */
@@ -46,6 +46,7 @@ interface HeroAtmosphereProps {
 
 const COLOR_MAP: Record<GlowColor, { glow: string; grid: string }> = {
   cyan:    { glow: 'rgba(34,211,238,',  grid: 'rgba(6,182,212,0.15)' },
+  teal:    { glow: 'rgba(45,212,191,',  grid: 'rgba(20,184,166,0.15)' },
   blue:    { glow: 'rgba(59,130,246,',  grid: 'rgba(59,130,246,0.15)' },
   violet:  { glow: 'rgba(139,92,246,',  grid: 'rgba(139,92,246,0.15)' },
   emerald: { glow: 'rgba(52,211,153,',  grid: 'rgba(16,185,129,0.15)' },

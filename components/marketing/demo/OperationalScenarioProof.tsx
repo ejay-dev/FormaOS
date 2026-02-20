@@ -35,7 +35,7 @@ export function OperationalScenarioProof() {
     <section className="relative py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-12">
         <div className="mb-12 text-center">
-          <p className="text-xs uppercase tracking-[0.25em] text-cyan-300">
+          <p className="text-xs uppercase tracking-[0.25em] text-teal-300">
             Operational Proof
           </p>
           <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">
@@ -56,8 +56,8 @@ export function OperationalScenarioProof() {
                 className="rounded-2xl border border-white/10 bg-white/5 p-6"
               >
                 <div className="mb-5 flex items-center gap-3">
-                  <div className="rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2.5">
-                    <Icon className="h-5 w-5 text-cyan-300" />
+                  <div className="rounded-lg border border-teal-400/20 bg-teal-500/10 p-2.5">
+                    <Icon className="h-5 w-5 text-teal-300" />
                   </div>
                   <h3 className="text-lg font-semibold text-white">
                     {scenario.title}
@@ -73,7 +73,7 @@ export function OperationalScenarioProof() {
                     {scenario.after}
                   </p>
                 </div>
-                <div className="mt-4 inline-flex rounded-full border border-cyan-300/30 bg-cyan-500/10 px-3 py-1.5 text-xs font-semibold text-cyan-100">
+                <div className="mt-4 inline-flex rounded-full border border-teal-300/30 bg-teal-500/10 px-3 py-1.5 text-xs font-semibold text-teal-100">
                   {scenario.metric}
                 </div>
               </article>
@@ -84,7 +84,7 @@ export function OperationalScenarioProof() {
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href={`${appBase}/auth/signup?source=operational_scenarios`}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 text-sm font-semibold text-white"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 px-6 py-3 text-sm font-semibold text-white"
           >
             Launch Guided Trial
             <ArrowRight className="h-4 w-4" />

@@ -34,9 +34,9 @@ const defaultSteps: ChainStep[] = [
     title: 'Regulatory Obligation Mapped',
     detail: 'ISO 27001 A.9.2 — Access Control Policy',
     meta: 'Framework imported • Controls auto-generated',
-    color: 'text-cyan-400',
-    bg: 'bg-cyan-500/15',
-    border: 'border-cyan-500/20',
+    color: 'text-teal-400',
+    bg: 'bg-teal-500/15',
+    border: 'border-teal-500/20',
   },
   {
     id: 'control',
@@ -45,9 +45,9 @@ const defaultSteps: ChainStep[] = [
     title: 'Control Activated',
     detail: 'Review access rights quarterly',
     meta: 'Owner: Sarah Chen • Frequency: Quarterly',
-    color: 'text-blue-400',
-    bg: 'bg-blue-500/15',
-    border: 'border-blue-500/20',
+    color: 'text-emerald-400',
+    bg: 'bg-emerald-500/15',
+    border: 'border-emerald-500/20',
   },
   {
     id: 'task',
@@ -56,9 +56,9 @@ const defaultSteps: ChainStep[] = [
     title: 'Task Auto-Assigned',
     detail: 'Quarterly Access Review — Q1 2026',
     meta: 'Due: 15 Mar 2026 • Escalation: 7 days',
-    color: 'text-purple-400',
-    bg: 'bg-purple-500/15',
-    border: 'border-purple-500/20',
+    color: 'text-teal-400',
+    bg: 'bg-teal-500/15',
+    border: 'border-teal-500/20',
   },
   {
     id: 'evidence',
@@ -93,7 +93,7 @@ interface DemoComplianceChainProps {
 export default function DemoComplianceChain({
   steps = defaultSteps,
   stepDuration = 2800,
-  glowColor = 'from-cyan-500/15 to-blue-500/15',
+  glowColor = 'from-teal-500/15 to-emerald-500/15',
 }: DemoComplianceChainProps) {
   const prefersReducedMotion = useReducedMotion();
   const [activeStep, setActiveStep] = useState(0);

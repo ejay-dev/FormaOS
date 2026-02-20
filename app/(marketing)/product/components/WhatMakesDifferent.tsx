@@ -5,11 +5,11 @@ import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
 const differentiators = [
-  { icon: Layers, title: 'A True Compliance Operating System', description: 'FormaOS is infrastructure, not a tool. It orchestrates governance, execution, and evidence across your organization.', color: 'from-cyan-500 to-blue-500' },
-  { icon: Building2, title: 'Built for Regulated Environments', description: 'Designed specifically for healthcare, NDIS, finance, education, and government-aligned organizations.', color: 'from-blue-500 to-purple-500' },
-  { icon: Database, title: 'Evidence by Design', description: 'Every action produces verifiable, structured evidence automatically.', color: 'from-purple-500 to-pink-500' },
-  { icon: UserCheck, title: 'Accountability at Scale', description: 'Every control has a defined owner, status, and outcome. No ambiguity.', color: 'from-pink-500 to-rose-500' },
-  { icon: Shield, title: 'Audit Defense, Not Audit Prep', description: 'You are always audit-ready because your compliance is continuously running.', color: 'from-rose-500 to-orange-500' },
+  { icon: Layers, title: 'A True Compliance Operating System', description: 'FormaOS is infrastructure, not a tool. It orchestrates governance, execution, and evidence across your organization.', color: 'from-teal-400 to-emerald-500' },
+  { icon: Building2, title: 'Built for Regulated Environments', description: 'Designed specifically for healthcare, NDIS, finance, education, and government-aligned organizations.', color: 'from-emerald-500 to-teal-600' },
+  { icon: Database, title: 'Evidence by Design', description: 'Every action produces verifiable, structured evidence automatically.', color: 'from-teal-600 to-emerald-600' },
+  { icon: UserCheck, title: 'Accountability at Scale', description: 'Every control has a defined owner, status, and outcome. No ambiguity.', color: 'from-amber-500 to-teal-500' },
+  { icon: Shield, title: 'Audit Defense, Not Audit Prep', description: 'You are always audit-ready because your compliance is continuously running.', color: 'from-rose-500 to-amber-500' },
 ];
 
 export function WhatMakesDifferent() {

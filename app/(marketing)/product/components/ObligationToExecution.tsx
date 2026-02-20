@@ -7,10 +7,10 @@ import dynamic from 'next/dynamic';
 const DemoComplianceChain = dynamic(() => import('@/components/marketing/demo/DemoComplianceChain'), { ssr: false });
 
 const flow = [
-  { step: 'Obligations', becomes: 'structured controls', color: 'from-cyan-500 to-blue-500' },
-  { step: 'Controls', becomes: 'owned tasks', color: 'from-blue-500 to-purple-500' },
-  { step: 'Tasks', becomes: 'live evidence', color: 'from-purple-500 to-pink-500' },
-  { step: 'Evidence', becomes: 'complete audit trail', color: 'from-pink-500 to-rose-500' },
+  { step: 'Obligations', becomes: 'structured controls', color: 'from-teal-400 to-emerald-500' },
+  { step: 'Controls', becomes: 'owned tasks', color: 'from-emerald-500 to-teal-600' },
+  { step: 'Tasks', becomes: 'live evidence', color: 'from-teal-600 to-emerald-600' },
+  { step: 'Evidence', becomes: 'complete audit trail', color: 'from-amber-500 to-teal-500' },
 ];
 
 export function ObligationToExecution() {
@@ -20,15 +20,15 @@ export function ObligationToExecution() {
         <ScrollReveal variant="slideUp" range={[0, 0.35]}>
           <div className="text-center mb-16">
             <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium mb-6">
-                <span className="w-2 h-2 rounded-full bg-purple-400" />
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-sm font-medium mb-6">
+                <span className="w-2 h-2 rounded-full bg-teal-400" />
                 From Obligation to Execution
               </div>
             </ScrollReveal>
 
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
               You Don't Just Record
-              <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-rose-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
                 {' '}
                 Compliance. You Run It.
               </span>
@@ -49,7 +49,7 @@ export function ObligationToExecution() {
               range={[index * 0.04, 0.3 + index * 0.04]}
             >
               <div className="relative group">
-                <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-purple-500/30 transition-all">
+                <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-teal-500/30 transition-all">
                   <div className={`inline-flex px-3 py-1 rounded-full bg-gradient-to-r ${item.color} text-white text-xs font-semibold mb-4`}>
                     {item.step}
                   </div>
@@ -77,11 +77,11 @@ export function ObligationToExecution() {
         <ScrollReveal variant="fadeUp" range={[0.12, 0.42]}>
           <div className="mt-12 grid sm:grid-cols-3 gap-6 text-center">
             <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
-              <Activity className="w-4 h-4 text-cyan-400" />
+              <Activity className="w-4 h-4 text-teal-400" />
               Every action is tracked
             </div>
             <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
-              <UserCheck className="w-4 h-4 text-blue-400" />
+              <UserCheck className="w-4 h-4 text-emerald-400" />
               Every control has an owner
             </div>
             <div className="flex items-center justify-center gap-2 text-sm text-gray-400">

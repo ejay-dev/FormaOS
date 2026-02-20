@@ -26,9 +26,9 @@ export const PHASE_CONFIGS: Record<PhaseId, PhaseConfig> = {
     title: 'Structure',
     verb: 'Model',
     subtitle: 'Model your organisation with governance built in',
-    accent: 'from-cyan-500 to-blue-500',
-    glowColor: 'rgba(6,182,212,0.15)',
-    color: 'cyan',
+    accent: 'from-teal-400 to-emerald-500',
+    glowColor: 'rgba(20,184,166,0.15)',
+    color: 'teal',
   },
   operationalize: {
     id: 'operationalize',
@@ -36,9 +36,9 @@ export const PHASE_CONFIGS: Record<PhaseId, PhaseConfig> = {
     title: 'Operationalize',
     verb: 'Execute',
     subtitle: 'Turn requirements into real execution',
-    accent: 'from-blue-500 to-purple-500',
-    glowColor: 'rgba(59,130,246,0.15)',
-    color: 'blue',
+    accent: 'from-emerald-500 to-teal-600',
+    glowColor: 'rgba(52,211,153,0.15)',
+    color: 'emerald',
   },
   validate: {
     id: 'validate',
@@ -46,9 +46,9 @@ export const PHASE_CONFIGS: Record<PhaseId, PhaseConfig> = {
     title: 'Validate',
     verb: 'Verify',
     subtitle: 'Continuously verify controls are working',
-    accent: 'from-purple-500 to-pink-500',
-    glowColor: 'rgba(139,92,246,0.15)',
-    color: 'purple',
+    accent: 'from-teal-600 to-emerald-600',
+    glowColor: 'rgba(20,184,166,0.15)',
+    color: 'tealAlt',
   },
   defend: {
     id: 'defend',
@@ -56,9 +56,9 @@ export const PHASE_CONFIGS: Record<PhaseId, PhaseConfig> = {
     title: 'Defend',
     verb: 'Prove',
     subtitle: 'Produce audit-ready evidence instantly',
-    accent: 'from-pink-500 to-rose-500',
-    glowColor: 'rgba(236,72,153,0.15)',
-    color: 'pink',
+    accent: 'from-amber-500 to-teal-500',
+    glowColor: 'rgba(245,158,11,0.15)',
+    color: 'amber',
   },
 };
 
@@ -67,9 +67,9 @@ export const PHASE_CONFIGS: Record<PhaseId, PhaseConfig> = {
 // -----------------------------------------------------------------------------
 
 export const structureFrameworks = [
-  { id: 'iso27001', name: 'ISO 27001', controls: 52, color: '#06b6d4' },
-  { id: 'soc2', name: 'SOC 2 Type II', controls: 48, color: '#3b82f6' },
-  { id: 'hipaa', name: 'HIPAA', controls: 42, color: '#8b5cf6' },
+  { id: 'iso27001', name: 'ISO 27001', controls: 52, color: '#14b8a6' },
+  { id: 'soc2', name: 'SOC 2 Type II', controls: 48, color: '#10b981' },
+  { id: 'hipaa', name: 'HIPAA', controls: 42, color: '#f59e0b' },
 ];
 
 export const structureControlMappings = [

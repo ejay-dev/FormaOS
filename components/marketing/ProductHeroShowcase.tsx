@@ -41,9 +41,9 @@ interface ViewMeta {
 }
 
 const VIEWS: ViewMeta[] = [
-  { id: 'dashboard', label: 'Dashboard', icon: '◫', accent: 'text-cyan-300', dot: 'bg-cyan-400', glow: '0,212,251' },
-  { id: 'evidence', label: 'Evidence', icon: '◉', accent: 'text-violet-300', dot: 'bg-violet-400', glow: '160,131,255' },
-  { id: 'controls', label: 'Controls', icon: '⬡', accent: 'text-blue-300', dot: 'bg-blue-400', glow: '59,130,246' },
+  { id: 'dashboard', label: 'Dashboard', icon: '◫', accent: 'text-teal-300', dot: 'bg-teal-400', glow: '45,212,191' },
+  { id: 'evidence', label: 'Evidence', icon: '◉', accent: 'text-amber-300', dot: 'bg-amber-400', glow: '251,191,36' },
+  { id: 'controls', label: 'Controls', icon: '⬡', accent: 'text-emerald-300', dot: 'bg-emerald-400', glow: '52,211,153' },
   { id: 'reports', label: 'Reports', icon: '◈', accent: 'text-emerald-300', dot: 'bg-emerald-400', glow: '52,211,153' },
   { id: 'risk', label: 'Risk', icon: '△', accent: 'text-amber-300', dot: 'bg-amber-400', glow: '251,191,36' },
   { id: 'policies', label: 'Policies', icon: '▣', accent: 'text-rose-300', dot: 'bg-rose-400', glow: '251,113,133' },
@@ -95,11 +95,11 @@ const TABS: Tab[] = [
    ═══════════════════════════════════════════════════════════════════════ */
 
 const DASHBOARD_ROWS = [
-  { title: 'Review SOC 2 Type II controls', badge: 'In Progress', badgeCls: 'bg-cyan-400/15 text-cyan-300', dot: 'bg-cyan-400/60', assignee: 'AK', pct: 72 },
+  { title: 'Review SOC 2 Type II controls', badge: 'In Progress', badgeCls: 'bg-teal-400/15 text-teal-300', dot: 'bg-teal-400/60', assignee: 'AK', pct: 72 },
   { title: 'Upload penetration test report', badge: 'Pending', badgeCls: 'bg-amber-400/15 text-amber-300', dot: 'bg-amber-400/60', assignee: 'SM', pct: 0 },
   { title: 'Map ISO 27001 Annex A controls', badge: 'Complete', badgeCls: 'bg-emerald-400/15 text-emerald-300', dot: 'bg-emerald-400/60', assignee: 'JR', pct: 100 },
-  { title: 'Vendor risk assessment — Stripe', badge: 'In Review', badgeCls: 'bg-blue-400/15 text-blue-300', dot: 'bg-blue-400/60', assignee: 'LW', pct: 88 },
-  { title: 'Incident response plan update', badge: 'In Progress', badgeCls: 'bg-cyan-400/15 text-cyan-300', dot: 'bg-cyan-400/60', assignee: 'TP', pct: 45 },
+  { title: 'Vendor risk assessment — Stripe', badge: 'In Review', badgeCls: 'bg-emerald-400/15 text-emerald-300', dot: 'bg-emerald-400/60', assignee: 'LW', pct: 88 },
+  { title: 'Incident response plan update', badge: 'In Progress', badgeCls: 'bg-teal-400/15 text-teal-300', dot: 'bg-teal-400/60', assignee: 'TP', pct: 45 },
   { title: 'Update data retention policy', badge: 'Pending', badgeCls: 'bg-amber-400/15 text-amber-300', dot: 'bg-amber-400/60', assignee: 'AK', pct: 0 },
 ];
 
@@ -125,7 +125,7 @@ const REPORTS_ROWS = [
   { name: 'Board Readiness Report — Q1 2026', status: 'Final', statusCls: 'bg-emerald-400/15 text-emerald-300', date: 'Feb 15', pages: 24 },
   { name: 'SOC 2 Type II Gap Analysis', status: 'Draft', statusCls: 'bg-slate-400/15 text-slate-300', date: 'Feb 12', pages: 18 },
   { name: 'Vendor Risk Summary', status: 'Final', statusCls: 'bg-emerald-400/15 text-emerald-300', date: 'Feb 8', pages: 12 },
-  { name: 'Incident Response Metrics', status: 'In Review', statusCls: 'bg-blue-400/15 text-blue-300', date: 'Feb 5', pages: 9 },
+  { name: 'Incident Response Metrics', status: 'In Review', statusCls: 'bg-teal-400/15 text-teal-300', date: 'Feb 5', pages: 9 },
   { name: 'Quarterly Compliance Digest', status: 'Final', statusCls: 'bg-emerald-400/15 text-emerald-300', date: 'Jan 31', pages: 16 },
 ];
 
@@ -140,7 +140,7 @@ const RISK_ROWS = [
 const POLICY_ROWS = [
   { name: 'Information Security Policy', ver: 'v4.2', status: 'Active', statusCls: 'bg-emerald-400/15 text-emerald-300', review: 'Jan 15', owner: 'CISO' },
   { name: 'Acceptable Use Policy', ver: 'v3.1', status: 'Active', statusCls: 'bg-emerald-400/15 text-emerald-300', review: 'Dec 20', owner: 'HR' },
-  { name: 'Data Retention Policy', ver: 'v2.0', status: 'In Review', statusCls: 'bg-blue-400/15 text-blue-300', review: 'Feb 10', owner: 'Legal' },
+  { name: 'Data Retention Policy', ver: 'v2.0', status: 'In Review', statusCls: 'bg-teal-400/15 text-teal-300', review: 'Feb 10', owner: 'Legal' },
   { name: 'Incident Response Plan', ver: 'v5.0', status: 'Active', statusCls: 'bg-emerald-400/15 text-emerald-300', review: 'Jan 28', owner: 'Security' },
   { name: 'Vendor Management Policy', ver: 'v1.3', status: 'Draft', statusCls: 'bg-slate-400/15 text-slate-300', review: 'Feb 14', owner: 'Procurement' },
   { name: 'Access Control Policy', ver: 'v3.0', status: 'Active', statusCls: 'bg-emerald-400/15 text-emerald-300', review: 'Jan 5', owner: 'IT' },
@@ -201,18 +201,18 @@ export function ProductHero() {
       className="relative min-h-[85vh] flex items-center justify-center overflow-hidden pt-28 pb-20"
       style={{ opacity: heroOpacity, scale: heroScale }}
     >
-      <HeroAtmosphere topColor="cyan" bottomColor="violet" />
+      <HeroAtmosphere topColor="teal" bottomColor="amber" />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12 text-center">
-        <CursorTilt intensity={3} glowFollow glowColor="6,182,212">
+        <CursorTilt intensity={3} glowFollow glowColor="45,212,191">
         <motion.div
           initial={sa ? { opacity: 0, y: 16 } : false}
           animate={{ opacity: 1, y: 0 }}
           transition={sa ? { duration: duration.slow, delay: 0.15 } : { duration: 0 }}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-cyan-500/[0.08] border border-cyan-500/25 mb-8"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-teal-500/[0.08] border border-teal-500/25 mb-8"
         >
-          <Sparkles className="w-4 h-4 text-cyan-400" />
-          <span className="text-sm text-cyan-400 font-medium tracking-wide">Compliance Operating System</span>
+          <Sparkles className="w-4 h-4 text-teal-400" />
+          <span className="text-sm text-teal-400 font-medium tracking-wide">Compliance Operating System</span>
         </motion.div>
 
         <motion.h1
@@ -223,7 +223,7 @@ export function ProductHero() {
         >
           The Compliance OS
           <br />
-          <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
             for Real Organizations
           </span>
         </motion.h1>
@@ -254,7 +254,7 @@ export function ProductHero() {
         >
           <motion.a
             href={`${appBase}/auth/signup`}
-            whileHover={sa ? { scale: 1.03, boxShadow: '0 0 40px rgba(6,182,212,0.3)' } : undefined}
+            whileHover={sa ? { scale: 1.03, boxShadow: '0 0 40px rgba(20,184,166,0.3)' } : undefined}
             whileTap={sa ? { scale: 0.98 } : undefined}
             className="mk-btn mk-btn-primary group px-10 py-4 text-base lg:text-lg"
           >
@@ -278,9 +278,9 @@ export function ProductHero() {
           className="flex flex-wrap items-center justify-center gap-3 text-sm text-slate-500"
         >
           {[
-            { label: 'Structured Controls', color: 'bg-cyan-400' },
-            { label: 'Owned Actions', color: 'bg-blue-400' },
-            { label: 'Live Evidence', color: 'bg-violet-400' },
+            { label: 'Structured Controls', color: 'bg-teal-400' },
+            { label: 'Owned Actions', color: 'bg-emerald-400' },
+            { label: 'Live Evidence', color: 'bg-amber-400' },
           ].map((chip) => (
             <span key={chip.label} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.08]">
               <span className={`w-1.5 h-1.5 rounded-full ${chip.color}/60`} />
@@ -371,7 +371,7 @@ const TabsRail = memo(function TabsRail({
               className={`
                 w-full flex items-center gap-3.5 px-5 py-3.5 rounded-xl text-left
                 transition-all duration-150 ease-out
-                focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40
+                focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/40
                 group relative overflow-hidden
                 ${isActive
                   ? 'bg-white/[0.07] border border-white/[0.14] shadow-lg shadow-black/25'
@@ -424,7 +424,7 @@ const DashboardView = memo(function DashboardView() {
           <div className={`text-xs px-2.5 py-0.5 rounded-full shrink-0 ${r.badgeCls}`}>{r.badge}</div>
           {r.pct > 0 && r.pct < 100 && (
             <div className="w-16 h-1.5 rounded-full bg-white/[0.06] overflow-hidden shrink-0">
-              <div className="h-full rounded-full bg-gradient-to-r from-cyan-400/40 to-blue-400/25" style={{ width: `${r.pct}%` }} />
+              <div className="h-full rounded-full bg-gradient-to-r from-teal-400/40 to-emerald-400/25" style={{ width: `${r.pct}%` }} />
             </div>
           )}
         </div>
@@ -438,12 +438,12 @@ const EvidenceView = memo(function EvidenceView() {
     <>
       {EVIDENCE_ROWS.map((r) => (
         <div key={r.name} className={ROW_CLS}>
-          <div className="w-8 h-8 rounded-lg bg-violet-400/10 flex items-center justify-center shrink-0"><span className="text-sm text-violet-300 font-mono">{r.type}</span></div>
+          <div className="w-8 h-8 rounded-lg bg-amber-400/10 flex items-center justify-center shrink-0"><span className="text-sm text-amber-300 font-mono">{r.type}</span></div>
           <div className="flex-1 min-w-0">
             <div className="text-sm text-white/65 truncate">{r.name}</div>
             <div className="text-sm text-white/25">{r.size} · {r.date}</div>
           </div>
-          <div className="text-sm px-2.5 py-0.5 rounded-full bg-violet-400/12 text-violet-300 shrink-0">{r.tag}</div>
+          <div className="text-sm px-2.5 py-0.5 rounded-full bg-amber-400/12 text-amber-300 shrink-0">{r.tag}</div>
         </div>
       ))}
     </>
@@ -455,7 +455,7 @@ const ControlsView = memo(function ControlsView() {
     <>
       {CONTROLS_ROWS.map((r) => (
         <div key={r.code} className={ROW_CLS}>
-          <div className="text-[15px] font-mono text-blue-300/80 w-14 shrink-0">{r.code}</div>
+          <div className="text-[15px] font-mono text-emerald-300/80 w-14 shrink-0">{r.code}</div>
           <div className="flex-1 min-w-0 text-[15px] text-white/65 truncate">{r.name}</div>
           <div className="text-[15px] text-white/25 shrink-0">{r.framework}</div>
           <div className={`text-[15px] px-2.5 py-0.5 rounded-full shrink-0 ${r.statusCls}`}>{r.status}</div>
@@ -579,7 +579,7 @@ const AppPanel = memo(function AppPanel({
             <div className="w-28 h-8 rounded-lg bg-white/[0.03] border border-white/[0.07] flex items-center px-3">
               <span className="text-[13px] text-white/22">Search…</span>
             </div>
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400/25 to-blue-500/15 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400/25 to-emerald-500/15 flex items-center justify-center">
               <span className="text-[15px] font-bold text-white/55">FO</span>
             </div>
           </div>
@@ -589,8 +589,8 @@ const AppPanel = memo(function AppPanel({
           {/* Sidebar */}
           <div className="w-[160px] shrink-0 border-r border-white/[0.06] bg-white/[0.03] py-3.5 px-2.5 flex flex-col overflow-hidden">
             <div className="flex items-center gap-2.5 px-2.5 mb-5">
-              <div className="w-7 h-7 rounded-md bg-gradient-to-br from-cyan-400/25 to-blue-500/15 flex items-center justify-center">
-                <span className="text-[15px] font-bold text-cyan-400/80">FO</span>
+              <div className="w-7 h-7 rounded-md bg-gradient-to-br from-teal-400/25 to-emerald-500/15 flex items-center justify-center">
+                <span className="text-[15px] font-bold text-teal-400/80">FO</span>
               </div>
               <div>
                 <div className="text-sm font-semibold text-white/55">FormaOS</div>
@@ -605,7 +605,7 @@ const AppPanel = memo(function AppPanel({
                   onClick={() => onViewChange(v.id)}
                   className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm text-left transition-colors duration-100 ${
                     activeView === v.id
-                      ? 'bg-cyan-400/[0.08] text-cyan-300 border border-cyan-400/12'
+                      ? 'bg-teal-400/[0.08] text-teal-300 border border-teal-400/12'
                       : 'text-white/30 hover:text-white/55 hover:bg-white/[0.03] border border-transparent'
                   }`}
                 >
@@ -616,7 +616,7 @@ const AppPanel = memo(function AppPanel({
             </div>
             <div className="mt-auto pt-3 border-t border-white/[0.06]">
               <div className="flex items-center gap-2 px-2.5 mt-1">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-400/25 to-blue-400/15 shrink-0" />
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-400/25 to-teal-400/15 shrink-0" />
                 <div className="min-w-0">
                   <div className="text-sm text-white/30 truncate">Nancy M.</div>
                 </div>
@@ -633,7 +633,7 @@ const AppPanel = memo(function AppPanel({
               </div>
               <div className="flex items-center gap-2.5">
                 <div className="px-3.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.07] text-[15px] text-white/30 cursor-pointer hover:bg-white/[0.05] transition-colors">Export</div>
-                <div className="px-3.5 py-1.5 rounded-lg bg-cyan-400/10 border border-cyan-400/20 text-[15px] text-cyan-300 cursor-pointer hover:bg-cyan-400/15 transition-colors">+ New</div>
+                <div className="px-3.5 py-1.5 rounded-lg bg-teal-400/10 border border-teal-400/20 text-[15px] text-teal-300 cursor-pointer hover:bg-teal-400/15 transition-colors">+ New</div>
               </div>
             </div>
 
@@ -704,8 +704,8 @@ function DesktopScene({
     <div className="relative w-full h-full">
       {/* Ambient glows */}
       <div aria-hidden className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[8%] left-[1%] w-[42%] h-[55%] rounded-full opacity-[0.14]" style={{ background: 'radial-gradient(ellipse at center, rgba(0,212,251,0.3), transparent 65%)', filter: 'blur(80px)' }} />
-        <div className="absolute top-[25%] right-[3%] w-[38%] h-[45%] rounded-full opacity-[0.10]" style={{ background: 'radial-gradient(ellipse at center, rgba(160,131,255,0.25), transparent 65%)', filter: 'blur(80px)' }} />
+        <div className="absolute top-[8%] left-[1%] w-[42%] h-[55%] rounded-full opacity-[0.14]" style={{ background: 'radial-gradient(ellipse at center, rgba(45,212,191,0.3), transparent 65%)', filter: 'blur(80px)' }} />
+        <div className="absolute top-[25%] right-[3%] w-[38%] h-[45%] rounded-full opacity-[0.10]" style={{ background: 'radial-gradient(ellipse at center, rgba(251,191,36,0.25), transparent 65%)', filter: 'blur(80px)' }} />
       </div>
 
       {/* Dot grid */}
@@ -760,7 +760,7 @@ function MobileLayout({ activeView, glowColor, onViewChange }: { activeView: Vie
             type="button"
             onClick={() => onViewChange(v.id)}
             className={`px-4 py-2.5 rounded-lg text-sm shrink-0 transition-all border ${
-              activeView === v.id ? 'bg-cyan-400/12 text-cyan-300 border-cyan-400/25' : 'bg-white/[0.03] text-white/40 border-white/[0.08] hover:text-white/60'
+              activeView === v.id ? 'bg-teal-400/12 text-teal-300 border-teal-400/25' : 'bg-white/[0.03] text-white/40 border-white/[0.08] hover:text-white/60'
             }`}
           >
             <span className="mr-1.5">{v.icon}</span>{v.label}
@@ -833,7 +833,7 @@ export function ProductShowcase() {
       role="presentation"
     >
       {/* Section top border line */}
-      <div aria-hidden className="absolute top-0 left-1/2 -translate-x-1/2 w-[50%] h-[1px]" style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(0,212,251,0.15) 50%, transparent 100%)' }} />
+      <div aria-hidden className="absolute top-0 left-1/2 -translate-x-1/2 w-[50%] h-[1px]" style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(45,212,191,0.15) 50%, transparent 100%)' }} />
 
       <div className="absolute top-6 left-1/2 z-20 w-[min(760px,90%)] -translate-x-1/2">
         <div className="mb-2 flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-white/45">
@@ -843,7 +843,7 @@ export function ProductShowcase() {
         </div>
         <div className="h-px w-full overflow-hidden rounded-full bg-white/15">
           <motion.div
-            className="h-full origin-left bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500"
+            className="h-full origin-left bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500"
             style={{ scaleX: progressScale }}
           />
         </div>
