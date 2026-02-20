@@ -111,14 +111,14 @@ export function TrustSection() {
                 className="relative group p-6 rounded-xl bg-[#080c18] border border-white/[0.06] text-center overflow-hidden"
               >
                 {/* Illumination glow on hover */}
-                <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/0 to-cyan-500/0 group-hover:from-cyan-500/[0.06] group-hover:to-transparent transition-all duration-500 rounded-xl" />
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/0 group-hover:via-cyan-400/30 to-transparent transition-all duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-b from-teal-500/0 to-teal-500/0 group-hover:from-teal-500/[0.06] group-hover:to-transparent transition-all duration-500 rounded-xl" />
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/0 group-hover:via-teal-400/30 to-transparent transition-all duration-500" />
 
                 <div className="relative">
                   <div className="text-3xl sm:text-4xl font-bold text-white mb-1 tabular-nums">
                     <AnimatedCounter value={stat.value} suffix={stat.suffix} />
                     {stat.unit && (
-                      <span className="text-lg text-cyan-400 ml-1 font-medium">{stat.unit}</span>
+                      <span className="text-lg text-teal-400 ml-1 font-medium">{stat.unit}</span>
                     )}
                   </div>
                   <div className="text-xs sm:text-sm text-gray-500">
@@ -135,7 +135,7 @@ export function TrustSection() {
           <div className="grid gap-3 md:grid-cols-3">
             <Link
               href="/security-review"
-              className="mk-btn mk-btn-primary group flex items-center justify-between rounded-2xl px-4 py-3 text-sm text-cyan-100"
+              className="mk-btn mk-btn-primary group flex items-center justify-between rounded-2xl px-4 py-3 text-sm text-teal-100"
             >
               <span className="inline-flex items-center gap-2 font-medium">
                 <FileLock2 className="h-4 w-4" />

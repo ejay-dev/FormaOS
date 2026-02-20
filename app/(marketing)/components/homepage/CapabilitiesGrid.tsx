@@ -28,14 +28,14 @@ const capabilities = [
     title: 'Automation Engine',
     description:
       'Automation triggers for evidence, tasks, policies, and certifications with auto-task generation and escalation notifications.',
-    color: 'from-cyan-400 to-blue-500',
+    color: 'from-teal-400 to-emerald-500',
   },
   {
     icon: Database,
     title: 'Evidence Versioning',
     description:
       'Evidence activity is logged with full audit trail context. Every upload, review, and approval is tracked for compliance readiness.',
-    color: 'from-blue-500 to-purple-500',
+    color: 'from-emerald-500 to-teal-600',
   },
   {
     icon: Lock,
@@ -84,14 +84,14 @@ const capabilities = [
     title: 'Multi-Site Operations',
     description:
       'Planned enterprise roadmap: multi-site hierarchies, business units, and cross-site rollups.',
-    color: 'from-green-500 to-cyan-500',
+    color: 'from-green-500 to-teal-500',
   },
   {
     icon: Shield,
     title: 'Compliance Gate Enforcement',
     description:
       'Block non-compliant actions before they happen. Real-time validation ensures controls are satisfied before proceeding.',
-    color: 'from-cyan-500 to-blue-500',
+    color: 'from-teal-500 to-emerald-500',
   },
   {
     icon: ScanSearch,
@@ -158,15 +158,15 @@ export function CapabilitiesGrid() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="scaleUp" range={[0, 0.3]} className="text-center mb-16">
           <div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium mb-6"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-sm font-medium mb-6"
           >
-            <span className="w-2 h-2 rounded-full bg-purple-400" />
+            <span className="w-2 h-2 rounded-full bg-teal-400" />
             Platform Capabilities
           </div>
 
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
             Complete Compliance
-            <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
               {' '}
               Operating System
             </span>
@@ -186,8 +186,8 @@ export function CapabilitiesGrid() {
                 {/* Category label */}
                 <ScrollReveal variant="fadeLeft" range={[catIdx * 0.06, 0.2 + catIdx * 0.06]}>
                   <div className="flex items-center gap-3 mb-5">
-                    <div className="h-px flex-1 max-w-[40px] bg-gradient-to-r from-purple-500/40 to-transparent" />
-                    <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-purple-400/60">
+                    <div className="h-px flex-1 max-w-[40px] bg-gradient-to-r from-teal-500/40 to-transparent" />
+                    <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-teal-400/60">
                       {category.label}
                     </span>
                     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
@@ -206,7 +206,7 @@ export function CapabilitiesGrid() {
                       >
                         <motion.div
                           whileHover={{ y: -4 }}
-                          className="group relative p-6 rounded-xl bg-gray-950/50 border-l-2 border-l-white/10 border border-white/[0.04] hover:border-l-cyan-500/50 transition-all cursor-pointer"
+                          className="group relative p-6 rounded-xl bg-gray-950/50 border-l-2 border-l-white/10 border border-white/[0.04] hover:border-l-teal-500/50 transition-all cursor-pointer"
                         >
                           <div
                             className={`absolute inset-0 rounded-xl bg-gradient-to-br ${capability.color} opacity-0 group-hover:opacity-5 transition-opacity`}
@@ -219,7 +219,7 @@ export function CapabilitiesGrid() {
                               <Icon className="w-5 h-5 text-white" />
                             </div>
                             <div>
-                              <h3 className="text-base font-semibold mb-1.5 group-hover:text-cyan-400 transition-colors">
+                              <h3 className="text-base font-semibold mb-1.5 group-hover:text-teal-400 transition-colors">
                                 {capability.title}
                               </h3>
                               <p className="text-sm text-gray-500 leading-relaxed">

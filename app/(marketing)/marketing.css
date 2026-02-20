@@ -6,12 +6,12 @@
 /* ── Design tokens ─────────────────────────────────────── */
 :root {
   --mk-rgb-bg: 10, 15, 28;
-  --mk-rgb-cyan: 6, 182, 212;
-  --mk-rgb-cyan-alt: 0, 180, 220;
-  --mk-rgb-blue: 56, 189, 248;
-  --mk-rgb-blue-alt: 77, 159, 255;
-  --mk-rgb-violet: 139, 92, 246;
-  --mk-rgb-violet-alt: 167, 139, 250;
+  --mk-rgb-cyan: 13, 148, 136;
+  --mk-rgb-cyan-alt: 20, 184, 166;
+  --mk-rgb-blue: 45, 212, 191;
+  --mk-rgb-blue-alt: 52, 211, 153;
+  --mk-rgb-violet: 245, 158, 11;
+  --mk-rgb-violet-alt: 251, 191, 36;
   --mk-rgb-emerald: 52, 211, 153;
   --mk-rgb-emerald-alt: 16, 185, 129;
   --mk-ink: 210, 20%, 96%;

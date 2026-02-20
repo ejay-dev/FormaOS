@@ -89,8 +89,8 @@ const industrySolutions: IndustrySolution[] = [
     icon: Users,
     title: 'NDIS Providers',
     subtitle: 'NDIS Practice Standards, Quality & Safeguards',
-    color: 'from-cyan-400 to-blue-600',
-    accentColor: 'cyan',
+    color: 'from-teal-400 to-teal-600',
+    accentColor: 'teal',
     problemStatement:
       'NDIS providers operate under intense scrutiny from the Quality and Safeguards Commission. Participant safety incidents, worker screening lapses, and missing evidence during audits can result in registration revocation and service shutdown.',
     solutionMapping: {
@@ -263,20 +263,20 @@ export function Industries() {
   return (
     <section className="mk-section relative overflow-hidden">
       {/* Industries section: clean with subtle accent line */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/10 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
         <ScrollReveal variant="blurIn" range={[0, 0.3]} className="text-center mb-16 lg:mb-20">
           <div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-medium mb-6"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-sm font-medium mb-6"
           >
-            <span className="w-2 h-2 rounded-full bg-cyan-400" />
+            <span className="w-2 h-2 rounded-full bg-teal-400" />
             Industry Solutions
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
             Built for{' '}
-            <span className="bg-gradient-to-r from-cyan-400 via-emerald-400 to-blue-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
               High-Accountability
             </span>
             <br />
@@ -305,8 +305,8 @@ export function Industries() {
                   onClick={() => toggleExpand(index)}
                   className={`w-full p-6 lg:p-8 rounded-2xl border text-left transition-all duration-300 ${
                     isExpanded
-                      ? 'bg-gradient-to-br from-gray-900/90 to-gray-950/90 border-cyan-500/40 shadow-lg shadow-cyan-500/10'
-                      : 'bg-gradient-to-br from-gray-900/60 to-gray-950/60 border-white/10 hover:border-cyan-500/30'
+                      ? 'bg-gradient-to-br from-gray-900/90 to-gray-950/90 border-teal-500/40 shadow-lg shadow-teal-500/10'
+                      : 'bg-gradient-to-br from-gray-900/60 to-gray-950/60 border-white/10 hover:border-teal-500/30'
                   }`}
                   style={{
                     backdropFilter: 'blur(20px)',
@@ -334,7 +334,7 @@ export function Industries() {
                     <motion.div
                       animate={{ rotate: isExpanded ? 180 : 0 }}
                       transition={{ duration: 0.3 }}
-                      className="text-cyan-400"
+                      className="text-teal-400"
                     >
                       <ChevronDown className="w-6 h-6" />
                     </motion.div>
@@ -399,7 +399,7 @@ export function Industries() {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.3 + i * 0.1 }}
-                                className="p-5 lg:p-6 rounded-xl bg-gray-800/40 border border-white/5 hover:border-cyan-500/20 transition-colors"
+                                className="p-5 lg:p-6 rounded-xl bg-gray-800/40 border border-white/5 hover:border-teal-500/20 transition-colors"
                               >
                                 <div
                                   className={`inline-flex p-2 rounded-lg bg-gradient-to-br ${solution.color} bg-opacity-20 mb-3`}
@@ -424,7 +424,7 @@ export function Industries() {
                           </p>
                           <Link
                             href={solution.cta.href}
-                            className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r ${solution.color} text-white font-semibold hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 hover:-translate-y-0.5`}
+                            className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r ${solution.color} text-white font-semibold hover:shadow-lg hover:shadow-teal-500/20 transition-all duration-300 hover:-translate-y-0.5`}
                           >
                             {solution.cta.text}
                             <ArrowRight className="w-4 h-4" />

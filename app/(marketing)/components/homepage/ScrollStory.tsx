@@ -16,7 +16,7 @@ const steps = [
     description:
       'Define your governance architecture. Map obligations to controls, controls to owners, and owners to evidence requirements. The OS knows who is accountable for what.',
     icon: Box,
-    color: 'from-cyan-400 to-blue-500',
+    color: 'from-teal-400 to-emerald-500',
     features: [
       'Governance hierarchy as code',
       'Framework-to-control mapping',
@@ -29,7 +29,7 @@ const steps = [
     description:
       'Controls become enforced workflows. Tasks are assigned, deadlines are tracked, escalations are automatic. The OS ensures execution, not just intention.',
     icon: Zap,
-    color: 'from-blue-500 to-purple-500',
+    color: 'from-emerald-500 to-teal-600',
     features: [
       'Automated control enforcement',
       'Deadline and escalation rules',
@@ -42,7 +42,7 @@ const steps = [
     description:
       'The OS continuously verifies control status. Gaps are flagged instantly. Compliance posture is always current, never a point-in-time snapshot.',
     icon: ShieldCheck,
-    color: 'from-purple-500 to-pink-500',
+    color: 'from-teal-600 to-emerald-600',
     features: [
       'Real-time control verification',
       'Continuous posture monitoring',
@@ -55,7 +55,7 @@ const steps = [
     description:
       'When auditors arrive, the evidence is already assembled. Chain of custody, timestamps, attestations. All exportable, all defensible, all undeniable.',
     icon: FileCheck,
-    color: 'from-pink-500 to-cyan-500',
+    color: 'from-amber-500 to-teal-500',
     features: [
       'Pre-assembled evidence packages',
       'Immutable audit trail',
@@ -113,7 +113,7 @@ function LifecycleCard({ step, index }: { step: (typeof steps)[0]; index: number
                     <Icon className="w-7 h-7 lg:w-8 lg:h-8 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-xl lg:text-2xl font-bold text-white group-hover:text-cyan-400 transition-colors duration-300">
+                    <h3 className="text-xl lg:text-2xl font-bold text-white group-hover:text-teal-400 transition-colors duration-300">
                       {step.title}
                     </h3>
                   </div>
@@ -158,19 +158,19 @@ export function ScrollStory() {
   return (
     <section className="mk-section relative overflow-hidden">
       {/* Subtle accent borders */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/10 to-transparent" />
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section header */}
         <ScrollReveal variant="blurIn" range={[0, 0.3]} className="text-center mb-16 lg:mb-20">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-medium mb-6">
-            <span className="w-2 h-2 rounded-full bg-cyan-400" />
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-sm font-medium mb-6">
+            <span className="w-2 h-2 rounded-full bg-teal-400" />
             How It Works
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
             The Compliance
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
               {' '}Lifecycle
             </span>
           </h2>
@@ -183,7 +183,7 @@ export function ScrollStory() {
         {/* Lifecycle steps — vertical flow */}
         <div className="relative">
           {/* Central timeline line (desktop) */}
-          <div className="hidden lg:block absolute left-1/2 -translate-x-px top-0 bottom-0 w-px bg-gradient-to-b from-cyan-400/20 via-purple-500/15 to-pink-500/20" />
+          <div className="hidden lg:block absolute left-1/2 -translate-x-px top-0 bottom-0 w-px bg-gradient-to-b from-teal-400/20 via-emerald-500/15 to-teal-600/20" />
 
           <div className="space-y-8 lg:space-y-12">
             {steps.map((step, i) => (

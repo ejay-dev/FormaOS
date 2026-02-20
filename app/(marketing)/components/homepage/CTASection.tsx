@@ -50,8 +50,8 @@ function ProofConvergenceCanvas({ isInView }: { isInView: boolean }) {
 
       // Radial depth layers
       const bg1 = ctx.createRadialGradient(400, 300, 0, 400, 300, 350);
-      bg1.addColorStop(0, 'rgba(6, 182, 212, 0.06)');
-      bg1.addColorStop(0.5, 'rgba(59, 130, 246, 0.03)');
+      bg1.addColorStop(0, 'rgba(20, 184, 166, 0.06)');
+      bg1.addColorStop(0.5, 'rgba(52, 211, 153, 0.03)');
       bg1.addColorStop(1, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = bg1;
       ctx.fillRect(0, 0, 800, 600);
@@ -62,8 +62,8 @@ function ProofConvergenceCanvas({ isInView }: { isInView: boolean }) {
       ctx.translate(400, 300);
       ctx.rotate(sweepAngle);
       const sweepGrad = ctx.createLinearGradient(0, 0, 300, 0);
-      sweepGrad.addColorStop(0, 'rgba(6, 182, 212, 0.12)');
-      sweepGrad.addColorStop(1, 'rgba(6, 182, 212, 0)');
+      sweepGrad.addColorStop(0, 'rgba(20, 184, 166, 0.12)');
+      sweepGrad.addColorStop(1, 'rgba(20, 184, 166, 0)');
       ctx.fillStyle = sweepGrad;
       ctx.beginPath();
       ctx.moveTo(0, 0);
@@ -104,8 +104,8 @@ function ProofConvergenceCanvas({ isInView }: { isInView: boolean }) {
           pg.addColorStop(0, `rgba(16, 185, 129, ${p.opacity})`);
           pg.addColorStop(1, 'rgba(16, 185, 129, 0)');
         } else {
-          pg.addColorStop(0, `rgba(6, 182, 212, ${p.opacity * 0.7})`);
-          pg.addColorStop(1, 'rgba(6, 182, 212, 0)');
+          pg.addColorStop(0, `rgba(20, 184, 166, ${p.opacity * 0.7})`);
+          pg.addColorStop(1, 'rgba(20, 184, 166, 0)');
         }
 
         ctx.fillStyle = pg;
@@ -141,9 +141,9 @@ function ProofConvergenceCanvas({ isInView }: { isInView: boolean }) {
       // Center shield icon
       const centerAlpha = Math.min(time / 2000, 1) * 0.5 + Math.sin(time * 0.003) * 0.1;
       const cg = ctx.createRadialGradient(400, 300, 0, 400, 300, 35);
-      cg.addColorStop(0, `rgba(6, 182, 212, ${centerAlpha})`);
-      cg.addColorStop(0.6, `rgba(59, 130, 246, ${centerAlpha * 0.5})`);
-      cg.addColorStop(1, 'rgba(6, 182, 212, 0)');
+      cg.addColorStop(0, `rgba(20, 184, 166, ${centerAlpha})`);
+      cg.addColorStop(0.6, `rgba(52, 211, 153, ${centerAlpha * 0.5})`);
+      cg.addColorStop(1, 'rgba(20, 184, 166, 0)');
       ctx.fillStyle = cg;
       ctx.beginPath();
       ctx.arc(400, 300, 30, 0, Math.PI * 2);
@@ -212,8 +212,8 @@ export function CTASection() {
       <div className="absolute inset-0 bg-gradient-to-b from-[#060a14] via-[#0a1628] to-[#060a14]" />
 
       {/* Cinematic gradient layers */}
-      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/[0.08] via-transparent to-purple-500/[0.06]" />
-      <div className="absolute inset-0 bg-gradient-to-tl from-blue-500/[0.06] via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-br from-teal-500/[0.08] via-transparent to-amber-500/[0.04]" />
+      <div className="absolute inset-0 bg-gradient-to-tl from-emerald-500/[0.04] via-transparent to-transparent" />
 
       {/* Edge vignette for full-bleed depth */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.4)_100%)]" />
@@ -232,9 +232,9 @@ export function CTASection() {
           style={shouldReduceMotion ? undefined : { scale }}
         >
           <ScrollReveal variant="scaleUp" range={[0, 0.25]}>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-8">
-              <Sparkles className="w-4 h-4 text-cyan-400" />
-              <span className="text-sm text-cyan-400 font-medium">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 mb-8">
+              <Sparkles className="w-4 h-4 text-teal-400" />
+              <span className="text-sm text-teal-400 font-medium">
                 Start Your Free Trial
               </span>
             </div>
@@ -243,11 +243,11 @@ export function CTASection() {
           <ScrollReveal variant="blurIn" range={[0, 0.3]}>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
               Install the{' '}
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
                 Operating System
               </span>
               <br />
-              <span className="bg-gradient-to-r from-green-400 via-cyan-500 to-blue-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-500 bg-clip-text text-transparent">
                 Your Compliance Deserves
               </span>
             </h2>
@@ -270,7 +270,7 @@ export function CTASection() {
                     : {
                         scale: 1.03,
                         boxShadow:
-                          '0 0 40px rgba(6, 182, 212, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.1)',
+                          '0 0 40px rgba(20, 184, 166, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.1)',
                       }
                 }
                 whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
@@ -287,7 +287,7 @@ export function CTASection() {
                     ? undefined
                     : {
                         scale: 1.03,
-                        boxShadow: '0 0 20px rgba(6, 182, 212, 0.3)',
+                        boxShadow: '0 0 20px rgba(20, 184, 166, 0.3)',
                       }
                 }
                 whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}

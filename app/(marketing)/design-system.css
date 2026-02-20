@@ -12,15 +12,15 @@
   --mk-ink: hsl(var(--foreground));
   --mk-muted: hsl(var(--muted-foreground));
 
-  --mk-cyan: #00d9ff;
-  --mk-blue: #4d9fff;
-  --mk-violet: #a78bfa;
+  --mk-cyan: #2dd4bf;
+  --mk-blue: #14b8a6;
+  --mk-violet: #f59e0b;
 
   --mk-gradient-brand: linear-gradient(
     135deg,
     var(--mk-cyan) 0%,
     var(--mk-blue) 48%,
-    var(--mk-violet) 100%
+    #34d399 100%
   );
   --mk-gradient-surface: linear-gradient(
     135deg,
@@ -44,8 +44,8 @@
   --mk-shadow-lg:
     0 24px 64px rgba(2, 6, 23, 0.42),
     0 8px 24px rgba(0, 0, 0, 0.28);
-  --mk-shadow-glow-cyan: 0 0 28px rgba(0, 217, 255, 0.22);
-  --mk-shadow-glow-violet: 0 0 28px rgba(167, 139, 250, 0.22);
+  --mk-shadow-glow-cyan: 0 0 28px rgba(45, 212, 191, 0.22);
+  --mk-shadow-glow-violet: 0 0 28px rgba(245, 158, 11, 0.22);
 
   --mk-focus: 0 0 0 3px rgba(56, 189, 248, 0.35);
   --mk-radius-pill: 999px;
@@ -331,24 +331,24 @@
 }
 
 /* Normalize frequently repeated inline CTA class patterns */
-.mk-shell a[class*='bg-gradient-to-r'][class*='from-cyan-500'][class*='to-blue-600'],
-.mk-shell button[class*='bg-gradient-to-r'][class*='from-cyan-500'][class*='to-blue-600'] {
+.mk-shell a[class*='bg-gradient-to-r'][class*='from-teal-500'][class*='to-emerald-600'],
+.mk-shell button[class*='bg-gradient-to-r'][class*='from-teal-500'][class*='to-emerald-600'] {
   border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow:
-    0 10px 30px rgba(0, 217, 255, 0.24),
-    0 0 14px rgba(77, 159, 255, 0.22);
+    0 10px 30px rgba(20, 184, 166, 0.24),
+    0 0 14px rgba(52, 211, 153, 0.22);
   transition:
     transform var(--mk-transition),
     box-shadow var(--mk-transition),
     border-color var(--mk-transition);
 }
 
-.mk-shell a[class*='bg-gradient-to-r'][class*='from-cyan-500'][class*='to-blue-600']:hover,
-.mk-shell button[class*='bg-gradient-to-r'][class*='from-cyan-500'][class*='to-blue-600']:hover {
+.mk-shell a[class*='bg-gradient-to-r'][class*='from-teal-500'][class*='to-emerald-600']:hover,
+.mk-shell button[class*='bg-gradient-to-r'][class*='from-teal-500'][class*='to-emerald-600']:hover {
   transform: translateY(-2px);
   box-shadow:
-    0 16px 40px rgba(0, 217, 255, 0.3),
-    0 0 20px rgba(77, 159, 255, 0.26);
+    0 16px 40px rgba(20, 184, 166, 0.3),
+    0 0 20px rgba(52, 211, 153, 0.26);
 }
 
 .mk-shell a[class*='border-white/20'][class*='bg-white/5'],

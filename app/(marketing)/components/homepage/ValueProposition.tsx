@@ -9,9 +9,9 @@ export function ValueProposition() {
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12 text-center">
         <ScrollReveal variant="blurIn" range={[0, 0.3]}>
           <div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-medium mb-6"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-sm font-medium mb-6"
           >
-            <span className="w-2 h-2 rounded-full bg-cyan-400" />
+            <span className="w-2 h-2 rounded-full bg-teal-400" />
             Operating System Architecture
           </div>
         </ScrollReveal>
@@ -66,13 +66,13 @@ export function ValueProposition() {
           <ScrollReveal variant="fadeRight" range={[0, 0.35]}>
             <motion.div
               whileHover={{ y: -4 }}
-              className="relative p-6 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all duration-500 group shadow-lg shadow-cyan-500/5"
+              className="relative p-6 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 backdrop-blur-xl border border-white/5 hover:border-teal-500/20 transition-all duration-500 group shadow-lg shadow-teal-500/5"
             >
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-500/0 to-teal-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-teal-400/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-              <h3 className="text-lg font-semibold text-cyan-400 mb-3 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-cyan-400" />
+              <h3 className="text-lg font-semibold text-teal-400 mb-3 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-teal-400" />
                 FormaOS runs your program.
               </h3>
               <p className="text-gray-500 mb-4">
@@ -81,15 +81,15 @@ export function ValueProposition() {
               </p>
               <ul className="text-xs text-gray-400 space-y-1">
                 <li className="flex items-center gap-2">
-                  <span className="w-1 h-1 rounded-full bg-cyan-400" />
+                  <span className="w-1 h-1 rounded-full bg-teal-400" />
                   Workflow orchestration built-in
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="w-1 h-1 rounded-full bg-cyan-400" />
+                  <span className="w-1 h-1 rounded-full bg-teal-400" />
                   Real-time compliance posture
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="w-1 h-1 rounded-full bg-cyan-400" />
+                  <span className="w-1 h-1 rounded-full bg-teal-400" />
                   Immutable audit trail
                 </li>
               </ul>

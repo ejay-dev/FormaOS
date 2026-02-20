@@ -48,11 +48,11 @@ function FloatingMetricCard({
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: duration.slower, delay }}
       whileHover={{ scale: 1.03 }}
-      className="relative p-5 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all shadow-2xl shadow-black/30"
+      className="relative p-5 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-teal-500/20 transition-all shadow-2xl shadow-black/30"
     >
       <div className="flex items-center gap-4">
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center">
-          <Icon className="w-6 h-6 text-cyan-400" />
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500/20 to-emerald-500/20 flex items-center justify-center">
+          <Icon className="w-6 h-6 text-teal-400" />
         </div>
         <div>
           <div className="text-2xl font-bold text-white">{value}</div>
@@ -141,7 +141,7 @@ export function HeroSection() {
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
           style={bgFarStyle}
-          className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-gradient-to-br from-cyan-500/15 via-blue-500/10 to-transparent rounded-full blur-3xl"
+          className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-gradient-to-br from-teal-500/15 via-emerald-500/10 to-transparent rounded-full blur-3xl"
           animate={
             shouldAnimateIntro
               ? {
@@ -158,7 +158,7 @@ export function HeroSection() {
         />
         <motion.div
           style={bgNearStyle}
-          className="absolute -bottom-40 -right-40 w-[700px] h-[700px] bg-gradient-to-tl from-purple-500/15 via-pink-500/10 to-transparent rounded-full blur-3xl"
+          className="absolute -bottom-40 -right-40 w-[700px] h-[700px] bg-gradient-to-tl from-amber-500/12 via-amber-500/6 to-transparent rounded-full blur-3xl"
           animate={
             shouldAnimateIntro
               ? {
@@ -178,7 +178,7 @@ export function HeroSection() {
               : undefined
           }
         />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-cyan-500/5 to-transparent rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-teal-500/5 to-transparent rounded-full" />
       </div>
 
       {/* Floating Metrics - Left Side (parallax drift) */}
@@ -230,10 +230,10 @@ export function HeroSection() {
               initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={shouldAnimateIntro ? { duration: duration.slow, delay: 0.2 } : { duration: 0 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 backdrop-blur-sm"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/30 mb-8 backdrop-blur-sm"
             >
-              <Sparkles className="w-4 h-4 text-cyan-400" />
-              <span className="text-sm text-cyan-400 font-medium tracking-wide">
+              <Sparkles className="w-4 h-4 text-teal-400" />
+              <span className="text-sm text-teal-400 font-medium tracking-wide">
                 Enterprise Compliance OS
               </span>
             </motion.div>
@@ -247,7 +247,7 @@ export function HeroSection() {
             >
               Operational Compliance,
               <br />
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
                 Built for Real Organizations
               </span>
             </motion.h1>
@@ -280,15 +280,15 @@ export function HeroSection() {
               </p>
               <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600">
                 <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
                   Workflow Orchestration
                 </span>
                 <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   Control Ownership
                 </span>
                 <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
-                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
                   Evidence Chains
                 </span>
               </div>

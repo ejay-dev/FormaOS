@@ -44,7 +44,7 @@ export function OutcomeProofSection() {
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.3]} className="mx-auto max-w-3xl text-center">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-cyan-200">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-teal-400/30 bg-teal-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-teal-200">
             <BarChart3 className="h-3.5 w-3.5" />
             Outcome Proof
           </div>
@@ -68,7 +68,7 @@ export function OutcomeProofSection() {
             >
               <article className="group relative rounded-2xl bg-[#080c18] border border-white/[0.06] p-6 overflow-hidden">
                 {/* Top illumination line */}
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent" />
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/20 to-transparent" />
 
                 <h3 className="text-sm font-semibold uppercase tracking-wider text-white/70 mb-5">
                   {scenario.title}
@@ -99,7 +99,7 @@ export function OutcomeProofSection() {
                     <div className="text-[10px] text-gray-600 uppercase tracking-wider">Before</div>
                   </div>
                   <div className="text-center px-3">
-                    <div className="text-xs font-bold text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 rounded-full px-2 py-0.5">
+                    <div className="text-xs font-bold text-teal-400 bg-teal-500/10 border border-teal-500/20 rounded-full px-2 py-0.5">
                       {scenario.metric.improvement}
                     </div>
                   </div>
@@ -110,7 +110,7 @@ export function OutcomeProofSection() {
                 </div>
 
                 {/* Impact badge */}
-                <div className="mt-4 inline-flex rounded-full border border-blue-400/20 bg-blue-500/[0.06] px-3 py-1 text-xs font-semibold text-blue-300">
+                <div className="mt-4 inline-flex rounded-full border border-amber-400/20 bg-amber-500/[0.06] px-3 py-1 text-xs font-semibold text-amber-300">
                   {scenario.impact}
                 </div>
               </article>
@@ -129,8 +129,8 @@ export function OutcomeProofSection() {
                 range={[idx * 0.04, 0.3 + idx * 0.04]}
               >
                 <div className="group relative rounded-xl bg-[#080c18] border border-white/[0.06] px-5 py-4 text-center overflow-hidden">
-                  <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/0 group-hover:via-cyan-400/20 to-transparent transition-all duration-500" />
-                  <Icon className="w-5 h-5 text-cyan-400/60 mx-auto mb-2" />
+                  <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/0 group-hover:via-teal-400/20 to-transparent transition-all duration-500" />
+                  <Icon className="w-5 h-5 text-teal-400/60 mx-auto mb-2" />
                   <p className="text-sm font-bold text-white">{stat.value}</p>
                   <p className="mt-1 text-xs text-slate-500">{stat.label}</p>
                 </div>

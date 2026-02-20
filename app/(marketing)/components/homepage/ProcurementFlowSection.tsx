@@ -20,7 +20,7 @@ const procurementFlow = [
     detail:
       'Bring security, compliance, procurement, and operations into one evaluation flow from day one.',
     icon: Building2,
-    color: 'from-cyan-400 to-blue-500',
+    color: 'from-teal-400 to-emerald-500',
   },
   {
     step: '02',
@@ -28,7 +28,7 @@ const procurementFlow = [
     detail:
       'Use the security packet and trust center artifacts while teams validate workspace fit in trial.',
     icon: ShieldCheck,
-    color: 'from-blue-500 to-indigo-500',
+    color: 'from-emerald-500 to-teal-600',
   },
   {
     step: '03',
@@ -36,7 +36,7 @@ const procurementFlow = [
     detail:
       'Present ownership trails, evidence chains, and readiness posture for approval without rework.',
     icon: FileCheck2,
-    color: 'from-indigo-500 to-purple-500',
+    color: 'from-teal-600 to-emerald-600',
   },
 ] as const;
 
@@ -99,7 +99,7 @@ function TimelineStep({
         <motion.div
           style={shouldReduceMotion ? undefined : { opacity: contentOpacity, y: contentY }}
         >
-          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-400/60 mb-2 block">
+          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-teal-400/60 mb-2 block">
             Step {item.step}
           </span>
 
@@ -160,7 +160,7 @@ export function ProcurementFlowSection() {
         {/* Artifact badges panel */}
         <ScrollReveal variant="fadeUp" range={[0.05, 0.35]} className="mt-12">
           <div className="rounded-2xl bg-[#080c18] border border-white/[0.06] p-5 overflow-hidden relative">
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/15 to-transparent" />
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/15 to-transparent" />
             <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">
               Buyer-Facing Artifacts
             </p>
@@ -168,7 +168,7 @@ export function ProcurementFlowSection() {
               {artifactBadges.map((badge) => (
                 <span
                   key={badge}
-                  className="rounded-full border border-cyan-400/20 bg-cyan-500/[0.06] px-3 py-1.5 text-xs text-cyan-200"
+                  className="rounded-full border border-teal-400/20 bg-teal-500/[0.06] px-3 py-1.5 text-xs text-teal-200"
                 >
                   {badge}
                 </span>

@@ -23,7 +23,7 @@ interface NetworkEdge {
 }
 
 const NODE_COLORS: Record<NetworkNode['type'], { fill: string; glow: string; label: string }> = {
-  framework: { fill: 'rgba(6, 182, 212, 0.9)', glow: 'rgba(6, 182, 212, 0.3)', label: 'rgba(6, 182, 212, 1)' },
+  framework: { fill: 'rgba(20, 184, 166, 0.9)', glow: 'rgba(20, 184, 166, 0.3)', label: 'rgba(20, 184, 166, 1)' },
   control: { fill: 'rgba(99, 102, 241, 0.85)', glow: 'rgba(99, 102, 241, 0.25)', label: 'rgba(139, 92, 246, 1)' },
   evidence: { fill: 'rgba(16, 185, 129, 0.85)', glow: 'rgba(16, 185, 129, 0.25)', label: 'rgba(52, 211, 153, 1)' },
   task: { fill: 'rgba(245, 158, 11, 0.85)', glow: 'rgba(245, 158, 11, 0.25)', label: 'rgba(251, 191, 36, 1)' },
@@ -39,7 +39,7 @@ const TYPE_ICONS: Record<NetworkNode['type'], string> = {
 function createNetworkData(width: number, height: number): { nodes: NetworkNode[]; edges: NetworkEdge[] } {
   const cx = width / 2;
   const cy = height / 2;
-  const spread = Math.min(width, height) * 0.38;
+  const spread = Math.min(width, height) * 0.35;
 
   // Framework nodes (center-top cluster)
   const frameworks = [
