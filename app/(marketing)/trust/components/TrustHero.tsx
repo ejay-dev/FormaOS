@@ -9,8 +9,10 @@ import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
 import { CursorTilt } from '@/components/motion/CursorTilt';
 import { brand } from '@/config/brand';
 import { easing, duration } from '@/config/motion';
+import { isCareLaunchMode } from '@/lib/vertical-launch';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
+const careLaunchMode = isCareLaunchMode();
 
 export function TrustHero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -52,21 +54,23 @@ export function TrustHero() {
         <Reveal variant="fadeInUp" delay={0}>
           <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-cyan-100">
             <ShieldCheck className="h-4 w-4" />
-            Trust-as-Revenue
+            {careLaunchMode ? 'Care Provider Trust' : 'Trust-as-Revenue'}
           </div>
         </Reveal>
 
         <Reveal variant="fadeInUp" delay={0.1}>
           <h1 className="mt-6 text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
-            Enterprise Trust Center for Faster Security Review Cycles
+            {careLaunchMode
+              ? 'Trust Center for Care Provider Data Protection'
+              : 'Enterprise Trust Center for Faster Security Review Cycles'}
           </h1>
         </Reveal>
 
         <Reveal variant="fadeInUp" delay={0.2}>
           <p className="mt-5 max-w-3xl text-base leading-relaxed text-slate-300 sm:text-lg">
-            FormaOS gives customers and auditors controlled visibility into live
-            compliance posture, evidence integrity, and security governance
-            artifacts.
+            {careLaunchMode
+              ? 'FormaOS gives auditors, participants, and regulators controlled visibility into your NDIS compliance posture, care evidence integrity, and security governance.'
+              : 'FormaOS gives customers and auditors controlled visibility into live compliance posture, evidence integrity, and security governance artifacts.'}
           </p>
         </Reveal>
 

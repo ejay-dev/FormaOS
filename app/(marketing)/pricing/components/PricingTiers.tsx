@@ -6,22 +6,29 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { brand } from '@/config/brand';
 import { easing, duration } from '@/config/motion';
+import { isCareLaunchMode } from '@/lib/vertical-launch';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
+const careLaunchMode = isCareLaunchMode();
 
 const pricingTiers = [
   {
     name: 'Starter',
     price: '$159',
     period: '/ month',
-    tagline: 'For small teams establishing structured compliance',
-    description:
-      'Best for organizations beginning to formalize workflows, evidence, and audit readiness.',
+    tagline: careLaunchMode
+      ? 'For small care teams establishing structured compliance'
+      : 'For small teams establishing structured compliance',
+    description: careLaunchMode
+      ? 'Best for care providers beginning to formalize workflows, evidence, and audit readiness.'
+      : 'Best for organizations beginning to formalize workflows, evidence, and audit readiness.',
     features: [
       'Core workflow modeling (Model → Execute → Verify → Prove)',
       'Task management & recurring compliance activities',
       'Evidence storage with audit trail history',
-      'Framework mapping for SOC 2, ISO 27001, and GDPR',
+      careLaunchMode
+        ? 'Framework mapping for NDIS Practice Standards, Aged Care Quality Standards & RACGP'
+        : 'Framework mapping for SOC 2, ISO 27001, and GDPR',
       'Document change tracking in audit logs',
       'Basic analytics & reporting',
       'Role-based access control (RBAC)',
@@ -44,9 +51,12 @@ const pricingTiers = [
     name: 'Professional',
     price: '$239',
     period: '/ month',
-    tagline: 'For growing organizations managing active regulatory obligations',
-    description:
-      'Designed for teams that must demonstrate compliance consistently and efficiently.',
+    tagline: careLaunchMode
+      ? 'For growing care providers managing active regulatory obligations'
+      : 'For growing organizations managing active regulatory obligations',
+    description: careLaunchMode
+      ? 'Designed for care teams that must demonstrate NDIS/Aged Care compliance consistently and efficiently.'
+      : 'Designed for teams that must demonstrate compliance consistently and efficiently.',
     starterPlus: true,
     features: [
       'Advanced analytics & compliance dashboards',
@@ -78,16 +88,20 @@ const pricingTiers = [
     name: 'Enterprise',
     price: 'Custom',
     period: '',
-    tagline:
-      'For regulated organizations requiring operational governance at scale',
-    description:
-      'Built for healthcare providers, NDIS operators, financial institutions, education bodies, and government agencies.',
+    tagline: careLaunchMode
+      ? 'For care organisations requiring operational governance at scale'
+      : 'For regulated organizations requiring operational governance at scale',
+    description: careLaunchMode
+      ? 'Built for NDIS providers, Aged Care facilities, Healthcare practices, and Child Care centres at scale.'
+      : 'Built for healthcare providers, NDIS operators, financial institutions, education bodies, and government agencies.',
     professionalPlus: true,
     features: [
       'Google OAuth and MFA included; enterprise SSO (SAML) on roadmap',
       'Executive dashboard with risk analytics',
       'Compliance score engine with trend insights',
-      'Cross-framework control mappings (SOC 2, NIST, CIS)',
+      careLaunchMode
+        ? 'Cross-framework control mappings (NDIS, Aged Care, RACGP)'
+        : 'Cross-framework control mappings (SOC 2, NIST, CIS)',
       'Compliance Gate Enforcement for audit-blocking controls',
       'Compliance score history tracking',
       'Compliance intelligence with scoring',

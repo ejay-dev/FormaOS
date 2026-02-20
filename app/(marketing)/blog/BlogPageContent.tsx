@@ -27,6 +27,9 @@ import {
   getCategoryCounts,
   getCategoryId,
 } from './blogData';
+import { isCareLaunchMode } from '@/lib/vertical-launch';
+
+const careLaunchMode = isCareLaunchMode();
 
 // ============================================================================
 // BLOG DATA
@@ -131,9 +134,9 @@ function BlogHero() {
               transition={{ duration: duration.slower, delay: 0.5 }}
               className="text-lg sm:text-xl text-gray-400 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
             >
-              Expert perspectives on compliance management, regulatory
-              technology, and building operational excellence in regulated
-              industries.
+              {careLaunchMode
+                ? 'Expert perspectives on NDIS compliance, aged care quality standards, and building operational excellence for care providers.'
+                : 'Expert perspectives on compliance management, regulatory technology, and building operational excellence in regulated industries.'}
             </motion.p>
 
             {/* Stats Row */}
@@ -491,8 +494,9 @@ function NewsletterCTA() {
               Subscribe to Our Newsletter
             </h2>
             <p className="text-gray-400 mb-8 max-w-xl mx-auto">
-              Get the latest insights on compliance management, regulatory
-              updates, and product news delivered to your inbox.
+              {careLaunchMode
+                ? 'Get the latest insights on NDIS compliance, care provider regulations, and product updates delivered to your inbox.'
+                : 'Get the latest insights on compliance management, regulatory updates, and product news delivered to your inbox.'}
             </p>
 
             <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
