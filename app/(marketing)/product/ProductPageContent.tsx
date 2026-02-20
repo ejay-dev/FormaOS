@@ -12,7 +12,7 @@ const ProductHero = dynamic(
 );
 const ProductShowcase = dynamic(
   () => import('@/components/marketing/ProductHeroShowcase').then((m) => m.ProductShowcase),
-  { ssr: false, loading: () => <div className="w-full" style={{ height: '88vh', minHeight: '680px' }} /> },
+  { ssr: false, loading: () => <div className="w-full" style={{ minHeight: '600px' }} /> },
 );
 
 const OperationalScenarioProof = dynamic(
