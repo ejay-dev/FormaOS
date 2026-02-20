@@ -7,7 +7,7 @@
  * HOW TO TOGGLE IN PRODUCTION (Vercel):
  *   NEXT_PUBLIC_VERTICAL_LAUNCH=care            → enable care-provider mode
  *   NEXT_PUBLIC_VERTICAL_LAUNCH=                → revert to generic mode
- *   NEXT_PUBLIC_VERTICAL_ALLOWED_INDUSTRIES=["ndis","aged-care","healthcare","child-care"]
+ *   NEXT_PUBLIC_VERTICAL_ALLOWED_INDUSTRIES=["ndis","healthcare","aged_care","childcare"]
  *   NEXT_PUBLIC_VERTICAL_HIDE_ENTERPRISE=1      → suppress enterprise marketing surfaces
  *
  * All changes are REVERSIBLE. Removing / clearing these env vars restores
@@ -19,17 +19,18 @@ const VERTICAL = process.env.NEXT_PUBLIC_VERTICAL_LAUNCH ?? '';
 
 /**
  * JSON-encoded list of industry slugs that are visible in care-launch mode.
+ * Uses the canonical DB format (underscore) matching INDUSTRY_OPTIONS in validators/organization.ts.
  * Falls back to a sensible default so the app works even without the var set.
  */
 const ALLOWED_INDUSTRIES_RAW =
   process.env.NEXT_PUBLIC_VERTICAL_ALLOWED_INDUSTRIES ??
-  '["ndis","aged-care","healthcare","child-care","aged_care","childcare"]';
+  '["ndis","healthcare","aged_care","childcare"]';
 
 let _allowedIndustries: string[] = [];
 try {
   _allowedIndustries = JSON.parse(ALLOWED_INDUSTRIES_RAW);
 } catch {
-  _allowedIndustries = ['ndis', 'aged-care', 'healthcare', 'child-care', 'aged_care', 'childcare'];
+  _allowedIndustries = ['ndis', 'healthcare', 'aged_care', 'childcare'];
 }
 
 /** Hide enterprise-centric marketing copy / surfaces in care-launch mode. */
@@ -76,7 +77,10 @@ export function shouldShowGenericComplianceLanguage(): boolean {
 /** Convenience: the list of allowed industry slugs. */
 export const ALLOWED_INDUSTRIES: readonly string[] = _allowedIndustries;
 
-/** Care-specific industry slugs in canonical DB format. */
+/**
+ * Care-specific industry slugs in canonical DB format (matches INDUSTRY_OPTIONS
+ * in lib/validators/organization.ts).
+ */
 export const CARE_INDUSTRY_IDS: readonly string[] = [
   'ndis',
   'healthcare',

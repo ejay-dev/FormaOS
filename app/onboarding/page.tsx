@@ -898,7 +898,7 @@ export default async function OnboardingPage({
                 <div className="flex items-start gap-3 rounded-xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
                   <Info className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-400" />
                   <span>
-                    This organisation is currently set to an industry that is not in our launch focus. Your existing access and data remain intact. To switch to a supported care provider vertical, select one below.
+                    This organization is currently set to an industry that is not in our launch focus. Your existing access and data remain intact. To switch to a supported care provider vertical, select one below.
                   </span>
                 </div>
               )}
