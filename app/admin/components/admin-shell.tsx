@@ -21,6 +21,7 @@ import {
   Settings,
   Tag,
   ShieldAlert,
+  SlidersHorizontal,
 } from 'lucide-react';
 import { useState } from 'react';
 import { createSupabaseClient } from '@/lib/supabase/client';
@@ -51,6 +52,7 @@ const NAV_SECTIONS = [
   {
     label: 'Platform',
     items: [
+      { name: 'Command Center', href: '/admin/control-plane', icon: SlidersHorizontal },
       { name: 'Features', href: '/admin/features', icon: Zap },
       { name: 'Security', href: '/admin/security', icon: Shield },
       { name: 'Risk Triage', href: '/admin/security/triage', icon: ShieldAlert },

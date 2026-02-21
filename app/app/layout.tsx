@@ -20,6 +20,9 @@ import { ProductTourProvider } from '@/lib/onboarding/product-tour';
 import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
 import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
 import { SecurityTrackingBootstrap } from '@/components/security/SecurityTrackingBootstrap';
+import { ControlPlaneRuntimeProvider } from '@/lib/control-plane/runtime-client';
+import { RuntimeOpsGuard } from '@/components/control-plane/runtime-ops-guard';
+import { RuntimeDebugIndicator } from '@/components/control-plane/runtime-debug-indicator';
 
 // Force dynamic rendering for all /app/* routes
 // Required because this layout uses cookies() via Supabase auth
@@ -116,29 +119,30 @@ export default async function AppLayout({
    *    - AppShellErrorBoundary: catches render errors in the shell
    * ----------------------------------------------------- */
   return (
-    <AppHydrator
-      initialState={{
-        user: systemState.user,
-        organization: systemState.organization,
-        role: systemState.role,
-        isFounder: systemState.isFounder,
-        entitlements: systemState.entitlements,
-      }}
-    >
-      <ProductTourProvider>
-        <SystemStateProvider
-          initialState={{
-            user: systemState.user,
-            organization: systemState.organization,
-            entitlements: systemState.entitlements,
-            isFounder: systemState.isFounder,
-          }}
-        >
-          <CommandProvider>
-            <ComplianceSystemProvider>
-              <HelpAssistantProvider>
-                <AppShellErrorBoundary>
-                  <div className="relative flex min-h-screen w-full overflow-hidden bg-background text-foreground">
+    <ControlPlaneRuntimeProvider>
+      <AppHydrator
+        initialState={{
+          user: systemState.user,
+          organization: systemState.organization,
+          role: systemState.role,
+          isFounder: systemState.isFounder,
+          entitlements: systemState.entitlements,
+        }}
+      >
+        <ProductTourProvider>
+          <SystemStateProvider
+            initialState={{
+              user: systemState.user,
+              organization: systemState.organization,
+              entitlements: systemState.entitlements,
+              isFounder: systemState.isFounder,
+            }}
+          >
+            <CommandProvider>
+              <ComplianceSystemProvider>
+                <HelpAssistantProvider>
+                  <AppShellErrorBoundary>
+                    <div className="relative flex min-h-screen w-full overflow-hidden bg-background text-foreground">
                     {/* Ambient background effects */}
                     <div className="pointer-events-none absolute inset-x-0 -top-32 h-64 bg-gradient-glow blur-3xl opacity-40" />
 
@@ -193,6 +197,7 @@ export default async function AppLayout({
                           </div>
                         </header>
 
+                        <RuntimeOpsGuard surface="app" />
                         <EnterpriseTrustStrip surface="app" />
 
                         {/* Trial Countdown Banner (conversion system) */}
@@ -218,13 +223,15 @@ export default async function AppLayout({
                     {/* In-app help */}
                     <HelpAssistant />
                     <SecurityTrackingBootstrap />
+                    <RuntimeDebugIndicator />
                   </div>
                 </AppShellErrorBoundary>
-              </HelpAssistantProvider>
-            </ComplianceSystemProvider>
-          </CommandProvider>
-        </SystemStateProvider>
-      </ProductTourProvider>
-    </AppHydrator>
+                </HelpAssistantProvider>
+              </ComplianceSystemProvider>
+            </CommandProvider>
+          </SystemStateProvider>
+        </ProductTourProvider>
+      </AppHydrator>
+    </ControlPlaneRuntimeProvider>
   );
 }

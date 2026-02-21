@@ -4,6 +4,8 @@ import dynamic from 'next/dynamic';
 import { MotionProvider } from './motion/MotionContext';
 import { DeferredSection } from './shared';
 import { HeroSection, ValueProposition } from './homepage';
+import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
+import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 
 // Lazy-load heavy rendering components
 const ScrollStory = dynamic(() => import('./homepage/ScrollStory').then((m) => m.ScrollStory), {
@@ -66,55 +68,98 @@ const TaskShowcase = dynamic(
 );
 
 export default function FormaOSHomepage() {
+  const { snapshot } = useControlPlaneRuntime();
+  const runtime = snapshot?.marketing.runtime ?? DEFAULT_RUNTIME_MARKETING.runtime;
+  const sectionVisibility = runtime.sectionVisibility;
+  const showcaseModules = runtime.showcaseModules;
+  const enabledShowcases = Object.entries(showcaseModules)
+    .filter(([, enabled]) => enabled)
+    .map(([key]) => key);
+  const activeShowcase =
+    enabledShowcases.includes(runtime.activeShowcaseModule)
+      ? runtime.activeShowcaseModule
+      : (enabledShowcases[0] ?? null);
+
   return (
     <MotionProvider>
       <div className="figma-homepage mk-page-bg relative min-h-screen overflow-x-hidden">
         {/* Page Sections */}
         <div className="mk-marketing-flow relative z-10">
           <HeroSection />
-          <ValueProposition />
-          <DeferredSection minHeight={620}>
-            <ComplianceNetworkSection />
-          </DeferredSection>
-          <DeferredSection minHeight={720}>
-            <InteractiveDemo />
-          </DeferredSection>
-          <DeferredSection minHeight={720}>
-            <ScrollStory />
-          </DeferredSection>
-          <DeferredSection minHeight={720}>
-            <ComplianceEngineDemo />
-          </DeferredSection>
-          <DeferredSection minHeight={640}>
-            <CapabilitiesGrid />
-          </DeferredSection>
-          <DeferredSection minHeight={640}>
-            <EvidenceShowcase />
-          </DeferredSection>
-          <DeferredSection minHeight={620}>
-            <Industries />
-          </DeferredSection>
-          <DeferredSection minHeight={640}>
-            <TaskShowcase />
-          </DeferredSection>
-          <DeferredSection minHeight={660}>
-            <SecuritySection />
-          </DeferredSection>
-          <DeferredSection minHeight={620}>
-            <OutcomeProofSection />
-          </DeferredSection>
-          <DeferredSection minHeight={620}>
-            <ObjectionHandlingSection />
-          </DeferredSection>
-          <DeferredSection minHeight={620}>
-            <ProcurementFlowSection />
-          </DeferredSection>
-          <DeferredSection minHeight={540}>
-            <CTASection />
-          </DeferredSection>
-          <DeferredSection minHeight={560}>
-            <TrustSection />
-          </DeferredSection>
+          {sectionVisibility.value_proposition !== false ? <ValueProposition /> : null}
+          {sectionVisibility.compliance_network !== false ? (
+            <DeferredSection minHeight={620}>
+              <ComplianceNetworkSection />
+            </DeferredSection>
+          ) : null}
+          {activeShowcase === 'interactive_demo' &&
+          sectionVisibility.interactive_demo !== false ? (
+            <DeferredSection minHeight={720}>
+              <InteractiveDemo />
+            </DeferredSection>
+          ) : null}
+          {sectionVisibility.scroll_story !== false ? (
+            <DeferredSection minHeight={720}>
+              <ScrollStory />
+            </DeferredSection>
+          ) : null}
+          {sectionVisibility.compliance_engine_demo !== false ? (
+            <DeferredSection minHeight={720}>
+              <ComplianceEngineDemo />
+            </DeferredSection>
+          ) : null}
+          {sectionVisibility.capabilities_grid !== false ? (
+            <DeferredSection minHeight={640}>
+              <CapabilitiesGrid />
+            </DeferredSection>
+          ) : null}
+          {activeShowcase === 'evidence_showcase' &&
+          sectionVisibility.evidence_showcase !== false ? (
+            <DeferredSection minHeight={640}>
+              <EvidenceShowcase />
+            </DeferredSection>
+          ) : null}
+          {sectionVisibility.industries !== false ? (
+            <DeferredSection minHeight={620}>
+              <Industries />
+            </DeferredSection>
+          ) : null}
+          {activeShowcase === 'task_showcase' &&
+          sectionVisibility.task_showcase !== false ? (
+            <DeferredSection minHeight={640}>
+              <TaskShowcase />
+            </DeferredSection>
+          ) : null}
+          {sectionVisibility.security !== false ? (
+            <DeferredSection minHeight={660}>
+              <SecuritySection />
+            </DeferredSection>
+          ) : null}
+          {sectionVisibility.outcome_proof !== false ? (
+            <DeferredSection minHeight={620}>
+              <OutcomeProofSection />
+            </DeferredSection>
+          ) : null}
+          {sectionVisibility.objection_handling !== false ? (
+            <DeferredSection minHeight={620}>
+              <ObjectionHandlingSection />
+            </DeferredSection>
+          ) : null}
+          {sectionVisibility.procurement_flow !== false ? (
+            <DeferredSection minHeight={620}>
+              <ProcurementFlowSection />
+            </DeferredSection>
+          ) : null}
+          {sectionVisibility.cta !== false ? (
+            <DeferredSection minHeight={540}>
+              <CTASection />
+            </DeferredSection>
+          ) : null}
+          {sectionVisibility.trust !== false ? (
+            <DeferredSection minHeight={560}>
+              <TrustSection />
+            </DeferredSection>
+          ) : null}
         </div>
       </div>
     </MotionProvider>

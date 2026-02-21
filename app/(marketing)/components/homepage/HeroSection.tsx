@@ -24,6 +24,8 @@ import {
 import { brand } from '@/config/brand';
 import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 import { HeroScrollRetentionController } from '@/components/motion/HeroScrollRetentionController';
+import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
+import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -80,6 +82,10 @@ export function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
   const [allowHeavyVisuals, setAllowHeavyVisuals] = useState(false);
+  const { snapshot } = useControlPlaneRuntime();
+  const runtimeMarketing = snapshot?.marketing ?? DEFAULT_RUNTIME_MARKETING;
+  const expensiveEffectsEnabled = runtimeMarketing.runtime.expensiveEffectsEnabled;
+  const heroCopy = runtimeMarketing.hero;
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end -20%'],
@@ -102,10 +108,20 @@ export function HeroSection() {
   const heroMetricStyle = shouldReduceMotion ? undefined : { y: metricY };
   const bgFarStyle = shouldReduceMotion ? undefined : { y: bgFarY };
   const bgNearStyle = shouldReduceMotion ? undefined : { y: bgNearY };
-  const shouldAnimateIntro = !shouldReduceMotion && allowHeavyVisuals;
+  const shouldAnimateIntro =
+    !shouldReduceMotion && allowHeavyVisuals && expensiveEffectsEnabled;
+  const primaryCtaHref = heroCopy.primaryCtaHref.startsWith('/auth')
+    ? `${appBase}${heroCopy.primaryCtaHref}`
+    : heroCopy.primaryCtaHref;
+  const secondaryCtaHref = heroCopy.secondaryCtaHref.startsWith('/auth')
+    ? `${appBase}${heroCopy.secondaryCtaHref}`
+    : heroCopy.secondaryCtaHref;
   const handleRequestDemoClick = (
     event: React.MouseEvent<HTMLAnchorElement>,
   ) => {
+    if (secondaryCtaHref !== '/contact') {
+      return;
+    }
     if (
       event.defaultPrevented ||
       event.button !== 0 ||
@@ -135,7 +151,7 @@ export function HeroSection() {
       style={{ minHeight: 'clamp(104svh, 116vh, 1300px)' }}
     >
       {/* Cinematic ambient particles */}
-      <AmbientParticleLayer intensity="subtle" />
+      {expensiveEffectsEnabled ? <AmbientParticleLayer intensity="subtle" /> : null}
 
       {/* Premium Background Effects - Cinematic Gradient Layers */}
       <div className="absolute inset-0 overflow-hidden">
@@ -234,7 +250,7 @@ export function HeroSection() {
             >
               <Sparkles className="w-4 h-4 text-teal-400" />
               <span className="text-sm text-teal-400 font-medium tracking-wide">
-                Enterprise Compliance OS
+                {heroCopy.badgeText}
               </span>
             </motion.div>
 
@@ -245,10 +261,10 @@ export function HeroSection() {
               transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.3 } : { duration: 0 }}
               className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
             >
-              Operational Compliance,
+              {heroCopy.headlinePrimary}
               <br />
               <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
-                Built for Real Organizations
+                {heroCopy.headlineAccent}
               </span>
             </motion.h1>
 
@@ -259,9 +275,7 @@ export function HeroSection() {
               transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.5 } : { duration: 0 }}
               className="text-lg sm:text-xl text-gray-400 mb-4 max-w-2xl mx-auto text-center leading-relaxed"
             >
-              The operating system for governance, controls, evidence, and audit
-              defense. Not a document repository. A system that enforces
-              accountability.
+              {heroCopy.subheadline}
             </motion.p>
 
             {/* OS Authority Statement */}
@@ -303,7 +317,7 @@ export function HeroSection() {
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
             >
               <motion.a
-                href={`${appBase}/auth/signup?plan=pro`}
+                href={primaryCtaHref}
                 whileHover={
                   shouldAnimateIntro
                     ? {
@@ -315,17 +329,17 @@ export function HeroSection() {
                 whileTap={shouldAnimateIntro ? { scale: 0.98 } : undefined}
                 className="mk-btn mk-btn-primary group px-8 py-4 text-lg"
               >
-                <span>Start Free Trial</span>
+                <span>{heroCopy.primaryCtaLabel}</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </motion.a>
 
               <Link
-                href="/contact"
+                href={secondaryCtaHref}
                 onClick={handleRequestDemoClick}
                 className="mk-btn mk-btn-secondary group relative z-30 pointer-events-auto px-8 py-4 text-lg"
               >
                 <Play className="w-5 h-5" />
-                <span>Request Demo</span>
+                <span>{heroCopy.secondaryCtaLabel}</span>
               </Link>
             </motion.div>
           </motion.div>

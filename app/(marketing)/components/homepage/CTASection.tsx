@@ -7,6 +7,8 @@ import { useRef, useEffect, useState } from 'react';
 import { ArrowRight, Sparkles, CheckCircle } from 'lucide-react';
 import { brand } from '@/config/brand';
 import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
+import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
+import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -177,6 +179,9 @@ export function CTASection() {
   const shouldReduceMotion = useReducedMotion();
   const [isInView, setIsInView] = useState(false);
   const [allowHeavyEffects, setAllowHeavyEffects] = useState(false);
+  const { snapshot } = useControlPlaneRuntime();
+  const runtime = snapshot?.marketing.runtime ?? DEFAULT_RUNTIME_MARKETING.runtime;
+  const expensiveEffectsEnabled = runtime.expensiveEffectsEnabled;
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start end', 'end start'],
@@ -196,11 +201,12 @@ export function CTASection() {
   }, []);
 
   useEffect(() => {
-    const update = () => setAllowHeavyEffects(window.innerWidth >= 1024);
+    const update = () =>
+      setAllowHeavyEffects(window.innerWidth >= 1024 && expensiveEffectsEnabled);
     update();
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
-  }, []);
+  }, [expensiveEffectsEnabled]);
 
   return (
     <section
@@ -218,7 +224,7 @@ export function CTASection() {
       {/* Edge vignette for full-bleed depth */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.4)_100%)]" />
 
-      <AmbientParticleLayer intensity="strong" />
+      {expensiveEffectsEnabled ? <AmbientParticleLayer intensity="strong" /> : null}
 
       {/* Canvas proof visualization */}
       {allowHeavyEffects && isInView && (

@@ -2,6 +2,8 @@
 
 import { memo, useEffect, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
+import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
+import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 
 /**
  * MarketingBackgroundLayer
@@ -14,6 +16,9 @@ function MarketingBackgroundLayerInner() {
   const shouldReduceMotion = useReducedMotion();
   const [isMobile, setIsMobile] = useState(false);
   const [enhancedReady, setEnhancedReady] = useState(false);
+  const { snapshot } = useControlPlaneRuntime();
+  const runtime = snapshot?.marketing.runtime ?? DEFAULT_RUNTIME_MARKETING.runtime;
+  const expensiveEffectsEnabled = runtime.expensiveEffectsEnabled;
 
   useEffect(() => {
     const updateMobile = () => setIsMobile(window.innerWidth < 768);
@@ -23,7 +28,7 @@ function MarketingBackgroundLayerInner() {
   }, []);
 
   useEffect(() => {
-    if (shouldReduceMotion) return;
+    if (shouldReduceMotion || !expensiveEffectsEnabled) return;
 
     let rafId = 0;
 
@@ -46,10 +51,10 @@ function MarketingBackgroundLayerInner() {
       if (rafId) window.cancelAnimationFrame(rafId);
       document.documentElement.style.removeProperty('--mk-scroll-depth');
     };
-  }, [shouldReduceMotion]);
+  }, [shouldReduceMotion, expensiveEffectsEnabled]);
 
   useEffect(() => {
-    if (isMobile || shouldReduceMotion) return;
+    if (isMobile || shouldReduceMotion || !expensiveEffectsEnabled) return;
 
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
     let idleId: number | null = null;
@@ -69,18 +74,27 @@ function MarketingBackgroundLayerInner() {
         (window as Window & { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(idleId);
       }
     };
-  }, [isMobile, shouldReduceMotion]);
+  }, [isMobile, shouldReduceMotion, expensiveEffectsEnabled]);
+
+  const bloomGradient =
+    runtime.backgroundVariant === 'sunrise'
+      ? 'radial-gradient(ellipse 70% 50% at 50% 35%, rgba(251,146,60,0.08) 0%, transparent 70%)'
+      : runtime.backgroundVariant === 'matrix'
+        ? 'radial-gradient(ellipse 70% 50% at 50% 35%, rgba(34,197,94,0.08) 0%, transparent 70%)'
+        : 'radial-gradient(ellipse 70% 50% at 50% 35%, rgba(6,182,212,0.06) 0%, transparent 70%)';
 
   return (
     <div
       aria-hidden
+      data-theme-variant={runtime.themeVariant}
+      data-background-variant={runtime.backgroundVariant}
       className="mk-bg-layer pointer-events-none fixed inset-0 z-0"
     >
       {/* Vertical depth gradient */}
       <div className="mk-bg-depth mk-bg-depth--far absolute inset-0 bg-gradient-to-b from-transparent via-[#0d1421]/30 to-transparent" />
 
       {/* Dot-grid pattern (product-page consistency) */}
-      {enhancedReady && !isMobile && (
+      {enhancedReady && !isMobile && expensiveEffectsEnabled && (
         <div
           className="mk-bg-depth mk-bg-depth--near absolute inset-0 opacity-[0.07]"
           style={{
@@ -96,14 +110,15 @@ function MarketingBackgroundLayerInner() {
         <div
           className="mk-bg-depth mk-bg-depth--mid absolute inset-0"
           style={{
-            background:
-              'radial-gradient(ellipse 70% 50% at 50% 35%, rgba(6,182,212,0.06) 0%, transparent 70%)',
+            background: bloomGradient,
           }}
         />
       )}
 
       {/* Film grain (CSS noise) */}
-      {!shouldReduceMotion && !isMobile && enhancedReady && <div className="mk-grain absolute inset-0" />}
+      {!shouldReduceMotion && !isMobile && enhancedReady && expensiveEffectsEnabled && (
+        <div className="mk-grain absolute inset-0" />
+      )}
 
       {/* Vignette — edge darkening */}
       <div
