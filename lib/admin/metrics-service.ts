@@ -3,17 +3,23 @@ import 'server-only';
 import { unstable_cache } from 'next/cache';
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { getStripeMetrics } from '@/lib/admin/stripe-metrics';
 
 export type AdminOverviewMetrics = {
   totalOrgs: number;
   activeByPlan: Record<string, number>;
   trialsActive: number;
   trialsExpiring: number;
-  mrrCents: number;
+  mrrCents: number; // From Stripe (live source of truth)
+  stripeMrrCents: number; // Explicit Stripe MRR
+  dbMrrCents: number; // DB-computed for comparison only
+  stripeMode: 'live' | 'test' | 'unknown';
+  stripeActiveCount: number;
   failedPayments: number;
   orgsByDay: Array<{ date: string; count: number }>;
   planPrices: Record<string, number>;
   excludedSyntheticOrgs: number;
+  lastSyncAt: string;
 };
 
 function isSyntheticOrgName(name: string | null | undefined): boolean {
@@ -29,6 +35,9 @@ function isSyntheticOrgName(name: string | null | undefined): boolean {
 
 async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
   const admin = createSupabaseAdminClient();
+  
+  // Fetch live Stripe metrics (source of truth for MRR)
+  const stripeMetrics = await getStripeMetrics();
 
   const [orgsResult, subsResult, plansResult] = await Promise.all([
     admin.from('organizations').select('id, name, created_at'),
@@ -71,7 +80,7 @@ async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
   let trialsActive = 0;
   let trialsExpiring = 0;
   let failedPayments = 0;
-  let mrrCents = 0;
+  let dbMrrCents = 0; // DB-computed for comparison only
 
   for (const subscription of subscriptions) {
     const status = (subscription.status ?? '').toLowerCase();
@@ -91,7 +100,7 @@ async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
     if (status === 'active') {
       const planKey = subscription.plan_key ?? 'unknown';
       activeByPlan[planKey] = (activeByPlan[planKey] ?? 0) + 1;
-      mrrCents += planPriceMap.get(planKey) ?? 0;
+      dbMrrCents += planPriceMap.get(planKey) ?? 0;
     }
 
     const hasFailedState = ['past_due', 'unpaid', 'incomplete', 'incomplete_expired', 'payment_failed'].includes(status);
@@ -125,18 +134,23 @@ async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
     activeByPlan,
     trialsActive,
     trialsExpiring,
-    mrrCents,
+    mrrCents: stripeMetrics.live_mrr_cents, // Use Stripe as source of truth
+    stripeMrrCents: stripeMetrics.live_mrr_cents,
+    dbMrrCents, // Keep for comparison/debugging
+    stripeMode: stripeMetrics.stripe_mode,
+    stripeActiveCount: stripeMetrics.active_subscription_count,
     failedPayments,
     orgsByDay,
     planPrices: Object.fromEntries(planPriceMap),
     excludedSyntheticOrgs,
+    lastSyncAt: stripeMetrics.computed_at,
   };
 }
 
 const getCachedOverviewMetrics = unstable_cache(
   fetchOverviewMetricsFromDb,
-  ['admin-overview-metrics-v2'],
-  { revalidate: 60 },
+  ['admin-overview-metrics-v3-stripe'],
+  { revalidate: 10 }, // Reduced from 60s to 10s for fresher Stripe data
 );
 
 export async function getAdminOverviewMetrics(): Promise<AdminOverviewMetrics> {

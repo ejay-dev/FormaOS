@@ -1,5 +1,5 @@
 import { getAdminFetchConfig } from '@/app/admin/lib';
-import { DollarSign, Zap } from 'lucide-react';
+import { DollarSign, Zap, RefreshCw, Activity } from 'lucide-react';
 
 async function fetchOverview() {
   const { base, headers } = await getAdminFetchConfig();
@@ -9,6 +9,33 @@ async function fetchOverview() {
   });
   if (!res.ok) return null;
   return res.json();
+}
+
+function StripeModeBadge({ mode }: { mode: 'live' | 'test' | 'unknown' }) {
+  if (mode === 'live') {
+    return (
+      <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-4 py-2 border border-emerald-500/30">
+        <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+        <span className="text-sm font-semibold text-emerald-400">🟢 Live Mode</span>
+      </div>
+    );
+  }
+  
+  if (mode === 'test') {
+    return (
+      <div className="inline-flex items-center gap-2 rounded-full bg-blue-500/10 px-4 py-2 border border-blue-500/30">
+        <div className="h-2 w-2 rounded-full bg-blue-500" />
+        <span className="text-sm font-semibold text-blue-400">🔵 Test Mode</span>
+      </div>
+    );
+  }
+  
+  return (
+    <div className="inline-flex items-center gap-2 rounded-full bg-slate-500/10 px-4 py-2 border border-slate-500/30">
+      <div className="h-2 w-2 rounded-full bg-slate-500" />
+      <span className="text-sm font-semibold text-slate-400">⚪ Unknown Mode</span>
+    </div>
+  );
 }
 
 export default async function AdminRevenuePage() {
@@ -31,12 +58,15 @@ export default async function AdminRevenuePage() {
 
   const activeByPlan: Record<string, number> = data.activeByPlan ?? {};
   const planPrices: Record<string, number> = data.planPrices ?? {};
-  const totalSubs = Object.values(activeByPlan).reduce(
-    (sum: number, count: any) => sum + count,
-    0,
-  );
+  
+  // Use Stripe count as source of truth
+  const totalSubs = data.stripeActiveCount ?? 0;
+  const stripeMrr = data.stripeMrrCents ?? 0;
+  const stripeMode = data.stripeMode ?? 'unknown';
+  const dbMrr = data.dbMrrCents ?? 0;
+  const arrCents = stripeMrr * 12;
 
-  // Compute per-plan revenue from real DB prices
+  // Compute per-plan revenue from real DB prices (for breakdown only)
   const planKeys = [
     ...new Set([...Object.keys(activeByPlan), ...Object.keys(planPrices)]),
   ];
@@ -53,29 +83,68 @@ export default async function AdminRevenuePage() {
 
   // Sort by revenue desc
   planMetrics.sort((a, b) => b.revenue - a.revenue);
+  
+  // Format last sync time
+  const lastSync = data.lastSyncAt 
+    ? new Date(data.lastSyncAt).toLocaleString('en-AU', { 
+        dateStyle: 'short', 
+        timeStyle: 'short' 
+      })
+    : 'Unknown';
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-slate-100">Revenue</h1>
-        <p className="mt-2 text-sm text-slate-400">
-          Monthly recurring revenue computed from active subscriptions × plan
-          prices
-        </p>
+      {/* Header with Mode Badge */}
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-100">Revenue</h1>
+          <p className="mt-2 text-sm text-slate-400">
+            Live revenue from Stripe • Updated: {lastSync}
+          </p>
+        </div>
+        <StripeModeBadge mode={stripeMode} />
       </div>
 
-      {/* MRR Highlight */}
+      {/* Live Stripe MRR Highlight */}
       <div className="rounded-lg border border-emerald-800/30 bg-gradient-to-br from-emerald-900/20 to-slate-900/50 p-8">
         <div className="flex items-start justify-between">
-          <div>
-            <p className="text-sm font-medium text-slate-400">MRR (from DB)</p>
-            <p className="mt-4 text-4xl font-bold text-slate-100">
-              {formatMoney(data.mrrCents ?? 0)}
+          <div className="flex-1">
+            <div className="flex items-center gap-3">
+              <p className="text-sm font-medium text-slate-400">
+                Monthly Recurring Revenue
+              </p>
+              <span className="text-xs text-emerald-400/60 font-medium">
+                from Stripe
+              </span>
+            </div>
+            <p className="mt-4 text-5xl font-bold text-slate-100">
+              {formatMoney(stripeMrr)}
             </p>
-            <p className="mt-2 text-xs text-slate-500">
-              {totalSubs} active subscription{totalSubs !== 1 ? 's' : ''}
-            </p>
+            <div className="mt-3 flex items-center gap-4 text-sm">
+              <div className="flex items-center gap-2">
+                <Activity className="h-4 w-4 text-slate-500" />
+                <span className="text-slate-400">
+                  {totalSubs} active subscription{totalSubs !== 1 ? 's' : ''}
+                </span>
+              </div>
+              <div className="text-slate-600">•</div>
+              <span className="text-slate-400">
+                ARR: {formatMoney(arrCents)}
+              </span>
+            </div>
+            
+            {/* Show delta if DB differs from Stripe */}
+            {Math.abs(stripeMrr - dbMrr) > 0 && (
+              <div className="mt-4 rounded-lg bg-amber-500/10 border border-amber-500/30 p-3">
+                <p className="text-xs text-amber-400">
+                  ⚠️ DB shows {formatMoney(dbMrr)} (delta: {formatMoney(Math.abs(stripeMrr - dbMrr))})
+                  {' • '}
+                  <a href="/admin/revenue/reconciliation" className="underline hover:text-amber-300">
+                    View reconciliation
+                  </a>
+                </p>
+              </div>
+            )}
           </div>
           <DollarSign className="h-12 w-12 text-emerald-500/20" />
         </div>
@@ -134,10 +203,22 @@ export default async function AdminRevenuePage() {
         <h2 className="text-lg font-semibold text-slate-100 mb-4">Summary</h2>
         <div className="space-y-3 text-sm">
           <div className="flex justify-between">
-            <span className="text-slate-400">Total Active Subscriptions</span>
+            <span className="text-slate-400">Stripe Active Subscriptions</span>
             <span className="font-semibold text-slate-100">{totalSubs}</span>
           </div>
           <div className="flex justify-between">
+            <span className="text-slate-400">Monthly Recurring Revenue</span>
+            <span className="font-semibold text-emerald-400">
+              {formatMoney(stripeMrr)}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-400">Annual Recurring Revenue</span>
+            <span className="font-semibold text-emerald-400">
+              {formatMoney(arrCents)}
+            </span>
+          </div>
+          <div className="border-t border-slate-800 pt-3 flex justify-between">
             <span className="text-slate-400">Failed Payments</span>
             <span
               className={`font-semibold ${data.failedPayments > 0 ? 'text-red-400' : 'text-slate-100'}`}
@@ -145,13 +226,18 @@ export default async function AdminRevenuePage() {
               {data.failedPayments}
             </span>
           </div>
-          <div className="border-t border-slate-800 pt-3 flex justify-between">
-            <span className="text-slate-400">Monthly Recurring Revenue</span>
-            <span className="font-semibold text-emerald-400">
-              {formatMoney(data.mrrCents ?? 0)}
-            </span>
+          <div className="flex justify-between">
+            <span className="text-slate-400">Last Synced</span>
+            <span className="text-xs text-slate-500">{lastSync}</span>
           </div>
         </div>
+      </div>
+      
+      {/* Refresh Notice */}
+      <div className="rounded-lg bg-slate-900/30 border border-slate-800/50 p-4">
+        <p className="text-xs text-slate-500">
+          💡 Data refreshes automatically every 10 seconds. Reload the page for latest numbers.
+        </p>
       </div>
     </div>
   );
