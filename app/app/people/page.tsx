@@ -19,7 +19,7 @@ export default function PeoplePage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [members, setMembers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [orgId, setOrgId] = useState<string | null>(null)
+  const [_orgId, setOrgId] = useState<string | null>(null)
 
   useEffect(() => {
     async function getPersonnelData() {
@@ -76,8 +76,7 @@ export default function PeoplePage() {
     <div className="space-y-8 pb-12">
       <InviteModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        orgId={orgId}
+        onCloseAction={() => setIsModalOpen(false)}
       />
 
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
