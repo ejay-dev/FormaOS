@@ -9,8 +9,8 @@ import {
   GlassCard,
   SectionGlow,
 } from "@/components/motion";
-import { FadeInView } from "@/components/motion";
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import Link from "next/link";
 import { brand } from '@/config/brand';
 
@@ -109,14 +109,9 @@ export function SecuritySafeguards() {
           alignment="center"
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-          {safeguards.map((safeguard, idx) => (
-            <ScrollReveal
-              key={safeguard.title}
-              variant="scaleUp"
-              range={[idx * 0.04, 0.3 + idx * 0.04]}
-              className="card-radial-glow section-metrics"
-            >
+        <SectionChoreography pattern="stagger-wave" stagger={0.04} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          {safeguards.map((safeguard) => (
+            <div key={safeguard.title} className="card-radial-glow section-metrics">
               <GlassCard variant="default" glow glowColor="purple" className="p-6 sm:p-8 h-full">
                 <div className="flex flex-col items-center text-center">
                   <div className="w-14 h-14 rounded-xl bg-[rgba(139,92,246,0.1)] border border-[rgba(139,92,246,0.2)] flex items-center justify-center mb-4">
@@ -126,9 +121,9 @@ export function SecuritySafeguards() {
                   <p className="text-foreground/70 text-sm leading-relaxed">{safeguard.description}</p>
                 </div>
               </GlassCard>
-            </ScrollReveal>
+            </div>
           ))}
-        </div>
+        </SectionChoreography>
       </div>
     </SystemBackground>
   );
@@ -148,14 +143,9 @@ export function SecurityArchitectureLayers() {
           alignment="center"
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+        <SectionChoreography pattern="alternating" stagger={0.04} className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
           {Object.entries(securityLayers).map(([title, components], idx) => (
-            <ScrollReveal
-              key={title}
-              variant="fadeUp"
-              range={[idx * 0.04, 0.3 + idx * 0.04]}
-              className="card-radial-glow section-process"
-            >
+            <div key={title} className="card-radial-glow section-process">
               <ArchitectureCard
                 title={title}
                 components={components}
@@ -167,9 +157,9 @@ export function SecurityArchitectureLayers() {
                 }
                 delay={0}
               />
-            </ScrollReveal>
+            </div>
           ))}
-        </div>
+        </SectionChoreography>
       </div>
     </SystemBackground>
   );
@@ -192,7 +182,7 @@ export function SecurityEvidenceChain() {
         <GlassCard variant="elevated" className="p-6 sm:p-10 lg:p-12">
           <div className="space-y-6 sm:space-y-8">
             {evidenceChain.map((item, idx) => (
-              <FadeInView key={item.title} delay={idx * 0.2}>
+              <ScrollReveal key={item.title} variant="depthSlide" range={[idx * 0.06, 0.3 + idx * 0.06]}>
                 <div className="flex items-start gap-6">
                   <div className="flex-shrink-0 h-12 w-12 rounded-xl glass-system flex items-center justify-center glow-system-cyan">
                     <item.icon className="h-6 w-6 text-primary" />
@@ -202,7 +192,7 @@ export function SecurityEvidenceChain() {
                     <p className="text-foreground/70 leading-relaxed">{item.description}</p>
                   </div>
                 </div>
-              </FadeInView>
+              </ScrollReveal>
             ))}
           </div>
         </GlassCard>
@@ -215,7 +205,7 @@ export function SecurityCTA() {
   return (
     <SystemBackground variant="process" intensity="high" className="py-12 sm:py-16 lg:py-20">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">
-        <FadeInView>
+        <ScrollReveal variant="splitLeft" range={[0, 0.35]}>
           <GlassCard
             variant="intense"
             glow
@@ -254,7 +244,7 @@ export function SecurityCTA() {
               </div>
             </div>
           </GlassCard>
-        </FadeInView>
+        </ScrollReveal>
       </div>
     </SystemBackground>
   );

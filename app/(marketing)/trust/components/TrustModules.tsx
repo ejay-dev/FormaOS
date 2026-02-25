@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ShieldCheck, FileLock2, CheckCircle2, ArrowRight } from 'lucide-react';
-import { Reveal } from '@/components/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const navCards = [
   {
@@ -71,13 +71,12 @@ export function TrustModules() {
   return (
     <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
       {/* Trust center navigation cards */}
-      <Reveal variant="fadeInUp">
-        <div className="grid gap-4 lg:grid-cols-4">
-          {navCards.map((card, i) => {
+      <SectionChoreography pattern="alternating" stagger={0.05} className="grid gap-4 lg:grid-cols-4">
+          {navCards.map((card) => {
             const Icon = card.icon;
             return (
-              <ScrollReveal key={card.href} variant="blurIn" range={[i * 0.04, 0.3 + i * 0.04]}>
                 <motion.div
+                  key={card.href}
                   whileHover={{ y: -6 }}
                 >
                   <Link
@@ -99,17 +98,14 @@ export function TrustModules() {
                     </div>
                   </Link>
                 </motion.div>
-              </ScrollReveal>
             );
           })}
-        </div>
-      </Reveal>
+      </SectionChoreography>
 
       {/* Assurance module cards */}
-      <div className="mt-10 grid gap-4 lg:grid-cols-3">
-        {assuranceModules.map((mod, i) => (
-          <ScrollReveal key={mod.title} variant="blurIn" range={[i * 0.04, 0.3 + i * 0.04]}>
-            <article className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-sm">
+      <SectionChoreography pattern="alternating" stagger={0.05} className="mt-10 grid gap-4 lg:grid-cols-3">
+        {assuranceModules.map((mod) => (
+            <article key={mod.title} className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-sm">
               <div className="mb-4 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
                 <FileLock2 className="h-5 w-5 text-cyan-300" />
               </div>
@@ -118,9 +114,8 @@ export function TrustModules() {
                 {mod.detail}
               </p>
             </article>
-          </ScrollReveal>
         ))}
-      </div>
+      </SectionChoreography>
     </section>
   );
 }

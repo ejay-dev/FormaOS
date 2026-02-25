@@ -101,3 +101,17 @@ export { ScrollReveal, ParallaxDepth } from './ScrollReveal';
 
 // Unified canvas particle system (consolidates ParticleField + MicroParticles)
 export { UnifiedParticles } from './UnifiedParticles';
+
+// 3D depth staging system
+export { DepthStage } from './DepthStage';
+export { DepthLayer } from './DepthLayer';
+
+// Immersive hero shell (unified hero architecture)
+export { ImmersiveHero } from './ImmersiveHero';
+
+// Section animation system
+export { SectionChoreography } from './SectionChoreography';
+export { DepthSection } from './DepthSection';
+
+// Compact hero for informational pages
+export { CompactHero } from './CompactHero';

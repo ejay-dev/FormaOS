@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
-import { Reveal } from '@/components/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const questionnaireFastLane = [
   {
@@ -41,7 +41,7 @@ export function QuestionnaireAccelerator() {
     <>
       {/* Security Questionnaire Fast-Lane */}
       <section className="relative mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
-        <Reveal variant="fadeInUp">
+        <ScrollReveal variant="depthScale" range={[0, 0.35]}>
           <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-7 backdrop-blur-sm lg:p-10">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div>
@@ -62,10 +62,9 @@ export function QuestionnaireAccelerator() {
               </Link>
             </div>
 
-            <div className="mt-6 grid gap-3 md:grid-cols-3">
-              {questionnaireFastLane.map((item, i) => (
-                <ScrollReveal key={item.title} variant="scaleUp" range={[i * 0.04, 0.3 + i * 0.04]}>
-                  <article className="rounded-xl border border-white/[0.08] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] p-4">
+            <SectionChoreography pattern="alternating" stagger={0.05} className="mt-6 grid gap-3 md:grid-cols-3">
+              {questionnaireFastLane.map((item) => (
+                  <article key={item.title} className="rounded-xl border border-white/[0.08] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] p-4">
                     <p className="text-sm font-semibold text-slate-100">
                       {item.title}
                     </p>
@@ -73,14 +72,12 @@ export function QuestionnaireAccelerator() {
                       {item.detail}
                     </p>
                   </article>
-                </ScrollReveal>
               ))}
-            </div>
+            </SectionChoreography>
 
-            <div className="mt-6 grid gap-3 md:grid-cols-3">
-              {stakeholderTracks.map((track, i) => (
-                <ScrollReveal key={track.persona} variant="scaleUp" range={[i * 0.04, 0.3 + i * 0.04]}>
-                  <div className="rounded-xl border border-cyan-400/20 bg-cyan-500/10 px-4 py-3">
+            <SectionChoreography pattern="alternating" stagger={0.05} className="mt-6 grid gap-3 md:grid-cols-3">
+              {stakeholderTracks.map((track) => (
+                  <div key={track.persona} className="rounded-xl border border-cyan-400/20 bg-cyan-500/10 px-4 py-3">
                     <p className="text-xs font-semibold uppercase tracking-wider text-cyan-200">
                       {track.persona}
                     </p>
@@ -88,33 +85,30 @@ export function QuestionnaireAccelerator() {
                       {track.artifact}
                     </p>
                   </div>
-                </ScrollReveal>
               ))}
-            </div>
+            </SectionChoreography>
           </div>
-        </Reveal>
+        </ScrollReveal>
       </section>
 
       {/* Assurance Signals */}
       <section className="relative mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
-        <Reveal variant="fadeInUp">
+        <ScrollReveal variant="depthScale" range={[0, 0.35]}>
           <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-6">
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-emerald-100">
               <ShieldCheck className="h-3.5 w-3.5" />
               Assurance Signals
             </div>
-            <div className="mt-4 flex flex-wrap gap-2.5">
-              {trustSignals.map((signal, i) => (
-                <ScrollReveal key={signal} variant="scaleUp" range={[i * 0.04, 0.3 + i * 0.04]}>
-                  <span className="inline-flex items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-500/10 px-3 py-1.5 text-xs text-emerald-100">
+            <SectionChoreography pattern="stagger-wave" stagger={0.04} className="mt-4 flex flex-wrap gap-2.5">
+              {trustSignals.map((signal) => (
+                  <span key={signal} className="inline-flex items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-500/10 px-3 py-1.5 text-xs text-emerald-100">
                     <CheckCircle2 className="h-3.5 w-3.5" />
                     {signal}
                   </span>
-                </ScrollReveal>
               ))}
-            </div>
+            </SectionChoreography>
           </div>
-        </Reveal>
+        </ScrollReveal>
       </section>
     </>
   );

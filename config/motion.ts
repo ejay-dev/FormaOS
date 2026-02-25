@@ -432,6 +432,45 @@ export function calculateParallax(
   return config.min + scrollProgress * range;
 }
 
+// =========================================================
+// CHOREOGRAPHY PRESETS
+// =========================================================
+
+export const choreography = {
+  'stagger-wave': {
+    variant: 'depthSlide' as const,
+    stagger: 0.04,
+    direction: 'left-to-right' as const,
+  },
+  'center-burst': {
+    variant: 'depthScale' as const,
+    stagger: 0.06,
+    direction: 'center-out' as const,
+  },
+  cascade: {
+    variant: 'perspectiveUp' as const,
+    stagger: 0.05,
+    direction: 'top-to-bottom' as const,
+  },
+  alternating: {
+    variant: 'splitLeft' as const,
+    stagger: 0.04,
+    direction: 'alternating' as const,
+  },
+  'depth-reveal': {
+    variant: 'depthScale' as const,
+    stagger: 0.03,
+    direction: 'front-to-back' as const,
+  },
+  'split-screen': {
+    variant: 'splitLeft' as const,
+    stagger: 0.04,
+    direction: 'split' as const,
+  },
+} as const;
+
+export type ChoreographyPreset = keyof typeof choreography;
+
 export type MotionConfig = typeof variants;
 export type EasingConfig = typeof easing;
 export type DurationConfig = typeof duration;

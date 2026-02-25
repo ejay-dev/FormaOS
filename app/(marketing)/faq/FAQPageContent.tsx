@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import {
   HelpCircle,
@@ -15,15 +15,12 @@ import {
 } from 'lucide-react';
 import {
   motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
   AnimatePresence,
 } from 'framer-motion';
 import { duration } from '@/config/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
-import { CursorTilt } from '@/components/motion/CursorTilt';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
+import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
@@ -207,113 +204,36 @@ const faqCategories = [
 // ============================================================================
 
 function FAQHero() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const shouldReduceMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  });
-
-  // Buffered hero exit: hold fully visible first, then progressive cinematic fade
-  const contentOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.24, 0.82, 0.96],
-    [1, 1, 0.35, 0],
-  );
-  const contentScale = useTransform(
-    scrollYProgress,
-    [0, 0.24, 0.82, 0.96],
-    [1, 1, 0.97, 0.94],
-  );
-  const contentY = useTransform(scrollYProgress, [0, 0.82, 1], [0, 52, 110]);
-
   return (
-    <section
-      ref={containerRef}
-      className="mk-hero relative flex items-center justify-center overflow-hidden"
-    >
-      <HeroAtmosphere topColor="cyan" bottomColor="emerald" />
-
-      {/* Main Hero Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <CursorTilt
-          intensity={3}
-          glowFollow
-          glowColor="34,211,238"
-          className="w-full"
-        >
-          <div className="flex flex-col items-center text-center">
-            <motion.div
-              style={
-                shouldReduceMotion
-                  ? undefined
-                  : {
-                      opacity: contentOpacity,
-                      scale: contentScale,
-                      y: contentY,
-                    }
-              }
+    <ImmersiveHero
+      theme="faq"
+      badge={{ icon: <HelpCircle className="w-4 h-4" />, text: 'Help Center' }}
+      headline={
+        <>
+          Frequently Asked{' '}
+          <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+            Questions
+          </span>
+        </>
+      }
+      subheadline="Everything you need to know about FormaOS, from platform capabilities and security to integrations, pricing, and support."
+      extras={
+        <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600">
+          {faqCategories.map((cat) => (
+            <a
+              key={cat.id}
+              href={`#${cat.id}`}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/[0.1] hover:border-cyan-500/30 hover:bg-white/[0.08] transition-all duration-300"
             >
-              {/* Badge */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slow, delay: 0.2 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 backdrop-blur-sm"
-              >
-                <HelpCircle className="w-4 h-4 text-cyan-400" />
-                <span className="text-sm text-cyan-400 font-medium tracking-wide">
-                  Help Center
-                </span>
-              </motion.div>
-
-              {/* Headline */}
-              <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slower, delay: 0.3 }}
-                className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
-              >
-                Frequently Asked{' '}
-                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
-                  Questions
-                </span>
-              </motion.h1>
-
-              {/* Subheadline */}
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slower, delay: 0.5 }}
-                className="text-lg sm:text-xl text-gray-400 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
-              >
-                Everything you need to know about FormaOS, from platform
-                capabilities and security to integrations, pricing, and support.
-              </motion.p>
-
-              {/* Category Pills */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slower, delay: 0.6 }}
-                className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600"
-              >
-                {faqCategories.map((cat) => (
-                  <a
-                    key={cat.id}
-                    href={`#${cat.id}`}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/[0.1] hover:border-cyan-500/30 hover:bg-white/[0.08] transition-all duration-300"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-                    {cat.title}
-                  </a>
-                ))}
-              </motion.div>
-            </motion.div>
-          </div>
-        </CursorTilt>
-      </div>
-    </section>
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+              {cat.title}
+            </a>
+          ))}
+        </div>
+      }
+      primaryCta={{ href: '/contact', label: 'Contact Us' }}
+      secondaryCta={{ href: `${appBase}/auth/signup`, label: 'Start Free Trial' }}
+    />
   );
 }
 
@@ -376,10 +296,8 @@ function FAQItem({
 
 function FAQCategory({
   category,
-  index,
 }: {
   category: (typeof faqCategories)[0];
-  index: number;
 }) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const Icon = category.icon;
@@ -421,7 +339,6 @@ function FAQCategory({
   const colors = colorMap[category.color] || colorMap.cyan;
 
   return (
-    <ScrollReveal variant="blurIn" range={[index * 0.04, 0.3 + index * 0.04]}>
       <div id={category.id} className="scroll-mt-24">
         <div className="relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-white/10 transition-all duration-500 shadow-2xl shadow-black/30">
           {/* Top accent line */}
@@ -454,7 +371,6 @@ function FAQCategory({
           </div>
         </div>
       </div>
-    </ScrollReveal>
   );
 }
 
@@ -485,11 +401,11 @@ function FAQContent() {
         />
       </div>
 
-      <div className="relative max-w-4xl mx-auto px-6 lg:px-12 space-y-8">
-        {faqCategories.map((category, index) => (
-          <FAQCategory key={category.id} category={category} index={index} />
+      <SectionChoreography pattern="cascade" className="relative max-w-4xl mx-auto px-6 lg:px-12 space-y-8">
+        {faqCategories.map((category) => (
+          <FAQCategory key={category.id} category={category} />
         ))}
-      </div>
+      </SectionChoreography>
     </section>
   );
 }

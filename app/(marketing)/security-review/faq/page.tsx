@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { FileText } from 'lucide-react';
+import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
+import { CompactHero } from '@/components/motion/CompactHero';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
@@ -120,21 +122,15 @@ const faqs = [
 
 export default function SecurityReviewFaqPage() {
   return (
-    <main className="bg-background min-h-screen">
-      <div className="mx-auto max-w-4xl px-6 py-24">
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-4">
-            <FileText className="h-8 w-8 text-primary" aria-hidden="true" />
-            <h1 className="text-3xl font-bold text-foreground">
-              Security Review FAQ
-            </h1>
-          </div>
-          <p className="text-muted-foreground text-lg">
-            Written for security, compliance, and procurement reviewers. This
-            page avoids inflated claims and uses contract-accurate language.
-          </p>
-        </div>
+    <MarketingPageShell>
+      <CompactHero
+        title="Security Review FAQ"
+        description="Written for security, compliance, and procurement reviewers. This page avoids inflated claims and uses contract-accurate language."
+        topColor="emerald"
+        bottomColor="cyan"
+      />
 
+      <div className="mx-auto max-w-4xl px-6 pb-24">
         <div className="space-y-4">
           {faqs.map((f) => (
             <details
@@ -166,6 +162,6 @@ export default function SecurityReviewFaqPage() {
           </Link>
         </div>
       </div>
-    </main>
+    </MarketingPageShell>
   );
 }

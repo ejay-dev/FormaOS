@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const consequences = [
   { label: 'Legal liability and penalties', color: 'bg-rose-400' },
@@ -23,7 +24,7 @@ export function MissionCriticalContext() {
       />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="blurIn" range={[0, 0.35]}>
+        <ScrollReveal variant="depthScale" range={[0, 0.35]}>
           <div className="text-center mb-16">
             <ScrollReveal variant="scaleUp" range={[0.02, 0.3]}>
               <div
@@ -45,7 +46,7 @@ export function MissionCriticalContext() {
         </ScrollReveal>
 
         {/* Mission Critical Card */}
-        <ScrollReveal variant="fadeUp" range={[0.04, 0.38]}>
+        <ScrollReveal variant="depthSlide" range={[0.04, 0.38]}>
           <div
             className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/[0.08] p-8 sm:p-12"
           >
@@ -53,18 +54,16 @@ export function MissionCriticalContext() {
               When compliance failures have serious consequences
             </h3>
 
-            <div className="grid sm:grid-cols-3 gap-8">
-              {consequences.map((item, index) => (
-                <ScrollReveal key={item.label} variant="fadeUp" range={[index * 0.04, 0.3 + index * 0.04]}>
-                  <div className="text-center">
+            <SectionChoreography pattern="center-burst" stagger={0.06} className="grid sm:grid-cols-3 gap-8">
+              {consequences.map((item) => (
+                  <div key={item.label} className="text-center">
                     <div
                       className={`w-3 h-3 ${item.color} rounded-full mx-auto mb-4`}
                     />
                     <p className="text-gray-400 font-medium">{item.label}</p>
                   </div>
-                </ScrollReveal>
               ))}
-            </div>
+            </SectionChoreography>
           </div>
         </ScrollReveal>
       </div>

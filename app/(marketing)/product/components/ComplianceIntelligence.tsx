@@ -12,6 +12,7 @@ import {
   Eye,
 } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import dynamic from 'next/dynamic';
 
 const DemoComplianceScore = dynamic(
@@ -99,34 +100,28 @@ export function ComplianceIntelligence() {
         </ScrollReveal>
 
         <div className="grid lg:grid-cols-5 gap-8 items-start">
-          <ScrollReveal variant="fadeLeft" range={[0, 0.35]} className="lg:col-span-2">
+          <ScrollReveal variant="splitLeft" range={[0, 0.35]} className="lg:col-span-2">
             <DemoComplianceScore glowColor="from-green-500/15 to-emerald-500/15" />
           </ScrollReveal>
 
-          <div className="lg:col-span-3 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {intelligenceFeatures.map((feature, index) => {
+          <SectionChoreography pattern="cascade" stagger={0.04} className="lg:col-span-3 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {intelligenceFeatures.map((feature) => {
               const Icon = feature.icon;
               return (
-                <ScrollReveal
-                  key={feature.label}
-                  variant="fadeUp"
-                  range={[index * 0.04, 0.3 + index * 0.04]}
-                >
-                  <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-5 hover:border-green-500/30 transition-all">
-                    <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center mb-3">
-                      <Icon className="w-5 h-5 text-green-400" />
-                    </div>
-                    <h3 className="text-sm font-semibold text-white mb-1.5">
-                      {feature.label}
-                    </h3>
-                    <p className="text-xs text-gray-400 leading-relaxed">
-                      {feature.description}
-                    </p>
+                <div key={feature.label} className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-5 hover:border-green-500/30 transition-all">
+                  <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center mb-3">
+                    <Icon className="w-5 h-5 text-green-400" />
                   </div>
-                </ScrollReveal>
+                  <h3 className="text-sm font-semibold text-white mb-1.5">
+                    {feature.label}
+                  </h3>
+                  <p className="text-xs text-gray-400 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
               );
             })}
-          </div>
+          </SectionChoreography>
         </div>
       </div>
     </section>

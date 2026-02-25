@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
-  Shield,
   FileText,
   Users,
   Clock,
@@ -10,6 +9,8 @@ import {
   Server,
   Lock,
 } from 'lucide-react';
+import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
+import { CompactHero } from '@/components/motion/CompactHero';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
@@ -29,24 +30,17 @@ export const metadata: Metadata = {
 
 export default function DPAPage() {
   return (
-    <main className="bg-background min-h-screen">
-      <div className="mx-auto max-w-4xl px-6 py-24">
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-4">
-            <Shield className="h-8 w-8 text-primary" aria-hidden="true" />
-            <h1 className="text-3xl font-bold text-foreground">
-              Data Processing Agreement
-            </h1>
-          </div>
-          <p className="text-muted-foreground text-lg">
-            FormaOS processes customer data in accordance with applicable data
-            protection laws, including GDPR, Australian Privacy Act, and HIPAA
-            where applicable.
-          </p>
-          <p className="text-sm text-muted-foreground mt-2">
-            Last updated: February 2026
-          </p>
-        </div>
+    <MarketingPageShell>
+      <CompactHero
+        title="Data Processing Agreement"
+        description="FormaOS processes customer data in accordance with applicable data protection laws, including GDPR, Australian Privacy Act, and HIPAA where applicable."
+        topColor="emerald"
+        bottomColor="cyan"
+      />
+      <div className="mx-auto max-w-4xl px-6 pb-24">
+        <p className="text-sm text-muted-foreground mt-2 mb-12">
+          Last updated: February 2026
+        </p>
 
         <div className="space-y-10">
           <Section title="1. Definitions">
@@ -171,7 +165,7 @@ export default function DPAPage() {
           </Link>
         </div>
       </div>
-    </main>
+    </MarketingPageShell>
   );
 }
 

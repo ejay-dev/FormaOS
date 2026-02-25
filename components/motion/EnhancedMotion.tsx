@@ -335,12 +335,15 @@ export function AmbientOrbs({
           style={{
             width: config.sizes[i],
             height: config.sizes[i],
-            background: config.colors[i],
-            filter: `blur(${config.blur}px)`,
-          }}
-          initial={{
             left: `${config.positions[i][0]}%`,
             top: `${config.positions[i][1]}%`,
+            background: config.colors[i],
+            filter: `blur(${config.blur}px)`,
+            willChange: 'transform, opacity',
+          }}
+          initial={{
+            x: 0,
+            y: 0,
             opacity: 0,
           }}
           animate={
@@ -349,17 +352,17 @@ export function AmbientOrbs({
                   opacity: 1,
                 }
               : {
-                  left: [
-                    `${config.positions[i][0]}%`,
-                    `${config.positions[i][0] + 10}%`,
-                    `${config.positions[i][0] - 8}%`,
-                    `${config.positions[i][0]}%`,
+                  x: [
+                    0,
+                    `${10}%`,
+                    `${-8}%`,
+                    0,
                   ],
-                  top: [
-                    `${config.positions[i][1]}%`,
-                    `${config.positions[i][1] - 12}%`,
-                    `${config.positions[i][1] + 8}%`,
-                    `${config.positions[i][1]}%`,
+                  y: [
+                    0,
+                    `${-12}%`,
+                    `${8}%`,
+                    0,
                   ],
                   opacity: [0, 1, 0.8, 1],
                   scale: [0.9, 1.1, 0.95, 0.9],

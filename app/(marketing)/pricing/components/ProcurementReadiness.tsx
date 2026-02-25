@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight, ClipboardCheck, FileCheck2, ShieldCheck, Sparkles } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const assurancePillars = [
   {
@@ -33,7 +34,7 @@ export function ProcurementReadiness() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_80%,rgba(56,189,248,0.12),transparent_40%)]" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
-        <ScrollReveal variant="blurIn" range={[0, 0.35]} className="mx-auto max-w-3xl text-center">
+        <ScrollReveal variant="depthScale" range={[0, 0.35]} className="mx-auto max-w-3xl text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-emerald-200">
             <Sparkles className="h-3.5 w-3.5" />
             Procurement Assurance
@@ -47,14 +48,9 @@ export function ProcurementReadiness() {
           </p>
         </ScrollReveal>
 
-        <div className="mt-10 grid gap-4 lg:grid-cols-3">
-          {assurancePillars.map((pillar, idx) => (
-            <ScrollReveal
-              key={pillar.title}
-              variant="fadeUp"
-              range={[idx * 0.05, 0.3 + idx * 0.05]}
-            >
-              <article className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-sm">
+        <SectionChoreography pattern="center-burst" stagger={0.06} className="mt-10 grid gap-4 lg:grid-cols-3">
+          {assurancePillars.map((pillar) => (
+              <article key={pillar.title} className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-sm">
                 <div className="inline-flex rounded-lg border border-emerald-400/30 bg-emerald-500/10 p-2">
                   <pillar.icon className="h-5 w-5 text-emerald-200" />
                 </div>
@@ -65,11 +61,10 @@ export function ProcurementReadiness() {
                   {pillar.detail}
                 </p>
               </article>
-            </ScrollReveal>
           ))}
-        </div>
+        </SectionChoreography>
 
-        <ScrollReveal variant="slideUp" range={[0.1, 0.4]} className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
+        <ScrollReveal variant="depthSlide" range={[0.1, 0.4]} className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
           <Link
             href="/security-review"
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-6 py-3 text-sm font-semibold text-white"

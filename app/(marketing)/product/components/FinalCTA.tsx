@@ -24,7 +24,7 @@ export function FinalCTA() {
                 </h2>
               </ScrollReveal>
 
-              <ScrollReveal variant="fadeUp" range={[0.05, 0.38]}>
+              <ScrollReveal variant="depthSlide" range={[0.05, 0.38]}>
                 <p className="text-lg text-gray-400 max-w-2xl mx-auto">
                   From obligation to execution, validation, and defense. FormaOS is
                   the operating system for modern compliance.
@@ -52,7 +52,7 @@ export function FinalCTA() {
                 </div>
               </ScrollReveal>
 
-              <ScrollReveal variant="fadeUp" range={[0.1, 0.42]}>
+              <ScrollReveal variant="perspectiveUp" range={[0.1, 0.42]}>
                 <div className="flex flex-wrap items-center justify-center gap-6 mt-8 text-sm text-gray-500">
                   <span className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-400" />

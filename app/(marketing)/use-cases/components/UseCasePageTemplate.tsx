@@ -1,15 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { useRef, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
-import { useScroll, useTransform, motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { brand } from '@/config/brand';
-import { SectionHeader, Reveal, VisualDivider } from '@/components/motion';
-import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
-import { CursorTilt } from '@/components/motion/CursorTilt';
+import { SectionHeader, VisualDivider } from '@/components/motion';
+import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { GlassCard, HoverLift } from '@/components/motion/EnhancedMotion';
 import { DeferredSection } from '../../components/shared';
 import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
@@ -79,56 +77,19 @@ export function UseCasePageTemplate({
   ctaSecondaryLabel = 'Schedule Demo',
   ctaSecondaryHref = '/contact',
 }: UseCasePageTemplateProps) {
-  const heroRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ['start start', 'end start'],
-  });
-  const contentOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.24, 0.82, 0.96],
-    [1, 1, 0.35, 0],
-  );
-  const contentScale = useTransform(
-    scrollYProgress,
-    [0, 0.24, 0.82, 0.96],
-    [1, 1, 0.97, 0.94],
-  );
-  const contentY = useTransform(scrollYProgress, [0, 0.82, 1], [0, 52, 110]);
-
   return (
     <MarketingPageShell>
-      <section
-        ref={heroRef}
-        className="mk-hero relative flex items-center justify-center overflow-hidden"
-      >
-        <HeroAtmosphere topColor="cyan" bottomColor="blue" />
-        <motion.div
-          style={{ opacity: contentOpacity, scale: contentScale, y: contentY }}
-          className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8"
-        >
-          <CursorTilt intensity={3} glowFollow glowColor="34,211,238">
-            <div className="flex flex-col items-center text-center">
-              <Reveal variant="fadeInUp">
-                <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-cyan-100">
-                  {badgeIcon ?? <ShieldCheck className="h-4 w-4" />}
-                  {badge}
-                </div>
-              </Reveal>
-              <Reveal variant="fadeInUp" delay={0.1}>
-                <h1 className="mt-6 text-4xl sm:text-5xl lg:text-7xl font-bold leading-[1.1] text-white">
-                  {title}
-                </h1>
-              </Reveal>
-              <Reveal variant="fadeInUp" delay={0.2}>
-                <p className="mt-5 max-w-3xl text-lg sm:text-xl leading-relaxed text-slate-300">
-                  {description}
-                </p>
-              </Reveal>
-            </div>
-          </CursorTilt>
-        </motion.div>
-      </section>
+      <ImmersiveHero
+        theme="use-cases"
+        badge={{
+          icon: badgeIcon ?? <ShieldCheck className="h-4 w-4" />,
+          text: badge,
+        }}
+        headline={title}
+        subheadline={description}
+        primaryCta={{ href: ctaPrimaryHref, label: ctaPrimaryLabel }}
+        secondaryCta={{ href: ctaSecondaryHref, label: ctaSecondaryLabel }}
+      />
 
       <VisualDivider />
 
@@ -143,7 +104,7 @@ export function UseCasePageTemplate({
             {challenges.map((item, idx) => (
               <ScrollReveal
                 key={item.title}
-                variant={idx % 2 === 0 ? 'fadeLeft' : 'fadeRight'}
+                variant={idx % 2 === 0 ? 'splitLeft' : 'splitRight'}
                 range={[0, 0.3 + idx * 0.05]}
               >
                 <HoverLift>
@@ -229,7 +190,7 @@ export function UseCasePageTemplate({
             {standards.map((standard, idx) => (
               <ScrollReveal
                 key={standard.name}
-                variant={idx % 2 === 0 ? 'fadeLeft' : 'fadeRight'}
+                variant={idx % 2 === 0 ? 'splitLeft' : 'splitRight'}
                 range={[0, 0.3 + idx * 0.05]}
               >
                 <GlassCard className="h-full p-6" intensity="subtle">

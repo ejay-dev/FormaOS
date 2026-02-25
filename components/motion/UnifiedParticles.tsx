@@ -54,6 +54,9 @@ function UnifiedParticlesInner({
   const particlesRef = useRef<Particle[]>([]);
   const rafRef = useRef<number>(0);
   const lastFrameRef = useRef<number>(0);
+  const isVisibleRef = useRef<boolean>(true);
+  const frameCountRef = useRef<number>(0);
+  const isLowEndRef = useRef<boolean>(false);
 
   const defaults = PRESET_DEFAULTS[preset];
   const particleCount = count ?? defaults.count;
@@ -66,6 +69,13 @@ function UnifiedParticlesInner({
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
+    // Detect low-end devices for frame throttling
+    isLowEndRef.current =
+      typeof navigator !== 'undefined' &&
+      typeof navigator.hardwareConcurrency === 'number' &&
+      navigator.hardwareConcurrency <= 4;
+    frameCountRef.current = 0;
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio, 2);
@@ -91,12 +101,25 @@ function UnifiedParticlesInner({
     const FPS_INTERVAL = 1000 / 30; // Cap at 30fps
 
     const animate = (timestamp: number) => {
+      // Pause when off-screen
+      if (!isVisibleRef.current) {
+        rafRef.current = 0;
+        return;
+      }
+
       const elapsed = timestamp - lastFrameRef.current;
       if (elapsed < FPS_INTERVAL) {
         rafRef.current = requestAnimationFrame(animate);
         return;
       }
       lastFrameRef.current = timestamp;
+
+      // Frame throttling on low-end devices: skip odd frames
+      frameCountRef.current++;
+      if (isLowEndRef.current && frameCountRef.current % 2 !== 0) {
+        rafRef.current = requestAnimationFrame(animate);
+        return;
+      }
 
       const w = rect.width;
       const h = rect.height;
@@ -160,6 +183,20 @@ function UnifiedParticlesInner({
       rafRef.current = requestAnimationFrame(animate);
     };
 
+    // Off-screen detection: pause animation when canvas is not visible
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisibleRef.current = entry.isIntersecting;
+        // Resume the loop when becoming visible again
+        if (entry.isIntersecting && rafRef.current === 0) {
+          lastFrameRef.current = 0;
+          rafRef.current = requestAnimationFrame(animate);
+        }
+      },
+      { threshold: 0 }
+    );
+    observer.observe(canvas);
+
     rafRef.current = requestAnimationFrame(animate);
 
     const handleResize = () => resize();
@@ -167,7 +204,9 @@ function UnifiedParticlesInner({
 
     return () => {
       cancelAnimationFrame(rafRef.current);
+      rafRef.current = 0;
       window.removeEventListener('resize', handleResize);
+      observer.disconnect();
     };
   }, [shouldReduceMotion, particleCount, color, secondaryColor, connections, connectionDistance, opacity, preset, defaults]);
 

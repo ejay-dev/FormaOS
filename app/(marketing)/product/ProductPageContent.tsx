@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
+import { DepthSection } from '@/components/motion/DepthSection';
 
 /* ── Hero (headline + CTAs) then Showcase (interactive tabs + panel) ── */
 const ProductHero = dynamic(
@@ -69,11 +70,15 @@ export default function ProductPageContent() {
       <ProductShowcase />
 
       <DeferredSection minHeight={640}>
-        <WhatIsFormaOS />
+        <DepthSection fade>
+          <WhatIsFormaOS />
+        </DepthSection>
       </DeferredSection>
       <VisualDivider />
       <DeferredSection minHeight={620}>
-        <ObligationToExecution />
+        <DepthSection fade>
+          <ObligationToExecution />
+        </DepthSection>
       </DeferredSection>
       <VisualDivider />
       <DeferredSection minHeight={700}>
@@ -81,20 +86,30 @@ export default function ProductPageContent() {
       </DeferredSection>
       <VisualDivider />
       <DeferredSection minHeight={620}>
-        <WhatMakesDifferent />
+        <DepthSection fade>
+          <WhatMakesDifferent />
+        </DepthSection>
       </DeferredSection>
       <VisualDivider />
       <DeferredSection minHeight={620}>
-        <EnterpriseSecurity />
+        <DepthSection fade>
+          <EnterpriseSecurity />
+        </DepthSection>
       </DeferredSection>
       <DeferredSection minHeight={620}>
-        <ComplianceIntelligence />
+        <DepthSection fade>
+          <ComplianceIntelligence />
+        </DepthSection>
       </DeferredSection>
       <DeferredSection minHeight={620}>
-        <BuiltForComplex />
+        <DepthSection fade>
+          <BuiltForComplex />
+        </DepthSection>
       </DeferredSection>
       <DeferredSection minHeight={620}>
-        <WhoIsFor />
+        <DepthSection fade>
+          <WhoIsFor />
+        </DepthSection>
       </DeferredSection>
       <VisualDivider />
       <DeferredSection minHeight={680}>

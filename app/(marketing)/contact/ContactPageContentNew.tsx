@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import {
   Mail,
   Phone,
@@ -11,17 +11,11 @@ import {
   Shield,
   Building2,
 } from 'lucide-react';
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from 'framer-motion';
-import { duration } from '@/config/motion';
+import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
+import { ContactHeroVisual } from './components/ContactHeroVisual';
 import { VisualDivider } from '@/components/motion';
-import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
-import { CursorTilt } from '@/components/motion/CursorTilt';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { brand } from '@/config/brand';
@@ -33,128 +27,17 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 // ============================================================================
 
 function ContactHero() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const shouldReduceMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  });
-
-  // Buffered hero exit: hold fully visible first, then progressive cinematic fade
-  const contentOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.24, 0.82, 0.96],
-    [1, 1, 0.35, 0],
-  );
-  const contentScale = useTransform(
-    scrollYProgress,
-    [0, 0.24, 0.82, 0.96],
-    [1, 1, 0.97, 0.94],
-  );
-  const contentY = useTransform(scrollYProgress, [0, 0.82, 1], [0, 52, 110]);
-
   return (
-    <section
-      ref={containerRef}
-      className="mk-hero relative flex items-center justify-center overflow-hidden"
-    >
-      <HeroAtmosphere topColor="blue" bottomColor="violet" />
-
-      {/* Main Hero Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <CursorTilt
-          intensity={3}
-          glowFollow
-          glowColor="59,130,246"
-          className="w-full"
-        >
-          <div className="flex flex-col items-center text-center">
-            <motion.div
-              style={
-                shouldReduceMotion
-                  ? undefined
-                  : {
-                      opacity: contentOpacity,
-                      scale: contentScale,
-                      y: contentY,
-                    }
-              }
-            >
-              {/* Badge */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slow, delay: 0.2 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/30 mb-8 backdrop-blur-sm"
-              >
-                <Mail className="w-4 h-4 text-blue-400" />
-                <span className="text-sm text-blue-400 font-medium tracking-wide">
-                  Contact
-                </span>
-              </motion.div>
-
-              {/* Headline */}
-              <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slower, delay: 0.3 }}
-                className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
-              >
-                Let&apos;s Talk About Your
-                <br />
-                <span className="bg-gradient-to-r from-blue-400 via-cyan-500 to-purple-500 bg-clip-text text-transparent">
-                  Compliance Strategy
-                </span>
-              </motion.h1>
-
-              {/* Subheadline */}
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slower, delay: 0.5 }}
-                className="text-lg sm:text-xl text-gray-400 mb-4 max-w-3xl mx-auto text-center leading-relaxed"
-              >
-                Whether you&apos;re exploring FormaOS, preparing for audits, or
-                designing governance at scale, our team is here to help.
-              </motion.p>
-
-              {/* Support Line */}
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slower, delay: 0.6 }}
-                className="text-base text-gray-500 mb-10 max-w-2xl mx-auto text-center"
-              >
-                We work with regulated organizations that require precision,
-                accountability, and operational proof.
-              </motion.p>
-
-              {/* CTAs */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link
-                  href="#demo-form"
-                  className="inline-flex items-center gap-2 rounded-lg border border-blue-400/60 bg-[#020617] px-8 py-4 font-medium text-white transition-all duration-300 hover:bg-[#0b1736]"
-                  style={{
-                    color: '#ffffff',
-                    WebkitTextFillColor: '#ffffff',
-                  }}
-                >
-                  Request a Demo
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-                <Link
-                  href="#contact-info"
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium border border-white/20 transition-all duration-300"
-                >
-                  Contact Our Team
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </motion.div>
-          </div>
-        </CursorTilt>
-      </div>
-    </section>
+    <ImmersiveHero
+      theme="contact"
+      visualContent={<ContactHeroVisual />}
+      badge={{ icon: <Mail className="w-4 h-4 text-blue-400" />, text: 'Contact', colorClass: 'blue' }}
+      headline={<>Let&apos;s Talk About Your<br /><span className="bg-gradient-to-r from-blue-400 via-cyan-500 to-purple-500 bg-clip-text text-transparent">Compliance Strategy</span></>}
+      subheadline="Whether you're exploring FormaOS, preparing for audits, or designing governance at scale, our team is here to help."
+      extras={<p className="text-base text-gray-500 max-w-2xl mx-auto text-center">We work with regulated organizations that require precision, accountability, and operational proof.</p>}
+      primaryCta={{ href: '#demo-form', label: 'Request a Demo' }}
+      secondaryCta={{ href: '#contact-info', label: 'Contact Our Team' }}
+    />
   );
 }
 
@@ -180,7 +63,7 @@ function ContactInformation() {
         {/* Contact Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Email */}
-          <ScrollReveal variant="fadeUp" range={[0, 0.3]}>
+          <ScrollReveal variant="depthSlide" range={[0, 0.3]}>
             <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
               <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-blue-500/20 flex items-center justify-center">
                 <Mail className="w-8 h-8 text-blue-400" />
@@ -196,7 +79,7 @@ function ContactInformation() {
           </ScrollReveal>
 
           {/* Phone */}
-          <ScrollReveal variant="fadeRight" range={[0.04, 0.34]}>
+          <ScrollReveal variant="perspectiveUp" range={[0.04, 0.34]}>
             <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
               <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-cyan-500/20 flex items-center justify-center">
                 <Phone className="w-8 h-8 text-cyan-400" />
@@ -212,7 +95,7 @@ function ContactInformation() {
           </ScrollReveal>
 
           {/* Availability */}
-          <ScrollReveal variant="fadeRight" range={[0.08, 0.38]}>
+          <ScrollReveal variant="depthSlide" range={[0.08, 0.38]}>
             <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
               <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-purple-500/20 flex items-center justify-center">
                 <Clock className="w-8 h-8 text-purple-400" />
@@ -274,7 +157,7 @@ function ContactForm({ submitAction, searchParams }: ContactFormProps) {
         </ScrollReveal>
 
         {/* Form Card */}
-        <ScrollReveal variant="fadeUp" range={[0.04, 0.34]}>
+        <ScrollReveal variant="perspectiveUp" range={[0.04, 0.34]}>
           <div className="p-8 sm:p-12 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
             <form action={handleSubmit} className="space-y-6">
               {/* Name & Email Row */}
@@ -457,7 +340,7 @@ function EnterpriseInquiries() {
   return (
     <section className="mk-section relative">
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="fadeUp" range={[0, 0.3]}>
+        <ScrollReveal variant="depthSlide" range={[0, 0.3]}>
           <div className="text-center p-12 rounded-2xl bg-gradient-to-br from-purple-500/20 via-white/[0.08] to-white/[0.04] border border-purple-500/30 backdrop-blur-xl">
             <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-purple-500/20 flex items-center justify-center">
               <Building2 className="w-8 h-8 text-purple-400" />
@@ -491,7 +374,7 @@ function SecurityTrust() {
   return (
     <section className="mk-section relative">
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="fadeUp" range={[0, 0.3]} className="text-center">
+        <ScrollReveal variant="perspectiveUp" range={[0, 0.3]} className="text-center">
           <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-cyan-500/20 flex items-center justify-center">
             <Shield className="w-8 h-8 text-cyan-400" />
           </div>
@@ -517,7 +400,7 @@ function ClosingCTA() {
   return (
     <section className="mk-section relative">
       <div className="max-w-4xl mx-auto px-6 lg:px-12 text-center">
-        <ScrollReveal variant="slideUp" range={[0, 0.3]}>
+        <ScrollReveal variant="depthScale" range={[0, 0.3]}>
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
             Operational Compliance Starts With
             <br />

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ArrowRight, CheckCircle, Zap } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
@@ -46,7 +47,7 @@ export function FreeTrial() {
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12">
         <ScrollReveal
-          variant="slideUp"
+          variant="depthSlide"
           range={[0, 0.35]}
           className="backdrop-blur-xl bg-gradient-to-br from-cyan-500/20 via-white/[0.04] to-white/[0.02] rounded-3xl border border-cyan-500/30 p-12 text-center shadow-2xl"
         >
@@ -68,22 +69,16 @@ export function FreeTrial() {
           </p>
 
           {/* Trial features */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-            {trialFeatures.map((feature, idx) => (
-              <ScrollReveal
-                key={feature}
-                variant="fadeUp"
-                range={[0.03 + idx * 0.04, 0.28 + idx * 0.04]}
-              >
-                <div className="p-4 rounded-xl bg-white/[0.06] border border-white/10">
+          <SectionChoreography pattern="center-burst" stagger={0.05} className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+            {trialFeatures.map((feature) => (
+                <div key={feature} className="p-4 rounded-xl bg-white/[0.06] border border-white/10">
                   <div className="flex items-center justify-center gap-2 mb-2">
                     <CheckCircle className="w-4 h-4 text-cyan-400" />
                   </div>
                   <p className="text-sm text-gray-300">{feature}</p>
                 </div>
-              </ScrollReveal>
             ))}
-          </div>
+          </SectionChoreography>
 
           <ScrollReveal variant="slideUp" range={[0.1, 0.45]}>
             <Link

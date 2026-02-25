@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const securityLayers = [
   {
@@ -111,9 +112,9 @@ export function SecurityArchitecture() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <ScrollReveal variant="fadeUp" range={[0, 0.35]} className="text-center mb-20">
+        <ScrollReveal variant="depthScale" range={[0, 0.35]} className="text-center mb-20">
           <div>
-            <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
+            <ScrollReveal variant="depthSlide" range={[0, 0.3]}>
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6">
                 <Lock className="h-3 w-3 text-red-400" />
                 <span className="text-gray-300">Security Architecture</span>
@@ -136,14 +137,10 @@ export function SecurityArchitecture() {
         </ScrollReveal>
 
         {/* Security Layers Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-20">
-          {securityLayers.map((layer, index) => (
-            <ScrollReveal
-              key={layer.title}
-              variant="blurIn"
-              range={[index * 0.04, 0.3 + index * 0.04]}
-            >
+        <SectionChoreography pattern="alternating" stagger={0.05} className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-20">
+          {securityLayers.map((layer) => (
               <div
+                key={layer.title}
                 className={`group relative backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border ${layer.borderColor} p-8 hover:from-white/[0.12] hover:to-white/[0.04] transition-all duration-500`}
               >
                 <div
@@ -167,12 +164,11 @@ export function SecurityArchitecture() {
                   </div>
                 </div>
               </div>
-            </ScrollReveal>
           ))}
-        </div>
+        </SectionChoreography>
 
         {/* Certifications */}
-        <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
+        <ScrollReveal variant="depthSlide" range={[0, 0.35]}>
           <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 lg:p-10">
             <div className="text-center mb-10">
               <h3 className="text-2xl font-bold text-white mb-3">
@@ -183,14 +179,9 @@ export function SecurityArchitecture() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {certifications.map((cert, index) => (
-                <ScrollReveal
-                  key={cert.name}
-                  variant="scaleUp"
-                  range={[index * 0.04, 0.3 + index * 0.04]}
-                >
-                  <div className="group text-center p-6 rounded-2xl bg-white/[0.04] border border-white/10 hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300">
+            <SectionChoreography pattern="stagger-wave" stagger={0.04} className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {certifications.map((cert) => (
+                  <div key={cert.name} className="group text-center p-6 rounded-2xl bg-white/[0.04] border border-white/10 hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/20 to-orange-500/20 border border-red-500/30 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                       <cert.icon className="h-6 w-6 text-red-400" />
                     </div>
@@ -199,9 +190,8 @@ export function SecurityArchitecture() {
                     </h4>
                     <p className="text-xs text-gray-500">{cert.description}</p>
                   </div>
-                </ScrollReveal>
               ))}
-            </div>
+            </SectionChoreography>
           </div>
         </ScrollReveal>
       </div>

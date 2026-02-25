@@ -1,18 +1,12 @@
 'use client';
 
-import { useRef } from 'react';
 import { ArrowRight, Users, Target, Lightbulb } from 'lucide-react';
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from 'framer-motion';
-import { duration } from '@/config/motion';
+import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import dynamic from 'next/dynamic';
-import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
-import { CursorTilt } from '@/components/motion/CursorTilt';
+import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
+import { AboutHeroVisual } from './components/AboutHeroVisual';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
@@ -23,127 +17,16 @@ const DemoAuditTrailCard = dynamic(
 );
 
 function AboutHero() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const shouldReduceMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  });
-
-  // Buffered hero exit: hold fully visible first, then progressive cinematic fade
-  const contentOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.24, 0.82, 0.96],
-    [1, 1, 0.35, 0],
-  );
-  const contentScale = useTransform(
-    scrollYProgress,
-    [0, 0.24, 0.82, 0.96],
-    [1, 1, 0.97, 0.94],
-  );
-  const contentY = useTransform(scrollYProgress, [0, 0.82, 1], [0, 52, 110]);
-
   return (
-    <section
-      ref={containerRef}
-      className="mk-hero relative flex items-center justify-center overflow-hidden"
-    >
-      <HeroAtmosphere topColor="violet" bottomColor="rose" />
-
-      {/* Main Hero Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <CursorTilt
-          intensity={3}
-          glowFollow
-          glowColor="139,92,246"
-          className="w-full"
-        >
-          <div className="flex flex-col items-center text-center">
-            <motion.div
-              style={
-                shouldReduceMotion
-                  ? undefined
-                  : {
-                      opacity: contentOpacity,
-                      scale: contentScale,
-                      y: contentY,
-                    }
-              }
-            >
-              {/* Badge */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slow, delay: 0.2 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 mb-8 backdrop-blur-sm"
-              >
-                <Users className="w-4 h-4 text-purple-400" />
-                <span className="text-sm text-purple-400 font-medium tracking-wide">
-                  About FormaOS
-                </span>
-              </motion.div>
-
-              {/* Headline */}
-              <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slower, delay: 0.3 }}
-                className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
-              >
-                Built for teams
-                <br />
-                <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-rose-500 bg-clip-text text-transparent">
-                  accountable to regulators
-                </span>
-              </motion.h1>
-
-              {/* Subheadline */}
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slower, delay: 0.5 }}
-                className="text-lg sm:text-xl text-gray-400 mb-10 max-w-2xl mx-auto text-center leading-relaxed"
-              >
-                FormaOS exists to help regulated organizations operate with
-                confidence. Compliance teams need more than spreadsheets. They
-                need a defensible system that proves governance, evidence, and
-                oversight.
-              </motion.p>
-
-              {/* CTA Buttons */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slower, delay: 0.7 }}
-                className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
-              >
-                <motion.a
-                  href="/our-story"
-                  whileHover={{
-                    scale: 1.05,
-                    boxShadow: '0 0 40px rgba(139, 92, 246, 0.4)',
-                  }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group px-8 py-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold text-lg flex items-center gap-3 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all"
-                >
-                  <span>Read Our Story</span>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </motion.a>
-
-                <motion.a
-                  href="/product"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white font-semibold text-lg flex items-center gap-3 hover:border-purple-400/50 hover:bg-purple-400/5 transition-all"
-                >
-                  <span>See How It Works</span>
-                </motion.a>
-              </motion.div>
-            </motion.div>
-          </div>
-        </CursorTilt>
-      </div>
-    </section>
+    <ImmersiveHero
+      theme="about"
+      visualContent={<AboutHeroVisual />}
+      badge={{ icon: <Users className="w-4 h-4 text-violet-400" />, text: 'About FormaOS', colorClass: 'violet' }}
+      headline={<>Built for teams<br /><span className="bg-gradient-to-r from-purple-400 via-pink-500 to-rose-500 bg-clip-text text-transparent">accountable to regulators</span></>}
+      subheadline="FormaOS exists to help regulated organizations operate with confidence. Compliance teams need more than spreadsheets. They need a defensible system that proves governance, evidence, and oversight."
+      primaryCta={{ href: '/our-story', label: 'Read Our Story' }}
+      secondaryCta={{ href: '/product', label: 'See How It Works' }}
+    />
   );
 }
 
@@ -158,8 +41,7 @@ export default function AboutPageContent() {
       <DeferredSection minHeight={300}>
         <section className="mk-section relative">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <div className="grid gap-8 md:grid-cols-2">
-              <ScrollReveal variant="fadeUp" range={[0, 0.3]}>
+            <SectionChoreography pattern="alternating" stagger={0.06} className="grid gap-8 md:grid-cols-2">
                 <div className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 hover:border-purple-500/30 transition-all duration-300">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                     <Target className="h-6 w-6 text-purple-400" />
@@ -173,9 +55,7 @@ export default function AboutPageContent() {
                     single compliance operating system.
                   </p>
                 </div>
-              </ScrollReveal>
 
-              <ScrollReveal variant="fadeLeft" range={[0.04, 0.34]}>
                 <div className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 hover:border-cyan-500/30 transition-all duration-300">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                     <Lightbulb className="h-6 w-6 text-cyan-400" />
@@ -190,8 +70,7 @@ export default function AboutPageContent() {
                     organizations.
                   </p>
                 </div>
-              </ScrollReveal>
-            </div>
+            </SectionChoreography>
           </div>
         </section>
       </DeferredSection>
@@ -203,7 +82,7 @@ export default function AboutPageContent() {
         <section className="mk-section relative">
           <div className="mx-auto max-w-xl px-6 lg:px-8">
             <ScrollReveal
-              variant="blurIn"
+              variant="depthScale"
               range={[0, 0.3]}
               className="text-center mb-8"
             >
@@ -214,7 +93,7 @@ export default function AboutPageContent() {
                 Every action timestamped, every decision defensible
               </p>
             </ScrollReveal>
-            <ScrollReveal variant="fadeUp" range={[0.04, 0.34]}>
+            <ScrollReveal variant="depthSlide" range={[0.04, 0.34]}>
               <DemoAuditTrailCard
                 glowColor="from-purple-500/15 to-pink-500/15"
                 entries={[
@@ -266,7 +145,7 @@ export default function AboutPageContent() {
       <DeferredSection minHeight={250}>
         <section className="mk-section relative">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <ScrollReveal variant="slideUp" range={[0, 0.3]}>
+            <ScrollReveal variant="depthSlide" range={[0, 0.3]}>
               <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-10 shadow-2xl">
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                   <div>

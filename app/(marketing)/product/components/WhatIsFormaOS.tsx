@@ -3,6 +3,7 @@
 import { Building2, FileCheck, Database, AlertTriangle, Shield, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 export function WhatIsFormaOS() {
   const unifies = [
@@ -22,9 +23,9 @@ export function WhatIsFormaOS() {
       />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
+        <ScrollReveal variant="depthSlide" range={[0, 0.35]}>
           <div className="text-center mb-16">
-            <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
+            <ScrollReveal variant="depthScale" range={[0, 0.3]}>
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-sm font-medium mb-6">
                 <span className="w-2 h-2 rounded-full bg-teal-400" />
                 What Is FormaOS?
@@ -52,25 +53,19 @@ export function WhatIsFormaOS() {
               FormaOS unifies:
             </h3>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
-              {unifies.map((item, index) => {
+            <SectionChoreography pattern="cascade" stagger={0.04} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+              {unifies.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <ScrollReveal
-                    key={item.label}
-                    variant="fadeUp"
-                    range={[index * 0.04, 0.3 + index * 0.04]}
-                  >
-                    <div className="flex flex-col items-center text-center group">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500/20 to-emerald-500/10 border border-teal-500/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                        <Icon className="w-6 h-6 text-teal-400" />
-                      </div>
-                      <span className="text-sm text-gray-400">{item.label}</span>
+                  <div key={item.label} className="flex flex-col items-center text-center group">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500/20 to-emerald-500/10 border border-teal-500/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <Icon className="w-6 h-6 text-teal-400" />
                     </div>
-                  </ScrollReveal>
+                    <span className="text-sm text-gray-400">{item.label}</span>
+                  </div>
                 );
               })}
-            </div>
+            </SectionChoreography>
 
             <p className="text-center text-gray-500 mt-8 text-sm">
               ...into a single, continuously operating system.

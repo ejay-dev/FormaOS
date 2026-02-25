@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ArrowRight, Check, Target } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { brand } from '@/config/brand';
 import { easing, duration } from '@/config/motion';
 
@@ -162,7 +163,7 @@ export function PricingTiers() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
-        <ScrollReveal variant="blurIn" range={[0, 0.35]} className="text-center mb-16">
+        <ScrollReveal variant="depthScale" range={[0, 0.35]} className="text-center mb-16">
           <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-semibold uppercase tracking-wider mb-6">
               <Target className="h-3 w-3 text-emerald-400" />
@@ -185,12 +186,10 @@ export function PricingTiers() {
         </ScrollReveal>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {pricingTiers.map((tier, idx) => (
-            <ScrollReveal
+        <SectionChoreography pattern="center-burst" stagger={0.06} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {pricingTiers.map((tier) => (
+            <div
               key={tier.name}
-              variant="scaleUp"
-              range={[idx * 0.05, 0.3 + idx * 0.05]}
               className={`group relative ${tier.featured ? 'lg:-mt-4 lg:mb-4' : ''}`}
             >
               <motion.div
@@ -319,9 +318,9 @@ export function PricingTiers() {
                 </Link>
               </div>
               </motion.div>
-            </ScrollReveal>
+            </div>
           ))}
-        </div>
+        </SectionChoreography>
       </div>
     </section>
   );

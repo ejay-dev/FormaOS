@@ -7,8 +7,8 @@ import {
   useScroll,
   useTransform,
 } from 'framer-motion';
-import { Reveal } from '@/components/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const trustWorkflow = [
   {
@@ -44,7 +44,7 @@ export function TrustWorkflow() {
 
   return (
     <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-      <Reveal variant="fadeInUp">
+      <ScrollReveal variant="depthScale" range={[0, 0.35]}>
         <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.07] via-white/[0.04] to-transparent p-7 backdrop-blur-sm lg:p-10">
           <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-300">
             Trust Workflow
@@ -169,10 +169,9 @@ export function TrustWorkflow() {
             </motion.div>
           </div>
 
-          <div className="mt-6 grid gap-3 md:grid-cols-3">
-            {trustWorkflow.map((item, i) => (
-              <ScrollReveal key={item.step} variant={i % 2 === 0 ? 'fadeUp' : 'fadeLeft'} range={[i * 0.04, 0.3 + i * 0.04]}>
-                <article className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4">
+          <SectionChoreography pattern="alternating" stagger={0.05} className="mt-6 grid gap-3 md:grid-cols-3">
+            {trustWorkflow.map((item) => (
+                <article key={item.step} className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4">
                   <p className="text-xs font-semibold uppercase tracking-wider text-cyan-200">
                     {item.step}
                   </p>
@@ -180,11 +179,10 @@ export function TrustWorkflow() {
                     {item.detail}
                   </p>
                 </article>
-              </ScrollReveal>
             ))}
-          </div>
+          </SectionChoreography>
         </div>
-      </Reveal>
+      </ScrollReveal>
     </section>
   );
 }

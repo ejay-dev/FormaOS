@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { CheckCircle2, XCircle, Clock, Activity } from 'lucide-react';
 import { fetchPublicUptimeChecks } from '@/lib/status/public-uptime';
+import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
+import { CompactHero } from '@/components/motion/CompactHero';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
@@ -49,21 +51,18 @@ export default async function StatusPage() {
   })();
 
   return (
-    <main className="bg-background min-h-screen">
-      <div className="mx-auto max-w-5xl px-6 py-24">
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-4">
-            <Activity className="h-8 w-8 text-primary" aria-hidden="true" />
-            <h1 className="text-3xl font-bold text-foreground">Status</h1>
-          </div>
-          <p className="text-muted-foreground text-lg">
-            Uptime checks are published from a scheduled health probe. This page
-            reports platform availability signals, not contractual SLAs.
-          </p>
-          <p className="text-sm text-muted-foreground mt-2">
-            Updated: {now.toLocaleString()}
-          </p>
-        </div>
+    <MarketingPageShell>
+      <CompactHero
+        title="System Status"
+        description="Uptime checks are published from a scheduled health probe. This page reports platform availability signals, not contractual SLAs."
+        topColor="emerald"
+        bottomColor="cyan"
+      />
+
+      <div className="mx-auto max-w-5xl px-6 pb-24">
+        <p className="text-sm text-muted-foreground mb-8">
+          Updated: {now.toLocaleString()}
+        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="rounded-2xl border border-border bg-card p-6">
@@ -137,6 +136,6 @@ export default async function StatusPage() {
           </div>
         </div>
       </div>
-    </main>
+    </MarketingPageShell>
   );
 }

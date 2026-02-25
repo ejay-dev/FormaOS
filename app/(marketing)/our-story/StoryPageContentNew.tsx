@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useRef } from 'react';
 import {
   ArrowRight,
   Sparkles,
@@ -15,17 +14,13 @@ import {
   Users,
   FileCheck,
 } from 'lucide-react';
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from 'framer-motion';
+import { motion } from 'framer-motion';
 import { duration } from '@/config/motion';
 import dynamic from 'next/dynamic';
 import { VisualDivider } from '@/components/motion';
-import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
-import { CursorTilt } from '@/components/motion/CursorTilt';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
+import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { DeferredSection } from '../components/shared';
 import { brand } from '@/config/brand';
 
@@ -44,124 +39,33 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 // Story Hero Section
 // ----------------------------------------------------------------------------
 export function StoryHero() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const shouldReduceMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  });
-
-  // Buffered hero exit: hold fully visible first, then progressive cinematic fade
-  const contentOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.24, 0.82, 0.96],
-    [1, 1, 0.35, 0],
-  );
-  const contentScale = useTransform(
-    scrollYProgress,
-    [0, 0.24, 0.82, 0.96],
-    [1, 1, 0.97, 0.94],
-  );
-  const contentY = useTransform(scrollYProgress, [0, 0.82, 1], [0, 52, 110]);
-
   return (
-    <section
-      ref={containerRef}
-      className="mk-hero relative flex items-center justify-center overflow-hidden"
-    >
-      <HeroAtmosphere topColor="violet" bottomColor="cyan" />
-
-      {/* Main Hero Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <CursorTilt
-          intensity={3}
-          glowFollow
-          glowColor="139,92,246"
-          className="w-full"
-        >
-          <div className="flex flex-col items-center text-center">
-            <motion.div
-              style={
-                shouldReduceMotion
-                  ? undefined
-                  : {
-                      opacity: contentOpacity,
-                      scale: contentScale,
-                      y: contentY,
-                    }
-              }
-            >
-              {/* Badge */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slow, delay: 0.2 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/30 mb-8 backdrop-blur-sm"
-              >
-                <Sparkles className="w-4 h-4 text-indigo-400" />
-                <span className="text-sm text-indigo-400 font-medium tracking-wide">
-                  Our Story
-                </span>
-              </motion.div>
-
-              {/* Headline */}
-              <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slower, delay: 0.3 }}
-                className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
-              >
-                Built for Organizations Where
-                <br />
-                <span className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                  Compliance Is Mission-Critical
-                </span>
-              </motion.h1>
-
-              {/* Subheadline */}
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slower, delay: 0.5 }}
-                className="text-lg sm:text-xl text-gray-400 mb-10 max-w-3xl mx-auto text-center leading-relaxed"
-              >
-                FormaOS was created for teams that operate in environments where
-                failure is not an option. Healthcare, disability services,
-                finance, education, and government don&apos;t just need
-                software, they need systems that can withstand scrutiny, audits,
-                and real-world consequences.
-              </motion.p>
-
-              {/* CTAs */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slower, delay: 0.7 }}
-                className="flex flex-col sm:flex-row items-center justify-center gap-4"
-              >
-                <Link
-                  href={`${appBase}/auth/signup`}
-                  className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 px-8 py-4 text-base font-semibold text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
-                >
-                  <span className="relative z-10 flex items-center gap-2">
-                    Start Free Trial
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                  </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </Link>
-                <Link
-                  href="/contact"
-                  className="group flex items-center gap-2 px-8 py-4 rounded-2xl border-2 border-white/20 text-base font-semibold text-white hover:bg-white/[0.08] hover:border-white/30 transition-all duration-300 backdrop-blur-sm"
-                >
-                  Request a Demo
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                </Link>
-              </motion.div>
-            </motion.div>
-          </div>
-        </CursorTilt>
-      </div>
-    </section>
+    <ImmersiveHero
+      theme="our-story"
+      badge={{
+        icon: <Sparkles className="w-4 h-4" />,
+        text: 'Our Story',
+        colorClass: 'indigo',
+      }}
+      headline={
+        <>
+          Built for Organizations Where
+          <br />
+          <span className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+            Compliance Is Mission-Critical
+          </span>
+        </>
+      }
+      subheadline="FormaOS was created for teams that operate in environments where failure is not an option. Healthcare, disability services, finance, education, and government don't just need software, they need systems that can withstand scrutiny, audits, and real-world consequences."
+      primaryCta={{
+        href: `${appBase}/auth/signup`,
+        label: 'Start Free Trial',
+      }}
+      secondaryCta={{
+        href: '/contact',
+        label: 'Request a Demo',
+      }}
+    />
   );
 }
 
@@ -357,24 +261,17 @@ function TheProblem() {
           className="mb-10"
         >
           <p className="text-xl text-white font-semibold mb-6">The result?</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <SectionChoreography pattern="stagger-wave" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {problems.map((problem, idx) => (
-              <motion.div
+              <div
                 key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: duration.normal,
-                  delay: 0.3 + idx * 0.1,
-                }}
                 className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20"
               >
                 <span className="w-2 h-2 rounded-full bg-red-400 flex-shrink-0" />
                 <span className="text-gray-300">{problem}</span>
-              </motion.div>
+              </div>
             ))}
-          </div>
+          </SectionChoreography>
         </motion.div>
 
         {/* Closing */}
@@ -502,26 +399,19 @@ function TheApproach() {
           <p className="text-lg text-white font-medium mb-6">
             With FormaOS, organizations:
           </p>
-          <div className="space-y-4">
+          <SectionChoreography pattern="cascade" className="space-y-4">
             {capabilities.map((capability, idx) => (
-              <motion.div
+              <div
                 key={idx}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: duration.normal,
-                  delay: 0.3 + idx * 0.1,
-                }}
                 className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] border border-white/10 hover:border-indigo-500/30 transition-all duration-300"
               >
                 <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   <capability.icon className="w-5 h-5 text-indigo-400" />
                 </div>
                 <span className="text-lg text-gray-300">{capability.text}</span>
-              </motion.div>
+              </div>
             ))}
-          </div>
+          </SectionChoreography>
         </motion.div>
 
         {/* Live compliance chain demo */}
@@ -750,17 +640,10 @@ function WhatMakesUsDifferent() {
           className="mb-12"
         >
           <p className="text-lg text-white font-medium mb-8">Key principles:</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {principles.map((principle, idx) => (
+          <SectionChoreography pattern="alternating" className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {principles.map((principle) => (
               <motion.div
                 key={principle.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: duration.normal,
-                  delay: 0.2 + idx * 0.1,
-                }}
                 whileHover={{ y: -8, transition: { duration: duration.fast } }}
                 className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-indigo-500/30 transition-all duration-500"
               >
@@ -780,7 +663,7 @@ function WhatMakesUsDifferent() {
                 </div>
               </motion.div>
             ))}
-          </div>
+          </SectionChoreography>
         </motion.div>
 
         {/* Closing */}
@@ -890,24 +773,17 @@ function OurMission() {
             We believe every organization operating in regulated environments
             deserves systems that:
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <SectionChoreography pattern="stagger-wave" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {beliefs.map((belief, idx) => (
-              <motion.div
+              <div
                 key={idx}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: duration.normal,
-                  delay: 0.3 + idx * 0.1,
-                }}
                 className="flex items-center gap-3 p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20"
               >
                 <CheckCircle className="w-5 h-5 text-cyan-400 flex-shrink-0" />
                 <span className="text-gray-300">{belief}</span>
-              </motion.div>
+              </div>
             ))}
-          </div>
+          </SectionChoreography>
         </motion.div>
 
         {/* Closing */}

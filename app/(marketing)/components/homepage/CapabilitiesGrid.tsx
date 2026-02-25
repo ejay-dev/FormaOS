@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import {
   Workflow,
   Database,
@@ -194,44 +195,38 @@ export function CapabilitiesGrid() {
                   </div>
                 </ScrollReveal>
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {categoryCapabilities.map((capability, index) => {
+                <SectionChoreography pattern="stagger-wave" stagger={0.04} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {categoryCapabilities.map((capability) => {
                     const Icon = capability.icon;
-                    const globalIndex = category.range[0] + index;
                     return (
-                      <ScrollReveal
+                      <motion.div
                         key={capability.title}
-                        variant="blurIn"
-                        range={[globalIndex * 0.025, 0.25 + globalIndex * 0.025]}
+                        whileHover={{ y: -4 }}
+                        className="group relative p-6 rounded-xl bg-gray-950/50 border-l-2 border-l-white/10 border border-white/[0.04] hover:border-l-teal-500/50 transition-all cursor-pointer"
                       >
-                        <motion.div
-                          whileHover={{ y: -4 }}
-                          className="group relative p-6 rounded-xl bg-gray-950/50 border-l-2 border-l-white/10 border border-white/[0.04] hover:border-l-teal-500/50 transition-all cursor-pointer"
-                        >
-                          <div
-                            className={`absolute inset-0 rounded-xl bg-gradient-to-br ${capability.color} opacity-0 group-hover:opacity-5 transition-opacity`}
-                          />
+                        <div
+                          className={`absolute inset-0 rounded-xl bg-gradient-to-br ${capability.color} opacity-0 group-hover:opacity-5 transition-opacity`}
+                        />
 
-                          <div className="flex items-start gap-4">
-                            <div
-                              className={`inline-flex p-2.5 rounded-lg bg-gradient-to-br ${capability.color} flex-shrink-0 group-hover:scale-110 transition-transform`}
-                            >
-                              <Icon className="w-5 h-5 text-white" />
-                            </div>
-                            <div>
-                              <h3 className="text-base font-semibold mb-1.5 group-hover:text-teal-400 transition-colors">
-                                {capability.title}
-                              </h3>
-                              <p className="text-sm text-gray-500 leading-relaxed">
-                                {capability.description}
-                              </p>
-                            </div>
+                        <div className="flex items-start gap-4">
+                          <div
+                            className={`inline-flex p-2.5 rounded-lg bg-gradient-to-br ${capability.color} flex-shrink-0 group-hover:scale-110 transition-transform`}
+                          >
+                            <Icon className="w-5 h-5 text-white" />
                           </div>
-                        </motion.div>
-                      </ScrollReveal>
+                          <div>
+                            <h3 className="text-base font-semibold mb-1.5 group-hover:text-teal-400 transition-colors">
+                              {capability.title}
+                            </h3>
+                            <p className="text-sm text-gray-500 leading-relaxed">
+                              {capability.description}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
                     );
                   })}
-                </div>
+                </SectionChoreography>
               </div>
             );
           })}

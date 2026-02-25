@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
   BookOpen,
@@ -14,16 +14,11 @@ import {
   CalendarDays,
   Search,
 } from 'lucide-react';
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from 'framer-motion';
-import { duration } from '@/config/motion';
+import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
-import { CursorTilt } from '@/components/motion/CursorTilt';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
+import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
+import { BlogListHeroVisual } from './components/BlogListHeroVisual';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
@@ -45,9 +40,7 @@ const parseDate = (value: string) => new Date(value).getTime();
 // HERO SECTION
 // ============================================================================
 
-function BlogHero() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const shouldReduceMotion = useReducedMotion();
+function BlogHeroExtras() {
   const latestPostDate = useMemo(() => {
     const sorted = [...blogPosts].sort(
       (a, b) => parseDate(b.date) - parseDate(a.date),
@@ -55,117 +48,37 @@ function BlogHero() {
     return sorted[0]?.date;
   }, []);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  });
-
-  // Buffered hero exit: hold fully visible first, then progressive cinematic fade
-  const contentOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.24, 0.82, 0.96],
-    [1, 1, 0.35, 0],
-  );
-  const contentScale = useTransform(
-    scrollYProgress,
-    [0, 0.24, 0.82, 0.96],
-    [1, 1, 0.97, 0.94],
-  );
-  const contentY = useTransform(scrollYProgress, [0, 0.82, 1], [0, 52, 110]);
-  const sa = !shouldReduceMotion;
-
   return (
-    <section
-      ref={containerRef}
-      className="mk-hero relative flex items-center justify-center overflow-hidden"
-    >
-      <HeroAtmosphere topColor="blue" bottomColor="violet" />
-
-      {/* Main Hero Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <CursorTilt
-          intensity={3}
-          glowFollow
-          glowColor="139,92,246"
-          className="w-full"
-        >
-          <div className="flex flex-col items-center text-center">
-            <motion.div
-              style={
-                sa
-                  ? {
-                      opacity: contentOpacity,
-                      scale: contentScale,
-                      y: contentY,
-                    }
-                  : undefined
-              }
-            >
-              {/* Badge */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slow, delay: 0.2 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 mb-8 backdrop-blur-sm"
-              >
-                <BookOpen className="w-4 h-4 text-purple-400" />
-                <span className="text-sm text-purple-400 font-medium tracking-wide">
-                  Insights & Updates
-                </span>
-              </motion.div>
-
-              {/* Headline */}
-              <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slower, delay: 0.3 }}
-                className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
-              >
-                FormaOS{' '}
-                <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">
-                  Blog
-                </span>
-              </motion.h1>
-
-              {/* Subheadline */}
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slower, delay: 0.5 }}
-                className="text-lg sm:text-xl text-gray-400 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
-              >
-                Expert perspectives on compliance management, regulatory
-                technology, and building operational excellence in regulated
-                industries.
-              </motion.p>
-
-              {/* Stats Row */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: duration.slower, delay: 0.6 }}
-                className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500"
-              >
-                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1]">
-                  <Tag className="w-4 h-4 text-purple-400" />
-                  <span>{blogPosts.length} Articles</span>
-                </div>
-                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1]">
-                  <BookOpen className="w-4 h-4 text-pink-400" />
-                  <span>{categories.length - 1} Categories</span>
-                </div>
-                {latestPostDate ? (
-                  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1]">
-                    <TrendingUp className="w-4 h-4 text-cyan-400" />
-                    <span>Last updated {latestPostDate}</span>
-                  </div>
-                ) : null}
-              </motion.div>
-            </motion.div>
-          </div>
-        </CursorTilt>
+    <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500">
+      <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1]">
+        <Tag className="w-4 h-4 text-purple-400" />
+        <span>{blogPosts.length} Articles</span>
       </div>
-    </section>
+      <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1]">
+        <BookOpen className="w-4 h-4 text-pink-400" />
+        <span>{categories.length - 1} Categories</span>
+      </div>
+      {latestPostDate ? (
+        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1]">
+          <TrendingUp className="w-4 h-4 text-cyan-400" />
+          <span>Last updated {latestPostDate}</span>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function BlogHero() {
+  return (
+    <ImmersiveHero
+      theme="blog"
+      visualContent={<BlogListHeroVisual />}
+      badge={{ icon: <BookOpen className="w-4 h-4 text-violet-400" />, text: 'Insights & Updates', colorClass: 'violet' }}
+      headline={<>FormaOS{' '}<span className="bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">Blog</span></>}
+      subheadline="Expert perspectives on compliance management, regulatory technology, and building operational excellence in regulated industries."
+      extras={<BlogHeroExtras />}
+      primaryCta={{ href: '/blog#featured', label: 'Read Featured Article' }}
+    />
   );
 }
 
@@ -324,24 +237,17 @@ function CategoryFilter({
 
 function BlogCard({
   post,
-  index,
 }: {
   post: (typeof blogPosts)[0];
-  index: number;
 }) {
   const Icon = post.icon;
 
   return (
     <Link
       href={`/blog/${post.id}`}
-      className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/60 rounded-2xl"
+      className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/60 rounded-2xl h-full"
       aria-label={`Read ${post.title}`}
     >
-      <ScrollReveal
-        variant="scaleUp"
-        range={[index * 0.04, 0.3 + index * 0.04]}
-        className="h-full"
-      >
         <div className="relative h-full p-6 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-purple-500/30 transition-all duration-500 shadow-xl shadow-black/20">
           {/* Top accent */}
           <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-purple-400/30 transition-colors" />
@@ -395,7 +301,6 @@ function BlogCard({
             </span>
           </div>
         </div>
-      </ScrollReveal>
     </Link>
   );
 }
@@ -443,11 +348,11 @@ function BlogGrid({
         </ScrollReveal>
 
         {posts.length ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {posts.map((post, index) => (
-              <BlogCard key={post.id} post={post} index={index} />
+          <SectionChoreography pattern="stagger-wave" className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post) => (
+              <BlogCard key={post.id} post={post} />
             ))}
-          </div>
+          </SectionChoreography>
         ) : (
           <div className="rounded-2xl border border-white/[0.08] backdrop-blur-xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] p-10 text-center text-gray-400">
             No articles match your search. Try a different keyword or category.
@@ -494,7 +399,7 @@ function NewsletterCTA() {
       </div>
 
       <div className="relative max-w-4xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="slideUp" range={[0, 0.3]}>
+        <ScrollReveal variant="depthScale" range={[0, 0.3]}>
           <div className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/30">
             <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-purple-400/40 to-transparent" />
 

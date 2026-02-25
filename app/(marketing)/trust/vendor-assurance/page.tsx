@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ShieldCheck, ArrowRight, FileText, CalendarDays } from 'lucide-react';
+import { ArrowRight, FileText, CalendarDays } from 'lucide-react';
 import { brand } from '@/config/brand';
+import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
+import { CompactHero } from '@/components/motion/CompactHero';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
@@ -22,23 +24,14 @@ export const metadata: Metadata = {
 
 export default function VendorAssurancePage() {
   return (
-    <main className="bg-background min-h-screen">
-      <div className="mx-auto max-w-5xl px-6 py-24">
-        <header className="mb-12">
-          <div className="flex items-center gap-3 mb-4">
-            <ShieldCheck className="h-8 w-8 text-primary" aria-hidden="true" />
-            <h1 className="text-3xl font-bold text-foreground">
-              Vendor Assurance
-            </h1>
-          </div>
-          <p className="text-muted-foreground text-lg">
-            This page describes our vendor assurance process and the artifacts
-            we provide during procurement. We do not claim SOC 2 or ISO
-            certification for FormaOS unless an independent audit report exists
-            for FormaOS as a vendor.
-          </p>
-        </header>
-
+    <MarketingPageShell>
+      <CompactHero
+        title="Vendor Assurance"
+        description="This page describes our vendor assurance process and the artifacts we provide during procurement. We do not claim SOC 2 or ISO certification for FormaOS unless an independent audit report exists for FormaOS as a vendor."
+        topColor="emerald"
+        bottomColor="cyan"
+      />
+      <div className="mx-auto max-w-5xl px-6 pb-24">
         <section className="rounded-2xl border border-border bg-card p-7">
           <div className="flex items-start gap-3">
             <FileText className="mt-0.5 h-5 w-5 text-primary" aria-hidden="true" />
@@ -141,7 +134,7 @@ export default function VendorAssurancePage() {
           </Link>
         </div>
       </div>
-    </main>
+    </MarketingPageShell>
   );
 }
 

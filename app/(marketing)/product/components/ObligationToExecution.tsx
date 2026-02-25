@@ -2,6 +2,7 @@
 
 import { ArrowRight, CheckCircle, Activity, UserCheck } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import dynamic from 'next/dynamic';
 
 const DemoComplianceChain = dynamic(() => import('@/components/marketing/demo/DemoComplianceChain'), { ssr: false });
@@ -41,40 +42,34 @@ export function ObligationToExecution() {
           </div>
         </ScrollReveal>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <SectionChoreography pattern="cascade" stagger={0.04} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {flow.map((item, index) => (
-            <ScrollReveal
-              key={item.step}
-              variant="fadeUp"
-              range={[index * 0.04, 0.3 + index * 0.04]}
-            >
-              <div className="relative group">
-                <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-teal-500/30 transition-all">
-                  <div className={`inline-flex px-3 py-1 rounded-full bg-gradient-to-r ${item.color} text-white text-xs font-semibold mb-4`}>
-                    {item.step}
-                  </div>
-                  <p className="text-gray-400">
-                    become{' '}
-                    <span className="text-white font-medium">{item.becomes}</span>
-                  </p>
+            <div key={item.step} className="relative group">
+              <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-teal-500/30 transition-all">
+                <div className={`inline-flex px-3 py-1 rounded-full bg-gradient-to-r ${item.color} text-white text-xs font-semibold mb-4`}>
+                  {item.step}
                 </div>
-                {index < flow.length - 1 && (
-                  <div className="hidden lg:block absolute top-1/2 -right-3 transform -translate-y-1/2 z-10">
-                    <ArrowRight className="w-5 h-5 text-gray-600" />
-                  </div>
-                )}
+                <p className="text-gray-400">
+                  become{' '}
+                  <span className="text-white font-medium">{item.becomes}</span>
+                </p>
               </div>
-            </ScrollReveal>
+              {index < flow.length - 1 && (
+                <div className="hidden lg:block absolute top-1/2 -right-3 transform -translate-y-1/2 z-10">
+                  <ArrowRight className="w-5 h-5 text-gray-600" />
+                </div>
+              )}
+            </div>
           ))}
-        </div>
+        </SectionChoreography>
 
-        <ScrollReveal variant="fadeUp" range={[0.1, 0.4]}>
+        <ScrollReveal variant="depthSlide" range={[0.1, 0.4]}>
           <div className="mt-12 max-w-2xl mx-auto">
             <DemoComplianceChain glowColor="from-purple-500/15 to-pink-500/15" />
           </div>
         </ScrollReveal>
 
-        <ScrollReveal variant="fadeUp" range={[0.12, 0.42]}>
+        <ScrollReveal variant="perspectiveUp" range={[0.12, 0.42]}>
           <div className="mt-12 grid sm:grid-cols-3 gap-6 text-center">
             <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
               <Activity className="w-4 h-4 text-teal-400" />

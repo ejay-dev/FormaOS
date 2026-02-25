@@ -1,17 +1,15 @@
 'use client';
 
 import Link from 'next/link';
-import { useRef } from 'react';
 import { ArrowRight, CheckCircle2, Quote, ShieldCheck } from 'lucide-react';
-import { useScroll, useTransform, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { brand } from '@/config/brand';
-import { Reveal, VisualDivider } from '@/components/motion';
-import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
-import { CursorTilt } from '@/components/motion/CursorTilt';
+import { VisualDivider } from '@/components/motion';
+import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DeferredSection } from '../components/shared';
-import { easing, duration } from '@/config/motion';
-import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -55,96 +53,35 @@ const stories = [
 ] as const;
 
 export default function CustomerStoriesContent() {
-  const heroRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ['start start', 'end start'],
-  });
-  const contentOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.24, 0.82, 0.96],
-    [1, 1, 0.35, 0],
-  );
-  const contentScale = useTransform(
-    scrollYProgress,
-    [0, 0.24, 0.82, 0.96],
-    [1, 1, 0.97, 0.94],
-  );
-  const contentY = useTransform(scrollYProgress, [0, 0.82, 1], [0, 52, 110]);
-
   return (
     <MarketingPageShell>
       {/* Hero */}
-      <section
-        ref={heroRef}
-        className="mk-hero relative flex items-center justify-center overflow-hidden"
-      >
-        <HeroAtmosphere topColor="cyan" bottomColor="blue" />
-        <motion.div
-          style={{ opacity: contentOpacity, scale: contentScale, y: contentY }}
-          className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
-        >
-          <CursorTilt intensity={3} glowFollow glowColor="34,211,238">
-            <div className="flex flex-col items-center text-center">
-              <Reveal variant="fadeInUp">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 backdrop-blur-sm">
-                  <ShieldCheck className="w-4 h-4 text-cyan-400" />
-                  <span className="text-sm text-cyan-400 font-medium tracking-wide">
-                    Proof in Practice
-                  </span>
-                </div>
-              </Reveal>
-              <Reveal variant="fadeInUp" delay={0.1}>
-                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white">
-                  Use Case Scenarios from
-                  <br />
-                  <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-teal-400 bg-clip-text text-transparent">
-                    Regulated Industries
-                  </span>
-                </h1>
-              </Reveal>
-              <Reveal variant="fadeInUp" delay={0.2}>
-                <p className="text-lg sm:text-xl text-gray-400 mb-10 max-w-3xl mx-auto text-center leading-relaxed">
-                  These examples are anonymized by default. If you&apos;re
-                  evaluating FormaOS for procurement, we can share deeper
-                  walkthroughs under NDA.
-                </p>
-              </Reveal>
-              <Reveal variant="fadeInUp" delay={0.3}>
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                  <Link
-                    href="/contact"
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_24px_rgba(34,211,238,0.25)] transition hover:shadow-[0_0_32px_rgba(34,211,238,0.4)]"
-                  >
-                    Request a Guided Demo
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                  <Link
-                    href={`${appBase}/auth/signup?source=customer_stories`}
-                    className="inline-flex items-center justify-center rounded-xl border border-white/20 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
-                  >
-                    Start Free Trial
-                  </Link>
-                </div>
-              </Reveal>
-            </div>
-          </CursorTilt>
-        </motion.div>
-      </section>
+      <ImmersiveHero
+        theme="customer-stories"
+        badge={{ icon: <ShieldCheck className="w-4 h-4" />, text: 'Proof in Practice' }}
+        headline={
+          <>
+            Use Case Scenarios from
+            <br />
+            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-teal-400 bg-clip-text text-transparent">
+              Regulated Industries
+            </span>
+          </>
+        }
+        subheadline="These examples are anonymized by default. If you're evaluating FormaOS for procurement, we can share deeper walkthroughs under NDA."
+        primaryCta={{ href: '/contact', label: 'Request a Guided Demo' }}
+        secondaryCta={{ href: `${appBase}/auth/signup?source=customer_stories`, label: 'Start Free Trial' }}
+      />
 
       <VisualDivider />
 
       {/* Story Cards */}
       <DeferredSection minHeight={500}>
         <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-          <div className="grid gap-4 lg:grid-cols-3">
-            {stories.map((s, i) => (
-              <ScrollReveal
-                key={s.title}
-                variant="fadeUp"
-                range={[i * 0.04, 0.3 + i * 0.04]}
-              >
+          <SectionChoreography pattern="stagger-wave" className="grid gap-4 lg:grid-cols-3">
+            {stories.map((s) => (
                 <motion.article
+                  key={s.title}
                   whileHover={{ y: -6 }}
                   className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
                 >
@@ -183,9 +120,8 @@ export default function CustomerStoriesContent() {
                     </div>
                   </div>
                 </motion.article>
-              </ScrollReveal>
             ))}
-          </div>
+          </SectionChoreography>
         </section>
       </DeferredSection>
 
@@ -194,7 +130,7 @@ export default function CustomerStoriesContent() {
       {/* Buyer-ready proof walkthrough CTA */}
       <DeferredSection minHeight={160}>
         <section className="relative mx-auto max-w-7xl px-4 pb-6 sm:px-6 lg:px-8">
-          <Reveal>
+          <ScrollReveal variant="depthSlide" range={[0, 0.35]}>
             <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.06] via-white/[0.03] to-transparent backdrop-blur-sm p-7 lg:p-10">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
@@ -215,14 +151,14 @@ export default function CustomerStoriesContent() {
                 </Link>
               </div>
             </div>
-          </Reveal>
+          </ScrollReveal>
         </section>
       </DeferredSection>
 
       {/* ROI Proof */}
       <DeferredSection minHeight={400}>
         <section className="relative mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
-          <Reveal>
+          <ScrollReveal variant="depthSlide" range={[0, 0.35]}>
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7 lg:p-10">
               <h3 className="text-lg font-semibold text-white">
                 ROI Proof (Structure)
@@ -233,18 +169,8 @@ export default function CustomerStoriesContent() {
                 prep, evidence collection, register tracking, incident handling)
                 and converting to fully loaded wage rates (low/median/high).
               </p>
-              <div className="mt-5 grid gap-3 md:grid-cols-3">
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: duration.fast,
-                    delay: 0.1,
-                    ease: easing.signature,
-                  }}
-                  className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4"
-                >
+              <SectionChoreography pattern="stagger-wave" className="mt-5 grid gap-3 md:grid-cols-3">
+                <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
                   <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                     Inputs
                   </div>
@@ -253,18 +179,8 @@ export default function CustomerStoriesContent() {
                     <li>Audit cycle frequency</li>
                     <li>Wage assumptions (low/median/high)</li>
                   </ul>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: duration.fast,
-                    delay: 0.18,
-                    ease: easing.signature,
-                  }}
-                  className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4"
-                >
+                </div>
+                <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
                   <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                     Outputs
                   </div>
@@ -273,18 +189,8 @@ export default function CustomerStoriesContent() {
                     <li>Annualized savings ($)</li>
                     <li>Payback period (months)</li>
                   </ul>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: duration.fast,
-                    delay: 0.26,
-                    ease: easing.signature,
-                  }}
-                  className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4"
-                >
+                </div>
+                <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
                   <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                     Proof
                   </div>
@@ -293,8 +199,8 @@ export default function CustomerStoriesContent() {
                     <li>Audit log excerpts</li>
                     <li>Governance pack PDF/ZIP artifacts</li>
                   </ul>
-                </motion.div>
-              </div>
+                </div>
+              </SectionChoreography>
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Link
@@ -313,7 +219,7 @@ export default function CustomerStoriesContent() {
                 </Link>
               </div>
             </div>
-          </Reveal>
+          </ScrollReveal>
         </section>
       </DeferredSection>
     </MarketingPageShell>

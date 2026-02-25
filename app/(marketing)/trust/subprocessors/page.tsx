@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Server } from 'lucide-react';
 import { TRUST_SUBPROCESSORS } from '@/lib/trust/subprocessors';
+import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
+import { CompactHero } from '@/components/motion/CompactHero';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
@@ -25,24 +26,17 @@ const subprocessors = [
 
 export default function SubprocessorsPage() {
   return (
-    <main className="bg-background min-h-screen">
-      <div className="mx-auto max-w-4xl px-6 py-24">
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-4">
-            <Server className="h-8 w-8 text-primary" aria-hidden="true" />
-            <h1 className="text-3xl font-bold text-foreground">
-              Sub-processors
-            </h1>
-          </div>
-          <p className="text-muted-foreground text-lg">
-            FormaOS uses the following third-party service providers to deliver
-            our compliance management platform. We provide 30 days advance
-            notice before engaging new sub-processors.
-          </p>
-          <p className="text-sm text-muted-foreground mt-2">
-            Last updated: February 2026
-          </p>
-        </div>
+    <MarketingPageShell>
+      <CompactHero
+        title="Subprocessors"
+        description="FormaOS uses the following third-party service providers to deliver our compliance management platform. We provide 30 days advance notice before engaging new sub-processors."
+        topColor="emerald"
+        bottomColor="cyan"
+      />
+      <div className="mx-auto max-w-4xl px-6 pb-24">
+        <p className="text-sm text-muted-foreground mt-2 mb-12">
+          Last updated: February 2026
+        </p>
 
         <div className="space-y-4">
           {subprocessors.map((sp) => {
@@ -98,6 +92,6 @@ export default function SubprocessorsPage() {
           </Link>
         </div>
       </div>
-    </main>
+    </MarketingPageShell>
   );
 }

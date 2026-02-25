@@ -10,6 +10,7 @@ import {
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const DemoWorkflowTimeline = dynamic(
   () => import('@/components/marketing/demo/DemoWorkflowTimeline'),
@@ -71,7 +72,7 @@ export function CrossIndustryPrinciples() {
   return (
     <section className="relative py-32 overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="blurIn" range={[0, 0.35]}>
+        <ScrollReveal variant="depthScale" range={[0, 0.35]}>
           <div className="text-center mb-16">
             <ScrollReveal variant="scaleUp" range={[0.02, 0.3]}>
               <div
@@ -98,12 +99,12 @@ export function CrossIndustryPrinciples() {
         </ScrollReveal>
 
         {/* Principles Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {principles.map((principle, index) => {
+        <SectionChoreography pattern="stagger-wave" stagger={0.05} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          {principles.map((principle) => {
             const Icon = principle.icon;
             return (
-              <ScrollReveal key={principle.title} variant="scaleUp" range={[index * 0.04, 0.3 + index * 0.04]}>
                 <motion.div
+                  key={principle.title}
                   whileHover={{ y: -4 }}
                   className="group text-center backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] hover:border-purple-500/30 p-6 transition-all duration-300"
                 >
@@ -131,10 +132,9 @@ export function CrossIndustryPrinciples() {
                     {principle.description}
                   </p>
                 </motion.div>
-              </ScrollReveal>
             );
           })}
-        </div>
+        </SectionChoreography>
 
         {/* Live compliance workflow demo */}
         <ScrollReveal variant="fadeUp" range={[0.04, 0.38]}>

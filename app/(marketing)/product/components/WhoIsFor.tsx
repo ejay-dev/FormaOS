@@ -2,6 +2,7 @@
 
 import { Shield, TrendingUp, Settings, FileCheck, AlertTriangle, Users } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const audiences = [
   { label: 'Compliance leaders who need certainty', icon: Shield },
@@ -33,23 +34,17 @@ export function WhoIsFor() {
           </div>
         </ScrollReveal>
 
-        <div className="flex flex-wrap justify-center gap-4">
-          {audiences.map((audience, index) => {
+        <SectionChoreography pattern="center-burst" stagger={0.04} className="flex flex-wrap justify-center gap-4">
+          {audiences.map((audience) => {
             const Icon = audience.icon;
             return (
-              <ScrollReveal
-                key={audience.label}
-                variant="scaleUp"
-                range={[index * 0.04, 0.3 + index * 0.04]}
-              >
-                <div className="flex items-center gap-3 px-5 py-3 rounded-full bg-gradient-to-r from-teal-500/10 to-emerald-500/10 border border-teal-500/20">
-                  <Icon className="w-4 h-4 text-teal-400" />
-                  <span className="text-sm text-gray-300">{audience.label}</span>
-                </div>
-              </ScrollReveal>
+              <div key={audience.label} className="flex items-center gap-3 px-5 py-3 rounded-full bg-gradient-to-r from-teal-500/10 to-emerald-500/10 border border-teal-500/20">
+                <Icon className="w-4 h-4 text-teal-400" />
+                <span className="text-sm text-gray-300">{audience.label}</span>
+              </div>
             );
           })}
-        </div>
+        </SectionChoreography>
       </div>
     </section>
   );

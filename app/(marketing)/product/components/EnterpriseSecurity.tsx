@@ -3,6 +3,7 @@
 import { Shield, Lock, Users, UserCheck, Database } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const securityFeatures = [
   { label: 'SOC 2-aligned controls', icon: Shield },
@@ -29,10 +30,10 @@ export function EnterpriseSecurity() {
       />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
+        <ScrollReveal variant="depthSlide" range={[0, 0.35]}>
           <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 sm:p-12">
             <div className="text-center mb-10">
-              <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
+              <ScrollReveal variant="depthScale" range={[0, 0.3]}>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium mb-6">
                   <Shield className="w-4 h-4" />
                   Enterprise-Grade Security
@@ -48,25 +49,19 @@ export function EnterpriseSecurity() {
               </p>
             </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {securityFeatures.map((feature, index) => {
+            <SectionChoreography pattern="cascade" stagger={0.04} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {securityFeatures.map((feature) => {
                 const Icon = feature.icon;
                 return (
-                  <ScrollReveal
-                    key={feature.label}
-                    variant="fadeUp"
-                    range={[index * 0.04, 0.3 + index * 0.04]}
-                  >
-                    <div className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/5">
-                      <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
-                        <Icon className="w-5 h-5 text-red-400" />
-                      </div>
-                      <span className="text-sm text-gray-300">{feature.label}</span>
+                  <div key={feature.label} className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/5">
+                    <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
+                      <Icon className="w-5 h-5 text-red-400" />
                     </div>
-                  </ScrollReveal>
+                    <span className="text-sm text-gray-300">{feature.label}</span>
+                  </div>
                 );
               })}
-            </div>
+            </SectionChoreography>
           </div>
         </ScrollReveal>
       </div>

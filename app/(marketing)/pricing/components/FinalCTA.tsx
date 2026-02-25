@@ -41,7 +41,7 @@ export function FinalCTA() {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="slideUp" range={[0, 0.35]} className="relative">
+        <ScrollReveal variant="depthSlide" range={[0, 0.35]} className="relative">
           {/* Executive Panel */}
           <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-2xl overflow-hidden max-w-4xl mx-auto">
             {/* Header */}

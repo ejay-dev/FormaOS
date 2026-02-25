@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { FileDown, ShieldCheck, ArrowRight } from 'lucide-react';
+import { FileDown, ArrowRight } from 'lucide-react';
+import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
+import { CompactHero } from '@/components/motion/CompactHero';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
@@ -20,22 +22,14 @@ export const metadata: Metadata = {
 
 export default function TrustPacketPage() {
   return (
-    <main className="bg-background min-h-screen">
-      <div className="mx-auto max-w-4xl px-6 py-24">
-        <div className="mb-10">
-          <div className="flex items-center gap-3 mb-4">
-            <ShieldCheck className="h-8 w-8 text-primary" aria-hidden="true" />
-            <h1 className="text-3xl font-bold text-foreground">
-              Vendor Trust Packet
-            </h1>
-          </div>
-          <p className="text-muted-foreground text-lg">
-            Procurement-ready PDF generated from current system status and the
-            maintained subprocessor list. This packet uses “aligned vs
-            certified” wording intentionally.
-          </p>
-        </div>
-
+    <MarketingPageShell>
+      <CompactHero
+        title="Vendor Trust Packet"
+        description='Procurement-ready PDF generated from current system status and the maintained subprocessor list. This packet uses "aligned vs certified" wording intentionally.'
+        topColor="emerald"
+        bottomColor="cyan"
+      />
+      <div className="mx-auto max-w-4xl px-6 pb-24">
         <div className="rounded-2xl border border-border bg-card p-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -66,6 +60,6 @@ export default function TrustPacketPage() {
           </Link>
         </div>
       </div>
-    </main>
+    </MarketingPageShell>
   );
 }

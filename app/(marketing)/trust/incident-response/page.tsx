@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Siren, ShieldAlert, PhoneCall } from 'lucide-react';
+import { ShieldAlert, PhoneCall } from 'lucide-react';
+import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
+import { CompactHero } from '@/components/motion/CompactHero';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
@@ -20,21 +22,14 @@ export const metadata: Metadata = {
 
 export default function IncidentResponsePage() {
   return (
-    <main className="bg-background min-h-screen">
-      <div className="mx-auto max-w-4xl px-6 py-24">
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-4">
-            <Siren className="h-8 w-8 text-primary" aria-hidden="true" />
-            <h1 className="text-3xl font-bold text-foreground">
-              Incident Response Summary
-            </h1>
-          </div>
-          <p className="text-muted-foreground text-lg">
-            Summary for security and procurement reviewers. Contractual
-            notification terms are defined in your MSA/SOW.
-          </p>
-        </div>
-
+    <MarketingPageShell>
+      <CompactHero
+        title="Incident Response"
+        description="Summary for security and procurement reviewers. Contractual notification terms are defined in your MSA/SOW."
+        topColor="emerald"
+        bottomColor="cyan"
+      />
+      <div className="mx-auto max-w-4xl px-6 pb-24">
         <div className="space-y-8">
           <section className="rounded-2xl border border-border bg-card p-6">
             <div className="flex items-center gap-2 mb-3">
@@ -76,6 +71,6 @@ export default function IncidentResponsePage() {
           </Link>
         </div>
       </div>
-    </main>
+    </MarketingPageShell>
   );
 }

@@ -3,6 +3,7 @@
 import { TrendingUp, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const outcomes = [
   'Continuous compliance, not periodic checks',
@@ -22,10 +23,10 @@ export function TheOutcome() {
       />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
+        <ScrollReveal variant="perspectiveUp" range={[0, 0.35]}>
           <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 sm:p-12">
             <div className="text-center mb-10">
-              <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
+              <ScrollReveal variant="depthScale" range={[0, 0.3]}>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-6">
                   <TrendingUp className="w-4 h-4" />
                   The Outcome
@@ -37,20 +38,14 @@ export function TheOutcome() {
               </h2>
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
-              {outcomes.map((outcome, index) => (
-                <ScrollReveal
-                  key={outcome}
-                  variant="blurIn"
-                  range={[index * 0.04, 0.3 + index * 0.04]}
-                >
-                  <div className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0" />
-                    <span className="text-gray-300">{outcome}</span>
-                  </div>
-                </ScrollReveal>
+            <SectionChoreography pattern="cascade" stagger={0.04} className="grid sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
+              {outcomes.map((outcome) => (
+                <div key={outcome} className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                  <span className="text-gray-300">{outcome}</span>
+                </div>
               ))}
-            </div>
+            </SectionChoreography>
           </div>
         </ScrollReveal>
       </div>

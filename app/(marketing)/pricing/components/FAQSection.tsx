@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ChevronDown, HelpCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { duration } from '@/config/motion';
 
 const faqs = [
@@ -62,7 +63,7 @@ export function FAQSection() {
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
-        <ScrollReveal variant="blurIn" range={[0, 0.35]} className="text-center mb-16">
+        <ScrollReveal variant="depthScale" range={[0, 0.35]} className="text-center mb-16">
           <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6">
               <HelpCircle className="h-3 w-3 text-purple-400" />
@@ -84,13 +85,8 @@ export function FAQSection() {
         </ScrollReveal>
 
         {/* FAQ Items */}
-        <div className="space-y-4">
+        <SectionChoreography pattern="cascade" stagger={0.05} className="space-y-4">
           {faqs.map((faq, idx) => (
-            <ScrollReveal
-              key={idx}
-              variant="blurIn"
-              range={[idx * 0.03, 0.25 + idx * 0.03]}
-            >
               <button
                 onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
                 className={`w-full text-left backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl p-6 border transition-all duration-300 ${
@@ -128,9 +124,8 @@ export function FAQSection() {
                   )}
                 </AnimatePresence>
               </button>
-            </ScrollReveal>
           ))}
-        </div>
+        </SectionChoreography>
       </div>
     </section>
   );

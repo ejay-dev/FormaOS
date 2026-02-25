@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 /** Inline pulse color values for each industry (Tailwind can't animate these dynamically) */
 const pulseColors: Record<string, string> = {
@@ -119,7 +120,7 @@ export function IndustryVerticals() {
       />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
+        <ScrollReveal variant="depthScale" range={[0, 0.35]}>
           <div className="text-center mb-16">
             <ScrollReveal variant="scaleUp" range={[0.02, 0.3]}>
               <div
@@ -145,12 +146,12 @@ export function IndustryVerticals() {
         </ScrollReveal>
 
         {/* Industries Grid */}
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <SectionChoreography pattern="stagger-wave" stagger={0.05} className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
           {industries.map((industry, index) => {
             const Icon = industry.icon;
             return (
-              <ScrollReveal key={industry.title} variant={index % 2 === 0 ? 'fadeLeft' : 'fadeRight'} range={[index * 0.04, 0.3 + index * 0.04]}>
                 <motion.div
+                  key={industry.title}
                   whileHover={{ y: -4 }}
                   className={`group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] ${industry.hoverBorder} p-6 transition-all duration-300`}
                 >
@@ -213,10 +214,9 @@ export function IndustryVerticals() {
                     ))}
                   </div>
                 </motion.div>
-              </ScrollReveal>
             );
           })}
-        </div>
+        </SectionChoreography>
       </div>
     </section>
   );

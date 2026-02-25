@@ -3,6 +3,7 @@
 import { Layers, Building2, Database, UserCheck, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const differentiators = [
   { icon: Layers, title: 'A True Compliance Operating System', description: 'FormaOS is infrastructure, not a tool. It orchestrates governance, execution, and evidence across your organization.', color: 'from-teal-400 to-emerald-500' },
@@ -34,31 +35,26 @@ export function WhatMakesDifferent() {
           </div>
         </ScrollReveal>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <SectionChoreography pattern="alternating" stagger={0.04} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {differentiators.map((item, index) => {
             const Icon = item.icon;
             return (
-              <ScrollReveal
+              <motion.div
                 key={item.title}
-                variant={index % 2 === 0 ? 'fadeLeft' : 'fadeRight'}
-                range={[index * 0.04, 0.3 + index * 0.04]}
+                whileHover={{ y: -4 }}
+                className={`group relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 border border-white/5 hover:border-orange-500/30 transition-all cursor-pointer backdrop-blur-sm ${index === 4 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
               >
-                <motion.div
-                  whileHover={{ y: -4 }}
-                  className={`group relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 border border-white/5 hover:border-orange-500/30 transition-all cursor-pointer backdrop-blur-sm ${index === 4 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
-                >
-                  <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${item.color} mb-5 group-hover:scale-110 transition-transform`}>
-                    <Icon className="w-6 h-6 text-white" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-3 text-white group-hover:text-orange-400 transition-colors">
-                    {item.title}
-                  </h3>
-                  <p className="text-gray-400 leading-relaxed">{item.description}</p>
-                </motion.div>
-              </ScrollReveal>
+                <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${item.color} mb-5 group-hover:scale-110 transition-transform`}>
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3 text-white group-hover:text-orange-400 transition-colors">
+                  {item.title}
+                </h3>
+                <p className="text-gray-400 leading-relaxed">{item.description}</p>
+              </motion.div>
             );
           })}
-        </div>
+        </SectionChoreography>
       </div>
     </section>
   );

@@ -1,6 +1,7 @@
 'use client';
 
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import {
   Shield,
   Lock,
@@ -59,7 +60,7 @@ export function SecuritySection() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          <ScrollReveal variant="fadeLeft" range={[0, 0.35]}>
+          <ScrollReveal variant="depthScale" range={[0, 0.35]}>
             <div>
               <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-white/80 text-xs sm:text-sm font-medium mb-4 sm:mb-6">
                 <BadgeCheck className="w-3.5 h-3.5" />
@@ -83,41 +84,35 @@ export function SecuritySection() {
               </p>
 
               {/* Security features: monochrome cards with proof badges */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                {securityFeatures.map((feature, index) => {
+              <SectionChoreography pattern="depth-reveal" stagger={0.04} className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                {securityFeatures.map((feature) => {
                   const Icon = feature.icon;
                   return (
-                    <ScrollReveal
-                      key={feature.title}
-                      variant="blurIn"
-                      range={[index * 0.04, 0.3 + index * 0.04]}
-                    >
-                      <div className="group flex gap-3 sm:gap-4 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-200">
-                        <div className="flex-shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-lg bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
-                          <Icon className="w-5 h-5 sm:w-5 sm:h-5 text-white/70" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-0.5">
-                            <h3 className="font-semibold text-sm sm:text-base text-white/90 truncate">
-                              {feature.title}
-                            </h3>
-                            <span className="flex-shrink-0 text-[10px] font-bold uppercase tracking-wider text-white/50 bg-white/[0.06] border border-white/[0.08] rounded px-1.5 py-0.5">
-                              {feature.badge}
-                            </span>
-                          </div>
-                          <p className="text-xs sm:text-sm text-gray-500">
-                            {feature.description}
-                          </p>
-                        </div>
+                    <div key={feature.title} className="group flex gap-3 sm:gap-4 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-200">
+                      <div className="flex-shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-lg bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
+                        <Icon className="w-5 h-5 sm:w-5 sm:h-5 text-white/70" />
                       </div>
-                    </ScrollReveal>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <h3 className="font-semibold text-sm sm:text-base text-white/90 truncate">
+                            {feature.title}
+                          </h3>
+                          <span className="flex-shrink-0 text-[10px] font-bold uppercase tracking-wider text-white/50 bg-white/[0.06] border border-white/[0.08] rounded px-1.5 py-0.5">
+                            {feature.badge}
+                          </span>
+                        </div>
+                        <p className="text-xs sm:text-sm text-gray-500">
+                          {feature.description}
+                        </p>
+                      </div>
+                    </div>
                   );
                 })}
-              </div>
+              </SectionChoreography>
             </div>
           </ScrollReveal>
 
-          <ScrollReveal variant="fadeRight" range={[0, 0.35]} className="flex items-center justify-center order-first lg:order-last">
+          <ScrollReveal variant="depthScale" range={[0, 0.35]} className="flex items-center justify-center order-first lg:order-last">
             <div className="w-full max-w-[500px]">
               <SecurityWorkflowCard />
             </div>

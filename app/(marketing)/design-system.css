@@ -272,6 +272,19 @@
   overflow: hidden;
 }
 
+/* Compact hero for informational pages (legal, trust sub-pages, etc.) */
+.mk-hero--compact {
+  min-height: clamp(14rem, 28vh, 20rem);
+  padding-top: clamp(5rem, 8vw, 7rem);
+  padding-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+
+.mk-marketing-flow .mk-hero--compact {
+  min-height: clamp(14rem, 28vh, 20rem);
+  padding-top: clamp(5rem, 8vw, 7rem);
+  padding-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+
 .mk-marketing-flow .mk-hero > [class*='max-w-4xl'],
 .mk-marketing-flow .mk-hero > [class*='max-w-5xl'],
 .mk-marketing-flow .mk-hero > [class*='max-w-6xl'],

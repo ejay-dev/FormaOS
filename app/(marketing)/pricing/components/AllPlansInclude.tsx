@@ -3,6 +3,7 @@
 import { Shield, Lock, Database, Users, FileCheck, Zap } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import dynamic from 'next/dynamic';
 import { easing, duration } from '@/config/motion';
 
@@ -78,7 +79,7 @@ export function AllPlansInclude() {
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
-        <ScrollReveal variant="blurIn" range={[0, 0.35]} className="text-center mb-16">
+        <ScrollReveal variant="depthScale" range={[0, 0.35]} className="text-center mb-16">
           <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-semibold uppercase tracking-wider mb-6">
               <Zap className="h-3 w-3 text-cyan-400" />
@@ -96,14 +97,10 @@ export function AllPlansInclude() {
         </ScrollReveal>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-          {allPlansFeatures.map((feature, idx) => (
-            <ScrollReveal
-              key={feature.title}
-              variant="fadeUp"
-              range={[idx * 0.04, 0.3 + idx * 0.04]}
-            >
+        <SectionChoreography pattern="center-burst" stagger={0.05} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+          {allPlansFeatures.map((feature) => (
               <motion.div
+                key={feature.title}
                 whileHover={{ y: -8, transition: { duration: duration.fast, ease: easing.smooth } }}
                 className="group text-center p-6 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/[0.04] to-white/[0.02] border border-white/[0.08] hover:border-emerald-500/30 transition-all duration-500"
               >
@@ -117,17 +114,16 @@ export function AllPlansInclude() {
                 </h3>
                 <p className="text-sm text-gray-400">{feature.description}</p>
               </motion.div>
-            </ScrollReveal>
           ))}
-        </div>
+        </SectionChoreography>
 
         {/* Compliance workflow preview */}
-        <ScrollReveal variant="scaleUp" range={[0.05, 0.4]} className="mt-12 max-w-xl mx-auto">
+        <ScrollReveal variant="depthScale" range={[0.05, 0.4]} className="mt-12 max-w-xl mx-auto">
           <DemoComplianceChain glowColor="from-emerald-500/15 to-cyan-500/15" />
         </ScrollReveal>
 
         {/* Bottom Note */}
-        <ScrollReveal variant="slideUp" range={[0.1, 0.45]} className="mt-16 backdrop-blur-xl bg-gradient-to-br from-white/[0.04] to-white/[0.02] rounded-3xl border border-white/[0.08] p-8 text-center">
+        <ScrollReveal variant="depthSlide" range={[0.1, 0.45]} className="mt-16 backdrop-blur-xl bg-gradient-to-br from-white/[0.04] to-white/[0.02] rounded-3xl border border-white/[0.08] p-8 text-center">
           <p className="text-gray-400 text-base">
             No tier compromises your ability to meet regulatory expectations.
             <span className="text-emerald-400 font-medium ml-1">
