@@ -1,12 +1,104 @@
 'use client';
 
+import { useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Check, Target } from 'lucide-react';
-import { motion, useReducedMotion } from 'framer-motion';
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  useReducedMotion,
+  type MotionValue,
+} from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { brand } from '@/config/brand';
 import { easing, duration } from '@/config/motion';
+
+/* ── Cursor-tracking light-sweep wrapper for pricing cards ── */
+function PricingCard({
+  children,
+  featured,
+  borderColor,
+  gradientFrom,
+  gradientTo,
+  reducedMotion,
+}: {
+  children: React.ReactNode;
+  featured: boolean;
+  borderColor: string;
+  gradientFrom: string;
+  gradientTo: string;
+  reducedMotion: boolean;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const localX = useMotionValue(0.5);
+  const localY = useMotionValue(0.5);
+  const smoothX = useSpring(localX, { stiffness: 200, damping: 25 });
+  const smoothY = useSpring(localY, { stiffness: 200, damping: 25 });
+
+  const lightGradient = useTransform(
+    [smoothX, smoothY] as MotionValue<number>[],
+    ([x, y]: number[]) =>
+      `radial-gradient(circle at ${x * 100}% ${y * 100}%, rgba(255,255,255,0.07) 0%, transparent 55%)`,
+  );
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (reducedMotion || !cardRef.current) return;
+      const rect = cardRef.current.getBoundingClientRect();
+      localX.set((e.clientX - rect.left) / rect.width);
+      localY.set((e.clientY - rect.top) / rect.height);
+    },
+    [reducedMotion, localX, localY],
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    localX.set(0.5);
+    localY.set(0.5);
+  }, [localX, localY]);
+
+  return (
+    <motion.div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      whileHover={
+        reducedMotion
+          ? undefined
+          : {
+              y: featured ? -16 : -4,
+              transition: { duration: duration.fast, ease: easing.smooth },
+            }
+      }
+      className="pointer-events-auto"
+    >
+      <div
+        className={`relative backdrop-blur-xl bg-gradient-to-br ${gradientFrom} ${gradientTo} rounded-3xl p-8 border-2 ${featured ? borderColor : 'border-white/[0.08]'} shadow-2xl transition-all duration-500 group-hover:shadow-3xl ${featured ? 'group-hover:shadow-emerald-500/20' : ''} group-hover:border-opacity-100 overflow-hidden h-full`}
+        style={{
+          transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
+        }}
+      >
+        {/* Cursor-tracking light sweep overlay */}
+        {!reducedMotion && (
+          <motion.div
+            className="absolute inset-0 pointer-events-none rounded-[inherit] z-[1]"
+            style={{ background: lightGradient } as Record<string, unknown>}
+          />
+        )}
+
+        {/* Hover glow effect */}
+        <div
+          className={`absolute inset-0 bg-gradient-to-br ${gradientFrom} ${gradientTo} rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10`}
+        />
+
+        {/* Card content */}
+        <div className="relative z-[2]">{children}</div>
+      </div>
+    </motion.div>
+  );
+}
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -190,14 +282,8 @@ export function PricingTiers() {
           {pricingTiers.map((tier) => (
             <div
               key={tier.name}
-              className={`group relative ${tier.featured ? 'lg:-mt-4 lg:mb-4' : ''}`}
+              className={`group relative pointer-events-auto ${tier.featured ? 'lg:-mt-4 lg:mb-4' : ''}`}
             >
-              <motion.div
-                whileHover={{
-                  y: tier.featured ? -16 : -8,
-                  transition: { duration: duration.fast, ease: easing.smooth },
-                }}
-              >
               {/* Featured badge */}
               {tier.featured && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
@@ -209,15 +295,14 @@ export function PricingTiers() {
                 </div>
               )}
 
-              {/* Card */}
-              <div
-                className={`relative backdrop-blur-xl bg-gradient-to-br ${tier.gradientFrom} ${tier.gradientTo} rounded-3xl p-8 border-2 ${tier.featured ? tier.borderColor : 'border-white/[0.08]'} shadow-2xl transition-all duration-500 group-hover:shadow-3xl ${tier.featured ? 'group-hover:shadow-emerald-500/20' : ''} group-hover:border-opacity-100 overflow-hidden h-full`}
+              {/* Card with cursor-tracking light sweep */}
+              <PricingCard
+                featured={tier.featured}
+                borderColor={tier.borderColor}
+                gradientFrom={tier.gradientFrom}
+                gradientTo={tier.gradientTo}
+                reducedMotion={shouldReduceMotion ?? false}
               >
-                {/* Hover glow effect */}
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${tier.gradientFrom} ${tier.gradientTo} rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10`}
-                />
-
                 {/* Tier Header */}
                 <div className="mb-6">
                   <h3 className="text-2xl font-bold text-white mb-2">
@@ -316,8 +401,7 @@ export function PricingTiers() {
                     <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-cyan-600 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
                   )}
                 </Link>
-              </div>
-              </motion.div>
+              </PricingCard>
             </div>
           ))}
         </SectionChoreography>

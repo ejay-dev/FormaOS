@@ -101,13 +101,43 @@ export function AllPlansInclude() {
           {allPlansFeatures.map((feature) => (
               <motion.div
                 key={feature.title}
-                whileHover={{ y: -8, transition: { duration: duration.fast, ease: easing.smooth } }}
-                className="group text-center p-6 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/[0.04] to-white/[0.02] border border-white/[0.08] hover:border-emerald-500/30 transition-all duration-500"
+                whileHover={
+                  shouldReduceMotion
+                    ? undefined
+                    : {
+                        y: -8,
+                        scale: 1.05,
+                        transition: { duration: duration.fast, ease: easing.smooth },
+                      }
+                }
+                className="group relative text-center p-6 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/[0.04] to-white/[0.02] border border-white/[0.08] hover:border-emerald-500/30 transition-all duration-500"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10" />
 
-                <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <feature.icon className="w-7 h-7 text-emerald-400" />
+                {/* Icon container with pulse + glow on hover */}
+                <div className="relative w-14 h-14 mx-auto mb-4">
+                  {/* Glow ring behind icon – visible on hover */}
+                  <div
+                    className="absolute inset-[-6px] rounded-2xl bg-emerald-500/0 group-hover:bg-emerald-500/15 transition-all duration-500 blur-md"
+                  />
+                  <motion.div
+                    className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 flex items-center justify-center"
+                    whileHover={
+                      shouldReduceMotion
+                        ? undefined
+                        : {
+                            scale: [1, 1.15, 1.1],
+                            boxShadow: [
+                              '0 0 0px rgba(16,185,129,0)',
+                              '0 0 18px rgba(16,185,129,0.4)',
+                              '0 0 12px rgba(16,185,129,0.25)',
+                            ],
+                            transition: { duration: 0.6, ease: 'easeOut' },
+                          }
+                    }
+                  >
+                    <feature.icon className="w-7 h-7 text-emerald-400 transition-colors duration-300 group-hover:text-emerald-300" />
+                  </motion.div>
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">
                   {feature.title}

@@ -11,6 +11,7 @@ import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { GlassCard, HoverLift } from '@/components/motion/EnhancedMotion';
 import { DeferredSection } from '../../components/shared';
 import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
+import { UseCaseHeroVisual } from './UseCaseHeroVisual';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -81,6 +82,7 @@ export function UseCasePageTemplate({
     <MarketingPageShell>
       <ImmersiveHero
         theme="use-cases"
+        visualContent={<UseCaseHeroVisual icon={badgeIcon ?? <ShieldCheck className="h-4 w-4" />} steps={workflows.slice(0, 4).map((w) => w.title)} />}
         badge={{
           icon: badgeIcon ?? <ShieldCheck className="h-4 w-4" />,
           text: badge,

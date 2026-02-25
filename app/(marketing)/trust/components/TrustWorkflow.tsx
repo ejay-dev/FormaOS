@@ -3,12 +3,100 @@
 import { useRef } from 'react';
 import {
   motion,
+  useInView,
   useReducedMotion,
   useScroll,
   useTransform,
 } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
+
+/* ── Pulse node: fires scale+opacity animation when scrolled into view ── */
+function PulseNode({
+  x,
+  y,
+  color,
+  index,
+  reducedMotion,
+}: {
+  x: number;
+  y: number;
+  color: string;
+  index: number;
+  reducedMotion: boolean;
+}) {
+  const ref = useRef<SVGGElement>(null);
+  const isInView = useInView(ref, { once: false, amount: 0.6 });
+
+  return (
+    <g ref={ref}>
+      {/* Outer glow ring – pulses once when entering viewport */}
+      <motion.circle
+        cx={x}
+        cy={y}
+        r="14"
+        fill="transparent"
+        stroke={color}
+        strokeWidth="1.5"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={
+          reducedMotion
+            ? undefined
+            : isInView
+              ? { scale: [1, 1.6, 1], opacity: [0, 0.45, 0] }
+              : { scale: 0.8, opacity: 0 }
+        }
+        transition={{
+          duration: 1.4,
+          delay: index * 0.15,
+          ease: 'easeOut',
+        }}
+        style={{ filter: 'blur(2px)' }}
+      />
+      {/* Core dot – entrance pulse */}
+      <motion.circle
+        cx={x}
+        cy={y}
+        r="4.5"
+        fill={color}
+        initial={{ scale: 0.6, opacity: 0.3 }}
+        animate={
+          reducedMotion
+            ? { scale: 1, opacity: 0.9 }
+            : isInView
+              ? { scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }
+              : { scale: 0.6, opacity: 0.3 }
+        }
+        transition={{
+          duration: 2.4,
+          delay: index * 0.25,
+          repeat: isInView ? Infinity : 0,
+          ease: 'easeInOut',
+        }}
+      />
+      {/* Expanding ring – perpetual */}
+      <motion.circle
+        cx={x}
+        cy={y}
+        r="9"
+        fill="transparent"
+        stroke={color}
+        strokeWidth="1.2"
+        animate={
+          reducedMotion
+            ? undefined
+            : { scale: [1, 1.55], opacity: [0.4, 0] }
+        }
+        transition={{
+          duration: 2.2,
+          delay: index * 0.3,
+          repeat: Infinity,
+          ease: 'easeOut',
+        }}
+      />
+    </g>
+  );
+}
 
 const trustWorkflow = [
   {
@@ -93,8 +181,32 @@ export function TrustWorkflow() {
                     <stop offset="0%" stopColor="rgba(16,185,129,0.1)" />
                     <stop offset="100%" stopColor="rgba(16,185,129,0.9)" />
                   </linearGradient>
+                  {/* Glow trail gradients – brighter, shorter stops */}
+                  <linearGradient id="trustGlowA" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="rgba(34,211,238,0.0)" />
+                    <stop offset="60%" stopColor="rgba(34,211,238,0.6)" />
+                    <stop offset="100%" stopColor="rgba(34,211,238,1)" />
+                  </linearGradient>
+                  <linearGradient id="trustGlowB" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="rgba(59,130,246,0.0)" />
+                    <stop offset="60%" stopColor="rgba(59,130,246,0.6)" />
+                    <stop offset="100%" stopColor="rgba(59,130,246,1)" />
+                  </linearGradient>
+                  <linearGradient id="trustGlowC" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="rgba(16,185,129,0.0)" />
+                    <stop offset="60%" stopColor="rgba(16,185,129,0.6)" />
+                    <stop offset="100%" stopColor="rgba(16,185,129,1)" />
+                  </linearGradient>
+                  <filter id="pathGlow">
+                    <feGaussianBlur stdDeviation="4" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
                 </defs>
 
+                {/* ── Base paths ── */}
                 <motion.path
                   d="M80 140 C 160 80, 230 80, 300 95"
                   fill="none"
@@ -120,50 +232,54 @@ export function TrustWorkflow() {
                   style={{ pathLength: reducedMotion ? 1 : pathC }}
                 />
 
+                {/* ── Glow trail paths – brighter stroke + blur filter ── */}
+                {!reducedMotion && (
+                  <>
+                    <motion.path
+                      d="M80 140 C 160 80, 230 80, 300 95"
+                      fill="none"
+                      stroke="url(#trustGlowA)"
+                      strokeWidth="5"
+                      strokeLinecap="round"
+                      filter="url(#pathGlow)"
+                      style={{ pathLength: pathA, opacity: 0.55 }}
+                    />
+                    <motion.path
+                      d="M300 95 C 360 110, 420 70, 500 90"
+                      fill="none"
+                      stroke="url(#trustGlowB)"
+                      strokeWidth="5"
+                      strokeLinecap="round"
+                      filter="url(#pathGlow)"
+                      style={{ pathLength: pathB, opacity: 0.55 }}
+                    />
+                    <motion.path
+                      d="M500 90 C 540 100, 570 120, 600 55"
+                      fill="none"
+                      stroke="url(#trustGlowC)"
+                      strokeWidth="5"
+                      strokeLinecap="round"
+                      filter="url(#pathGlow)"
+                      style={{ pathLength: pathC, opacity: 0.55 }}
+                    />
+                  </>
+                )}
+
+                {/* ── Nodes with in-view pulse ── */}
                 {[
                   { x: 80, y: 140, color: 'rgba(34,211,238,0.9)' },
                   { x: 300, y: 95, color: 'rgba(59,130,246,0.9)' },
                   { x: 500, y: 90, color: 'rgba(16,185,129,0.9)' },
                   { x: 600, y: 55, color: 'rgba(251,191,36,0.95)' },
                 ].map((node, index) => (
-                  <g key={`${node.x}-${node.y}`}>
-                    <motion.circle
-                      cx={node.x}
-                      cy={node.y}
-                      r="4.5"
-                      fill={node.color}
-                      animate={
-                        reducedMotion
-                          ? undefined
-                          : { scale: [1, 1.35, 1], opacity: [0.8, 1, 0.8] }
-                      }
-                      transition={{
-                        duration: 2.4,
-                        delay: index * 0.25,
-                        repeat: Infinity,
-                        ease: 'easeInOut',
-                      }}
-                    />
-                    <motion.circle
-                      cx={node.x}
-                      cy={node.y}
-                      r="9"
-                      fill="transparent"
-                      stroke={node.color}
-                      strokeWidth="1.2"
-                      animate={
-                        reducedMotion
-                          ? undefined
-                          : { scale: [1, 1.55], opacity: [0.4, 0] }
-                      }
-                      transition={{
-                        duration: 2.2,
-                        delay: index * 0.3,
-                        repeat: Infinity,
-                        ease: 'easeOut',
-                      }}
-                    />
-                  </g>
+                  <PulseNode
+                    key={`${node.x}-${node.y}`}
+                    x={node.x}
+                    y={node.y}
+                    color={node.color}
+                    index={index}
+                    reducedMotion={reducedMotion}
+                  />
                 ))}
               </svg>
             </motion.div>

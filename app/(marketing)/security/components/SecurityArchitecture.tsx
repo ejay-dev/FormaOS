@@ -10,7 +10,8 @@ import {
   Key,
   Server,
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import { useRef } from 'react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
@@ -77,6 +78,30 @@ const certifications = [
 ];
 
 export function SecurityArchitecture() {
+  const layersRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+
+  const { scrollYProgress } = useScroll({
+    target: layersRef,
+    offset: ['start end', 'center center'],
+  });
+
+  // Scroll-driven gap expansion: 16px -> 48px
+  const gapValue = useTransform(scrollYProgress, [0, 1], [16, 48]);
+  // Per-card glow intensification
+  const glowOpacity0 = useTransform(scrollYProgress, [0, 0.5, 1], [0, 0.3, 0.7]);
+  const glowOpacity1 = useTransform(scrollYProgress, [0, 0.5, 1], [0, 0.25, 0.6]);
+  const glowOpacity2 = useTransform(scrollYProgress, [0, 0.5, 1], [0, 0.2, 0.55]);
+  const glowOpacity3 = useTransform(scrollYProgress, [0, 0.5, 1], [0, 0.15, 0.5]);
+  const glowOpacities = [glowOpacity0, glowOpacity1, glowOpacity2, glowOpacity3];
+
+  // Per-card translateY separation (cards push apart)
+  const translateY0 = useTransform(scrollYProgress, [0, 1], [0, -12]);
+  const translateY1 = useTransform(scrollYProgress, [0, 1], [0, -4]);
+  const translateY2 = useTransform(scrollYProgress, [0, 1], [0, 4]);
+  const translateY3 = useTransform(scrollYProgress, [0, 1], [0, 12]);
+  const translateYValues = [translateY0, translateY1, translateY2, translateY3];
+
   return (
     <section className="relative py-32 overflow-hidden">
       {/* Background */}
@@ -136,15 +161,50 @@ export function SecurityArchitecture() {
           </div>
         </ScrollReveal>
 
-        {/* Security Layers Grid */}
-        <SectionChoreography pattern="alternating" stagger={0.05} className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-20">
-          {securityLayers.map((layer) => (
+        {/* Security Layers Grid — scroll-driven layer separation */}
+        <motion.div
+          ref={layersRef}
+          style={prefersReducedMotion ? {} : { gap: gapValue }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-20"
+        >
+          {securityLayers.map((layer, index) => (
+            <motion.div
+              key={layer.title}
+              style={
+                prefersReducedMotion
+                  ? {}
+                  : {
+                      y: translateYValues[index],
+                    }
+              }
+              className="relative"
+            >
+              {/* Scroll-driven glow layer */}
+              <motion.div
+                style={
+                  prefersReducedMotion
+                    ? {}
+                    : { opacity: glowOpacities[index] }
+                }
+                className={`absolute inset-0 bg-gradient-to-br ${layer.color} rounded-3xl blur-xl -z-10 pointer-events-none`}
+              />
+
               <div
-                key={layer.title}
                 className={`group relative backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border ${layer.borderColor} p-8 hover:from-white/[0.12] hover:to-white/[0.04] transition-all duration-500`}
               >
+                {/* Hover glow (preserved) */}
                 <div
                   className={`absolute inset-0 bg-gradient-to-br ${layer.color} rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10`}
+                />
+
+                {/* Scroll-driven border glow ring */}
+                <motion.div
+                  style={
+                    prefersReducedMotion
+                      ? {}
+                      : { opacity: glowOpacities[index] }
+                  }
+                  className={`absolute inset-0 rounded-3xl border-2 ${layer.borderColor} pointer-events-none`}
                 />
 
                 <div className="flex items-start gap-5">
@@ -164,8 +224,9 @@ export function SecurityArchitecture() {
                   </div>
                 </div>
               </div>
+            </motion.div>
           ))}
-        </SectionChoreography>
+        </motion.div>
 
         {/* Certifications */}
         <ScrollReveal variant="depthSlide" range={[0, 0.35]}>

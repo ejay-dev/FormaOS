@@ -3,6 +3,7 @@ import { CheckCircle2, XCircle, Clock, Activity } from 'lucide-react';
 import { fetchPublicUptimeChecks } from '@/lib/status/public-uptime';
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
+import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
@@ -57,6 +58,7 @@ export default async function StatusPage() {
         description="Uptime checks are published from a scheduled health probe. This page reports platform availability signals, not contractual SLAs."
         topColor="emerald"
         bottomColor="cyan"
+        visualContent={<CompactHeroIcon icon={<Activity className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
       />
 
       <div className="mx-auto max-w-5xl px-6 pb-24">

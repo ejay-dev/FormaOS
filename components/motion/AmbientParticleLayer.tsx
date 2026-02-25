@@ -18,6 +18,10 @@ interface AmbientParticleLayerProps {
   intensity?: 'subtle' | 'normal' | 'strong';
   /** Defer rendering to protect first paint on marketing routes. */
   deferMode?: 'none' | 'idle' | 'interaction';
+  /** Primary particle color as R,G,B string (default: '34,211,238' = cyan) */
+  color?: string;
+  /** Secondary particle color as R,G,B string (default: '59,130,246' = blue) */
+  secondaryColor?: string;
 }
 
 const INTENSITY_CONFIG = {
@@ -45,6 +49,8 @@ function AmbientParticleLayerInner({
   className = '',
   intensity = 'normal',
   deferMode = 'idle',
+  color: colorProp,
+  secondaryColor: secondaryColorProp,
 }: AmbientParticleLayerProps) {
   const [enabled, setEnabled] = useState(true);
   const [ready, setReady] = useState(deferMode === 'none');
@@ -146,8 +152,8 @@ function AmbientParticleLayerInner({
       count={config.count}
       opacity={config.opacity}
       connections={config.connections}
-      color="34,211,238"
-      secondaryColor="59,130,246"
+      color={colorProp ?? '34,211,238'}
+      secondaryColor={secondaryColorProp ?? '59,130,246'}
       className={className}
     />
   );

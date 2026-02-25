@@ -13,6 +13,7 @@ import {
 import { brand } from '@/config/brand';
 import { Reveal, VisualDivider } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
+import { SecurityReviewHeroVisual } from './components/SecurityReviewHeroVisual';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DeferredSection } from '../components/shared';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
@@ -83,6 +84,7 @@ export default function SecurityReviewContent() {
       {/* Hero */}
       <ImmersiveHero
         theme="security-review"
+        visualContent={<SecurityReviewHeroVisual />}
         badge={{ icon: <ShieldCheck className="h-4 w-4" />, text: 'Procurement Ready' }}
         headline="Security Review Packet for Enterprise Buyers"
         subheadline="Security review should not stall your deal cycle. FormaOS is designed to be reviewable: clear architecture, controlled evidence handling, and audit-ready operational assurance."

@@ -13,6 +13,7 @@ import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { MarketingPageShell } from './shared/MarketingPageShell';
 import { DeferredSection } from './shared';
+import { OutcomeJourneyHeroVisual } from './OutcomeJourneyHeroVisual';
 
 type JourneyPageProps = {
   badge: string;
@@ -49,6 +50,7 @@ export function OutcomeJourneyPage({
       {/* Hero */}
       <ImmersiveHero
         theme="outcome-journey"
+        visualContent={<OutcomeJourneyHeroVisual journeyKey={journeyKey} />}
         badge={{
           icon: <Sparkles className="h-3.5 w-3.5" />,
           text: badge,

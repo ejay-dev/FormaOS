@@ -44,14 +44,14 @@ interface HeroAtmosphereProps {
   className?: string;
 }
 
-const COLOR_MAP: Record<GlowColor, { glow: string; grid: string }> = {
-  cyan:    { glow: 'rgba(34,211,238,',  grid: 'rgba(6,182,212,0.15)' },
-  teal:    { glow: 'rgba(45,212,191,',  grid: 'rgba(20,184,166,0.15)' },
-  blue:    { glow: 'rgba(59,130,246,',  grid: 'rgba(59,130,246,0.15)' },
-  violet:  { glow: 'rgba(139,92,246,',  grid: 'rgba(139,92,246,0.15)' },
-  emerald: { glow: 'rgba(52,211,153,',  grid: 'rgba(16,185,129,0.15)' },
-  rose:    { glow: 'rgba(251,113,133,', grid: 'rgba(244,63,94,0.15)' },
-  amber:   { glow: 'rgba(251,191,36,',  grid: 'rgba(245,158,11,0.15)' },
+const COLOR_MAP: Record<GlowColor, { glow: string; grid: string; rgb: string }> = {
+  cyan:    { glow: 'rgba(34,211,238,',  grid: 'rgba(6,182,212,0.15)',   rgb: '34,211,238' },
+  teal:    { glow: 'rgba(45,212,191,',  grid: 'rgba(20,184,166,0.15)',  rgb: '45,212,191' },
+  blue:    { glow: 'rgba(59,130,246,',  grid: 'rgba(59,130,246,0.15)',  rgb: '59,130,246' },
+  violet:  { glow: 'rgba(139,92,246,',  grid: 'rgba(139,92,246,0.15)', rgb: '139,92,246' },
+  emerald: { glow: 'rgba(52,211,153,',  grid: 'rgba(16,185,129,0.15)', rgb: '52,211,153' },
+  rose:    { glow: 'rgba(251,113,133,', grid: 'rgba(244,63,94,0.15)',  rgb: '251,113,133' },
+  amber:   { glow: 'rgba(251,191,36,',  grid: 'rgba(245,158,11,0.15)', rgb: '251,191,36' },
 };
 
 function HeroAtmosphereInner({
@@ -127,8 +127,13 @@ function HeroAtmosphereInner({
         }}
       />
 
-      {/* Deferred ambient particles (unified engine) */}
-      <AmbientParticleLayer intensity={particleIntensity} deferMode="idle" />
+      {/* Deferred ambient particles (unified engine) — themed to page colors */}
+      <AmbientParticleLayer
+        intensity={particleIntensity}
+        deferMode="idle"
+        color={top.rgb}
+        secondaryColor={bottom.rgb}
+      />
     </div>
   );
 }

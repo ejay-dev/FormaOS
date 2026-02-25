@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { FileDown, ArrowRight } from 'lucide-react';
+import { FileDown, ArrowRight, Package } from 'lucide-react';
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
+import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
@@ -28,6 +29,7 @@ export default function TrustPacketPage() {
         description='Procurement-ready PDF generated from current system status and the maintained subprocessor list. This packet uses "aligned vs certified" wording intentionally.'
         topColor="emerald"
         bottomColor="cyan"
+        visualContent={<CompactHeroIcon icon={<Package className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
       />
       <div className="mx-auto max-w-4xl px-6 pb-24">
         <div className="rounded-2xl border border-border bg-card p-8">

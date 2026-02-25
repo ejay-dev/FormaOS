@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ShieldAlert, PhoneCall } from 'lucide-react';
+import { ShieldAlert, PhoneCall, AlertTriangle } from 'lucide-react';
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
+import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
@@ -28,6 +29,7 @@ export default function IncidentResponsePage() {
         description="Summary for security and procurement reviewers. Contractual notification terms are defined in your MSA/SOW."
         topColor="emerald"
         bottomColor="cyan"
+        visualContent={<CompactHeroIcon icon={<AlertTriangle className="w-8 h-8 text-amber-400" />} color="251,191,36" />}
       />
       <div className="mx-auto max-w-4xl px-6 pb-24">
         <div className="space-y-8">

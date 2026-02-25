@@ -9,6 +9,7 @@ import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
 import { DeferredSection } from '../../components/shared';
 import { motion } from 'framer-motion';
+import { CompareHeroVisual } from './CompareHeroVisual';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -39,6 +40,7 @@ export function ComparePageTemplate({
       {/* Hero */}
       <ImmersiveHero
         theme="compare"
+        visualContent={<CompareHeroVisual competitor={competitor} />}
         badge={{
           icon: <Sparkles className="w-4 h-4" />,
           text: 'Comparison',

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { FileText, Shield, Scale, ArrowRight, Lock } from 'lucide-react';
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
+import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
@@ -54,6 +55,7 @@ export default function LegalIndexPage() {
         description="Procurement-ready legal and privacy resources. Content reflects implemented platform behavior and contract-first commitments."
         topColor="violet"
         bottomColor="blue"
+        visualContent={<CompactHeroIcon icon={<Scale className="w-8 h-8 text-violet-400" />} color="139,92,246" />}
       />
 
       <div className="mx-auto max-w-5xl px-6 pb-24">

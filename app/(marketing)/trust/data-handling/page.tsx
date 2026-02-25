@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Trash2, Lock } from 'lucide-react';
+import { Trash2, Lock, Database } from 'lucide-react';
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
+import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
@@ -28,6 +29,7 @@ export default function DataHandlingPage() {
         description="Procurement-oriented overview of how FormaOS stores and protects data. This page is informational and does not replace your executed agreement."
         topColor="emerald"
         bottomColor="cyan"
+        visualContent={<CompactHeroIcon icon={<Database className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
       />
       <div className="mx-auto max-w-4xl px-6 pb-24">
         <div className="space-y-8">

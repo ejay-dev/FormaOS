@@ -2,6 +2,7 @@
 
 import { BookOpen, Search, Rocket, Code, Shield, Zap } from 'lucide-react';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
+import { DocsHeroVisual } from './DocsHeroVisual';
 
 const quickLinks = [
   {
@@ -80,6 +81,7 @@ export function DocsHero() {
   return (
     <ImmersiveHero
       theme="docs"
+      visualContent={<DocsHeroVisual />}
       badge={{
         icon: <BookOpen className="w-4 h-4" />,
         text: 'Knowledge Base',

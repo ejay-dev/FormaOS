@@ -1,126 +1,166 @@
 'use client';
 
 import { memo } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
-import { easing, duration } from '@/config/motion';
-
-const signatureEase = [...easing.signature] as [number, number, number, number];
+import { motion, useReducedMotion, useTransform } from 'framer-motion';
+import { useCursorPosition } from '@/components/motion/CursorContext';
 
 /**
- * AboutHeroVisual
- * ───────────────
- * Unique visual for the About page hero:
- * - Vertical timeline line drawn with SVG pathLength animation
- * - 5 milestone nodes with pulsing glow rings
- * - Year labels alternating left/right
- * - Staggered scale+opacity entrance for nodes
- *
- * Rendered in the midground DepthLayer of ImmersiveHero.
- * Desktop-only (hidden on mobile for performance).
+ * AboutHeroVisual — "Timeline Pillar"
+ * ────────────────────────────────────
+ * Vertical glass pillar with animated energy line and 5 milestone nodes.
+ * Nodes alternate left/right at different Z depths.
+ * Cursor tilts entire structure via rotateX/Y; nodes get extra parallax.
+ * Desktop-only, pointer-events-none.
  */
 
 const MILESTONES = [
-  { year: '2022', label: 'Founded', side: 'left' as const },
-  { year: '2023', label: 'First Enterprise Client', side: 'right' as const },
-  { year: '2024', label: 'SOC 2 Certified', side: 'left' as const },
-  { year: '2025', label: 'Series A', side: 'right' as const },
-  { year: '2026', label: 'Global Expansion', side: 'left' as const },
-];
+  { year: '2022', label: 'Founded', color: 'rgb(16,185,129)', z: -10 },
+  { year: '2023', label: 'First Client', color: 'rgb(6,182,212)', z: -25 },
+  { year: '2024', label: 'SOC 2', color: 'rgb(59,130,246)', z: -35 },
+  { year: '2025', label: 'Series A', color: 'rgb(139,92,246)', z: -45 },
+  { year: '2026', label: 'Global', color: 'rgb(245,158,11)', z: -50 },
+] as const;
 
 function AboutHeroVisualInner() {
   const shouldReduceMotion = useReducedMotion();
-  const sa = !shouldReduceMotion;
+  const cursor = useCursorPosition();
 
-  const lineHeight = 400;
-  const startY = 100;
-  const nodeSpacing = lineHeight / (MILESTONES.length - 1);
+  // Cursor-driven tilt for the whole structure (±4°)
+  const rotateY = useTransform(cursor.mouseX, [0, 1], [-4, 4]);
+  const rotateX = useTransform(cursor.mouseY, [0, 1], [4, -4]);
+
+  const pillarHeight = 400;
+  const nodeSpacing = pillarHeight / (MILESTONES.length - 1);
+
+  // Static layout for reduced motion
+  if (shouldReduceMotion) {
+    return (
+      <div className="hidden lg:flex items-center justify-center pointer-events-none w-[300px] h-[450px]">
+        <div className="relative w-[40px] h-[400px] rounded-2xl border border-emerald-500/20 backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02]">
+          {MILESTONES.map((m, i) => {
+            const isLeft = i % 2 === 0;
+            const top = i * nodeSpacing;
+            return (
+              <div
+                key={m.year}
+                className="absolute flex items-center gap-2"
+                style={{
+                  top,
+                  [isLeft ? 'right' : 'left']: 52,
+                }}
+              >
+                <div
+                  className="rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] px-2 py-1 flex items-center gap-1.5"
+                  style={{ width: 90, height: 30 }}
+                >
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: m.color }} />
+                  <span className="text-[10px] text-white/70 font-medium whitespace-nowrap">
+                    {m.year} {m.label}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-      {/* Timeline with milestones — desktop only */}
-      <div className="hidden lg:block relative w-[600px] h-[600px] xl:w-[700px] xl:h-[700px]">
-        {/* Central vertical line */}
-        <svg
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-          width="4"
-          height={lineHeight + 40}
-          viewBox={`0 0 4 ${lineHeight + 40}`}
-          fill="none"
+    <div className="hidden lg:flex items-center justify-center pointer-events-none w-[300px] h-[450px]">
+      <motion.div
+        className="relative"
+        style={{
+          perspective: 800,
+          transformStyle: 'preserve-3d',
+          width: 300,
+          height: 450,
+          rotateX: cursor.isActive ? rotateX : 0,
+          rotateY: cursor.isActive ? rotateY : 0,
+        }}
+      >
+        {/* Central glass pillar */}
+        <motion.div
+          className="absolute left-1/2 top-[25px] -translate-x-1/2 rounded-2xl border border-emerald-500/20 backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] overflow-hidden"
+          style={{
+            width: 40,
+            height: pillarHeight,
+            transformStyle: 'preserve-3d',
+          }}
+          initial={{ scaleY: 0, opacity: 0 }}
+          animate={{ scaleY: 1, opacity: 1 }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
         >
-          <motion.line
-            x1="2"
-            y1="0"
-            x2="2"
-            y2={lineHeight + 40}
-            stroke="rgba(107,114,128,0.3)"
-            strokeWidth="1.5"
-            initial={sa ? { pathLength: 0, opacity: 0 } : false}
-            animate={{ pathLength: 1, opacity: 1 }}
-            transition={sa ? {
-              pathLength: { duration: 2, ease: signatureEase },
-              opacity: { duration: 0.3 },
-            } : { duration: 0 }}
+          {/* Animated energy line running upward */}
+          <motion.div
+            className="absolute inset-0"
+            style={{
+              background:
+                'repeating-linear-gradient(0deg, transparent 0px, transparent 30px, rgba(16,185,129,0.25) 30px, rgba(16,185,129,0.25) 60px)',
+              backgroundSize: '100% 120px',
+            }}
+            animate={{ backgroundPositionY: [0, -120] }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: 'linear',
+            }}
           />
-        </svg>
+          {/* Inner glow */}
+          <div className="absolute inset-0 bg-gradient-to-t from-emerald-500/10 via-transparent to-cyan-500/10" />
+        </motion.div>
 
         {/* Milestone nodes */}
-        {MILESTONES.map((milestone, i) => {
-          const yPos = startY + i * nodeSpacing;
-          const centerX = 300; // half of 600px container
-          const isLeft = milestone.side === 'left';
+        {MILESTONES.map((m, i) => {
+          const isLeft = i % 2 === 0;
+          const top = 25 + i * nodeSpacing;
+          const centerX = 150; // half of 300
+
+          // Extra parallax per node based on Z depth
+          const nodeParallaxX = useTransform(cursor.mouseX, [0, 1], [m.z * 0.15, -m.z * 0.15]);
+          const nodeParallaxY = useTransform(cursor.mouseY, [0, 1], [m.z * 0.1, -m.z * 0.1]);
 
           return (
             <motion.div
-              key={i}
+              key={m.year}
               className="absolute"
               style={{
-                top: yPos - 6,
-                left: centerX - 6,
+                top: top - 15,
+                left: isLeft ? centerX - 120 : centerX + 30,
+                translateX: cursor.isActive ? nodeParallaxX : 0,
+                translateY: cursor.isActive ? nodeParallaxY : 0,
+                translateZ: m.z,
+                transformStyle: 'preserve-3d',
               }}
-              initial={sa ? { opacity: 0, scale: 0 } : false}
+              initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={sa ? {
-                duration: duration.slow,
-                delay: 0.6 + i * 0.2,
-                ease: signatureEase,
-              } : { duration: 0 }}
+              transition={{
+                duration: 0.6,
+                delay: 0.8 + i * 0.15,
+                ease: [0.22, 1, 0.36, 1],
+              }}
             >
-              {/* Pulsing glow ring */}
-              <motion.div
-                className="absolute -inset-2 rounded-full bg-violet-500/20"
-                animate={sa ? {
-                  scale: [1, 1.6, 1],
-                  opacity: [0.3, 0.1, 0.3],
-                } : undefined}
-                transition={sa ? {
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                  delay: i * 0.4,
-                } : undefined}
-              />
-
-              {/* Node circle */}
-              <div className="relative w-3 h-3 rounded-full bg-violet-500/60 border border-violet-400/40" />
-
-              {/* Year + label */}
+              {/* Glass card node */}
               <div
-                className="absolute top-1/2 -translate-y-1/2 whitespace-nowrap"
-                style={{
-                  [isLeft ? 'right' : 'left']: 24,
-                }}
+                className="rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] px-2 py-1 flex items-center gap-1.5"
+                style={{ width: 90, height: 30 }}
               >
-                <span className="text-xs font-medium text-violet-400/70">
-                  {milestone.year}
-                </span>
-                <span className="text-xs text-gray-500 ml-1.5">
-                  {milestone.label}
+                {/* Colored dot */}
+                <div
+                  className="w-2 h-2 rounded-full shrink-0"
+                  style={{
+                    backgroundColor: m.color,
+                    boxShadow: `0 0 6px ${m.color}`,
+                  }}
+                />
+                <span className="text-[10px] text-white/70 font-medium whitespace-nowrap">
+                  {m.year} {m.label}
                 </span>
               </div>
             </motion.div>
           );
         })}
-      </div>
+      </motion.div>
     </div>
   );
 }

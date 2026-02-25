@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Clock } from 'lucide-react';
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
+import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
@@ -45,6 +46,7 @@ export default function SlaPage() {
         description="This page is a summary of how availability commitments are typically structured. Contract terms are defined in your executed agreement."
         topColor="emerald"
         bottomColor="cyan"
+        visualContent={<CompactHeroIcon icon={<Clock className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
       />
       <div className="mx-auto max-w-4xl px-6 pb-24">
         <div className="space-y-4">

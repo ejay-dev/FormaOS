@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { Users } from 'lucide-react';
 import { TRUST_SUBPROCESSORS } from '@/lib/trust/subprocessors';
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
+import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
@@ -32,6 +34,7 @@ export default function SubprocessorsPage() {
         description="FormaOS uses the following third-party service providers to deliver our compliance management platform. We provide 30 days advance notice before engaging new sub-processors."
         topColor="emerald"
         bottomColor="cyan"
+        visualContent={<CompactHeroIcon icon={<Users className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
       />
       <div className="mx-auto max-w-4xl px-6 pb-24">
         <p className="text-sm text-muted-foreground mt-2 mb-12">

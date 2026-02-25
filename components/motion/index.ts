@@ -115,3 +115,10 @@ export { DepthSection } from './DepthSection';
 
 // Compact hero for informational pages
 export { CompactHero } from './CompactHero';
+export { CompactHeroIcon } from './CompactHeroIcon';
+
+// Cursor position context (exposed by DepthStage)
+export { CursorContext, useCursorPosition } from './CursorContext';
+
+// Premium glass card with hover depth + light sweep
+export { GlassDepthCard } from './GlassDepthCard';

@@ -12,6 +12,8 @@ interface CompactHeroProps {
   description?: ReactNode;
   /** Optional icon above the title */
   icon?: ReactNode;
+  /** Optional floating 3D visual content (e.g. CompactHeroIcon) */
+  visualContent?: ReactNode;
   /** HeroAtmosphere top glow color */
   topColor?: 'cyan' | 'blue' | 'violet' | 'emerald' | 'amber' | 'rose';
   /** HeroAtmosphere bottom glow color */
@@ -37,6 +39,7 @@ export function CompactHero({
   title,
   description,
   icon,
+  visualContent,
   topColor = 'cyan',
   bottomColor = 'blue',
   className = '',
@@ -52,36 +55,44 @@ export function CompactHero({
         particleIntensity="subtle"
       />
 
-      <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12 text-center flex flex-col items-center">
-        {icon && (
-          <motion.div
-            initial={sa ? { opacity: 0, y: 12 } : false}
-            animate={{ opacity: 1, y: 0 }}
-            transition={sa ? { duration: duration.normal, ease: signatureEase, delay: 0.1 } : { duration: 0 }}
-            className="mb-4"
-          >
-            {icon}
-          </motion.div>
-        )}
+      <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12 flex flex-col items-center text-center lg:flex-row lg:text-left lg:gap-8">
+        <div className="flex flex-col items-center lg:items-start flex-1">
+          {icon && (
+            <motion.div
+              initial={sa ? { opacity: 0, y: 12 } : false}
+              animate={{ opacity: 1, y: 0 }}
+              transition={sa ? { duration: duration.normal, ease: signatureEase, delay: 0.1 } : { duration: 0 }}
+              className="mb-4"
+            >
+              {icon}
+            </motion.div>
+          )}
 
-        <motion.h1
-          initial={sa ? { opacity: 0, y: 20 } : false}
-          animate={{ opacity: 1, y: 0 }}
-          transition={sa ? { duration: duration.slow, ease: signatureEase, delay: 0.2 } : { duration: 0 }}
-          className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.1] text-white"
-        >
-          {title}
-        </motion.h1>
-
-        {description && (
-          <motion.p
-            initial={sa ? { opacity: 0, y: 16 } : false}
+          <motion.h1
+            initial={sa ? { opacity: 0, y: 20 } : false}
             animate={{ opacity: 1, y: 0 }}
-            transition={sa ? { duration: duration.slow, ease: signatureEase, delay: 0.35 } : { duration: 0 }}
-            className="mt-4 text-base sm:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed"
+            transition={sa ? { duration: duration.slow, ease: signatureEase, delay: 0.2 } : { duration: 0 }}
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.1] text-white"
           >
-            {description}
-          </motion.p>
+            {title}
+          </motion.h1>
+
+          {description && (
+            <motion.p
+              initial={sa ? { opacity: 0, y: 16 } : false}
+              animate={{ opacity: 1, y: 0 }}
+              transition={sa ? { duration: duration.slow, ease: signatureEase, delay: 0.35 } : { duration: 0 }}
+              className="mt-4 text-base sm:text-lg text-gray-400 max-w-2xl leading-relaxed"
+            >
+              {description}
+            </motion.p>
+          )}
+        </div>
+
+        {visualContent && (
+          <div className="hidden lg:flex items-center justify-center shrink-0">
+            {visualContent}
+          </div>
         )}
       </div>
 

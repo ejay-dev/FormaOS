@@ -10,6 +10,7 @@ import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DeferredSection } from '../components/shared';
+import { CustomerStoriesHeroVisual } from './components/CustomerStoriesHeroVisual';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -58,6 +59,7 @@ export default function CustomerStoriesContent() {
       {/* Hero */}
       <ImmersiveHero
         theme="customer-stories"
+        visualContent={<CustomerStoriesHeroVisual />}
         badge={{ icon: <ShieldCheck className="w-4 h-4" />, text: 'Proof in Practice' }}
         headline={
           <>

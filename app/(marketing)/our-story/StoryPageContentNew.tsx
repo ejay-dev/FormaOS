@@ -23,6 +23,7 @@ import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { DeferredSection } from '../components/shared';
 import { brand } from '@/config/brand';
+import { OurStoryHeroVisual } from './components/OurStoryHeroVisual';
 
 const DemoComplianceChain = dynamic(
   () => import('@/components/marketing/demo/DemoComplianceChain'),
@@ -42,6 +43,7 @@ export function StoryHero() {
   return (
     <ImmersiveHero
       theme="our-story"
+      visualContent={<OurStoryHeroVisual />}
       badge={{
         icon: <Sparkles className="w-4 h-4" />,
         text: 'Our Story',

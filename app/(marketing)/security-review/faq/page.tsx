@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { FileText } from 'lucide-react';
+import { FileText, HelpCircle } from 'lucide-react';
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
+import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
@@ -128,6 +129,7 @@ export default function SecurityReviewFaqPage() {
         description="Written for security, compliance, and procurement reviewers. This page avoids inflated claims and uses contract-accurate language."
         topColor="emerald"
         bottomColor="cyan"
+        visualContent={<CompactHeroIcon icon={<HelpCircle className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
       />
 
       <div className="mx-auto max-w-4xl px-6 pb-24">

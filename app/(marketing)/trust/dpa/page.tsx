@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
+import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
@@ -36,6 +37,7 @@ export default function DPAPage() {
         description="FormaOS processes customer data in accordance with applicable data protection laws, including GDPR, Australian Privacy Act, and HIPAA where applicable."
         topColor="emerald"
         bottomColor="cyan"
+        visualContent={<CompactHeroIcon icon={<FileText className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
       />
       <div className="mx-auto max-w-4xl px-6 pb-24">
         <p className="text-sm text-muted-foreground mt-2 mb-12">

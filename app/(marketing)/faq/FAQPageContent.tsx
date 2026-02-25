@@ -24,6 +24,7 @@ import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
+import { FAQHeroVisual } from './components/FAQHeroVisual';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
@@ -207,6 +208,7 @@ function FAQHero() {
   return (
     <ImmersiveHero
       theme="faq"
+      visualContent={<FAQHeroVisual />}
       badge={{ icon: <HelpCircle className="w-4 h-4" />, text: 'Help Center' }}
       headline={
         <>

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { FileText, ArrowRight } from 'lucide-react';
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
+import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
@@ -85,6 +86,7 @@ export default function CaseStudyTemplatePage() {
         description="Use this template to build credible outcome proof without inflated claims. Designed to match how procurement and auditors evaluate impact."
         topColor="cyan"
         bottomColor="blue"
+        visualContent={<CompactHeroIcon icon={<FileText className="w-8 h-8 text-cyan-400" />} color="34,211,238" />}
       />
 
       <div className="mx-auto max-w-4xl px-6 pb-24">

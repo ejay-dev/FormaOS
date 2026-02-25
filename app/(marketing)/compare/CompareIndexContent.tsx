@@ -9,6 +9,7 @@ import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DeferredSection } from '../components/shared';
 import { motion } from 'framer-motion';
+import { CompareHeroVisual } from './components/CompareHeroVisual';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -61,6 +62,7 @@ export default function CompareIndexContent() {
       {/* Hero */}
       <ImmersiveHero
         theme="compare"
+        visualContent={<CompareHeroVisual competitor="Alternatives" />}
         badge={{ icon: <Scale className="w-4 h-4" />, text: 'Compare' }}
         headline={
           <>

@@ -14,6 +14,7 @@ import {
   useTransform,
   type MotionValue,
 } from 'framer-motion';
+import { CursorContext } from './CursorContext';
 
 interface DepthStageProps {
   children: ReactNode;
@@ -114,42 +115,49 @@ export function DepthStage({
     mouseY.set(0.5);
   }, [mouseX, mouseY]);
 
+  // Cursor context value — exposed to children (HeroVisuals, etc.)
+  const cursorCtx = { mouseX, mouseY, isActive: tiltEnabled };
+
   // Reduced motion: render without any transforms
   if (shouldReduceMotion) {
     return (
-      <div className={`relative ${className}`} style={style}>
-        {children}
-      </div>
+      <CursorContext.Provider value={cursorCtx}>
+        <div className={`relative ${className}`} style={style}>
+          {children}
+        </div>
+      </CursorContext.Provider>
     );
   }
 
   return (
-    <motion.div
-      ref={ref}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        perspective,
-        ...style,
-      }}
-      className={`relative ${className}`}
-    >
+    <CursorContext.Provider value={cursorCtx}>
       <motion.div
+        ref={ref}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         style={{
-          ...(tiltEnabled ? { rotateX, rotateY } : {}),
-          transformStyle: 'preserve-3d',
+          perspective,
+          ...style,
         }}
-        className="relative w-full h-full"
+        className={`relative ${className}`}
       >
-        {children}
+        <motion.div
+          style={{
+            ...(tiltEnabled ? { rotateX, rotateY } : {}),
+            transformStyle: 'preserve-3d',
+          }}
+          className="relative w-full h-full"
+        >
+          {children}
 
-        {/* Cursor-following glow overlay */}
-        {glowFollow && tiltEnabled && isHovered && (
-          <GlowOverlay glowX={glowX} glowY={glowY} color={glowColor} />
-        )}
+          {/* Cursor-following glow overlay */}
+          {glowFollow && tiltEnabled && isHovered && (
+            <GlowOverlay glowX={glowX} glowY={glowY} color={glowColor} />
+          )}
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </CursorContext.Provider>
   );
 }
 

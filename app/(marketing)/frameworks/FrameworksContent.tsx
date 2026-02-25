@@ -16,6 +16,7 @@ import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DeferredSection } from '../components/shared';
+import { FrameworksHeroVisual } from './components/FrameworksHeroVisual';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -77,6 +78,7 @@ export default function FrameworksContent() {
       {/* Hero */}
       <ImmersiveHero
         theme="frameworks"
+        visualContent={<FrameworksHeroVisual />}
         badge={{ icon: <Layers className="h-4 w-4" />, text: 'Framework Coverage' }}
         headline="Framework-mapped controls, built for execution"
         subheadline="FormaOS ships framework packs that map obligations into controls and evidence workflows. This is alignment and operational mapping, not a certification claim."

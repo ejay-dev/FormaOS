@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, FileText, CalendarDays } from 'lucide-react';
+import { ArrowRight, FileText, CalendarDays, ShieldCheck } from 'lucide-react';
 import { brand } from '@/config/brand';
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
+import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
@@ -30,6 +31,7 @@ export default function VendorAssurancePage() {
         description="This page describes our vendor assurance process and the artifacts we provide during procurement. We do not claim SOC 2 or ISO certification for FormaOS unless an independent audit report exists for FormaOS as a vendor."
         topColor="emerald"
         bottomColor="cyan"
+        visualContent={<CompactHeroIcon icon={<ShieldCheck className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
       />
       <div className="mx-auto max-w-5xl px-6 pb-24">
         <section className="rounded-2xl border border-border bg-card p-7">

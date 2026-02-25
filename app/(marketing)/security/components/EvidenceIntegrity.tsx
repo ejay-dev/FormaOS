@@ -8,7 +8,8 @@ import {
   FileCheck,
   CheckCircle,
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform, useReducedMotion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import dynamic from 'next/dynamic';
 
@@ -52,9 +53,76 @@ const evidenceProperties = [
   },
 ];
 
-export function EvidenceIntegrity() {
+function TimelineNode({
+  property,
+  index,
+  total,
+}: {
+  property: (typeof evidenceProperties)[number];
+  index: number;
+  total: number;
+}) {
+  const nodeRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(nodeRef, { once: true, margin: '-10% 0px -10% 0px' });
+
   return (
-    <section className="relative py-32 overflow-hidden">
+    <div ref={nodeRef} className="relative flex flex-col items-center">
+      {/* Connector line (not on last) */}
+      {index < total - 1 && (
+        <div className="hidden md:block absolute top-6 left-[calc(50%+24px)] w-[calc(100%-48px)] h-px">
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="h-full bg-gradient-to-r from-orange-500/40 to-amber-500/40 origin-left"
+          />
+        </div>
+      )}
+
+      {/* Node dot */}
+      <motion.div
+        initial={{ scale: 0, opacity: 0 }}
+        animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+        transition={{ duration: 0.4, delay: index * 0.1 }}
+        className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500/30 to-amber-500/30 border-2 border-orange-500/50 flex items-center justify-center mb-4 z-10"
+      >
+        <property.icon className="h-5 w-5 text-orange-400" />
+      </motion.div>
+
+      {/* Detail card */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+        transition={{ duration: 0.5, delay: 0.15 + index * 0.1 }}
+        className="text-center max-w-[180px]"
+      >
+        <span className="text-xs font-bold text-orange-400/60 tracking-widest">
+          {property.number}
+        </span>
+        <h4 className="text-sm font-bold text-white mt-1">{property.title}</h4>
+        <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+          {property.detail}
+        </p>
+      </motion.div>
+    </div>
+  );
+}
+
+export function EvidenceIntegrity() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start end', 'end start'],
+  });
+
+  // Progress bar that fills as the section scrolls
+  const progressWidth = useTransform(scrollYProgress, [0.1, 0.6], ['0%', '100%']);
+  const progressOpacity = useTransform(scrollYProgress, [0.05, 0.15, 0.7, 0.85], [0, 1, 1, 0]);
+
+  return (
+    <section ref={sectionRef} className="relative py-32 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]">
         <div
@@ -105,6 +173,35 @@ export function EvidenceIntegrity() {
             </p>
           </div>
         </ScrollReveal>
+
+        {/* Scroll-driven progress bar */}
+        {!prefersReducedMotion && (
+          <motion.div
+            style={{ opacity: progressOpacity }}
+            className="mb-12"
+          >
+            <div className="relative h-1 rounded-full bg-white/[0.06] overflow-hidden max-w-3xl mx-auto">
+              <motion.div
+                style={{ width: progressWidth }}
+                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-orange-500 via-amber-400 to-yellow-400"
+              />
+            </div>
+          </motion.div>
+        )}
+
+        {/* Horizontal Timeline — nodes reveal on intersection */}
+        {!prefersReducedMotion && (
+          <div className="hidden md:grid grid-cols-4 gap-4 mb-16">
+            {evidenceProperties.map((property, index) => (
+              <TimelineNode
+                key={property.title}
+                property={property}
+                index={index}
+                total={evidenceProperties.length}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Evidence Properties */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
