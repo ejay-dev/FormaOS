@@ -15,7 +15,7 @@ const sora = Sora({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-display',
-  preload: false,
+  preload: true,
   weight: ['700'],
 });
 
@@ -42,6 +42,18 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png',
   },
   manifest: '/manifest.json',
+  openGraph: {
+    type: 'website',
+    siteName: 'FormaOS',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'FormaOS — Compliance Operating System' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FormaOS | Compliance Operating System',
+    description:
+      'FormaOS is the compliance operating system for regulated industries. Manage frameworks, policies, controls, and evidence in a single platform.',
+    images: ['/og-image.png'],
+  },
 };
 
 export const viewport: Viewport = {

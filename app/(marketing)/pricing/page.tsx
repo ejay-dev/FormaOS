@@ -1,19 +1,20 @@
 import type { Metadata } from 'next';
 import PricingPageContent from './PricingPageContent';
+import { breadcrumbSchema } from '@/lib/seo';
 
 export const dynamic = 'force-static';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
 export const metadata: Metadata = {
-  title: 'FormaOS | Pricing',
+  title: 'Pricing — Compliance Management Software | FormaOS',
   description:
-    'Simple, transparent pricing for compliance teams. Start free, scale as you grow.',
+    'Simple, transparent pricing for compliance teams. Start with a free 14-day trial, scale as you grow. No setup fees, cancel anytime.',
   alternates: {
     canonical: `${siteUrl}/pricing`,
   },
   openGraph: {
-    title: 'FormaOS | Pricing',
+    title: 'Pricing | FormaOS',
     description:
       'Transparent pricing for compliance management. Free trial, no setup fees, cancel anytime.',
     type: 'website',
@@ -22,5 +23,20 @@ export const metadata: Metadata = {
 };
 
 export default function PricingPage() {
-  return <PricingPageContent />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Pricing', path: '/pricing' },
+            ])
+          ),
+        }}
+      />
+      <PricingPageContent />
+    </>
+  );
 }

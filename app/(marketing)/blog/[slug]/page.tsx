@@ -6,6 +6,7 @@ import { blogPosts, getCategoryId } from '../blogData';
 import { BlogHeroVisual } from '@/components/blog/BlogHeroVisual';
 import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
 import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
+import { articleSchema, breadcrumbSchema, siteUrl as seoSiteUrl } from '@/lib/seo';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -64,6 +65,25 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   return (
     <MarketingPageShell>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            articleSchema({
+              title: post.title,
+              description: post.excerpt,
+              url: `${seoSiteUrl}/blog/${post.id}`,
+              datePublished: new Date(post.date).toISOString(),
+              author: post.author,
+            }),
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Blog', path: '/blog' },
+              { name: post.title, path: `/blog/${post.id}` },
+            ]),
+          ]),
+        }}
+      />
       <div className="relative z-10">
         <section className="mk-hero relative overflow-hidden">
           <HeroAtmosphere

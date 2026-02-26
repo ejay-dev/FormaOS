@@ -12,6 +12,7 @@ import './snow-field.css';
 import './design-system.css';
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';
+import { organizationSchema, softwareApplicationSchema } from '@/lib/seo';
 import MarketingBackgroundLayer from '@/components/motion/MarketingBackgroundLayer';
 import { PageTransition } from '@/components/motion/PageTransition';
 import { ControlPlaneRuntimeProvider } from '@/lib/control-plane/runtime-client';
@@ -98,29 +99,8 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
             type="application/ld+json"
             dangerouslySetInnerHTML={{
               __html: JSON.stringify([
-                {
-                  '@context': 'https://schema.org',
-                  '@type': 'Organization',
-                  name: 'FormaOS',
-                  url: siteUrl,
-                  contactPoint: [
-                    {
-                      '@type': 'ContactPoint',
-                      contactType: 'sales',
-                      email: `sales@${brand.domain}`,
-                    },
-                  ],
-                },
-                {
-                  '@context': 'https://schema.org',
-                  '@type': 'SoftwareApplication',
-                  name: 'FormaOS',
-                  applicationCategory: 'BusinessApplication',
-                  operatingSystem: 'Web',
-                  url: siteUrl,
-                  description:
-                    'Compliance and governance operating system for regulated industries.',
-                },
+                organizationSchema(),
+                softwareApplicationSchema(),
               ]),
             }}
           />

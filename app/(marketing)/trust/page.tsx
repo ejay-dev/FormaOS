@@ -1,24 +1,40 @@
 import type { Metadata } from 'next';
 import TrustPageContent from './TrustPageContent';
+import { breadcrumbSchema } from '@/lib/seo';
 
 export const dynamic = 'force-static';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
 export const metadata: Metadata = {
-  title: 'FormaOS | Trust Center',
+  title: 'Trust Center — Security & Compliance Assurance | FormaOS',
   description:
-    'Customer-facing assurance portal for compliance posture, security controls, and audit readiness artifacts.',
+    'Review FormaOS security posture, compliance controls, data handling policies, and audit readiness artifacts. Enterprise trust documentation in one portal.',
   alternates: { canonical: `${siteUrl}/trust` },
   openGraph: {
-    title: 'FormaOS | Trust Center',
+    title: 'Trust Center | FormaOS',
     description:
-      'Customer-facing assurance portal for compliance posture, security controls, and audit readiness artifacts.',
+      'Security posture, compliance controls, and audit readiness artifacts for enterprise procurement.',
     type: 'website',
     url: `${siteUrl}/trust`,
   },
 };
 
 export default function TrustCenterPage() {
-  return <TrustPageContent />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Trust Center', path: '/trust' },
+            ])
+          ),
+        }}
+      />
+      <TrustPageContent />
+    </>
+  );
 }

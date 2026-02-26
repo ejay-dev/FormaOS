@@ -1,17 +1,18 @@
 import type { Metadata } from 'next';
 import CompareIndexContent from './CompareIndexContent';
+import { breadcrumbSchema } from '@/lib/seo';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
 export const metadata: Metadata = {
-  title: 'FormaOS | Compare',
+  title: 'Compare FormaOS vs Compliance Automation Tools',
   description:
-    'Compare FormaOS against popular compliance automation tools. Outcome-driven execution, evidence defensibility, and operational governance.',
+    'Compare FormaOS against Drata, Vanta, SecureFrame, and traditional compliance platforms. See how outcome-driven execution beats checkbox automation.',
   alternates: {
     canonical: `${siteUrl}/compare`,
   },
   openGraph: {
-    title: 'FormaOS | Compare',
+    title: 'Compare FormaOS vs Compliance Tools',
     description:
       'Compare FormaOS against popular compliance automation tools. Outcome-driven execution, evidence defensibility, and operational governance.',
     type: 'website',
@@ -20,5 +21,20 @@ export const metadata: Metadata = {
 };
 
 export default function CompareIndexPage() {
-  return <CompareIndexContent />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Compare', path: '/compare' },
+            ])
+          ),
+        }}
+      />
+      <CompareIndexContent />
+    </>
+  );
 }

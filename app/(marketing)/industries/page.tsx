@@ -1,26 +1,42 @@
 import type { Metadata } from 'next';
 import IndustriesPageContent from './IndustriesPageContentNew';
+import { breadcrumbSchema } from '@/lib/seo';
 
 export const dynamic = 'force-static';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
 export const metadata: Metadata = {
-  title: 'FormaOS | Industry Solutions',
+  title: 'Industry Compliance Solutions — Healthcare, NDIS, Aged Care | FormaOS',
   description:
-    'Compliance frameworks for health, disability, community services, and regulated industries.',
+    'Pre-built compliance frameworks for NDIS, healthcare, aged care, disability services, financial services, and government. Purpose-built for regulated industries.',
   alternates: {
     canonical: `${siteUrl}/industries`,
   },
   openGraph: {
-    title: 'FormaOS | Industry Solutions',
+    title: 'Industry Solutions | FormaOS',
     description:
-      'Pre-built compliance frameworks for NDIS, healthcare, and community services.',
+      'Pre-built compliance frameworks for NDIS, healthcare, aged care, and regulated industries.',
     type: 'website',
     url: `${siteUrl}/industries`,
   },
 };
 
 export default function IndustriesPage() {
-  return <IndustriesPageContent />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Industries', path: '/industries' },
+            ])
+          ),
+        }}
+      />
+      <IndustriesPageContent />
+    </>
+  );
 }
