@@ -3,7 +3,6 @@
 import { Lock, Shield, Eye, FileCheck } from 'lucide-react';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SecurityHeroVisual } from './components/SecurityHeroVisual';
-import { SecurityHeroLaser } from './components/SecurityHeroLaser';
 
 const SECURITY_PILLS = [
   { icon: Lock, label: 'Tenant Isolation' },
@@ -16,7 +15,6 @@ export function SecurityHero() {
     <ImmersiveHero
       theme="security"
       visualContent={<SecurityHeroVisual />}
-      backgroundContent={<SecurityHeroLaser />}
       badge={{
         icon: <Shield className="w-4 h-4 text-cyan-400" />,
         text: 'Security Architecture',

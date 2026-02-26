@@ -296,11 +296,11 @@ function LaserFlowInner({
     // ── WebGL setup ──
     const renderer = new THREE.WebGLRenderer({
       antialias: false,
-      alpha: false,
+      alpha: true,
       depth: false,
       stencil: false,
       powerPreference: 'high-performance',
-      premultipliedAlpha: false,
+      premultipliedAlpha: true,
       preserveDrawingBuffer: false,
       failIfMajorPerformanceCaveat: false,
     });
@@ -310,7 +310,7 @@ function LaserFlowInner({
     renderer.setPixelRatio(currentDpr);
     renderer.shadowMap.enabled = false;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.setClearColor(0x000000, 1);
+    renderer.setClearColor(0x000000, 0);
 
     const canvas = renderer.domElement;
     canvas.style.width = '100%';
@@ -366,10 +366,10 @@ function LaserFlowInner({
       vertexShader: VERT,
       fragmentShader: FRAG,
       uniforms,
-      transparent: false,
+      transparent: true,
       depthTest: false,
       depthWrite: false,
-      blending: THREE.NormalBlending,
+      blending: THREE.AdditiveBlending,
     });
 
     const mesh = new THREE.Mesh(geometry, material);

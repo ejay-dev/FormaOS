@@ -1,102 +1,121 @@
 'use client';
 
-import { memo } from 'react';
-import { useReducedMotion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { memo, useRef, useEffect, useState } from 'react';
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { LaserFlow } from '@/components/motion/LaserFlow';
-import { useDeviceTier } from '@/lib/device-tier';
 
 /**
  * SecurityHeroLaser
  * ─────────────────
- * Massive cinematic LaserFlow backdrop for the security hero.
+ * Massive cinematic LaserFlow that sits BEHIND the hero section.
  *
- * - Spans ~140vw × 90vh, centered behind headline/CTAs
- * - Masked with radial vignette so edges dissolve into dark bg
- * - Bottom gradient so it fades as page scrolls
- * - Pointer-events: none (fully behind content)
- * - Mobile low-tier / reduced-motion: static gradient fallback
- * - useInView gating: unmounts WebGL when hero leaves viewport
+ * Must be rendered as a SIBLING to ImmersiveHero (not inside it)
+ * because ImmersiveHero has overflow-hidden which clips oversized content.
+ *
+ * Sizing: ~160vw × 110vh, centered on the hero viewport.
+ * The beam bleeds past screen edges for a cinematic feel.
+ *
+ * Performance:
+ * - Desktop only: matchMedia("(hover:hover) and (pointer:fine)")
+ * - Mobile: rich static gradient fallback (always visible)
+ * - Reduced motion: static gradient fallback
+ * - Always mounted (no unmount flicker), pauses via internal IO
+ * - Scroll parallax at 0.15x speed (transform only, no layout)
  */
 function SecurityHeroLaserInner() {
-  const ref = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
-  const tierConfig = useDeviceTier();
-  const isInView = useInView(ref, { once: false, margin: '100px' });
+  const [isDesktop, setIsDesktop] = useState(false);
 
-  const useFallback = prefersReduced || tierConfig.tier === 'low';
+  // Desktop-only check — WebGL only on devices with hover + fine pointer
+  useEffect(() => {
+    const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
+    setIsDesktop(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  // Scroll parallax — laser drifts slower than content
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end start'],
+  });
+  const laserY = useTransform(scrollYProgress, [0, 1], [0, 100]);
+
+  const showWebGL = isDesktop && !prefersReduced;
 
   return (
     <div
-      ref={ref}
-      className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden"
+      ref={containerRef}
+      className="absolute inset-0 pointer-events-none"
+      style={{ zIndex: 0 }}
       aria-hidden
     >
-      {/* Oversized laser container — bleeds beyond viewport edges */}
-      <div
-        className="absolute"
-        style={{
-          width: '140vw',
-          height: '90vh',
-          top: '10%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-        }}
+      {/* Parallax wrapper — moves at ~0.15x scroll speed */}
+      <motion.div
+        className="absolute inset-0"
+        style={prefersReduced ? undefined : { y: laserY }}
       >
-        {/* Radial mask: bright center, fades to transparent at edges */}
+        {/* Oversized canvas — bleeds past viewport edges */}
         <div
-          className="absolute inset-0 overflow-hidden"
+          className="absolute"
           style={{
-            WebkitMaskImage: 'radial-gradient(ellipse 70% 65% at 50% 48%, rgba(0,0,0,1) 20%, rgba(0,0,0,0.6) 45%, rgba(0,0,0,0.15) 70%, transparent 90%)',
-            maskImage: 'radial-gradient(ellipse 70% 65% at 50% 48%, rgba(0,0,0,1) 20%, rgba(0,0,0,0.6) 45%, rgba(0,0,0,0.15) 70%, transparent 90%)',
+            width: '160vw',
+            height: '110vh',
+            top: '-5vh',
+            left: '50%',
+            transform: 'translateX(-50%)',
           }}
         >
-          {useFallback ? (
-            /* Static gradient fallback */
-            <div
-              className="w-full h-full"
-              style={{
-                background: `
-                  radial-gradient(ellipse 60% 50% at 50% 50%, rgba(139,92,246,0.12) 0%, transparent 60%),
-                  radial-gradient(ellipse 80% 70% at 50% 45%, rgba(6,182,212,0.06) 0%, transparent 65%)
-                `,
-              }}
-            />
-          ) : isInView ? (
-            <LaserFlow
-              color="#8B5CF6"
-              horizontalBeamOffset={0.0}
-              verticalBeamOffset={-0.08}
-              flowSpeed={0.2}
-              verticalSizing={2.5}
-              horizontalSizing={1.0}
-              fogIntensity={0.5}
-              fogScale={0.3}
-              wispDensity={0.7}
-              wispSpeed={10}
-              wispIntensity={5}
-              flowStrength={0.25}
-              decay={1.1}
-              falloffStart={1.2}
-              fogFallSpeed={0.45}
-            />
-          ) : null}
+          {/* Radial mask: bright center, dissolves at edges */}
+          <div
+            className="w-full h-full"
+            style={{
+              WebkitMaskImage: 'radial-gradient(ellipse 65% 58% at 50% 48%, black 10%, rgba(0,0,0,0.7) 30%, rgba(0,0,0,0.2) 55%, transparent 75%)',
+              maskImage: 'radial-gradient(ellipse 65% 58% at 50% 48%, black 10%, rgba(0,0,0,0.7) 30%, rgba(0,0,0,0.2) 55%, transparent 75%)',
+            }}
+          >
+            {showWebGL ? (
+              <LaserFlow
+                color="#8B5CF6"
+                horizontalBeamOffset={0.0}
+                verticalBeamOffset={-0.05}
+                flowSpeed={0.22}
+                verticalSizing={3.0}
+                horizontalSizing={1.2}
+                fogIntensity={0.65}
+                fogScale={0.32}
+                wispDensity={0.9}
+                wispSpeed={12}
+                wispIntensity={8}
+                flowStrength={0.3}
+                decay={1.15}
+                falloffStart={1.3}
+                fogFallSpeed={0.5}
+              />
+            ) : (
+              /* Static gradient fallback — visible on mobile + reduced motion */
+              <div
+                className="w-full h-full"
+                style={{
+                  background: `
+                    radial-gradient(ellipse 50% 40% at 50% 48%, rgba(139,92,246,0.2) 0%, transparent 70%),
+                    radial-gradient(ellipse 70% 55% at 50% 45%, rgba(6,182,212,0.1) 0%, transparent 65%),
+                    radial-gradient(ellipse 35% 25% at 50% 50%, rgba(139,92,246,0.15) 0%, transparent 50%)
+                  `,
+                }}
+              />
+            )}
+          </div>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Bottom vignette: ensures laser dissolves before content below */}
+      {/* Bottom vignette — dissolves laser into page content below */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-[30%] pointer-events-none"
+        className="absolute bottom-0 left-0 right-0 h-[35%] pointer-events-none"
         style={{
-          background: 'linear-gradient(to top, rgba(3,7,18,1) 0%, rgba(3,7,18,0.8) 40%, transparent 100%)',
-        }}
-      />
-
-      {/* Top subtle vignette */}
-      <div
-        className="absolute top-0 left-0 right-0 h-[15%] pointer-events-none"
-        style={{
-          background: 'linear-gradient(to bottom, rgba(3,7,18,0.6) 0%, transparent 100%)',
+          background: 'linear-gradient(to top, rgba(3,7,18,1) 0%, rgba(3,7,18,0.7) 50%, transparent 100%)',
         }}
       />
     </div>
