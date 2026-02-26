@@ -23,7 +23,7 @@ function NodeGlow({ progress, threshold }: { progress: MotionValue<number>; thre
   return (
     <motion.div
       style={{ opacity, scale }}
-      className="absolute -inset-1 rounded-2xl bg-teal-400/15 blur-md pointer-events-none z-0"
+      className="absolute -inset-1 rounded-2xl bg-violet-400/15 blur-md pointer-events-none z-0"
     />
   );
 }
@@ -101,9 +101,9 @@ export function ObligationToExecution() {
               />
               <defs>
                 <linearGradient id="connection-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#2dd4bf" />
-                  <stop offset="50%" stopColor="#34d399" />
-                  <stop offset="100%" stopColor="#f59e0b" />
+                  <stop offset="0%" stopColor="#a78bfa" />
+                  <stop offset="50%" stopColor="#8b5cf6" />
+                  <stop offset="100%" stopColor="#7c3aed" />
                 </linearGradient>
               </defs>
             </svg>
