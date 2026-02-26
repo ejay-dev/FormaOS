@@ -9,7 +9,7 @@ import { DepthSection } from '@/components/motion/DepthSection';
 /* ── Hero (headline + CTAs) then Showcase (interactive tabs + panel) ── */
 const ProductHero = dynamic(
   () => import('@/components/marketing/ProductHeroShowcase').then((m) => m.ProductHero),
-  { ssr: false, loading: () => <div className="w-full" style={{ height: '85vh', minHeight: '600px' }} /> },
+  { ssr: false, loading: () => <div className="w-full" style={{ height: '300vh' }} /> },
 );
 const ProductShowcase = dynamic(
   () => import('@/components/marketing/ProductHeroShowcase').then((m) => m.ProductShowcase),

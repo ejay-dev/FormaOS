@@ -4,66 +4,21 @@
  * ProductHeroShowcase — /product page hero + live interactive demo
  *
  * Exports:
- *   ProductHero     — Immersive 3D hero with scroll-driven UI transformation
+ *   ProductHero     — Cinematic scroll-driven hero with 3D compliance core
  *   ProductShowcase — Live interactive app demo below the hero
  */
 
 import { useRef } from 'react';
-import { Sparkles } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
-import { ProductHeroVisual } from '@/app/(marketing)/product/components/ProductHeroVisual';
+import { ProductScrollHero } from '@/app/(marketing)/product/components/ProductScrollHero';
 import { ProductLiveDemo } from './ProductLiveDemo';
 
-const PRODUCT_CHIPS = [
-  { label: 'Structured Controls', color: 'bg-teal-400' },
-  { label: 'Owned Actions', color: 'bg-emerald-400' },
-  { label: 'Live Evidence', color: 'bg-amber-400' },
-];
-
 /* ═══════════════════════════════════════════════════════════════════════
-   HERO SECTION — immersive 3D hero with scroll-driven UI transformation
+   HERO SECTION — cinematic scroll-driven 3D compliance core
    ═══════════════════════════════════════════════════════════════════════ */
 
 export function ProductHero() {
-  return (
-    <ImmersiveHero
-      theme="product"
-      visualContent={<ProductHeroVisual />}
-      badge={{
-        icon: <Sparkles className="w-4 h-4 text-violet-400" />,
-        text: 'Compliance Operating System',
-        colorClass: 'violet',
-      }}
-      headline={
-        <>
-          The Compliance OS
-          <br />
-          <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-500 bg-clip-text text-transparent">
-            for Real Organizations
-          </span>
-        </>
-      }
-      subheadline="Transform regulatory obligations into structured controls, owned actions, and audit-ready outcomes — in real time."
-      extras={
-        <div className="flex flex-col items-center gap-4">
-          <p className="text-sm sm:text-base text-slate-500 max-w-xl mx-auto text-center">
-            Used by compliance teams. Aligned to ISO & SOC frameworks. Built for audit defensibility.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-3 text-sm text-slate-500">
-            {PRODUCT_CHIPS.map((chip) => (
-              <span key={chip.label} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.08]">
-                <span className={`w-1.5 h-1.5 rounded-full ${chip.color}/60`} />
-                {chip.label}
-              </span>
-            ))}
-          </div>
-        </div>
-      }
-      primaryCta={{ href: '/auth/signup', label: 'Start Free Trial' }}
-      secondaryCta={{ href: '/contact', label: 'Request Demo' }}
-    />
-  );
+  return <ProductScrollHero />;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
