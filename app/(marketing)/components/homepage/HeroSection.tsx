@@ -21,12 +21,18 @@ import {
   Sparkles,
 } from 'lucide-react';
 
+import dynamic from 'next/dynamic';
 import { brand } from '@/config/brand';
 import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 import { HeroScrollRetentionController } from '@/components/motion/HeroScrollRetentionController';
 import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 import { useDeviceTier } from '@/lib/device-tier';
+
+const HomeHeroLaser = dynamic(
+  () => import('./HomeHeroLaser').then((m) => m.HomeHeroLaser),
+  { ssr: false, loading: () => null },
+);
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -143,9 +149,12 @@ export function HeroSection() {
   return (
     <section
       ref={containerRef}
-      className="home-hero relative flex items-center justify-center overflow-hidden pt-24 sm:pt-28 lg:pt-32 pb-24 sm:pb-32 md:pb-52"
+      className="home-hero relative isolate flex items-center justify-center overflow-hidden pt-24 sm:pt-28 lg:pt-32 pb-24 sm:pb-32 md:pb-52"
       style={{ minHeight: 'clamp(100svh, 116vh, 1300px)' }}
     >
+      {/* Cinematic laser beam — WebGL on desktop, static gradient on mobile */}
+      <HomeHeroLaser />
+
       {/* Cinematic ambient particles — all tiers */}
       {expensiveEffectsEnabled ? <AmbientParticleLayer intensity="subtle" /> : null}
 
