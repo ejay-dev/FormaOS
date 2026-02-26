@@ -29,11 +29,7 @@ export function SecurityHero() {
           </span>
         </>
       }
-      subheadline={
-        <span className="text-gray-300 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
-          Audit-grade logging, tenant isolation, and compliance gates engineered for organizations where security and data integrity are regulatory requirements.
-        </span>
-      }
+      subheadline="Audit-grade logging, tenant isolation, and compliance gates engineered for organizations where security and data integrity are regulatory requirements."
       extras={
         <div className="flex flex-wrap justify-center gap-3">
           {SECURITY_PILLS.map((item) => (

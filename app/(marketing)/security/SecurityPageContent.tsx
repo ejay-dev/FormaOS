@@ -5,7 +5,6 @@ import { VisualDivider } from '@/components/motion';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DeferredSection } from '../components/shared';
 import { SecurityHero } from './SecurityHero';
-import { SecurityHeroLaser } from './components/SecurityHeroLaser';
 import { FrameworkTrustStrip } from '@/components/marketing/FrameworkTrustStrip';
 
 const LaserFlowSection = dynamic(
@@ -32,13 +31,7 @@ const SecurityCTA = dynamic(
 export default function SecurityPageContent() {
   return (
     <MarketingPageShell>
-      {/* Hero wrapper — laser sits BEHIND hero content, outside ImmersiveHero's overflow-hidden */}
-      <div className="relative">
-        <SecurityHeroLaser />
-        <div className="relative" style={{ zIndex: 1 }}>
-          <SecurityHero />
-        </div>
-      </div>
+      <SecurityHero />
 
       {/* Security Pipeline section (lightweight, no WebGL) */}
       <LaserFlowSection />
