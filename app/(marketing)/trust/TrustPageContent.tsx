@@ -7,6 +7,7 @@ import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { TrustHero } from './components';
+import { FrameworkTrustStrip } from '@/components/marketing/FrameworkTrustStrip';
 
 const TrustModules = dynamic(
   () => import('./components/TrustModules').then((m) => m.TrustModules),
@@ -136,6 +137,7 @@ export default function TrustPageContent() {
     <MarketingPageShell>
       <TrustWirePaths />
       <TrustHero />
+      <FrameworkTrustStrip className="mt-2 mb-2" />
       <VisualDivider />
       <DeferredSection minHeight={520}>
         <TrustModules />

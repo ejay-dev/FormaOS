@@ -5,6 +5,7 @@ import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DepthSection } from '@/components/motion/DepthSection';
+import { FrameworkTrustStrip } from '@/components/marketing/FrameworkTrustStrip';
 
 /* ── Hero (headline + CTAs) then Showcase (interactive tabs + panel) ── */
 const ProductHero = dynamic(
@@ -68,6 +69,8 @@ export default function ProductPageContent() {
       <ProductHero />
       {/* Interactive showcase — tabs left, app panel right */}
       <ProductShowcase />
+
+      <FrameworkTrustStrip className="mt-4 mb-2" />
 
       <DeferredSection minHeight={640}>
         <DepthSection fade>

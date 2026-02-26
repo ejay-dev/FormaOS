@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { MotionProvider } from './motion/MotionContext';
 import { DeferredSection } from './shared';
 import { HeroSection, ValueProposition } from './homepage';
+import { FrameworkTrustStrip } from '@/components/marketing/FrameworkTrustStrip';
 import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 
@@ -86,6 +87,7 @@ export default function FormaOSHomepage() {
         {/* Page Sections */}
         <div className="mk-marketing-flow relative z-10">
           <HeroSection />
+          <FrameworkTrustStrip className="-mt-4 mb-2" />
           {sectionVisibility.value_proposition !== false ? <ValueProposition /> : null}
           {sectionVisibility.compliance_network !== false ? (
             <DeferredSection minHeight={620}>

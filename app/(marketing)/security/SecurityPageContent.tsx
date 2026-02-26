@@ -5,6 +5,7 @@ import { VisualDivider } from '@/components/motion';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DeferredSection } from '../components/shared';
 import { SecurityHero } from './SecurityHero';
+import { FrameworkTrustStrip } from '@/components/marketing/FrameworkTrustStrip';
 
 const SecuritySafeguards = dynamic(
   () => import('./SecurityContent').then((m) => m.SecuritySafeguards),
@@ -27,6 +28,7 @@ export default function SecurityPageContent() {
   return (
     <MarketingPageShell>
       <SecurityHero />
+      <FrameworkTrustStrip className="mt-2 mb-2" />
       <VisualDivider gradient />
       <DeferredSection minHeight={520}>
         <SecuritySafeguards />
