@@ -10,7 +10,7 @@ import { FrameworkTrustStrip } from '@/components/marketing/FrameworkTrustStrip'
 /* ── Hero (headline + CTAs) then Showcase (interactive tabs + panel) ── */
 const ProductHero = dynamic(
   () => import('@/components/marketing/ProductHeroShowcase').then((m) => m.ProductHero),
-  { ssr: false, loading: () => <div className="w-full" style={{ height: '250vh' }} /> },
+  { ssr: false, loading: () => <div className="w-full" style={{ minHeight: '100vh' }} /> },
 );
 const ProductShowcase = dynamic(
   () => import('@/components/marketing/ProductHeroShowcase').then((m) => m.ProductShowcase),
