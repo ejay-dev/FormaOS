@@ -12,8 +12,12 @@ import { LaserFlow } from '@/components/motion/LaserFlow';
  * Must be rendered as a SIBLING to ImmersiveHero (not inside it)
  * because ImmersiveHero has overflow-hidden which clips oversized content.
  *
- * Sizing: ~160vw × 110vh, centered on the hero viewport.
- * The beam bleeds past screen edges for a cinematic feel.
+ * Visual composition:
+ * - ~160vw × 110vh canvas, centered, beam offset upward for hero alignment
+ * - Radial mask dissolves edges naturally
+ * - Bottom vignette blends into page
+ * - Text scrim: subtle dark gradient behind hero text area for readability
+ * - Noise overlay: breaks WebGL color banding
  *
  * Performance:
  * - Desktop only: matchMedia("(hover:hover) and (pointer:fine)")
@@ -110,6 +114,27 @@ function SecurityHeroLaserInner() {
           </div>
         </div>
       </motion.div>
+
+      {/* Text scrim — subtle darkening behind hero text for readability */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `
+            radial-gradient(ellipse 55% 40% at 50% 45%, rgba(3,7,18,0.35) 0%, transparent 70%)
+          `,
+        }}
+      />
+
+      {/* Noise overlay — breaks color banding from WebGL gradients */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.03]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: 'repeat',
+          backgroundSize: '128px 128px',
+          mixBlendMode: 'overlay',
+        }}
+      />
 
       {/* Bottom vignette — dissolves laser into page content below */}
       <div

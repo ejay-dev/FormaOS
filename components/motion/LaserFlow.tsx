@@ -1,20 +1,27 @@
 'use client';
 
-import { useEffect, useRef, memo } from 'react';
+import { useEffect, useRef, useCallback, memo } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import * as THREE from 'three';
 import { useDeviceTier } from '@/lib/device-tier';
 
 /**
- * LaserFlow — WebGL beam effect for premium section dividers.
+ * LaserFlow — WebGL beam effect for premium hero backgrounds.
  *
- * Performance constraints:
+ * Stability guarantees:
+ * - Single init guard (initializedRef) prevents Strict Mode double-invoke
+ * - Props stored in refs — effect never re-runs from prop changes
+ * - Resize throttled to 100ms with 2px deadzone
+ * - Adaptive DPR changes capped at once per 3s with smooth crossfade
+ * - Context loss/restore handled gracefully with fade-in
+ * - Pause/resume via IO + visibilitychange (never unmounts)
+ *
+ * Performance:
  * - Pauses when off-screen (IntersectionObserver)
  * - Pauses when tab hidden (visibilitychange)
- * - Respects prefers-reduced-motion (renders static gradient fallback)
+ * - Respects prefers-reduced-motion (static gradient fallback)
  * - Mobile low-tier → static gradient fallback (no WebGL)
- * - Adaptive DPR downscaling on low FPS
- * - Single instance only
+ * - Adaptive DPR downscaling on sustained low FPS
  */
 
 const VERT = `
@@ -263,6 +270,15 @@ interface LaserFlowProps {
   className?: string;
 }
 
+/** Debug overlay state — activated via ?laserDebug=1 */
+interface DebugState {
+  status: 'mounting' | 'running' | 'paused' | 'contextLost';
+  fps: number;
+  dpr: number;
+  resolution: string;
+  frameCount: number;
+}
+
 function LaserFlowInner({
   color = '#8B5CF6',
   horizontalBeamOffset = 0.1,
@@ -285,6 +301,50 @@ function LaserFlowInner({
   const prefersReduced = useReducedMotion();
   const tierConfig = useDeviceTier();
 
+  // Store props in refs so the effect never re-runs from prop changes
+  const propsRef = useRef({
+    color, horizontalBeamOffset, verticalBeamOffset, flowSpeed,
+    verticalSizing, horizontalSizing, fogIntensity, fogScale,
+    wispDensity, wispSpeed, wispIntensity, flowStrength,
+    decay, falloffStart, fogFallSpeed,
+  });
+  propsRef.current = {
+    color, horizontalBeamOffset, verticalBeamOffset, flowSpeed,
+    verticalSizing, horizontalSizing, fogIntensity, fogScale,
+    wispDensity, wispSpeed, wispIntensity, flowStrength,
+    decay, falloffStart, fogFallSpeed,
+  };
+
+  // Strict Mode guard — prevent double init
+  const initializedRef = useRef(false);
+
+  // Debug state ref (written from RAF loop, read by debug overlay)
+  const debugRef = useRef<DebugState>({
+    status: 'mounting',
+    fps: 0,
+    dpr: 1,
+    resolution: '0x0',
+    frameCount: 0,
+  });
+  const debugOverlayRef = useRef<HTMLDivElement>(null);
+
+  // Check for debug mode
+  const debugEnabled = useRef(false);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      debugEnabled.current = new URLSearchParams(window.location.search).has('laserDebug');
+    }
+  }, []);
+
+  // Update debug overlay DOM directly (no React re-renders)
+  const updateDebugOverlay = useCallback(() => {
+    const el = debugOverlayRef.current;
+    if (!el || !debugEnabled.current) return;
+    const d = debugRef.current;
+    el.style.display = 'block';
+    el.textContent = `LaserFlow: ${d.status} | FPS: ${d.fps.toFixed(0)} | DPR: ${d.dpr.toFixed(2)} | ${d.resolution} | frames: ${d.frameCount}`;
+  }, []);
+
   // Mobile low-power or reduced motion → static fallback
   const useFallback = prefersReduced || tierConfig.tier === 'low';
 
@@ -292,6 +352,12 @@ function LaserFlowInner({
     if (useFallback) return;
     const mount = mountRef.current;
     if (!mount) return;
+
+    // Strict Mode guard: only init once
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+
+    const props = propsRef.current;
 
     // ── WebGL setup ──
     const renderer = new THREE.WebGLRenderer({
@@ -335,29 +401,29 @@ function LaserFlowInner({
       return { r: ((n >> 16) & 255) / 255, g: ((n >> 8) & 255) / 255, b: (n & 255) / 255 };
     };
 
-    const { r, g, b } = hexToRGB(color);
+    const { r, g, b } = hexToRGB(props.color);
 
     const uniforms = {
       iTime: { value: 0 },
       iResolution: { value: new THREE.Vector3(1, 1, 1) },
       iMouse: { value: new THREE.Vector4(0, 0, 0, 0) },
-      uWispDensity: { value: wispDensity },
+      uWispDensity: { value: props.wispDensity },
       uTiltScale: { value: 0.01 },
       uFlowTime: { value: 0 },
       uFogTime: { value: 0 },
-      uBeamXFrac: { value: horizontalBeamOffset },
-      uBeamYFrac: { value: verticalBeamOffset },
-      uFlowSpeed: { value: flowSpeed },
-      uVLenFactor: { value: verticalSizing },
-      uHLenFactor: { value: horizontalSizing },
-      uFogIntensity: { value: fogIntensity },
-      uFogScale: { value: fogScale },
-      uWSpeed: { value: wispSpeed },
-      uWIntensity: { value: wispIntensity },
-      uFlowStrength: { value: flowStrength },
-      uDecay: { value: decay },
-      uFalloffStart: { value: falloffStart },
-      uFogFallSpeed: { value: fogFallSpeed },
+      uBeamXFrac: { value: props.horizontalBeamOffset },
+      uBeamYFrac: { value: props.verticalBeamOffset },
+      uFlowSpeed: { value: props.flowSpeed },
+      uVLenFactor: { value: props.verticalSizing },
+      uHLenFactor: { value: props.horizontalSizing },
+      uFogIntensity: { value: props.fogIntensity },
+      uFogScale: { value: props.fogScale },
+      uWSpeed: { value: props.wispSpeed },
+      uWIntensity: { value: props.wispIntensity },
+      uFlowStrength: { value: props.flowStrength },
+      uDecay: { value: props.decay },
+      uFalloffStart: { value: props.falloffStart },
+      uFogFallSpeed: { value: props.fogFallSpeed },
       uColor: { value: new THREE.Vector3(r, g, b) },
       uFade: { value: 0 },
     };
@@ -382,36 +448,46 @@ function LaserFlowInner({
     let fade = 0;
     let inView = true;
     let paused = false;
+    let contextLost = false;
     let lastW = 0;
     let lastH = 0;
     let rect: DOMRect | null = null;
+    let frameCount = 0;
 
-    // Adaptive DPR
+    // Adaptive DPR — conservative to prevent flicker
     let fpsSamples: number[] = [];
     let lastFpsCheck = performance.now();
     let emaDt = 16.7;
     let lastDprChange = 0;
+    const DPR_CHECK_INTERVAL = 1500; // ms between FPS checks
+    const DPR_CHANGE_COOLDOWN = 3000; // ms between DPR changes
+    const DPR_FPS_LOW = 45; // only downscale on significant drops
+    const DPR_FPS_HIGH = 58;
 
     const mouseTarget = new THREE.Vector2(0, 0);
     const mouseSmooth = new THREE.Vector2(0, 0);
 
-    // ── Resize ──
+    // ── Resize — throttled with deadzone ──
     const setSizeNow = () => {
+      if (contextLost) return;
       const w = mount.clientWidth || 1;
       const h = mount.clientHeight || 1;
-      if (Math.abs(w - lastW) < 1 && Math.abs(h - lastH) < 1) return;
+      // 2px deadzone to prevent sub-pixel resize loops
+      if (Math.abs(w - lastW) < 2 && Math.abs(h - lastH) < 2) return;
       lastW = w;
       lastH = h;
       renderer.setPixelRatio(currentDpr);
       renderer.setSize(w, h, false);
       uniforms.iResolution.value.set(w * currentDpr, h * currentDpr, currentDpr);
       rect = canvas.getBoundingClientRect();
+      debugRef.current.resolution = `${Math.round(w * currentDpr)}x${Math.round(h * currentDpr)}`;
     };
 
-    let resizeRaf = 0;
+    // Throttle resize to 100ms (not RAF which can conflict with render loop)
+    let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     const ro = new ResizeObserver(() => {
-      if (resizeRaf) cancelAnimationFrame(resizeRaf);
-      resizeRaf = requestAnimationFrame(setSizeNow);
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(setSizeNow, 100);
     });
     setSizeNow();
     ro.observe(mount);
@@ -427,6 +503,10 @@ function LaserFlowInner({
 
     const onVis = () => {
       paused = document.hidden;
+      if (!document.hidden && !contextLost) {
+        // Reset clock to prevent time jumps after tab switch
+        prevTime = clock.getElapsedTime();
+      }
     };
     document.addEventListener('visibilitychange', onVis, { passive: true });
 
@@ -442,29 +522,47 @@ function LaserFlowInner({
     canvas.addEventListener('pointermove', onMove, { passive: true });
     canvas.addEventListener('pointerleave', onLeave, { passive: true });
 
-    // ── Context loss ──
+    // ── Context loss — graceful recovery with fade-in ──
     const onCtxLost = (e: Event) => {
       e.preventDefault();
-      paused = true;
+      contextLost = true;
+      debugRef.current.status = 'contextLost';
+      updateDebugOverlay();
     };
     const onCtxRestored = () => {
-      paused = false;
-      setSizeNow();
+      contextLost = false;
+      // Re-fade-in after context restore
+      fade = 0;
+      uniforms.uFade.value = 0;
+      lastW = 0; // force resize on next frame
+      lastH = 0;
+      debugRef.current.status = 'running';
     };
     canvas.addEventListener('webglcontextlost', onCtxLost, false);
     canvas.addEventListener('webglcontextrestored', onCtxRestored, false);
 
-    // ── Render loop ──
+    // ── Render loop — single stable RAF chain ──
     let raf = 0;
+    let disposed = false;
 
     const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
     const animate = () => {
+      if (disposed) return;
       raf = requestAnimationFrame(animate);
-      if (paused || !inView) return;
+
+      // Update debug state
+      const isActive = !paused && !contextLost && inView;
+      debugRef.current.status = contextLost ? 'contextLost' : isActive ? 'running' : 'paused';
+
+      if (!isActive) {
+        // Update debug overlay even when paused
+        if (frameCount % 30 === 0) updateDebugOverlay();
+        return;
+      }
 
       const t = clock.getElapsedTime();
-      const dt = Math.max(0, t - prevTime);
+      const dt = Math.max(0, Math.min(0.1, t - prevTime)); // Cap dt at 100ms to prevent time jumps
       prevTime = t;
 
       const dtMs = dt * 1000;
@@ -478,9 +576,9 @@ function LaserFlowInner({
       uniforms.uFlowTime.value += cdt;
       uniforms.uFogTime.value += cdt;
 
-      // Fade in
+      // Fade in smoothly (1.5s)
       if (fade < 1) {
-        fade = Math.min(1, fade + cdt);
+        fade = Math.min(1, fade + cdt * 0.67);
         uniforms.uFade.value = fade;
       }
 
@@ -489,30 +587,44 @@ function LaserFlowInner({
       mouseSmooth.lerp(mouseTarget, alpha);
       uniforms.iMouse.value.set(mouseSmooth.x, mouseSmooth.y, 0, 0);
 
-      renderer.render(scene, camera);
+      // Check if resize needed (handles DPR changes)
+      setSizeNow();
 
-      // Adaptive DPR
+      renderer.render(scene, camera);
+      frameCount++;
+      debugRef.current.frameCount = frameCount;
+      debugRef.current.fps = instFps;
+      debugRef.current.dpr = currentDpr;
+
+      // Update debug overlay every 30 frames
+      if (frameCount % 30 === 0) updateDebugOverlay();
+
+      // Adaptive DPR — conservative, infrequent checks
       const now = performance.now();
-      if (now - lastFpsCheck > 750 && fpsSamples.length > 0) {
+      if (now - lastFpsCheck > DPR_CHECK_INTERVAL && fpsSamples.length >= 10) {
         const avgFps = fpsSamples.reduce((a, c) => a + c, 0) / fpsSamples.length;
         let next = currentDpr;
-        if (avgFps < 50) next = clamp(currentDpr * 0.85, 0.6, baseDpr);
-        else if (avgFps > 58 && currentDpr < baseDpr) next = clamp(currentDpr * 1.1, 0.6, baseDpr);
-        if (Math.abs(next - currentDpr) > 0.01 && now - lastDprChange > 2000) {
+        if (avgFps < DPR_FPS_LOW) next = clamp(currentDpr * 0.85, 0.6, baseDpr);
+        else if (avgFps > DPR_FPS_HIGH && currentDpr < baseDpr) next = clamp(currentDpr * 1.05, 0.6, baseDpr);
+        if (Math.abs(next - currentDpr) > 0.01 && now - lastDprChange > DPR_CHANGE_COOLDOWN) {
           currentDpr = next;
           lastDprChange = now;
-          lastW = 0; // force resize
-          setSizeNow();
+          lastW = 0; // force resize on next frame (will be picked up by setSizeNow above)
+          lastH = 0;
         }
         fpsSamples = [];
         lastFpsCheck = now;
       }
     };
 
+    debugRef.current.status = 'running';
     animate();
 
     return () => {
+      disposed = true;
+      initializedRef.current = false;
       cancelAnimationFrame(raf);
+      if (resizeTimer) clearTimeout(resizeTimer);
       ro.disconnect();
       io.disconnect();
       document.removeEventListener('visibilitychange', onVis);
@@ -525,12 +637,8 @@ function LaserFlowInner({
       renderer.dispose();
       if (mount.contains(canvas)) mount.removeChild(canvas);
     };
-  }, [
-    useFallback, color, horizontalBeamOffset, verticalBeamOffset,
-    flowSpeed, verticalSizing, horizontalSizing, fogIntensity,
-    fogScale, wispDensity, wispSpeed, wispIntensity,
-    flowStrength, decay, falloffStart, fogFallSpeed,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useFallback]); // Only re-run if fallback mode changes
 
   // Static gradient fallback for reduced-motion / low-tier
   if (useFallback) {
@@ -552,7 +660,27 @@ function LaserFlowInner({
     <div
       ref={mountRef}
       className={`w-full h-full relative pointer-events-none ${className || ''}`}
-    />
+    >
+      {/* Debug overlay — only visible with ?laserDebug=1 */}
+      <div
+        ref={debugOverlayRef}
+        style={{
+          display: 'none',
+          position: 'absolute',
+          top: 8,
+          left: 8,
+          zIndex: 9999,
+          padding: '4px 8px',
+          background: 'rgba(0,0,0,0.85)',
+          color: '#0f0',
+          fontFamily: 'monospace',
+          fontSize: '11px',
+          borderRadius: 4,
+          pointerEvents: 'none',
+          whiteSpace: 'nowrap',
+        }}
+      />
+    </div>
   );
 }
 
