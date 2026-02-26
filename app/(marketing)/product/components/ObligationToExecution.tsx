@@ -10,10 +10,10 @@ import dynamic from 'next/dynamic';
 const DemoComplianceChain = dynamic(() => import('@/components/marketing/demo/DemoComplianceChain'), { ssr: false });
 
 const flow = [
-  { step: 'Obligations', becomes: 'structured controls', color: 'from-teal-400 to-emerald-500' },
-  { step: 'Controls', becomes: 'owned tasks', color: 'from-emerald-500 to-teal-600' },
-  { step: 'Tasks', becomes: 'live evidence', color: 'from-teal-600 to-emerald-600' },
-  { step: 'Evidence', becomes: 'complete audit trail', color: 'from-amber-500 to-teal-500' },
+  { step: 'Obligations', becomes: 'structured controls', color: 'from-violet-400 to-purple-500' },
+  { step: 'Controls', becomes: 'owned tasks', color: 'from-purple-500 to-violet-600' },
+  { step: 'Tasks', becomes: 'live evidence', color: 'from-violet-600 to-purple-600' },
+  { step: 'Evidence', becomes: 'complete audit trail', color: 'from-fuchsia-500 to-violet-500' },
 ];
 
 /** Glow node overlay for each card when the scroll path reaches it */
@@ -49,15 +49,15 @@ export function ObligationToExecution() {
         <ScrollReveal variant="slideUp" range={[0, 0.35]}>
           <div className="text-center mb-16">
             <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-sm font-medium mb-6">
-                <span className="w-2 h-2 rounded-full bg-teal-400" />
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-sm font-medium mb-6">
+                <span className="w-2 h-2 rounded-full bg-violet-400" />
                 From Obligation to Execution
               </div>
             </ScrollReveal>
 
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
               You Don't Just Record
-              <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
                 {' '}
                 Compliance. You Run It.
               </span>
@@ -86,6 +86,7 @@ export function ObligationToExecution() {
                 strokeWidth="2"
                 strokeLinecap="round"
                 fill="none"
+                filter="drop-shadow(0 0 12px rgba(192,132,252,0.6))"
                 style={{ pathLength }}
               />
               {/* Glow duplicate for the drawn portion */}
@@ -95,15 +96,15 @@ export function ObligationToExecution() {
                 strokeWidth="6"
                 strokeLinecap="round"
                 fill="none"
-                opacity="0.3"
-                filter="blur(4px)"
+                opacity="0.25"
+                filter="blur(6px)"
                 style={{ pathLength }}
               />
               <defs>
                 <linearGradient id="connection-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#a78bfa" />
-                  <stop offset="50%" stopColor="#8b5cf6" />
-                  <stop offset="100%" stopColor="#7c3aed" />
+                  <stop offset="0%" stopColor="#B46CFF" />
+                  <stop offset="50%" stopColor="#C084FC" />
+                  <stop offset="100%" stopColor="#F0ABFC" />
                 </linearGradient>
               </defs>
             </svg>
@@ -117,7 +118,7 @@ export function ObligationToExecution() {
               {!prefersReducedMotion && (
                 <NodeGlow progress={scrollYProgress} threshold={nodeThresholds[index]} />
               )}
-              <div className="relative z-10 backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-teal-500/30 transition-all">
+              <div className="relative z-10 backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-violet-500/30 transition-all">
                 <div className={`inline-flex px-3 py-1 rounded-full bg-gradient-to-r ${item.color} text-white text-xs font-semibold mb-4`}>
                   {item.step}
                 </div>
@@ -144,15 +145,15 @@ export function ObligationToExecution() {
         <ScrollReveal variant="perspectiveUp" range={[0.12, 0.42]}>
           <div className="mt-12 grid sm:grid-cols-3 gap-6 text-center">
             <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
-              <Activity className="w-4 h-4 text-teal-400" />
+              <Activity className="w-4 h-4 text-violet-400" />
               Every action is tracked
             </div>
             <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
-              <UserCheck className="w-4 h-4 text-emerald-400" />
+              <UserCheck className="w-4 h-4 text-purple-400" />
               Every control has an owner
             </div>
             <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
-              <CheckCircle className="w-4 h-4 text-green-400" />
+              <CheckCircle className="w-4 h-4 text-fuchsia-400" />
               Every outcome is provable
             </div>
           </div>
