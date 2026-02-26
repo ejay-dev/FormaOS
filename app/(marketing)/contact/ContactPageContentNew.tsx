@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import {
   Mail,
   Phone,
@@ -119,13 +120,10 @@ function ContactInformation() {
 
 type ContactFormProps = {
   submitAction: (formData: FormData) => Promise<void>;
-  searchParams?: {
-    success?: string;
-    error?: string;
-  };
 };
 
-function ContactForm({ submitAction, searchParams }: ContactFormProps) {
+function ContactForm({ submitAction }: ContactFormProps) {
+  const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (formData: FormData) => {
@@ -301,7 +299,7 @@ function ContactForm({ submitAction, searchParams }: ContactFormProps) {
             </form>
 
             {/* Status Messages */}
-            {searchParams?.success && (
+            {searchParams.get('success') && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -313,7 +311,7 @@ function ContactForm({ submitAction, searchParams }: ContactFormProps) {
               </motion.div>
             )}
 
-            {searchParams?.error && (
+            {searchParams.get('error') && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -442,15 +440,10 @@ function ClosingCTA() {
 // ============================================================================
 
 type ContactPageContentProps = {
-  searchParams?: {
-    success?: string;
-    error?: string;
-  };
   submitAction: (formData: FormData) => Promise<void>;
 };
 
 export default function ContactPageContent({
-  searchParams,
   submitAction,
 }: ContactPageContentProps) {
   return (
@@ -462,7 +455,7 @@ export default function ContactPageContent({
       </DeferredSection>
       <VisualDivider />
       <DeferredSection minHeight={500}>
-        <ContactForm submitAction={submitAction} searchParams={searchParams} />
+        <ContactForm submitAction={submitAction} />
       </DeferredSection>
       <VisualDivider />
       <DeferredSection minHeight={250}>

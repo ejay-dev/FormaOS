@@ -4,57 +4,12 @@ import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 import { isFounder } from '@/lib/utils/founder';
 import { getSupabaseAnonKey, getSupabaseUrl } from '@/lib/supabase/env';
 
-const CANONICAL_MARKETING_HOST = 'www.formaos.com.au';
-const LEGACY_MARKETING_HOST = 'formaos.com.au';
-const CANONICAL_PRIVACY_URL = 'https://www.formaos.com.au/legal/privacy';
-
-// Define public routes that don't require authentication
-const PUBLIC_ROUTES = [
-  '/',
-  '/product',
-  '/industries',
-  '/security',
-  '/pricing',
-  '/our-story',
-  '/contact',
-  '/about',
-  '/docs',
-  '/blog',
-  '/faq',
-  '/legal/privacy',
-  '/legal/terms',
+// Auth routes that should pass through without auth checks
+const AUTH_PASSTHROUGH_ROUTES = [
   '/auth/signin',
   '/auth/signup',
   '/auth/callback',
 ];
-
-// Check if a path is a public route
-function isPublicRoute(path: string): boolean {
-  // Exact matches
-  if (PUBLIC_ROUTES.includes(path)) {
-    return true;
-  }
-
-  // Check for static assets
-  if (
-    path.startsWith('/_next/') ||
-    path.startsWith('/public/') ||
-    path.match(/\.(ico|png|jpg|jpeg|svg|css|js)$/)
-  ) {
-    return true;
-  }
-
-  return false;
-}
-
-function redirectToCanonicalPrivacy(): NextResponse {
-  return new NextResponse(null, {
-    status: 301,
-    headers: {
-      Location: CANONICAL_PRIVACY_URL,
-    },
-  });
-}
 
 export async function middleware(request: NextRequest) {
   try {
@@ -130,55 +85,6 @@ export async function middleware(request: NextRequest) {
     const appOrigin = safeUrl(appUrl);
     const siteOrigin = safeUrl(siteUrl);
     const host = request.nextUrl.hostname;
-    const protocol = request.nextUrl.protocol;
-
-    const isMarketingHost =
-      host === CANONICAL_MARKETING_HOST || host === LEGACY_MARKETING_HOST;
-    const isLegacyPrivacyPath =
-      pathname === '/privacy' || pathname === '/privacy/';
-    const isNonCanonicalPrivacyPath =
-      isLegacyPrivacyPath || pathname === '/legal/privacy/';
-
-    if (isMarketingHost && isNonCanonicalPrivacyPath) {
-      return redirectToCanonicalPrivacy();
-    }
-
-    if (
-      isMarketingHost &&
-      (host !== CANONICAL_MARKETING_HOST || protocol !== 'https:')
-    ) {
-      const canonicalUrl = request.nextUrl.clone();
-      canonicalUrl.protocol = 'https:';
-      canonicalUrl.host = CANONICAL_MARKETING_HOST;
-      return NextResponse.redirect(canonicalUrl, 301);
-    }
-
-    const oauthCode = request.nextUrl.searchParams.get('code');
-    const oauthState = request.nextUrl.searchParams.get('state');
-    const oauthError = request.nextUrl.searchParams.get('error');
-
-    // Handle OAuth redirects to root path - Google OAuth may not always include state
-    if (oauthCode && pathname === '/') {
-      const redirectUrl = request.nextUrl.clone();
-      redirectUrl.pathname = '/auth/callback';
-      // Preserve all search params for OAuth callback
-      if (
-        appOrigin &&
-        siteOrigin &&
-        request.nextUrl.hostname === siteOrigin.hostname &&
-        appOrigin.hostname !== siteOrigin.hostname
-      ) {
-        redirectUrl.protocol = appOrigin.protocol;
-        redirectUrl.host = appOrigin.host;
-      }
-      console.log('[Middleware] OAuth redirect:', {
-        from: request.nextUrl.toString(),
-        to: redirectUrl.toString(),
-        hasState: !!oauthState,
-        hasError: !!oauthError,
-      });
-      return NextResponse.redirect(redirectUrl);
-    }
 
     // Handle /auth route - redirect to /auth/signin
     if (pathname === '/auth') {
@@ -190,11 +96,7 @@ export async function middleware(request: NextRequest) {
     // 🔒 CRITICAL: Never intercept /auth/callback, /auth/signin, /auth/signup
     // These routes handle OAuth flows and must NOT be redirected or auth-checked.
     // Interfering here causes session-loss loops ("try again" errors).
-    if (
-      pathname === '/auth/callback' ||
-      pathname === '/auth/signin' ||
-      pathname === '/auth/signup'
-    ) {
+    if (AUTH_PASSTHROUGH_ROUTES.includes(pathname)) {
       logTiming('auth-passthrough');
       response.headers.set('Server-Timing', serverTiming());
       return response;
@@ -208,30 +110,8 @@ export async function middleware(request: NextRequest) {
       return redirectWithLoopGuard(redirectUrl, false, 'legacy-app-auth');
     }
 
-    // Handle OAuth errors (user denied permission, etc.)
-    if (oauthError && pathname === '/') {
-      console.log('[Middleware] OAuth error detected:', oauthError);
-      const redirectUrl = request.nextUrl.clone();
-      redirectUrl.pathname = '/auth/signin';
-      redirectUrl.searchParams.set('error', 'oauth_cancelled');
-      redirectUrl.searchParams.set(
-        'message',
-        'Sign in was cancelled. Please try again.',
-      );
-      return redirectWithLoopGuard(redirectUrl, false, 'oauth-error');
-    }
-
-    const isAuthPath = pathname === '/auth' || pathname.startsWith('/auth/');
     const isAdminPath = pathname.startsWith('/admin');
     const isAppPath = pathname.startsWith('/app');
-
-    // Skip auth checks for public routes (after OAuth handling),
-    // but allow /auth/* to continue so we can redirect signed-in users.
-    if (isPublicRoute(pathname) && !isAuthPath) {
-      logTiming('public');
-      response.headers.set('Server-Timing', serverTiming());
-      return response;
-    }
 
     if (appOrigin && siteOrigin && appOrigin.hostname !== siteOrigin.hostname) {
       const appPaths = [
@@ -498,14 +378,14 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     * - api routes that are explicitly public
-     */
-    '/((?!_next/static|_next/image|favicon.ico|public/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|woff|woff2)$).*)',
+    '/app/:path*',
+    '/admin/:path*',
+    '/auth/:path*',
+    '/onboarding/:path*',
+    '/accept-invite/:path*',
+    '/join/:path*',
+    '/workspace-recovery/:path*',
+    '/submit/:path*',
+    '/signin/:path*',
   ],
 };

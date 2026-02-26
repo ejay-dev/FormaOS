@@ -7,6 +7,9 @@ import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 
+// Status page fetches live uptime data — must override layout's force-static
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'FormaOS | Status',
   description: 'Public uptime checks and status for FormaOS.',

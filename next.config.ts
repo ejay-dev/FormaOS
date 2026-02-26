@@ -9,6 +9,49 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     '*': ['framework-packs/*.json'],
   },
+  async redirects() {
+    return [
+      // Canonical domain: formaos.com.au → www.formaos.com.au
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'formaos.com.au' }],
+        destination: 'https://www.formaos.com.au/:path*',
+        permanent: true, // 308
+      },
+      // Legacy privacy paths → canonical
+      {
+        source: '/privacy',
+        destination: '/legal/privacy',
+        permanent: true,
+      },
+    ];
+  },
+  async headers() {
+    return [
+      {
+        // Security headers for all routes (marketing + app)
+        source: '/:path*',
+        headers: [
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-XSS-Protection', value: '1; mode=block' },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains; preload',
+          },
+          {
+            key: 'Permissions-Policy',
+            value:
+              'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+          },
+        ],
+      },
+    ];
+  },
 };
 
 // Wrap with Sentry only in production

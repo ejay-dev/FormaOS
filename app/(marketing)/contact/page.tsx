@@ -18,19 +18,9 @@ export const metadata: Metadata = {
   },
 };
 
-type ContactPageProps = {
-  searchParams?: Promise<{
-    success?: string;
-    error?: string;
-  }>;
-};
-
-export default async function ContactPage({ searchParams }: ContactPageProps) {
-  const resolvedSearchParams = await searchParams;
-
+export default function ContactPage() {
   return (
-    <ContactPageContentNew 
-      searchParams={resolvedSearchParams}
+    <ContactPageContentNew
       submitAction={submitMarketingLead}
     />
   );
