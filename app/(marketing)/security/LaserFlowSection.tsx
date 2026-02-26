@@ -4,22 +4,19 @@ import { useRef } from 'react';
 import { motion, useReducedMotion, useInView } from 'framer-motion';
 import { Shield, CheckCircle, Lock, FileText, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { LaserFlow } from '@/components/motion/LaserFlow';
-import { useDeviceTier } from '@/lib/device-tier';
 import { duration, easing } from '@/config/motion';
 
 const signatureEase: [number, number, number, number] = [...easing.signature] as [number, number, number, number];
 
 const PIPELINE_STEPS = [
-  { label: 'Ingest', icon: FileText, color: 'text-cyan-400', dotColor: 'bg-cyan-400', glowColor: 'rgba(6,182,212,0.3)' },
-  { label: 'Verify', icon: Shield, color: 'text-violet-400', dotColor: 'bg-violet-400', glowColor: 'rgba(139,92,246,0.3)' },
-  { label: 'Seal', icon: Lock, color: 'text-emerald-400', dotColor: 'bg-emerald-400', glowColor: 'rgba(52,211,153,0.3)' },
+  { label: 'Ingest', icon: FileText, color: 'text-cyan-400', borderColor: 'border-cyan-500/25', bgColor: 'bg-cyan-500/8', glowColor: 'shadow-[0_0_12px_rgba(6,182,212,0.15)]' },
+  { label: 'Verify', icon: Shield, color: 'text-violet-400', borderColor: 'border-violet-500/25', bgColor: 'bg-violet-500/8', glowColor: 'shadow-[0_0_12px_rgba(139,92,246,0.15)]' },
+  { label: 'Seal', icon: Lock, color: 'text-emerald-400', borderColor: 'border-emerald-500/25', bgColor: 'bg-emerald-500/8', glowColor: 'shadow-[0_0_12px_rgba(52,211,153,0.15)]' },
 ];
 
 export function LaserFlowSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
-  const tierConfig = useDeviceTier();
   const isInView = useInView(sectionRef, { once: false, margin: '-50px' });
   const sa = !prefersReduced;
 
@@ -31,7 +28,7 @@ export function LaserFlowSection() {
         background: 'linear-gradient(180deg, #030712 0%, #0a0f1f 50%, #0f172a 100%)',
       }}
     >
-      {/* Subtle background glow — static radial, no animation */}
+      {/* Subtle background glow */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -65,7 +62,7 @@ export function LaserFlowSection() {
           </p>
         </motion.div>
 
-        {/* 2-column layout: copy left, device frame right */}
+        {/* 2-column layout: copy left, pipeline diagram right */}
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
 
           {/* ═══ LEFT: Copy + bullets + CTA ═══ */}
@@ -102,119 +99,69 @@ export function LaserFlowSection() {
             </Link>
           </motion.div>
 
-          {/* ═══ RIGHT: Device frame with Laser Flow ═══ */}
+          {/* ═══ RIGHT: Lightweight pipeline diagram ═══ */}
           <motion.div
             initial={sa ? { opacity: 0, x: 20 } : false}
             animate={isInView ? { opacity: 1, x: 0 } : undefined}
             transition={sa ? { duration: duration.slow, delay: 0.25, ease: signatureEase } : { duration: 0 }}
             className="relative"
           >
-            {/* Glow behind device frame */}
-            <div
-              className="absolute -inset-6 rounded-3xl pointer-events-none"
-              style={{
-                background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.08) 0%, transparent 65%)',
-              }}
-            />
+            {/* Pipeline flow card */}
+            <div className="relative rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.05] to-white/[0.02] p-6 sm:p-8 shadow-[0_8px_32px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.06)]">
 
-            {/* Device frame */}
-            <div
-              className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-white/[0.10] bg-white/[0.04] shadow-[0_8px_40px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)]"
-              style={{
-                backdropFilter: tierConfig.enableBlur ? 'blur(12px)' : undefined,
-              }}
-            >
-              {/* Browser chrome bar */}
-              <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.02]">
-                <div className="flex gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-white/10" />
-                  <div className="w-2 h-2 rounded-full bg-white/10" />
-                  <div className="w-2 h-2 rounded-full bg-white/10" />
-                </div>
-                <div className="flex-1 mx-6">
-                  <div className="h-4 rounded-md bg-white/[0.03] flex items-center justify-center">
-                    <span className="text-[9px] text-white/15 font-mono">security-pipeline</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Laser Flow canvas area */}
-              <div className="relative h-[240px] sm:h-[300px] lg:h-[360px] overflow-hidden">
-                {/* Radial mask for soft edges */}
-                <div
-                  className="absolute inset-0 z-10 pointer-events-none"
-                  style={{
-                    background: `
-                      radial-gradient(ellipse 90% 85% at 50% 50%, transparent 50%, rgba(3,7,18,0.6) 80%, rgba(3,7,18,0.95) 100%)
-                    `,
-                  }}
-                />
-
-                {/* Laser Flow — only renders when in view */}
-                {isInView && (
-                  <LaserFlow
-                    color="#8B5CF6"
-                    horizontalBeamOffset={0.0}
-                    verticalBeamOffset={-0.05}
-                    flowSpeed={0.25}
-                    verticalSizing={1.8}
-                    horizontalSizing={0.8}
-                    fogIntensity={0.35}
-                    fogScale={0.25}
-                    wispDensity={0.6}
-                    wispSpeed={10}
-                    wispIntensity={4}
-                    flowStrength={0.2}
-                    decay={1.0}
-                    falloffStart={1.1}
-                    fogFallSpeed={0.4}
-                  />
-                )}
-
-                {/* ═══ Pipeline step chips — overlaid on the beam ═══ */}
-                <div className="absolute inset-x-0 bottom-0 top-0 z-20 flex items-end justify-center pb-6 sm:pb-8 pointer-events-none">
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    {PIPELINE_STEPS.map((step, i) => {
-                      const Icon = step.icon;
-                      return (
-                        <motion.div
-                          key={step.label}
-                          initial={sa ? { opacity: 0, y: 12 } : false}
-                          animate={isInView ? { opacity: 1, y: 0 } : undefined}
-                          transition={sa ? { duration: 0.5, delay: 0.4 + i * 0.12, ease: signatureEase } : { duration: 0 }}
-                          className="flex items-center gap-1.5"
-                        >
-                          <div
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.06] border border-white/[0.1]"
-                            style={{
-                              backdropFilter: tierConfig.enableBlur ? 'blur(8px)' : undefined,
-                              boxShadow: `0 0 12px ${step.glowColor}`,
-                            }}
-                          >
-                            <Icon className={`w-3 h-3 ${step.color}`} />
-                            <span className="text-[10px] sm:text-xs font-medium text-white/70">{step.label}</span>
-                          </div>
-                          {/* Connector arrow */}
-                          {i < PIPELINE_STEPS.length - 1 && (
-                            <ArrowRight className="w-3 h-3 text-white/15" />
-                          )}
-                        </motion.div>
-                      );
-                    })}
-
-                    {/* Final badge */}
+              {/* Pipeline steps — vertical on mobile, horizontal on sm+ */}
+              <div className="flex flex-col sm:flex-row items-stretch gap-4 sm:gap-0">
+                {PIPELINE_STEPS.map((step, i) => {
+                  const Icon = step.icon;
+                  return (
                     <motion.div
-                      initial={sa ? { opacity: 0, scale: 0.9 } : false}
-                      animate={isInView ? { opacity: 1, scale: 1 } : undefined}
-                      transition={sa ? { duration: 0.5, delay: 0.8, ease: signatureEase } : { duration: 0 }}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 ml-1"
+                      key={step.label}
+                      initial={sa ? { opacity: 0, y: 16 } : false}
+                      animate={isInView ? { opacity: 1, y: 0 } : undefined}
+                      transition={sa ? { duration: 0.5, delay: 0.35 + i * 0.1, ease: signatureEase } : { duration: 0 }}
+                      className="flex-1 flex flex-col sm:flex-row items-center"
                     >
-                      <CheckCircle className="w-3 h-3 text-emerald-400" />
-                      <span className="text-[10px] sm:text-xs font-medium text-emerald-400/80">Audit log appended</span>
+                      {/* Step card */}
+                      <div className={`flex-1 w-full rounded-xl ${step.bgColor} border ${step.borderColor} ${step.glowColor} p-4 sm:p-5 text-center`}>
+                        <div className={`w-10 h-10 rounded-lg bg-white/[0.06] border border-white/[0.1] flex items-center justify-center mx-auto mb-3`}>
+                          <Icon className={`w-5 h-5 ${step.color}`} />
+                        </div>
+                        <div className="text-sm font-semibold text-white mb-1">{step.label}</div>
+                        <div className="text-[11px] text-white/40">
+                          {i === 0 && 'Timestamp + identity'}
+                          {i === 1 && 'Integrity check'}
+                          {i === 2 && 'Append-only store'}
+                        </div>
+                      </div>
+
+                      {/* Connector arrow between steps */}
+                      {i < PIPELINE_STEPS.length - 1 && (
+                        <div className="flex items-center justify-center py-2 sm:py-0 sm:px-3">
+                          <ArrowRight className="w-4 h-4 text-white/15 rotate-90 sm:rotate-0" />
+                        </div>
+                      )}
                     </motion.div>
-                  </div>
-                </div>
+                  );
+                })}
               </div>
+
+              {/* Connector line to result */}
+              <div className="flex items-center justify-center my-4">
+                <div className="w-px sm:w-32 h-6 sm:h-px bg-gradient-to-b sm:bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+              </div>
+
+              {/* Result badge */}
+              <motion.div
+                initial={sa ? { opacity: 0, scale: 0.95 } : false}
+                animate={isInView ? { opacity: 1, scale: 1 } : undefined}
+                transition={sa ? { duration: 0.5, delay: 0.7, ease: signatureEase } : { duration: 0 }}
+                className="flex items-center justify-center"
+              >
+                <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500/8 border border-emerald-500/20 shadow-[0_0_16px_rgba(52,211,153,0.1)]">
+                  <CheckCircle className="w-4 h-4 text-emerald-400" />
+                  <span className="text-sm font-medium text-emerald-400">Audit log appended</span>
+                </div>
+              </motion.div>
             </div>
           </motion.div>
         </div>
