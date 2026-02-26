@@ -9,7 +9,7 @@ import { FrameworkTrustStrip } from '@/components/marketing/FrameworkTrustStrip'
 
 const LaserFlowSection = dynamic(
   () => import('./LaserFlowSection').then((m) => m.LaserFlowSection),
-  { ssr: false, loading: () => <div style={{ height: '420px', background: '#030712' }} /> },
+  { ssr: false, loading: () => <div style={{ minHeight: '520px', background: '#030712' }} /> },
 );
 const SecuritySafeguards = dynamic(
   () => import('./SecurityContent').then((m) => m.SecuritySafeguards),
