@@ -36,40 +36,41 @@ function HomeHeroLaserInner() {
       style={{ zIndex: -1 }}
       aria-hidden
     >
-      {/* Oversized canvas — bleeds past viewport edges for cinematic feel */}
+      {/* Oversized canvas — bleeds past viewport edges, extends to hero bottom */}
       <div
         className="absolute"
         style={{
           width: '140vw',
-          height: '100vh',
-          top: '0',
+          height: '120vh',
+          top: '-10vh',
           left: '50%',
           transform: 'translateX(-50%)',
         }}
       >
-        {/* Radial mask: bright center, dissolves at edges */}
+        {/* Radial mask: bright center, dissolves at horizontal edges,
+            keeps vertical reach so beam "lands" at hero bottom */}
         <div
           className="w-full h-full"
           style={{
             WebkitMaskImage:
-              'radial-gradient(ellipse 75% 65% at 50% 50%, black 55%, rgba(0,0,0,0.3) 70%, transparent 100%)',
+              'radial-gradient(ellipse 75% 70% at 50% 45%, black 40%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.15) 75%, transparent 100%)',
             maskImage:
-              'radial-gradient(ellipse 75% 65% at 50% 50%, black 55%, rgba(0,0,0,0.3) 70%, transparent 100%)',
+              'radial-gradient(ellipse 75% 70% at 50% 45%, black 40%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.15) 75%, transparent 100%)',
           }}
         >
           {showWebGL ? (
             <LaserFlow
               color="#8B5CF6"
               horizontalBeamOffset={0.0}
-              verticalBeamOffset={0.05}
+              verticalBeamOffset={-0.1}
               flowSpeed={0.22}
-              verticalSizing={2.8}
-              horizontalSizing={0.8}
-              fogIntensity={0.5}
+              verticalSizing={3.2}
+              horizontalSizing={0.9}
+              fogIntensity={0.55}
               fogScale={0.3}
-              wispDensity={0.7}
+              wispDensity={0.75}
               wispSpeed={10}
-              wispIntensity={5}
+              wispIntensity={6}
               flowStrength={0.25}
               decay={1.15}
               falloffStart={1.3}
@@ -111,12 +112,13 @@ function HomeHeroLaserInner() {
         }}
       />
 
-      {/* Bottom vignette — dissolves laser into page below */}
+      {/* Bottom vignette — soft fade so beam glow reaches hero edge
+          (the hard cutoff + impact shockwave lives in Section 2) */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-[30%] pointer-events-none"
+        className="absolute bottom-0 left-0 right-0 h-[25%] pointer-events-none"
         style={{
           background:
-            'linear-gradient(to top, rgba(10,15,28,1) 0%, rgba(10,15,28,0.6) 50%, transparent 100%)',
+            'linear-gradient(to top, rgba(10,15,28,0.7) 0%, rgba(10,15,28,0.3) 40%, transparent 100%)',
         }}
       />
     </div>
