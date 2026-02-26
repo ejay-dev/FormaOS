@@ -4,10 +4,6 @@ import { Shield, Lock, Eye, FileCheck, Activity, Database, UserCheck, Key, Arrow
 import {
   SectionHeader,
   ArchitectureCard,
-  GradientMesh,
-  SystemBackground,
-  GlassCard,
-  SectionGlow,
 } from "@/components/motion";
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
@@ -95,11 +91,62 @@ const evidenceChain = [
   },
 ];
 
+/* ─── Lightweight section wrapper ─── */
+function LightSection({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return (
+    <section
+      className={`relative overflow-hidden ${className}`}
+      style={{
+        background: 'linear-gradient(180deg, #030712 0%, #0a0f1f 50%, #0f172a 100%)',
+      }}
+    >
+      {/* Single subtle glow — no blur filter, just a radial gradient */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `
+            radial-gradient(ellipse 120% 80% at 20% 20%, rgba(0, 60, 120, 0.25) 0%, transparent 50%),
+            radial-gradient(ellipse 100% 100% at 80% 30%, rgba(30, 64, 175, 0.18) 0%, transparent 45%),
+            radial-gradient(ellipse 80% 80% at 50% 80%, rgba(139, 92, 246, 0.12) 0%, transparent 50%)
+          `,
+        }}
+      />
+      {/* Vignette */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at center, transparent 40%, rgba(3, 7, 18, 0.4) 100%)',
+        }}
+      />
+      {/* Content */}
+      <div className="relative z-10">{children}</div>
+    </section>
+  );
+}
+
+/* ─── Lightweight card — no backdrop-filter, uses solid bg ─── */
+function LightCard({ children, className = '', glow = false }: { children: React.ReactNode; className?: string; glow?: boolean }) {
+  return (
+    <div
+      className={`
+        rounded-2xl
+        bg-gradient-to-b from-white/[0.07] to-white/[0.02]
+        border border-white/[0.1]
+        shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)]
+        transition-colors duration-300
+        hover:border-white/[0.18]
+        ${glow ? 'shadow-[0_0_20px_rgba(139,92,246,0.1),0_8px_32px_rgba(0,0,0,0.4)]' : ''}
+        ${className}
+      `}
+    >
+      {children}
+    </div>
+  );
+}
+
 export function SecuritySafeguards() {
   return (
-    <SystemBackground variant="metrics" className="py-12 sm:py-16 lg:py-20">
-      <SectionGlow color="purple" intensity="medium" position="top" />
-
+    <LightSection className="py-12 sm:py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
         <SectionHeader
           badge="Security Safeguards"
@@ -111,29 +158,25 @@ export function SecuritySafeguards() {
 
         <SectionChoreography pattern="stagger-wave" stagger={0.04} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {safeguards.map((safeguard) => (
-            <div key={safeguard.title} className="card-radial-glow section-metrics">
-              <GlassCard variant="default" glow glowColor="purple" className="p-6 sm:p-8 h-full">
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-14 h-14 rounded-xl bg-[rgba(139,92,246,0.1)] border border-[rgba(139,92,246,0.2)] flex items-center justify-center mb-4">
-                    <safeguard.icon className="h-7 w-7 text-[rgb(139,92,246)]" />
-                  </div>
-                  <h3 className="font-bold text-white text-lg mb-2">{safeguard.title}</h3>
-                  <p className="text-foreground/70 text-sm leading-relaxed">{safeguard.description}</p>
+            <LightCard key={safeguard.title} glow className="p-6 sm:p-8 h-full">
+              <div className="flex flex-col items-center text-center">
+                <div className="w-14 h-14 rounded-xl bg-[rgba(139,92,246,0.1)] border border-[rgba(139,92,246,0.2)] flex items-center justify-center mb-4">
+                  <safeguard.icon className="h-7 w-7 text-[rgb(139,92,246)]" />
                 </div>
-              </GlassCard>
-            </div>
+                <h3 className="font-bold text-white text-lg mb-2">{safeguard.title}</h3>
+                <p className="text-foreground/70 text-sm leading-relaxed">{safeguard.description}</p>
+              </div>
+            </LightCard>
           ))}
         </SectionChoreography>
       </div>
-    </SystemBackground>
+    </LightSection>
   );
 }
 
 export function SecurityArchitectureLayers() {
   return (
-    <SystemBackground variant="process" className="py-12 sm:py-16 lg:py-20">
-      <SectionGlow color="cyan" intensity="high" position="center" />
-
+    <LightSection className="py-12 sm:py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
         <SectionHeader
           badge="Security Architecture"
@@ -145,7 +188,7 @@ export function SecurityArchitectureLayers() {
 
         <SectionChoreography pattern="alternating" stagger={0.04} className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
           {Object.entries(securityLayers).map(([title, components], idx) => (
-            <div key={title} className="card-radial-glow section-process">
+            <div key={title}>
               <ArchitectureCard
                 title={title}
                 components={components}
@@ -161,15 +204,13 @@ export function SecurityArchitectureLayers() {
           ))}
         </SectionChoreography>
       </div>
-    </SystemBackground>
+    </LightSection>
   );
 }
 
 export function SecurityEvidenceChain() {
   return (
-    <SystemBackground variant="info" className="py-12 sm:py-16 lg:py-20">
-      <SectionGlow color="blue" intensity="low" position="center" />
-
+    <LightSection className="py-12 sm:py-16 lg:py-20">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">
         <SectionHeader
           badge="Evidence Chain"
@@ -179,12 +220,12 @@ export function SecurityEvidenceChain() {
           alignment="center"
         />
 
-        <GlassCard variant="elevated" className="p-6 sm:p-10 lg:p-12">
+        <LightCard className="p-6 sm:p-10 lg:p-12">
           <div className="space-y-6 sm:space-y-8">
             {evidenceChain.map((item, idx) => (
               <ScrollReveal key={item.title} variant="depthSlide" range={[idx * 0.06, 0.3 + idx * 0.06]}>
                 <div className="flex items-start gap-6">
-                  <div className="flex-shrink-0 h-12 w-12 rounded-xl glass-system flex items-center justify-center glow-system-cyan">
+                  <div className="flex-shrink-0 h-12 w-12 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center shadow-[0_0_15px_rgba(0,180,220,0.08)]">
                     <item.icon className="h-6 w-6 text-primary" />
                   </div>
                   <div>
@@ -195,27 +236,30 @@ export function SecurityEvidenceChain() {
               </ScrollReveal>
             ))}
           </div>
-        </GlassCard>
+        </LightCard>
       </div>
-    </SystemBackground>
+    </LightSection>
   );
 }
 
 export function SecurityCTA() {
   return (
-    <SystemBackground variant="process" intensity="high" className="py-12 sm:py-16 lg:py-20">
+    <LightSection className="py-12 sm:py-16 lg:py-20">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">
         <ScrollReveal variant="splitLeft" range={[0, 0.35]}>
-          <GlassCard
-            variant="intense"
-            glow
-            glowColor="cyan"
+          <LightCard
             className="p-8 sm:p-12 lg:p-16 text-center relative overflow-hidden"
           >
-            <div className="absolute inset-0 shimmer pointer-events-none" />
-            <div className="absolute inset-0 pointer-events-none opacity-50">
-              <GradientMesh animate={false} />
-            </div>
+            {/* Subtle gradient mesh — static, no animation */}
+            <div
+              className="absolute inset-0 pointer-events-none opacity-30"
+              style={{
+                background: `
+                  radial-gradient(ellipse 60% 50% at 30% 40%, rgba(0, 180, 220, 0.15) 0%, transparent 60%),
+                  radial-gradient(ellipse 50% 60% at 70% 60%, rgba(139, 92, 246, 0.12) 0%, transparent 60%)
+                `,
+              }}
+            />
 
             <div className="relative z-10">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display mb-4 sm:mb-6">
@@ -243,9 +287,9 @@ export function SecurityCTA() {
                 </Link>
               </div>
             </div>
-          </GlassCard>
+          </LightCard>
         </ScrollReveal>
       </div>
-    </SystemBackground>
+    </LightSection>
   );
 }

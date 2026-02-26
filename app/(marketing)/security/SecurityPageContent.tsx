@@ -7,6 +7,10 @@ import { DeferredSection } from '../components/shared';
 import { SecurityHero } from './SecurityHero';
 import { FrameworkTrustStrip } from '@/components/marketing/FrameworkTrustStrip';
 
+const LaserFlowSection = dynamic(
+  () => import('./LaserFlowSection').then((m) => m.LaserFlowSection),
+  { ssr: false, loading: () => <div style={{ height: '420px', background: '#030712' }} /> },
+);
 const SecuritySafeguards = dynamic(
   () => import('./SecurityContent').then((m) => m.SecuritySafeguards),
   { ssr: false, loading: () => null },
@@ -28,6 +32,10 @@ export default function SecurityPageContent() {
   return (
     <MarketingPageShell>
       <SecurityHero />
+
+      {/* Laser Flow section divider — premium transition below hero */}
+      <LaserFlowSection />
+
       <FrameworkTrustStrip className="mt-2 mb-2" />
       <VisualDivider gradient />
       <DeferredSection minHeight={520}>
