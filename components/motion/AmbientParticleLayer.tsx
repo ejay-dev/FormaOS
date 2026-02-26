@@ -2,14 +2,18 @@
 
 import { memo, useEffect, useState } from 'react';
 import { UnifiedParticles } from './UnifiedParticles';
+import { useDeviceTier, tierParticleCount, type TierConfig } from '@/lib/device-tier';
 
 /**
  * AmbientParticleLayer
  * ────────────────────
  * Backward-compatible wrapper around `UnifiedParticles`.
  *
- * This preserves the historical API (`intensity`, `deferMode`) while routing
+ * Preserves the historical API (`intensity`, `deferMode`) while routing
  * all particle rendering through a single implementation.
+ *
+ * Mobile: particles are now ENABLED at reduced counts via device tier
+ * instead of being disabled entirely.
  */
 
 interface AmbientParticleLayerProps {
@@ -52,22 +56,18 @@ function AmbientParticleLayerInner({
   color: colorProp,
   secondaryColor: secondaryColorProp,
 }: AmbientParticleLayerProps) {
-  const [enabled, setEnabled] = useState(true);
+  const tierConfig = useDeviceTier();
+  const [enabled, setEnabled] = useState(!tierConfig.reducedMotion);
   const [ready, setReady] = useState(deferMode === 'none');
 
   useEffect(() => {
-    // Reduced motion
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (mq.matches) {
+    // Reduced motion: disable entirely (accessibility)
+    if (tierConfig.reducedMotion) {
       setEnabled(false);
       return;
     }
 
-    // Small screens — disable to save resources
-    if (window.innerWidth < 768) {
-      setEnabled(false);
-      return;
-    }
+    setEnabled(true);
 
     // Low-power detection (Battery API, Safari / Chrome)
     if ('getBattery' in navigator) {
@@ -79,10 +79,12 @@ function AmbientParticleLayerInner({
         .catch(() => {});
     }
 
+    // Listen for reduced-motion changes
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
     const handler = (e: MediaQueryListEvent) => setEnabled(!e.matches);
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
-  }, []);
+  }, [tierConfig.reducedMotion]);
 
   useEffect(() => {
     if (!enabled) return;
@@ -145,16 +147,19 @@ function AmbientParticleLayerInner({
   if (!enabled || !ready) return null;
 
   const config = INTENSITY_CONFIG[intensity];
+  const scaledCount = tierParticleCount(config.count, tierConfig);
+  const scaledOpacity = config.opacity * (tierConfig.tier === 'low' ? 0.7 : tierConfig.tier === 'mid' ? 0.85 : 1);
 
   return (
     <UnifiedParticles
       preset={config.preset}
-      count={config.count}
-      opacity={config.opacity}
-      connections={config.connections}
+      count={scaledCount}
+      opacity={scaledOpacity}
+      connections={config.connections && tierConfig.enableConnections}
       color={colorProp ?? '34,211,238'}
       secondaryColor={secondaryColorProp ?? '59,130,246'}
       className={className}
+      fpsCap={tierConfig.fpsCap}
     />
   );
 }

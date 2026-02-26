@@ -26,6 +26,7 @@ import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 import { HeroScrollRetentionController } from '@/components/motion/HeroScrollRetentionController';
 import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
+import { useDeviceTier } from '@/lib/device-tier';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -81,7 +82,7 @@ function ProofMetric({ value, label }: { value: string; label: string }) {
 export function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
-  const [allowHeavyVisuals, setAllowHeavyVisuals] = useState(false);
+  const tierConfig = useDeviceTier();
   const { snapshot } = useControlPlaneRuntime();
   const runtimeMarketing = snapshot?.marketing ?? DEFAULT_RUNTIME_MARKETING;
   const expensiveEffectsEnabled = runtimeMarketing.runtime.expensiveEffectsEnabled;
@@ -91,6 +92,10 @@ export function HeroSection() {
     offset: ['start start', 'end -20%'],
   });
   const router = useRouter();
+
+  // Animations enabled for all tiers (not just >=1024px)
+  const shouldAnimateIntro =
+    !shouldReduceMotion && tierConfig.tier !== 'low' && expensiveEffectsEnabled;
 
   // Buffered hero exit: hold fully visible first, then progressive cinematic fade.
   const contentOpacity = useTransform(scrollYProgress, [0, 0.24, 0.82, 0.96], [1, 1, 0.35, 0]);
@@ -108,8 +113,6 @@ export function HeroSection() {
   const heroMetricStyle = shouldReduceMotion ? undefined : { y: metricY };
   const bgFarStyle = shouldReduceMotion ? undefined : { y: bgFarY };
   const bgNearStyle = shouldReduceMotion ? undefined : { y: bgNearY };
-  const shouldAnimateIntro =
-    !shouldReduceMotion && allowHeavyVisuals && expensiveEffectsEnabled;
   const primaryCtaHref = heroCopy.primaryCtaHref.startsWith('/auth')
     ? `${appBase}${heroCopy.primaryCtaHref}`
     : heroCopy.primaryCtaHref;
@@ -136,28 +139,21 @@ export function HeroSection() {
     router.push('/contact');
   };
 
-  useEffect(() => {
-    const update = () => setAllowHeavyVisuals(window.innerWidth >= 1024);
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, []);
-
 
   return (
     <section
       ref={containerRef}
-      className="home-hero relative flex items-center justify-center overflow-hidden pt-24 sm:pt-28 lg:pt-32 pb-32 sm:pb-40 md:pb-52"
-      style={{ minHeight: 'clamp(104svh, 116vh, 1300px)' }}
+      className="home-hero relative flex items-center justify-center overflow-hidden pt-24 sm:pt-28 lg:pt-32 pb-24 sm:pb-32 md:pb-52"
+      style={{ minHeight: 'clamp(100svh, 116vh, 1300px)' }}
     >
-      {/* Cinematic ambient particles */}
+      {/* Cinematic ambient particles — all tiers */}
       {expensiveEffectsEnabled ? <AmbientParticleLayer intensity="subtle" /> : null}
 
       {/* Premium Background Effects - Cinematic Gradient Layers */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
           style={bgFarStyle}
-          className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-gradient-to-br from-teal-500/15 via-emerald-500/10 to-transparent rounded-full blur-3xl"
+          className="absolute -top-20 -left-20 sm:-top-40 sm:-left-40 w-[500px] sm:w-[800px] h-[500px] sm:h-[800px] bg-gradient-to-br from-teal-500/15 via-emerald-500/10 to-transparent rounded-full blur-3xl"
           animate={
             shouldAnimateIntro
               ? {
@@ -174,7 +170,7 @@ export function HeroSection() {
         />
         <motion.div
           style={bgNearStyle}
-          className="absolute -bottom-40 -right-40 w-[700px] h-[700px] bg-gradient-to-tl from-amber-500/12 via-amber-500/6 to-transparent rounded-full blur-3xl"
+          className="absolute -bottom-20 -right-20 sm:-bottom-40 sm:-right-40 w-[400px] sm:w-[700px] h-[400px] sm:h-[700px] bg-gradient-to-tl from-amber-500/12 via-amber-500/6 to-transparent rounded-full blur-3xl"
           animate={
             shouldAnimateIntro
               ? {
@@ -194,10 +190,10 @@ export function HeroSection() {
               : undefined
           }
         />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-teal-500/5 to-transparent rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-gradient-radial from-teal-500/5 to-transparent rounded-full" />
       </div>
 
-      {/* Floating Metrics - Left Side (parallax drift) */}
+      {/* Floating Metrics - Left Side (parallax drift) — xl only */}
       <motion.div style={heroMetricStyle} className="absolute left-8 lg:left-16 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6 z-20">
         <FloatingMetricCard
           value="Real-time"
@@ -217,7 +213,7 @@ export function HeroSection() {
         />
       </motion.div>
 
-      {/* Floating Metrics - Right Side (parallax drift) */}
+      {/* Floating Metrics - Right Side (parallax drift) — xl only */}
       <motion.div style={heroMetricStyle} className="absolute right-8 lg:right-16 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6 z-20">
         <FloatingMetricCard
           value="Faster"
@@ -238,7 +234,7 @@ export function HeroSection() {
       </motion.div>
 
       {/* Main Hero Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
+      <div className="relative z-10 max-w-5xl mx-auto px-5 sm:px-6 lg:px-12">
         <div className="flex flex-col items-center text-center">
           <motion.div style={heroContentStyle}>
             {/* Badge */}
@@ -246,7 +242,7 @@ export function HeroSection() {
               initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={shouldAnimateIntro ? { duration: duration.slow, delay: 0.2 } : { duration: 0 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/30 mb-8 backdrop-blur-sm"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-teal-500/10 border border-teal-500/30 mb-6 sm:mb-8 backdrop-blur-sm"
             >
               <Sparkles className="w-4 h-4 text-teal-400" />
               <span className="text-sm text-teal-400 font-medium tracking-wide">
@@ -254,12 +250,12 @@ export function HeroSection() {
               </span>
             </motion.div>
 
-            {/* Headline */}
+            {/* Headline — mobile-optimized type scale */}
             <motion.h1
               initial={shouldAnimateIntro ? { opacity: 0, y: 30 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.3 } : { duration: 0 }}
-              className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
+              className="text-[2.5rem] sm:text-5xl lg:text-7xl font-bold mb-5 sm:mb-6 leading-[1.08] text-white"
             >
               {heroCopy.headlinePrimary}
               <br />
@@ -268,12 +264,12 @@ export function HeroSection() {
               </span>
             </motion.h1>
 
-            {/* Subheadline */}
+            {/* Subheadline — readable mobile size */}
             <motion.p
               initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.5 } : { duration: 0 }}
-              className="text-lg sm:text-xl text-gray-400 mb-4 max-w-2xl mx-auto text-center leading-relaxed"
+              className="text-base sm:text-lg md:text-xl text-gray-400 mb-4 max-w-2xl mx-auto text-center leading-relaxed"
             >
               {heroCopy.subheadline}
             </motion.p>
@@ -283,7 +279,7 @@ export function HeroSection() {
               initial={shouldAnimateIntro ? { opacity: 0 } : false}
               animate={{ opacity: 1 }}
               transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.65 } : { duration: 0 }}
-              className="mb-10 max-w-2xl mx-auto text-center"
+              className="mb-8 sm:mb-10 max-w-2xl mx-auto text-center"
             >
               <p className="text-sm text-gray-500 mb-3">
                 Structure → Operationalize → Validate → Defend
@@ -292,29 +288,29 @@ export function HeroSection() {
                 Used by compliance teams. Aligned to ISO/SOC frameworks. Built
                 for audit defensibility.
               </p>
-              <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600">
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs text-gray-600">
+                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800/50 border border-gray-700/50">
                   <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
                   Workflow Orchestration
                 </span>
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800/50 border border-gray-700/50">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   Control Ownership
                 </span>
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800/50 border border-gray-700/50">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
                   Evidence Chains
                 </span>
               </div>
             </motion.div>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons — full-width mobile, side-by-side sm+ */}
             <motion.div
               style={heroCtaStyle}
               initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.7 } : { duration: 0 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+              className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-12 sm:mb-16 w-full sm:w-auto"
             >
               <motion.a
                 href={primaryCtaHref}
@@ -327,7 +323,7 @@ export function HeroSection() {
                     : undefined
                 }
                 whileTap={shouldAnimateIntro ? { scale: 0.98 } : undefined}
-                className="mk-btn mk-btn-primary group px-8 py-4 text-lg"
+                className="mk-btn mk-btn-primary group px-8 py-4 min-h-[48px] text-base sm:text-lg w-full sm:w-auto justify-center"
               >
                 <span>{heroCopy.primaryCtaLabel}</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -336,7 +332,7 @@ export function HeroSection() {
               <Link
                 href={secondaryCtaHref}
                 onClick={handleRequestDemoClick}
-                className="mk-btn mk-btn-secondary group relative z-30 pointer-events-auto px-8 py-4 text-lg"
+                className="mk-btn mk-btn-secondary group relative z-30 pointer-events-auto px-8 py-4 min-h-[48px] text-base sm:text-lg w-full sm:w-auto justify-center"
               >
                 <Play className="w-5 h-5" />
                 <span>{heroCopy.secondaryCtaLabel}</span>
@@ -349,7 +345,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: duration.slower, delay: 0.9 }}
-            className="xl:hidden grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-lg"
+            className="xl:hidden grid grid-cols-3 gap-3 sm:gap-4 w-full max-w-lg"
           >
             <ProofMetric value="Real-time" label="Compliance" />
             <ProofMetric value="Automated" label="Evidence" />

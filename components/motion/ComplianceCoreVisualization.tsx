@@ -56,17 +56,17 @@ export function ComplianceCoreVisualization() {
                 transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
                 className="flex flex-col items-center"
               >
-                {/* Circle - smaller size for mobile */}
+                {/* Circle — 48px min tap target */}
                 <motion.div
                   whileHover={{ scale: 1.08 }}
                   whileTap={{ scale: 0.95 }}
-                  className="relative w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/15 transition-all"
+                  className="relative w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/15 transition-all"
                   style={{ backgroundColor: `${module.color}15` }}
                 >
                   {/* Very subtle glow ring */}
-                  <div 
+                  <div
                     className="absolute -inset-0.5 rounded-full opacity-30"
-                    style={{ 
+                    style={{
                       border: `1px solid ${module.color}`,
                     }}
                   />
@@ -76,8 +76,8 @@ export function ComplianceCoreVisualization() {
                   </div>
                 </motion.div>
                 {/* Label */}
-                <span 
-                  className="mt-1.5 text-[10px] font-semibold"
+                <span
+                  className="mt-2 text-xs font-semibold"
                   style={{ color: module.color }}
                 >
                   {module.label}
@@ -85,7 +85,7 @@ export function ComplianceCoreVisualization() {
               </motion.div>
             ))}
           </div>
-          
+
           {/* Row 2: 2 modules - Audits, Evidence (centered) */}
           <div className="flex justify-center gap-8">
             {mobileOrderedModules.slice(3, 5).map((module, i) => (
@@ -96,17 +96,17 @@ export function ComplianceCoreVisualization() {
                 transition={{ delay: 0.5 + i * 0.1, duration: 0.5 }}
                 className="flex flex-col items-center"
               >
-                {/* Circle */}
+                {/* Circle — 48px min tap target */}
                 <motion.div
                   whileHover={{ scale: 1.08 }}
                   whileTap={{ scale: 0.95 }}
-                  className="relative w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/15 transition-all"
+                  className="relative w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/15 transition-all"
                   style={{ backgroundColor: `${module.color}15` }}
                 >
                   {/* Very subtle glow ring */}
-                  <div 
+                  <div
                     className="absolute -inset-0.5 rounded-full opacity-30"
-                    style={{ 
+                    style={{
                       border: `1px solid ${module.color}`,
                     }}
                   />
@@ -116,8 +116,8 @@ export function ComplianceCoreVisualization() {
                   </div>
                 </motion.div>
                 {/* Label */}
-                <span 
-                  className="mt-1.5 text-[10px] font-semibold"
+                <span
+                  className="mt-2 text-xs font-semibold"
                   style={{ color: module.color }}
                 >
                   {module.label}

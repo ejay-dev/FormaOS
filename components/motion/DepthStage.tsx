@@ -15,6 +15,7 @@ import {
   type MotionValue,
 } from 'framer-motion';
 import { CursorContext } from './CursorContext';
+import { useDeviceTier } from '@/lib/device-tier';
 
 interface DepthStageProps {
   children: ReactNode;
@@ -40,16 +41,12 @@ interface DepthStageProps {
  * DepthStage
  * ──────────
  * 3D perspective container that enables true depth composition.
- * Wraps children in a perspective + preserve-3d context.
- * Optional cursor-following tilt (rotateX/rotateY) for interactive depth.
- *
- * Use with DepthLayer children to create multi-layer parallax depth.
+ * Desktop: cursor-following tilt. Mobile: slow auto-drift tilt.
  *
  * Performance:
  *  - Transform-only animations (GPU-accelerated)
  *  - Spring physics via useSpring (no layout thrashing)
- *  - Cursor tracking deferred via requestIdleCallback
- *  - Desktop-only tilt (disabled on <1024px and reduced-motion)
+ *  - Tier-aware intensity scaling
  */
 export function DepthStage({
   children,
@@ -66,45 +63,60 @@ export function DepthStage({
   const ref = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
   const [isHovered, setIsHovered] = useState(false);
-  const [tiltEnabled, setTiltEnabled] = useState(false);
+  const tierConfig = useDeviceTier();
+  const driftRef = useRef<number>(0);
+
+  // Scale tilt intensity by tier
+  const effectiveIntensity = tiltIntensity * tierConfig.parallaxIntensity;
+  // Mobile auto-drift uses much smaller tilt
+  const mobileTiltIntensity = effectiveIntensity * 0.4;
+
+  // Determine if any tilt should be active
+  const tiltActive = cursorTilt && !shouldReduceMotion && tierConfig.tier !== 'low';
 
   // Spring-animated mouse position (0-1 range)
   const mouseX = useSpring(0.5, { stiffness, damping });
   const mouseY = useSpring(0.5, { stiffness, damping });
 
-  // Map mouse position to tilt angles
-  const rotateX = useTransform(mouseY, [0, 1], [tiltIntensity, -tiltIntensity]);
-  const rotateY = useTransform(mouseX, [0, 1], [-tiltIntensity, tiltIntensity]);
+  // Map mouse position to tilt angles — use smaller intensity for mobile
+  const maxTilt = tierConfig.cursorTilt ? effectiveIntensity : mobileTiltIntensity;
+  const rotateX = useTransform(mouseY, [0, 1], [maxTilt, -maxTilt]);
+  const rotateY = useTransform(mouseX, [0, 1], [-maxTilt, maxTilt]);
 
   // Glow position (percentage)
   const glowX = useTransform(mouseX, [0, 1], [0, 100]);
   const glowY = useTransform(mouseY, [0, 1], [0, 100]);
 
-  // Viewport gate: only enable tilt on desktop
   useEffect(() => {
-    if (shouldReduceMotion || !cursorTilt) return;
+    if (!tiltActive) return;
 
-    const updateGate = () => setTiltEnabled(window.innerWidth >= 1024);
-
-    // Defer initial check to avoid blocking first paint
-    if ('requestIdleCallback' in window) {
-      (window as Window).requestIdleCallback(updateGate);
-    } else {
-      setTimeout(updateGate, 100);
+    // Desktop: cursor-linked
+    if (tierConfig.cursorTilt) {
+      return; // handled via onMouseMove below
     }
 
-    window.addEventListener('resize', updateGate);
-    return () => window.removeEventListener('resize', updateGate);
-  }, [shouldReduceMotion, cursorTilt]);
+    // Mobile: slow auto-drift animation
+    if (tierConfig.autoDrift) {
+      let rafId: number;
+      const drift = () => {
+        driftRef.current += 0.004;
+        mouseX.set(0.5 + Math.sin(driftRef.current) * 0.12);
+        mouseY.set(0.5 + Math.cos(driftRef.current * 0.6) * 0.08);
+        rafId = requestAnimationFrame(drift);
+      };
+      rafId = requestAnimationFrame(drift);
+      return () => cancelAnimationFrame(rafId);
+    }
+  }, [tiltActive, tierConfig.cursorTilt, tierConfig.autoDrift, mouseX, mouseY]);
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!tiltEnabled || !ref.current) return;
+      if (!tierConfig.cursorTilt || !ref.current) return;
       const rect = ref.current.getBoundingClientRect();
       mouseX.set((e.clientX - rect.left) / rect.width);
       mouseY.set((e.clientY - rect.top) / rect.height);
     },
-    [tiltEnabled, mouseX, mouseY],
+    [tierConfig.cursorTilt, mouseX, mouseY],
   );
 
   const handleMouseEnter = useCallback(() => setIsHovered(true), []);
@@ -116,7 +128,7 @@ export function DepthStage({
   }, [mouseX, mouseY]);
 
   // Cursor context value — exposed to children (HeroVisuals, etc.)
-  const cursorCtx = { mouseX, mouseY, isActive: tiltEnabled };
+  const cursorCtx = { mouseX, mouseY, isActive: tiltActive };
 
   // Reduced motion: render without any transforms
   if (shouldReduceMotion) {
@@ -144,15 +156,15 @@ export function DepthStage({
       >
         <motion.div
           style={{
-            ...(tiltEnabled ? { rotateX, rotateY } : {}),
+            ...(tiltActive ? { rotateX, rotateY } : {}),
             transformStyle: 'preserve-3d',
           }}
           className="relative w-full h-full"
         >
           {children}
 
-          {/* Cursor-following glow overlay */}
-          {glowFollow && tiltEnabled && isHovered && (
+          {/* Cursor-following glow overlay — desktop only */}
+          {glowFollow && tierConfig.cursorTilt && tiltActive && isHovered && (
             <GlowOverlay glowX={glowX} glowY={glowY} color={glowColor} />
           )}
         </motion.div>

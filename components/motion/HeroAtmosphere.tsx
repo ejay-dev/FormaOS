@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import {
   motion,
   useReducedMotion,
@@ -8,24 +8,14 @@ import {
   useTransform,
 } from 'framer-motion';
 import { AmbientParticleLayer } from './AmbientParticleLayer';
+import { useDeviceTier } from '@/lib/device-tier';
 
 /**
  * HeroAtmosphere
  * ──────────────
  * Shared hero background for all marketing pages (except Home).
- * Includes cursor-linked parallax depth on desktop for premium hero movement.
- *
- * Performance:
- *  - Static gradient foundation with lightweight transform-only parallax
- *  - AmbientParticleLayer defers rendering and uses unified particle engine
- *  - Zero layout shift, zero blocking JS
- *  - Respects prefers-reduced-motion via AmbientParticleLayer
- *
- * Usage:
- *   <section className="relative ...">
- *     <HeroAtmosphere />
- *     <div className="relative z-10">...content...</div>
- *   </section>
+ * Includes cursor-linked parallax depth on desktop and slow auto-drift
+ * on mobile touch devices for premium movement.
  */
 
 type GlowColor = 'cyan' | 'teal' | 'blue' | 'violet' | 'emerald' | 'rose' | 'amber';
@@ -57,7 +47,6 @@ const COLOR_MAP: Record<GlowColor, { glow: string; grid: string; rgb: string }> 
 function HeroAtmosphereInner({
   topColor = 'cyan',
   bottomColor = 'blue',
-  // gridColor/gridOpacity kept for backward compat but no longer rendered
   particleIntensity = 'subtle',
   className = '',
 }: HeroAtmosphereProps) {
@@ -65,47 +54,65 @@ function HeroAtmosphereInner({
   const bottom = COLOR_MAP[bottomColor];
   const prefersReducedMotion = useReducedMotion();
   const reducedMotion = prefersReducedMotion ?? false;
-  const [enableParallax, setEnableParallax] = useState(false);
+  const tierConfig = useDeviceTier();
+  const driftRef = useRef<number>(0);
+
   const mouseX = useSpring(0.5, { stiffness: 110, damping: 18 });
   const mouseY = useSpring(0.5, { stiffness: 110, damping: 18 });
-  const farX = useTransform(mouseX, [0, 1], [-18, 18]);
-  const farY = useTransform(mouseY, [0, 1], [-12, 12]);
-  const nearX = useTransform(mouseX, [0, 1], [10, -10]);
-  const nearY = useTransform(mouseY, [0, 1], [8, -8]);
+
+  // Scale parallax displacement by tier
+  const intensity = tierConfig.parallaxIntensity;
+  const farX = useTransform(mouseX, [0, 1], [-18 * intensity, 18 * intensity]);
+  const farY = useTransform(mouseY, [0, 1], [-12 * intensity, 12 * intensity]);
+  const nearX = useTransform(mouseX, [0, 1], [10 * intensity, -10 * intensity]);
+  const nearY = useTransform(mouseY, [0, 1], [8 * intensity, -8 * intensity]);
+
+  // Enable parallax on all tiers (not just >=1024px), using cursor or auto-drift
+  const enableParallax = !reducedMotion && tierConfig.tier !== 'low';
 
   useEffect(() => {
-    if (reducedMotion) return;
+    if (reducedMotion || !enableParallax) return;
 
-    const updateViewportGate = () => setEnableParallax(window.innerWidth >= 1024);
-    updateViewportGate();
-    window.addEventListener('resize', updateViewportGate);
+    // Desktop: cursor-linked parallax
+    if (tierConfig.cursorTilt) {
+      const onPointerMove = (event: PointerEvent) => {
+        mouseX.set(event.clientX / window.innerWidth);
+        mouseY.set(event.clientY / window.innerHeight);
+      };
+      window.addEventListener('pointermove', onPointerMove, { passive: true });
+      return () => {
+        window.removeEventListener('pointermove', onPointerMove);
+      };
+    }
 
-    const onPointerMove = (event: PointerEvent) => {
-      mouseX.set(event.clientX / window.innerWidth);
-      mouseY.set(event.clientY / window.innerHeight);
-    };
-    window.addEventListener('pointermove', onPointerMove, { passive: true });
-
-    return () => {
-      window.removeEventListener('resize', updateViewportGate);
-      window.removeEventListener('pointermove', onPointerMove);
-    };
-  }, [mouseX, mouseY, reducedMotion]);
+    // Mobile: slow sinusoidal auto-drift
+    if (tierConfig.autoDrift) {
+      let rafId: number;
+      const drift = () => {
+        driftRef.current += 0.003; // very slow
+        mouseX.set(0.5 + Math.sin(driftRef.current) * 0.15);
+        mouseY.set(0.5 + Math.cos(driftRef.current * 0.7) * 0.1);
+        rafId = requestAnimationFrame(drift);
+      };
+      rafId = requestAnimationFrame(drift);
+      return () => cancelAnimationFrame(rafId);
+    }
+  }, [mouseX, mouseY, reducedMotion, enableParallax, tierConfig.cursorTilt, tierConfig.autoDrift]);
 
   return (
     <div className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`} aria-hidden>
-      {/* Static radial gradient blooms — paint-once, zero animation cost */}
+      {/* Radial gradient blooms with parallax (all tiers except low) */}
       <motion.div
         className="absolute inset-0"
         style={{
-          ...(enableParallax && !reducedMotion ? { x: farX, y: farY } : {}),
+          ...(enableParallax ? { x: farX, y: farY } : {}),
           background: `radial-gradient(circle at 30% 15%, ${top.glow}0.18), transparent 50%)`,
         }}
       />
       <motion.div
         className="absolute inset-0"
         style={{
-          ...(enableParallax && !reducedMotion ? { x: nearX, y: nearY } : {}),
+          ...(enableParallax ? { x: nearX, y: nearY } : {}),
           background: `radial-gradient(circle at 70% 85%, ${bottom.glow}0.14), transparent 45%)`,
         }}
       />

@@ -9,6 +9,7 @@ import { brand } from '@/config/brand';
 import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
+import { useDeviceTier } from '@/lib/device-tier';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -25,22 +26,29 @@ function ProofConvergenceCanvas({ isInView }: { isInView: boolean }) {
     if (!ctx) return;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = 800 * dpr;
-    canvas.height = 600 * dpr;
+    // Size canvas responsively
+    const canvasW = Math.min(800, window.innerWidth * 0.9);
+    const canvasH = canvasW * 0.75;
+    canvas.width = canvasW * dpr;
+    canvas.height = canvasH * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    canvas.style.width = '800px';
-    canvas.style.height = '600px';
+    canvas.style.width = `${canvasW}px`;
+    canvas.style.height = `${canvasH}px`;
+
+    const cx = canvasW / 2;
+    const cy = canvasH / 2;
+    const scale = canvasW / 800; // scale factor relative to original 800px design
 
     let time = 0;
     let animId: number;
 
     const particles = Array.from({ length: 30 }, (_, i) => ({
-      x: 80 + Math.random() * 640,
-      y: 80 + Math.random() * 440,
-      targetX: 400,
-      targetY: 300,
+      x: 80 * scale + Math.random() * 640 * scale,
+      y: 80 * scale + Math.random() * 440 * scale,
+      targetX: cx,
+      targetY: cy,
       speed: 0.4 + Math.random() * 0.8,
-      size: 1.5 + Math.random() * 2.5,
+      size: (1.5 + Math.random() * 2.5) * scale,
       opacity: 0.3 + Math.random() * 0.4,
       verified: false,
       verifyTime: 150 + i * 60,
@@ -48,28 +56,28 @@ function ProofConvergenceCanvas({ isInView }: { isInView: boolean }) {
     }));
 
     const animate = () => {
-      ctx.clearRect(0, 0, 800, 600);
+      ctx.clearRect(0, 0, canvasW, canvasH);
 
       // Radial depth layers
-      const bg1 = ctx.createRadialGradient(400, 300, 0, 400, 300, 350);
+      const bg1 = ctx.createRadialGradient(cx, cy, 0, cx, cy, 350 * scale);
       bg1.addColorStop(0, 'rgba(20, 184, 166, 0.06)');
       bg1.addColorStop(0.5, 'rgba(52, 211, 153, 0.03)');
       bg1.addColorStop(1, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = bg1;
-      ctx.fillRect(0, 0, 800, 600);
+      ctx.fillRect(0, 0, canvasW, canvasH);
 
       // Rotating scan line
       const sweepAngle = (time * 0.0015) % (Math.PI * 2);
       ctx.save();
-      ctx.translate(400, 300);
+      ctx.translate(cx, cy);
       ctx.rotate(sweepAngle);
-      const sweepGrad = ctx.createLinearGradient(0, 0, 300, 0);
+      const sweepGrad = ctx.createLinearGradient(0, 0, 300 * scale, 0);
       sweepGrad.addColorStop(0, 'rgba(20, 184, 166, 0.12)');
       sweepGrad.addColorStop(1, 'rgba(20, 184, 166, 0)');
       ctx.fillStyle = sweepGrad;
       ctx.beginPath();
       ctx.moveTo(0, 0);
-      ctx.arc(0, 0, 280, -0.08, 0.08);
+      ctx.arc(0, 0, 280 * scale, -0.08, 0.08);
       ctx.closePath();
       ctx.fill();
       ctx.restore();
@@ -79,25 +87,25 @@ function ProofConvergenceCanvas({ isInView }: { isInView: boolean }) {
         ctx.strokeStyle = `rgba(148, 163, 184, ${0.04 + i * 0.01})`;
         ctx.lineWidth = 0.5;
         ctx.beginPath();
-        ctx.arc(400, 300, radius, 0, Math.PI * 2);
+        ctx.arc(cx, cy, radius * scale, 0, Math.PI * 2);
         ctx.stroke();
       });
 
       // Particles converging
       particles.forEach((p, pi) => {
         const convergeFactor = Math.min(time / 2500, 1);
-        const orbitRadius = 200 * (1 - convergeFactor * 0.7);
+        const orbitRadius = 200 * scale * (1 - convergeFactor * 0.7);
         const orbitAngle = p.angle + time * 0.0005;
 
-        const targetX = 400 + Math.cos(orbitAngle) * orbitRadius * (1 - convergeFactor * 0.5);
-        const targetY = 300 + Math.sin(orbitAngle) * orbitRadius * (1 - convergeFactor * 0.5);
+        const targetX = cx + Math.cos(orbitAngle) * orbitRadius * (1 - convergeFactor * 0.5);
+        const targetY = cy + Math.sin(orbitAngle) * orbitRadius * (1 - convergeFactor * 0.5);
 
         p.x += (targetX - p.x) * 0.02 * p.speed;
         p.y += (targetY - p.y) * 0.02 * p.speed;
 
-        const dist = Math.sqrt(Math.pow(p.x - 400, 2) + Math.pow(p.y - 300, 2));
+        const dist = Math.sqrt(Math.pow(p.x - cx, 2) + Math.pow(p.y - cy, 2));
 
-        if (time > p.verifyTime && dist < 120) {
+        if (time > p.verifyTime && dist < 120 * scale) {
           p.verified = true;
         }
 
@@ -120,8 +128,8 @@ function ProofConvergenceCanvas({ isInView }: { isInView: boolean }) {
           const dx = p.x - p2.x;
           const dy = p.y - p2.y;
           const d = Math.sqrt(dx * dx + dy * dy);
-          if (d < 100) {
-            ctx.strokeStyle = `rgba(148, 163, 184, ${(1 - d / 100) * 0.08})`;
+          if (d < 100 * scale) {
+            ctx.strokeStyle = `rgba(148, 163, 184, ${(1 - d / (100 * scale)) * 0.08})`;
             ctx.lineWidth = 0.5;
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
@@ -142,23 +150,23 @@ function ProofConvergenceCanvas({ isInView }: { isInView: boolean }) {
 
       // Center shield icon
       const centerAlpha = Math.min(time / 2000, 1) * 0.5 + Math.sin(time * 0.003) * 0.1;
-      const cg = ctx.createRadialGradient(400, 300, 0, 400, 300, 35);
+      const cg = ctx.createRadialGradient(cx, cy, 0, cx, cy, 35 * scale);
       cg.addColorStop(0, `rgba(20, 184, 166, ${centerAlpha})`);
       cg.addColorStop(0.6, `rgba(52, 211, 153, ${centerAlpha * 0.5})`);
       cg.addColorStop(1, 'rgba(20, 184, 166, 0)');
       ctx.fillStyle = cg;
       ctx.beginPath();
-      ctx.arc(400, 300, 30, 0, Math.PI * 2);
+      ctx.arc(cx, cy, 30 * scale, 0, Math.PI * 2);
       ctx.fill();
 
       // Checkmark
       ctx.strokeStyle = `rgba(255, 255, 255, ${Math.min(time / 3000, 0.9)})`;
-      ctx.lineWidth = 2.5;
+      ctx.lineWidth = 2.5 * scale;
       ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.moveTo(391, 300);
-      ctx.lineTo(397, 306);
-      ctx.lineTo(409, 293);
+      ctx.moveTo(cx - 9 * scale, cy);
+      ctx.lineTo(cx - 3 * scale, cy + 6 * scale);
+      ctx.lineTo(cx + 9 * scale, cy - 7 * scale);
       ctx.stroke();
 
       time += 16;
@@ -171,14 +179,14 @@ function ProofConvergenceCanvas({ isInView }: { isInView: boolean }) {
 
   if (shouldReduceMotion) return null;
 
-  return <canvas ref={canvasRef} className="opacity-50" />;
+  return <canvas ref={canvasRef} className="opacity-50 max-w-full" />;
 }
 
 export function CTASection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
   const [isInView, setIsInView] = useState(false);
-  const [allowHeavyEffects, setAllowHeavyEffects] = useState(false);
+  const tierConfig = useDeviceTier();
   const { snapshot } = useControlPlaneRuntime();
   const runtime = snapshot?.marketing.runtime ?? DEFAULT_RUNTIME_MARKETING.runtime;
   const expensiveEffectsEnabled = runtime.expensiveEffectsEnabled;
@@ -200,13 +208,8 @@ export function CTASection() {
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    const update = () =>
-      setAllowHeavyEffects(window.innerWidth >= 1024 && expensiveEffectsEnabled);
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, [expensiveEffectsEnabled]);
+  // Allow heavy effects on all tiers (not just >=1024px), gated by tier + expensive flag
+  const allowHeavyEffects = tierConfig.tier !== 'low' && expensiveEffectsEnabled;
 
   return (
     <section
@@ -226,19 +229,19 @@ export function CTASection() {
 
       {expensiveEffectsEnabled ? <AmbientParticleLayer intensity="strong" /> : null}
 
-      {/* Canvas proof visualization */}
+      {/* Canvas proof visualization — tier-gated */}
       {allowHeavyEffects && isInView && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <ProofConvergenceCanvas isInView={isInView} />
         </div>
       )}
 
-      <div className="relative z-10 py-24 sm:py-32 lg:py-40 max-w-4xl mx-auto px-6 lg:px-12 text-center">
+      <div className="relative z-10 py-20 sm:py-28 lg:py-40 max-w-4xl mx-auto px-5 sm:px-6 lg:px-12 text-center">
         <motion.div
           style={shouldReduceMotion ? undefined : { scale }}
         >
           <ScrollReveal variant="scaleUp" range={[0, 0.25]}>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 mb-6 sm:mb-8">
               <Sparkles className="w-4 h-4 text-teal-400" />
               <span className="text-sm text-teal-400 font-medium">
                 Start Your Free Trial
@@ -247,7 +250,7 @@ export function CTASection() {
           </ScrollReveal>
 
           <ScrollReveal variant="blurIn" range={[0, 0.3]}>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+            <h2 className="text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-5 sm:mb-6 leading-tight">
               Install the{' '}
               <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
                 Operating System
@@ -260,14 +263,14 @@ export function CTASection() {
           </ScrollReveal>
 
           <ScrollReveal variant="fadeUp" range={[0.02, 0.32]}>
-            <p className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-gray-400 mb-10 sm:mb-12 max-w-2xl mx-auto leading-relaxed">
               Stop managing compliance manually. FormaOS enforces controls,
               captures evidence, and keeps you audit-ready. Every single day.
             </p>
           </ScrollReveal>
 
           <ScrollReveal variant="slideUp" range={[0.04, 0.34]}>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto">
               <motion.a
                 href={`${appBase}/auth/signup?plan=pro`}
                 whileHover={
@@ -280,7 +283,7 @@ export function CTASection() {
                       }
                 }
                 whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
-                className="mk-btn mk-btn-primary px-8 py-4 text-lg"
+                className="mk-btn mk-btn-primary px-8 py-4 min-h-[48px] text-base sm:text-lg w-full sm:w-auto justify-center"
               >
                 Get Started Free
                 <ArrowRight className="w-5 h-5" />
@@ -297,7 +300,7 @@ export function CTASection() {
                       }
                 }
                 whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
-                className="mk-btn mk-btn-secondary px-8 py-4 text-lg"
+                className="mk-btn mk-btn-secondary px-8 py-4 min-h-[48px] text-base sm:text-lg w-full sm:w-auto justify-center"
               >
                 Schedule Demo
               </motion.a>
@@ -305,14 +308,14 @@ export function CTASection() {
           </ScrollReveal>
 
           <ScrollReveal variant="fadeUp" range={[0.06, 0.36]}>
-            <p className="text-sm text-gray-500 mt-8">
+            <p className="text-sm text-gray-500 mt-6 sm:mt-8">
               No credit card required &bull; 14-day free trial &bull; Cancel anytime
             </p>
           </ScrollReveal>
 
-          {/* Trust proof badges: monochrome, high-contrast */}
-          <ScrollReveal variant="fadeUp" range={[0.08, 0.38]} className="mt-16 pt-8 border-t border-white/[0.06]">
-            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+          {/* Trust proof badges */}
+          <ScrollReveal variant="fadeUp" range={[0.08, 0.38]} className="mt-12 sm:mt-16 pt-6 sm:pt-8 border-t border-white/[0.06]">
+            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
               {[
                 { label: 'SOC 2-aligned', detail: 'Trust framework' },
                 { label: 'Audit-ready', detail: 'Evidence workflows' },
@@ -321,7 +324,7 @@ export function CTASection() {
               ].map((stat) => (
                 <div
                   key={stat.label}
-                  className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]"
+                  className="flex items-center gap-2.5 px-3 sm:px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]"
                 >
                   <CheckCircle className="w-4 h-4 text-emerald-400/70 flex-shrink-0" />
                   <div className="text-left">

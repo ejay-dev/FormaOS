@@ -86,22 +86,13 @@ function staggerTransition(delay: number, dur: number = duration.slower) {
 /**
  * ImmersiveHero
  * ─────────────
- * Unified hero shell for all marketing pages. Replaces 7+ identical
- * hero implementations with one composable component.
+ * Unified hero shell for all marketing pages.
  *
- * Features:
- *  1. 3D depth staging (DepthStage + DepthLayer)
- *  2. Immersive zoom entrance (blur → focus, scale → 1, translateZ → 0)
- *  3. Cursor-following tilt with glass reflection
- *  4. Multi-layer parallax (foreground/midground/background)
- *  5. Cinematic scroll exit (hold → fade → gone)
- *  6. Per-page visual content in midground layer
- *
- * Performance:
- *  - Transform-only animations (GPU-accelerated)
- *  - Deferred visual content rendering
- *  - Respects prefers-reduced-motion
- *  - SSR-safe text for SEO/LCP
+ * Mobile layout:
+ *  - Larger type scale (text-[2.5rem] base → sm:text-5xl → lg:text-7xl)
+ *  - Full-width buttons with ≥44px tap targets
+ *  - Proper spacing rhythm (no tight stacks)
+ *  - Visual content positioned below text, not overlapping
  */
 export function ImmersiveHero({
   theme,
@@ -126,7 +117,6 @@ export function ImmersiveHero({
       const id = requestIdleCallback(() => setVisualReady(true));
       return () => cancelIdleCallback(id);
     }
-    // Fallback for browsers without requestIdleCallback
     const t2 = setTimeout(() => setVisualReady(true), 50);
     return () => clearTimeout(t2);
   }, []);
@@ -182,7 +172,7 @@ export function ImmersiveHero({
     },
   };
 
-  // ─── Stagger delays (tighter: 0.12s intervals) ───
+  // ─── Stagger delays ───
   const delays = {
     badge: 0.15,
     headline: 0.27,
@@ -248,7 +238,7 @@ export function ImmersiveHero({
         >
           <motion.div
             style={sa ? { opacity: contentOpacity, scale: contentScale, y: contentY, willChange: heroAnimating ? 'opacity, transform' : 'auto' } : undefined}
-            className="max-w-5xl mx-auto px-6 lg:px-12"
+            className="max-w-5xl mx-auto px-5 sm:px-6 lg:px-12"
           >
             {/* 3D entrance wrapper for text content */}
             <motion.div
@@ -262,7 +252,7 @@ export function ImmersiveHero({
                   initial={sa ? { opacity: 0, y: 20 } : false}
                   animate={{ opacity: 1, y: 0 }}
                   transition={sa ? staggerTransition(delays.badge, duration.slow) : { duration: 0 }}
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-${badge.colorClass ?? 'cyan'}-500/10 border border-${badge.colorClass ?? 'cyan'}-500/30 mb-8 backdrop-blur-sm`}
+                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-${badge.colorClass ?? 'cyan'}-500/10 border border-${badge.colorClass ?? 'cyan'}-500/30 mb-6 sm:mb-8 backdrop-blur-sm`}
                 >
                   {badge.icon}
                   <span className={`text-sm text-${badge.colorClass ?? 'cyan'}-400 font-medium tracking-wide`}>
@@ -271,22 +261,22 @@ export function ImmersiveHero({
                 </motion.div>
               )}
 
-              {/* Headline */}
+              {/* Headline — mobile-first type scale */}
               <motion.h1
                 initial={sa ? { opacity: 0, y: 30 } : false}
                 animate={{ opacity: 1, y: 0 }}
                 transition={sa ? staggerTransition(delays.headline) : { duration: 0 }}
-                className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
+                className="text-[2.5rem] sm:text-5xl lg:text-7xl font-bold mb-5 sm:mb-6 leading-[1.08] text-white"
               >
                 {headline}
               </motion.h1>
 
-              {/* Subheadline */}
+              {/* Subheadline — readable mobile size */}
               <motion.p
                 initial={sa ? { opacity: 0, y: 20 } : false}
                 animate={{ opacity: 1, y: 0 }}
                 transition={sa ? staggerTransition(delays.subheadline) : { duration: 0 }}
-                className="text-lg sm:text-xl text-gray-400 mb-4 max-w-2xl mx-auto text-center leading-relaxed"
+                className="text-base sm:text-lg md:text-xl text-gray-400 mb-4 max-w-2xl mx-auto text-center leading-relaxed"
               >
                 {subheadline}
               </motion.p>
@@ -297,25 +287,25 @@ export function ImmersiveHero({
                   initial={sa ? { opacity: 0, y: 20 } : false}
                   animate={{ opacity: 1, y: 0 }}
                   transition={sa ? staggerTransition(delays.extras) : { duration: 0 }}
-                  className="mb-10"
+                  className="mb-8 sm:mb-10"
                 >
                   {extras}
                 </motion.div>
               )}
 
-              {/* CTAs */}
+              {/* CTAs — full-width on mobile, side-by-side on sm+ */}
               <motion.div
                 initial={sa ? { opacity: 0, y: 20 } : false}
                 animate={{ opacity: 1, y: 0 }}
                 transition={sa ? staggerTransition(delays.ctas) : { duration: 0 }}
-                className="flex flex-col sm:flex-row gap-4 justify-center"
+                className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full sm:w-auto"
               >
                 <motion.a
                   href={primaryCta.href.startsWith('/') ? primaryCta.href : `${appBase}${primaryCta.href}`}
                   data-testid={primaryCta.testId}
                   whileHover={sa ? { scale: 1.03, boxShadow: `0 0 30px rgba(${t.tilt.glowColor}, 0.3)` } : undefined}
                   whileTap={sa ? { scale: 0.98 } : undefined}
-                  className="mk-btn mk-btn-primary group px-8 py-4 text-lg"
+                  className="mk-btn mk-btn-primary group px-8 py-4 min-h-[48px] text-base sm:text-lg justify-center"
                 >
                   <span>{primaryCta.label}</span>
                   <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -324,7 +314,7 @@ export function ImmersiveHero({
                 {secondaryCta && (
                   <Link
                     href={secondaryCta.href}
-                    className="mk-btn mk-btn-secondary group px-8 py-4 text-lg"
+                    className="mk-btn mk-btn-secondary group px-8 py-4 min-h-[48px] text-base sm:text-lg justify-center"
                   >
                     {secondaryCta.label}
                   </Link>
@@ -337,11 +327,11 @@ export function ImmersiveHero({
 
       {/* noscript fallback for SSR/SEO */}
       <noscript>
-        <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12 text-center flex flex-col items-center">
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white">
+        <div className="relative z-10 max-w-5xl mx-auto px-5 sm:px-6 lg:px-12 text-center flex flex-col items-center">
+          <h1 className="text-[2.5rem] sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.08] text-white">
             {headline}
           </h1>
-          <p className="text-lg sm:text-xl text-gray-400 mb-8 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-gray-400 mb-8 max-w-2xl mx-auto leading-relaxed">
             {subheadline}
           </p>
         </div>

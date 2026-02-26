@@ -4,6 +4,7 @@ import { memo, useEffect, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
+import { useDeviceTier } from '@/lib/device-tier';
 
 /**
  * MarketingBackgroundLayer
@@ -11,21 +12,19 @@ import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
  * Shared fixed-position background for ALL marketing pages.
  * Provides: depth gradient · dot-grid · film grain · vignette · radial bloom.
  * Placed once in the marketing layout — no per-page duplication.
+ *
+ * Mobile: effects are now tiered instead of disabled.
+ * - high: full dot-grid + film grain
+ * - mid: bloom + vignette (no grain/grid — they're subtle and expensive)
+ * - low: bloom + vignette only
  */
 function MarketingBackgroundLayerInner() {
   const shouldReduceMotion = useReducedMotion();
-  const [isMobile, setIsMobile] = useState(false);
+  const tierConfig = useDeviceTier();
   const [enhancedReady, setEnhancedReady] = useState(false);
   const { snapshot } = useControlPlaneRuntime();
   const runtime = snapshot?.marketing.runtime ?? DEFAULT_RUNTIME_MARKETING.runtime;
   const expensiveEffectsEnabled = runtime.expensiveEffectsEnabled;
-
-  useEffect(() => {
-    const updateMobile = () => setIsMobile(window.innerWidth < 768);
-    updateMobile();
-    window.addEventListener('resize', updateMobile);
-    return () => window.removeEventListener('resize', updateMobile);
-  }, []);
 
   useEffect(() => {
     if (shouldReduceMotion || !expensiveEffectsEnabled) return;
@@ -54,7 +53,7 @@ function MarketingBackgroundLayerInner() {
   }, [shouldReduceMotion, expensiveEffectsEnabled]);
 
   useEffect(() => {
-    if (isMobile || shouldReduceMotion || !expensiveEffectsEnabled) return;
+    if (shouldReduceMotion || !expensiveEffectsEnabled) return;
 
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
     let idleId: number | null = null;
@@ -74,7 +73,7 @@ function MarketingBackgroundLayerInner() {
         (window as Window & { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(idleId);
       }
     };
-  }, [isMobile, shouldReduceMotion, expensiveEffectsEnabled]);
+  }, [shouldReduceMotion, expensiveEffectsEnabled]);
 
   const bloomGradient =
     runtime.backgroundVariant === 'sunrise'
@@ -82,6 +81,9 @@ function MarketingBackgroundLayerInner() {
       : runtime.backgroundVariant === 'matrix'
         ? 'radial-gradient(ellipse 70% 50% at 50% 35%, rgba(34,197,94,0.08) 0%, transparent 70%)'
         : 'radial-gradient(ellipse 70% 50% at 50% 35%, rgba(6,182,212,0.06) 0%, transparent 70%)';
+
+  // Tiered overlay rendering: grid + grain only on high-tier devices
+  const showOverlays = enhancedReady && tierConfig.enableOverlays && expensiveEffectsEnabled;
 
   return (
     <div
@@ -93,8 +95,8 @@ function MarketingBackgroundLayerInner() {
       {/* Vertical depth gradient */}
       <div className="mk-bg-depth mk-bg-depth--far absolute inset-0 bg-gradient-to-b from-transparent via-[#0d1421]/30 to-transparent" />
 
-      {/* Dot-grid pattern (product-page consistency) */}
-      {enhancedReady && !isMobile && expensiveEffectsEnabled && (
+      {/* Dot-grid pattern — high tier only */}
+      {showOverlays && (
         <div
           className="mk-bg-depth mk-bg-depth--near absolute inset-0 opacity-[0.07]"
           style={{
@@ -105,7 +107,7 @@ function MarketingBackgroundLayerInner() {
         />
       )}
 
-      {/* Radial bloom — soft center light */}
+      {/* Radial bloom — soft center light (all tiers) */}
       {enhancedReady && (
         <div
           className="mk-bg-depth mk-bg-depth--mid absolute inset-0"
@@ -115,12 +117,12 @@ function MarketingBackgroundLayerInner() {
         />
       )}
 
-      {/* Film grain (CSS noise) */}
-      {!shouldReduceMotion && !isMobile && enhancedReady && expensiveEffectsEnabled && (
+      {/* Film grain — high tier only */}
+      {!shouldReduceMotion && showOverlays && (
         <div className="mk-grain absolute inset-0" />
       )}
 
-      {/* Vignette — edge darkening */}
+      {/* Vignette — edge darkening (all tiers) */}
       <div
         className="absolute inset-0"
         style={{
