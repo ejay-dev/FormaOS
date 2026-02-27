@@ -1,6 +1,5 @@
 'use client';
 
-import { useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
@@ -70,23 +69,18 @@ const FinalCTA = dynamic(() => import('./components/FinalCTA').then((m) => m.Fin
 });
 
 export default function ProductPageContent() {
-  const showcaseRef = useRef<HTMLDivElement>(null);
-
   return (
     <MarketingPageShell className="product-page-flow">
-      {/* Hero + Showcase wrapper — laser sits behind both,
-          beam "lands" on the showcase panel's top edge */}
+      {/* Hero wrapper — laser lands at the bottom edge of hero section */}
       <div className="relative">
-        <ProductHeroLaser showcaseRef={showcaseRef} />
+        <ProductHeroLaser />
         <div className="relative" style={{ zIndex: 1 }}>
           {/* Hero — headline, gradient text, CTAs */}
           <ProductHero />
-          {/* Interactive showcase — tabs left, app panel right */}
-          <div ref={showcaseRef}>
-            <ProductShowcase />
-          </div>
         </div>
       </div>
+      {/* Interactive showcase — tabs left, app panel right */}
+      <ProductShowcase />
 
       <FrameworkTrustStrip className="mt-4 mb-2" />
 

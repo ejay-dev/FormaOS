@@ -1,40 +1,20 @@
 'use client';
 
-import { memo, useRef, useEffect, useState, useCallback } from 'react';
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import { memo, useEffect, useState } from 'react';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { LaserFlow } from '@/components/motion/LaserFlow';
 
 /**
  * ProductHeroLaser
  * ────────────────
- * Cinematic LaserFlow that drops from the hero into the top edge of the
- * showcase panel. Sits behind hero content as an absolute layer.
- *
- * Beam alignment:
- * - Measures the showcase panel's DOMRect on load + resize
- * - Sets CSS variables for beam position: --beam-x, --beam-y
- * - Laser container positioned so the bright "impact" area
- *   lands exactly at the showcase panel's top border
- *
- * Performance:
- * - Desktop: full WebGL beam
- * - Mobile: static gradient fallback (always visible)
- * - Reduced motion: static fallback
- * - Mounted once, never unmounts — pauses internally when off-screen
+ * ReactBits-inspired vertical laser with a clear landing zone at the
+ * bottom of the Product hero section.
  */
 
-interface ProductHeroLaserProps {
-  /** Ref to the showcase panel element for beam alignment */
-  showcaseRef: React.RefObject<HTMLDivElement | null>;
-}
-
-function ProductHeroLaserInner({ showcaseRef }: ProductHeroLaserProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+function ProductHeroLaserInner() {
   const prefersReduced = useReducedMotion();
   const [isDesktop, setIsDesktop] = useState(false);
-  const [beamY, setBeamY] = useState<number | null>(null);
 
-  // Desktop-only WebGL
   useEffect(() => {
     const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
     setIsDesktop(mq.matches);
@@ -43,116 +23,57 @@ function ProductHeroLaserInner({ showcaseRef }: ProductHeroLaserProps) {
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
-  // Measure showcase panel position relative to our container
-  const measureBeam = useCallback(() => {
-    const wrapper = containerRef.current;
-    const panel = showcaseRef.current;
-    if (!wrapper || !panel) return;
-
-    const wrapperRect = wrapper.getBoundingClientRect();
-    const panelRect = panel.getBoundingClientRect();
-
-    // Distance from top of wrapper to top of showcase panel
-    const y = panelRect.top - wrapperRect.top;
-    setBeamY(y);
-  }, [showcaseRef]);
-
-  useEffect(() => {
-    measureBeam();
-    // Re-measure on resize (throttled)
-    let timer: ReturnType<typeof setTimeout> | null = null;
-    const onResize = () => {
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(measureBeam, 150);
-    };
-    window.addEventListener('resize', onResize, { passive: true });
-    // Also measure after fonts/images load
-    window.addEventListener('load', measureBeam);
-    // Re-measure periodically for first 3 seconds (dynamic content loading)
-    const intervals = [500, 1000, 2000, 3000].map((ms) =>
-      setTimeout(measureBeam, ms),
-    );
-    return () => {
-      window.removeEventListener('resize', onResize);
-      window.removeEventListener('load', measureBeam);
-      intervals.forEach(clearTimeout);
-      if (timer) clearTimeout(timer);
-    };
-  }, [measureBeam]);
-
-  // Scroll parallax — laser drifts slightly slower than scroll
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  });
-  const laserY = useTransform(scrollYProgress, [0, 1], [0, 80]);
+  const { scrollYProgress } = useScroll();
+  const laserY = useTransform(scrollYProgress, [0, 1], [0, 48]);
 
   const showWebGL = isDesktop && !prefersReduced;
-
-  // Beam vertical offset: position the beam's bright center ~40% from top,
-  // so the "impact" lands at the showcase panel edge
-  const beamVerticalOffset = beamY != null
-    ? -0.15 + (beamY / (typeof window !== 'undefined' ? window.innerHeight : 900)) * 0.1
-    : -0.08;
+  const impactTop = '84%';
 
   return (
-    <div
-      ref={containerRef}
-      className="absolute inset-0 pointer-events-none"
-      style={{ zIndex: 0 }}
-      aria-hidden
-    >
-      {/* Parallax wrapper */}
-      <motion.div
-        className="absolute inset-0"
-        style={prefersReduced ? undefined : { y: laserY }}
-      >
-        {/* Oversized canvas — bleeds past viewport edges for cinematic feel */}
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }} aria-hidden>
+      <motion.div className="absolute inset-0" style={prefersReduced ? undefined : { y: laserY }}>
         <div
-          className="absolute"
+          className="absolute left-1/2 -translate-x-1/2"
           style={{
-            width: '140vw',
-            height: '120vh',
-            top: '-10vh',
-            left: '50%',
-            transform: 'translateX(-50%)',
+            width: '150vw',
+            height: '130vh',
+            top: '-18vh',
           }}
         >
-          {/* Radial mask: bright center, dissolves at edges */}
           <div
             className="w-full h-full"
             style={{
-              WebkitMaskImage: 'radial-gradient(ellipse 60% 55% at 50% 45%, black 10%, rgba(0,0,0,0.7) 30%, rgba(0,0,0,0.15) 55%, transparent 75%)',
-              maskImage: 'radial-gradient(ellipse 60% 55% at 50% 45%, black 10%, rgba(0,0,0,0.7) 30%, rgba(0,0,0,0.15) 55%, transparent 75%)',
+              WebkitMaskImage:
+                'radial-gradient(ellipse 58% 72% at 50% 62%, black 12%, rgba(0,0,0,0.78) 36%, rgba(0,0,0,0.2) 62%, transparent 82%)',
+              maskImage:
+                'radial-gradient(ellipse 58% 72% at 50% 62%, black 12%, rgba(0,0,0,0.78) 36%, rgba(0,0,0,0.2) 62%, transparent 82%)',
             }}
           >
             {showWebGL ? (
               <LaserFlow
-                color="#8B5CF6"
-                horizontalBeamOffset={0.0}
-                verticalBeamOffset={beamVerticalOffset}
-                flowSpeed={0.22}
-                verticalSizing={3.2}
-                horizontalSizing={1.0}
-                fogIntensity={0.6}
-                fogScale={0.3}
-                wispDensity={0.85}
-                wispSpeed={10}
-                wispIntensity={7}
-                flowStrength={0.28}
-                decay={1.15}
-                falloffStart={1.3}
-                fogFallSpeed={0.45}
+                color="#A78BFA"
+                horizontalBeamOffset={0}
+                verticalBeamOffset={0.32}
+                flowSpeed={0.18}
+                verticalSizing={4.4}
+                horizontalSizing={0.78}
+                fogIntensity={0.72}
+                fogScale={0.26}
+                wispDensity={1.05}
+                wispSpeed={9}
+                wispIntensity={8.4}
+                flowStrength={0.34}
+                decay={1.18}
+                falloffStart={1.34}
+                fogFallSpeed={0.42}
               />
             ) : (
-              /* Static gradient fallback — mobile + reduced motion */
               <div
                 className="w-full h-full"
                 style={{
                   background: `
-                    radial-gradient(ellipse 40% 55% at 50% 45%, rgba(139,92,246,0.18) 0%, transparent 70%),
-                    radial-gradient(ellipse 60% 45% at 50% 50%, rgba(6,182,212,0.08) 0%, transparent 65%),
-                    radial-gradient(ellipse 30% 30% at 50% 48%, rgba(139,92,246,0.12) 0%, transparent 50%)
+                    radial-gradient(ellipse 32% 58% at 50% 68%, rgba(167,139,250,0.26) 0%, rgba(167,139,250,0.08) 54%, transparent 78%),
+                    radial-gradient(ellipse 52% 42% at 50% 72%, rgba(56,189,248,0.08) 0%, transparent 74%)
                   `,
                 }}
               />
@@ -161,52 +82,73 @@ function ProductHeroLaserInner({ showcaseRef }: ProductHeroLaserProps) {
         </div>
       </motion.div>
 
-      {/* Noise overlay — breaks color banding */}
+      {/* Core beam */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-[0.03]"
+        className="absolute left-1/2 top-0 -translate-x-1/2"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          backgroundRepeat: 'repeat',
-          backgroundSize: '128px 128px',
-          mixBlendMode: 'overlay',
+          width: '2px',
+          height: '84%',
+          background:
+            'linear-gradient(180deg, rgba(233,213,255,0.92) 0%, rgba(196,181,253,0.82) 18%, rgba(167,139,250,0.7) 58%, rgba(167,139,250,0.05) 100%)',
+          boxShadow:
+            '0 0 18px rgba(196,181,253,0.9), 0 0 42px rgba(167,139,250,0.6), 0 0 82px rgba(167,139,250,0.34)',
+          opacity: showWebGL ? 0.86 : 0.62,
         }}
       />
 
-      {/* Impact glow — horizontal strip at showcase panel top edge */}
-      {beamY != null && (
-        <div
-          className="absolute left-0 right-0 pointer-events-none"
-          style={{ top: beamY - 30 }}
-        >
-          {/* Wide diffused glow */}
-          <div
-            className="mx-auto"
-            style={{
-              width: '60%',
-              height: '60px',
-              background: 'radial-gradient(ellipse 100% 100% at 50% 50%, rgba(139,92,246,0.15) 0%, rgba(139,92,246,0.06) 40%, transparent 70%)',
-              filter: 'blur(12px)',
-            }}
-          />
-          {/* Tight bright line */}
-          <div
-            className="mx-auto"
-            style={{
-              width: '40%',
-              height: '2px',
-              marginTop: '-30px',
-              background: 'linear-gradient(90deg, transparent 0%, rgba(139,92,246,0.25) 20%, rgba(139,92,246,0.4) 50%, rgba(139,92,246,0.25) 80%, transparent 100%)',
-              filter: 'blur(1px)',
-            }}
-          />
-        </div>
-      )}
-
-      {/* Bottom vignette — dissolves laser into page below */}
+      {/* Atmospheric beam haze */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-[30%] pointer-events-none"
+        className="absolute left-1/2 top-0 -translate-x-1/2"
         style={{
-          background: 'linear-gradient(to top, rgba(3,7,18,1) 0%, rgba(3,7,18,0.6) 50%, transparent 100%)',
+          width: '130px',
+          height: '84%',
+          background:
+            'linear-gradient(180deg, rgba(167,139,250,0.2) 0%, rgba(167,139,250,0.12) 36%, rgba(167,139,250,0.04) 78%, transparent 100%)',
+          filter: 'blur(14px)',
+          opacity: showWebGL ? 0.8 : 0.45,
+        }}
+      />
+
+      {/* Impact plume */}
+      <div className="absolute left-0 right-0 -translate-y-1/2" style={{ top: impactTop }}>
+        <div
+          className="mx-auto"
+          style={{
+            width: '64%',
+            height: '130px',
+            background:
+              'radial-gradient(ellipse 70% 100% at 50% 50%, rgba(233,213,255,0.56) 0%, rgba(167,139,250,0.3) 34%, rgba(56,189,248,0.12) 58%, transparent 82%)',
+            filter: 'blur(18px)',
+          }}
+        />
+        <div
+          className="mx-auto -mt-[84px]"
+          style={{
+            width: '46%',
+            height: '3px',
+            background:
+              'linear-gradient(90deg, transparent 0%, rgba(196,181,253,0.35) 18%, rgba(233,213,255,0.95) 50%, rgba(196,181,253,0.35) 82%, transparent 100%)',
+            boxShadow: '0 0 28px rgba(216,180,254,0.7), 0 0 60px rgba(167,139,250,0.36)',
+          }}
+        />
+      </div>
+
+      {/* Ground line at section bottom */}
+      <div
+        className="absolute inset-x-0 bottom-[11%] mx-auto h-[1px] w-[78%]"
+        style={{
+          background:
+            'linear-gradient(90deg, transparent 0%, rgba(167,139,250,0.2) 20%, rgba(233,213,255,0.64) 50%, rgba(167,139,250,0.2) 80%, transparent 100%)',
+          boxShadow: '0 0 18px rgba(167,139,250,0.32)',
+        }}
+      />
+
+      {/* Bottom blend */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-[34%]"
+        style={{
+          background:
+            'linear-gradient(to top, rgba(4,8,18,1) 0%, rgba(4,8,18,0.72) 44%, rgba(4,8,18,0.2) 74%, transparent 100%)',
         }}
       />
     </div>
