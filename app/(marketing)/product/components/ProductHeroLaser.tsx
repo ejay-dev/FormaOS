@@ -7,8 +7,10 @@ import { LaserFlow } from '@/components/motion/LaserFlow';
 /**
  * ProductHeroLaser
  * ────────────────
- * ReactBits-inspired vertical laser with a clear landing zone at the
- * bottom of the Product hero section.
+ * ReactBits-style laser composition:
+ * - LaserFlow with reference parameters
+ * - Bottom target surface where laser lands
+ * - Strong impact bloom at target edge
  */
 
 function ProductHeroLaserInner() {
@@ -24,10 +26,8 @@ function ProductHeroLaserInner() {
   }, []);
 
   const { scrollYProgress } = useScroll();
-  const laserY = useTransform(scrollYProgress, [0, 1], [0, 48]);
-
+  const laserY = useTransform(scrollYProgress, [0, 1], [0, 52]);
   const showWebGL = isDesktop && !prefersReduced;
-  const impactTop = '82%';
 
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }} aria-hidden>
@@ -36,44 +36,44 @@ function ProductHeroLaserInner() {
           className="absolute left-1/2 -translate-x-1/2"
           style={{
             width: '150vw',
-            height: '130vh',
-            top: '-18vh',
+            height: '120vh',
+            top: '-10vh',
           }}
         >
           <div
             className="w-full h-full"
             style={{
               WebkitMaskImage:
-                'radial-gradient(ellipse 62% 74% at 50% 68%, black 14%, rgba(0,0,0,0.82) 38%, rgba(0,0,0,0.22) 64%, transparent 84%)',
+                'radial-gradient(ellipse 70% 68% at 50% 56%, black 10%, rgba(0,0,0,0.78) 32%, rgba(0,0,0,0.24) 58%, transparent 80%)',
               maskImage:
-                'radial-gradient(ellipse 62% 74% at 50% 68%, black 14%, rgba(0,0,0,0.82) 38%, rgba(0,0,0,0.22) 64%, transparent 84%)',
+                'radial-gradient(ellipse 70% 68% at 50% 56%, black 10%, rgba(0,0,0,0.78) 32%, rgba(0,0,0,0.24) 58%, transparent 80%)',
             }}
           >
             {showWebGL ? (
               <LaserFlow
-                color="#C4B5FD"
-                horizontalBeamOffset={0}
-                verticalBeamOffset={0.26}
-                flowSpeed={0.35}
-                verticalSizing={2}
+                color="#CF9EFF"
+                horizontalBeamOffset={0.1}
+                verticalBeamOffset={0.0}
                 horizontalSizing={0.5}
-                fogIntensity={0.45}
-                fogScale={0.3}
+                verticalSizing={2}
                 wispDensity={1}
                 wispSpeed={15}
                 wispIntensity={5}
+                flowSpeed={0.35}
                 flowStrength={0.25}
+                fogIntensity={0.45}
+                fogScale={0.3}
+                fogFallSpeed={0.6}
                 decay={1.1}
                 falloffStart={1.2}
-                fogFallSpeed={0.6}
               />
             ) : (
               <div
                 className="w-full h-full"
                 style={{
                   background: `
-                    radial-gradient(ellipse 20% 68% at 50% 56%, rgba(196,181,253,0.32) 0%, rgba(196,181,253,0.11) 48%, transparent 74%),
-                    radial-gradient(ellipse 48% 44% at 50% 70%, rgba(56,189,248,0.09) 0%, transparent 74%)
+                    radial-gradient(ellipse 16% 64% at 50% 56%, rgba(207,158,255,0.42) 0%, rgba(207,158,255,0.15) 46%, transparent 72%),
+                    radial-gradient(ellipse 58% 44% at 50% 72%, rgba(207,158,255,0.14) 0%, transparent 70%)
                   `,
                 }}
               />
@@ -82,87 +82,64 @@ function ProductHeroLaserInner() {
         </div>
       </motion.div>
 
-      {/* Wide volumetric beam haze */}
-      <div
-        className="absolute left-1/2 top-0 -translate-x-1/2"
-        style={{
-          width: '184px',
-          height: '82%',
-          background:
-            'linear-gradient(180deg, rgba(196,181,253,0.24) 0%, rgba(196,181,253,0.18) 16%, rgba(167,139,250,0.1) 50%, rgba(167,139,250,0.03) 76%, transparent 100%)',
-          filter: 'blur(20px)',
-          opacity: showWebGL ? 0.88 : 0.5,
-        }}
-      />
-
-      {/* Mid beam glow */}
-      <div
-        className="absolute left-1/2 top-0 -translate-x-1/2"
-        style={{
-          width: '54px',
-          height: '82%',
-          background:
-            'linear-gradient(180deg, rgba(233,213,255,0.72) 0%, rgba(196,181,253,0.6) 18%, rgba(167,139,250,0.34) 56%, rgba(167,139,250,0.08) 80%, transparent 100%)',
-          filter: 'blur(9px)',
-          opacity: showWebGL ? 0.96 : 0.72,
-        }}
-      />
-
-      {/* Core beam */}
-      <div
-        className="absolute left-1/2 top-0 -translate-x-1/2"
-        style={{
-          width: '8px',
-          height: '82%',
-          background:
-            'linear-gradient(180deg, rgba(255,245,255,0.98) 0%, rgba(233,213,255,0.96) 20%, rgba(196,181,253,0.8) 56%, rgba(167,139,250,0.2) 82%, transparent 100%)',
-          boxShadow:
-            '0 0 24px rgba(233,213,255,0.94), 0 0 54px rgba(196,181,253,0.74), 0 0 110px rgba(167,139,250,0.44)',
-          opacity: showWebGL ? 0.98 : 0.82,
-        }}
-      />
-
-      {/* Impact plume */}
-      <div className="absolute left-0 right-0 -translate-y-1/2" style={{ top: impactTop }}>
+      {/* Impact plume right above the surface edge */}
+      <div className="absolute left-1/2 top-[56%] -translate-x-1/2 w-[62%] h-[138px]">
         <div
-          className="mx-auto"
+          className="absolute inset-0"
           style={{
-            width: '68%',
-            height: '156px',
             background:
-              'radial-gradient(ellipse 72% 100% at 50% 50%, rgba(255,244,255,0.72) 0%, rgba(233,213,255,0.44) 24%, rgba(167,139,250,0.24) 48%, rgba(56,189,248,0.1) 64%, transparent 84%)',
-            filter: 'blur(22px)',
+              'radial-gradient(ellipse 58% 100% at 50% 60%, rgba(245,221,255,0.88) 0%, rgba(207,158,255,0.42) 36%, rgba(207,158,255,0.16) 58%, transparent 82%)',
+            filter: 'blur(18px)',
           }}
         />
         <div
-          className="mx-auto -mt-[98px]"
+          className="absolute left-1/2 top-[52%] -translate-x-1/2 h-[3px] w-[58%]"
           style={{
-            width: '52%',
-            height: '4px',
             background:
-              'linear-gradient(90deg, transparent 0%, rgba(196,181,253,0.42) 14%, rgba(255,243,255,0.98) 50%, rgba(196,181,253,0.42) 86%, transparent 100%)',
-            boxShadow: '0 0 32px rgba(233,213,255,0.86), 0 0 76px rgba(167,139,250,0.5)',
+              'linear-gradient(90deg, transparent 0%, rgba(207,158,255,0.36) 14%, rgba(255,244,255,0.96) 50%, rgba(207,158,255,0.36) 86%, transparent 100%)',
+            boxShadow: '0 0 26px rgba(207,158,255,0.72), 0 0 64px rgba(207,158,255,0.46)',
           }}
         />
       </div>
 
-      {/* Ground line at section bottom */}
+      {/* ReactBits-like target surface */}
       <div
-        className="absolute inset-x-0 mx-auto h-[1px] w-[80%]"
+        className="absolute left-1/2 top-[57%] -translate-x-1/2 w-[86%] h-[46%] rounded-[20px]"
         style={{
-          top: `calc(${impactTop} + 2px)`,
           background:
-            'linear-gradient(90deg, transparent 0%, rgba(167,139,250,0.26) 18%, rgba(233,213,255,0.72) 50%, rgba(167,139,250,0.26) 82%, transparent 100%)',
-          boxShadow: '0 0 20px rgba(167,139,250,0.42)',
+            'linear-gradient(180deg, rgba(8,3,20,0.86) 0%, rgba(5,2,14,0.92) 100%)',
+          border: '2px solid rgba(207,158,255,0.72)',
+          boxShadow:
+            'inset 0 0 0 1px rgba(255,255,255,0.04), 0 0 36px rgba(207,158,255,0.18)',
+        }}
+      >
+        <div
+          className="absolute inset-0 rounded-[18px]"
+          style={{
+            backgroundImage: 'radial-gradient(circle, rgba(207,158,255,0.22) 1px, transparent 1px)',
+            backgroundSize: '18px 18px',
+            opacity: 0.22,
+          }}
+        />
+      </div>
+
+      {/* Noise overlay for smoother gradients */}
+      <div
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage:
+            'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")',
+          backgroundRepeat: 'repeat',
+          backgroundSize: '128px 128px',
+          mixBlendMode: 'overlay',
         }}
       />
 
-      {/* Bottom blend */}
       <div
         className="absolute bottom-0 left-0 right-0 h-[34%]"
         style={{
           background:
-            'linear-gradient(to top, rgba(4,8,18,1) 0%, rgba(4,8,18,0.72) 44%, rgba(4,8,18,0.2) 74%, transparent 100%)',
+            'linear-gradient(to top, rgba(4,8,18,1) 0%, rgba(4,8,18,0.7) 48%, rgba(4,8,18,0.18) 76%, transparent 100%)',
         }}
       />
     </div>
