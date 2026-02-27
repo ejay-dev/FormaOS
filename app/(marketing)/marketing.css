@@ -453,6 +453,12 @@
   position: relative;
 }
 
+/* Override design-system section:first-of-type overflow:hidden
+   so the laser beam can bleed past the hero bottom edge. */
+.mk-marketing-flow .home-hero {
+  overflow: visible;
+}
+
 /* =========================================================
    MOBILE FIXES
    ========================================================= */

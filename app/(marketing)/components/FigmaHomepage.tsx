@@ -8,6 +8,11 @@ import { FrameworkTrustStrip } from '@/components/marketing/FrameworkTrustStrip'
 import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 
+const Section2LaserImpact = dynamic(
+  () => import('./homepage/Section2LaserImpact').then((m) => m.Section2LaserImpact),
+  { ssr: false, loading: () => null },
+);
+
 // Lazy-load heavy rendering components
 const ScrollStory = dynamic(() => import('./homepage/ScrollStory').then((m) => m.ScrollStory), {
   ssr: false,
@@ -87,7 +92,13 @@ export default function FormaOSHomepage() {
         {/* Page Sections */}
         <div className="mk-marketing-flow relative z-10">
           <HeroSection />
-          <FrameworkTrustStrip className="-mt-4 mb-2" />
+          {/* Section 2 — shockwave landing where beam hits */}
+          <div className="relative isolate overflow-visible">
+            <Section2LaserImpact />
+            <div className="relative z-10">
+              <FrameworkTrustStrip className="-mt-4 mb-2" />
+            </div>
+          </div>
           {sectionVisibility.value_proposition !== false ? <ValueProposition /> : null}
           {sectionVisibility.compliance_network !== false ? (
             <DeferredSection minHeight={620}>
