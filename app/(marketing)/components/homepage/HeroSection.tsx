@@ -21,7 +21,6 @@ import {
   Eye,
   Sparkles,
 } from 'lucide-react';
-import dynamic from 'next/dynamic';
 import { brand } from '@/config/brand';
 import { HeroScrollRetentionController } from '@/components/motion/HeroScrollRetentionController';
 import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
@@ -34,11 +33,6 @@ import {
   resolveHomepageCtas,
 } from '@/lib/marketing/homepage-experience';
 import { useHomepageTelemetry } from '@/lib/marketing/homepage-telemetry';
-
-const OrbitalCore = dynamic(
-  () => import('@/components/hero/OrbitalCore').then((m) => m.OrbitalCore),
-  { ssr: false, loading: () => null },
-);
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -103,26 +97,28 @@ function FloatingMetricCard({
       animate={motionEnabled ? { opacity: 1, x: 0 } : undefined}
       transition={motionEnabled ? { duration: duration.slower, delay } : { duration: 0 }}
       whileHover={motionEnabled ? { scale: 1.025, y: -3 } : undefined}
-      className="hero-floating-metric relative w-[270px] rounded-2xl border border-white/10 bg-gradient-to-br from-slate-950/70 to-slate-900/55 p-5 shadow-[0_20px_55px_rgba(0,0,0,0.45)] backdrop-blur-xl"
+      className="hero-floating-metric home-panel home-panel--soft relative w-full min-h-[188px] rounded-2xl border border-white/10 bg-gradient-to-br from-slate-950/70 to-slate-900/55 p-4 shadow-[0_20px_55px_rgba(0,0,0,0.45)] backdrop-blur-xl"
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="h-12 w-12 rounded-xl border border-teal-400/25 bg-gradient-to-br from-teal-400/20 to-emerald-400/15 flex items-center justify-center">
-            <Icon className="h-5 w-5 text-teal-300" />
+      <div className="flex h-full flex-col">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="h-11 w-11 rounded-xl border border-teal-400/25 bg-gradient-to-br from-teal-400/20 to-emerald-400/15 flex items-center justify-center">
+              <Icon className="h-5 w-5 text-teal-300" />
+            </div>
+            <div>
+              <div className="text-[1.15rem] font-semibold tracking-tight text-white">{value}</div>
+              <div className="text-[11px] uppercase tracking-[0.18em] text-slate-300/90">{label}</div>
+            </div>
           </div>
-          <div>
-            <div className="text-[1.15rem] font-semibold tracking-tight text-white">{value}</div>
-            <div className="text-xs uppercase tracking-[0.16em] text-slate-300/90">{label}</div>
-          </div>
+          <span className="rounded-full border border-emerald-300/30 bg-emerald-300/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-200">
+            {trend}
+          </span>
         </div>
-        <span className="rounded-full border border-emerald-300/30 bg-emerald-300/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-200">
-          {trend}
-        </span>
+        <div className="mt-3 h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        <p className="mt-auto pt-3 text-xs leading-relaxed text-slate-300/75">
+          Continuous signal processing with policy-linked evidence correlation.
+        </p>
       </div>
-      <div className="mt-4 h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-      <p className="mt-3 text-xs text-slate-300/75">
-        Continuous signal processing with policy-linked evidence correlation.
-      </p>
     </motion.div>
   );
 }
@@ -273,7 +269,7 @@ export function HeroSection() {
   ]);
 
   const shouldAnimateIntro = motionPolicy.allowIntroMotion;
-  const shouldAnimateOrbital = motionPolicy.allowOrbitalMotion;
+  const shouldAnimateBackdrop = motionPolicy.allowOrbitalMotion;
   const pulseClass = motionPolicy.allowPulseTokens ? 'animate-pulse' : '';
 
   const contentOpacity = useTransform(scrollYProgress, [0, 0.26, 0.84, 0.97], [1, 1, 0.38, 0]);
@@ -334,64 +330,73 @@ export function HeroSection() {
   return (
     <section
       ref={containerRef}
-      className="home-hero relative isolate flex items-center justify-center overflow-hidden pt-20 sm:pt-24 lg:pt-28 pb-16 sm:pb-20 md:pb-28"
+      className={`home-hero relative isolate flex items-center justify-center overflow-hidden pt-20 sm:pt-24 lg:pt-28 pb-16 sm:pb-20 md:pb-28 ${
+        shouldAnimateBackdrop ? 'hero-backdrop--animated' : 'hero-backdrop--static'
+      }`}
       style={{ minHeight: 'clamp(96svh, 106vh, 1160px)' }}
     >
-      <OrbitalCore shouldAnimate={shouldAnimateOrbital} />
-
+      <div className="hero-aurora hero-aurora--left" />
+      <div className="hero-aurora hero-aurora--right" />
+      <div className="hero-beam hero-beam--left" />
+      <div className="hero-beam hero-beam--right" />
       <div className="hero-grid-overlay" />
+      <div className="hero-scanlines" />
       <div className="hero-vertical-fog" />
       <div className="hero-rim-light" />
 
-      <motion.div
-        style={heroMetricStyle}
-        className="absolute left-6 xl:left-12 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-5 z-20"
-      >
-        <FloatingMetricCard
-          value="Real-time"
-          label="Compliance Monitoring"
-          trend="Continuous"
-          icon={ShieldCheck}
-          delay={0.76}
-          direction="left"
-          motionEnabled={shouldAnimateIntro}
-        />
-        <FloatingMetricCard
-          value="Automated"
-          label="Evidence Capture"
-          trend="Built-in"
-          icon={Database}
-          delay={0.94}
-          direction="left"
-          motionEnabled={shouldAnimateIntro}
-        />
-      </motion.div>
+      <div className="hero-metric-rails pointer-events-none absolute inset-0 z-20 hidden min-[1440px]:block">
+        <div className="mx-auto flex h-full w-full max-w-[1460px] items-center justify-between px-5 2xl:px-8">
+          <motion.div
+            style={heroMetricStyle}
+            className="pointer-events-auto flex w-[236px] flex-col gap-4 2xl:w-[252px]"
+          >
+            <FloatingMetricCard
+              value="Real-time"
+              label="Compliance Monitoring"
+              trend="Continuous"
+              icon={ShieldCheck}
+              delay={0.76}
+              direction="left"
+              motionEnabled={shouldAnimateIntro}
+            />
+            <FloatingMetricCard
+              value="Automated"
+              label="Evidence Capture"
+              trend="Built-in"
+              icon={Database}
+              delay={0.94}
+              direction="left"
+              motionEnabled={shouldAnimateIntro}
+            />
+          </motion.div>
 
-      <motion.div
-        style={heroMetricStyle}
-        className="absolute right-6 xl:right-12 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-5 z-20"
-      >
-        <FloatingMetricCard
-          value="Faster"
-          label="Audit Defense"
-          trend="Streamlined"
-          icon={Clock}
-          delay={1.1}
-          direction="right"
-          motionEnabled={shouldAnimateIntro}
-        />
-        <FloatingMetricCard
-          value="Always-on"
-          label="Activity Tracking"
-          trend="Continuous"
-          icon={Eye}
-          delay={1.28}
-          direction="right"
-          motionEnabled={shouldAnimateIntro}
-        />
-      </motion.div>
+          <motion.div
+            style={heroMetricStyle}
+            className="pointer-events-auto flex w-[236px] flex-col gap-4 2xl:w-[252px]"
+          >
+            <FloatingMetricCard
+              value="Faster"
+              label="Audit Defense"
+              trend="Streamlined"
+              icon={Clock}
+              delay={1.1}
+              direction="right"
+              motionEnabled={shouldAnimateIntro}
+            />
+            <FloatingMetricCard
+              value="Always-on"
+              label="Activity Tracking"
+              trend="Continuous"
+              icon={Eye}
+              delay={1.28}
+              direction="right"
+              motionEnabled={shouldAnimateIntro}
+            />
+          </motion.div>
+        </div>
+      </div>
 
-      <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-6 lg:px-12">
+      <div className="relative z-10 mx-auto max-w-5xl px-5 sm:px-6 lg:px-12 min-[1440px]:max-w-4xl 2xl:max-w-5xl">
         <div className="flex flex-col items-center text-center">
           <motion.div style={heroContentStyle} className="w-full">
             <motion.div
