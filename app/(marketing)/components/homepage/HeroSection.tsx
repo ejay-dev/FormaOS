@@ -100,17 +100,17 @@ function FloatingMetricCard({
       className="hero-floating-metric home-panel home-panel--soft relative w-full min-h-[188px] rounded-2xl border border-white/10 bg-gradient-to-br from-slate-950/70 to-slate-900/55 p-4 shadow-[0_20px_55px_rgba(0,0,0,0.45)] backdrop-blur-xl"
     >
       <div className="flex h-full flex-col">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+          <div className="flex min-w-0 items-center gap-3">
             <div className="h-11 w-11 rounded-xl border border-teal-400/25 bg-gradient-to-br from-teal-400/20 to-emerald-400/15 flex items-center justify-center">
               <Icon className="h-5 w-5 text-teal-300" />
             </div>
-            <div>
-              <div className="text-[1.15rem] font-semibold tracking-tight text-white">{value}</div>
+            <div className="min-w-0">
+              <div className="truncate text-[1.15rem] font-semibold tracking-tight text-white">{value}</div>
               <div className="text-[11px] uppercase tracking-[0.18em] text-slate-300/90">{label}</div>
             </div>
           </div>
-          <span className="rounded-full border border-emerald-300/30 bg-emerald-300/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-200">
+          <span className="shrink-0 whitespace-nowrap rounded-full border border-emerald-300/30 bg-emerald-300/15 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-emerald-200">
             {trend}
           </span>
         </div>
