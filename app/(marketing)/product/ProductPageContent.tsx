@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
@@ -15,6 +16,12 @@ const ProductHero = dynamic(
 const ProductShowcase = dynamic(
   () => import('@/components/marketing/ProductHeroShowcase').then((m) => m.ProductShowcase),
   { ssr: false, loading: () => <div className="w-full" style={{ minHeight: '600px' }} /> },
+);
+
+/* ── LaserFlow — cinematic hero background (desktop WebGL, mobile fallback) ── */
+const ProductHeroLaser = dynamic(
+  () => import('./components/ProductHeroLaser').then((m) => m.ProductHeroLaser),
+  { ssr: false, loading: () => null },
 );
 
 const OperationalScenarioProof = dynamic(
@@ -63,10 +70,23 @@ const FinalCTA = dynamic(() => import('./components/FinalCTA').then((m) => m.Fin
 });
 
 export default function ProductPageContent() {
+  const showcaseRef = useRef<HTMLDivElement>(null);
+
   return (
     <MarketingPageShell>
-      <ProductHero />
-      <ProductShowcase />
+      {/* Hero + Showcase wrapper — laser sits behind both,
+          beam "lands" on the showcase panel's top edge */}
+      <div className="relative">
+        <ProductHeroLaser showcaseRef={showcaseRef} />
+        <div className="relative" style={{ zIndex: 1 }}>
+          {/* Hero — headline, gradient text, CTAs */}
+          <ProductHero />
+          {/* Interactive showcase — tabs left, app panel right */}
+          <div ref={showcaseRef}>
+            <ProductShowcase />
+          </div>
+        </div>
+      </div>
 
       <FrameworkTrustStrip className="mt-4 mb-2" />
 
