@@ -29,8 +29,8 @@ import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 import { useDeviceTier } from '@/lib/device-tier';
 
-const HomeHeroLaserBeam = dynamic(
-  () => import('./HomeHeroLaserBeam').then((m) => m.HomeHeroLaserBeam),
+const HomeHeroLaser = dynamic(
+  () => import('./HomeHeroLaser').then((m) => m.HomeHeroLaser),
   { ssr: false, loading: () => null },
 );
 
@@ -149,12 +149,11 @@ export function HeroSection() {
   return (
     <section
       ref={containerRef}
-      className="home-hero relative isolate flex items-center justify-center overflow-visible pt-24 sm:pt-28 lg:pt-32 pb-24 sm:pb-32 md:pb-52"
+      className="home-hero relative isolate flex items-center justify-center overflow-hidden pt-24 sm:pt-28 lg:pt-32 pb-24 sm:pb-32 md:pb-52"
       style={{ minHeight: 'clamp(100svh, 116vh, 1300px)' }}
     >
-      {/* Cinematic laser beam — WebGL on desktop, static gradient on mobile.
-          Beam ONLY (no impact shockwave — that lives in Section2LaserImpact). */}
-      <HomeHeroLaserBeam />
+      {/* Cinematic laser beam — WebGL on desktop, static gradient on mobile */}
+      <HomeHeroLaser />
 
       {/* Cinematic ambient particles — all tiers */}
       {expensiveEffectsEnabled ? <AmbientParticleLayer intensity="subtle" /> : null}

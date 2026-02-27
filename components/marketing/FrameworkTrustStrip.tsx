@@ -75,6 +75,45 @@ export const FrameworkTrustStrip = memo(function FrameworkTrustStrip({
       style={{ height: 80 }}
       aria-label="Supported compliance frameworks"
     >
+      {/* Laser impact shockwave — beam "lands" at the hero/section boundary */}
+      <div className="absolute left-0 right-0 pointer-events-none" style={{ top: -30 }} aria-hidden>
+        {/* Wide diffused haze */}
+        <div
+          className="mx-auto"
+          style={{
+            width: '70%',
+            height: '60px',
+            background:
+              'radial-gradient(ellipse 100% 100% at 50% 50%, rgba(139,92,246,0.18) 0%, rgba(139,92,246,0.07) 40%, transparent 70%)',
+            filter: 'blur(14px)',
+          }}
+        />
+        {/* Bright impact line */}
+        <div
+          className="mx-auto"
+          style={{
+            width: '50%',
+            height: '2px',
+            marginTop: '-30px',
+            background:
+              'linear-gradient(90deg, transparent 0%, rgba(139,92,246,0.3) 15%, rgba(139,92,246,0.5) 50%, rgba(139,92,246,0.3) 85%, transparent 100%)',
+            filter: 'blur(0.5px)',
+          }}
+        />
+        {/* Secondary diffused glow ring — wider, softer */}
+        <div
+          className="mx-auto"
+          style={{
+            width: '90%',
+            height: '40px',
+            marginTop: '-10px',
+            background:
+              'radial-gradient(ellipse 100% 100% at 50% 0%, rgba(139,92,246,0.08) 0%, rgba(6,182,212,0.03) 50%, transparent 80%)',
+            filter: 'blur(20px)',
+          }}
+        />
+      </div>
+
       <div className="absolute inset-0 flex items-center">
         <LogoLoop
           logos={frameworkLogos}
