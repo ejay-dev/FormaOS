@@ -53,7 +53,7 @@ const securityFeatures = [
 
 export function SecuritySection() {
   return (
-    <section className="mk-section relative overflow-hidden">
+    <section className="mk-section home-section home-section--proof relative overflow-hidden">
       {/* Proof section treatment: monochrome, high-contrast, no color gradients */}
       <div className="absolute inset-x-0 top-0 h-px bg-white/[0.04]" />
       <div className="absolute inset-x-0 bottom-0 h-px bg-white/[0.04]" />
@@ -88,7 +88,7 @@ export function SecuritySection() {
                 {securityFeatures.map((feature) => {
                   const Icon = feature.icon;
                   return (
-                    <div key={feature.title} className="group flex gap-3 sm:gap-4 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-200">
+                    <div key={feature.title} className="home-panel home-panel--soft group flex gap-3 sm:gap-4 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-200">
                       <div className="flex-shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-lg bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
                         <Icon className="w-5 h-5 sm:w-5 sm:h-5 text-white/70" />
                       </div>
@@ -113,7 +113,7 @@ export function SecuritySection() {
           </ScrollReveal>
 
           <ScrollReveal variant="depthScale" range={[0, 0.35]} className="flex items-center justify-center order-first lg:order-last">
-            <div className="w-full max-w-[500px]">
+            <div className="home-panel home-panel--strong w-full max-w-[500px] rounded-2xl p-2">
               <SecurityWorkflowCard />
             </div>
           </ScrollReveal>

@@ -47,7 +47,7 @@ const FRAMEWORK_ITEMS: FrameworkItem[] = [
 
 const FrameworkBadge = memo(function FrameworkBadge({ icon, label }: FrameworkItem) {
   return (
-    <span className="framework-badge group inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2.5 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/20 hover:bg-white/[0.07] hover:shadow-[0_0_20px_rgba(6,182,212,0.08)] hover:-translate-y-px">
+    <span className="home-panel home-panel--soft framework-badge group inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2.5 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/20 hover:bg-white/[0.07] hover:shadow-[0_0_20px_rgba(6,182,212,0.08)] hover:-translate-y-px">
       <span className="flex-shrink-0 text-cyan-400/70 transition-colors duration-300 group-hover:text-cyan-400/90">
         {icon}
       </span>
@@ -71,7 +71,7 @@ export const FrameworkTrustStrip = memo(function FrameworkTrustStrip({
 }) {
   return (
     <section
-      className={`framework-trust-strip relative z-10 ${className}`}
+      className={`framework-trust-strip home-section home-section--contrast relative z-10 ${className}`}
       style={{ height: 80 }}
       aria-label="Supported compliance frameworks"
     >

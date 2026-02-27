@@ -67,7 +67,7 @@ const trustSignals = [
 
 export function TrustSection() {
   return (
-    <section className="mk-section relative overflow-hidden">
+    <section className="mk-section home-section home-section--trust relative overflow-hidden">
       {/* Data section treatment: dark inset panel */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#060a14] to-transparent" />
 
@@ -93,7 +93,7 @@ export function TrustSection() {
               variant="scaleUp"
               range={[index * 0.04, 0.3 + index * 0.04]}
             >
-              <div className="flex items-center justify-center p-4 rounded-lg bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300">
+              <div className="home-panel home-panel--soft flex items-center justify-center p-4 rounded-lg bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300">
                 <span className="text-gray-500 hover:text-gray-300 transition-colors duration-300 text-sm font-medium text-center">
                   {company}
                 </span>
@@ -108,7 +108,7 @@ export function TrustSection() {
             {trustSignals.map((stat) => (
               <div
                 key={stat.label}
-                className="relative group p-6 rounded-xl bg-[#080c18] border border-white/[0.06] text-center overflow-hidden"
+                className="home-panel home-panel--interactive relative group p-6 rounded-xl bg-[#080c18] border border-white/[0.06] text-center overflow-hidden"
               >
                 {/* Illumination glow on hover */}
                 <div className="absolute inset-0 bg-gradient-to-b from-teal-500/0 to-teal-500/0 group-hover:from-teal-500/[0.06] group-hover:to-transparent transition-all duration-500 rounded-xl" />

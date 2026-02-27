@@ -214,7 +214,7 @@ export function CTASection() {
   return (
     <section
       ref={containerRef}
-      className="relative overflow-hidden"
+      className="home-section home-section--cta relative overflow-hidden"
       style={{ position: 'relative' }}
     >
       {/* CTA section treatment: full-bleed gradient with cinematic depth */}
@@ -324,7 +324,7 @@ export function CTASection() {
               ].map((stat) => (
                 <div
                   key={stat.label}
-                  className="flex items-center gap-2.5 px-3 sm:px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]"
+                  className="home-panel home-panel--soft flex items-center gap-2.5 px-3 sm:px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]"
                 >
                   <CheckCircle className="w-4 h-4 text-emerald-400/70 flex-shrink-0" />
                   <div className="text-left">

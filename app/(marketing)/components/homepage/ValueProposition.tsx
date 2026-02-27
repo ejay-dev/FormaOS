@@ -5,7 +5,7 @@ import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
 export function ValueProposition() {
   return (
-    <section className="mk-section relative overflow-hidden">
+    <section className="mk-section home-section home-section--contrast relative overflow-hidden">
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12 text-center">
         <ScrollReveal variant="blurIn" range={[0, 0.3]}>
           <div
@@ -33,7 +33,7 @@ export function ValueProposition() {
           <ScrollReveal variant="fadeLeft" range={[0, 0.35]}>
             <motion.div
               whileHover={{ y: -4 }}
-              className="relative p-6 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 backdrop-blur-xl border border-white/5 hover:border-red-500/20 transition-all duration-500 group"
+              className="home-panel home-panel--soft home-panel--tilt relative p-6 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 backdrop-blur-xl border border-white/5 hover:border-red-500/20 transition-all duration-500 group"
             >
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-red-500/0 to-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-red-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -66,7 +66,7 @@ export function ValueProposition() {
           <ScrollReveal variant="fadeRight" range={[0, 0.35]}>
             <motion.div
               whileHover={{ y: -4 }}
-              className="relative p-6 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 backdrop-blur-xl border border-white/5 hover:border-teal-500/20 transition-all duration-500 group shadow-lg shadow-teal-500/5"
+              className="home-panel home-panel--strong home-panel--tilt relative p-6 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 backdrop-blur-xl border border-white/5 hover:border-teal-500/20 transition-all duration-500 group shadow-lg shadow-teal-500/5"
             >
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-500/0 to-teal-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-teal-400/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

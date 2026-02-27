@@ -89,7 +89,7 @@ function LifecycleCard({ step, index }: { step: (typeof steps)[0]; index: number
           <div className={`${!isEven ? 'lg:col-start-2 lg:text-left' : ''}`}>
             <motion.div
               whileHover={{ y: -4 }}
-              className="relative p-6 lg:p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/[0.06] hover:border-white/[0.12] transition-all duration-300 shadow-xl shadow-black/20"
+              className="home-panel home-panel--interactive relative p-6 lg:p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/[0.06] hover:border-white/[0.12] transition-all duration-300 shadow-xl shadow-black/20"
             >
               {/* Gradient overlay */}
               <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${step.color} opacity-[0.03] group-hover:opacity-[0.06] transition-opacity duration-500`} />
@@ -156,7 +156,7 @@ function LifecycleCard({ step, index }: { step: (typeof steps)[0]; index: number
 /* ── Main export ── */
 export function ScrollStory() {
   return (
-    <section className="mk-section relative overflow-hidden">
+    <section className="mk-section home-section home-section--process relative overflow-hidden">
       {/* Subtle accent borders */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/10 to-transparent" />
 

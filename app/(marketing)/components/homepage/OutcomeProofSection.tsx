@@ -36,7 +36,7 @@ const outcomeStats = [
 
 export function OutcomeProofSection() {
   return (
-    <section className="mk-section relative overflow-hidden">
+    <section className="mk-section home-section home-section--proof relative overflow-hidden">
       {/* Data section treatment: dark inset panel */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#060a14] to-transparent" />
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
@@ -66,7 +66,7 @@ export function OutcomeProofSection() {
               variant="fadeLeft"
               range={[idx * 0.04, 0.3 + idx * 0.04]}
             >
-              <article className="group relative rounded-2xl bg-[#080c18] border border-white/[0.06] p-6 overflow-hidden">
+              <article className="home-panel home-panel--interactive group relative rounded-2xl bg-[#080c18] border border-white/[0.06] p-6 overflow-hidden">
                 {/* Top illumination line */}
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/20 to-transparent" />
 
@@ -128,7 +128,7 @@ export function OutcomeProofSection() {
                 variant="fadeRight"
                 range={[idx * 0.04, 0.3 + idx * 0.04]}
               >
-                <div className="group relative rounded-xl bg-[#080c18] border border-white/[0.06] px-5 py-4 text-center overflow-hidden">
+                <div className="home-panel home-panel--soft group relative rounded-xl bg-[#080c18] border border-white/[0.06] px-5 py-4 text-center overflow-hidden">
                   <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/0 group-hover:via-teal-400/20 to-transparent transition-all duration-500" />
                   <Icon className="w-5 h-5 text-teal-400/60 mx-auto mb-2" />
                   <p className="text-sm font-bold text-white">{stat.value}</p>

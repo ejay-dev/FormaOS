@@ -261,7 +261,7 @@ export function Industries() {
   };
 
   return (
-    <section className="mk-section relative overflow-hidden">
+    <section className="mk-section home-section home-section--contrast relative overflow-hidden">
       {/* Industries section: clean with subtle accent line */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/10 to-transparent" />
 
@@ -303,7 +303,7 @@ export function Industries() {
               >
                 <motion.button
                   onClick={() => toggleExpand(index)}
-                  className={`w-full p-6 lg:p-8 rounded-2xl border text-left transition-all duration-300 ${
+                  className={`home-panel home-panel--interactive w-full p-6 lg:p-8 rounded-2xl border text-left transition-all duration-300 ${
                     isExpanded
                       ? 'bg-gradient-to-br from-gray-900/90 to-gray-950/90 border-teal-500/40 shadow-lg shadow-teal-500/10'
                       : 'bg-gradient-to-br from-gray-900/60 to-gray-950/60 border-white/10 hover:border-teal-500/30'
@@ -350,7 +350,7 @@ export function Industries() {
                       transition={{ duration: duration.normal, ease: 'easeInOut' }}
                       className="overflow-hidden"
                     >
-                      <div className="p-6 lg:p-10 mt-2 rounded-2xl bg-gradient-to-br from-gray-900/80 to-gray-950/80 border border-white/5">
+                      <div className="home-panel home-panel--strong p-6 lg:p-10 mt-2 rounded-2xl bg-gradient-to-br from-gray-900/80 to-gray-950/80 border border-white/5">
                         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 mb-10">
                           <div className="space-y-4">
                             <div className="flex items-center gap-2 text-rose-400 text-sm font-medium">
@@ -399,7 +399,7 @@ export function Industries() {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.3 + i * 0.1 }}
-                                className="p-5 lg:p-6 rounded-xl bg-gray-800/40 border border-white/5 hover:border-teal-500/20 transition-colors"
+                                className="home-panel home-panel--soft p-5 lg:p-6 rounded-xl bg-gray-800/40 border border-white/5 hover:border-teal-500/20 transition-colors"
                               >
                                 <div
                                   className={`inline-flex p-2 rounded-lg bg-gradient-to-br ${solution.color} bg-opacity-20 mb-3`}

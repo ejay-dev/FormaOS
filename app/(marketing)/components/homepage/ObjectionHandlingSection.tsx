@@ -29,7 +29,7 @@ const objectionCards = [
 
 export function ObjectionHandlingSection() {
   return (
-    <section className="mk-section relative overflow-hidden">
+    <section className="mk-section home-section home-section--proof relative overflow-hidden">
       {/* Proof section treatment: monochrome, high-contrast, badge-heavy */}
       <div className="absolute inset-x-0 top-0 h-px bg-white/[0.04]" />
       <div className="absolute inset-x-0 bottom-0 h-px bg-white/[0.04]" />
@@ -56,7 +56,7 @@ export function ObjectionHandlingSection() {
               variant="clipUp"
               range={[idx * 0.04, 0.3 + idx * 0.04]}
             >
-              <article className="group relative rounded-2xl bg-white/[0.02] border border-white/[0.06] p-6 hover:bg-white/[0.03] hover:border-white/[0.1] transition-all duration-300">
+              <article className="home-panel home-panel--interactive group relative rounded-2xl bg-white/[0.02] border border-white/[0.06] p-6 hover:bg-white/[0.03] hover:border-white/[0.1] transition-all duration-300">
                 {/* Quote icon */}
                 <Quote className="w-8 h-8 text-white/[0.06] mb-4" />
 

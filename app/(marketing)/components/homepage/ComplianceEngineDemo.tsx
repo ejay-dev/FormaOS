@@ -14,7 +14,7 @@ const DemoComplianceScore = dynamic(
 
 export function ComplianceEngineDemo() {
   return (
-    <section className="mk-section relative overflow-hidden">
+    <section className="mk-section home-section home-section--process relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-r from-teal-500/8 to-emerald-500/8 rounded-full blur-3xl" />
       </div>
@@ -42,10 +42,14 @@ export function ComplianceEngineDemo() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
           <ScrollReveal variant="slideUp" range={[0, 0.35]}>
-            <DemoComplianceChain />
+            <div className="home-panel home-panel--strong rounded-2xl p-2">
+              <DemoComplianceChain />
+            </div>
           </ScrollReveal>
           <ScrollReveal variant="slideUp" range={[0.04, 0.39]}>
-            <DemoComplianceScore />
+            <div className="home-panel home-panel--strong rounded-2xl p-2">
+              <DemoComplianceScore />
+            </div>
           </ScrollReveal>
         </div>
       </div>

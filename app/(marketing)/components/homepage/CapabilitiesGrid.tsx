@@ -155,7 +155,7 @@ const capabilityCategories = [
 
 export function CapabilitiesGrid() {
   return (
-    <section className="mk-section relative overflow-hidden">
+    <section className="mk-section home-section home-section--contrast relative overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="scaleUp" range={[0, 0.3]} className="text-center mb-16">
           <div
@@ -202,7 +202,7 @@ export function CapabilitiesGrid() {
                       <motion.div
                         key={capability.title}
                         whileHover={{ y: -4 }}
-                        className="group relative p-6 rounded-xl bg-gray-950/50 border-l-2 border-l-white/10 border border-white/[0.04] hover:border-l-teal-500/50 transition-all cursor-pointer"
+                        className="home-panel home-panel--interactive group relative p-6 rounded-xl bg-gray-950/50 border-l-2 border-l-white/10 border border-white/[0.04] hover:border-l-teal-500/50 transition-all cursor-pointer"
                       >
                         <div
                           className={`absolute inset-0 rounded-xl bg-gradient-to-br ${capability.color} opacity-0 group-hover:opacity-5 transition-opacity`}

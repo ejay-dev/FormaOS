@@ -17,7 +17,7 @@ const legendItems = [
 
 export function ComplianceNetworkSection() {
   return (
-    <section className="mk-section relative overflow-hidden">
+    <section className="mk-section home-section home-section--network relative overflow-hidden">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/10 to-transparent" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
@@ -43,7 +43,10 @@ export function ComplianceNetworkSection() {
           {/* Legend row */}
           <div className="flex flex-wrap items-center justify-center gap-4 lg:gap-6">
             {legendItems.map((item) => (
-              <div key={item.label} className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+              <div
+                key={item.label}
+                className="home-panel home-panel--soft flex items-center gap-3 px-4 py-2.5 rounded-xl"
+              >
                 <div className={`w-3 h-3 rounded-full ${item.color}`} />
                 <div className="text-left">
                   <div className="text-sm font-medium text-white">{item.label}</div>
@@ -56,7 +59,7 @@ export function ComplianceNetworkSection() {
 
         {/* Full-width canvas */}
         <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
-          <div className="relative aspect-[4/3] lg:aspect-[16/7] rounded-2xl border border-white/[0.08] bg-gradient-to-br from-gray-950/80 to-[#0a0e1a] overflow-hidden shadow-2xl shadow-black/30">
+          <div className="home-panel home-panel--strong relative aspect-[4/3] lg:aspect-[16/7] rounded-2xl border border-white/[0.08] bg-gradient-to-br from-gray-950/80 to-[#0a0e1a] overflow-hidden shadow-2xl shadow-black/30">
             {/* Corner glows */}
             <div className="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-teal-500/10 to-transparent rounded-br-full" />
             <div className="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-emerald-500/8 to-transparent rounded-tl-full" />

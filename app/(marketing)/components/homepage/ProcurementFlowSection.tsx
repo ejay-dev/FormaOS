@@ -98,6 +98,7 @@ function TimelineStep({
         {/* Step number */}
         <motion.div
           style={shouldReduceMotion ? undefined : { opacity: contentOpacity, y: contentY }}
+          className="home-panel home-panel--soft w-full max-w-[290px] rounded-2xl px-4 py-5"
         >
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-teal-400/60 mb-2 block">
             Step {item.step}
@@ -124,7 +125,7 @@ export function ProcurementFlowSection() {
   });
 
   return (
-    <section ref={sectionRef} className="mk-section relative overflow-hidden">
+    <section ref={sectionRef} className="mk-section home-section home-section--process relative overflow-hidden">
       {/* Process section treatment: subtle top/bottom borders, clean background */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/15 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-emerald-400/15 to-transparent" />
@@ -159,7 +160,7 @@ export function ProcurementFlowSection() {
 
         {/* Artifact badges panel */}
         <ScrollReveal variant="fadeUp" range={[0.05, 0.35]} className="mt-12">
-          <div className="rounded-2xl bg-[#080c18] border border-white/[0.06] p-5 overflow-hidden relative">
+          <div className="home-panel home-panel--strong rounded-2xl bg-[#080c18] border border-white/[0.06] p-5 overflow-hidden relative">
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/15 to-transparent" />
             <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">
               Buyer-Facing Artifacts
