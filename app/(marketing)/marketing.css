@@ -79,6 +79,14 @@
   animation-duration: 32s;
 }
 
+/* MarketingBackgroundLayer is the primary ambient system.
+   Disable legacy pseudo-layer animation when layered background is enabled. */
+.mk-shell--layered-bg::before,
+.mk-shell--layered-bg::after {
+  display: none;
+  animation: none;
+}
+
 .mk-stage {
   position: relative;
   z-index: 1;

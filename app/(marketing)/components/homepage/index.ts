@@ -1,5 +1,6 @@
 export { HeroSection } from './HeroSection';
 export { ValueProposition } from './ValueProposition';
+export { ComplianceNetworkSection } from './ComplianceNetworkSection';
 export { ScrollStory } from './ScrollStory';
 export { ComplianceEngineDemo } from './ComplianceEngineDemo';
 export { CapabilitiesGrid } from './CapabilitiesGrid';

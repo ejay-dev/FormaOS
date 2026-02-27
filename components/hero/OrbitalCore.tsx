@@ -249,8 +249,7 @@ function OrbitalCoreInner({ shouldAnimate = true, className }: OrbitalCoreProps)
   return (
     <div
       ref={containerRef}
-      className={`absolute inset-0 pointer-events-none ${className ?? ''}`}
-      style={{ zIndex: -1 }}
+      className={`absolute inset-0 z-0 pointer-events-none ${className ?? ''}`}
       aria-hidden
     >
       {/* ── Dust particles (full hero area, behind everything) ── */}

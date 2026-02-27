@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState, memo, type ReactNode } from 'react';
+import { useReducedMotion } from 'framer-motion';
 import './LogoLoop.css';
 
 const ANIMATION_CONFIG = { SMOOTH_TAU: 0.25, MIN_COPIES: 2, COPY_HEADROOM: 2 };
@@ -52,7 +53,6 @@ const useResizeObserver = (
     return () => {
       observers.forEach((observer) => observer?.disconnect());
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [callback, ...dependencies]);
 };
 
@@ -86,12 +86,12 @@ const useImageLoader = (
         img.removeEventListener('error', handleImageLoad);
       });
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onLoad, seqRef, ...dependencies]);
 };
 
 const useAnimationLoop = (
   trackRef: React.RefObject<HTMLElement | null>,
+  enabled: boolean,
   targetVelocity: number,
   seqWidth: number,
   seqHeight: number,
@@ -107,6 +107,13 @@ const useAnimationLoop = (
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
+
+    if (!enabled) {
+      track.style.transform = isVertical
+        ? 'translate3d(0, 0, 0)'
+        : 'translate3d(0, 0, 0)';
+      return;
+    }
 
     const seqSize = isVertical ? seqHeight : seqWidth;
 
@@ -153,7 +160,16 @@ const useAnimationLoop = (
       }
       lastTimestampRef.current = null;
     };
-  }, [targetVelocity, seqWidth, seqHeight, isHovered, hoverSpeed, isVertical, trackRef]);
+  }, [
+    enabled,
+    targetVelocity,
+    seqWidth,
+    seqHeight,
+    isHovered,
+    hoverSpeed,
+    isVertical,
+    trackRef,
+  ]);
 };
 
 export const LogoLoop = memo(function LogoLoop({
@@ -173,6 +189,7 @@ export const LogoLoop = memo(function LogoLoop({
   className,
   style,
 }: LogoLoopProps) {
+  const shouldReduceMotion = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const seqRef = useRef<HTMLUListElement>(null);
@@ -183,11 +200,12 @@ export const LogoLoop = memo(function LogoLoop({
   const [isHovered, setIsHovered] = useState(false);
 
   const effectiveHoverSpeed = useMemo(() => {
+    if (shouldReduceMotion) return undefined;
     if (hoverSpeed !== undefined) return hoverSpeed;
     if (pauseOnHover === true) return 0;
     if (pauseOnHover === false) return undefined;
     return 0;
-  }, [hoverSpeed, pauseOnHover]);
+  }, [hoverSpeed, pauseOnHover, shouldReduceMotion]);
 
   const isVertical = direction === 'up' || direction === 'down';
 
@@ -230,7 +248,16 @@ export const LogoLoop = memo(function LogoLoop({
 
   useResizeObserver(updateDimensions, [containerRef, seqRef], [logos, gap, logoHeight, isVertical]);
   useImageLoader(seqRef, updateDimensions, [logos, gap, logoHeight, isVertical]);
-  useAnimationLoop(trackRef, targetVelocity, seqWidth, seqHeight, isHovered, effectiveHoverSpeed, isVertical);
+  useAnimationLoop(
+    trackRef,
+    !shouldReduceMotion,
+    targetVelocity,
+    seqWidth,
+    seqHeight,
+    isHovered,
+    effectiveHoverSpeed,
+    isVertical,
+  );
 
   const cssVariables = useMemo(
     () => ({

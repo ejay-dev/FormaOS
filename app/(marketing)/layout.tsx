@@ -37,7 +37,7 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
 
   return (
     <ControlPlaneRuntimeProvider>
-      <div className="mk-shell font-[var(--font-body)]">
+      <div className="mk-shell mk-shell--layered-bg font-[var(--font-body)]">
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[10000] mk-btn mk-btn-secondary px-4 py-2"

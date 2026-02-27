@@ -2,6 +2,7 @@
 
 import {
   motion,
+  useInView,
   useReducedMotion,
   useScroll,
   useTransform,
@@ -27,6 +28,13 @@ import { HeroScrollRetentionController } from '@/components/motion/HeroScrollRet
 import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 import { useDeviceTier } from '@/lib/device-tier';
+import {
+  deriveHomepageMotionPolicy,
+  evaluateHeroCopyRisk,
+  normalizeHeroCopy,
+  resolveHomepageCtas,
+} from '@/lib/marketing/homepage-experience';
+import { useHomepageTelemetry } from '@/lib/marketing/homepage-telemetry';
 
 const OrbitalCore = dynamic(
   () => import('@/components/hero/OrbitalCore').then((m) => m.OrbitalCore),
@@ -42,6 +50,7 @@ function FloatingMetricCard({
   icon: Icon,
   delay,
   direction,
+  motionEnabled,
 }: {
   value: string;
   label: string;
@@ -49,13 +58,14 @@ function FloatingMetricCard({
   icon: LucideIcon;
   delay: number;
   direction: 'left' | 'right';
+  motionEnabled: boolean;
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, x: direction === 'left' ? -40 : 40 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: duration.slower, delay }}
-      whileHover={{ scale: 1.03 }}
+      initial={motionEnabled ? { opacity: 0, x: direction === 'left' ? -40 : 40 } : false}
+      animate={motionEnabled ? { opacity: 1, x: 0 } : undefined}
+      transition={motionEnabled ? { duration: duration.slower, delay } : { duration: 0 }}
+      whileHover={motionEnabled ? { scale: 1.03 } : undefined}
       className="relative p-5 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-teal-500/20 transition-all shadow-2xl shadow-black/30"
     >
       <div className="flex items-center gap-4">
@@ -76,9 +86,9 @@ function FloatingMetricCard({
 
 function ProofMetric({ value, label }: { value: string; label: string }) {
   return (
-    <div className="text-center p-4 rounded-xl bg-white/3 backdrop-blur-sm border border-white/5">
+    <div className="text-center p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
       <div className="text-xl font-bold text-white">{value}</div>
-      <div className="text-xs text-gray-500">{label}</div>
+      <div className="text-xs text-slate-300">{label}</div>
     </div>
   );
 }
@@ -87,20 +97,106 @@ function ProofMetric({ value, label }: { value: string; label: string }) {
 export function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
+  const isHeroInView = useInView(containerRef, {
+    amount: 0.2,
+    margin: '0px 0px -15% 0px',
+  });
+  const [isPageVisible, setIsPageVisible] = useState(true);
+  const [prefersContrastMore, setPrefersContrastMore] = useState(false);
   const tierConfig = useDeviceTier();
   const { snapshot } = useControlPlaneRuntime();
   const runtimeMarketing = snapshot?.marketing ?? DEFAULT_RUNTIME_MARKETING;
   const expensiveEffectsEnabled = runtimeMarketing.runtime.expensiveEffectsEnabled;
-  const heroCopy = runtimeMarketing.hero;
+  const heroCopy = normalizeHeroCopy(
+    runtimeMarketing.hero,
+    DEFAULT_RUNTIME_MARKETING.hero,
+  );
+  const ctas = resolveHomepageCtas(heroCopy, appBase);
+  const motionPolicy = deriveHomepageMotionPolicy({
+    reducedMotion: Boolean(shouldReduceMotion),
+    expensiveEffectsEnabled,
+    pageVisible: isPageVisible,
+    heroInView: isHeroInView,
+    deviceTier: tierConfig.tier,
+    saveDataEnabled:
+      typeof navigator !== 'undefined' &&
+      Boolean(
+        (
+          navigator as Navigator & {
+            connection?: { saveData?: boolean };
+          }
+        ).connection?.saveData,
+      ),
+    prefersContrastMore,
+  });
+  const telemetry = useHomepageTelemetry(motionPolicy, { samplingRate: 0.75 });
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end -20%'],
   });
   const router = useRouter();
 
-  // Animations enabled for all tiers (not just >=1024px)
-  const shouldAnimateIntro =
-    !shouldReduceMotion && tierConfig.tier !== 'low' && expensiveEffectsEnabled;
+  useEffect(() => {
+    if (typeof document === 'undefined') return undefined;
+
+    const updateVisibility = () =>
+      setIsPageVisible(document.visibilityState !== 'hidden');
+    updateVisibility();
+    document.addEventListener('visibilitychange', updateVisibility, {
+      passive: true,
+    });
+    return () =>
+      document.removeEventListener('visibilitychange', updateVisibility);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+
+    const mq = window.matchMedia('(prefers-contrast: more)');
+    const update = () => setPrefersContrastMore(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+  useEffect(() => {
+    telemetry.trackRuntimeProfile({
+      tier: tierConfig.tier,
+      expensiveEffectsEnabled,
+      allowIntroMotion: motionPolicy.allowIntroMotion,
+      allowOrbitalMotion: motionPolicy.allowOrbitalMotion,
+      profile: motionPolicy.performanceProfile,
+    });
+
+    telemetry.trackHeroImpression({
+      badgeText: heroCopy.badgeText,
+      primaryCtaLabel: ctas.primary.label,
+      secondaryCtaLabel: ctas.secondary.label,
+    });
+
+    const copyRisks = evaluateHeroCopyRisk(heroCopy);
+    for (const issue of copyRisks) {
+      telemetry.trackQualityWarning({
+        issueLevel: issue.level,
+        issueField: issue.field,
+        issueMessage: issue.message,
+      });
+    }
+  }, [
+    ctas.primary.label,
+    ctas.secondary.label,
+    expensiveEffectsEnabled,
+    heroCopy,
+    motionPolicy.allowIntroMotion,
+    motionPolicy.allowOrbitalMotion,
+    motionPolicy.performanceProfile,
+    telemetry,
+    tierConfig.tier,
+  ]);
+
+  const shouldAnimateIntro = motionPolicy.allowIntroMotion;
+  const shouldAnimateOrbital = motionPolicy.allowOrbitalMotion;
+  const pulseClass = motionPolicy.allowPulseTokens ? 'animate-pulse' : '';
 
   // Buffered hero exit: hold fully visible first, then progressive cinematic fade.
   const contentOpacity = useTransform(scrollYProgress, [0, 0.24, 0.82, 0.96], [1, 1, 0.35, 0]);
@@ -114,12 +210,8 @@ export function HeroSection() {
     : { opacity: contentOpacity, scale: contentScale, y: contentY };
   const heroCtaStyle = shouldReduceMotion ? undefined : { opacity: ctaOpacity, y: ctaY };
   const heroMetricStyle = shouldReduceMotion ? undefined : { y: metricY };
-  const primaryCtaHref = heroCopy.primaryCtaHref.startsWith('/auth')
-    ? `${appBase}${heroCopy.primaryCtaHref}`
-    : heroCopy.primaryCtaHref;
-  const secondaryCtaHref = heroCopy.secondaryCtaHref.startsWith('/auth')
-    ? `${appBase}${heroCopy.secondaryCtaHref}`
-    : heroCopy.secondaryCtaHref;
+  const primaryCtaHref = ctas.primary.href;
+  const secondaryCtaHref = ctas.secondary.href;
   const handleRequestDemoClick = (
     event: React.MouseEvent<HTMLAnchorElement>,
   ) => {
@@ -139,16 +231,40 @@ export function HeroSection() {
     event.preventDefault();
     router.push('/contact');
   };
+  const handlePrimaryClick = () => {
+    telemetry.trackCtaClick(
+      'primary',
+      ctas.primary.label,
+      ctas.primary.href,
+      {
+        isAppDomain: ctas.primary.isAppDomain,
+        isAuthRoute: ctas.primary.isAuthRoute,
+      },
+    );
+  };
+
+  const handleSecondaryClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    telemetry.trackCtaClick(
+      'secondary',
+      ctas.secondary.label,
+      ctas.secondary.href,
+      {
+        isAppDomain: ctas.secondary.isAppDomain,
+        isAuthRoute: ctas.secondary.isAuthRoute,
+      },
+    );
+    handleRequestDemoClick(event);
+  };
 
 
   return (
     <section
       ref={containerRef}
-      className="home-hero relative flex items-center justify-center overflow-hidden pt-24 sm:pt-28 lg:pt-32 pb-24 sm:pb-32 md:pb-52"
-      style={{ minHeight: 'clamp(100svh, 116vh, 1300px)' }}
+      className="home-hero relative isolate flex items-center justify-center overflow-hidden pt-20 sm:pt-24 lg:pt-28 pb-16 sm:pb-20 md:pb-28"
+      style={{ minHeight: 'clamp(92svh, 104vh, 1120px)' }}
     >
       {/* Orbital Core — enterprise hero background system */}
-      <OrbitalCore shouldAnimate={shouldAnimateIntro} />
+      <OrbitalCore shouldAnimate={shouldAnimateOrbital} />
 
       {/* Floating Metrics - Left Side (parallax drift) — xl only */}
       <motion.div style={heroMetricStyle} className="absolute left-8 lg:left-16 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6 z-20">
@@ -159,6 +275,7 @@ export function HeroSection() {
           icon={ShieldCheck}
           delay={0.8}
           direction="left"
+          motionEnabled={shouldAnimateIntro}
         />
         <FloatingMetricCard
           value="Automated"
@@ -167,6 +284,7 @@ export function HeroSection() {
           icon={Database}
           delay={1.0}
           direction="left"
+          motionEnabled={shouldAnimateIntro}
         />
       </motion.div>
 
@@ -179,6 +297,7 @@ export function HeroSection() {
           icon={Clock}
           delay={1.2}
           direction="right"
+          motionEnabled={shouldAnimateIntro}
         />
         <FloatingMetricCard
           value="Always-on"
@@ -187,6 +306,7 @@ export function HeroSection() {
           icon={Eye}
           delay={1.4}
           direction="right"
+          motionEnabled={shouldAnimateIntro}
         />
       </motion.div>
 
@@ -226,7 +346,7 @@ export function HeroSection() {
               initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.5 } : { duration: 0 }}
-              className="text-base sm:text-lg md:text-xl text-gray-400 mb-4 max-w-2xl mx-auto text-center leading-relaxed"
+              className="text-base sm:text-lg md:text-xl text-slate-300 mb-4 max-w-2xl mx-auto text-center leading-relaxed"
             >
               {heroCopy.subheadline}
             </motion.p>
@@ -238,24 +358,24 @@ export function HeroSection() {
               transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.65 } : { duration: 0 }}
               className="mb-8 sm:mb-10 max-w-2xl mx-auto text-center"
             >
-              <p className="text-sm text-gray-500 mb-3">
+              <p className="text-sm text-slate-300 mb-3">
                 Structure → Operationalize → Validate → Defend
               </p>
-              <p className="text-xs text-gray-500 mb-4">
+              <p className="text-xs text-slate-400 mb-4">
                 Used by compliance teams. Aligned to ISO/SOC frameworks. Built
                 for audit defensibility.
               </p>
-              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs text-gray-600">
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs text-slate-300">
                 <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800/50 border border-gray-700/50">
-                  <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
+                  <span className={`w-1.5 h-1.5 rounded-full bg-teal-400 ${pulseClass}`.trim()} />
                   Workflow Orchestration
                 </span>
                 <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800/50 border border-gray-700/50">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className={`w-1.5 h-1.5 rounded-full bg-emerald-400 ${pulseClass}`.trim()} />
                   Control Ownership
                 </span>
                 <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800/50 border border-gray-700/50">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  <span className={`w-1.5 h-1.5 rounded-full bg-amber-400 ${pulseClass}`.trim()} />
                   Evidence Chains
                 </span>
               </div>
@@ -267,10 +387,11 @@ export function HeroSection() {
               initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.7 } : { duration: 0 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-12 sm:mb-16 w-full sm:w-auto"
+              className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8 sm:mb-10 w-full sm:w-auto"
             >
               <motion.a
                 href={primaryCtaHref}
+                onClick={handlePrimaryClick}
                 whileHover={
                   shouldAnimateIntro
                     ? {
@@ -288,7 +409,7 @@ export function HeroSection() {
 
               <Link
                 href={secondaryCtaHref}
-                onClick={handleRequestDemoClick}
+                onClick={handleSecondaryClick}
                 className="mk-btn mk-btn-secondary group relative z-30 pointer-events-auto px-8 py-4 min-h-[48px] text-base sm:text-lg w-full sm:w-auto justify-center"
               >
                 <Play className="w-5 h-5" />
@@ -299,14 +420,14 @@ export function HeroSection() {
 
           {/* Proof Strip - Mobile Metrics */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: duration.slower, delay: 0.9 }}
-            className="xl:hidden grid grid-cols-3 gap-3 sm:gap-4 w-full max-w-lg"
+            transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.9 } : { duration: 0 }}
+            className="grid grid-cols-3 gap-3 sm:gap-4 w-full max-w-2xl"
           >
-            <ProofMetric value="Real-time" label="Compliance" />
-            <ProofMetric value="Automated" label="Evidence" />
-            <ProofMetric value="Faster" label="Audits" />
+            <ProofMetric value="85+" label="Pre-built Controls" />
+            <ProofMetric value="7" label="Framework Packs" />
+            <ProofMetric value="<2m" label="Audit Export Time" />
           </motion.div>
         </div>
       </div>
@@ -315,7 +436,10 @@ export function HeroSection() {
       <div className="hero-exit-gradient" />
 
       {/* Sticky CTA that re-appears after hero CTAs scroll away */}
-      <HeroScrollRetentionController heroRef={containerRef} />
+      <HeroScrollRetentionController
+        heroRef={containerRef}
+        stickyWindow={motionPolicy.stickyCtaWindow}
+      />
     </section>
   );
 }
