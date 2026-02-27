@@ -453,6 +453,16 @@
   position: relative;
 }
 
+/* ── OrbitalCore stage — scale down on mobile ─────────── */
+.orbital-core-stage {
+  transform-origin: center center;
+}
+@media (max-width: 767px) {
+  .orbital-core-stage {
+    transform: scale(0.58);
+  }
+}
+
 /* =========================================================
    MOBILE FIXES
    ========================================================= */

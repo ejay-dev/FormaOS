@@ -21,12 +21,17 @@ import {
   Sparkles,
 } from 'lucide-react';
 
+import dynamic from 'next/dynamic';
 import { brand } from '@/config/brand';
-import { AmbientParticleLayer } from '@/components/motion/AmbientParticleLayer';
 import { HeroScrollRetentionController } from '@/components/motion/HeroScrollRetentionController';
 import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 import { useDeviceTier } from '@/lib/device-tier';
+
+const OrbitalCore = dynamic(
+  () => import('@/components/hero/OrbitalCore').then((m) => m.OrbitalCore),
+  { ssr: false, loading: () => null },
+);
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -104,15 +109,11 @@ export function HeroSection() {
   const ctaOpacity = useTransform(scrollYProgress, [0, 0.72, 0.96], [1, 1, 0]);
   const ctaY = useTransform(scrollYProgress, [0, 1], [0, 26]);
   const metricY = useTransform(scrollYProgress, [0, 0.78, 1], [0, -30, -56]);
-  const bgFarY = useTransform(scrollYProgress, [0, 1], [0, -42]);
-  const bgNearY = useTransform(scrollYProgress, [0, 1], [0, -84]);
   const heroContentStyle = shouldReduceMotion
     ? undefined
     : { opacity: contentOpacity, scale: contentScale, y: contentY };
   const heroCtaStyle = shouldReduceMotion ? undefined : { opacity: ctaOpacity, y: ctaY };
   const heroMetricStyle = shouldReduceMotion ? undefined : { y: metricY };
-  const bgFarStyle = shouldReduceMotion ? undefined : { y: bgFarY };
-  const bgNearStyle = shouldReduceMotion ? undefined : { y: bgNearY };
   const primaryCtaHref = heroCopy.primaryCtaHref.startsWith('/auth')
     ? `${appBase}${heroCopy.primaryCtaHref}`
     : heroCopy.primaryCtaHref;
@@ -146,52 +147,8 @@ export function HeroSection() {
       className="home-hero relative flex items-center justify-center overflow-hidden pt-24 sm:pt-28 lg:pt-32 pb-24 sm:pb-32 md:pb-52"
       style={{ minHeight: 'clamp(100svh, 116vh, 1300px)' }}
     >
-      {/* Cinematic ambient particles — all tiers */}
-      {expensiveEffectsEnabled ? <AmbientParticleLayer intensity="subtle" /> : null}
-
-      {/* Premium Background Effects - Cinematic Gradient Layers */}
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          style={bgFarStyle}
-          className="absolute -top-20 -left-20 sm:-top-40 sm:-left-40 w-[500px] sm:w-[800px] h-[500px] sm:h-[800px] bg-gradient-to-br from-teal-500/15 via-emerald-500/10 to-transparent rounded-full blur-3xl"
-          animate={
-            shouldAnimateIntro
-              ? {
-                  scale: [1, 1.1, 1],
-                  opacity: [0.3, 0.4, 0.3],
-                }
-              : undefined
-          }
-          transition={
-            shouldAnimateIntro
-              ? { duration: 8, repeat: Infinity, ease: 'easeInOut' }
-              : undefined
-          }
-        />
-        <motion.div
-          style={bgNearStyle}
-          className="absolute -bottom-20 -right-20 sm:-bottom-40 sm:-right-40 w-[400px] sm:w-[700px] h-[400px] sm:h-[700px] bg-gradient-to-tl from-amber-500/12 via-amber-500/6 to-transparent rounded-full blur-3xl"
-          animate={
-            shouldAnimateIntro
-              ? {
-                  scale: [1, 1.15, 1],
-                  opacity: [0.2, 0.3, 0.2],
-                }
-              : undefined
-          }
-          transition={
-            shouldAnimateIntro
-              ? {
-                  duration: 10,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                  delay: 2,
-                }
-              : undefined
-          }
-        />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-gradient-radial from-teal-500/5 to-transparent rounded-full" />
-      </div>
+      {/* Orbital Core — enterprise hero background system */}
+      <OrbitalCore shouldAnimate={shouldAnimateIntro} />
 
       {/* Floating Metrics - Left Side (parallax drift) — xl only */}
       <motion.div style={heroMetricStyle} className="absolute left-8 lg:left-16 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6 z-20">
