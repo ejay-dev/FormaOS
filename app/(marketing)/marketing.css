@@ -459,15 +459,111 @@
 /* ── Hero section ──────────────────────────────────────── */
 .home-hero {
   position: relative;
+  background:
+    radial-gradient(circle at 50% 22%, rgba(45, 212, 191, 0.12), transparent 54%),
+    radial-gradient(circle at 18% 56%, rgba(56, 189, 248, 0.08), transparent 48%),
+    radial-gradient(circle at 82% 52%, rgba(129, 140, 248, 0.08), transparent 46%);
+}
+
+.hero-grid-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image:
+    linear-gradient(to right, rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+  background-size: 58px 58px;
+  opacity: 0.28;
+  mask-image: radial-gradient(ellipse 90% 72% at 50% 40%, black 22%, transparent 80%);
+}
+
+.hero-vertical-fog {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5, 8, 20, 0.08) 0%,
+      rgba(5, 8, 20, 0.48) 66%,
+      rgba(5, 8, 20, 0.78) 100%
+    );
+}
+
+.hero-rim-light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    radial-gradient(
+      ellipse 88% 58% at 50% 10%,
+      rgba(255, 255, 255, 0.09) 0%,
+      transparent 64%
+    );
+}
+
+.hero-title-stack {
+  text-shadow:
+    0 16px 48px rgba(2, 6, 23, 0.52),
+    0 2px 10px rgba(0, 0, 0, 0.36);
+}
+
+.hero-title-main,
+.hero-title-accent {
+  display: inline-block;
+}
+
+.hero-badge-shell {
+  box-shadow:
+    0 0 0 1px rgba(45, 212, 191, 0.18),
+    0 14px 42px rgba(6, 182, 212, 0.18);
+}
+
+.hero-command-deck {
+  box-shadow:
+    0 24px 70px rgba(2, 6, 23, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.hero-primary-cta {
+  box-shadow:
+    0 20px 56px rgba(20, 184, 166, 0.34),
+    0 0 18px rgba(45, 212, 191, 0.24);
+}
+
+.hero-secondary-cta {
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.16) 0%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+}
+
+.hero-trust-rail {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.hero-floating-metric {
+  box-shadow:
+    0 26px 70px rgba(2, 6, 23, 0.58),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 /* ── OrbitalCore stage — scale down on mobile ─────────── */
 .orbital-core-stage {
   transform-origin: center center;
 }
+@media (max-width: 1024px) {
+  .orbital-core-stage {
+    transform: scale(0.74);
+  }
+}
 @media (max-width: 767px) {
   .orbital-core-stage {
-    transform: scale(0.58);
+    transform: scale(0.56);
   }
 }
 
@@ -495,8 +591,23 @@ body {
 
   .home-hero {
     min-height: 100svh;
-    padding-top: 1rem;
-    padding-bottom: 2rem;
+    padding-top: 2rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .hero-grid-overlay {
+    opacity: 0.18;
+    background-size: 42px 42px;
+  }
+
+  .hero-command-deck {
+    border-radius: 1rem;
+    padding: 0.875rem;
+  }
+
+  .hero-primary-cta,
+  .hero-secondary-cta {
+    width: 100%;
   }
 
   .mk-shell > * {
@@ -519,6 +630,10 @@ body {
 
   .home-hero h1 {
     font-size: 1.75rem;
+  }
+
+  .hero-command-deck span {
+    letter-spacing: 0.08em;
   }
 }
 

@@ -21,7 +21,6 @@ import {
   Eye,
   Sparkles,
 } from 'lucide-react';
-
 import dynamic from 'next/dynamic';
 import { brand } from '@/config/brand';
 import { HeroScrollRetentionController } from '@/components/motion/HeroScrollRetentionController';
@@ -42,6 +41,44 @@ const OrbitalCore = dynamic(
 );
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
+const SIGNAL_PILLS = [
+  {
+    label: 'Workflow Orchestration',
+    dotClass: 'bg-teal-400',
+    chipClass: 'from-teal-500/20 to-cyan-500/10 border-teal-400/30',
+  },
+  {
+    label: 'Control Ownership',
+    dotClass: 'bg-emerald-400',
+    chipClass: 'from-emerald-500/20 to-teal-500/10 border-emerald-400/30',
+  },
+  {
+    label: 'Evidence Chains',
+    dotClass: 'bg-amber-400',
+    chipClass: 'from-amber-500/20 to-orange-500/10 border-amber-400/30',
+  },
+] as const;
+
+const COMMAND_DECK_ROWS = [
+  { label: 'Control Drift Detection', value: 'Live', status: 'Nominal' },
+  { label: 'Evidence Chain Integrity', value: '99.98%', status: 'Verified' },
+  { label: 'Audit Packet Assembly', value: '< 2 min', status: 'Ready' },
+] as const;
+
+const MOBILE_PROOF_METRICS = [
+  { value: '85+', label: 'Pre-built Controls' },
+  { value: '7', label: 'Framework Packs' },
+  { value: '<2m', label: 'Audit Export Time' },
+] as const;
+
+const MICRO_TRUST_RAIL = [
+  'ISO 27001',
+  'SOC 2',
+  'NDIS',
+  'HIPAA',
+  'GDPR',
+] as const;
 
 function FloatingMetricCard({
   value,
@@ -65,34 +102,75 @@ function FloatingMetricCard({
       initial={motionEnabled ? { opacity: 0, x: direction === 'left' ? -40 : 40 } : false}
       animate={motionEnabled ? { opacity: 1, x: 0 } : undefined}
       transition={motionEnabled ? { duration: duration.slower, delay } : { duration: 0 }}
-      whileHover={motionEnabled ? { scale: 1.03 } : undefined}
-      className="relative p-5 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-teal-500/20 transition-all shadow-2xl shadow-black/30"
+      whileHover={motionEnabled ? { scale: 1.025, y: -3 } : undefined}
+      className="hero-floating-metric relative w-[270px] rounded-2xl border border-white/10 bg-gradient-to-br from-slate-950/70 to-slate-900/55 p-5 shadow-[0_20px_55px_rgba(0,0,0,0.45)] backdrop-blur-xl"
     >
-      <div className="flex items-center gap-4">
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500/20 to-emerald-500/20 flex items-center justify-center">
-          <Icon className="w-6 h-6 text-teal-400" />
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="h-12 w-12 rounded-xl border border-teal-400/25 bg-gradient-to-br from-teal-400/20 to-emerald-400/15 flex items-center justify-center">
+            <Icon className="h-5 w-5 text-teal-300" />
+          </div>
+          <div>
+            <div className="text-[1.15rem] font-semibold tracking-tight text-white">{value}</div>
+            <div className="text-xs uppercase tracking-[0.16em] text-slate-300/90">{label}</div>
+          </div>
         </div>
-        <div>
-          <div className="text-2xl font-bold text-white">{value}</div>
-          <div className="text-sm text-gray-400">{label}</div>
-        </div>
+        <span className="rounded-full border border-emerald-300/30 bg-emerald-300/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-200">
+          {trend}
+        </span>
       </div>
-      <div className="absolute -top-2 -right-2 px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-xs text-emerald-400 font-medium">
-        {trend}
-      </div>
+      <div className="mt-4 h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+      <p className="mt-3 text-xs text-slate-300/75">
+        Continuous signal processing with policy-linked evidence correlation.
+      </p>
     </motion.div>
   );
 }
 
 function ProofMetric({ value, label }: { value: string; label: string }) {
   return (
-    <div className="text-center p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-      <div className="text-xl font-bold text-white">{value}</div>
-      <div className="text-xs text-slate-300">{label}</div>
+    <div className="rounded-xl border border-white/15 bg-gradient-to-b from-white/10 to-white/[0.04] p-4 text-center backdrop-blur-md">
+      <div className="text-xl font-semibold tracking-tight text-white">{value}</div>
+      <div className="mt-1 text-[11px] uppercase tracking-[0.16em] text-slate-300">{label}</div>
     </div>
   );
 }
 
+function CommandDeck({ motionEnabled }: { motionEnabled: boolean }) {
+  return (
+    <motion.div
+      initial={motionEnabled ? { opacity: 0, y: 24 } : false}
+      animate={{ opacity: 1, y: 0 }}
+      transition={motionEnabled ? { duration: duration.slower, delay: 0.82 } : { duration: 0 }}
+      className="hero-command-deck mx-auto mb-8 w-full max-w-3xl rounded-2xl border border-white/15 bg-gradient-to-b from-slate-900/70 to-slate-950/70 p-4 sm:p-5 backdrop-blur-2xl"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
+        <div className="flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-emerald-400" />
+          <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-200">
+            Live Control Plane Snapshot
+          </span>
+        </div>
+        <span className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-cyan-100">
+          Enterprise Runtime
+        </span>
+      </div>
+
+      <div className="mt-3 grid gap-2">
+        {COMMAND_DECK_ROWS.map((row) => (
+          <div
+            key={row.label}
+            className="grid grid-cols-[1fr_auto_auto] items-center gap-2 rounded-lg border border-white/10 bg-white/[0.035] px-3 py-2"
+          >
+            <span className="text-xs text-slate-200">{row.label}</span>
+            <span className="text-xs font-semibold text-white">{row.value}</span>
+            <span className="text-[10px] uppercase tracking-[0.16em] text-emerald-200">{row.status}</span>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
 
 export function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -198,23 +276,21 @@ export function HeroSection() {
   const shouldAnimateOrbital = motionPolicy.allowOrbitalMotion;
   const pulseClass = motionPolicy.allowPulseTokens ? 'animate-pulse' : '';
 
-  // Buffered hero exit: hold fully visible first, then progressive cinematic fade.
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.24, 0.82, 0.96], [1, 1, 0.35, 0]);
-  const contentScale = useTransform(scrollYProgress, [0, 0.24, 0.82, 0.96], [1, 1, 0.97, 0.94]);
-  const contentY = useTransform(scrollYProgress, [0, 0.82, 1], [0, 52, 110]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.26, 0.84, 0.97], [1, 1, 0.38, 0]);
+  const contentScale = useTransform(scrollYProgress, [0, 0.26, 0.84, 0.97], [1, 1, 0.975, 0.945]);
+  const contentY = useTransform(scrollYProgress, [0, 0.84, 1], [0, 46, 108]);
   const ctaOpacity = useTransform(scrollYProgress, [0, 0.72, 0.96], [1, 1, 0]);
-  const ctaY = useTransform(scrollYProgress, [0, 1], [0, 26]);
-  const metricY = useTransform(scrollYProgress, [0, 0.78, 1], [0, -30, -56]);
+  const ctaY = useTransform(scrollYProgress, [0, 1], [0, 24]);
+  const metricY = useTransform(scrollYProgress, [0, 0.78, 1], [0, -22, -48]);
   const heroContentStyle = shouldReduceMotion
     ? undefined
     : { opacity: contentOpacity, scale: contentScale, y: contentY };
   const heroCtaStyle = shouldReduceMotion ? undefined : { opacity: ctaOpacity, y: ctaY };
   const heroMetricStyle = shouldReduceMotion ? undefined : { y: metricY };
+
   const primaryCtaHref = ctas.primary.href;
   const secondaryCtaHref = ctas.secondary.href;
-  const handleRequestDemoClick = (
-    event: React.MouseEvent<HTMLAnchorElement>,
-  ) => {
+  const handleRequestDemoClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (secondaryCtaHref !== '/contact') {
       return;
     }
@@ -242,7 +318,6 @@ export function HeroSection() {
       },
     );
   };
-
   const handleSecondaryClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     telemetry.trackCtaClick(
       'secondary',
@@ -256,24 +331,28 @@ export function HeroSection() {
     handleRequestDemoClick(event);
   };
 
-
   return (
     <section
       ref={containerRef}
       className="home-hero relative isolate flex items-center justify-center overflow-hidden pt-20 sm:pt-24 lg:pt-28 pb-16 sm:pb-20 md:pb-28"
-      style={{ minHeight: 'clamp(92svh, 104vh, 1120px)' }}
+      style={{ minHeight: 'clamp(96svh, 106vh, 1160px)' }}
     >
-      {/* Orbital Core — enterprise hero background system */}
       <OrbitalCore shouldAnimate={shouldAnimateOrbital} />
 
-      {/* Floating Metrics - Left Side (parallax drift) — xl only */}
-      <motion.div style={heroMetricStyle} className="absolute left-8 lg:left-16 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6 z-20">
+      <div className="hero-grid-overlay" />
+      <div className="hero-vertical-fog" />
+      <div className="hero-rim-light" />
+
+      <motion.div
+        style={heroMetricStyle}
+        className="absolute left-6 xl:left-12 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-5 z-20"
+      >
         <FloatingMetricCard
           value="Real-time"
           label="Compliance Monitoring"
           trend="Continuous"
           icon={ShieldCheck}
-          delay={0.8}
+          delay={0.76}
           direction="left"
           motionEnabled={shouldAnimateIntro}
         />
@@ -282,20 +361,22 @@ export function HeroSection() {
           label="Evidence Capture"
           trend="Built-in"
           icon={Database}
-          delay={1.0}
+          delay={0.94}
           direction="left"
           motionEnabled={shouldAnimateIntro}
         />
       </motion.div>
 
-      {/* Floating Metrics - Right Side (parallax drift) — xl only */}
-      <motion.div style={heroMetricStyle} className="absolute right-8 lg:right-16 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-6 z-20">
+      <motion.div
+        style={heroMetricStyle}
+        className="absolute right-6 xl:right-12 top-1/2 -translate-y-1/2 hidden xl:flex flex-col gap-5 z-20"
+      >
         <FloatingMetricCard
           value="Faster"
           label="Audit Defense"
           trend="Streamlined"
           icon={Clock}
-          delay={1.2}
+          delay={1.1}
           direction="right"
           motionEnabled={shouldAnimateIntro}
         />
@@ -304,90 +385,84 @@ export function HeroSection() {
           label="Activity Tracking"
           trend="Continuous"
           icon={Eye}
-          delay={1.4}
+          delay={1.28}
           direction="right"
           motionEnabled={shouldAnimateIntro}
         />
       </motion.div>
 
-      {/* Main Hero Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-5 sm:px-6 lg:px-12">
+      <div className="relative z-10 mx-auto max-w-6xl px-5 sm:px-6 lg:px-12">
         <div className="flex flex-col items-center text-center">
-          <motion.div style={heroContentStyle}>
-            {/* Badge */}
+          <motion.div style={heroContentStyle} className="w-full">
             <motion.div
               initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={shouldAnimateIntro ? { duration: duration.slow, delay: 0.2 } : { duration: 0 }}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-teal-500/10 border border-teal-500/30 mb-6 sm:mb-8 backdrop-blur-sm"
+              transition={shouldAnimateIntro ? { duration: duration.slow, delay: 0.15 } : { duration: 0 }}
+              className="hero-badge-shell mb-6 sm:mb-8 inline-flex items-center gap-2 rounded-full border border-teal-300/35 bg-teal-400/10 px-4 py-2.5 backdrop-blur-md"
             >
-              <Sparkles className="w-4 h-4 text-teal-400" />
-              <span className="text-sm text-teal-400 font-medium tracking-wide">
+              <Sparkles className="h-4 w-4 text-teal-300" />
+              <span className="text-xs sm:text-sm font-semibold uppercase tracking-[0.14em] text-teal-200">
                 {heroCopy.badgeText}
               </span>
             </motion.div>
 
-            {/* Headline — mobile-optimized type scale */}
             <motion.h1
               initial={shouldAnimateIntro ? { opacity: 0, y: 30 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.3 } : { duration: 0 }}
-              className="text-[2.5rem] sm:text-5xl lg:text-7xl font-bold mb-5 sm:mb-6 leading-[1.08] text-white"
+              transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.28 } : { duration: 0 }}
+              className="hero-title-stack text-[2.35rem] sm:text-5xl lg:text-7xl font-semibold tracking-tight mb-5 sm:mb-6 leading-[1.03] text-white"
             >
-              {heroCopy.headlinePrimary}
+              <span className="hero-title-main">{heroCopy.headlinePrimary}</span>
               <br />
-              <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
+              <span className="hero-title-accent bg-gradient-to-r from-cyan-300 via-teal-300 to-emerald-300 bg-clip-text text-transparent">
                 {heroCopy.headlineAccent}
               </span>
             </motion.h1>
 
-            {/* Subheadline — readable mobile size */}
             <motion.p
               initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.5 } : { duration: 0 }}
-              className="text-base sm:text-lg md:text-xl text-slate-300 mb-4 max-w-2xl mx-auto text-center leading-relaxed"
+              transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.46 } : { duration: 0 }}
+              className="mx-auto mb-4 max-w-3xl text-base sm:text-lg md:text-xl leading-relaxed text-slate-200/95"
             >
               {heroCopy.subheadline}
             </motion.p>
 
-            {/* OS Authority Statement */}
             <motion.div
               initial={shouldAnimateIntro ? { opacity: 0 } : false}
               animate={{ opacity: 1 }}
-              transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.65 } : { duration: 0 }}
-              className="mb-8 sm:mb-10 max-w-2xl mx-auto text-center"
+              transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.6 } : { duration: 0 }}
+              className="mx-auto mb-7 sm:mb-9 max-w-3xl text-center"
             >
-              <p className="text-sm text-slate-300 mb-3">
+              <p className="mb-3 text-sm uppercase tracking-[0.16em] text-slate-200/90">
                 Structure → Operationalize → Validate → Defend
               </p>
-              <p className="text-xs text-slate-400 mb-4">
-                Used by compliance teams. Aligned to ISO/SOC frameworks. Built
-                for audit defensibility.
+              <p className="mb-4 text-xs sm:text-sm text-slate-300/85">
+                Used by compliance teams. Aligned to ISO/SOC frameworks. Built for
+                audit defensibility in regulated environments.
               </p>
-              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs text-slate-300">
-                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800/50 border border-gray-700/50">
-                  <span className={`w-1.5 h-1.5 rounded-full bg-teal-400 ${pulseClass}`.trim()} />
-                  Workflow Orchestration
-                </span>
-                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800/50 border border-gray-700/50">
-                  <span className={`w-1.5 h-1.5 rounded-full bg-emerald-400 ${pulseClass}`.trim()} />
-                  Control Ownership
-                </span>
-                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800/50 border border-gray-700/50">
-                  <span className={`w-1.5 h-1.5 rounded-full bg-amber-400 ${pulseClass}`.trim()} />
-                  Evidence Chains
-                </span>
+
+              <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 text-xs text-slate-200">
+                {SIGNAL_PILLS.map((pill) => (
+                  <span
+                    key={pill.label}
+                    className={`inline-flex items-center gap-1.5 rounded-full border bg-gradient-to-r px-3 py-1.5 ${pill.chipClass}`}
+                  >
+                    <span className={`h-1.5 w-1.5 rounded-full ${pill.dotClass} ${pulseClass}`.trim()} />
+                    {pill.label}
+                  </span>
+                ))}
               </div>
             </motion.div>
 
-            {/* CTA Buttons — full-width mobile, side-by-side sm+ */}
+            <CommandDeck motionEnabled={shouldAnimateIntro} />
+
             <motion.div
               style={heroCtaStyle}
               initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.7 } : { duration: 0 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8 sm:mb-10 w-full sm:w-auto"
+              className="mb-8 sm:mb-10 flex w-full flex-col items-center justify-center gap-3 sm:w-auto sm:flex-row sm:gap-4"
             >
               <motion.a
                 href={primaryCtaHref}
@@ -395,47 +470,56 @@ export function HeroSection() {
                 whileHover={
                   shouldAnimateIntro
                     ? {
-                        scale: 1.03,
-                        boxShadow: '0 0 30px rgba(6, 182, 212, 0.3)',
+                        scale: 1.025,
+                        boxShadow: '0 0 32px rgba(45, 212, 191, 0.32)',
                       }
                     : undefined
                 }
                 whileTap={shouldAnimateIntro ? { scale: 0.98 } : undefined}
-                className="mk-btn mk-btn-primary group px-8 py-4 min-h-[48px] text-base sm:text-lg w-full sm:w-auto justify-center"
+                className="mk-btn mk-btn-primary group hero-primary-cta min-h-[50px] w-full px-8 py-4 text-base sm:w-auto sm:text-lg"
               >
                 <span>{heroCopy.primaryCtaLabel}</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </motion.a>
 
               <Link
                 href={secondaryCtaHref}
                 onClick={handleSecondaryClick}
-                className="mk-btn mk-btn-secondary group relative z-30 pointer-events-auto px-8 py-4 min-h-[48px] text-base sm:text-lg w-full sm:w-auto justify-center"
+                className="mk-btn mk-btn-secondary group hero-secondary-cta relative z-30 min-h-[50px] w-full px-8 py-4 text-base sm:w-auto sm:text-lg"
               >
-                <Play className="w-5 h-5" />
+                <Play className="h-5 w-5" />
                 <span>{heroCopy.secondaryCtaLabel}</span>
               </Link>
             </motion.div>
           </motion.div>
 
-          {/* Proof Strip - Mobile Metrics */}
           <motion.div
             initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
             animate={{ opacity: 1, y: 0 }}
-            transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.9 } : { duration: 0 }}
-            className="grid grid-cols-3 gap-3 sm:gap-4 w-full max-w-2xl"
+            transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.86 } : { duration: 0 }}
+            className="w-full max-w-3xl"
           >
-            <ProofMetric value="85+" label="Pre-built Controls" />
-            <ProofMetric value="7" label="Framework Packs" />
-            <ProofMetric value="<2m" label="Audit Export Time" />
+            <div className="grid grid-cols-3 gap-3 sm:gap-4">
+              {MOBILE_PROOF_METRICS.map((metric) => (
+                <ProofMetric key={metric.label} value={metric.value} label={metric.label} />
+              ))}
+            </div>
+
+            <div className="hero-trust-rail mt-4 rounded-xl border border-white/10 bg-white/[0.045] px-3 py-2.5 backdrop-blur-md">
+              <div className="flex flex-wrap items-center justify-center gap-2 text-[10px] sm:text-[11px] uppercase tracking-[0.16em] text-slate-300">
+                {MICRO_TRUST_RAIL.map((item) => (
+                  <span key={item} className="rounded-full border border-white/12 px-2.5 py-1 text-slate-200/95">
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
           </motion.div>
         </div>
       </div>
 
-      {/* Gradient bridge — smooth depth transition to next section */}
       <div className="hero-exit-gradient" />
 
-      {/* Sticky CTA that re-appears after hero CTAs scroll away */}
       <HeroScrollRetentionController
         heroRef={containerRef}
         stickyWindow={motionPolicy.stickyCtaWindow}
