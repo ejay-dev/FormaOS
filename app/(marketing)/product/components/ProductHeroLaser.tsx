@@ -27,7 +27,7 @@ function ProductHeroLaserInner() {
   const laserY = useTransform(scrollYProgress, [0, 1], [0, 48]);
 
   const showWebGL = isDesktop && !prefersReduced;
-  const impactTop = '84%';
+  const impactTop = '82%';
 
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }} aria-hidden>
@@ -44,36 +44,36 @@ function ProductHeroLaserInner() {
             className="w-full h-full"
             style={{
               WebkitMaskImage:
-                'radial-gradient(ellipse 58% 72% at 50% 62%, black 12%, rgba(0,0,0,0.78) 36%, rgba(0,0,0,0.2) 62%, transparent 82%)',
+                'radial-gradient(ellipse 62% 74% at 50% 68%, black 14%, rgba(0,0,0,0.82) 38%, rgba(0,0,0,0.22) 64%, transparent 84%)',
               maskImage:
-                'radial-gradient(ellipse 58% 72% at 50% 62%, black 12%, rgba(0,0,0,0.78) 36%, rgba(0,0,0,0.2) 62%, transparent 82%)',
+                'radial-gradient(ellipse 62% 74% at 50% 68%, black 14%, rgba(0,0,0,0.82) 38%, rgba(0,0,0,0.22) 64%, transparent 84%)',
             }}
           >
             {showWebGL ? (
               <LaserFlow
-                color="#A78BFA"
+                color="#C4B5FD"
                 horizontalBeamOffset={0}
-                verticalBeamOffset={0.32}
-                flowSpeed={0.18}
-                verticalSizing={4.4}
-                horizontalSizing={0.78}
-                fogIntensity={0.72}
-                fogScale={0.26}
-                wispDensity={1.05}
-                wispSpeed={9}
-                wispIntensity={8.4}
-                flowStrength={0.34}
-                decay={1.18}
-                falloffStart={1.34}
-                fogFallSpeed={0.42}
+                verticalBeamOffset={0.26}
+                flowSpeed={0.35}
+                verticalSizing={2}
+                horizontalSizing={0.5}
+                fogIntensity={0.45}
+                fogScale={0.3}
+                wispDensity={1}
+                wispSpeed={15}
+                wispIntensity={5}
+                flowStrength={0.25}
+                decay={1.1}
+                falloffStart={1.2}
+                fogFallSpeed={0.6}
               />
             ) : (
               <div
                 className="w-full h-full"
                 style={{
                   background: `
-                    radial-gradient(ellipse 32% 58% at 50% 68%, rgba(167,139,250,0.26) 0%, rgba(167,139,250,0.08) 54%, transparent 78%),
-                    radial-gradient(ellipse 52% 42% at 50% 72%, rgba(56,189,248,0.08) 0%, transparent 74%)
+                    radial-gradient(ellipse 20% 68% at 50% 56%, rgba(196,181,253,0.32) 0%, rgba(196,181,253,0.11) 48%, transparent 74%),
+                    radial-gradient(ellipse 48% 44% at 50% 70%, rgba(56,189,248,0.09) 0%, transparent 74%)
                   `,
                 }}
               />
@@ -82,30 +82,43 @@ function ProductHeroLaserInner() {
         </div>
       </motion.div>
 
+      {/* Wide volumetric beam haze */}
+      <div
+        className="absolute left-1/2 top-0 -translate-x-1/2"
+        style={{
+          width: '184px',
+          height: '82%',
+          background:
+            'linear-gradient(180deg, rgba(196,181,253,0.24) 0%, rgba(196,181,253,0.18) 16%, rgba(167,139,250,0.1) 50%, rgba(167,139,250,0.03) 76%, transparent 100%)',
+          filter: 'blur(20px)',
+          opacity: showWebGL ? 0.88 : 0.5,
+        }}
+      />
+
+      {/* Mid beam glow */}
+      <div
+        className="absolute left-1/2 top-0 -translate-x-1/2"
+        style={{
+          width: '54px',
+          height: '82%',
+          background:
+            'linear-gradient(180deg, rgba(233,213,255,0.72) 0%, rgba(196,181,253,0.6) 18%, rgba(167,139,250,0.34) 56%, rgba(167,139,250,0.08) 80%, transparent 100%)',
+          filter: 'blur(9px)',
+          opacity: showWebGL ? 0.96 : 0.72,
+        }}
+      />
+
       {/* Core beam */}
       <div
         className="absolute left-1/2 top-0 -translate-x-1/2"
         style={{
-          width: '2px',
-          height: '84%',
+          width: '8px',
+          height: '82%',
           background:
-            'linear-gradient(180deg, rgba(233,213,255,0.92) 0%, rgba(196,181,253,0.82) 18%, rgba(167,139,250,0.7) 58%, rgba(167,139,250,0.05) 100%)',
+            'linear-gradient(180deg, rgba(255,245,255,0.98) 0%, rgba(233,213,255,0.96) 20%, rgba(196,181,253,0.8) 56%, rgba(167,139,250,0.2) 82%, transparent 100%)',
           boxShadow:
-            '0 0 18px rgba(196,181,253,0.9), 0 0 42px rgba(167,139,250,0.6), 0 0 82px rgba(167,139,250,0.34)',
-          opacity: showWebGL ? 0.86 : 0.62,
-        }}
-      />
-
-      {/* Atmospheric beam haze */}
-      <div
-        className="absolute left-1/2 top-0 -translate-x-1/2"
-        style={{
-          width: '130px',
-          height: '84%',
-          background:
-            'linear-gradient(180deg, rgba(167,139,250,0.2) 0%, rgba(167,139,250,0.12) 36%, rgba(167,139,250,0.04) 78%, transparent 100%)',
-          filter: 'blur(14px)',
-          opacity: showWebGL ? 0.8 : 0.45,
+            '0 0 24px rgba(233,213,255,0.94), 0 0 54px rgba(196,181,253,0.74), 0 0 110px rgba(167,139,250,0.44)',
+          opacity: showWebGL ? 0.98 : 0.82,
         }}
       />
 
@@ -114,32 +127,33 @@ function ProductHeroLaserInner() {
         <div
           className="mx-auto"
           style={{
-            width: '64%',
-            height: '130px',
+            width: '68%',
+            height: '156px',
             background:
-              'radial-gradient(ellipse 70% 100% at 50% 50%, rgba(233,213,255,0.56) 0%, rgba(167,139,250,0.3) 34%, rgba(56,189,248,0.12) 58%, transparent 82%)',
-            filter: 'blur(18px)',
+              'radial-gradient(ellipse 72% 100% at 50% 50%, rgba(255,244,255,0.72) 0%, rgba(233,213,255,0.44) 24%, rgba(167,139,250,0.24) 48%, rgba(56,189,248,0.1) 64%, transparent 84%)',
+            filter: 'blur(22px)',
           }}
         />
         <div
-          className="mx-auto -mt-[84px]"
+          className="mx-auto -mt-[98px]"
           style={{
-            width: '46%',
-            height: '3px',
+            width: '52%',
+            height: '4px',
             background:
-              'linear-gradient(90deg, transparent 0%, rgba(196,181,253,0.35) 18%, rgba(233,213,255,0.95) 50%, rgba(196,181,253,0.35) 82%, transparent 100%)',
-            boxShadow: '0 0 28px rgba(216,180,254,0.7), 0 0 60px rgba(167,139,250,0.36)',
+              'linear-gradient(90deg, transparent 0%, rgba(196,181,253,0.42) 14%, rgba(255,243,255,0.98) 50%, rgba(196,181,253,0.42) 86%, transparent 100%)',
+            boxShadow: '0 0 32px rgba(233,213,255,0.86), 0 0 76px rgba(167,139,250,0.5)',
           }}
         />
       </div>
 
       {/* Ground line at section bottom */}
       <div
-        className="absolute inset-x-0 bottom-[11%] mx-auto h-[1px] w-[78%]"
+        className="absolute inset-x-0 mx-auto h-[1px] w-[80%]"
         style={{
+          top: `calc(${impactTop} + 2px)`,
           background:
-            'linear-gradient(90deg, transparent 0%, rgba(167,139,250,0.2) 20%, rgba(233,213,255,0.64) 50%, rgba(167,139,250,0.2) 80%, transparent 100%)',
-          boxShadow: '0 0 18px rgba(167,139,250,0.32)',
+            'linear-gradient(90deg, transparent 0%, rgba(167,139,250,0.26) 18%, rgba(233,213,255,0.72) 50%, rgba(167,139,250,0.26) 82%, transparent 100%)',
+          boxShadow: '0 0 20px rgba(167,139,250,0.42)',
         }}
       />
 
