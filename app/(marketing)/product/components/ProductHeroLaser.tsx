@@ -102,27 +102,6 @@ function ProductHeroLaserInner() {
         />
       </div>
 
-      {/* ReactBits-like target surface */}
-      <div
-        className="absolute left-1/2 top-[57%] -translate-x-1/2 w-[86%] h-[46%] rounded-[20px]"
-        style={{
-          background:
-            'linear-gradient(180deg, rgba(8,3,20,0.86) 0%, rgba(5,2,14,0.92) 100%)',
-          border: '2px solid rgba(207,158,255,0.72)',
-          boxShadow:
-            'inset 0 0 0 1px rgba(255,255,255,0.04), 0 0 36px rgba(207,158,255,0.18)',
-        }}
-      >
-        <div
-          className="absolute inset-0 rounded-[18px]"
-          style={{
-            backgroundImage: 'radial-gradient(circle, rgba(207,158,255,0.22) 1px, transparent 1px)',
-            backgroundSize: '18px 18px',
-            opacity: 0.22,
-          }}
-        />
-      </div>
-
       {/* Noise overlay for smoother gradients */}
       <div
         className="absolute inset-0 opacity-[0.03]"
