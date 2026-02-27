@@ -262,8 +262,9 @@
 @supports (content-visibility: auto) {
   .mk-deferred-section {
     content-visibility: auto;
-    contain: layout paint style;
+    contain: layout style;
     contain-intrinsic-size: 600px;
+    overflow: visible;
   }
 }
 

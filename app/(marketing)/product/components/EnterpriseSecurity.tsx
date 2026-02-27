@@ -22,7 +22,7 @@ const securityFeatures = [
 
 export function EnterpriseSecurity() {
   return (
-    <section className="product-section product-section--security relative py-32 overflow-hidden">
+    <section className="product-section product-section--security relative py-32 overflow-visible">
       <motion.div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-full blur-3xl"
         animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.4, 0.2] }}
@@ -31,7 +31,7 @@ export function EnterpriseSecurity() {
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="depthSlide" range={[0, 0.35]}>
-          <div className="product-panel product-panel--strong backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 sm:p-12">
+          <div className="product-panel product-panel--strong overflow-visible backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 sm:p-12">
             <div className="text-center mb-10">
               <ScrollReveal variant="depthScale" range={[0, 0.3]}>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium mb-6">
@@ -49,7 +49,7 @@ export function EnterpriseSecurity() {
               </p>
             </div>
 
-            <SectionChoreography pattern="cascade" stagger={0.04} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <SectionChoreography pattern="cascade" stagger={0.04} range={[0, 0.3]} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {securityFeatures.map((feature) => {
                 const Icon = feature.icon;
                 return (

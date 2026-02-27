@@ -75,8 +75,11 @@ export function DeferredSection({
   const deferredStyle: CSSProperties = {
     minHeight,
     contentVisibility: mounted ? 'visible' : 'auto',
-    contain: 'layout paint style',
+    // Keep layout/style containment for perf, but avoid paint containment clipping
+    // when descendants use scroll-based transforms near section boundaries.
+    contain: mounted ? 'layout style' : 'layout paint style',
     containIntrinsicSize: minHeight > 0 ? `${Math.round(minHeight)}px` : '600px',
+    overflow: 'visible',
   };
 
   return (

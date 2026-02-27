@@ -53,7 +53,7 @@ function getChildConfig(
     }
 
     case 'cascade':
-      return { variant: 'perspectiveUp', rangeOffset: index * stagger * 1.2 };
+      return { variant: 'depthScale', rangeOffset: index * stagger * 0.8 };
 
     case 'alternating':
       return {
@@ -89,9 +89,11 @@ export function SectionChoreography({
     <div className={className}>
       {items.map((child, index) => {
         const config = getChildConfig(pattern, index, total, stagger);
+        const maxOffset = Math.min(0.2, Math.max(0.12, (total - 1) * stagger * 0.45));
+        const boundedOffset = Math.min(config.rangeOffset, maxOffset);
         const offsetRange: [number, number] = [
-          Math.min(range[0] + config.rangeOffset, 0.8),
-          Math.min(range[1] + config.rangeOffset, 1),
+          Math.min(range[0] + boundedOffset, 0.75),
+          Math.min(range[1] + boundedOffset, 0.9),
         ];
 
         return (

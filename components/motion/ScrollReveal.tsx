@@ -24,22 +24,22 @@ interface ScrollRevealProps {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const VARIANT_CONFIG: Record<RevealVariant, { from: Record<string, any>; to: Record<string, any> }> = {
-  fadeUp: { from: { opacity: 0, y: 40 }, to: { opacity: 1, y: 0 } },
-  fadeDown: { from: { opacity: 0, y: -30 }, to: { opacity: 1, y: 0 } },
-  fadeLeft: { from: { opacity: 0, x: -40 }, to: { opacity: 1, x: 0 } },
-  fadeRight: { from: { opacity: 0, x: 40 }, to: { opacity: 1, x: 0 } },
+  fadeUp: { from: { opacity: 0, y: 24 }, to: { opacity: 1, y: 0 } },
+  fadeDown: { from: { opacity: 0, y: -20 }, to: { opacity: 1, y: 0 } },
+  fadeLeft: { from: { opacity: 0, x: -24 }, to: { opacity: 1, x: 0 } },
+  fadeRight: { from: { opacity: 0, x: 24 }, to: { opacity: 1, x: 0 } },
   scaleUp: { from: { opacity: 0, scale: 0.92 }, to: { opacity: 1, scale: 1 } },
   blurIn: { from: { opacity: 0, blur: 8 }, to: { opacity: 1, blur: 0 } },
-  slideUp: { from: { opacity: 0, y: 60 }, to: { opacity: 1, y: 0 } },
-  clipUp: { from: { opacity: 0, y: 30, scale: 0.97 }, to: { opacity: 1, y: 0, scale: 1 } },
-  rotateIn: { from: { opacity: 0, rotate: -3, y: 20 }, to: { opacity: 1, rotate: 0, y: 0 } },
+  slideUp: { from: { opacity: 0, y: 32 }, to: { opacity: 1, y: 0 } },
+  clipUp: { from: { opacity: 0, y: 18, scale: 0.97 }, to: { opacity: 1, y: 0, scale: 1 } },
+  rotateIn: { from: { opacity: 0, rotate: -2, y: 14 }, to: { opacity: 1, rotate: 0, y: 0 } },
   staggerFade: { from: { opacity: 0, y: 16 }, to: { opacity: 1, y: 0 } },
   // 3D depth variants
   depthScale: { from: { opacity: 0, scale: 0.88, blur: 4 }, to: { opacity: 1, scale: 1, blur: 0 } },
-  depthSlide: { from: { opacity: 0, y: 60, scale: 0.95, blur: 3 }, to: { opacity: 1, y: 0, scale: 1, blur: 0 } },
-  perspectiveUp: { from: { opacity: 0, y: 80, rotateX: 8, scale: 0.9 }, to: { opacity: 1, y: 0, rotateX: 0, scale: 1 } },
-  splitLeft: { from: { opacity: 0, x: -60, scale: 0.95 }, to: { opacity: 1, x: 0, scale: 1 } },
-  splitRight: { from: { opacity: 0, x: 60, scale: 0.95 }, to: { opacity: 1, x: 0, scale: 1 } },
+  depthSlide: { from: { opacity: 0, y: 28, scale: 0.95, blur: 2 }, to: { opacity: 1, y: 0, scale: 1, blur: 0 } },
+  perspectiveUp: { from: { opacity: 0, y: 32, rotateX: 4, scale: 0.95 }, to: { opacity: 1, y: 0, rotateX: 0, scale: 1 } },
+  splitLeft: { from: { opacity: 0, x: -30, scale: 0.95 }, to: { opacity: 1, x: 0, scale: 1 } },
+  splitRight: { from: { opacity: 0, x: 30, scale: 0.95 }, to: { opacity: 1, x: 0, scale: 1 } },
 };
 
 /** Variants that use blur animation */
