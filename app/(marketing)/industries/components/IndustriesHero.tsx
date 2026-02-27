@@ -4,6 +4,7 @@ import { Building2 } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { IndustriesHeroVisual } from './IndustriesHeroVisual';
+import { useDeviceTier } from '@/lib/device-tier';
 
 const VERTICALS = [
   { label: 'NDIS', color: 'bg-pink-400' },
@@ -47,6 +48,9 @@ export function IndustriesHero() {
 
 function IndustriesExtras() {
   const shouldReduceMotion = useReducedMotion();
+  const tierConfig = useDeviceTier();
+  const allowAmbientMotion =
+    !shouldReduceMotion && tierConfig.tier === 'high' && !tierConfig.isTouch;
 
   return (
     <div className="max-w-2xl mx-auto text-center">
@@ -73,16 +77,20 @@ function IndustriesExtras() {
               <motion.span
                 className={`absolute left-1/2 top-full h-2.5 w-2.5 -translate-x-1/2 rounded-full ${vertical.color}`}
                 animate={
-                  shouldReduceMotion
+                  !allowAmbientMotion
                     ? undefined
                     : { y: [0, -36, 0], opacity: [0.5, 1, 0.5], scale: [0.9, 1.2, 0.9] }
                 }
-                transition={{
-                  duration: 2.8,
-                  delay: index * 0.25,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
+                transition={
+                  allowAmbientMotion
+                    ? {
+                        duration: 2.8,
+                        delay: index * 0.25,
+                        repeat: Infinity,
+                        ease: 'easeInOut',
+                      }
+                    : undefined
+                }
               />
             </div>
             <span className="text-[11px] uppercase tracking-wider text-gray-500">

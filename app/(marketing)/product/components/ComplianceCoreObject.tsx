@@ -33,6 +33,8 @@ interface ComplianceCoreObjectProps {
 function ComplianceCoreObjectInner({ scrollProgress, className = '' }: ComplianceCoreObjectProps) {
   const prefersReduced = useReducedMotion();
   const tierConfig = useDeviceTier();
+  const allowInteractiveMotion =
+    !prefersReduced && tierConfig.tier === 'high' && !tierConfig.isTouch;
   const driftRef = useRef(0);
   const interactRotateY = useSpring(0, { stiffness: 40, damping: 20 });
   const interactRotateX = useSpring(0, { stiffness: 40, damping: 20 });
@@ -64,7 +66,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
 
   // ─── Cursor / auto-drift ───
   useEffect(() => {
-    if (prefersReduced) return;
+    if (!allowInteractiveMotion) return;
 
     if (tierConfig.cursorTilt) {
       const onMove = (e: PointerEvent) => {
@@ -86,9 +88,9 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
     };
     raf = requestAnimationFrame(drift);
     return () => cancelAnimationFrame(raf);
-  }, [prefersReduced, tierConfig.cursorTilt, interactRotateX, interactRotateY]);
+  }, [allowInteractiveMotion, tierConfig.cursorTilt, interactRotateX, interactRotateY]);
 
-  if (prefersReduced) {
+  if (!allowInteractiveMotion) {
     return (
       <div className={`relative flex items-center justify-center ${className}`}>
         <StaticCore />
@@ -109,8 +111,8 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
       />
       <motion.div
         className="absolute w-[250px] h-[250px] sm:w-[380px] sm:h-[380px] lg:w-[480px] lg:h-[480px] rounded-full pointer-events-none"
-        animate={{ scale: [1, 1.12, 1], opacity: [0.12, 0.25, 0.12] }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        animate={allowInteractiveMotion ? { scale: [1, 1.12, 1], opacity: [0.12, 0.25, 0.12] } : undefined}
+        transition={allowInteractiveMotion ? { duration: 4, repeat: Infinity, ease: 'easeInOut' } : undefined}
         style={{
           background: 'radial-gradient(circle, rgba(6,182,212,0.18) 0%, transparent 60%)',
           filter: tierConfig.enableBlur ? 'blur(35px)' : 'blur(18px)',
@@ -252,15 +254,15 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
             {/* ─── Energy core ─── */}
             <motion.div
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 sm:w-16 sm:h-16"
-              animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.9, 0.5] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+              animate={allowInteractiveMotion ? { scale: [1, 1.1, 1], opacity: [0.5, 0.9, 0.5] } : undefined}
+              transition={allowInteractiveMotion ? { duration: 3, repeat: Infinity, ease: 'easeInOut' } : undefined}
             >
               <div className="w-full h-full rounded-full bg-gradient-to-br from-violet-400/30 via-cyan-400/20 to-blue-500/30 shadow-[0_0_30px_rgba(139,92,246,0.25),0_0_60px_rgba(6,182,212,0.12)]" />
               <div className="absolute inset-[25%] rounded-full bg-gradient-to-br from-white/20 to-white/5" />
             </motion.div>
 
             {/* ─── Orbital particles ─── */}
-            {tierConfig.tier !== 'low' && [0, 72, 144, 216, 288].map((angle, i) => (
+            {allowInteractiveMotion && [0, 72, 144, 216, 288].map((angle, i) => (
               <motion.div
                 key={angle}
                 className="absolute top-1/2 left-1/2 w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-cyan-300/50 pointer-events-none"

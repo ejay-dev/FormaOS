@@ -6,14 +6,14 @@ import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DepthSection } from '@/components/motion/DepthSection';
 import { FrameworkTrustStrip } from '@/components/marketing/FrameworkTrustStrip';
+import { ProductHeroSection } from '@/components/marketing/ProductHeroSection';
 
 /* ── Hero (headline + CTAs) then Showcase (interactive tabs + panel) ── */
-const ProductHero = dynamic(
-  () => import('@/components/marketing/ProductHeroShowcase').then((m) => m.ProductHero),
-  { ssr: false, loading: () => <div className="w-full" style={{ minHeight: '100vh' }} /> },
-);
-const ProductShowcase = dynamic(
-  () => import('@/components/marketing/ProductHeroShowcase').then((m) => m.ProductShowcase),
+const ProductShowcaseSection = dynamic(
+  () =>
+    import('@/components/marketing/ProductShowcaseSection').then(
+      (m) => m.ProductShowcaseSection,
+    ),
   { ssr: false, loading: () => <div className="w-full" style={{ minHeight: '600px' }} /> },
 );
 
@@ -76,11 +76,13 @@ export default function ProductPageContent() {
         <ProductHeroLaser />
         <div className="relative" style={{ zIndex: 1 }}>
           {/* Hero — headline, gradient text, CTAs */}
-          <ProductHero />
+          <ProductHeroSection />
         </div>
       </div>
       {/* Interactive showcase — tabs left, app panel right */}
-      <ProductShowcase />
+      <DeferredSection minHeight={620} rootMargin="120px 0px">
+        <ProductShowcaseSection />
+      </DeferredSection>
 
       <FrameworkTrustStrip className="mt-4 mb-2" />
 

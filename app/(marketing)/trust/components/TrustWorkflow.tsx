@@ -10,6 +10,7 @@ import {
 } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
+import { useDeviceTier } from '@/lib/device-tier';
 
 /* ── Pulse node: fires scale+opacity animation when scrolled into view ── */
 function PulseNode({
@@ -119,7 +120,11 @@ const trustWorkflow = [
 export function TrustWorkflow() {
   const graphRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
-  const reducedMotion = prefersReducedMotion ?? false;
+  const tierConfig = useDeviceTier();
+  const reducedMotion =
+    Boolean(prefersReducedMotion) ||
+    tierConfig.tier !== 'high' ||
+    tierConfig.isTouch;
   const { scrollYProgress } = useScroll({
     target: graphRef,
     offset: ['start 80%', 'end 20%'],

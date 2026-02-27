@@ -1,8 +1,9 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
+import { useDeviceTier } from '@/lib/device-tier';
 
 const consequences = [
   { label: 'Legal liability and penalties', color: 'bg-rose-400' },
@@ -11,16 +12,29 @@ const consequences = [
 ];
 
 export function MissionCriticalContext() {
+  const shouldReduceMotion = useReducedMotion();
+  const tierConfig = useDeviceTier();
+  const allowAmbientMotion =
+    !shouldReduceMotion && tierConfig.tier === 'high' && !tierConfig.isTouch;
+
   return (
     <section className="relative py-32 overflow-hidden">
       {/* Ambient Background */}
       <motion.div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 rounded-full blur-3xl"
-        animate={{
-          scale: [1, 1.1, 1],
-          opacity: [0.3, 0.5, 0.3],
-        }}
-        transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+        animate={
+          allowAmbientMotion
+            ? {
+                scale: [1, 1.1, 1],
+                opacity: [0.3, 0.5, 0.3],
+              }
+            : undefined
+        }
+        transition={
+          allowAmbientMotion
+            ? { duration: 15, repeat: Infinity, ease: 'easeInOut' }
+            : undefined
+        }
       />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">

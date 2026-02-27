@@ -230,7 +230,8 @@ export function deriveHomepageMotionPolicy(
 
   const allowIntroMotion =
     !reducedMotion && !saveDataEnabled && expensiveEffectsEnabled && !lowTier;
-  const allowOrbitalMotion = allowIntroMotion && pageVisible && heroInView;
+  const allowOrbitalMotion =
+    allowIntroMotion && highTier && pageVisible && heroInView;
   const allowBackgroundOverlays =
     !reducedMotion &&
     expensiveEffectsEnabled &&

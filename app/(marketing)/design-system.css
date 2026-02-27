@@ -259,6 +259,14 @@
   );
 }
 
+@supports (content-visibility: auto) {
+  .mk-deferred-section {
+    content-visibility: auto;
+    contain: layout paint style;
+    contain-intrinsic-size: 600px;
+  }
+}
+
 .mk-marketing-flow section {
   scroll-margin-top: calc(var(--mk-nav-height) + 1.5rem);
 }
@@ -538,5 +546,24 @@
   .mk-shell section[class*='py-36'] {
     padding-top: clamp(4rem, 10vw, 5rem);
     padding-bottom: clamp(4rem, 10vw, 5rem);
+  }
+
+  .mk-header-premium {
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+  }
+
+  .mk-shell .mk-glass-card,
+  .mk-shell .glass-panel,
+  .mk-shell .glass-panel-strong,
+  .mk-shell .glass-intense,
+  .mk-shell [class*='backdrop-blur'] {
+    backdrop-filter: blur(10px) saturate(115%);
+    -webkit-backdrop-filter: blur(10px) saturate(115%);
+  }
+
+  .mk-marketing-flow [class*='shadow-2xl'],
+  .mk-marketing-flow [class*='shadow-xl'] {
+    box-shadow: 0 16px 36px rgba(2, 6, 23, 0.34);
   }
 }

@@ -3,6 +3,7 @@
 import { memo, useMemo } from 'react';
 import { motion, useReducedMotion, useTransform } from 'framer-motion';
 import { useCursorPosition } from '@/components/motion/CursorContext';
+import { useDeviceTier } from '@/lib/device-tier';
 
 // ─── Framework Data ─────────────────────────────────────────────────────────
 
@@ -85,7 +86,9 @@ function buildBezierPath(node: FrameworkNode): string {
  */
 function TrustHeroVisualInner() {
   const shouldReduceMotion = useReducedMotion();
-  const sa = !shouldReduceMotion; // shouldAnimate
+  const tierConfig = useDeviceTier();
+  const sa =
+    !shouldReduceMotion && tierConfig.tier === 'high' && !tierConfig.isTouch; // shouldAnimate
   const { mouseX, mouseY, isActive } = useCursorPosition();
 
   // Constellation tilt from cursor (±4°)

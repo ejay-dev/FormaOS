@@ -30,7 +30,8 @@ export function ProductScrollHero() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
   const tierConfig = useDeviceTier();
-  const sa = !prefersReduced;
+  const sa =
+    !prefersReduced && tierConfig.tier === 'high' && !tierConfig.isTouch;
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,

@@ -10,9 +10,10 @@ import {
   ArrowRight,
   CheckCircle,
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { brand } from '@/config/brand';
+import { useDeviceTier } from '@/lib/device-tier';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -56,15 +57,22 @@ const ndisFeatures = [
 ];
 
 export function NDISDeepDive() {
+  const shouldReduceMotion = useReducedMotion();
+  const tierConfig = useDeviceTier();
+  const allowAmbientMotion =
+    !shouldReduceMotion && tierConfig.tier === 'high' && !tierConfig.isTouch;
+
   return (
     <section className="relative py-32 overflow-hidden">
       {/* Ambient Background */}
       <motion.div
         className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-pink-500/5 via-transparent to-purple-500/5"
-        animate={{
-          opacity: [0.5, 0.8, 0.5],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+        animate={allowAmbientMotion ? { opacity: [0.5, 0.8, 0.5] } : undefined}
+        transition={
+          allowAmbientMotion
+            ? { duration: 10, repeat: Infinity, ease: 'easeInOut' }
+            : undefined
+        }
       />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">

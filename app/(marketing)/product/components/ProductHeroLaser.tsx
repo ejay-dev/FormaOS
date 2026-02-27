@@ -3,6 +3,7 @@
 import { memo, useEffect, useState } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { LaserFlow } from '@/components/motion/LaserFlow';
+import { useDeviceTier } from '@/lib/device-tier';
 
 /**
  * ProductHeroLaser
@@ -15,6 +16,7 @@ import { LaserFlow } from '@/components/motion/LaserFlow';
 
 function ProductHeroLaserInner() {
   const prefersReduced = useReducedMotion();
+  const tierConfig = useDeviceTier();
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
@@ -27,11 +29,13 @@ function ProductHeroLaserInner() {
 
   const { scrollYProgress } = useScroll();
   const laserY = useTransform(scrollYProgress, [0, 1], [0, 52]);
-  const showWebGL = isDesktop && !prefersReduced;
+  const allowPremiumMotion =
+    !prefersReduced && tierConfig.tier === 'high' && !tierConfig.isTouch;
+  const showWebGL = isDesktop && allowPremiumMotion;
 
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }} aria-hidden>
-      <motion.div className="absolute inset-0" style={prefersReduced ? undefined : { y: laserY }}>
+      <motion.div className="absolute inset-0" style={allowPremiumMotion ? { y: laserY } : undefined}>
         <div
           className="absolute left-1/2 -translate-x-1/2"
           style={{

@@ -18,6 +18,7 @@ import {
 import type { MotionValue } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
+import { useDeviceTier } from '@/lib/device-tier';
 
 /** Inline pulse color values for each industry (Tailwind can't animate these dynamically) */
 const pulseColors: Record<string, string> = {
@@ -321,7 +322,7 @@ function CardFrontContent({
               transition={{
                 duration: 2.5,
                 delay: index * 0.4,
-                repeat: Infinity,
+                repeat: reducedMotion ? 0 : Infinity,
                 ease: 'easeInOut',
               }}
             />
@@ -360,29 +361,34 @@ function CardFrontContent({
 /* ------------------------------------------------------------------ */
 export function IndustryVerticals() {
   const prefersReducedMotion = useReducedMotion();
-  const reducedMotion = prefersReducedMotion ?? false;
+  const tierConfig = useDeviceTier();
+  const reducedMotion =
+    Boolean(prefersReducedMotion) ||
+    tierConfig.tier !== 'high' ||
+    tierConfig.isTouch;
+  const allowAmbientMotion = !reducedMotion;
 
   return (
     <section className="relative py-32 overflow-hidden">
       {/* Ambient Background */}
       <motion.div
         className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-gradient-to-l from-blue-500/10 to-transparent rounded-full blur-3xl"
-        animate={{
-          opacity: [0.3, 0.5, 0.3],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+        animate={allowAmbientMotion ? { opacity: [0.3, 0.5, 0.3] } : undefined}
+        transition={allowAmbientMotion ? { duration: 10, repeat: Infinity, ease: 'easeInOut' } : undefined}
       />
       <motion.div
         className="absolute bottom-1/4 left-0 w-[600px] h-[600px] bg-gradient-to-r from-emerald-500/10 to-transparent rounded-full blur-3xl"
-        animate={{
-          opacity: [0.2, 0.4, 0.2],
-        }}
-        transition={{
-          duration: 12,
-          repeat: Infinity,
-          ease: 'easeInOut',
-          delay: 3,
-        }}
+        animate={allowAmbientMotion ? { opacity: [0.2, 0.4, 0.2] } : undefined}
+        transition={
+          allowAmbientMotion
+            ? {
+                duration: 12,
+                repeat: Infinity,
+                ease: 'easeInOut',
+                delay: 3,
+              }
+            : undefined
+        }
       />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">

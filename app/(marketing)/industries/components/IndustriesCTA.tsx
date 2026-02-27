@@ -1,24 +1,38 @@
 'use client';
 
 import { Building2, ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { brand } from '@/config/brand';
+import { useDeviceTier } from '@/lib/device-tier';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 export function IndustriesCTA() {
+  const shouldReduceMotion = useReducedMotion();
+  const tierConfig = useDeviceTier();
+  const allowAmbientMotion =
+    !shouldReduceMotion && tierConfig.tier === 'high' && !tierConfig.isTouch;
+
   return (
     <section className="relative py-32 overflow-hidden">
       {/* Premium Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-gradient-to-r from-emerald-500/10 via-cyan-500/5 to-blue-500/10 rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+          animate={
+            allowAmbientMotion
+              ? {
+                  scale: [1, 1.1, 1],
+                  opacity: [0.3, 0.5, 0.3],
+                }
+              : undefined
+          }
+          transition={
+            allowAmbientMotion
+              ? { duration: 15, repeat: Infinity, ease: 'easeInOut' }
+              : undefined
+          }
         />
       </div>
 

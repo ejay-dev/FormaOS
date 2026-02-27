@@ -8,6 +8,7 @@ import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { TrustHero } from './components';
 import { FrameworkTrustStrip } from '@/components/marketing/FrameworkTrustStrip';
+import { useDeviceTier } from '@/lib/device-tier';
 
 const TrustModules = dynamic(
   () => import('./components/TrustModules').then((m) => m.TrustModules),
@@ -30,21 +31,28 @@ const QuestionnaireAccelerator = dynamic(
 /** Page-level decorative compliance wire paths that draw on scroll */
 function TrustWirePaths() {
   const prefersReducedMotion = useReducedMotion();
+  const tierConfig = useDeviceTier();
   const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll();
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start start', 'end end'],
+  });
+
+  const shouldRenderWires =
+    !prefersReducedMotion && tierConfig.tier === 'high' && !tierConfig.isTouch;
 
   const wire1 = useTransform(scrollYProgress, [0, 0.4], [0, 1]);
   const wire2 = useTransform(scrollYProgress, [0.15, 0.6], [0, 1]);
   const wire3 = useTransform(scrollYProgress, [0.3, 0.8], [0, 1]);
   const wire4 = useTransform(scrollYProgress, [0.5, 1], [0, 1]);
 
-  if (prefersReducedMotion) return null;
+  if (!shouldRenderWires) return null;
 
   return (
     <div
       ref={ref}
-      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
-      style={{ opacity: 0.2 }}
+      className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[120vh] overflow-hidden"
+      style={{ opacity: 0.18 }}
     >
       <svg
         className="absolute inset-0 h-full w-full"

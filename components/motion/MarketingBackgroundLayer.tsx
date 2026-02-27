@@ -25,9 +25,14 @@ function MarketingBackgroundLayerInner() {
   const { snapshot } = useControlPlaneRuntime();
   const runtime = snapshot?.marketing.runtime ?? DEFAULT_RUNTIME_MARKETING.runtime;
   const expensiveEffectsEnabled = runtime.expensiveEffectsEnabled;
+  const allowScrollDepthParallax =
+    !shouldReduceMotion &&
+    expensiveEffectsEnabled &&
+    tierConfig.tier === 'high' &&
+    !tierConfig.isTouch;
 
   useEffect(() => {
-    if (shouldReduceMotion || !expensiveEffectsEnabled) return;
+    if (!allowScrollDepthParallax) return;
 
     let rafId = 0;
 
@@ -50,7 +55,7 @@ function MarketingBackgroundLayerInner() {
       if (rafId) window.cancelAnimationFrame(rafId);
       document.documentElement.style.removeProperty('--mk-scroll-depth');
     };
-  }, [shouldReduceMotion, expensiveEffectsEnabled]);
+  }, [allowScrollDepthParallax]);
 
   useEffect(() => {
     if (shouldReduceMotion || !expensiveEffectsEnabled) return;

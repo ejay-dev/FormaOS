@@ -1,9 +1,18 @@
 'use client';
 
 import { memo, useRef } from 'react';
-import { motion, useReducedMotion, useTransform, useAnimationFrame, useMotionValue, type MotionValue } from 'framer-motion';
+import {
+  motion,
+  useReducedMotion,
+  useTransform,
+  useAnimationFrame,
+  useMotionValue,
+  useInView,
+  type MotionValue,
+} from 'framer-motion';
 import { useCursorPosition } from '@/components/motion/CursorContext';
 import { easing, duration } from '@/config/motion';
+import { useDeviceTier } from '@/lib/device-tier';
 
 const signatureEase = [...easing.signature] as [number, number, number, number];
 
@@ -65,26 +74,37 @@ const TILE_SIZE = 130; // px
  * Cursor tilts the orbital plane. Tiles at different Z depths.
  */
 function IndustriesHeroVisualInner() {
+  const visualRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
-  const sa = !shouldReduceMotion;
+  const tierConfig = useDeviceTier();
+  const isInView = useInView(visualRef, { amount: 0.2 });
+  const allowOrbitMotion =
+    !shouldReduceMotion &&
+    tierConfig.tier === 'high' &&
+    !tierConfig.isTouch &&
+    isInView;
+  const sa = allowOrbitMotion;
   const cursor = useCursorPosition();
 
   // Slow auto-rotation angle (degrees)
   const orbitAngle = useMotionValue(0);
   const speedRef = useRef(0.12); // degrees per frame (~30s per orbit at 60fps)
 
-  useAnimationFrame(() => {
-    if (shouldReduceMotion) return;
-    orbitAngle.set(orbitAngle.get() + speedRef.current);
+  useAnimationFrame((_, delta) => {
+    if (!allowOrbitMotion) return;
+    orbitAngle.set(orbitAngle.get() + speedRef.current * (delta / 16.67));
   });
 
   // Cursor-reactive tilt on the orbital plane
   const tiltX = useTransform(cursor.mouseY, [0, 1], [-4, 4]);
   const tiltY = useTransform(cursor.mouseX, [0, 1], [4, -4]);
 
-  if (shouldReduceMotion) {
+  if (!allowOrbitMotion) {
     return (
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+      <div
+        ref={visualRef}
+        className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden"
+      >
         <div className="hidden lg:block relative w-[550px] h-[400px] xl:w-[600px] xl:h-[440px]">
           {SECTORS.map((sector) => {
             const rad = (sector.angle * Math.PI) / 180;
@@ -112,7 +132,10 @@ function IndustriesHeroVisualInner() {
   }
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+    <div
+      ref={visualRef}
+      className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden"
+    >
       <div className="hidden lg:flex items-center justify-center relative w-[550px] h-[400px] xl:w-[600px] xl:h-[440px]">
         {/* 3D orbital container */}
         <motion.div
