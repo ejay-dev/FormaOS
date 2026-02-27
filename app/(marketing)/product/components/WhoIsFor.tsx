@@ -14,7 +14,7 @@ const audiences = [
 
 export function WhoIsFor() {
   return (
-    <section className="relative py-32 overflow-hidden">
+    <section className="product-section product-section--core relative py-32 overflow-hidden">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="blurIn" range={[0, 0.35]}>
           <div className="text-center mb-12">
@@ -38,7 +38,7 @@ export function WhoIsFor() {
           {audiences.map((audience) => {
             const Icon = audience.icon;
             return (
-              <div key={audience.label} className="flex items-center gap-3 px-5 py-3 rounded-full bg-gradient-to-r from-teal-500/10 to-emerald-500/10 border border-teal-500/20">
+              <div key={audience.label} className="product-chip flex items-center gap-3 px-5 py-3 rounded-full bg-gradient-to-r from-teal-500/10 to-emerald-500/10 border border-teal-500/20">
                 <Icon className="w-4 h-4 text-teal-400" />
                 <span className="text-sm text-gray-300">{audience.label}</span>
               </div>

@@ -44,7 +44,7 @@ export function ObligationToExecution() {
   const nodeThresholds = [0.18, 0.30, 0.42, 0.54];
 
   return (
-    <section ref={sectionRef} className="relative py-32 overflow-hidden">
+    <section ref={sectionRef} className="product-section product-section--process relative py-32 overflow-hidden">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.35]}>
           <div className="text-center mb-16">
@@ -118,7 +118,7 @@ export function ObligationToExecution() {
               {!prefersReducedMotion && (
                 <NodeGlow progress={scrollYProgress} threshold={nodeThresholds[index]} />
               )}
-              <div className="relative z-10 backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-violet-500/30 transition-all">
+              <div className="product-panel product-panel--interactive relative z-10 backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-violet-500/30 transition-all">
                 <div className={`inline-flex px-3 py-1 rounded-full bg-gradient-to-r ${item.color} text-white text-xs font-semibold mb-4`}>
                   {item.step}
                 </div>
@@ -138,21 +138,23 @@ export function ObligationToExecution() {
 
         <ScrollReveal variant="depthSlide" range={[0.1, 0.4]}>
           <div className="mt-12 max-w-2xl mx-auto">
-            <DemoComplianceChain glowColor="from-purple-500/15 to-pink-500/15" />
+            <div className="product-panel product-panel--strong rounded-2xl p-2">
+              <DemoComplianceChain glowColor="from-purple-500/15 to-pink-500/15" />
+            </div>
           </div>
         </ScrollReveal>
 
         <ScrollReveal variant="perspectiveUp" range={[0.12, 0.42]}>
           <div className="mt-12 grid sm:grid-cols-3 gap-6 text-center">
-            <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
+            <div className="product-panel product-panel--soft flex items-center justify-center gap-2 rounded-xl p-4 text-sm text-gray-400">
               <Activity className="w-4 h-4 text-violet-400" />
               Every action is tracked
             </div>
-            <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
+            <div className="product-panel product-panel--soft flex items-center justify-center gap-2 rounded-xl p-4 text-sm text-gray-400">
               <UserCheck className="w-4 h-4 text-purple-400" />
               Every control has an owner
             </div>
-            <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
+            <div className="product-panel product-panel--soft flex items-center justify-center gap-2 rounded-xl p-4 text-sm text-gray-400">
               <CheckCircle className="w-4 h-4 text-fuchsia-400" />
               Every outcome is provable
             </div>

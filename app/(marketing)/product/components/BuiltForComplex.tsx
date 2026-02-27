@@ -13,10 +13,10 @@ const scales = [
 
 export function BuiltForComplex() {
   return (
-    <section className="relative py-32 overflow-hidden">
+    <section className="product-section product-section--core relative py-32 overflow-hidden">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="depthSlide" range={[0, 0.35]}>
-          <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 sm:p-12 text-center">
+          <div className="product-panel product-panel--strong backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 sm:p-12 text-center">
             <ScrollReveal variant="depthScale" range={[0, 0.3]}>
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm font-medium mb-6">
                 <Building2 className="w-4 h-4" />
@@ -35,7 +35,7 @@ export function BuiltForComplex() {
               {scales.map((scale) => {
                 const Icon = scale.icon;
                 return (
-                  <div key={scale.label} className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/5">
+                  <div key={scale.label} className="product-panel product-panel--soft flex items-center gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/5">
                     <Icon className="w-5 h-5 text-indigo-400" />
                     <span className="text-sm text-gray-300">{scale.label}</span>
                   </div>

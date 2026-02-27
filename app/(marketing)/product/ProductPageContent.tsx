@@ -73,7 +73,7 @@ export default function ProductPageContent() {
   const showcaseRef = useRef<HTMLDivElement>(null);
 
   return (
-    <MarketingPageShell>
+    <MarketingPageShell className="product-page-flow">
       {/* Hero + Showcase wrapper — laser sits behind both,
           beam "lands" on the showcase panel's top edge */}
       <div className="relative">

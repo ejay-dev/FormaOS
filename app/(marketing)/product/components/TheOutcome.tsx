@@ -15,7 +15,7 @@ const outcomes = [
 
 export function TheOutcome() {
   return (
-    <section className="relative py-32 overflow-hidden">
+    <section className="product-section product-section--core relative py-32 overflow-hidden">
       <motion.div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-teal-500/10 to-emerald-500/10 rounded-full blur-3xl"
         animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
@@ -24,7 +24,7 @@ export function TheOutcome() {
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="perspectiveUp" range={[0, 0.35]}>
-          <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 sm:p-12">
+          <div className="product-panel product-panel--strong backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 sm:p-12">
             <div className="text-center mb-10">
               <ScrollReveal variant="depthScale" range={[0, 0.3]}>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-6">
@@ -40,7 +40,7 @@ export function TheOutcome() {
 
             <SectionChoreography pattern="cascade" stagger={0.04} className="grid sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
               {outcomes.map((outcome) => (
-                <div key={outcome} className="flex items-center gap-3">
+                <div key={outcome} className="product-panel product-panel--soft flex items-center gap-3 rounded-xl px-4 py-3">
                   <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0" />
                   <span className="text-gray-300">{outcome}</span>
                 </div>

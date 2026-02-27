@@ -73,7 +73,7 @@ const intelligenceFeatures = [
 
 export function ComplianceIntelligence() {
   return (
-    <section className="relative py-32 overflow-hidden">
+    <section className="product-section product-section--core relative py-32 overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="blurIn" range={[0, 0.35]}>
           <div className="text-center mb-16">
@@ -101,14 +101,16 @@ export function ComplianceIntelligence() {
 
         <div className="grid lg:grid-cols-5 gap-8 items-start">
           <ScrollReveal variant="splitLeft" range={[0, 0.35]} className="lg:col-span-2">
-            <DemoComplianceScore glowColor="from-green-500/15 to-emerald-500/15" />
+            <div className="product-panel product-panel--strong rounded-2xl p-2">
+              <DemoComplianceScore glowColor="from-green-500/15 to-emerald-500/15" />
+            </div>
           </ScrollReveal>
 
           <SectionChoreography pattern="cascade" stagger={0.04} className="lg:col-span-3 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {intelligenceFeatures.map((feature) => {
               const Icon = feature.icon;
               return (
-                <div key={feature.label} className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-5 hover:border-green-500/30 transition-all">
+                <div key={feature.label} className="product-panel product-panel--interactive backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-5 hover:border-green-500/30 transition-all">
                   <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center mb-3">
                     <Icon className="w-5 h-5 text-green-400" />
                   </div>

@@ -15,7 +15,7 @@ export function WhatIsFormaOS() {
   ];
 
   return (
-    <section className="relative py-32 overflow-hidden">
+    <section className="product-section product-section--core relative py-32 overflow-hidden">
       <motion.div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-teal-500/10 to-emerald-500/10 rounded-full blur-3xl"
         animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
@@ -48,7 +48,7 @@ export function WhatIsFormaOS() {
         </ScrollReveal>
 
         <ScrollReveal variant="blurIn" range={[0.05, 0.4]}>
-          <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 sm:p-12">
+          <div className="product-panel product-panel--strong backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 sm:p-12">
             <h3 className="text-xl font-semibold text-white text-center mb-8">
               FormaOS unifies:
             </h3>
@@ -57,7 +57,7 @@ export function WhatIsFormaOS() {
               {unifies.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <div key={item.label} className="flex flex-col items-center text-center group">
+                  <div key={item.label} className="product-panel product-panel--soft flex flex-col items-center text-center group rounded-2xl px-3 py-4">
                     <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-500/20 to-emerald-500/10 border border-teal-500/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                       <Icon className="w-6 h-6 text-teal-400" />
                     </div>

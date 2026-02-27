@@ -45,7 +45,7 @@ export function ProductScrollHero() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen flex items-center overflow-hidden"
+      className="product-section product-section--hero relative min-h-screen flex items-center overflow-hidden"
     >
       {/* Atmosphere */}
       <HeroAtmosphere topColor="violet" bottomColor="blue" particleIntensity="normal" />
@@ -81,7 +81,7 @@ export function ProductScrollHero() {
               initial={sa ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={sa ? { duration: duration.slow, delay: 0.15, ease: signatureEase } : { duration: 0 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/25 mb-6 backdrop-blur-sm"
+              className="product-chip inline-flex items-center gap-2 px-4 py-2 mb-6 backdrop-blur-sm"
             >
               <Sparkles className="w-4 h-4 text-violet-400" />
               <span className="text-sm text-violet-400 font-medium tracking-wide">Compliance Operating System</span>
@@ -148,7 +148,7 @@ export function ProductScrollHero() {
                 return (
                   <div
                     key={cap.label}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-sm text-white/60"
+                    className="product-chip flex items-center gap-2 px-3 py-1.5 text-sm text-white/70"
                   >
                     <Icon className="w-3.5 h-3.5 text-white/40" />
                     {cap.label}
@@ -180,7 +180,7 @@ export function ProductScrollHero() {
 
               {/* Product preview card */}
               <div
-                className="relative rounded-2xl sm:rounded-3xl border border-white/[0.1] bg-gradient-to-br from-white/[0.07] to-white/[0.02] shadow-[0_0_80px_rgba(139,92,246,0.08),0_24px_48px_rgba(0,0,0,0.4)] overflow-hidden"
+                className="product-panel product-panel--strong relative rounded-2xl sm:rounded-3xl border border-white/[0.1] bg-gradient-to-br from-white/[0.07] to-white/[0.02] shadow-[0_0_80px_rgba(139,92,246,0.08),0_24px_48px_rgba(0,0,0,0.4)] overflow-hidden"
                 style={{ backdropFilter: tierConfig.enableBlur ? 'blur(14px)' : undefined }}
               >
                 {/* Browser chrome */}

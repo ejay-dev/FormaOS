@@ -9,10 +9,10 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 export function FinalCTA() {
   return (
-    <section className="relative py-32 overflow-hidden">
+    <section className="product-section product-section--cta relative py-32 overflow-hidden">
       <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.35]}>
-          <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+          <div className="product-panel product-panel--strong backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
             <div className="bg-gradient-to-r from-white/[0.08] to-white/[0.04] border-b border-white/10 px-8 sm:px-12 py-10 text-center">
               <ScrollReveal variant="blurIn" range={[0.02, 0.35]}>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white">
@@ -54,15 +54,15 @@ export function FinalCTA() {
 
               <ScrollReveal variant="perspectiveUp" range={[0.1, 0.42]}>
                 <div className="flex flex-wrap items-center justify-center gap-6 mt-8 text-sm text-gray-500">
-                  <span className="flex items-center gap-2">
+                  <span className="product-panel product-panel--soft flex items-center gap-2 rounded-full px-3 py-1.5">
                     <CheckCircle className="w-4 h-4 text-green-400" />
                     14-day free trial
                   </span>
-                  <span className="flex items-center gap-2">
+                  <span className="product-panel product-panel--soft flex items-center gap-2 rounded-full px-3 py-1.5">
                     <CheckCircle className="w-4 h-4 text-green-400" />
                     No credit card required
                   </span>
-                  <span className="flex items-center gap-2">
+                  <span className="product-panel product-panel--soft flex items-center gap-2 rounded-full px-3 py-1.5">
                     <CheckCircle className="w-4 h-4 text-green-400" />
                     Full platform access
                   </span>

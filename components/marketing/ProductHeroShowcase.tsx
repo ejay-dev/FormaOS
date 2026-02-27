@@ -36,7 +36,7 @@ export function ProductShowcase() {
   return (
     <motion.section
       ref={containerRef}
-      className="relative pt-8 sm:pt-12 pb-12 sm:pb-16 overflow-hidden"
+      className="product-section product-section--signal relative pt-8 sm:pt-12 pb-12 sm:pb-16 overflow-hidden"
       style={{ opacity: sectionOpacity }}
       aria-label="Interactive product demo"
     >
@@ -53,7 +53,7 @@ export function ProductShowcase() {
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-12">
         <div
-          className="relative rounded-2xl overflow-hidden"
+          className="product-panel product-panel--strong relative rounded-2xl overflow-hidden"
           style={{
             height: 'clamp(400px, 55vh, 640px)',
             boxShadow: '0 0 80px rgba(45,212,191,0.08), 0 0 160px rgba(45,212,191,0.04), 0 32px 64px rgba(0,0,0,0.4)',

@@ -56,7 +56,7 @@ function FlipCard({ item, index }: { item: typeof differentiators[number]; index
     return (
       <motion.div
         whileHover={{ y: -4 }}
-        className={`group relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 border border-white/5 hover:border-orange-500/30 transition-all cursor-pointer backdrop-blur-sm ${index === 4 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
+        className={`product-panel product-panel--interactive group relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 border border-white/5 hover:border-orange-500/30 transition-all cursor-pointer backdrop-blur-sm ${index === 4 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
       >
         <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${item.color} mb-5 group-hover:scale-110 transition-transform`}>
           <Icon className="w-6 h-6 text-white" />
@@ -86,7 +86,7 @@ function FlipCard({ item, index }: { item: typeof differentiators[number]; index
       >
         {/* Front face */}
         <div
-          className="group relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 border border-white/5 hover:border-orange-500/30 transition-all backdrop-blur-sm"
+          className="product-panel group relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 border border-white/5 hover:border-orange-500/30 transition-all backdrop-blur-sm"
           style={{ backfaceVisibility: 'hidden' }}
         >
           <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${item.color} mb-5 group-hover:scale-110 transition-transform`}>
@@ -107,7 +107,7 @@ function FlipCard({ item, index }: { item: typeof differentiators[number]; index
 
         {/* Back face */}
         <div
-          className="absolute inset-0 p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 border border-orange-500/20 backdrop-blur-sm flex flex-col justify-center"
+          className="product-panel absolute inset-0 p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 border border-orange-500/20 backdrop-blur-sm flex flex-col justify-center"
           style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
         >
           <div className={`inline-flex p-2 rounded-lg bg-gradient-to-br ${item.color} mb-4 w-fit`}>
@@ -132,7 +132,7 @@ function FlipCard({ item, index }: { item: typeof differentiators[number]; index
 
 export function WhatMakesDifferent() {
   return (
-    <section className="relative py-32 overflow-hidden">
+    <section className="product-section product-section--core relative py-32 overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="blurIn" range={[0, 0.35]}>
           <div className="text-center mb-16">
