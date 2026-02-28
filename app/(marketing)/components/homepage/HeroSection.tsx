@@ -437,16 +437,8 @@ export function HeroSection() {
               initial={shouldAnimateIntro ? { opacity: 0 } : false}
               animate={{ opacity: 1 }}
               transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.6 } : { duration: 0 }}
-              className="mx-auto mb-7 sm:mb-9 max-w-3xl text-center"
+              className="mx-auto mb-8 sm:mb-10 max-w-3xl text-center"
             >
-              <p className="mb-3 text-sm uppercase tracking-[0.16em] text-slate-200/90">
-                Structure → Operationalize → Validate → Defend
-              </p>
-              <p className="mb-4 text-xs sm:text-sm text-slate-300/85">
-                Used by compliance teams. Aligned to ISO/SOC frameworks. Built for
-                audit defensibility in regulated environments.
-              </p>
-
               <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 text-xs text-slate-200">
                 {SIGNAL_PILLS.map((pill) => (
                   <span
@@ -459,8 +451,6 @@ export function HeroSection() {
                 ))}
               </div>
             </motion.div>
-
-            <CommandDeck motionEnabled={shouldAnimateIntro} />
 
             <motion.div
               style={heroCtaStyle}
