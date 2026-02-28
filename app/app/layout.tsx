@@ -19,6 +19,7 @@ import { ControlPlaneRuntimeProvider } from '@/lib/control-plane/runtime-client'
 import { RuntimeOpsGuard } from '@/components/control-plane/runtime-ops-guard';
 import { RuntimeDebugIndicator } from '@/components/control-plane/runtime-debug-indicator';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { FeedbackWidget } from '@/components/feedback/FeedbackWidget';
 
 const log = routeLog('app/layout');
 
@@ -193,6 +194,7 @@ export default async function AppLayout({
             <UpgradeSuggestionEngine />
             <HelpAssistant />
             <SecurityTrackingBootstrap />
+            <FeedbackWidget />
             <RuntimeDebugIndicator />
           </div>
         </AppProviders>

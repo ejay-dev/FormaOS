@@ -20,6 +20,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/pricing`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Pricing — Compliance Management Software | FormaOS',
+    description:
+      'Transparent pricing for compliance management. Free 14-day trial, no setup fees, cancel anytime.',
+  },
 };
 
 export default function PricingPage() {

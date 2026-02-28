@@ -17,6 +17,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/compare/drata`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FormaOS vs Drata — Compare Compliance Platforms',
+    description:
+      'FormaOS vs Drata: operational workflow governance with evidence verification and audit-ready execution.',
+  },
 };
 
 const points = [

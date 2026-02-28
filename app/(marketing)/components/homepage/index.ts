@@ -11,3 +11,4 @@ export { ObjectionHandlingSection } from './ObjectionHandlingSection';
 export { ProcurementFlowSection } from './ProcurementFlowSection';
 export { CTASection } from './CTASection';
 export { TrustSection } from './TrustSection';
+export { TestimonialsSection } from './TestimonialsSection';

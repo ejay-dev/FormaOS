@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import ProductPageContent from "./ProductPageContent";
-import { breadcrumbSchema } from "@/lib/seo";
+import { breadcrumbSchema, aggregateRatingSchema, videoObjectSchema } from "@/lib/seo";
 
 export const dynamic = 'force-static';
 
@@ -20,6 +20,12 @@ export const metadata: Metadata = {
     type: "website",
     url: `${siteUrl}/product`,
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Compliance Operating System Platform | FormaOS",
+    description:
+      "See how FormaOS links policies, tasks, evidence, and audit readiness into a defensible compliance workflow.",
+  },
 };
 
 export default function ProductPage() {
@@ -28,12 +34,21 @@ export default function ProductPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
+          __html: JSON.stringify([
             breadcrumbSchema([
               { name: "Home", path: "/" },
               { name: "Product", path: "/product" },
-            ])
-          ),
+            ]),
+            aggregateRatingSchema(),
+            videoObjectSchema({
+              name: "FormaOS — Compliance Operating System Demo",
+              description:
+                "See how FormaOS connects policies, tasks, evidence, and audit readiness into a single defensible compliance workflow for regulated organizations.",
+              thumbnailUrl: "/og-image.png",
+              uploadDate: "2025-01-01",
+              duration: "PT3M",
+            }),
+          ]),
         }}
       />
       <ProductPageContent />

@@ -65,6 +65,10 @@ const TrustSection = dynamic(() => import('./homepage/TrustSection').then((m) =>
   ssr: false,
   loading: () => null,
 });
+const TestimonialsSection = dynamic(
+  () => import('./homepage/TestimonialsSection').then((m) => m.TestimonialsSection),
+  { ssr: false, loading: () => null },
+);
 // Interactive demo components (lazy-loaded, client-only)
 const InteractiveDemo = dynamic(
   () => import('@/components/marketing/demo/InteractiveDemo'),
@@ -210,6 +214,10 @@ export default function FormaOSHomepage() {
           {sectionVisibility.outcome_proof !== false ? (
             renderSection('outcome_proof', <OutcomeProofSection />, 620)
           ) : null}
+          {/* Social proof — always shown; not gated by control plane */}
+          <DeferredSection minHeight={520}>
+            <TestimonialsSection />
+          </DeferredSection>
           {sectionVisibility.objection_handling !== false ? (
             renderSection('objection_handling', <ObjectionHandlingSection />, 620)
           ) : null}

@@ -2,6 +2,9 @@ import type { NextConfig } from 'next';
 import { withSentryConfig } from '@sentry/nextjs';
 
 const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  poweredByHeader: false,
+
   generateBuildId: async () => {
     // Deterministic build ID based on timestamp for cache invalidation
     return `build-${Date.now()}`;

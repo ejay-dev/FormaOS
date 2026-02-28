@@ -20,6 +20,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/security`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Security & Compliance Infrastructure | FormaOS',
+    description:
+      'Enterprise-grade encryption, immutable audit trails, role-based access, and SSO for regulated data.',
+  },
 };
 
 const securityFaqItems = [

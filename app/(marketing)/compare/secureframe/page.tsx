@@ -17,6 +17,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/compare/secureframe`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FormaOS vs Secureframe — Compare Compliance Platforms',
+    description:
+      'FormaOS vs Secureframe: compliance program setup plus operational execution with evidence verification and audit-ready governance.',
+  },
 };
 
 const points = [
