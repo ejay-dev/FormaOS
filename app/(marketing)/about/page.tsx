@@ -20,6 +20,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/about`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About FormaOS — Our Mission for Regulated Industries',
+    description:
+      'Why FormaOS exists: building the compliance operating system for regulated teams who need defensible audit evidence.',
+  },
 };
 
 export default function AboutPage() {

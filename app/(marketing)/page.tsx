@@ -20,6 +20,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl.replace(/\/$/, '')}/`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FormaOS | Turn Process Into Provable Truth',
+    description:
+      'Enterprise-grade process evidence platform for regulated industries. Model workflows, execute with precision, verify in real-time, prove compliance.',
+  },
 };
 
 export default function HomePage() {

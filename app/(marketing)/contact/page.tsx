@@ -16,6 +16,11 @@ export const metadata: Metadata = {
     type: "website",
     url: `${siteUrl}/contact`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Contact FormaOS — Request a Demo',
+    description: 'Request a personalized demo or get in touch with the FormaOS team.',
+  },
 };
 
 export default function ContactPage() {

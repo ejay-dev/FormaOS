@@ -18,6 +18,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/compare`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Compare FormaOS vs Compliance Automation Tools',
+    description:
+      'See how FormaOS compares against Drata, Vanta, and Secureframe. Outcome-driven execution beats checkbox automation.',
+  },
 };
 
 export default function CompareIndexPage() {

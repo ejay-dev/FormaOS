@@ -18,6 +18,12 @@ export const metadata: Metadata = {
     type: 'article',
     url: `${siteUrl.replace(/\/$/, '')}/our-story`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Our Story | FormaOS',
+    description:
+      'Why FormaOS exists and how we are building a compliance operating system for regulated teams.',
+  },
 };
 
 export default function OurStoryPage() {
