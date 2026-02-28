@@ -28,7 +28,7 @@ export default function VendorAssurancePage() {
     <MarketingPageShell>
       <CompactHero
         title="Vendor Assurance"
-        description="This page describes our vendor assurance process and the artifacts we provide during procurement. We do not claim SOC 2 or ISO certification for FormaOS unless an independent audit report exists for FormaOS as a vendor."
+        description="Vendor assurance process and procurement artifacts. FormaOS does not claim SOC 2 or ISO certification unless an independent report exists."
         topColor="emerald"
         bottomColor="cyan"
         visualContent={<CompactHeroIcon icon={<ShieldCheck className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
@@ -139,4 +139,3 @@ export default function VendorAssurancePage() {
     </MarketingPageShell>
   );
 }
-

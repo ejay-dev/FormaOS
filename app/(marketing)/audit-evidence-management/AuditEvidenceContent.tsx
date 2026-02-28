@@ -16,7 +16,7 @@ export default function AuditEvidenceContent() {
           </span>
         </>
       }
-      subheadline="Stop reconstructing evidence before audits. FormaOS captures immutable evidence as work happens, links it to compliance controls, and generates auditor-ready packages on demand."
+      subheadline="Capture immutable evidence during daily operations, map it to controls, and export auditor-ready packages on demand."
       introParagraphs={[
         'Audit evidence is the currency of compliance. Without organized, verifiable evidence, controls are just claims. With it, you demonstrate that your organization actually does what it says it does.',
         'The fundamental problem with audit evidence isn\'t collection — it\'s timing. When evidence is gathered after the fact, retroactively assembled from email threads, screenshots, and spreadsheets, it\'s incomplete, inconsistent, and unconvincing. Auditors can tell the difference between evidence that was captured in real-time and evidence that was reconstructed for an audit.',

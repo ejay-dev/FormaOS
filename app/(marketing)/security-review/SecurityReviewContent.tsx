@@ -87,9 +87,9 @@ export default function SecurityReviewContent() {
         visualContent={<SecurityReviewHeroVisual />}
         badge={{ icon: <ShieldCheck className="h-4 w-4" />, text: 'Procurement Ready' }}
         headline="Security Review Packet for Enterprise Buyers"
-        subheadline="Security review should not stall your deal cycle. FormaOS is designed to be reviewable: clear architecture, controlled evidence handling, and audit-ready operational assurance."
-        primaryCta={{ href: '/contact', label: 'Request Security Review Walkthrough' }}
-        secondaryCta={{ href: `${appBase}/auth/signup?source=security_review`, label: 'Start Trial (Trust-Ready)' }}
+        subheadline="Accelerate buyer due diligence with clear architecture, controlled evidence handling, and contract-aligned security answers."
+        primaryCta={{ href: '/contact', label: 'Security Walkthrough' }}
+        secondaryCta={{ href: `${appBase}/auth/signup?source=security_review`, label: 'Start Trust-Ready Trial' }}
       />
 
       <VisualDivider />

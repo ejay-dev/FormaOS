@@ -16,7 +16,7 @@ export default function IsoContent() {
           </span>
         </>
       }
-      subheadline="Stop treating ISO certification as a yearly project. FormaOS maps Annex A controls to operational workflows, captures evidence continuously, and keeps your ISMS audit-ready every day."
+      subheadline="Map ISO 27001 Annex A controls to live workflows and keep your ISMS audit-ready year-round."
       introParagraphs={[
         'ISO 27001 certification signals to customers, partners, and regulators that your organization takes information security seriously. But maintaining that certification is where most teams struggle. The gap between passing an audit and actually operating a mature ISMS is where risk lives.',
         'Traditional approaches rely on spreadsheets, shared drives, and annual evidence-gathering sprints. Controls exist on paper but aren\'t connected to the people and processes that execute them. When the auditor arrives, teams scramble to reconstruct evidence from scattered systems.',

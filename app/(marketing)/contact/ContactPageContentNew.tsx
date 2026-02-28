@@ -34,7 +34,7 @@ function ContactHero() {
       visualContent={<ContactHeroVisual />}
       badge={{ icon: <Mail className="w-4 h-4 text-blue-400" />, text: 'Contact', colorClass: 'blue' }}
       headline={<>Let&apos;s Talk About Your<br /><span className="bg-gradient-to-r from-blue-400 via-cyan-500 to-purple-500 bg-clip-text text-transparent">Compliance Strategy</span></>}
-      subheadline="Whether you're exploring FormaOS, preparing for audits, or designing governance at scale, our team is here to help."
+      subheadline="Speak with FormaOS about rollout, security review, and enterprise governance design."
       extras={<p className="text-base text-gray-500 max-w-2xl mx-auto text-center">We work with regulated organizations that require precision, accountability, and operational proof.</p>}
       primaryCta={{ href: '#demo-form', label: 'Request a Demo' }}
       secondaryCta={{ href: '#contact-info', label: 'Contact Our Team' }}

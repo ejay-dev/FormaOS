@@ -23,7 +23,7 @@ function AboutHero() {
       visualContent={<AboutHeroVisual />}
       badge={{ icon: <Users className="w-4 h-4 text-violet-400" />, text: 'About FormaOS', colorClass: 'violet' }}
       headline={<>Built for teams<br /><span className="bg-gradient-to-r from-purple-400 via-pink-500 to-rose-500 bg-clip-text text-transparent">accountable to regulators</span></>}
-      subheadline="FormaOS exists to help regulated organizations operate with confidence. Compliance teams need more than spreadsheets. They need a defensible system that proves governance, evidence, and oversight."
+      subheadline="FormaOS helps regulated organizations run governance, controls, and evidence in one accountable operating system."
       primaryCta={{ href: '/our-story', label: 'Read Our Story' }}
       secondaryCta={{ href: '/product', label: 'See How It Works' }}
     />

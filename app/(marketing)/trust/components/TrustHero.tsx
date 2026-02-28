@@ -25,7 +25,7 @@ export function TrustHero() {
       }
       subheadline="FormaOS gives customers and auditors controlled visibility into live compliance posture, evidence integrity, and security governance artifacts."
       primaryCta={{ href: '/auth/signup?source=trust_center', label: 'Start Trust-Ready Trial' }}
-      secondaryCta={{ href: '/contact', label: 'Request Security Review Walkthrough' }}
+      secondaryCta={{ href: '/contact', label: 'Security Walkthrough' }}
     />
   );
 }

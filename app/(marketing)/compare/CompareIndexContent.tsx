@@ -73,8 +73,8 @@ export default function CompareIndexContent() {
             </span>
           </>
         }
-        subheadline="Many platforms help you prepare for an audit. FormaOS is designed to operate compliance continuously: enforce controls as workflows and keep evidence defensible by default."
-        primaryCta={{ href: '/contact', label: 'Request Evaluation Walkthrough' }}
+        subheadline="Compare platforms by execution depth: workflow-enforced controls, accountable ownership, and defensible evidence."
+        primaryCta={{ href: '/contact', label: 'Book Evaluation Demo' }}
         secondaryCta={{ href: `${appBase}/auth/signup?source=compare`, label: 'Start Free Trial' }}
       />
 

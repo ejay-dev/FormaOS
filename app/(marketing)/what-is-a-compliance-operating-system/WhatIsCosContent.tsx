@@ -26,7 +26,7 @@ export default function WhatIsCosContent() {
             ?
           </>
         }
-        subheadline="A compliance operating system is operational infrastructure that turns regulatory obligations into executable workflows, continuous evidence capture, and real-time audit readiness."
+        subheadline="A compliance operating system turns regulatory obligations into executable workflows, evidence, and continuously testable readiness."
         primaryCta={{ href: '/product', label: 'See FormaOS in Action' }}
         secondaryCta={{ href: `${appBase}/auth/signup`, label: 'Start Free Trial' }}
       />

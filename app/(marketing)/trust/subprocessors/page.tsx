@@ -31,7 +31,7 @@ export default function SubprocessorsPage() {
     <MarketingPageShell>
       <CompactHero
         title="Subprocessors"
-        description="FormaOS uses the following third-party service providers to deliver our compliance management platform. We provide 30 days advance notice before engaging new sub-processors."
+        description="Third-party providers used to deliver FormaOS. Enterprise customers receive 30 days advance notice before new subprocessor engagement."
         topColor="emerald"
         bottomColor="cyan"
         visualContent={<CompactHeroIcon icon={<Users className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}

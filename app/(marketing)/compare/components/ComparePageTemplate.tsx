@@ -55,7 +55,7 @@ export function ComparePageTemplate({
             Back to Compare
           </Link>
         }
-        primaryCta={{ href: '/contact', label: 'Request Buyer Walkthrough' }}
+        primaryCta={{ href: '/contact', label: 'Book Buyer Demo' }}
         secondaryCta={{
           href: `${appBase}/auth/signup?source=${source}`,
           label: 'Start Free Trial',

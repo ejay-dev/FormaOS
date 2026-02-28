@@ -218,7 +218,7 @@ function FAQHero() {
           </span>
         </>
       }
-      subheadline="Everything you need to know about FormaOS, from platform capabilities and security to integrations, pricing, and support."
+      subheadline="Straight answers on platform capabilities, security, integrations, pricing, and support."
       extras={
         <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600">
           {faqCategories.map((cat) => (

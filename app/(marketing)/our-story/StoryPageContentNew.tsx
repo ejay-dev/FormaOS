@@ -58,7 +58,7 @@ export function StoryHero() {
           </span>
         </>
       }
-      subheadline="FormaOS was created for teams that operate in environments where failure is not an option. Healthcare, disability services, finance, education, and government don't just need software, they need systems that can withstand scrutiny, audits, and real-world consequences."
+      subheadline="FormaOS was built for high-stakes sectors where governance must withstand audits, incidents, and real-world scrutiny."
       primaryCta={{
         href: `${appBase}/auth/signup`,
         label: 'Start Free Trial',

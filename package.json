@@ -6,6 +6,7 @@
     "check-root": "node scripts/check-root.js",
     "check-env": "node scripts/check-env.js",
     "design:check": "node scripts/design-governance-check.mjs",
+    "audit:marketing-copy": "node tests/marketing/marketing-enterprise-audit.mjs",
     "check:app-links": "node scripts/app-link-integrity-audit.mjs",
     "check:admin-nav": "node scripts/check-admin-nav-integrity.mjs",
     "check:security-baseline": "node scripts/check-security-baseline.mjs",

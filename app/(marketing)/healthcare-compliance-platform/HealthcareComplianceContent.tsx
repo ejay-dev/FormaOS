@@ -16,7 +16,7 @@ export default function HealthcareComplianceContent() {
           </span>
         </>
       }
-      subheadline="Manage NSQHS Standards, AHPRA requirements, clinical incidents, and accreditation readiness in one system. FormaOS connects clinical governance to operational execution for hospitals, clinics, and aged care providers."
+      subheadline="Run NSQHS, AHPRA, incidents, and accreditation evidence in one clinical governance operating system."
       introParagraphs={[
         'Healthcare organizations operate under some of the most demanding compliance requirements of any industry. The National Safety and Quality Health Service Standards, AHPRA practitioner requirements, state health regulations, and accreditation standards create a complex web of obligations that must be met while delivering patient care.',
         'Clinical governance isn\'t optional — it\'s the foundation that ensures patient safety, care quality, and organizational accountability. But managing governance obligations through disconnected systems creates dangerous gaps between documented procedures and actual practice.',

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect, type ReactNode } from 'react';
+import { useRef, useState, useEffect, useMemo, type ReactNode } from 'react';
 import Link from 'next/link';
 import {
   motion,
@@ -16,6 +16,7 @@ import { brand } from '@/config/brand';
 import { HeroAtmosphere } from './HeroAtmosphere';
 import { DepthStage } from './DepthStage';
 import { DepthLayer } from './DepthLayer';
+import { evaluateEnterpriseCopy } from '@/lib/marketing/enterprise-copy';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -26,9 +27,59 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 interface HeroBadge {
   icon: ReactNode;
   text: string;
-  /** Tailwind color name for badge tint (e.g. 'cyan', 'violet') */
-  colorClass?: string;
+  colorClass?: HeroBadgeTone;
 }
+
+type HeroBadgeTone =
+  | 'cyan'
+  | 'blue'
+  | 'violet'
+  | 'emerald'
+  | 'amber'
+  | 'rose'
+  | 'indigo'
+  | 'teal';
+
+const HERO_BADGE_TONE_CLASSES: Record<
+  HeroBadgeTone,
+  {
+    shell: string;
+    text: string;
+  }
+> = {
+  cyan: {
+    shell: 'bg-cyan-500/10 border-cyan-500/30',
+    text: 'text-cyan-400',
+  },
+  blue: {
+    shell: 'bg-blue-500/10 border-blue-500/30',
+    text: 'text-blue-400',
+  },
+  violet: {
+    shell: 'bg-violet-500/10 border-violet-500/30',
+    text: 'text-violet-400',
+  },
+  emerald: {
+    shell: 'bg-emerald-500/10 border-emerald-500/30',
+    text: 'text-emerald-400',
+  },
+  amber: {
+    shell: 'bg-amber-500/10 border-amber-500/30',
+    text: 'text-amber-400',
+  },
+  rose: {
+    shell: 'bg-rose-500/10 border-rose-500/30',
+    text: 'text-rose-400',
+  },
+  indigo: {
+    shell: 'bg-indigo-500/10 border-indigo-500/30',
+    text: 'text-indigo-400',
+  },
+  teal: {
+    shell: 'bg-teal-500/10 border-teal-500/30',
+    text: 'text-teal-400',
+  },
+};
 
 interface HeroCta {
   href: string;
@@ -123,6 +174,34 @@ export function ImmersiveHero({
 
   // Resolve theme
   const t: HeroTheme = typeof theme === 'string' ? getHeroTheme(theme) : theme;
+  const badgeTone = badge?.colorClass ?? 'cyan';
+  const badgeToneClasses = HERO_BADGE_TONE_CLASSES[badgeTone];
+  const copyIssues = useMemo(
+    () =>
+      evaluateEnterpriseCopy({
+        surface: 'immersive_hero',
+        badgeText: badge?.text,
+        headline,
+        subheadline,
+        primaryCtaLabel: primaryCta.label,
+        secondaryCtaLabel: secondaryCta?.label,
+      }),
+    [
+      badge?.text,
+      headline,
+      primaryCta.label,
+      secondaryCta?.label,
+      subheadline,
+    ],
+  );
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production' || copyIssues.length === 0) return;
+    for (const issue of copyIssues) {
+      // Guardrail for marketing copy quality during local iteration.
+      console.warn(`[ImmersiveHero copy] ${issue.message}`, issue);
+    }
+  }, [copyIssues]);
 
   // ─── Scroll exit transforms ───
   const { scrollYProgress } = useScroll({
@@ -252,10 +331,10 @@ export function ImmersiveHero({
                   initial={sa ? { opacity: 0, y: 20 } : false}
                   animate={{ opacity: 1, y: 0 }}
                   transition={sa ? staggerTransition(delays.badge, duration.slow) : { duration: 0 }}
-                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-${badge.colorClass ?? 'cyan'}-500/10 border border-${badge.colorClass ?? 'cyan'}-500/30 mb-6 sm:mb-8 backdrop-blur-sm`}
+                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full mb-6 sm:mb-8 backdrop-blur-sm ${badgeToneClasses.shell}`}
                 >
                   {badge.icon}
-                  <span className={`text-sm text-${badge.colorClass ?? 'cyan'}-400 font-medium tracking-wide`}>
+                  <span className={`text-sm font-medium tracking-wide ${badgeToneClasses.text}`}>
                     {badge.text}
                   </span>
                 </motion.div>
@@ -266,7 +345,7 @@ export function ImmersiveHero({
                 initial={sa ? { opacity: 0, y: 30 } : false}
                 animate={{ opacity: 1, y: 0 }}
                 transition={sa ? staggerTransition(delays.headline) : { duration: 0 }}
-                className="text-[2.5rem] sm:text-5xl lg:text-7xl font-bold mb-5 sm:mb-6 leading-[1.08] text-white"
+                className="text-[2.35rem] sm:text-5xl lg:text-7xl font-semibold tracking-tight mb-5 sm:mb-6 leading-[1.06] text-white"
               >
                 {headline}
               </motion.h1>
@@ -276,7 +355,7 @@ export function ImmersiveHero({
                 initial={sa ? { opacity: 0, y: 20 } : false}
                 animate={{ opacity: 1, y: 0 }}
                 transition={sa ? staggerTransition(delays.subheadline) : { duration: 0 }}
-                className="text-base sm:text-lg md:text-xl text-gray-400 mb-4 max-w-2xl mx-auto text-center leading-relaxed"
+                className="text-base sm:text-lg md:text-xl text-slate-300 mb-4 max-w-3xl mx-auto text-center leading-relaxed"
               >
                 {subheadline}
               </motion.p>
@@ -331,7 +410,7 @@ export function ImmersiveHero({
           <h1 className="text-[2.5rem] sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.08] text-white">
             {headline}
           </h1>
-          <p className="text-base sm:text-lg md:text-xl text-gray-400 mb-8 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
             {subheadline}
           </p>
         </div>

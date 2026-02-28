@@ -16,7 +16,7 @@ export default function Soc2Content() {
           </span>
         </>
       }
-      subheadline="SOC 2 Type II demands continuous evidence of control effectiveness. FormaOS maps Trust Service Criteria to operational workflows that capture evidence as work happens — not before audits."
+      subheadline="Operationalize SOC 2 Trust Services Criteria with workflow enforcement and continuous evidence capture."
       introParagraphs={[
         'SOC 2 has become table stakes for B2B SaaS companies, cloud service providers, and any organization handling customer data. Prospects and enterprise customers increasingly require SOC 2 Type II reports before signing contracts.',
         'The challenge isn\'t understanding the Trust Service Criteria — it\'s operationalizing them. SOC 2 Type II requires demonstrating that controls operated effectively over an extended period, typically 6-12 months. This means your compliance program must run continuously, not just during audit preparation windows.',

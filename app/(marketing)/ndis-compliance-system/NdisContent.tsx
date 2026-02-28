@@ -16,7 +16,7 @@ export default function NdisContent() {
           </span>
         </>
       }
-      subheadline="Map NDIS Practice Standards to operational workflows. Track Quality Indicators, manage incidents, and maintain audit-ready evidence for NDIS Commission reviews — without manual tracking."
+      subheadline="Translate NDIS Practice Standards into owned workflows with continuous evidence for Commission reviews."
       introParagraphs={[
         'NDIS providers face a unique compliance challenge. The NDIS Practice Standards define what quality looks like, but turning those standards into daily operational practice requires systems that connect policy to execution.',
         'Most providers manage compliance through a combination of policy documents, spreadsheets, incident logs, and folder structures. This approach creates gaps between what policies say and what staff actually do. When the NDIS Quality and Safeguards Commission conducts an audit, providers scramble to demonstrate that standards are met consistently — not just documented.',
