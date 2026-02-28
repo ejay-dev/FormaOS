@@ -2,8 +2,7 @@
 
 import { useRef } from 'react';
 import dynamic from 'next/dynamic';
-import { motion, useTransform, useReducedMotion } from 'framer-motion';
-import { useGlobalMotion } from '../components/motion/MotionContext';
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
@@ -37,7 +36,7 @@ const FinalCTA = dynamic(() => import('./components/FinalCTA').then((m) => m.Fin
 function PricingGradientMesh() {
   const prefersReducedMotion = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useGlobalMotion();
+  const { scrollYProgress } = useScroll();
   const hueRotate = useTransform(scrollYProgress, [0, 1], [0, 60]);
   const filterValue = useTransform(hueRotate, (v) => `hue-rotate(${v}deg)`);
 
