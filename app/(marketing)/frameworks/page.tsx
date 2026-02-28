@@ -18,6 +18,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/frameworks`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ISO, SOC 2, NDIS Framework Coverage — FormaOS',
+    description:
+      'Framework-mapped controls and evidence workflows for ISO 27001, SOC 2, NDIS Practice Standards, and more.',
+  },
 };
 
 export default function FrameworksPage() {

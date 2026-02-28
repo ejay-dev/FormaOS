@@ -18,6 +18,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/faq`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Frequently Asked Questions — FormaOS Compliance Platform',
+    description:
+      'Security, audit trails, immutable evidence, ISO/SOC support, integrations, pricing, and enterprise onboarding — answered.',
+  },
 };
 
 const faqItems = [

@@ -15,6 +15,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/use-cases/healthcare`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Healthcare Compliance Management | FormaOS',
+    description:
+      'Manage policies, evidence, certificates, and incident reporting in one AHPRA-aligned compliance platform.',
+  },
 };
 
 export default function HealthcareUseCasePage() {

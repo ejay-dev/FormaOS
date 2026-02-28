@@ -20,6 +20,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/industries`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Industry Compliance Solutions — Healthcare, NDIS, Aged Care | FormaOS',
+    description:
+      'Purpose-built compliance for NDIS, healthcare, aged care, financial services, and government regulated industries.',
+  },
 };
 
 export default function IndustriesPage() {

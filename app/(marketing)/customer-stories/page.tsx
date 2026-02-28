@@ -17,6 +17,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/customer-stories`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Customer Use Cases | FormaOS',
+    description:
+      'See how regulated operators use FormaOS to govern controls, evidence, and audit readiness.',
+  },
 };
 
 export default function CustomerStoriesPage() {

@@ -17,6 +17,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/blog`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Blog & Insights | FormaOS',
+    description:
+      'Expert insights on compliance management, regulatory technology, and operational excellence for regulated industries.',
+  },
 };
 
 export default function BlogPage() {

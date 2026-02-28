@@ -15,6 +15,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/use-cases/incident-management`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Incident Management & Investigation | FormaOS',
+    description:
+      'Incident reporting and investigation workflows with corrective actions, audit trails, and configurable regulator templates.',
+  },
 };
 
 export default function IncidentManagementPage() {

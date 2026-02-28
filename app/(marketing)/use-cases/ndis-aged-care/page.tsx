@@ -15,6 +15,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/use-cases/ndis-aged-care`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'NDIS & Aged Care Compliance | FormaOS',
+    description:
+      'Support worker screening, incident workflows, and NDIS audit readiness for providers and aged care facilities.',
+  },
 };
 
 export default function NDISUseCasePage() {
