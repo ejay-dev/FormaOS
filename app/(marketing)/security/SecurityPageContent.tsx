@@ -8,7 +8,10 @@ import { SecurityHero } from './SecurityHero';
 import { FrameworkTrustStrip } from '@/components/marketing/FrameworkTrustStrip';
 
 const LaserFlowSection = dynamic(
-  () => import('./LaserFlowSection').then((m) => m.LaserFlowSection),
+  () =>
+    import(/* webpackChunkName: "marketing-threejs" */ './LaserFlowSection').then(
+      (m) => m.LaserFlowSection,
+    ),
   { ssr: false, loading: () => <div style={{ minHeight: '520px', background: '#030712' }} /> },
 );
 const SecuritySafeguards = dynamic(

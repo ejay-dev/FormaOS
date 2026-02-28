@@ -19,7 +19,10 @@ const ProductShowcaseSection = dynamic(
 
 /* ── LaserFlow — cinematic hero background (desktop WebGL, mobile fallback) ── */
 const ProductHeroLaser = dynamic(
-  () => import('./components/ProductHeroLaser').then((m) => m.ProductHeroLaser),
+  () =>
+    import(/* webpackChunkName: "marketing-threejs" */ './components/ProductHeroLaser').then(
+      (m) => m.ProductHeroLaser,
+    ),
   { ssr: false, loading: () => null },
 );
 

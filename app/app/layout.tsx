@@ -3,20 +3,15 @@ import { redirect } from 'next/navigation';
 import { Sidebar } from '@/components/sidebar';
 import { TopBar } from '@/components/topbar';
 import { CommandPalette } from '@/components/command-palette/CommandPalette';
-import { CommandProvider } from '@/components/ui/command-provider';
-import { ComplianceSystemProvider } from '@/components/compliance-system/provider';
-import { SystemStateProvider } from '@/lib/system-state/context';
 import { AppHydrator } from '@/components/app-hydrator';
+import { AppProviders } from '@/components/app-providers';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { TrialCountdownBanner } from '@/components/billing/TrialCountdownBanner';
 import { UpgradeModal } from '@/components/billing/UpgradeModal';
 import { UpgradeSuggestionEngine } from '@/components/billing/UpgradeSuggestionEngine';
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';
-import { HelpAssistantProvider } from '@/components/help/help-assistant-context';
 import { HelpAssistant } from '@/components/help/HelpAssistant';
-import { AppShellErrorBoundary } from '@/components/app-shell-error-boundary';
-import { ProductTourProvider } from '@/lib/onboarding/product-tour';
 import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
 import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
 import { SecurityTrackingBootstrap } from '@/components/security/SecurityTrackingBootstrap';
@@ -112,9 +107,9 @@ export default async function AppLayout({
 
   /* -------------------------------------------------------
    * 3) APPLICATION FRAME
-   *    - AppHydrator: seeds Zustand store (client-side cache)
-   *    - SystemStateProvider: React context (direct, no 2nd fetch)
-   *    - AppShellErrorBoundary: catches render errors in the shell
+   *    - ControlPlaneRuntimeProvider: live feature-flag stream
+   *    - AppHydrator: seeds Zustand store from server state
+   *    - AppProviders: composes the remaining 5 context layers
    * ----------------------------------------------------- */
   return (
     <ControlPlaneRuntimeProvider>
@@ -127,108 +122,80 @@ export default async function AppLayout({
           entitlements: systemState.entitlements,
         }}
       >
-        <ProductTourProvider>
-          <SystemStateProvider
-            initialState={{
-              user: systemState.user,
-              organization: systemState.organization,
-              entitlements: systemState.entitlements,
-              isFounder: systemState.isFounder,
-            }}
-          >
-            <CommandProvider>
-              <ComplianceSystemProvider>
-                <HelpAssistantProvider>
-                  <AppShellErrorBoundary>
-                    <div className="relative flex min-h-screen w-full overflow-hidden bg-background text-foreground">
-                    {/* Ambient background effects */}
-                    <div className="pointer-events-none absolute inset-x-0 -top-32 h-64 bg-gradient-glow blur-3xl opacity-40" />
+        <AppProviders
+          initialState={{
+            user: systemState.user,
+            organization: systemState.organization,
+            entitlements: systemState.entitlements,
+            isFounder: systemState.isFounder,
+          }}
+        >
+          <div className="relative flex min-h-screen w-full overflow-hidden bg-background text-foreground">
+            {/* Ambient background */}
+            <div className="pointer-events-none absolute inset-x-0 -top-32 h-64 bg-gradient-glow blur-3xl opacity-40" />
 
-                    {/* App shell grid */}
-                    <div className="flex h-full w-full min-w-0">
-                      {/* Sidebar */}
-                      <aside className="relative z-30 hidden md:flex h-full w-[280px] shrink-0 flex-col glass-panel-strong border-r border-border">
-                        {/* Sidebar header */}
-                        <div className="flex h-20 items-center border-b border-border px-6">
-                          <div className="flex items-center gap-3">
-                            <Logo variant="mark" size={48} />
-                            <div>
-                              <div className="text-base font-bold font-display">
-                                {brand.appName}
-                              </div>
-                              <div className="text-xs text-muted-foreground uppercase tracking-wider">
-                                {brand.identity}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Sidebar navigation */}
-                        <div className="flex flex-1 overflow-y-auto">
-                          <Sidebar role={systemState.role} />
-                        </div>
-
-                        {/* Sidebar footer */}
-                        <div className="border-t border-border px-6 py-5 text-xs text-muted-foreground">
-                          <div className="font-medium">
-                            © {new Date().getFullYear()} {brand.appName}
-                          </div>
-                          <div className="mt-1.5">{brand.identity}</div>
-                        </div>
-                      </aside>
-
-                      {/* Main application area */}
-                      <section className="relative flex h-full flex-1 flex-col overflow-hidden">
-                        {/* Top bar */}
-                        <header className="sticky top-0 z-40 flex h-16 w-full items-center glass-panel-strong border-b border-border">
-                          <div className="flex h-full w-full items-center px-4 sm:px-6 lg:px-8">
-                            <TopBar
-                              orgName={
-                                systemState.organization.name ||
-                                'My Organization'
-                              }
-                              userEmail={systemState.user.email || ''}
-                              userId={systemState.user.id}
-                              orgId={systemState.organization.id}
-                              role={systemState.role}
-                            />
-                          </div>
-                        </header>
-
-                        <RuntimeOpsGuard surface="app" />
-                        <EnterpriseTrustStrip surface="app" />
-
-                        {/* Trial Countdown Banner (conversion system) */}
-                        <TrialCountdownBanner />
-
-                        {/* Main content */}
-                        <main className="relative flex flex-1 flex-col overflow-y-auto bg-background">
-                          {/* Page container with better spacing */}
-                          <div className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
-                            {children}
-                          </div>
-                        </main>
-                      </section>
+            {/* App shell grid */}
+            <div className="flex h-full w-full min-w-0">
+              {/* Sidebar */}
+              <aside className="relative z-30 hidden md:flex h-full w-[280px] shrink-0 flex-col glass-panel-strong border-r border-border">
+                <div className="flex h-20 items-center border-b border-border px-6">
+                  <div className="flex items-center gap-3">
+                    <Logo variant="mark" size={48} />
+                    <div>
+                      <div className="text-base font-bold font-display">
+                        {brand.appName}
+                      </div>
+                      <div className="text-xs text-muted-foreground uppercase tracking-wider">
+                        {brand.identity}
+                      </div>
                     </div>
-
-                    {/* Command palette */}
-                    <CommandPalette />
-
-                    {/* Trial conversion system (non-blocking) */}
-                    <UpgradeModal />
-                    <UpgradeSuggestionEngine />
-
-                    {/* In-app help */}
-                    <HelpAssistant />
-                    <SecurityTrackingBootstrap />
-                    <RuntimeDebugIndicator />
                   </div>
-                </AppShellErrorBoundary>
-                </HelpAssistantProvider>
-              </ComplianceSystemProvider>
-            </CommandProvider>
-          </SystemStateProvider>
-        </ProductTourProvider>
+                </div>
+                <div className="flex flex-1 overflow-y-auto">
+                  <Sidebar role={systemState.role} />
+                </div>
+                <div className="border-t border-border px-6 py-5 text-xs text-muted-foreground">
+                  <div className="font-medium">
+                    © {new Date().getFullYear()} {brand.appName}
+                  </div>
+                  <div className="mt-1.5">{brand.identity}</div>
+                </div>
+              </aside>
+
+              {/* Main application area */}
+              <section className="relative flex h-full flex-1 flex-col overflow-hidden">
+                <header className="sticky top-0 z-40 flex h-16 w-full items-center glass-panel-strong border-b border-border">
+                  <div className="flex h-full w-full items-center px-4 sm:px-6 lg:px-8">
+                    <TopBar
+                      orgName={systemState.organization.name || 'My Organization'}
+                      userEmail={systemState.user.email || ''}
+                      userId={systemState.user.id}
+                      orgId={systemState.organization.id}
+                      role={systemState.role}
+                    />
+                  </div>
+                </header>
+
+                <RuntimeOpsGuard surface="app" />
+                <EnterpriseTrustStrip surface="app" />
+                <TrialCountdownBanner />
+
+                <main className="relative flex flex-1 flex-col overflow-y-auto bg-background">
+                  <div className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
+                    {children}
+                  </div>
+                </main>
+              </section>
+            </div>
+
+            <CommandPalette />
+            <UpgradeModal />
+            <UpgradeSuggestionEngine />
+            <HelpAssistant />
+            <SecurityTrackingBootstrap />
+            <RuntimeDebugIndicator />
+          </div>
+        </AppProviders>
       </AppHydrator>
     </ControlPlaneRuntimeProvider>
   );

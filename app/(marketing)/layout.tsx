@@ -15,9 +15,6 @@ import { Logo } from '@/components/brand/Logo';
 import { organizationSchema, softwareApplicationSchema } from '@/lib/seo';
 import MarketingBackgroundLayer from '@/components/motion/MarketingBackgroundLayer';
 import { PageTransition } from '@/components/motion/PageTransition';
-import { ControlPlaneRuntimeProvider } from '@/lib/control-plane/runtime-client';
-import { RuntimeOpsGuard } from '@/components/control-plane/runtime-ops-guard';
-import { RuntimeDebugIndicator } from '@/components/control-plane/runtime-debug-indicator';
 
 // Force static rendering for all marketing pages
 export const dynamic = 'force-static';
@@ -36,8 +33,7 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
   const siteUrl = brand.seo.siteUrl;
 
   return (
-    <ControlPlaneRuntimeProvider>
-      <div className="mk-shell mk-shell--layered-bg font-[var(--font-body)]">
+    <div className="mk-shell mk-shell--layered-bg font-[var(--font-body)]">
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[10000] mk-btn mk-btn-secondary px-4 py-2"
@@ -49,7 +45,6 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
         <div className="relative min-h-screen overflow-hidden">
           {/* Shared background layer: gradient + grid + grain + vignette */}
           <MarketingBackgroundLayer />
-          <RuntimeOpsGuard surface="marketing" />
 
           {/* Premium header with glass effect and micro-animations */}
           <header className="mk-header-premium sticky top-0 z-50">
@@ -107,9 +102,7 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
 
           {/* Premium animated footer */}
           <Footer />
-          <RuntimeDebugIndicator />
         </div>
-      </div>
-    </ControlPlaneRuntimeProvider>
+    </div>
   );
 }

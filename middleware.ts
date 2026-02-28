@@ -266,9 +266,7 @@ export async function middleware(request: NextRequest) {
 
     // 🔍 FOUNDER DETECTION LOGGING (only log denials to reduce noise)
     if (pathname.startsWith('/admin') && !isUserFounder && user) {
-      console.log('[Middleware] NON-FOUNDER tried /admin', {
-        email: userEmail ? userEmail.substring(0, 3) + '***' : 'none',
-      });
+      console.log('[Middleware] NON-FOUNDER tried /admin', { userId });
     }
 
     // ============================================================
@@ -287,9 +285,8 @@ export async function middleware(request: NextRequest) {
       if (isUserFounder) {
         // ✅ FOUNDER → ALLOW ACCESS, bypass everything
         console.log('[Middleware] ✅ FOUNDER ACCESS GRANTED TO /admin', {
-          email: userEmail ? userEmail.substring(0, 3) + '***' : 'none',
+          userId,
           path: pathname,
-          redirecting: 'ALLOW (no redirect, founder gets access)',
         });
         logTiming('admin-allow');
         response.headers.set('Server-Timing', serverTiming());
@@ -297,7 +294,7 @@ export async function middleware(request: NextRequest) {
       } else {
         // ❌ NOT A FOUNDER → DENY ACCESS
         console.log('[Middleware] ❌ NON-FOUNDER BLOCKED FROM /admin', {
-          email: userEmail ? userEmail.substring(0, 3) + '***' : 'none',
+          userId,
           redirectTo: '/unauthorized',
         });
         const url = request.nextUrl.clone();

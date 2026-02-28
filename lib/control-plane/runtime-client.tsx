@@ -196,12 +196,25 @@ export function ControlPlaneRuntimeProvider({
   return <RuntimeContext.Provider value={value}>{children}</RuntimeContext.Provider>;
 }
 
+/** Returned when called outside ControlPlaneRuntimeProvider (e.g. marketing pages). */
+const STATIC_FALLBACK: RuntimeContextValue = {
+  snapshot: null,
+  loading: false,
+  error: null,
+  refresh: async () => {},
+  streamStatus: 'disconnected',
+  streamConnected: false,
+  lastStreamEventAt: null,
+  lastHeartbeatAt: null,
+};
+
+/**
+ * Returns live runtime data inside ControlPlaneRuntimeProvider (authenticated app shell),
+ * or a static null-snapshot fallback on marketing pages where no provider is mounted.
+ * Marketing components already handle null snapshots via DEFAULT_RUNTIME_MARKETING.
+ */
 export function useControlPlaneRuntime() {
-  const context = useContext(RuntimeContext);
-  if (!context) {
-    throw new Error('useControlPlaneRuntime must be used within ControlPlaneRuntimeProvider');
-  }
-  return context;
+  return useContext(RuntimeContext) ?? STATIC_FALLBACK;
 }
 
 export function useRuntimeFeatureFlag(flagKey: string) {
