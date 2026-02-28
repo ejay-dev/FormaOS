@@ -18,6 +18,13 @@ export {
 export type { AnalyticsEvent, UserProperties, FeatureFlag } from './analytics';
 
 /**
+ * Structured server-side logger (Node.js / API routes only).
+ * Do NOT use in client components or middleware (edge runtime).
+ * Import directly: import { log, routeLog } from '@/lib/monitoring/server-logger'
+ */
+export { log, routeLog } from './server-logger';
+
+/**
  * Initialize all monitoring services
  */
 export function initializeMonitoring() {

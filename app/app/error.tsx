@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import * as Sentry from '@sentry/nextjs';
 
 export default function DashboardError({
   error,
@@ -21,6 +22,18 @@ export default function DashboardError({
       stack: error.stack?.split('\n').slice(0, 8).join('\n'),
       timestamp: new Date().toISOString(),
     });
+
+    try {
+      Sentry.captureException(error, {
+        tags: { boundary: 'dashboard' },
+        extra: {
+          digest: error.digest,
+          pathname,
+        },
+      });
+    } catch {
+      // Ignore Sentry failures
+    }
   }, [error, pathname]);
 
   return (

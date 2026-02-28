@@ -1,11 +1,11 @@
 "use client";
 
 import React, { createContext, useContext, useReducer, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { 
-  SystemState, 
-  ModuleId, 
-  PlanTier, 
-  UserRole, 
+import {
+  SystemState,
+  ModuleId,
+  PlanTier,
+  UserRole,
   NodeState,
   WireState,
   SystemFlow,
@@ -15,6 +15,7 @@ import {
   ROLE_PERMISSIONS,
   MODULE_DEFINITIONS,
 } from "./types";
+import { useAppStore } from "@/lib/stores/app";
 
 /**
  * =========================================================
@@ -410,13 +411,13 @@ export function SystemStateProvider({
   // Hydrate from server action (client-side)
   const hydrateFromServer = useCallback(async () => {
     if (isHydrated) return;
-    
+
     setIsLoading(true);
     try {
       // Dynamic import to avoid server/client mismatch
       const { getSystemState } = await import("./actions");
       const result = await getSystemState();
-      
+
       if (result.success && result.data) {
         setFounderState(result.data.isFounder);
         dispatch({
@@ -426,6 +427,19 @@ export function SystemStateProvider({
             organization: result.data.organization,
             entitlements: result.data.entitlements,
             isFounder: result.data.isFounder,
+          },
+        });
+        // Keep Zustand store in sync to prevent sidebar/topbar divergence
+        useAppStore.getState().hydrate({
+          user: result.data.user,
+          organization: result.data.organization,
+          role: result.data.entitlements.role,
+          isFounder: result.data.isFounder,
+          entitlements: {
+            enabledModules: result.data.entitlements.enabledModules,
+            permissions: result.data.entitlements.permissions,
+            trialActive: result.data.entitlements.trialActive,
+            trialDaysRemaining: result.data.entitlements.trialDaysRemaining,
           },
         });
         setIsHydrated(true);
@@ -443,7 +457,7 @@ export function SystemStateProvider({
     try {
       const { getSystemState } = await import("./actions");
       const result = await getSystemState();
-      
+
       if (result.success && result.data) {
         setFounderState(result.data.isFounder);
         dispatch({
@@ -453,6 +467,20 @@ export function SystemStateProvider({
             organization: result.data.organization,
             entitlements: result.data.entitlements,
             isFounder: result.data.isFounder,
+          },
+        });
+        // Keep Zustand store in sync — prevents sidebar/topbar showing stale
+        // plan or role after an upgrade or role change
+        useAppStore.getState().hydrate({
+          user: result.data.user,
+          organization: result.data.organization,
+          role: result.data.entitlements.role,
+          isFounder: result.data.isFounder,
+          entitlements: {
+            enabledModules: result.data.entitlements.enabledModules,
+            permissions: result.data.entitlements.permissions,
+            trialActive: result.data.entitlements.trialActive,
+            trialDaysRemaining: result.data.entitlements.trialDaysRemaining,
           },
         });
       }

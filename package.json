@@ -91,6 +91,7 @@
     "openai": "^6.21.0",
     "passport": "^0.7.0",
     "pdf-lib": "^1.17.1",
+    "pino": "^10.3.1",
     "posthog-js": "^1.321.2",
     "puppeteer": "^24.35.0",
     "qrcode": "^1.5.4",

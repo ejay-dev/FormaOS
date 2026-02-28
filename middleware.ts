@@ -13,9 +13,19 @@ const AUTH_PASSTHROUGH_ROUTES = [
 
 export async function middleware(request: NextRequest) {
   try {
-    const nonce =
-      globalThis.crypto?.randomUUID?.() ??
-      `nonce-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const nonce = (() => {
+      if (typeof globalThis.crypto?.randomUUID === 'function') {
+        return globalThis.crypto.randomUUID();
+      }
+      // Cryptographic fallback for environments without randomUUID
+      if (typeof globalThis.crypto?.getRandomValues === 'function') {
+        const bytes = new Uint8Array(16);
+        globalThis.crypto.getRandomValues(bytes);
+        return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+      }
+      // Non-cryptographic last resort — should never be reached in any supported runtime
+      return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+    })();
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set('x-nonce', nonce);
     const response = NextResponse.next({

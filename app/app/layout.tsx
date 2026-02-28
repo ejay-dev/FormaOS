@@ -23,6 +23,9 @@ import { SecurityTrackingBootstrap } from '@/components/security/SecurityTrackin
 import { ControlPlaneRuntimeProvider } from '@/lib/control-plane/runtime-client';
 import { RuntimeOpsGuard } from '@/components/control-plane/runtime-ops-guard';
 import { RuntimeDebugIndicator } from '@/components/control-plane/runtime-debug-indicator';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('app/layout');
 
 // Force dynamic rendering for all /app/* routes
 // Required because this layout uses cookies() via Supabase auth
@@ -62,7 +65,7 @@ export default async function AppLayout({
     const { data } = await supabase.auth.getUser();
     user = data?.user ?? null;
   } catch (err) {
-    console.error('[AppLayout] getUser crashed:', err);
+    log.error({ err }, 'getUser crashed');
   }
 
   if (!user) {
@@ -78,18 +81,13 @@ export default async function AppLayout({
   try {
     systemState = await fetchSystemState(user);
   } catch (err) {
-    console.error('[AppLayout] fetchSystemState crashed:', err);
+    log.error({ err, userId: user.id }, 'fetchSystemState crashed');
   }
 
   // If we can't build state, send to onboarding rather than crashing.
   // Add ?from=app to prevent /onboarding → /app → /onboarding infinite loop.
   if (!systemState) {
-    console.warn(
-      '[AppLayout] No system state — redirecting to workspace recovery',
-      {
-        userId: user.id,
-      },
-    );
+    log.warn({ userId: user.id }, 'No system state — redirecting to workspace recovery');
     redirect('/workspace-recovery?from=app-layout-null-state');
   }
 
