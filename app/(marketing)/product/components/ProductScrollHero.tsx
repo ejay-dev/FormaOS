@@ -70,13 +70,21 @@ export function ProductScrollHero() {
         className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-6 lg:px-12 pt-28 sm:pt-32 pb-16 sm:pb-20"
         style={sa ? { opacity: sectionOpacity } : undefined}
       >
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-[55fr_45fr] gap-12 lg:gap-16 items-center">
 
           {/* ═══ LEFT: Text Content ═══ */}
           <motion.div
-            className="text-center lg:text-left"
+            className="text-center lg:text-left relative"
             style={sa ? { y: contentY } : undefined}
           >
+            {/* Dark radial scrim prevents laser bloom from washing out headline */}
+            <div
+              className="absolute inset-0 pointer-events-none -z-10"
+              style={{
+                background: 'radial-gradient(circle at center, rgba(10,15,28,0.75) 0%, rgba(10,15,28,0.6) 40%, transparent 75%)',
+              }}
+              aria-hidden
+            />
             {/* Badge */}
             <motion.div
               initial={sa ? { opacity: 0, y: 20 } : false}
@@ -93,7 +101,8 @@ export function ProductScrollHero() {
               initial={sa ? { opacity: 0, y: 30 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={sa ? { duration: duration.slower, delay: 0.27, ease: signatureEase } : { duration: 0 }}
-              className="text-[2.25rem] sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-5 leading-[1.08] text-white"
+              className="text-[2.25rem] sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-5 leading-[1.12] text-white"
+              style={{ textShadow: '0 0 40px rgba(0,0,0,0.4)' }}
             >
               The Compliance OS
               <br />
@@ -162,19 +171,20 @@ export function ProductScrollHero() {
           {/* ═══ RIGHT: Product Visual ═══ */}
           <motion.div
             className="relative flex items-center justify-center"
-            style={sa ? { y: visualY } : undefined}
+            style={sa ? { y: visualY, transformPerspective: 1400 } : { transformPerspective: 1400 }}
           >
             <motion.div
-              initial={sa ? { opacity: 0, scale: 0.92 } : false}
-              animate={{ opacity: 1, scale: 1 }}
+              initial={sa ? { opacity: 0, scale: 0.92, rotateY: 0, rotateX: 0 } : false}
+              animate={{ opacity: 1, scale: 1, rotateY: sa ? -6 : 0, rotateX: sa ? 2 : 0 }}
               transition={sa ? { duration: duration.slower, delay: 0.35, ease: signatureEase } : { duration: 0 }}
+              whileHover={sa ? { x: 4, y: -4 } : undefined}
               className="relative w-full max-w-[520px] mx-auto"
             >
-              {/* Glow behind the card */}
+              {/* Ambient glow behind the card — teal + purple depth layer */}
               <div
                 className="absolute -inset-8 rounded-3xl pointer-events-none"
                 style={{
-                  background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.12) 0%, rgba(6,182,212,0.06) 50%, transparent 70%)',
+                  background: 'radial-gradient(ellipse at center, rgba(45,212,191,0.18) 0%, rgba(139,92,246,0.15) 48%, transparent 70%)',
                   filter: tierConfig.enableBlur ? 'blur(40px)' : 'blur(20px)',
                 }}
               />

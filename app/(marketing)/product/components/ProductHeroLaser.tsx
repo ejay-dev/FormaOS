@@ -48,9 +48,9 @@ function ProductHeroLaserInner() {
             className="w-full h-full"
             style={{
               WebkitMaskImage:
-                'radial-gradient(ellipse 70% 68% at 50% 56%, black 10%, rgba(0,0,0,0.78) 32%, rgba(0,0,0,0.24) 58%, transparent 80%)',
+                'radial-gradient(ellipse 60% 68% at 46% 56%, black 10%, rgba(0,0,0,0.78) 32%, rgba(0,0,0,0.24) 58%, transparent 80%)',
               maskImage:
-                'radial-gradient(ellipse 70% 68% at 50% 56%, black 10%, rgba(0,0,0,0.78) 32%, rgba(0,0,0,0.24) 58%, transparent 80%)',
+                'radial-gradient(ellipse 60% 68% at 46% 56%, black 10%, rgba(0,0,0,0.78) 32%, rgba(0,0,0,0.24) 58%, transparent 80%)',
             }}
           >
             {showWebGL ? (
@@ -62,10 +62,10 @@ function ProductHeroLaserInner() {
                 verticalSizing={2}
                 wispDensity={1}
                 wispSpeed={15}
-                wispIntensity={5}
+                wispIntensity={2.8}
                 flowSpeed={0.35}
                 flowStrength={0.25}
-                fogIntensity={0.45}
+                fogIntensity={0.25}
                 fogScale={0.3}
                 fogFallSpeed={0.6}
                 decay={1.1}
@@ -86,22 +86,27 @@ function ProductHeroLaserInner() {
         </div>
       </motion.div>
 
-      {/* Impact plume right above the surface edge */}
-      <div className="absolute left-1/2 top-[56%] -translate-x-1/2 w-[62%] h-[138px]">
+      {/* Impact plume — constrained to left column, masked to not cross mock boundary */}
+      <div className="absolute left-[42%] top-[55%] -translate-x-1/2 w-full max-w-[480px] h-[138px]">
         <div
           className="absolute inset-0"
           style={{
             background:
-              'radial-gradient(ellipse 58% 100% at 50% 60%, rgba(245,221,255,0.88) 0%, rgba(207,158,255,0.42) 36%, rgba(207,158,255,0.16) 58%, transparent 82%)',
+              'radial-gradient(ellipse 58% 100% at 50% 60%, rgba(245,221,255,0.52) 0%, rgba(207,158,255,0.25) 36%, rgba(207,158,255,0.10) 58%, transparent 82%)',
             filter: 'blur(18px)',
+            WebkitMaskImage: 'linear-gradient(90deg, black 0%, black 54%, rgba(0,0,0,0.4) 72%, transparent 86%)',
+            maskImage: 'linear-gradient(90deg, black 0%, black 54%, rgba(0,0,0,0.4) 72%, transparent 86%)',
           }}
         />
+        {/* Shockwave line — sits behind mock, fades out before mock boundary */}
         <div
           className="absolute left-1/2 top-[52%] -translate-x-1/2 h-[3px] w-[58%]"
           style={{
             background:
-              'linear-gradient(90deg, transparent 0%, rgba(207,158,255,0.36) 14%, rgba(255,244,255,0.96) 50%, rgba(207,158,255,0.36) 86%, transparent 100%)',
-            boxShadow: '0 0 26px rgba(207,158,255,0.72), 0 0 64px rgba(207,158,255,0.46)',
+              'linear-gradient(90deg, transparent 0%, rgba(207,158,255,0.30) 14%, rgba(255,244,255,0.70) 50%, rgba(207,158,255,0.30) 86%, transparent 100%)',
+            boxShadow: '0 0 16px rgba(207,158,255,0.40), 0 0 36px rgba(207,158,255,0.24)',
+            WebkitMaskImage: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.85) 8%, black 20%, black 46%, rgba(0,0,0,0.3) 62%, transparent 74%)',
+            maskImage: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.85) 8%, black 20%, black 46%, rgba(0,0,0,0.3) 62%, transparent 74%)',
           }}
         />
       </div>
