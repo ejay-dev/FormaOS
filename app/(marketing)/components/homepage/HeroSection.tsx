@@ -38,7 +38,7 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 const SIGNAL_PILLS = [
   {
-    label: 'Workflow Orchestration',
+    label: 'Workflow Execution',
     dotClass: 'bg-teal-400',
     chipClass: 'from-teal-500/20 to-cyan-500/10 border-teal-400/30',
   },
@@ -48,22 +48,22 @@ const SIGNAL_PILLS = [
     chipClass: 'from-emerald-500/20 to-teal-500/10 border-emerald-400/30',
   },
   {
-    label: 'Evidence Chains',
+    label: 'Evidence Integrity',
     dotClass: 'bg-amber-400',
     chipClass: 'from-amber-500/20 to-orange-500/10 border-amber-400/30',
   },
 ] as const;
 
 const COMMAND_DECK_ROWS = [
-  { label: 'Control Drift Detection', value: 'Live', status: 'Nominal' },
-  { label: 'Evidence Chain Integrity', value: '99.98%', status: 'Verified' },
-  { label: 'Audit Packet Assembly', value: '< 2 min', status: 'Ready' },
+  { label: 'Control Drift', value: 'Live', status: 'Nominal' },
+  { label: 'Evidence Integrity', value: '99.98%', status: 'Verified' },
+  { label: 'Audit Packet SLA', value: '< 2 min', status: 'Ready' },
 ] as const;
 
 const MOBILE_PROOF_METRICS = [
-  { value: '85+', label: 'Pre-built Controls' },
-  { value: '7', label: 'Framework Packs' },
-  { value: '<2m', label: 'Audit Export Time' },
+  { value: '85+', label: 'Controls' },
+  { value: '7', label: 'Frameworks' },
+  { value: '<2m', label: 'Audit Export' },
 ] as const;
 
 const MICRO_TRUST_RAIL = [
@@ -97,7 +97,7 @@ function FloatingMetricCard({
       animate={motionEnabled ? { opacity: 1, x: 0 } : undefined}
       transition={motionEnabled ? { duration: duration.slower, delay } : { duration: 0 }}
       whileHover={motionEnabled ? { scale: 1.025, y: -3 } : undefined}
-      className="hero-floating-metric home-panel home-panel--soft relative w-full min-h-[188px] rounded-2xl border border-white/10 bg-gradient-to-br from-slate-950/70 to-slate-900/55 p-4 shadow-[0_20px_55px_rgba(0,0,0,0.45)] backdrop-blur-xl"
+      className="hero-floating-metric home-panel home-panel--soft relative w-full min-h-[156px] rounded-2xl border border-white/10 bg-gradient-to-br from-slate-950/70 to-slate-900/55 p-4 shadow-[0_20px_55px_rgba(0,0,0,0.45)] backdrop-blur-xl"
     >
       <div className="flex h-full flex-col">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
@@ -115,9 +115,6 @@ function FloatingMetricCard({
           </span>
         </div>
         <div className="mt-3 h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-        <p className="mt-auto pt-3 text-xs leading-relaxed text-slate-300/75">
-          Continuous signal processing with policy-linked evidence correlation.
-        </p>
       </div>
     </motion.div>
   );
@@ -144,11 +141,11 @@ function CommandDeck({ motionEnabled }: { motionEnabled: boolean }) {
         <div className="flex items-center gap-2">
           <span className="h-2 w-2 rounded-full bg-emerald-400" />
           <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-200">
-            Live Control Plane Snapshot
+            Live Control Plane
           </span>
         </div>
         <span className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-cyan-100">
-          Enterprise Runtime
+          Enterprise
         </span>
       </div>
 
@@ -439,12 +436,8 @@ export function HeroSection() {
               transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.6 } : { duration: 0 }}
               className="mx-auto mb-7 sm:mb-9 max-w-3xl text-center"
             >
-              <p className="mb-3 text-sm uppercase tracking-[0.16em] text-slate-200/90">
-                Structure → Operationalize → Validate → Defend
-              </p>
               <p className="mb-4 text-xs sm:text-sm text-slate-300/85">
-                Used by compliance teams. Aligned to ISO/SOC frameworks. Built for
-                audit defensibility in regulated environments.
+                Controls, ownership, and evidence aligned in one operating layer.
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 text-xs text-slate-200">

@@ -22,11 +22,11 @@ export const DEFAULT_RUNTIME_OPS: RuntimeOpsConfig = {
 
 export const DEFAULT_RUNTIME_MARKETING: RuntimeMarketingConfig = {
   hero: {
-    badgeText: 'Enterprise Compliance OS',
-    headlinePrimary: 'Operational Compliance,',
-    headlineAccent: 'Built for Real Organizations',
+    badgeText: 'Enterprise Compliance Platform',
+    headlinePrimary: 'Compliance Operations,',
+    headlineAccent: 'Engineered for Regulated Teams',
     subheadline:
-      'The operating system for governance, controls, evidence, and audit defense. Not a document repository. A system that enforces accountability.',
+      'Unify governance, controls, evidence, and audit defense in one operational system.',
     primaryCtaLabel: 'Start Free Trial',
     primaryCtaHref: '/auth/signup?plan=pro',
     secondaryCtaLabel: 'Request Demo',
