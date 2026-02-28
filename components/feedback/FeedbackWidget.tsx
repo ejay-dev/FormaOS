@@ -63,7 +63,7 @@ export function FeedbackWidget() {
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
       {/* Panel */}
-      {state === 'open' && (
+      {(state === 'open' || state === 'submitting') && (
         <div
           ref={panelRef}
           className={cn(
