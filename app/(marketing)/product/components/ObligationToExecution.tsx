@@ -1,8 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
 import { ArrowRight, CheckCircle, Activity, UserCheck } from 'lucide-react';
-import { motion, useScroll, useTransform, useReducedMotion, type MotionValue } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import dynamic from 'next/dynamic';
@@ -14,37 +12,11 @@ const flow = [
   { step: 'Controls', becomes: 'owned tasks', color: 'from-purple-500 to-violet-600' },
   { step: 'Tasks', becomes: 'live evidence', color: 'from-violet-600 to-purple-600' },
   { step: 'Evidence', becomes: 'complete audit trail', color: 'from-fuchsia-500 to-violet-500' },
-];
-
-/** Glow node overlay for each card when the scroll path reaches it */
-function NodeGlow({ progress, threshold }: { progress: MotionValue<number>; threshold: number }) {
-  const opacity = useTransform(progress, [Math.max(0, threshold - 0.08), threshold, threshold + 0.1], [0, 1, 0.6]);
-  const scale = useTransform(progress, [Math.max(0, threshold - 0.08), threshold], [0.8, 1]);
-  return (
-    <motion.div
-      style={{ opacity, scale }}
-      className="absolute -inset-1 rounded-2xl bg-violet-400/15 blur-md pointer-events-none z-0"
-    />
-  );
-}
+] as const;
 
 export function ObligationToExecution() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const prefersReducedMotion = useReducedMotion();
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start end', 'end start'],
-  });
-
-  // Drive the SVG path length from 0 to 1 as the section scrolls into view
-  const pathLength = useTransform(scrollYProgress, [0.1, 0.55], [0, 1]);
-
-  // Thresholds at which each node should glow (evenly spaced across scroll range)
-  const nodeThresholds = [0.18, 0.30, 0.42, 0.54];
-
   return (
-    <section ref={sectionRef} className="product-section product-section--process relative py-32 overflow-hidden">
+    <section className="product-section product-section--process relative py-32 overflow-hidden">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.35]}>
           <div className="text-center mb-16">
@@ -70,54 +42,9 @@ export function ObligationToExecution() {
           </div>
         </ScrollReveal>
 
-        {/* Scroll-driven SVG connection path (desktop only) */}
-        {!prefersReducedMotion && (
-          <div className="hidden lg:block absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
-            <svg
-              className="absolute top-0 left-0 w-full h-full"
-              viewBox="0 0 1000 200"
-              preserveAspectRatio="none"
-              fill="none"
-            >
-              {/* Horizontal bezier path connecting 4 nodes across the card grid */}
-              <motion.path
-                d="M 100 100 C 200 40, 300 160, 375 100 C 450 40, 550 160, 625 100 C 700 40, 800 160, 900 100"
-                stroke="url(#connection-gradient)"
-                strokeWidth="2"
-                strokeLinecap="round"
-                fill="none"
-                filter="drop-shadow(0 0 12px rgba(192,132,252,0.6))"
-                style={{ pathLength }}
-              />
-              {/* Glow duplicate for the drawn portion */}
-              <motion.path
-                d="M 100 100 C 200 40, 300 160, 375 100 C 450 40, 550 160, 625 100 C 700 40, 800 160, 900 100"
-                stroke="url(#connection-gradient)"
-                strokeWidth="6"
-                strokeLinecap="round"
-                fill="none"
-                opacity="0.25"
-                filter="blur(6px)"
-                style={{ pathLength }}
-              />
-              <defs>
-                <linearGradient id="connection-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#B46CFF" />
-                  <stop offset="50%" stopColor="#C084FC" />
-                  <stop offset="100%" stopColor="#F0ABFC" />
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
-        )}
-
         <SectionChoreography pattern="cascade" stagger={0.04} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {flow.map((item, index) => (
             <div key={item.step} className="relative group">
-              {/* Node glow that pulses when the scroll path reaches this card */}
-              {!prefersReducedMotion && (
-                <NodeGlow progress={scrollYProgress} threshold={nodeThresholds[index]} />
-              )}
               <div className="product-panel product-panel--interactive relative z-10 backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-violet-500/30 transition-all">
                 <div className={`inline-flex px-3 py-1 rounded-full bg-gradient-to-r ${item.color} text-white text-xs font-semibold mb-4`}>
                   {item.step}

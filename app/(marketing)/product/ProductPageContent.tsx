@@ -17,15 +17,6 @@ const ProductShowcaseSection = dynamic(
   { ssr: false, loading: () => <div className="w-full" style={{ minHeight: '600px' }} /> },
 );
 
-/* ── LaserFlow — cinematic hero background (desktop WebGL, mobile fallback) ── */
-const ProductHeroLaser = dynamic(
-  () =>
-    import(/* webpackChunkName: "marketing-threejs" */ './components/ProductHeroLaser').then(
-      (m) => m.ProductHeroLaser,
-    ),
-  { ssr: false, loading: () => null },
-);
-
 const OperationalScenarioProof = dynamic(
   () => import('@/components/marketing/demo/OperationalScenarioProof').then((m) => m.OperationalScenarioProof),
   { ssr: false, loading: () => null },
@@ -74,14 +65,8 @@ const FinalCTA = dynamic(() => import('./components/FinalCTA').then((m) => m.Fin
 export default function ProductPageContent() {
   return (
     <MarketingPageShell className="product-page-flow">
-      {/* Hero wrapper — laser lands at the bottom edge of hero section */}
-      <div className="relative">
-        <ProductHeroLaser />
-        <div className="relative" style={{ zIndex: 1 }}>
-          {/* Hero — headline, gradient text, CTAs */}
-          <ProductHeroSection />
-        </div>
-      </div>
+      {/* Hero — headline, gradient text, CTAs */}
+      <ProductHeroSection />
       {/* Interactive showcase — tabs left, app panel right */}
       <DeferredSection minHeight={620} rootMargin="120px 0px">
         <ProductShowcaseSection />
