@@ -6,19 +6,125 @@ import {
   motion,
   useReducedMotion,
 } from 'framer-motion';
-import { ArrowRight, Play, Sparkles, Shield, FileCheck, BarChart3, CheckCircle } from 'lucide-react';
+import {
+  Activity,
+  ArrowRight,
+  BarChart3,
+  CheckCircle,
+  Clock3,
+  FileCheck,
+  Play,
+  ShieldCheck,
+  Sparkles,
+  Workflow,
+} from 'lucide-react';
 import { duration } from '@/config/motion';
 import { brand } from '@/config/brand';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
-const CAPABILITIES = [
-  { icon: Shield, label: 'System-Enforced Controls' },
-  { icon: FileCheck, label: 'Automated Evidence Capture' },
-  { icon: BarChart3, label: 'Regulator-Ready Audit Packets' },
+const OUTCOME_METRICS = [
+  {
+    label: 'Live Control Coverage',
+    value: '147 controls',
+    trend: '+12 this quarter',
+  },
+  {
+    label: 'Evidence Continuity',
+    value: '99.98%',
+    trend: 'Chain verified',
+  },
+  {
+    label: 'Audit Packet Delivery',
+    value: '94 sec',
+    trend: 'P95 export time',
+  },
 ] as const;
 
-const FRAMEWORKS = ['SOC 2', 'ISO 27001', 'GDPR', 'HIPAA', 'NDIS'] as const;
+const CAPABILITIES = [
+  {
+    icon: ShieldCheck,
+    label: 'System-Enforced Controls',
+    detail: 'Controls become enforceable workflows with named ownership.',
+  },
+  {
+    icon: FileCheck,
+    label: 'Defensible Evidence Chain',
+    detail: 'Tamper-evident artifacts with traceable approvals and history.',
+  },
+  {
+    icon: BarChart3,
+    label: 'Executive Readiness Reporting',
+    detail: 'Always-current posture, findings, and board-ready evidence packs.',
+  },
+] as const;
+
+const WORKFLOW_STAGES = [
+  {
+    stage: 'Detect Drift',
+    owner: 'Control Ops',
+    sla: '9 min',
+    status: 'Stable',
+  },
+  {
+    stage: 'Assign & Escalate',
+    owner: 'Risk Lead',
+    sla: '14 min',
+    status: 'Healthy',
+  },
+  {
+    stage: 'Verify Resolution',
+    owner: 'Assurance',
+    sla: '31 min',
+    status: 'Tracked',
+  },
+  {
+    stage: 'Export Audit Packet',
+    owner: 'Reporting',
+    sla: '94 sec',
+    status: 'Ready',
+  },
+] as const;
+
+const ASSURANCE_SIGNALS = [
+  { label: 'Open Findings', value: '3', tone: 'amber' },
+  { label: 'Critical Risks', value: '0', tone: 'emerald' },
+  { label: 'Upcoming Audits', value: '2', tone: 'cyan' },
+  { label: 'Board Reports', value: 'Weekly', tone: 'slate' },
+] as const;
+
+const FRAMEWORKS = ['SOC 2', 'ISO 27001', 'HIPAA', 'GDPR', 'NDIS'] as const;
+
+function signalToneClasses(
+  tone: (typeof ASSURANCE_SIGNALS)[number]['tone'],
+): { dot: string; text: string; badge: string } {
+  switch (tone) {
+    case 'amber':
+      return {
+        dot: 'bg-amber-400',
+        text: 'text-amber-300',
+        badge: 'border-amber-400/20 bg-amber-500/10',
+      };
+    case 'emerald':
+      return {
+        dot: 'bg-emerald-400',
+        text: 'text-emerald-300',
+        badge: 'border-emerald-400/20 bg-emerald-500/10',
+      };
+    case 'cyan':
+      return {
+        dot: 'bg-cyan-400',
+        text: 'text-cyan-300',
+        badge: 'border-cyan-400/20 bg-cyan-500/10',
+      };
+    default:
+      return {
+        dot: 'bg-slate-300',
+        text: 'text-slate-300',
+        badge: 'border-slate-300/15 bg-slate-500/10',
+      };
+  }
+}
 
 export function ProductScrollHero() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -28,213 +134,209 @@ export function ProductScrollHero() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[90vh] flex items-center overflow-hidden pt-24 pb-16 sm:pt-32 sm:pb-20"
+      className="relative flex min-h-[90vh] items-center overflow-hidden pb-16 pt-24 sm:pb-20 sm:pt-32"
     >
-      {/* Subtle background teal glow */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_-10%,rgba(20,184,166,0.10)_0%,transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_74%_52%_at_48%_-12%,rgba(6,182,212,0.14)_0%,transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(148,163,184,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.05)_1px,transparent_1px)] bg-[size:44px_44px] opacity-20" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[#0a0f1c]" />
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-6 lg:px-12">
-        <div className="grid lg:grid-cols-[55fr_45fr] gap-12 lg:gap-16 items-center">
-
-          {/* Left: Text content */}
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-12">
+        <div className="grid items-center gap-12 lg:grid-cols-[56fr_44fr] lg:gap-16">
           <div className="text-center lg:text-left">
-            {/* Badge */}
             <motion.div
               initial={shouldAnimate ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={shouldAnimate ? { duration: duration.slow, delay: 0.15 } : { duration: 0 }}
-              className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full border border-teal-400/25 bg-teal-500/10"
+              className="mb-6 inline-flex items-center gap-2 rounded-full border border-teal-400/25 bg-teal-500/10 px-4 py-2"
             >
-              <Sparkles className="w-4 h-4 text-teal-400" />
-              <span className="text-sm text-teal-300 font-medium tracking-wide">Compliance Operating System</span>
+              <Sparkles className="h-4 w-4 text-teal-400" />
+              <span className="text-sm font-semibold tracking-wide text-teal-300">
+                Compliance Operating System
+              </span>
             </motion.div>
 
-            {/* Headline */}
             <motion.h1
               initial={shouldAnimate ? { opacity: 0, y: 30 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={shouldAnimate ? { duration: duration.slower, delay: 0.27 } : { duration: 0 }}
-              className="text-[2.25rem] sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-5 leading-[1.08] text-white"
+              className="mb-5 text-[2.25rem] font-bold leading-[1.08] text-white sm:text-5xl lg:text-6xl xl:text-7xl"
             >
-              The Compliance OS
+              Run Compliance Like
               <br />
               <span className="bg-gradient-to-r from-teal-300 via-emerald-300 to-cyan-300 bg-clip-text text-transparent">
-                for Real Organizations
+                Mission-Critical Operations
               </span>
             </motion.h1>
 
-            {/* Subheadline */}
             <motion.p
               initial={shouldAnimate ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={shouldAnimate ? { duration: duration.slower, delay: 0.39 } : { duration: 0 }}
-              className="text-base sm:text-lg lg:text-xl text-slate-400 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed"
+              className="mx-auto mb-7 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-lg lg:mx-0 lg:text-xl"
             >
-              Turn regulatory obligations into system-enforced controls, owned evidence, and audit-ready outcomes — continuously and in real time.
+              FormaOS turns obligations into governed execution loops with owned evidence,
+              real-time posture visibility, and audit packets leadership can defend.
             </motion.p>
 
-            {/* CTAs */}
+            <motion.div
+              initial={shouldAnimate ? { opacity: 0, y: 18 } : false}
+              animate={{ opacity: 1, y: 0 }}
+              transition={shouldAnimate ? { duration: duration.slower, delay: 0.45 } : { duration: 0 }}
+              className="mb-8 grid gap-2.5 sm:grid-cols-3"
+            >
+              {OUTCOME_METRICS.map((metric) => (
+                <div
+                  key={metric.label}
+                  className="rounded-xl border border-white/[0.1] bg-slate-950/50 px-3.5 py-3 text-left"
+                >
+                  <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">{metric.label}</p>
+                  <p className="mt-1 text-sm font-semibold text-white">{metric.value}</p>
+                  <p className="mt-1 text-[11px] text-emerald-300">{metric.trend}</p>
+                </div>
+              ))}
+            </motion.div>
+
             <motion.div
               initial={shouldAnimate ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
-              transition={shouldAnimate ? { duration: duration.slower, delay: 0.48 } : { duration: 0 }}
-              className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start"
+              transition={shouldAnimate ? { duration: duration.slower, delay: 0.52 } : { duration: 0 }}
+              className="flex flex-col justify-center gap-3 sm:flex-row sm:gap-4 lg:justify-start"
             >
               <motion.a
                 href={`${appBase}/auth/signup`}
                 whileHover={shouldAnimate ? { scale: 1.02 } : undefined}
                 whileTap={shouldAnimate ? { scale: 0.98 } : undefined}
-                className="mk-btn mk-btn-primary group px-8 py-4 min-h-[48px] text-base sm:text-lg w-full sm:w-auto justify-center"
+                className="mk-btn mk-btn-primary group min-h-[48px] w-full justify-center px-8 py-4 text-base sm:w-auto sm:text-lg"
               >
                 <span>Start Free Trial</span>
-                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </motion.a>
               <Link
                 href="/contact"
-                className="mk-btn mk-btn-secondary group px-8 py-4 min-h-[48px] text-base sm:text-lg w-full sm:w-auto justify-center"
+                className="mk-btn mk-btn-secondary group min-h-[48px] w-full justify-center px-8 py-4 text-base sm:w-auto sm:text-lg"
               >
-                <Play className="w-5 h-5" />
+                <Play className="h-5 w-5" />
                 <span>Request Demo</span>
               </Link>
             </motion.div>
 
-            {/* Capability badges */}
             <motion.div
               initial={shouldAnimate ? { opacity: 0, y: 15 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={shouldAnimate ? { duration: duration.slower, delay: 0.6 } : { duration: 0 }}
-              className="flex flex-wrap gap-2 mt-8 justify-center lg:justify-start"
+              className="mt-8 grid gap-2.5 sm:grid-cols-3"
             >
-              {CAPABILITIES.map((cap) => {
-                const Icon = cap.icon;
+              {CAPABILITIES.map((capability) => {
+                const Icon = capability.icon;
                 return (
                   <div
-                    key={cap.label}
-                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] text-sm text-slate-400"
+                    key={capability.label}
+                    className="rounded-xl border border-white/[0.09] bg-white/[0.03] px-3.5 py-3 text-left"
                   >
-                    <Icon className="w-3.5 h-3.5 text-teal-400/70" />
-                    {cap.label}
+                    <div className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-cyan-300/20 bg-cyan-400/10">
+                      <Icon className="h-4 w-4 text-cyan-300" />
+                    </div>
+                    <p className="text-sm font-semibold text-white">{capability.label}</p>
+                    <p className="mt-1 text-xs leading-relaxed text-slate-300">{capability.detail}</p>
                   </div>
                 );
               })}
             </motion.div>
           </div>
 
-          {/* Right: Dashboard preview */}
           <motion.div
             initial={shouldAnimate ? { opacity: 0, y: 24 } : false}
             animate={{ opacity: 1, y: 0 }}
-            transition={shouldAnimate ? { duration: duration.slower, delay: 0.35 } : { duration: 0 }}
+            transition={shouldAnimate ? { duration: duration.slower, delay: 0.34 } : { duration: 0 }}
             whileHover={shouldAnimate ? { y: -4 } : undefined}
-            className="relative w-full max-w-[520px] mx-auto"
+            className="relative mx-auto w-full max-w-[540px]"
           >
-            {/* Dashboard card */}
-            <div className="relative rounded-2xl border border-white/[0.08] bg-white/[0.03] overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.4)]">
-              {/* Top illumination */}
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/25 to-transparent" />
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.1] bg-slate-950/70 shadow-[0_24px_64px_rgba(0,0,0,0.4)] backdrop-blur-sm">
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/35 to-transparent" />
 
-              {/* Browser chrome */}
-              <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.02]">
-                <div className="flex gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-white/[0.12]" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-white/[0.12]" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-white/[0.12]" />
+              <div className="flex items-center justify-between border-b border-white/[0.08] bg-white/[0.02] px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <Activity className="h-4 w-4 text-cyan-300" />
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-200">
+                    Operating Snapshot
+                  </span>
                 </div>
-                <div className="flex-1 mx-4">
-                  <div className="h-5 rounded-md bg-white/[0.04] flex items-center justify-center">
-                    <span className="text-[10px] text-white/20 font-mono">app.formaos.com.au/dashboard</span>
-                  </div>
-                </div>
+                <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-300">
+                  <Clock3 className="h-3 w-3" />
+                  Live
+                </span>
               </div>
 
-              {/* App layout */}
-              <div className="flex">
-                {/* Sidebar */}
-                <div className="hidden sm:flex flex-col w-[130px] border-r border-white/[0.04] p-2.5 gap-1">
-                  {['Dashboard', 'Controls', 'Evidence', 'Tasks', 'Reports', 'Settings'].map((item, i) => (
-                    <div
-                      key={item}
-                      className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[10px] ${
-                        i === 0
-                          ? 'bg-teal-500/15 text-teal-300'
-                          : 'text-white/30'
-                      }`}
-                    >
-                      <div className={`w-1.5 h-1.5 rounded-full ${i === 0 ? 'bg-teal-400' : 'bg-white/15'}`} />
-                      {item}
-                    </div>
-                  ))}
+              <div className="p-4">
+                <div className="grid grid-cols-2 gap-2.5">
+                  {ASSURANCE_SIGNALS.map((signal) => {
+                    const tone = signalToneClasses(signal.tone);
+                    return (
+                      <div
+                        key={signal.label}
+                        className={`rounded-lg border px-3 py-2 ${tone.badge}`}
+                      >
+                        <p className="text-[10px] uppercase tracking-[0.14em] text-slate-300/90">{signal.label}</p>
+                        <div className="mt-1 flex items-center gap-1.5">
+                          <span className={`h-1.5 w-1.5 rounded-full ${tone.dot}`} />
+                          <span className={`text-sm font-semibold ${tone.text}`}>{signal.value}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
 
-                {/* Content area */}
-                <div className="flex-1 p-3.5">
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <div className="text-xs font-semibold text-white/80">Compliance Dashboard</div>
-                      <div className="text-[9px] text-white/30 mt-0.5">All frameworks · Q1 2026</div>
-                    </div>
-                    <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/20">
-                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                      <span className="text-[9px] font-bold text-emerald-400">94%</span>
-                    </div>
+                <div className="mt-4 rounded-xl border border-white/[0.08] bg-white/[0.03] p-3">
+                  <div className="mb-2 flex items-center gap-2">
+                    <Workflow className="h-4 w-4 text-teal-300" />
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-300">
+                      Governance Workflow
+                    </p>
                   </div>
-
-                  {/* Stats row */}
-                  <div className="grid grid-cols-3 gap-1.5 mb-3">
-                    {[
-                      { v: '142', l: 'Controls', c: 'text-teal-400' },
-                      { v: '98%', l: 'Evidence', c: 'text-emerald-400' },
-                      { v: '3', l: 'Findings', c: 'text-amber-400' },
-                    ].map((s) => (
-                      <div key={s.l} className="text-center p-2 rounded-lg bg-white/[0.03] border border-white/[0.04]">
-                        <div className={`text-xs font-bold ${s.c}`}>{s.v}</div>
-                        <div className="text-[8px] text-white/25">{s.l}</div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Framework rows */}
-                  <div className="space-y-1">
-                    {[
-                      { fw: 'SOC 2 Type II', s: 'Pass', c: 'emerald' },
-                      { fw: 'ISO 27001', s: 'Pass', c: 'emerald' },
-                      { fw: 'NDIS Practice Standards', s: 'Pass', c: 'emerald' },
-                      { fw: 'GDPR', s: 'Review', c: 'amber' },
-                    ].map((r) => (
-                      <div key={r.fw} className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-white/[0.02]">
-                        <div className={`w-1.5 h-1.5 rounded-full bg-${r.c}-400`} />
-                        <span className="text-[9px] text-white/50 flex-1">{r.fw}</span>
-                        <span className={`text-[8px] font-semibold text-${r.c}-400/70`}>{r.s}</span>
+                  <div className="space-y-2">
+                    {WORKFLOW_STAGES.map((stage) => (
+                      <div
+                        key={stage.stage}
+                        className="grid grid-cols-[1fr_auto] gap-2 rounded-lg border border-white/[0.06] bg-slate-900/45 px-3 py-2"
+                      >
+                        <div>
+                          <p className="text-xs font-semibold text-white">{stage.stage}</p>
+                          <p className="text-[11px] text-slate-400">{stage.owner}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs font-semibold text-cyan-300">{stage.sla}</p>
+                          <p className="text-[10px] uppercase tracking-[0.12em] text-emerald-300">
+                            {stage.status}
+                          </p>
+                        </div>
                       </div>
                     ))}
                   </div>
                 </div>
+
+                <div className="mt-4 rounded-xl border border-white/[0.08] bg-slate-900/55 px-3.5 py-2.5">
+                  <p className="text-[11px] text-slate-300">
+                    Next audit packet scheduled in{' '}
+                    <span className="font-semibold text-white">4h 12m</span>
+                  </p>
+                </div>
               </div>
 
-              {/* Framework badge strip */}
-              <div className="border-t border-white/[0.05] px-4 py-2.5 flex items-center justify-center gap-4 bg-white/[0.01]">
-                {FRAMEWORKS.map((fw) => (
-                  <div key={fw} className="flex items-center gap-1.5">
-                    <CheckCircle className="w-3 h-3 text-emerald-400/50" />
-                    <span className="text-[9px] text-white/30 font-medium">{fw}</span>
-                  </div>
+              <div className="flex flex-wrap items-center justify-center gap-3 border-t border-white/[0.08] bg-white/[0.02] px-4 py-3">
+                {FRAMEWORKS.map((framework) => (
+                  <span
+                    key={framework}
+                    className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-300"
+                  >
+                    <CheckCircle className="h-3 w-3 text-emerald-300/80" />
+                    {framework}
+                  </span>
                 ))}
               </div>
             </div>
 
-            {/* Static badge accents */}
-            <div className="absolute -top-3 -right-3 px-3 py-1.5 rounded-xl border border-emerald-400/20 bg-emerald-500/10">
-              <div className="flex items-center gap-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                <span className="text-xs font-semibold text-emerald-400">Audit Ready</span>
-              </div>
-            </div>
-            <div className="absolute -bottom-2 -left-2 px-3 py-1.5 rounded-xl border border-teal-400/20 bg-teal-500/10">
-              <div className="flex items-center gap-1.5">
-                <Shield className="w-3 h-3 text-teal-400" />
-                <span className="text-xs font-semibold text-teal-400">142 Controls Active</span>
-              </div>
+            <div className="absolute -right-3 -top-3 rounded-xl border border-cyan-400/20 bg-cyan-500/10 px-3 py-1.5">
+              <p className="text-xs font-semibold text-cyan-300">Board Brief Ready</p>
             </div>
           </motion.div>
         </div>
