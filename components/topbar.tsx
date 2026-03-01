@@ -158,18 +158,18 @@ export function TopBar({
   ];
 
   return (
-    <div className="flex h-full w-full items-center justify-between gap-3 min-w-0">
+    <div className="flex h-full w-full items-center justify-between gap-2 sm:gap-3 min-w-0">
       {/* Left: Breadcrumbs + Role badge */}
-      <div className="flex items-center gap-2 text-sm text-sidebar-foreground min-w-0">
+      <div className="flex items-center gap-1.5 sm:gap-2 text-sm text-sidebar-foreground min-w-0">
         <MobileSidebar role={role} />
         <span className="hidden sm:inline font-semibold text-sidebar-primary-foreground uppercase text-[11px] tracking-[0.2em]">
           Organization
         </span>
-        <ChevronRight className="h-4 w-4 text-slate-400" />
-        <span className="max-w-[120px] sm:max-w-[200px] truncate px-2.5 sm:px-3 py-1 rounded-md bg-card/70 text-card-foreground text-xs sm:text-sm font-semibold border border-card-foreground/8">
+        <ChevronRight className="hidden sm:block h-4 w-4 text-slate-400" />
+        <span className="max-w-[110px] sm:max-w-[200px] truncate px-2 sm:px-3 py-1 rounded-md bg-card/70 text-card-foreground text-[11px] sm:text-sm font-semibold border border-card-foreground/8">
           {orgName}
         </span>
-        <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-border bg-muted/50 text-muted-foreground">
+        <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider border border-border bg-muted/50 text-muted-foreground">
           {role}
         </span>
       </div>
@@ -180,9 +180,11 @@ export function TopBar({
       </div>
 
       {/* Right: Actions */}
-      <div className="ml-auto flex items-center gap-2 sm:gap-3">
+      <div className="ml-auto flex items-center gap-1 sm:gap-2">
         {/* Trial days remaining badge */}
-        <TrialDaysRemaining />
+        <div className="hidden md:flex">
+          <TrialDaysRemaining />
+        </div>
 
         {/* Mobile search trigger */}
         <Button
@@ -198,14 +200,14 @@ export function TopBar({
 
         {/* 🔔 NOTIFICATIONS */}
         <div className="relative" ref={notifRef}>
-          <Button
-            variant="ghost"
-            onClick={() => setShowNotifications((v) => !v)}
-            className="relative rounded-full p-2.5 text-sidebar-foreground/90 hover:bg-card/8 transition-colors"
-            aria-label="Notifications"
-          >
-            <Bell className="h-5 w-5" />
-          </Button>
+        <Button
+          variant="ghost"
+          onClick={() => setShowNotifications((v) => !v)}
+          className="relative rounded-full p-2 md:p-2.5 text-sidebar-foreground/90 hover:bg-card/8 transition-colors"
+          aria-label="Notifications"
+        >
+          <Bell className="h-5 w-5" />
+        </Button>
 
           {/* DROPDOWN PANEL (only when open) */}
           {showNotifications && (
@@ -224,14 +226,16 @@ export function TopBar({
         <Button
           variant="ghost"
           onClick={() => openHelp('home')}
-          className="rounded-full p-2.5 text-sidebar-foreground/90 hover:bg-card/8 transition-colors"
+          className="hidden sm:inline-flex rounded-full p-2.5 text-sidebar-foreground/90 hover:bg-card/8 transition-colors"
           aria-label="Open help assistant"
         >
           <LifeBuoy className="h-5 w-5" />
         </Button>
 
         {/* Theme Toggle */}
-        <ThemeToggle />
+        <div className="hidden sm:block">
+          <ThemeToggle />
+        </div>
 
         {/* USER DROPDOWN */}
         <div className="relative" ref={userMenuRef}>
@@ -240,9 +244,9 @@ export function TopBar({
             onClick={() => setShowUserMenu(!showUserMenu)}
             aria-haspopup="menu"
             aria-expanded={showUserMenu}
-            className="flex items-center gap-2 rounded-full pl-1 pr-3 py-1.5"
+            className="flex items-center gap-1 sm:gap-2 rounded-full pl-1 pr-2.5 sm:pr-3 py-1.5"
           >
-            <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-muted text-[10px] font-bold text-card-foreground">
+            <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-muted text-xs font-bold text-card-foreground">
               {avatarUrl ? (
                 <img
                   src={avatarUrl}

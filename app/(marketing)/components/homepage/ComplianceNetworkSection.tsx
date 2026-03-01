@@ -70,14 +70,14 @@ export function ComplianceNetworkSection() {
             <div className="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-emerald-500/8 to-transparent rounded-tl-full" />
             <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-amber-500/5 to-transparent rounded-bl-full" />
 
-            <div className="pointer-events-none absolute inset-x-4 top-4 z-20 hidden sm:flex items-start justify-between">
-              <div className="home-panel home-panel--soft rounded-xl border border-teal-400/15 bg-slate-950/60 px-4 py-2.5 backdrop-blur-md">
+            <div className="pointer-events-none absolute inset-x-4 top-4 z-20 hidden md:flex items-start justify-between gap-3">
+              <div className="home-panel home-panel--soft max-w-[48%] rounded-xl border border-teal-400/15 bg-slate-950/60 px-4 py-2.5 backdrop-blur-md">
                 <p className="text-[10px] uppercase tracking-[0.18em] text-teal-300/70">Live Mapping</p>
-                <p className="mt-1 text-xs text-slate-300">Framework obligations connected to active controls</p>
+                <p className="mt-1 text-xs text-slate-300">Framework obligations connected to active controls.</p>
               </div>
-              <div className="home-panel home-panel--soft rounded-xl border border-indigo-400/20 bg-slate-950/60 px-4 py-2.5 backdrop-blur-md text-right">
+              <div className="home-panel home-panel--soft max-w-[48%] rounded-xl border border-indigo-400/20 bg-slate-950/60 px-4 py-2.5 backdrop-blur-md text-right">
                 <p className="text-[10px] uppercase tracking-[0.18em] text-indigo-300/70">Audit Readiness</p>
-                <p className="mt-1 text-xs text-slate-300">Task and evidence chains remain continuously verifiable</p>
+                <p className="mt-1 text-xs text-slate-300">Task and evidence chains remain continuously verifiable.</p>
               </div>
             </div>
 

@@ -188,12 +188,11 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
               href={l.href}
               onClick={onLinkClick}
               className={clsx(
-                'block rounded-xl px-4 py-3 transition-all',
+                'block rounded-xl px-4 py-3 transition-all text-sm leading-relaxed break-words',
                 isActive
                   ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
                   : 'hover:bg-white/5 text-slate-300 hover:text-white',
               )}
-              style={{ whiteSpace: 'nowrap' }}
               aria-current={isActive ? 'page' : undefined}
             >
               {l.label}
@@ -212,12 +211,11 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
               href={l.href}
               onClick={onLinkClick}
               className={clsx(
-                'block rounded-xl px-4 py-3 transition-all',
+                'block rounded-xl px-4 py-3 transition-all text-sm leading-relaxed break-words',
                 isActive
                   ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
                   : 'hover:bg-white/5 text-slate-300 hover:text-white',
               )}
-              style={{ whiteSpace: 'nowrap' }}
               aria-current={isActive ? 'page' : undefined}
             >
               {l.label}
@@ -236,12 +234,11 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
               href={l.href}
               onClick={onLinkClick}
               className={clsx(
-                'block rounded-xl px-4 py-3 transition-all',
+                'block rounded-xl px-4 py-3 transition-all text-sm leading-relaxed break-words',
                 isActive
                   ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
                   : 'hover:bg-white/5 text-slate-300 hover:text-white',
               )}
-              style={{ whiteSpace: 'nowrap' }}
               aria-current={isActive ? 'page' : undefined}
             >
               {l.label}

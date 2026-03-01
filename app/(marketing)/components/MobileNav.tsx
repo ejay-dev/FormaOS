@@ -188,14 +188,14 @@ export function MobileNav() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.95 }}
               transition={{ duration: 0.25, ease: [...easing.signature] }}
-              className="mk-mobile-sheet absolute left-3 right-3 top-[calc(env(safe-area-inset-top)+4.5rem)] max-h-[calc(100vh-6rem)] rounded-2xl overflow-hidden"
+              className="mk-mobile-sheet absolute left-3 right-3 top-[calc(env(safe-area-inset-top)+4.25rem)] max-h-[calc(100dvh-5.25rem)] rounded-2xl overflow-hidden"
               onClick={(e) => e.stopPropagation()}
               onKeyDown={trapFocus}
             >
               {/* Decorative top line */}
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
 
-              <div className="max-h-[calc(100vh-6rem)] overflow-y-auto pb-[env(safe-area-inset-bottom)]">
+              <div className="max-h-[calc(100dvh-5.25rem)] overflow-y-auto overscroll-y-contain pb-[max(env(safe-area-inset-bottom),0.75rem)]">
                 {/* Header */}
                 <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
                   <span className="text-sm font-bold text-white tracking-wide">

@@ -51,44 +51,44 @@ export default async function EmailHistoryPage() {
       </div>
 
       <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden shadow-sm">
-        <div className="overflow-x-auto">
-        <table className="min-w-[760px] w-full text-left text-sm">
+        <div className="overflow-x-auto overscroll-x-contain">
+        <table className="min-w-[640px] sm:min-w-[760px] w-full text-left text-sm">
           <thead className="bg-white/10 border-b border-white/10 text-slate-400 font-medium">
             <tr>
-              <th className="px-6 py-4">Recipient</th>
-              <th className="px-6 py-4">Type</th>
-              <th className="px-6 py-4">Subject</th>
-              <th className="px-6 py-4">Status & Logic</th>
-              <th className="px-6 py-4">Date</th>
+              <th className="px-4 sm:px-6 py-4">Recipient</th>
+              <th className="px-4 sm:px-6 py-4">Type</th>
+              <th className="px-4 sm:px-6 py-4">Subject</th>
+              <th className="px-4 sm:px-6 py-4">Status & Logic</th>
+              <th className="px-4 sm:px-6 py-4">Date</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/10">
             {logs.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-6 py-12 text-center text-slate-400 italic">
+                <td colSpan={5} className="px-4 sm:px-6 py-12 text-center text-slate-400 italic">
                   No emails have been sent yet.
                 </td>
               </tr>
             ) : (
               logs.map((log) => (
                 <tr key={log.id} className="hover:bg-white/5 transition-colors group">
-                  <td className="px-6 py-4 font-medium text-slate-100">
+                  <td className="px-4 sm:px-6 py-4 font-medium text-slate-100">
                     <div className="flex flex-col">
                       <span>{log.recipient_email}</span>
-                      <span className="text-[10px] text-slate-400 font-mono uppercase tracking-tighter">
+                      <span className="text-xs text-slate-400 font-mono uppercase tracking-tighter">
                         Ref: {log.resend_id ? log.resend_id.split('-').pop() : 'N/A'}
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 sm:px-6 py-4">
                     <span className="capitalize px-2 py-1 rounded bg-white/10 text-slate-400 text-xs font-semibold">
                       {log.email_type.replace('_', ' ')}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-slate-400">
+                  <td className="px-4 sm:px-6 py-4 text-slate-400">
                     {log.subject}
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 sm:px-6 py-4">
                     <div className="flex flex-col gap-1">
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium w-fit ${
                         log.status === 'sent' 
@@ -101,13 +101,13 @@ export default async function EmailHistoryPage() {
                       
                       {/* FORENSIC ERROR MESSAGE: Only shows if the email failed */}
                       {log.status === 'failed' && log.error_message && (
-                        <span className="text-[10px] text-red-500 font-medium leading-tight max-w-[180px]">
+                        <span className="text-xs text-red-500 font-medium leading-tight max-w-[180px]">
                           Reason: {log.error_message}
                         </span>
                       )}
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-slate-400 tabular-nums">
+                  <td className="px-4 sm:px-6 py-4 text-slate-400 tabular-nums">
                     {new Date(log.created_at).toLocaleString('en-GB', {
                       day: '2-digit',
                       month: 'short',
@@ -122,7 +122,7 @@ export default async function EmailHistoryPage() {
         </table>
         </div>
       </div>
-      <div className="mt-4 text-[10px] text-slate-400 flex justify-between">
+      <div className="mt-4 text-xs text-slate-400 flex justify-between">
         <span>Showing last {logs.length} events</span>
         <span>FormaOS Compliance Engine v1.0</span>
       </div>

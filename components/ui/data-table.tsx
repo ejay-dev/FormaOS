@@ -11,7 +11,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, ArrowUpDown, Search } from "lucide-react";
+import { Search } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -61,8 +61,8 @@ export function DataTable<TData, TValue>({
 
       {/* Table */}
         <div className="rounded-md border border-card-foreground/8 bg-card p-0 shadow-sm overflow-hidden">
-          <div className="w-full overflow-x-auto">
-            <table className="min-w-[640px] w-full text-sm text-left">
+          <div className="w-full overflow-x-auto overscroll-x-contain">
+            <table className="min-w-[560px] sm:min-w-[640px] w-full text-sm text-left">
             <thead className="bg-card text-muted font-medium">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b border-card-foreground/8">
@@ -110,14 +110,14 @@ export function DataTable<TData, TValue>({
       {/* Pagination */}
       <div className="flex flex-wrap items-center justify-end gap-2 py-4">
         <button
-          className="px-3 py-1 border rounded text-sm disabled:opacity-50"
+          className="px-3 py-1 border rounded text-sm disabled:opacity-50 w-full sm:w-auto"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
           Previous
         </button>
         <button
-          className="px-3 py-1 border rounded text-sm disabled:opacity-50"
+          className="px-3 py-1 border rounded text-sm disabled:opacity-50 w-full sm:w-auto"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >

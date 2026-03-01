@@ -52,39 +52,43 @@ export default async function AppLayout({
   children: React.ReactNode;
 }) {
   /* -------------------------------------------------------
-   * 1) AUTHENTICATION — fail-soft
-   * ----------------------------------------------------- */
-  let user: { id: string; email?: string | null } | null = null;
-
-  try {
-    const supabase = await createSupabaseServerClient();
-    const { data } = await supabase.auth.getUser();
-    user = data?.user ?? null;
-  } catch (err) {
-    log.error({ err }, 'getUser crashed');
-  }
-
-  if (!user) {
-    redirect('/auth/signin');
-  }
-
-  /* -------------------------------------------------------
-   * 2) FETCH COMPLETE SYSTEM STATE (server-side, once)
-   *    Pass user to avoid duplicate getUser() call.
+   * 1) FETCH COMPLETE SYSTEM STATE (server-side, once)
+   *    Uses request cache so child pages can reuse the same payload.
    * ----------------------------------------------------- */
   let systemState: Awaited<ReturnType<typeof fetchSystemState>> = null;
 
   try {
-    systemState = await fetchSystemState(user);
+    systemState = await fetchSystemState();
   } catch (err) {
-    log.error({ err, userId: user.id }, 'fetchSystemState crashed');
+    log.error({ err }, 'fetchSystemState crashed');
   }
 
-  // If we can't build state, send to onboarding rather than crashing.
-  // Add ?from=app to prevent /onboarding → /app → /onboarding infinite loop.
+  // If state is unavailable, distinguish unauthenticated users from workspace issues.
   if (!systemState) {
-    log.warn({ userId: user.id }, 'No system state — redirecting to workspace recovery');
-    redirect('/workspace-recovery?from=app-layout-null-state');
+    let authUser: { id: string; email?: string | null } | null = null;
+    try {
+      const supabase = await createSupabaseServerClient();
+      const { data } = await supabase.auth.getUser();
+      authUser = data?.user ?? null;
+    } catch (err) {
+      log.error({ err }, 'fallback getUser crashed');
+    }
+
+    if (!authUser) {
+      redirect('/auth/signin');
+    }
+
+    log.warn({ userId: authUser.id }, 'No system state — redirecting to workspace recovery');
+    const recovery = await recoverUserWorkspace({
+      userId: authUser.id,
+      userEmail: authUser.email ?? null,
+      source: 'app-layout-null-state',
+    });
+    redirect(
+      recovery.nextPath === '/app'
+        ? '/workspace-recovery?from=app-layout-null-state'
+        : recovery.nextPath,
+    );
   }
 
   // 🔧 FIX: Don't force founders to /admin when they visit /app intentionally.
@@ -95,8 +99,8 @@ export default async function AppLayout({
   // Validate onboarding completion
   if (!systemState.organization.onboardingCompleted) {
     const recovery = await recoverUserWorkspace({
-      userId: user.id,
-      userEmail: user.email ?? null,
+      userId: systemState.user.id,
+      userEmail: systemState.user.email ?? null,
       source: 'app-layout-onboarding-guard',
     });
     redirect(
@@ -163,10 +167,10 @@ export default async function AppLayout({
                 </div>
               </aside>
 
-              {/* Main application area */}
-              <section className="relative flex h-full flex-1 flex-col overflow-hidden">
-                <header className="sticky top-0 z-40 flex h-16 w-full items-center glass-panel-strong border-b border-border">
-                  <div className="flex h-full w-full items-center px-4 sm:px-6 lg:px-8">
+                {/* Main application area */}
+                <section className="relative flex h-full flex-1 flex-col overflow-hidden">
+                  <header className="sticky top-0 z-40 flex h-16 w-full items-center glass-panel-strong border-b border-border">
+                  <div className="flex h-full w-full items-center px-3 sm:px-6 lg:px-8">
                     <TopBar
                       orgName={systemState.organization.name || 'My Organization'}
                       userEmail={systemState.user.email || ''}
@@ -182,7 +186,7 @@ export default async function AppLayout({
                 <TrialCountdownBanner />
 
                 <main className="relative flex flex-1 flex-col overflow-y-auto bg-background">
-                  <div className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10">
+                  <div className="mx-auto w-full max-w-[1600px] px-3 sm:px-6 lg:px-8 py-5 sm:py-8 lg:py-10 pb-[max(env(safe-area-inset-bottom),1.25rem)] sm:pb-8 lg:pb-10">
                     {children}
                   </div>
                 </main>

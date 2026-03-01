@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { Menu, X } from "lucide-react";
 import clsx from "clsx";
 import { Sidebar } from "@/components/sidebar";
@@ -11,6 +11,7 @@ type UserRole = "viewer" | "member" | "admin" | "owner" | "staff" | "auditor";
 export function MobileSidebar({ role }: { role: UserRole }) {
   const [visible, setVisible] = useState(false);
   const [open, setOpen] = useState(false);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleOpen = useCallback(() => {
     setVisible(true);
@@ -23,8 +24,21 @@ export function MobileSidebar({ role }: { role: UserRole }) {
   const handleClose = useCallback(() => {
     setOpen(false);
     // Remove from DOM after transition completes
-    const timer = setTimeout(() => setVisible(false), 250);
-    return () => clearTimeout(timer);
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+    }
+    closeTimerRef.current = setTimeout(() => {
+      setVisible(false);
+      closeTimerRef.current = null;
+    }, 250);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) {
+        clearTimeout(closeTimerRef.current);
+      }
+    };
   }, []);
 
   // Body scroll lock
@@ -62,10 +76,10 @@ export function MobileSidebar({ role }: { role: UserRole }) {
       <Button
         variant="ghost"
         onClick={handleOpen}
-        className="rounded-full p-2"
+        className="rounded-full p-2.5"
         aria-label="Open navigation"
       >
-        <Menu className="h-4 w-4" />
+        <Menu className="h-5 w-5" />
       </Button>
 
       {visible && (
@@ -83,7 +97,7 @@ export function MobileSidebar({ role }: { role: UserRole }) {
           {/* Panel */}
           <div
             className={clsx(
-              "absolute left-0 top-0 h-full w-[85vw] max-w-[320px] sm:w-80 shadow-2xl overflow-y-auto bg-[hsl(var(--sidebar))] glass-panel-strong pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]",
+              "absolute left-0 top-0 h-full w-[88vw] max-w-[340px] sm:w-80 shadow-2xl overflow-y-auto overscroll-y-contain bg-[hsl(var(--sidebar))] glass-panel-strong pt-[max(env(safe-area-inset-top),0.75rem)] pb-[max(env(safe-area-inset-bottom),0.75rem)]",
               "transition-transform duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
               open ? "translate-x-0" : "-translate-x-full"
             )}
@@ -92,7 +106,7 @@ export function MobileSidebar({ role }: { role: UserRole }) {
             <Button
               variant="ghost"
               onClick={handleClose}
-              className="absolute right-3 top-3 rounded-full p-2 bg-black/40"
+              className="absolute right-3 top-3 rounded-full p-2 bg-black/50 border border-white/10"
             >
               <X className="h-4 w-4" />
             </Button>
