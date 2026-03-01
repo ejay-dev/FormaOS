@@ -93,6 +93,8 @@ interface ImmersiveHeroProps {
   theme: string | HeroTheme;
   /** Per-page unique visual content rendered in the midground depth layer */
   visualContent?: ReactNode;
+  /** Allow pointer events for visual layer (interactive canvas/globe, etc.) */
+  visualInteractive?: boolean;
   /** Optional background decoration rendered in the background depth layer */
   backgroundContent?: ReactNode;
   /** Badge configuration */
@@ -152,6 +154,7 @@ function staggerTransition(delay: number, dur: number = duration.slower) {
 export function ImmersiveHero({
   theme,
   visualContent,
+  visualInteractive = false,
   backgroundContent,
   badge,
   headline,
@@ -313,7 +316,7 @@ export function ImmersiveHero({
           <DepthLayer
             layer="midground"
             parallaxRate={t.parallax.midground}
-            className="absolute inset-0 pointer-events-none z-[1]"
+            className={`absolute inset-0 z-[1] ${visualInteractive ? 'pointer-events-auto' : 'pointer-events-none'}`}
           >
             <motion.div
               initial={sa ? entranceVariants.hidden : false}

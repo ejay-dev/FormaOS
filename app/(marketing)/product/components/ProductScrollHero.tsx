@@ -9,6 +9,7 @@ import {
   Workflow,
 } from 'lucide-react';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
+import { InteractiveGlobe } from '@/components/marketing/InteractiveGlobe';
 
 const OUTCOME_METRICS = [
   {
@@ -74,6 +75,25 @@ const WORKFLOW_STAGES = [
 ] as const;
 
 const FRAMEWORKS = ['SOC 2', 'ISO 27001', 'HIPAA', 'GDPR', 'NDIS'] as const;
+
+function ProductHeroGlobeVisual() {
+  return (
+    <div className="pointer-events-none absolute inset-0 hidden lg:block">
+      <div className="pointer-events-auto absolute right-[-4%] top-[50%] -translate-y-1/2">
+        <div className="rounded-full border border-cyan-300/20 bg-slate-950/20 p-3 backdrop-blur-sm">
+          <InteractiveGlobe
+            size={500}
+            className="opacity-85"
+            autoRotateSpeed={0.0018}
+            dotColor="rgba(130, 190, 255, ALPHA)"
+            arcColor="rgba(82, 227, 255, 0.35)"
+            markerColor="rgba(125, 245, 255, 1)"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function ProductHeroExtras() {
   return (
@@ -156,6 +176,8 @@ export function ProductScrollHero() {
   return (
     <ImmersiveHero
       theme="product"
+      visualContent={<ProductHeroGlobeVisual />}
+      visualInteractive
       badge={{
         icon: <Sparkles className="h-4 w-4 text-violet-300" />,
         text: 'Compliance Operating System',
