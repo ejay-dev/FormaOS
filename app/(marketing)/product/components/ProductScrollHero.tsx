@@ -78,16 +78,20 @@ const FRAMEWORKS = ['SOC 2', 'ISO 27001', 'HIPAA', 'GDPR', 'NDIS'] as const;
 
 function ProductHeroGlobeVisual() {
   return (
-    <div className="pointer-events-none absolute inset-0 hidden lg:block">
-      <div className="pointer-events-auto absolute right-[-4%] top-[50%] -translate-y-1/2">
-        <div className="rounded-full border border-cyan-300/20 bg-slate-950/20 p-3 backdrop-blur-sm">
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 hidden lg:block"
+    >
+      <div className="pointer-events-auto absolute right-[clamp(0.75rem,3.4vw,3.75rem)] top-[58%] -translate-y-1/2">
+        <div className="relative h-[360px] w-[360px] xl:h-[460px] xl:w-[460px]">
+          <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,rgba(14,165,233,0.12)_0%,rgba(14,165,233,0.03)_48%,transparent_74%)]" />
           <InteractiveGlobe
-            size={500}
-            className="opacity-85"
+            size={460}
+            className="h-full w-full opacity-75"
             autoRotateSpeed={0.0018}
             dotColor="rgba(130, 190, 255, ALPHA)"
-            arcColor="rgba(82, 227, 255, 0.35)"
-            markerColor="rgba(125, 245, 255, 1)"
+            arcColor="rgba(82, 227, 255, 0.32)"
+            markerColor="rgba(125, 245, 255, 0.92)"
           />
         </div>
       </div>
