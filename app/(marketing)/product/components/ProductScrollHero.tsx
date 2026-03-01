@@ -82,12 +82,12 @@ function ProductHeroGlobeVisual() {
       aria-hidden
       className="pointer-events-none absolute inset-0 hidden lg:block"
     >
-      <div className="pointer-events-auto absolute right-[clamp(0.75rem,3.4vw,3.75rem)] top-[58%] -translate-y-1/2">
-        <div className="relative h-[360px] w-[360px] xl:h-[460px] xl:w-[460px]">
+      <div className="pointer-events-auto absolute right-[clamp(-4.5rem,-1.4vw,-1rem)] top-[68%] -translate-y-1/2">
+        <div className="relative h-[460px] w-[460px] xl:h-[620px] xl:w-[620px]">
           <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,rgba(14,165,233,0.12)_0%,rgba(14,165,233,0.03)_48%,transparent_74%)]" />
           <InteractiveGlobe
-            size={460}
-            className="h-full w-full opacity-75"
+            size={620}
+            className="h-full w-full opacity-78"
             autoRotateSpeed={0.0018}
             dotColor="rgba(130, 190, 255, ALPHA)"
             arcColor="rgba(82, 227, 255, 0.32)"
