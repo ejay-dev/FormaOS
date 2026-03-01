@@ -75,7 +75,7 @@ function PricingCard({
       className="pointer-events-auto"
     >
       <div
-        className={`relative backdrop-blur-xl bg-gradient-to-br ${gradientFrom} ${gradientTo} rounded-3xl p-8 border-2 ${featured ? borderColor : 'border-white/[0.08]'} shadow-2xl transition-all duration-500 group-hover:shadow-3xl ${featured ? 'group-hover:shadow-emerald-500/20' : ''} group-hover:border-opacity-100 overflow-hidden h-full`}
+        className={`relative backdrop-blur-xl bg-gradient-to-br ${gradientFrom} ${gradientTo} rounded-3xl p-5 sm:p-8 border-2 ${featured ? borderColor : 'border-white/[0.08]'} shadow-2xl transition-all duration-500 group-hover:shadow-3xl ${featured ? 'group-hover:shadow-emerald-500/20' : ''} group-hover:border-opacity-100 overflow-hidden h-full`}
         style={{
           transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
         }}
@@ -205,7 +205,7 @@ export function PricingTiers() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className="relative py-32 overflow-hidden">
+    <section className="relative overflow-hidden py-18 sm:py-24 lg:py-32">
       {/* Background */}
       <div className="absolute inset-0 bg-[#0a0f1c]">
         <motion.div
@@ -255,7 +255,7 @@ export function PricingTiers() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
-        <ScrollReveal variant="depthScale" range={[0, 0.35]} className="text-center mb-16">
+        <ScrollReveal variant="depthScale" range={[0, 0.35]} className="text-center mb-12 sm:mb-16">
           <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-semibold uppercase tracking-wider mb-6">
               <Target className="h-3 w-3 text-emerald-400" />
@@ -263,7 +263,7 @@ export function PricingTiers() {
             </div>
           </ScrollReveal>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
             Choose Your Compliance
             <br />
             <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
@@ -271,14 +271,14 @@ export function PricingTiers() {
             </span>
           </h2>
 
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto">
             All plans include the complete FormaOS compliance engine with
             transparent monthly pricing.
           </p>
         </ScrollReveal>
 
         {/* Pricing Cards */}
-        <SectionChoreography pattern="center-burst" stagger={0.06} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <SectionChoreography pattern="center-burst" stagger={0.06} className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-8">
           {pricingTiers.map((tier) => (
             <div
               key={tier.name}

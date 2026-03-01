@@ -1,6 +1,13 @@
 'use client';
 
-import { useRef, useEffect, useState, useCallback, memo } from 'react';
+import {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  memo,
+  type PointerEvent as ReactPointerEvent,
+} from 'react';
 import { useReducedMotion } from 'framer-motion';
 
 /* ── Data model: Compliance entities and their relationships ── */
@@ -37,43 +44,53 @@ const TYPE_ICONS: Record<NetworkNode['type'], string> = {
 };
 
 function createNetworkData(width: number, height: number): { nodes: NetworkNode[]; edges: NetworkEdge[] } {
-  const cx = width / 2;
-  const cy = height * 0.44;
-  const xSpread = Math.min(width * 0.24, 300);
-  const ySpread = Math.min(height * 0.24, 145);
+  const isCompact = width < 900;
+  const isPhone = width < 640;
+  const scale = isPhone ? 0.82 : isCompact ? 0.9 : 1;
+  const horizontalInset = isPhone ? 28 : isCompact ? 36 : 52;
+  const topInset = isPhone ? 58 : 50;
+  const bottomInset = isPhone ? 92 : 78;
+  const usableWidth = Math.max(width - horizontalInset * 2, width * 0.52);
+  const usableHeight = Math.max(height - topInset - bottomInset, height * 0.5);
+  const cx = horizontalInset + usableWidth / 2;
+  const cy = topInset + usableHeight * (isPhone ? 0.46 : 0.48);
+  const xSpread = Math.min(usableWidth * 0.4, isPhone ? 176 : 300);
+  const ySpread = Math.min(usableHeight * 0.43, isPhone ? 118 : 150);
+  const taskDepth = isPhone ? 0.86 : isCompact ? 0.92 : 1.02;
+  const size = (value: number) => Math.max(Math.round(value * scale), 10);
 
   // Framework nodes (center-top cluster)
   const frameworks = [
-    { id: 'iso27001', label: 'ISO 27001', type: 'framework', baseX: cx - xSpread * 0.34, baseY: cy - ySpread * 0.92, size: 24, phase: 0 },
-    { id: 'soc2', label: 'SOC 2', type: 'framework', baseX: cx + xSpread * 0.34, baseY: cy - ySpread * 0.84, size: 23, phase: 0.5 },
-    { id: 'nist', label: 'NIST CSF', type: 'framework', baseX: cx, baseY: cy - ySpread * 1.12, size: 22, phase: 1 },
-    { id: 'hipaa', label: 'HIPAA', type: 'framework', baseX: cx - xSpread * 0.9, baseY: cy - ySpread * 0.58, size: 19, phase: 1.5 },
-    { id: 'gdpr', label: 'GDPR', type: 'framework', baseX: cx + xSpread * 0.9, baseY: cy - ySpread * 0.54, size: 19, phase: 2 },
+    { id: 'iso27001', label: 'ISO 27001', type: 'framework', baseX: cx - xSpread * 0.34, baseY: cy - ySpread * 0.92, size: size(24), phase: 0 },
+    { id: 'soc2', label: 'SOC 2', type: 'framework', baseX: cx + xSpread * 0.34, baseY: cy - ySpread * 0.84, size: size(23), phase: 0.5 },
+    { id: 'nist', label: 'NIST CSF', type: 'framework', baseX: cx, baseY: cy - ySpread * 1.12, size: size(22), phase: 1 },
+    { id: 'hipaa', label: 'HIPAA', type: 'framework', baseX: cx - xSpread * 0.9, baseY: cy - ySpread * 0.58, size: size(19), phase: 1.5 },
+    { id: 'gdpr', label: 'GDPR', type: 'framework', baseX: cx + xSpread * 0.9, baseY: cy - ySpread * 0.54, size: size(19), phase: 2 },
   ];
 
   // Control nodes (middle ring)
   const controls = [
-    { id: 'ac-mgmt', label: 'Access Mgmt', type: 'control', baseX: cx - xSpread * 0.9, baseY: cy - ySpread * 0.02, size: 17, phase: 0.3 },
-    { id: 'encrypt', label: 'Encryption', type: 'control', baseX: cx - xSpread * 0.3, baseY: cy + ySpread * 0.2, size: 17, phase: 0.8 },
-    { id: 'logging', label: 'Audit Logging', type: 'control', baseX: cx + xSpread * 0.3, baseY: cy, size: 17, phase: 1.3 },
-    { id: 'incident', label: 'Incident Resp', type: 'control', baseX: cx + xSpread * 0.92, baseY: cy + ySpread * 0.08, size: 16, phase: 1.8 },
-    { id: 'change', label: 'Change Mgmt', type: 'control', baseX: cx, baseY: cy + ySpread * 0.28, size: 16, phase: 2.3 },
-    { id: 'risk', label: 'Risk Assess', type: 'control', baseX: cx - xSpread * 0.56, baseY: cy + ySpread * 0.42, size: 15, phase: 2.8 },
+    { id: 'ac-mgmt', label: 'Access Mgmt', type: 'control', baseX: cx - xSpread * 0.9, baseY: cy - ySpread * 0.02, size: size(17), phase: 0.3 },
+    { id: 'encrypt', label: 'Encryption', type: 'control', baseX: cx - xSpread * 0.3, baseY: cy + ySpread * 0.2, size: size(17), phase: 0.8 },
+    { id: 'logging', label: 'Audit Logging', type: 'control', baseX: cx + xSpread * 0.3, baseY: cy, size: size(17), phase: 1.3 },
+    { id: 'incident', label: 'Incident Resp', type: 'control', baseX: cx + xSpread * 0.92, baseY: cy + ySpread * 0.08, size: size(16), phase: 1.8 },
+    { id: 'change', label: 'Change Mgmt', type: 'control', baseX: cx, baseY: cy + ySpread * 0.28, size: size(16), phase: 2.3 },
+    { id: 'risk', label: 'Risk Assess', type: 'control', baseX: cx - xSpread * 0.56, baseY: cy + ySpread * 0.42, size: size(15), phase: 2.8 },
   ];
 
   // Evidence nodes (lower ring)
   const evidence = [
-    { id: 'ev-policy', label: 'Policy Docs', type: 'evidence', baseX: cx - xSpread * 0.68, baseY: cy + ySpread * 0.72, size: 15, phase: 0.4 },
-    { id: 'ev-log', label: 'Audit Logs', type: 'evidence', baseX: cx - xSpread * 0.12, baseY: cy + ySpread * 0.82, size: 15, phase: 1.1 },
-    { id: 'ev-cert', label: 'Certificates', type: 'evidence', baseX: cx + xSpread * 0.34, baseY: cy + ySpread * 0.72, size: 15, phase: 1.7 },
-    { id: 'ev-screen', label: 'Screenshots', type: 'evidence', baseX: cx + xSpread * 0.86, baseY: cy + ySpread * 0.58, size: 14, phase: 2.4 },
+    { id: 'ev-policy', label: 'Policy Docs', type: 'evidence', baseX: cx - xSpread * 0.68, baseY: cy + ySpread * 0.72, size: size(15), phase: 0.4 },
+    { id: 'ev-log', label: 'Audit Logs', type: 'evidence', baseX: cx - xSpread * 0.12, baseY: cy + ySpread * 0.82, size: size(15), phase: 1.1 },
+    { id: 'ev-cert', label: 'Certificates', type: 'evidence', baseX: cx + xSpread * 0.34, baseY: cy + ySpread * 0.72, size: size(15), phase: 1.7 },
+    { id: 'ev-screen', label: 'Screenshots', type: 'evidence', baseX: cx + xSpread * 0.86, baseY: cy + ySpread * 0.58, size: size(14), phase: 2.4 },
   ];
 
   // Task nodes (bottom)
   const tasks = [
-    { id: 'task-review', label: 'Review', type: 'task', baseX: cx - xSpread * 0.42, baseY: cy + ySpread * 1.02, size: 14, phase: 0.6 },
-    { id: 'task-approve', label: 'Approve', type: 'task', baseX: cx + xSpread * 0.06, baseY: cy + ySpread * 1.08, size: 14, phase: 1.4 },
-    { id: 'task-upload', label: 'Upload', type: 'task', baseX: cx + xSpread * 0.48, baseY: cy + ySpread * 0.96, size: 14, phase: 2.1 },
+    { id: 'task-review', label: 'Review', type: 'task', baseX: cx - xSpread * 0.42, baseY: cy + ySpread * taskDepth, size: size(14), phase: 0.6 },
+    { id: 'task-approve', label: 'Approve', type: 'task', baseX: cx + xSpread * 0.06, baseY: cy + ySpread * (taskDepth + 0.06), size: size(14), phase: 1.4 },
+    { id: 'task-upload', label: 'Upload', type: 'task', baseX: cx + xSpread * 0.48, baseY: cy + ySpread * (taskDepth - 0.06), size: size(14), phase: 2.1 },
   ];
 
   const nodes: NetworkNode[] = [...frameworks, ...controls, ...evidence, ...tasks].map(n => ({
@@ -135,7 +152,7 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
   }, []);
 
   // Mouse tracking
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+  const handlePointerMove = useCallback((e: ReactPointerEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
@@ -145,7 +162,7 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
     });
   }, []);
 
-  const handleMouseLeave = useCallback(() => setMousePos(null), []);
+  const clearPointer = useCallback(() => setMousePos(null), []);
 
   // Main animation loop
   useEffect(() => {
@@ -167,11 +184,14 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
     canvas.style.height = `${h}px`;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    sizeRef.current = { width: w, height: h };
-
-    if (!dataRef.current || Math.abs(dataRef.current.nodes[0]?.baseX - w / 2 + 60) > 10) {
+    if (
+      !dataRef.current ||
+      Math.abs(sizeRef.current.width - w) > 12 ||
+      Math.abs(sizeRef.current.height - h) > 12
+    ) {
       dataRef.current = createNetworkData(w, h);
     }
+    sizeRef.current = { width: w, height: h };
 
     const { nodes, edges } = dataRef.current;
 
@@ -181,7 +201,7 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
 
     const findNearestNode = (mx: number, my: number): NetworkNode | null => {
       let nearest: NetworkNode | null = null;
-      let minDist = 96;
+      let minDist = w < 640 ? 72 : 96;
       for (const node of nodes) {
         const dx = node.x - mx;
         const dy = node.y - my;
@@ -214,7 +234,7 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
       ctx.fillStyle = halo;
       ctx.fillRect(0, 0, w, h);
 
-      const orbitRadii = [unit * 0.23, unit * 0.31, unit * 0.39];
+      const orbitRadii = [unit * 0.22, unit * 0.3, unit * 0.38];
       orbitRadii.forEach((radius, index) => {
         ctx.beginPath();
         ctx.ellipse(centerX, centerY, radius * 1.18, radius, 0, 0, Math.PI * 2);
@@ -321,7 +341,8 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
         // Label (show on hover/connected or always for frameworks)
         if (isHovered || (isConnected && hoveredNode) || (node.type === 'framework' && !isDimmed)) {
           ctx.fillStyle = `rgba(255, 255, 255, ${isHovered ? 0.95 : isDimmed ? 0.3 : 0.7})`;
-          ctx.font = `${isHovered ? 'bold ' : ''}12px system-ui, -apple-system, sans-serif`;
+          const labelFontSize = w < 640 ? 10 : 12;
+          ctx.font = `${isHovered ? 'bold ' : ''}${labelFontSize}px system-ui, -apple-system, sans-serif`;
           ctx.textAlign = 'center';
           ctx.fillText(node.label, node.x, node.y + nodeSize + 16);
         }
@@ -356,9 +377,11 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
     <div ref={containerRef} className={`relative ${className}`}>
       <canvas
         ref={canvasRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        className="w-full h-full cursor-crosshair"
+        onPointerMove={handlePointerMove}
+        onPointerLeave={clearPointer}
+        onPointerUp={clearPointer}
+        onPointerCancel={clearPointer}
+        className="h-full w-full cursor-default md:cursor-crosshair"
       />
     </div>
   );

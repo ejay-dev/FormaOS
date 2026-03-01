@@ -14,7 +14,12 @@ const ProductShowcaseSection = dynamic(
     import('@/components/marketing/ProductShowcaseSection').then(
       (m) => m.ProductShowcaseSection,
     ),
-  { ssr: false, loading: () => <div className="w-full" style={{ minHeight: '600px' }} /> },
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full min-h-[360px] sm:min-h-[520px] lg:min-h-[600px]" />
+    ),
+  },
 );
 
 const OperationalScenarioProof = dynamic(

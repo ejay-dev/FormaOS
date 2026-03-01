@@ -131,7 +131,7 @@ export function ProductShowcaseSection() {
         <div
           className="product-panel product-panel--strong relative overflow-hidden rounded-2xl"
           style={{
-            height: 'clamp(400px, 55vh, 640px)',
+            height: 'clamp(340px, 52vh, 640px)',
             boxShadow:
               '0 0 80px rgba(45,212,191,0.08), 0 0 160px rgba(45,212,191,0.04), 0 32px 64px rgba(0,0,0,0.4)',
           }}

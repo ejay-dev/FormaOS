@@ -240,7 +240,6 @@ const DASH_STATS = [
 
 type SortOption = 'default' | 'name-asc' | 'name-desc' | 'status';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyItem = any;
 
 function getTextField(item: AnyItem): string {
@@ -351,7 +350,7 @@ const DetailDrawer = memo(function DetailDrawer({
             animate={{ opacity: 1, x: 0 }}
             exit={reduced ? { opacity: 0 } : { opacity: 0, x: 80 }}
             transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute top-0 right-0 bottom-0 z-40 w-full sm:w-[360px] bg-[#0e1525] border-l border-white/[0.08] flex flex-col overflow-hidden"
+            className="absolute top-0 right-0 bottom-0 z-40 w-full sm:w-[360px] bg-slate-900/95 border-l border-white/[0.08] flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="flex items-start justify-between gap-3 px-5 py-4 border-b border-white/[0.06] shrink-0">
@@ -519,7 +518,6 @@ export function ProductLiveDemo() {
   const [drawerData, setDrawerData] = useState<DrawerData | null>(null);
   const { toasts, add: addToast } = useToasts();
   const [isMobile, setIsMobile] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -535,7 +533,6 @@ export function ProductLiveDemo() {
     setSearch('');
     setSort('default');
     setDrawerData(null);
-    setMobileMenuOpen(false);
   }, []);
 
   // Keyboard nav for sidebar
@@ -687,7 +684,7 @@ export function ProductLiveDemo() {
 
       <div className="absolute inset-0 flex flex-col overflow-hidden">
         {/* Browser chrome bar */}
-        <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/[0.07] bg-white/[0.015] shrink-0">
+        <div className="flex items-center justify-between px-3 py-2 sm:px-4 sm:py-2.5 border-b border-white/[0.07] bg-white/[0.015] shrink-0">
           <div className="flex items-center gap-3">
             <div className="flex gap-1.5">
               <div className="w-2.5 h-2.5 rounded-full bg-red-400/50" />
@@ -697,7 +694,7 @@ export function ProductLiveDemo() {
             <div className="text-[11px] text-white/28 font-mono tracking-wider hidden sm:block">app.formaos.com.au / {activeView}</div>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-20 sm:w-28 h-6 rounded-md bg-white/[0.03] border border-white/[0.07] flex items-center px-2">
+            <div className="hidden min-[420px]:flex w-24 sm:w-28 h-6 rounded-md bg-white/[0.03] border border-white/[0.07] items-center px-2">
               <span className="text-[10px] text-white/20">Search…</span>
             </div>
             <div className="w-6 h-6 rounded-full bg-gradient-to-br from-teal-400/25 to-emerald-500/15 flex items-center justify-center">
@@ -758,7 +755,7 @@ export function ProductLiveDemo() {
           <div ref={contentRef} className="flex-1 min-w-0 flex flex-col overflow-hidden relative">
             {/* Mobile nav */}
             {isMobile && (
-              <div className="flex gap-1 px-3 py-2 border-b border-white/[0.06] overflow-x-auto shrink-0" style={{ scrollbarWidth: 'none' }}>
+              <div className="flex gap-1.5 px-2.5 py-2 border-b border-white/[0.06] overflow-x-auto shrink-0 sm:px-3" style={{ scrollbarWidth: 'none' }}>
                 {VIEWS.map((v) => {
                   const VIcon = v.icon;
                   const isActive = activeView === v.id;
@@ -767,7 +764,7 @@ export function ProductLiveDemo() {
                       key={v.id}
                       type="button"
                       onClick={() => switchView(v.id)}
-                      className={`flex items-center gap-1 px-2 py-1 rounded-md text-[10px] shrink-0 transition-colors ${
+                      className={`flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs shrink-0 transition-colors ${
                         isActive ? 'bg-teal-400/10 text-teal-300 border border-teal-400/20' : 'text-white/35 border border-transparent hover:text-white/55'
                       }`}
                     >
@@ -780,7 +777,7 @@ export function ProductLiveDemo() {
             )}
 
             {/* Topbar */}
-            <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/[0.06] shrink-0">
+            <div className="flex items-center justify-between px-3 py-2 sm:px-4 sm:py-2.5 border-b border-white/[0.06] shrink-0">
               <div className="flex items-center gap-2">
                 <Icon className="w-4 h-4 text-white/40" />
                 <div>
@@ -797,7 +794,7 @@ export function ProductLiveDemo() {
             </div>
 
             {/* Content */}
-            <div className="flex-1 min-h-0 overflow-hidden p-3 sm:p-4">
+            <div className="flex-1 min-h-0 overflow-hidden p-2.5 sm:p-4">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeView}
