@@ -217,7 +217,7 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
       orbitRadii.forEach((radius, index) => {
         ctx.beginPath();
         ctx.ellipse(centerX, centerY, radius * 1.18, radius, 0, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(148, 163, 184, ${hoveredNode ? 0.08 : 0.15 - index * 0.03})`;
+        ctx.strokeStyle = `rgba(148, 163, 184, ${mousePos ? 0.08 : 0.15 - index * 0.03})`;
         ctx.lineWidth = 1;
         ctx.stroke();
       });
