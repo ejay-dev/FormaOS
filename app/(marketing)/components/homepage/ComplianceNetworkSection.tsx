@@ -81,11 +81,13 @@ export function ComplianceNetworkSection() {
               </div>
             </div>
 
-            <div className="pointer-events-none absolute bottom-4 left-1/2 z-20 hidden -translate-x-1/2 rounded-full border border-white/10 bg-slate-950/70 px-4 py-2 text-[11px] text-slate-300 backdrop-blur-md lg:block">
-              Trace dependencies from <span className="text-teal-300">Frameworks</span> to <span className="text-indigo-300">Controls</span> to <span className="text-emerald-300">Evidence</span> to <span className="text-amber-300">Tasks</span>
-            </div>
-
             <ComplianceNetworkViz className="absolute inset-0 z-10" />
+          </div>
+
+          <div className="mt-5 text-center">
+            <p className="text-sm text-slate-400">
+              Trace dependencies from <span className="text-teal-300">Frameworks</span> to <span className="text-indigo-300">Controls</span> to <span className="text-emerald-300">Evidence</span> to <span className="text-amber-300">Tasks</span>.
+            </p>
           </div>
         </ScrollReveal>
       </div>

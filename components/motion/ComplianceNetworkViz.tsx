@@ -38,42 +38,42 @@ const TYPE_ICONS: Record<NetworkNode['type'], string> = {
 
 function createNetworkData(width: number, height: number): { nodes: NetworkNode[]; edges: NetworkEdge[] } {
   const cx = width / 2;
-  const cy = height * 0.47;
+  const cy = height * 0.44;
   const xSpread = Math.min(width * 0.24, 300);
-  const ySpread = Math.min(height * 0.3, 170);
+  const ySpread = Math.min(height * 0.24, 145);
 
   // Framework nodes (center-top cluster)
   const frameworks = [
-    { id: 'iso27001', label: 'ISO 27001', type: 'framework', baseX: cx - xSpread * 0.34, baseY: cy - ySpread * 1.02, size: 24, phase: 0 },
-    { id: 'soc2', label: 'SOC 2', type: 'framework', baseX: cx + xSpread * 0.34, baseY: cy - ySpread * 0.94, size: 23, phase: 0.5 },
-    { id: 'nist', label: 'NIST CSF', type: 'framework', baseX: cx, baseY: cy - ySpread * 1.25, size: 22, phase: 1 },
-    { id: 'hipaa', label: 'HIPAA', type: 'framework', baseX: cx - xSpread * 0.92, baseY: cy - ySpread * 0.66, size: 19, phase: 1.5 },
-    { id: 'gdpr', label: 'GDPR', type: 'framework', baseX: cx + xSpread * 0.92, baseY: cy - ySpread * 0.58, size: 19, phase: 2 },
+    { id: 'iso27001', label: 'ISO 27001', type: 'framework', baseX: cx - xSpread * 0.34, baseY: cy - ySpread * 0.92, size: 24, phase: 0 },
+    { id: 'soc2', label: 'SOC 2', type: 'framework', baseX: cx + xSpread * 0.34, baseY: cy - ySpread * 0.84, size: 23, phase: 0.5 },
+    { id: 'nist', label: 'NIST CSF', type: 'framework', baseX: cx, baseY: cy - ySpread * 1.12, size: 22, phase: 1 },
+    { id: 'hipaa', label: 'HIPAA', type: 'framework', baseX: cx - xSpread * 0.9, baseY: cy - ySpread * 0.58, size: 19, phase: 1.5 },
+    { id: 'gdpr', label: 'GDPR', type: 'framework', baseX: cx + xSpread * 0.9, baseY: cy - ySpread * 0.54, size: 19, phase: 2 },
   ];
 
   // Control nodes (middle ring)
   const controls = [
-    { id: 'ac-mgmt', label: 'Access Mgmt', type: 'control', baseX: cx - xSpread * 0.9, baseY: cy - ySpread * 0.05, size: 17, phase: 0.3 },
-    { id: 'encrypt', label: 'Encryption', type: 'control', baseX: cx - xSpread * 0.3, baseY: cy + ySpread * 0.18, size: 17, phase: 0.8 },
-    { id: 'logging', label: 'Audit Logging', type: 'control', baseX: cx + xSpread * 0.3, baseY: cy - ySpread * 0.02, size: 17, phase: 1.3 },
+    { id: 'ac-mgmt', label: 'Access Mgmt', type: 'control', baseX: cx - xSpread * 0.9, baseY: cy - ySpread * 0.02, size: 17, phase: 0.3 },
+    { id: 'encrypt', label: 'Encryption', type: 'control', baseX: cx - xSpread * 0.3, baseY: cy + ySpread * 0.2, size: 17, phase: 0.8 },
+    { id: 'logging', label: 'Audit Logging', type: 'control', baseX: cx + xSpread * 0.3, baseY: cy, size: 17, phase: 1.3 },
     { id: 'incident', label: 'Incident Resp', type: 'control', baseX: cx + xSpread * 0.92, baseY: cy + ySpread * 0.08, size: 16, phase: 1.8 },
-    { id: 'change', label: 'Change Mgmt', type: 'control', baseX: cx, baseY: cy + ySpread * 0.3, size: 16, phase: 2.3 },
-    { id: 'risk', label: 'Risk Assess', type: 'control', baseX: cx - xSpread * 0.56, baseY: cy + ySpread * 0.46, size: 15, phase: 2.8 },
+    { id: 'change', label: 'Change Mgmt', type: 'control', baseX: cx, baseY: cy + ySpread * 0.28, size: 16, phase: 2.3 },
+    { id: 'risk', label: 'Risk Assess', type: 'control', baseX: cx - xSpread * 0.56, baseY: cy + ySpread * 0.42, size: 15, phase: 2.8 },
   ];
 
   // Evidence nodes (lower ring)
   const evidence = [
-    { id: 'ev-policy', label: 'Policy Docs', type: 'evidence', baseX: cx - xSpread * 0.68, baseY: cy + ySpread * 0.86, size: 15, phase: 0.4 },
-    { id: 'ev-log', label: 'Audit Logs', type: 'evidence', baseX: cx - xSpread * 0.12, baseY: cy + ySpread * 0.96, size: 15, phase: 1.1 },
-    { id: 'ev-cert', label: 'Certificates', type: 'evidence', baseX: cx + xSpread * 0.34, baseY: cy + ySpread * 0.86, size: 15, phase: 1.7 },
-    { id: 'ev-screen', label: 'Screenshots', type: 'evidence', baseX: cx + xSpread * 0.86, baseY: cy + ySpread * 0.66, size: 14, phase: 2.4 },
+    { id: 'ev-policy', label: 'Policy Docs', type: 'evidence', baseX: cx - xSpread * 0.68, baseY: cy + ySpread * 0.72, size: 15, phase: 0.4 },
+    { id: 'ev-log', label: 'Audit Logs', type: 'evidence', baseX: cx - xSpread * 0.12, baseY: cy + ySpread * 0.82, size: 15, phase: 1.1 },
+    { id: 'ev-cert', label: 'Certificates', type: 'evidence', baseX: cx + xSpread * 0.34, baseY: cy + ySpread * 0.72, size: 15, phase: 1.7 },
+    { id: 'ev-screen', label: 'Screenshots', type: 'evidence', baseX: cx + xSpread * 0.86, baseY: cy + ySpread * 0.58, size: 14, phase: 2.4 },
   ];
 
   // Task nodes (bottom)
   const tasks = [
-    { id: 'task-review', label: 'Review', type: 'task', baseX: cx - xSpread * 0.42, baseY: cy + ySpread * 1.28, size: 14, phase: 0.6 },
-    { id: 'task-approve', label: 'Approve', type: 'task', baseX: cx + xSpread * 0.06, baseY: cy + ySpread * 1.36, size: 14, phase: 1.4 },
-    { id: 'task-upload', label: 'Upload', type: 'task', baseX: cx + xSpread * 0.48, baseY: cy + ySpread * 1.2, size: 14, phase: 2.1 },
+    { id: 'task-review', label: 'Review', type: 'task', baseX: cx - xSpread * 0.42, baseY: cy + ySpread * 1.02, size: 14, phase: 0.6 },
+    { id: 'task-approve', label: 'Approve', type: 'task', baseX: cx + xSpread * 0.06, baseY: cy + ySpread * 1.08, size: 14, phase: 1.4 },
+    { id: 'task-upload', label: 'Upload', type: 'task', baseX: cx + xSpread * 0.48, baseY: cy + ySpread * 0.96, size: 14, phase: 2.1 },
   ];
 
   const nodes: NetworkNode[] = [...frameworks, ...controls, ...evidence, ...tasks].map(n => ({
@@ -319,7 +319,7 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
         ctx.fillText(TYPE_ICONS[node.type], node.x, node.y);
 
         // Label (show on hover/connected or always for frameworks)
-        if (isHovered || (isConnected && hoveredNode) || ((node.type === 'framework' || node.type === 'task') && !isDimmed)) {
+        if (isHovered || (isConnected && hoveredNode) || (node.type === 'framework' && !isDimmed)) {
           ctx.fillStyle = `rgba(255, 255, 255, ${isHovered ? 0.95 : isDimmed ? 0.3 : 0.7})`;
           ctx.font = `${isHovered ? 'bold ' : ''}12px system-ui, -apple-system, sans-serif`;
           ctx.textAlign = 'center';
