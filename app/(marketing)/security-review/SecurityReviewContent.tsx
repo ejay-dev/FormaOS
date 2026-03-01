@@ -26,56 +26,59 @@ const sections = [
     icon: ShieldCheck,
     title: 'Security architecture overview',
     points: [
-      'Tenant isolation and organization boundaries',
-      'Application-layer authorization and role model',
-      'Operational controls and change management',
+      'Multi-tenant architecture with Row-Level Security (RLS) — strict org boundary enforcement',
+      'Application-layer authorization, RBAC model, and segregation of duties',
+      'Change management controls, release discipline, and operational governance',
     ],
   },
   {
     icon: Fingerprint,
-    title: 'Identity, auth, and session security',
+    title: 'Identity, auth, and SSO',
     points: [
-      'Email, OAuth, and optional MFA strategies',
-      'Session handling and secure cookie posture',
-      'Least-privilege access patterns by role',
+      'Google OAuth on all plans; SAML 2.0 SSO for Okta, Azure AD, Google Workspace (Enterprise)',
+      'MFA policy enforcement and configurable session duration controls',
+      'SCIM provisioning for automated user lifecycle management',
     ],
   },
   {
     icon: Lock,
     title: 'Data handling and encryption',
     points: [
-      'Encryption-in-transit and secure storage primitives',
-      'Evidence handling patterns and chain-of-custody metadata',
-      'Retention expectations and deletion workflows',
+      'AES-256 encryption at rest; TLS 1.3 in transit — no exceptions, across all data types',
+      'Evidence chain-of-custody metadata: uploader, verifier, timestamps, control linkage',
+      'Retention policies aligned to your regulatory requirements; full data portability on exit',
     ],
   },
   {
     icon: FileLock2,
     title: 'Audit logging and evidence defensibility',
     points: [
-      'Immutable audit history for critical actions',
-      'Evidence verification workflow and segregation controls',
-      'Exportable audit bundles for review and regulators',
+      'Tamper-evident, immutable audit logs for every compliance action — timestamped and uneditable',
+      'Evidence verification workflow: approval, rejection, and segregation controls documented',
+      'Framework-mapped audit bundles exportable in under 2 minutes for regulator review',
     ],
   },
   {
     icon: ClipboardCheck,
-    title: 'Operational assurance',
+    title: 'Operational assurance and residency',
     points: [
-      'Monitoring posture and incident response readiness',
-      'Change visibility and release discipline',
-      'Buyer-facing trust artifacts and access control expectations',
+      'AU-based hosting by default; US and EU data residency options for international obligations',
+      'Annual independent penetration test — summary available under NDA for Enterprise customers',
+      'DPA, vendor assurance questionnaire, and SLA documentation available for procurement sign-off',
     ],
   },
 ] as const;
 
 const checklist = [
-  'Data flow diagram (high level)',
-  'Tenant isolation model (org boundary + RLS posture)',
-  'Authentication methods and session handling',
-  'Evidence storage approach and access controls',
-  'Audit logging coverage and export capabilities',
-  'Incident response and operational contacts',
+  'Data flow diagram (high level) + tenant isolation model (RLS posture)',
+  'Authentication methods — Google OAuth, SAML 2.0 SSO, MFA enforcement',
+  'AES-256 at rest + TLS 1.3 in transit encryption confirmation',
+  'Evidence storage approach, access controls, and chain-of-custody metadata',
+  'Audit logging coverage, tamper-evident history, and export capabilities',
+  'Data residency options (AU/US/EU) and DPA documentation',
+  'Annual penetration test summary (available under NDA)',
+  'Incident response posture and operational escalation contacts',
+  'Data portability confirmation — portable export, 30-day deletion on exit',
 ] as const;
 
 export default function SecurityReviewContent() {
@@ -87,7 +90,7 @@ export default function SecurityReviewContent() {
         visualContent={<SecurityReviewHeroVisual />}
         badge={{ icon: <ShieldCheck className="h-4 w-4" />, text: 'Procurement Ready' }}
         headline="Security Review Packet for Enterprise Buyers"
-        subheadline="Accelerate buyer due diligence with clear architecture, controlled evidence handling, and contract-aligned security answers."
+        subheadline="Everything your security team, legal team, and procurement team will ask — documented before they ask it. Architecture, AES-256 encryption, SAML 2.0 SSO, penetration testing, data residency, and DPA."
         primaryCta={{ href: '/contact', label: 'Security Walkthrough' }}
         secondaryCta={{ href: `${appBase}/auth/signup?source=security_review`, label: 'Start Trust-Ready Trial' }}
       />

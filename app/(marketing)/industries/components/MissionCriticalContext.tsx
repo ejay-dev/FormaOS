@@ -6,9 +6,12 @@ import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { useDeviceTier } from '@/lib/device-tier';
 
 const consequences = [
-  { label: 'Legal liability and penalties', color: 'bg-rose-400' },
-  { label: 'License suspension or revocation', color: 'bg-orange-400' },
-  { label: 'Reputational and operational damage', color: 'bg-amber-400' },
+  { label: 'Regulatory fines, enforcement action, and legal liability', color: 'bg-rose-400' },
+  { label: 'License suspension, registration cancellation, or accreditation loss', color: 'bg-orange-400' },
+  { label: 'Criminal liability for executives and board members', color: 'bg-amber-400' },
+  { label: 'Service suspension affecting vulnerable participants', color: 'bg-red-400' },
+  { label: 'Reputational damage with media coverage and public disclosure', color: 'bg-yellow-400' },
+  { label: 'Contract termination with government and enterprise buyers', color: 'bg-orange-300' },
 ];
 
 export function MissionCriticalContext() {
@@ -64,17 +67,20 @@ export function MissionCriticalContext() {
           <div
             className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/[0.08] p-8 sm:p-12"
           >
-            <h3 className="text-xl sm:text-2xl font-bold text-white text-center mb-8">
+            <h3 className="text-xl sm:text-2xl font-bold text-white text-center mb-4">
               When compliance failures have serious consequences
             </h3>
+            <p className="text-sm text-gray-500 text-center mb-8 max-w-2xl mx-auto">
+              In regulated industries, the cost of a compliance failure is not a fine — it is a shutdown. FormaOS is built for organizations that cannot afford to treat governance as optional.
+            </p>
 
-            <SectionChoreography pattern="center-burst" stagger={0.06} className="grid sm:grid-cols-3 gap-8">
+            <SectionChoreography pattern="center-burst" stagger={0.06} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {consequences.map((item) => (
-                  <div key={item.label} className="text-center">
+                  <div key={item.label} className="flex items-start gap-3">
                     <div
-                      className={`w-3 h-3 ${item.color} rounded-full mx-auto mb-4`}
+                      className={`flex-shrink-0 w-2.5 h-2.5 ${item.color} rounded-full mt-1.5`}
                     />
-                    <p className="text-gray-400 font-medium">{item.label}</p>
+                    <p className="text-gray-400 text-sm font-medium leading-relaxed">{item.label}</p>
                   </div>
               ))}
             </SectionChoreography>

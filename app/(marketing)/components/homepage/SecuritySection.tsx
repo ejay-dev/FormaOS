@@ -20,34 +20,39 @@ const SecurityWorkflowCard = dynamic(
 const securityFeatures = [
   {
     icon: Shield,
-    title: 'SOC 2-aligned controls',
-    description: 'Security controls aligned to common trust frameworks',
+    title: 'SOC 2 Type II-aligned controls',
+    description: 'Security controls mapped to Common Criteria, Availability, and Confidentiality trust service categories',
     badge: 'SOC 2',
   },
   {
     icon: Lock,
-    title: 'Encryption at Rest & In Transit',
-    description: 'AES-256 encryption at rest, TLS 1.3 in transit',
+    title: 'AES-256 + TLS 1.3 encryption',
+    description: 'Data encrypted at rest with AES-256, in transit with TLS 1.3 — no exceptions',
     badge: 'AES-256',
   },
   {
     icon: Eye,
-    title: 'Complete Audit Logs',
-    description: 'Every action tracked and timestamped',
+    title: 'Tamper-evident audit logs',
+    description: 'Immutable, timestamped action logs for every compliance event — ready for regulator review',
     badge: 'Immutable',
   },
   {
     icon: History,
-    title: 'Evidence Integrity',
-    description:
-      'Audit trail context protects evidence defensibility with full traceability',
+    title: 'Evidence chain of custody',
+    description: 'Every evidence item linked to its owner, workflow, approval, and timestamp — full defensibility trail',
     badge: 'Traceable',
   },
   {
     icon: Key,
-    title: 'SSO & MFA',
-    description: 'Google OAuth and MFA included; enterprise SSO (SAML) on roadmap',
-    badge: 'MFA',
+    title: 'SAML 2.0 SSO + MFA enforcement',
+    description: 'Google OAuth on all plans; SAML enterprise SSO for Okta and Azure AD; MFA policy enforcement',
+    badge: 'Enterprise',
+  },
+  {
+    icon: BadgeCheck,
+    title: 'Data residency controls',
+    description: 'AU-based hosting by default; US and EU residency options for enterprise deployments',
+    badge: 'Sovereignty',
   },
 ];
 
@@ -74,13 +79,10 @@ export function SecuritySection() {
                 </span>
               </h2>
               <p className="text-base sm:text-lg md:text-xl text-gray-400 mb-3 sm:mb-4 leading-relaxed">
-                Controls are enforced, not just recorded. Every action is logged,
-                evidence activity is tracked, and audit trails are complete.
+                Controls are enforced, not just recorded. Security is embedded at the operating layer — where compliance evidence is generated automatically and audit trails are always complete.
               </p>
               <p className="text-xs sm:text-sm text-gray-500 mb-6 sm:mb-8 leading-relaxed">
-                Security is infrastructure, not features. Built into the operating
-                layer where controls execute automatically and evidence is
-                captured at the system level.
+                FormaOS ships with enterprise security controls as infrastructure: encryption, identity governance, immutable audit logs, and data residency — ready for your procurement team before the first question is asked.
               </p>
 
               {/* Security features: monochrome cards with proof badges */}

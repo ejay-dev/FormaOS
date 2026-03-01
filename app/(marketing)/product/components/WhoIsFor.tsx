@@ -1,15 +1,18 @@
 'use client';
 
-import { Shield, TrendingUp, Settings, FileCheck, AlertTriangle, Users } from 'lucide-react';
+import { Shield, TrendingUp, Settings, FileCheck, AlertTriangle, Users, Lock, Building2, Activity } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const audiences = [
-  { label: 'Compliance leaders who need certainty', icon: Shield },
-  { label: 'Executives who need defensibility', icon: TrendingUp },
-  { label: 'Operations teams who need clarity', icon: Settings },
-  { label: 'Auditors who demand evidence', icon: FileCheck },
-  { label: 'Organizations that cannot afford failure', icon: AlertTriangle },
+  { label: 'Chief Compliance Officers building defensible infrastructure', icon: Shield, role: 'CCO / Head of Compliance' },
+  { label: 'CISOs who need governance aligned to security controls', icon: Lock, role: 'CISO' },
+  { label: 'Executives accountable to regulators and boards', icon: TrendingUp, role: 'CEO / Executive Leadership' },
+  { label: 'Operations directors managing cross-site compliance', icon: Settings, role: 'Director of Operations' },
+  { label: 'Risk managers who need real-time control visibility', icon: Activity, role: 'Risk & Audit Manager' },
+  { label: 'IT teams implementing identity and access governance', icon: Users, role: 'IT / Infrastructure Lead' },
+  { label: 'External auditors who demand structured evidence', icon: FileCheck, role: 'External / Internal Auditor' },
+  { label: 'Regulated providers who cannot afford compliance failure', icon: AlertTriangle, role: 'Healthcare / NDIS / Financial Services' },
 ];
 
 export function WhoIsFor() {
@@ -34,13 +37,18 @@ export function WhoIsFor() {
           </div>
         </ScrollReveal>
 
-        <SectionChoreography pattern="center-burst" stagger={0.04} className="flex flex-wrap justify-center gap-4">
+        <SectionChoreography pattern="center-burst" stagger={0.04} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {audiences.map((audience) => {
             const Icon = audience.icon;
             return (
-              <div key={audience.label} className="product-chip flex items-center gap-3 px-5 py-3 rounded-full bg-gradient-to-r from-teal-500/10 to-emerald-500/10 border border-teal-500/20">
-                <Icon className="w-4 h-4 text-teal-400" />
-                <span className="text-sm text-gray-300">{audience.label}</span>
+              <div key={audience.label} className="product-chip flex items-start gap-3 px-5 py-4 rounded-2xl bg-gradient-to-br from-teal-500/10 to-emerald-500/5 border border-teal-500/20">
+                <div className="mt-0.5 w-8 h-8 rounded-lg bg-teal-500/15 flex items-center justify-center shrink-0">
+                  <Icon className="w-4 h-4 text-teal-400" />
+                </div>
+                <div>
+                  <div className="text-xs font-semibold text-teal-300 uppercase tracking-wide mb-1">{audience.role}</div>
+                  <div className="text-sm text-gray-300 leading-snug">{audience.label}</div>
+                </div>
               </div>
             );
           })}

@@ -21,19 +21,33 @@ export const metadata: Metadata = {
 
 const tiers = [
   {
-    tier: 'Starter / Pro',
+    tier: 'Starter',
     points: [
       'No contractual SLA by default.',
       'Public status page and published uptime checks available.',
-      'Support channels and response times depend on plan and support package.',
+      'Standard email support (business hours); response time varies.',
+      'Platform access to FormaOS Trust Center for procurement self-service.',
+    ],
+  },
+  {
+    tier: 'Professional',
+    points: [
+      'No contractual SLA by default; best-effort 99.9% uptime target.',
+      'Priority email support with faster response commitments vs Starter.',
+      'Public status page, incident history, and uptime reports available.',
+      'Security review artifacts available via Trust Center for procurement.',
     ],
   },
   {
     tier: 'Enterprise',
     points: [
-      'SLA terms can be included in the MSA/SOW (uptime, support response, escalation).',
-      'Security review artifacts available via Trust Center and vendor trust packet.',
-      'Identity requirements (e.g., SAML SSO) supported for enterprise plans.',
+      '99.9% monthly uptime SLA target — included in executed MSA/SOW.',
+      'P1 critical incident response: acknowledgement within 1 business hour.',
+      'P2 high priority: acknowledgement within 4 business hours.',
+      'Dedicated success support and named escalation path.',
+      'Planned maintenance communicated minimum 48 hours in advance.',
+      'SAML 2.0 SSO, MFA enforcement, and data residency controls (AU/US/EU).',
+      'Annual uptime reports and SLA credit calculation available on request.',
     ],
   },
 ] as const;
@@ -43,7 +57,7 @@ export default function SlaPage() {
     <MarketingPageShell>
       <CompactHero
         title="SLA"
-        description="This page is a summary of how availability commitments are typically structured. Contract terms are defined in your executed agreement."
+        description="Enterprise plans include a 99.9% monthly uptime SLA with documented incident response tiers. Contract terms are defined in your executed MSA/SOW. Starter and Professional plans operate on a best-effort basis with public status reporting."
         topColor="emerald"
         bottomColor="cyan"
         visualContent={<CompactHeroIcon icon={<Clock className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}

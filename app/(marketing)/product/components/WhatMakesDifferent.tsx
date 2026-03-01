@@ -40,8 +40,28 @@ const differentiators = [
       'Evidence linked directly to the control it satisfies -- no manual mapping',
     ],
   },
-  { icon: UserCheck, title: 'Accountability at Scale', description: 'Every control has a defined owner, status, and outcome. No ambiguity.', color: 'from-amber-500 to-teal-500' },
-  { icon: Shield, title: 'Audit Defense, Not Audit Prep', description: 'You are always audit-ready because your compliance is continuously running.', color: 'from-rose-500 to-amber-500' },
+  {
+    icon: UserCheck,
+    title: 'Accountability at Scale',
+    description: 'Every control has a defined owner, status, and outcome. Accountability is structural — not cultural.',
+    color: 'from-amber-500 to-teal-500',
+    backDetails: [
+      'Control ownership assigned by name, role, and team',
+      'Automated escalation when controls drift or tasks overdue',
+      'Accountability trails for every governance decision',
+    ],
+  },
+  {
+    icon: Shield,
+    title: 'Audit Defense, Not Audit Prep',
+    description: 'You are always audit-ready because your compliance runs continuously — evidence is never reconstructed.',
+    color: 'from-rose-500 to-amber-500',
+    backDetails: [
+      'Evidence generated automatically at point of execution',
+      'Framework-mapped audit packets exportable in minutes',
+      'Multi-year compliance history preserved with chain of custody',
+    ],
+  },
 ];
 
 /** Flip card wrapper -- shows back face with detail bullets on hover (first 3 cards only) */

@@ -43,21 +43,28 @@ export function ValueProposition() {
                 Other tools store documents.
               </h3>
               <p className="text-gray-500 mb-4">
-                Static repositories. Manual reminders. Evidence scattered across
-                folders. Hope the auditor doesn&apos;t ask the hard questions.
+                Static repositories. Spreadsheets passed around. Evidence reconstructed days before audits. Ownership documented nowhere.
               </p>
-              <ul className="text-xs text-gray-600 space-y-1">
+              <ul className="text-xs text-gray-600 space-y-1.5">
                 <li className="flex items-center gap-2">
                   <span className="w-1 h-1 rounded-full bg-red-500/50" />
-                  No control enforcement
+                  No control enforcement — just documentation
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="w-1 h-1 rounded-full bg-red-500/50" />
-                  Point-in-time snapshots
+                  Point-in-time snapshots, not continuous posture
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="w-1 h-1 rounded-full bg-red-500/50" />
-                  Manual evidence collection
+                  Manual evidence collection before every audit
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1 h-1 rounded-full bg-red-500/50" />
+                  Ownership is assumed, not assigned or enforced
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1 h-1 rounded-full bg-red-500/50" />
+                  No single source of truth when regulators ask
                 </li>
               </ul>
             </motion.div>
@@ -76,21 +83,28 @@ export function ValueProposition() {
                 FormaOS runs your program.
               </h3>
               <p className="text-gray-500 mb-4">
-                A live operating system. Controls are enforced, not just
-                recorded. Evidence is automatic. Accountability is system-level.
+                A live operating layer. Controls are enforced before work proceeds. Evidence is generated as teams operate. Accountability is structural — not cultural.
               </p>
-              <ul className="text-xs text-gray-400 space-y-1">
+              <ul className="text-xs text-gray-400 space-y-1.5">
                 <li className="flex items-center gap-2">
                   <span className="w-1 h-1 rounded-full bg-teal-400" />
-                  Workflow orchestration built-in
+                  Workflow enforcement — controls block non-compliance
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="w-1 h-1 rounded-full bg-teal-400" />
-                  Real-time compliance posture
+                  Real-time continuous compliance posture
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="w-1 h-1 rounded-full bg-teal-400" />
-                  Immutable audit trail
+                  Immutable, timestamped audit trail
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1 h-1 rounded-full bg-teal-400" />
+                  Every control owned by a named person or team
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1 h-1 rounded-full bg-teal-400" />
+                  Audit packets ready to export in minutes
                 </li>
               </ul>
             </motion.div>

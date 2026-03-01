@@ -92,62 +92,66 @@ const workflows: UseCaseWorkflow[] = [
 const standards: UseCaseStandard[] = [
   {
     name: 'NDIS Practice Standards',
-    description: 'Core and supplementary provider obligations',
+    description: 'Core module and supplementary module obligations — NDIS Quality and Safeguards Commission',
     features: [
-      'Participant rights and safeguards',
-      'Incident and complaints management',
-      'Governance and workforce controls',
+      'Module 1 (Rights and Responsibility): participant rights controls and safeguard evidence',
+      'Module 3 (Supporting Effective Transitions): incident and complaints management workflows',
+      'Supplementary modules: High Intensity, Specialist Behaviour Support, Early Childhood',
+      'Workforce screening records with NDIS Worker Screening Check evidence tracking',
     ],
   },
   {
     name: 'Aged Care Quality Standards',
-    description: 'Quality and safety expectations for aged care services',
+    description: 'Aged Care Quality and Safety Commission standards — 8 standards applicable',
     features: [
-      'Care planning and delivery evidence',
-      'Workforce capability tracking',
-      'Continuous improvement workflows',
+      'Standard 1 (Consumer Dignity): rights and care planning evidence chain',
+      'Standard 8 (Organisational Governance): board-level accountability and posture reporting',
+      'Workforce capability and competency tracking across care teams',
+      'Continuous improvement cycle documentation for Commission visits',
     ],
   },
   {
-    name: 'Risk and Safeguarding',
-    description: 'Operational controls for high-consequence environments',
+    name: 'Incident and Safeguarding',
+    description: 'Reportable incident and safeguarding obligations under NDIS and Aged Care regimes',
     features: [
-      'Escalation and response workflows',
-      'Corrective action verification',
-      'Traceable management approvals',
+      'NDIS reportable incident classification and 24-hour initial response tracking',
+      'Aged care serious incident response scheme (SIRS) workflow and evidence',
+      'Corrective action assignment with named owners and verified closure',
+      'Traceable management approval records for Commission review',
     ],
   },
   {
     name: 'Provider Governance',
-    description: 'Executive and board-level accountability posture',
+    description: 'Executive, board, and quality management accountability expectations',
     features: [
-      'Open obligations visibility',
-      'Audit-ready control status reporting',
-      'Defensible trust artifacts',
+      'Open obligation visibility for executive and quality managers',
+      'Audit-ready compliance posture reports for NDIS Commission unannounced visits',
+      'Continuous improvement evidence across all standards and modules',
+      'Defensible trust artifacts for re-registration and renewal reviews',
     ],
   },
 ];
 
 const metrics: UseCaseMetric[] = [
   {
-    value: 'Faster',
-    label: 'Audit Prep',
-    description: 'Reduce evidence collation lead time significantly.',
+    value: '< 24 hr',
+    label: 'Incident Response',
+    description: 'Reportable incidents routed with named owner and SLA target — within hours of intake.',
   },
   {
-    value: 'Fewer',
-    label: 'Control Gaps',
-    description: 'Operational workflows keep obligations active daily.',
+    value: '4 hrs',
+    label: 'Audit Preparation',
+    description: 'vs. weeks of manual reconstruction — evidence packs ready on demand for NDIS Commission visits.',
   },
   {
-    value: 'Less',
-    label: 'Admin Friction',
-    description: 'Automate reminders and ownership tracking.',
+    value: 'Named',
+    label: 'Owner — Always',
+    description: 'Every control, participant record, and obligation has a traceable accountable owner.',
   },
   {
-    value: 'Audit-Ready',
-    label: 'By Default',
-    description: 'Maintain continuous proof for review events.',
+    value: 'Zero',
+    label: 'Credential Gaps',
+    description: 'Renewal engine eliminates expiry surprises for NDIS worker screening requirements.',
   },
 ];
 
@@ -163,7 +167,7 @@ export default function NDISContent() {
           as daily operational practice
         </>
       }
-      description="Apply mapped controls, ownership workflows, and evidence capture to participant-focused services where accountability is non-negotiable."
+      description="Apply mapped NDIS Practice Standards controls, named ownership workflows, and continuous evidence capture to participant-focused services where accountability is non-negotiable and auditors arrive unannounced."
       challenges={challenges}
       demoTitle="NDIS and aged-care workflow simulation"
       demoDescription="Preview policy operations, incident response, and live compliance posture across provider obligations."
@@ -177,8 +181,8 @@ export default function NDISContent() {
       workflows={workflows}
       standards={standards}
       metrics={metrics}
-      ctaTitle="Build a defensible provider compliance operating model"
-      ctaDescription="Start with NDIS and aged-care aligned workflows, then adapt controls and evidence rules to your service delivery model."
+      ctaTitle="Build a provider compliance operating model auditors can verify — not just review"
+      ctaDescription="Start with NDIS Practice Standards-aligned workflows, then adapt controls and evidence rules to your service delivery model. Full defensibility from governance board to participant record."
     />
   );
 }

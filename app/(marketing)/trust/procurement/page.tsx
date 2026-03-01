@@ -30,7 +30,7 @@ const faqs = [
   {
     question: 'Where is customer data stored?',
     answer:
-      'Customer data is stored in Supabase (PostgreSQL + object storage). Data is encrypted at rest and in transit. If your procurement process requires the exact hosting region, contact us and we will provide your current project region and subprocessor details.',
+      'Customer data is hosted in Australia by default (AU region). Enterprise customers can select data residency in Australia, the United States, or the European Union. All data is encrypted at rest (AES-256) and in transit (TLS 1.3). A full subprocessor list with hosting regions is available at formaos.com.au/trust/subprocessors.',
   },
   {
     question: 'Do you have a SOC 2 report?',
@@ -45,7 +45,7 @@ const faqs = [
   {
     question: 'What are your data retention policies?',
     answer:
-      'Data retention and deletion timelines are defined contractually. By default, data is retained for the duration of your subscription. On termination, we support deletion requests and can provide written confirmation of deletion completion for your records.',
+      'Retention periods are configurable and can be tailored to your regulatory obligations — for example, 7-year ASIC record retention or NDIS evidence retention requirements. On termination or plan cancellation, customers have 30 days to export all compliance data, evidence artifacts, and audit trail records in portable formats (CSV, JSON, ZIP). After the export window, data is securely deleted and written confirmation is available on request. No lock-in penalty applies to data portability.',
   },
   {
     question: 'Do you support SSO/SAML?',
@@ -60,7 +60,7 @@ const faqs = [
   {
     question: 'What is your uptime SLA?',
     answer:
-      'FormaOS targets high uptime and publishes status and uptime checks on our status page. Enterprise agreements can include SLA terms in your MSA/SOW.',
+      'Enterprise plans include a 99.9% monthly uptime SLA target incorporated into your executed MSA/SOW. P1 critical incidents receive an acknowledgement within 1 business hour; P2 high-priority incidents within 4 business hours. Planned maintenance is communicated a minimum of 48 hours in advance. Starter and Professional plans operate on a best-effort basis with public status reporting at formaos.com.au/status.',
   },
   {
     question: 'How long does security review take?',

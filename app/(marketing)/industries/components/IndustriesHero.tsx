@@ -15,8 +15,10 @@ const VERTICALS = [
 
 const PILLS = [
   { color: 'bg-pink-400', label: 'NDIS & Aged Care' },
-  { color: 'bg-blue-400', label: 'Healthcare' },
+  { color: 'bg-blue-400', label: 'Healthcare & Allied Health' },
   { color: 'bg-amber-400', label: 'Financial Services' },
+  { color: 'bg-emerald-400', label: 'Education & Childcare' },
+  { color: 'bg-orange-400', label: 'Construction & Infrastructure' },
 ];
 
 export function IndustriesHero() {
@@ -38,7 +40,7 @@ export function IndustriesHero() {
           </span>
         </>
       }
-      subheadline="FormaOS adapts to your industry's requirements. Pre-built frameworks. Enforced controls. Evidence that auditors trust."
+      subheadline="FormaOS adapts to your industry's regulatory requirements — NDIS, AHPRA, NSQHS, ASIC, AUSTRAC, WHS, NQF. Pre-built frameworks. System-enforced controls. Evidence that regulators, auditors, and procurement teams trust."
       extras={<IndustriesExtras />}
       primaryCta={{ href: '/auth/signup', label: 'Start Free Trial' }}
       secondaryCta={{ href: '/contact', label: 'Request Demo' }}
@@ -55,7 +57,7 @@ function IndustriesExtras() {
   return (
     <div className="max-w-2xl mx-auto text-center">
       <p className="text-sm text-gray-500 mb-3">
-        Framework-agnostic compliance infrastructure
+        5 regulated industries covered — from NDIS Commission to ASIC and AHPRA
       </p>
       <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600">
         {PILLS.map((pill) => (

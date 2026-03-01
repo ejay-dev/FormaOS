@@ -2,36 +2,38 @@
 
 import Link from 'next/link';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { ArrowRight, BarChart3, ShieldCheck, TimerReset, TrendingUp, TrendingDown } from 'lucide-react';
+import { ArrowRight, BarChart3, ShieldCheck, TimerReset, TrendingUp, TrendingDown, GitBranch, CalendarCheck } from 'lucide-react';
 
 const proofScenarios = [
   {
     title: 'Audit request lifecycle',
-    before: 'Evidence hunt across documents and inbox threads.',
-    after: 'Mapped control evidence with export-ready audit bundles.',
-    impact: 'Faster audit response',
-    metric: { before: 'Days', after: 'Hours', improvement: '~80%' },
+    before: 'Evidence hunted across email threads, shared drives, and spreadsheets — days before auditor arrives.',
+    after: 'Framework-mapped evidence bundles exported in under 2 minutes. Every control linked to its proof.',
+    impact: 'Audit prep: days → hours',
+    metric: { before: 'Days', after: '< 2 hrs', improvement: '~90%' },
   },
   {
     title: 'Incident response workflow',
-    before: 'Ownership gaps and inconsistent escalation trails.',
-    after: 'Routed triage with accountable owners and timestamped actions.',
-    impact: 'Lower remediation latency',
+    before: 'Ownership unclear. Escalation inconsistent. Regulator asks for evidence trail — nothing exists.',
+    after: 'Routed triage with named owners, timestamped actions, and full audit trail from detection to resolution.',
+    impact: 'From ad-hoc to defensible',
     metric: { before: 'Ad-hoc', after: 'Structured', improvement: 'Traceable' },
   },
   {
-    title: 'Executive reporting flow',
-    before: 'Manual status reconciliation for board and leadership updates.',
-    after: 'Single posture view tied to live execution and evidence health.',
-    impact: 'Higher decision confidence',
+    title: 'Compliance posture reporting',
+    before: 'Manual status reconciliation. Board gets a stale snapshot. Gaps discovered late.',
+    after: 'Live compliance score with framework coverage, control drift alerts, and board-ready posture view.',
+    impact: 'Decision confidence: weekly → live',
     metric: { before: 'Weekly', after: 'Real-time', improvement: 'Live' },
   },
 ] as const;
 
 const outcomeStats = [
-  { value: 'Execution-first', label: 'Control ownership model', icon: TrendingUp },
-  { value: 'Defensible', label: 'Evidence chain posture', icon: ShieldCheck },
-  { value: 'Buyer-ready', label: 'Trust workflow path', icon: BarChart3 },
+  { value: '< 2 min', label: 'Audit packet export time', icon: TimerReset },
+  { value: 'Continuous', label: 'Compliance posture monitoring', icon: ShieldCheck },
+  { value: 'Named owner', label: 'On every control and evidence item', icon: TrendingUp },
+  { value: '9 frameworks', label: 'Pre-built, audit-ready out of the box', icon: GitBranch },
+  { value: '< 7 days', label: 'Typical security review cycle', icon: CalendarCheck },
 ] as const;
 
 export function OutcomeProofSection() {
@@ -49,12 +51,10 @@ export function OutcomeProofSection() {
             Outcome Proof
           </div>
           <h2 className="text-3xl font-bold text-white sm:text-4xl">
-            Show the before and after, not just feature lists
+            Real outcomes. Before and after FormaOS.
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-slate-300 sm:text-base">
-            FormaOS connects workflows to measurable operational outcomes so
-            buyers and operators can validate maturity with real execution
-            signals.
+            Regulated teams don't need more features — they need fewer compliance crises. FormaOS connects governance to measurable operational outcomes that matter to regulators, executives, and operators.
           </p>
         </ScrollReveal>
 
@@ -119,7 +119,7 @@ export function OutcomeProofSection() {
         </div>
 
         {/* Outcome stats: illuminated row */}
-        <div className="mt-8 grid gap-3 sm:grid-cols-3">
+        <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {outcomeStats.map((stat, idx) => {
             const Icon = stat.icon;
             return (

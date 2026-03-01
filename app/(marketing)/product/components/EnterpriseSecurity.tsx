@@ -6,18 +6,18 @@ import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const securityFeatures = [
-  { label: 'SOC 2-aligned controls', icon: Shield },
-  {
-    label: 'Encryption at rest (AES-256) and in transit (TLS 1.3)',
-    icon: Lock,
-  },
-  { label: 'Google OAuth + Enterprise SSO (SAML)', icon: Users },
-  { label: 'MFA (TOTP + backup codes)', icon: UserCheck },
-  { label: 'Immutable Audit Logs', icon: Database },
-  { label: 'Role-Based Access Control (4 Roles)', icon: UserCheck },
-  { label: 'Automated compliance score engine', icon: Shield },
-  { label: 'Correlation ID tracking', icon: Lock },
-  { label: 'Session management & rate limiting', icon: Database },
+  { label: 'SOC 2 Type II-aligned security controls', icon: Shield },
+  { label: 'AES-256 encryption at rest, TLS 1.3 in transit', icon: Lock },
+  { label: 'Google OAuth 2.0 + SAML 2.0 Enterprise SSO', icon: Users },
+  { label: 'MFA enforcement (TOTP + hardware key support)', icon: UserCheck },
+  { label: 'Immutable, tamper-evident audit logs', icon: Database },
+  { label: 'RBAC with 4 organizational roles', icon: UserCheck },
+  { label: 'Continuous compliance scoring engine', icon: Shield },
+  { label: 'Correlation ID tracking for all system events', icon: Lock },
+  { label: 'Session management, rate limiting, and IP controls', icon: Database },
+  { label: 'Data residency controls (AU / US / EU)', icon: Shield },
+  { label: 'Penetration testing — annual independent review', icon: Lock },
+  { label: 'Vendor assurance packet and DPA available', icon: Database },
 ];
 
 export function EnterpriseSecurity() {
@@ -41,11 +41,10 @@ export function EnterpriseSecurity() {
               </ScrollReveal>
 
               <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-white">
-                Built for Regulated Organizations
+                Security Built Into the Operating Layer
               </h2>
               <p className="text-gray-400 max-w-2xl mx-auto">
-                Security is embedded at the operating layer, not added as a
-                feature.
+                FormaOS is built for organizations under regulatory scrutiny. Security controls, identity governance, and audit infrastructure are core — not bolt-on features.
               </p>
             </div>
 

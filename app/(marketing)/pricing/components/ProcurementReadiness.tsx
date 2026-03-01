@@ -1,28 +1,34 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, ClipboardCheck, FileCheck2, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, ClipboardCheck, FileCheck2, ShieldCheck, Lock, Sparkles } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const assurancePillars = [
   {
     icon: ClipboardCheck,
-    title: 'Security review workflow',
+    title: 'Security review packet',
     detail:
-      'Use a structured packet for architecture, identity, encryption, and audit defensibility questions.',
+      'Structured packet covering architecture, identity, encryption, data handling, penetration testing, and audit defensibility — ready for your security team.',
   },
   {
     icon: FileCheck2,
-    title: 'Procurement-ready artifacts',
+    title: 'Procurement artifacts',
     detail:
-      'Accelerate legal and security review with trust-center links, walkthrough support, and buyer-facing evidence context.',
+      'DPA, vendor assurance questionnaire, SLA documentation, and trust-center links to accelerate legal, risk, and procurement sign-off.',
   },
   {
     icon: ShieldCheck,
-    title: 'Operational assurance',
+    title: 'Operational proof',
     detail:
-      'Map controls into accountable workflows, then export posture snapshots without spreadsheet reconstruction.',
+      'Export compliance posture snapshots on demand — evidence packages, control coverage reports, and framework alignment summaries without spreadsheet reconstruction.',
+  },
+  {
+    icon: Lock,
+    title: 'Enterprise identity controls',
+    detail:
+      'SAML 2.0 SSO, MFA enforcement, role-based access by organizational boundary, and session policy management for enterprise identity standards.',
   },
 ] as const;
 
@@ -40,15 +46,14 @@ export function ProcurementReadiness() {
             Procurement Assurance
           </div>
           <h2 className="text-3xl font-bold text-white sm:text-4xl">
-            Designed for security and procurement scrutiny
+            Built to survive security and procurement scrutiny
           </h2>
           <p className="mt-4 text-base leading-relaxed text-slate-300">
-            Move from vendor questionnaire to buyer confidence faster with a
-            clear review path and defensible operational proof.
+            Enterprise procurement teams have rigorous requirements. FormaOS ships with the artifacts, controls, and documentation to meet them — before the first question is asked.
           </p>
         </ScrollReveal>
 
-        <SectionChoreography pattern="center-burst" stagger={0.06} className="mt-10 grid gap-4 lg:grid-cols-3">
+        <SectionChoreography pattern="center-burst" stagger={0.06} className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {assurancePillars.map((pillar) => (
               <article key={pillar.title} className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-sm">
                 <div className="inline-flex rounded-lg border border-emerald-400/30 bg-emerald-500/10 p-2">

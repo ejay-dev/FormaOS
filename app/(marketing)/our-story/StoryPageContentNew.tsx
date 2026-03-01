@@ -58,7 +58,7 @@ export function StoryHero() {
           </span>
         </>
       }
-      subheadline="FormaOS was built for high-stakes sectors where governance must withstand audits, incidents, and real-world scrutiny."
+      subheadline="FormaOS was built for organizations where a compliance failure isn't a setback — it's a shutdown. We built the infrastructure that makes accountability unavoidable."
       primaryCta={{
         href: `${appBase}/auth/signup`,
         label: 'Start Free Trial',
@@ -179,11 +179,12 @@ function FounderQuote() {
 // ----------------------------------------------------------------------------
 function TheProblem() {
   const problems = [
-    'Manual workarounds',
-    'Fragmented ownership',
-    'Inconsistent controls',
-    'High audit stress',
-    'Compliance that exists on paper, not in practice',
+    'Evidence reconstructed hours before audits',
+    'Fragmented ownership — nobody knows who owns what',
+    'Controls documented but never enforced',
+    'Framework coverage gaps discovered at audit time',
+    'No single source of truth for regulators',
+    'Leadership liability with no defensible paper trail',
   ];
 
   return (

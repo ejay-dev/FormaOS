@@ -264,8 +264,7 @@ export function CTASection() {
 
           <ScrollReveal variant="fadeUp" range={[0.02, 0.32]}>
             <p className="text-base sm:text-lg md:text-xl text-gray-400 mb-10 sm:mb-12 max-w-2xl mx-auto leading-relaxed">
-              Stop managing compliance manually. FormaOS enforces controls,
-              captures evidence, and keeps you audit-ready. Every single day.
+              Regulators don't accept "we were working on it." FormaOS enforces controls, captures evidence automatically, and keeps your organization audit-ready — every day, not just before the audit.
             </p>
           </ScrollReveal>
 
@@ -309,7 +308,7 @@ export function CTASection() {
 
           <ScrollReveal variant="fadeUp" range={[0.06, 0.36]}>
             <p className="text-sm text-gray-500 mt-6 sm:mt-8">
-              No credit card required &bull; 14-day free trial &bull; Cancel anytime
+              No credit card required &bull; 14-day free trial &bull; Security review packet included &bull; Cancel anytime
             </p>
           </ScrollReveal>
 
@@ -318,9 +317,10 @@ export function CTASection() {
             <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
               {[
                 { label: 'SOC 2-aligned', detail: 'Trust framework' },
-                { label: 'Audit-ready', detail: 'Evidence workflows' },
-                { label: 'Traceable', detail: 'Evidence records' },
-                { label: 'Priority', detail: 'Support coverage' },
+                { label: 'Audit-ready', detail: 'Continuous posture' },
+                { label: 'Data sovereign', detail: 'AU / US / EU residency' },
+                { label: 'Enterprise SSO', detail: 'SAML 2.0 + MFA' },
+                { label: 'Full data export', detail: 'No lock-in on exit' },
               ].map((stat) => (
                 <div
                   key={stat.label}

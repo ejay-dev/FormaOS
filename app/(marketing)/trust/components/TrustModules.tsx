@@ -12,7 +12,7 @@ const navCards = [
     icon: ShieldCheck,
     title: 'Security Review Packet',
     description:
-      'Procurement-ready walkthrough covering architecture, access controls, audit logging, and evidence defensibility.',
+      'Architecture, AES-256 encryption, SAML 2.0 SSO, penetration testing summary, data residency options, and DPA — before your security team asks the first question.',
     linkText: 'Review packet',
   },
   {
@@ -20,15 +20,15 @@ const navCards = [
     icon: FileLock2,
     title: 'Framework Coverage',
     description:
-      'See mapped framework packs and how controls become executable work with contextual evidence.',
+      'ISO 27001, SOC 2, HIPAA, GDPR, NDIS Practice Standards, NSQHS, and more — mapped controls that become executable work with contextual evidence.',
     linkText: 'View coverage',
   },
   {
     href: '/compare',
     icon: CheckCircle2,
-    title: 'Compare',
+    title: 'Compare Platforms',
     description:
-      'Compare FormaOS against popular compliance tools and evaluate the execution-first difference.',
+      'Compare FormaOS against Drata, Vanta, and Secureframe — evaluate the operational execution difference for regulated industries.',
     linkText: 'See comparisons',
   },
   {
@@ -36,7 +36,7 @@ const navCards = [
     icon: FileLock2,
     title: 'Download Trust Packet',
     description:
-      'Procurement-ready vendor trust packet PDF generated from current system status and maintained trust disclosures.',
+      'Vendor trust packet covering architecture, encryption, identity governance, data residency, and assurance commitments — procurement-ready PDF.',
     linkText: 'Download PDF',
   },
   {
@@ -44,7 +44,7 @@ const navCards = [
     icon: ShieldCheck,
     title: 'Vendor Assurance',
     description:
-      'Procurement-ready process overview for independent assessment artifacts and contract-accurate assurance wording.',
+      'DPA, vendor assurance questionnaire, SLA documentation, and independent assessment artifacts — ready for legal, risk, and procurement sign-off.',
     linkText: 'View process',
   },
 ] as const;
@@ -53,17 +53,17 @@ const assuranceModules = [
   {
     title: 'Live compliance posture',
     detail:
-      'Share framework-level posture snapshots with auditors and enterprise buyers.',
+      'Share real-time framework-level posture snapshots — control coverage, drift alerts, and evidence readiness — with auditors and enterprise buyers.',
   },
   {
     title: 'Security questionnaire acceleration',
     detail:
-      'Respond to due-diligence requests using reusable control-and-evidence mappings.',
+      'Respond to due-diligence requests using pre-built control-and-evidence mappings. AES-256, SAML 2.0, DPA, and data residency answers ready to share.',
   },
   {
     title: 'Controlled document access',
     detail:
-      'Grant time-bound access to policies, controls, and certification artifacts.',
+      'Grant time-bound, auditable access to policies, controls, certification artifacts, and evidence bundles — with a traceable access log for every view.',
   },
 ];
 

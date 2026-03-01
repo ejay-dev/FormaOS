@@ -26,6 +26,19 @@ export const metadata: Metadata = {
 
 const ENTRIES = [
   {
+    version: '1.9',
+    date: '2026-03-01',
+    tag: 'Feature',
+    tagColor: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20',
+    title: 'Enterprise identity governance and data residency controls',
+    items: [
+      'SAML 2.0 SSO now supports metadata URL import with automatic ACS endpoint configuration — compatible with Okta, Microsoft Entra ID (Azure AD), and Google Workspace.',
+      'SCIM 2.0 provisioning available for Enterprise plans: automated user lifecycle management synced from your identity provider.',
+      'Data residency selection added to Enterprise tenant settings — choose AU, US, or EU at onboarding or via migration request.',
+      'Audit log now surfaces identity provider events: SSO login, SCIM provisioning actions, and MFA enforcement outcomes alongside platform activity.',
+    ],
+  },
+  {
     version: '1.8',
     date: '2026-02-14',
     tag: 'Feature',

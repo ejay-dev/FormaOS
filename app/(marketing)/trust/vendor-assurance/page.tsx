@@ -28,7 +28,7 @@ export default function VendorAssurancePage() {
     <MarketingPageShell>
       <CompactHero
         title="Vendor Assurance"
-        description="Vendor assurance process and procurement artifacts. FormaOS does not claim SOC 2 or ISO certification unless an independent report exists."
+        description="FormaOS ships with enterprise-grade vendor assurance artifacts — DPA, vendor assurance questionnaire, security review packet, subprocessor disclosures, and annual penetration test summary. Ready for your legal, risk, and procurement team before the first question."
         topColor="emerald"
         bottomColor="cyan"
         visualContent={<CompactHeroIcon icon={<ShieldCheck className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
@@ -53,9 +53,10 @@ export default function VendorAssurancePage() {
                     Scope
                   </div>
                   <ul className="mt-2 space-y-2 text-sm text-foreground/90">
-                    <li>Application security posture (OWASP-style)</li>
-                    <li>Auth/SSO flows and session security</li>
-                    <li>Data access controls and audit logging</li>
+                    <li>Application security posture (OWASP Top 10)</li>
+                    <li>SAML 2.0 SSO flows and session security</li>
+                    <li>AES-256 encryption and data access controls</li>
+                    <li>Audit logging and evidence chain integrity</li>
                   </ul>
                 </div>
                 <div className="rounded-xl border border-border bg-background/40 p-4">
@@ -63,19 +64,21 @@ export default function VendorAssurancePage() {
                     Cadence
                   </div>
                   <ul className="mt-2 space-y-2 text-sm text-foreground/90">
-                    <li>Initial independent assessment</li>
-                    <li>Annual refresh (or after major changes)</li>
-                    <li>Remediation tracking and re-test where applicable</li>
+                    <li>Annual independent penetration test</li>
+                    <li>Re-assessment after major platform changes</li>
+                    <li>Remediation tracking and verified fix documentation</li>
+                    <li>Summary available to Enterprise customers under NDA</li>
                   </ul>
                 </div>
                 <div className="rounded-xl border border-border bg-background/40 p-4">
                   <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Artifacts
+                    Artifacts Available
                   </div>
                   <ul className="mt-2 space-y-2 text-sm text-foreground/90">
-                    <li>Executive summary</li>
-                    <li>Findings + remediation plan</li>
-                    <li>Verification notes on fixes</li>
+                    <li>Penetration test executive summary (NDA required)</li>
+                    <li>DPA (signed on request for Enterprise)</li>
+                    <li>Vendor assurance questionnaire responses</li>
+                    <li>Subprocessor list + data flow diagram</li>
                   </ul>
                 </div>
               </div>

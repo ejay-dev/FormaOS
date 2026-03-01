@@ -1,6 +1,6 @@
 'use client';
 
-import { Shield, Lock, Database, Users, FileCheck, Zap } from 'lucide-react';
+import { Shield, Lock, Database, Users, FileCheck, Zap, Globe, Activity } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
@@ -16,27 +16,37 @@ const allPlansFeatures = [
   {
     icon: FileCheck,
     title: 'Immutable Audit Trail',
-    description: 'Every action recorded and time-stamped',
+    description: 'Every action timestamped and tamper-evident — ready for regulator review',
   },
   {
     icon: Database,
     title: 'Evidence Vault',
-    description: 'Versioned, secure, and defensible documentation',
+    description: 'Versioned, encrypted, and chain-of-custody documentation for every control',
   },
   {
     icon: Shield,
     title: 'Workflow Governance',
-    description: 'Enforce how work is executed, not just recorded',
+    description: 'Enforce how compliance work is executed and owned, not just documented',
   },
   {
     icon: Lock,
     title: 'Role-Based Security',
-    description: 'Strict access controls by function and responsibility',
+    description: 'Granular access controls by role, function, and organizational boundary',
   },
   {
     icon: Users,
-    title: 'Operational Transparency',
-    description: 'Real-time insight into compliance activity',
+    title: 'Control Ownership',
+    description: 'Every control assigned, tracked, and accountable to a named person or team',
+  },
+  {
+    icon: Activity,
+    title: 'Real-Time Monitoring',
+    description: 'Continuous compliance score with live drift detection across all frameworks',
+  },
+  {
+    icon: Globe,
+    title: 'Multi-Framework Support',
+    description: 'ISO 27001, SOC 2, HIPAA, GDPR, NDIS, and more — mapped and maintained',
   },
 ];
 
@@ -97,7 +107,7 @@ export function AllPlansInclude() {
         </ScrollReveal>
 
         {/* Features Grid */}
-        <SectionChoreography pattern="center-burst" stagger={0.05} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <SectionChoreography pattern="center-burst" stagger={0.05} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {allPlansFeatures.map((feature) => (
               <motion.div
                 key={feature.title}
@@ -155,10 +165,11 @@ export function AllPlansInclude() {
         {/* Bottom Note */}
         <ScrollReveal variant="depthSlide" range={[0.1, 0.45]} className="mt-16 backdrop-blur-xl bg-gradient-to-br from-white/[0.04] to-white/[0.02] rounded-3xl border border-white/[0.08] p-8 text-center">
           <p className="text-gray-400 text-base">
-            No tier compromises your ability to meet regulatory expectations.
+            Every plan delivers the core compliance operating layer your team needs.
             <span className="text-emerald-400 font-medium ml-1">
-              Upgrade or downgrade anytime.
+              No tier compromises regulatory defensibility.
             </span>
+            {' '}Upgrade or downgrade with full data portability, no penalty.
           </p>
         </ScrollReveal>
       </div>

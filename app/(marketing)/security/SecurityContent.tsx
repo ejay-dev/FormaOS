@@ -17,59 +17,60 @@ const safeguards = [
   {
     icon: Lock,
     title: "Tenant isolation",
-    description: "Every record is scoped to an organization with strict RLS enforcement and access controls",
+    description: "Row-Level Security (RLS) enforces strict organizational boundaries. Every record, audit log, and evidence item is scoped to its organization — no cross-tenant data access.",
   },
   {
     icon: Activity,
-    title: "Audit-grade logging",
-    description: "Immutable audit events capture who did what, when, and why across compliance actions",
+    title: "Tamper-evident audit logs",
+    description: "Immutable, timestamped audit events capture who did what, when, and in relation to which control. Every compliance decision is permanently recorded — uneditable after creation.",
   },
   {
     icon: UserCheck,
-    title: "Role-based access",
-    description: "Granular permissions with segregation of duties protect approvals and exports",
+    title: "Role-based access and RBAC",
+    description: "Granular permissions with segregation of duties. Approvals, evidence exports, and control sign-offs are gated by role — preventing unauthorized access or self-approval.",
   },
   {
     icon: Eye,
-    title: "Evidence traceability",
-    description: "Evidence links to controls, tasks, and approvals to maintain a verifiable chain of custody",
+    title: "Chain-of-custody evidence",
+    description: "Every evidence artifact links to its uploader, approver, associated controls, and export timestamps — providing a complete defensible custody record for auditors.",
   },
   {
     icon: FileCheck,
-    title: "Exportable audit bundles",
-    description: "Generate signed bundles with snapshots, controls, and evidence for external audits",
+    title: "Regulator-ready audit bundles",
+    description: "Generate framework-mapped evidence bundles with control snapshots, verification records, and audit trail exports — ready for external audit or regulator review in under 2 minutes.",
   },
   {
     icon: Shield,
-    title: "Compliance gates",
-    description: "Critical actions are blocked when required controls are unresolved or evidence is missing",
+    title: "Compliance workflow gates",
+    description: "Critical actions are blocked when required controls are unresolved or evidence is missing. Accountability is enforced by the system — before work proceeds, not after.",
   },
 ];
 
 const securityLayers = {
   "Application Security": [
-    "Multi-tenant architecture with RLS",
-    "Role-based access control (RBAC)",
-    "JWT-based authentication",
-    "Session management & timeouts"
+    "Multi-tenant architecture with Row-Level Security (RLS)",
+    "Role-based access control (RBAC) with segregation of duties",
+    "SAML 2.0 SSO — Okta, Azure AD, Google Workspace (Enterprise)",
+    "MFA policy enforcement and session duration controls",
+    "SCIM provisioning for automated user lifecycle management",
   ],
   "Data Protection": [
-    "Evidence encryption at rest",
-    "Encrypted transport",
-    "Immutable audit log storage",
-    "Backup & disaster recovery"
+    "AES-256 encryption at rest — evidence, controls, and audit logs",
+    "TLS 1.3 encryption in transit — no exceptions",
+    "Immutable audit log storage — tamper-evident by design",
+    "Backup, disaster recovery, and business continuity controls",
   ],
   "Compliance Controls": [
-    "Evidence approval workflows",
-    "Change tracking & versioning",
-    "Audit trail completeness",
-    "Export bundle signing"
+    "Evidence approval workflows with sign-off chain",
+    "Change tracking, versioning, and before/after audit capture",
+    "Audit trail completeness — every compliance action recorded",
+    "Penetration testing — annual independent security review",
   ],
-  "Infrastructure": [
-    "Framework-aligned hosting",
-    "Private storage buckets",
-    "Network isolation",
-    "DDoS protection"
+  "Infrastructure & Residency": [
+    "AU-based hosting by default — aligned for Australian-regulated orgs",
+    "US and EU data residency options for international requirements",
+    "Private storage buckets with network isolation",
+    "DDoS protection and cloud-native availability controls",
   ]
 };
 
@@ -263,27 +264,27 @@ export function SecurityCTA() {
 
             <div className="relative z-10">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display mb-4 sm:mb-6">
-                Security questions?<br />
-                <span className="text-gradient-system-animated">We&apos;re here to answer</span>
+                Security review?<br />
+                <span className="text-gradient-system-animated">We&apos;re ready before you ask</span>
               </h2>
 
               <p className="text-lg sm:text-xl text-foreground/70 mb-8 sm:mb-10 max-w-2xl mx-auto">
-                Request detailed security documentation or schedule a technical deep-dive with our team.
+                Enterprise security review packet available now — architecture, encryption, identity governance, penetration testing, data residency, and DPA. No delays for your procurement team.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
                 <Link
-                  href="/contact"
+                  href="/security-review"
                   className="group inline-flex items-center gap-2 btn btn-primary btn-premium text-base sm:text-lg px-8 sm:px-12 py-4 sm:py-6 shadow-premium-xl w-full sm:w-auto justify-center"
                 >
-                  Contact Security Team
+                  Review Security Packet
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
                 <Link
-                  href={`${appBase}/auth/signup`}
+                  href="/contact"
                   className="btn btn-secondary text-base sm:text-lg px-8 sm:px-12 py-4 sm:py-6 w-full sm:w-auto text-center"
                 >
-                  Start Free Trial
+                  Schedule Security Briefing
                 </Link>
               </div>
             </div>

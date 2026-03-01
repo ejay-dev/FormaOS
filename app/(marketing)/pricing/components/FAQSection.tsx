@@ -11,32 +11,42 @@ const faqs = [
   {
     question: 'Can we run a security review before purchase?',
     answer:
-      'Yes. Start with the FormaOS security review packet and request a guided walkthrough for your security or procurement team.',
+      'Yes. Request the FormaOS security review packet — it includes our security posture summary, penetration test overview, vulnerability disclosure policy, and vendor assurance documentation. Guided walkthroughs for procurement and security teams are available on Enterprise engagements.',
   },
   {
-    question: 'Do you support enterprise identity requirements?',
+    question: 'Do you support enterprise identity and access requirements?',
     answer:
-      'Google OAuth is available for all plans. Enterprise plans can enable SAML SSO (Okta/Azure AD and similar IdPs). If you need SCIM provisioning, raise it during security review so we can confirm scope and workarounds.',
+      'Google OAuth and MFA enforcement are available on all plans. Enterprise plans include SAML 2.0 SSO with support for Okta, Azure AD, and Google Workspace. Session policy management, IP restrictions, and SCIM provisioning can be discussed during security review.',
+  },
+  {
+    question: 'Where is data stored, and can we select our region?',
+    answer:
+      'FormaOS stores data on infrastructure based in Australia by default. Enterprise plans can enable data residency controls for AU, US, or EU regions. All data is encrypted at rest (AES-256) and in transit (TLS 1.3). A full Data Processing Agreement (DPA) is available on request.',
+  },
+  {
+    question: 'What are your uptime and SLA commitments?',
+    answer:
+      'FormaOS targets 99.9% monthly uptime for production services. Enterprise plans include a formal SLA with defined incident response, escalation paths, and remediation credits. Our status page provides real-time availability and incident history.',
   },
   {
     question: 'How does procurement and billing work?',
     answer:
-      'Self-serve plans use card billing. Enterprise engagements can include invoice-based procurement and implementation planning.',
+      'Starter and Professional plans are self-serve with monthly card billing. Enterprise engagements support invoice-based procurement, multi-year agreements, and purchase-order workflows. All plans include the security and vendor assurance documentation required for enterprise procurement.',
   },
   {
-    question: 'Can we pilot first and expand later?',
+    question: 'Can we pilot one team first and expand later?',
     answer:
-      'Yes. Most teams start with one operating unit, prove workflow fit, and then expand to additional entities or sites.',
+      'Yes. Most enterprise teams start with a single operating unit, validate workflow fit during the trial, then expand to additional entities or sites. Your data, configurations, and audit history carry forward when you scale.',
   },
   {
-    question: 'What happens after the trial ends?',
+    question: 'What happens to our data if we leave?',
     answer:
-      'You can choose a plan, continue with procurement, or pause and restart when ready. No long-term lock-in is required to evaluate fit.',
+      'Your compliance data belongs to you. On exit, we provide a full data export (evidence, audit trails, control mappings) in portable formats (CSV, ZIP, PDF). Data is purged from our systems within 30 days of account termination, per our retention policy.',
   },
   {
-    question: 'Do you provide onboarding support?',
+    question: 'Do you provide onboarding and implementation support?',
     answer:
-      'Yes. All plans include guided resources, and higher tiers include deeper implementation and operational enablement support.',
+      'All plans include access to onboarding documentation and setup guides. Professional plans include priority support. Enterprise engagements include a dedicated implementation engineer, framework configuration, control mapping review, and staff enablement sessions.',
   },
 ];
 
@@ -80,7 +90,7 @@ export function FAQSection() {
           </h2>
 
           <p className="text-lg text-gray-400">
-            Answers for buyers evaluating platform fit, risk, and rollout
+            Answers for compliance leaders, procurement teams, and IT security evaluating platform fit, data handling, and enterprise readiness
           </p>
         </ScrollReveal>
 

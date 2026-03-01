@@ -126,24 +126,24 @@ const standards: UseCaseStandard[] = [
 
 const metrics: UseCaseMetric[] = [
   {
-    value: 'Clear',
-    label: 'Ownership',
-    description: 'Every incident action has a named owner and due date.',
+    value: '< 4 hr',
+    label: 'Triage to Owner',
+    description: 'High-severity incidents routed to a named, accountable owner within hours of intake.',
   },
   {
-    value: 'Structured',
-    label: 'Escalation',
-    description: 'High-risk events route quickly to accountable leaders.',
+    value: '100%',
+    label: 'Action Traceability',
+    description: 'Every corrective action has a named owner, due date, and verified closure evidence.',
   },
   {
-    value: 'Actionable',
-    label: 'Insights',
-    description: 'Trends and root causes become visible in real time.',
+    value: 'Export-ready',
+    label: 'Evidence Chain',
+    description: 'Regulator and customer evidence packages generated without manual timeline reconstruction.',
   },
   {
-    value: 'Less',
-    label: 'Manual Work',
-    description: 'Reduce spreadsheet coordination and follow-up overhead.',
+    value: '< 30 min',
+    label: 'Regulator Response',
+    description: 'Incident chronology with full approval and decision history exported on demand.',
   },
 ];
 
@@ -159,7 +159,7 @@ export default function IncidentContent() {
           defensible operational evidence
         </>
       }
-      description="Coordinate intake, triage, investigation, corrective action, and closure in one incident system that stays audit-ready by design."
+      description="Coordinate intake, triage, investigation, corrective action, and closure in one incident system with named ownership, timestamped evidence, and regulator-ready export — audit-ready by design, not by sprint."
       challenges={challenges}
       demoTitle="Incident workflow simulation"
       demoDescription="Follow incident lifecycle state changes and see how closure evidence is preserved."
@@ -172,8 +172,8 @@ export default function IncidentContent() {
       workflows={workflows}
       standards={standards}
       metrics={metrics}
-      ctaTitle="Run incidents as accountable operations"
-      ctaDescription="Move from reactive reporting to structured response workflows with provable remediation history."
+      ctaTitle="Run incidents as accountable operations — with proof that holds under scrutiny"
+      ctaDescription="Replace reactive reporting with structured response workflows. Every incident gets a named owner, documented investigation, and closure evidence — ready for regulators, customers, or the board in minutes."
     />
   );
 }

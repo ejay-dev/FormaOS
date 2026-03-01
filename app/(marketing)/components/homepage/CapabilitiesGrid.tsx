@@ -11,7 +11,7 @@ import {
   Layers,
   Terminal,
   Eye,
-  Clock,
+  Code2,
   Globe,
   Shield,
   ScanSearch,
@@ -49,7 +49,7 @@ const capabilities = [
     icon: GitBranch,
     title: 'Framework Packs',
     description:
-      '7 pre-built frameworks (ISO 27001, SOC 2, GDPR, HIPAA, PCI-DSS, NIST CSF, CIS).',
+      '9 pre-built frameworks: ISO 27001, SOC 2, GDPR, HIPAA, PCI-DSS, NIST CSF, CIS Controls, NDIS Practice Standards, and Essential Eight.',
     color: 'from-pink-500 to-rose-500',
   },
   {
@@ -74,17 +74,17 @@ const capabilities = [
     color: 'from-yellow-500 to-lime-500',
   },
   {
-    icon: Clock,
+    icon: Code2,
     title: 'REST API v1',
     description:
-      'REST API v1 for compliance data, evidence uploads, and tasks. Webhook endpoints included for real-time event notifications.',
+      'REST API v1 for compliance data, evidence uploads, and task management. Webhook endpoints deliver real-time event notifications to your SIEM or existing tooling.',
     color: 'from-yellow-500 to-green-500',
   },
   {
     icon: Globe,
     title: 'Multi-Site Operations',
     description:
-      'Planned enterprise roadmap: multi-site hierarchies, business units, and cross-site rollups.',
+      'Multi-entity and multi-site operations with centralized oversight. Each entity maintains its own controls, evidence, and audit trail — with cross-site rollup reporting for executive governance.',
     color: 'from-green-500 to-teal-500',
   },
   {

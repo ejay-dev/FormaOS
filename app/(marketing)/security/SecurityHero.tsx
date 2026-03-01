@@ -1,13 +1,14 @@
 'use client';
 
-import { Lock, Shield, Eye, FileCheck } from 'lucide-react';
+import { Lock, Shield, Eye, FileCheck, Key } from 'lucide-react';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SecurityHeroVisual } from './components/SecurityHeroVisual';
 
 const SECURITY_PILLS = [
-  { icon: Lock, label: 'Tenant Isolation' },
-  { icon: FileCheck, label: 'Immutable Logs' },
-  { icon: Eye, label: 'Evidence Chain' },
+  { icon: Lock, label: 'AES-256 + TLS 1.3' },
+  { icon: FileCheck, label: 'Tamper-Evident Logs' },
+  { icon: Eye, label: 'Chain of Custody' },
+  { icon: Key, label: 'SAML 2.0 SSO' },
 ];
 
 export function SecurityHero() {
@@ -29,7 +30,7 @@ export function SecurityHero() {
           </span>
         </>
       }
-      subheadline="Audit-grade logging, tenant isolation, and compliance gates engineered for organizations where security and data integrity are regulatory requirements."
+      subheadline="AES-256 encryption, SAML 2.0 SSO, tamper-evident audit logs, and compliance workflow gates — enterprise security infrastructure engineered for organizations where a breach or audit failure is a regulatory event."
       extras={
         <div className="flex flex-wrap justify-center gap-3">
           {SECURITY_PILLS.map((item) => (

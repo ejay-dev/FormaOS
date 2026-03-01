@@ -6,11 +6,14 @@ import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const outcomes = [
-  'Continuous compliance, not periodic checks',
-  'Reduced audit risk and preparation time',
-  'Clear ownership of every obligation',
-  'Defensible, regulator-ready evidence',
-  'A governance system that actually runs',
+  'Continuous compliance posture — not periodic audit scrambles',
+  'Audit preparation reduced from weeks to hours',
+  'Every control has a named owner, status, and evidence trail',
+  'Regulator-ready evidence packages exportable in minutes',
+  'Cross-framework coverage without duplicating work',
+  'A governance layer that runs while your teams operate',
+  'Real-time drift alerts before auditors find gaps',
+  'Compliance history preserved for multi-year audit cycles',
 ];
 
 export function TheOutcome() {
@@ -34,11 +37,14 @@ export function TheOutcome() {
               </ScrollReveal>
 
               <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-white">
-                What Organizations Achieve with FormaOS
+                What Regulated Organizations Achieve with FormaOS
               </h2>
+              <p className="text-gray-400 max-w-2xl mx-auto mt-2">
+                Not promises. These are the operational outcomes teams reach when compliance is a system, not a spreadsheet.
+              </p>
             </div>
 
-            <SectionChoreography pattern="cascade" stagger={0.04} className="grid sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
+            <SectionChoreography pattern="cascade" stagger={0.04} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {outcomes.map((outcome) => (
                 <div key={outcome} className="product-panel product-panel--soft flex items-center gap-3 rounded-xl px-4 py-3">
                   <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0" />

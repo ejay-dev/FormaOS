@@ -1,17 +1,19 @@
 'use client';
 
-import { Building2, FileCheck, Database, AlertTriangle, Shield, CheckCircle } from 'lucide-react';
+import { Building2, FileCheck, Database, AlertTriangle, Shield, CheckCircle, Users, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 export function WhatIsFormaOS() {
   const unifies = [
-    { icon: Building2, label: 'Governance structure' },
-    { icon: FileCheck, label: 'Policy and control execution' },
-    { icon: Database, label: 'Evidence generation' },
-    { icon: AlertTriangle, label: 'Risk visibility' },
-    { icon: Shield, label: 'Audit defense' },
+    { icon: Building2, label: 'Governance structure and framework alignment' },
+    { icon: FileCheck, label: 'Policy, control, and obligation execution' },
+    { icon: Database, label: 'Automated evidence generation and vault' },
+    { icon: AlertTriangle, label: 'Real-time risk scoring and drift detection' },
+    { icon: Shield, label: 'Audit defense with exportable evidence packages' },
+    { icon: Users, label: 'Control ownership across teams and entities' },
+    { icon: Lock, label: 'Role-based accountability and access governance' },
   ];
 
   return (
@@ -41,8 +43,7 @@ export function WhatIsFormaOS() {
             </h2>
 
             <p className="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed mb-12">
-              Designed for regulated teams that need certainty, accountability,
-              and defensible audit outcomes.
+              Not a GRC checklist tool. Not a document repository. FormaOS is an operational layer that enforces compliance as your organization works — continuously, with evidence generated automatically.
             </p>
           </div>
         </ScrollReveal>
@@ -53,7 +54,7 @@ export function WhatIsFormaOS() {
               FormaOS unifies:
             </h3>
 
-            <SectionChoreography pattern="cascade" stagger={0.04} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+            <SectionChoreography pattern="cascade" stagger={0.04} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
               {unifies.map((item) => {
                 const Icon = item.icon;
                 return (
@@ -68,21 +69,25 @@ export function WhatIsFormaOS() {
             </SectionChoreography>
 
             <p className="text-center text-gray-500 mt-8 text-sm">
-              ...into a single, continuously operating system.
+              Unified in a single, continuously operating compliance layer.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4 mt-8 text-sm text-gray-400">
               <span className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-green-400" />
-                No silos
+                No compliance silos
               </span>
               <span className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-green-400" />
-                No manual reconciliation
+                No manual evidence reconciliation
               </span>
               <span className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-green-400" />
-                No last-minute audit panic
+                No last-minute audit reconstruction
+              </span>
+              <span className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-400" />
+                No undocumented ownership gaps
               </span>
             </div>
           </div>

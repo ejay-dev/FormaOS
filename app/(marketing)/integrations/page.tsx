@@ -178,7 +178,7 @@ export default function IntegrationsPage() {
     <MarketingPageShell>
       <CompactHero
         title="Integrations"
-        description="Embed compliance into the tools your team already uses. FormaOS works alongside your existing stack — not instead of it."
+        description="Embed compliance into the tools your team already uses. FormaOS integrates with Jira, Slack, Microsoft Teams, Okta, Azure AD, GitHub, and 5,000+ apps via Zapier — so compliance evidence is captured where work happens, not reconstructed after the fact."
         topColor="cyan"
         bottomColor="blue"
       />

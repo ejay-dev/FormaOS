@@ -126,24 +126,24 @@ const standards: UseCaseStandard[] = [
 
 const metrics: UseCaseMetric[] = [
   {
-    value: 'Clear',
-    label: 'Ownership',
-    description: 'Every credential item is tied to a responsible owner.',
+    value: '90/60/30',
+    label: 'Day Renewal Alerts',
+    description: 'Automated reminder cadence — no more expiry surprises for licenses and clearances.',
   },
   {
-    value: 'Less',
-    label: 'Manual Follow-up',
-    description: 'Automate reminder and escalation routines.',
+    value: '< 2 min',
+    label: 'Credential Status Check',
+    description: 'Live posture view by team, role, or individual — audit-ready at any moment.',
   },
   {
-    value: 'Audit-ready',
-    label: 'Evidence',
-    description: 'Keep current and historical proof in one chain.',
+    value: 'Named',
+    label: 'Verifier — Always',
+    description: 'Every credential item has a documented reviewer and approval decision on record.',
   },
   {
-    value: 'Streamlined',
-    label: 'Onboarding',
-    description: 'Accelerate readiness checks for new staff.',
+    value: '100%',
+    label: 'Audit Traceability',
+    description: 'Current and historical credential proof in one exportable chain — no reconstruction.',
   },
 ];
 
@@ -159,7 +159,7 @@ export default function WorkforceContent() {
           with continuous audit readiness
         </>
       }
-      description="Manage credential obligations, reminders, verification, and proof exports in one workflow system built for regulated operations."
+      description="Manage credential obligations, automated renewal alerts, verification workflows, and audit-ready evidence for every role — in a system built for regulated operational environments where expiry has consequences."
       challenges={challenges}
       demoTitle="Credential operations simulation"
       demoDescription="See credential lifecycle tracking and live compliance posture as obligations change."
@@ -172,8 +172,8 @@ export default function WorkforceContent() {
       workflows={workflows}
       standards={standards}
       metrics={metrics}
-      ctaTitle="Operationalize credential compliance across your workforce"
-      ctaDescription="Replace fragmented spreadsheets and ad-hoc reminders with a governed system for credential ownership and evidence."
+      ctaTitle="Operationalize credential compliance — with zero expiry surprises"
+      ctaDescription="Replace fragmented spreadsheets and ad-hoc reminders with a governed credential system. Named owners, automated renewal cadences, and export-ready evidence for every workforce compliance review."
     />
   );
 }

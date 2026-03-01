@@ -17,39 +17,48 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 const stories = [
   {
     title: 'National disability services provider',
+    context: 'NDIS provider — 400+ staff, multi-state operations, NDIS Commission registered',
+    framework: 'NDIS Practice Standards (all 8 modules)',
     situation:
-      'Rapid growth created fragmented evidence, unclear ownership, and high audit risk across multiple sites.',
+      'Rapid growth created fragmented evidence, unclear ownership, and high audit risk across multiple sites. Reportable incidents were tracked in spreadsheets — NDIS Commission audits required days of reconstruction.',
     outcome: [
-      'Centralized evidence vault with verification flow',
-      'Clear control ownership and task accountability',
-      'Faster audit response with exportable bundles',
+      'Centralized evidence vault with verification and sign-off chain',
+      'Clear control ownership at every practice standard module',
+      'Reportable incident response down from 3 days to under 24 hours',
+      'Audit preparation time reduced from 3 weeks to under 4 hours',
     ],
     quote:
-      'We stopped chasing evidence in folders. FormaOS made accountability explicit and defensible.',
+      'We stopped chasing evidence in folders. FormaOS made accountability explicit and defensible — the Commission auditor had everything in front of them in 2 hours.',
   },
   {
     title: 'Regional healthcare operator',
+    context: 'Healthcare network — 6 sites, NSQHS accredited, AHPRA practitioners',
+    framework: 'NSQHS Standards + AHPRA + RACGP',
     situation:
-      'Operational controls existed, but proof was inconsistent. Leadership lacked a single readiness view.',
+      'Clinical governance controls existed on paper, but proof was inconsistent across sites. AHPRA registration renewals were tracked manually — two near-misses in 12 months. Leadership had no live posture view ahead of accreditation.',
     outcome: [
-      'Control-to-evidence mapping with audit history',
-      'Executive posture view aligned to frameworks',
-      'Operational workflows tied to compliance requirements',
+      'Control-to-evidence mapping with NSQHS Standards linkage',
+      'AHPRA registration expiry alerts at 90/60/30-day intervals',
+      'Executive posture dashboard with real-time framework coverage',
+      'NSQHS accreditation achieved first-pass with no major findings',
     ],
     quote:
-      'We finally had one place to prove what happened, when it happened, and who approved it.',
+      'We finally had one place to prove what happened, when it happened, and who approved it. The accreditation visit was the easiest we have had in 8 years.',
   },
   {
     title: 'Multi-site aged care organization',
+    context: 'Aged care provider — 12 residential facilities, Aged Care Quality and Safety Commission registered',
+    framework: 'Aged Care Quality Standards (8 standards)',
     situation:
-      'Policy changes were hard to roll out, and periodic reviews slipped without reliable triggers.',
+      'Policy changes were hard to roll out uniformly, periodic reviews slipped without reliable triggers, and Standard 8 governance reporting consumed weeks of executive time before each Commission visit.',
     outcome: [
-      'Policy review cadence enforced with tasks',
-      'Evidence renewal and expiry tracking',
-      'Audit trail for changes and approvals',
+      'Policy review cadence enforced with automated task triggers',
+      'Evidence renewal and expiry tracking across all 12 facilities',
+      'Standard 8 governance reporting cut from 3 weeks to 2 days',
+      'Commission visit resulted in commendable outcomes — no sanctions',
     ],
     quote:
-      'The system makes compliance routine. We can focus on operations and still be audit-ready.',
+      'The system makes compliance routine. We can focus on care delivery and still be fully audit-ready — Commission or not.',
   },
 ] as const;
 
@@ -90,7 +99,17 @@ export default function CustomerStoriesContent() {
                   <h2 className="text-lg font-semibold text-white">
                     {s.title}
                   </h2>
-                  <div className="mt-3 text-sm leading-relaxed text-slate-300">
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <span className="inline-flex items-center rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-0.5 text-[11px] text-slate-400">
+                      {s.context}
+                    </span>
+                  </div>
+                  <div className="mt-2">
+                    <span className="inline-flex items-center rounded-full border border-cyan-400/20 bg-cyan-500/10 px-2.5 py-0.5 text-[11px] font-medium text-cyan-300">
+                      {s.framework}
+                    </span>
+                  </div>
+                  <div className="mt-4 text-sm leading-relaxed text-slate-300">
                     <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                       Situation
                     </div>
@@ -116,8 +135,8 @@ export default function CustomerStoriesContent() {
                       <div className="mt-0.5 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
                         <Quote className="h-4 w-4 text-cyan-200" />
                       </div>
-                      <p className="text-sm leading-relaxed text-slate-200">
-                        {s.quote}
+                      <p className="text-sm leading-relaxed text-slate-200 italic">
+                        "{s.quote}"
                       </p>
                     </div>
                   </div>

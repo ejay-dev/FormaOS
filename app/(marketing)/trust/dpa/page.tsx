@@ -34,7 +34,7 @@ export default function DPAPage() {
     <MarketingPageShell>
       <CompactHero
         title="Data Processing Agreement"
-        description="FormaOS processes customer data in accordance with applicable data protection laws, including GDPR, Australian Privacy Act, and HIPAA where applicable."
+        description="FormaOS processes customer data in accordance with the Australian Privacy Act 1988 (APPs), GDPR, and other applicable data protection obligations. AU-based hosting by default. Data residency controls, sub-processor disclosure, and signed DPA available for enterprise customers."
         topColor="emerald"
         bottomColor="cyan"
         visualContent={<CompactHeroIcon icon={<FileText className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
@@ -124,12 +124,16 @@ export default function DPAPage() {
             </p>
           </Section>
 
-          <Section title="6. Data Retention & Deletion">
+          <Section title="6. Data Retention, Portability & Deletion">
             <p>
-              Data retention and deletion timelines are defined in the service
-              agreement (and may be tailored to regulatory requirements).
-              Upon termination, FormaOS supports deletion requests and can
-              provide written confirmation of deletion completion upon request.
+              Data retention periods are configurable and may be tailored to your
+              specific regulatory obligations (e.g., 7-year ASIC record retention,
+              NDIS evidence retention requirements). Upon termination or plan
+              cancellation, customers have 30 days to export all compliance data,
+              evidence artifacts, and audit trail records in portable formats
+              (CSV, JSON, ZIP). After the export window, data is securely deleted
+              and written confirmation is available on request. No lock-in penalty
+              applies to data portability.
             </p>
           </Section>
 

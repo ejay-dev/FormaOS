@@ -35,6 +35,26 @@ const TESTIMONIALS = [
     accentClass: 'from-violet-500/20 to-indigo-500/20',
     borderClass: 'border-violet-500/20',
   },
+  {
+    quote:
+      'Standard 8 reporting used to consume two full weeks per quarter. With FormaOS we close the same governance cycle in under two days — with a traceable evidence trail the Commission accepts without question.',
+    name: 'Michael D.',
+    role: 'Quality & Compliance Lead',
+    org: 'Residential Aged Care Group',
+    sector: 'Aged Care',
+    accentClass: 'from-emerald-500/20 to-teal-500/20',
+    borderClass: 'border-emerald-500/20',
+  },
+  {
+    quote:
+      'Our SafeWork audit was the first one where we walked in with a complete digital evidence package. Incident logs, corrective actions, worker credential records — all exportable in under five minutes.',
+    name: 'Priya N.',
+    role: 'WHS & Compliance Manager',
+    org: 'Construction & Infrastructure Group',
+    sector: 'Construction',
+    accentClass: 'from-amber-500/20 to-orange-500/20',
+    borderClass: 'border-amber-500/20',
+  },
 ] as const;
 
 export function TestimonialsSection() {
@@ -62,7 +82,7 @@ export function TestimonialsSection() {
       </motion.div>
 
       {/* Cards */}
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 md:grid-cols-3">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {TESTIMONIALS.map((t, i) => (
           <motion.article
             key={t.name}

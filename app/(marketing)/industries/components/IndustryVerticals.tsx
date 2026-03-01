@@ -34,11 +34,11 @@ const industries = [
     icon: Heart,
     title: 'Disability and Aged Care',
     description:
-      'Operationalize NDIS, quality standards, safeguarding, incident management, and audits.',
+      'Operationalize NDIS Practice Standards, Aged Care Quality Standards, safeguarding, reportable incident obligations, and NDIS Commission audit readiness — for providers where unannounced visits are real.',
     features: [
-      'Practice Standards 1-8',
-      'Incident Management',
-      'Worker Screening',
+      'NDIS Practice Standards (all 8 modules)',
+      'NDIS Commission Reportable Incidents',
+      'NDIS Worker Screening + SIRS',
     ],
     color: 'pink',
     gradient: 'from-pink-500/20 to-pink-500/10',
@@ -47,17 +47,21 @@ const industries = [
     textColor: 'text-pink-400',
     dotColor: 'bg-pink-400',
     metrics: [
-      { label: 'NDIS Practice Standards', value: '8/8' },
-      { label: 'Audit Prep Time Saved', value: '65%' },
-      { label: 'Incident Response SLA', value: '<24h' },
+      { label: 'NDIS Practice Standards Modules', value: '8/8' },
+      { label: 'Reportable Incident Response', value: '<24h' },
+      { label: 'Audit Pack Export', value: '< 4 hrs' },
     ],
   },
   {
     icon: Shield,
     title: 'Healthcare and Allied Health',
     description:
-      'Manage accreditation, clinical governance, compliance workflows, and evidence tracking.',
-    features: ['NSQHS Standards', 'Clinical Governance', 'Safety & Risk'],
+      'Manage AHPRA practitioner registration, NSQHS Standards accreditation, clinical governance, credential expiry, Privacy Act compliance, and adverse event tracking — continuously, not just before audits.',
+    features: [
+      'AHPRA Registration & CPD Tracking',
+      'NSQHS Standards (8/8 covered)',
+      'RACGP Accreditation & Privacy Act NDB',
+    ],
     color: 'blue',
     gradient: 'from-blue-500/20 to-blue-500/10',
     border: 'border-blue-500/20',
@@ -67,15 +71,19 @@ const industries = [
     metrics: [
       { label: 'NSQHS Standards Covered', value: '8/8' },
       { label: 'Clinical Governance Tasks', value: '120+' },
-      { label: 'Evidence Auto-Linked', value: '92%' },
+      { label: 'Credential Renewal Lead Time', value: '90 days' },
     ],
   },
   {
     icon: TrendingUp,
     title: 'Financial Services',
     description:
-      'Track regulatory obligations, risk controls, internal audits, and compliance reporting.',
-    features: ['Regulatory Tracking', 'Risk Controls', 'Internal Audits'],
+      'Track ASIC, APRA, AUSTRAC, and AML/CTF regulatory obligations, risk controls, internal audit programs, and board-level compliance reporting — with named ownership at every level.',
+    features: [
+      'ASIC, APRA & AUSTRAC Obligations',
+      'AML/CTF Risk Control Mapping',
+      'Internal Audit + Board Reporting',
+    ],
     color: 'green',
     gradient: 'from-green-500/20 to-green-500/10',
     border: 'border-green-500/20',
@@ -83,7 +91,7 @@ const industries = [
     textColor: 'text-green-400',
     dotColor: 'bg-green-400',
     metrics: [
-      { label: 'Regulatory Obligations', value: '250+' },
+      { label: 'Regulatory Obligations Tracked', value: '250+' },
       { label: 'Risk Control Coverage', value: '98%' },
       { label: 'Audit Findings Resolved', value: '<48h' },
     ],
@@ -92,8 +100,12 @@ const industries = [
     icon: Building2,
     title: 'Construction and Infrastructure',
     description:
-      'Manage safety systems, contractor compliance, incident reporting, and regulatory audits.',
-    features: ['Safety Systems', 'Contractor Compliance', 'Incident Reporting'],
+      'Manage WHS Act safety systems, contractor compliance programs, incident reporting, SafeWork obligations, and multi-site regulatory audit readiness — with defensible evidence at every stage.',
+    features: [
+      'WHS Act & SafeWork Obligations',
+      'Contractor License Verification',
+      'Multi-site Incident Reporting',
+    ],
     color: 'orange',
     gradient: 'from-orange-500/20 to-orange-500/10',
     border: 'border-orange-500/20',
@@ -102,7 +114,7 @@ const industries = [
     dotColor: 'bg-orange-400',
     metrics: [
       { label: 'Safety System Controls', value: '180+' },
-      { label: 'Contractor Compliance', value: '99.5%' },
+      { label: 'Contractor Compliance Rate', value: '99.5%' },
       { label: 'Incident Report Time', value: '<1h' },
     ],
   },
@@ -110,8 +122,12 @@ const industries = [
     icon: Users,
     title: 'Education and Childcare',
     description:
-      'Control policy adherence, staff compliance, risk management, and inspection readiness.',
-    features: ['Policy Adherence', 'Staff Compliance', 'Inspection Readiness'],
+      'Operationalize ACECQA National Quality Framework compliance, staff credential governance, child safety policy adherence, and inspection readiness — with continuous evidence, not pre-visit scrambles.',
+    features: [
+      'ACECQA National Quality Framework (NQF)',
+      'Child Safety Compliance Workflows',
+      'Staff Credential & WWC Tracking',
+    ],
     color: 'purple',
     gradient: 'from-purple-500/20 to-purple-500/10',
     border: 'border-purple-500/20',
@@ -119,9 +135,9 @@ const industries = [
     textColor: 'text-purple-400',
     dotColor: 'bg-purple-400',
     metrics: [
-      { label: 'Policy Frameworks', value: '45+' },
+      { label: 'NQF Quality Areas Covered', value: '7/7' },
       { label: 'Staff Compliance Rate', value: '97%' },
-      { label: 'Inspection Readiness', value: '100%' },
+      { label: 'Inspection Readiness', value: 'Continuous' },
     ],
   },
 ];

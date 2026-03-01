@@ -29,41 +29,59 @@ const points = [
   {
     title: 'Compliance as an operating model',
     detail:
-      'FormaOS connects governance structure to the work that proves compliance: policies, tasks, evidence, and audit history in one chain.',
+      'FormaOS connects governance structure to the work that proves compliance: policies, tasks, evidence, and audit history in one chain — not just a program setup and monitoring tool.',
   },
   {
     title: 'Verification layer for evidence',
     detail:
-      'FormaOS emphasizes verification status, segregation, and audit history so evidence is defensible, not just stored.',
+      'FormaOS emphasizes verification status, segregation, and immutable audit history so evidence is defensible under regulator scrutiny — not just stored and organized.',
   },
   {
     title: 'Execution visibility for leadership',
     detail:
-      'FormaOS is built to communicate readiness as operational truth: owners, deadlines, gaps, and posture snapshots.',
+      'FormaOS communicates readiness as operational truth: named owners, live deadlines, control gaps, and posture snapshots — real-time and always current for board and executive reporting.',
+  },
+  {
+    title: 'Non-security regulated industries',
+    detail:
+      'FormaOS covers operational compliance for healthcare, NDIS, aged care, and financial services — not limited to security frameworks like SOC 2 and ISO 27001.',
+  },
+  {
+    title: 'Workflow enforcement, not just documentation',
+    detail:
+      'Controls in FormaOS block non-compliant work from proceeding. Accountability is structural, not cultural — the system enforces it, not a spreadsheet or a reminder email.',
+  },
+  {
+    title: 'Audit-ready posture — always',
+    detail:
+      'FormaOS maintains continuous compliance posture with real-time control drift alerts. No more "sprint to audit" — evidence is generated as teams operate, every day.',
   },
 ] as const;
 
 const idealIf = [
-  'Your audits depend on operations (not only security policy)',
-  'You need verified evidence and approval history',
-  'You want a single control execution view across teams',
+  'Your audits depend on operations — not only security policy and technical controls',
+  'You need verified evidence and approval history — not just evidence storage and collection',
+  'You want a single control execution view across teams with named ownership at every level',
+  'Your organization needs healthcare, NDIS, or operational compliance beyond security frameworks',
+  'Continuous posture matters — not just periodic compliance snapshots assembled before audits',
+  'Enterprise procurement needs DPA, SAML SSO, and data residency documentation upfront',
 ] as const;
 
 const procurementChecks = [
   {
-    title: 'Security review acceleration',
+    title: 'Operational compliance proof',
     detail:
-      'Use the FormaOS security review packet to address architecture and control questions early.',
+      'Export compliance posture snapshots, control coverage reports, and framework alignment summaries without spreadsheet reconstruction — on demand.',
   },
   {
-    title: 'Defensible workflow proof',
+    title: 'Vendor assurance and DPA',
     detail:
-      'Demonstrate owner-level execution with tasks, approvals, and evidence history in one chain.',
+      'Data processing agreement, vendor assurance questionnaire, and SLA documentation ready for legal, risk, and procurement sign-off — no delays.',
   },
   {
-    title: 'Pilot-to-rollout confidence',
+    title: 'Framework coverage documentation',
     detail:
-      'Start with one business unit, validate outcomes, then scale to broader teams and entities.',
+      'Multi-framework coverage (ISO 27001, SOC 2, HIPAA, GDPR, NDIS Practice Standards) mapped and evidenced — ready for your next compliance or procurement review.',
   },
 ] as const;
 
@@ -71,7 +89,7 @@ export default function CompareSecureframePage() {
   return (
     <ComparePageTemplate
       competitor="Secureframe"
-      heroDescription="Secureframe helps teams organize compliance programs. FormaOS is built to operationalize compliance into governed workflows and verified evidence chains, designed for audit defense."
+      heroDescription="Secureframe helps teams organize and automate compliance programs. FormaOS is built to operationalize compliance as a governed execution system — with workflow enforcement, continuous posture, named accountability, and audit-ready evidence for every regulated sector."
       points={points}
       idealIf={idealIf}
       procurementChecks={procurementChecks}

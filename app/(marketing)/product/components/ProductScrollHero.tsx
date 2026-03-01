@@ -19,9 +19,9 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 const signatureEase: [number, number, number, number] = [...easing.signature] as [number, number, number, number];
 
 const CAPABILITIES = [
-  { icon: Shield, label: 'Structured Controls', color: 'from-violet-500/20 to-violet-600/10', dot: 'bg-violet-400' },
-  { icon: FileCheck, label: 'Live Evidence', color: 'from-emerald-500/20 to-emerald-600/10', dot: 'bg-emerald-400' },
-  { icon: BarChart3, label: 'Audit-Ready Reports', color: 'from-cyan-500/20 to-cyan-600/10', dot: 'bg-cyan-400' },
+  { icon: Shield, label: 'System-Enforced Controls', color: 'from-violet-500/20 to-violet-600/10', dot: 'bg-violet-400' },
+  { icon: FileCheck, label: 'Automated Evidence Capture', color: 'from-emerald-500/20 to-emerald-600/10', dot: 'bg-emerald-400' },
+  { icon: BarChart3, label: 'Regulator-Ready Audit Packets', color: 'from-cyan-500/20 to-cyan-600/10', dot: 'bg-cyan-400' },
 ];
 
 const FRAMEWORKS = ['SOC 2', 'ISO 27001', 'GDPR', 'HIPAA'];
@@ -118,7 +118,7 @@ export function ProductScrollHero() {
               transition={sa ? { duration: duration.slower, delay: 0.39, ease: signatureEase } : { duration: 0 }}
               className="text-base sm:text-lg lg:text-xl text-gray-400 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed"
             >
-              Transform regulatory obligations into structured controls, owned actions, and audit-ready outcomes — in real time.
+              Turn regulatory obligations into system-enforced controls, owned evidence, and audit-ready outcomes — continuously and in real time.
             </motion.p>
 
             {/* CTAs */}

@@ -1,28 +1,49 @@
 'use client';
 
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { CircleCheckBig, FileCheck2, HelpCircle, ShieldAlert, Quote } from 'lucide-react';
+import { CircleCheckBig, FileCheck2, HelpCircle, ShieldAlert, Quote, Globe, Lock, ArrowUpRight } from 'lucide-react';
 
 const objectionCards = [
   {
-    objection: '"How quickly can we complete security review?"',
+    objection: '"How do we complete security review before procurement sign-off?"',
     response:
-      'Use the security review packet and trust workflow to pre-answer architecture and control questions.',
+      'FormaOS ships with a pre-built security review packet: architecture overview, penetration test summary, vendor assurance questionnaire, and DPA — pre-answering 90% of procurement questions.',
     icon: ShieldAlert,
     proof: 'Security packet included',
   },
   {
-    objection: '"How do we know evidence is defensible?"',
+    objection: '"Where is our data stored, and do we control residency?"',
     response:
-      'FormaOS ties evidence to owners, approvals, timestamps, and workflow context for audit defensibility.',
+      'AU-based hosting by default. Enterprise plans include data residency controls for AU, US, or EU. Full Data Processing Agreement available for GDPR and Privacy Act 1988 obligations.',
+    icon: Globe,
+    proof: 'Data sovereignty controls',
+  },
+  {
+    objection: '"How do we know evidence is regulator-defensible?"',
+    response:
+      'Every evidence item is linked to its creator, workflow step, approver, control, and framework. Immutable audit logs preserve chain of custody — auditors can trace any action back to its origin.',
     icon: FileCheck2,
     proof: 'Immutable audit trail',
   },
   {
-    objection: '"Will this work for operations, not only compliance teams?"',
+    objection: '"Can we get our data out if we leave?"',
     response:
-      'Execution is mapped to real operators and team workflows, not just checklist dashboards.',
+      'Full data portability on exit. Evidence, controls, audit trails, and framework mappings export in portable formats (CSV, ZIP, PDF). Data purged within 30 days of termination per retention policy.',
+    icon: ArrowUpRight,
+    proof: 'Full data portability',
+  },
+  {
+    objection: '"Will this work across multiple operating sites or entities?"',
+    response:
+      'Multi-entity and multi-site management is a core capability. Each entity has its own controls, evidence, and audit trail — with centralized oversight from the executive dashboard.',
     icon: CircleCheckBig,
+    proof: 'Multi-entity by design',
+  },
+  {
+    objection: '"Is this only for compliance teams, or does it work for operators?"',
+    response:
+      'Execution is mapped to real operators — not just compliance teams. Task routing, shift tracking, incident workflows, and credential management work for frontline and operational staff.',
+    icon: Lock,
     proof: 'Workflow-first design',
   },
 ] as const;
@@ -41,15 +62,14 @@ export function ObjectionHandlingSection() {
             Buyer Objections
           </div>
           <h2 className="text-2xl font-bold text-white sm:text-3xl">
-            Answer procurement blockers before they slow the deal
+            Answer every procurement and security objection — before they slow you down
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-slate-400 sm:text-base">
-            Objection handling is built into the product narrative so security,
-            compliance, and procurement stakeholders can move in sync.
+            FormaOS ships with the artifacts, controls, and documentation to satisfy security teams, legal, procurement, and regulators — without a multi-week review process.
           </p>
         </ScrollReveal>
 
-        <div className="mt-10 grid gap-4 lg:grid-cols-3">
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {objectionCards.map((card, idx) => (
             <ScrollReveal
               key={card.objection}

@@ -12,6 +12,7 @@ import {
   ChevronDown,
   ArrowRight,
   Sparkles,
+  Building2,
 } from 'lucide-react';
 import {
   motion,
@@ -70,23 +71,23 @@ const faqCategories = [
     questions: [
       {
         q: 'Is FormaOS SOC 2 aligned?',
-        a: 'FormaOS is built with SOC 2-aligned controls and security best practices. We implement encryption, access management, audit logging, and incident response procedures designed to support audit readiness. We have not yet obtained formal SOC 2 certification, but our controls follow the framework. Security documentation can be provided on request.',
+        a: 'FormaOS is built with SOC 2-aligned controls across the Common Criteria, Availability, and Confidentiality trust service categories. We implement AES-256 encryption, identity governance, tamper-evident audit logs, and structured incident response procedures aligned with the framework. Our security review packet — covering architecture, controls, and data handling — is available for enterprise procurement and security teams on request.',
       },
       {
         q: 'How is data encrypted?',
-        a: 'Data is encrypted in transit and at rest using industry-standard practices. Encryption key management follows cloud-provider best practices, and sensitive fields can be additionally protected when needed.',
+        a: 'All data is encrypted at rest using AES-256 and in transit using TLS 1.3 — no exceptions. Encryption key management follows enterprise cloud-provider best practices. Sensitive compliance evidence and audit trail data receive additional protection layers. Encryption controls are documented in our security review packet.',
       },
       {
         q: 'Does FormaOS support SSO and MFA?',
-        a: 'FormaOS supports Google OAuth login today. Enterprise SSO options are available by configuration, and MFA can be enforced via your identity provider or additional security controls.',
+        a: 'FormaOS supports Google OAuth on all plans. Enterprise plans include SAML 2.0 SSO for Okta, Azure AD, and Google Workspace. SCIM provisioning is available for automated user lifecycle management. MFA policy enforcement is supported across all SSO providers. Session duration controls and access governance policies are configurable at the organizational level.',
       },
       {
-        q: 'Where is data stored?',
-        a: 'FormaOS is hosted on enterprise-grade cloud platforms. Enterprise customers can request specific data residency configurations and region-aware hosting options.',
+        q: 'Where is data stored and what residency options exist?',
+        a: 'FormaOS is AU-based hosted by default, designed for Australian-regulated organizations. Enterprise customers can request US or EU data residency for international regulatory requirements. All residency options come with region-specific data handling controls. A Data Processing Agreement (DPA) is available for enterprise sign-off, covering GDPR, Privacy Act 1988, and cross-border transfer requirements.',
       },
       {
-        q: 'How do you handle data privacy?',
-        a: 'We follow privacy-by-design principles and support APP/GDPR-aligned workflows where applicable. We collect only necessary data, provide clear data handling policies, and give you control over your organizational data. Customer data is never sold to third parties.',
+        q: 'How do you handle data privacy and the Australian Privacy Principles?',
+        a: 'FormaOS is built with privacy-by-design principles aligned with the Australian Privacy Principles (APPs) under the Privacy Act 1988. We collect only the data necessary to operate the platform, provide full organizational data control, and never sell customer data to third parties. APP-aligned data handling documentation, breach response workflows, and our DPA are available for privacy and legal review.',
       },
     ],
   },
@@ -171,6 +172,34 @@ const faqCategories = [
     ],
   },
   {
+    id: 'enterprise',
+    title: 'Enterprise & Procurement',
+    icon: Building2,
+    color: 'blue',
+    questions: [
+      {
+        q: 'What procurement documentation is available for enterprise sign-off?',
+        a: 'FormaOS ships with a full enterprise procurement package: Data Processing Agreement (DPA), vendor assurance questionnaire, SLA documentation, and security review packet covering architecture, encryption, identity governance, penetration testing, and data residency. These are available before the first procurement question is asked — request them via the security review page or contact sales engineering.',
+      },
+      {
+        q: 'What are the SLA commitments for Enterprise customers?',
+        a: 'Enterprise plans include a documented Service Level Agreement with a 99.9% monthly uptime target for the production environment. SLA terms cover incident response times, maintenance windows, and escalation paths. Dedicated support with priority response times is included. Contact our sales engineering team for the full Enterprise SLA documentation.',
+      },
+      {
+        q: 'What are our options if we need to exit the platform?',
+        a: 'FormaOS is built with no lock-in on exit. All compliance data, evidence, audit trails, and control records are exportable in portable formats (CSV, JSON, ZIP). Upon subscription cancellation, data export is available for 30 days before secure deletion. We provide export tooling and support to ensure a clean transition. Data portability is a first-class commitment, not a negotiated term.',
+      },
+      {
+        q: 'Can FormaOS support multi-entity or multi-site deployments?',
+        a: 'Yes. Enterprise plans support multi-entity and multi-site deployments with separate organizational boundaries, role-based access governance per entity, and consolidated compliance posture reporting across the group. SAML SSO and SCIM provisioning ensure identity governance scales with your organizational structure.',
+      },
+      {
+        q: 'Does FormaOS conduct penetration testing?',
+        a: 'Yes. FormaOS conducts annual independent penetration tests against the production environment. Penetration test summaries are available to Enterprise customers under NDA as part of the security review packet. Our vulnerability disclosure policy and remediation timelines are documented and available for enterprise procurement review.',
+      },
+    ],
+  },
+  {
     id: 'support',
     title: 'Support & Onboarding',
     icon: Headphones,
@@ -218,7 +247,7 @@ function FAQHero() {
           </span>
         </>
       }
-      subheadline="Straight answers on platform capabilities, security, integrations, pricing, and support."
+      subheadline="Straight answers on platform capabilities, enterprise security, procurement documentation, data residency, integrations, and support."
       extras={
         <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600">
           {faqCategories.map((cat) => (

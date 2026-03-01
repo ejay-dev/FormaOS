@@ -64,31 +64,44 @@ const workflows: UseCaseWorkflow[] = [
   {
     title: 'Clinical policy lifecycle',
     description:
-      'Policies are versioned, assigned to accountable owners, and moved through review and acknowledgement workflows.',
+      'Policies are versioned, assigned to accountable owners, and moved through review and acknowledgement workflows — with full audit trail for RACGP and NSQHS inspections.',
     steps: [
-      'Map each policy to relevant standards and controls',
-      'Assign owner, due date, and escalation path',
-      'Capture approvals and acknowledgements automatically',
+      'Map each policy to NSQHS Standards, RACGP, or Privacy Act controls',
+      'Assign named owner, review due date, and escalation path',
+      'Capture acknowledgements and approvals with immutable timestamps',
+      'Auto-generate policy coverage report for auditors on demand',
     ],
   },
   {
-    title: 'Credential governance',
+    title: 'Credential and registration governance',
     description:
-      'Registrations, certifications, and competency artifacts are monitored with reminder and renewal workflows.',
+      'AHPRA registrations, CPD hours, immunizations, and competency certificates are monitored with automated reminder and renewal workflows.',
     steps: [
-      'Track registration status by staff member',
-      'Trigger reminders at 90/60/30/7-day intervals',
-      'Store renewal evidence with immutable timestamps',
+      'Track AHPRA registration expiry by practitioner and specialty',
+      'Trigger renewal reminders at 90/60/30/7-day intervals',
+      'Store renewal evidence with immutable timestamps and verifier sign-off',
+      'Export workforce credential status for RACGP quality reviews',
     ],
   },
   {
     title: 'Incident to remediation',
     description:
-      'Incident reports route to investigation, corrective actions, and closure evidence in one operational trail.',
+      'Adverse events, near-misses, and reportable incidents route through investigation, corrective action assignment, and closure evidence — defensible for NSQHS Standard 1 and 2.',
     steps: [
-      'Capture incident context and severity',
-      'Assign actions to accountable roles',
-      'Verify closure and include in evidence exports',
+      'Capture incident context, severity, and patient safety classification',
+      'Assign corrective action to accountable clinical or governance lead',
+      'Verify closure with sign-off evidence and root-cause documentation',
+      'Export complete incident chain for AHPRA or regulator review',
+    ],
+  },
+  {
+    title: 'Privacy and data breach response',
+    description:
+      'Privacy Act and Notifiable Data Breach (NDB) obligations managed through structured assessment, notification, and closure workflows.',
+    steps: [
+      'Assess breach severity against APP and NDB scheme thresholds',
+      'Document notification decisions with legal sign-off records',
+      'Retain breach response evidence for Office of the Australian Information Commissioner (OAIC)',
     ],
   },
 ];
@@ -96,62 +109,66 @@ const workflows: UseCaseWorkflow[] = [
 const standards: UseCaseStandard[] = [
   {
     name: 'AHPRA',
-    description: 'Practitioner registration and professional standards',
+    description: 'Practitioner registration and professional standards — Australian Health Practitioner Regulation Agency',
     features: [
-      'Registration and renewal tracking',
-      'Competency and training evidence',
-      'Supervisor sign-off records',
+      'AHPRA registration expiry tracking by practitioner and specialty',
+      'CPD hours and competency evidence capture with timestamps',
+      'Supervisor sign-off records with immutable decision history',
+      'Renewal reminder cadence at 90/60/30/7-day intervals',
     ],
   },
   {
-    name: 'RACGP / Primary Care',
-    description: 'Practice quality and governance expectations',
+    name: 'RACGP & Primary Care',
+    description: 'Practice quality and governance expectations for GP and primary care settings',
     features: [
-      'Clinical governance workflows',
-      'Policy acknowledgement chains',
-      'Audit-ready reporting packs',
+      'Clinical governance policy workflows with version control',
+      'Staff acknowledgement chains and policy review evidence',
+      'Quality improvement cycle documentation',
+      'Audit-ready reporting packs for RACGP accreditation visits',
     ],
   },
   {
-    name: 'NSQHS',
-    description: 'National Safety and Quality Health Service standards',
+    name: 'NSQHS Standards',
+    description: 'National Safety and Quality Health Service Standards — all 8 applicable standards',
     features: [
-      'Safety and risk workflows',
-      'Corrective action tracking',
-      'Continuous improvement evidence',
+      'Standard 1 (Clinical Governance): leadership accountability and control mapping',
+      'Standard 2 (Partnering with Consumers): feedback and safety workflow evidence',
+      'Safety and risk incident workflows with corrective action tracking',
+      'Continuous improvement evidence across all NSQHS requirements',
     ],
   },
   {
-    name: 'Privacy Act',
-    description: 'Patient information governance and accountability',
+    name: 'Privacy Act 1988 & NDB',
+    description: 'Australian Privacy Principles (APPs) and Notifiable Data Breach scheme obligations',
     features: [
-      'Access and handling controls',
-      'Breach response workflow mapping',
-      'Defensible audit trail context',
+      'Patient information access and handling control mapping',
+      'Notifiable Data Breach assessment and notification workflow',
+      'OAIC-ready breach response documentation and audit trail',
+      'Defensible data handling evidence for regulatory inquiries',
     ],
   },
 ];
 
 const metrics: UseCaseMetric[] = [
   {
-    value: '2x',
-    label: 'Faster Audits',
-    description: 'Move from reconstruction to evidence-on-demand.',
+    value: '< 2 hrs',
+    label: 'Audit Pack Export',
+    description: 'Generate framework-mapped evidence bundles without manual reconstruction — export-ready on demand.',
   },
   {
-    value: '35%',
-    label: 'Less Admin',
-    description: 'Reduce manual compliance coordination overhead.',
+    value: '90 days',
+    label: 'Renewal Lead Time',
+    description: 'Automated alert windows for AHPRA, CPD, and immunization renewals — never miss an expiry.',
   },
   {
-    value: 'Hours',
-    label: 'To Evidence',
-    description: 'Collect export-ready controls and artifacts quickly.',
+    value: '100%',
+    label: 'Incident Traceability',
+    description: 'Every adverse event linked from intake through corrective action to verified closure.',
   },
   {
-    value: 'Full',
-    label: 'Traceability',
-    description: 'Keep a continuous chain from task to proof.',
+    value: 'Real-time',
+    label: 'Compliance Posture',
+    description: 'Continuous coverage visibility across AHPRA, NSQHS Standards, RACGP, and Privacy Act obligations.',
   },
 ];
 
@@ -167,7 +184,7 @@ export default function HealthcareContent() {
           as operational workflow
         </>
       }
-      description="Run policy governance, clinical controls, credential tracking, and incident response in one system designed for continuous audit readiness."
+      description="Run clinical policy governance, credential tracking, incident management, and safety controls in one purpose-built system — continuously audit-ready for AHPRA, NSQHS, RACGP, and Privacy Act obligations."
       challenges={challenges}
       demoTitle="Healthcare workflow simulation"
       demoDescription="Preview policy lifecycle, credential monitoring, compliance posture, and audit trail integrity."
@@ -182,8 +199,8 @@ export default function HealthcareContent() {
       workflows={workflows}
       standards={standards}
       metrics={metrics}
-      ctaTitle="Make healthcare compliance continuously audit-ready"
-      ctaDescription="Start with pre-built healthcare control frameworks and adapt them to your operating model. Keep every action tied to accountable ownership and defensible evidence."
+      ctaTitle="Build a healthcare compliance operating model that holds up at audit time"
+      ctaDescription="Start with pre-built control frameworks mapped to AHPRA, NSQHS Standards, and the Privacy Act. Every action stays tied to accountable ownership and defensible timestamped evidence — no reconstruction required."
     />
   );
 }

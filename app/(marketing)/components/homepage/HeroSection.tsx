@@ -11,14 +11,9 @@ import { duration } from '@/config/motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import type { LucideIcon } from 'lucide-react';
 import {
   ArrowRight,
   Play,
-  ShieldCheck,
-  Database,
-  Clock,
-  Eye,
   Sparkles,
 } from 'lucide-react';
 import { brand } from '@/config/brand';
@@ -36,34 +31,10 @@ import { useHomepageTelemetry } from '@/lib/marketing/homepage-telemetry';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
-const SIGNAL_PILLS = [
-  {
-    label: 'Workflow Execution',
-    dotClass: 'bg-teal-400',
-    chipClass: 'from-teal-500/20 to-cyan-500/10 border-teal-400/30',
-  },
-  {
-    label: 'Control Ownership',
-    dotClass: 'bg-emerald-400',
-    chipClass: 'from-emerald-500/20 to-teal-500/10 border-emerald-400/30',
-  },
-  {
-    label: 'Evidence Integrity',
-    dotClass: 'bg-amber-400',
-    chipClass: 'from-amber-500/20 to-orange-500/10 border-amber-400/30',
-  },
-] as const;
-
 const COMMAND_DECK_ROWS = [
   { label: 'Control Drift', value: 'Live', status: 'Nominal' },
   { label: 'Evidence Integrity', value: '99.98%', status: 'Verified' },
   { label: 'Audit Packet SLA', value: '< 2 min', status: 'Ready' },
-] as const;
-
-const MOBILE_PROOF_METRICS = [
-  { value: '85+', label: 'Controls' },
-  { value: '7', label: 'Frameworks' },
-  { value: '<2m', label: 'Audit Export' },
 ] as const;
 
 const MICRO_TRUST_RAIL = [
@@ -73,61 +44,6 @@ const MICRO_TRUST_RAIL = [
   'HIPAA',
   'GDPR',
 ] as const;
-
-function FloatingMetricCard({
-  value,
-  label,
-  trend,
-  icon: Icon,
-  delay,
-  direction,
-  motionEnabled,
-}: {
-  value: string;
-  label: string;
-  trend: string;
-  icon: LucideIcon;
-  delay: number;
-  direction: 'left' | 'right';
-  motionEnabled: boolean;
-}) {
-  return (
-    <motion.div
-      initial={motionEnabled ? { opacity: 0, x: direction === 'left' ? -40 : 40 } : false}
-      animate={motionEnabled ? { opacity: 1, x: 0 } : undefined}
-      transition={motionEnabled ? { duration: duration.slower, delay } : { duration: 0 }}
-      whileHover={motionEnabled ? { scale: 1.025, y: -3 } : undefined}
-      className="hero-floating-metric home-panel home-panel--soft relative w-full min-h-[156px] rounded-2xl border border-white/10 bg-gradient-to-br from-slate-950/70 to-slate-900/55 p-4 shadow-[0_20px_55px_rgba(0,0,0,0.45)] backdrop-blur-xl"
-    >
-      <div className="flex h-full flex-col">
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
-          <div className="flex min-w-0 items-center gap-3">
-            <div className="h-11 w-11 rounded-xl border border-teal-400/25 bg-gradient-to-br from-teal-400/20 to-emerald-400/15 flex items-center justify-center">
-              <Icon className="h-5 w-5 text-teal-300" />
-            </div>
-            <div className="min-w-0">
-              <div className="truncate text-[1.15rem] font-semibold tracking-tight text-white">{value}</div>
-              <div className="text-[11px] uppercase tracking-[0.18em] text-slate-300/90">{label}</div>
-            </div>
-          </div>
-          <span className="shrink-0 whitespace-nowrap rounded-full border border-emerald-300/30 bg-emerald-300/15 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-emerald-200">
-            {trend}
-          </span>
-        </div>
-        <div className="mt-3 h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-      </div>
-    </motion.div>
-  );
-}
-
-function ProofMetric({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="rounded-xl border border-white/15 bg-gradient-to-b from-white/10 to-white/[0.04] p-4 text-center backdrop-blur-md">
-      <div className="text-xl font-semibold tracking-tight text-white">{value}</div>
-      <div className="mt-1 text-[11px] uppercase tracking-[0.16em] text-slate-300">{label}</div>
-    </div>
-  );
-}
 
 function CommandDeck({ motionEnabled }: { motionEnabled: boolean }) {
   return (
@@ -267,19 +183,16 @@ export function HeroSection() {
 
   const shouldAnimateIntro = motionPolicy.allowIntroMotion;
   const shouldAnimateBackdrop = motionPolicy.allowOrbitalMotion;
-  const pulseClass = motionPolicy.allowPulseTokens ? 'animate-pulse' : '';
 
   const contentOpacity = useTransform(scrollYProgress, [0, 0.26, 0.84, 0.97], [1, 1, 0.38, 0]);
   const contentScale = useTransform(scrollYProgress, [0, 0.26, 0.84, 0.97], [1, 1, 0.975, 0.945]);
   const contentY = useTransform(scrollYProgress, [0, 0.84, 1], [0, 46, 108]);
   const ctaOpacity = useTransform(scrollYProgress, [0, 0.72, 0.96], [1, 1, 0]);
   const ctaY = useTransform(scrollYProgress, [0, 1], [0, 24]);
-  const metricY = useTransform(scrollYProgress, [0, 0.78, 1], [0, -22, -48]);
   const heroContentStyle = shouldReduceMotion
     ? undefined
     : { opacity: contentOpacity, scale: contentScale, y: contentY };
   const heroCtaStyle = shouldReduceMotion ? undefined : { opacity: ctaOpacity, y: ctaY };
-  const heroMetricStyle = shouldReduceMotion ? undefined : { y: metricY };
 
   const primaryCtaHref = ctas.primary.href;
   const secondaryCtaHref = ctas.secondary.href;
@@ -341,58 +254,6 @@ export function HeroSection() {
       <div className="hero-vertical-fog" />
       <div className="hero-rim-light" />
 
-      <div className="hero-metric-rails pointer-events-none absolute inset-0 z-20 hidden min-[1440px]:block">
-        <div className="mx-auto flex h-full w-full max-w-[1460px] items-center justify-between px-5 2xl:px-8">
-          <motion.div
-            style={heroMetricStyle}
-            className="pointer-events-auto flex w-[236px] flex-col gap-4 2xl:w-[252px]"
-          >
-            <FloatingMetricCard
-              value="Real-time"
-              label="Compliance Monitoring"
-              trend="Continuous"
-              icon={ShieldCheck}
-              delay={0.76}
-              direction="left"
-              motionEnabled={shouldAnimateIntro}
-            />
-            <FloatingMetricCard
-              value="Automated"
-              label="Evidence Capture"
-              trend="Built-in"
-              icon={Database}
-              delay={0.94}
-              direction="left"
-              motionEnabled={shouldAnimateIntro}
-            />
-          </motion.div>
-
-          <motion.div
-            style={heroMetricStyle}
-            className="pointer-events-auto flex w-[236px] flex-col gap-4 2xl:w-[252px]"
-          >
-            <FloatingMetricCard
-              value="Faster"
-              label="Audit Defense"
-              trend="Streamlined"
-              icon={Clock}
-              delay={1.1}
-              direction="right"
-              motionEnabled={shouldAnimateIntro}
-            />
-            <FloatingMetricCard
-              value="Always-on"
-              label="Activity Tracking"
-              trend="Continuous"
-              icon={Eye}
-              delay={1.28}
-              direction="right"
-              motionEnabled={shouldAnimateIntro}
-            />
-          </motion.div>
-        </div>
-      </div>
-
       <div className="relative z-10 mx-auto max-w-5xl px-5 sm:px-6 lg:px-12 min-[1440px]:max-w-4xl 2xl:max-w-5xl">
         <div className="flex flex-col items-center text-center">
           <motion.div style={heroContentStyle} className="w-full">
@@ -425,33 +286,10 @@ export function HeroSection() {
               initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.46 } : { duration: 0 }}
-              className="mx-auto mb-4 max-w-3xl text-base sm:text-lg md:text-xl leading-relaxed text-slate-200/95"
+              className="mx-auto mb-8 sm:mb-10 max-w-3xl text-base sm:text-lg md:text-xl leading-relaxed text-slate-200/95"
             >
               {heroCopy.subheadline}
             </motion.p>
-
-            <motion.div
-              initial={shouldAnimateIntro ? { opacity: 0 } : false}
-              animate={{ opacity: 1 }}
-              transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.6 } : { duration: 0 }}
-              className="mx-auto mb-7 sm:mb-9 max-w-3xl text-center"
-            >
-              <p className="mb-4 text-xs sm:text-sm text-slate-300/85">
-                Controls, ownership, and evidence aligned in one operating layer.
-              </p>
-
-              <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 text-xs text-slate-200">
-                {SIGNAL_PILLS.map((pill) => (
-                  <span
-                    key={pill.label}
-                    className={`inline-flex items-center gap-1.5 rounded-full border bg-gradient-to-r px-3 py-1.5 ${pill.chipClass}`}
-                  >
-                    <span className={`h-1.5 w-1.5 rounded-full ${pill.dotClass} ${pulseClass}`.trim()} />
-                    {pill.label}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
 
             <CommandDeck motionEnabled={shouldAnimateIntro} />
 
@@ -497,14 +335,9 @@ export function HeroSection() {
             transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.86 } : { duration: 0 }}
             className="w-full max-w-3xl"
           >
-            <div className="grid grid-cols-3 gap-3 sm:gap-4">
-              {MOBILE_PROOF_METRICS.map((metric) => (
-                <ProofMetric key={metric.label} value={metric.value} label={metric.label} />
-              ))}
-            </div>
-
-            <div className="hero-trust-rail mt-4 rounded-xl border border-white/10 bg-white/[0.045] px-3 py-2.5 backdrop-blur-md">
+            <div className="hero-trust-rail rounded-xl border border-white/10 bg-white/[0.045] px-4 py-3 backdrop-blur-md">
               <div className="flex flex-wrap items-center justify-center gap-2 text-[10px] sm:text-[11px] uppercase tracking-[0.16em] text-slate-300">
+                <span className="mr-1 text-slate-400/70">Trusted for</span>
                 {MICRO_TRUST_RAIL.map((item) => (
                   <span key={item} className="rounded-full border border-white/12 px-2.5 py-1 text-slate-200/95">
                     {item}

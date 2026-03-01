@@ -29,41 +29,59 @@ const points = [
   {
     title: 'Continuous posture through operations',
     detail:
-      'FormaOS keeps posture current by tying control status to tasks, ownership, and evidence verification workflows.',
+      'FormaOS keeps posture current by tying control status to tasks, ownership, and evidence verification workflows — not just automated integrations.',
   },
   {
     title: 'Defensible audit history',
     detail:
-      'FormaOS emphasizes chain-of-custody context and audit logs so reviewers can trace what happened and who approved it.',
+      'FormaOS emphasizes chain-of-custody context and immutable audit logs so reviewers can trace what happened, who approved it, and when — for every control.',
   },
   {
     title: 'Outcome-centric execution model',
     detail:
-      'FormaOS is designed around "prove readiness" workflows, not page-centric compliance management.',
+      'FormaOS is designed around "prove readiness" workflows, not page-centric compliance management. Every control maps to owned work and timestamped evidence.',
+  },
+  {
+    title: 'Non-security regulated sectors',
+    detail:
+      'FormaOS extends beyond security compliance to healthcare, NDIS, aged care, and financial services — governed by AHPRA, NSQHS, RACGP, and Privacy Act obligations.',
+  },
+  {
+    title: 'Named accountability at every level',
+    detail:
+      'Every control and evidence item has a named owner. Workflow escalations, SLA acknowledgements, and approval histories are all recorded — never assumed.',
+  },
+  {
+    title: 'Enterprise procurement artifacts included',
+    detail:
+      'FormaOS ships with DPA, vendor assurance questionnaire, SAML 2.0 SSO, MFA enforcement, and data residency controls (AU/US/EU) — accelerating enterprise procurement.',
   },
 ] as const;
 
 const idealIf = [
-  'You need accountability across frontline operators and managers',
-  'Auditors require defensible, contextual evidence and approvals',
-  'You want a single operating view of compliance execution',
+  'You need accountability across frontline operators and managers — not just automated security scans',
+  'Auditors require defensible, contextual evidence with approvals and full ownership history',
+  'You want a single operating view of compliance execution across all active frameworks',
+  'Your regulated environment includes healthcare, NDIS, care services, or non-security obligations',
+  'You need evidence verification and chain-of-custody — not just evidence collection and storage',
+  'Your enterprise procurement team requires SAML SSO, DPA, and data residency assurance',
 ] as const;
 
 const procurementChecks = [
   {
-    title: 'Security review acceleration',
+    title: 'Security review packet',
     detail:
-      'Use the FormaOS security review packet to address architecture and control questions early.',
+      'Architecture, identity governance, AES-256 encryption, penetration testing, and SOC 2-aligned controls documented before your security team asks the first question.',
   },
   {
-    title: 'Defensible workflow proof',
+    title: 'DPA and vendor assurance',
     detail:
-      'Demonstrate owner-level execution with tasks, approvals, and evidence history in one chain.',
+      'Data processing agreement, vendor assurance questionnaire, and SLA documentation available for legal, risk, and procurement sign-off — no delays.',
   },
   {
-    title: 'Pilot-to-rollout confidence',
+    title: 'Enterprise identity controls',
     detail:
-      'Start with one business unit, validate outcomes, then scale to broader teams and entities.',
+      'SAML 2.0 SSO (Okta, Azure AD, Google Workspace), SCIM provisioning, and MFA policy enforcement ready for enterprise identity requirements.',
   },
 ] as const;
 
@@ -71,7 +89,7 @@ export default function CompareDrataPage() {
   return (
     <ComparePageTemplate
       competitor="Drata"
-      heroDescription="Drata helps teams monitor compliance. FormaOS is built to run compliance as a governed operating system, linking controls to execution, verification, and defensible evidence."
+      heroDescription="Drata helps security teams monitor compliance posture. FormaOS is built to run compliance as a governed operating system — linking controls to execution workflows, named ownership, and defensible evidence across every regulated sector."
       points={points}
       idealIf={idealIf}
       procurementChecks={procurementChecks}

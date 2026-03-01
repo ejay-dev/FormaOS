@@ -57,11 +57,11 @@ export function FinalCTA() {
                 <ScrollReveal variant="blurIn" range={[0.05, 0.4]}>
                   <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-6">
                     <span className="text-white">
-                      Build your compliance foundation
+                      Governance infrastructure that holds up
                     </span>
                     <br className="hidden sm:inline" />
                     <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                      with FormaOS
+                      when regulators come looking
                     </span>
                   </h2>
                 </ScrollReveal>
@@ -78,33 +78,38 @@ export function FinalCTA() {
                 {/* Value Props */}
                 <ScrollReveal variant="fadeLeft" range={[0.05, 0.4]} className="text-center lg:text-left">
                   <h3 className="text-xl sm:text-2xl font-bold text-white mb-6">
-                    Start transforming compliance today
+                    Operational compliance from day one
                   </h3>
 
                   <div className="space-y-4 mb-8">
                     <div className="flex items-center gap-3 justify-center lg:justify-start">
                       <div className="w-2 h-2 rounded-full bg-emerald-400" />
                       <span className="text-sm text-gray-400">
-                        14-day free trial on all plans
+                        14-day free trial — no credit card required
                       </span>
                     </div>
                     <div className="flex items-center gap-3 justify-center lg:justify-start">
                       <div className="w-2 h-2 rounded-full bg-cyan-400" />
                       <span className="text-sm text-gray-400">
-                        No credit card required to start
+                        Frameworks mapped and controls configured from day one
                       </span>
                     </div>
                     <div className="flex items-center gap-3 justify-center lg:justify-start">
                       <div className="w-2 h-2 rounded-full bg-blue-400" />
                       <span className="text-sm text-gray-400">
-                        Cancel or change plans anytime
+                        Security review packet and DPA available immediately
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3 justify-center lg:justify-start">
+                      <div className="w-2 h-2 rounded-full bg-violet-400" />
+                      <span className="text-sm text-gray-400">
+                        Dedicated implementation support for Enterprise
                       </span>
                     </div>
                   </div>
 
                   <p className="text-base text-gray-500 leading-relaxed">
-                    Join organizations building audit-ready compliance
-                    infrastructure with FormaOS.
+                    Trusted by regulated teams in healthcare, NDIS, financial services, and government.
                   </p>
                 </ScrollReveal>
 
@@ -128,8 +133,7 @@ export function FinalCTA() {
                   </div>
 
                   <div className="text-xs text-gray-500">
-                    Region-aware hosting • GDPR-ready workflows •
-                    Enterprise-ready
+                    AU-based hosting • GDPR & Privacy Act 1988 ready • SOC 2 aligned • Enterprise SSO
                   </div>
                 </ScrollReveal>
               </div>
