@@ -9,7 +9,6 @@ import {
   Workflow,
 } from 'lucide-react';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
-import { ProductHeroVisual } from './ProductHeroVisual';
 
 const OUTCOME_METRICS = [
   {
@@ -157,7 +156,6 @@ export function ProductScrollHero() {
   return (
     <ImmersiveHero
       theme="product"
-      visualContent={<ProductHeroVisual />}
       badge={{
         icon: <Sparkles className="h-4 w-4 text-violet-300" />,
         text: 'Compliance Operating System',
