@@ -6,7 +6,7 @@ import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import dynamic from 'next/dynamic';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
-import { AboutHeroVisual } from './components/AboutHeroVisual';
+import { InteractiveGlobe } from '@/components/marketing/InteractiveGlobe';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
@@ -16,11 +16,35 @@ const DemoAuditTrailCard = dynamic(
   { ssr: false },
 );
 
+function AboutHeroGlobeVisual() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 hidden lg:block"
+    >
+      <div className="pointer-events-auto absolute right-[clamp(1.25rem,3vw,4rem)] top-1/2 -translate-y-1/2">
+        <div className="relative h-[560px] w-[560px] xl:h-[700px] xl:w-[700px]">
+          <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.14)_0%,rgba(14,165,233,0.04)_50%,transparent_74%)]" />
+          <InteractiveGlobe
+            size={700}
+            className="h-full w-full opacity-82"
+            autoRotateSpeed={0.0016}
+            dotColor="rgba(167,139,250, ALPHA)"
+            arcColor="rgba(99,102,241, 0.35)"
+            markerColor="rgba(125,211,252, 0.95)"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function AboutHero() {
   return (
     <ImmersiveHero
       theme="about"
-      visualContent={<AboutHeroVisual />}
+      visualContent={<AboutHeroGlobeVisual />}
+      visualInteractive
       badge={{ icon: <Users className="w-4 h-4 text-violet-400" />, text: 'About FormaOS', colorClass: 'violet' }}
       headline={<>Compliance infrastructure<br /><span className="bg-gradient-to-r from-purple-400 via-pink-500 to-rose-500 bg-clip-text text-transparent">built for accountability</span></>}
       subheadline="FormaOS was built for regulated teams where compliance failure has real consequences — and where leadership needs more than a spreadsheet to prove they're in control."

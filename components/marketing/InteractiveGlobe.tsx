@@ -15,16 +15,16 @@ interface GlobeProps {
 }
 
 const DEFAULT_MARKERS = [
-  { lat: 37.78, lng: -122.42, label: 'San Francisco' },
-  { lat: 51.51, lng: -0.13, label: 'London' },
-  { lat: 35.68, lng: 139.69, label: 'Tokyo' },
-  { lat: -33.87, lng: 151.21, label: 'Sydney' },
-  { lat: 1.35, lng: 103.82, label: 'Singapore' },
-  { lat: 55.76, lng: 37.62, label: 'Moscow' },
-  { lat: -23.55, lng: -46.63, label: 'Sao Paulo' },
-  { lat: 19.43, lng: -99.13, label: 'Mexico City' },
-  { lat: 28.61, lng: 77.21, label: 'Delhi' },
-  { lat: 36.19, lng: 44.01, label: 'Erbil' },
+  { lat: 37.78, lng: -122.42, label: 'Control Mapping' },
+  { lat: 51.51, lng: -0.13, label: 'Policy Governance' },
+  { lat: 35.68, lng: 139.69, label: 'Evidence Chain' },
+  { lat: -33.87, lng: 151.21, label: 'Audit Defense' },
+  { lat: 1.35, lng: 103.82, label: 'Risk Monitoring' },
+  { lat: 55.76, lng: 37.62, label: 'Board Reporting' },
+  { lat: -23.55, lng: -46.63, label: 'Task Ownership' },
+  { lat: 19.43, lng: -99.13, label: 'Access Controls' },
+  { lat: 28.61, lng: 77.21, label: 'Incident Response' },
+  { lat: 36.19, lng: 44.01, label: 'Regulatory Readiness' },
 ];
 
 const DEFAULT_CONNECTIONS: { from: [number, number]; to: [number, number] }[] = [

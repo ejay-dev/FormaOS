@@ -9,7 +9,6 @@ import {
   Workflow,
 } from 'lucide-react';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
-import { InteractiveGlobe } from '@/components/marketing/InteractiveGlobe';
 
 const OUTCOME_METRICS = [
   {
@@ -75,29 +74,6 @@ const WORKFLOW_STAGES = [
 ] as const;
 
 const FRAMEWORKS = ['SOC 2', 'ISO 27001', 'HIPAA', 'GDPR', 'NDIS'] as const;
-
-function ProductHeroGlobeVisual() {
-  return (
-    <div
-      aria-hidden
-      className="pointer-events-none absolute inset-0 hidden lg:block"
-    >
-      <div className="pointer-events-auto absolute right-[clamp(-4.5rem,-1.4vw,-1rem)] top-[68%] -translate-y-1/2">
-        <div className="relative h-[460px] w-[460px] xl:h-[620px] xl:w-[620px]">
-          <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,rgba(14,165,233,0.12)_0%,rgba(14,165,233,0.03)_48%,transparent_74%)]" />
-          <InteractiveGlobe
-            size={620}
-            className="h-full w-full opacity-78"
-            autoRotateSpeed={0.0018}
-            dotColor="rgba(130, 190, 255, ALPHA)"
-            arcColor="rgba(82, 227, 255, 0.32)"
-            markerColor="rgba(125, 245, 255, 0.92)"
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function ProductHeroExtras() {
   return (
@@ -180,8 +156,6 @@ export function ProductScrollHero() {
   return (
     <ImmersiveHero
       theme="product"
-      visualContent={<ProductHeroGlobeVisual />}
-      visualInteractive
       badge={{
         icon: <Sparkles className="h-4 w-4 text-violet-300" />,
         text: 'Compliance Operating System',
