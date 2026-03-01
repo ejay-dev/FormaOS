@@ -56,31 +56,51 @@ const workflows: UseCaseWorkflow[] = [
   {
     title: 'Intake and risk classification',
     description:
-      'Route incidents through standardized intake, severity assignment, and escalation paths.',
+      'Route incidents through standardized intake, severity assignment, and escalation paths — with structured context capture from the first moment.',
     steps: [
-      'Capture who/what/when context at intake',
-      'Apply severity rules and escalation routing',
-      'Notify responsible leads with SLA targets',
+      'Capture who, what, when, where, and affected-party context at intake using structured forms',
+      'Apply severity classification rules: critical (immediate regulator notification), high (24-hour SLA), medium, low',
+      'Route to named incident lead based on incident type, business unit, and escalation matrix',
+      'Notify responsible leads and backup escalation contacts with SLA countdown timers',
+      'Attach initial evidence (photos, screenshots, witness statements) with tamper-evident timestamps',
+      'Flag reportable incidents for SIRS, SafeWork, ASIC, or APRA notification workflows automatically',
     ],
   },
   {
     title: 'Investigation and remediation',
     description:
-      'Assign root-cause analysis and corrective actions to accountable owners with explicit due dates.',
+      'Assign root-cause analysis and corrective actions to accountable owners with explicit due dates, decision records, and linked evidence at every stage.',
     steps: [
-      'Document investigation findings',
-      'Create and track corrective actions',
-      'Escalate overdue items automatically',
+      'Document investigation findings with structured root-cause analysis (5-Why, fishbone, or timeline method)',
+      'Create corrective actions with named owners, due dates, priority levels, and required evidence types',
+      'Link each corrective action to the originating control gap or policy deficiency',
+      'Track remediation progress with automatic status updates and overdue escalation to management',
+      'Record investigation decisions: who approved the finding, when, and with what authority',
+      'Attach remediation evidence (updated procedures, training records, system changes) to close the loop',
     ],
   },
   {
     title: 'Closure and audit package',
     description:
-      'Finalize incidents with sign-off evidence and export-ready reporting for auditors and governance teams.',
+      'Finalize incidents with multi-party sign-off, lessons-learned capture, and export-ready reporting for auditors, regulators, and governance teams.',
     steps: [
-      'Record resolution outcomes and approvals',
-      'Link closure to policy/control updates',
-      'Export complete event chain for review',
+      'Record resolution outcomes with verifier sign-off and segregation of duties enforcement',
+      'Capture lessons learned and link to policy or procedure updates triggered by the incident',
+      'Generate regulator-ready incident chronology: intake → investigation → actions → closure with full timestamps',
+      'Export complete evidence chain as a packaged audit bundle (PDF or structured data) in under 2 minutes',
+      'Update control registers and risk assessments to reflect incident outcomes and residual risk',
+    ],
+  },
+  {
+    title: 'Cross-framework incident classification',
+    description:
+      'Map a single incident to every applicable framework and regulator obligation — so one event triggers the right reporting, evidence, and corrective workflows across all jurisdictions.',
+    steps: [
+      'Classify the incident against all mapped frameworks simultaneously (ISO 27001, WHS, SIRS, APRA, ASIC)',
+      'Identify reportable-incident thresholds per framework: 24-hour SIRS, immediate SafeWork, 30-day ASIC',
+      'Generate framework-specific notification templates pre-populated with incident context',
+      'Track notification deadlines per regulator with countdown alerts and named responsible officers',
+      'Produce per-framework evidence bundles so each regulator receives only the documentation they require',
     ],
   },
 ];
@@ -88,38 +108,42 @@ const workflows: UseCaseWorkflow[] = [
 const standards: UseCaseStandard[] = [
   {
     name: 'ISO 27001 / SOC 2',
-    description: 'Security and operational incident governance',
+    description: 'Information security incident management — Annex A.16 and SOC 2 CC7/CC8 controls',
     features: [
-      'Structured incident response workflow',
-      'Corrective-action ownership tracking',
-      'Immutable audit trail for evidence',
+      'Structured incident response aligned to Annex A.16.1 requirements',
+      'Corrective-action ownership with Annex A.16.1.5 root-cause analysis',
+      'Immutable audit trail for SOC 2 CC7.4 and CC7.5 evidence',
+      'Post-incident review documentation for continual improvement (A.16.1.6)',
     ],
   },
   {
-    name: 'Healthcare / Safety Regimes',
-    description: 'Operational incident capture and remediation controls',
+    name: 'WHS Act & SafeWork',
+    description: 'Work Health and Safety Act 2011 — notifiable incident and SafeWork reporting obligations',
     features: [
-      'Severity-based escalation matrix',
-      'Risk and mitigation logging',
-      'Management sign-off workflow',
+      'Notifiable incident classification per WHS Act s35–37 (death, serious injury, dangerous incident)',
+      'SafeWork notification evidence with timestamps and decision records',
+      'Corrective action tracking for PCBU duty-of-care obligations',
+      'Incident trend reporting for WHS committee and board governance reviews',
     ],
   },
   {
-    name: 'Internal Governance',
-    description: 'Board and executive reporting expectations',
+    name: 'NDIS / SIRS',
+    description: 'NDIS Serious Incident Response Scheme — reportable incident obligations under the NDIS Commission',
     features: [
-      'Open/overdue incident dashboards',
-      'Trend and recurrence reporting',
-      'Decision-grade evidence exports',
+      'SIRS reportable incident intake aligned to NDIS (Incident Management and Reportable Incidents) Rules 2018',
+      'Severity classification and 24-hour / 5-day notification workflow',
+      'Investigation and corrective action records for NDIS Commission review',
+      'Quarterly SIRS report generation with linked evidence chains',
     ],
   },
   {
-    name: 'Customer Assurance',
-    description: 'External trust and transparency requirements',
+    name: 'ASIC / APRA',
+    description: 'Financial services incident reporting — ASIC breach reporting and APRA CPS 234 obligations',
     features: [
-      'Defensible incident chronology',
-      'Ownership and approval history',
-      'Regulator/customer-ready narrative',
+      'ASIC reportable situation classification and notification timelines',
+      'APRA CPS 234 material information security incident reporting',
+      'Board-ready incident summary with decision and escalation history',
+      'Defensible incident chronology for regulator inquiry and external audit',
     ],
   },
 ];

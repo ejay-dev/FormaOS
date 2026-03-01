@@ -103,17 +103,35 @@ const trustWorkflow = [
   {
     step: 'Evaluate',
     detail:
-      'Security and procurement teams review architecture, data handling, and governance posture.',
+      'Security and procurement teams review architecture, data handling, and governance posture before engaging further.',
+    subpoints: [
+      'Multi-tenant architecture with Row-Level Security — strict org boundary enforcement reviewed upfront',
+      'AES-256 encryption at rest, TLS 1.3 in transit — no exceptions across all data types and environments',
+      'Data residency options (AU default, US, EU) documented with Privacy Act 1988 and GDPR alignment',
+      'Annual independent penetration test summary available under NDA for Enterprise security reviewers',
+    ],
   },
   {
     step: 'Validate',
     detail:
-      'Buyer stakeholders verify control ownership, evidence traceability, and operational accountability.',
+      'Buyer stakeholders verify control ownership, evidence traceability, and operational accountability against their internal requirements.',
+    subpoints: [
+      'SAML 2.0 SSO integration with Okta, Azure AD, and Google Workspace — verified during trial setup',
+      'SCIM provisioning for automated user lifecycle management and role-based access control validation',
+      'Tamper-evident audit logs reviewed: every compliance action timestamped, immutable, and exportable',
+      'DPA, vendor assurance questionnaire, and SLA documentation provided for legal and risk sign-off',
+    ],
   },
   {
     step: 'Accelerate',
     detail:
-      'Teams move into trial or procurement with fewer blockers and reusable trust artifacts.',
+      'Teams move into trial or procurement with fewer blockers, reusable trust artifacts, and pre-answered security questionnaires.',
+    subpoints: [
+      'Pre-built security review packet covers 90%+ of standard procurement questionnaire items',
+      'Trust Center with public documentation: architecture overview, encryption posture, and data handling',
+      'Dedicated implementation support with named CSM for Enterprise onboarding and integration',
+      'Framework-mapped evidence bundles and compliance posture snapshots available from day one of trial',
+    ],
   },
 ] as const;
 
@@ -299,6 +317,14 @@ export function TrustWorkflow() {
                   <p className="mt-2 text-sm leading-relaxed text-slate-300">
                     {item.detail}
                   </p>
+                  <ul className="mt-3 space-y-1.5">
+                    {item.subpoints.map((sp) => (
+                      <li key={sp} className="flex items-start gap-2 text-xs leading-relaxed text-slate-400">
+                        <span className="mt-1 h-1 w-1 flex-shrink-0 rounded-full bg-cyan-400/60" />
+                        <span>{sp}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </article>
             ))}
           </SectionChoreography>

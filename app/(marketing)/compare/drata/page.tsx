@@ -67,6 +67,29 @@ const idealIf = [
   'Your enterprise procurement team requires SAML SSO, DPA, and data residency assurance',
 ] as const;
 
+const featureComparison = [
+  { feature: 'Operational workflow enforcement', formaos: 'yes', competitor: 'no' },
+  { feature: 'Named control ownership with audit trail', formaos: 'yes', competitor: 'partial' },
+  { feature: 'Evidence verification with approval chain', formaos: 'yes', competitor: 'partial' },
+  { feature: 'Immutable, tamper-evident audit logs', formaos: 'yes', competitor: 'yes' },
+  { feature: 'Healthcare compliance (AHPRA, NSQHS, RACGP)', formaos: 'yes', competitor: 'no' },
+  { feature: 'NDIS Practice Standards (all 8 modules)', formaos: 'yes', competitor: 'no' },
+  { feature: 'Incident management with corrective actions', formaos: 'yes', competitor: 'partial' },
+  { feature: 'Credential / workforce governance', formaos: 'yes', competitor: 'no' },
+  { feature: 'AU-first data residency (AU/US/EU)', formaos: 'yes', competitor: 'US-first, AU on request' },
+  { feature: 'SAML 2.0 SSO (Okta, Azure AD, Google)', formaos: 'Enterprise plan', competitor: 'Enterprise plan' },
+  { feature: 'SCIM user provisioning', formaos: 'yes', competitor: 'yes' },
+  { feature: 'Pre-built frameworks', formaos: '9 frameworks', competitor: '14+ frameworks' },
+  { feature: 'Continuous compliance scoring', formaos: 'yes', competitor: 'yes' },
+  { feature: 'DPA and vendor assurance packet', formaos: 'Included', competitor: 'On request' },
+] as const;
+
+const competitorStrengths = [
+  'Your compliance program is primarily SOC 2, ISO 27001, or HIPAA — and you need deep automation for cloud infrastructure monitoring and evidence collection from 75+ native integrations',
+  'You operate in technology/SaaS and your compliance team is focused on security frameworks rather than operational or regulated-sector governance',
+  'You want an established vendor with a large integration marketplace and a broad network of auditor partnerships',
+] as const;
+
 const procurementChecks = [
   {
     title: 'Security review packet',
@@ -93,6 +116,8 @@ export default function CompareDrataPage() {
       points={points}
       idealIf={idealIf}
       procurementChecks={procurementChecks}
+      featureComparison={featureComparison}
+      competitorStrengths={competitorStrengths}
       source="compare_drata"
     />
   );

@@ -67,6 +67,29 @@ const idealIf = [
   'You need incident management linked to compliance evidence — not a separate disconnected workflow',
 ] as const;
 
+const featureComparison = [
+  { feature: 'Operational workflow enforcement', formaos: 'yes', competitor: 'no' },
+  { feature: 'Named control ownership with audit trail', formaos: 'yes', competitor: 'partial' },
+  { feature: 'Evidence verification with approval chain', formaos: 'yes', competitor: 'partial' },
+  { feature: 'Immutable, tamper-evident audit logs', formaos: 'yes', competitor: 'yes' },
+  { feature: 'Healthcare compliance (AHPRA, NSQHS, RACGP)', formaos: 'yes', competitor: 'no' },
+  { feature: 'NDIS Practice Standards (all 8 modules)', formaos: 'yes', competitor: 'no' },
+  { feature: 'Incident management with corrective actions', formaos: 'yes', competitor: 'partial' },
+  { feature: 'Credential / workforce governance', formaos: 'yes', competitor: 'no' },
+  { feature: 'AU-first data residency (AU/US/EU)', formaos: 'yes', competitor: 'US-first, limited AU' },
+  { feature: 'SAML 2.0 SSO (Okta, Azure AD, Google)', formaos: 'Enterprise plan', competitor: 'Business plan+' },
+  { feature: 'SCIM user provisioning', formaos: 'yes', competitor: 'yes' },
+  { feature: 'Pre-built frameworks', formaos: '9 frameworks', competitor: '20+ frameworks' },
+  { feature: 'Continuous compliance scoring', formaos: 'yes', competitor: 'yes' },
+  { feature: 'Cloud infrastructure scanning', formaos: 'Via integrations', competitor: 'Native (200+ integrations)' },
+] as const;
+
+const competitorStrengths = [
+  'Your compliance program is primarily SOC 2, ISO 27001, or HIPAA and you need automated evidence collection from 200+ cloud infrastructure integrations (AWS, Azure, GCP, Okta, GitHub)',
+  'You need a trust center / trust report page to share compliance status publicly with customers and prospects',
+  'You want an established vendor with a large auditor network and a marketplace of pre-built integrations for cloud-native environments',
+] as const;
+
 const procurementChecks = [
   {
     title: 'Data residency documentation',
@@ -93,6 +116,8 @@ export default function CompareVantaPage() {
       points={points}
       idealIf={idealIf}
       procurementChecks={procurementChecks}
+      featureComparison={featureComparison}
+      competitorStrengths={competitorStrengths}
       source="compare_vanta"
     />
   );

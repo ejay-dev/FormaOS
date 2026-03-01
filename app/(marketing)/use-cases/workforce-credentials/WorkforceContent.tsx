@@ -56,70 +56,94 @@ const workflows: UseCaseWorkflow[] = [
   {
     title: 'Credential intake and verification',
     description:
-      'Collect artifacts, validate completeness, and assign verification ownership in one workflow.',
+      'Collect artifacts, validate completeness, and assign verification ownership in one governed workflow — from initial hire through ongoing role changes.',
     steps: [
-      'Define required credential schema by role',
-      'Capture artifact and verification status',
-      'Record reviewer decision history',
+      'Define required credential schema by role, site, and regulatory jurisdiction (AHPRA, NDIS, SafeWork)',
+      'Capture credential artifacts: registration certificates, clearance letters, training records, and photo ID',
+      'Validate completeness against role-specific requirements — block assignment to regulated roles until all credentials are verified',
+      'Assign named verifier for each credential with segregation of duties (verifier cannot be the credential holder)',
+      'Record reviewer decision history: approved, rejected with reason, or pending further documentation',
+      'Link verified credentials to the individual\'s compliance profile with tamper-evident timestamps',
     ],
   },
   {
     title: 'Renewal and escalation engine',
     description:
-      'Trigger reminder cadences and escalate overdue renewals before they become high-risk gaps.',
+      'Trigger reminder cadences and escalate overdue renewals before they become high-risk gaps — with automatic role-restriction for expired credentials.',
     steps: [
-      'Set policy-based renewal intervals',
-      'Send reminders at configured thresholds',
-      'Escalate to managers for unresolved items',
+      'Set policy-based renewal intervals per credential type: annual AHPRA, biennial WWC, 3-year first aid',
+      'Send automated reminders at 90, 60, 30, 14, and 7 days before expiry to the credential holder and their manager',
+      'Escalate unresolved renewals to department heads and compliance leads at configurable thresholds',
+      'Automatically flag expired credentials and restrict the individual from rostering in regulated roles',
+      'Track renewal evidence submission: new certificate uploaded, verifier assigned, approval recorded',
+      'Generate weekly credential expiry dashboard for compliance officers showing upcoming, overdue, and critical gaps',
     ],
   },
   {
     title: 'Audit and assurance output',
     description:
-      'Generate workforce readiness views with linked evidence and status by individual, team, or credential type.',
+      'Generate workforce readiness views with linked evidence and verification status by individual, team, site, or credential type — audit-ready at any moment.',
     steps: [
-      'View live compliance posture by role',
-      'Drill into artifact verification chain',
-      'Export audit-ready evidence package',
+      'View live compliance posture by role, team, site, or business unit with red/amber/green status indicators',
+      'Drill into any individual\'s credential chain: artifact → verifier → decision → timestamp → linked control',
+      'Filter by credential type across the entire workforce: who holds current AHPRA, who has expired WWC, who lacks WHS induction',
+      'Export audit-ready evidence packages for NDIS Commission quality reviews, AHPRA audits, or procurement assessments',
+      'Generate historical compliance snapshots: prove who was credentialed at any point in time for retrospective audits',
+    ],
+  },
+  {
+    title: 'Contractor and locum credential onboarding',
+    description:
+      'Apply the same credential governance to short-term contractors, locums, and agency staff — ensuring temporary workers meet the same regulatory standards as permanent employees.',
+    steps: [
+      'Define contractor-specific credential requirements by engagement type: locum doctor, agency support worker, IT contractor',
+      'Capture and verify credentials before the contractor\'s first shift — block rostering until all requirements are met',
+      'Track agency-supplied credential evidence separately with source attribution (agency-verified vs self-declared)',
+      'Set engagement-end date triggers: archive credentials, revoke system access, and generate exit compliance summary',
+      'Maintain full contractor credential history for retrospective audits even after engagement ends',
     ],
   },
 ];
 
 const standards: UseCaseStandard[] = [
   {
-    name: 'Workforce Compliance Programs',
-    description: 'Credential governance for regulated teams',
+    name: 'AHPRA & Health Practitioner Regulation',
+    description: 'Australian Health Practitioner Regulation Agency — registration, CPD, and scope-of-practice obligations',
     features: [
-      'Role-based credential requirements',
-      'Verification and approval history',
-      'Defensible renewal recordkeeping',
+      'AHPRA registration expiry tracking by practitioner, profession, and specialty',
+      'CPD hour and competency evidence capture with immutable timestamps',
+      'Supervisor sign-off workflows for provisional and limited registrations',
+      'Renewal reminder cadence at 90/60/30/7-day intervals with escalation',
     ],
   },
   {
-    name: 'Healthcare / Care Workforce',
-    description: 'Registration, screening, and competency expectations',
+    name: 'NDIS Worker Screening',
+    description: 'NDIS Worker Screening Check and state-based Working With Children Check requirements',
     features: [
-      'Expiry and renewal reminders',
-      'Supervisor oversight workflows',
-      'Evidence linkage to policy controls',
+      'NDIS Worker Screening Check status tracking per employee and contractor',
+      'State-based WWC Check expiry monitoring (VIC, NSW, QLD, SA, WA, TAS)',
+      'Clearance-to-role mapping ensuring only screened workers in risk-assessed roles',
+      'Audit-ready screening status export for NDIS Commission quality reviews',
     ],
   },
   {
-    name: 'Security and Trust Reviews',
-    description: 'Buyer and regulator assurance readiness',
+    name: 'ISO 27001 / SOC 2 Competency',
+    description: 'Information security competency and awareness requirements under Annex A.7 and SOC 2 CC1.4',
     features: [
-      'Current status and historical traceability',
-      'Control ownership visibility',
-      'Exportable proof artifacts',
+      'Security awareness training completion tracking per employee and role',
+      'Annual competency assessment evidence with verifier sign-off records',
+      'Role-based access prerequisite validation (training → access grant)',
+      'Exportable competency matrix for SOC 2 Type II and ISO 27001 auditors',
     ],
   },
   {
-    name: 'Operational Governance',
-    description: 'Leadership visibility into workforce risk posture',
+    name: 'SafeWork & WHS Inductions',
+    description: 'Work Health and Safety induction, licensing, and high-risk work credentials',
     features: [
-      'Gap and overdue tracking',
-      'Escalation accountability',
-      'Continuous readiness reporting',
+      'High-risk work licence tracking (forklift, scaffolding, crane, rigging)',
+      'Site-specific WHS induction completion records with expiry dates',
+      'SafeWork NSW / WorkSafe VIC credential alignment and gap detection',
+      'Contractor credential verification workflows with evidence chain',
     ],
   },
 ];

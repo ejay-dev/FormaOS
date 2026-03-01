@@ -1,11 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, CheckCircle2, ShieldCheck, Sparkles, Check, Minus, AlertCircle } from 'lucide-react';
 import { brand } from '@/config/brand';
 import { Reveal, VisualDivider } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
 import { DeferredSection } from '../../components/shared';
 import { motion } from 'framer-motion';
@@ -18,13 +19,28 @@ export interface ComparePoint {
   detail: string;
 }
 
+export interface CompareFeatureRow {
+  feature: string;
+  formaos: string;
+  competitor: string;
+}
+
 export interface ComparePageTemplateProps {
   competitor: string;
   heroDescription: string;
   points: readonly ComparePoint[];
   idealIf: readonly string[];
   procurementChecks: readonly ComparePoint[];
+  featureComparison: readonly CompareFeatureRow[];
+  competitorStrengths: readonly string[];
   source: string;
+}
+
+function FeatureCell({ value }: { value: string }) {
+  if (value === 'yes') return <Check className="h-4 w-4 text-emerald-400 mx-auto" />;
+  if (value === 'no') return <Minus className="h-4 w-4 text-slate-600 mx-auto" />;
+  if (value === 'partial') return <AlertCircle className="h-4 w-4 text-amber-400 mx-auto" />;
+  return <span className="text-xs text-slate-300 leading-snug">{value}</span>;
 }
 
 export function ComparePageTemplate({
@@ -33,6 +49,8 @@ export function ComparePageTemplate({
   points,
   idealIf,
   procurementChecks,
+  featureComparison,
+  competitorStrengths,
   source,
 }: ComparePageTemplateProps) {
   return (
@@ -64,6 +82,49 @@ export function ComparePageTemplate({
 
       <VisualDivider />
 
+      {/* Feature Comparison Table */}
+      <DeferredSection minHeight={400}>
+        <section className="mk-section relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <ScrollReveal variant="slideUp" range={[0, 0.3]}>
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm overflow-hidden">
+              <div className="p-6 pb-4 border-b border-white/[0.06]">
+                <h2 className="text-lg font-semibold text-white">Feature Comparison</h2>
+                <p className="mt-1 text-sm text-slate-400">Side-by-side evaluation across key compliance capabilities</p>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/[0.06]">
+                      <th className="text-left py-3 px-6 text-xs font-semibold uppercase tracking-wider text-slate-400 w-[45%]">Capability</th>
+                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-teal-400 w-[27.5%]">FormaOS</th>
+                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-400 w-[27.5%]">{competitor}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {featureComparison.map((row, i) => (
+                      <tr key={row.feature} className={`border-b border-white/[0.04] ${i % 2 === 0 ? 'bg-white/[0.01]' : ''}`}>
+                        <td className="py-3 px-6 text-sm text-slate-300">{row.feature}</td>
+                        <td className="py-3 px-4 text-center"><FeatureCell value={row.formaos} /></td>
+                        <td className="py-3 px-4 text-center"><FeatureCell value={row.competitor} /></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="p-4 border-t border-white/[0.06] flex items-center gap-6 text-[10px] text-slate-500">
+                <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-emerald-400" /> Included</span>
+                <span className="flex items-center gap-1.5"><AlertCircle className="h-3 w-3 text-amber-400" /> Partial / Limited</span>
+                <span className="flex items-center gap-1.5"><Minus className="h-3 w-3 text-slate-600" /> Not available</span>
+              </div>
+            </div>
+          </ScrollReveal>
+        </section>
+      </DeferredSection>
+
+      <VisualDivider gradient={false} />
+
       {/* Differentiator Points */}
       <DeferredSection minHeight={320}>
         <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -86,6 +147,30 @@ export function ComparePageTemplate({
                 </motion.article>
             ))}
           </SectionChoreography>
+        </section>
+      </DeferredSection>
+
+      <VisualDivider gradient={false} />
+
+      {/* When competitor is the right choice */}
+      <DeferredSection minHeight={180}>
+        <section className="mk-section relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <ScrollReveal variant="slideUp" range={[0, 0.3]}>
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7">
+              <h2 className="text-lg font-semibold text-white mb-1">
+                When {competitor} may be the right choice
+              </h2>
+              <p className="text-xs text-slate-500 mb-4">We believe honest comparison builds trust. {competitor} is a strong platform for specific use cases.</p>
+              <ul className="space-y-2 text-sm text-slate-300">
+                {competitorStrengths.map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 text-slate-500 flex-shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </ScrollReveal>
         </section>
       </DeferredSection>
 

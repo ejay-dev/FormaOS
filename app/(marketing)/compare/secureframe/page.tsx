@@ -67,6 +67,29 @@ const idealIf = [
   'Enterprise procurement needs DPA, SAML SSO, and data residency documentation upfront',
 ] as const;
 
+const featureComparison = [
+  { feature: 'Operational workflow enforcement', formaos: 'yes', competitor: 'no' },
+  { feature: 'Named control ownership with audit trail', formaos: 'yes', competitor: 'partial' },
+  { feature: 'Evidence verification with approval chain', formaos: 'yes', competitor: 'yes' },
+  { feature: 'Immutable, tamper-evident audit logs', formaos: 'yes', competitor: 'yes' },
+  { feature: 'Healthcare compliance (AHPRA, NSQHS, RACGP)', formaos: 'yes', competitor: 'no' },
+  { feature: 'NDIS Practice Standards (all 8 modules)', formaos: 'yes', competitor: 'no' },
+  { feature: 'Incident management with corrective actions', formaos: 'yes', competitor: 'partial' },
+  { feature: 'Credential / workforce governance', formaos: 'yes', competitor: 'no' },
+  { feature: 'AU-first data residency (AU/US/EU)', formaos: 'yes', competitor: 'US-first, AU on request' },
+  { feature: 'SAML 2.0 SSO (Okta, Azure AD, Google)', formaos: 'Enterprise plan', competitor: 'Growth plan+' },
+  { feature: 'SCIM user provisioning', formaos: 'yes', competitor: 'yes' },
+  { feature: 'Pre-built frameworks', formaos: '9 frameworks', competitor: '15+ frameworks' },
+  { feature: 'Continuous compliance scoring', formaos: 'yes', competitor: 'yes' },
+  { feature: 'Compliance program setup wizard', formaos: 'Framework templates', competitor: 'Guided onboarding wizard' },
+] as const;
+
+const competitorStrengths = [
+  'You are setting up a compliance program from scratch and want guided onboarding with a compliance program wizard that walks you through framework requirements step by step',
+  'Your primary frameworks are SOC 2, ISO 27001, HIPAA, or PCI DSS and you need automated evidence collection from cloud infrastructure integrations',
+  'You want a vendor with strong auditor partnerships and a streamlined path to achieving your first SOC 2 or ISO 27001 certification quickly',
+] as const;
+
 const procurementChecks = [
   {
     title: 'Operational compliance proof',
@@ -93,6 +116,8 @@ export default function CompareSecureframePage() {
       points={points}
       idealIf={idealIf}
       procurementChecks={procurementChecks}
+      featureComparison={featureComparison}
+      competitorStrengths={competitorStrengths}
       source="compare_secureframe"
     />
   );

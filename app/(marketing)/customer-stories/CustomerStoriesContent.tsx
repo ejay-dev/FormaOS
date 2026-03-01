@@ -29,6 +29,7 @@ const stories = [
     ],
     quote:
       'We stopped chasing evidence in folders. FormaOS made accountability explicit and defensible — the Commission auditor had everything in front of them in 2 hours.',
+    attribution: 'Head of Quality & Compliance',
   },
   {
     title: 'Regional healthcare operator',
@@ -44,6 +45,7 @@ const stories = [
     ],
     quote:
       'We finally had one place to prove what happened, when it happened, and who approved it. The accreditation visit was the easiest we have had in 8 years.',
+    attribution: 'Director of Clinical Governance',
   },
   {
     title: 'Multi-site aged care organization',
@@ -59,6 +61,23 @@ const stories = [
     ],
     quote:
       'The system makes compliance routine. We can focus on care delivery and still be fully audit-ready — Commission or not.',
+    attribution: 'CEO & Registered Provider',
+  },
+  {
+    title: 'Mid-market financial services firm',
+    context: 'Financial services — 200+ staff, ASIC and APRA regulated, AML/CTF reporting obligations',
+    framework: 'ISO 27001 + APRA CPS 234 + AML/CTF Act',
+    situation:
+      'Rapid fintech partnerships introduced new third-party risk, but control ownership and evidence collection remained manual. ASIC breach reporting timelines were tight — the team relied on email threads and shared drives to reconstruct incident histories. Board governance reporting consumed days of analyst time each quarter.',
+    outcome: [
+      'APRA CPS 234 control mapping with named owners and evidence trails',
+      'ASIC reportable situation response time reduced from days to under 4 hours',
+      'Board governance packs generated in minutes instead of days',
+      'ISO 27001 surveillance audit passed with zero non-conformities',
+    ],
+    quote:
+      'Our auditors used to spend the first two days requesting documents. Now they log into the read-only evidence room and have everything before the opening meeting.',
+    attribution: 'Head of Governance, Risk & Compliance',
   },
 ] as const;
 
@@ -89,7 +108,7 @@ export default function CustomerStoriesContent() {
       {/* Story Cards */}
       <DeferredSection minHeight={500}>
         <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-          <SectionChoreography pattern="stagger-wave" className="grid gap-4 lg:grid-cols-3">
+          <SectionChoreography pattern="stagger-wave" className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
             {stories.map((s) => (
                 <motion.article
                   key={s.title}
@@ -135,9 +154,16 @@ export default function CustomerStoriesContent() {
                       <div className="mt-0.5 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
                         <Quote className="h-4 w-4 text-cyan-200" />
                       </div>
-                      <p className="text-sm leading-relaxed text-slate-200 italic">
-                        "{s.quote}"
-                      </p>
+                      <div>
+                        <p className="text-sm leading-relaxed text-slate-200 italic">
+                          &ldquo;{s.quote}&rdquo;
+                        </p>
+                        {'attribution' in s && (
+                          <p className="mt-2 text-xs font-medium text-slate-400">
+                            — {s.attribution}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </motion.article>
@@ -176,52 +202,91 @@ export default function CustomerStoriesContent() {
         </section>
       </DeferredSection>
 
-      {/* ROI Proof */}
-      <DeferredSection minHeight={400}>
+      {/* ROI Proof — Worked Example */}
+      <DeferredSection minHeight={500}>
         <section className="relative mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
           <ScrollReveal variant="depthSlide" range={[0, 0.35]}>
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7 lg:p-10">
               <h3 className="text-lg font-semibold text-white">
-                ROI Proof (Structure)
+                ROI Proof — Worked Example
               </h3>
               <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-300">
-                Procurement teams typically approve when ROI inputs are
-                explicit. We recommend capturing hours saved by function (audit
-                prep, evidence collection, register tracking, incident handling)
-                and converting to fully loaded wage rates (low/median/high).
+                Based on an NDIS provider with 400 staff, 3 FTE compliance team, and 4 audit cycles per year. Loaded hourly rate: $85/hr (mid-market compliance analyst).
               </p>
-              <SectionChoreography pattern="stagger-wave" className="mt-5 grid gap-3 md:grid-cols-3">
-                <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    Inputs
-                  </div>
-                  <ul className="mt-2 space-y-2 text-sm text-slate-300">
-                    <li>Hours saved per month (by workflow)</li>
-                    <li>Audit cycle frequency</li>
-                    <li>Wage assumptions (low/median/high)</li>
-                  </ul>
+
+              {/* Worked example table */}
+              <div className="mt-6 rounded-xl border border-white/[0.08] overflow-hidden">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/[0.06] bg-white/[0.03]">
+                      <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Workflow</th>
+                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-rose-400">Before FormaOS</th>
+                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-emerald-400">After FormaOS</th>
+                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-teal-400">Hours Saved / Cycle</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-slate-300">
+                    <tr className="border-b border-white/[0.04]">
+                      <td className="py-2.5 px-4">Audit preparation</td>
+                      <td className="py-2.5 px-4 text-center">3 weeks (120 hrs)</td>
+                      <td className="py-2.5 px-4 text-center">4 hours</td>
+                      <td className="py-2.5 px-4 text-center font-semibold text-teal-400">116 hrs</td>
+                    </tr>
+                    <tr className="border-b border-white/[0.04] bg-white/[0.01]">
+                      <td className="py-2.5 px-4">Evidence collection & verification</td>
+                      <td className="py-2.5 px-4 text-center">40 hrs / month</td>
+                      <td className="py-2.5 px-4 text-center">8 hrs / month</td>
+                      <td className="py-2.5 px-4 text-center font-semibold text-teal-400">96 hrs / quarter</td>
+                    </tr>
+                    <tr className="border-b border-white/[0.04]">
+                      <td className="py-2.5 px-4">Credential & register tracking</td>
+                      <td className="py-2.5 px-4 text-center">20 hrs / month</td>
+                      <td className="py-2.5 px-4 text-center">2 hrs / month</td>
+                      <td className="py-2.5 px-4 text-center font-semibold text-teal-400">54 hrs / quarter</td>
+                    </tr>
+                    <tr className="border-b border-white/[0.04] bg-white/[0.01]">
+                      <td className="py-2.5 px-4">Incident response documentation</td>
+                      <td className="py-2.5 px-4 text-center">3 days per incident</td>
+                      <td className="py-2.5 px-4 text-center">4 hours per incident</td>
+                      <td className="py-2.5 px-4 text-center font-semibold text-teal-400">~60 hrs / quarter</td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr className="bg-white/[0.03]">
+                      <td className="py-3 px-4 font-semibold text-white" colSpan={3}>Total hours saved per quarter</td>
+                      <td className="py-3 px-4 text-center font-bold text-teal-400">~326 hrs</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+
+              {/* ROI summary */}
+              <SectionChoreography pattern="stagger-wave" className="mt-6 grid gap-3 md:grid-cols-4">
+                <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4 text-center">
+                  <div className="text-xl font-bold text-teal-400">$27,710</div>
+                  <div className="text-xs text-slate-400 mt-1">Quarterly savings</div>
+                  <div className="text-[10px] text-slate-500 mt-0.5">326 hrs × $85/hr</div>
                 </div>
-                <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    Outputs
-                  </div>
-                  <ul className="mt-2 space-y-2 text-sm text-slate-300">
-                    <li>Monthly savings ($)</li>
-                    <li>Annualized savings ($)</li>
-                    <li>Payback period (months)</li>
-                  </ul>
+                <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4 text-center">
+                  <div className="text-xl font-bold text-teal-400">$110,840</div>
+                  <div className="text-xs text-slate-400 mt-1">Annual savings</div>
+                  <div className="text-[10px] text-slate-500 mt-0.5">4 audit cycles / year</div>
                 </div>
-                <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    Proof
-                  </div>
-                  <ul className="mt-2 space-y-2 text-sm text-slate-300">
-                    <li>Export bundle timestamps</li>
-                    <li>Audit log excerpts</li>
-                    <li>Governance pack PDF/ZIP artifacts</li>
-                  </ul>
+                <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4 text-center">
+                  <div className="text-xl font-bold text-teal-400">&lt; 1 month</div>
+                  <div className="text-xs text-slate-400 mt-1">Payback period</div>
+                  <div className="text-[10px] text-slate-500 mt-0.5">At Professional tier pricing</div>
+                </div>
+                <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4 text-center">
+                  <div className="text-xl font-bold text-teal-400">38×</div>
+                  <div className="text-xs text-slate-400 mt-1">Annual ROI multiple</div>
+                  <div className="text-[10px] text-slate-500 mt-0.5">Savings ÷ annual license</div>
                 </div>
               </SectionChoreography>
+
+              <p className="mt-4 text-[10px] text-slate-500">
+                Illustrative example based on typical NDIS provider metrics. Actual savings vary by organization size, audit frequency, and compliance team structure. We can model your specific scenario during evaluation.
+              </p>
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Link

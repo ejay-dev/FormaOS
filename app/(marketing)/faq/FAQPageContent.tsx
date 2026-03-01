@@ -103,7 +103,7 @@ const faqCategories = [
       },
       {
         q: 'Is evidence immutable?',
-        a: 'Evidence records are tracked with audit logs and timestamps. Every upload, update, and approval is recorded for full traceability.',
+        a: 'Yes. Evidence records in FormaOS are append-only and tamper-evident. Once uploaded, evidence cannot be modified or deleted — only superseded by a new version, with the original preserved in the audit trail. Every upload, update, approval, and version change is recorded with an immutable timestamp, the identity of the actor, and a correlation ID linking it to the originating control or workflow. This chain-of-custody model ensures that auditors and regulators see a complete, unaltered history of every compliance artifact from creation through current state.',
       },
       {
         q: 'Can we export regulatory reports?',
@@ -127,7 +127,7 @@ const faqCategories = [
     questions: [
       {
         q: 'Does FormaOS integrate with existing systems?',
-        a: 'FormaOS provides Google OAuth for authentication and REST API access. Slack and Microsoft Teams integrations are available by request.',
+        a: 'FormaOS provides Google OAuth for authentication, REST API access, and live integrations with Slack, Microsoft Teams, Jira, Linear, Asana, Zapier, and Google Drive. Enterprise plans include SAML 2.0 SSO for Okta, Azure AD, and Google Workspace. Additional integrations including GitHub, Make, and SharePoint are in beta or coming soon.',
       },
       {
         q: 'Are APIs available?',
@@ -207,23 +207,27 @@ const faqCategories = [
     questions: [
       {
         q: 'What onboarding is provided?',
-        a: 'Paid plans include structured onboarding to configure the platform, users, workflows, and best practices. Enterprise plans can request extended onboarding and implementation support.',
+        a: 'All paid plans include structured onboarding delivered over 2–3 weeks. Week 1: platform configuration, user provisioning, and first framework setup. Week 2: workflow modeling, evidence structure design, and control ownership assignment. Week 3: first audit readiness review and posture baseline. Enterprise plans include a dedicated implementation manager, custom framework configuration, and extended onboarding with multi-site deployment support. Onboarding is not self-serve — every customer works with our team to ensure the platform matches their regulatory environment.',
       },
       {
         q: 'Is enterprise support available?',
-        a: 'Enterprise plans include priority support with SLAs and dedicated success support. Coverage and response times depend on your plan and support package.',
+        a: 'Yes. Enterprise plans include a dedicated Slack channel with your support team, priority email support with a 4-hour response SLA during business hours (AEST), and a named customer success manager. Enterprise support also includes quarterly compliance posture reviews, proactive framework update notifications, and direct escalation paths to engineering for platform issues. Support coverage and response commitments are documented in the Enterprise SLA.',
       },
       {
         q: 'How do I get help if I have an issue?',
-        a: 'Support is available through the in-app help center and email. Priority support and expanded channels depend on your plan. Our knowledge base provides self-service documentation for common questions.',
+        a: 'All customers have access to the in-app help center, the FormaOS knowledge base, and email support at support@formaos.com.au. Professional plans include priority email with an 8-hour response window during business hours. Enterprise plans add a dedicated Slack channel and a 4-hour response SLA. For platform-critical issues (data access, authentication, evidence integrity), all plans receive expedited response regardless of tier.',
       },
       {
         q: 'Do you provide training for our team?',
-        a: 'FormaOS provides training resources including documentation and guided sessions. Enterprise customers can request custom training tailored to their workflows.',
+        a: 'Yes. All paid plans include a live onboarding call with your team, recorded walkthrough videos for key workflows (control setup, evidence management, audit export), and access to the self-service knowledge base. Enterprise customers can request custom training sessions tailored to specific roles (compliance managers, control owners, executive dashboard users) and specific frameworks. We also provide quarterly check-in sessions for Enterprise customers to review new features and optimize workflows.',
       },
       {
         q: 'What is your support response time?',
-        a: 'Response times vary by plan tier and support package. Contact us to confirm the response time commitments for your plan.',
+        a: 'Starter plans: email support with a 2-business-day response window. Professional plans: priority email with an 8-hour response window during business hours (AEST, Mon–Fri). Enterprise plans: dedicated Slack channel and priority email with a 4-hour response SLA during business hours. Platform-critical issues (authentication failures, data access, evidence integrity) are treated as P1 across all tiers with same-day acknowledgement. Response time commitments are documented in the SLA available during procurement review.',
+      },
+      {
+        q: 'What happens during an audit if we need urgent help?',
+        a: 'Enterprise customers have access to audit-support escalation — a direct path to our team during active audits or regulator visits. This includes help with evidence export, posture snapshot generation, and auditor read-only access configuration. Professional plan customers can request audit-period support as an add-on. We understand that audit timelines are not flexible — our support commitments reflect that reality.',
       },
     ],
   },
