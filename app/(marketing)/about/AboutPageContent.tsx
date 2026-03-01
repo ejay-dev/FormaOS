@@ -23,7 +23,7 @@ function AboutHeroGlobeVisual() {
       aria-hidden
       className="pointer-events-none absolute inset-0 hidden lg:block"
     >
-      <div className="pointer-events-auto absolute right-[clamp(1.25rem,3vw,4rem)] top-1/2 -translate-y-1/2">
+      <div className="pointer-events-auto absolute right-[clamp(1.25rem,3vw,4rem)] top-[62%] -translate-y-1/2">
         <div className="relative h-[560px] w-[560px] xl:h-[700px] xl:w-[700px]">
           <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.14)_0%,rgba(14,165,233,0.04)_50%,transparent_74%)]" />
           <InteractiveGlobe
