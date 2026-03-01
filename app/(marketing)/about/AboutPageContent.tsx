@@ -7,6 +7,7 @@ import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import dynamic from 'next/dynamic';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { InteractiveGlobe } from '@/components/marketing/InteractiveGlobe';
+import { EnterpriseShaderHero } from '@/components/marketing/EnterpriseShaderHero';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
@@ -106,6 +107,22 @@ export default function AboutPageContent() {
       <AboutHero />
 
       <VisualDivider gradient />
+
+      <DeferredSection minHeight={640}>
+        <EnterpriseShaderHero
+          badgeText="Compliance Execution Network"
+          headline={{
+            line1: 'Operational Signal',
+            line2: 'Across Every Control Surface',
+          }}
+          subtitle="A live strategic view of how governance, evidence, and accountability stay synchronized for regulated teams operating at enterprise scale."
+          primaryCta={{ href: '/product', label: 'Explore Product' }}
+          secondaryCta={{ href: '/contact', label: 'Book Walkthrough' }}
+          className="pt-10 sm:pt-12 pb-8 sm:pb-10"
+        />
+      </DeferredSection>
+
+      <VisualDivider />
 
       {/* Founder Origin Story */}
       <DeferredSection minHeight={280}>
