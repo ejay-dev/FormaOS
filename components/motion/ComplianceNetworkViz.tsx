@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useState, useCallback, memo } from 'react';
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import { useReducedMotion } from 'framer-motion';
 
 /* ── Data model: Compliance entities and their relationships ── */
 
@@ -39,40 +39,40 @@ const TYPE_ICONS: Record<NetworkNode['type'], string> = {
 function createNetworkData(width: number, height: number): { nodes: NetworkNode[]; edges: NetworkEdge[] } {
   const cx = width / 2;
   const cy = height / 2;
-  const spread = Math.min(width, height) * 0.35;
+  const spread = Math.min(width, height) * 0.4;
 
   // Framework nodes (center-top cluster)
   const frameworks = [
-    { id: 'iso27001', label: 'ISO 27001', type: 'framework', baseX: cx - 60, baseY: cy - spread * 0.7, size: 18, phase: 0 },
-    { id: 'soc2', label: 'SOC 2', type: 'framework', baseX: cx + 60, baseY: cy - spread * 0.65, size: 18, phase: 0.5 },
-    { id: 'nist', label: 'NIST CSF', type: 'framework', baseX: cx, baseY: cy - spread * 0.85, size: 16, phase: 1 },
-    { id: 'hipaa', label: 'HIPAA', type: 'framework', baseX: cx - 140, baseY: cy - spread * 0.5, size: 14, phase: 1.5 },
-    { id: 'gdpr', label: 'GDPR', type: 'framework', baseX: cx + 140, baseY: cy - spread * 0.45, size: 14, phase: 2 },
+    { id: 'iso27001', label: 'ISO 27001', type: 'framework', baseX: cx - 68, baseY: cy - spread * 0.68, size: 25, phase: 0 },
+    { id: 'soc2', label: 'SOC 2', type: 'framework', baseX: cx + 68, baseY: cy - spread * 0.63, size: 24, phase: 0.5 },
+    { id: 'nist', label: 'NIST CSF', type: 'framework', baseX: cx, baseY: cy - spread * 0.88, size: 22, phase: 1 },
+    { id: 'hipaa', label: 'HIPAA', type: 'framework', baseX: cx - 152, baseY: cy - spread * 0.48, size: 20, phase: 1.5 },
+    { id: 'gdpr', label: 'GDPR', type: 'framework', baseX: cx + 152, baseY: cy - spread * 0.44, size: 20, phase: 2 },
   ];
 
   // Control nodes (middle ring)
   const controls = [
-    { id: 'ac-mgmt', label: 'Access Mgmt', type: 'control', baseX: cx - spread * 0.6, baseY: cy - 10, size: 13, phase: 0.3 },
-    { id: 'encrypt', label: 'Encryption', type: 'control', baseX: cx - spread * 0.25, baseY: cy + 20, size: 13, phase: 0.8 },
-    { id: 'logging', label: 'Audit Logging', type: 'control', baseX: cx + spread * 0.25, baseY: cy - 15, size: 13, phase: 1.3 },
-    { id: 'incident', label: 'Incident Resp', type: 'control', baseX: cx + spread * 0.6, baseY: cy + 10, size: 13, phase: 1.8 },
-    { id: 'change', label: 'Change Mgmt', type: 'control', baseX: cx, baseY: cy + spread * 0.15, size: 12, phase: 2.3 },
-    { id: 'risk', label: 'Risk Assess', type: 'control', baseX: cx - spread * 0.45, baseY: cy + spread * 0.25, size: 12, phase: 2.8 },
+    { id: 'ac-mgmt', label: 'Access Mgmt', type: 'control', baseX: cx - spread * 0.64, baseY: cy - 8, size: 18, phase: 0.3 },
+    { id: 'encrypt', label: 'Encryption', type: 'control', baseX: cx - spread * 0.26, baseY: cy + 24, size: 18, phase: 0.8 },
+    { id: 'logging', label: 'Audit Logging', type: 'control', baseX: cx + spread * 0.26, baseY: cy - 14, size: 17, phase: 1.3 },
+    { id: 'incident', label: 'Incident Resp', type: 'control', baseX: cx + spread * 0.64, baseY: cy + 10, size: 17, phase: 1.8 },
+    { id: 'change', label: 'Change Mgmt', type: 'control', baseX: cx, baseY: cy + spread * 0.17, size: 16, phase: 2.3 },
+    { id: 'risk', label: 'Risk Assess', type: 'control', baseX: cx - spread * 0.44, baseY: cy + spread * 0.27, size: 16, phase: 2.8 },
   ];
 
   // Evidence nodes (lower ring)
   const evidence = [
-    { id: 'ev-policy', label: 'Policy Docs', type: 'evidence', baseX: cx - spread * 0.5, baseY: cy + spread * 0.55, size: 11, phase: 0.4 },
-    { id: 'ev-log', label: 'Audit Logs', type: 'evidence', baseX: cx - spread * 0.1, baseY: cy + spread * 0.6, size: 11, phase: 1.1 },
-    { id: 'ev-cert', label: 'Certificates', type: 'evidence', baseX: cx + spread * 0.3, baseY: cy + spread * 0.55, size: 11, phase: 1.7 },
-    { id: 'ev-screen', label: 'Screenshots', type: 'evidence', baseX: cx + spread * 0.6, baseY: cy + spread * 0.45, size: 10, phase: 2.4 },
+    { id: 'ev-policy', label: 'Policy Docs', type: 'evidence', baseX: cx - spread * 0.5, baseY: cy + spread * 0.56, size: 15, phase: 0.4 },
+    { id: 'ev-log', label: 'Audit Logs', type: 'evidence', baseX: cx - spread * 0.1, baseY: cy + spread * 0.61, size: 15, phase: 1.1 },
+    { id: 'ev-cert', label: 'Certificates', type: 'evidence', baseX: cx + spread * 0.3, baseY: cy + spread * 0.56, size: 15, phase: 1.7 },
+    { id: 'ev-screen', label: 'Screenshots', type: 'evidence', baseX: cx + spread * 0.6, baseY: cy + spread * 0.45, size: 14, phase: 2.4 },
   ];
 
   // Task nodes (bottom)
   const tasks = [
-    { id: 'task-review', label: 'Review', type: 'task', baseX: cx - spread * 0.35, baseY: cy + spread * 0.85, size: 10, phase: 0.6 },
-    { id: 'task-approve', label: 'Approve', type: 'task', baseX: cx + spread * 0.05, baseY: cy + spread * 0.9, size: 10, phase: 1.4 },
-    { id: 'task-upload', label: 'Upload', type: 'task', baseX: cx + spread * 0.4, baseY: cy + spread * 0.8, size: 10, phase: 2.1 },
+    { id: 'task-review', label: 'Review', type: 'task', baseX: cx - spread * 0.35, baseY: cy + spread * 0.86, size: 14, phase: 0.6 },
+    { id: 'task-approve', label: 'Approve', type: 'task', baseX: cx + spread * 0.05, baseY: cy + spread * 0.92, size: 14, phase: 1.4 },
+    { id: 'task-upload', label: 'Upload', type: 'task', baseX: cx + spread * 0.4, baseY: cy + spread * 0.82, size: 14, phase: 2.1 },
   ];
 
   const nodes: NetworkNode[] = [...frameworks, ...controls, ...evidence, ...tasks].map(n => ({
@@ -180,7 +180,7 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
 
     const findNearestNode = (mx: number, my: number): NetworkNode | null => {
       let nearest: NetworkNode | null = null;
-      let minDist = 60;
+      let minDist = 96;
       for (const node of nodes) {
         const dx = node.x - mx;
         const dy = node.y - my;
@@ -202,6 +202,25 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
       const t = timeRef.current;
 
       ctx.clearRect(0, 0, w, h);
+      const centerX = w / 2;
+      const centerY = h / 2 + 8;
+      const unit = Math.min(w, h);
+
+      const halo = ctx.createRadialGradient(centerX, centerY, 24, centerX, centerY, unit * 0.56);
+      halo.addColorStop(0, 'rgba(56, 189, 248, 0.16)');
+      halo.addColorStop(0.45, 'rgba(20, 184, 166, 0.1)');
+      halo.addColorStop(1, 'rgba(15, 23, 42, 0)');
+      ctx.fillStyle = halo;
+      ctx.fillRect(0, 0, w, h);
+
+      const orbitRadii = [unit * 0.23, unit * 0.31, unit * 0.39];
+      orbitRadii.forEach((radius, index) => {
+        ctx.beginPath();
+        ctx.ellipse(centerX, centerY, radius * 1.18, radius, 0, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(148, 163, 184, ${hoveredNode ? 0.08 : 0.15 - index * 0.03})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      });
 
       // Subtle breathing movement on nodes
       if (!shouldReduceMotion) {
@@ -241,7 +260,7 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
         ctx.moveTo(fromNode.x, fromNode.y);
         ctx.lineTo(toNode.x, toNode.y);
         ctx.strokeStyle = `rgba(148, 163, 184, ${baseAlpha})`;
-        ctx.lineWidth = isHighlighted ? 1.5 : 0.8;
+        ctx.lineWidth = isHighlighted ? 1.8 : hoveredNode ? 0.9 : 1.15;
         ctx.stroke();
 
         // Flow particle on edge
@@ -253,7 +272,7 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
           flowGradient.addColorStop(1, colors.glow.replace(/[\d.]+\)$/, '0)'));
           ctx.fillStyle = flowGradient;
           ctx.beginPath();
-          ctx.arc(flowX, flowY, 3, 0, Math.PI * 2);
+          ctx.arc(flowX, flowY, isHighlighted ? 3.8 : 2.9, 0, Math.PI * 2);
           ctx.fill();
         }
       }
@@ -266,11 +285,11 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
         const isDimmed = hoveredNode && !isConnected;
 
         const nodeAlpha = isDimmed ? 0.2 : 1;
-        const nodeSize = isHovered ? node.size * 1.4 : isConnected ? node.size * 1.1 : node.size;
+        const nodeSize = isHovered ? node.size * 1.28 : isConnected ? node.size * 1.12 : node.size;
 
         // Glow ring
         if ((isHovered || isConnected) && !shouldReduceMotion) {
-          const glowSize = nodeSize + (isHovered ? 12 : 6);
+          const glowSize = nodeSize + (isHovered ? 18 : 10);
           const glowGradient = ctx.createRadialGradient(node.x, node.y, nodeSize * 0.5, node.x, node.y, glowSize);
           glowGradient.addColorStop(0, colors.glow);
           glowGradient.addColorStop(1, colors.glow.replace(/[\d.]+\)$/, '0)'));
@@ -299,31 +318,32 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
         ctx.fillText(TYPE_ICONS[node.type], node.x, node.y);
 
         // Label (show on hover/connected or always for frameworks)
-        if (isHovered || (isConnected && hoveredNode) || (node.type === 'framework' && !isDimmed)) {
+        if (isHovered || (isConnected && hoveredNode) || ((node.type === 'framework' || node.type === 'task') && !isDimmed)) {
           ctx.fillStyle = `rgba(255, 255, 255, ${isHovered ? 0.95 : isDimmed ? 0.3 : 0.7})`;
-          ctx.font = `${isHovered ? 'bold ' : ''}11px system-ui, -apple-system, sans-serif`;
+          ctx.font = `${isHovered ? 'bold ' : ''}12px system-ui, -apple-system, sans-serif`;
           ctx.textAlign = 'center';
-          ctx.fillText(node.label, node.x, node.y + nodeSize + 14);
+          ctx.fillText(node.label, node.x, node.y + nodeSize + 16);
         }
       }
 
-      // Legend (bottom-left)
-      const legendY = h - 70;
-      const legendX = 16;
+      // Legend (bottom-center)
+      const legendY = h - 30;
       const legendTypes: NetworkNode['type'][] = ['framework', 'control', 'evidence', 'task'];
       const legendLabels = ['Frameworks', 'Controls', 'Evidence', 'Tasks'];
+      const itemSpacing = 122;
+      const legendX = Math.max(16, w / 2 - ((legendTypes.length - 1) * itemSpacing) / 2 - 36);
 
       ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-      ctx.font = '10px system-ui, -apple-system, sans-serif';
+      ctx.font = '11px system-ui, -apple-system, sans-serif';
       ctx.textAlign = 'left';
 
       legendTypes.forEach((type, i) => {
-        const lx = legendX;
-        const ly = legendY + i * 18;
+        const lx = legendX + i * itemSpacing;
+        const ly = legendY;
         const colors = NODE_COLORS[type];
 
         ctx.beginPath();
-        ctx.arc(lx + 5, ly + 4, 5, 0, Math.PI * 2);
+        ctx.arc(lx + 5, ly + 4, 6, 0, Math.PI * 2);
         ctx.fillStyle = colors.fill;
         ctx.fill();
 
