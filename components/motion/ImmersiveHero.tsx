@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect, useMemo, type ReactNode } from 'react';
+import { useRef, useState, useEffect, useMemo, type ReactNode, type MouseEvent } from 'react';
 import Link from 'next/link';
 import {
   motion,
@@ -107,6 +107,10 @@ interface ImmersiveHeroProps {
   primaryCta: HeroCta;
   /** Secondary CTA button */
   secondaryCta?: HeroCta;
+  /** Optional click instrumentation for primary CTA */
+  onPrimaryCtaClick?: (event: MouseEvent<HTMLAnchorElement>) => void;
+  /** Optional click instrumentation for secondary CTA */
+  onSecondaryCtaClick?: (event: MouseEvent<HTMLAnchorElement>) => void;
   /** Additional className on outer section */
   className?: string;
 }
@@ -155,6 +159,8 @@ export function ImmersiveHero({
   extras,
   primaryCta,
   secondaryCta,
+  onPrimaryCtaClick,
+  onSecondaryCtaClick,
   className = '',
 }: ImmersiveHeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -259,6 +265,16 @@ export function ImmersiveHero({
     extras: 0.48,
     ctas: 0.57,
   };
+
+  const resolveCtaHref = (href: string) => {
+    if (/^https?:\/\//i.test(href)) return href;
+    if (href.startsWith('/')) return href;
+    return `${appBase}${href}`;
+  };
+
+  const primaryHref = resolveCtaHref(primaryCta.href);
+  const secondaryHref = secondaryCta ? resolveCtaHref(secondaryCta.href) : null;
+  const secondaryIsExternal = secondaryHref ? /^https?:\/\//i.test(secondaryHref) : false;
 
   return (
     <section
@@ -380,8 +396,9 @@ export function ImmersiveHero({
                 className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full sm:w-auto"
               >
                 <motion.a
-                  href={primaryCta.href.startsWith('/') ? primaryCta.href : `${appBase}${primaryCta.href}`}
+                  href={primaryHref}
                   data-testid={primaryCta.testId}
+                  onClick={onPrimaryCtaClick}
                   whileHover={sa ? { scale: 1.03, boxShadow: `0 0 30px rgba(${t.tilt.glowColor}, 0.3)` } : undefined}
                   whileTap={sa ? { scale: 0.98 } : undefined}
                   className="mk-btn mk-btn-primary group px-8 py-4 min-h-[48px] text-base sm:text-lg justify-center"
@@ -390,9 +407,20 @@ export function ImmersiveHero({
                   <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </motion.a>
 
-                {secondaryCta && (
+                {secondaryCta && secondaryHref && secondaryIsExternal && (
+                  <a
+                    href={secondaryHref}
+                    onClick={onSecondaryCtaClick}
+                    className="mk-btn mk-btn-secondary group px-8 py-4 min-h-[48px] text-base sm:text-lg justify-center"
+                  >
+                    {secondaryCta.label}
+                  </a>
+                )}
+
+                {secondaryCta && secondaryHref && !secondaryIsExternal && (
                   <Link
-                    href={secondaryCta.href}
+                    href={secondaryHref}
+                    onClick={onSecondaryCtaClick}
                     className="mk-btn mk-btn-secondary group px-8 py-4 min-h-[48px] text-base sm:text-lg justify-center"
                   >
                     {secondaryCta.label}
