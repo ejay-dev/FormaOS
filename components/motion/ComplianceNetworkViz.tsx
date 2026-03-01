@@ -38,41 +38,42 @@ const TYPE_ICONS: Record<NetworkNode['type'], string> = {
 
 function createNetworkData(width: number, height: number): { nodes: NetworkNode[]; edges: NetworkEdge[] } {
   const cx = width / 2;
-  const cy = height / 2;
-  const spread = Math.min(width, height) * 0.4;
+  const cy = height * 0.47;
+  const xSpread = Math.min(width * 0.24, 300);
+  const ySpread = Math.min(height * 0.3, 170);
 
   // Framework nodes (center-top cluster)
   const frameworks = [
-    { id: 'iso27001', label: 'ISO 27001', type: 'framework', baseX: cx - 68, baseY: cy - spread * 0.68, size: 25, phase: 0 },
-    { id: 'soc2', label: 'SOC 2', type: 'framework', baseX: cx + 68, baseY: cy - spread * 0.63, size: 24, phase: 0.5 },
-    { id: 'nist', label: 'NIST CSF', type: 'framework', baseX: cx, baseY: cy - spread * 0.88, size: 22, phase: 1 },
-    { id: 'hipaa', label: 'HIPAA', type: 'framework', baseX: cx - 152, baseY: cy - spread * 0.48, size: 20, phase: 1.5 },
-    { id: 'gdpr', label: 'GDPR', type: 'framework', baseX: cx + 152, baseY: cy - spread * 0.44, size: 20, phase: 2 },
+    { id: 'iso27001', label: 'ISO 27001', type: 'framework', baseX: cx - xSpread * 0.34, baseY: cy - ySpread * 1.02, size: 24, phase: 0 },
+    { id: 'soc2', label: 'SOC 2', type: 'framework', baseX: cx + xSpread * 0.34, baseY: cy - ySpread * 0.94, size: 23, phase: 0.5 },
+    { id: 'nist', label: 'NIST CSF', type: 'framework', baseX: cx, baseY: cy - ySpread * 1.25, size: 22, phase: 1 },
+    { id: 'hipaa', label: 'HIPAA', type: 'framework', baseX: cx - xSpread * 0.92, baseY: cy - ySpread * 0.66, size: 19, phase: 1.5 },
+    { id: 'gdpr', label: 'GDPR', type: 'framework', baseX: cx + xSpread * 0.92, baseY: cy - ySpread * 0.58, size: 19, phase: 2 },
   ];
 
   // Control nodes (middle ring)
   const controls = [
-    { id: 'ac-mgmt', label: 'Access Mgmt', type: 'control', baseX: cx - spread * 0.64, baseY: cy - 8, size: 18, phase: 0.3 },
-    { id: 'encrypt', label: 'Encryption', type: 'control', baseX: cx - spread * 0.26, baseY: cy + 24, size: 18, phase: 0.8 },
-    { id: 'logging', label: 'Audit Logging', type: 'control', baseX: cx + spread * 0.26, baseY: cy - 14, size: 17, phase: 1.3 },
-    { id: 'incident', label: 'Incident Resp', type: 'control', baseX: cx + spread * 0.64, baseY: cy + 10, size: 17, phase: 1.8 },
-    { id: 'change', label: 'Change Mgmt', type: 'control', baseX: cx, baseY: cy + spread * 0.17, size: 16, phase: 2.3 },
-    { id: 'risk', label: 'Risk Assess', type: 'control', baseX: cx - spread * 0.44, baseY: cy + spread * 0.27, size: 16, phase: 2.8 },
+    { id: 'ac-mgmt', label: 'Access Mgmt', type: 'control', baseX: cx - xSpread * 0.9, baseY: cy - ySpread * 0.05, size: 17, phase: 0.3 },
+    { id: 'encrypt', label: 'Encryption', type: 'control', baseX: cx - xSpread * 0.3, baseY: cy + ySpread * 0.18, size: 17, phase: 0.8 },
+    { id: 'logging', label: 'Audit Logging', type: 'control', baseX: cx + xSpread * 0.3, baseY: cy - ySpread * 0.02, size: 17, phase: 1.3 },
+    { id: 'incident', label: 'Incident Resp', type: 'control', baseX: cx + xSpread * 0.92, baseY: cy + ySpread * 0.08, size: 16, phase: 1.8 },
+    { id: 'change', label: 'Change Mgmt', type: 'control', baseX: cx, baseY: cy + ySpread * 0.3, size: 16, phase: 2.3 },
+    { id: 'risk', label: 'Risk Assess', type: 'control', baseX: cx - xSpread * 0.56, baseY: cy + ySpread * 0.46, size: 15, phase: 2.8 },
   ];
 
   // Evidence nodes (lower ring)
   const evidence = [
-    { id: 'ev-policy', label: 'Policy Docs', type: 'evidence', baseX: cx - spread * 0.5, baseY: cy + spread * 0.56, size: 15, phase: 0.4 },
-    { id: 'ev-log', label: 'Audit Logs', type: 'evidence', baseX: cx - spread * 0.1, baseY: cy + spread * 0.61, size: 15, phase: 1.1 },
-    { id: 'ev-cert', label: 'Certificates', type: 'evidence', baseX: cx + spread * 0.3, baseY: cy + spread * 0.56, size: 15, phase: 1.7 },
-    { id: 'ev-screen', label: 'Screenshots', type: 'evidence', baseX: cx + spread * 0.6, baseY: cy + spread * 0.45, size: 14, phase: 2.4 },
+    { id: 'ev-policy', label: 'Policy Docs', type: 'evidence', baseX: cx - xSpread * 0.68, baseY: cy + ySpread * 0.86, size: 15, phase: 0.4 },
+    { id: 'ev-log', label: 'Audit Logs', type: 'evidence', baseX: cx - xSpread * 0.12, baseY: cy + ySpread * 0.96, size: 15, phase: 1.1 },
+    { id: 'ev-cert', label: 'Certificates', type: 'evidence', baseX: cx + xSpread * 0.34, baseY: cy + ySpread * 0.86, size: 15, phase: 1.7 },
+    { id: 'ev-screen', label: 'Screenshots', type: 'evidence', baseX: cx + xSpread * 0.86, baseY: cy + ySpread * 0.66, size: 14, phase: 2.4 },
   ];
 
   // Task nodes (bottom)
   const tasks = [
-    { id: 'task-review', label: 'Review', type: 'task', baseX: cx - spread * 0.35, baseY: cy + spread * 0.86, size: 14, phase: 0.6 },
-    { id: 'task-approve', label: 'Approve', type: 'task', baseX: cx + spread * 0.05, baseY: cy + spread * 0.92, size: 14, phase: 1.4 },
-    { id: 'task-upload', label: 'Upload', type: 'task', baseX: cx + spread * 0.4, baseY: cy + spread * 0.82, size: 14, phase: 2.1 },
+    { id: 'task-review', label: 'Review', type: 'task', baseX: cx - xSpread * 0.42, baseY: cy + ySpread * 1.28, size: 14, phase: 0.6 },
+    { id: 'task-approve', label: 'Approve', type: 'task', baseX: cx + xSpread * 0.06, baseY: cy + ySpread * 1.36, size: 14, phase: 1.4 },
+    { id: 'task-upload', label: 'Upload', type: 'task', baseX: cx + xSpread * 0.48, baseY: cy + ySpread * 1.2, size: 14, phase: 2.1 },
   ];
 
   const nodes: NetworkNode[] = [...frameworks, ...controls, ...evidence, ...tasks].map(n => ({
@@ -326,30 +327,6 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
         }
       }
 
-      // Legend (bottom-center)
-      const legendY = h - 30;
-      const legendTypes: NetworkNode['type'][] = ['framework', 'control', 'evidence', 'task'];
-      const legendLabels = ['Frameworks', 'Controls', 'Evidence', 'Tasks'];
-      const itemSpacing = 122;
-      const legendX = Math.max(16, w / 2 - ((legendTypes.length - 1) * itemSpacing) / 2 - 36);
-
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-      ctx.font = '11px system-ui, -apple-system, sans-serif';
-      ctx.textAlign = 'left';
-
-      legendTypes.forEach((type, i) => {
-        const lx = legendX + i * itemSpacing;
-        const ly = legendY;
-        const colors = NODE_COLORS[type];
-
-        ctx.beginPath();
-        ctx.arc(lx + 5, ly + 4, 6, 0, Math.PI * 2);
-        ctx.fillStyle = colors.fill;
-        ctx.fill();
-
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-        ctx.fillText(legendLabels[i], lx + 16, ly + 8);
-      });
     };
 
     animRef.current = requestAnimationFrame(animate);
