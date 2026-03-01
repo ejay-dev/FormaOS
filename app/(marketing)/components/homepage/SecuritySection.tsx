@@ -9,13 +9,9 @@ import {
   History,
   Key,
   BadgeCheck,
+  CheckCircle,
+  AlertTriangle,
 } from 'lucide-react';
-import dynamic from 'next/dynamic';
-
-const SecurityWorkflowCard = dynamic(
-  () => import('@/components/marketing/demo/SecurityWorkflowCard'),
-  { ssr: false, loading: () => null }
-);
 
 const securityFeatures = [
   {
@@ -56,54 +52,100 @@ const securityFeatures = [
   },
 ];
 
+const AUDIT_LOG_ENTRIES = [
+  {
+    action: 'Evidence approved',
+    control: 'CC6.1 – Logical access controls',
+    actor: 'Sarah M.',
+    time: '2 min ago',
+    status: 'verified',
+  },
+  {
+    action: 'Control drift detected',
+    control: 'A1.2 – Availability monitoring',
+    actor: 'System',
+    time: '14 min ago',
+    status: 'alert',
+  },
+  {
+    action: 'Audit packet exported',
+    control: 'SOC 2 Type II – Full pack',
+    actor: 'James T.',
+    time: '1 hr ago',
+    status: 'verified',
+  },
+  {
+    action: 'Policy acknowledged',
+    control: 'ISO 27001 – A.5.1 Policies',
+    actor: 'Rachel K.',
+    time: '3 hr ago',
+    status: 'verified',
+  },
+  {
+    action: 'Worker credential updated',
+    control: 'NDIS – Worker Screening',
+    actor: 'Michael D.',
+    time: '5 hr ago',
+    status: 'verified',
+  },
+];
+
+const SECURITY_STATS = [
+  { label: 'Audit events logged', value: '100%' },
+  { label: 'Evidence with chain-of-custody', value: '100%' },
+  { label: 'Data encrypted at rest', value: 'AES-256' },
+  { label: 'Average audit packet export', value: '< 2 min' },
+] as const;
+
 export function SecuritySection() {
   return (
     <section className="mk-section home-section home-section--proof relative overflow-hidden">
-      {/* Proof section treatment: monochrome, high-contrast, no color gradients */}
-      <div className="absolute inset-x-0 top-0 h-px bg-white/[0.04]" />
-      <div className="absolute inset-x-0 bottom-0 h-px bg-white/[0.04]" />
+      {/* Section dividers */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          <ScrollReveal variant="depthScale" range={[0, 0.35]}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+          {/* Left — copy + feature grid */}
+          <ScrollReveal variant="slideUp" range={[0, 0.35]}>
             <div>
-              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-white/80 text-xs sm:text-sm font-medium mb-4 sm:mb-6">
+              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-teal-500/10 border border-teal-400/20 text-teal-400 text-xs sm:text-sm font-medium mb-5">
                 <BadgeCheck className="w-3.5 h-3.5" />
                 Enterprise Security
               </div>
 
-              <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-white">
-                Security Built Into
-                <span className="text-white/60">
-                  {' '}the Operating Layer
-                </span>
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-4 text-white">
+                Security built into
+                <span className="text-slate-400"> the operating layer</span>
               </h2>
-              <p className="text-base sm:text-lg md:text-xl text-gray-400 mb-3 sm:mb-4 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-400 mb-3 leading-relaxed">
                 Controls are enforced, not just recorded. Security is embedded at the operating layer — where compliance evidence is generated automatically and audit trails are always complete.
               </p>
-              <p className="text-xs sm:text-sm text-gray-500 mb-6 sm:mb-8 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-500 mb-8 leading-relaxed">
                 FormaOS ships with enterprise security controls as infrastructure: encryption, identity governance, immutable audit logs, and data residency — ready for your procurement team before the first question is asked.
               </p>
 
-              {/* Security features: monochrome cards with proof badges */}
-              <SectionChoreography pattern="depth-reveal" stagger={0.04} className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <SectionChoreography pattern="depth-reveal" stagger={0.04} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {securityFeatures.map((feature) => {
                   const Icon = feature.icon;
                   return (
-                    <div key={feature.title} className="home-panel home-panel--soft group flex gap-3 sm:gap-4 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-200">
-                      <div className="flex-shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-lg bg-white/[0.06] border border-white/[0.08] flex items-center justify-center">
-                        <Icon className="w-5 h-5 sm:w-5 sm:h-5 text-white/70" />
+                    <div
+                      key={feature.title}
+                      className="group flex gap-3 p-3.5 rounded-xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-teal-400/15 transition-all duration-200"
+                    >
+                      <div className="shrink-0 inline-flex items-center justify-center rounded-lg border border-teal-400/20 bg-teal-500/10 p-2 self-start">
+                        <Icon className="w-4 h-4 text-teal-400" />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-0.5">
-                          <h3 className="font-semibold text-sm sm:text-base text-white/90 truncate">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                          <h3 className="font-semibold text-sm text-white leading-snug">
                             {feature.title}
                           </h3>
-                          <span className="flex-shrink-0 text-[10px] font-bold uppercase tracking-wider text-white/50 bg-white/[0.06] border border-white/[0.08] rounded px-1.5 py-0.5">
+                          <span className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-teal-400/80 bg-teal-500/10 border border-teal-400/15 rounded px-1.5 py-0.5">
                             {feature.badge}
                           </span>
                         </div>
-                        <p className="text-xs sm:text-sm text-gray-500">
+                        <p className="text-xs text-slate-500 leading-relaxed">
                           {feature.description}
                         </p>
                       </div>
@@ -114,9 +156,58 @@ export function SecuritySection() {
             </div>
           </ScrollReveal>
 
-          <ScrollReveal variant="depthScale" range={[0, 0.35]} className="flex items-center justify-center order-first lg:order-last">
-            <div className="home-panel home-panel--strong w-full max-w-[500px] rounded-2xl p-2">
-              <SecurityWorkflowCard />
+          {/* Right — live audit log visual */}
+          <ScrollReveal variant="slideUp" range={[0.05, 0.4]}>
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] overflow-hidden">
+              {/* Panel header */}
+              <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06] bg-white/[0.02]">
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)]" />
+                  <span className="text-xs font-semibold uppercase tracking-widest text-slate-400">
+                    Live Audit Log
+                  </span>
+                </div>
+                <span className="text-[10px] text-slate-600 uppercase tracking-wider">
+                  Immutable · Timestamped
+                </span>
+              </div>
+
+              {/* Log entries */}
+              <div className="divide-y divide-white/[0.04]">
+                {AUDIT_LOG_ENTRIES.map((entry, i) => (
+                  <div
+                    key={i}
+                    className="flex items-start gap-3 px-4 py-3.5 hover:bg-white/[0.02] transition-colors"
+                  >
+                    <div className="mt-0.5 shrink-0">
+                      {entry.status === 'verified' ? (
+                        <CheckCircle className="w-4 h-4 text-emerald-400/70" />
+                      ) : (
+                        <AlertTriangle className="w-4 h-4 text-amber-400/70" />
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-white">{entry.action}</p>
+                      <p className="text-xs text-slate-500 mt-0.5">{entry.control}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-[10px] text-slate-600">{entry.actor}</span>
+                        <span className="text-[10px] text-slate-700">·</span>
+                        <span className="text-[10px] text-slate-600">{entry.time}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Stats strip */}
+              <div className="border-t border-white/[0.06] bg-white/[0.02] px-4 py-4 grid grid-cols-2 gap-3">
+                {SECURITY_STATS.map((stat) => (
+                  <div key={stat.label}>
+                    <p className="text-base font-bold text-teal-400">{stat.value}</p>
+                    <p className="text-[10px] text-slate-600 mt-0.5">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </ScrollReveal>
         </div>

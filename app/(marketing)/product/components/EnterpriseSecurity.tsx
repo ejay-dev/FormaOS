@@ -1,7 +1,6 @@
 'use client';
 
 import { Shield, Lock, Users, UserCheck, Database } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
@@ -16,47 +15,51 @@ const securityFeatures = [
   { label: 'Correlation ID tracking for all system events', icon: Lock },
   { label: 'Session management, rate limiting, and IP controls', icon: Database },
   { label: 'Data residency controls (AU / US / EU)', icon: Shield },
-  { label: 'Penetration testing — annual independent review', icon: Lock },
+  { label: 'Annual independent penetration testing', icon: Lock },
   { label: 'Vendor assurance packet and DPA available', icon: Database },
-];
+] as const;
 
 export function EnterpriseSecurity() {
   return (
-    <section className="product-section product-section--security relative py-32 overflow-visible">
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-full blur-3xl"
-        animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.4, 0.2] }}
-        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-      />
+    <section className="relative py-24 sm:py-32 overflow-hidden">
+      {/* Section dividers */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+
+      {/* Subtle section tint */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-teal-500/[0.03] to-transparent" />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="depthSlide" range={[0, 0.35]}>
-          <div className="product-panel product-panel--strong overflow-visible backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 sm:p-12">
+        <ScrollReveal variant="slideUp" range={[0, 0.35]}>
+          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 sm:p-10 relative overflow-hidden">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/25 to-transparent" />
+
             <div className="text-center mb-10">
-              <ScrollReveal variant="depthScale" range={[0, 0.3]}>
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium mb-6">
-                  <Shield className="w-4 h-4" />
-                  Enterprise-Grade Security
-                </div>
-              </ScrollReveal>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-400/20 text-teal-400 text-sm font-medium mb-5">
+                <Shield className="w-4 h-4" />
+                Enterprise-Grade Security
+              </div>
 
               <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-white">
-                Security Built Into the Operating Layer
+                Security built into the operating layer
               </h2>
-              <p className="text-gray-400 max-w-2xl mx-auto">
+              <p className="text-slate-400 max-w-2xl mx-auto leading-relaxed">
                 FormaOS is built for organizations under regulatory scrutiny. Security controls, identity governance, and audit infrastructure are core — not bolt-on features.
               </p>
             </div>
 
-            <SectionChoreography pattern="cascade" stagger={0.04} range={[0, 0.3]} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <SectionChoreography pattern="cascade" stagger={0.04} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {securityFeatures.map((feature) => {
                 const Icon = feature.icon;
                 return (
-                  <div key={feature.label} className="product-panel product-panel--soft flex items-center gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/5">
-                    <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
-                      <Icon className="w-5 h-5 text-red-400" />
+                  <div
+                    key={feature.label}
+                    className="flex items-center gap-3 p-3.5 rounded-xl border border-white/[0.05] bg-white/[0.02] hover:border-teal-400/15 hover:bg-white/[0.04] transition-all duration-200"
+                  >
+                    <div className="inline-flex items-center justify-center rounded-lg border border-teal-400/20 bg-teal-500/10 p-2 shrink-0">
+                      <Icon className="w-4 h-4 text-teal-400" />
                     </div>
-                    <span className="text-sm text-gray-300">{feature.label}</span>
+                    <span className="text-sm text-slate-300 leading-snug">{feature.label}</span>
                   </div>
                 );
               })}

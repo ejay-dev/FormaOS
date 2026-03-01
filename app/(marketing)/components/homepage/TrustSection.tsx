@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ArrowRight, ClipboardCheck, FileLock2, ShieldCheck } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -15,7 +16,7 @@ const trustedBy = [
   'Community services',
   'Enterprise compliance',
   'Multi-site operators',
-];
+] as const;
 
 /* ── Animated counter: counts up from 0 to target on scroll ── */
 function AnimatedCounter({ value, suffix = '' }: { value: number; suffix?: string }) {
@@ -38,7 +39,7 @@ function AnimatedCounter({ value, suffix = '' }: { value: number; suffix?: strin
           return;
         }
 
-        const dur = 1800;
+        const dur = 1600;
         const start = performance.now();
         const step = (now: number) => {
           const elapsed = now - start;
@@ -59,7 +60,7 @@ function AnimatedCounter({ value, suffix = '' }: { value: number; suffix?: strin
 }
 
 const trustSignals = [
-  { value: 7, suffix: '', unit: 'packs', label: 'Framework mappings available' },
+  { value: 9, suffix: '', unit: 'packs', label: 'Framework mappings available' },
   { value: 100, suffix: '%', unit: '', label: 'Immutable audit event history' },
   { value: 4, suffix: '', unit: 'roles', label: 'Least-privilege access control' },
   { value: 14, suffix: '', unit: 'day', label: 'Free trial — no credit card' },
@@ -68,12 +69,13 @@ const trustSignals = [
 export function TrustSection() {
   return (
     <section className="mk-section home-section home-section--trust relative overflow-hidden">
-      {/* Data section treatment: dark inset panel */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#060a14] to-transparent" />
+      {/* Section dividers */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="blurIn" range={[0, 0.3]} className="text-center mb-12">
-          <p className="text-sm uppercase tracking-wider text-gray-500 mb-8">
+        <ScrollReveal variant="slideUp" range={[0, 0.3]} className="text-center mb-12">
+          <p className="text-xs uppercase tracking-widest text-slate-600 mb-3">
             Built for regulated teams and enterprise buyers
           </p>
           <h2 className="text-2xl sm:text-3xl font-bold text-white">
@@ -85,45 +87,38 @@ export function TrustSection() {
           </p>
         </ScrollReveal>
 
-        {/* Trusted-by chips: minimal, monochrome */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
-          {trustedBy.map((company, index) => (
-            <ScrollReveal
-              key={company}
-              variant="scaleUp"
-              range={[index * 0.04, 0.3 + index * 0.04]}
+        {/* Trusted-by chips */}
+        <SectionChoreography pattern="stagger-wave" stagger={0.05} className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {trustedBy.map((sector) => (
+            <div
+              key={sector}
+              className="flex items-center justify-center p-3.5 rounded-xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-200"
             >
-              <div className="home-panel home-panel--soft flex items-center justify-center p-4 rounded-lg bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300">
-                <span className="text-gray-500 hover:text-gray-300 transition-colors duration-300 text-sm font-medium text-center">
-                  {company}
-                </span>
-              </div>
-            </ScrollReveal>
+              <span className="text-slate-500 hover:text-slate-300 transition-colors duration-200 text-sm font-medium text-center">
+                {sector}
+              </span>
+            </div>
           ))}
-        </div>
+        </SectionChoreography>
 
-        {/* Trust metrics: illuminated number panels */}
-        <ScrollReveal variant="scaleUp" range={[0.05, 0.4]} className="mt-16 max-w-4xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
+        {/* Trust metrics */}
+        <ScrollReveal variant="slideUp" range={[0.05, 0.4]} className="mt-10 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {trustSignals.map((stat) => (
               <div
                 key={stat.label}
-                className="home-panel home-panel--interactive relative group p-6 rounded-xl bg-[#080c18] border border-white/[0.06] text-center overflow-hidden"
+                className="group relative p-6 rounded-xl border border-white/[0.06] bg-white/[0.02] text-center overflow-hidden hover:border-teal-400/20 hover:bg-white/[0.04] transition-all duration-300"
               >
-                {/* Illumination glow on hover */}
-                <div className="absolute inset-0 bg-gradient-to-b from-teal-500/0 to-teal-500/0 group-hover:from-teal-500/[0.06] group-hover:to-transparent transition-all duration-500 rounded-xl" />
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/0 group-hover:via-teal-400/30 to-transparent transition-all duration-500" />
 
-                <div className="relative">
-                  <div className="text-3xl sm:text-4xl font-bold text-white mb-1 tabular-nums">
-                    <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-                    {stat.unit && (
-                      <span className="text-lg text-teal-400 ml-1 font-medium">{stat.unit}</span>
-                    )}
-                  </div>
-                  <div className="text-xs sm:text-sm text-gray-500">
-                    {stat.label}
-                  </div>
+                <div className="text-3xl sm:text-4xl font-bold text-white mb-1 tabular-nums">
+                  <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                  {stat.unit && (
+                    <span className="text-base text-teal-400 ml-1 font-medium">{stat.unit}</span>
+                  )}
+                </div>
+                <div className="text-xs text-slate-500">
+                  {stat.label}
                 </div>
               </div>
             ))}
@@ -131,10 +126,10 @@ export function TrustSection() {
         </ScrollReveal>
 
         {/* CTA links */}
-        <ScrollReveal variant="slideUp" range={[0.05, 0.35]} className="mt-12">
+        <ScrollReveal variant="slideUp" range={[0.05, 0.35]} className="mt-8">
           <div className="grid gap-3 md:grid-cols-3">
             <Link
-              href="/security-review"
+              href="/trust/packet"
               className="mk-btn mk-btn-primary group flex items-center justify-between rounded-2xl px-4 py-3 text-sm text-teal-100"
             >
               <span className="inline-flex items-center gap-2 font-medium">
