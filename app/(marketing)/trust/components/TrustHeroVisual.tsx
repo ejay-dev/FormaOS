@@ -194,8 +194,8 @@ function TrustHeroVisualInner() {
           // Particle drifts between node position and center
           const startX = 300 + node.x; // offset to container coords (center = 300,250)
           const startY = 250 + node.y;
-          const endX = 300;
-          const endY = 250;
+          const _endX = 300;
+          const _endY = 250;
           return (
             <div
               key={`particle-${p.id}`}

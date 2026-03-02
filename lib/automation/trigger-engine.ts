@@ -445,7 +445,7 @@ async function handleOrgOnboarding(
  */
 async function handleOnboardingMilestone(
   event: TriggerEvent,
-  result: AutomationResult,
+  _result: AutomationResult,
 ) {
   const supabase = createSupabaseAdminClient();
   const milestone = event.metadata?.milestone || 'unknown';
@@ -619,7 +619,7 @@ async function handleRiskScoreChange(
 
   // Create escalation task for high/critical risk
   if (newRisk === 'high' || newRisk === 'critical') {
-    const { data: task, error } = await supabase
+    const { data: _task, error } = await supabase
       .from('org_tasks')
       .insert({
         organization_id: event.organizationId,

@@ -6,12 +6,7 @@ import {
   Building2,
   Shield,
   Zap,
-  FileCheck,
-  TrendingUp,
-  Layers,
   ClipboardCheck,
-  Lock,
-  BookOpen,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 

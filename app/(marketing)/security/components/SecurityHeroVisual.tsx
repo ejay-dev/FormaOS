@@ -49,9 +49,7 @@ function SecurityHeroVisualInner() {
 
   // Per-ring parallax offsets (additional rotation from cursor)
   const ringOffsets = RINGS.map((ring) => ({
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     rotateX: useTransform(mouseY, [0, 1], [8 * ring.parallax, -8 * ring.parallax]),
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     rotateY: useTransform(mouseX, [0, 1], [-8 * ring.parallax, 8 * ring.parallax]),
   }));
 

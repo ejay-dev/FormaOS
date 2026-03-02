@@ -256,10 +256,10 @@ export function ProfileEditor({
         <div className="flex-1 space-y-6">
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-xs font-black uppercase text-slate-400 tracking-widest">Full name</label>
+              <label htmlFor="field-81" className="text-xs font-black uppercase text-slate-400 tracking-widest">Full name</label>
               <div className="relative">
                 <UserIcon className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                <input
+                <input id="field-81"
                   value={fullName}
                   onChange={(event) => setFullName(event.target.value)}
                   className="w-full rounded-2xl border border-white/10 bg-white/10 py-3 pl-10 pr-4 text-sm font-semibold text-slate-100 focus:outline-white/20"
@@ -267,10 +267,10 @@ export function ProfileEditor({
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-black uppercase text-slate-400 tracking-widest">Phone number</label>
+              <label htmlFor="field-80" className="text-xs font-black uppercase text-slate-400 tracking-widest">Phone number</label>
               <div className="relative">
                 <Phone className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                <input
+                <input id="field-80"
                   value={phone}
                   onChange={(event) => setPhone(event.target.value)}
                   className="w-full rounded-2xl border border-white/10 bg-white/10 py-3 pl-10 pr-4 text-sm font-semibold text-slate-100 focus:outline-white/20"
@@ -281,10 +281,10 @@ export function ProfileEditor({
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-xs font-black uppercase text-slate-400 tracking-widest">Email</label>
+              <label htmlFor="field-79" className="text-xs font-black uppercase text-slate-400 tracking-widest">Email</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                <input
+                <input id="field-79"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                   className="w-full rounded-2xl border border-white/10 bg-white/10 py-3 pl-10 pr-4 text-sm font-semibold text-slate-100 focus:outline-white/20"
@@ -296,10 +296,10 @@ export function ProfileEditor({
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-black uppercase text-slate-400 tracking-widest">Organization name</label>
+              <label htmlFor="field-78" className="text-xs font-black uppercase text-slate-400 tracking-widest">Organization name</label>
               <div className="relative">
                 <Building2 className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                <input
+                <input id="field-78"
                   value={organizationName}
                   onChange={(event) => setOrganizationName(event.target.value)}
                   disabled={!isAdmin}

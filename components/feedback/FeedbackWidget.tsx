@@ -67,7 +67,7 @@ export function FeedbackWidget() {
         <div
           ref={panelRef}
           className={cn(
-            'w-80 rounded-2xl border border-white/[0.08] bg-[#0d1424] shadow-2xl',
+            'w-80 rounded-2xl border border-white/[0.08] bg-background shadow-2xl',
             'backdrop-blur-xl',
           )}
         >
@@ -139,7 +139,7 @@ export function FeedbackWidget() {
 
       {/* Done state */}
       {state === 'done' && (
-        <div className="rounded-2xl border border-emerald-500/20 bg-[#0d1424] px-5 py-4 shadow-xl backdrop-blur-xl">
+        <div className="rounded-2xl border border-emerald-500/20 bg-background px-5 py-4 shadow-xl backdrop-blur-xl">
           <p className="text-sm font-semibold text-emerald-400">Thanks for the feedback!</p>
           <p className="mt-0.5 text-xs text-slate-500">We read every response.</p>
         </div>
@@ -151,7 +151,7 @@ export function FeedbackWidget() {
           onClick={() => setState(state === 'open' ? 'idle' : 'open')}
           className={cn(
             'flex h-11 w-11 items-center justify-center rounded-full shadow-lg transition',
-            'bg-[#0d1424] ring-1 ring-white/[0.08] hover:ring-white/[0.16]',
+            'bg-background ring-1 ring-white/[0.08] hover:ring-white/[0.16]',
             state === 'open' && 'ring-cyan-500/40',
           )}
           aria-label="Share feedback"

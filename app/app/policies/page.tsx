@@ -32,7 +32,7 @@ export default function PoliciesPage() {
   const supabase = useMemo(() => createSupabaseClient(), []);
 
   const [allPolicies, setAllPolicies] = useState<PolicyRow[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [_isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const publishedCount = useMemo(

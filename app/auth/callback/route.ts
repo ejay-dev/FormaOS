@@ -28,7 +28,7 @@ export const dynamic = 'force-dynamic';
 const DEFAULT_PLAN = 'basic';
 
 // Legacy plan_code mapping (basic -> starter for FK constraint)
-function toLegacyPlanCode(planKey: string): string {
+function _toLegacyPlanCode(planKey: string): string {
   return planKey === 'basic' ? 'starter' : planKey;
 }
 

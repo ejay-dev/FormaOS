@@ -6,7 +6,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { AlertCircle, CheckCircle2, X, Shield, TrendingDown } from 'lucide-react';
+import { AlertCircle, CheckCircle2, X, Shield } from 'lucide-react';
 import { getAutomationHistory } from '@/app/app/actions/automation';
 
 interface Toast {

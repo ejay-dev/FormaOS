@@ -50,7 +50,7 @@ export function CareOperationsScorecard() {
 
         const json = await response.json();
         setData(json);
-      } catch (err) {
+      } catch (_err) {
         setError('Failed to load care operations data');
       } finally {
         setIsLoading(false);

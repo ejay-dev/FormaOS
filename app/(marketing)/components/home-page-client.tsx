@@ -1,21 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Database, Target, Users, Shield, Sparkles, Mail, Phone, MapPin, ArrowRight } from "lucide-react";
+import { Database, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { duration } from '@/config/motion';
 import {
-  CinematicSection,
-  SectionHeader,
-  TimelineItem,
-  NarrativeBlock,
-  MissionStatement,
-  TeamMember,
-  VisualDivider,
-  ValueProp,
   ParallaxLayer,
-  GradientMesh,
-  InteractiveCard,
 } from "@/components/motion";
 import { MarketingAnchor } from "./marketing-anchor";
 import { brand } from '@/config/brand';

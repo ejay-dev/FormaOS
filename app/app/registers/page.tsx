@@ -72,7 +72,6 @@ export default function RegistersPage() {
 
   useEffect(() => {
     fetchRegisters();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [organization?.id]);
 
   async function fetchRegisters() {

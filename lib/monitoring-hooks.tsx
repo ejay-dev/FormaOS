@@ -8,7 +8,7 @@ import { performanceMonitor } from '@/lib/monitoring';
  * Usage: usePageLoadMonitoring('dashboard')
  */
 export function usePageLoadMonitoring(pageName: string) {
-  const startTimeRef = useRef(Date.now());
+  const _startTimeRef = useRef(Date.now());
   const renderStartRef = useRef(Date.now());
 
   useEffect(() => {

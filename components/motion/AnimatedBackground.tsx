@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 export function FloatingUIPanel({ delay = 0, children, className = "" }: { delay?: number; children: React.ReactNode; className?: string }) {

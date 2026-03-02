@@ -13,7 +13,6 @@ import { Button } from '@/components/ui/button';
 import {
   TrendingUp,
   TrendingDown,
-  AlertTriangle,
   CheckCircle2,
   Shield,
   ChevronRight,
@@ -103,7 +102,7 @@ export function ComplianceDashboardWidget() {
     return 'from-red-500 to-rose-600';
   };
 
-  const getTrendIcon = (score: number) => {
+  const _getTrendIcon = (score: number) => {
     if (score >= 75) {
       return <TrendingUp className="w-6 h-6 text-green-600" />;
     } else if (score >= 50) {

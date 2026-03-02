@@ -32,10 +32,10 @@ test.describe('CRITICAL: User Journey Validation', () => {
       }
     }
 
-    // At minimum, the site should be accessible with a title
+    // The site should be accessible with a title
     expect(await page.title()).toBeTruthy();
-    // CTA existence is informational, not a failure
-    expect(ctaCount).toBeGreaterThanOrEqual(0);
+    // At least one signup CTA should be visible on the homepage
+    expect(ctaCount).toBeGreaterThan(0);
   });
 
   test('CRITICAL: Homepage loads successfully', async ({ page }) => {
@@ -73,8 +73,8 @@ test.describe('CRITICAL: User Journey Validation', () => {
       }
     }
 
-    // At minimum, navigation should exist
-    expect(checkedLinks.size).toBeGreaterThanOrEqual(0);
+    // Navigation should contain at least one internal link
+    expect(checkedLinks.size).toBeGreaterThan(0);
   });
 
   test('CRITICAL: Non-founder cannot access admin routes', async ({ page }) => {
@@ -113,10 +113,10 @@ test.describe('CRITICAL: User Journey Validation', () => {
       }
     }
 
-    // At minimum, some auth flow should be accessible
+    // At least one auth URL should be accessible
     const pageContent = await page.textContent('body');
     expect(pageContent).toBeTruthy();
-    expect(successfulLogin).toBeGreaterThanOrEqual(0);
+    expect(successfulLogin).toBeGreaterThan(0);
   });
 });
 

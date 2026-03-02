@@ -13,9 +13,7 @@ import {
   Bell,
   CheckCircle2,
   Clock,
-  FileCheck,
   Shield,
-  TrendingUp,
   X,
 } from 'lucide-react';
 import { getAutomationHistory } from '@/app/app/actions/automation';
@@ -165,6 +163,9 @@ function NotificationItem({
 
   return (
     <div
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}
       className={`group relative p-4 rounded-lg border transition-all ${
         notification.read
           ? 'bg-white border-gray-200'

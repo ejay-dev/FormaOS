@@ -1,7 +1,7 @@
 "use client"
 
 import { useFormStatus } from "react-dom"
-import { Loader2, ArrowRight, Check, AlertCircle } from "lucide-react"
+import { Loader2, ArrowRight, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 type SubmitButtonVariant = "primary" | "secondary" | "danger" | "ghost"

@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext } from 'react';
 import { type MotionValue, motionValue } from 'framer-motion';
 
 interface CursorContextValue {

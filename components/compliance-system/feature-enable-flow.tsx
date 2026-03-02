@@ -233,9 +233,7 @@ function ModuleNode({
 
       <div>
         <p className={cn('font-bold text-sm', colors.text)}>{config.name}</p>
-        <p className="text-xs text-slate-500 mt-0.5">
-          {config.description}
-        </p>
+        <p className="text-xs text-slate-500 mt-0.5">{config.description}</p>
       </div>
 
       {/* Hover tooltip for locked modules */}
@@ -255,9 +253,8 @@ interface FeatureEnableFlowProps {
 }
 
 export function FeatureEnableFlow({ onModuleSelect }: FeatureEnableFlowProps) {
-  const { state, getModuleState, isModuleAccessible, getPlan } =
-    useSystemState();
-  const { reportSuccess, reportWarning, reportInfo } = useComplianceAction();
+  const { getModuleState, getPlan } = useSystemState();
+  const { reportWarning, reportInfo } = useComplianceAction();
   const [processingModule, setProcessingModule] = useState<ModuleId | null>(
     null,
   );

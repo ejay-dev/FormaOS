@@ -18,7 +18,6 @@ import { motion } from 'framer-motion';
 import { duration } from '@/config/motion';
 import dynamic from 'next/dynamic';
 import { VisualDivider } from '@/components/motion';
-import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { DeferredSection } from '../components/shared';

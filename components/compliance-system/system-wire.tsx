@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React, { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
-import { useSystemState } from "@/lib/system-state";
-import { ModuleId, WireState, SystemFlow } from "@/lib/system-state/types";
+import React, { useEffect, useRef, useState } from 'react';
+import { cn } from '@/lib/utils';
+import { useSystemState } from '@/lib/system-state';
+import { ModuleId, WireState } from '@/lib/system-state/types';
 
 /**
  * =========================================================
@@ -13,45 +13,48 @@ import { ModuleId, WireState, SystemFlow } from "@/lib/system-state/types";
  * Reflects real-time system operations.
  */
 
-const WIRE_STYLES: Record<WireState, {
-  stroke: string;
-  strokeWidth: number;
-  dashArray?: string;
-  glowFilter: string;
-  particleColor: string;
-}> = {
+const WIRE_STYLES: Record<
+  WireState,
+  {
+    stroke: string;
+    strokeWidth: number;
+    dashArray?: string;
+    glowFilter: string;
+    particleColor: string;
+  }
+> = {
   none: {
-    stroke: "transparent",
+    stroke: 'transparent',
     strokeWidth: 0,
-    glowFilter: "",
-    particleColor: "transparent",
+    glowFilter: '',
+    particleColor: 'transparent',
   },
   animating: {
-    stroke: "url(#wireGradientAnimating)",
+    stroke: 'url(#wireGradientAnimating)',
     strokeWidth: 3,
-    dashArray: "8 4",
-    glowFilter: "url(#wireGlow)",
-    particleColor: "#22d3ee",
+    dashArray: '8 4',
+    glowFilter: 'url(#wireGlow)',
+    particleColor: '#22d3ee',
   },
   connected: {
-    stroke: "url(#wireGradientConnected)",
+    stroke: 'url(#wireGradientConnected)',
     strokeWidth: 2,
-    glowFilter: "url(#wireGlowSubtle)",
-    particleColor: "#34d399",
+    glowFilter: 'url(#wireGlowSubtle)',
+    particleColor: '#34d399',
   },
   partial: {
-    stroke: "url(#wireGradientPartial)",
+    stroke: 'url(#wireGradientPartial)',
     strokeWidth: 2,
-    dashArray: "4 4",
-    glowFilter: "",
-    particleColor: "#fbbf24",
+    dashArray: '4 4',
+    glowFilter: '',
+    particleColor: '#fbbf24',
   },
   broken: {
-    stroke: "#ef4444",
+    stroke: '#ef4444',
     strokeWidth: 2,
-    dashArray: "2 6",
-    glowFilter: "",
-    particleColor: "#ef4444",
+    dashArray: '2 6',
+    glowFilter: '',
+    particleColor: '#ef4444',
   },
 };
 
@@ -66,8 +69,6 @@ interface SystemWireProps {
 
 export function SystemWire({
   flowId,
-  sourceModule,
-  targetModule,
   state: propState,
   progress: propProgress,
   className,
@@ -78,22 +79,22 @@ export function SystemWire({
   const [particlePosition, setParticlePosition] = useState({ x: 0, y: 0 });
 
   // Get flow from system state if flowId provided
-  const flow = flowId 
-    ? systemState.activeFlows.find(f => f.id === flowId) 
+  const flow = flowId
+    ? systemState.activeFlows.find((f) => f.id === flowId)
     : undefined;
-  
-  const wireState = flow?.state || propState || "none";
+
+  const wireState = flow?.state || propState || 'none';
   const progress = flow?.progress ?? propProgress ?? 0;
   const styles = WIRE_STYLES[wireState];
 
   // Animate particle along path
   useEffect(() => {
-    if (!pathRef.current || wireState === "none") return;
-    
+    if (!pathRef.current || wireState === 'none') return;
+
     const length = pathRef.current.getTotalLength();
     setPathLength(length);
 
-    if (wireState === "animating") {
+    if (wireState === 'animating') {
       const animateParticle = () => {
         const t = (Date.now() % 2000) / 2000;
         const point = pathRef.current?.getPointAtLength(t * length);
@@ -107,24 +108,47 @@ export function SystemWire({
     }
   }, [wireState]);
 
-  if (wireState === "none") return null;
+  if (wireState === 'none') return null;
 
   return (
-    <svg className={cn("absolute inset-0 w-full h-full pointer-events-none", className)}>
+    <svg
+      className={cn(
+        'absolute inset-0 w-full h-full pointer-events-none',
+        className,
+      )}
+    >
       <defs>
         {/* Gradients */}
-        <linearGradient id="wireGradientAnimating" x1="0%" y1="0%" x2="100%" y2="0%">
+        <linearGradient
+          id="wireGradientAnimating"
+          x1="0%"
+          y1="0%"
+          x2="100%"
+          y2="0%"
+        >
           <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.3" />
           <stop offset="50%" stopColor="#06b6d4" stopOpacity="1" />
           <stop offset="100%" stopColor="#14b8a6" stopOpacity="0.3" />
         </linearGradient>
-        
-        <linearGradient id="wireGradientConnected" x1="0%" y1="0%" x2="100%" y2="0%">
+
+        <linearGradient
+          id="wireGradientConnected"
+          x1="0%"
+          y1="0%"
+          x2="100%"
+          y2="0%"
+        >
           <stop offset="0%" stopColor="#34d399" stopOpacity="0.5" />
           <stop offset="100%" stopColor="#10b981" stopOpacity="0.8" />
         </linearGradient>
-        
-        <linearGradient id="wireGradientPartial" x1="0%" y1="0%" x2="100%" y2="0%">
+
+        <linearGradient
+          id="wireGradientPartial"
+          x1="0%"
+          y1="0%"
+          x2="100%"
+          y2="0%"
+        >
           <stop offset="0%" stopColor="#fbbf24" stopOpacity="0.3" />
           <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.6" />
         </linearGradient>
@@ -137,8 +161,14 @@ export function SystemWire({
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
-        
-        <filter id="wireGlowSubtle" x="-50%" y="-50%" width="200%" height="200%">
+
+        <filter
+          id="wireGlowSubtle"
+          x="-50%"
+          y="-50%"
+          width="200%"
+          height="200%"
+        >
           <feGaussianBlur stdDeviation="2" result="coloredBlur" />
           <feMerge>
             <feMergeNode in="coloredBlur" />
@@ -157,17 +187,16 @@ export function SystemWire({
         strokeDasharray={styles.dashArray}
         filter={styles.glowFilter}
         strokeLinecap="round"
-        className={wireState === "animating" ? "animate-pulse" : ""}
+        className={wireState === 'animating' ? 'animate-pulse' : ''}
         style={{
-          strokeDashoffset: wireState === "animating" 
-            ? pathLength * (1 - progress / 100)
-            : 0,
-          transition: "stroke-dashoffset 0.3s ease-out",
+          strokeDashoffset:
+            wireState === 'animating' ? pathLength * (1 - progress / 100) : 0,
+          transition: 'stroke-dashoffset 0.3s ease-out',
         }}
       />
 
       {/* Animated Particle */}
-      {wireState === "animating" && (
+      {wireState === 'animating' && (
         <circle
           cx={particlePosition.x}
           cy={particlePosition.y}
@@ -205,27 +234,33 @@ interface WireCanvasProps {
 export function WireCanvas({ children, className }: WireCanvasProps) {
   const { state } = useSystemState();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [wires, setWires] = useState<{ 
-    id: string; 
-    path: string; 
-    state: WireState;
-    progress: number;
-  }[]>([]);
+  const [wires, setWires] = useState<
+    {
+      id: string;
+      path: string;
+      state: WireState;
+      progress: number;
+    }[]
+  >([]);
 
   // Update wire positions based on active flows
   useEffect(() => {
     if (!containerRef.current) return;
 
     const updateWires = () => {
-      const newWires = state.activeFlows.map(flow => {
+      const newWires = state.activeFlows.map((flow) => {
         // Find source and target elements
-        const sourceEl = containerRef.current?.querySelector(`[data-module="${flow.sourceModule}"]`);
-        const targetEl = containerRef.current?.querySelector(`[data-module="${flow.targetModule}"]`);
+        const sourceEl = containerRef.current?.querySelector(
+          `[data-module="${flow.sourceModule}"]`,
+        );
+        const targetEl = containerRef.current?.querySelector(
+          `[data-module="${flow.targetModule}"]`,
+        );
 
         if (!sourceEl || !targetEl) {
           return {
             id: flow.id,
-            path: "",
+            path: '',
             state: flow.state,
             progress: flow.progress,
           };
@@ -245,7 +280,7 @@ export function WireCanvas({ children, className }: WireCanvasProps) {
         const midX = (sx + tx) / 2;
         const midY = (sy + ty) / 2;
         const curvature = Math.abs(tx - sx) * 0.3;
-        
+
         const path = `M ${sx},${sy} Q ${midX},${midY - curvature} ${tx},${ty}`;
 
         return {
@@ -260,12 +295,12 @@ export function WireCanvas({ children, className }: WireCanvasProps) {
     };
 
     updateWires();
-    window.addEventListener("resize", updateWires);
-    return () => window.removeEventListener("resize", updateWires);
+    window.addEventListener('resize', updateWires);
+    return () => window.removeEventListener('resize', updateWires);
   }, [state.activeFlows]);
 
   return (
-    <div ref={containerRef} className={cn("relative", className)}>
+    <div ref={containerRef} className={cn('relative', className)}>
       {/* Wire Layer */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
         <defs>
@@ -282,27 +317,30 @@ export function WireCanvas({ children, className }: WireCanvasProps) {
             </feMerge>
           </filter>
         </defs>
-        
-        {wires.map(wire => wire.path && (
-          <g key={wire.id}>
-            <path
-              d={wire.path}
-              fill="none"
-              stroke="url(#flowGradient)"
-              strokeWidth={3}
-              strokeDasharray={wire.state === "animating" ? "8 4" : undefined}
-              filter="url(#flowGlow)"
-              strokeLinecap="round"
-              className={wire.state === "animating" ? "animate-pulse" : ""}
-            />
-          </g>
-        ))}
+
+        {wires.map(
+          (wire) =>
+            wire.path && (
+              <g key={wire.id}>
+                <path
+                  d={wire.path}
+                  fill="none"
+                  stroke="url(#flowGradient)"
+                  strokeWidth={3}
+                  strokeDasharray={
+                    wire.state === 'animating' ? '8 4' : undefined
+                  }
+                  filter="url(#flowGlow)"
+                  strokeLinecap="round"
+                  className={wire.state === 'animating' ? 'animate-pulse' : ''}
+                />
+              </g>
+            ),
+        )}
       </svg>
 
       {/* Content Layer */}
-      <div className="relative z-10">
-        {children}
-      </div>
+      <div className="relative z-10">{children}</div>
     </div>
   );
 }

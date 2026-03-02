@@ -101,6 +101,9 @@ export function CertificationReportCard({
 
   return (
     <div
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}
       className={`rounded-2xl border bg-gradient-to-br p-6 relative overflow-hidden transition-all ${
         disabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02] cursor-pointer'
       } ${colorClasses[color]}`}

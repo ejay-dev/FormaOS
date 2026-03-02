@@ -1,7 +1,7 @@
 'use client';
 
 import { useNotifications } from '@/lib/realtime';
-import { Bell, Check, X } from 'lucide-react';
+import { Bell, Check } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -27,7 +27,7 @@ export function NotificationCenter({ userId }: NotificationCenterProps) {
     }
   };
 
-  const getNotificationColor = (type: string) => {
+  const _getNotificationColor = (type: string) => {
     switch (type) {
       case 'success':
         return 'bg-green-50 border-green-200';
@@ -61,6 +61,9 @@ export function NotificationCenter({ userId }: NotificationCenterProps) {
           <>
             {/* Backdrop */}
             <div
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}
               className="fixed inset-0 z-40"
               onClick={() => setIsOpen(false)}
             />

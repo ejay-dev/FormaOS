@@ -580,7 +580,7 @@ async function getPhiInventorySummary(
 async function getCriticalGaps(
   orgId: string,
   admin: ReturnType<typeof createSupabaseAdminClient>,
-  frameworkCode: string,
+  _frameworkCode: string,
 ): Promise<CriticalGap[]> {
   const { data: evaluations } = await admin
     .from('org_control_evaluations')

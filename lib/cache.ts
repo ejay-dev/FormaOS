@@ -10,7 +10,7 @@
 const MAX_CACHE_ENTRIES = 1000;
 
 class InMemoryCache {
-  private cache: Map<string, { value: any; expiry: number }> = new Map();
+  private cache: Map<string, { value: unknown; expiry: number }> = new Map();
 
   private evictExpired(): void {
     const now = Date.now();
@@ -63,10 +63,19 @@ class InMemoryCache {
     const regex = new RegExp(pattern.replace('*', '.*'));
     return Array.from(this.cache.keys()).filter((k) => regex.test(k));
   }
+
+  get size(): number {
+    return this.cache.size;
+  }
+
+  clear(): void {
+    this.cache.clear();
+  }
 }
 
 // Initialize cache (Redis or in-memory fallback)
-let cacheInstance: any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Upstash Redis client type is incompatible with InMemoryCache
+let cacheInstance: any = null;
 
 async function getCache() {
   if (cacheInstance) return cacheInstance;
@@ -86,7 +95,7 @@ async function getCache() {
       });
       console.log('✅ Upstash Redis cache initialized');
       return cacheInstance;
-    } catch (error) {
+    } catch (_error) {
       console.warn('⚠️  Redis not available, using in-memory cache');
     }
   }
@@ -162,7 +171,7 @@ export async function getCached<T>(
  */
 export async function setCache(
   key: string,
-  value: any,
+  value: unknown,
   ttl = 300,
 ): Promise<void> {
   const cache = await getCache();
@@ -254,7 +263,7 @@ export async function getCacheStats(): Promise<{
   if (cache instanceof InMemoryCache) {
     return {
       type: 'memory',
-      keys: (cache as any).cache.size,
+      keys: cache.size,
     };
   }
 
@@ -276,7 +285,7 @@ export async function clearAllCache(): Promise<void> {
   const cache = await getCache();
 
   if (cache instanceof InMemoryCache) {
-    (cache as any).cache.clear();
+    cache.clear();
   } else {
     try {
       await cache.flushdb();

@@ -70,7 +70,7 @@ interface SandboxScreenProps {
 export default function SandboxScreen({ activePhase }: SandboxScreenProps) {
   const [drawer, setDrawer] = useState<DrawerState>({ type: 'none' });
   const [activeTab, setActiveTab] = useState<SandboxTab>('overview');
-  const [firedTriggers, setFiredTriggers] = useState<Set<string>>(new Set());
+  const [_firedTriggers, setFiredTriggers] = useState<Set<string>>(new Set());
   const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set());
 
   const closeDrawer = useCallback(() => setDrawer({ type: 'none' }), []);
@@ -480,7 +480,7 @@ function ControlsPanel() {
       <motion.div variants={fadeUp} className="rounded-xl bg-white/[0.02] border border-white/[0.06] overflow-hidden">
         {controls.map((ctrl) => {
           const fw = resolveFramework(ctrl.frameworkId);
-          const owner = resolveUserName(ctrl.ownerId);
+          const _owner = resolveUserName(ctrl.ownerId);
           const cfg = statusConfig[ctrl.status];
           return (
             <motion.div

@@ -165,7 +165,7 @@ export function CredentialInspectorModal({
 
             <div className="space-y-3 pt-10">
                 <div>
-                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">
+                    <label htmlFor="field-229" className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">
                         Approval Reason (required)
                     </label>
                     <textarea

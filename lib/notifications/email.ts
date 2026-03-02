@@ -6,7 +6,6 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
-import { logActivity } from '@/lib/audit-trail';
 
 export type EmailTemplate =
   | 'task_assignment'
@@ -385,19 +384,19 @@ export async function sendEmail(
 ): Promise<boolean> {
   try {
     // Generate email HTML based on template
-    let html = '';
+    let _html = '';
     switch (notification.template) {
       case 'task_assignment':
-        html = generateTaskAssignmentEmail(notification.data as any);
+        _html = generateTaskAssignmentEmail(notification.data as any);
         break;
       case 'certificate_expiring':
-        html = generateCertificateExpiringEmail(notification.data as any);
+        _html = generateCertificateExpiringEmail(notification.data as any);
         break;
       case 'compliance_alert':
-        html = generateComplianceAlertEmail(notification.data as any);
+        _html = generateComplianceAlertEmail(notification.data as any);
         break;
       case 'weekly_digest':
-        html = generateWeeklyDigestEmail(notification.data as any);
+        _html = generateWeeklyDigestEmail(notification.data as any);
         break;
       default:
         console.error(`Unknown email template: ${notification.template}`);

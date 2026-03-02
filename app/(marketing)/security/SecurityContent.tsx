@@ -10,7 +10,7 @@ import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import Link from "next/link";
 import { brand } from '@/config/brand';
 
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+const _appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 
 const safeguards = [

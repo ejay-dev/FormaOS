@@ -25,6 +25,7 @@ export function CardTitle({
   ...props
 }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
+    // eslint-disable-next-line jsx-a11y/heading-has-content -- content comes via {...props}
     <h3
       className={cn('text-lg font-semibold text-foreground', className)}
       {...props}

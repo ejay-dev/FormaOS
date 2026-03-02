@@ -61,7 +61,7 @@ export default async function NewCredentialPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">
+              <label htmlFor="field-52" className="block text-sm font-medium mb-1">
                 Staff Member <span className="text-red-500">*</span>
               </label>
               <select
@@ -78,7 +78,7 @@ export default async function NewCredentialPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">
+              <label htmlFor="field-51" className="block text-sm font-medium mb-1">
                 Credential Type <span className="text-red-500">*</span>
               </label>
               <select
@@ -97,7 +97,7 @@ export default async function NewCredentialPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label htmlFor="field-50" className="block text-sm font-medium mb-1">
               Credential Name <span className="text-red-500">*</span>
             </label>
             <input
@@ -111,8 +111,8 @@ export default async function NewCredentialPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Credential Number</label>
-              <input
+              <label htmlFor="field-49" className="block text-sm font-medium mb-1">Credential Number</label>
+              <input id="field-49"
                 type="text"
                 name="credential_number"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -120,8 +120,8 @@ export default async function NewCredentialPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Issuing Authority</label>
-              <input
+              <label htmlFor="field-48" className="block text-sm font-medium mb-1">Issuing Authority</label>
+              <input id="field-48"
                 type="text"
                 name="issuing_authority"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -137,16 +137,16 @@ export default async function NewCredentialPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Issue Date</label>
-              <input
+              <label htmlFor="field-47" className="block text-sm font-medium mb-1">Issue Date</label>
+              <input id="field-47"
                 type="date"
                 name="issue_date"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Expiry Date</label>
-              <input
+              <label htmlFor="field-46" className="block text-sm font-medium mb-1">Expiry Date</label>
+              <input id="field-46"
                 type="date"
                 name="expiry_date"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -160,8 +160,8 @@ export default async function NewCredentialPage() {
           <h2 className="text-lg font-semibold">Additional Notes</h2>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Notes</label>
-            <textarea
+            <label htmlFor="field-45" className="block text-sm font-medium mb-1">Notes</label>
+            <textarea id="field-45"
               name="notes"
               rows={3}
               className="w-full px-3 py-2 rounded-lg border border-input bg-background"

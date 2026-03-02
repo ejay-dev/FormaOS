@@ -53,3 +53,5 @@ scripts/
 !scripts/run-*.mjs
 .npm-cache/
 .gitnexus
+gitnexus/
+supabase/.temp/

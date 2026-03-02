@@ -5,6 +5,12 @@ import {
   SecurityEventTypes,
 } from '@/lib/security/session-security';
 import { extractClientIP } from '@/lib/security/session-security';
+import {
+  checkRateLimit,
+  getClientIdentifier,
+  createRateLimitHeaders,
+  RATE_LIMITS,
+} from '@/lib/security/rate-limiter';
 
 const allowedEvents = new Set(Object.values(SecurityEventTypes));
 const invalidMetadataPattern =
@@ -26,9 +32,18 @@ const sanitizeMetadata = (meta: unknown) => {
 
 export async function POST(request: Request) {
   try {
+    // Rate limit to prevent log flooding (10 req / 15 min per IP)
+    const identifier = await getClientIdentifier();
+    const rl = await checkRateLimit(RATE_LIMITS.AUTH, identifier);
+    if (!rl.success) {
+      return NextResponse.json(
+        { ok: false, error: 'rate_limited' },
+        { status: 429, headers: createRateLimitHeaders(rl) },
+      );
+    }
+
     const body = await request.json().catch(() => ({}));
-    const eventType =
-      typeof body?.eventType === 'string' ? body.eventType : '';
+    const eventType = typeof body?.eventType === 'string' ? body.eventType : '';
 
     if (!allowedEvents.has(eventType)) {
       return NextResponse.json(

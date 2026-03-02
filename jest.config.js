@@ -28,13 +28,14 @@ const customJestConfig = {
     '!**/coverage/**',
     '!**/e2e/**',
   ],
-  // TODO: Restore thresholds to 70% after test coverage improvement
+  // Coverage thresholds – raised from 1% baseline.
+  // Target: 20%+ as more tests are added.
   coverageThreshold: {
     global: {
-      branches: 1,
-      functions: 1,
-      lines: 1,
-      statements: 1,
+      branches: 3,
+      functions: 4,
+      lines: 4,
+      statements: 4,
     },
   },
   testMatch: [

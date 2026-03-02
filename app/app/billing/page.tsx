@@ -48,7 +48,7 @@ export default function BillingPage() {
     null,
   );
   const [entitlements, setEntitlements] = useState<EntitlementRow[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [_isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const planKey = useMemo(

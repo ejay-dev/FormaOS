@@ -180,7 +180,7 @@ export default async function SettingsPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-3">
-                  <label className="text-xs font-black uppercase text-slate-400 tracking-widest ml-1">
+                  <label htmlFor="field-212" className="text-xs font-black uppercase text-slate-400 tracking-widest ml-1">
                     Legal Entity Name
                   </label>
                   <input
@@ -191,7 +191,7 @@ export default async function SettingsPage() {
                   />
                 </div>
                 <div className="space-y-3">
-                  <label className="text-xs font-black uppercase text-slate-400 tracking-widest ml-1">
+                  <label htmlFor="field-211" className="text-xs font-black uppercase text-slate-400 tracking-widest ml-1">
                     Registration (ABN/ACN)
                   </label>
                   <input
@@ -205,7 +205,7 @@ export default async function SettingsPage() {
               </div>
 
               <div className="space-y-3 pt-2">
-                <label className="text-xs font-black uppercase text-slate-400 tracking-widest ml-1">
+                <label htmlFor="field-210" className="text-xs font-black uppercase text-slate-400 tracking-widest ml-1">
                   Authorized Email Domain
                 </label>
                 <div className="relative group">

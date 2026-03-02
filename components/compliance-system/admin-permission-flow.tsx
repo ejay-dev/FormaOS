@@ -12,7 +12,6 @@ import {
   ChevronRight,
   Lock,
   Unlock,
-  AlertTriangle,
   CheckCircle2,
   XCircle,
   Loader2,
@@ -248,9 +247,7 @@ function PermissionMatrix({
                 >
                   {label.name}
                 </p>
-                <p className="text-xs text-slate-500">
-                  {label.description}
-                </p>
+                <p className="text-xs text-slate-500">{label.description}</p>
               </div>
             </div>
 
@@ -281,7 +278,7 @@ interface AdminPermissionFlowProps {
 export function AdminPermissionFlow({
   onRoleChange,
 }: AdminPermissionFlowProps) {
-  const { state, changeRole, getRole, hasPermission } = useSystemState();
+  const { changeRole, getRole, hasPermission } = useSystemState();
   const { reportSuccess, reportWarning, reportInfo, reportError } =
     useComplianceAction();
 
@@ -333,7 +330,7 @@ export function AdminPermissionFlow({
       if (onRoleChange) {
         onRoleChange(selectedRole);
       }
-    } catch (error) {
+    } catch (_error) {
       reportError({
         title: 'Update failed',
         message: 'Could not update role. Please try again.',

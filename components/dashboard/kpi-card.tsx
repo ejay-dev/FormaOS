@@ -73,6 +73,7 @@ export function KPICard({
   };
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions -- role/tabIndex/onKeyDown are conditionally applied when onClick exists
     <div
       onClick={onClick}
       onKeyDown={onClick ? handleKeyDown : undefined}

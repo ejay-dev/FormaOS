@@ -30,7 +30,6 @@ import {
   updateComplianceScoreAndCheckRisk,
   onIndustryConfigured,
   onFrameworksProvisioned,
-  onOnboardingMilestone,
 } from '@/lib/automation/integration';
 import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
 import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
@@ -812,7 +811,7 @@ export default async function OnboardingPage({
               data-testid="onboarding-step-org"
             >
               <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
+                <label htmlFor="field-221" className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
                   Organization name
                 </label>
                 <input
@@ -826,7 +825,7 @@ export default async function OnboardingPage({
               </div>
 
               <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
+                <label htmlFor="field-220" className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
                   Team size
                 </label>
                 <div className="grid gap-3 md:grid-cols-2">
@@ -851,7 +850,7 @@ export default async function OnboardingPage({
               </div>
 
               <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
+                <label htmlFor="field-219" className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
                   Plan
                 </label>
                 <div className="grid gap-3 md:grid-cols-3">
@@ -893,7 +892,7 @@ export default async function OnboardingPage({
               data-testid="onboarding-step-industry"
             >
               <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
+                <label htmlFor="field-218" className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
                   Industry
                 </label>
                 <div className="grid gap-3 md:grid-cols-2">
@@ -1027,7 +1026,7 @@ export default async function OnboardingPage({
               data-testid="onboarding-step-invites"
             >
               <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
+                <label htmlFor="field-217" className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
                   Invite teammates (optional)
                 </label>
                 <textarea

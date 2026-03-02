@@ -194,7 +194,7 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
               </div>
 
               <div className="space-y-2">
-                <label className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+                <label htmlFor="field-226" className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
                   Verification Code
                 </label>
                 <input

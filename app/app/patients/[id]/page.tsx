@@ -300,7 +300,7 @@ export default async function PatientDetailPage({
             >
               <input type="hidden" name="patientId" value={patient.id} />
               <div className="md:col-span-2">
-                <label className="text-xs uppercase tracking-widest text-slate-500">
+                <label htmlFor="field-205" className="text-xs uppercase tracking-widest text-slate-500">
                   Full Name
                 </label>
                 <input
@@ -310,7 +310,7 @@ export default async function PatientDetailPage({
                 />
               </div>
               <div>
-                <label className="text-xs uppercase tracking-widest text-slate-500">
+                <label htmlFor="field-204" className="text-xs uppercase tracking-widest text-slate-500">
                   Status
                 </label>
                 <select
@@ -324,7 +324,7 @@ export default async function PatientDetailPage({
                 </select>
               </div>
               <div>
-                <label className="text-xs uppercase tracking-widest text-slate-500">
+                <label htmlFor="field-203" className="text-xs uppercase tracking-widest text-slate-500">
                   Risk
                 </label>
                 <select

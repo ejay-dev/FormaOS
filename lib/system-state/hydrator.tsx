@@ -1,7 +1,5 @@
 import { fetchSystemState } from './server';
 import { SystemStateProvider } from './context';
-import type { UserEntitlements } from './types';
-import { headers } from 'next/headers';
 
 /**
  * =========================================================

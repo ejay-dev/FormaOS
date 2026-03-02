@@ -194,8 +194,8 @@ export default async function IncidentDetailPage({
           </h2>
           <form action={resolveAction} className="mt-4 space-y-3">
             <div>
-              <label className="text-xs uppercase tracking-wider text-amber-200">Root Cause</label>
-              <textarea
+              <label htmlFor="field-8" className="text-xs uppercase tracking-wider text-amber-200">Root Cause</label>
+              <textarea id="field-8"
                 name="root_cause"
                 rows={3}
                 required
@@ -204,8 +204,8 @@ export default async function IncidentDetailPage({
               />
             </div>
             <div>
-              <label className="text-xs uppercase tracking-wider text-amber-200">Preventive Measures</label>
-              <textarea
+              <label htmlFor="field-7" className="text-xs uppercase tracking-wider text-amber-200">Preventive Measures</label>
+              <textarea id="field-7"
                 name="preventive_measures"
                 rows={3}
                 required

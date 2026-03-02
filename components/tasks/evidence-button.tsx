@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { uploadEvidence } from "@/app/app/actions/evidence"
-import { FileUp, Loader2, CheckCircle2, Upload, Shield } from "lucide-react"
+import { Loader2, CheckCircle2, Upload } from "lucide-react"
 import { useComplianceAction } from "@/components/compliance-system"
 
 /**

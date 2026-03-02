@@ -134,6 +134,9 @@ export default function OrganizationSwitcher({
         <>
           {/* Overlay */}
           <div
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}
             className="fixed inset-0 z-40"
             onClick={() => setIsOpen(false)}
           />

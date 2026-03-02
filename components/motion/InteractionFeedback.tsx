@@ -56,7 +56,7 @@ export function InteractiveButton({
       } else {
         setState("idle");
       }
-    } catch (error) {
+    } catch (_error) {
       if (showFeedback) {
         setState("error");
         setTimeout(() => setState("idle"), 3000);
@@ -218,7 +218,7 @@ interface Toast {
   duration?: number;
 }
 
-interface ToastProviderProps {
+interface _ToastProviderProps {
   children: ReactNode;
 }
 

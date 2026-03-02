@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react"
 import { createSupabaseClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
-import { LogOut, User, Settings, CreditCard, ChevronDown } from "lucide-react"
+import { LogOut, User, Settings, ChevronDown } from "lucide-react"
 import Button from "./ui/button"
 
 export function UserNav({ userEmail }: { userEmail: string }) {

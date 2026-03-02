@@ -103,7 +103,7 @@ export function InviteModal({
 
             {/* Email Input */}
             <div className="space-y-2">
-              <label className="text-xs font-black uppercase text-neutral-400 tracking-[0.2em] ml-1">
+              <label htmlFor="field-228" className="text-xs font-black uppercase text-neutral-400 tracking-[0.2em] ml-1">
                 Identity / Email
               </label>
               <div className="relative group">
@@ -121,7 +121,7 @@ export function InviteModal({
 
             {/* Role Selection */}
             <div className="space-y-3">
-              <label className="text-xs font-black uppercase text-neutral-400 tracking-[0.2em] ml-1">
+              <label htmlFor="field-227" className="text-xs font-black uppercase text-neutral-400 tracking-[0.2em] ml-1">
                 Access Level
               </label>
               <div className="grid grid-cols-3 gap-3">

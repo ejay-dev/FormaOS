@@ -5,7 +5,7 @@ import StarterKit from "@tiptap/starter-kit"
 import Placeholder from "@tiptap/extension-placeholder"
 import Link from "@tiptap/extension-link"
 import { useState } from "react"
-import { Save, Loader2, Bold, Italic, Heading1, Heading2, CheckCircle2 } from "lucide-react"
+import { Save, Loader2, Bold, Italic, Heading1, Heading2 } from "lucide-react"
 import { useComplianceAction } from "@/components/compliance-system"
 
 /**
@@ -27,7 +27,7 @@ export function PolicyEditor({
 }) {
   const [isSaving, setIsSaving] = useState(false)
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
-  const [showSuccess, setShowSuccess] = useState(false)
+  const [_showSuccess, setShowSuccess] = useState(false)
   const { nodeUpdated, reportError } = useComplianceAction()
 
   const editor = useEditor({

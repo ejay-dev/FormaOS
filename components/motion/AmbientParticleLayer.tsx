@@ -2,7 +2,7 @@
 
 import { memo, useEffect, useState } from 'react';
 import { UnifiedParticles } from './UnifiedParticles';
-import { useDeviceTier, tierParticleCount, type TierConfig } from '@/lib/device-tier';
+import { useDeviceTier, tierParticleCount } from '@/lib/device-tier';
 
 /**
  * AmbientParticleLayer

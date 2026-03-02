@@ -4,7 +4,6 @@ import {
   checkRateLimit,
   getClientIdentifier,
   createRateLimitHeaders,
-  RATE_LIMITS,
 } from '@/lib/security/rate-limiter';
 
 export const runtime = 'nodejs';

@@ -58,7 +58,7 @@ export async function inviteMember(email: string, role: string) {
 /**
  * ✅ REMOVE MEMBER (Keep this from before)
  */
-export async function removeTeamMember(targetUserId: string) {
+export async function removeTeamMember(_targetUserId: string) {
   // ... (Previous implementation remains valid)
   // If you need this code again, let me know.
   return { success: true };

@@ -30,7 +30,7 @@ on:
 jobs:
   artillery-load-test:
     runs-on: ubuntu-latest
-    if: github.event.inputs.test_type != 'k6-only'
+    if: github.event.inputs.test_type != 'stress' && github.event.inputs.test_type != 'spike'
 
     steps:
       - name: Checkout code
@@ -128,7 +128,7 @@ jobs:
 
   k6-performance-test:
     runs-on: ubuntu-latest
-    if: github.event.inputs.test_type == 'k6' || github.event.inputs.test_type == 'stress' || github.event.inputs.test_type == 'spike'
+    if: github.event.inputs.test_type == 'stress' || github.event.inputs.test_type == 'spike'
 
     steps:
       - name: Checkout code

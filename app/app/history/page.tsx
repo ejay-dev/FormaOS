@@ -1,7 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { 
-  FileText, ShieldAlert, CheckCircle2, Upload, 
-  Calendar, User, ArrowDown 
+  FileText, ShieldAlert, CheckCircle2, User 
 } from "lucide-react";
 
 type AuditLog = {
@@ -48,7 +47,7 @@ export default async function HistoryPage() {
       </div>
 
       <div className="relative border-l-2 border-white/10 ml-4 space-y-8 pb-12">
-        {auditLogs.map((log, index) => {
+        {auditLogs.map((log, _index) => {
            const style = getEventStyle(log.action);
            return (
             <div key={log.id} className="relative pl-8 group">

@@ -49,7 +49,7 @@ export default async function NewIncidentPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">
+              <label htmlFor="field-16" className="block text-sm font-medium mb-1">
                 Incident Type <span className="text-red-500">*</span>
               </label>
               <select
@@ -69,7 +69,7 @@ export default async function NewIncidentPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">
+              <label htmlFor="field-15" className="block text-sm font-medium mb-1">
                 Severity <span className="text-red-500">*</span>
               </label>
               <select
@@ -87,8 +87,8 @@ export default async function NewIncidentPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Related Client</label>
-              <select
+              <label htmlFor="field-14" className="block text-sm font-medium mb-1">Related Client</label>
+              <select id="field-14"
                 name="patient_id"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               >
@@ -101,7 +101,7 @@ export default async function NewIncidentPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">
+              <label htmlFor="field-13" className="block text-sm font-medium mb-1">
                 Date & Time Occurred <span className="text-red-500">*</span>
               </label>
               <input
@@ -115,8 +115,8 @@ export default async function NewIncidentPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Location</label>
-            <input
+            <label htmlFor="field-12" className="block text-sm font-medium mb-1">Location</label>
+            <input id="field-12"
               type="text"
               name="location"
               className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -125,7 +125,7 @@ export default async function NewIncidentPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label htmlFor="field-11" className="block text-sm font-medium mb-1">
               Description <span className="text-red-500">*</span>
             </label>
             <textarea
@@ -138,8 +138,8 @@ export default async function NewIncidentPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Immediate Actions Taken</label>
-            <textarea
+            <label htmlFor="field-10" className="block text-sm font-medium mb-1">Immediate Actions Taken</label>
+            <textarea id="field-10"
               name="immediate_actions"
               rows={2}
               className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -160,8 +160,8 @@ export default async function NewIncidentPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Follow-up Due Date</label>
-            <input
+            <label htmlFor="field-9" className="block text-sm font-medium mb-1">Follow-up Due Date</label>
+            <input id="field-9"
               type="date"
               name="follow_up_due_date"
               className="w-full px-3 py-2 rounded-lg border border-input bg-background"

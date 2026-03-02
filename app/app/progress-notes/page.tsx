@@ -108,7 +108,7 @@ export default async function ProgressNotesPage() {
             className="mt-4 grid gap-4 md:grid-cols-3"
           >
             <div className="md:col-span-1">
-              <label className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+              <label htmlFor="field-209" className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
                 Patient
               </label>
               <select
@@ -129,7 +129,7 @@ export default async function ProgressNotesPage() {
               </select>
             </div>
             <div>
-              <label className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+              <label htmlFor="field-208" className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
                 Status Tag
               </label>
               <select
@@ -145,7 +145,7 @@ export default async function ProgressNotesPage() {
               </select>
             </div>
             <div className="md:col-span-3">
-              <label className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+              <label htmlFor="field-207" className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
                 Note
               </label>
               <textarea

@@ -98,10 +98,10 @@ export function CreateAssetSheet() {
               
               {/* 1. Asset Name */}
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Asset Name</label>
+                <label htmlFor="field-89" className="text-xs font-bold uppercase text-slate-400 tracking-wider">Asset Name</label>
                 <div className="relative">
                   <Laptop className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
-                  <input
+                  <input id="field-89"
                       required
                       name="name"
                       placeholder="e.g. AWS Production Cluster"
@@ -112,8 +112,8 @@ export function CreateAssetSheet() {
 
               {/* 2. Asset Type */}
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Category</label>
-                <select 
+                <label htmlFor="field-88" className="text-xs font-bold uppercase text-slate-400 tracking-wider">Category</label>
+                <select id="field-88" 
                   name="type" 
                   className="w-full rounded-xl border border-white/10 p-3 text-sm outline-none focus:border-teal-400/50 bg-white/5"
                 >
@@ -126,7 +126,7 @@ export function CreateAssetSheet() {
 
               {/* 3. Owner (New Requirement) */}
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase text-slate-400 tracking-wider flex items-center gap-1">
+                <label htmlFor="field-87" className="text-xs font-bold uppercase text-slate-400 tracking-wider flex items-center gap-1">
                   <User className="h-3 w-3" />
                   Owner
                 </label>
@@ -141,7 +141,7 @@ export function CreateAssetSheet() {
 
               {/* 4. Criticality */}
               <div className="space-y-2 pt-2">
-                <label className="text-xs font-bold uppercase text-slate-400 tracking-wider flex items-center gap-1">
+                <label htmlFor="field-86" className="text-xs font-bold uppercase text-slate-400 tracking-wider flex items-center gap-1">
                   <ShieldAlert className="h-3 w-3 text-amber-500" />
                   Risk Level
                 </label>

@@ -637,7 +637,6 @@ function LaserFlowInner({
       renderer.dispose();
       if (mount.contains(canvas)) mount.removeChild(canvas);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [useFallback]); // Only re-run if fallback mode changes
 
   // Static gradient fallback for reduced-motion / low-tier

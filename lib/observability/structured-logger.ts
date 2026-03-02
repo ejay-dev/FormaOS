@@ -56,7 +56,7 @@ function safeStringify(value: Record<string, unknown>): string {
  * Output format: [DOMAIN] [LEVEL] action - details
  */
 export function logStructured(log: StructuredLog): void {
-  const { timestamp, level, domain, action, orgId, userId, duration, error, metadata } = log;
+  const { level, domain, action, orgId, userId, duration, error, metadata } = log;
 
   // Build log parts
   const parts: string[] = [

@@ -293,7 +293,7 @@ export const LogoLoop = memo(function LogoLoop({
     (item: LogoItem, key: string) => {
       if (renderItem) {
         return (
-          <li className="logoloop__item" key={key} role="listitem">
+          <li className="logoloop__item" key={key}>
             {renderItem(item, key)}
           </li>
         );
@@ -332,7 +332,7 @@ export const LogoLoop = memo(function LogoLoop({
         content
       );
       return (
-        <li className="logoloop__item" key={key} role="listitem">
+        <li className="logoloop__item" key={key}>
           {itemContent}
         </li>
       );
@@ -346,7 +346,6 @@ export const LogoLoop = memo(function LogoLoop({
         <ul
           className="logoloop__list"
           key={`copy-${copyIndex}`}
-          role="list"
           aria-hidden={copyIndex > 0}
           ref={copyIndex === 0 ? seqRef : undefined}
         >
@@ -378,6 +377,9 @@ export const LogoLoop = memo(function LogoLoop({
       aria-label={ariaLabel}
     >
       <div
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}
         className="logoloop__track"
         ref={trackRef}
         onMouseEnter={handleMouseEnter}

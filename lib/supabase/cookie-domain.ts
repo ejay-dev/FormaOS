@@ -30,7 +30,7 @@ function longestCommonSuffixHost(hostA: string, hostB: string) {
   return suffix.length > 0 ? suffix.join('.') : '';
 }
 
-function widenHost(host: string) {
+function _widenHost(host: string) {
   const normalized = normalizeHost(host);
   const parts = normalized.split('.');
   const dropPrefixes = new Set(['www', 'app', 'admin']);
@@ -91,7 +91,7 @@ export function getCookieDomain(requestHost?: string): string | undefined {
     }
 
     // Only set domain cookie if we need cross-subdomain auth
-    const cookieHost = normalizedPrimary;
+    const _cookieHost = normalizedPrimary;
     if (siteHost && appHost && siteHost !== appHost) {
       const common = longestCommonSuffixHost(siteHost, appHost);
       if (common && requestHost.endsWith(common)) {

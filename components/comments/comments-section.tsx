@@ -10,8 +10,6 @@
 import { useState, useEffect } from 'react';
 import {
   Send,
-  ThumbsUp,
-  Heart,
   Smile,
   Edit2,
   Trash2,

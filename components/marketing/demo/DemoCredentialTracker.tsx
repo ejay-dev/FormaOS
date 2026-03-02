@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import {
-  Award, AlertCircle, CheckCircle, Clock,
+import { AlertCircle, CheckCircle, Clock,
   Shield, UserCheck,
 } from 'lucide-react';
 import { easing, duration } from '@/config/motion';

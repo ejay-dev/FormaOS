@@ -27,7 +27,7 @@ export function OAuthRedirectWrapper() {
   useEffect(() => {
     const handleOAuthRedirect = async () => {
       const code = searchParams.get('code');
-      const state = searchParams.get('state');
+      const _state = searchParams.get('state');
       const error = searchParams.get('error');
 
       // Only handle if this is an OAuth redirect

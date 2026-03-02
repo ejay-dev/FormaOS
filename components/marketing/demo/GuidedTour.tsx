@@ -88,7 +88,10 @@ export function GuidedTourOverlay({
           transition={{ duration: 0.2 }}
         >
           {/* Semi-transparent overlay */}
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" onClick={onDismiss} />
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" role="button"
+ tabIndex={0}
+ onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}
+ onClick={onDismiss} />
 
           {/* Tour card */}
           <motion.div

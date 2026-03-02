@@ -76,7 +76,6 @@ function commandSeverityFromCount(count: number): CommandSeverity {
 
 export function ExecutiveDashboardClient({
   organizationName,
-  industry,
 }: ExecutiveDashboardClientProps) {
   const [data, setData] = useState<DashboardData>({
     posture: null,
@@ -134,8 +133,10 @@ export function ExecutiveDashboardClient({
   const overdueCount = deadlineCounts.overdue ?? 0;
   const dueSoonCount = deadlineCounts.due_soon ?? 0;
   const missingControls =
-    posture?.frameworkRollup?.reduce((sum, fw) => sum + (fw.controlsMissing ?? 0), 0) ??
-    0;
+    posture?.frameworkRollup?.reduce(
+      (sum, fw) => sum + (fw.controlsMissing ?? 0),
+      0,
+    ) ?? 0;
   const automationSuccess = data.automationMetrics?.successRate ?? 0;
 
   const riskHeatmap = [
@@ -167,7 +168,8 @@ export function ExecutiveDashboardClient({
       key: 'automation_reliability',
       label: 'Automation Reliability',
       metric: `${automationSuccess}% workflow success`,
-      count: automationSuccess < 90 ? Math.round((90 - automationSuccess) / 2) : 0,
+      count:
+        automationSuccess < 90 ? Math.round((90 - automationSuccess) / 2) : 0,
       href: '/app/workflows',
       icon: Zap,
     },
@@ -223,9 +225,13 @@ export function ExecutiveDashboardClient({
             <div>
               <div className="flex items-center gap-2">
                 <LayoutDashboard className="h-5 w-5 text-sky-400" />
-                <h1 className="text-xl sm:text-2xl font-bold">Executive Dashboard</h1>
+                <h1 className="text-xl sm:text-2xl font-bold">
+                  Executive Dashboard
+                </h1>
               </div>
-              <p className="text-sm text-slate-400 mt-0.5">{organizationName}</p>
+              <p className="text-sm text-slate-400 mt-0.5">
+                {organizationName}
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -239,7 +245,9 @@ export function ExecutiveDashboardClient({
               disabled={isLoading}
               className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/10 hover:bg-white/10 transition-colors disabled:opacity-50"
             >
-              <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+              <RefreshCw
+                className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`}
+              />
               <span className="text-sm">Refresh</span>
             </button>
           </div>
@@ -268,8 +276,8 @@ export function ExecutiveDashboardClient({
               (posture?.overallScore ?? 0) >= 80
                 ? 'SUCCESS'
                 : (posture?.overallScore ?? 0) >= 50
-                ? 'WARNING'
-                : 'DANGER'
+                  ? 'WARNING'
+                  : 'DANGER'
             }
             isLoading={isLoading}
           />
@@ -305,8 +313,8 @@ export function ExecutiveDashboardClient({
               criticalFailures.length === 0
                 ? 'SUCCESS'
                 : criticalFailures.length <= 3
-                ? 'WARNING'
-                : 'DANGER'
+                  ? 'WARNING'
+                  : 'DANGER'
             }
             isLoading={isLoading}
           />
@@ -375,7 +383,9 @@ export function ExecutiveDashboardClient({
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-            <h3 className="text-sm font-semibold text-slate-100">Action Queue</h3>
+            <h3 className="text-sm font-semibold text-slate-100">
+              Action Queue
+            </h3>
             <p className="mt-1 text-xs text-slate-500">
               Ranked by impact and urgency.
             </p>
@@ -430,19 +440,25 @@ export function ExecutiveDashboardClient({
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-300">Auto-Completed Tasks</span>
+                  <span className="text-sm text-slate-300">
+                    Auto-Completed Tasks
+                  </span>
                   <span className="text-sm font-semibold text-slate-200">
                     {data.automationMetrics?.taskAutoCompletionRate ?? 0}%
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-300">Avg Resolution Time</span>
+                  <span className="text-sm text-slate-300">
+                    Avg Resolution Time
+                  </span>
                   <span className="text-sm font-semibold text-slate-200">
                     {data.automationMetrics?.averageResolutionTime ?? 0} days
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-300">Monthly Triggers</span>
+                  <span className="text-sm text-slate-300">
+                    Monthly Triggers
+                  </span>
                   <span className="text-sm font-semibold text-slate-200">
                     {data.automationMetrics?.triggersThisMonth ?? 0}
                   </span>
@@ -471,14 +487,14 @@ export function ExecutiveDashboardClient({
         <div className="grid gap-6 lg:grid-cols-2 mt-6">
           {/* Audit Readiness */}
           {data.auditForecast && (
-            <AuditReadinessGauge forecast={data.auditForecast} isLoading={isLoading} />
+            <AuditReadinessGauge
+              forecast={data.auditForecast}
+              isLoading={isLoading}
+            />
           )}
 
           {/* Deadlines */}
-          <DeadlineCalendar
-            deadlines={deadlines}
-            isLoading={isLoading}
-          />
+          <DeadlineCalendar deadlines={deadlines} isLoading={isLoading} />
         </div>
       </main>
     </div>

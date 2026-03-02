@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ReactNode } from "react";
 import { LucideIcon } from "lucide-react";
 
 // Feature card with icon, title, description and hover effects

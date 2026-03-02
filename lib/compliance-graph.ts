@@ -117,7 +117,7 @@ export async function initializeComplianceGraph(
     }
 
     const policyNodes: GraphNode[] = (defaultPolicies || []).map(
-      (policy: any) => ({
+      (policy: { id: string; created_at: string }) => ({
         id: policy.id,
         type: 'policy' as const,
         organizationId,
@@ -282,7 +282,8 @@ export async function validateComplianceGraph(organizationId: string): Promise<{
     nodeCount.task = tasks?.length || 0;
 
     // Count policy_task wires
-    const tasksWithPolicy = tasks?.filter((t: any) => t.policy_id) || [];
+    const tasksWithPolicy =
+      tasks?.filter((t: { policy_id: string | null }) => t.policy_id) || [];
     wireCount.policy_task = tasksWithPolicy.length;
 
     // Check evidence nodes
@@ -294,7 +295,8 @@ export async function validateComplianceGraph(organizationId: string): Promise<{
     nodeCount.evidence = evidence?.length || 0;
 
     // Count task_evidence wires
-    const evidenceWithTask = evidence?.filter((e: any) => e.task_id) || [];
+    const evidenceWithTask =
+      evidence?.filter((e: { task_id: string | null }) => e.task_id) || [];
     wireCount.task_evidence = evidenceWithTask.length;
 
     // Check audit nodes

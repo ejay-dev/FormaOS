@@ -11,8 +11,6 @@ import {
   Loader2,
   Crown,
   Zap,
-  TrendingUp,
-  Users,
   Shield,
   Sparkles,
 } from 'lucide-react';
@@ -96,6 +94,9 @@ export function UpgradeIntelligenceModal({
     <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto py-6">
       {/* Backdrop */}
       <div
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}
         className="fixed inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
@@ -156,6 +157,9 @@ export function UpgradeIntelligenceModal({
 
               return (
                 <div
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}
                   key={key}
                   onClick={() => meetsRequirement && setSelectedPlan(key)}
                   className={`relative rounded-xl border p-5 transition-all cursor-pointer ${

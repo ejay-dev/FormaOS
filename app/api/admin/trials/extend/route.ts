@@ -1,6 +1,11 @@
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { logActivity } from '@/lib/audit-logger';
-import { checkApiRateLimit, getClientIp } from '@/lib/ratelimit';
+import {
+  checkRateLimit,
+  getClientIdentifier,
+  createRateLimitHeaders,
+  RATE_LIMITS,
+} from '@/lib/security/rate-limiter';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { MAX_TRIAL_EXTENSION_DAYS } from '@/lib/trial/constants';
 import { NextResponse, type NextRequest } from 'next/server';
@@ -22,21 +27,24 @@ export async function PATCH(request: NextRequest) {
   try {
     await requireFounderAccess();
 
-    // Rate limit: 10 requests per 60 s per IP
-    const ip = getClientIp(request);
-    const rl = await checkApiRateLimit(`admin:trials:extend:${ip}`);
+    // Rate limit: use standard API rate limit
+    const ip = await getClientIdentifier();
+    const rl = await checkRateLimit(
+      RATE_LIMITS.API,
+      `admin:trials:extend:${ip}`,
+    );
     if (!rl.success) {
       void logRateLimitEvent({
         identifier: `admin:trials:extend:${ip}`,
         endpoint: request.nextUrl.pathname,
         requestCount: rl.limit,
-        windowStart: rl.reset - 60 * 1000,
+        windowStart: (rl.resetAt ?? Date.now()) - 60 * 1000,
         blocked: true,
         ipAddress: ip,
       });
       return NextResponse.json(
         { error: 'Too many requests. Try again later.' },
-        { status: 429, headers: { 'Retry-After': '60' } },
+        { status: 429, headers: createRateLimitHeaders(rl) },
       );
     }
 

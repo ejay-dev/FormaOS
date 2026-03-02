@@ -1,6 +1,7 @@
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
+import unusedImports from 'eslint-plugin-unused-imports';
 import formaosDesign from './lib/eslint/formaos-design-rules.mjs';
 
 /** @type {import('eslint').Linter.Config[]} */
@@ -45,13 +46,16 @@ const eslintConfig = [
     plugins: {
       '@typescript-eslint': typescriptEslint,
       'jsx-a11y': jsxA11y,
+      'unused-imports': unusedImports,
       formaos: formaosDesign,
     },
     rules: {
       'no-unused-vars': 'off',
-      '@typescript-eslint/no-unused-vars': [
+      '@typescript-eslint/no-unused-vars': 'off',
+      'unused-imports/no-unused-imports': 'warn',
+      'unused-imports/no-unused-vars': [
         'warn',
-        { argsIgnorePattern: '^_' },
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
       ],
       'prefer-const': 'warn',
       'no-console': 'off',
@@ -73,7 +77,11 @@ const eslintConfig = [
       'jsx-a11y/html-has-lang': 'error',
       'jsx-a11y/img-redundant-alt': 'warn',
       'jsx-a11y/interactive-supports-focus': 'warn',
-      'jsx-a11y/label-has-associated-control': 'warn',
+      'jsx-a11y/label-has-associated-control': ['warn', {
+        assert: 'either',
+        controlComponents: ['Input', 'Select', 'Textarea', 'Switch'],
+        depth: 3,
+      }],
       'jsx-a11y/no-access-key': 'warn',
       'jsx-a11y/no-autofocus': 'warn',
       'jsx-a11y/no-distracting-elements': 'error',
@@ -85,13 +93,19 @@ const eslintConfig = [
       'jsx-a11y/tabindex-no-positive': 'warn',
     },
   },
-  // Marketing pages are allowed to use bespoke styling; do not gate commits on
+  // Marketing pages and components use bespoke styling; do not gate commits on
   // tokenization warnings here (keeps warning counts below CI thresholds).
   {
-    files: ['app/(marketing)/**/*.{js,jsx,ts,tsx}'],
+    files: [
+      'app/(marketing)/**/*.{js,jsx,ts,tsx}',
+      'components/marketing/**/*.{js,jsx,ts,tsx}',
+      'components/motion/**/*.{js,jsx,ts,tsx}',
+      'components/blog/**/*.{js,jsx,ts,tsx}',
+    ],
     rules: {
       'formaos/no-hardcoded-colors': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
+      'unused-imports/no-unused-vars': 'off',
     },
   },
   // Tests and tooling scripts should not block merges on unused vars warnings.

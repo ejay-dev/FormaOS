@@ -9,7 +9,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { getStripeClient, resolvePlanKeyFromPriceId } from "@/lib/billing/stripe";
 import { syncEntitlementsForPlan } from "@/lib/billing/entitlements";
 import { billingLogger } from "@/lib/observability/structured-logger";
-import { resolvePlanKey, type PlanKey } from "@/lib/plans";
+import { resolvePlanKey } from "@/lib/plans";
 
 export interface BillingDiscrepancy {
   orgId: string;

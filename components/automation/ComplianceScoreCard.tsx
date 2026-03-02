@@ -12,7 +12,7 @@ import {
 } from '@/app/app/actions/automation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { RefreshCw, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 
 interface ComplianceSummary {
   score: number;

@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { uploadEvidence } from "@/app/app/actions/evidence"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription } from "@/components/ui/sheet"
-import { Paperclip, UploadCloud, FileText, Loader2, Download, CheckCircle2 } from "lucide-react"
+import { Paperclip, UploadCloud, Loader2, CheckCircle2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useComplianceAction } from "@/components/compliance-system"
 

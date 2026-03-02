@@ -6,7 +6,7 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
-import { getCached, CacheKeys, invalidateCache } from './cache';
+import { getCached, invalidateCache } from './cache';
 
 export interface Organization {
   id: string;

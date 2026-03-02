@@ -165,7 +165,7 @@ export async function generateCredentialAlerts(
   orgId: string
 ): Promise<CareScorecardAlert[]> {
   const alerts: CareScorecardAlert[] = [];
-  const now = new Date();
+  const _now = new Date();
 
   const [expired, expiring30, expiring7] = await Promise.all([
     getExpiredCredentials(orgId, 100),

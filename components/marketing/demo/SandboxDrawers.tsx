@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { easing, duration } from '@/config/motion';
 import { demoTenant, resolveUserName, resolveFramework } from './demo-tenant-seed';
-import type { TenantTask, TenantEvidence, TenantAuditEntry } from './demo-tenant-seed';
+import type { TenantTask, TenantEvidence } from './demo-tenant-seed';
 import { trackDemoEvent } from './demo-analytics';
 
 // ---------------------------------------------------------------------------
@@ -74,7 +74,7 @@ function DrawerShell({ isOpen, onClose, title, icon, children }: DrawerProps) {
 // Shared mini-components
 // ---------------------------------------------------------------------------
 
-function AvatarBadge({ name, size = 'sm' }: { name: string; size?: 'sm' | 'md' }) {
+function _AvatarBadge({ name, size = 'sm' }: { name: string; size?: 'sm' | 'md' }) {
   const initials = name.split(' ').map((n) => n[0]).join('');
   const sizeClass = size === 'md' ? 'h-8 w-8 text-[10px]' : 'h-5 w-5 text-[7px]';
   return (
@@ -419,7 +419,7 @@ export function AuditTimelineDrawer({
         <div className="space-y-0.5">
           {entries.map((entry, i) => {
             const colors = typeColors[entry.targetType] || typeColors.system;
-            const [colorText] = colors.split(' ');
+            const [_colorText] = colors.split(' ');
             const icon = typeIcons[entry.targetType] || <Activity className="h-3 w-3" />;
 
             return (

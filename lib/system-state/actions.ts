@@ -8,7 +8,6 @@ import {
   type SystemStatePayload 
 } from "./server";
 import type { ModuleId, UserEntitlements, NodeState, PlanTier, UserRole } from "./types";
-import { PLAN_FEATURES, ROLE_PERMISSIONS } from "./types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
@@ -64,7 +63,7 @@ export async function getSystemState(): Promise<ActionResult<SystemStatePayload>
  */
 export async function getModuleNodeState(moduleId: ModuleId): Promise<ActionResult<NodeState>> {
   try {
-    const { allowed, state, reason } = await validateModuleAccess(moduleId);
+    const { state } = await validateModuleAccess(moduleId);
     return { success: true, data: state };
   } catch (error) {
     console.error("[getModuleNodeState] Error:", error);
@@ -273,7 +272,7 @@ export async function changeUserRole(
  */
 export async function recordModuleAccess(moduleId: ModuleId): Promise<ActionResult> {
   try {
-    const { allowed, state, reason } = await validateModuleAccess(moduleId);
+    const { allowed, reason } = await validateModuleAccess(moduleId);
     
     if (!allowed) {
       return { success: false, error: reason };

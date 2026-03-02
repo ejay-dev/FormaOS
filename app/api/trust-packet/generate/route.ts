@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { randomBytes } from 'crypto';
+import {
+  checkRateLimit,
+  getClientIdentifier,
+  createRateLimitHeaders,
+  RATE_LIMITS,
+} from '@/lib/security/rate-limiter';
 
 async function getMembershipOrganization(
   supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
@@ -50,6 +56,16 @@ async function getMembershipOrganization(
  */
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit trust packet generation (5 req / 10 min per IP)
+    const identifier = await getClientIdentifier();
+    const rl = await checkRateLimit(RATE_LIMITS.EXPORT, identifier);
+    if (!rl.success) {
+      return NextResponse.json(
+        { ok: false, error: 'rate_limited' },
+        { status: 429, headers: createRateLimitHeaders(rl) },
+      );
+    }
+
     const supabase = await createSupabaseServerClient();
 
     const {
@@ -127,7 +143,8 @@ export async function POST(request: NextRequest) {
       .select('plan_key, status')
       .eq('organization_id', organizationId)
       .maybeSingle();
-    const isEnterprisePlan = (subscriptionRow as any)?.plan_key === 'enterprise';
+    const isEnterprisePlan =
+      (subscriptionRow as any)?.plan_key === 'enterprise';
 
     const packetData = {
       generated_at: new Date().toISOString(),

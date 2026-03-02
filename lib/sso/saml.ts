@@ -101,7 +101,7 @@ function buildCacheProvider(prefix: string): CacheProvider {
   }
 
   return {
-    async saveAsync(key: string, value: string) {
+    async saveAsync(key: string, _value: string) {
       const createdAt = Date.now();
       const redisKey = `${prefix}:${key}`;
       // Store createdAt as value for node-saml time checks.

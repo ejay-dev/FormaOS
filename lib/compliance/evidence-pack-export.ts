@@ -346,7 +346,7 @@ async function getControlsData(orgId: string, frameworkSlug: string) {
   }
 }
 
-async function getEvidenceData(orgId: string, frameworkSlug: string) {
+async function getEvidenceData(orgId: string, _frameworkSlug: string) {
   const admin = createSupabaseAdminClient()
 
   const { data: evidence } = await admin
@@ -357,7 +357,7 @@ async function getEvidenceData(orgId: string, frameworkSlug: string) {
   return { evidence: evidence || [] }
 }
 
-async function getTasksData(orgId: string, frameworkSlug: string) {
+async function getTasksData(orgId: string, _frameworkSlug: string) {
   const admin = createSupabaseAdminClient()
 
   const { data: tasks } = await admin
@@ -379,7 +379,7 @@ async function getPoliciesData(orgId: string) {
   return { policies: policies || [] }
 }
 
-async function getAutomationLogs(orgId: string, frameworkSlug: string) {
+async function getAutomationLogs(orgId: string, _frameworkSlug: string) {
   const admin = createSupabaseAdminClient()
 
   const { data: logs } = await admin
@@ -395,8 +395,8 @@ async function getAutomationLogs(orgId: string, frameworkSlug: string) {
 function generateCSVSummary(
   manifest: ExportManifest,
   controls: any,
-  evidence: any,
-  tasks: any
+  _evidence: any,
+  _tasks: any
 ): string {
   const lines = [
     'Audit Evidence Pack Summary',

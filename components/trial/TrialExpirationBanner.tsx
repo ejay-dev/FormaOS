@@ -53,7 +53,7 @@ export function TrialExpirationBanner() {
             setValueMetrics(data.metrics);
           }
         }
-      } catch (error) {
+      } catch (_error) {
         // Silent fail - banner still works without value data
       } finally {
         if (isActive) {

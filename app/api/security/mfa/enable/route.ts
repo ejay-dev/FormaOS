@@ -7,6 +7,12 @@ import {
   SecurityEventTypes,
 } from '@/lib/security/session-security';
 import { safeString } from '@/lib/security/api-validation';
+import {
+  checkRateLimit,
+  getClientIdentifier,
+  createRateLimitHeaders,
+  RATE_LIMITS,
+} from '@/lib/security/rate-limiter';
 
 export const runtime = 'nodejs';
 
@@ -16,6 +22,15 @@ const schema = z.object({
 
 export async function POST(request: Request) {
   try {
+    const identifier = await getClientIdentifier();
+    const rl = await checkRateLimit(RATE_LIMITS.AUTH, identifier);
+    if (!rl.success) {
+      return NextResponse.json(
+        { ok: false, error: 'rate_limited' },
+        { status: 429, headers: createRateLimitHeaders(rl) },
+      );
+    }
+
     const supabase = await createSupabaseServerClient();
     const {
       data: { user },

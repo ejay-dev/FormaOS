@@ -212,6 +212,8 @@ export function TopBar({
           {/* DROPDOWN PANEL (only when open) */}
           {showNotifications && (
             <div
+              role="button"
+              tabIndex={0}
               className="absolute right-0 top-full mt-1 z-50"
               onKeyDown={(e) => {
                 if (e.key === 'Escape') setShowNotifications(false);
@@ -268,6 +270,7 @@ export function TopBar({
             <div
               className="absolute right-0 top-full mt-1 w-[min(16rem,calc(100vw-1.5rem))] rounded-2xl border border-card-foreground/8 bg-card p-2 shadow-xl z-50"
               role="menu"
+              tabIndex={-1}
               onKeyDown={(event) => {
                 if (event.key === 'Escape') setShowUserMenu(false);
               }}

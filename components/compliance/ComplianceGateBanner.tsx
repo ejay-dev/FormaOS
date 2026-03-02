@@ -51,7 +51,7 @@ export default function ComplianceGateBanner({
             </div>
 
             <div className="shrink-0">
-              <Link href={resolvePath} className="inline-flex items-center gap-2 rounded-md bg-[#2b0a0f] px-3 py-1 text-xs font-semibold text-rose-200 hover:bg-[#3a0f14]">
+              <Link href={resolvePath} className="inline-flex items-center gap-2 rounded-md bg-destructive/20 px-3 py-1 text-xs font-semibold text-rose-200 hover:bg-destructive/30">
                 Resolve requirements
                 <ShieldCheck className="h-4 w-4 text-rose-300" />
               </Link>

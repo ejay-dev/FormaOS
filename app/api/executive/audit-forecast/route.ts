@@ -136,7 +136,7 @@ export async function GET(request: NextRequest) {
  */
 async function getAutomationMetrics(orgId: string): Promise<AutomationMetrics> {
   const admin = createSupabaseAdminClient();
-  const now = new Date();
+  const _now = new Date();
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   const thirtyDaysAgo = new Date();

@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
-import { Loader2, Check, X, AlertTriangle } from "lucide-react";
+import { Loader2, Check, X } from "lucide-react";
 
 /**
  * =========================================================

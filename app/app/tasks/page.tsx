@@ -121,7 +121,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
               <div className="mt-4 bg-white/5 border border-white/10 rounded-2xl p-5 shadow-[0_16px_40px_rgba(0,0,0,0.35)] w-full sm:min-w-[320px]">
                 <form action={createTask} className="space-y-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                    <label htmlFor="field-216" className="text-xs font-bold uppercase tracking-widest text-slate-400">
                       Requirement title
                     </label>
                     <input
@@ -133,7 +133,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                   </div>
                   <div className="grid gap-3 md:grid-cols-2">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                      <label htmlFor="field-215" className="text-xs font-bold uppercase tracking-widest text-slate-400">
                         Priority
                       </label>
                       <select
@@ -147,7 +147,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                       </select>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                      <label htmlFor="field-214" className="text-xs font-bold uppercase tracking-widest text-slate-400">
                         Due date (optional)
                       </label>
                       <div className="relative">
@@ -161,7 +161,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                    <label htmlFor="field-213" className="text-xs font-bold uppercase tracking-widest text-slate-400">
                       Recurrence (days, optional)
                     </label>
                     <div className="relative">

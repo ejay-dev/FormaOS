@@ -457,7 +457,7 @@ export async function getRecentAlertsWidgetData(
 export async function getQuickStatsWidgetData(
   organizationId: string,
 ): Promise<any> {
-  const supabase = await createClient();
+  const _supabase = await createClient();
 
   const [riskData, certData, taskData, complianceData] = await Promise.all([
     getRiskScoreWidgetData(organizationId),

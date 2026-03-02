@@ -1,6 +1,6 @@
 "use client"
 
-import { AlertCircle, Calendar, ArrowRight, User } from "lucide-react"
+import { AlertCircle, ArrowRight, User } from "lucide-react"
 import Link from "next/link"
 
 export function ExpiryAlertWidget({ atRiskDocs }: { atRiskDocs: any[] }) {

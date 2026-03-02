@@ -3,8 +3,7 @@ import { notFound } from "next/navigation";
 import { 
   ChevronLeft, 
   Save, 
-  ShieldCheck, 
-  FileEdit,
+  ShieldCheck,
   History 
 } from "lucide-react";
 import Link from "next/link";
@@ -128,7 +127,7 @@ export default async function PolicyDetailPage({
             {/* Document Controls */}
             <div className="bg-white/5 border border-white/10 rounded-[2rem] p-6 sm:p-8 shadow-sm space-y-8 md:sticky md:top-6">
                 <div className="space-y-3">
-                    <label className="text-xs font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
+                    <label htmlFor="field-206" className="text-xs font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
                         Lifecycle Stage
                     </label>
                     <div className="relative">

@@ -6,7 +6,7 @@
 'use client';
 
 import { Card } from '@/components/ui/card';
-import { CheckCircle2, Shield, Bell, FileCheck, TrendingUp, Sparkles } from 'lucide-react';
+import { CheckCircle2, Bell, FileCheck, TrendingUp, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 
 export function AutomationOnboardingSuccess() {

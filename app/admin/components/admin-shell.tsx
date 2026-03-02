@@ -188,6 +188,9 @@ export function AdminShell({
       {/* Mobile Overlay */}
       {sidebarOpen && (
         <div
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}
           className="fixed inset-0 bg-black/50 lg:hidden z-30"
           onClick={() => setSidebarOpen(false)}
         />

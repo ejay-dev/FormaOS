@@ -50,7 +50,7 @@ export function generateReportPdf(
 
   // Gaps and recommendations
   if (report.gaps.criticalGaps.length > 0) {
-    currentY = addGapsSection(doc, report, currentY);
+    addGapsSection(doc, report, currentY);
   }
 
   // Framework-specific sections

@@ -280,7 +280,7 @@ export async function validateBody<T>(
     }
 
     return { success: false, error: result.error };
-  } catch (error) {
+  } catch (_error) {
     return {
       success: false,
       error: new z.ZodError([

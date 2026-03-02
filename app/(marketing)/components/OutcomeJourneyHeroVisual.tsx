@@ -3,7 +3,7 @@
 import { memo } from 'react';
 import { motion, useReducedMotion, useTransform } from 'framer-motion';
 import { useCursorPosition } from '@/components/motion/CursorContext';
-import { easing, duration } from '@/config/motion';
+import { easing } from '@/config/motion';
 
 const signatureEase = [...easing.signature] as [number, number, number, number];
 

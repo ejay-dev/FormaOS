@@ -492,7 +492,7 @@ export function CommandPalette() {
               className="fixed inset-0 z-50 flex items-start justify-center px-4 pt-[15vh] sm:pt-[20vh]"
             >
               <Command
-                className="w-full max-w-[640px] overflow-hidden rounded-2xl border border-white/10 bg-[#0a0f1c]/95 shadow-[0_24px_80px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)] backdrop-blur-xl"
+                className="w-full max-w-[640px] overflow-hidden rounded-2xl border border-white/10 bg-background/95 shadow-[0_24px_80px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)] backdrop-blur-xl"
                 label="Command Palette"
                 loop
                 shouldFilter={true}
@@ -509,7 +509,6 @@ export function CommandPalette() {
                         ? 'Type an admin command or route...'
                         : 'Type a command or search...'
                     }
-                    autoFocus
                     className="h-14 w-full border-none bg-transparent text-sm text-slate-200 outline-none placeholder:text-slate-500"
                   />
                   <div className="flex shrink-0 items-center gap-1.5">

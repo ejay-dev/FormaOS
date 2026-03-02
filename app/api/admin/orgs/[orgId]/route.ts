@@ -44,16 +44,26 @@ export async function GET(request: Request, { params }: OrgRouteProps) {
 
     const memberRows = await Promise.all(
       (members ?? []).map(async (member: any) => {
-        const { data } = await (admin as any).auth.admin.getUserById(
-          member.user_id,
-        );
-        return {
-          user_id: member.user_id,
-          email: data?.user?.email ?? 'N/A',
-          role: member.role ?? 'N/A',
-          created_at: member.created_at ?? null,
-          last_sign_in_at: data?.user?.last_sign_in_at ?? null,
-        };
+        try {
+          const { data } = await (admin as any).auth.admin.getUserById(
+            member.user_id,
+          );
+          return {
+            user_id: member.user_id,
+            email: data?.user?.email ?? 'N/A',
+            role: member.role ?? 'N/A',
+            created_at: member.created_at ?? null,
+            last_sign_in_at: data?.user?.last_sign_in_at ?? null,
+          };
+        } catch {
+          return {
+            user_id: member.user_id,
+            email: 'N/A',
+            role: member.role ?? 'N/A',
+            created_at: member.created_at ?? null,
+            last_sign_in_at: null,
+          };
+        }
       }),
     );
 

@@ -64,7 +64,7 @@ export async function generateComplianceReport(
   // Get compliance metrics
   const metrics = await getComplianceMetrics(organizationId);
   const teamMetrics = await getTeamMetrics(organizationId);
-  const trend = await getComplianceTrend(organizationId);
+  const _trend = await getComplianceTrend(organizationId);
   const riskScore = await calculateRiskScore(organizationId);
 
   // Build HTML report

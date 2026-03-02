@@ -27,7 +27,6 @@ import {
   Mail,
   Baby,
   Landmark,
-  Briefcase,
   Building2,
   type LucideIcon,
 } from 'lucide-react';

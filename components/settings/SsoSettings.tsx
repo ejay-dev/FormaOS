@@ -123,7 +123,7 @@ export function SsoSettings(props: Props) {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-2">
+            <label htmlFor="field-225" className="block text-xs font-semibold text-slate-300 mb-2">
               Allowed email domains (one per line)
             </label>
             <textarea
@@ -165,7 +165,7 @@ export function SsoSettings(props: Props) {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-2">
+            <label htmlFor="field-224" className="block text-xs font-semibold text-slate-300 mb-2">
               IdP metadata XML
             </label>
             <textarea

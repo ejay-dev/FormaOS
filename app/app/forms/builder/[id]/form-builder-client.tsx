@@ -5,7 +5,7 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { createSupabaseClient } from "@/lib/supabase/client";
 import { FormField, Form } from "@/lib/forms/types";
 import { FIELD_TEMPLATES } from "@/lib/forms/field-templates";
-import { Plus, Trash2, GripVertical, Settings, Eye, Save, CheckCircle2 } from "lucide-react";
+import { Plus, Trash2, GripVertical, Settings, Eye, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useComplianceAction } from "@/components/compliance-system";
 
@@ -27,7 +27,7 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
   const [selectedField, setSelectedField] = useState<FormField | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [showSaveSuccess, setShowSaveSuccess] = useState(false);
+  const [_showSaveSuccess, setShowSaveSuccess] = useState(false);
   const [orgId, setOrgId] = useState<string | null>(null);
   const { nodeUpdated, reportError } = useComplianceAction();
 
@@ -189,6 +189,9 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
                       <Draggable key={field.id} draggableId={field.id} index={index}>
                         {(dragProvided) => (
                           <div
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}
                             ref={dragProvided.innerRef}
                             {...dragProvided.draggableProps}
                             className={`bg-gray-800/50 border border-gray-700 rounded-lg p-4 cursor-pointer ${
@@ -260,8 +263,8 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Label</label>
-                  <input
+                  <label htmlFor="field-6" className="block text-sm font-medium text-gray-400 mb-1">Label</label>
+                  <input id="field-6"
                     type="text"
                     value={selectedField.label}
                     onChange={(e) => updateField(selectedField.id, { label: e.target.value })}
@@ -270,8 +273,8 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Placeholder</label>
-                  <input
+                  <label htmlFor="field-5" className="block text-sm font-medium text-gray-400 mb-1">Placeholder</label>
+                  <input id="field-5"
                     type="text"
                     value={selectedField.placeholder || ""}
                     onChange={(e) => updateField(selectedField.id, { placeholder: e.target.value })}
@@ -293,7 +296,7 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
                     }
                     className="rounded border-gray-700 bg-gray-800 text-blue-500 focus:ring-blue-500"
                   />
-                  <label className="text-sm text-gray-400">Required field</label>
+                  <label htmlFor="field-4" className="text-sm text-gray-400">Required field</label>
                 </div>
               </div>
             </div>

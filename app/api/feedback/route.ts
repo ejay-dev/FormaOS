@@ -1,15 +1,37 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import {
+  checkRateLimit,
+  getClientIdentifier,
+  createRateLimitHeaders,
+  RATE_LIMITS,
+} from '@/lib/security/rate-limiter';
 
 const log = routeLog('api/feedback');
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as { sentiment?: string; message?: string };
+    // Rate limit anonymous feedback to prevent spam (5 req / 10 min)
+    const identifier = await getClientIdentifier();
+    const rl = await checkRateLimit(RATE_LIMITS.EXPORT, identifier);
+    if (!rl.success) {
+      return NextResponse.json(
+        { ok: false, error: 'rate_limited' },
+        { status: 429, headers: createRateLimitHeaders(rl) },
+      );
+    }
+
+    const body = (await request.json()) as {
+      sentiment?: string;
+      message?: string;
+    };
     const { sentiment, message } = body;
 
-    if (!sentiment || !['positive', 'neutral', 'negative'].includes(sentiment)) {
+    if (
+      !sentiment ||
+      !['positive', 'neutral', 'negative'].includes(sentiment)
+    ) {
       return NextResponse.json({ error: 'Invalid sentiment' }, { status: 400 });
     }
 

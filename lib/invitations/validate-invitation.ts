@@ -255,7 +255,7 @@ export async function createInvitationWithExpiry(
     }
     
     // Create new invitation
-    const { data: invitation, error } = await supabase
+    const { data: _invitation, error } = await supabase
       .from("team_invitations")
       .insert({
         organization_id: organizationId,

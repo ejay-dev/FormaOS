@@ -17,8 +17,6 @@ import {
   ArrowRight,
   CheckCircle,
   History,
-  Shield,
-  RotateCcw,
 } from 'lucide-react';
 import {
   SectionHeader,
@@ -26,7 +24,6 @@ import {
   MetricCard,
   ArchitectureCard,
   ProcessStep,
-  NodeWireShowcase,
   GradientMesh,
   SystemBackground,
   GlassCard,
@@ -40,7 +37,7 @@ import {
   AnimatedLink,
 } from '@/components/motion';
 import { motion } from 'framer-motion';
-import { spacing, radius, depth, duration } from '@/config/motion';
+import { spacing, radius, depth } from '@/config/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { brand } from '@/config/brand';
 

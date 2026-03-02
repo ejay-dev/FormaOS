@@ -73,7 +73,7 @@ export async function buildMasterControlMappings(): Promise<{
     })
 
     // Process each group
-    for (const [title, groupControls] of titleGroups) {
+    for (const [_title, groupControls] of titleGroups) {
       if (groupControls.length === 1) {
         // Single control - create master control
         const control = groupControls[0]

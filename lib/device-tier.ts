@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
 // =========================================================
 // DEVICE PERFORMANCE TIER SYSTEM
@@ -181,7 +181,7 @@ export function useDeviceTier(): TierConfig {
 
     // Listen for reduced-motion changes
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const handler = (e: MediaQueryListEvent) => {
+    const handler = (_e: MediaQueryListEvent) => {
       cachedConfig = null; // invalidate cache
       const fresh = getDeviceTierConfig();
       setConfig(fresh);

@@ -34,7 +34,7 @@ export function PresenceIndicator({
     >
       <Users className="h-4 w-4 text-green-600" />
       <div className="flex -space-x-2">
-        {otherUsers.slice(0, 3).map((user: any, index) => (
+        {otherUsers.slice(0, 3).map((user: any, _index) => (
           <div
             key={user.user_id}
             className="relative inline-block"

@@ -1,6 +1,6 @@
 "use client"
 
-import { ShieldCheck, Clock, AlertTriangle, FileText } from "lucide-react"
+import { ShieldCheck, Clock, AlertTriangle } from "lucide-react"
 
 export function CredentialStatusWidget({ credentials }: { credentials: any[] }) {
   const stats = {

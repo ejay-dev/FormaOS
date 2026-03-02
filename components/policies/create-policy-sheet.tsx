@@ -87,10 +87,10 @@ export function CreatePolicySheet() {
             <div className="flex-1 space-y-6">
               {/* Title Field */}
               <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Policy Title</label>
+                  <label htmlFor="field-77" className="text-xs font-bold uppercase text-slate-400 tracking-wider">Policy Title</label>
                   <div className="relative">
                       <FileText className="absolute left-3 top-3 h-4 w-4 text-cyan-400/70" />
-                      <input 
+                      <input id="field-77" 
                           name="title" 
                           required 
                           placeholder="e.g. Data Retention Policy" 

@@ -104,7 +104,7 @@ export async function createTask(formData: FormData) {
   return;
 }
 
-async function completeTaskCore(supabase: any, taskId: string, user: any) {
+async function _completeTaskCore(supabase: any, taskId: string, user: any) {
   const permissionCtx = await requirePermission("EDIT_CONTROLS");
   const { data: task } = await supabase
     .from("org_tasks")

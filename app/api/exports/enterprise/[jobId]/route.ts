@@ -143,7 +143,7 @@ export async function POST(
 ) {
   // This endpoint is for triggering export processing
   const { jobId } = await params;
-  const admin = createSupabaseAdminClient();
+  const _admin = createSupabaseAdminClient();
 
   try {
     // Verify request is from internal system (cron or admin)

@@ -4,7 +4,7 @@ import { useTheme } from 'next-themes';
 import { Monitor } from 'lucide-react';
 import { useEffect, useState, useCallback } from 'react';
 import { saveThemePreference } from '@/app/app/actions/theme';
-import { THEMES, type ThemeId } from '@/components/theme-provider';
+import { THEMES } from '@/components/theme-provider';
 import { THEME_META } from '@/components/theme-switcher';
 
 /**

@@ -153,7 +153,7 @@ function ContactHeroVisualInner() {
         >
           {/* Input fields */}
           <div className="flex-1 flex flex-col justify-center space-y-6">
-            {INPUT_FIELDS.map((field, i) => (
+            {INPUT_FIELDS.map((field, _i) => (
               <div key={field.label} className="space-y-2">
                 {/* Label placeholder */}
                 <div className={`${field.labelWidth} h-2 bg-white/15 rounded`} />

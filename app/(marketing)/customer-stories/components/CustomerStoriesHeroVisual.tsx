@@ -58,7 +58,7 @@ function CustomerStoriesHeroVisualInner() {
   const rotateY = useTransform(cursor.mouseX, [0, 1], [-3, 3]);
 
   /* Cards separate slightly with cursor Y movement */
-  const spreadFactor = useTransform(cursor.mouseY, [0, 1], [0.8, 1.2]);
+  const _spreadFactor = useTransform(cursor.mouseY, [0, 1], [0.8, 1.2]);
 
   /* ── Reduced-motion: static layout ──────────────────────────── */
   if (prefersReduced) {
@@ -161,7 +161,7 @@ interface CardProps {
   checked: boolean;
 }
 
-function CardContent({ card, checked }: CardProps) {
+function CardContent({ card }: CardProps) {
   const pillBg =
     card.accent === 'emerald'
       ? 'bg-emerald-500/20 text-emerald-300'

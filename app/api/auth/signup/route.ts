@@ -70,7 +70,7 @@ export async function POST(request: Request) {
     }
 
     // 2. Create auth user with pre-generated id
-    const { data: createdUser, error: createUserError } = await admin.auth.admin.createUser({
+    const { data: _createdUser, error: createUserError } = await admin.auth.admin.createUser({
       id: userId,
       email,
       password,

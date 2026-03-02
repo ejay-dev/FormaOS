@@ -26,13 +26,12 @@ interface Workflow {
 
 export function WorkflowManagementClient({
   initialWorkflows,
-  organizationId,
 }: {
   initialWorkflows: Workflow[];
   organizationId: string;
 }) {
   const [workflows, setWorkflows] = useState<Workflow[]>(initialWorkflows);
-  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [_showCreateModal, setShowCreateModal] = useState(false);
   const { reportSuccess, reportError } = useComplianceAction();
 
   const triggerTypes = [
@@ -47,7 +46,7 @@ export function WorkflowManagementClient({
     { value: 'task_overdue', label: 'Task Overdue', icon: '🔴' },
   ];
 
-  const actionTypes = [
+  const _actionTypes = [
     { value: 'send_notification', label: 'Send Notification', icon: '🔔' },
     { value: 'send_email', label: 'Send Email', icon: '📧' },
     { value: 'create_task', label: 'Create Task', icon: '✏️' },

@@ -140,7 +140,7 @@ export function AutomationTimeline({ limit = 10 }: { limit?: number }) {
         {/* Timeline line */}
         <div className="absolute left-5 top-8 bottom-8 w-0.5 bg-gradient-to-b from-purple-200 via-blue-200 to-transparent"></div>
 
-        {events.map((event, index) => {
+        {events.map((event, _index) => {
           const Icon = TRIGGER_ICONS[event.trigger] || CheckCircle2;
           const isSuccess = event.status === 'success';
 

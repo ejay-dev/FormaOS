@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { createSupabaseClient } from "@/lib/supabase/client";
 
 export default function PlanSelectPage() {
-  const [selected, setSelected] = useState<PlanKey | null>(null);
+  const [selected, _setSelected] = useState<PlanKey | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();

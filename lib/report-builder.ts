@@ -315,19 +315,19 @@ export async function fetchWidgetData(
     }
 
     case 'compliance_metrics': {
-      // Fetch various compliance metrics
+      // Fetch compliance metrics — only needed columns for counting/charting
       const [tasks, certificates, evidence] = await Promise.all([
         supabase
           .from('tasks')
-          .select('*')
+          .select('id, status, priority, due_date, created_at')
           .eq('organization_id', organizationId),
         supabase
           .from('certifications')
-          .select('*')
+          .select('id, status, framework_key, created_at, expires_at')
           .eq('organization_id', organizationId),
         supabase
           .from('evidence')
-          .select('*')
+          .select('id, status, control_id, created_at')
           .eq('organization_id', organizationId),
       ]);
 
@@ -366,14 +366,13 @@ export async function fetchWidgetData(
     }
 
     case 'custom_query': {
-      if (filters?.customQuery) {
-        // Execute custom SQL query (be careful with security)
-        const { data } = await supabase.rpc('execute_custom_query', {
-          query: filters.customQuery,
-          org_id: organizationId,
-        });
-        return data || [];
-      }
+      // SECURITY: Custom SQL execution is disabled.
+      // The execute_custom_query RPC function does not exist and passing
+      // user-controlled SQL strings is a critical injection risk.
+      // Custom queries should use predefined, parameterised views instead.
+      console.warn(
+        '[report-builder] custom_query data source is disabled for security reasons',
+      );
       return [];
     }
 
@@ -405,22 +404,23 @@ export async function generateReport(
     throw new Error('Report template not found');
   }
 
-  // Fetch data for all widgets
-  const widgetData: Record<string, any> = {};
-
-  for (const widget of template.widgets) {
-    try {
-      const data = await fetchWidgetData(
-        organizationId,
-        widget.dataSource,
-        widget.config.filters,
-      );
-      widgetData[widget.id] = data;
-    } catch (error) {
-      console.error(`Failed to fetch data for widget ${widget.id}:`, error);
-      widgetData[widget.id] = null;
-    }
-  }
+  // Fetch data for all widgets in parallel
+  const widgetEntries = await Promise.all(
+    (template.widgets as Widget[]).map(async (widget) => {
+      try {
+        const data = await fetchWidgetData(
+          organizationId,
+          widget.dataSource,
+          widget.config.filters,
+        );
+        return [widget.id, data] as const;
+      } catch (error) {
+        console.error(`Failed to fetch data for widget ${widget.id}:`, error);
+        return [widget.id, null] as const;
+      }
+    }),
+  );
+  const widgetData: Record<string, any> = Object.fromEntries(widgetEntries);
 
   return {
     template,

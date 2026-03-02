@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTrialState } from '@/lib/trial/use-trial-state';
-import { getFeatureBenefit, type FeatureBenefit } from '@/lib/upgrade-intelligence/feature-benefits';
+import { getFeatureBenefit } from '@/lib/upgrade-intelligence/feature-benefits';
 import { Lock, ArrowRight, Zap, Check, Sparkles, Crown } from 'lucide-react';
 import { UpgradeIntelligenceModal } from './UpgradeIntelligenceModal';
 

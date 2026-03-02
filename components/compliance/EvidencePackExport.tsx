@@ -11,7 +11,7 @@ type Props = {
 export function EvidencePackExport({ frameworkSlug, frameworkName }: Props) {
   const [exporting, setExporting] = useState(false)
   const [progress, setProgress] = useState(0)
-  const [jobId, setJobId] = useState<string | null>(null)
+  const [_jobId, setJobId] = useState<string | null>(null)
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
   const [passwordProtected, setPasswordProtected] = useState(false)
 

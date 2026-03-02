@@ -76,7 +76,7 @@ jobs:
           CI: true
 
       - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         continue-on-error: true
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -179,10 +179,6 @@ jobs:
 
       - name: Build application
         run: npm run build
-
-      - name: Analyze bundle size
-        run: npx next build --experimental-bundle-pages-router-dependencies
-        continue-on-error: true
 
       - name: Bundle size check
         run: |

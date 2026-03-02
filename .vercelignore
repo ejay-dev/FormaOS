@@ -10,5 +10,7 @@ tests
 __tests__
 selenium-tests
 coverage
+docs
+scripts/ops
 *.log
 .DS_Store

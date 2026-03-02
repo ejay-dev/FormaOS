@@ -120,10 +120,10 @@ export function InviteMemberSheet() {
 
             <div className="flex-1 py-8 space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-semibold">Email Address</label>
+                <label htmlFor="field-76" className="text-sm font-semibold">Email Address</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
-                  <input
+                  <input id="field-76"
                     required
                     name="email"
                     type="email"
@@ -134,8 +134,8 @@ export function InviteMemberSheet() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold">Role</label>
-                <select 
+                <label htmlFor="field-75" className="text-sm font-semibold">Role</label>
+                <select id="field-75" 
                   name="role" 
                   className="w-full rounded-xl border border-white/10 p-2.5 text-sm bg-white/5 outline-none focus:border-blue-400/50 focus:ring-2 focus:ring-blue-400/20 transition-all"
                 >

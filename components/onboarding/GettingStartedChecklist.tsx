@@ -15,7 +15,6 @@ import { useAppStore } from '@/lib/stores/app';
 import {
   generateIndustryChecklist,
   getGenericChecklist,
-  type ChecklistItem,
   type ChecklistCompletionCounts,
 } from '@/lib/onboarding/industry-checklists';
 

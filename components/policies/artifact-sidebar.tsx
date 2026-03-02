@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useState } from 'react';
 import {
   ShieldCheck,
   FileText,
@@ -10,9 +10,9 @@ import {
   Loader2,
   Link as LinkIcon,
   CheckCircle2,
-} from "lucide-react";
-import { linkArtifactToPolicy } from "@/app/app/actions/policies";
-import { useComplianceAction } from "@/components/compliance-system";
+} from 'lucide-react';
+import { linkArtifactToPolicy } from '@/app/app/actions/policies';
+import { useComplianceAction } from '@/components/compliance-system';
 
 /**
  * =========================================================
@@ -20,7 +20,7 @@ import { useComplianceAction } from "@/components/compliance-system";
  * Node Type: Evidence (violet) linking to Policy (cyan)
  * Wire: Policy ← Evidence (dashed violet)
  * =========================================================
- * 
+ *
  * This component manages the evidence → policy relationship.
  * When artifacts are linked, it creates a visual wire connection.
  */
@@ -42,7 +42,7 @@ export function ArtifactSidebar({
 }: ArtifactSidebarProps) {
   const [isLinking, setIsLinking] = useState<string | null>(null);
   const [justLinked, setJustLinked] = useState<string | null>(null);
-  const { nodesLinked, reportError, reportInfo } = useComplianceAction();
+  const { nodesLinked, reportError } = useComplianceAction();
 
   async function handleLink(artifactId: string, artifactName: string) {
     if (readOnly) return;
@@ -50,28 +50,31 @@ export function ArtifactSidebar({
     setIsLinking(artifactId);
     try {
       await linkArtifactToPolicy(policyId, artifactId);
-      
+
       // Show success state briefly
       setJustLinked(artifactId);
       setTimeout(() => setJustLinked(null), 2000);
-      
+
       // Report to compliance system
       nodesLinked(
-        "evidence", 
-        artifactName, 
-        "policy", 
-        policyTitle || `Policy ${policyId.slice(0, 8)}`
+        'evidence',
+        artifactName,
+        'policy',
+        policyTitle || `Policy ${policyId.slice(0, 8)}`,
       );
     } catch (err: any) {
-      console.error("Linking failed", err);
-      reportError({ title: "Link failed", message: err.message || "Unknown error" });
+      console.error('Linking failed', err);
+      reportError({
+        title: 'Link failed',
+        message: err.message || 'Unknown error',
+      });
     } finally {
       setIsLinking(null);
     }
   }
 
   const availableItems = (allVaultItems || []).filter(
-    (item: any) => !(linkedArtifacts || []).find((l: any) => l.id === item.id)
+    (item: any) => !(linkedArtifacts || []).find((l: any) => l.id === item.id),
   );
 
   return (
@@ -101,9 +104,12 @@ export function ArtifactSidebar({
             </div>
           ) : (
             (linkedArtifacts || []).map((file: any) => {
-              const fileName = file.file_name || file.title || "Untitled Artifact";
-              const fileType = String(file.file_type || "");
-              const typeLabel = fileType.includes("/") ? fileType.split("/")[1] : "DOC";
+              const fileName =
+                file.file_name || file.title || 'Untitled Artifact';
+              const fileType = String(file.file_type || '');
+              const typeLabel = fileType.includes('/')
+                ? fileType.split('/')[1]
+                : 'DOC';
               const sizeKb = ((Number(file.file_size) || 0) / 1024).toFixed(0);
 
               return (
@@ -152,10 +158,10 @@ export function ArtifactSidebar({
               </p>
             ) : (
               availableItems.map((item: any) => {
-                const itemName = item.file_name || item.title || "Untitled";
+                const itemName = item.file_name || item.title || 'Untitled';
                 const isCurrentlyLinking = isLinking === item.id;
                 const wasJustLinked = justLinked === item.id;
-                
+
                 return (
                   <button
                     key={item.id}
@@ -164,13 +170,15 @@ export function ArtifactSidebar({
                     className="w-full flex items-center justify-between p-2 rounded-xl border border-transparent hover:border-violet-400/30 hover:bg-violet-400/10 transition-all text-left group disabled:opacity-50 active:scale-[0.98]"
                   >
                     <div className="flex items-center gap-3 overflow-hidden">
-                      <div className={`h-7 w-7 rounded-lg border flex items-center justify-center shadow-sm transition-all ${
-                        wasJustLinked 
-                          ? 'bg-emerald-400/20 border-emerald-400/40' 
-                          : isCurrentlyLinking 
-                            ? 'bg-violet-400/20 border-violet-400/40'
-                            : 'bg-white/5 border-white/10 group-hover:bg-violet-400/10 group-hover:border-violet-400/30'
-                      }`}>
+                      <div
+                        className={`h-7 w-7 rounded-lg border flex items-center justify-center shadow-sm transition-all ${
+                          wasJustLinked
+                            ? 'bg-emerald-400/20 border-emerald-400/40'
+                            : isCurrentlyLinking
+                              ? 'bg-violet-400/20 border-violet-400/40'
+                              : 'bg-white/5 border-white/10 group-hover:bg-violet-400/10 group-hover:border-violet-400/30'
+                        }`}
+                      >
                         {wasJustLinked ? (
                           <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
                         ) : isCurrentlyLinking ? (
@@ -179,11 +187,13 @@ export function ArtifactSidebar({
                           <Plus className="h-3.5 w-3.5 text-slate-400 group-hover:text-violet-300 transition-colors" />
                         )}
                       </div>
-                      <span className={`text-[11px] font-bold truncate transition-colors ${
-                        wasJustLinked 
-                          ? 'text-emerald-300' 
-                          : 'text-slate-400 group-hover:text-slate-100'
-                      }`}>
+                      <span
+                        className={`text-[11px] font-bold truncate transition-colors ${
+                          wasJustLinked
+                            ? 'text-emerald-300'
+                            : 'text-slate-400 group-hover:text-slate-100'
+                        }`}
+                      >
                         {wasJustLinked ? 'Linked!' : itemName}
                       </span>
                     </div>
@@ -205,7 +215,8 @@ export function ArtifactSidebar({
           </span>
         </div>
         <p className="text-xs text-white/70 leading-relaxed relative z-10">
-          Each linked artifact creates a wire in your compliance graph. Auditors trace these connections to verify implementation.
+          Each linked artifact creates a wire in your compliance graph. Auditors
+          trace these connections to verify implementation.
         </p>
       </div>
     </div>

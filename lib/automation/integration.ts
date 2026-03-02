@@ -3,7 +3,7 @@
  * Functions to integrate automation with existing server actions
  */
 
-import { processEvent, type EventType } from './event-processor';
+import { processEvent } from './event-processor';
 import { updateComplianceScore } from './compliance-score-engine';
 
 /**

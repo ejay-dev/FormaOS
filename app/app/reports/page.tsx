@@ -19,7 +19,7 @@ import {
 } from '@/app/app/actions/control-evaluations';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { fetchSystemState } from '@/lib/system-state/server';
-import { Skeleton, SkeletonCard } from '@/components/ui/skeleton';
+import { SkeletonCard } from '@/components/ui/skeleton';
 
 type EntitlementRow = {
   feature_key: string;

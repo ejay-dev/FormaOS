@@ -8,7 +8,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Search, Filter, Download, Shield, AlertTriangle } from 'lucide-react';
+import { Search, Filter, Download, Shield } from 'lucide-react';
 
 interface ActivityLog {
   id: string;
@@ -182,7 +182,7 @@ export default function AuditTrailViewer({ orgId }: AuditTrailViewerProps) {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Date range */}
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label htmlFor="field-74" className="block text-sm font-medium mb-2">
                 Date Range
               </label>
               <input
@@ -205,7 +205,7 @@ export default function AuditTrailViewer({ orgId }: AuditTrailViewerProps) {
 
             {/* Actions */}
             <div>
-              <label className="block text-sm font-medium mb-2">Actions</label>
+              <label htmlFor="field-73" className="block text-sm font-medium mb-2">Actions</label>
               <div className="space-y-1 max-h-32 overflow-y-auto">
                 {[
                   'create',
@@ -217,7 +217,7 @@ export default function AuditTrailViewer({ orgId }: AuditTrailViewerProps) {
                   'reject',
                 ].map((action) => (
                   <label key={action} className="flex items-center">
-                    <input
+                    <input id="field-73"
                       type="checkbox"
                       checked={filters.actions.includes(action)}
                       onChange={(e) => {
@@ -238,7 +238,7 @@ export default function AuditTrailViewer({ orgId }: AuditTrailViewerProps) {
 
             {/* Entity Types */}
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label htmlFor="field-72" className="block text-sm font-medium mb-2">
                 Entity Types
               </label>
               <div className="space-y-1 max-h-32 overflow-y-auto">

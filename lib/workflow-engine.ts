@@ -120,8 +120,8 @@ export class WorkflowEngine {
    * Evaluate conditions
    */
   private evaluateConditions(
-    conditions: Record<string, any>,
-    context: AutomationContext,
+    _conditions: Record<string, any>,
+    _context: AutomationContext,
   ): boolean {
     // Simple condition evaluation (can be extended)
     return true; // For now, always true

@@ -212,7 +212,7 @@ export default function AdvancedSearch({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Type filters */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="field-223" className="block text-sm font-medium text-gray-700 mb-2">
                 Types
               </label>
               <div className="space-y-1">
@@ -232,7 +232,7 @@ export default function AdvancedSearch({
 
             {/* Date range */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="field-222" className="block text-sm font-medium text-gray-700 mb-2">
                 Date Range
               </label>
               <input

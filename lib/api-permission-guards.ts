@@ -119,7 +119,7 @@ export async function verifyOrgAccess(
 export function canAccessUserData(
   context: UserContext,
   targetUserId: string,
-  sameOrgOnly: boolean = true,
+  _sameOrgOnly: boolean = true,
 ): boolean {
   // Users can always access their own data
   if (context.userId === targetUserId) {
@@ -156,7 +156,7 @@ export function canModifyResource(
 /**
  * Query builder: Add org filter based on context
  */
-export async function getOrgFilteredQuery<T>(
+export async function getOrgFilteredQuery<_T>(
   supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
   table: string,
   context: UserContext,
@@ -169,7 +169,7 @@ export async function getOrgFilteredQuery<T>(
 /**
  * Query builder: Add org + user filter
  */
-export async function getUserFilteredQuery<T>(
+export async function getUserFilteredQuery<_T>(
   supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
   table: string,
   context: UserContext,

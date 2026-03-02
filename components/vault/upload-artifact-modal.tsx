@@ -169,8 +169,8 @@ export function UploadArtifactModal({ isOpen, onClose }: { isOpen: boolean; onCl
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold uppercase text-slate-400 tracking-widest ml-1">Artifact Label</label>
-            <input 
+            <label htmlFor="field-104" className="text-xs font-bold uppercase text-slate-400 tracking-widest ml-1">Artifact Label</label>
+            <input id="field-104" 
               placeholder="e.g. Annual Fire Safety Certificate 2025"
               value={title}
               onChange={(e) => setTitle(e.target.value)}

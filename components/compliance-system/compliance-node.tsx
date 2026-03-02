@@ -173,6 +173,9 @@ export function ComplianceNode({
 
   return (
     <div
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}
       onClick={interactive ? onClick : undefined}
       className={cn(
         // Base structure

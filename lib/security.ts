@@ -138,7 +138,7 @@ export async function verify2FAToken(
   if (security.backup_codes?.includes(token)) {
     // Remove used backup code
     const updatedCodes = security.backup_codes.filter(
-      (code: any) => code !== token,
+      (code: string) => code !== token,
     );
     await supabase
       .from('user_security')
@@ -162,7 +162,7 @@ export async function verify2FAToken(
  */
 export async function disable2FA(
   userId: string,
-  password: string,
+  _password: string,
 ): Promise<boolean> {
   const supabase = await createClient();
 

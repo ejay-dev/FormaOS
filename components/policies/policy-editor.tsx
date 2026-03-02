@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { updatePolicyContent, publishPolicy } from "@/app/app/policies/actions"
-import { Save, CheckCircle2, Loader2, ArrowLeft, Globe } from "lucide-react"
+import { Loader2, ArrowLeft, Globe } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 export function PolicyEditor({ policy }: { policy: any }) {

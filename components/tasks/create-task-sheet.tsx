@@ -99,8 +99,8 @@ export function CreateTaskSheet() {
               
               {/* Title */}
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Task Title</label>
-                <input 
+                <label htmlFor="field-98" className="text-xs font-bold uppercase text-slate-400 tracking-wider">Task Title</label>
+                <input id="field-98" 
                     {...register("title", { required: true })} 
                     placeholder="e.g. Review Firewall Logs" 
                     className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-sm outline-none focus:border-emerald-400/50 focus:ring-2 focus:ring-emerald-400/20 transition-all" 
@@ -110,8 +110,8 @@ export function CreateTaskSheet() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                  {/* Priority */}
                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Priority Level</label>
-                    <select 
+                    <label htmlFor="field-97" className="text-xs font-bold uppercase text-slate-400 tracking-wider">Priority Level</label>
+                    <select id="field-97" 
                         {...register("priority")} 
                         className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-sm outline-none focus:border-emerald-400/50 focus:ring-2 focus:ring-emerald-400/20"
                     >
@@ -124,7 +124,7 @@ export function CreateTaskSheet() {
 
                  {/* Due Date */}
                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase text-slate-400 tracking-wider flex items-center gap-1">
+                    <label htmlFor="field-96" className="text-xs font-bold uppercase text-slate-400 tracking-wider flex items-center gap-1">
                         <Calendar className="h-3 w-3" /> Due Date
                     </label>
                     <input 
@@ -152,9 +152,9 @@ export function CreateTaskSheet() {
 
                 {isRecurring && (
                     <div className="animate-in fade-in slide-in-from-top-2">
-                        <label className="text-xs font-bold uppercase text-purple-300 tracking-wider block mb-2">Repeat Every (Days)</label>
+                        <label htmlFor="field-95" className="text-xs font-bold uppercase text-purple-300 tracking-wider block mb-2">Repeat Every (Days)</label>
                         <div className="flex gap-2">
-                            <input 
+                            <input id="field-95" 
                                 type="number" 
                                 {...register("recurrenceDays")}
                                 defaultValue={30}

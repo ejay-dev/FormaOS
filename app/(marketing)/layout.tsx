@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 };
 
 export default function MarketingLayout({ children }: { children: ReactNode }) {
-  const siteUrl = brand.seo.siteUrl;
+  const _siteUrl = brand.seo.siteUrl;
 
   return (
     <div className="mk-shell mk-shell--layered-bg font-[var(--font-body)]">

@@ -10,7 +10,6 @@
 import { useState, useEffect } from 'react';
 import {
   CreditCard,
-  TrendingUp,
   Users,
   FileText,
   Award,

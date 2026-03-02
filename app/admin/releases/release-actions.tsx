@@ -134,7 +134,7 @@ export function ReleaseActions({
 
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <label className="block text-xs text-slate-400 mb-1.5">
+              <label htmlFor="field-202" className="block text-xs text-slate-400 mb-1.5">
                 Version Code
               </label>
               <input
@@ -146,7 +146,7 @@ export function ReleaseActions({
               />
             </div>
             <div>
-              <label className="block text-xs text-slate-400 mb-1.5">
+              <label htmlFor="field-201" className="block text-xs text-slate-400 mb-1.5">
                 Release Name
               </label>
               <div className="flex gap-2">
@@ -173,7 +173,7 @@ export function ReleaseActions({
           </div>
 
           <div>
-            <label className="block text-xs text-slate-400 mb-1.5">
+            <label htmlFor="field-200" className="block text-xs text-slate-400 mb-1.5">
               Release Notes (Markdown)
             </label>
             <textarea

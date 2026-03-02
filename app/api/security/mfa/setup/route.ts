@@ -1,11 +1,26 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { generate2FASecret } from '@/lib/security';
+import {
+  checkRateLimit,
+  getClientIdentifier,
+  createRateLimitHeaders,
+  RATE_LIMITS,
+} from '@/lib/security/rate-limiter';
 
 export const runtime = 'nodejs';
 
 export async function POST() {
   try {
+    const identifier = await getClientIdentifier();
+    const rl = await checkRateLimit(RATE_LIMITS.AUTH, identifier);
+    if (!rl.success) {
+      return NextResponse.json(
+        { ok: false, error: 'rate_limited' },
+        { status: 429, headers: createRateLimitHeaders(rl) },
+      );
+    }
+
     const supabase = await createSupabaseServerClient();
     const {
       data: { user },
@@ -20,7 +35,11 @@ export async function POST() {
 
     const secret = await generate2FASecret(user.id, user.email);
     // Only return QR code and backup codes — never expose the raw TOTP secret
-    return NextResponse.json({ ok: true, qrCode: secret.qrCode, backupCodes: secret.backupCodes });
+    return NextResponse.json({
+      ok: true,
+      qrCode: secret.qrCode,
+      backupCodes: secret.backupCodes,
+    });
   } catch (error) {
     console.error('[security/mfa/setup] Error:', error);
     return NextResponse.json(

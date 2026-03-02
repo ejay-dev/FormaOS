@@ -80,7 +80,7 @@ export async function getOrgFrameworkOverview(orgId: string) {
     .select('id, name, slug, version, description, is_active')
     .in('slug', enabledSlugs)
 
-  const frameworkById = new Map((frameworks ?? []).map((fw: any) => [fw.id, fw]))
+  const _frameworkById = new Map((frameworks ?? []).map((fw: any) => [fw.id, fw]))
   const frameworkBySlug = new Map((frameworks ?? []).map((fw: any) => [fw.slug, fw]))
 
   const frameworkIds = (frameworks ?? []).map((fw: any) => fw.id)

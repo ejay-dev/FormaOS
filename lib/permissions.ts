@@ -25,9 +25,7 @@
  */
 
 import {
-  hasPermission as unifiedHasPermission,
   type DatabaseRole,
-  type Permission,
 } from './roles';
 
 /** @deprecated Use DatabaseRole from lib/roles.ts */
@@ -47,7 +45,7 @@ export const PERMISSIONS = {
 };
 
 /** Map legacy roles to new DatabaseRole */
-function mapLegacyRole(role: UserRole): DatabaseRole {
+function _mapLegacyRole(role: UserRole): DatabaseRole {
   switch (role) {
     case 'admin':
       return 'owner';
