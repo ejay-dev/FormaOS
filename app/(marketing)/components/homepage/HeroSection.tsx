@@ -179,12 +179,15 @@ export function HeroSection() {
       className="home-hero relative isolate overflow-hidden"
       style={{ minHeight: 'clamp(88svh, 100vh, 1080px)' }}
     >
-      {/* Aurora gradient blobs — premium animated atmosphere */}
+      {/* Aurora + sparkles + beams — enterprise atmosphere */}
       <AuroraBackground className="absolute inset-0" />
 
-      {/* Soft vignette for text legibility */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/30 to-slate-950/80" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,transparent_50%,rgba(3,7,18,0.70)_100%)]" />
+      {/* Vignette layers for text legibility */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/5 via-slate-950/25 to-slate-950/75" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_-5%,transparent_55%,rgba(3,7,18,0.65)_100%)]" />
+      {/* Side vignette for widescreen depth */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_100%_at_0%_50%,rgba(3,7,18,0.40),transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_100%_at_100%_50%,rgba(3,7,18,0.40),transparent_70%)]" />
 
       <div className="relative z-10 mx-auto flex min-h-[inherit] max-w-7xl flex-col items-center justify-center px-6 pb-16 pt-28 text-center sm:px-8 sm:pt-32 lg:px-12">
         <motion.div
