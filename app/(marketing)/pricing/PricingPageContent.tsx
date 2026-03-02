@@ -2,36 +2,56 @@
 
 import { useRef } from 'react';
 import dynamic from 'next/dynamic';
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+} from 'framer-motion';
 import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { PricingHero } from './components';
 
-const PricingTiers = dynamic(() => import('./components/PricingTiers').then((m) => m.PricingTiers), {
-  ssr: false,
-  loading: () => null,
-});
+const PricingTiers = dynamic(
+  () => import('./components/PricingTiers').then((m) => m.PricingTiers),
+  {
+    ssr: false,
+    loading: () => null,
+  },
+);
 const AllPlansInclude = dynamic(
   () => import('./components/AllPlansInclude').then((m) => m.AllPlansInclude),
   { ssr: false, loading: () => null },
 );
 const ProcurementReadiness = dynamic(
-  () => import('./components/ProcurementReadiness').then((m) => m.ProcurementReadiness),
+  () =>
+    import('./components/ProcurementReadiness').then(
+      (m) => m.ProcurementReadiness,
+    ),
   { ssr: false, loading: () => null },
 );
-const FreeTrial = dynamic(() => import('./components/FreeTrial').then((m) => m.FreeTrial), {
-  ssr: false,
-  loading: () => null,
-});
-const FAQSection = dynamic(() => import('./components/FAQSection').then((m) => m.FAQSection), {
-  ssr: false,
-  loading: () => null,
-});
-const FinalCTA = dynamic(() => import('./components/FinalCTA').then((m) => m.FinalCTA), {
-  ssr: false,
-  loading: () => null,
-});
+const FreeTrial = dynamic(
+  () => import('./components/FreeTrial').then((m) => m.FreeTrial),
+  {
+    ssr: false,
+    loading: () => null,
+  },
+);
+const FAQSection = dynamic(
+  () => import('./components/FAQSection').then((m) => m.FAQSection),
+  {
+    ssr: false,
+    loading: () => null,
+  },
+);
+const FinalCTA = dynamic(
+  () => import('./components/FinalCTA').then((m) => m.FinalCTA),
+  {
+    ssr: false,
+    loading: () => null,
+  },
+);
 
 function PricingGradientMesh() {
   const prefersReducedMotion = useReducedMotion();

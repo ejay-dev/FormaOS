@@ -69,7 +69,8 @@ export function ComplianceNetworkSection() {
 
           <p className="mx-auto mb-7 max-w-2xl text-base leading-relaxed text-gray-400 sm:text-lg">
             Frameworks map to controls. Controls generate tasks. Tasks produce
-            evidence. Tap or hover any node to trace its compliance relationships.
+            evidence. Tap or hover any node to trace its compliance
+            relationships.
           </p>
 
           {/* Legend row — enhanced with live status pulse */}

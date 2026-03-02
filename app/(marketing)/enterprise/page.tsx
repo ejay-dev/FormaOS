@@ -19,7 +19,8 @@ import { MarketingPageShell } from '@/app/(marketing)/components/shared/Marketin
 import { CompactHero } from '@/components/motion/CompactHero';
 import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 export const metadata: Metadata = {
@@ -78,9 +79,15 @@ const enterpriseFeatures = [
 const procurementChecklist = [
   { label: 'Data Processing Agreement (DPA)', href: '/trust/dpa' },
   { label: 'Vendor Assurance Questionnaire', href: '/trust/vendor-assurance' },
-  { label: 'Subprocessor List + Data Flow Diagram', href: '/trust/subprocessors' },
+  {
+    label: 'Subprocessor List + Data Flow Diagram',
+    href: '/trust/subprocessors',
+  },
   { label: 'Penetration Test Executive Summary (NDA)', href: '/contact' },
-  { label: 'Trust Packet PDF (architecture, encryption, identity)', href: '/trust/packet' },
+  {
+    label: 'Trust Packet PDF (architecture, encryption, identity)',
+    href: '/trust/packet',
+  },
   { label: 'Security Review Packet', href: '/security-review' },
   { label: 'SLA Terms (99.9% uptime, P1/P2 response)', href: '/trust/sla' },
   { label: 'Data Residency Confirmation', href: '/trust/data-handling' },
@@ -131,7 +138,6 @@ export default function EnterprisePage() {
       />
 
       <div className="mx-auto max-w-5xl px-6 pb-24">
-
         {/* Enterprise features grid */}
         <section>
           <h2 className="text-xl font-semibold text-foreground mb-6">
@@ -146,8 +152,13 @@ export default function EnterprisePage() {
                   className="rounded-2xl border border-border bg-card p-6"
                 >
                   <div className="flex items-center gap-2 mb-3">
-                    <Icon className="h-4 w-4 text-primary shrink-0" aria-hidden="true" />
-                    <h3 className="text-sm font-semibold text-foreground">{feature.title}</h3>
+                    <Icon
+                      className="h-4 w-4 text-primary shrink-0"
+                      aria-hidden="true"
+                    />
+                    <h3 className="text-sm font-semibold text-foreground">
+                      {feature.title}
+                    </h3>
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {feature.description}
@@ -162,7 +173,9 @@ export default function EnterprisePage() {
         <section className="mt-12 rounded-2xl border border-border bg-card p-4 sm:p-7">
           <div className="flex items-center gap-2 mb-5">
             <Clock className="h-5 w-5 text-primary" aria-hidden="true" />
-            <h2 className="text-lg font-semibold text-foreground">SLA Commitments — Enterprise</h2>
+            <h2 className="text-lg font-semibold text-foreground">
+              SLA Commitments — Enterprise
+            </h2>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {slaCommitments.map(({ label, value }) => (
@@ -171,13 +184,15 @@ export default function EnterprisePage() {
                 className="flex items-center justify-between rounded-xl border border-border bg-background/50 px-4 py-3"
               >
                 <span className="text-sm text-muted-foreground">{label}</span>
-                <span className="text-sm font-semibold text-foreground ml-3 shrink-0">{value}</span>
+                <span className="text-sm font-semibold text-foreground ml-3 shrink-0">
+                  {value}
+                </span>
               </div>
             ))}
           </div>
           <p className="mt-4 text-xs text-muted-foreground">
-            SLA terms are incorporated into your executed MSA/SOW. Contact us to initiate the
-            enterprise agreement process.
+            SLA terms are incorporated into your executed MSA/SOW. Contact us to
+            initiate the enterprise agreement process.
           </p>
         </section>
 
@@ -190,9 +205,10 @@ export default function EnterprisePage() {
             </h2>
           </div>
           <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-            Every artifact your legal, security, and risk teams need is available before they ask.
-            Enterprise customers receive countersigned copies of the DPA and NDA-gated artifacts
-            within 2 business days of request.
+            Every artifact your legal, security, and risk teams need is
+            available before they ask. Enterprise customers receive
+            countersigned copies of the DPA and NDA-gated artifacts within 2
+            business days of request.
           </p>
           <div className="grid gap-3 sm:grid-cols-2">
             {procurementChecklist.map(({ label, href }) => (
@@ -201,7 +217,10 @@ export default function EnterprisePage() {
                 href={href}
                 className="group flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 text-sm hover:border-primary/30 hover:bg-muted/20 transition-colors"
               >
-                <CheckCircle className="h-4 w-4 text-primary/70 shrink-0" aria-hidden="true" />
+                <CheckCircle
+                  className="h-4 w-4 text-primary/70 shrink-0"
+                  aria-hidden="true"
+                />
                 <span className="text-foreground group-hover:text-primary transition-colors">
                   {label}
                 </span>
@@ -230,8 +249,12 @@ export default function EnterprisePage() {
                     {t.name.charAt(0)}
                   </div>
                   <div>
-                    <div className="text-sm font-semibold text-foreground">{t.name}</div>
-                    <div className="text-xs text-muted-foreground">{t.role} · {t.org}</div>
+                    <div className="text-sm font-semibold text-foreground">
+                      {t.name}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {t.role} · {t.org}
+                    </div>
                   </div>
                   <span className="ml-auto text-[10px] font-semibold uppercase tracking-wider text-muted-foreground border border-border rounded-full px-2 py-0.5">
                     {t.sector}
@@ -251,8 +274,9 @@ export default function EnterprisePage() {
             </h2>
           </div>
           <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-            Request a security review walkthrough, download the Trust Packet, or initiate
-            procurement. Most enterprise security reviews complete within 5–7 business days.
+            Request a security review walkthrough, download the Trust Packet, or
+            initiate procurement. Most enterprise security reviews complete
+            within 5–7 business days.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Link
@@ -283,7 +307,10 @@ export default function EnterprisePage() {
           <Link href="/trust" className="text-primary hover:underline">
             ← Trust Center
           </Link>
-          <Link href="/security-review" className="text-primary hover:underline">
+          <Link
+            href="/security-review"
+            className="text-primary hover:underline"
+          >
             Security Review Packet →
           </Link>
           <Link href="/pricing" className="text-primary hover:underline">

@@ -25,69 +25,93 @@ import {
 import { useHomepageTelemetry } from '@/lib/marketing/homepage-telemetry';
 
 // Lazy-load heavy rendering components
-const ScrollStory = dynamic(() => import('./homepage/ScrollStory').then((m) => m.ScrollStory), {
-  ssr: false,
-  loading: () => null,
-});
+const ScrollStory = dynamic(
+  () => import('./homepage/ScrollStory').then((m) => m.ScrollStory),
+  {
+    ssr: false,
+    loading: () => null,
+  },
+);
 const ComplianceEngineDemo = dynamic(
-  () => import('./homepage/ComplianceEngineDemo').then((m) => m.ComplianceEngineDemo),
+  () =>
+    import('./homepage/ComplianceEngineDemo').then(
+      (m) => m.ComplianceEngineDemo,
+    ),
   { ssr: false, loading: () => null },
 );
 const CapabilitiesGrid = dynamic(
   () => import('./homepage/CapabilitiesGrid').then((m) => m.CapabilitiesGrid),
   { ssr: false, loading: () => null },
 );
-const Industries = dynamic(() => import('./homepage/Industries').then((m) => m.Industries), {
-  ssr: false,
-  loading: () => null,
-});
+const Industries = dynamic(
+  () => import('./homepage/Industries').then((m) => m.Industries),
+  {
+    ssr: false,
+    loading: () => null,
+  },
+);
 const SecuritySection = dynamic(
   () => import('./homepage/SecuritySection').then((m) => m.SecuritySection),
   { ssr: false, loading: () => null },
 );
 const OutcomeProofSection = dynamic(
-  () => import('./homepage/OutcomeProofSection').then((m) => m.OutcomeProofSection),
+  () =>
+    import('./homepage/OutcomeProofSection').then((m) => m.OutcomeProofSection),
   { ssr: false, loading: () => null },
 );
 const ObjectionHandlingSection = dynamic(
-  () => import('./homepage/ObjectionHandlingSection').then((m) => m.ObjectionHandlingSection),
+  () =>
+    import('./homepage/ObjectionHandlingSection').then(
+      (m) => m.ObjectionHandlingSection,
+    ),
   { ssr: false, loading: () => null },
 );
 const ProcurementFlowSection = dynamic(
-  () => import('./homepage/ProcurementFlowSection').then((m) => m.ProcurementFlowSection),
+  () =>
+    import('./homepage/ProcurementFlowSection').then(
+      (m) => m.ProcurementFlowSection,
+    ),
   { ssr: false, loading: () => null },
 );
-const CTASection = dynamic(() => import('./homepage/CTASection').then((m) => m.CTASection), {
-  ssr: false,
-  loading: () => null,
-});
-const TrustSection = dynamic(() => import('./homepage/TrustSection').then((m) => m.TrustSection), {
-  ssr: false,
-  loading: () => null,
-});
+const CTASection = dynamic(
+  () => import('./homepage/CTASection').then((m) => m.CTASection),
+  {
+    ssr: false,
+    loading: () => null,
+  },
+);
+const TrustSection = dynamic(
+  () => import('./homepage/TrustSection').then((m) => m.TrustSection),
+  {
+    ssr: false,
+    loading: () => null,
+  },
+);
 const TestimonialsSection = dynamic(
-  () => import('./homepage/TestimonialsSection').then((m) => m.TestimonialsSection),
+  () =>
+    import('./homepage/TestimonialsSection').then((m) => m.TestimonialsSection),
   { ssr: false, loading: () => null },
 );
 // Interactive demo components (lazy-loaded, client-only)
 const InteractiveDemo = dynamic(
   () => import('@/components/marketing/demo/InteractiveDemo'),
-  { ssr: false, loading: () => null }
+  { ssr: false, loading: () => null },
 );
 const EvidenceShowcase = dynamic(
   () => import('@/components/marketing/demo/EvidenceShowcase'),
-  { ssr: false, loading: () => null }
+  { ssr: false, loading: () => null },
 );
 const TaskShowcase = dynamic(
   () => import('@/components/marketing/demo/TaskShowcase'),
-  { ssr: false, loading: () => null }
+  { ssr: false, loading: () => null },
 );
 
 export default function FormaOSHomepage() {
   const { snapshot } = useControlPlaneRuntime();
   const shouldReduceMotion = useReducedMotion();
   const tierConfig = useDeviceTier();
-  const runtime = snapshot?.marketing.runtime ?? DEFAULT_RUNTIME_MARKETING.runtime;
+  const runtime =
+    snapshot?.marketing.runtime ?? DEFAULT_RUNTIME_MARKETING.runtime;
   const sectionVisibility = runtime.sectionVisibility;
   const motionPolicy = useMemo(
     () =>
@@ -98,11 +122,7 @@ export default function FormaOSHomepage() {
         heroInView: true,
         deviceTier: tierConfig.tier,
       }),
-    [
-      runtime.expensiveEffectsEnabled,
-      shouldReduceMotion,
-      tierConfig.tier,
-    ],
+    [runtime.expensiveEffectsEnabled, shouldReduceMotion, tierConfig.tier],
   );
   const telemetry = useHomepageTelemetry(motionPolicy, { samplingRate: 0.75 });
   const sectionDecisions = useMemo(
@@ -125,10 +145,9 @@ export default function FormaOSHomepage() {
   const enabledShowcases = Object.entries(showcaseModules)
     .filter(([, enabled]) => enabled)
     .map(([key]) => key);
-  const activeShowcase =
-    enabledShowcases.includes(runtime.activeShowcaseModule)
-      ? runtime.activeShowcaseModule
-      : (enabledShowcases[0] ?? null);
+  const activeShowcase = enabledShowcases.includes(runtime.activeShowcaseModule)
+    ? runtime.activeShowcaseModule
+    : (enabledShowcases[0] ?? null);
 
   useEffect(() => {
     telemetry.trackRuntimeProfile({
@@ -165,7 +184,9 @@ export default function FormaOSHomepage() {
     if (!decision || !decision.visible) return null;
     if (!decision.deferred) return section;
 
-    return <DeferredSection minHeight={minHeight ?? 400}>{section}</DeferredSection>;
+    return (
+      <DeferredSection minHeight={minHeight ?? 400}>{section}</DeferredSection>
+    );
   };
 
   return (
@@ -182,54 +203,66 @@ export default function FormaOSHomepage() {
             ? renderSection('value_proposition', <ValueProposition />)
             : null}
           {sectionVisibility.compliance_network !== false
-            ? renderSection('compliance_network', <ComplianceNetworkSection />, 620)
+            ? renderSection(
+                'compliance_network',
+                <ComplianceNetworkSection />,
+                620,
+              )
             : null}
           {activeShowcase === 'interactive_demo' &&
-          sectionVisibility.interactive_demo !== false ? (
-            renderSection('interactive_demo', <InteractiveDemo />, 720)
-          ) : null}
-          {sectionVisibility.scroll_story !== false ? (
-            renderSection('scroll_story', <ScrollStory />, 720)
-          ) : null}
-          {sectionVisibility.compliance_engine_demo !== false ? (
-            renderSection('compliance_engine_demo', <ComplianceEngineDemo />, 720)
-          ) : null}
-          {sectionVisibility.capabilities_grid !== false ? (
-            renderSection('capabilities_grid', <CapabilitiesGrid />, 640)
-          ) : null}
+          sectionVisibility.interactive_demo !== false
+            ? renderSection('interactive_demo', <InteractiveDemo />, 720)
+            : null}
+          {sectionVisibility.scroll_story !== false
+            ? renderSection('scroll_story', <ScrollStory />, 720)
+            : null}
+          {sectionVisibility.compliance_engine_demo !== false
+            ? renderSection(
+                'compliance_engine_demo',
+                <ComplianceEngineDemo />,
+                720,
+              )
+            : null}
+          {sectionVisibility.capabilities_grid !== false
+            ? renderSection('capabilities_grid', <CapabilitiesGrid />, 640)
+            : null}
           {activeShowcase === 'evidence_showcase' &&
-          sectionVisibility.evidence_showcase !== false ? (
-            renderSection('evidence_showcase', <EvidenceShowcase />, 640)
-          ) : null}
-          {sectionVisibility.industries !== false ? (
-            renderSection('industries', <Industries />, 620)
-          ) : null}
+          sectionVisibility.evidence_showcase !== false
+            ? renderSection('evidence_showcase', <EvidenceShowcase />, 640)
+            : null}
+          {sectionVisibility.industries !== false
+            ? renderSection('industries', <Industries />, 620)
+            : null}
           {activeShowcase === 'task_showcase' &&
-          sectionVisibility.task_showcase !== false ? (
-            renderSection('task_showcase', <TaskShowcase />, 640)
-          ) : null}
-          {sectionVisibility.security !== false ? (
-            renderSection('security', <SecuritySection />, 660)
-          ) : null}
-          {sectionVisibility.outcome_proof !== false ? (
-            renderSection('outcome_proof', <OutcomeProofSection />, 620)
-          ) : null}
+          sectionVisibility.task_showcase !== false
+            ? renderSection('task_showcase', <TaskShowcase />, 640)
+            : null}
+          {sectionVisibility.security !== false
+            ? renderSection('security', <SecuritySection />, 660)
+            : null}
+          {sectionVisibility.outcome_proof !== false
+            ? renderSection('outcome_proof', <OutcomeProofSection />, 620)
+            : null}
           {/* Social proof — always shown; not gated by control plane */}
           <DeferredSection minHeight={520}>
             <TestimonialsSection />
           </DeferredSection>
-          {sectionVisibility.objection_handling !== false ? (
-            renderSection('objection_handling', <ObjectionHandlingSection />, 620)
-          ) : null}
-          {sectionVisibility.procurement_flow !== false ? (
-            renderSection('procurement_flow', <ProcurementFlowSection />, 620)
-          ) : null}
-          {sectionVisibility.cta !== false ? (
-            renderSection('cta', <CTASection />, 540)
-          ) : null}
-          {sectionVisibility.trust !== false ? (
-            renderSection('trust', <TrustSection />, 560)
-          ) : null}
+          {sectionVisibility.objection_handling !== false
+            ? renderSection(
+                'objection_handling',
+                <ObjectionHandlingSection />,
+                620,
+              )
+            : null}
+          {sectionVisibility.procurement_flow !== false
+            ? renderSection('procurement_flow', <ProcurementFlowSection />, 620)
+            : null}
+          {sectionVisibility.cta !== false
+            ? renderSection('cta', <CTASection />, 540)
+            : null}
+          {sectionVisibility.trust !== false
+            ? renderSection('trust', <TrustSection />, 560)
+            : null}
         </div>
       </div>
     </MotionProvider>

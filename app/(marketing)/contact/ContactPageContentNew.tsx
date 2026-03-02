@@ -32,10 +32,27 @@ function ContactHero() {
     <ImmersiveHero
       theme="contact"
       visualContent={<ContactHeroVisual />}
-      badge={{ icon: <Mail className="w-4 h-4 text-blue-400" />, text: 'Contact', colorClass: 'blue' }}
-      headline={<>Let&apos;s Talk About Your<br /><span className="bg-gradient-to-r from-blue-400 via-cyan-500 to-purple-500 bg-clip-text text-transparent">Compliance Strategy</span></>}
+      badge={{
+        icon: <Mail className="w-4 h-4 text-blue-400" />,
+        text: 'Contact',
+        colorClass: 'blue',
+      }}
+      headline={
+        <>
+          Let&apos;s Talk About Your
+          <br />
+          <span className="bg-gradient-to-r from-blue-400 via-cyan-500 to-purple-500 bg-clip-text text-transparent">
+            Compliance Strategy
+          </span>
+        </>
+      }
       subheadline="Speak with FormaOS about rollout, security review, and enterprise governance design."
-      extras={<p className="text-base text-gray-500 max-w-2xl mx-auto text-center">We work with regulated organizations that require precision, accountability, and operational proof.</p>}
+      extras={
+        <p className="text-base text-gray-500 max-w-2xl mx-auto text-center">
+          We work with regulated organizations that require precision,
+          accountability, and operational proof.
+        </p>
+      }
       primaryCta={{ href: '#demo-form', label: 'Request a Demo' }}
       secondaryCta={{ href: '#contact-info', label: 'Contact Our Team' }}
     />
@@ -372,7 +389,11 @@ function SecurityTrust() {
   return (
     <section className="mk-section relative">
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="perspectiveUp" range={[0, 0.3]} className="text-center">
+        <ScrollReveal
+          variant="perspectiveUp"
+          range={[0, 0.3]}
+          className="text-center"
+        >
           <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-cyan-500/20 flex items-center justify-center">
             <Shield className="w-8 h-8 text-cyan-400" />
           </div>

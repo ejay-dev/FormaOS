@@ -96,7 +96,10 @@ function AnimatedFooterLink({
 
 function FooterCTA() {
   return (
-    <ScrollReveal variant="fadeUp" className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-500/10 via-blue-500/5 to-purple-500/10 border border-white/10 p-8 lg:p-10">
+    <ScrollReveal
+      variant="fadeUp"
+      className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-500/10 via-blue-500/5 to-purple-500/10 border border-white/10 p-8 lg:p-10"
+    >
       {/* Animated gradient orb */}
       <motion.div
         className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-cyan-500/20 blur-3xl"
@@ -228,7 +231,10 @@ export function Footer() {
             </p>
 
             {/* Status indicator */}
-            <ScrollReveal variant="blurIn" className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20">
+            <ScrollReveal
+              variant="blurIn"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20"
+            >
               <motion.span
                 className="h-2 w-2 rounded-full bg-green-500"
                 animate={{
@@ -317,7 +323,10 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <ScrollReveal variant="fadeUp" className="py-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+        <ScrollReveal
+          variant="fadeUp"
+          className="py-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4"
+        >
           <p className="text-sm text-gray-500">
             © {new Date().getFullYear()} FormaOS. All rights reserved.
           </p>
