@@ -50,6 +50,10 @@ const ComplianceIntelligence = dynamic(
   () => import('./components/ComplianceIntelligence').then((m) => m.ComplianceIntelligence),
   { ssr: false, loading: () => null },
 );
+const FullControlMapSection = dynamic(
+  () => import('./components/FullControlMapSection').then((m) => m.FullControlMapSection),
+  { ssr: false, loading: () => null },
+);
 const BuiltForComplex = dynamic(
   () => import('./components/BuiltForComplex').then((m) => m.BuiltForComplex),
   { ssr: false, loading: () => null },
@@ -111,6 +115,11 @@ export default function ProductPageContent() {
           <ComplianceIntelligence />
         </DepthSection>
       </DeferredSection>
+      <VisualDivider />
+      <DeferredSection minHeight={800}>
+        <FullControlMapSection />
+      </DeferredSection>
+      <VisualDivider />
       <DeferredSection minHeight={620}>
         <DepthSection fade>
           <BuiltForComplex />
