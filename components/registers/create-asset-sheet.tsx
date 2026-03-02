@@ -98,7 +98,7 @@ export function CreateAssetSheet() {
               
               {/* 1. Asset Name */}
               <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Asset Name</label>
+                <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Asset Name</label>
                 <div className="relative">
                   <Laptop className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                   <input
@@ -112,7 +112,7 @@ export function CreateAssetSheet() {
 
               {/* 2. Asset Type */}
               <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Category</label>
+                <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Category</label>
                 <select 
                   name="type" 
                   className="w-full rounded-xl border border-white/10 p-3 text-sm outline-none focus:border-teal-400/50 bg-white/5"
@@ -126,7 +126,7 @@ export function CreateAssetSheet() {
 
               {/* 3. Owner (New Requirement) */}
               <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider flex items-center gap-1">
+                <label className="text-xs font-bold uppercase text-slate-400 tracking-wider flex items-center gap-1">
                   <User className="h-3 w-3" />
                   Owner
                 </label>
@@ -136,12 +136,12 @@ export function CreateAssetSheet() {
                   placeholder="e.g. DevOps Team or CTO"
                   className="w-full rounded-xl border border-white/10 p-3 text-sm outline-none focus:border-teal-400/50 transition-colors"
                 />
-                <p className="text-[10px] text-slate-400">The person or team responsible for this asset.</p>
+                <p className="text-xs text-slate-400">The person or team responsible for this asset.</p>
               </div>
 
               {/* 4. Criticality */}
               <div className="space-y-2 pt-2">
-                <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider flex items-center gap-1">
+                <label className="text-xs font-bold uppercase text-slate-400 tracking-wider flex items-center gap-1">
                   <ShieldAlert className="h-3 w-3 text-amber-500" />
                   Risk Level
                 </label>

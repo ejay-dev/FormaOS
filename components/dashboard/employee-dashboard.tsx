@@ -6,7 +6,6 @@ import {
   ClipboardCheck,
   FileText,
   CheckSquare,
-  AlertCircle,
   CheckCircle2,
   TrendingUp,
   Calendar,
@@ -29,6 +28,7 @@ interface EmployeeDashboardProps {
   employeeName: string;
   organizationName: string;
   userRole: DatabaseRole;
+  industry?: string | null;
   complianceScore?: number;
   nextAuditDate?: string;
   tasksAssigned?: number;
@@ -447,49 +447,66 @@ export function Training({
   );
 }
 
+function getEmployeeEntityLabel(industry?: string | null): string {
+  switch (industry) {
+    case 'ndis': return 'participant compliance';
+    case 'healthcare': return 'clinical';
+    case 'aged_care': return 'resident care';
+    case 'childcare': return 'child safety';
+    case 'community_services': return 'client service';
+    case 'financial_services': return 'regulatory';
+    case 'saas_technology': return 'security control';
+    case 'enterprise': return 'enterprise';
+    default: return 'compliance';
+  }
+}
+
 function RoleWorkflowBoard({
   role,
+  industry,
   tasksAssigned,
   tasksPending,
   complianceScore,
 }: {
   role: DatabaseRole;
+  industry?: string | null;
   tasksAssigned: number;
   tasksPending: number;
   complianceScore: number;
 }) {
   const isViewer = role === 'viewer';
+  const entityLabel = getEmployeeEntityLabel(industry);
   const actions = isViewer
     ? [
         {
           label: 'Review readiness dashboard',
-          detail: 'Start with posture and risk visibility before deep review.',
+          detail: `Start with ${entityLabel} posture and risk visibility before deep review.`,
           href: '/app',
           icon: TrendingUp,
         },
         {
           label: 'Inspect evidence vault',
-          detail: 'Check control evidence completeness and verification state.',
+          detail: `Check ${entityLabel} evidence completeness and verification state.`,
           href: '/app/vault',
           icon: FileText,
         },
         {
           label: 'Read audit stream',
-          detail: 'Trace approvals and key operational control events.',
+          detail: `Trace approvals and key ${entityLabel} events.`,
           href: '/app/audit',
           icon: Calendar,
         },
       ]
     : [
         {
-          label: 'Complete priority tasks',
-          detail: 'Focus on assigned controls with pending status first.',
+          label: `Complete priority ${entityLabel} tasks`,
+          detail: `Focus on assigned ${entityLabel} items with pending status first.`,
           href: '/app/tasks',
           icon: CheckSquare,
         },
         {
           label: 'Upload required evidence',
-          detail: 'Attach proof for current controls and close readiness gaps.',
+          detail: `Attach proof for current ${entityLabel} controls and close readiness gaps.`,
           href: '/app/vault',
           icon: CheckCircle2,
         },
@@ -514,19 +531,19 @@ function RoleWorkflowBoard({
       <div className="mb-4 grid grid-cols-3 gap-2">
         <div className="rounded-lg border border-white/10 bg-white/5 p-3 text-center">
           <p className="text-lg font-bold text-slate-100">{tasksAssigned}</p>
-          <p className="text-[10px] uppercase tracking-wide text-slate-400">
+          <p className="text-xs uppercase tracking-wide text-slate-400">
             Assigned
           </p>
         </div>
         <div className="rounded-lg border border-white/10 bg-white/5 p-3 text-center">
           <p className="text-lg font-bold text-slate-100">{tasksPending}</p>
-          <p className="text-[10px] uppercase tracking-wide text-slate-400">
+          <p className="text-xs uppercase tracking-wide text-slate-400">
             Pending
           </p>
         </div>
         <div className="rounded-lg border border-white/10 bg-white/5 p-3 text-center">
           <p className="text-lg font-bold text-slate-100">{complianceScore}%</p>
-          <p className="text-[10px] uppercase tracking-wide text-slate-400">
+          <p className="text-xs uppercase tracking-wide text-slate-400">
             Score
           </p>
         </div>
@@ -537,7 +554,7 @@ function RoleWorkflowBoard({
           <Link
             key={action.label}
             href={action.href}
-            className="group flex items-start justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:bg-white/10"
+            className="group flex flex-col gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:bg-white/10 sm:flex-row sm:items-start sm:justify-between"
           >
             <div className="flex items-start gap-3">
               <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5">
@@ -550,7 +567,7 @@ function RoleWorkflowBoard({
                 <p className="text-xs text-slate-400">{action.detail}</p>
               </div>
             </div>
-            <CheckCircle2 className="mt-1 h-4 w-4 text-slate-500 transition-transform group-hover:scale-110" />
+            <CheckCircle2 className="mt-1 h-4 w-4 self-end text-slate-500 transition-transform group-hover:scale-110 sm:self-auto" />
           </Link>
         ))}
       </div>
@@ -565,6 +582,7 @@ export function EmployeeDashboard({
   employeeName,
   organizationName,
   userRole,
+  industry,
   complianceScore = 0,
   nextAuditDate = '',
   tasksAssigned = 6,
@@ -592,8 +610,8 @@ export function EmployeeDashboard({
   ];
 
   return (
-    <div className="space-y-8">
-      <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4">
+    <div className="space-y-6 sm:space-y-8">
+      <div className="rounded-2xl border border-white/10 bg-white/5 px-4 sm:px-5 py-4">
         <p className="text-xs uppercase tracking-wider text-slate-400">
           Workspace Context
         </p>
@@ -602,10 +620,11 @@ export function EmployeeDashboard({
         </p>
       </div>
 
-      <GettingStartedChecklist />
+      <GettingStartedChecklist industry={industry} />
       <AIComplianceAssistantPanel suggestions={aiSuggestions} />
       <RoleWorkflowBoard
         role={userRole}
+        industry={industry}
         tasksAssigned={tasksAssigned}
         tasksPending={tasksPending}
         complianceScore={complianceScore}

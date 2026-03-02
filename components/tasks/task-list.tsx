@@ -44,10 +44,10 @@ export function TaskList({ initialTasks }: { initialTasks: Task[] }) {
         <table className="min-w-[520px] w-full text-left text-sm">
           <thead className="bg-white/10 border-b border-white/10 text-slate-400">
             <tr>
-              <th className="px-6 py-4 font-bold text-[10px] uppercase tracking-wider w-16">Done</th>
-              <th className="px-6 py-4 font-bold text-[10px] uppercase tracking-wider">Task Name</th>
-              <th className="px-6 py-4 font-bold text-[10px] uppercase tracking-wider">Priority</th>
-              <th className="px-6 py-4 font-bold text-[10px] uppercase tracking-wider text-right">Due Date</th>
+              <th className="px-6 py-4 font-bold text-xs uppercase tracking-wider w-16">Done</th>
+              <th className="px-6 py-4 font-bold text-xs uppercase tracking-wider">Task Name</th>
+              <th className="px-6 py-4 font-bold text-xs uppercase tracking-wider">Priority</th>
+              <th className="px-6 py-4 font-bold text-xs uppercase tracking-wider text-right">Due Date</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-neutral-100">
@@ -76,7 +76,7 @@ export function TaskList({ initialTasks }: { initialTasks: Task[] }) {
                         {task.title}
                       </span>
                       {task.is_recurring && (
-                        <div className="flex items-center gap-1 text-[10px] text-purple-300 mt-0.5 font-medium">
+                        <div className="flex items-center gap-1 text-xs text-purple-300 mt-0.5 font-medium">
                           <RefreshCw className="h-3 w-3" />
                           Recurring Task
                         </div>
@@ -84,7 +84,7 @@ export function TaskList({ initialTasks }: { initialTasks: Task[] }) {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-2.5 py-1 rounded-md text-[10px] font-bold border uppercase tracking-wide ${getPriorityBadge(task.priority)}`}>
+                    <span className={`px-2.5 py-1 rounded-md text-xs font-bold border uppercase tracking-wide ${getPriorityBadge(task.priority)}`}>
                       {task.priority}
                     </span>
                   </td>

@@ -22,7 +22,7 @@ interface ScrollRevealProps {
   parallaxDistance?: number;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 const VARIANT_CONFIG: Record<RevealVariant, { from: Record<string, any>; to: Record<string, any> }> = {
   fadeUp: { from: { opacity: 0, y: 24 }, to: { opacity: 1, y: 0 } },
   fadeDown: { from: { opacity: 0, y: -20 }, to: { opacity: 1, y: 0 } },

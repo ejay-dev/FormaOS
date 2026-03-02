@@ -12,8 +12,8 @@ export function CredentialStatusWidget({ credentials }: { credentials: any[] }) 
   return (
     <div className="bg-white/10 border border-white/10 rounded-[2.5rem] p-8 shadow-sm space-y-8">
       <div className="flex items-center justify-between">
-        <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Credential Integrity</h3>
-        <span className="text-[10px] font-black text-slate-100 uppercase tracking-widest bg-white/10 px-3 py-1 rounded-full">
+        <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Credential Integrity</h3>
+        <span className="text-xs font-black text-slate-100 uppercase tracking-widest bg-white/10 px-3 py-1 rounded-full">
             {credentials.length} Total Files
         </span>
       </div>
@@ -39,7 +39,7 @@ export function CredentialStatusWidget({ credentials }: { credentials: any[] }) 
       {stats.rejected > 0 && (
         <div className="p-4 bg-red-900 rounded-2xl text-white flex items-start gap-3">
             <AlertTriangle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
-            <p className="text-[10px] leading-relaxed font-bold uppercase tracking-widest">
+            <p className="text-xs leading-relaxed font-bold uppercase tracking-widest">
                 Action Required: One or more documents were rejected by your employer. Please re-upload verified proof.
             </p>
         </div>

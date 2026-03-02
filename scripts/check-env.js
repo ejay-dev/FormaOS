@@ -84,6 +84,63 @@ if (missingRequired.length > 0) {
   process.exit(1);
 }
 
+const isPlaceholder = (value) => {
+  if (!value) return false;
+  const normalized = String(value).trim().toLowerCase();
+  return (
+    normalized.startsWith('your-') ||
+    normalized.includes('your-project') ||
+    normalized.includes('your-instance') ||
+    normalized.startsWith('placeholder') ||
+    normalized.startsWith('changeme') ||
+    normalized.includes('replace-me') ||
+    normalized.includes('example.com') ||
+    /^<.*>$/.test(normalized)
+  );
+};
+
+const invalidRequired = requiredKeys.filter((key) => {
+  const value = combinedVars[key];
+  if (!value) return false;
+  if (!isPlaceholder(value)) return false;
+  return true;
+});
+
+const supabaseUrl = combinedVars.NEXT_PUBLIC_SUPABASE_URL;
+let invalidSupabaseUrl = false;
+if (supabaseUrl) {
+  try {
+    const parsed = new URL(supabaseUrl);
+    const host = parsed.hostname.toLowerCase();
+    invalidSupabaseUrl =
+      host.startsWith('your-') ||
+      host.includes('your-project') ||
+      !(
+        host.endsWith('.supabase.co') || host.endsWith('.supabase-project.com')
+      );
+  } catch {
+    invalidSupabaseUrl = true;
+  }
+}
+
+if (invalidRequired.length > 0 || invalidSupabaseUrl) {
+  const strictValidation = process.env.STRICT_ENV_VALIDATION === 'true';
+  const logger = strictValidation ? console.error : console.warn;
+
+  logger('\nInvalid placeholder environment variables detected:');
+  if (invalidRequired.length > 0) {
+    logger(invalidRequired.map((key) => `- ${key}`).join('\n'));
+  }
+  if (invalidSupabaseUrl) {
+    logger('- NEXT_PUBLIC_SUPABASE_URL');
+  }
+  logger('\nReplace placeholder values with real environment values.');
+
+  if (strictValidation) {
+    process.exit(1);
+  }
+}
+
 const missingRecommended = recommendedKeys.filter((key) => !combinedVars[key]);
 if (missingRecommended.length > 0) {
   console.warn(

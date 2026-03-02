@@ -85,7 +85,7 @@ export function TopbarSearch() {
 
       {isOpen && results.length > 0 && (
         <div className="absolute mt-2 w-full rounded-2xl border border-card-foreground/8 bg-card p-2 shadow-xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-          <div className="px-2 py-1.5 text-[10px] font-bold uppercase text-slate-400 tracking-wider">
+          <div className="px-2 py-1.5 text-xs font-bold uppercase text-slate-400 tracking-wider">
             Results
           </div>
           {results.map((result) => (
@@ -116,7 +116,7 @@ export function TopbarSearch() {
               )}
               <div className="flex-1 truncate">
                  <span className="font-medium text-card-foreground block truncate">{result.title}</span>
-                 <span className="text-[10px] text-muted capitalize">{result.type}</span>
+                 <span className="text-xs text-muted capitalize">{result.type}</span>
               </div>
             </Link>
           ))}

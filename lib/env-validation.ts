@@ -80,8 +80,12 @@ function validateEnvVar(name: string): { valid: boolean; error?: string } {
   // Check for placeholder values that indicate misconfiguration
   const placeholderPatterns = [
     /^your-/i,
+    /your-project/i,
+    /your-instance/i,
+    /example\.com/i,
     /^placeholder/i,
     /^changeme/i,
+    /replace[-_ ]?me/i,
     /^<.*>$/,
   ];
 
@@ -100,11 +104,19 @@ function validateEnvVar(name: string): { valid: boolean; error?: string } {
 function validateSupabaseUrl(url: string): { valid: boolean; error?: string } {
   try {
     const parsed = new URL(url);
+    const host = parsed.hostname.toLowerCase();
+
+    if (host.startsWith('your-') || host.includes('your-project')) {
+      return {
+        valid: false,
+        error: 'Supabase URL contains a placeholder hostname',
+      };
+    }
 
     // Supabase URLs should end with .supabase.co or .supabase-project.com
     if (
-      !parsed.hostname.endsWith('.supabase.co') &&
-      !parsed.hostname.endsWith('.supabase-project.com')
+      !host.endsWith('.supabase.co') &&
+      !host.endsWith('.supabase-project.com')
     ) {
       return {
         valid: false,

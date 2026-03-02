@@ -80,5 +80,98 @@ export const INDUSTRY_PACKS: Record<string, IndustryPack> = {
             { name: "Resident Care Plans", type: "data", criticality: "critical" },
             { name: "Medication Management System", type: "software", criticality: "critical" }
         ]
+    },
+    "community_services": {
+        id: "community_services",
+        name: "Community Services",
+        description: "Compliance for community service organizations and NGOs.",
+        policies: [
+            { title: "Client Rights & Advocacy Policy", content: "## 1. Purpose\nEnsuring client rights are upheld and advocacy pathways are accessible..." },
+            { title: "Service Delivery Standards", content: "## 1. Overview\nMaintaining quality and consistency in service delivery..." },
+            { title: "Complaints & Feedback Policy", content: "## 1. Purpose\nProviding accessible feedback and complaints channels..." }
+        ],
+        tasks: [
+            { title: "Vulnerable Persons Check", description: "Verify working with vulnerable persons clearances for all staff." },
+            { title: "Review Service Agreements", description: "Ensure all client service agreements are current and compliant." },
+            { title: "Community Program Risk Assessment", description: "Conduct risk assessment for all active community programs." }
+        ],
+        assets: [
+            { name: "Client Management System", type: "software", criticality: "critical" },
+            { name: "Case File Records", type: "data", criticality: "critical" }
+        ]
+    },
+    "financial_services": {
+        id: "financial_services",
+        name: "Financial Services",
+        description: "Regulatory compliance for financial services providers.",
+        policies: [
+            { title: "AML/CTF Policy", content: "## 1. Purpose\nAnti-money laundering and counter-terrorism financing procedures..." },
+            { title: "Risk Management Framework", content: "## 1. Scope\nEnterprise risk identification, assessment, and mitigation..." },
+            { title: "Privacy & Data Protection Policy", content: "## 1. Overview\nProtecting client financial data and personal information..." }
+        ],
+        tasks: [
+            { title: "AML/CTF Compliance Review", description: "Review anti-money laundering controls and transaction monitoring." },
+            { title: "Conduct Risk Assessment", description: "Complete annual enterprise risk assessment and update risk register." },
+            { title: "Staff Compliance Training", description: "Ensure all staff complete mandatory regulatory compliance training." }
+        ],
+        assets: [
+            { name: "Core Banking System", type: "software", criticality: "critical" },
+            { name: "Client Financial Records", type: "data", criticality: "critical" }
+        ]
+    },
+    "saas_technology": {
+        id: "saas_technology",
+        name: "SaaS / Technology",
+        description: "SOC 2, ISO 27001, and GDPR controls for technology companies.",
+        policies: [
+            { title: "Information Security Policy", content: "## 1. Purpose\nEstablishing information security controls and access management..." },
+            { title: "Incident Response Plan", content: "## 1. Scope\nProcedures for detecting, responding to, and recovering from security incidents..." },
+            { title: "Data Retention & Disposal Policy", content: "## 1. Overview\nData lifecycle management, retention schedules, and secure disposal..." }
+        ],
+        tasks: [
+            { title: "SOC 2 Readiness Assessment", description: "Evaluate current controls against SOC 2 Trust Service Criteria." },
+            { title: "Vulnerability Scan Review", description: "Review results from latest vulnerability scan and prioritize remediation." },
+            { title: "Access Control Audit", description: "Audit user access permissions and remove stale accounts." }
+        ],
+        assets: [
+            { name: "Production Infrastructure", type: "software", criticality: "critical" },
+            { name: "Source Code Repository", type: "data", criticality: "critical" }
+        ]
+    },
+    "enterprise": {
+        id: "enterprise",
+        name: "Enterprise / Multi-site",
+        description: "Multi-framework compliance for large enterprises and multi-site organizations.",
+        policies: [
+            { title: "Enterprise Risk Management Policy", content: "## 1. Purpose\nEstablishing enterprise-wide risk governance across all business units..." },
+            { title: "Business Continuity Plan", content: "## 1. Scope\nEnsuring operational resilience and disaster recovery across all sites..." },
+            { title: "Vendor & Third-Party Management Policy", content: "## 1. Overview\nManaging third-party risk, vendor assessments, and supply chain compliance..." }
+        ],
+        tasks: [
+            { title: "Multi-site Compliance Baseline", description: "Establish compliance baseline across all operational sites." },
+            { title: "Vendor Risk Assessment", description: "Complete risk assessments for all critical third-party vendors." },
+            { title: "Business Continuity Test", description: "Conduct annual business continuity and disaster recovery test." }
+        ],
+        assets: [
+            { name: "Enterprise Resource Planning System", type: "software", criticality: "critical" },
+            { name: "Vendor Contracts Register", type: "data", criticality: "high" }
+        ]
+    },
+    "other": {
+        id: "other",
+        name: "General Compliance",
+        description: "General compliance framework for regulated services.",
+        policies: [
+            { title: "Privacy Policy", content: "## 1. Purpose\nProtecting personal information in accordance with applicable privacy laws..." },
+            { title: "Risk Management Policy", content: "## 1. Overview\nIdentifying, assessing, and managing organizational risks..." }
+        ],
+        tasks: [
+            { title: "Complete Risk Register", description: "Identify and document key organizational risks." },
+            { title: "Staff Compliance Orientation", description: "Ensure all staff understand compliance obligations and reporting." }
+        ],
+        assets: [
+            { name: "Document Management System", type: "software", criticality: "high" },
+            { name: "Staff Records Database", type: "data", criticality: "high" }
+        ]
     }
 };

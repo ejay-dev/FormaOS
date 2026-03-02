@@ -89,7 +89,7 @@ export async function calculateTrialValue(
     admin
       .from('org_frameworks')
       .select('*', { count: 'exact', head: true })
-      .eq('org_id', orgId),
+      .eq('organization_id', orgId),
     // Workflows created
     admin
       .from('org_workflows')

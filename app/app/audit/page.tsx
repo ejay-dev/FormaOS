@@ -111,7 +111,7 @@ export default async function AuditTrailPage() {
       <header className="flex flex-col gap-8 border-b border-neutral-200 pb-8">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="space-y-4">
-            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">
+            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-neutral-400">
               <LayoutGrid className="h-3 w-3" />
               <span>{orgName || 'Organization'}</span>
               <ChevronRight className="h-3 w-3" />
@@ -137,7 +137,7 @@ export default async function AuditTrailPage() {
           <div className="flex flex-col items-start md:items-end gap-3">
             <div className="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100 shadow-sm">
               <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
-              <span className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em]">
+              <span className="text-xs font-black text-emerald-600 uppercase tracking-[0.2em]">
                 {verifiedCount} Verified Events
               </span>
             </div>
@@ -163,7 +163,7 @@ export default async function AuditTrailPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead className="bg-neutral-50/80 border-b border-neutral-100 sticky top-0 backdrop-blur-md">
-                <tr className="text-[10px] font-black uppercase text-neutral-400 tracking-[0.2em]">
+                <tr className="text-xs font-black uppercase text-neutral-400 tracking-[0.2em]">
                   <th className="px-8 py-6">Actor</th>
                   <th className="px-8 py-6">Event Type</th>
                   <th className="px-8 py-6">Target Resource</th>
@@ -177,7 +177,7 @@ export default async function AuditTrailPage() {
                     className="group hover:bg-neutral-50/50 transition-colors"
                   >
                     <td className="px-8 py-5">
-                      <p className="text-[10px] font-black text-neutral-900 uppercase tracking-widest">
+                      <p className="text-xs font-black text-neutral-900 uppercase tracking-widest">
                         {log.actor_id === user.id
                           ? 'You'
                           : `User ${log.actor_id?.slice(0, 4)}`}
@@ -197,7 +197,7 @@ export default async function AuditTrailPage() {
                       <div className="text-xs font-bold">
                         {new Date(log.created_at).toLocaleDateString()}
                       </div>
-                      <div className="text-[10px] text-neutral-400 font-mono">
+                      <div className="text-xs text-neutral-400 font-mono">
                         {new Date(log.created_at).toLocaleTimeString()}
                       </div>
                     </td>

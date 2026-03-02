@@ -6,7 +6,7 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Plus, Calendar, Clock, MapPin, CheckCircle, XCircle, AlertCircle } from "lucide-react";
+import { Plus, Calendar, Clock, MapPin, CheckCircle, XCircle, AlertCircle, Search, Filter } from "lucide-react";
 import { fetchSystemState } from "@/lib/system-state/server";
 
 function formatDateTime(date: string | null) {
@@ -46,19 +46,26 @@ function getVisitLabel(industry: string | null): string {
   }
 }
 
-export default async function VisitsPage() {
-  const supabase = await createSupabaseServerClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/signin");
+export default async function VisitsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{
+    q?: string;
+    status?: string;
+  }>;
+}) {
+  const params = (await searchParams) ?? {};
+  const q = (params.q ?? "").trim();
+  const qLower = q.toLowerCase();
+  const statusFilter = (params.status ?? "").trim().toLowerCase();
+  const hasFilters = q.length > 0 || statusFilter.length > 0;
 
   const systemState = await fetchSystemState();
   if (!systemState) redirect("/auth/signin");
 
   const { organization } = systemState;
   const label = getVisitLabel(organization.industry);
+  const supabase = await createSupabaseServerClient();
 
   // Fetch visits with client info
   const { data: visits, error } = await supabase
@@ -94,11 +101,29 @@ export default async function VisitsPage() {
   }
 
   type Visit = NonNullable<typeof visits>[number];
+  const visitRows = (visits ?? []) as Visit[];
+  const filteredVisits = visitRows.filter((visit: Visit) => {
+    if (statusFilter && visit.status.toLowerCase() !== statusFilter) return false;
+    if (!qLower) return true;
+
+    const clientName = ((visit.client as any)?.full_name ?? "").toLowerCase();
+    const visitType = (visit.visit_type ?? "").toLowerCase();
+    const serviceCategory = (visit.service_category ?? "").toLowerCase();
+    const locationType = (visit.location_type ?? "").toLowerCase();
+
+    return (
+      clientName.includes(qLower) ||
+      visitType.includes(qLower) ||
+      serviceCategory.includes(qLower) ||
+      locationType.includes(qLower)
+    );
+  });
+
   const stats = {
-    total: visits?.length ?? 0,
-    scheduled: visits?.filter((v: Visit) => v.status === "scheduled").length ?? 0,
-    completed: visits?.filter((v: Visit) => v.status === "completed").length ?? 0,
-    missed: visits?.filter((v: Visit) => v.status === "missed" || v.status === "cancelled").length ?? 0,
+    total: filteredVisits.length,
+    scheduled: filteredVisits.filter((v: Visit) => v.status === "scheduled").length,
+    completed: filteredVisits.filter((v: Visit) => v.status === "completed").length,
+    missed: filteredVisits.filter((v: Visit) => v.status === "missed" || v.status === "cancelled").length,
   };
 
   return (
@@ -106,10 +131,10 @@ export default async function VisitsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold" data-testid="visits-title">
+          <h1 className="text-3xl font-black tracking-tight" data-testid="visits-title">
             {label}
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Track and manage {label.toLowerCase()}
           </p>
         </div>
@@ -163,6 +188,46 @@ export default async function VisitsPage() {
         </div>
       </div>
 
+      <form method="GET" className="flex flex-col lg:flex-row gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <input
+            type="text"
+            name="q"
+            defaultValue={q}
+            placeholder="Search by client, visit type, or service..."
+            className="w-full pl-10 pr-4 py-2 rounded-lg border border-input bg-background"
+          />
+        </div>
+        <select
+          name="status"
+          defaultValue={statusFilter}
+          className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+        >
+          <option value="">All status</option>
+          <option value="scheduled">Scheduled</option>
+          <option value="in_progress">In progress</option>
+          <option value="completed">Completed</option>
+          <option value="missed">Missed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        <button
+          type="submit"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors"
+        >
+          <Filter className="h-4 w-4" />
+          Apply
+        </button>
+        {hasFilters ? (
+          <Link
+            href="/app/visits"
+            className="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-transparent text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Clear
+          </Link>
+        ) : null}
+      </form>
+
       {/* Table */}
       <div className="rounded-xl border border-border overflow-hidden">
         <table className="w-full" data-testid="visits-table">
@@ -178,7 +243,7 @@ export default async function VisitsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {visits?.map((visit: Visit) => (
+            {filteredVisits.map((visit: Visit) => (
               <tr key={visit.id} className="hover:bg-muted/30 transition-colors">
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
@@ -220,17 +285,31 @@ export default async function VisitsPage() {
                 </td>
               </tr>
             ))}
-            {(!visits || visits.length === 0) && (
+            {filteredVisits.length === 0 && (
               <tr>
                 <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">
                   <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>No visits scheduled yet</p>
-                  <Link
-                    href="/app/visits/new"
-                    className="text-primary hover:underline mt-2 inline-block"
-                  >
-                    Schedule your first visit
-                  </Link>
+                  {hasFilters ? (
+                    <>
+                      <p>No visits matched your filters</p>
+                      <Link
+                        href="/app/visits"
+                        className="text-primary hover:underline mt-2 inline-block"
+                      >
+                        Clear filters
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <p>No visits scheduled yet</p>
+                      <Link
+                        href="/app/visits/new"
+                        className="text-primary hover:underline mt-2 inline-block"
+                      >
+                        Schedule your first visit
+                      </Link>
+                    </>
+                  )}
                 </td>
               </tr>
             )}

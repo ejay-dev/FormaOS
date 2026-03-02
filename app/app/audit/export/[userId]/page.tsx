@@ -60,9 +60,9 @@ export default async function AuditExportPage({
             <div className="text-right space-y-2">
                 <div className="inline-flex items-center gap-2 bg-emerald-400/10 text-emerald-200 px-4 py-1.5 rounded-full">
                     <ShieldCheck className="h-4 w-4" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Audit Verified</span>
+                    <span className="text-xs font-black uppercase tracking-widest">Audit Verified</span>
                 </div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
                     Generated: {new Date().toLocaleDateString()}
                 </p>
             </div>
@@ -85,11 +85,11 @@ export default async function AuditExportPage({
                         <div>
                             <h3 className="font-black uppercase tracking-widest text-sm text-slate-100">{doc.document_type}</h3>
                             <div className="flex items-center gap-4 mt-3">
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight flex items-center gap-1">
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-tight flex items-center gap-1">
                                     <Calendar className="h-3 w-3" />
                                     Issued: {doc.issue_date || 'N/A'}
                                 </p>
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-tight">
                                     Expires: {doc.expiry_date || 'Continuous'}
                                 </p>
                             </div>
@@ -116,7 +116,7 @@ export default async function AuditExportPage({
                                 {log.action.replace(/_/g, ' ')}
                             </span>
                         </div>
-                        <span className="text-[10px] font-mono font-bold text-slate-400 mt-1 md:mt-0">
+                        <span className="text-xs font-mono font-bold text-slate-400 mt-1 md:mt-0">
                             {new Date(log.created_at).toLocaleString()}
                         </span>
                     </div>
@@ -126,7 +126,7 @@ export default async function AuditExportPage({
         
         {/* Print Footer */}
         <div className="mt-20 pt-8 border-t-2 border-white/10 flex justify-between items-center print:hidden">
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+            <p className="text-xs font-black uppercase tracking-widest text-slate-400">
                 FormaOS Governance Engine
             </p>
             <PrintPackButton />

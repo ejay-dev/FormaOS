@@ -43,7 +43,7 @@ export function RuntimeOpsGuard({
                 ? 'Maintenance mode is active. Some surfaces may be temporarily limited.'
                 : 'Read-only mode is active. Mutating actions are blocked for safety.'}
           </span>
-          <span className="ml-auto rounded border border-amber-500/40 px-1.5 py-0.5 uppercase tracking-wider text-[10px]">
+          <span className="ml-auto rounded border border-amber-500/40 px-1.5 py-0.5 uppercase tracking-wider text-xs">
             {surface}
           </span>
         </div>

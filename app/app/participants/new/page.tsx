@@ -2,7 +2,6 @@
  * New Participant Form Page
  */
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -23,13 +22,6 @@ function getEntityLabel(industry: string | null): string {
 }
 
 export default async function NewParticipantPage() {
-  const supabase = await createSupabaseServerClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/signin");
-
   const systemState = await fetchSystemState();
   if (!systemState) redirect("/auth/signin");
 

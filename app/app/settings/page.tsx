@@ -1,5 +1,7 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
 import {
   Building2,
   Fingerprint,
@@ -14,9 +16,11 @@ import {
 
 // ✅ Verify this path matches your project structure
 import { updateOrganization } from '@/app/app/actions/org';
+import { requirePermission } from '@/app/app/actions/rbac';
 import { ExpiryAlertWidget } from '@/components/dashboard/expiry-alert-widget';
 import { SaveButton } from '@/components/ui/submit-button';
 import { AppearanceSettings } from '@/components/settings/appearance-settings';
+import { fetchSystemState } from '@/lib/system-state/server';
 
 /**
  * ✅ GOVERNANCE UPDATE ACTION (UPGRADED)
@@ -25,10 +29,7 @@ import { AppearanceSettings } from '@/components/settings/appearance-settings';
 async function handleUpdateOrg(formData: FormData) {
   'use server';
 
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const permissionCtx = await requirePermission('MANAGE_USERS');
 
   // 1. Extract Data
   const orgId = formData.get('orgId') as string;
@@ -36,16 +37,9 @@ async function handleUpdateOrg(formData: FormData) {
   const domain = formData.get('domain') as string;
   const registrationNumber = formData.get('registrationNumber') as string;
 
-  if (!user || !orgId) return;
+  if (!orgId) return;
 
-  const { data: membership, error: membershipError } = await supabase
-    .from('org_members')
-    .select('organization_id')
-    .eq('user_id', user.id)
-    .maybeSingle();
-
-  if (membershipError || !membership?.organization_id) return;
-  if (membership.organization_id !== orgId) {
+  if (permissionCtx.orgId !== orgId) {
     throw new Error('Organization mismatch');
   }
 
@@ -57,35 +51,22 @@ async function handleUpdateOrg(formData: FormData) {
 }
 
 export default async function SettingsPage() {
+  const systemState = await fetchSystemState();
+  if (!systemState) {
+    redirect('/workspace-recovery?from=settings-page');
+  }
+
   const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const role = systemState.role;
+  const orgId = systemState.organization.id;
 
-  if (!user) return null;
-
-  // 1. Fetch Membership + Joined Org details (Optimized Query)
-  const { data: membership } = await supabase
-    .from('org_members')
-    .select(
-      `
-      role, 
-      organization_id,
-      organizations:organization_id (*)
-    `,
-    )
-    .eq('user_id', user.id)
+  const { data: activeOrganization } = await supabase
+    .from('organizations')
+    .select('*')
+    .eq('id', orgId)
     .maybeSingle();
 
-  // 2. DATA EXTRACTION & TYPE GUARD
-  // Handle case where join returns array or object
-  // @ts-ignore
-  const activeOrganization = Array.isArray(membership?.organizations)
-    ? membership.organizations[0]
-    : membership?.organizations;
-
-  // 3. HARD ALERT: Configuration Error UI
-  if (!membership || !activeOrganization) {
+  if (!activeOrganization) {
     return (
       <div className="flex items-center justify-center p-12 min-h-[60vh]">
         <div className="max-w-2xl bg-white/5 rounded-[2.5rem] border border-white/10 p-12 shadow-2xl text-center animate-in fade-in zoom-in duration-500">
@@ -101,11 +82,11 @@ export default async function SettingsPage() {
             restriction or a missing membership record.
           </p>
           <div className="mt-10 pt-8 border-t border-white/10 flex flex-col gap-3">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-left ml-1">
+            <p className="text-xs font-black text-slate-400 uppercase tracking-widest text-left ml-1">
               Diagnostic Identity
             </p>
-            <code className="text-[10px] font-mono bg-white/10 text-emerald-400 p-4 rounded-xl break-all select-all text-left shadow-lg">
-              UID: {user.id}
+            <code className="text-xs font-mono bg-white/10 text-emerald-400 p-4 rounded-xl break-all select-all text-left shadow-lg">
+              UID: {systemState.user.id}
             </code>
           </div>
         </div>
@@ -113,7 +94,7 @@ export default async function SettingsPage() {
     );
   }
 
-  const isAdmin = membership.role === 'admin' || membership.role === 'owner';
+  const isAdmin = role === 'admin' || role === 'owner';
 
   // ✅ UPGRADE: Fetch "At Risk" documents from the new view
   const { data: atRiskDocs } = await supabase
@@ -121,6 +102,12 @@ export default async function SettingsPage() {
     .select('*')
     .eq('organization_id', activeOrganization.id)
     .limit(3);
+
+  const atRiskCount = atRiskDocs?.length ?? 0;
+  const hasMissingIdentityData =
+    !activeOrganization.domain || !activeOrganization.registration_number;
+  const healthState =
+    atRiskCount > 0 ? 'attention' : hasMissingIdentityData ? 'review' : 'healthy';
 
   return (
     <div
@@ -139,9 +126,29 @@ export default async function SettingsPage() {
           </p>
         </div>
         <div className="hidden md:flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full border border-white/10 shadow-sm">
-          <Activity className="h-4 w-4 text-emerald-500" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700">
-            System Healthy
+          <Activity
+            className={`h-4 w-4 ${
+              healthState === 'healthy'
+                ? 'text-emerald-500'
+                : healthState === 'review'
+                  ? 'text-amber-400'
+                  : 'text-rose-400'
+            }`}
+          />
+          <span
+            className={`text-xs font-black uppercase tracking-widest ${
+              healthState === 'healthy'
+                ? 'text-emerald-700'
+                : healthState === 'review'
+                  ? 'text-amber-700'
+                  : 'text-rose-300'
+            }`}
+          >
+            {healthState === 'healthy'
+              ? 'System Healthy'
+              : healthState === 'review'
+                ? 'Profile Review Needed'
+                : 'Risk Alerts Active'}
           </span>
         </div>
       </header>
@@ -164,7 +171,7 @@ export default async function SettingsPage() {
                   </h3>
                   <div className="flex items-center gap-2 mt-2">
                     <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <p className="text-[10px] font-black text-emerald-300 uppercase tracking-widest">
+                    <p className="text-xs font-black text-emerald-300 uppercase tracking-widest">
                       Node Fully Operational
                     </p>
                   </div>
@@ -173,7 +180,7 @@ export default async function SettingsPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">
+                  <label className="text-xs font-black uppercase text-slate-400 tracking-widest ml-1">
                     Legal Entity Name
                   </label>
                   <input
@@ -184,7 +191,7 @@ export default async function SettingsPage() {
                   />
                 </div>
                 <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">
+                  <label className="text-xs font-black uppercase text-slate-400 tracking-widest ml-1">
                     Registration (ABN/ACN)
                   </label>
                   <input
@@ -198,7 +205,7 @@ export default async function SettingsPage() {
               </div>
 
               <div className="space-y-3 pt-2">
-                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">
+                <label className="text-xs font-black uppercase text-slate-400 tracking-widest ml-1">
                   Authorized Email Domain
                 </label>
                 <div className="relative group">
@@ -229,17 +236,17 @@ export default async function SettingsPage() {
                       Active
                     </span>
                   </div>
-                  <p className="text-[10px] text-slate-400 font-bold mt-1.5 uppercase tracking-widest">
+                  <p className="text-xs text-slate-400 font-bold mt-1.5 uppercase tracking-widest">
                     Full Evidence Vault & Governance Enabled
                   </p>
                 </div>
               </div>
-              <button
-                type="button"
-                className="px-8 py-4 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all active:scale-95 whitespace-nowrap"
+              <Link
+                href="/app/billing"
+                className="px-8 py-4 border border-white/10 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all active:scale-95 whitespace-nowrap inline-flex items-center justify-center"
               >
                 Manage Node
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -252,7 +259,7 @@ export default async function SettingsPage() {
 
               <div className="flex items-center gap-3 relative z-10">
                 <Fingerprint className="h-6 w-6 text-blue-400" />
-                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">
                   Security Identity
                 </h3>
               </div>
@@ -269,7 +276,7 @@ export default async function SettingsPage() {
               <div className="pt-6 border-t border-white/10 space-y-4 relative z-10">
                 <div className="flex items-start gap-4">
                   <Lock className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <p className="text-[10px] text-slate-400 leading-relaxed font-bold uppercase tracking-widest">
+                  <p className="text-xs text-slate-400 leading-relaxed font-bold uppercase tracking-widest">
                     Isolation enforced via Hardware-Level Row Security.
                   </p>
                 </div>
@@ -289,7 +296,7 @@ export default async function SettingsPage() {
                     Authorized As
                   </p>
                   <p className="text-sm font-black text-slate-100 capitalize tracking-tight mt-0.5">
-                    {membership.role}
+                    {role}
                   </p>
                 </div>
               </div>
@@ -303,17 +310,17 @@ export default async function SettingsPage() {
             <div className="bg-rose-500/10 border border-rose-400/30 rounded-[2.25rem] p-8 space-y-6 opacity-70 hover:opacity-100 transition-all">
               <div className="flex items-center gap-3 text-rose-300">
                 <AlertOctagon className="h-5 w-5" />
-                <h3 className="text-[10px] font-black uppercase tracking-[0.2em]">
+                <h3 className="text-xs font-black uppercase tracking-[0.2em]">
                   Danger Zone
                 </h3>
               </div>
-              <p className="text-[10px] text-red-800 leading-relaxed font-bold uppercase tracking-widest">
+              <p className="text-xs text-red-800 leading-relaxed font-bold uppercase tracking-widest">
                 Deleting this organization will permanently erase the
                 un-editable audit history. This action is irreversible.
               </p>
               <button
                 disabled
-                className="w-full py-4 bg-white/5 border border-red-200 text-red-400 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] cursor-not-allowed shadow-sm"
+                className="w-full py-4 bg-white/5 border border-red-200 text-red-400 rounded-2xl text-xs font-black uppercase tracking-[0.2em] cursor-not-allowed shadow-sm"
               >
                 Destroy Node
               </button>

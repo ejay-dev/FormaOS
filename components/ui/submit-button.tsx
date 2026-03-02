@@ -50,7 +50,7 @@ export function SubmitButton({
   const isDisabled = disabled || pending
 
   const sizeClasses: Record<SubmitButtonSize, string> = {
-    sm: "py-2.5 px-4 text-[10px]",
+    sm: "py-2.5 px-4 text-xs",
     md: "py-3.5 px-6 text-xs",
     lg: "py-5 px-8 text-xs",
   }

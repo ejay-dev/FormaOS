@@ -88,7 +88,7 @@ export function AddCertificationModal({
           <form onSubmit={handleSubmit} className="p-8 space-y-6">
             {/* Select Member */}
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Personnel</label>
+              <label className="text-xs font-black uppercase text-slate-400 tracking-widest ml-1">Personnel</label>
               <div className="relative">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <select 
@@ -107,7 +107,7 @@ export function AddCertificationModal({
 
             {/* Title */}
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Certification Title</label>
+              <label className="text-xs font-black uppercase text-slate-400 tracking-widest ml-1">Certification Title</label>
               <input 
                 required
                 placeholder="e.g. NDIS Worker Screening Check"
@@ -120,22 +120,22 @@ export function AddCertificationModal({
             {/* Dates Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Completion</label>
+                <label className="text-xs font-black uppercase text-slate-400 tracking-widest ml-1">Completion</label>
                 <input 
                   required
                   type="date"
                   value={completionDate}
                   onChange={(e) => setCompletionDate(e.target.value)}
-                  className="w-full p-4 rounded-2xl border border-white/10 bg-white/10 focus:bg-white/10 focus:outline-black text-[10px] font-bold transition-all"
+                  className="w-full p-4 rounded-2xl border border-white/10 bg-white/10 focus:bg-white/10 focus:outline-black text-xs font-bold transition-all"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Expiry (Optional)</label>
+                <label className="text-xs font-black uppercase text-slate-400 tracking-widest ml-1">Expiry (Optional)</label>
                 <input 
                   type="date"
                   value={expiryDate}
                   onChange={(e) => setExpiryDate(e.target.value)}
-                  className="w-full p-4 rounded-2xl border border-white/10 bg-white/10 focus:bg-white/10 focus:outline-black text-[10px] font-bold transition-all"
+                  className="w-full p-4 rounded-2xl border border-white/10 bg-white/10 focus:bg-white/10 focus:outline-black text-xs font-bold transition-all"
                 />
               </div>
             </div>

@@ -23,49 +23,39 @@ function getEntityLabel(industry: string | null): { singular: string; plural: st
   }
 }
 
-export default async function ParticipantsPage() {
+export default async function ParticipantsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{
+    q?: string;
+    status?: string;
+    risk?: string;
+  }>;
+}) {
+  const params = (await searchParams) ?? {};
+  const q = (params.q ?? "").trim();
+  const statusFilter = (params.status ?? "").trim();
+  const riskFilter = (params.risk ?? "").trim();
+  const hasFilters = q.length > 0 || statusFilter.length > 0 || riskFilter.length > 0;
+
+  const systemState = await fetchSystemState();
+  if (!systemState) {
+    redirect("/workspace-recovery?from=participants-page");
+  }
+
   const supabase = await createSupabaseServerClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/auth/signin");
-  }
-
-  // Fetch user's organization membership and industry (same pattern as dashboard)
-  let orgId: string = "";
-  let industry: string | null = null;
-
-  try {
-    const { data } = await supabase
-      .from("org_members")
-      .select("organization_id, organizations(industry)")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (data) {
-      orgId = data.organization_id as string;
-      const orgs = data.organizations as any;
-      industry = Array.isArray(orgs) ? orgs?.[0]?.industry : orgs?.industry;
-    }
-  } catch (err) {
-    console.error("[ParticipantsPage] Error fetching membership:", err);
-  }
-
-  if (!orgId) {
-    redirect("/onboarding");
-  }
+  const orgId = systemState.organization.id;
+  const industry = systemState.organization.industry;
 
   const labels = getEntityLabel(industry);
 
   // Fetch participants/patients
   let participants: any[] | null = null;
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from("org_patients")
-      .select(`
+      .select(
+        `
         id,
         full_name,
         preferred_name,
@@ -80,9 +70,29 @@ export default async function ParticipantsPage() {
         funding_type,
         primary_diagnosis,
         created_at
-      `)
+      `,
+      )
       .eq("organization_id", orgId)
       .order("created_at", { ascending: false });
+
+    if (q) {
+      query = query.or(
+        [
+          `full_name.ilike.%${q}%`,
+          `preferred_name.ilike.%${q}%`,
+          `external_id.ilike.%${q}%`,
+          `ndis_number.ilike.%${q}%`,
+        ].join(","),
+      );
+    }
+    if (statusFilter) {
+      query = query.eq("care_status", statusFilter);
+    }
+    if (riskFilter) {
+      query = query.eq("risk_level", riskFilter);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.error("[ParticipantsPage] Error fetching participants:", error);
@@ -106,10 +116,10 @@ export default async function ParticipantsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold" data-testid="participants-title">
+          <h1 className="text-3xl font-black tracking-tight" data-testid="participants-title">
             {labels.plural}
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Manage {labels.plural.toLowerCase()} and their care records
           </p>
         </div>
@@ -164,21 +174,55 @@ export default async function ParticipantsPage() {
       </div>
 
       {/* Search and Filter */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <form className="flex flex-col lg:flex-row gap-3" method="GET">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
+            name="q"
             placeholder={`Search ${labels.plural.toLowerCase()}...`}
+            defaultValue={q}
             className="w-full pl-10 pr-4 py-2 rounded-lg border border-input bg-background"
             data-testid="search-participants"
           />
         </div>
-        <button className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors">
+        <select
+          name="status"
+          defaultValue={statusFilter}
+          className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+        >
+          <option value="">All status</option>
+          <option value="active">Active</option>
+          <option value="paused">Paused</option>
+          <option value="discharged">Discharged</option>
+        </select>
+        <select
+          name="risk"
+          defaultValue={riskFilter}
+          className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+        >
+          <option value="">All risk</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+          <option value="critical">Critical</option>
+        </select>
+        <button
+          type="submit"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors"
+        >
           <Filter className="h-4 w-4" />
-          Filter
+          Apply
         </button>
-      </div>
+        {hasFilters ? (
+          <Link
+            href="/app/participants"
+            className="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-transparent text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Clear
+          </Link>
+        ) : null}
+      </form>
 
       {/* Table */}
       <div className="rounded-xl border border-border overflow-hidden">
@@ -262,13 +306,27 @@ export default async function ParticipantsPage() {
               <tr>
                 <td colSpan={6} className="px-4 py-12 text-center text-muted-foreground">
                   <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>No {labels.plural.toLowerCase()} yet</p>
-                  <Link
-                    href="/app/participants/new"
-                    className="text-primary hover:underline mt-2 inline-block"
-                  >
-                    Add your first {labels.singular.toLowerCase()}
-                  </Link>
+                  {hasFilters ? (
+                    <>
+                      <p>No {labels.plural.toLowerCase()} matched your filters</p>
+                      <Link
+                        href="/app/participants"
+                        className="text-primary hover:underline mt-2 inline-block"
+                      >
+                        Clear filters
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <p>No {labels.plural.toLowerCase()} yet</p>
+                      <Link
+                        href="/app/participants/new"
+                        className="text-primary hover:underline mt-2 inline-block"
+                      >
+                        Add your first {labels.singular.toLowerCase()}
+                      </Link>
+                    </>
+                  )}
                 </td>
               </tr>
             )}

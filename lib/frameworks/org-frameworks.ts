@@ -49,12 +49,12 @@ export async function syncOrgFrameworksFromOrgRecord(orgId: string) {
   if (!slugs.length) return []
 
   const rows = slugs.map((slug) => ({
-    org_id: orgId,
+    organization_id: orgId,
     framework_slug: slug,
     enabled_at: new Date().toISOString(),
   }))
 
-  await admin.from('org_frameworks').upsert(rows, { onConflict: 'org_id,framework_slug' })
+  await admin.from('org_frameworks').upsert(rows, { onConflict: 'organization_id,framework_slug' })
 
   return slugs
 }
@@ -70,7 +70,7 @@ export async function getOrgFrameworkOverview(orgId: string) {
   const { data: enabled } = await admin
     .from('org_frameworks')
     .select('framework_slug, enabled_at')
-    .eq('org_id', orgId)
+    .eq('organization_id', orgId)
 
   const enabledSlugs = (enabled ?? []).map((row: any) => row.framework_slug)
   if (!enabledSlugs.length) return []

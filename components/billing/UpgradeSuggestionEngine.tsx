@@ -27,6 +27,7 @@ const FEATURE_ROUTE_MAP: Record<string, string> = {
   '/app/vault': 'vault',
   '/app/reports': 'reports',
   '/app/audit': 'audits',
+  '/app/team': 'team',
   '/app/people': 'team',
   '/app/registers': 'registers',
   '/app/patients': 'patients',

@@ -359,7 +359,7 @@ export function ExecutiveDashboardClient({
                       </div>
                       <div className="flex flex-col items-end gap-2">
                         <span
-                          className={`rounded border px-2 py-1 text-[10px] font-semibold uppercase tracking-wider ${severityStyles(severity)}`}
+                          className={`rounded border px-2 py-1 text-xs font-semibold uppercase tracking-wider ${severityStyles(severity)}`}
                         >
                           {severityLabel(severity)}
                         </span>

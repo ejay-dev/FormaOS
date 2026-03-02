@@ -232,7 +232,7 @@ export function SystemFeedback({
       {/* Node Changes */}
       {nodeChanges && nodeChanges.length > 0 && (
         <div className="px-4 py-3 border-b border-white/10">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">
+          <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
             Node Changes
           </div>
           <div className="space-y-1.5">
@@ -249,7 +249,7 @@ export function SystemFeedback({
                   <span className="text-slate-500">•</span>
                   <span
                     className={cn(
-                      'text-[10px] font-bold uppercase',
+                      'text-xs font-bold uppercase',
                       change.action === 'created' && 'text-emerald-400',
                       change.action === 'updated' && 'text-sky-400',
                       change.action === 'deleted' && 'text-rose-400',
@@ -269,7 +269,7 @@ export function SystemFeedback({
       {/* Wire Changes */}
       {wireChanges && wireChanges.length > 0 && (
         <div className="px-4 py-3 border-b border-white/10">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">
+          <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
             Connections Updated
           </div>
           <div className="space-y-1.5">
@@ -294,7 +294,7 @@ export function SystemFeedback({
       {/* Compliance Impact */}
       {complianceImpact && complianceImpact.length > 0 && (
         <div className="px-4 py-3">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">
+          <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
             Compliance Impact
           </div>
           <div className="flex flex-wrap gap-2">
@@ -302,7 +302,7 @@ export function SystemFeedback({
               <div
                 key={i}
                 className={cn(
-                  'flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-bold',
+                  'flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-bold',
                   impact.change === 'improved' &&
                     'bg-emerald-500/10 text-emerald-300 border border-emerald-400/30',
                   impact.change === 'degraded' &&

@@ -72,7 +72,7 @@ export function DashboardAuditStream({ orgId }: { orgId: string }) {
           Live Audit Stream
         </h3>
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Live</span>
+          <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Live</span>
           <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse" />
         </div>
       </div>
@@ -92,11 +92,11 @@ export function DashboardAuditStream({ orgId }: { orgId: string }) {
                     {log.target}
                 </p>
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase">
                     <User className="h-3 w-3" />
                     {(log.actor_email || "system").split('@')[0]}
                   </div>
-                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase">
                     <Clock className="h-3 w-3" />
                     {getTimeAgo(log.created_at)}
                   </div>

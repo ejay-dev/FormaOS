@@ -264,7 +264,7 @@ export default async function PatientDetailPage({
           </div>
           <div className="mt-4 grid gap-4 md:grid-cols-2 text-sm text-slate-300">
             <div>
-              <div className="text-[10px] uppercase tracking-widest text-slate-500">
+              <div className="text-xs uppercase tracking-widest text-slate-500">
                 External ID
               </div>
               <div className="text-slate-100">
@@ -272,7 +272,7 @@ export default async function PatientDetailPage({
               </div>
             </div>
             <div>
-              <div className="text-[10px] uppercase tracking-widest text-slate-500">
+              <div className="text-xs uppercase tracking-widest text-slate-500">
                 Date of Birth
               </div>
               <div className="text-slate-100">
@@ -280,13 +280,13 @@ export default async function PatientDetailPage({
               </div>
             </div>
             <div>
-              <div className="text-[10px] uppercase tracking-widest text-slate-500">
+              <div className="text-xs uppercase tracking-widest text-slate-500">
                 Care Status
               </div>
               <div className="text-slate-100">{patient.care_status}</div>
             </div>
             <div>
-              <div className="text-[10px] uppercase tracking-widest text-slate-500">
+              <div className="text-xs uppercase tracking-widest text-slate-500">
                 Risk Level
               </div>
               <div className="text-slate-100">{patient.risk_level}</div>
@@ -300,7 +300,7 @@ export default async function PatientDetailPage({
             >
               <input type="hidden" name="patientId" value={patient.id} />
               <div className="md:col-span-2">
-                <label className="text-[10px] uppercase tracking-widest text-slate-500">
+                <label className="text-xs uppercase tracking-widest text-slate-500">
                   Full Name
                 </label>
                 <input
@@ -310,7 +310,7 @@ export default async function PatientDetailPage({
                 />
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-widest text-slate-500">
+                <label className="text-xs uppercase tracking-widest text-slate-500">
                   Status
                 </label>
                 <select
@@ -324,7 +324,7 @@ export default async function PatientDetailPage({
                 </select>
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-widest text-slate-500">
+                <label className="text-xs uppercase tracking-widest text-slate-500">
                   Risk
                 </label>
                 <select
@@ -367,7 +367,7 @@ export default async function PatientDetailPage({
           <div className="mt-4 space-y-3 text-xs text-slate-300">
             {activeShift ? (
               <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                <div className="text-[10px] uppercase tracking-widest text-slate-400">
+                <div className="text-xs uppercase tracking-widest text-slate-400">
                   Active
                 </div>
                 <div className="text-sm text-slate-100">
@@ -404,7 +404,7 @@ export default async function PatientDetailPage({
                   key={shift.id}
                   className="rounded-xl border border-white/10 bg-white/5 px-3 py-2"
                 >
-                  <div className="text-[10px] uppercase tracking-widest text-slate-400">
+                  <div className="text-xs uppercase tracking-widest text-slate-400">
                     {shift.status}
                   </div>
                   <div className="text-xs text-slate-300">
@@ -461,7 +461,7 @@ export default async function PatientDetailPage({
                   key={note.id}
                   className="rounded-xl border border-white/10 bg-white/5 px-4 py-3"
                 >
-                  <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-slate-400">
+                  <div className="flex items-center justify-between text-xs uppercase tracking-widest text-slate-400">
                     <span>{note.status_tag}</span>
                     <span>{fmtDate(note.created_at)}</span>
                   </div>
@@ -470,7 +470,7 @@ export default async function PatientDetailPage({
                   </p>
                   <div className="mt-3 flex items-center gap-2 text-xs">
                     {note.signed_off_by ? (
-                      <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-2 py-1 text-[10px] font-semibold text-emerald-200">
+                      <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-2 py-1 text-xs font-semibold text-emerald-200">
                         <BadgeCheck className="h-3 w-3" />
                         Signed off
                       </span>
@@ -540,7 +540,7 @@ export default async function PatientDetailPage({
                   key={incident.id}
                   className="rounded-xl border border-white/10 bg-white/5 px-4 py-3"
                 >
-                  <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-slate-400">
+                  <div className="flex items-center justify-between text-xs uppercase tracking-widest text-slate-400">
                     <span>{incident.severity}</span>
                     <span>{incident.status}</span>
                   </div>
@@ -622,7 +622,7 @@ export default async function PatientDetailPage({
               >
                 <div className="flex items-center justify-between text-sm text-slate-100">
                   <span className="font-semibold">{task.title}</span>
-                  <span className="text-[10px] uppercase tracking-widest text-slate-400">
+                  <span className="text-xs uppercase tracking-widest text-slate-400">
                     {task.status}
                   </span>
                 </div>
@@ -656,7 +656,7 @@ export default async function PatientDetailPage({
               >
                 <div className="flex items-center justify-between text-sm text-slate-100">
                   <span className="font-semibold">{item.file_name}</span>
-                  <span className="text-[10px] uppercase tracking-widest text-slate-400">
+                  <span className="text-xs uppercase tracking-widest text-slate-400">
                     {item.verification_status || 'pending'}
                   </span>
                 </div>

@@ -16,6 +16,17 @@ import {
   Settings,
   CheckSquare,
   ArrowRight,
+  HeartPulse,
+  Home,
+  Baby,
+  UserCheck,
+  NotebookPen,
+  AlertTriangle,
+  Lock,
+  ClipboardList,
+  Landmark,
+  Laptop,
+  type LucideIcon,
 } from 'lucide-react';
 import { DashboardSectionCard } from '@/components/dashboard/unified-dashboard-layout';
 import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedChecklist';
@@ -38,81 +49,126 @@ import {
 } from '@/lib/monitoring/performance-monitor';
 
 /**
- * Quick-action cards — replaces the old sidebar-style "middle column"
- * navigation so users can jump to key areas without a second nav.
+ * Quick-action cards — industry-specific shortcuts so users
+ * jump to the most relevant areas for their vertical.
  */
-const QUICK_ACTIONS = [
-  {
-    label: 'Organization',
-    description: 'Overview & KPIs',
-    href: '/app/executive',
-    icon: Building2,
-    color: 'text-blue-400',
-  },
-  {
-    label: 'Team',
-    description: 'Manage employees',
-    href: '/app/team',
-    icon: Users,
-    color: 'text-cyan-400',
-  },
-  {
-    label: 'Certificates',
-    description: 'All certifications',
-    href: '/app/certificates',
-    icon: FileText,
-    color: 'text-emerald-400',
-  },
-  {
-    label: 'Evidence',
-    description: 'Evidence submissions',
-    href: '/app/vault',
-    icon: CheckSquare,
-    color: 'text-purple-400',
-  },
-  {
-    label: 'Tasks',
-    description: 'Create & assign',
-    href: '/app/tasks',
-    icon: Briefcase,
-    color: 'text-amber-400',
-  },
-  {
-    label: 'Audit Logs',
-    description: 'Activity history',
-    href: '/app/audit',
-    icon: Shield,
-    color: 'text-rose-400',
-  },
-  {
-    label: 'Billing',
-    description: 'Plan & subscription',
-    href: '/app/billing',
-    icon: CreditCard,
-    color: 'text-sky-400',
-  },
-  {
-    label: 'Settings',
-    description: 'Organization settings',
-    href: '/app/settings',
-    icon: Settings,
-    color: 'text-slate-400',
-  },
-] as const;
+interface QuickAction {
+  label: string;
+  description: string;
+  href: string;
+  icon: LucideIcon;
+  color: string;
+}
 
-function QuickActions() {
+const INDUSTRY_QUICK_ACTIONS: Record<string, QuickAction[]> = {
+  ndis: [
+    { label: 'Participants', description: 'Manage participant records', href: '/app/participants', icon: Users, color: 'text-purple-400' },
+    { label: 'Service Delivery', description: 'Visits & service logs', href: '/app/visits', icon: Calendar, color: 'text-cyan-400' },
+    { label: 'Incidents', description: 'Report & investigate', href: '/app/incidents', icon: AlertTriangle, color: 'text-rose-400' },
+    { label: 'Staff Compliance', description: 'Worker screening & checks', href: '/app/staff-compliance', icon: UserCheck, color: 'text-emerald-400' },
+    { label: 'Progress Notes', description: 'Participant progress', href: '/app/progress-notes', icon: NotebookPen, color: 'text-blue-400' },
+    { label: 'Evidence Vault', description: 'Evidence submissions', href: '/app/vault', icon: Lock, color: 'text-amber-400' },
+    { label: 'Reports', description: 'Compliance reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
+    { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-slate-400' },
+  ],
+  healthcare: [
+    { label: 'Patients', description: 'Patient records & status', href: '/app/participants', icon: HeartPulse, color: 'text-rose-400' },
+    { label: 'Appointments', description: 'Schedule & track', href: '/app/visits', icon: Calendar, color: 'text-cyan-400' },
+    { label: 'Clinical Notes', description: 'Clinical documentation', href: '/app/progress-notes', icon: NotebookPen, color: 'text-blue-400' },
+    { label: 'Staff Credentials', description: 'AHPRA & registrations', href: '/app/staff-compliance', icon: UserCheck, color: 'text-emerald-400' },
+    { label: 'Incidents', description: 'Clinical incidents', href: '/app/incidents', icon: AlertTriangle, color: 'text-amber-400' },
+    { label: 'Evidence Vault', description: 'Evidence & artifacts', href: '/app/vault', icon: Lock, color: 'text-purple-400' },
+    { label: 'Reports', description: 'Accreditation reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
+    { label: 'Settings', description: 'Practice settings', href: '/app/settings', icon: Settings, color: 'text-slate-400' },
+  ],
+  aged_care: [
+    { label: 'Residents', description: 'Resident records', href: '/app/participants', icon: Home, color: 'text-rose-400' },
+    { label: 'Care Plans', description: 'Care plan management', href: '/app/care-plans', icon: FileText, color: 'text-cyan-400' },
+    { label: 'Service Logs', description: 'Daily service logs', href: '/app/visits', icon: Calendar, color: 'text-blue-400' },
+    { label: 'Incidents', description: 'SIRS reporting', href: '/app/incidents', icon: AlertTriangle, color: 'text-amber-400' },
+    { label: 'Staff Compliance', description: 'Staff credentials', href: '/app/staff-compliance', icon: UserCheck, color: 'text-emerald-400' },
+    { label: 'Progress Notes', description: 'Resident notes', href: '/app/progress-notes', icon: NotebookPen, color: 'text-purple-400' },
+    { label: 'Evidence Vault', description: 'Audit evidence', href: '/app/vault', icon: Lock, color: 'text-sky-400' },
+    { label: 'Settings', description: 'Facility settings', href: '/app/settings', icon: Settings, color: 'text-slate-400' },
+  ],
+  childcare: [
+    { label: 'Children', description: 'Enrollment & records', href: '/app/participants', icon: Baby, color: 'text-amber-400' },
+    { label: 'Safety Checks', description: 'Daily safety inspections', href: '/app/registers', icon: Shield, color: 'text-rose-400' },
+    { label: 'Educator Compliance', description: 'WWCC & qualifications', href: '/app/staff-compliance', icon: UserCheck, color: 'text-emerald-400' },
+    { label: 'Incidents', description: 'Incident reports', href: '/app/incidents', icon: AlertTriangle, color: 'text-purple-400' },
+    { label: 'Progress Notes', description: 'Developmental notes', href: '/app/progress-notes', icon: NotebookPen, color: 'text-blue-400' },
+    { label: 'Evidence Vault', description: 'NQF evidence', href: '/app/vault', icon: Lock, color: 'text-cyan-400' },
+    { label: 'Reports', description: 'Quality reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
+    { label: 'Settings', description: 'Center settings', href: '/app/settings', icon: Settings, color: 'text-slate-400' },
+  ],
+  community_services: [
+    { label: 'Clients', description: 'Client records', href: '/app/participants', icon: Users, color: 'text-purple-400' },
+    { label: 'Service Delivery', description: 'Service sessions', href: '/app/visits', icon: Calendar, color: 'text-cyan-400' },
+    { label: 'Incidents', description: 'Report incidents', href: '/app/incidents', icon: AlertTriangle, color: 'text-rose-400' },
+    { label: 'Staff Compliance', description: 'Staff checks', href: '/app/staff-compliance', icon: UserCheck, color: 'text-emerald-400' },
+    { label: 'Evidence Vault', description: 'Compliance evidence', href: '/app/vault', icon: Lock, color: 'text-amber-400' },
+    { label: 'Tasks', description: 'Compliance tasks', href: '/app/tasks', icon: CheckSquare, color: 'text-blue-400' },
+    { label: 'Reports', description: 'Funding reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
+    { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-slate-400' },
+  ],
+  financial_services: [
+    { label: 'Organization', description: 'Overview & KPIs', href: '/app/executive', icon: Landmark, color: 'text-blue-400' },
+    { label: 'Policies', description: 'Regulatory policies', href: '/app/policies', icon: FileText, color: 'text-cyan-400' },
+    { label: 'Risk Registers', description: 'Risk & asset registers', href: '/app/registers', icon: ClipboardList, color: 'text-emerald-400' },
+    { label: 'Tasks', description: 'Compliance tasks', href: '/app/tasks', icon: CheckSquare, color: 'text-amber-400' },
+    { label: 'Evidence Vault', description: 'Audit evidence', href: '/app/vault', icon: Lock, color: 'text-purple-400' },
+    { label: 'Team', description: 'Manage team', href: '/app/team', icon: Users, color: 'text-rose-400' },
+    { label: 'Reports', description: 'Compliance reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
+    { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-slate-400' },
+  ],
+  saas_technology: [
+    { label: 'Organization', description: 'Overview & KPIs', href: '/app/executive', icon: Building2, color: 'text-blue-400' },
+    { label: 'Policies', description: 'SOC 2 / ISO policies', href: '/app/policies', icon: FileText, color: 'text-cyan-400' },
+    { label: 'Asset Inventory', description: 'Asset & risk registers', href: '/app/registers', icon: Laptop, color: 'text-emerald-400' },
+    { label: 'Control Tasks', description: 'Security controls', href: '/app/tasks', icon: CheckSquare, color: 'text-amber-400' },
+    { label: 'Evidence Vault', description: 'Audit artifacts', href: '/app/vault', icon: Lock, color: 'text-purple-400' },
+    { label: 'Team', description: 'Manage team', href: '/app/team', icon: Users, color: 'text-rose-400' },
+    { label: 'Reports', description: 'Framework reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
+    { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-slate-400' },
+  ],
+  enterprise: [
+    { label: 'Organization', description: 'Multi-site overview', href: '/app/executive', icon: Building2, color: 'text-blue-400' },
+    { label: 'Policies', description: 'Enterprise policies', href: '/app/policies', icon: FileText, color: 'text-cyan-400' },
+    { label: 'Registers', description: 'All registers', href: '/app/registers', icon: ClipboardList, color: 'text-emerald-400' },
+    { label: 'Tasks', description: 'Task management', href: '/app/tasks', icon: CheckSquare, color: 'text-amber-400' },
+    { label: 'Evidence Vault', description: 'Evidence chain', href: '/app/vault', icon: Lock, color: 'text-purple-400' },
+    { label: 'Team', description: 'Workforce management', href: '/app/team', icon: Users, color: 'text-rose-400' },
+    { label: 'Reports', description: 'Executive reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
+    { label: 'Settings', description: 'Enterprise settings', href: '/app/settings', icon: Settings, color: 'text-slate-400' },
+  ],
+};
+
+const DEFAULT_QUICK_ACTIONS: QuickAction[] = [
+  { label: 'Organization', description: 'Overview & KPIs', href: '/app/executive', icon: Building2, color: 'text-blue-400' },
+  { label: 'Team', description: 'Manage employees', href: '/app/team', icon: Users, color: 'text-cyan-400' },
+  { label: 'Certificates', description: 'All certifications', href: '/app/certificates', icon: FileText, color: 'text-emerald-400' },
+  { label: 'Evidence', description: 'Evidence submissions', href: '/app/vault', icon: CheckSquare, color: 'text-purple-400' },
+  { label: 'Tasks', description: 'Create & assign', href: '/app/tasks', icon: Briefcase, color: 'text-amber-400' },
+  { label: 'Audit Logs', description: 'Activity history', href: '/app/audit', icon: Shield, color: 'text-rose-400' },
+  { label: 'Billing', description: 'Plan & subscription', href: '/app/billing', icon: CreditCard, color: 'text-sky-400' },
+  { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-slate-400' },
+];
+
+function QuickActions({ industry }: { industry?: string | null }) {
+  const actions =
+    (industry && INDUSTRY_QUICK_ACTIONS[industry]) || DEFAULT_QUICK_ACTIONS;
   return (
     <div
-      className="grid grid-cols-2 sm:grid-cols-4 gap-3"
+      className="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3"
       data-testid="quick-actions"
     >
-      {QUICK_ACTIONS.map((a) => {
+      {actions.map((a) => {
         const Icon = a.icon;
         return (
           <Link
             key={a.href}
             href={a.href}
-            className="group flex flex-col gap-2 rounded-xl border border-white/10 bg-white/5 p-4 transition-all hover:bg-white/10 hover:border-white/20"
+            className="group flex flex-col gap-2 rounded-xl border border-white/10 bg-white/5 p-3.5 sm:p-4 transition-all hover:bg-white/10 hover:border-white/20"
           >
             <Icon
               className={`h-5 w-5 ${a.color} transition-transform group-hover:scale-110`}
@@ -157,19 +213,19 @@ function MobileReadinessCheckpoint({
       <div className="mt-4 grid grid-cols-3 gap-2 text-center">
         <div className="rounded-lg border border-white/10 bg-white/5 px-2 py-3">
           <p className="text-lg font-bold text-slate-100">{complianceScore}%</p>
-          <p className="text-[10px] uppercase tracking-wide text-slate-400">
+          <p className="text-xs uppercase tracking-wide text-slate-400">
             Score
           </p>
         </div>
         <div className="rounded-lg border border-white/10 bg-white/5 px-2 py-3">
           <p className="text-lg font-bold text-slate-100">{openTasksCount}</p>
-          <p className="text-[10px] uppercase tracking-wide text-slate-400">
+          <p className="text-xs uppercase tracking-wide text-slate-400">
             Open Tasks
           </p>
         </div>
         <div className="rounded-lg border border-white/10 bg-white/5 px-2 py-3">
           <p className="text-lg font-bold text-slate-100">{expiringCertsCount}</p>
-          <p className="text-[10px] uppercase tracking-wide text-slate-400">
+          <p className="text-xs uppercase tracking-wide text-slate-400">
             Expiring
           </p>
         </div>
@@ -266,7 +322,7 @@ function PriorityActionQueue({
           <Link
             key={item.id}
             href={item.href}
-            className="group flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:bg-white/10"
+            className="group flex flex-col gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:bg-white/10 sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="flex items-start gap-3">
               <div className="mt-0.5 inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5">
@@ -280,12 +336,12 @@ function PriorityActionQueue({
                 {(item.ownerLabel || item.slaLabel) && (
                   <div className="mt-2 flex flex-wrap items-center gap-2">
                     {item.ownerLabel && (
-                      <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-300">
+                      <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-slate-300">
                         Owner: {item.ownerLabel}
                       </span>
                     )}
                     {item.slaLabel && (
-                      <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-300">
+                      <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-slate-300">
                         SLA: {item.slaLabel}
                       </span>
                     )}
@@ -293,9 +349,9 @@ function PriorityActionQueue({
                 )}
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 self-end sm:self-auto">
               <span
-                className={`rounded border px-2 py-1 text-[10px] font-semibold uppercase tracking-wider ${badgeClass[item.priority]}`}
+                className={`rounded border px-2 py-1 text-xs font-semibold uppercase tracking-wider ${badgeClass[item.priority]}`}
               >
                 {label[item.priority]}
               </span>
@@ -389,54 +445,101 @@ function ActivationMilestones({
 /**
  * Organization health overview
  */
+/**
+ * Industry-specific label helpers for KPIs and action queues
+ */
+function getExpiryLabel(industry?: string | null): string {
+  switch (industry) {
+    case 'ndis': return 'Screening Expiry';
+    case 'healthcare': return 'Registration Expiry';
+    case 'childcare': return 'WWCC Expiry';
+    case 'aged_care': return 'Credential Expiry';
+    case 'saas_technology': return 'Cert Expiry';
+    default: return 'Expiring Soon';
+  }
+}
+
+function getEntityLabel(industry?: string | null): string {
+  switch (industry) {
+    case 'ndis': return 'participant compliance';
+    case 'healthcare': return 'clinical';
+    case 'aged_care': return 'resident care';
+    case 'childcare': return 'child safety';
+    case 'community_services': return 'client service';
+    case 'financial_services': return 'regulatory';
+    case 'saas_technology': return 'security control';
+    case 'enterprise': return 'enterprise compliance';
+    default: return 'control';
+  }
+}
+
+function getTasksLabel(industry?: string | null): string {
+  switch (industry) {
+    case 'ndis': return 'Compliance Tasks';
+    case 'healthcare': return 'Clinical Tasks';
+    case 'aged_care': return 'Care Tasks';
+    case 'childcare': return 'Safety Tasks';
+    case 'community_services': return 'Service Tasks';
+    case 'financial_services': return 'Regulatory Tasks';
+    case 'saas_technology': return 'Control Tasks';
+    case 'enterprise': return 'Governance Tasks';
+    default: return 'Open Tasks';
+  }
+}
+
 export function OrgHealthOverview({
+  industry,
   teamMemberCount = 0,
   complianceScore = 0,
   expiringCertsCount = 0,
   openTasksCount = 0,
 }: {
+  industry?: string | null;
   teamMemberCount: number;
   complianceScore: number;
   expiringCertsCount: number;
   openTasksCount: number;
 }) {
+  const expiryLabel = getExpiryLabel(industry);
+  const tasksLabel = getTasksLabel(industry);
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-      <div className="rounded-xl border border-white/10 bg-white/5 p-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+      <div className="rounded-xl border border-white/10 bg-white/5 p-4 sm:p-6">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-slate-400">Team Members</p>
-            <p className="text-3xl font-bold">{teamMemberCount}</p>
+            <p className="text-2xl sm:text-3xl font-bold">{teamMemberCount}</p>
           </div>
           <Users className="h-8 w-8 text-blue-400" />
         </div>
       </div>
 
-      <div className="rounded-xl border border-white/10 bg-white/5 p-6">
+      <div className="rounded-xl border border-white/10 bg-white/5 p-4 sm:p-6">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-slate-400">Compliance Score</p>
-            <p className="text-3xl font-bold">{complianceScore}%</p>
+            <p className="text-2xl sm:text-3xl font-bold">{complianceScore}%</p>
           </div>
           <TrendingUp className="h-8 w-8 text-green-400" />
         </div>
       </div>
 
-      <div className="rounded-xl border border-white/10 bg-white/5 p-6">
+      <div className="rounded-xl border border-white/10 bg-white/5 p-4 sm:p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-slate-400">Expiring Soon</p>
-            <p className="text-3xl font-bold">{expiringCertsCount}</p>
+            <p className="text-sm text-slate-400">{expiryLabel}</p>
+            <p className="text-2xl sm:text-3xl font-bold">{expiringCertsCount}</p>
           </div>
           <AlertCircle className="h-8 w-8 text-amber-400" />
         </div>
       </div>
 
-      <div className="rounded-xl border border-white/10 bg-white/5 p-6">
+      <div className="rounded-xl border border-white/10 bg-white/5 p-4 sm:p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-slate-400">Open Tasks</p>
-            <p className="text-3xl font-bold">{openTasksCount}</p>
+            <p className="text-sm text-slate-400">{tasksLabel}</p>
+            <p className="text-2xl sm:text-3xl font-bold">{openTasksCount}</p>
           </div>
           <CheckCircle2 className="h-8 w-8 text-purple-400" />
         </div>
@@ -466,8 +569,8 @@ export function TeamComplianceTable({
       description="View employee compliance status and assignments"
       icon={Users}
     >
-      <div className="overflow-x-auto">
-        <table className="min-w-[520px] w-full text-sm">
+      <div className="overflow-x-auto overscroll-x-contain">
+        <table className="min-w-[480px] sm:min-w-[520px] w-full text-sm">
           <thead className="border-b border-white/10">
             <tr>
               <th className="px-4 py-2 text-left font-semibold">Employee</th>
@@ -859,17 +962,18 @@ export function EmployerDashboard({
     },
   ];
 
+  const entityLabel = getEntityLabel(industry);
   const actionQueue: ActionQueueItem[] = [
     {
       id: 'queue-open-tasks',
       title:
         openTasksCount > 0
-          ? `${openTasksCount} open control tasks require action`
-          : 'Review active control tasks',
+          ? `${openTasksCount} open ${entityLabel} tasks require action`
+          : `Review active ${entityLabel} tasks`,
       detail:
         openTasksCount > 0
-          ? 'Prioritize overdue controls and assign owners.'
-          : 'No backlog detected. Confirm this week’s control cadence.',
+          ? `Prioritize overdue ${entityLabel} items and assign owners.`
+          : `No backlog detected. Confirm this week's ${entityLabel} cadence.`,
       href: '/app/tasks',
       icon: CheckSquare,
       priority: openTasksCount > 10 ? 'critical' : openTasksCount > 0 ? 'high' : 'normal',
@@ -896,7 +1000,7 @@ export function EmployerDashboard({
       id: 'queue-evidence-verification',
       title: 'Verify pending evidence submissions',
       detail:
-        'Move pending artifacts through approval to keep chain-of-custody current.',
+        `Move pending ${entityLabel} artifacts through approval to keep chain-of-custody current.`,
       href: '/app/vault/review',
       icon: CheckCircle2,
       priority: 'high',
@@ -907,7 +1011,7 @@ export function EmployerDashboard({
       id: 'queue-team-readiness',
       title: 'Review team assignment coverage',
       detail:
-        'Confirm control ownership and reduce unassigned accountability gaps.',
+        `Confirm ${entityLabel} ownership and reduce unassigned accountability gaps.`,
       href: '/app/team',
       icon: Users,
       priority: complianceScore < 75 ? 'critical' : 'normal',
@@ -1006,8 +1110,8 @@ export function EmployerDashboard({
         expiringCertsCount={expiringCertsCount}
       />
 
-      {/* Quick-action cards (replaces old sidebar-style middle column) */}
-      <QuickActions />
+      {/* Quick-action cards — industry-specific shortcuts */}
+      <QuickActions industry={industry} />
       <PriorityActionQueue items={actionQueue} />
       <ActivationMilestones
         milestones={activationMilestones}
@@ -1053,6 +1157,7 @@ export function EmployerDashboard({
       <div data-tour="dashboard-overview">
         <h2 className="text-xl font-bold mb-4">Organization Health</h2>
         <OrgHealthOverview
+          industry={industry}
           teamMemberCount={teamMemberCount}
           complianceScore={complianceScore}
           expiringCertsCount={expiringCertsCount}

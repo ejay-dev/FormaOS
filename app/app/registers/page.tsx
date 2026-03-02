@@ -241,7 +241,7 @@ export default function RegistersPage() {
                       </div>
                       <div className="flex items-center gap-2">
                         <span
-                          className={`text-[10px] font-bold px-2 py-1 rounded-md border uppercase ${getRiskColor(
+                          className={`text-xs font-bold px-2 py-1 rounded-md border uppercase ${getRiskColor(
                             item.risk_level
                           )}`}
                         >

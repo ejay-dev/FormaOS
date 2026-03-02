@@ -157,7 +157,7 @@ export function FrameworkHealthWidget() {
                     className="rounded-md border border-white/10 bg-black/20 px-2 py-1 text-center"
                   >
                     <span className="text-slate-200">{count}</span>
-                    <span className="ml-1 text-[10px] uppercase text-slate-500">{status.replace('_', ' ')}</span>
+                    <span className="ml-1 text-xs uppercase text-slate-500">{status.replace('_', ' ')}</span>
                   </div>
                 )
               })}

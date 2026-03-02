@@ -40,6 +40,7 @@ const ALLOWED_ACTIONS = [
   'bulk_action',
   'api_key_created',
   'webhook_configured',
+  'route_transition',
 ] as const;
 
 export async function POST(request: Request) {

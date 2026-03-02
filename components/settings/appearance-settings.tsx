@@ -129,7 +129,7 @@ export function AppearanceSettings() {
 
               {/* Active indicator */}
               {isActive && (
-                <div className="absolute top-3 right-3 h-5 w-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px] font-bold">
+                <div className="absolute top-3 right-3 h-5 w-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
                   ✓
                 </div>
               )}
@@ -138,7 +138,7 @@ export function AppearanceSettings() {
         })}
       </div>
 
-      <p className="text-[10px] text-muted-foreground">
+      <p className="text-xs text-muted-foreground">
         Your preference is saved automatically and persists across sessions.
       </p>
     </div>

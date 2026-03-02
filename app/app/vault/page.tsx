@@ -5,15 +5,17 @@ import {
   Search,
   FileUp,
   HardDrive,
-  Trash2,
-  ExternalLink,
   Filter,
   CheckCircle2,
   Clock,
-  Download,
-  Eye,
+  ListFilter,
 } from 'lucide-react';
 import { verifyEvidence } from '@/app/app/actions/evidence';
+import { fetchSystemState } from '@/lib/system-state/server';
+import { redirect } from 'next/navigation';
+import { VaultUploadButton } from '@/components/vault/vault-upload-button';
+import { EvidenceFileActions } from '@/components/vault/evidence-file-actions';
+import Link from 'next/link';
 
 function getFileName(item: any) {
   return item?.file_name || item?.title || item?.name || 'Untitled';
@@ -28,39 +30,36 @@ function getFileSizeKB(item: any) {
   return (bytes / 1024).toFixed(0);
 }
 
-export default async function VaultPage() {
+type VaultPageProps = {
+  searchParams?: Promise<{
+    q?: string | string[];
+    status?: string | string[];
+  }>;
+};
+
+function parseSingleValue(input: string | string[] | undefined): string {
+  return Array.isArray(input) ? input[0] ?? '' : input ?? '';
+}
+
+export default async function VaultPage({ searchParams }: VaultPageProps) {
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const searchQueryRaw = parseSingleValue(resolvedSearchParams.q).trim();
+  const searchQuery = searchQueryRaw.toLowerCase();
+  const statusFilterRaw = parseSingleValue(resolvedSearchParams.status).trim().toLowerCase();
+  const statusFilter =
+    statusFilterRaw === 'pending' || statusFilterRaw === 'verified'
+      ? statusFilterRaw
+      : 'all';
+  const hasFilters = Boolean(searchQuery || statusFilter !== 'all');
+
+  const systemState = await fetchSystemState();
+  if (!systemState) {
+    redirect('/workspace-recovery?from=vault-page');
+  }
+
   const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return (
-      <div className="p-12 text-center">
-        <h1 className="text-xl font-bold text-slate-100">Please sign in</h1>
-      </div>
-    );
-  }
-
-  // 1) Fetch Context
-  const { data: membership } = await supabase
-    .from('org_members')
-    .select('organization_id, role')
-    .eq('user_id', user.id)
-    .maybeSingle();
-
-  if (!membership) {
-    return (
-      <div className="p-12 text-center">
-        <h1 className="text-xl font-bold text-slate-100">Access Denied</h1>
-        <p className="text-slate-400">
-          No active organization membership found.
-        </p>
-      </div>
-    );
-  }
-
-  const isAuditor = ['admin', 'manager'].includes(membership.role);
+  const orgId = systemState.organization.id;
+  const isAuditor = systemState.role === 'owner' || systemState.role === 'admin';
 
   // 2) Fetch Evidence with joins (limited to 100 for performance)
   const { data: artifacts } = await supabase
@@ -69,16 +68,34 @@ export default async function VaultPage() {
       `
       id, title, file_name, file_type, file_size, name,
       verification_status, quality_score, risk_flag,
-      verified_at, created_at,
+      verified_at, created_at, file_path,
       task:task_id (title),
       policy:policy_id (title)
     `,
     )
-    .eq('organization_id', membership.organization_id)
+    .eq('organization_id', orgId)
     .order('created_at', { ascending: false })
     .limit(100);
 
   const allArtifacts = artifacts || [];
+  const filteredArtifacts = allArtifacts.filter((artifact: any) => {
+    const statusMatches =
+      statusFilter === 'all' || artifact.verification_status === statusFilter;
+    if (!statusMatches) return false;
+
+    if (!searchQuery) return true;
+
+    const haystack = [
+      getFileName(artifact),
+      artifact.file_type ?? '',
+      artifact.task?.title ?? '',
+      artifact.policy?.title ?? '',
+    ]
+      .join(' ')
+      .toLowerCase();
+
+    return haystack.includes(searchQuery);
+  });
 
   // Storage calc (current feature)
   const totalSize =
@@ -89,10 +106,10 @@ export default async function VaultPage() {
   const sizeInMB = (totalSize / (1024 * 1024)).toFixed(2);
 
   // Split (upgrade feature)
-  const pending = allArtifacts.filter(
+  const pending = filteredArtifacts.filter(
     (a: any) => a.verification_status === 'pending',
   );
-  const verified = allArtifacts.filter(
+  const verified = filteredArtifacts.filter(
     (a: any) => a.verification_status === 'verified',
   );
 
@@ -116,7 +133,10 @@ export default async function VaultPage() {
         <div className="flex flex-col md:flex-row items-start md:items-center gap-3">
           <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-xl text-xs font-bold text-slate-400">
             <Filter className="h-4 w-4" />
-            <span>{allArtifacts.length} Total Artifacts</span>
+            <span>
+              {filteredArtifacts.length} Showing
+              {hasFilters ? ` (${allArtifacts.length} Total)` : ''}
+            </span>
           </div>
 
           <div className="flex items-center gap-4 bg-white/5 border border-white/10 p-4 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
@@ -136,18 +156,43 @@ export default async function VaultPage() {
       </div>
 
       {/* Action Toolbar (current) */}
-      <div className="flex items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <input
-            placeholder="Search artifacts by name or type..."
-            className="w-full pl-10 pr-4 py-2 text-sm outline-none bg-transparent"
-          />
-        </div>
-        <button className="flex items-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white px-5 py-2 rounded-xl text-xs font-bold hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(59,130,246,0.35)]">
-          <FileUp className="h-4 w-4" />
-          Upload Artifact
-        </button>
+      <div className="flex flex-col lg:flex-row lg:items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+        <form method="get" className="flex flex-1 flex-col sm:flex-row sm:items-center gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <input
+              name="q"
+              defaultValue={searchQueryRaw}
+              placeholder="Search artifacts by name, type, or context..."
+              className="w-full pl-10 pr-4 py-2 text-sm outline-none bg-transparent text-slate-100 placeholder:text-slate-500"
+            />
+          </div>
+          <select
+            name="status"
+            defaultValue={statusFilter}
+            className="h-10 rounded-xl border border-white/10 bg-white/10 px-3 text-xs font-semibold uppercase tracking-wider text-slate-300"
+          >
+            <option value="all">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="verified">Verified</option>
+          </select>
+          <button
+            type="submit"
+            className="h-10 px-4 rounded-xl bg-white/10 text-xs font-semibold uppercase tracking-wider text-slate-100 hover:bg-white/20 transition-colors"
+          >
+            <ListFilter className="h-3.5 w-3.5 inline mr-2" />
+            Apply
+          </button>
+          {hasFilters ? (
+            <Link
+              href="/app/vault"
+              className="h-10 px-4 rounded-xl border border-white/10 text-xs font-semibold uppercase tracking-wider text-slate-300 hover:bg-white/10 transition-colors inline-flex items-center justify-center"
+            >
+              Clear
+            </Link>
+          ) : null}
+        </form>
+        <VaultUploadButton />
       </div>
 
       {/* PENDING REVIEW SECTION (upgrade) */}
@@ -172,7 +217,7 @@ export default async function VaultPage() {
                   <div className="h-10 w-10 bg-amber-400/10 rounded-xl flex items-center justify-center text-amber-300">
                     <FileText className="h-5 w-5" />
                   </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-amber-200 bg-amber-400/10 px-2 py-1 rounded-lg">
+                  <span className="text-xs font-black uppercase tracking-widest text-amber-200 bg-amber-400/10 px-2 py-1 rounded-lg">
                     Needs Action
                   </span>
                 </div>
@@ -186,10 +231,10 @@ export default async function VaultPage() {
                 </p>
 
                 <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4">
-                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">
+                  <p className="text-xs text-slate-400 font-bold uppercase tracking-tight">
                     {getFileType(item)} • {getFileSizeKB(item)} KB
                   </p>
-                  <span className="text-[10px] text-slate-400 font-medium">
+                  <span className="text-xs text-slate-400 font-medium">
                     {item.created_at
                       ? new Date(item.created_at).toLocaleDateString()
                       : 'N/A'}
@@ -198,13 +243,7 @@ export default async function VaultPage() {
 
                 {/* Action Bar */}
                 <div className="flex items-center gap-3 mt-4">
-                  <button
-                    type="button"
-                    className="flex-1 py-3 flex items-center justify-center gap-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-slate-200 transition-colors"
-                  >
-                    <Eye className="h-4 w-4" />
-                    View
-                  </button>
+                  <EvidenceFileActions filePath={item.file_path ?? null} variant="pending" />
 
                   {isAuditor && (
                     <form
@@ -218,7 +257,7 @@ export default async function VaultPage() {
                       <input
                         name="reason"
                         placeholder="Reason required"
-                        className="mb-3 w-full rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-200 placeholder:text-slate-500"
+                        className="mb-3 w-full rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-xs font-bold uppercase tracking-widest text-slate-200 placeholder:text-slate-500"
                         required
                       />
                       <button
@@ -254,7 +293,7 @@ export default async function VaultPage() {
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-[760px] w-full text-left">
-                <thead className="bg-white/5 border-b border-white/10 text-[10px] font-black uppercase text-slate-400 tracking-widest">
+                <thead className="bg-white/5 border-b border-white/10 text-xs font-black uppercase text-slate-400 tracking-widest">
                   <tr>
                     <th className="px-8 py-6">Artifact</th>
                     <th className="px-8 py-6">Context</th>
@@ -276,7 +315,7 @@ export default async function VaultPage() {
                             {getFileName(item)}
                           </span>
                         </div>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight mt-1">
+                        <p className="text-xs text-slate-400 font-bold uppercase tracking-tight mt-1">
                           {getFileType(item)} • {getFileSizeKB(item)} KB
                         </p>
                       </td>
@@ -288,7 +327,7 @@ export default async function VaultPage() {
                       <td className="px-8 py-4">
                         {item.quality_score != null ? (
                           <div className="flex items-center gap-2">
-                            <div className={`h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                            <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
                               item.quality_score >= 70 ? 'bg-emerald-400/10 text-emerald-300' :
                               item.quality_score >= 50 ? 'bg-amber-400/10 text-amber-300' :
                               'bg-rose-400/10 text-rose-300'
@@ -304,7 +343,7 @@ export default async function VaultPage() {
                             </span>
                           </div>
                         ) : (
-                          <span className="text-[10px] text-slate-500">Not scored</span>
+                          <span className="text-xs text-slate-500">Not scored</span>
                         )}
                       </td>
 
@@ -314,7 +353,7 @@ export default async function VaultPage() {
                             <ShieldCheck className="h-3 w-3" />
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-[10px] font-bold text-slate-100">
+                            <span className="text-xs font-bold text-slate-100">
                               Verified
                             </span>
                             <span className="text-[9px] font-mono text-slate-400">
@@ -333,26 +372,7 @@ export default async function VaultPage() {
                       </td>
 
                       <td className="px-8 py-4 text-right">
-                        <div className="inline-flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                          <button
-                            type="button"
-                            className="p-2 hover:bg-rose-500/10 text-rose-300 rounded-lg transition-colors"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                          <button
-                            type="button"
-                            className="p-2 hover:bg-white/10 text-slate-400 rounded-lg transition-colors"
-                          >
-                            <ExternalLink className="h-4 w-4" />
-                          </button>
-                          <button
-                            type="button"
-                            className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-slate-100 transition-colors"
-                          >
-                            <Download className="h-4 w-4" />
-                          </button>
-                        </div>
+                        <EvidenceFileActions filePath={item.file_path ?? null} />
                       </td>
                     </tr>
                   ))}
@@ -364,14 +384,18 @@ export default async function VaultPage() {
       </section>
 
       {/* Empty state (current) if literally nothing exists */}
-      {allArtifacts.length === 0 && (
+      {filteredArtifacts.length === 0 && (
         <div className="py-20 border-2 border-dashed border-white/10 rounded-3xl flex flex-col items-center justify-center bg-white/5">
           <div className="h-16 w-16 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center mb-4 shadow-sm">
             <FileUp className="h-8 w-8 text-slate-400" />
           </div>
-          <h3 className="text-lg font-bold text-slate-100">Vault is Empty</h3>
+          <h3 className="text-lg font-bold text-slate-100">
+            {allArtifacts.length === 0 ? 'Vault is Empty' : 'No matching artifacts'}
+          </h3>
           <p className="text-sm text-slate-400 mt-1">
-            Upload your first compliance artifact to begin.
+            {allArtifacts.length === 0
+              ? 'Upload your first compliance artifact to begin.'
+              : 'Try adjusting your search and status filters.'}
           </p>
         </div>
       )}

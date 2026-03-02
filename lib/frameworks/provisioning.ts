@@ -55,11 +55,11 @@ export async function enableFrameworkForOrg(
 
   await admin.from('org_frameworks').upsert(
     {
-      org_id: orgId,
+      organization_id: orgId,
       framework_slug: frameworkSlug,
       enabled_at: new Date().toISOString(),
     },
-    { onConflict: 'org_id,framework_slug' },
+    { onConflict: 'organization_id,framework_slug' },
   )
 
   await provisionFrameworkControls(orgId, frameworkSlug, options)
@@ -79,11 +79,11 @@ export async function provisionFrameworkControls(
 
   await admin.from('org_frameworks').upsert(
     {
-      org_id: orgId,
+      organization_id: orgId,
       framework_slug: frameworkSlug,
       enabled_at: new Date().toISOString(),
     },
-    { onConflict: 'org_id,framework_slug' },
+    { onConflict: 'organization_id,framework_slug' },
   )
   const frameworkCode = getFrameworkCodeForSlug(frameworkSlug)
 

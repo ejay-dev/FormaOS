@@ -103,7 +103,7 @@ export function InviteModal({
 
             {/* Email Input */}
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-neutral-400 tracking-[0.2em] ml-1">
+              <label className="text-xs font-black uppercase text-neutral-400 tracking-[0.2em] ml-1">
                 Identity / Email
               </label>
               <div className="relative group">
@@ -121,7 +121,7 @@ export function InviteModal({
 
             {/* Role Selection */}
             <div className="space-y-3">
-              <label className="text-[10px] font-black uppercase text-neutral-400 tracking-[0.2em] ml-1">
+              <label className="text-xs font-black uppercase text-neutral-400 tracking-[0.2em] ml-1">
                 Access Level
               </label>
               <div className="grid grid-cols-3 gap-3">
@@ -138,7 +138,7 @@ export function InviteModal({
                   <Eye
                     className={`h-5 w-5 ${role === 'viewer' ? 'text-white' : 'text-neutral-400'}`}
                   />
-                  <span className="text-[10px] font-black uppercase tracking-wider">
+                  <span className="text-xs font-black uppercase tracking-wider">
                     Viewer
                   </span>
                 </button>
@@ -156,7 +156,7 @@ export function InviteModal({
                   <User
                     className={`h-5 w-5 ${role === 'member' ? 'text-white' : 'text-neutral-400'}`}
                   />
-                  <span className="text-[10px] font-black uppercase tracking-wider">
+                  <span className="text-xs font-black uppercase tracking-wider">
                     Member
                   </span>
                 </button>
@@ -174,12 +174,12 @@ export function InviteModal({
                   <Shield
                     className={`h-5 w-5 ${role === 'admin' ? 'text-white' : 'text-neutral-400'}`}
                   />
-                  <span className="text-[10px] font-black uppercase tracking-wider">
+                  <span className="text-xs font-black uppercase tracking-wider">
                     Admin
                   </span>
                 </button>
               </div>
-              <p className="text-[10px] text-center text-neutral-400 font-medium pt-1">
+              <p className="text-xs text-center text-neutral-400 font-medium pt-1">
                 {role === 'viewer' && 'Read-only access to published evidence.'}
                 {role === 'member' && 'Can edit policies and complete tasks.'}
                 {role === 'admin' && 'Full control over organization settings.'}

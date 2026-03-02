@@ -87,7 +87,7 @@ export function CreatePolicySheet() {
             <div className="flex-1 space-y-6">
               {/* Title Field */}
               <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Policy Title</label>
+                  <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Policy Title</label>
                   <div className="relative">
                       <FileText className="absolute left-3 top-3 h-4 w-4 text-cyan-400/70" />
                       <input 
@@ -97,7 +97,7 @@ export function CreatePolicySheet() {
                           className="w-full pl-10 p-3 rounded-xl border border-white/10 text-sm outline-none focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20 transition-all" 
                       />
                   </div>
-                  <p className="text-[10px] text-slate-400">This will be the official name of the document.</p>
+                  <p className="text-xs text-slate-400">This will be the official name of the document.</p>
               </div>
 
               {/* Info Box */}
@@ -105,7 +105,7 @@ export function CreatePolicySheet() {
                   <ShieldCheck className="h-5 w-5 text-cyan-400 shrink-0" />
                   <div>
                       <h4 className="text-xs font-bold text-slate-100">Automatic Versioning</h4>
-                      <p className="text-[10px] text-slate-400 mt-1 leading-relaxed">
+                      <p className="text-xs text-slate-400 mt-1 leading-relaxed">
                           FormaOS will automatically assign a version number (v0.1) and set the status to "Draft" until you are ready to publish.
                       </p>
                   </div>
@@ -118,7 +118,7 @@ export function CreatePolicySheet() {
                   </div>
                   <div>
                       <h4 className="text-xs font-bold text-slate-100">Compliance Graph</h4>
-                      <p className="text-[10px] text-slate-400 mt-1 leading-relaxed">
+                      <p className="text-xs text-slate-400 mt-1 leading-relaxed">
                           Once created, you can link Controls and Evidence to this Policy to build your compliance graph.
                       </p>
                   </div>

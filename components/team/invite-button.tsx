@@ -110,7 +110,7 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                     <form onSubmit={handleInvite} className="p-6 space-y-5">
                         {/* Email Input */}
                         <div className="space-y-2">
-                            <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Email Address</label>
+                            <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Email Address</label>
                             <div className="relative">
                                 <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                                 <input 
@@ -126,7 +126,7 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
 
                         {/* Role Selector */}
                         <div className="space-y-2">
-                            <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Access Level</label>
+                            <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Access Level</label>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <button
                                     type="button"
@@ -140,7 +140,7 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                                     <span className="flex items-center gap-2 text-xs font-bold text-slate-100">
                                         <Shield className={`h-3 w-3 ${role === 'member' ? 'text-blue-400' : ''}`} /> Member
                                     </span>
-                                    <span className="text-[10px] text-slate-400">Can view and edit documents.</span>
+                                    <span className="text-xs text-slate-400">Can view and edit documents.</span>
                                 </button>
 
                                 <button
@@ -155,7 +155,7 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                                     <span className="flex items-center gap-2 text-xs font-bold text-slate-100">
                                         <Eye className={`h-3 w-3 ${role === 'viewer' ? 'text-blue-400' : ''}`} /> Viewer
                                     </span>
-                                    <span className="text-[10px] text-slate-400">Read-only access. No editing.</span>
+                                    <span className="text-xs text-slate-400">Read-only access. No editing.</span>
                                 </button>
                             </div>
                         </div>

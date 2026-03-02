@@ -63,12 +63,12 @@ export default async function PolicyDetailPage({
             Policy Library
         </Link>
         <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
                 <History className="h-3 w-3" />
                 <span>Last modified: {new Date(policy.last_updated_at || policy.created_at).toLocaleDateString()}</span>
             </div>
             <div className="h-4 w-px bg-white/10" />
-            <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-400/10 text-emerald-700 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-400/30">
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-400/10 text-emerald-700 rounded-full text-xs font-black uppercase tracking-widest border border-emerald-400/30">
                 <ShieldCheck className="h-3.5 w-3.5" />
                 Verified Template
             </div>
@@ -128,7 +128,7 @@ export default async function PolicyDetailPage({
             {/* Document Controls */}
             <div className="bg-white/5 border border-white/10 rounded-[2rem] p-6 sm:p-8 shadow-sm space-y-8 md:sticky md:top-6">
                 <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
+                    <label className="text-xs font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
                         Lifecycle Stage
                     </label>
                     <div className="relative">
@@ -148,13 +148,13 @@ export default async function PolicyDetailPage({
                 </div>
 
                 <div className="flex flex-col gap-4 py-6 border-y border-white/10">
-                    <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
+                    <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest">
                         <span className="text-slate-400">Version</span>
                         <span className="text-slate-100 bg-white/10 px-2 py-1 rounded-lg">
                             {policy.version || 'v1.0'}
                         </span>
                     </div>
-                    <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
+                    <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest">
                         <span className="text-slate-400">Governance ID</span>
                         <span className="font-mono text-slate-400">
                             POL-{policy.id.slice(0, 4).toUpperCase()}
@@ -171,7 +171,7 @@ export default async function PolicyDetailPage({
                         Commit Changes
                     </button>
                 ) : (
-                    <div className="p-4 bg-white/10 rounded-2xl border border-white/10 text-[10px] font-black text-slate-400 text-center uppercase tracking-widest flex items-center justify-center gap-2">
+                    <div className="p-4 bg-white/10 rounded-2xl border border-white/10 text-xs font-black text-slate-400 text-center uppercase tracking-widest flex items-center justify-center gap-2">
                         <ShieldCheck className="h-4 w-4" />
                         Read Only Mode
                     </div>

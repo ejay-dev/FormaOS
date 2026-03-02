@@ -233,7 +233,7 @@ function ModuleNode({
 
       <div>
         <p className={cn('font-bold text-sm', colors.text)}>{config.name}</p>
-        <p className="text-[10px] text-slate-500 mt-0.5">
+        <p className="text-xs text-slate-500 mt-0.5">
           {config.description}
         </p>
       </div>

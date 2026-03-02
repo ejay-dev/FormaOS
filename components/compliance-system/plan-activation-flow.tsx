@@ -61,7 +61,7 @@ function PlanCard({
     >
       {recommended && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-          <div className="px-3 py-1 bg-gradient-to-r from-cyan-500 to-teal-500 rounded-full text-[10px] font-black uppercase tracking-wider text-white">
+          <div className="px-3 py-1 bg-gradient-to-r from-cyan-500 to-teal-500 rounded-full text-xs font-black uppercase tracking-wider text-white">
             Recommended
           </div>
         </div>
@@ -69,7 +69,7 @@ function PlanCard({
 
       {current && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-          <div className="px-3 py-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full text-[10px] font-black uppercase tracking-wider text-white flex items-center gap-1">
+          <div className="px-3 py-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full text-xs font-black uppercase tracking-wider text-white flex items-center gap-1">
             <Check className="h-3 w-3" />
             Current Plan
           </div>

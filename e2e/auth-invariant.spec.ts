@@ -93,7 +93,7 @@ async function waitForFrameworkProvisioning(
         const { data: enabled } = await admin
           .from('org_frameworks')
           .select('framework_slug')
-          .eq('org_id', orgId)
+          .eq('organization_id', orgId)
           .eq('framework_slug', frameworkSlug);
 
         const hasOrgFramework = (enabled ?? []).length > 0;

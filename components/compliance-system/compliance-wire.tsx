@@ -213,7 +213,7 @@ export function ComplianceWire({
       {label && (
         <div 
           className={cn(
-            "absolute top-full mt-1 text-[10px] font-medium uppercase tracking-wider whitespace-nowrap",
+            "absolute top-full mt-1 text-xs font-medium uppercase tracking-wider whitespace-nowrap",
             "px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm",
           )}
           style={{ color: config.color }}
@@ -324,7 +324,7 @@ export function WireLabel({ type, className }: { type: WireType; className?: str
   return (
     <span 
       className={cn(
-        "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider",
+        "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider",
         "bg-black/40 backdrop-blur-sm border",
         className
       )}

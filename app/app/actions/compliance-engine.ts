@@ -196,7 +196,7 @@ async function safeSelectFrameworks(
       const { data: enabled } = await supabase
         .from("org_frameworks")
         .select("framework_slug")
-        .eq("org_id", orgId);
+        .eq("organization_id", orgId);
 
       const enabledSlugs = (enabled ?? []).map((row: any) => row.framework_slug);
       if (!enabledSlugs.length) return frameworks;

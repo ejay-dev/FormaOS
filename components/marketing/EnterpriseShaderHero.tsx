@@ -2,12 +2,18 @@
 
 import Link from 'next/link';
 import { ShieldCheck } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type MouseEvent } from 'react';
 import { cn } from '@/lib/utils';
 
 interface CtaLink {
   label: string;
   href: string;
+}
+
+interface SignalCard {
+  label: string;
+  value: string;
+  detail?: string;
 }
 
 interface EnterpriseShaderHeroProps {
@@ -19,6 +25,10 @@ interface EnterpriseShaderHeroProps {
   subtitle: string;
   primaryCta?: CtaLink;
   secondaryCta?: CtaLink;
+  signalCards?: SignalCard[];
+  footerPills?: string[];
+  onPrimaryCtaClick?: (event: MouseEvent<HTMLAnchorElement>) => void;
+  onSecondaryCtaClick?: (event: MouseEvent<HTMLAnchorElement>) => void;
   className?: string;
 }
 
@@ -308,6 +318,10 @@ export function EnterpriseShaderHero({
   subtitle,
   primaryCta,
   secondaryCta,
+  signalCards,
+  footerPills,
+  onPrimaryCtaClick,
+  onSecondaryCtaClick,
   className,
 }: EnterpriseShaderHeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -373,11 +387,11 @@ export function EnterpriseShaderHero({
   }, []);
 
   return (
-    <section className={cn('mk-section relative py-20 sm:py-24', className)}>
+    <section className={cn('mk-section relative py-16 sm:py-24', className)}>
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div
           ref={containerRef}
-          className="relative min-h-[560px] overflow-hidden rounded-3xl border border-cyan-300/15 bg-black/70 shadow-[0_22px_70px_rgba(6,182,212,0.18)]"
+          className="relative min-h-[500px] overflow-hidden rounded-3xl border border-cyan-300/15 bg-black/70 shadow-[0_22px_70px_rgba(6,182,212,0.18)] sm:min-h-[560px]"
         >
           <canvas
             ref={canvasRef}
@@ -386,9 +400,10 @@ export function EnterpriseShaderHero({
           />
 
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(124,58,237,0.22)_0%,transparent_44%),radial-gradient(circle_at_80%_70%,rgba(6,182,212,0.2)_0%,transparent_50%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(125,211,252,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(125,211,252,0.07)_1px,transparent_1px)] bg-[size:44px_44px] opacity-30" />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/22 via-slate-950/45 to-slate-950/78" />
 
-          <div className="relative z-10 flex min-h-[560px] flex-col items-center justify-center px-6 text-center sm:px-10 lg:px-14">
+          <div className="relative z-10 flex min-h-[500px] flex-col items-center justify-center px-5 text-center sm:min-h-[560px] sm:px-10 lg:px-14">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-300/35 bg-cyan-500/10 px-5 py-2.5 backdrop-blur-sm">
               <ShieldCheck className="h-4 w-4 text-cyan-300" />
               <span className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-100">
@@ -413,6 +428,7 @@ export function EnterpriseShaderHero({
                 {primaryCta && (
                   <Link
                     href={primaryCta.href}
+                    onClick={onPrimaryCtaClick}
                     className="mk-btn mk-btn-primary min-h-[48px] justify-center px-8 py-4 text-base sm:text-lg"
                   >
                     {primaryCta.label}
@@ -421,11 +437,42 @@ export function EnterpriseShaderHero({
                 {secondaryCta && (
                   <Link
                     href={secondaryCta.href}
+                    onClick={onSecondaryCtaClick}
                     className="mk-btn mk-btn-secondary min-h-[48px] justify-center px-8 py-4 text-base sm:text-lg"
                   >
                     {secondaryCta.label}
                   </Link>
                 )}
+              </div>
+            )}
+
+            {signalCards && signalCards.length > 0 && (
+              <div className="mt-8 grid w-full max-w-5xl gap-3 sm:grid-cols-3">
+                {signalCards.map((card) => (
+                  <div
+                    key={card.label}
+                    className="rounded-xl border border-cyan-200/10 bg-slate-950/55 px-4 py-3 text-left backdrop-blur-sm"
+                  >
+                    <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">{card.label}</p>
+                    <p className="mt-1 text-base font-semibold text-white">{card.value}</p>
+                    {card.detail ? (
+                      <p className="mt-1 text-xs text-cyan-200/80">{card.detail}</p>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {footerPills && footerPills.length > 0 && (
+              <div className="mt-6 flex w-full max-w-5xl flex-wrap items-center justify-center gap-2">
+                {footerPills.map((pill) => (
+                  <span
+                    key={pill}
+                    className="rounded-full border border-white/15 bg-white/[0.05] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-200"
+                  >
+                    {pill}
+                  </span>
+                ))}
               </div>
             )}
           </div>

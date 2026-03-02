@@ -249,14 +249,14 @@ export function ProfileEditor({
             >
               {removing ? "Removing..." : "Remove photo"}
             </button>
-            <p className="text-[10px] text-slate-500">JPG, PNG, or WebP up to 5MB.</p>
+            <p className="text-xs text-slate-500">JPG, PNG, or WebP up to 5MB.</p>
           </div>
         </div>
 
         <div className="flex-1 space-y-6">
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Full name</label>
+              <label className="text-xs font-black uppercase text-slate-400 tracking-widest">Full name</label>
               <div className="relative">
                 <UserIcon className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <input
@@ -267,7 +267,7 @@ export function ProfileEditor({
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Phone number</label>
+              <label className="text-xs font-black uppercase text-slate-400 tracking-widest">Phone number</label>
               <div className="relative">
                 <Phone className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <input
@@ -281,7 +281,7 @@ export function ProfileEditor({
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Email</label>
+              <label className="text-xs font-black uppercase text-slate-400 tracking-widest">Email</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <input
@@ -290,13 +290,13 @@ export function ProfileEditor({
                   className="w-full rounded-2xl border border-white/10 bg-white/10 py-3 pl-10 pr-4 text-sm font-semibold text-slate-100 focus:outline-white/20"
                 />
               </div>
-              <p className="text-[10px] text-slate-500">
+              <p className="text-xs text-slate-500">
                 Email updates require verification through your auth provider.
               </p>
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Organization name</label>
+              <label className="text-xs font-black uppercase text-slate-400 tracking-widest">Organization name</label>
               <div className="relative">
                 <Building2 className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <input
@@ -307,7 +307,7 @@ export function ProfileEditor({
                 />
               </div>
               {!isAdmin ? (
-                <p className="text-[10px] text-slate-500">Only administrators can update org details.</p>
+                <p className="text-xs text-slate-500">Only administrators can update org details.</p>
               ) : null}
             </div>
           </div>

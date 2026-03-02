@@ -11,7 +11,7 @@ export function ExpiryAlertWidget({ atRiskDocs }: { atRiskDocs: any[] }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3 text-amber-300">
             <AlertCircle className="h-5 w-5" />
-            <h3 className="text-[10px] font-black uppercase tracking-[0.2em]">Expiring Credentials</h3>
+            <h3 className="text-xs font-black uppercase tracking-[0.2em]">Expiring Credentials</h3>
         </div>
         <span className="bg-amber-400/10 text-amber-300 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">
             {atRiskDocs.length} At Risk
@@ -27,7 +27,7 @@ export function ExpiryAlertWidget({ atRiskDocs }: { atRiskDocs: any[] }) {
                 </div>
                 <div>
                     <p className="text-xs font-black text-slate-100">{doc.document_type}</p>
-                    <p className="text-[10px] font-bold text-amber-300 uppercase tracking-tighter mt-0.5">
+                    <p className="text-xs font-bold text-amber-300 uppercase tracking-tighter mt-0.5">
                         Expiring: {new Date(doc.expiry_date).toLocaleDateString()}
                     </p>
                 </div>

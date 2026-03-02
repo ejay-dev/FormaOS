@@ -48,7 +48,7 @@ export function FeatureUsageIndicators() {
           </h3>
         </div>
         {hasHighUsage && (
-          <span className="text-[10px] font-medium text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded-full">
+          <span className="text-xs font-medium text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded-full">
             Nearing limits
           </span>
         )}

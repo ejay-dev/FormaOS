@@ -40,7 +40,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
     title: 'Generating Compliance Reports',
     summary: 'Create audit exports and compliance snapshots.',
     body:
-      'Reports give you a compliance snapshot and audit export packages. Run a gap analysis, resolve blockers, then export to PDF or HTML.',
+      'Reports give you a compliance snapshot and audit export packages. Run a gap analysis, resolve blockers, then export to PDF or JSON.',
     tags: ['reports', 'audit', 'compliance'],
     routes: ['/app/reports'],
   },

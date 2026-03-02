@@ -200,11 +200,11 @@ export default async function ProgressNotesPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="rounded-full border border-white/10 bg-white/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-widest text-slate-300">
+                      <span className="rounded-full border border-white/10 bg-white/10 px-2 py-1 text-xs font-semibold uppercase tracking-widest text-slate-300">
                         {note.status_tag}
                       </span>
                       {note.signed_off_by ? (
-                        <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-2 py-1 text-[10px] font-semibold text-emerald-200">
+                        <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-2 py-1 text-xs font-semibold text-emerald-200">
                           <BadgeCheck className="h-3 w-3" />
                           Signed off
                         </span>

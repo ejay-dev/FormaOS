@@ -23,7 +23,7 @@ export function RiskHeatmap({ data }: RiskHeatmapProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="font-bold text-slate-100">Security Risk Profile</h3>
-        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Live Distribution</span>
+        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Live Distribution</span>
       </div>
 
       {/* Visual Progress Bar */}
@@ -43,7 +43,7 @@ export function RiskHeatmap({ data }: RiskHeatmapProps) {
           <div key={s.label} className="p-3 rounded-xl border border-white/10 bg-white/10">
             <div className="flex items-center gap-2 mb-1">
               <s.icon className={`h-3 w-3 ${s.text}`} />
-              <span className="text-[10px] font-bold text-slate-400 uppercase">{s.count} Assets</span>
+              <span className="text-xs font-bold text-slate-400 uppercase">{s.count} Assets</span>
             </div>
             <p className={`text-xs font-bold ${s.text}`}>{s.label}</p>
           </div>

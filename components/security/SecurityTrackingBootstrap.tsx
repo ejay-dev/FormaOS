@@ -6,6 +6,7 @@ import {
   useActivityTracker,
   useSessionHeartbeat,
 } from '@/lib/hooks/use-session-tracking';
+import { consumeSidebarRouteTransition } from '@/lib/monitoring/route-transition';
 
 const isExplicitlyDisabled = (value: string | undefined): boolean =>
   value === '0' || value?.toLowerCase() === 'false';
@@ -38,6 +39,21 @@ export function SecurityTrackingBootstrap() {
         source: 'security_tracking_bootstrap',
       },
     });
+
+    const sidebarTransition = consumeSidebarRouteTransition(pathname);
+    if (sidebarTransition) {
+      void trackActivity({
+        action: 'route_transition',
+        route: pathname,
+        metadata: {
+          source: 'security_tracking_bootstrap',
+          nav_source: sidebarTransition.navSource,
+          from_route: sidebarTransition.fromRoute,
+          to_route: sidebarTransition.toRoute,
+          duration_ms: sidebarTransition.durationMs,
+        },
+      });
+    }
   }, [enabled, pathname, sendHeartbeat, trackActivity]);
 
   return null;

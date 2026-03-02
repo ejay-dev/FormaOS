@@ -272,11 +272,11 @@ async function createTemporaryTestUser(): Promise<TestUser> {
   try {
     await adminClient.from('org_frameworks').upsert(
       {
-        org_id: orgData.id,
+        organization_id: orgData.id,
         framework_slug: 'soc2',
         enabled_at: nowIso,
       },
-      { onConflict: 'org_id,framework_slug' },
+      { onConflict: 'organization_id,framework_slug' },
     );
   } catch (error) {
     console.warn('[E2E] Failed to seed org_frameworks:', error);

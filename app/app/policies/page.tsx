@@ -174,7 +174,7 @@ export default function PoliciesPage() {
                         </div>
 
                         <div className="flex items-center gap-6">
-                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide ${
+                            <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide ${
                                 policy.status === 'published' 
                                     ? 'bg-emerald-400/15 text-emerald-200' 
                                     : 'bg-amber-400/15 text-amber-200'

@@ -109,7 +109,7 @@ export function FeatureLockBadge({
 
   return (
     <span
-      className={`inline-flex items-center gap-1 text-[10px] font-medium text-amber-300 bg-amber-500/15 px-1.5 py-0.5 rounded-full ${className}`}
+      className={`inline-flex items-center gap-1 text-xs font-medium text-amber-300 bg-amber-500/15 px-1.5 py-0.5 rounded-full ${className}`}
       title="Upgrade to unlock"
     >
       <Lock className="h-2.5 w-2.5" />

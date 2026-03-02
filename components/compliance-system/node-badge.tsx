@@ -106,7 +106,7 @@ const SIZE_CONFIG = {
     icon: 'h-2.5 w-2.5',
   },
   sm: {
-    container: 'px-2 py-0.5 gap-1 text-[10px]',
+    container: 'px-2 py-0.5 gap-1 text-xs',
     icon: 'h-3 w-3',
   },
   md: {

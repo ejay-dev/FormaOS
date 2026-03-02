@@ -503,7 +503,7 @@ function RoadmapStepCard({
 
               {/* Priority Badge */}
               <div
-                className={`rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wider border ${priorityColors[step.priority]}`}
+                className={`rounded px-2 py-1 text-xs font-bold uppercase tracking-wider border ${priorityColors[step.priority]}`}
               >
                 {step.priority}
               </div>

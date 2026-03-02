@@ -539,7 +539,7 @@ export function CommandPalette() {
                       heading="Results"
                       className={cn(
                         '[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-2',
-                        '[&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:font-bold',
+                        '[&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-bold',
                         '[&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-widest',
                         '[&_[cmdk-group-heading]]:text-slate-500',
                       )}
@@ -639,7 +639,7 @@ export function CommandPalette() {
                                 <span className="flex-1 truncate">
                                   {r.title}
                                 </span>
-                                <span className="shrink-0 rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 text-[10px] font-medium text-slate-600">
+                                <span className="shrink-0 rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 text-xs font-medium text-slate-600">
                                   {r.type}
                                 </span>
                                 <ArrowRight className="h-3 w-3 shrink-0 text-slate-600 opacity-0 transition-opacity group-aria-selected:opacity-100" />
@@ -656,7 +656,7 @@ export function CommandPalette() {
                       heading={group.heading}
                       className={cn(
                         '[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-2',
-                        '[&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:font-bold',
+                        '[&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-bold',
                         '[&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-widest',
                         '[&_[cmdk-group-heading]]:text-slate-500',
                       )}
@@ -687,7 +687,7 @@ export function CommandPalette() {
                           </div>
                           <span className="flex-1 truncate">{item.label}</span>
                           {item.shortcut && (
-                            <kbd className="hidden select-none rounded-md border border-white/10 bg-white/[0.04] px-1.5 py-0.5 font-mono text-[10px] text-slate-600 sm:inline-flex">
+                            <kbd className="hidden select-none rounded-md border border-white/10 bg-white/[0.04] px-1.5 py-0.5 font-mono text-xs text-slate-600 sm:inline-flex">
                               {item.shortcut}
                             </kbd>
                           )}
@@ -702,22 +702,22 @@ export function CommandPalette() {
                 <div className="flex items-center justify-between border-t border-white/[0.06] px-4 py-2.5">
                   <div className="flex items-center gap-3 text-[11px] text-slate-600">
                     <span className="flex items-center gap-1">
-                      <kbd className="rounded border border-white/10 bg-white/[0.04] px-1 py-0.5 font-mono text-[10px]">
+                      <kbd className="rounded border border-white/10 bg-white/[0.04] px-1 py-0.5 font-mono text-xs">
                         &uarr;
                       </kbd>
-                      <kbd className="rounded border border-white/10 bg-white/[0.04] px-1 py-0.5 font-mono text-[10px]">
+                      <kbd className="rounded border border-white/10 bg-white/[0.04] px-1 py-0.5 font-mono text-xs">
                         &darr;
                       </kbd>
                       <span className="ml-0.5">Navigate</span>
                     </span>
                     <span className="flex items-center gap-1">
-                      <kbd className="rounded border border-white/10 bg-white/[0.04] px-1 py-0.5 font-mono text-[10px]">
+                      <kbd className="rounded border border-white/10 bg-white/[0.04] px-1 py-0.5 font-mono text-xs">
                         &crarr;
                       </kbd>
                       <span className="ml-0.5">Select</span>
                     </span>
                     <span className="flex items-center gap-1">
-                      <kbd className="rounded border border-white/10 bg-white/[0.04] px-1 py-0.5 font-mono text-[10px]">
+                      <kbd className="rounded border border-white/10 bg-white/[0.04] px-1 py-0.5 font-mono text-xs">
                         Esc
                       </kbd>
                       <span className="ml-0.5">Close</span>

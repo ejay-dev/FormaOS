@@ -98,7 +98,7 @@ export async function analyzeUsage(
     admin
       .from('org_frameworks')
       .select('*', { count: 'exact', head: true })
-      .eq('org_id', orgId),
+      .eq('organization_id', orgId),
     admin
       .from('org_workflows')
       .select('*', { count: 'exact', head: true })

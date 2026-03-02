@@ -33,18 +33,28 @@ function getSeverityColor(severity: string) {
   }
 }
 
-export default async function IncidentsPage() {
-  const supabase = await createSupabaseServerClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/signin");
+export default async function IncidentsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{
+    q?: string;
+    status?: string;
+    severity?: string;
+  }>;
+}) {
+  const params = (await searchParams) ?? {};
+  const q = (params.q ?? "").trim();
+  const qLower = q.toLowerCase();
+  const statusFilter = (params.status ?? "").trim().toLowerCase();
+  const severityFilter = (params.severity ?? "").trim().toLowerCase();
+  const hasFilters =
+    q.length > 0 || statusFilter.length > 0 || severityFilter.length > 0;
 
   const systemState = await fetchSystemState();
   if (!systemState) redirect("/auth/signin");
 
   const { organization } = systemState;
+  const supabase = await createSupabaseServerClient();
 
   // Fetch incidents with client info
   const { data: incidents, error } = await supabase
@@ -79,12 +89,31 @@ export default async function IncidentsPage() {
   }
 
   type Incident = NonNullable<typeof incidents>[number];
+  const incidentRows = (incidents ?? []) as Incident[];
+  const filteredIncidents = incidentRows.filter((incident: Incident) => {
+    if (statusFilter && incident.status.toLowerCase() !== statusFilter) return false;
+    if (severityFilter && incident.severity.toLowerCase() !== severityFilter) return false;
+    if (!qLower) return true;
+
+    const patientName = ((incident.patient as any)?.full_name ?? "").toLowerCase();
+    const description = (incident.description ?? "").toLowerCase();
+    const incidentType = (incident.incident_type ?? "").toLowerCase();
+    const location = (incident.location ?? "").toLowerCase();
+
+    return (
+      patientName.includes(qLower) ||
+      description.includes(qLower) ||
+      incidentType.includes(qLower) ||
+      location.includes(qLower)
+    );
+  });
+
   const stats = {
-    total: incidents?.length ?? 0,
-    open: incidents?.filter((i: Incident) => i.status === "open").length ?? 0,
-    resolved: incidents?.filter((i: Incident) => i.status === "resolved").length ?? 0,
-    critical: incidents?.filter((i: Incident) => i.severity === "critical" || i.severity === "high").length ?? 0,
-    pendingFollowUp: incidents?.filter((i: Incident) => i.follow_up_required && !i.resolved_at).length ?? 0,
+    total: filteredIncidents.length,
+    open: filteredIncidents.filter((i: Incident) => i.status === "open").length,
+    resolved: filteredIncidents.filter((i: Incident) => i.status === "resolved").length,
+    critical: filteredIncidents.filter((i: Incident) => i.severity === "critical" || i.severity === "high").length,
+    pendingFollowUp: filteredIncidents.filter((i: Incident) => i.follow_up_required && !i.resolved_at).length,
   };
 
   return (
@@ -92,21 +121,22 @@ export default async function IncidentsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold" data-testid="incidents-title">
+          <h1 className="text-3xl font-black tracking-tight" data-testid="incidents-title">
             Incidents
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Report, track, and manage incidents
           </p>
         </div>
         <div className="flex gap-2">
-          <button
+          <Link
+            href="/api/incidents/export"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors"
             data-testid="export-incidents-btn"
           >
             <Download className="h-4 w-4" />
             Export CSV
-          </button>
+          </Link>
           <Link
             href="/app/incidents/new"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
@@ -168,20 +198,53 @@ export default async function IncidentsPage() {
       </div>
 
       {/* Search and Filter */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <form method="GET" className="flex flex-col lg:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
+            name="q"
+            defaultValue={q}
             placeholder="Search incidents..."
             className="w-full pl-10 pr-4 py-2 rounded-lg border border-input bg-background"
           />
         </div>
-        <button className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors">
+        <select
+          name="status"
+          defaultValue={statusFilter}
+          className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+        >
+          <option value="">All status</option>
+          <option value="open">Open</option>
+          <option value="resolved">Resolved</option>
+        </select>
+        <select
+          name="severity"
+          defaultValue={severityFilter}
+          className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+        >
+          <option value="">All severity</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+          <option value="critical">Critical</option>
+        </select>
+        <button
+          type="submit"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors"
+        >
           <Filter className="h-4 w-4" />
-          Filter
+          Apply
         </button>
-      </div>
+        {hasFilters ? (
+          <Link
+            href="/app/incidents"
+            className="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-transparent text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Clear
+          </Link>
+        ) : null}
+      </form>
 
       {/* Table */}
       <div className="rounded-xl border border-border overflow-hidden">
@@ -198,7 +261,7 @@ export default async function IncidentsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {incidents?.map((incident: Incident) => (
+            {filteredIncidents.map((incident: Incident) => (
               <tr key={incident.id} className="hover:bg-muted/30 transition-colors">
                 <td className="px-4 py-3">
                   <span
@@ -257,12 +320,26 @@ export default async function IncidentsPage() {
                 </td>
               </tr>
             ))}
-            {(!incidents || incidents.length === 0) && (
+            {filteredIncidents.length === 0 && (
               <tr>
                 <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">
                   <AlertTriangle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>No incidents reported</p>
-                  <p className="text-sm mt-1">Incidents will appear here when reported</p>
+                  {hasFilters ? (
+                    <>
+                      <p>No incidents matched your filters</p>
+                      <Link
+                        href="/app/incidents"
+                        className="text-primary hover:underline mt-2 inline-block"
+                      >
+                        Clear filters
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <p>No incidents reported</p>
+                      <p className="text-sm mt-1">Incidents will appear here when reported</p>
+                    </>
+                  )}
                 </td>
               </tr>
             )}

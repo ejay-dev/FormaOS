@@ -28,7 +28,7 @@ interface DashboardLayoutProps {
  * Main unified dashboard layout
  */
 export function UnifiedDashboardLayout({ children }: DashboardLayoutProps) {
-  return <div className="space-y-8">{children}</div>;
+  return <div className="space-y-6 sm:space-y-8">{children}</div>;
 }
 
 /**
@@ -49,7 +49,7 @@ export function DashboardSectionCard({
 }) {
   return (
     <div
-      className={`rounded-xl border p-6 transition-all ${
+      className={`rounded-xl border p-4 sm:p-6 transition-all ${
         locked
           ? 'border-slate-700/50 bg-slate-900/30 opacity-50'
           : 'border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20'
@@ -57,8 +57,8 @@ export function DashboardSectionCard({
     >
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h3 className="text-lg font-semibold">{title}</h3>
-          <p className="text-sm text-slate-400">{description}</p>
+          <h3 className="text-base sm:text-lg font-semibold">{title}</h3>
+          <p className="text-xs sm:text-sm text-slate-400">{description}</p>
         </div>
         <Icon
           className={`h-6 w-6 ${locked ? 'text-slate-500' : 'text-white'}`}

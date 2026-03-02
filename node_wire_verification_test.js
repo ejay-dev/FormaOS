@@ -2,107 +2,202 @@
 
 /**
  * FORMAOS Node & Wire System Verification Test
- * Ensures all user journey nodes are connected and functional
- *
- * Tests:
- * 1. Public website node connectivity
- * 2. Authentication flow wire integrity
- * 3. App/dashboard node access
- * 4. Admin console wire verification
- * 5. API endpoint connectivity
- * 6. Database relationship integrity
+ * Performs concrete local verification of route wiring and optional DB checks.
  */
 
 const fs = require('fs');
 const path = require('path');
+const { createClient } = require('@supabase/supabase-js');
 
-// Read .env.local manually
-const envPath = path.join(__dirname, '.env.local');
-const envContent = fs.readFileSync(envPath, 'utf8');
-const envVars = {};
+const APP_DIR = path.join(__dirname, 'app');
+const MIDDLEWARE_PATH = path.join(__dirname, 'middleware.ts');
+const ENV_PATH = path.join(__dirname, '.env.local');
 
-envContent.split('\n').forEach((line) => {
-  const match = line.match(/^([^=]+)=(.*)$/);
-  if (match) {
+function readEnvFile() {
+  if (!fs.existsSync(ENV_PATH)) return {};
+  const envContent = fs.readFileSync(ENV_PATH, 'utf8');
+  const envVars = {};
+
+  envContent.split('\n').forEach((line) => {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) return;
+    const match = trimmed.match(/^([^=]+)=(.*)$/);
+    if (!match) return;
+
     const key = match[1].trim();
     let value = match[2].trim();
+    const commentIndex = value.indexOf(' #');
+    if (commentIndex !== -1) {
+      value = value.slice(0, commentIndex).trim();
+    }
+
     if (
       (value.startsWith('"') && value.endsWith('"')) ||
       (value.startsWith("'") && value.endsWith("'"))
     ) {
       value = value.slice(1, -1);
     }
+
     envVars[key] = value;
-  }
-});
+  });
 
-const { createClient } = require('@supabase/supabase-js');
-
-const SUPABASE_URL = envVars.NEXT_PUBLIC_SUPABASE_URL;
-const SERVICE_ROLE_KEY = envVars.SUPABASE_SERVICE_ROLE_KEY;
-
-if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
-  console.error('❌ Missing Supabase credentials');
-  process.exit(1);
+  return envVars;
 }
 
-const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
-  auth: { autoRefreshToken: false, persistSession: false },
-});
+function isPlaceholder(value) {
+  if (!value) return true;
+  const normalized = String(value).toLowerCase();
+  return (
+    normalized.includes('your-project') ||
+    normalized.includes('placeholder') ||
+    normalized.includes('changeme') ||
+    normalized.includes('example.com') ||
+    normalized.startsWith('<')
+  );
+}
 
-// ============================================================================
-// TEST 1: Public Website Node Connectivity
-// ============================================================================
+function isValidSupabaseConfig(url, key) {
+  if (!url || !key) return false;
+  if (isPlaceholder(url) || isPlaceholder(key)) return false;
+
+  try {
+    const parsed = new URL(url);
+    return parsed.hostname.endsWith('.supabase.co');
+  } catch {
+    return false;
+  }
+}
+
+function toPosix(filePath) {
+  return filePath.split(path.sep).join('/');
+}
+
+function walkFiles(dir, out = []) {
+  if (!fs.existsSync(dir)) return out;
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      walkFiles(fullPath, out);
+    } else {
+      out.push(fullPath);
+    }
+  }
+
+  return out;
+}
+
+function isRouteFile(filePath) {
+  const base = path.basename(filePath);
+  return /^page\.(ts|tsx|js|jsx)$/.test(base) || /^route\.(ts|tsx|js|jsx)$/.test(base);
+}
+
+function segmentRegex(segment) {
+  if (segment.startsWith('@')) {
+    return null;
+  }
+
+  if (segment.startsWith('(') && segment.endsWith(')')) {
+    return null;
+  }
+
+  if (/^\[\[\.\.\..+\]\]$/.test(segment)) {
+    return '(?:/.+)?';
+  }
+
+  if (/^\[\.\.\..+\]$/.test(segment)) {
+    return '/.+';
+  }
+
+  if (/^\[.+\]$/.test(segment)) {
+    return '/[^/]+';
+  }
+
+  return `/${segment.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`;
+}
+
+function routePatternFromFile(filePath) {
+  const rel = toPosix(path.relative(APP_DIR, filePath));
+  const dir = path.dirname(rel);
+  const segments = dir === '.' ? [] : dir.split('/');
+
+  let pattern = '^';
+  for (const segment of segments) {
+    const part = segmentRegex(segment);
+    if (part === null) continue;
+    pattern += part;
+  }
+
+  if (pattern === '^') {
+    pattern += '/';
+  }
+
+  pattern += '/?$';
+
+  const kind = path.basename(filePath).startsWith('route.') ? 'route' : 'page';
+
+  return {
+    filePath,
+    kind,
+    regex: new RegExp(pattern),
+  };
+}
+
+const routePatterns = walkFiles(APP_DIR)
+  .filter(isRouteFile)
+  .map(routePatternFromFile);
+
+function routeExists(urlPath, kind = 'any') {
+  const normalized = urlPath.replace(/\/+$/, '') || '/';
+
+  return routePatterns.some((route) => {
+    if (kind !== 'any' && route.kind !== kind) return false;
+    return route.regex.test(normalized);
+  });
+}
+
+function assertRoute(urlPath, label, kind = 'any') {
+  if (!routeExists(urlPath, kind)) {
+    throw new Error(`${label} missing: ${urlPath}`);
+  }
+  console.log(`   ✅ ${label}: ${urlPath}`);
+}
+
+function assertMiddlewareMatcher(paths) {
+  if (!fs.existsSync(MIDDLEWARE_PATH)) {
+    throw new Error('middleware.ts missing');
+  }
+
+  const content = fs.readFileSync(MIDDLEWARE_PATH, 'utf8');
+  for (const matcher of paths) {
+    if (!content.includes(`'${matcher}'`) && !content.includes(`\"${matcher}\"`)) {
+      throw new Error(`middleware matcher missing: ${matcher}`);
+    }
+    console.log(`   ✅ Middleware matcher: ${matcher}`);
+  }
+}
 
 async function test1_PublicWebsiteNodes() {
   console.log('\n' + '='.repeat(70));
   console.log('TEST 1: Public Website Node Connectivity');
   console.log('='.repeat(70));
 
-  const nodes = [
-    { name: 'Home (/)', path: '/', expected: 'FormaOS' },
-    { name: 'Product (/product)', path: '/product', expected: 'Product' },
-    {
-      name: 'Industries (/industries)',
-      path: '/industries',
-      expected: 'Industries',
-    },
-    { name: 'Security (/security)', path: '/security', expected: 'Security' },
-    { name: 'Pricing (/pricing)', path: '/pricing', expected: 'Pricing' },
-    { name: 'Contact (/contact)', path: '/contact', expected: 'Contact' },
-    { name: 'FAQ (/faq)', path: '/faq', expected: 'FAQ' },
-    { name: 'Blog (/blog)', path: '/blog', expected: 'Blog' },
-    { name: 'Docs (/docs)', path: '/docs', expected: 'Docs' },
-  ];
+  const nodes = ['/', '/product', '/industries', '/security', '/pricing', '/contact', '/faq', '/blog', '/docs'];
 
   console.log('\n🔗 Testing public website node connectivity...');
-
   for (const node of nodes) {
-    try {
-      // Simulate route existence check (in real test, would make HTTP request)
-      console.log(`   ✅ Node "${node.name}" - Route exists`);
-    } catch (error) {
-      console.log(`   ❌ Node "${node.name}" - Route failed: ${error.message}`);
-      throw error;
-    }
+    assertRoute(node, 'Public route', 'page');
   }
 
-  console.log('\n✅ TEST 1 PASSED: All public website nodes connected');
-  return true;
+  console.log('\n✅ TEST 1 PASSED: Public website routes verified on disk');
 }
-
-// ============================================================================
-// TEST 2: Authentication Flow Wire Integrity
-// ============================================================================
 
 async function test2_AuthenticationWires() {
   console.log('\n' + '='.repeat(70));
   console.log('TEST 2: Authentication Flow Wire Integrity');
   console.log('='.repeat(70));
 
-  console.log('\n🔗 Testing authentication wire connections...');
-
-  // Test auth routes exist
   const authRoutes = [
     '/auth/signin',
     '/auth/signup',
@@ -111,63 +206,37 @@ async function test2_AuthenticationWires() {
     '/auth/reset-password',
   ];
 
+  console.log('\n🔗 Testing authentication route wires...');
   for (const route of authRoutes) {
-    console.log(`   ✅ Wire "${route}" - Route exists`);
+    const kind = route === '/auth/callback' ? 'any' : 'page';
+    assertRoute(route, 'Auth route', kind);
   }
 
-  // Test middleware guards
-  console.log('\n🛡️  Testing middleware wire guards...');
-  console.log('   ✅ Auth middleware - Guards /app/* routes');
-  console.log('   ✅ Admin middleware - Guards /admin/* routes');
-  console.log('   ✅ API middleware - Guards /api/* routes');
+  console.log('\n🛡️  Testing middleware guard wiring...');
+  assertMiddlewareMatcher(['/app/:path*', '/admin/:path*', '/auth/:path*']);
 
-  console.log('\n✅ TEST 2 PASSED: Authentication wires intact');
-  return true;
+  console.log('\n✅ TEST 2 PASSED: Authentication routes and middleware matchers verified');
 }
-
-// ============================================================================
-// TEST 3: App/Dashboard Node Access
-// ============================================================================
 
 async function test3_AppDashboardNodes() {
   console.log('\n' + '='.repeat(70));
   console.log('TEST 3: App/Dashboard Node Access');
   console.log('='.repeat(70));
 
-  console.log('\n🔗 Testing app/dashboard node connections...');
+  const appNodes = ['/app', '/app/dashboard', '/app/workflows', '/app/audit', '/app/billing', '/app/settings'];
 
-  const appNodes = [
-    '/app',
-    '/app/dashboard',
-    '/app/workflows',
-    '/app/audit',
-    '/app/billing',
-    '/app/settings',
-  ];
-
+  console.log('\n🔗 Testing app/dashboard route wiring...');
   for (const node of appNodes) {
-    console.log(`   ✅ Node "${node}" - Protected route exists`);
+    assertRoute(node, 'App route', 'page');
   }
 
-  console.log('\n🔐 Testing role-based access wires...');
-  console.log('   ✅ Owner role - Full access to all app nodes');
-  console.log('   ✅ Member role - Limited access based on permissions');
-  console.log('   ✅ Trial restrictions - Feature gating active');
-
-  console.log('\n✅ TEST 3 PASSED: App/dashboard nodes accessible');
-  return true;
+  console.log('\n✅ TEST 3 PASSED: App/dashboard routes verified on disk');
 }
-
-// ============================================================================
-// TEST 4: Admin Console Wire Verification
-// ============================================================================
 
 async function test4_AdminConsoleWires() {
   console.log('\n' + '='.repeat(70));
   console.log('TEST 4: Admin Console Wire Verification');
   console.log('='.repeat(70));
-
-  console.log('\n🔗 Testing admin console wire connections...');
 
   const adminNodes = [
     '/admin',
@@ -181,279 +250,163 @@ async function test4_AdminConsoleWires() {
     '/admin/trials',
   ];
 
+  console.log('\n🔗 Testing admin route wiring...');
   for (const node of adminNodes) {
-    console.log(`   ✅ Node "${node}" - Admin route exists`);
+    assertRoute(node, 'Admin route', 'page');
   }
 
-  console.log('\n👑 Testing founder access wires...');
-  console.log('   ✅ Founder role - Access to all admin nodes');
-  console.log('   ✅ Non-founder - Redirected from admin routes');
-  console.log('   ✅ Admin API endpoints - Protected by service role');
-
-  console.log('\n✅ TEST 4 PASSED: Admin console wires verified');
-  return true;
+  console.log('\n✅ TEST 4 PASSED: Admin console routes verified on disk');
 }
-
-// ============================================================================
-// TEST 5: API Endpoint Connectivity
-// ============================================================================
 
 async function test5_APIEndpointConnectivity() {
   console.log('\n' + '='.repeat(70));
   console.log('TEST 5: API Endpoint Connectivity');
   console.log('='.repeat(70));
 
-  console.log('\n🔗 Testing API endpoint wire connections...');
-
   const apiEndpoints = [
-    'GET /api/v1/tasks',
-    'GET /api/v1/evidence',
-    'GET /api/v1/compliance',
-    'GET /api/v1/audit-logs',
-    'POST /api/admin/features',
-    'POST /api/admin/trials',
-    'GET /api/admin/dashboard',
+    '/api/v1/tasks',
+    '/api/v1/evidence',
+    '/api/v1/compliance',
+    '/api/v1/audit-logs',
+    '/api/admin/features',
+    '/api/admin/trials',
+    '/api/admin/overview',
   ];
 
+  console.log('\n🔗 Testing API endpoint route wiring...');
   for (const endpoint of apiEndpoints) {
-    console.log(`   ✅ Endpoint "${endpoint}" - API route exists`);
+    assertRoute(endpoint, 'API endpoint', 'route');
   }
 
-  console.log('\n🔒 Testing API security wires...');
-  console.log('   ✅ Public endpoints - Rate limited');
-  console.log('   ✅ Protected endpoints - Auth required');
-  console.log('   ✅ Admin endpoints - Founder required');
-  console.log('   ✅ CORS configured - Cross-origin requests allowed');
-
-  console.log('\n✅ TEST 5 PASSED: API endpoints connected');
-  return true;
+  console.log('\n✅ TEST 5 PASSED: API endpoint route files verified on disk');
 }
 
-// ============================================================================
-// TEST 6: Database Relationship Integrity
-// ============================================================================
-
-async function test6_DatabaseRelationships() {
+async function test6_DatabaseRelationships(envVars) {
   console.log('\n' + '='.repeat(70));
   console.log('TEST 6: Database Relationship Integrity');
   console.log('='.repeat(70));
 
-  console.log('\n🗄️  Testing database relationship wires...');
+  const supabaseUrl = envVars.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = envVars.SUPABASE_SERVICE_ROLE_KEY;
 
-  try {
-    // Test core table relationships
-    const tables = [
-      'organizations',
-      'org_members',
-      'org_subscriptions',
-      'org_entitlements',
-      'plans',
-    ];
-
-    for (const table of tables) {
-      const { data, error } = await supabase.from(table).select('*').limit(1);
-
-      if (error) {
-        throw new Error(`Table ${table} query failed: ${error.message}`);
-      }
-
-      console.log(`   ✅ Table "${table}" - Accessible and has data structure`);
-    }
-
-    // Test foreign key relationships
-    console.log('\n🔗 Testing foreign key wire connections...');
-    console.log('   ✅ org_members.organization_id → organizations.id');
-    console.log('   ✅ org_subscriptions.organization_id → organizations.id');
-    console.log('   ✅ org_entitlements.organization_id → organizations.id');
-    console.log('   ✅ org_members.user_id → auth.users.id');
-
-    // Test RLS policies
-    console.log('\n🛡️  Testing RLS policy wires...');
-    console.log('   ✅ Organizations - RLS enabled');
-    console.log('   ✅ Org members - RLS enabled');
-    console.log('   ✅ Subscriptions - RLS enabled');
-    console.log('   ✅ Entitlements - RLS enabled');
-
-    console.log('\n✅ TEST 6 PASSED: Database relationships intact');
-    return true;
-  } catch (error) {
-    console.error('\n❌ TEST 6 FAILED:', error.message);
-    throw error;
+  if (!isValidSupabaseConfig(supabaseUrl, serviceRoleKey)) {
+    console.log('\n⚠️  Skipping DB test: missing/placeholder Supabase credentials in .env.local');
+    return 'skipped';
   }
-}
 
-// ============================================================================
-// TEST 7: User Journey Flow Verification
-// ============================================================================
+  const supabase = createClient(supabaseUrl, serviceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+
+  const tables = ['organizations', 'org_members', 'org_subscriptions', 'org_entitlements', 'plans'];
+
+  console.log('\n🗄️  Testing database table accessibility...');
+  for (const table of tables) {
+    const { error } = await supabase.from(table).select('*').limit(1);
+    if (error) {
+      throw new Error(`Table ${table} query failed: ${error.message}`);
+    }
+    console.log(`   ✅ Table accessible: ${table}`);
+  }
+
+  console.log('\n✅ TEST 6 PASSED: Database relationships base checks verified');
+  return 'passed';
+}
 
 async function test7_UserJourneyFlows() {
   console.log('\n' + '='.repeat(70));
   console.log('TEST 7: User Journey Flow Verification');
   console.log('='.repeat(70));
 
-  console.log('\n🚶 Testing complete user journey wire flows...');
-
-  const journeys = [
-    {
-      name: 'Public → Auth → Trial → App',
-      steps: [
-        'Visit / (public)',
-        'Click "Start Free Trial"',
-        'Redirect to /auth/signup',
-        'Complete signup',
-        'Redirect to /onboarding',
-        'Complete onboarding',
-        'Access /app with trial',
-      ],
-    },
-    {
-      name: 'Pricing → Payment → Pro Access',
-      steps: [
-        'Visit /pricing',
-        'Click "Upgrade to Pro"',
-        'Redirect to Stripe checkout',
-        'Complete payment',
-        'Redirect to /app',
-        'Access Pro features',
-      ],
-    },
-    {
-      name: 'Admin Console Access',
-      steps: [
-        'Login as founder',
-        'Access /admin',
-        'Navigate admin panels',
-        'Modify system settings',
-        'View audit logs',
-      ],
-    },
+  const checkpoints = [
+    '/',
+    '/auth/signup',
+    '/onboarding',
+    '/app',
+    '/pricing',
+    '/admin',
+    '/api/billing/webhook',
   ];
 
-  for (const journey of journeys) {
-    console.log(`\n📍 Journey: ${journey.name}`);
-    for (const step of journey.steps) {
-      console.log(`   ✅ ${step}`);
-    }
+  console.log('\n🚶 Testing route checkpoints for core journeys...');
+  for (const checkpoint of checkpoints) {
+    const kind = checkpoint.startsWith('/api/') ? 'route' : 'page';
+    assertRoute(checkpoint, 'Journey checkpoint', kind);
   }
 
-  console.log('\n🔄 Testing circular redirect prevention...');
-  console.log('   ✅ No redirect loops detected');
-  console.log('   ✅ All flows reach intended endpoints');
+  console.log('\n🔄 Verifying middleware loop guard code path exists...');
+  const content = fs.readFileSync(MIDDLEWARE_PATH, 'utf8');
+  if (!content.includes('loop guard triggered')) {
+    throw new Error('Middleware loop guard log marker missing');
+  }
+  console.log('   ✅ Middleware loop guard marker found');
 
-  console.log('\n✅ TEST 7 PASSED: User journey flows verified');
-  return true;
+  console.log('\n✅ TEST 7 PASSED: Journey checkpoints and loop guard wiring verified');
 }
-
-// ============================================================================
-// Main Test Runner
-// ============================================================================
 
 async function runAllTests() {
   console.log('\n');
   console.log('╔' + '═'.repeat(68) + '╗');
-  console.log(
-    '║' +
-      ' '.repeat(15) +
-      'FORMAOS Node & Wire Verification' +
-      ' '.repeat(15) +
-      '║',
-  );
+  console.log('║' + ' '.repeat(15) + 'FORMAOS Node & Wire Verification' + ' '.repeat(15) + '║');
   console.log('║' + ' '.repeat(68) + '║');
-  console.log(
-    '║ Ensuring all system nodes are connected and wires are intact' +
-      ' '.repeat(4) +
-      '║',
-  );
+  console.log('║ Concrete route + middleware + optional DB wiring verification' + ' '.repeat(8) + '║');
   console.log('╚' + '═'.repeat(68) + '╝\n');
 
-  const results = {
-    test1: { status: 'pending', error: null },
-    test2: { status: 'pending', error: null },
-    test3: { status: 'pending', error: null },
-    test4: { status: 'pending', error: null },
-    test5: { status: 'pending', error: null },
-    test6: { status: 'pending', error: null },
-    test7: { status: 'pending', error: null },
-  };
+  const envVars = readEnvFile();
+  const tests = [
+    ['test1', test1_PublicWebsiteNodes],
+    ['test2', test2_AuthenticationWires],
+    ['test3', test3_AppDashboardNodes],
+    ['test4', test4_AdminConsoleWires],
+    ['test5', test5_APIEndpointConnectivity],
+    ['test6', () => test6_DatabaseRelationships(envVars)],
+    ['test7', test7_UserJourneyFlows],
+  ];
 
-  try {
-    // Test 1
-    await test1_PublicWebsiteNodes();
-    results.test1.status = 'passed';
+  const results = {};
 
-    // Test 2
-    await test2_AuthenticationWires();
-    results.test2.status = 'passed';
-
-    // Test 3
-    await test3_AppDashboardNodes();
-    results.test3.status = 'passed';
-
-    // Test 4
-    await test4_AdminConsoleWires();
-    results.test4.status = 'passed';
-
-    // Test 5
-    await test5_APIEndpointConnectivity();
-    results.test5.status = 'passed';
-
-    // Test 6
-    await test6_DatabaseRelationships();
-    results.test6.status = 'passed';
-
-    // Test 7
-    await test7_UserJourneyFlows();
-    results.test7.status = 'passed';
-  } catch (error) {
-    console.error('\n❌ Test suite failed:', error.message);
-    results.test1.error = error.message;
+  for (const [id, testFn] of tests) {
+    try {
+      const status = await testFn();
+      results[id] = status === 'skipped' ? 'skipped' : 'passed';
+    } catch (error) {
+      console.error(`\n❌ ${id.toUpperCase()} FAILED: ${error.message}`);
+      results[id] = 'failed';
+    }
   }
 
-  // Summary
   console.log('\n' + '='.repeat(70));
   console.log('NODE & WIRE VERIFICATION SUMMARY');
   console.log('='.repeat(70));
 
-  const passed = Object.values(results).filter(
-    (r) => r.status === 'passed',
-  ).length;
-  const failed = Object.values(results).filter(
-    (r) => r.status === 'failed',
-  ).length;
+  const ordered = [
+    ['Test 1 - Public Website Nodes', 'test1'],
+    ['Test 2 - Authentication Wires', 'test2'],
+    ['Test 3 - App/Dashboard Nodes', 'test3'],
+    ['Test 4 - Admin Console Wires', 'test4'],
+    ['Test 5 - API Endpoints', 'test5'],
+    ['Test 6 - Database Relationships', 'test6'],
+    ['Test 7 - User Journey Flows', 'test7'],
+  ];
 
-  console.log(
-    `\nTest 1 - Public Website Nodes:     ${results.test1.status.toUpperCase()}`,
-  );
-  console.log(
-    `Test 2 - Authentication Wires:     ${results.test2.status.toUpperCase()}`,
-  );
-  console.log(
-    `Test 3 - App/Dashboard Nodes:      ${results.test3.status.toUpperCase()}`,
-  );
-  console.log(
-    `Test 4 - Admin Console Wires:      ${results.test4.status.toUpperCase()}`,
-  );
-  console.log(
-    `Test 5 - API Endpoints:            ${results.test5.status.toUpperCase()}`,
-  );
-  console.log(
-    `Test 6 - Database Relationships:   ${results.test6.status.toUpperCase()}`,
-  );
-  console.log(
-    `Test 7 - User Journey Flows:       ${results.test7.status.toUpperCase()}`,
-  );
+  ordered.forEach(([label, id]) => {
+    const status = (results[id] || 'failed').toUpperCase();
+    console.log(`${label.padEnd(36)} ${status}`);
+  });
 
-  console.log(`\n📊 Results: ${passed}/7 passed, ${failed}/7 failed`);
+  const passed = Object.values(results).filter((s) => s === 'passed').length;
+  const failed = Object.values(results).filter((s) => s === 'failed').length;
+  const skipped = Object.values(results).filter((s) => s === 'skipped').length;
 
-  if (passed === 7) {
-    console.log('\n✅ ALL NODE & WIRE TESTS PASSED!');
-    console.log('🎉 FORMAOS system is fully connected and production-ready!\n');
-    process.exit(0);
-  } else {
-    console.log('\n❌ Some tests failed. Check wire connections above.\n');
+  console.log(`\n📊 Results: ${passed} passed, ${failed} failed, ${skipped} skipped`);
+
+  if (failed > 0) {
+    console.log('\n❌ Node/wire verification failed. Review failing checks above.\n');
     process.exit(1);
   }
+
+  console.log('\n✅ Node/wire verification completed successfully.\n');
+  process.exit(0);
 }
 
-// Run tests
 runAllTests();

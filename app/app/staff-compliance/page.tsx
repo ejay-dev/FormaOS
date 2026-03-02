@@ -58,18 +58,12 @@ const CREDENTIAL_TYPES = {
 };
 
 export default async function StaffCompliancePage() {
-  const supabase = await createSupabaseServerClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/signin");
-
   const systemState = await fetchSystemState();
   if (!systemState) redirect("/auth/signin");
 
   const { organization } = systemState;
   const label = getCredentialLabel(organization.industry);
+  const supabase = await createSupabaseServerClient();
 
   // Fetch staff credentials
   const { data: credentials, error } = await supabase
@@ -116,35 +110,26 @@ export default async function StaffCompliancePage() {
     }).length ?? 0,
   };
 
-  // Group by staff member
-  const staffMap = new Map<string, typeof credentials>();
-  credentials?.forEach((cred: Credential) => {
-    const staffEmail = (cred.staff as any)?.email || "unknown";
-    if (!staffMap.has(staffEmail)) {
-      staffMap.set(staffEmail, []);
-    }
-    staffMap.get(staffEmail)!.push(cred);
-  });
-
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold" data-testid="staff-compliance-title">
+          <h1 className="text-3xl font-black tracking-tight" data-testid="staff-compliance-title">
             {label}
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Track staff qualifications, checks, and expiry dates
           </p>
         </div>
         <div className="flex gap-2">
-          <button
+          <Link
+            href="/api/staff-credentials/export"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors"
           >
             <Download className="h-4 w-4" />
             Export
-          </button>
+          </Link>
           <Link
             href="/app/staff-compliance/new"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"

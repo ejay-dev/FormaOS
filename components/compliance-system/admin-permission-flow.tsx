@@ -141,7 +141,7 @@ function RoleCard({
         <div className="absolute -top-2 left-4">
           <div
             className={cn(
-              'px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider',
+              'px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider',
               `bg-${config.color}-500/20 text-${config.color}-300 border border-${config.color}-400/30`,
             )}
           >
@@ -248,7 +248,7 @@ function PermissionMatrix({
                 >
                   {label.name}
                 </p>
-                <p className="text-[10px] text-slate-500">
+                <p className="text-xs text-slate-500">
                   {label.description}
                 </p>
               </div>

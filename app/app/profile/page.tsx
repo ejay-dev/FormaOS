@@ -78,7 +78,7 @@ export default async function EmployeeProfilePage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Personal Governance Card */}
         <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-[2.5rem] p-10 shadow-sm space-y-10">
-            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Organizational Record</h3>
+            <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Organizational Record</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <div className="flex items-start gap-4">
@@ -86,7 +86,7 @@ export default async function EmployeeProfilePage() {
                         <Briefcase className="h-5 w-5" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Department</span>
+                        <span className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Department</span>
                         <span className="text-sm font-black text-slate-100">{profile.department || "Unassigned Operations"}</span>
                     </div>
                 </div>
@@ -96,7 +96,7 @@ export default async function EmployeeProfilePage() {
                         <Calendar className="h-5 w-5" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Official Start Date</span>
+                        <span className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Official Start Date</span>
                         <span className="text-sm font-black text-slate-100">
                             {profile.start_date ? new Date(profile.start_date).toLocaleDateString(undefined, { dateStyle: 'long' }) : "Pending Verification"}
                         </span>
@@ -108,7 +108,7 @@ export default async function EmployeeProfilePage() {
                         <Clock className="h-5 w-5" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Access Tier</span>
+                        <span className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Access Tier</span>
                         <span className="text-sm font-black text-slate-100 capitalize tracking-tight">{profile.role} Permissions</span>
                     </div>
                 </div>
@@ -118,7 +118,7 @@ export default async function EmployeeProfilePage() {
                         <FileText className="h-5 w-5" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Employee ID</span>
+                        <span className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Employee ID</span>
                         <span className="text-sm font-mono font-bold text-slate-100">USR-{profile.user_id.slice(0, 8).toUpperCase()}</span>
                     </div>
                 </div>
@@ -128,12 +128,12 @@ export default async function EmployeeProfilePage() {
         {/* Phase 2 Teaser: Quick Summary */}
         <div className="bg-white/10 rounded-[2.5rem] p-10 text-slate-100 space-y-8 shadow-2xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16" />
-            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Credential Integrity</h3>
+            <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Credential Integrity</h3>
             <p className="text-xs text-slate-400 leading-relaxed font-bold uppercase tracking-widest">
                 All professional licenses and identity documents are securely managed by the organization's central vault.
             </p>
             <div className="pt-8 border-t border-white/10 space-y-4">
-                 <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest">
+                 <div className="flex items-center justify-between text-xs font-black uppercase tracking-widest">
                     <span className="text-slate-400">Document Status</span>
                     <span className="text-emerald-500">Audit Ready</span>
                  </div>

@@ -102,7 +102,7 @@ async function resolveFrameworksForOrganization(
   const { data: frameworkRows } = await admin
     .from('org_frameworks')
     .select('framework_slug')
-    .eq('org_id', organizationId)
+    .eq('organization_id', organizationId)
     .limit(100);
 
   const fallbackFrameworks = normalizeFrameworks(

@@ -79,11 +79,11 @@ export function ArtifactSidebar({
       {/* SECTION 1: LINKED EVIDENCE */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+          <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
             <LinkIcon className="h-3 w-3 text-violet-400" />
             <span>Linked Evidence</span>
           </h3>
-          <span className="px-2 py-0.5 bg-violet-400/10 text-violet-300 rounded text-[10px] font-bold border border-violet-400/30 min-w-[20px] text-center">
+          <span className="px-2 py-0.5 bg-violet-400/10 text-violet-300 rounded text-xs font-bold border border-violet-400/30 min-w-[20px] text-center">
             {(linkedArtifacts || []).length}
           </span>
         </div>
@@ -92,7 +92,7 @@ export function ArtifactSidebar({
           {(linkedArtifacts || []).length === 0 ? (
             <div className="p-6 border-2 border-dashed border-violet-400/20 rounded-2xl text-center bg-violet-400/5">
               <Paperclip className="h-5 w-5 text-violet-400/50 mx-auto mb-2" />
-              <p className="text-[10px] text-violet-300/70 font-bold uppercase">
+              <p className="text-xs text-violet-300/70 font-bold uppercase">
                 No Evidence Linked
               </p>
               <p className="text-[9px] text-slate-400 mt-1">
@@ -137,7 +137,7 @@ export function ArtifactSidebar({
       {!readOnly && (
         <div className="pt-6 border-t border-white/10 space-y-4">
           <div className="flex items-center justify-between">
-            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+            <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">
               Vault Browser
             </h4>
             <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
@@ -147,7 +147,7 @@ export function ArtifactSidebar({
 
           <div className="max-h-[240px] overflow-y-auto space-y-2 pr-1 custom-scrollbar">
             {availableItems.length === 0 ? (
-              <p className="text-[10px] text-slate-400 italic py-2">
+              <p className="text-xs text-slate-400 italic py-2">
                 No unlinked items found in Vault.
               </p>
             ) : (
@@ -200,11 +200,11 @@ export function ArtifactSidebar({
         <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -mr-12 -mt-12" />
         <div className="flex items-center gap-2 mb-3 relative z-10">
           <ShieldCheck className="h-4 w-4 text-emerald-400" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-emerald-200">
+          <span className="text-xs font-black uppercase tracking-widest text-emerald-200">
             Graph Defensibility
           </span>
         </div>
-        <p className="text-[10px] text-white/70 leading-relaxed relative z-10">
+        <p className="text-xs text-white/70 leading-relaxed relative z-10">
           Each linked artifact creates a wire in your compliance graph. Auditors trace these connections to verify implementation.
         </p>
       </div>

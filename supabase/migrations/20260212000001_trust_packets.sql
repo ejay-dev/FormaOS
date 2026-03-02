@@ -32,7 +32,7 @@ CREATE POLICY "Org admins can manage trust packets"
   USING (
     EXISTS (
       SELECT 1 FROM org_members
-      WHERE org_members.org_id = trust_packets.org_id
+      WHERE org_members.organization_id = trust_packets.org_id
         AND org_members.user_id = auth.uid()
         AND org_members.role IN ('owner', 'admin')
     )

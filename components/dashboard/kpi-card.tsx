@@ -102,7 +102,7 @@ export function KPICard({
         {status && (
           <span
             className={clsx(
-              "text-[10px] font-bold px-2 py-1 rounded-full border",
+              "text-xs font-bold px-2 py-1 rounded-full border",
               statusStyles[status]
             )}
           >
@@ -146,7 +146,7 @@ export function KPICard({
               {trend.value}%
             </span>
             {trend.label && (
-              <span className="text-[10px] font-medium opacity-70">
+              <span className="text-xs font-medium opacity-70">
                 {trend.label}
               </span>
             )}

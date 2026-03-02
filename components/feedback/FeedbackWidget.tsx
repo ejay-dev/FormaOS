@@ -93,7 +93,7 @@ export function FeedbackWidget() {
                   type="button"
                   onClick={() => setSentiment(value)}
                   className={cn(
-                    'flex flex-1 flex-col items-center gap-1.5 rounded-xl border py-2.5 text-[10px] font-semibold uppercase tracking-wide transition',
+                    'flex flex-1 flex-col items-center gap-1.5 rounded-xl border py-2.5 text-xs font-semibold uppercase tracking-wide transition',
                     sentiment === value
                       ? 'border-cyan-500/50 bg-cyan-500/10 text-cyan-400'
                       : 'border-white/[0.06] text-slate-500 hover:border-white/[0.12] hover:text-slate-300',

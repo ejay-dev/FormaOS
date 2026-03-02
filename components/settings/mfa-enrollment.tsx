@@ -112,7 +112,7 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
               Multi-Factor Authentication
             </h3>
             {required && (
-              <span className="rounded-full border border-amber-400/40 bg-amber-500/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-amber-200">
+              <span className="rounded-full border border-amber-400/40 bg-amber-500/10 px-2.5 py-1 text-xs font-black uppercase tracking-widest text-amber-200">
                 Required
               </span>
             )}
@@ -172,7 +172,7 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
               <div className="h-40 w-40 rounded-xl border border-white/10 bg-white p-3">
                 <img src={qrCode} alt="MFA QR Code" className="h-full w-full" />
               </div>
-              <div className="flex items-center gap-2 text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-widest">
                 <QrCode className="h-3 w-3" />
                 Scan with Authenticator
               </div>

@@ -472,22 +472,23 @@ async function getAuditLogs(
     }
   };
 
-  // Prefer org_audit_events (structured) then fall back to legacy org_audit_logs.
-  const { data: events } = await safeQuery(
-    'org_audit_events',
-    'id, action, actor_user_id, entity_type, entity_id, before_state, after_state, created_at',
+  // Use unified audit view (combines org_audit_logs, org_audit_events, security_audit_log)
+  const { data: unified } = await safeQuery(
+    'unified_org_audit_log',
+    'id, action, source_table, actor, target_resource, entity_id, before_state, after_state, ip_address, created_at',
   );
 
-  if (events && events.length > 0) {
+  if (unified && unified.length > 0) {
     const filtered = sinceIso
-      ? events.filter((e: any) => e.created_at && e.created_at >= sinceIso)
-      : events;
+      ? unified.filter((e: any) => e.created_at && e.created_at >= sinceIso)
+      : unified;
     return { auditEvents: filtered };
   }
 
+  // Fallback to direct table query if unified view doesn't exist yet
   const { data: logs } = await safeQuery(
     'org_audit_logs',
-    'id, action, actor_id, target_resource, metadata, created_at',
+    'id, action, actor_email, target, entity_id, created_at',
   );
 
   const filtered = sinceIso

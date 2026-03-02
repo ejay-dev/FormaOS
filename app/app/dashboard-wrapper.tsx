@@ -44,6 +44,7 @@ export function DashboardWrapper({
         employeeName={userEmail || 'Employee'}
         organizationName={orgName}
         userRole={userRole}
+        industry={industry}
       />
     </UnifiedDashboardLayout>
   );

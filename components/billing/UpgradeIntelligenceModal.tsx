@@ -169,7 +169,7 @@ export function UpgradeIntelligenceModal({
                   {/* Recommended badge */}
                   {recommended && meetsRequirement && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <span className="text-[10px] font-bold text-sky-300 bg-sky-500/20 px-3 py-1 rounded-full flex items-center gap-1 border border-sky-400/20">
+                      <span className="text-xs font-bold text-sky-300 bg-sky-500/20 px-3 py-1 rounded-full flex items-center gap-1 border border-sky-400/20">
                         <Sparkles className="h-2.5 w-2.5" />
                         RECOMMENDED
                       </span>
@@ -217,7 +217,7 @@ export function UpgradeIntelligenceModal({
                   {/* Required indicator */}
                   {featureBenefit &&
                     featureBenefit.requiredPlan === key && (
-                      <div className="mt-2 text-[10px] text-emerald-400 flex items-center gap-1">
+                      <div className="mt-2 text-xs text-emerald-400 flex items-center gap-1">
                         <Check className="h-3 w-3" />
                         Includes {featureBenefit.title}
                       </div>
@@ -273,7 +273,7 @@ export function UpgradeIntelligenceModal({
             Maybe later
           </button>
 
-          <div className="flex items-center gap-4 text-[10px] text-slate-500">
+          <div className="flex items-center gap-4 text-xs text-slate-500">
             <span className="flex items-center gap-1">
               <Shield className="h-3 w-3" />
               Secure checkout

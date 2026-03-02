@@ -92,7 +92,7 @@ export function CareOperationsScorecard() {
             </p>
           </div>
         </div>
-        <span className="text-[10px] text-slate-500">
+        <span className="text-xs text-slate-500">
           Updated {new Date(scorecard.generatedAt).toLocaleTimeString()}
         </span>
       </div>
@@ -358,7 +358,7 @@ function CredentialList({
               >
                 {cred.daysUntilExpiry}d
               </div>
-              <div className="text-[10px] text-slate-500">
+              <div className="text-xs text-slate-500">
                 <Clock className="h-3 w-3 inline mr-1" />
                 expires
               </div>
@@ -398,7 +398,7 @@ function ReviewList({
               >
                 {review.daysUntilReview}d
               </div>
-              <div className="text-[10px] text-slate-500">until review</div>
+              <div className="text-xs text-slate-500">until review</div>
             </div>
           </div>
         ))}

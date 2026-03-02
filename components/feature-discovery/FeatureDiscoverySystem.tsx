@@ -199,7 +199,7 @@ export function FeatureDiscoveryBanner({
                   Did you know?
                 </span>
                 {currentFeature.newFeature && (
-                  <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-[10px] font-bold text-indigo-300">
+                  <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-xs font-bold text-indigo-300">
                     NEW
                   </span>
                 )}
@@ -250,7 +250,7 @@ export function FeatureDiscoveryBanner({
               </div>
               <button
                 onClick={handleNext}
-                className="text-[10px] text-gray-400 hover:text-gray-200 font-medium uppercase tracking-wide transition-colors"
+                className="text-xs text-gray-400 hover:text-gray-200 font-medium uppercase tracking-wide transition-colors"
               >
                 Next
               </button>
@@ -323,7 +323,7 @@ export function FeatureCard({
               {feature.title}
             </h4>
             {feature.newFeature && (
-              <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-[10px] font-bold text-indigo-300">
+              <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-xs font-bold text-indigo-300">
                 NEW
               </span>
             )}

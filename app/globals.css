@@ -107,6 +107,7 @@
 
   --card: 228 40% 8%;
   --card-foreground: 210 40% 98%;
+  --panel-2: 226 35% 12%;
 
   --popover: 228 40% 10%;
   --popover-foreground: 210 40% 98%;
@@ -170,6 +171,7 @@
 
   --card: 40 18% 99%;
   --card-foreground: 220 20% 12%;
+  --panel-2: 40 14% 95%;
 
   --popover: 0 0% 100%;
   --popover-foreground: 220 20% 12%;
@@ -1503,4 +1505,17 @@
     opacity: 0 !important;
     transform: none !important;
   }
+}
+
+/* App readability floor: avoid micro text in dense enterprise surfaces */
+.text-\[8px\],
+.text-\[9px\],
+.text-\[10px\] {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.text-\[11px\] {
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
 }

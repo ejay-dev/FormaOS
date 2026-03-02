@@ -15,26 +15,13 @@ interface AuthHealthResponse {
   status: 'healthy' | 'degraded' | 'unhealthy';
   timestamp: string;
   checks: {
-    supabase_url: { status: string; value?: string };
-    anon_key: { status: string; truncated?: string };
-    service_role_key: { status: string; configured: boolean };
-    session: { status: string; user?: string | null; error?: string };
+    supabase_url: { status: string };
+    anon_key: { status: string };
+    service_role_key: { status: string };
+    session: { status: string; authenticated?: boolean; error?: string };
     jwt_validity: { status: string; message?: string };
-    cookies: { status: string; count: number; auth_cookies: string[] };
+    cookies: { status: string; count: number };
   };
-  diagnostics?: {
-    environment: string;
-    cookie_domain?: string;
-    app_url?: string;
-  };
-}
-
-function getProjectRef(url: string): string {
-  try {
-    return new URL(url).hostname.split('.')[0];
-  } catch {
-    return 'unknown';
-  }
 }
 
 export async function GET() {
@@ -45,13 +32,10 @@ export async function GET() {
   const anonKey = getSupabaseAnonKey();
   const serviceRoleKey = getSupabaseServiceRoleKey();
 
-  const projectRef = getProjectRef(supabaseUrl);
-  const authCookiePrefix = `sb-${projectRef}`;
-
-  // Find all Supabase auth cookies
-  const authCookies = allCookies
-    .filter((c) => c.name.startsWith(authCookiePrefix))
-    .map((c) => c.name);
+  // Count auth cookies without exposing names or project ref
+  const authCookieCount = allCookies.filter((c) =>
+    c.name.startsWith('sb-'),
+  ).length;
 
   const response: AuthHealthResponse = {
     status: 'healthy',
@@ -59,34 +43,24 @@ export async function GET() {
     checks: {
       supabase_url: {
         status: supabaseUrl ? 'ok' : 'missing',
-        value: supabaseUrl ? `${new URL(supabaseUrl).hostname}` : undefined,
       },
       anon_key: {
         status: anonKey ? 'ok' : 'missing',
-        truncated: anonKey ? `${anonKey.slice(0, 20)}...` : undefined,
       },
       service_role_key: {
         status: serviceRoleKey ? 'ok' : 'missing',
-        configured: !!serviceRoleKey,
       },
       session: {
         status: 'checking',
-        user: null,
+        authenticated: false,
       },
       jwt_validity: {
         status: 'checking',
       },
       cookies: {
-        status: authCookies.length > 0 ? 'ok' : 'none',
-        count: authCookies.length,
-        auth_cookies: authCookies,
+        status: authCookieCount > 0 ? 'ok' : 'none',
+        count: authCookieCount,
       },
-    },
-    diagnostics: {
-      environment: process.env.NODE_ENV ?? 'unknown',
-      cookie_domain:
-        process.env.NEXT_PUBLIC_COOKIE_DOMAIN ?? process.env.COOKIE_DOMAIN,
-      app_url: process.env.NEXT_PUBLIC_APP_URL,
     },
   };
 
@@ -115,7 +89,7 @@ export async function GET() {
       }
     } else if (data?.user) {
       response.checks.session.status = 'authenticated';
-      response.checks.session.user = data.user.email ?? data.user.id;
+      response.checks.session.authenticated = true;
       response.checks.jwt_validity.status = 'valid';
       response.checks.jwt_validity.message =
         'Session token is valid with current JWT key.';

@@ -72,7 +72,7 @@ export async function getChecklistCountsForOrg(
       admin
         .from('org_frameworks')
         .select('id', { count: 'exact', head: true })
-        .eq('org_id', orgId),
+        .eq('organization_id', orgId),
     ),
     safeCount(
       admin

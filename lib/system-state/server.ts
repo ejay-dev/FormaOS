@@ -334,7 +334,7 @@ export interface SystemStatePayload {
  *
  * @param preloadedUser - Optional user object to avoid duplicate getUser() calls
  */
-export async function fetchSystemState(preloadedUser?: {
+async function fetchSystemStateFresh(preloadedUser?: {
   id: string;
   email?: string | null;
   user_metadata?: Record<string, unknown>;
@@ -496,6 +496,26 @@ export async function fetchSystemState(preloadedUser?: {
     subscription,
     isFounder,
   };
+}
+
+const fetchSystemStateCached = cache(async (): Promise<SystemStatePayload | null> =>
+  fetchSystemStateFresh(),
+);
+
+/**
+ * Request-scoped system state accessor.
+ * - No args: uses request cache to dedupe duplicate calls in the same RSC render.
+ * - With preloaded user: bypasses cache (object args are not stable cache keys).
+ */
+export async function fetchSystemState(preloadedUser?: {
+  id: string;
+  email?: string | null;
+  user_metadata?: Record<string, unknown>;
+}): Promise<SystemStatePayload | null> {
+  if (preloadedUser) {
+    return fetchSystemStateFresh(preloadedUser);
+  }
+  return fetchSystemStateCached();
 }
 
 // =========================================================

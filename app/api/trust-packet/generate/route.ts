@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
         supabase
           .from('org_frameworks')
           .select('framework_key, status, created_at')
-          .eq('org_id', organizationId),
+          .eq('organization_id', organizationId),
         supabase
           .from('policies')
           .select('id, title, status, last_reviewed_at')

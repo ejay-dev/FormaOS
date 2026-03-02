@@ -57,17 +57,17 @@ export function DeadlineCalendar({ deadlines, isLoading = false }: DeadlineCalen
           <div className={`text-lg font-bold ${overdue.length > 0 ? 'text-red-400' : 'text-slate-400'}`}>
             {overdue.length}
           </div>
-          <div className="text-[10px] text-slate-400 uppercase">Overdue</div>
+          <div className="text-xs text-slate-400 uppercase">Overdue</div>
         </div>
         <div className={`rounded-lg p-2 text-center ${dueSoon.length > 0 ? 'bg-amber-500/10' : 'bg-white/5'}`}>
           <div className={`text-lg font-bold ${dueSoon.length > 0 ? 'text-amber-400' : 'text-slate-400'}`}>
             {dueSoon.length}
           </div>
-          <div className="text-[10px] text-slate-400 uppercase">Due Soon</div>
+          <div className="text-xs text-slate-400 uppercase">Due Soon</div>
         </div>
         <div className="rounded-lg bg-white/5 p-2 text-center">
           <div className="text-lg font-bold text-slate-300">{upcoming.length}</div>
-          <div className="text-[10px] text-slate-400 uppercase">Upcoming</div>
+          <div className="text-xs text-slate-400 uppercase">Upcoming</div>
         </div>
       </div>
 
@@ -151,7 +151,7 @@ function DeadlineRow({ deadline }: { deadline: ComplianceDeadline }) {
             <span className="text-sm text-slate-200 font-medium line-clamp-1">
               {deadline.title}
             </span>
-            <span className="text-[10px] text-slate-500 uppercase shrink-0">
+            <span className="text-xs text-slate-500 uppercase shrink-0">
               {typeLabels[deadline.type] || deadline.type}
             </span>
           </div>

@@ -195,7 +195,7 @@ export function UpgradeModal() {
                   <span className="font-bold text-slate-100">
                     {catalog.name}
                   </span>
-                  <span className="text-[10px] font-bold text-sky-300 bg-sky-500/15 px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <span className="text-xs font-bold text-sky-300 bg-sky-500/15 px-2 py-0.5 rounded-full flex items-center gap-1">
                     <Sparkles className="h-2.5 w-2.5" />
                     RECOMMENDED
                   </span>
@@ -260,7 +260,7 @@ export function UpgradeModal() {
             </button>
           </div>
 
-          <p className="text-[10px] text-center text-slate-500">
+          <p className="text-xs text-center text-slate-500">
             14-day free trial included · Cancel anytime · Your data is safe
           </p>
         </div>

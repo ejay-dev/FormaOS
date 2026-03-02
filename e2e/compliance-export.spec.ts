@@ -49,7 +49,7 @@ test.describe('Compliance Evidence Export', () => {
         .from('compliance_score_snapshots')
         .delete()
         .eq('organization_id', orgId);
-      await admin.from('org_frameworks').delete().eq('org_id', orgId);
+      await admin.from('org_frameworks').delete().eq('organization_id', orgId);
       await admin.from('org_members').delete().eq('organization_id', orgId);
       await admin.from('organizations').delete().eq('id', orgId);
     }
@@ -99,7 +99,7 @@ test.describe('Compliance Evidence Export', () => {
 
     // Enable GDPR framework
     await admin.from('org_frameworks').insert({
-      org_id: orgId,
+      organization_id: orgId,
       framework_slug: 'gdpr',
     });
 
@@ -216,7 +216,7 @@ test.describe('Compliance Evidence Export', () => {
     });
 
     await admin.from('org_frameworks').insert({
-      org_id: orgId,
+      organization_id: orgId,
       framework_slug: 'iso27001',
     });
 

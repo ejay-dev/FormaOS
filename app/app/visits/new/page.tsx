@@ -10,17 +10,11 @@ import { fetchSystemState } from "@/lib/system-state/server";
 import { createVisit } from "@/app/app/actions/care-operations";
 
 export default async function NewVisitPage() {
-  const supabase = await createSupabaseServerClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/signin");
-
   const systemState = await fetchSystemState();
   if (!systemState) redirect("/auth/signin");
 
   const { organization } = systemState;
+  const supabase = await createSupabaseServerClient();
 
   // Fetch clients for dropdown
   const { data: clients } = await supabase

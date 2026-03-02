@@ -150,7 +150,7 @@ export function PlanComparisonTable() {
             >
               {/* Recommended badge */}
               {isRecommended && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-gradient-to-r from-sky-500 to-indigo-500 text-white text-[10px] font-bold px-3 py-1 rounded-full">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-gradient-to-r from-sky-500 to-indigo-500 text-white text-xs font-bold px-3 py-1 rounded-full">
                   <Sparkles className="h-3 w-3" />
                   RECOMMENDED
                 </div>
@@ -158,7 +158,7 @@ export function PlanComparisonTable() {
 
               {/* Current badge */}
               {isCurrent && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-emerald-950 text-[10px] font-bold px-3 py-1 rounded-full">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-emerald-950 text-xs font-bold px-3 py-1 rounded-full">
                   CURRENT PLAN
                 </div>
               )}

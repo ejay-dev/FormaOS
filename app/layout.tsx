@@ -8,7 +8,7 @@ const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-body',
-  weight: ['400'],
+  weight: ['400', '500', '600', '700', '800'],
 });
 
 const sora = Sora({
@@ -16,7 +16,7 @@ const sora = Sora({
   display: 'swap',
   variable: '--font-display',
   preload: true,
-  weight: ['700'],
+  weight: ['600', '700', '800'],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -24,10 +24,23 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
   variable: '--font-mono',
   preload: false,
-  weight: ['400'],
+  weight: ['400', '500', '700'],
 });
 
+const metadataBase = (() => {
+  const base =
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    process.env.NEXT_PUBLIC_APP_URL ??
+    'https://www.formaos.com.au';
+  try {
+    return new URL(base);
+  } catch {
+    return new URL('https://www.formaos.com.au');
+  }
+})();
+
 export const metadata: Metadata = {
+  metadataBase,
   title: {
     default: 'FormaOS | Compliance Operating System',
     template: '%s | FormaOS',

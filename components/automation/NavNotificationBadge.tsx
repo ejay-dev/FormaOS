@@ -56,7 +56,7 @@ export function NavNotificationBadge() {
       {unreadCount > 0 && (
         <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-          <span className="relative inline-flex items-center justify-center rounded-full h-4 w-4 bg-red-500 text-[10px] font-bold text-white">
+          <span className="relative inline-flex items-center justify-center rounded-full h-4 w-4 bg-red-500 text-xs font-bold text-white">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         </span>

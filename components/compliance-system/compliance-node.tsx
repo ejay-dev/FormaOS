@@ -130,7 +130,7 @@ const SIZE_CONFIG = {
     container: "min-w-[100px] px-3 py-2",
     icon: "h-4 w-4",
     label: "text-xs",
-    sublabel: "text-[10px]",
+    sublabel: "text-xs",
   },
   md: {
     container: "min-w-[140px] px-4 py-3",

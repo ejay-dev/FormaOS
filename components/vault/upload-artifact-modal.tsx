@@ -12,6 +12,7 @@ import {
   CheckCircle2
 } from "lucide-react"
 import { useComplianceAction } from "@/components/compliance-system"
+import { useAppStore } from "@/lib/stores/app"
 
 /**
  * =========================================================
@@ -29,6 +30,7 @@ export function UploadArtifactModal({ isOpen, onClose }: { isOpen: boolean; onCl
   const [success, setSuccess] = useState(false)
   const supabase = createSupabaseClient()
   const { evidenceAdded, reportError } = useComplianceAction()
+  const orgId = useAppStore((state) => state.organization?.id ?? null)
 
   // Reset state when modal closes
   useEffect(() => {
@@ -61,23 +63,14 @@ export function UploadArtifactModal({ isOpen, onClose }: { isOpen: boolean; onCl
     }, 100)
 
     try {
-      const { data: auth } = await supabase.auth.getUser()
-      if (!auth?.user?.id) throw new Error("Unauthorized")
-
-      const { data: membership, error: membershipError } = await supabase
-        .from("org_members")
-        .select("organization_id")
-        .eq("user_id", auth.user.id)
-        .maybeSingle()
-
-      if (membershipError || !membership?.organization_id) {
+      if (!orgId) {
         throw new Error("Organization context missing")
       }
 
       // 1. Upload Binary to Supabase Storage
       const fileExt = file.name.split('.').pop()
       const fileName = `${Math.random()}.${fileExt}`
-      const filePath = `${membership.organization_id}/vault/${fileName}`
+      const filePath = `${orgId}/vault/${fileName}`
 
       const { error: storageError } = await supabase.storage
         .from('evidence')
@@ -164,7 +157,7 @@ export function UploadArtifactModal({ isOpen, onClose }: { isOpen: boolean; onCl
                   <FileText className="h-6 w-6" />
                 </div>
                 <p className="text-sm font-bold text-slate-100 truncate max-w-[200px]">{file.name}</p>
-                <p className="text-[10px] text-violet-300 uppercase font-bold mt-1">Ready to Secure</p>
+                <p className="text-xs text-violet-300 uppercase font-bold mt-1">Ready to Secure</p>
               </div>
             ) : (
               <>
@@ -176,7 +169,7 @@ export function UploadArtifactModal({ isOpen, onClose }: { isOpen: boolean; onCl
           </div>
 
           <div className="space-y-2">
-            <label className="text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Artifact Label</label>
+            <label className="text-xs font-bold uppercase text-slate-400 tracking-widest ml-1">Artifact Label</label>
             <input 
               placeholder="e.g. Annual Fire Safety Certificate 2025"
               value={title}

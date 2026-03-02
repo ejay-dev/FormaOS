@@ -85,7 +85,7 @@ export function DeleteButton({ id, tableName, itemTitle, onDelete }: DeleteButto
     return (
       <div className="flex items-center gap-2 bg-rose-500/10 px-3 py-1.5 rounded-lg border border-rose-500/30 animate-in fade-in slide-in-from-right-2 duration-200">
         <AlertTriangle className="h-3.5 w-3.5 text-rose-400 shrink-0" />
-        <span className="text-[10px] font-medium text-rose-300 hidden sm:inline">
+        <span className="text-xs font-medium text-rose-300 hidden sm:inline">
           This will disconnect all linked nodes
         </span>
         <button 
@@ -99,7 +99,7 @@ export function DeleteButton({ id, tableName, itemTitle, onDelete }: DeleteButto
         <button 
           onClick={handleDelete}
           disabled={loading}
-          className="flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold uppercase text-rose-300 hover:text-white hover:bg-rose-500/20 rounded transition-all disabled:opacity-50"
+          className="flex items-center gap-1.5 px-2 py-1 text-xs font-bold uppercase text-rose-300 hover:text-white hover:bg-rose-500/20 rounded transition-all disabled:opacity-50"
         >
           {loading ? (
             <Loader2 className="h-3 w-3 animate-spin" />

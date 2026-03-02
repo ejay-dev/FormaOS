@@ -139,7 +139,7 @@ function ComplianceToast({
           {data.impactArea && (
             <div className="flex items-center gap-1.5 mt-2">
               <span className={cn(
-                "inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold",
+                "inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold",
                 data.impactDelta && data.impactDelta > 0 
                   ? "bg-emerald-500/20 text-emerald-300"
                   : "bg-amber-500/20 text-amber-300"

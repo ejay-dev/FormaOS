@@ -219,7 +219,7 @@ export default async function StaffDashboardPage() {
                   className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-100 hover:bg-white/10"
                 >
                   <span>{patient.full_name}</span>
-                  <span className="text-[10px] uppercase tracking-widest text-slate-400">
+                  <span className="text-xs uppercase tracking-widest text-slate-400">
                     {patient.care_status}
                   </span>
                 </Link>

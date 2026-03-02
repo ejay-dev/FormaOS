@@ -30,7 +30,7 @@ export function RuntimeDebugIndicator() {
           <Activity className="h-3.5 w-3.5" />
           Runtime Debug
         </div>
-        <div className="flex items-center gap-1 text-[10px]">
+        <div className="flex items-center gap-1 text-xs">
           {streamConnected ? (
             <Wifi className="h-3 w-3 text-emerald-300" />
           ) : (
@@ -59,7 +59,7 @@ export function RuntimeDebugIndicator() {
         </div>
         <div className="flex items-center justify-between">
           <span>stream_version</span>
-          <span className="truncate pl-2 text-right text-[10px] text-slate-400">
+          <span className="truncate pl-2 text-right text-xs text-slate-400">
             {snapshot?.streamVersion ?? 'n/a'}
           </span>
         </div>

@@ -129,7 +129,7 @@ function BlockerRow({ blocker }: { blocker: AuditBlocker }) {
   return (
     <div className="flex items-start gap-2 p-2 rounded-lg bg-white/5">
       <span
-        className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${priorityColors[blocker.priority]}`}
+        className={`text-xs font-bold px-1.5 py-0.5 rounded border ${priorityColors[blocker.priority]}`}
       >
         {blocker.priority.toUpperCase()}
       </span>
@@ -137,7 +137,7 @@ function BlockerRow({ blocker }: { blocker: AuditBlocker }) {
         <div className="text-xs text-slate-200 line-clamp-1">
           {blocker.controlCode}: {blocker.controlTitle}
         </div>
-        <div className="text-[10px] text-slate-500 mt-0.5">{blocker.reason}</div>
+        <div className="text-xs text-slate-500 mt-0.5">{blocker.reason}</div>
       </div>
     </div>
   );

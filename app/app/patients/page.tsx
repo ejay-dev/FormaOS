@@ -80,13 +80,13 @@ export default async function PatientsPage() {
                 <div className="flex items-center gap-3">
                   <span className="font-semibold">{patient.full_name}</span>
                   {patient.emergency_flag ? (
-                    <span className="inline-flex items-center gap-1 rounded-full border border-rose-400/40 bg-rose-500/10 px-2 py-1 text-[10px] font-semibold text-rose-200">
+                    <span className="inline-flex items-center gap-1 rounded-full border border-rose-400/40 bg-rose-500/10 px-2 py-1 text-xs font-semibold text-rose-200">
                       <AlertTriangle className="h-3 w-3" />
                       Emergency
                     </span>
                   ) : null}
                 </div>
-                <div className="text-[10px] uppercase tracking-widest text-slate-400">
+                <div className="text-xs uppercase tracking-widest text-slate-400">
                   {patient.care_status} • {patient.risk_level}
                 </div>
               </Link>

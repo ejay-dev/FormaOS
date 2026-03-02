@@ -18,6 +18,17 @@ type SystemStatus = {
   total_audit_entries: number | null;
   recent_admin_actions_24h: number;
   recent_billing_events_24h: number;
+  route_transition_samples_24h: number;
+  route_transition_p50_ms_24h: number | null;
+  route_transition_p95_ms_24h: number | null;
+  route_transition_routes_24h: Array<{
+    route: string;
+    samples: number;
+    p50_ms: number;
+    p95_ms: number;
+    avg_ms: number;
+    max_ms: number;
+  }>;
   build_version: string;
   build_timestamp: string | null;
   environment: string;
@@ -67,6 +78,9 @@ export default async function AdminSystemPage() {
 
   const dbLatency = data.database_latency_ms;
   const isDbHealthy = dbLatency < 100;
+  const transitionP50 = data.route_transition_p50_ms_24h;
+  const transitionP95 = data.route_transition_p95_ms_24h;
+  const routeRows = data.route_transition_routes_24h ?? [];
 
   return (
     <div className="space-y-6">
@@ -158,6 +172,79 @@ export default async function AdminSystemPage() {
             <Activity className="h-8 w-8 text-amber-500/30" />
           </div>
         </div>
+      </section>
+
+      {/* Route Transition Latency */}
+      <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
+        <h2 className="text-lg font-semibold text-slate-100 mb-4">
+          Sidebar Route Transition Latency (Last 24h)
+        </h2>
+
+        <div className="grid gap-4 md:grid-cols-3 mb-4">
+          <div className="rounded-lg border border-slate-800/50 bg-slate-800/20 p-4">
+            <p className="text-xs uppercase tracking-wider text-slate-500">Samples</p>
+            <p className="mt-1 text-2xl font-bold text-slate-100">
+              {data.route_transition_samples_24h.toLocaleString()}
+            </p>
+          </div>
+          <div className="rounded-lg border border-slate-800/50 bg-slate-800/20 p-4">
+            <p className="text-xs uppercase tracking-wider text-slate-500">Overall P50</p>
+            <p className="mt-1 text-2xl font-bold text-emerald-300">
+              {transitionP50 == null ? '—' : `${transitionP50}ms`}
+            </p>
+          </div>
+          <div className="rounded-lg border border-slate-800/50 bg-slate-800/20 p-4">
+            <p className="text-xs uppercase tracking-wider text-slate-500">Overall P95</p>
+            <p
+              className={`mt-1 text-2xl font-bold ${
+                transitionP95 == null
+                  ? 'text-slate-300'
+                  : transitionP95 <= 600
+                    ? 'text-emerald-300'
+                    : transitionP95 <= 1500
+                      ? 'text-amber-300'
+                      : 'text-rose-300'
+              }`}
+            >
+              {transitionP95 == null ? '—' : `${transitionP95}ms`}
+            </p>
+          </div>
+        </div>
+
+        {routeRows.length === 0 ? (
+          <div className="rounded-lg border border-slate-800/50 bg-slate-800/20 p-4 text-sm text-slate-400">
+            No sidebar transition telemetry yet. Navigate through the left sidebar in `/app` to collect p50/p95 route data.
+          </div>
+        ) : (
+          <div className="overflow-x-auto rounded-lg border border-slate-800/50">
+            <table className="w-full min-w-[720px] text-sm">
+              <thead className="bg-slate-800/30 text-slate-400">
+                <tr>
+                  <th className="px-4 py-3 text-left font-medium">Route</th>
+                  <th className="px-4 py-3 text-left font-medium">Samples</th>
+                  <th className="px-4 py-3 text-left font-medium">P50</th>
+                  <th className="px-4 py-3 text-left font-medium">P95</th>
+                  <th className="px-4 py-3 text-left font-medium">Avg</th>
+                  <th className="px-4 py-3 text-left font-medium">Max</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800/50 text-slate-200">
+                {routeRows.map((row) => (
+                  <tr key={row.route}>
+                    <td className="px-4 py-3 font-mono text-xs text-slate-300">
+                      {row.route}
+                    </td>
+                    <td className="px-4 py-3">{row.samples}</td>
+                    <td className="px-4 py-3">{row.p50_ms}ms</td>
+                    <td className="px-4 py-3">{row.p95_ms}ms</td>
+                    <td className="px-4 py-3">{row.avg_ms}ms</td>
+                    <td className="px-4 py-3">{row.max_ms}ms</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </section>
 
       {/* Build Information */}

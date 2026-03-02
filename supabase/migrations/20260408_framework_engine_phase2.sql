@@ -86,7 +86,7 @@ CREATE POLICY "org_frameworks_select"
   ON public.org_frameworks
   FOR SELECT
   USING (
-    org_id IN (
+    organization_id IN (
       SELECT organization_id
       FROM public.org_members
       WHERE user_id = auth.uid()
@@ -98,7 +98,7 @@ CREATE POLICY "org_frameworks_manage"
   ON public.org_frameworks
   FOR ALL
   USING (
-    org_id IN (
+    organization_id IN (
       SELECT organization_id
       FROM public.org_members
       WHERE user_id = auth.uid()
@@ -106,7 +106,7 @@ CREATE POLICY "org_frameworks_manage"
     )
   )
   WITH CHECK (
-    org_id IN (
+    organization_id IN (
       SELECT organization_id
       FROM public.org_members
       WHERE user_id = auth.uid()
@@ -114,8 +114,8 @@ CREATE POLICY "org_frameworks_manage"
     )
   );
 
-CREATE INDEX IF NOT EXISTS org_frameworks_org_id_idx
-  ON public.org_frameworks (org_id);
+CREATE INDEX IF NOT EXISTS org_frameworks_organization_id_idx
+  ON public.org_frameworks (organization_id);
 
 CREATE INDEX IF NOT EXISTS compliance_controls_framework_control_idx
   ON public.compliance_controls (framework_control_id);

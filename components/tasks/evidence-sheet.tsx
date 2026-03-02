@@ -55,7 +55,7 @@ export function EvidenceSheet({ task, evidenceCount = 0 }: { task: any, evidence
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <button className={`flex items-center gap-1.5 text-[10px] font-bold uppercase px-2 py-1 rounded-md transition-all active:scale-95 ${evidenceCount > 0 ? 'bg-violet-500/10 text-violet-300 hover:bg-violet-500/20' : 'text-slate-400 hover:text-violet-300 hover:bg-violet-500/10'}`}>
+        <button className={`flex items-center gap-1.5 text-xs font-bold uppercase px-2 py-1 rounded-md transition-all active:scale-95 ${evidenceCount > 0 ? 'bg-violet-500/10 text-violet-300 hover:bg-violet-500/20' : 'text-slate-400 hover:text-violet-300 hover:bg-violet-500/10'}`}>
           <Paperclip className="h-3 w-3" />
           {evidenceCount > 0 ? `${evidenceCount} Files` : 'Attach'}
         </button>

@@ -23,17 +23,11 @@ const CREDENTIAL_TYPES = [
 ];
 
 export default async function NewCredentialPage() {
-  const supabase = await createSupabaseServerClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/signin");
-
   const systemState = await fetchSystemState();
   if (!systemState) redirect("/auth/signin");
 
   const { organization } = systemState;
+  const supabase = await createSupabaseServerClient();
 
   // Fetch staff members for dropdown
   const { data: staffMembers } = await supabase
@@ -74,7 +68,7 @@ export default async function NewCredentialPage() {
                 name="user_id"
                 required
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
-                defaultValue={user.id}
+                defaultValue={systemState.user.id}
               >
                 {staffMembers?.map((member: StaffMember) => (
                   <option key={member.user_id} value={member.user_id}>

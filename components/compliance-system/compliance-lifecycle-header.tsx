@@ -204,12 +204,12 @@ export function ComplianceLifecycleHeader({
           </div>
           <div className="flex items-center gap-2">
             {hasRisks && (
-              <span className="px-2 py-1 rounded-full text-[10px] font-bold uppercase bg-rose-500/20 text-rose-300 border border-rose-400/30 animate-pulse">
+              <span className="px-2 py-1 rounded-full text-xs font-bold uppercase bg-rose-500/20 text-rose-300 border border-rose-400/30 animate-pulse">
                 {stats.risks.high} Critical Risks
               </span>
             )}
             {hasOverdue && (
-              <span className="px-2 py-1 rounded-full text-[10px] font-bold uppercase bg-amber-500/20 text-amber-300 border border-amber-400/30">
+              <span className="px-2 py-1 rounded-full text-xs font-bold uppercase bg-amber-500/20 text-amber-300 border border-amber-400/30">
                 {stats.tasks.overdue} Overdue
               </span>
             )}
@@ -264,7 +264,7 @@ export function ComplianceLifecycleHeader({
                     <div className="text-lg font-bold text-slate-100">
                       {nodeStats.primary}
                     </div>
-                    <div className={cn("text-[10px] font-bold uppercase tracking-wider", colors.text)}>
+                    <div className={cn("text-xs font-bold uppercase tracking-wider", colors.text)}>
                       {node.label}
                     </div>
                     <div className="text-[9px] text-slate-400 mt-0.5">
@@ -330,7 +330,7 @@ export function ComplianceLifecycleHeader({
                   <div className="text-lg font-bold text-slate-100">
                     {nodeStats.primary}
                   </div>
-                  <div className={cn("text-[10px] font-bold uppercase tracking-wider truncate", colors.text)}>
+                  <div className={cn("text-xs font-bold uppercase tracking-wider truncate", colors.text)}>
                     {node.label}
                   </div>
                 </div>

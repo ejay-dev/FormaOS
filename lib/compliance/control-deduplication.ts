@@ -196,7 +196,7 @@ export async function getFrameworksSatisfiedByControl(
   const { data: enabledFrameworks } = await admin
     .from('org_frameworks')
     .select('framework_slug')
-    .eq('org_id', orgId)
+    .eq('organization_id', orgId)
 
   const enabledSlugs = new Set(
     (enabledFrameworks || []).map((f: { framework_slug: string }) => f.framework_slug),

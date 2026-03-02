@@ -132,14 +132,14 @@ export function ActivityFeed({ items }: { items: ActivityItem[] }) {
               <div className="flex justify-between items-start gap-3">
                 <div className="flex items-center gap-2 flex-wrap">
                   {/* Domain Label */}
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                  <span className="text-xs font-black uppercase tracking-widest text-slate-400">
                     {meta.label}
                   </span>
 
                   {/* Severity Badge */}
                   {severity && (
                     <span
-                      className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full border 
+                      className={`text-xs font-black uppercase px-2 py-0.5 rounded-full border 
                         ${severity.bg} ${severity.border} ${severity.color}`}
                     >
                       {severity.label}
@@ -148,14 +148,14 @@ export function ActivityFeed({ items }: { items: ActivityItem[] }) {
 
                   {/* Security Alert Chip */}
                   {item.type === "security" && (
-                    <span className="flex items-center gap-1 text-[10px] font-black text-red-600 bg-red-50 border border-red-100 px-2 py-0.5 rounded-full">
+                    <span className="flex items-center gap-1 text-xs font-black text-red-600 bg-red-50 border border-red-100 px-2 py-0.5 rounded-full">
                       <AlertTriangle className="w-3 h-3" />
                       Alert
                     </span>
                   )}
                 </div>
 
-                <span className="text-[10px] text-slate-400 font-mono whitespace-nowrap">
+                <span className="text-xs text-slate-400 font-mono whitespace-nowrap">
                   {timeAgo(item.timestamp)}
                 </span>
               </div>
@@ -175,7 +175,7 @@ export function ActivityFeed({ items }: { items: ActivityItem[] }) {
               {(actionUrl || domain) && (
                 <div className="mt-2 flex items-center gap-3">
                   {domain && (
-                    <span className="text-[10px] font-mono uppercase text-slate-400">
+                    <span className="text-xs font-mono uppercase text-slate-400">
                       {domain}
                     </span>
                   )}
@@ -183,7 +183,7 @@ export function ActivityFeed({ items }: { items: ActivityItem[] }) {
                   {actionUrl && (
                     <Link
                       href={actionUrl}
-                      className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-blue-600 hover:text-blue-800"
+                      className="inline-flex items-center gap-1 text-xs font-black uppercase tracking-widest text-blue-600 hover:text-blue-800"
                     >
                       Open
                       <ExternalLink className="w-3 h-3" />

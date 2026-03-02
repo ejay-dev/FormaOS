@@ -99,7 +99,7 @@ export function CreateTaskSheet() {
               
               {/* Title */}
               <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Task Title</label>
+                <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Task Title</label>
                 <input 
                     {...register("title", { required: true })} 
                     placeholder="e.g. Review Firewall Logs" 
@@ -110,7 +110,7 @@ export function CreateTaskSheet() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                  {/* Priority */}
                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Priority Level</label>
+                    <label className="text-xs font-bold uppercase text-slate-400 tracking-wider">Priority Level</label>
                     <select 
                         {...register("priority")} 
                         className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-sm outline-none focus:border-emerald-400/50 focus:ring-2 focus:ring-emerald-400/20"
@@ -124,7 +124,7 @@ export function CreateTaskSheet() {
 
                  {/* Due Date */}
                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold uppercase text-slate-400 tracking-wider flex items-center gap-1">
+                    <label className="text-xs font-bold uppercase text-slate-400 tracking-wider flex items-center gap-1">
                         <Calendar className="h-3 w-3" /> Due Date
                     </label>
                     <input 
@@ -152,7 +152,7 @@ export function CreateTaskSheet() {
 
                 {isRecurring && (
                     <div className="animate-in fade-in slide-in-from-top-2">
-                        <label className="text-[10px] font-bold uppercase text-purple-300 tracking-wider block mb-2">Repeat Every (Days)</label>
+                        <label className="text-xs font-bold uppercase text-purple-300 tracking-wider block mb-2">Repeat Every (Days)</label>
                         <div className="flex gap-2">
                             <input 
                                 type="number" 
@@ -162,7 +162,7 @@ export function CreateTaskSheet() {
                             />
                             <div className="flex items-center text-xs font-medium text-purple-300">Days</div>
                         </div>
-                        <p className="text-[10px] text-purple-300/70 mt-2">Example: 30 = Monthly, 90 = Quarterly, 365 = Yearly</p>
+                        <p className="text-xs text-purple-300/70 mt-2">Example: 30 = Monthly, 90 = Quarterly, 365 = Yearly</p>
                     </div>
                 )}
               </div>

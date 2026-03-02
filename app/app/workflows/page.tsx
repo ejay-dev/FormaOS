@@ -35,7 +35,7 @@ export default async function WorkflowsPage() {
       {/* Header */}
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between border-b border-white/10 pb-8">
         <div>
-          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4">
+          <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-4">
             <Shield className="h-3 w-3" />
             <span>Automation</span>
           </div>

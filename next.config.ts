@@ -1,14 +1,16 @@
 import type { NextConfig } from 'next';
 import { withSentryConfig } from '@sentry/nextjs';
+import path from 'node:path';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
 
-  generateBuildId: async () => {
-    // Deterministic build ID based on timestamp for cache invalidation
-    return `build-${Date.now()}`;
-  },
+  generateBuildId: async () =>
+    process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 12) ??
+    process.env.GIT_COMMIT_SHA?.slice(0, 12) ??
+    'local-build',
+  outputFileTracingRoot: path.join(__dirname),
   outputFileTracingIncludes: {
     '*': ['framework-packs/*.json'],
   },

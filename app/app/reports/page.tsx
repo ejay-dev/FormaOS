@@ -18,6 +18,7 @@ import {
   fetchComplianceSummary,
 } from '@/app/app/actions/control-evaluations';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { fetchSystemState } from '@/lib/system-state/server';
 import { Skeleton, SkeletonCard } from '@/components/ui/skeleton';
 
 type EntitlementRow = {
@@ -61,43 +62,26 @@ const EXPORT_CARDS: ExportCard[] = [
 
 /** Resolves org context — fast path, just auth + membership lookup */
 async function resolveOrgContext() {
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const systemState = await fetchSystemState();
+  if (!systemState) return null;
 
-  if (!user) return null;
-
-  const { data: membership } = await supabase
-    .from('org_members')
-    .select('organization_id, role')
-    .eq('user_id', user.id)
-    .maybeSingle();
-
-  if (!membership?.organization_id) return null;
-
-  const orgId = membership.organization_id;
-  const hasAdminAccess = membership.role === 'owner' || membership.role === 'admin';
-
-  const [subscriptionResult, entitlementsResult] = await Promise.all([
-    supabase
-      .from('org_subscriptions')
-      .select('status')
-      .eq('organization_id', orgId)
-      .maybeSingle(),
-    supabase
-      .from('org_entitlements')
-      .select('feature_key, enabled')
-      .eq('organization_id', orgId),
-  ]);
-
-  const subscription = subscriptionResult.data;
+  const orgId = systemState.organization.id;
+  const hasAdminAccess =
+    systemState.role === 'owner' || systemState.role === 'admin';
   const hasSubscription =
-    subscription?.status === 'active' || subscription?.status === 'trialing';
+    systemState.subscription?.status === 'active' ||
+    systemState.subscription?.status === 'trialing';
 
-  const entitlementRows: EntitlementRow[] = entitlementsResult.data ?? [];
+  const supabase = await createSupabaseServerClient();
+
+  const { data: entitlementRows } = await supabase
+    .from('org_entitlements')
+    .select('feature_key, enabled')
+    .eq('organization_id', orgId);
+
+  const safeRows: EntitlementRow[] = entitlementRows ?? [];
   const entitlementSet = new Set(
-    entitlementRows.filter((entry) => entry.enabled).map((entry) => entry.feature_key),
+    safeRows.filter((entry) => entry.enabled).map((entry) => entry.feature_key),
   );
 
   return {
@@ -171,7 +155,7 @@ async function ComplianceScoreSection({
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/5 px-6 py-5 text-center">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Compliance Score</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Compliance Score</p>
             <div className="mt-2 text-4xl font-black text-slate-100">{complianceScore}%</div>
             <div className="mt-3 flex items-center justify-center gap-4 text-xs text-slate-400">
               <span>Missing: {missingCount}</span>
@@ -245,7 +229,7 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
 
           <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
             <Link
-              href="/api/reports/export?type=trust&format=pdf"
+              href="/api/reports/export?type=trust&format=pdf&mode=sync"
               className={`inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold ${
                 disableExports
                   ? 'pointer-events-none border border-white/10 bg-white/5 text-slate-500'
@@ -287,7 +271,7 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
       <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-8">
         <div className="mb-4 flex items-center gap-2 text-sky-300">
           <FileText className="h-5 w-5" />
-          <span className="text-[10px] font-bold uppercase tracking-widest">Certification Reports</span>
+          <span className="text-xs font-bold uppercase tracking-widest">Certification Reports</span>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {EXPORT_CARDS.map((card) => (
@@ -298,7 +282,7 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
               <h4 className="text-lg font-bold text-slate-100">{card.title}</h4>
               <p className="mt-2 text-xs leading-relaxed text-slate-300">{card.description}</p>
               <Link
-                href={`/api/reports/export?type=${card.type}&format=pdf`}
+                href={`/api/reports/export?type=${card.type}&format=pdf&mode=sync`}
                 className={`mt-4 inline-flex items-center gap-1.5 text-xs font-semibold ${disableExports ? 'pointer-events-none text-slate-500' : 'text-cyan-200 hover:text-cyan-100'}`}
               >
                 Generate report

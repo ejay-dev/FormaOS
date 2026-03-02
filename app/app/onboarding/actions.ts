@@ -150,10 +150,20 @@ export async function applyIndustryPack(industryId: string) {
     throw new Error('Failed to create assets: ' + assetError.message);
   }
 
-  // 5. Success Log
+  // 5. Set the organization's industry field
+  const { error: industryUpdateError } = await admin
+    .from('organizations')
+    .update({ industry: industryId })
+    .eq('id', orgId);
+
+  if (industryUpdateError) {
+    console.error('Warning: Failed to set organization industry:', industryUpdateError.message);
+  }
+
+  // 6. Success Log
   await logActivity(orgId, 'applied_industry_pack', pack.name);
 
-  // 6. Trigger automation for industry pack application
+  // 7. Trigger automation for industry pack application
   await onIndustryPackApplied(orgId, industryId, pack.name);
 
   revalidatePath('/app');
