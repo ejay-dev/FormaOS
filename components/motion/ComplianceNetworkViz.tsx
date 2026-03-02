@@ -29,7 +29,10 @@ interface NetworkEdge {
   to: string;
 }
 
-const NODE_COLORS: Record<NetworkNode['type'], { fill: string; glow: string; ring: string; label: string }> = {
+const NODE_COLORS: Record<
+  NetworkNode['type'],
+  { fill: string; glow: string; ring: string; label: string }
+> = {
   framework: {
     fill: 'rgba(20, 184, 166, 0.92)',
     glow: 'rgba(20, 184, 166, 0.35)',
@@ -74,7 +77,11 @@ interface AmbientParticle {
   phase: number;
 }
 
-function createAmbientParticles(w: number, h: number, count: number): AmbientParticle[] {
+function createAmbientParticles(
+  w: number,
+  h: number,
+  count: number,
+): AmbientParticle[] {
   const particles: AmbientParticle[] = [];
   for (let i = 0; i < count; i++) {
     particles.push({
@@ -90,7 +97,10 @@ function createAmbientParticles(w: number, h: number, count: number): AmbientPar
   return particles;
 }
 
-function createNetworkData(width: number, height: number): { nodes: NetworkNode[]; edges: NetworkEdge[] } {
+function createNetworkData(
+  width: number,
+  height: number,
+): { nodes: NetworkNode[]; edges: NetworkEdge[] } {
   const isCompact = width < 900;
   const isPhone = width < 640;
   const scale = isPhone ? 0.82 : isCompact ? 0.9 : 1;
@@ -107,36 +117,185 @@ function createNetworkData(width: number, height: number): { nodes: NetworkNode[
   const size = (value: number) => Math.max(Math.round(value * scale), 10);
 
   const frameworks = [
-    { id: 'iso27001', label: 'ISO 27001', type: 'framework', baseX: cx - xSpread * 0.34, baseY: cy - ySpread * 0.92, size: size(24), phase: 0 },
-    { id: 'soc2', label: 'SOC 2', type: 'framework', baseX: cx + xSpread * 0.34, baseY: cy - ySpread * 0.84, size: size(23), phase: 0.5 },
-    { id: 'nist', label: 'NIST CSF', type: 'framework', baseX: cx, baseY: cy - ySpread * 1.12, size: size(22), phase: 1 },
-    { id: 'hipaa', label: 'HIPAA', type: 'framework', baseX: cx - xSpread * 0.9, baseY: cy - ySpread * 0.58, size: size(19), phase: 1.5 },
-    { id: 'gdpr', label: 'GDPR', type: 'framework', baseX: cx + xSpread * 0.9, baseY: cy - ySpread * 0.54, size: size(19), phase: 2 },
+    {
+      id: 'iso27001',
+      label: 'ISO 27001',
+      type: 'framework',
+      baseX: cx - xSpread * 0.34,
+      baseY: cy - ySpread * 0.92,
+      size: size(24),
+      phase: 0,
+    },
+    {
+      id: 'soc2',
+      label: 'SOC 2',
+      type: 'framework',
+      baseX: cx + xSpread * 0.34,
+      baseY: cy - ySpread * 0.84,
+      size: size(23),
+      phase: 0.5,
+    },
+    {
+      id: 'nist',
+      label: 'NIST CSF',
+      type: 'framework',
+      baseX: cx,
+      baseY: cy - ySpread * 1.12,
+      size: size(22),
+      phase: 1,
+    },
+    {
+      id: 'hipaa',
+      label: 'HIPAA',
+      type: 'framework',
+      baseX: cx - xSpread * 0.9,
+      baseY: cy - ySpread * 0.58,
+      size: size(19),
+      phase: 1.5,
+    },
+    {
+      id: 'gdpr',
+      label: 'GDPR',
+      type: 'framework',
+      baseX: cx + xSpread * 0.9,
+      baseY: cy - ySpread * 0.54,
+      size: size(19),
+      phase: 2,
+    },
   ];
 
   const controls = [
-    { id: 'ac-mgmt', label: 'Access Mgmt', type: 'control', baseX: cx - xSpread * 0.9, baseY: cy - ySpread * 0.02, size: size(17), phase: 0.3 },
-    { id: 'encrypt', label: 'Encryption', type: 'control', baseX: cx - xSpread * 0.3, baseY: cy + ySpread * 0.2, size: size(17), phase: 0.8 },
-    { id: 'logging', label: 'Audit Logging', type: 'control', baseX: cx + xSpread * 0.3, baseY: cy, size: size(17), phase: 1.3 },
-    { id: 'incident', label: 'Incident Resp', type: 'control', baseX: cx + xSpread * 0.92, baseY: cy + ySpread * 0.08, size: size(16), phase: 1.8 },
-    { id: 'change', label: 'Change Mgmt', type: 'control', baseX: cx, baseY: cy + ySpread * 0.28, size: size(16), phase: 2.3 },
-    { id: 'risk', label: 'Risk Assess', type: 'control', baseX: cx - xSpread * 0.56, baseY: cy + ySpread * 0.42, size: size(15), phase: 2.8 },
+    {
+      id: 'ac-mgmt',
+      label: 'Access Mgmt',
+      type: 'control',
+      baseX: cx - xSpread * 0.9,
+      baseY: cy - ySpread * 0.02,
+      size: size(17),
+      phase: 0.3,
+    },
+    {
+      id: 'encrypt',
+      label: 'Encryption',
+      type: 'control',
+      baseX: cx - xSpread * 0.3,
+      baseY: cy + ySpread * 0.2,
+      size: size(17),
+      phase: 0.8,
+    },
+    {
+      id: 'logging',
+      label: 'Audit Logging',
+      type: 'control',
+      baseX: cx + xSpread * 0.3,
+      baseY: cy,
+      size: size(17),
+      phase: 1.3,
+    },
+    {
+      id: 'incident',
+      label: 'Incident Resp',
+      type: 'control',
+      baseX: cx + xSpread * 0.92,
+      baseY: cy + ySpread * 0.08,
+      size: size(16),
+      phase: 1.8,
+    },
+    {
+      id: 'change',
+      label: 'Change Mgmt',
+      type: 'control',
+      baseX: cx,
+      baseY: cy + ySpread * 0.28,
+      size: size(16),
+      phase: 2.3,
+    },
+    {
+      id: 'risk',
+      label: 'Risk Assess',
+      type: 'control',
+      baseX: cx - xSpread * 0.56,
+      baseY: cy + ySpread * 0.42,
+      size: size(15),
+      phase: 2.8,
+    },
   ];
 
   const evidence = [
-    { id: 'ev-policy', label: 'Policy Docs', type: 'evidence', baseX: cx - xSpread * 0.68, baseY: cy + ySpread * 0.72, size: size(15), phase: 0.4 },
-    { id: 'ev-log', label: 'Audit Logs', type: 'evidence', baseX: cx - xSpread * 0.12, baseY: cy + ySpread * 0.82, size: size(15), phase: 1.1 },
-    { id: 'ev-cert', label: 'Certificates', type: 'evidence', baseX: cx + xSpread * 0.34, baseY: cy + ySpread * 0.72, size: size(15), phase: 1.7 },
-    { id: 'ev-screen', label: 'Screenshots', type: 'evidence', baseX: cx + xSpread * 0.86, baseY: cy + ySpread * 0.58, size: size(14), phase: 2.4 },
+    {
+      id: 'ev-policy',
+      label: 'Policy Docs',
+      type: 'evidence',
+      baseX: cx - xSpread * 0.68,
+      baseY: cy + ySpread * 0.72,
+      size: size(15),
+      phase: 0.4,
+    },
+    {
+      id: 'ev-log',
+      label: 'Audit Logs',
+      type: 'evidence',
+      baseX: cx - xSpread * 0.12,
+      baseY: cy + ySpread * 0.82,
+      size: size(15),
+      phase: 1.1,
+    },
+    {
+      id: 'ev-cert',
+      label: 'Certificates',
+      type: 'evidence',
+      baseX: cx + xSpread * 0.34,
+      baseY: cy + ySpread * 0.72,
+      size: size(15),
+      phase: 1.7,
+    },
+    {
+      id: 'ev-screen',
+      label: 'Screenshots',
+      type: 'evidence',
+      baseX: cx + xSpread * 0.86,
+      baseY: cy + ySpread * 0.58,
+      size: size(14),
+      phase: 2.4,
+    },
   ];
 
   const tasks = [
-    { id: 'task-review', label: 'Review', type: 'task', baseX: cx - xSpread * 0.42, baseY: cy + ySpread * taskDepth, size: size(14), phase: 0.6 },
-    { id: 'task-approve', label: 'Approve', type: 'task', baseX: cx + xSpread * 0.06, baseY: cy + ySpread * (taskDepth + 0.06), size: size(14), phase: 1.4 },
-    { id: 'task-upload', label: 'Upload', type: 'task', baseX: cx + xSpread * 0.48, baseY: cy + ySpread * (taskDepth - 0.06), size: size(14), phase: 2.1 },
+    {
+      id: 'task-review',
+      label: 'Review',
+      type: 'task',
+      baseX: cx - xSpread * 0.42,
+      baseY: cy + ySpread * taskDepth,
+      size: size(14),
+      phase: 0.6,
+    },
+    {
+      id: 'task-approve',
+      label: 'Approve',
+      type: 'task',
+      baseX: cx + xSpread * 0.06,
+      baseY: cy + ySpread * (taskDepth + 0.06),
+      size: size(14),
+      phase: 1.4,
+    },
+    {
+      id: 'task-upload',
+      label: 'Upload',
+      type: 'task',
+      baseX: cx + xSpread * 0.48,
+      baseY: cy + ySpread * (taskDepth - 0.06),
+      size: size(14),
+      phase: 2.1,
+    },
   ];
 
-  const nodes: NetworkNode[] = [...frameworks, ...controls, ...evidence, ...tasks].map(n => ({
+  const nodes: NetworkNode[] = [
+    ...frameworks,
+    ...controls,
+    ...evidence,
+    ...tasks,
+  ].map((n) => ({
     ...n,
     type: n.type as NetworkNode['type'],
     x: n.baseX,
@@ -144,16 +303,29 @@ function createNetworkData(width: number, height: number): { nodes: NetworkNode[
   }));
 
   const edges: NetworkEdge[] = [
-    { from: 'iso27001', to: 'ac-mgmt' }, { from: 'iso27001', to: 'encrypt' }, { from: 'iso27001', to: 'logging' },
-    { from: 'soc2', to: 'logging' }, { from: 'soc2', to: 'incident' }, { from: 'soc2', to: 'change' },
-    { from: 'nist', to: 'ac-mgmt' }, { from: 'nist', to: 'risk' }, { from: 'nist', to: 'incident' },
-    { from: 'hipaa', to: 'encrypt' }, { from: 'hipaa', to: 'ac-mgmt' },
-    { from: 'gdpr', to: 'logging' }, { from: 'gdpr', to: 'encrypt' },
-    { from: 'ac-mgmt', to: 'ev-policy' }, { from: 'encrypt', to: 'ev-cert' },
-    { from: 'logging', to: 'ev-log' }, { from: 'incident', to: 'ev-screen' },
-    { from: 'change', to: 'ev-log' }, { from: 'risk', to: 'ev-policy' },
-    { from: 'ev-policy', to: 'task-review' }, { from: 'ev-log', to: 'task-approve' },
-    { from: 'ev-cert', to: 'task-upload' }, { from: 'ev-screen', to: 'task-approve' },
+    { from: 'iso27001', to: 'ac-mgmt' },
+    { from: 'iso27001', to: 'encrypt' },
+    { from: 'iso27001', to: 'logging' },
+    { from: 'soc2', to: 'logging' },
+    { from: 'soc2', to: 'incident' },
+    { from: 'soc2', to: 'change' },
+    { from: 'nist', to: 'ac-mgmt' },
+    { from: 'nist', to: 'risk' },
+    { from: 'nist', to: 'incident' },
+    { from: 'hipaa', to: 'encrypt' },
+    { from: 'hipaa', to: 'ac-mgmt' },
+    { from: 'gdpr', to: 'logging' },
+    { from: 'gdpr', to: 'encrypt' },
+    { from: 'ac-mgmt', to: 'ev-policy' },
+    { from: 'encrypt', to: 'ev-cert' },
+    { from: 'logging', to: 'ev-log' },
+    { from: 'incident', to: 'ev-screen' },
+    { from: 'change', to: 'ev-log' },
+    { from: 'risk', to: 'ev-policy' },
+    { from: 'ev-policy', to: 'task-review' },
+    { from: 'ev-log', to: 'task-approve' },
+    { from: 'ev-cert', to: 'task-upload' },
+    { from: 'ev-screen', to: 'task-approve' },
   ];
 
   return { nodes, edges };
@@ -162,9 +334,12 @@ function createNetworkData(width: number, height: number): { nodes: NetworkNode[
 /* ── Bezier curve helpers ── */
 
 function getBezierControlPoint(
-  x1: number, y1: number,
-  x2: number, y2: number,
-  cx: number, cy: number,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  cx: number,
+  cy: number,
 ): { cpx: number; cpy: number } {
   const mx = (x1 + x2) / 2;
   const my = (y1 + y2) / 2;
@@ -177,9 +352,12 @@ function getBezierControlPoint(
 
 function getQuadraticPoint(
   t: number,
-  x1: number, y1: number,
-  cpx: number, cpy: number,
-  x2: number, y2: number,
+  x1: number,
+  y1: number,
+  cpx: number,
+  cpy: number,
+  x2: number,
+  y2: number,
 ): { x: number; y: number } {
   const u = 1 - t;
   return {
@@ -195,12 +373,16 @@ interface ComplianceNetworkVizProps {
   scrollProgress?: number;
 }
 
-function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps) {
+function ComplianceNetworkVizInner({
+  className = '',
+}: ComplianceNetworkVizProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
   const [isInView, setIsInView] = useState(false);
-  const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(null);
+  const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(
+    null,
+  );
   const dataRef = useRef<ReturnType<typeof createNetworkData> | null>(null);
   const particlesRef = useRef<AmbientParticle[]>([]);
   const animRef = useRef<number>(0);
@@ -218,15 +400,22 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
     return () => observer.disconnect();
   }, []);
 
-  const handlePointerMove = useCallback((e: ReactPointerEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    setMousePos({
-      x: (e.clientX - rect.left) * (canvas.width / rect.width / (window.devicePixelRatio || 1)),
-      y: (e.clientY - rect.top) * (canvas.height / rect.height / (window.devicePixelRatio || 1)),
-    });
-  }, []);
+  const handlePointerMove = useCallback(
+    (e: ReactPointerEvent<HTMLCanvasElement>) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      setMousePos({
+        x:
+          (e.clientX - rect.left) *
+          (canvas.width / rect.width / (window.devicePixelRatio || 1)),
+        y:
+          (e.clientY - rect.top) *
+          (canvas.height / rect.height / (window.devicePixelRatio || 1)),
+      });
+    },
+    [],
+  );
 
   const clearPointer = useCallback(() => setMousePos(null), []);
 
@@ -297,7 +486,14 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
       const unit = Math.min(w, h);
 
       /* ── BG: Multi-layer radial halos ── */
-      const halo1 = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, unit * 0.6);
+      const halo1 = ctx.createRadialGradient(
+        centerX,
+        centerY,
+        0,
+        centerX,
+        centerY,
+        unit * 0.6,
+      );
       halo1.addColorStop(0, 'rgba(20, 184, 166, 0.12)');
       halo1.addColorStop(0.3, 'rgba(56, 189, 248, 0.06)');
       halo1.addColorStop(0.6, 'rgba(99, 102, 241, 0.04)');
@@ -330,7 +526,9 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
         ctx.ellipse(centerX, centerY, radius * 1.2, radius, 0, 0, Math.PI * 2);
         ctx.strokeStyle = `rgba(148, 163, 184, ${0.06 - index * 0.01})`;
         ctx.lineWidth = 0.8;
-        const dashOffset = shouldReduceMotion ? 0 : tSec * (6 + index * 2) * (index % 2 === 0 ? 1 : -1);
+        const dashOffset = shouldReduceMotion
+          ? 0
+          : tSec * (6 + index * 2) * (index % 2 === 0 ? 1 : -1);
         ctx.setLineDash([4, 12 + index * 4]);
         ctx.lineDashOffset = dashOffset;
         ctx.stroke();
@@ -364,7 +562,9 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
         }
       }
 
-      const hoveredNode = mousePos ? findNearestNode(mousePos.x, mousePos.y) : null;
+      const hoveredNode = mousePos
+        ? findNearestNode(mousePos.x, mousePos.y)
+        : null;
       const connectedIds = new Set<string>();
       if (hoveredNode) {
         connectedIds.add(hoveredNode.id);
@@ -378,22 +578,37 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
 
       /* ── Edges: Curved bezier paths with animated data packets ── */
       for (const edge of edges) {
-        const fromNode = nodes.find(n => n.id === edge.from);
-        const toNode = nodes.find(n => n.id === edge.to);
+        const fromNode = nodes.find((n) => n.id === edge.from);
+        const toNode = nodes.find((n) => n.id === edge.to);
         if (!fromNode || !toNode) continue;
 
-        const isHighlighted = hoveredNode != null && connectedIds.has(edge.from) && connectedIds.has(edge.to);
+        const isHighlighted =
+          hoveredNode != null &&
+          connectedIds.has(edge.from) &&
+          connectedIds.has(edge.to);
         const isDimmed = hoveredNode != null && !isHighlighted;
         const baseAlpha = isHighlighted ? 0.55 : isDimmed ? 0.04 : 0.12;
 
-        const cp = getBezierControlPoint(fromNode.x, fromNode.y, toNode.x, toNode.y, centerX, centerY);
+        const cp = getBezierControlPoint(
+          fromNode.x,
+          fromNode.y,
+          toNode.x,
+          toNode.y,
+          centerX,
+          centerY,
+        );
 
         // Edge path
         ctx.beginPath();
         ctx.moveTo(fromNode.x, fromNode.y);
         ctx.quadraticCurveTo(cp.cpx, cp.cpy, toNode.x, toNode.y);
         if (isHighlighted) {
-          const edgeGrad = ctx.createLinearGradient(fromNode.x, fromNode.y, toNode.x, toNode.y);
+          const edgeGrad = ctx.createLinearGradient(
+            fromNode.x,
+            fromNode.y,
+            toNode.x,
+            toNode.y,
+          );
           const fromColor = NODE_COLORS[fromNode.type];
           const toColor = NODE_COLORS[toNode.type];
           edgeGrad.addColorStop(0, fromColor.ring);
@@ -410,15 +625,34 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
         if (!shouldReduceMotion && !isDimmed) {
           const packetCount = isHighlighted ? 3 : 1;
           for (let p = 0; p < packetCount; p++) {
-            const flowPhase = ((tSec * 0.4 + fromNode.phase + p * (1 / packetCount)) % 1);
-            const pos = getQuadraticPoint(flowPhase, fromNode.x, fromNode.y, cp.cpx, cp.cpy, toNode.x, toNode.y);
+            const flowPhase =
+              (tSec * 0.4 + fromNode.phase + p * (1 / packetCount)) % 1;
+            const pos = getQuadraticPoint(
+              flowPhase,
+              fromNode.x,
+              fromNode.y,
+              cp.cpx,
+              cp.cpy,
+              toNode.x,
+              toNode.y,
+            );
             const packetSize = isHighlighted ? 4 : 2.5;
             const packetAlpha = isHighlighted ? 0.8 : 0.3;
             const colors = NODE_COLORS[fromNode.type];
 
             // Packet glow
-            const pgGrad = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, packetSize * 3);
-            pgGrad.addColorStop(0, colors.fill.replace(/[\d.]+\)$/, `${packetAlpha * 0.6})`));
+            const pgGrad = ctx.createRadialGradient(
+              pos.x,
+              pos.y,
+              0,
+              pos.x,
+              pos.y,
+              packetSize * 3,
+            );
+            pgGrad.addColorStop(
+              0,
+              colors.fill.replace(/[\d.]+\)$/, `${packetAlpha * 0.6})`),
+            );
             pgGrad.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = pgGrad;
             ctx.beginPath();
@@ -435,10 +669,27 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
             if (isHighlighted) {
               for (let tr = 1; tr <= 3; tr++) {
                 const trailT = Math.max(0, flowPhase - tr * 0.025);
-                const trPos = getQuadraticPoint(trailT, fromNode.x, fromNode.y, cp.cpx, cp.cpy, toNode.x, toNode.y);
+                const trPos = getQuadraticPoint(
+                  trailT,
+                  fromNode.x,
+                  fromNode.y,
+                  cp.cpx,
+                  cp.cpy,
+                  toNode.x,
+                  toNode.y,
+                );
                 ctx.beginPath();
-                ctx.arc(trPos.x, trPos.y, packetSize * (1 - tr * 0.2), 0, Math.PI * 2);
-                ctx.fillStyle = colors.fill.replace(/[\d.]+\)$/, `${packetAlpha * (1 - tr * 0.3)})`);
+                ctx.arc(
+                  trPos.x,
+                  trPos.y,
+                  packetSize * (1 - tr * 0.2),
+                  0,
+                  Math.PI * 2,
+                );
+                ctx.fillStyle = colors.fill.replace(
+                  /[\d.]+\)$/,
+                  `${packetAlpha * (1 - tr * 0.3)})`,
+                );
                 ctx.fill();
               }
             }
@@ -467,15 +718,34 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
         const isDimmed = hoveredNode != null && !isConnected;
 
         const nodeAlpha = isDimmed ? 0.15 : 1;
-        const nodeSize = isHovered ? node.size * 1.3 : isConnected ? node.size * 1.15 : node.size;
+        const nodeSize = isHovered
+          ? node.size * 1.3
+          : isConnected
+            ? node.size * 1.15
+            : node.size;
 
         // Outer glow halo (large, soft)
         if (!isDimmed) {
           const haloSize = nodeSize * (isHovered ? 3.5 : 2.2);
-          const pulse = shouldReduceMotion ? 1 : 0.85 + 0.15 * Math.sin(tSec * 1.5 + node.phase);
-          const haloGrad = ctx.createRadialGradient(node.x, node.y, nodeSize * 0.4, node.x, node.y, haloSize * pulse);
-          haloGrad.addColorStop(0, colors.glow.replace(/[\d.]+\)$/, `${isHovered ? 0.35 : 0.15})`));
-          haloGrad.addColorStop(0.6, colors.glow.replace(/[\d.]+\)$/, `${isHovered ? 0.12 : 0.04})`));
+          const pulse = shouldReduceMotion
+            ? 1
+            : 0.85 + 0.15 * Math.sin(tSec * 1.5 + node.phase);
+          const haloGrad = ctx.createRadialGradient(
+            node.x,
+            node.y,
+            nodeSize * 0.4,
+            node.x,
+            node.y,
+            haloSize * pulse,
+          );
+          haloGrad.addColorStop(
+            0,
+            colors.glow.replace(/[\d.]+\)$/, `${isHovered ? 0.35 : 0.15})`),
+          );
+          haloGrad.addColorStop(
+            0.6,
+            colors.glow.replace(/[\d.]+\)$/, `${isHovered ? 0.12 : 0.04})`),
+          );
           haloGrad.addColorStop(1, 'rgba(0,0,0,0)');
           ctx.fillStyle = haloGrad;
           ctx.beginPath();
@@ -488,7 +758,10 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
           ctx.save();
           ctx.beginPath();
           ctx.arc(node.x, node.y, nodeSize + 5, 0, Math.PI * 2);
-          ctx.strokeStyle = colors.ring.replace(/[\d.]+\)$/, `${isHovered ? 0.6 : 0.2})`);
+          ctx.strokeStyle = colors.ring.replace(
+            /[\d.]+\)$/,
+            `${isHovered ? 0.6 : 0.2})`,
+          );
           ctx.lineWidth = 1;
           ctx.setLineDash([3, 5]);
           ctx.lineDashOffset = tSec * 8 * (node.phase > 1 ? -1 : 1);
@@ -500,24 +773,40 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
         // Inner ring (solid)
         ctx.beginPath();
         ctx.arc(node.x, node.y, nodeSize + 1.5, 0, Math.PI * 2);
-        ctx.strokeStyle = colors.ring.replace(/[\d.]+\)$/, `${nodeAlpha * (isHovered ? 0.7 : 0.3)})`);
+        ctx.strokeStyle = colors.ring.replace(
+          /[\d.]+\)$/,
+          `${nodeAlpha * (isHovered ? 0.7 : 0.3)})`,
+        );
         ctx.lineWidth = 1;
         ctx.stroke();
 
         // Node fill — gradient from center
         const fillGrad = ctx.createRadialGradient(
-          node.x - nodeSize * 0.2, node.y - nodeSize * 0.2, 0,
-          node.x, node.y, nodeSize,
+          node.x - nodeSize * 0.2,
+          node.y - nodeSize * 0.2,
+          0,
+          node.x,
+          node.y,
+          nodeSize,
         );
-        fillGrad.addColorStop(0, colors.fill.replace(/[\d.]+\)$/, `${nodeAlpha * 0.95})`));
-        fillGrad.addColorStop(1, colors.fill.replace(/[\d.]+\)$/, `${nodeAlpha * 0.65})`));
+        fillGrad.addColorStop(
+          0,
+          colors.fill.replace(/[\d.]+\)$/, `${nodeAlpha * 0.95})`),
+        );
+        fillGrad.addColorStop(
+          1,
+          colors.fill.replace(/[\d.]+\)$/, `${nodeAlpha * 0.65})`),
+        );
         ctx.beginPath();
         ctx.arc(node.x, node.y, nodeSize, 0, Math.PI * 2);
         ctx.fillStyle = fillGrad;
         ctx.fill();
 
         // Node border (solid)
-        ctx.strokeStyle = colors.fill.replace(/[\d.]+\)$/, `${nodeAlpha * 0.7})`);
+        ctx.strokeStyle = colors.fill.replace(
+          /[\d.]+\)$/,
+          `${nodeAlpha * 0.7})`,
+        );
         ctx.lineWidth = isHovered ? 2 : 1.2;
         ctx.stroke();
 
@@ -529,7 +818,11 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
         ctx.fillText(TYPE_ICONS[node.type], node.x, node.y + 0.5);
 
         // Label
-        if (isHovered || (isConnected && hoveredNode) || (node.type === 'framework' && !isDimmed)) {
+        if (
+          isHovered ||
+          (isConnected && hoveredNode) ||
+          (node.type === 'framework' && !isDimmed)
+        ) {
           const labelAlpha = isHovered ? 0.95 : isDimmed ? 0.2 : 0.65;
           const labelFontSize = w < 640 ? 10 : 12;
           ctx.fillStyle = colors.label.replace(/[\d.]+\)$/, `${labelAlpha})`);
@@ -569,7 +862,6 @@ function ComplianceNetworkVizInner({ className = '' }: ComplianceNetworkVizProps
       ctx.lineTo(w - bracketInset, h - bracketInset);
       ctx.lineTo(w - bracketInset, h - bracketInset - bracketSize);
       ctx.stroke();
-
     };
 
     animRef.current = requestAnimationFrame(animate);

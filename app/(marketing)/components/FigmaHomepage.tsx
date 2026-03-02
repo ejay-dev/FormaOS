@@ -165,7 +165,7 @@ export default function FormaOSHomepage() {
     if (!decision || !decision.visible) return null;
     if (!decision.deferred) return section;
 
-    return <DeferredSection minHeight={minHeight ?? 560}>{section}</DeferredSection>;
+    return <DeferredSection minHeight={minHeight ?? 400}>{section}</DeferredSection>;
   };
 
   return (
@@ -176,7 +176,7 @@ export default function FormaOSHomepage() {
           {renderSection('hero', <HeroSection />)}
           {renderSection(
             'framework_trust_strip',
-            <FrameworkTrustStrip className="-mt-4 mb-2" />,
+            <FrameworkTrustStrip className="-mt-2 sm:-mt-4 mb-2" />,
           )}
           {sectionVisibility.value_proposition !== false
             ? renderSection('value_proposition', <ValueProposition />)

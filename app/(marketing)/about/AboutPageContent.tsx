@@ -199,7 +199,7 @@ export default function AboutPageContent() {
                     <div className="absolute left-6 sm:left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-teal-400 border-2 border-[#0a0f1c] z-10" />
 
                     {/* Content card */}
-                    <div className={`ml-12 sm:ml-0 sm:w-[calc(50%-2rem)] ${i % 2 === 0 ? '' : 'sm:ml-auto'}`}>
+                    <div className={`ml-10 sm:ml-0 sm:w-[calc(50%-2rem)] ${i % 2 === 0 ? '' : 'sm:ml-auto'}`}>
                       <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 hover:border-teal-400/15 hover:bg-white/[0.06] transition-all duration-200">
                         <div className="text-xs font-bold uppercase tracking-wider text-teal-400 mb-2">{milestone.year}</div>
                         <h3 className="text-base font-semibold text-white mb-2">{milestone.title}</h3>
@@ -229,8 +229,8 @@ export default function AboutPageContent() {
               </p>
             </ScrollReveal>
 
-            <SectionChoreography pattern="alternating" stagger={0.06} className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-                <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-8 hover:border-teal-400/20 transition-all duration-300">
+            <SectionChoreography pattern="alternating" stagger={0.06} className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-8 hover:border-teal-400/20 transition-all duration-300">
                   <div className="w-12 h-12 rounded-xl border border-teal-400/20 bg-teal-500/10 flex items-center justify-center mb-6">
                     <Target className="h-6 w-6 text-teal-400" />
                   </div>
@@ -242,7 +242,7 @@ export default function AboutPageContent() {
                   </p>
                 </div>
 
-                <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-8 hover:border-teal-400/20 transition-all duration-300">
+                <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-8 hover:border-teal-400/20 transition-all duration-300">
                   <div className="w-12 h-12 rounded-xl border border-teal-400/20 bg-teal-500/10 flex items-center justify-center mb-6">
                     <Lightbulb className="h-6 w-6 text-teal-400" />
                   </div>
@@ -254,7 +254,7 @@ export default function AboutPageContent() {
                   </p>
                 </div>
 
-                <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-8 hover:border-teal-400/20 transition-all duration-300">
+                <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-8 hover:border-teal-400/20 transition-all duration-300">
                   <div className="w-12 h-12 rounded-xl border border-teal-400/20 bg-teal-500/10 flex items-center justify-center mb-6">
                     <AlertTriangle className="h-6 w-6 text-teal-400" />
                   </div>
@@ -266,7 +266,7 @@ export default function AboutPageContent() {
                   </p>
                 </div>
 
-                <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-8 hover:border-teal-400/20 transition-all duration-300">
+                <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-8 hover:border-teal-400/20 transition-all duration-300">
                   <div className="w-12 h-12 rounded-xl border border-teal-400/20 bg-teal-500/10 flex items-center justify-center mb-6">
                     <Shield className="h-6 w-6 text-teal-400" />
                   </div>
@@ -333,7 +333,7 @@ export default function AboutPageContent() {
                 These are the outcomes regulated teams achieve when compliance runs as infrastructure.
               </p>
             </ScrollReveal>
-            <SectionChoreography pattern="cascade" stagger={0.04} className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <SectionChoreography pattern="cascade" stagger={0.04} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {[
                 { stat: '< 2 min', label: 'Audit packet export', detail: 'Framework-mapped evidence bundles generated on demand — no manual reconstruction' },
                 { stat: '9', label: 'Pre-built frameworks', detail: 'ISO 27001, SOC 2, NDIS, NSQHS, RACGP, Essential Eight, HIPAA, GDPR, PCI-DSS' },
@@ -488,7 +488,7 @@ export default function AboutPageContent() {
                       boxShadow: '0 0 40px rgba(20, 184, 166, 0.4)',
                     }}
                     whileTap={{ scale: 0.98 }}
-                    className="group px-8 py-4 rounded-full bg-gradient-to-r from-teal-500 to-cyan-600 text-white font-semibold text-lg flex items-center gap-3 shadow-lg shadow-teal-500/25 hover:shadow-teal-500/40 transition-all whitespace-nowrap"
+                    className="group px-8 py-4 rounded-full bg-gradient-to-r from-teal-500 to-cyan-600 text-white font-semibold text-lg flex items-center justify-center gap-3 shadow-lg shadow-teal-500/25 hover:shadow-teal-500/40 transition-all whitespace-nowrap w-full sm:w-auto"
                   >
                     <span>Get Started</span>
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

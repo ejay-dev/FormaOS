@@ -727,7 +727,7 @@ function FullControlMapVizInner({ className = '' }: FullControlMapVizProps) {
       for (let i = 0; i < orbitCounts; i++) {
         const frac = 0.12 + i * 0.14;
         const orx = w * 0.42 * frac;
-        const ory = h * 0.40 * frac;
+        const ory = h * 0.4 * frac;
         ctx.beginPath();
         ctx.ellipse(centerX, centerY, orx, ory, 0, 0, Math.PI * 2);
         ctx.strokeStyle = `rgba(148,163,184,${0.04 - i * 0.004})`;
@@ -745,7 +745,7 @@ function FullControlMapVizInner({ className = '' }: FullControlMapVizProps) {
       if (!shouldReduceMotion) {
         const ang = tSec * 0.2;
         const sx = centerX + Math.cos(ang) * w * 0.42;
-        const sy = centerY + Math.sin(ang) * h * 0.40;
+        const sy = centerY + Math.sin(ang) * h * 0.4;
         const sg = ctx.createLinearGradient(centerX, centerY, sx, sy);
         sg.addColorStop(0, 'rgba(20,184,166,0)');
         sg.addColorStop(0.6, 'rgba(20,184,166,0.025)');
@@ -1048,10 +1048,16 @@ function FullControlMapVizInner({ className = '' }: FullControlMapVizProps) {
       FRAMEWORKS.forEach((fw) => {
         const a = (fw.angle * Math.PI) / 180;
         const trx = w * 0.42;
-        const tryy = h * 0.40;
+        const tryy = h * 0.4;
         ctx.beginPath();
-        ctx.moveTo(centerX + Math.cos(a) * trx * 0.96, centerY + Math.sin(a) * tryy * 0.96);
-        ctx.lineTo(centerX + Math.cos(a) * trx * 1.0, centerY + Math.sin(a) * tryy * 1.0);
+        ctx.moveTo(
+          centerX + Math.cos(a) * trx * 0.96,
+          centerY + Math.sin(a) * tryy * 0.96,
+        );
+        ctx.lineTo(
+          centerX + Math.cos(a) * trx * 1.0,
+          centerY + Math.sin(a) * tryy * 1.0,
+        );
         ctx.strokeStyle = 'rgba(148,163,184,0.08)';
         ctx.lineWidth = 1;
         ctx.stroke();

@@ -156,7 +156,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
 
         {/* Form Card */}
         <ScrollReveal variant="perspectiveUp" range={[0.04, 0.34]}>
-          <div className="p-8 sm:p-12 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
+          <div className="p-5 sm:p-8 md:p-12 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
             <form action={handleSubmit} className="space-y-6">
               {/* Name & Email Row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -339,7 +339,7 @@ function EnterpriseInquiries() {
     <section className="mk-section relative">
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="depthSlide" range={[0, 0.3]}>
-          <div className="text-center p-12 rounded-2xl bg-gradient-to-br from-purple-500/20 via-white/[0.08] to-white/[0.04] border border-purple-500/30 backdrop-blur-xl">
+          <div className="text-center p-6 sm:p-8 md:p-12 rounded-2xl bg-gradient-to-br from-purple-500/20 via-white/[0.08] to-white/[0.04] border border-purple-500/30 backdrop-blur-xl">
             <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-purple-500/20 flex items-center justify-center">
               <Building2 className="w-8 h-8 text-purple-400" />
             </div>
@@ -399,7 +399,7 @@ function ClosingCTA() {
     <section className="mk-section relative">
       <div className="max-w-4xl mx-auto px-6 lg:px-12 text-center">
         <ScrollReveal variant="depthScale" range={[0, 0.3]}>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-6">
             Operational Compliance Starts With
             <br />
             <span className="bg-gradient-to-r from-blue-400 via-cyan-500 to-purple-500 bg-clip-text text-transparent">
@@ -407,7 +407,7 @@ function ClosingCTA() {
             </span>
           </h2>
 
-          <p className="text-lg text-gray-400 mb-12 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-400 mb-8 sm:mb-12 max-w-2xl mx-auto">
             Whether you&apos;re early in your compliance transformation or
             managing complex regulatory operations, we&apos;re here to help you
             build systems that enforce accountability and prove outcomes.
@@ -416,14 +416,14 @@ function ClosingCTA() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="#demo-form"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-blue-500 hover:bg-blue-400 text-white font-medium transition-all duration-300"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-blue-500 hover:bg-blue-400 text-white font-medium transition-all duration-300 w-full sm:w-auto justify-center"
             >
               Request a Demo
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href={`${appBase}/auth/signup`}
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium border border-white/20 transition-all duration-300"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium border border-white/20 transition-all duration-300 w-full sm:w-auto justify-center"
             >
               Start Free Trial
               <ArrowRight className="w-4 h-4" />

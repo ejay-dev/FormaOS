@@ -71,7 +71,7 @@ export default function PricingPageContent() {
       <PricingGradientMesh />
       <PricingHero />
       <VisualDivider gradient />
-      <DeferredSection minHeight={920}>
+      <DeferredSection minHeight={480}>
         <PricingTiers />
       </DeferredSection>
       <VisualDivider />
@@ -87,7 +87,7 @@ export default function PricingPageContent() {
         <FreeTrial />
       </DeferredSection>
       <VisualDivider />
-      <DeferredSection minHeight={760}>
+      <DeferredSection minHeight={380}>
         <FAQSection />
       </DeferredSection>
       <VisualDivider gradient />

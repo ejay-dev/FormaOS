@@ -281,6 +281,22 @@
   overflow: hidden;
 }
 
+@media (max-width: 767px) {
+  .mk-marketing-flow section:first-of-type,
+  .mk-marketing-flow .mk-hero {
+    min-height: clamp(28rem, 75vh, 40rem);
+    padding-top: clamp(5rem, 8vw, 6.5rem);
+    padding-bottom: clamp(3rem, 5vw, 4rem);
+  }
+}
+
+.mk-marketing-flow .mk-hero h1,
+.mk-marketing-flow .mk-hero h2,
+.mk-marketing-flow section:first-of-type h1,
+.mk-marketing-flow section:first-of-type h2 {
+  text-wrap: balance;
+}
+
 /* Compact hero for informational pages (legal, trust sub-pages, etc.) */
 .mk-hero--compact {
   min-height: clamp(14rem, 28vh, 20rem);
@@ -307,6 +323,7 @@
 .mk-marketing-flow section:first-of-type h1 {
   letter-spacing: -0.025em;
   line-height: 1.05;
+  text-wrap: balance;
 }
 
 .mk-marketing-flow .mk-hero p,

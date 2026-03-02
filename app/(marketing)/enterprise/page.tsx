@@ -159,7 +159,7 @@ export default function EnterprisePage() {
         </section>
 
         {/* SLA commitments */}
-        <section className="mt-12 rounded-2xl border border-border bg-card p-7">
+        <section className="mt-12 rounded-2xl border border-border bg-card p-4 sm:p-7">
           <div className="flex items-center gap-2 mb-5">
             <Clock className="h-5 w-5 text-primary" aria-hidden="true" />
             <h2 className="text-lg font-semibold text-foreground">SLA Commitments — Enterprise</h2>
@@ -257,21 +257,21 @@ export default function EnterprisePage() {
           <div className="flex flex-col gap-3 sm:flex-row">
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground w-full sm:w-auto"
             >
               Schedule Security Walkthrough
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/trust/packet"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-background px-6 py-3 text-sm font-semibold text-foreground hover:bg-muted/30"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-background px-6 py-3 text-sm font-semibold text-foreground hover:bg-muted/30 w-full sm:w-auto"
             >
               Download Trust Packet
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href={`${appBase}/auth/signup?source=enterprise`}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-background px-6 py-3 text-sm font-semibold text-foreground hover:bg-muted/30"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-background px-6 py-3 text-sm font-semibold text-foreground hover:bg-muted/30 w-full sm:w-auto"
             >
               Start Trial
               <ArrowRight className="h-4 w-4" />

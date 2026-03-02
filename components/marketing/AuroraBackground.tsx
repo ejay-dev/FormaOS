@@ -136,8 +136,10 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
           <div
             className="absolute inset-0 h-full w-full bg-[#030712]"
             style={{
-              maskImage: 'radial-gradient(ellipse 50% 60% at 50% 0%, transparent 30%, black 70%)',
-              WebkitMaskImage: 'radial-gradient(ellipse 50% 60% at 50% 0%, transparent 30%, black 70%)',
+              maskImage:
+                'radial-gradient(ellipse 50% 60% at 50% 0%, transparent 30%, black 70%)',
+              WebkitMaskImage:
+                'radial-gradient(ellipse 50% 60% at 50% 0%, transparent 30%, black 70%)',
             }}
           />
         </div>
@@ -159,37 +161,86 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
 
       <style jsx>{`
         @keyframes aurora-drift-1 {
-          0%, 100% { transform: translate(0%, 0%) scale(1); }
-          25% { transform: translate(12%, 8%) scale(1.08); }
-          50% { transform: translate(4%, 16%) scale(0.96); }
-          75% { transform: translate(-8%, 6%) scale(1.04); }
+          0%,
+          100% {
+            transform: translate(0%, 0%) scale(1);
+          }
+          25% {
+            transform: translate(12%, 8%) scale(1.08);
+          }
+          50% {
+            transform: translate(4%, 16%) scale(0.96);
+          }
+          75% {
+            transform: translate(-8%, 6%) scale(1.04);
+          }
         }
         @keyframes aurora-drift-2 {
-          0%, 100% { transform: translate(0%, 0%) scale(1); }
-          25% { transform: translate(-10%, 12%) scale(1.06); }
-          50% { transform: translate(-16%, 4%) scale(0.94); }
-          75% { transform: translate(-4%, -8%) scale(1.1); }
+          0%,
+          100% {
+            transform: translate(0%, 0%) scale(1);
+          }
+          25% {
+            transform: translate(-10%, 12%) scale(1.06);
+          }
+          50% {
+            transform: translate(-16%, 4%) scale(0.94);
+          }
+          75% {
+            transform: translate(-4%, -8%) scale(1.1);
+          }
         }
         @keyframes aurora-drift-3 {
-          0%, 100% { transform: translate(0%, 0%) scale(1); }
-          30% { transform: translate(14%, -8%) scale(1.12); }
-          60% { transform: translate(-6%, -4%) scale(0.92); }
-          85% { transform: translate(8%, 4%) scale(1.04); }
+          0%,
+          100% {
+            transform: translate(0%, 0%) scale(1);
+          }
+          30% {
+            transform: translate(14%, -8%) scale(1.12);
+          }
+          60% {
+            transform: translate(-6%, -4%) scale(0.92);
+          }
+          85% {
+            transform: translate(8%, 4%) scale(1.04);
+          }
         }
         @keyframes aurora-drift-4 {
-          0%, 100% { transform: translate(0%, 0%) scale(1); }
-          20% { transform: translate(-12%, 10%) scale(1.08); }
-          55% { transform: translate(8%, -6%) scale(0.96); }
-          80% { transform: translate(-4%, -12%) scale(1.06); }
+          0%,
+          100% {
+            transform: translate(0%, 0%) scale(1);
+          }
+          20% {
+            transform: translate(-12%, 10%) scale(1.08);
+          }
+          55% {
+            transform: translate(8%, -6%) scale(0.96);
+          }
+          80% {
+            transform: translate(-4%, -12%) scale(1.06);
+          }
         }
 
-        .animate-aurora-1 { animation: aurora-drift-1 24s ease-in-out infinite; }
-        .animate-aurora-2 { animation: aurora-drift-2 30s ease-in-out infinite; animation-delay: -6s; }
-        .animate-aurora-3 { animation: aurora-drift-3 26s ease-in-out infinite; animation-delay: -10s; }
-        .animate-aurora-4 { animation: aurora-drift-4 32s ease-in-out infinite; animation-delay: -14s; }
+        .animate-aurora-1 {
+          animation: aurora-drift-1 24s ease-in-out infinite;
+        }
+        .animate-aurora-2 {
+          animation: aurora-drift-2 30s ease-in-out infinite;
+          animation-delay: -6s;
+        }
+        .animate-aurora-3 {
+          animation: aurora-drift-3 26s ease-in-out infinite;
+          animation-delay: -10s;
+        }
+        .animate-aurora-4 {
+          animation: aurora-drift-4 32s ease-in-out infinite;
+          animation-delay: -14s;
+        }
 
         @media (prefers-reduced-motion: reduce) {
-          .aurora-blob { animation: none !important; }
+          .aurora-blob {
+            animation: none !important;
+          }
         }
       `}</style>
     </div>
