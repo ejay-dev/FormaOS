@@ -4,6 +4,16 @@ import path from 'node:path';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  experimental: {
+    // Tree-shake large icon/animation/chart libraries — reduces JS bundle per page
+    optimizePackageImports: [
+      'lucide-react',
+      'framer-motion',
+      'recharts',
+      '@react-three/drei',
+      '@react-three/fiber',
+    ],
+  },
   poweredByHeader: false,
 
   generateBuildId: async () =>
@@ -52,6 +62,35 @@ const nextConfig: NextConfig = {
             key: 'Permissions-Policy',
             value:
               'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+          },
+          {
+            // Content Security Policy — permissive mode to allow all existing
+            // integrations (Supabase, Sentry, PostHog, Stripe, Vercel, Google Fonts)
+            // without breaking anything. Tighten per-environment as needed.
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              // Scripts: self + inline (Next.js requires unsafe-inline), Sentry, PostHog, Stripe
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.sentry.io https://*.posthog.com https://js.stripe.com https://vercel.live",
+              // Styles: self + inline (Tailwind CSS-in-JS requires this)
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              // Fonts: Google Fonts
+              "font-src 'self' https://fonts.gstatic.com data:",
+              // Images: self + data URIs + blob + Supabase storage
+              "img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in https://vercel.com",
+              // Connect: self + all FormaOS backends
+              "connect-src 'self' https://*.supabase.co https://*.supabase.in wss://*.supabase.co wss://*.supabase.in https://*.sentry.io https://*.posthog.com https://api.stripe.com https://vitals.vercel-insights.com",
+              // Frames: Stripe only (for payment elements)
+              'frame-src https://js.stripe.com https://hooks.stripe.com',
+              // Workers: self + blob (for Sentry)
+              "worker-src 'self' blob:",
+              // Block object/embed entirely
+              "object-src 'none'",
+              // Only allow HTTPS base URIs
+              "base-uri 'self'",
+              // Form submissions to self only
+              "form-action 'self'",
+            ].join('; '),
           },
         ],
       },

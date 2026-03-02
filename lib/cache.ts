@@ -74,7 +74,7 @@ class InMemoryCache {
 }
 
 // Initialize cache (Redis or in-memory fallback)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Upstash Redis client type is incompatible with InMemoryCache
+ 
 let cacheInstance: any = null;
 
 async function getCache() {
@@ -131,6 +131,15 @@ export const CacheKeys = {
 
   // Search
   SEARCH_RESULTS: (orgId: string, query: string) => `search:${orgId}:${query}`,
+
+  // Frameworks
+  FRAMEWORKS_LIST: (orgId: string) => `frameworks:${orgId}:list`,
+
+  // Tasks
+  TASKS_OVERVIEW: (orgId: string) => `tasks:${orgId}:overview`,
+
+  // Reports
+  REPORTS_LIST: (orgId: string) => `reports:${orgId}:list`,
 };
 
 /**
@@ -164,6 +173,45 @@ export async function getCached<T>(
   }
 
   return data;
+}
+
+/**
+ * Stale-While-Revalidate cache pattern.
+ * Returns stale/cached data immediately if available, then revalidates in background.
+ * Falls back to getCached behaviour if no stale data exists.
+ */
+export async function getCachedSWR<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl = 300, // 5 minutes
+): Promise<T> {
+  const cache = await getCache();
+
+  let stale: T | null = null;
+  try {
+    const cached = await cache.get(key);
+    if (cached) {
+      stale = JSON.parse(cached) as T;
+    }
+  } catch {
+    // ignore read errors
+  }
+
+  if (stale !== null) {
+    // Revalidate in background — don't await
+    void (async () => {
+      try {
+        const fresh = await fetcher();
+        await cache.set(key, JSON.stringify(fresh), ttl);
+      } catch {
+        // Background revalidation failure is non-fatal
+      }
+    })();
+    return stale;
+  }
+
+  // No stale data — must fetch synchronously
+  return getCached(key, fetcher, ttl);
 }
 
 /**

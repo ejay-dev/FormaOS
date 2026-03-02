@@ -1,4 +1,4 @@
-import { test, expect, type BrowserContext } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
 
 const APP_URL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000';

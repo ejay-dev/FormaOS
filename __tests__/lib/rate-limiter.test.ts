@@ -36,7 +36,6 @@ jest.mock('@/lib/security/session-security', () => ({
 import {
   checkRateLimit,
   createRateLimitHeaders,
-  getRateLimitStatus,
   RATE_LIMITS,
 } from '@/lib/security/rate-limiter';
 import type { RateLimitConfig } from '@/lib/security/rate-limiter';

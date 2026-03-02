@@ -62,56 +62,61 @@ function generateTaskAssignmentEmail(data: {
     <html>
       <head>
         <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: #2563eb; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-          .content { background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; }
-          .task-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
-          .label { font-weight: bold; color: #6b7280; }
-          .value { color: #1f2937; margin-bottom: 10px; }
-          .priority-high { color: #ef4444; font-weight: bold; }
-          .priority-medium { color: #f59e0b; font-weight: bold; }
-          .priority-low { color: #10b981; font-weight: bold; }
-          .button { display: inline-block; background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
-          .footer { text-align: center; color: #6b7280; font-size: 12px; margin-top: 30px; }
+          body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #e2e8f0; background: #0f172a; margin: 0; padding: 0; }
+          .container { max-width: 600px; margin: 0 auto; background: #1e293b; border-radius: 12px; overflow: hidden; }
+          .header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-bottom: 1px solid #22d3ee33; padding: 32px 40px; text-align: center; }
+          .header h1 { color: #22d3ee; font-size: 28px; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
+          .header p { color: #94a3b8; font-size: 13px; margin: 8px 0 0; letter-spacing: 0.05em; text-transform: uppercase; }
+          .content { padding: 36px 40px; background: #1e293b; }
+          .task-details { background: #0f172a; border: 1px solid #22d3ee22; border-radius: 10px; padding: 24px; margin: 24px 0; }
+          .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; margin-bottom: 4px; margin-top: 16px; }
+          .label:first-child { margin-top: 0; }
+          .value { color: #e2e8f0; font-size: 15px; margin-bottom: 0; }
+          .priority-high { color: #f87171; font-weight: 700; }
+          .priority-medium { color: #fb923c; font-weight: 700; }
+          .priority-low { color: #4ade80; font-weight: 700; }
+          .btn-wrap { text-align: center; margin: 32px 0; }
+          .button { display: inline-block; background: #22d3ee; color: #0f172a; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 15px; letter-spacing: -0.2px; }
+          .footer { text-align: center; color: #475569; font-size: 12px; margin-top: 32px; padding: 24px 40px; border-top: 1px solid #22d3ee11; }
         </style>
       </head>
       <body>
         <div class="container">
           <div class="header">
-            <h1>📋 New Task Assigned</h1>
+            <h1>FormaOS</h1>
+            <p>Compliance Operating System</p>
           </div>
           <div class="content">
             <p>Hello,</p>
-            <p>You have been assigned a new task in <strong>${data.orgName}</strong>.</p>
+            <p>You have been assigned a new task in <strong style="color:#22d3ee">${data.orgName}</strong>.</p>
             
             <div class="task-details">
-              <div class="label">Task:</div>
+              <div class="label">Task</div>
               <div class="value"><strong>${data.taskTitle}</strong></div>
               
-              <div class="label">Description:</div>
+              <div class="label">Description</div>
               <div class="value">${data.taskDescription || 'No description provided'}</div>
               
-              <div class="label">Priority:</div>
+              <div class="label">Priority</div>
               <div class="value priority-${data.priority}">${data.priority.toUpperCase()}</div>
               
-              <div class="label">Due Date:</div>
+              <div class="label">Due Date</div>
               <div class="value">${new Date(data.dueDate).toLocaleDateString()}</div>
               
-              <div class="label">Assigned By:</div>
+              <div class="label">Assigned By</div>
               <div class="value">${data.assignedBy}</div>
             </div>
             
-            <center>
-              <a href="${data.taskUrl}" class="button">View Task</a>
-            </center>
+            <div class="btn-wrap">
+              <a href="${data.taskUrl}" class="button">View Task →</a>
+            </div>
             
-            <p style="margin-top: 20px;">Please complete this task by the due date to maintain compliance.</p>
+            <p style="color:#94a3b8;font-size:14px">Please complete this task by the due date to maintain compliance.</p>
           </div>
           
           <div class="footer">
-            <p>This is an automated message from FormaOS</p>
-            <p>To manage your email preferences, visit your account settings</p>
+            <p>Sent by FormaOS &mdash; Compliance Operating System</p>
+            <p>Manage your email preferences in account settings.</p>
           </div>
         </div>
       </body>
@@ -142,51 +147,54 @@ function generateCertificateExpiringEmail(data: {
     <html>
       <head>
         <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: ${urgencyColor}; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-          .content { background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; }
-          .alert-box { background: #fef3c7; border-left: 4px solid ${urgencyColor}; padding: 15px; margin: 20px 0; border-radius: 4px; }
-          .cert-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
-          .label { font-weight: bold; color: #6b7280; }
-          .value { color: #1f2937; margin-bottom: 10px; }
-          .button { display: inline-block; background: ${urgencyColor}; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
-          .footer { text-align: center; color: #6b7280; font-size: 12px; margin-top: 30px; }
+          body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #e2e8f0; background: #0f172a; margin: 0; padding: 0; }
+          .container { max-width: 600px; margin: 0 auto; background: #1e293b; border-radius: 12px; overflow: hidden; }
+          .header { background: linear-gradient(135deg, ${urgencyColor} 0%, ${urgencyColor}cc 100%); padding: 32px 40px; text-align: center; }
+          .header h1 { color: #fff; font-size: 26px; font-weight: 800; margin: 0; }
+          .header p { color: rgba(255,255,255,0.8); font-size: 13px; margin: 8px 0 0; }
+          .content { padding: 36px 40px; background: #1e293b; }
+          .alert-box { background: #0f172a; border-left: 4px solid ${urgencyColor}; border-radius: 8px; padding: 18px 20px; margin: 24px 0; }
+          .alert-box p { color: #f8fafc; font-weight: 700; margin: 0; font-size: 15px; }
+          .cert-details { background: #0f172a; border: 1px solid #22d3ee22; border-radius: 10px; padding: 24px; margin: 24px 0; }
+          .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; margin-bottom: 4px; margin-top: 16px; }
+          .label:first-child { margin-top: 0; }
+          .value { color: #e2e8f0; font-size: 15px; }
+          .btn-wrap { text-align: center; margin: 32px 0; }
+          .button { display: inline-block; background: ${urgencyColor}; color: #fff; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 15px; }
+          .footer { text-align: center; color: #475569; font-size: 12px; padding: 24px 40px; border-top: 1px solid #22d3ee11; }
         </style>
       </head>
       <body>
         <div class="container">
           <div class="header">
             <h1>${urgencyIcon} Certificate Expiring Soon</h1>
+            <p>FormaOS &mdash; Compliance Operating System</p>
           </div>
           <div class="content">
-            <div class="alert-box">
-              <strong>Action Required:</strong> Your certificate is expiring in ${data.daysRemaining} days!
-            </div>
+            <div class="alert-box"><p>Action Required: Your certificate is expiring in ${data.daysRemaining} days!</p></div>
             
-            <p>Hello,</p>
-            <p>This is a reminder that one of your certificates in <strong>${data.orgName}</strong> is approaching its expiration date.</p>
+            <p style="color:#94a3b8">Hello,</p>
+            <p>This is a reminder that one of your certificates in <strong style="color:#22d3ee">${data.orgName}</strong> is approaching its expiration date.</p>
             
             <div class="cert-details">
-              <div class="label">Certificate:</div>
+              <div class="label">Certificate</div>
               <div class="value"><strong>${data.certificateName}</strong></div>
               
-              <div class="label">Expiry Date:</div>
+              <div class="label">Expiry Date</div>
               <div class="value">${new Date(data.expiryDate).toLocaleDateString()}</div>
               
-              <div class="label">Days Remaining:</div>
+              <div class="label">Days Remaining</div>
               <div class="value" style="color: ${urgencyColor}; font-weight: bold;">${data.daysRemaining} days</div>
             </div>
             
-            <center>
-              <a href="${data.certificateUrl}" class="button">Renew Certificate</a>
-            </center>
+            <div class="btn-wrap">
+              <a href="${data.certificateUrl}" class="button">Renew Certificate →</a>
+            </div>
             
-            <p style="margin-top: 20px;">Please renew this certificate before it expires to maintain compliance.</p>
+            <p style="color:#94a3b8;font-size:14px">Please renew before it expires to maintain compliance.</p>
           </div>
-          
           <div class="footer">
-            <p>This is an automated message from FormaOS</p>
+            <p>Sent by FormaOS &mdash; Compliance Operating System</p>
           </div>
         </div>
       </body>
@@ -218,46 +226,51 @@ function generateComplianceAlertEmail(data: {
     <html>
       <head>
         <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: ${color}; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-          .content { background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; }
-          .alert-box { background: #fef3c7; border-left: 4px solid ${color}; padding: 15px; margin: 20px 0; border-radius: 4px; }
-          .recommendations { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
-          .rec-item { margin: 10px 0; padding-left: 20px; }
-          .button { display: inline-block; background: ${color}; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
-          .footer { text-align: center; color: #6b7280; font-size: 12px; margin-top: 30px; }
+          body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #e2e8f0; background: #0f172a; margin: 0; padding: 0; }
+          .container { max-width: 600px; margin: 0 auto; background: #1e293b; border-radius: 12px; overflow: hidden; }
+          .header { background: linear-gradient(135deg, ${color} 0%, ${color}cc 100%); padding: 32px 40px; text-align: center; }
+          .header h1 { color: #fff; font-size: 26px; font-weight: 800; margin: 0; }
+          .header p { color: rgba(255,255,255,0.8); font-size: 13px; margin: 8px 0 0; }
+          .content { padding: 36px 40px; }
+          .alert-box { background: #0f172a; border-left: 4px solid ${color}; border-radius: 8px; padding: 18px 20px; margin: 24px 0; }
+          .alert-box strong { color: #f8fafc; font-size: 15px; }
+          .recommendations { background: #0f172a; border: 1px solid #22d3ee22; border-radius: 10px; padding: 24px; margin: 24px 0; }
+          .recommendations strong { color: #22d3ee; display: block; margin-bottom: 12px; }
+          .rec-item { color: #cbd5e1; margin: 8px 0; padding-left: 16px; font-size: 14px; }
+          .btn-wrap { text-align: center; margin: 32px 0; }
+          .button { display: inline-block; background: ${color}; color: #fff; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 15px; }
+          .footer { text-align: center; color: #475569; font-size: 12px; padding: 24px 40px; border-top: 1px solid #22d3ee11; }
         </style>
       </head>
       <body>
         <div class="container">
           <div class="header">
-            <h1>🚨 Compliance Alert - ${data.severity.toUpperCase()}</h1>
+            <h1>🚨 Compliance Alert &mdash; ${data.severity.toUpperCase()}</h1>
+            <p>FormaOS &mdash; Compliance Operating System</p>
           </div>
           <div class="content">
             <div class="alert-box">
               <strong>${data.alertTitle}</strong>
             </div>
             
-            <p>Hello,</p>
-            <p>A compliance alert has been detected in <strong>${data.orgName}</strong>.</p>
+            <p style="color:#94a3b8">Hello,</p>
+            <p>A compliance alert has been detected in <strong style="color:#22d3ee">${data.orgName}</strong>.</p>
             
-            <p style="background: white; padding: 15px; border-radius: 8px;">
+            <p style="background: #0f172a; padding: 16px; border-radius: 8px; color: #cbd5e1; font-size: 14px;">
               ${data.alertDescription}
             </p>
             
             <div class="recommendations">
-              <strong>Recommended Actions:</strong>
-              ${data.recommendations.map((rec) => `<div class="rec-item">• ${rec}</div>`).join('')}
+              <strong>Recommended Actions</strong>
+              ${data.recommendations.map((rec) => `<div class="rec-item">&bull; ${rec}</div>`).join('')}
             </div>
             
-            <center>
-              <a href="${data.dashboardUrl}" class="button">View Dashboard</a>
-            </center>
+            <div class="btn-wrap">
+              <a href="${data.dashboardUrl}" class="button">View Dashboard →</a>
+            </div>
           </div>
-          
           <div class="footer">
-            <p>This is an automated message from FormaOS</p>
+            <p>Sent by FormaOS &mdash; Compliance Operating System</p>
           </div>
         </div>
       </body>
@@ -289,29 +302,34 @@ function generateWeeklyDigestEmail(data: {
     <html>
       <head>
         <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: #2563eb; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-          .content { background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; }
-          .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
-          .stat-card { background: white; padding: 15px; border-radius: 8px; text-align: center; }
-          .stat-value { font-size: 32px; font-weight: bold; color: #2563eb; }
-          .stat-label { font-size: 12px; color: #6b7280; text-transform: uppercase; }
-          .task-list { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
-          .task-item { padding: 10px; border-bottom: 1px solid #e5e7eb; }
-          .button { display: inline-block; background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
-          .footer { text-align: center; color: #6b7280; font-size: 12px; margin-top: 30px; }
+          body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #e2e8f0; background: #0f172a; margin: 0; padding: 0; }
+          .container { max-width: 600px; margin: 0 auto; background: #1e293b; border-radius: 12px; overflow: hidden; }
+          .header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-bottom: 1px solid #22d3ee33; padding: 32px 40px; text-align: center; }
+          .header h1 { color: #22d3ee; font-size: 26px; font-weight: 800; margin: 0; }
+          .header p { color: #94a3b8; font-size: 13px; margin: 8px 0 0; }
+          .content { padding: 36px 40px; }
+          .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 24px 0; }
+          .stat-card { background: #0f172a; border: 1px solid #22d3ee22; padding: 18px; border-radius: 10px; text-align: center; }
+          .stat-value { font-size: 32px; font-weight: 800; color: #22d3ee; line-height: 1; }
+          .stat-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 6px; }
+          .task-list { background: #0f172a; border: 1px solid #22d3ee22; border-radius: 10px; padding: 20px; margin: 24px 0; }
+          .task-list strong { color: #22d3ee; display: block; margin-bottom: 12px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; }
+          .task-item { padding: 10px 0; border-bottom: 1px solid #1e293b; color: #cbd5e1; font-size: 14px; }
+          .task-item:last-child { border-bottom: none; }
+          .btn-wrap { text-align: center; margin: 32px 0; }
+          .button { display: inline-block; background: #22d3ee; color: #0f172a; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 15px; }
+          .footer { text-align: center; color: #475569; font-size: 12px; padding: 24px 40px; border-top: 1px solid #22d3ee11; }
         </style>
       </head>
       <body>
         <div class="container">
           <div class="header">
-            <h1>📊 Weekly Compliance Summary</h1>
-            <p>${new Date(data.weekStart).toLocaleDateString()} - ${new Date(data.weekEnd).toLocaleDateString()}</p>
+            <h1>FormaOS</h1>
+            <p>📊 Weekly Compliance Summary &mdash; ${new Date(data.weekStart).toLocaleDateString()} &ndash; ${new Date(data.weekEnd).toLocaleDateString()}</p>
           </div>
           <div class="content">
-            <p>Hello ${data.userName},</p>
-            <p>Here's your weekly compliance summary for <strong>${data.orgName}</strong>.</p>
+            <p style="color:#94a3b8">Hello ${data.userName},</p>
+            <p>Here's your weekly compliance summary for <strong style="color:#22d3ee">${data.orgName}</strong>.</p>
             
             <div class="stats-grid">
               <div class="stat-card">
@@ -324,7 +342,7 @@ function generateWeeklyDigestEmail(data: {
               </div>
               <div class="stat-card">
                 <div class="stat-value">${data.stats.certificatesRenewed}</div>
-                <div class="stat-label">Certificates Renewed</div>
+                <div class="stat-label">Certs Renewed</div>
               </div>
               <div class="stat-card">
                 <div class="stat-value">${data.stats.certificatesExpiring}</div>
@@ -344,14 +362,13 @@ function generateWeeklyDigestEmail(data: {
               data.topTasks.length > 0
                 ? `
               <div class="task-list">
-                <strong>Upcoming Tasks:</strong>
+                <strong>Upcoming Tasks</strong>
                 ${data.topTasks
                   .map(
                     (task) => `
                   <div class="task-item">
-                    <strong>${task.title}</strong>
-                    <br>
-                    <span style="color: #6b7280; font-size: 14px;">Due: ${new Date(task.dueDate).toLocaleDateString()}</span>
+                    <strong style="color:#e2e8f0">${task.title}</strong><br>
+                    <span style="color: #64748b; font-size: 13px;">Due: ${new Date(task.dueDate).toLocaleDateString()}</span>
                   </div>
                 `,
                   )
@@ -361,14 +378,13 @@ function generateWeeklyDigestEmail(data: {
                 : ''
             }
             
-            <center>
-              <a href="${data.dashboardUrl}" class="button">View Full Dashboard</a>
-            </center>
+            <div class="btn-wrap">
+              <a href="${data.dashboardUrl}" class="button">View Full Dashboard →</a>
+            </div>
           </div>
-          
           <div class="footer">
-            <p>This is an automated weekly digest from FormaOS</p>
-            <p>To manage your email preferences, visit your account settings</p>
+            <p>Sent by FormaOS &mdash; Compliance Operating System</p>
+            <p>Manage your email preferences in account settings.</p>
           </div>
         </div>
       </body>

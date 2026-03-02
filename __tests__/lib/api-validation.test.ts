@@ -15,8 +15,6 @@ import {
   safeStringSchema,
   orgNameSchema,
   paginationSchema,
-  displayNameSchema,
-  urlSchema,
   formatZodError,
 } from '@/lib/security/api-validation';
 import { z } from 'zod';

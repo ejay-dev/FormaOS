@@ -5,14 +5,15 @@ import {
   Head,
   Heading,
   Html,
-  Link,
   Preview,
   Section,
   Text,
+  Hr,
 } from '@react-email/components';
 import * as React from 'react';
 
-const DEFAULT_APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.formaos.com.au';
+const DEFAULT_APP_URL =
+  process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.formaos.com.au';
 
 interface InviteEmailProps {
   inviterName?: string;
@@ -32,52 +33,66 @@ export default function InviteEmail({
   return (
     <Html>
       <Head />
-      <Preview>You've been invited to join {organizationName} on FormaOS</Preview>
+      <Preview>
+        You&apos;ve been invited to join {organizationName} on FormaOS
+      </Preview>
       <Body style={main}>
         <Container style={container}>
+          {/* Header */}
           <Section style={header}>
-            <Heading style={h1}>FormaOS</Heading>
+            <Heading style={logo}>FormaOS</Heading>
+            <Text style={tagline}>Compliance Operating System</Text>
           </Section>
 
+          {/* Content */}
           <Section style={content}>
-            <Heading style={h2}>You've been invited! 🎉</Heading>
-            
+            <Heading style={h2}>You&apos;ve been invited! 🎉</Heading>
+
             <Text style={text}>
-              <strong>{inviterName}</strong> ({inviterEmail}) has invited you to join{' '}
-              <strong>{organizationName}</strong> on FormaOS.
+              <strong style={{ color: '#f1f5f9' }}>{inviterName}</strong>{' '}
+              <span style={{ color: '#64748b' }}>({inviterEmail})</span> has
+              invited you to join{' '}
+              <strong style={{ color: '#22d3ee' }}>{organizationName}</strong>{' '}
+              on FormaOS.
             </Text>
 
             <Section style={infoBox}>
-              <Text style={infoText}>
-                <strong>Organization:</strong> {organizationName}
+              <Text style={infoRow}>
+                <span style={infoLabel}>Organization</span>
+                <span style={infoValue}>{organizationName}</span>
               </Text>
-              <Text style={infoText}>
-                <strong>Role:</strong> {role.charAt(0).toUpperCase() + role.slice(1)}
+              <Hr style={infoHr} />
+              <Text style={infoRow}>
+                <span style={infoLabel}>Role</span>
+                <span style={{ ...infoValue, color: '#22d3ee' }}>
+                  {role.charAt(0).toUpperCase() + role.slice(1)}
+                </span>
               </Text>
-              <Text style={infoText}>
-                <strong>Invited by:</strong> {inviterName}
+              <Hr style={infoHr} />
+              <Text style={infoRow}>
+                <span style={infoLabel}>Invited by</span>
+                <span style={infoValue}>{inviterName}</span>
               </Text>
             </Section>
 
             <Text style={text}>
-              FormaOS is a comprehensive compliance operating system that helps teams manage
-              governance, policies, evidence collection, and audit trails—all in one place.
+              FormaOS is a comprehensive compliance operating system — manage
+              governance, policies, evidence, and audit trails all in one place.
             </Text>
 
             <Section style={buttonContainer}>
               <Button style={button} href={inviteUrl}>
-                Accept Invitation
+                Accept Invitation →
               </Button>
             </Section>
 
             <Text style={smallText}>
-              This invitation link will expire in 7 days. If you don't want to join this
-              organization, you can safely ignore this email.
+              This invitation expires in 7 days. If you don&apos;t want to join,
+              you can safely ignore this email.
             </Text>
 
-            <Text style={footer}>
-              — The FormaOS Team
-            </Text>
+            <Hr style={divider} />
+            <Text style={footer}>— The FormaOS Team</Text>
           </Section>
         </Container>
       </Body>
@@ -86,64 +101,92 @@ export default function InviteEmail({
 }
 
 const main = {
-  backgroundColor: '#f6f9fc',
+  backgroundColor: '#0f172a',
   fontFamily:
-    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
+    "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
 };
 
 const container = {
-  backgroundColor: '#ffffff',
+  backgroundColor: '#1e293b',
   margin: '0 auto',
-  padding: '20px 0 48px',
-  marginBottom: '64px',
   maxWidth: '600px',
+  borderRadius: '12px',
+  overflow: 'hidden' as const,
 };
 
 const header = {
-  padding: '32px 20px',
+  background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+  borderBottom: '1px solid rgba(34,211,238,0.2)',
+  padding: '32px 40px',
   textAlign: 'center' as const,
-  borderBottom: '1px solid #e6e6e6',
 };
 
-const h1 = {
-  color: '#1a1a1a',
-  fontSize: '32px',
-  fontWeight: '700',
+const logo = {
+  color: '#22d3ee',
+  fontSize: '28px',
+  fontWeight: '800',
   margin: '0',
-  padding: '0',
+  letterSpacing: '-0.5px',
+};
+
+const tagline = {
+  color: '#94a3b8',
+  fontSize: '12px',
+  margin: '6px 0 0',
+  textTransform: 'uppercase' as const,
+  letterSpacing: '0.1em',
 };
 
 const content = {
-  padding: '32px 40px',
+  padding: '36px 40px',
 };
 
 const h2 = {
-  color: '#1a1a1a',
+  color: '#f1f5f9',
   fontSize: '24px',
-  fontWeight: '600',
+  fontWeight: '700',
   lineHeight: '1.3',
   margin: '0 0 20px',
 };
 
 const text = {
-  color: '#525252',
-  fontSize: '16px',
-  lineHeight: '1.6',
+  color: '#94a3b8',
+  fontSize: '15px',
+  lineHeight: '1.7',
   margin: '16px 0',
 };
 
 const infoBox = {
-  backgroundColor: '#f6f9fc',
-  borderRadius: '8px',
-  padding: '20px',
+  backgroundColor: '#0f172a',
+  border: '1px solid rgba(34,211,238,0.15)',
+  borderRadius: '10px',
+  padding: '20px 24px',
   margin: '24px 0',
 };
 
-const infoText = {
-  color: '#525252',
-  fontSize: '16px',
-  lineHeight: '1.6',
-  margin: '8px 0',
+const infoRow = {
+  display: 'flex' as const,
+  justifyContent: 'space-between' as const,
+  margin: '0',
+  fontSize: '14px',
+};
+
+const infoLabel = {
+  color: '#64748b',
+  fontWeight: '600',
+  textTransform: 'uppercase' as const,
+  fontSize: '11px',
+  letterSpacing: '0.08em',
+};
+
+const infoValue = {
+  color: '#e2e8f0',
+  fontWeight: '500',
+};
+
+const infoHr = {
+  borderColor: 'rgba(34,211,238,0.08)',
+  margin: '12px 0',
 };
 
 const buttonContainer = {
@@ -152,27 +195,31 @@ const buttonContainer = {
 };
 
 const button = {
-  backgroundColor: '#667eea',
+  backgroundColor: '#22d3ee',
   borderRadius: '8px',
-  color: '#ffffff',
-  fontSize: '16px',
-  fontWeight: '600',
+  color: '#0f172a',
+  fontSize: '15px',
+  fontWeight: '700',
   textDecoration: 'none',
   textAlign: 'center' as const,
   display: 'inline-block',
-  padding: '12px 32px',
+  padding: '14px 32px',
 };
 
 const smallText = {
-  color: '#8a8a8a',
-  fontSize: '14px',
-  lineHeight: '1.5',
+  color: '#475569',
+  fontSize: '13px',
+  lineHeight: '1.6',
   margin: '16px 0',
 };
 
+const divider = {
+  borderColor: 'rgba(34,211,238,0.1)',
+  margin: '24px 0',
+};
+
 const footer = {
-  color: '#8a8a8a',
-  fontSize: '14px',
-  marginTop: '32px',
-  fontStyle: 'italic',
+  color: '#475569',
+  fontSize: '13px',
+  fontStyle: 'italic' as const,
 };

@@ -13,7 +13,7 @@ jest.mock('@/lib/redis/client', () => ({
 }));
 
 import { QueueClient, getQueueClient } from '@/lib/queue/client';
-import { DEFAULT_QUEUE_CONFIG, QUEUE_KEYS } from '@/lib/queue/types';
+import { QUEUE_KEYS } from '@/lib/queue/types';
 import type { EmailSendPayload } from '@/lib/queue/types';
 import { getRedisClient } from '@/lib/redis/client';
 
