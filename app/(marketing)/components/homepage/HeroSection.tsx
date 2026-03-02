@@ -1,20 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import {
-  motion,
-  useInView,
-  useReducedMotion,
-} from 'framer-motion';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
-import {
-  ArrowRight,
-  ShieldCheck,
-  Sparkles,
-} from 'lucide-react';
+import { ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 import { duration } from '@/config/motion';
 import { brand } from '@/config/brand';
-import { SparklesCore } from '@/components/marketing/SparklesCore';
+import { AuroraBackground } from '@/components/marketing/AuroraBackground';
 import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 import { useDeviceTier } from '@/lib/device-tier';
@@ -71,7 +63,8 @@ export function HeroSection() {
   const tierConfig = useDeviceTier();
   const { snapshot } = useControlPlaneRuntime();
   const runtimeMarketing = snapshot?.marketing ?? DEFAULT_RUNTIME_MARKETING;
-  const expensiveEffectsEnabled = runtimeMarketing.runtime.expensiveEffectsEnabled;
+  const expensiveEffectsEnabled =
+    runtimeMarketing.runtime.expensiveEffectsEnabled;
   const heroCopy = normalizeHeroCopy(
     runtimeMarketing.hero,
     DEFAULT_RUNTIME_MARKETING.hero,
@@ -99,12 +92,14 @@ export function HeroSection() {
   useEffect(() => {
     if (typeof document === 'undefined') return undefined;
 
-    const updateVisibility = () => setIsPageVisible(document.visibilityState !== 'hidden');
+    const updateVisibility = () =>
+      setIsPageVisible(document.visibilityState !== 'hidden');
     updateVisibility();
     document.addEventListener('visibilitychange', updateVisibility, {
       passive: true,
     });
-    return () => document.removeEventListener('visibilitychange', updateVisibility);
+    return () =>
+      document.removeEventListener('visibilitychange', updateVisibility);
   }, []);
 
   useEffect(() => {
@@ -153,15 +148,10 @@ export function HeroSection() {
   ]);
 
   const handlePrimaryClick = (event: MouseEvent<HTMLAnchorElement>) => {
-    telemetry.trackCtaClick(
-      'primary',
-      ctas.primary.label,
-      ctas.primary.href,
-      {
-        isAppDomain: ctas.primary.isAppDomain,
-        isAuthRoute: ctas.primary.isAuthRoute,
-      },
-    );
+    telemetry.trackCtaClick('primary', ctas.primary.label, ctas.primary.href, {
+      isAppDomain: ctas.primary.isAppDomain,
+      isAuthRoute: ctas.primary.isAuthRoute,
+    });
     if (event.defaultPrevented) return;
   };
 
@@ -189,24 +179,22 @@ export function HeroSection() {
       className="home-hero relative isolate overflow-hidden"
       style={{ minHeight: 'clamp(88svh, 100vh, 1080px)' }}
     >
-      <SparklesCore
-        className="pointer-events-none absolute inset-0"
-        background="#030712"
-        particleColor="#67e8f9"
-        minSize={0.7}
-        maxSize={2.4}
-        speed={3.6}
-        particleDensity={150}
-      />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_22%_32%,rgba(45,212,191,0.24)_0%,transparent_46%),radial-gradient(circle_at_78%_68%,rgba(167,139,250,0.26)_0%,transparent_48%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(125,211,252,0.09)_1px,transparent_1px),linear-gradient(to_bottom,rgba(125,211,252,0.07)_1px,transparent_1px)] bg-[size:46px_46px] opacity-35" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/12 via-slate-950/46 to-slate-950/86" />
+      {/* Aurora gradient blobs — premium animated atmosphere */}
+      <AuroraBackground className="absolute inset-0" />
+
+      {/* Soft vignette for text legibility */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/30 to-slate-950/80" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,transparent_50%,rgba(3,7,18,0.70)_100%)]" />
 
       <div className="relative z-10 mx-auto flex min-h-[inherit] max-w-7xl flex-col items-center justify-center px-6 pb-16 pt-28 text-center sm:px-8 sm:pt-32 lg:px-12">
         <motion.div
           initial={shouldAnimateIntro ? { opacity: 0, y: 16 } : false}
           animate={{ opacity: 1, y: 0 }}
-          transition={shouldAnimateIntro ? { duration: duration.slow, delay: 0.12 } : { duration: 0 }}
+          transition={
+            shouldAnimateIntro
+              ? { duration: duration.slow, delay: 0.12 }
+              : { duration: 0 }
+          }
           className="mb-7 inline-flex items-center gap-2 rounded-full border border-cyan-300/35 bg-cyan-500/10 px-4 py-2.5 backdrop-blur-md"
         >
           <ShieldCheck className="h-4 w-4 text-cyan-300" />
@@ -218,7 +206,11 @@ export function HeroSection() {
         <motion.h1
           initial={shouldAnimateIntro ? { opacity: 0, y: 26 } : false}
           animate={{ opacity: 1, y: 0 }}
-          transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.24 } : { duration: 0 }}
+          transition={
+            shouldAnimateIntro
+              ? { duration: duration.slower, delay: 0.24 }
+              : { duration: 0 }
+          }
           className="max-w-5xl text-[2.35rem] font-semibold leading-[1.04] tracking-tight text-white sm:text-5xl lg:text-7xl"
         >
           <span>{heroCopy.headlinePrimary}</span>
@@ -231,7 +223,11 @@ export function HeroSection() {
         <motion.p
           initial={shouldAnimateIntro ? { opacity: 0, y: 18 } : false}
           animate={{ opacity: 1, y: 0 }}
-          transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.36 } : { duration: 0 }}
+          transition={
+            shouldAnimateIntro
+              ? { duration: duration.slower, delay: 0.36 }
+              : { duration: 0 }
+          }
           className="mt-6 max-w-3xl text-base leading-relaxed text-slate-200 sm:text-lg lg:text-xl"
         >
           {heroCopy.subheadline}
@@ -240,7 +236,11 @@ export function HeroSection() {
         <motion.div
           initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
           animate={{ opacity: 1, y: 0 }}
-          transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.5 } : { duration: 0 }}
+          transition={
+            shouldAnimateIntro
+              ? { duration: duration.slower, delay: 0.5 }
+              : { duration: 0 }
+          }
           className="mt-9 flex w-full max-w-xl flex-col justify-center gap-3 sm:flex-row sm:gap-4"
         >
           <motion.a
@@ -276,7 +276,11 @@ export function HeroSection() {
         <motion.div
           initial={shouldAnimateIntro ? { opacity: 0, y: 18 } : false}
           animate={{ opacity: 1, y: 0 }}
-          transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.62 } : { duration: 0 }}
+          transition={
+            shouldAnimateIntro
+              ? { duration: duration.slower, delay: 0.62 }
+              : { duration: 0 }
+          }
           className="mt-8 grid w-full max-w-5xl gap-3 sm:grid-cols-3"
         >
           {SIGNAL_CARDS.map((card) => (
@@ -284,8 +288,12 @@ export function HeroSection() {
               key={card.label}
               className="rounded-xl border border-cyan-200/10 bg-slate-950/55 px-4 py-3 text-left backdrop-blur-sm"
             >
-              <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">{card.label}</p>
-              <p className="mt-1 text-base font-semibold text-white">{card.value}</p>
+              <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
+                {card.label}
+              </p>
+              <p className="mt-1 text-base font-semibold text-white">
+                {card.value}
+              </p>
               <p className="mt-1 text-xs text-cyan-200/85">{card.detail}</p>
             </div>
           ))}
@@ -294,7 +302,11 @@ export function HeroSection() {
         <motion.div
           initial={shouldAnimateIntro ? { opacity: 0, y: 16 } : false}
           animate={{ opacity: 1, y: 0 }}
-          transition={shouldAnimateIntro ? { duration: duration.slower, delay: 0.72 } : { duration: 0 }}
+          transition={
+            shouldAnimateIntro
+              ? { duration: duration.slower, delay: 0.72 }
+              : { duration: 0 }
+          }
           className="mt-6 flex w-full max-w-5xl flex-wrap items-center justify-center gap-2"
         >
           {TRUST_PILLS.map((pill) => (
