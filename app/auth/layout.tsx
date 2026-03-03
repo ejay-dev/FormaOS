@@ -1,5 +1,3 @@
-import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
-
 export default function AuthLayout({
   children,
 }: {
@@ -7,7 +5,6 @@ export default function AuthLayout({
 }) {
   return (
     <div className="min-h-screen bg-slate-950">
-      <EnterpriseTrustStrip surface="auth" />
       {children}
     </div>
   );

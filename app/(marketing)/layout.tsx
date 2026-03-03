@@ -6,7 +6,6 @@ import { NavLinks } from './components/NavLinks';
 import { MobileNav } from './components/MobileNav';
 import { HeaderCTA } from './components/HeaderCTA';
 import { Footer } from './components/Footer';
-import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
 import './marketing.css';
 import './snow-field.css';
 import './design-system.css';
@@ -81,8 +80,6 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
               __html: `(function(){var h=document.querySelector('.mk-header-premium');if(!h)return;var c='scrolled';function u(){h.classList.toggle(c,window.scrollY>10)}window.addEventListener('scroll',u,{passive:true});u()})()`,
             }}
           />
-
-          <EnterpriseTrustStrip surface="marketing" />
 
           <main
             id="main-content"
