@@ -157,15 +157,17 @@ export function CapabilitiesGrid() {
   return (
     <section className="mk-section home-section home-section--contrast relative overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="scaleUp" range={[0, 0.3]} className="text-center mb-16">
-          <div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-sm font-medium mb-6"
-          >
+        <ScrollReveal
+          variant="scaleUp"
+          range={[0, 0.3]}
+          className="text-center mb-16"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-sm font-medium mb-6">
             <span className="w-2 h-2 rounded-full bg-teal-400" />
             Platform Capabilities
           </div>
 
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-6">
             Complete Compliance
             <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
               {' '}
@@ -181,11 +183,17 @@ export function CapabilitiesGrid() {
 
         <div className="space-y-10">
           {capabilityCategories.map((category, catIdx) => {
-            const categoryCapabilities = capabilities.slice(category.range[0], category.range[1]);
+            const categoryCapabilities = capabilities.slice(
+              category.range[0],
+              category.range[1],
+            );
             return (
               <div key={category.label}>
                 {/* Category label */}
-                <ScrollReveal variant="fadeLeft" range={[catIdx * 0.06, 0.2 + catIdx * 0.06]}>
+                <ScrollReveal
+                  variant="fadeLeft"
+                  range={[catIdx * 0.06, 0.2 + catIdx * 0.06]}
+                >
                   <div className="flex items-center gap-3 mb-5">
                     <div className="h-px flex-1 max-w-[40px] bg-gradient-to-r from-teal-500/40 to-transparent" />
                     <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-teal-400/60">
@@ -195,7 +203,11 @@ export function CapabilitiesGrid() {
                   </div>
                 </ScrollReveal>
 
-                <SectionChoreography pattern="stagger-wave" stagger={0.04} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <SectionChoreography
+                  pattern="stagger-wave"
+                  stagger={0.04}
+                  className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4"
+                >
                   {categoryCapabilities.map((capability) => {
                     const Icon = capability.icon;
                     return (

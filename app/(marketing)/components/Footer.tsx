@@ -98,7 +98,7 @@ function FooterCTA() {
   return (
     <ScrollReveal
       variant="fadeUp"
-      className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-500/10 via-blue-500/5 to-purple-500/10 border border-white/10 p-8 lg:p-10"
+      className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-500/10 via-blue-500/5 to-purple-500/10 border border-white/10 p-5 sm:p-8 lg:p-10"
     >
       {/* Animated gradient orb */}
       <motion.div
@@ -216,7 +216,7 @@ export function Footer() {
         </div>
 
         {/* Main Footer Content */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12 py-12 border-t border-white/10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12 py-12 border-t border-white/10">
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-1 space-y-6">
             <ScrollReveal variant="blurIn">

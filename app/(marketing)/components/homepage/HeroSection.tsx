@@ -177,7 +177,6 @@ export function HeroSection() {
     <section
       ref={containerRef}
       className="home-hero relative isolate overflow-hidden"
-      style={{ minHeight: 'clamp(88svh, 100vh, 1080px)' }}
     >
       {/* Aurora + sparkles + beams — enterprise atmosphere */}
       <AuroraBackground className="absolute inset-0" />
@@ -189,7 +188,7 @@ export function HeroSection() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_100%_at_0%_50%,rgba(3,7,18,0.40),transparent_70%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_100%_at_100%_50%,rgba(3,7,18,0.40),transparent_70%)]" />
 
-      <div className="relative z-10 mx-auto flex min-h-[inherit] max-w-7xl flex-col items-center justify-center px-6 pb-16 pt-28 text-center sm:px-8 sm:pt-32 lg:px-12">
+      <div className="relative z-10 mx-auto flex min-h-[inherit] max-w-7xl flex-col items-center justify-center px-6 pb-16 pt-20 text-center sm:px-8 sm:pt-28 lg:px-12 lg:pt-32">
         <motion.div
           initial={shouldAnimateIntro ? { opacity: 0, y: 16 } : false}
           animate={{ opacity: 1, y: 0 }}
@@ -214,7 +213,7 @@ export function HeroSection() {
               ? { duration: duration.slower, delay: 0.24 }
               : { duration: 0 }
           }
-          className="max-w-5xl text-[2.35rem] font-semibold leading-[1.04] tracking-tight text-white sm:text-5xl lg:text-7xl"
+          className="max-w-5xl text-[clamp(1.75rem,5vw+0.5rem,2.35rem)] font-semibold leading-[1.04] tracking-tight text-white sm:text-5xl lg:text-7xl"
         >
           <span>{heroCopy.headlinePrimary}</span>
           <br />

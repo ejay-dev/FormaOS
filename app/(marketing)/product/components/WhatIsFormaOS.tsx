@@ -1,6 +1,15 @@
 'use client';
 
-import { Building2, FileCheck, Database, AlertTriangle, Shield, CheckCircle, Users, Lock } from 'lucide-react';
+import {
+  Building2,
+  FileCheck,
+  Database,
+  AlertTriangle,
+  Shield,
+  CheckCircle,
+  Users,
+  Lock,
+} from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
@@ -40,7 +49,7 @@ export function WhatIsFormaOS() {
               What Is FormaOS?
             </div>
 
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-5 text-white">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-5 text-white">
               An end-to-end{' '}
               <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
                 Compliance Operating System
@@ -48,7 +57,9 @@ export function WhatIsFormaOS() {
             </h2>
 
             <p className="text-base sm:text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed">
-              Not a GRC checklist tool. Not a document repository. FormaOS is an operational layer that enforces compliance as your organization works — continuously, with evidence generated automatically.
+              Not a GRC checklist tool. Not a document repository. FormaOS is an
+              operational layer that enforces compliance as your organization
+              works — continuously, with evidence generated automatically.
             </p>
           </div>
         </ScrollReveal>
@@ -61,19 +72,25 @@ export function WhatIsFormaOS() {
               FormaOS unifies:
             </h3>
 
-            <SectionChoreography pattern="cascade" stagger={0.04} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+            <SectionChoreography
+              pattern="cascade"
+              stagger={0.04}
+              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5"
+            >
               {UNIFIES.map((item) => {
                 const Icon = item.icon;
                 return (
                   <motion.div
                     key={item.label}
                     whileHover={{ y: -2 }}
-                    className="flex flex-col items-center text-center rounded-xl border border-white/[0.05] bg-white/[0.02] px-3 py-4 hover:border-teal-400/15 hover:bg-white/[0.04] transition-all duration-200"
+                    className="flex flex-col items-center text-center rounded-xl border border-white/[0.05] bg-white/[0.02] px-2 py-3 sm:px-3 sm:py-4 hover:border-teal-400/15 hover:bg-white/[0.04] transition-all duration-200 last:col-span-2 sm:last:col-span-1"
                   >
                     <div className="inline-flex items-center justify-center rounded-xl border border-teal-400/20 bg-teal-500/10 p-3 mb-3">
                       <Icon className="w-5 h-5 text-teal-400" />
                     </div>
-                    <span className="text-xs text-slate-400 leading-snug">{item.label}</span>
+                    <span className="text-xs text-slate-400 leading-snug">
+                      {item.label}
+                    </span>
                   </motion.div>
                 );
               })}

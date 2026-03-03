@@ -27,7 +27,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      "Finally, a compliance platform designed for operations teams, not just IT. Our frontline staff actually use it — because the workflows make sense to them.",
+      'Finally, a compliance platform designed for operations teams, not just IT. Our frontline staff actually use it — because the workflows make sense to them.',
     name: 'Rachel K.',
     role: 'Head of Governance & Risk',
     org: 'Regional Financial Services Group',
@@ -77,19 +77,25 @@ export function TestimonialsSection() {
           Proof from regulated operations
         </h2>
         <p className="mt-4 text-base text-slate-400">
-          Healthcare, disability services, and financial teams running compliance as governance — not guesswork.
+          Healthcare, disability services, and financial teams running
+          compliance as governance — not guesswork.
         </p>
       </motion.div>
 
       {/* Cards */}
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Note: 5 items — last card spans full width on tablet to avoid orphan */}
         {TESTIMONIALS.map((t, i) => (
           <motion.article
             key={t.name}
             initial={{ opacity: 0, y: 32 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
-            className={`relative flex flex-col rounded-2xl border bg-white/[0.03] p-8 backdrop-blur-sm ${t.borderClass}`}
+            transition={{
+              duration: 0.6,
+              delay: i * 0.12,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className={`relative flex flex-col rounded-2xl border bg-white/[0.03] p-5 sm:p-8 backdrop-blur-sm ${t.borderClass} ${i === TESTIMONIALS.length - 1 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
           >
             {/* Gradient tint */}
             <div
@@ -97,7 +103,10 @@ export function TestimonialsSection() {
             />
 
             {/* Quote icon */}
-            <Quote className="relative mb-5 h-6 w-6 text-slate-500" aria-hidden="true" />
+            <Quote
+              className="relative mb-5 h-6 w-6 text-slate-500"
+              aria-hidden="true"
+            />
 
             {/* Quote text */}
             <blockquote className="relative flex-1 text-base leading-relaxed text-slate-200">
@@ -112,7 +121,9 @@ export function TestimonialsSection() {
                   {t.name.charAt(0)}
                 </div>
                 <div>
-                  <div className="text-sm font-semibold text-white">{t.name}</div>
+                  <div className="text-sm font-semibold text-white">
+                    {t.name}
+                  </div>
                   <div className="mt-0.5 text-xs text-slate-400">{t.role}</div>
                   <div className="mt-0.5 text-xs text-slate-500">{t.org}</div>
                 </div>

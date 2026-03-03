@@ -39,8 +39,7 @@ function ContactHero() {
       }}
       headline={
         <>
-          Let&apos;s Talk About Your
-          <br />
+          Let&apos;s Talk About Your <br className="hidden sm:block" />
           <span className="bg-gradient-to-r from-blue-400 via-cyan-500 to-purple-500 bg-clip-text text-transparent">
             Compliance Strategy
           </span>
@@ -421,8 +420,8 @@ function ClosingCTA() {
       <div className="max-w-4xl mx-auto px-6 lg:px-12 text-center">
         <ScrollReveal variant="depthScale" range={[0, 0.3]}>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-6">
-            Operational Compliance Starts With
-            <br />
+            Operational Compliance Starts With{' '}
+            <br className="hidden sm:block" />
             <span className="bg-gradient-to-r from-blue-400 via-cyan-500 to-purple-500 bg-clip-text text-transparent">
               the Right Conversation
             </span>

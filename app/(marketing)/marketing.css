@@ -1156,11 +1156,6 @@
    MOBILE FIXES
    ========================================================= */
 
-html,
-body {
-  overflow-x: hidden;
-}
-
 .mk-shell {
   overflow-x: hidden;
   width: 100%;
@@ -1175,7 +1170,7 @@ body {
   }
 
   .home-hero {
-    min-height: 100svh;
+    min-height: clamp(88svh, 100vh, 1080px);
     padding-top: 2rem;
     padding-bottom: 2.5rem;
   }

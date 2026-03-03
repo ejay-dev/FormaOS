@@ -9,14 +9,15 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 export function FinalCTA() {
   return (
-    <section className="product-section product-section--cta relative py-32 overflow-hidden">
+    <section className="product-section product-section--cta relative py-16 sm:py-24 lg:py-32 overflow-hidden">
       <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.35]}>
           <div className="product-panel product-panel--strong backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
-            <div className="bg-gradient-to-r from-white/[0.08] to-white/[0.04] border-b border-white/10 px-8 sm:px-12 py-10 text-center">
+            <div className="bg-gradient-to-r from-white/[0.08] to-white/[0.04] border-b border-white/10 px-5 sm:px-8 lg:px-12 py-8 sm:py-10 text-center">
               <ScrollReveal variant="blurIn" range={[0.02, 0.35]}>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white">
-                  Most platforms <span className="text-gray-500">store</span> compliance.
+                  Most platforms <span className="text-gray-500">store</span>{' '}
+                  compliance.
                   <br />
                   <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
                     FormaOS operates it.
@@ -26,13 +27,13 @@ export function FinalCTA() {
 
               <ScrollReveal variant="depthSlide" range={[0.05, 0.38]}>
                 <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-                  From obligation to execution, validation, and defense. FormaOS is
-                  the operating system for modern compliance.
+                  From obligation to execution, validation, and defense. FormaOS
+                  is the operating system for modern compliance.
                 </p>
               </ScrollReveal>
             </div>
 
-            <div className="px-8 sm:px-12 py-10 text-center">
+            <div className="px-5 sm:px-8 lg:px-12 py-8 sm:py-10 text-center">
               <ScrollReveal variant="slideUp" range={[0.08, 0.4]}>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
                   <Link

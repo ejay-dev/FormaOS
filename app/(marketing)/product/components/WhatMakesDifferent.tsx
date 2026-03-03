@@ -9,7 +9,8 @@ const differentiators = [
   {
     icon: Layers,
     title: 'A True Compliance Operating System',
-    description: 'FormaOS is infrastructure, not a tool. It orchestrates governance, execution, and evidence across your organization.',
+    description:
+      'FormaOS is infrastructure, not a tool. It orchestrates governance, execution, and evidence across your organization.',
     details: [
       'Unified data model linking frameworks, controls, tasks, and evidence',
       'Workflow engine that automates cross-team compliance handoffs',
@@ -19,7 +20,8 @@ const differentiators = [
   {
     icon: Building2,
     title: 'Built for Regulated Environments',
-    description: 'Designed specifically for healthcare, NDIS, finance, education, and government-aligned organizations.',
+    description:
+      'Designed specifically for healthcare, NDIS, finance, education, and government-aligned organizations.',
     details: [
       'Pre-built framework mappings for NDIS, ISO 27001, SOC 2, and more',
       'Multi-entity support for complex organizational structures',
@@ -29,7 +31,8 @@ const differentiators = [
   {
     icon: Database,
     title: 'Evidence by Design',
-    description: 'Every action produces verifiable, structured evidence automatically.',
+    description:
+      'Every action produces verifiable, structured evidence automatically.',
     details: [
       'Automatic evidence capture from task completions and approvals',
       'Tamper-evident audit logs with cryptographic integrity checks',
@@ -39,7 +42,8 @@ const differentiators = [
   {
     icon: UserCheck,
     title: 'Accountability at Scale',
-    description: 'Every control has a defined owner, status, and outcome. Accountability is structural — not cultural.',
+    description:
+      'Every control has a defined owner, status, and outcome. Accountability is structural — not cultural.',
     details: [
       'Control ownership assigned by name, role, and team',
       'Automated escalation when controls drift or tasks overdue',
@@ -49,7 +53,8 @@ const differentiators = [
   {
     icon: Shield,
     title: 'Audit Defense, Not Audit Prep',
-    description: 'You are always audit-ready because your compliance runs continuously — evidence is never reconstructed.',
+    description:
+      'You are always audit-ready because your compliance runs continuously — evidence is never reconstructed.',
     details: [
       'Evidence generated automatically at point of execution',
       'Framework-mapped audit packets exportable in minutes',
@@ -73,19 +78,24 @@ export function WhatMakesDifferent() {
               What Makes FormaOS Different
             </div>
 
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 text-white">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white">
               Not just another{' '}
               <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
                 compliance tool
               </span>
             </h2>
             <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              FormaOS is infrastructure. It orchestrates governance, execution, and evidence across your organization — not just records.
+              FormaOS is infrastructure. It orchestrates governance, execution,
+              and evidence across your organization — not just records.
             </p>
           </div>
         </ScrollReveal>
 
-        <SectionChoreography pattern="stagger-wave" stagger={0.06} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <SectionChoreography
+          pattern="stagger-wave"
+          stagger={0.06}
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"
+        >
           {differentiators.map((item, index) => {
             const Icon = item.icon;
             return (
@@ -113,7 +123,10 @@ export function WhatMakesDifferent() {
                 {/* Detail bullets — always visible */}
                 <ul className="space-y-2">
                   {item.details.map((detail) => (
-                    <li key={detail} className="flex items-start gap-2 text-xs text-slate-500 leading-relaxed">
+                    <li
+                      key={detail}
+                      className="flex items-start gap-2 text-xs text-slate-500 leading-relaxed"
+                    >
                       <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-400/50" />
                       {detail}
                     </li>

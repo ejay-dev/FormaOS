@@ -39,7 +39,7 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
       {/* Teal — top-left quadrant */}
       <div
         className={cn(
-          'aurora-blob absolute -left-[15%] -top-[25%] h-[80vh] w-[80vh] rounded-full opacity-[0.28]',
+          'aurora-blob absolute -left-[15%] -top-[25%] h-[80vmin] w-[80vmin] sm:h-[80vh] sm:w-[80vh] rounded-full opacity-[0.28]',
           !shouldReduceMotion && 'animate-aurora-1',
         )}
         style={{
@@ -51,7 +51,7 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
       {/* Cyan — center-right */}
       <div
         className={cn(
-          'aurora-blob absolute -right-[8%] top-[5%] h-[70vh] w-[70vh] rounded-full opacity-[0.22]',
+          'aurora-blob absolute -right-[8%] top-[5%] h-[70vmin] w-[70vmin] sm:h-[70vh] sm:w-[70vh] rounded-full opacity-[0.22]',
           !shouldReduceMotion && 'animate-aurora-2',
         )}
         style={{
@@ -63,7 +63,7 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
       {/* Violet/indigo — bottom */}
       <div
         className={cn(
-          'aurora-blob absolute -bottom-[15%] left-[15%] h-[70vh] w-[90vh] rounded-full opacity-[0.20]',
+          'aurora-blob absolute -bottom-[15%] left-[15%] h-[70vmin] w-[90vmin] sm:h-[70vh] sm:w-[90vh] rounded-full opacity-[0.20]',
           !shouldReduceMotion && 'animate-aurora-3',
         )}
         style={{
@@ -75,7 +75,7 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
       {/* Emerald accent — subtle center */}
       <div
         className={cn(
-          'aurora-blob absolute left-[35%] top-[25%] h-[55vh] w-[55vh] rounded-full opacity-[0.12]',
+          'aurora-blob absolute left-[35%] top-[25%] h-[55vmin] w-[55vmin] sm:h-[55vh] sm:w-[55vh] rounded-full opacity-[0.12]',
           !shouldReduceMotion && 'animate-aurora-4',
         )}
         style={{

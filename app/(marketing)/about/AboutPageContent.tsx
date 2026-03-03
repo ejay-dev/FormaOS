@@ -261,9 +261,9 @@ export default function AboutPageContent() {
 
                     {/* Content card */}
                     <div
-                      className={`ml-10 sm:ml-0 sm:w-[calc(50%-2rem)] ${i % 2 === 0 ? '' : 'sm:ml-auto'}`}
+                      className={`ml-8 sm:ml-0 sm:w-[calc(50%-2rem)] ${i % 2 === 0 ? '' : 'sm:ml-auto'}`}
                     >
-                      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 hover:border-teal-400/15 hover:bg-white/[0.06] transition-all duration-200">
+                      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-4 sm:p-6 hover:border-teal-400/15 hover:bg-white/[0.06] transition-all duration-200">
                         <div className="text-xs font-bold uppercase tracking-wider text-teal-400 mb-2">
                           {milestone.year}
                         </div>
@@ -310,7 +310,7 @@ export default function AboutPageContent() {
               className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
             >
               <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-8 hover:border-teal-400/20 transition-all duration-300">
-                <div className="w-12 h-12 rounded-xl border border-teal-400/20 bg-teal-500/10 flex items-center justify-center mb-6">
+                <div className="w-12 h-12 rounded-xl border border-teal-400/20 bg-teal-500/10 flex items-center justify-center mb-4 sm:mb-6">
                   <Target className="h-6 w-6 text-teal-400" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">Mission</h3>

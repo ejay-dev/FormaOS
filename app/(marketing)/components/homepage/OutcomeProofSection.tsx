@@ -2,27 +2,42 @@
 
 import Link from 'next/link';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { ArrowRight, BarChart3, ShieldCheck, TimerReset, TrendingUp, TrendingDown, GitBranch, CalendarCheck } from 'lucide-react';
+import {
+  ArrowRight,
+  BarChart3,
+  ShieldCheck,
+  TimerReset,
+  TrendingUp,
+  TrendingDown,
+  GitBranch,
+  CalendarCheck,
+} from 'lucide-react';
 
 const proofScenarios = [
   {
     title: 'Audit request lifecycle',
-    before: 'Evidence hunted across email threads, shared drives, and spreadsheets — days before auditor arrives.',
-    after: 'Framework-mapped evidence bundles exported in under 2 minutes. Every control linked to its proof.',
+    before:
+      'Evidence hunted across email threads, shared drives, and spreadsheets — days before auditor arrives.',
+    after:
+      'Framework-mapped evidence bundles exported in under 2 minutes. Every control linked to its proof.',
     impact: 'Audit prep: days → hours',
     metric: { before: 'Days', after: '< 2 hrs', improvement: '~90%' },
   },
   {
     title: 'Incident response workflow',
-    before: 'Ownership unclear. Escalation inconsistent. Regulator asks for evidence trail — nothing exists.',
-    after: 'Routed triage with named owners, timestamped actions, and full audit trail from detection to resolution.',
+    before:
+      'Ownership unclear. Escalation inconsistent. Regulator asks for evidence trail — nothing exists.',
+    after:
+      'Routed triage with named owners, timestamped actions, and full audit trail from detection to resolution.',
     impact: 'From ad-hoc to defensible',
     metric: { before: 'Ad-hoc', after: 'Structured', improvement: 'Traceable' },
   },
   {
     title: 'Compliance posture reporting',
-    before: 'Manual status reconciliation. Board gets a stale snapshot. Gaps discovered late.',
-    after: 'Live compliance score with framework coverage, control drift alerts, and board-ready posture view.',
+    before:
+      'Manual status reconciliation. Board gets a stale snapshot. Gaps discovered late.',
+    after:
+      'Live compliance score with framework coverage, control drift alerts, and board-ready posture view.',
     impact: 'Decision confidence: weekly → live',
     metric: { before: 'Weekly', after: 'Real-time', improvement: 'Live' },
   },
@@ -30,10 +45,26 @@ const proofScenarios = [
 
 const outcomeStats = [
   { value: '< 2 min', label: 'Audit packet export time', icon: TimerReset },
-  { value: 'Continuous', label: 'Compliance posture monitoring', icon: ShieldCheck },
-  { value: 'Named owner', label: 'On every control and evidence item', icon: TrendingUp },
-  { value: '9 frameworks', label: 'Pre-built, audit-ready out of the box', icon: GitBranch },
-  { value: '< 7 days', label: 'Typical security review cycle', icon: CalendarCheck },
+  {
+    value: 'Continuous',
+    label: 'Compliance posture monitoring',
+    icon: ShieldCheck,
+  },
+  {
+    value: 'Named owner',
+    label: 'On every control and evidence item',
+    icon: TrendingUp,
+  },
+  {
+    value: '9 frameworks',
+    label: 'Pre-built, audit-ready out of the box',
+    icon: GitBranch,
+  },
+  {
+    value: '< 7 days',
+    label: 'Typical security review cycle',
+    icon: CalendarCheck,
+  },
 ] as const;
 
 export function OutcomeProofSection() {
@@ -45,7 +76,11 @@ export function OutcomeProofSection() {
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
-        <ScrollReveal variant="slideUp" range={[0, 0.3]} className="mx-auto max-w-3xl text-center">
+        <ScrollReveal
+          variant="slideUp"
+          range={[0, 0.3]}
+          className="mx-auto max-w-3xl text-center"
+        >
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-teal-400/30 bg-teal-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-teal-200">
             <BarChart3 className="h-3.5 w-3.5" />
             Outcome Proof
@@ -54,7 +89,10 @@ export function OutcomeProofSection() {
             Real outcomes. Before and after FormaOS.
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-slate-300 sm:text-base">
-            Regulated teams don't need more features — they need fewer compliance crises. FormaOS connects governance to measurable operational outcomes that matter to regulators, executives, and operators.
+            Regulated teams don't need more features — they need fewer
+            compliance crises. FormaOS connects governance to measurable
+            operational outcomes that matter to regulators, executives, and
+            operators.
           </p>
         </ScrollReveal>
 
@@ -79,14 +117,18 @@ export function OutcomeProofSection() {
                   <div className="flex items-start gap-3 p-3 rounded-lg bg-rose-500/[0.06] border border-rose-500/10">
                     <TrendingDown className="w-4 h-4 text-rose-400 mt-0.5 flex-shrink-0" />
                     <div>
-                      <span className="font-semibold text-rose-300 text-xs uppercase tracking-wider">Before</span>
+                      <span className="font-semibold text-rose-300 text-xs uppercase tracking-wider">
+                        Before
+                      </span>
                       <p className="text-slate-300 mt-1">{scenario.before}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3 p-3 rounded-lg bg-emerald-500/[0.06] border border-emerald-500/10">
                     <TrendingUp className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
                     <div>
-                      <span className="font-semibold text-emerald-300 text-xs uppercase tracking-wider">After</span>
+                      <span className="font-semibold text-emerald-300 text-xs uppercase tracking-wider">
+                        After
+                      </span>
                       <p className="text-slate-200 mt-1">{scenario.after}</p>
                     </div>
                   </div>
@@ -95,8 +137,12 @@ export function OutcomeProofSection() {
                 {/* Illuminated metric panel */}
                 <div className="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/[0.04]">
                   <div className="text-center flex-1">
-                    <div className="text-lg font-bold text-rose-400/80">{scenario.metric.before}</div>
-                    <div className="text-[10px] text-gray-600 uppercase tracking-wider">Before</div>
+                    <div className="text-lg font-bold text-rose-400/80">
+                      {scenario.metric.before}
+                    </div>
+                    <div className="text-[10px] text-gray-600 uppercase tracking-wider">
+                      Before
+                    </div>
                   </div>
                   <div className="text-center px-3">
                     <div className="text-xs font-bold text-teal-400 bg-teal-500/10 border border-teal-500/20 rounded-full px-2 py-0.5">
@@ -104,8 +150,12 @@ export function OutcomeProofSection() {
                     </div>
                   </div>
                   <div className="text-center flex-1">
-                    <div className="text-lg font-bold text-emerald-400">{scenario.metric.after}</div>
-                    <div className="text-[10px] text-gray-600 uppercase tracking-wider">After</div>
+                    <div className="text-lg font-bold text-emerald-400">
+                      {scenario.metric.after}
+                    </div>
+                    <div className="text-[10px] text-gray-600 uppercase tracking-wider">
+                      After
+                    </div>
                   </div>
                 </div>
 
@@ -119,7 +169,7 @@ export function OutcomeProofSection() {
         </div>
 
         {/* Outcome stats: illuminated row */}
-        <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mt-8 grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
           {outcomeStats.map((stat, idx) => {
             const Icon = stat.icon;
             return (
