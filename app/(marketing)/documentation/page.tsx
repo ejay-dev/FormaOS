@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import DocsPageContent from '../docs/DocsPageContent';
+import DocsPageContent from './DocsPageContent';
 import { siteUrl } from '@/lib/seo';
 
 export const metadata: Metadata = {
