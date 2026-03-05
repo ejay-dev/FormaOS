@@ -11,6 +11,9 @@ import {
   createRateLimitHeaders,
   RATE_LIMITS,
 } from '@/lib/security/rate-limiter';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/compliance/exports/create');
 
 export async function POST(request: Request) {
   const userId = await getUserIdentifier();
@@ -77,16 +80,16 @@ export async function POST(request: Request) {
         workerId: 'inline',
         maxAttempts: 3,
       }).catch((err) => {
-        console.error(
-          `[exports/create] Background job ${result.jobId} failed:`,
-          err,
+        log.error(
+          { err },
+          `[exports/create] Background job ${result.jobId} failed`,
         );
       });
     }
 
     return NextResponse.json({ ok: true, jobId: result.jobId });
   } catch (error) {
-    console.error('[exports/create] Error:', error);
+    log.error({ err: error }, '[exports/create] Error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSamlClient } from '@/lib/sso/saml';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/sso/saml/login/[orgId]');
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -42,7 +45,7 @@ export async function GET(
     const authorizeUrl = await saml.getAuthorizeUrlAsync(relayState, host, {});
     return NextResponse.redirect(authorizeUrl);
   } catch (err) {
-    console.error('[saml/login] failed:', err);
+    log.error({ err: err }, "[saml/login] failed:");
     return NextResponse.json({ error: 'SSO initiation failed' }, { status: 500 });
   }
 }

@@ -1,12 +1,16 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { generate2FASecret } from '@/lib/security';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   checkRateLimit,
   getClientIdentifier,
   createRateLimitHeaders,
   RATE_LIMITS,
+
 } from '@/lib/security/rate-limiter';
+
+const log = routeLog('/api/security/mfa/setup');
 
 export const runtime = 'nodejs';
 
@@ -41,7 +45,7 @@ export async function POST() {
       backupCodes: secret.backupCodes,
     });
   } catch (error) {
-    console.error('[security/mfa/setup] Error:', error);
+    log.error({ err: error }, "[security/mfa/setup] Error:");
     return NextResponse.json(
       { ok: false, error: 'mfa_setup_failed' },
       { status: 500 },

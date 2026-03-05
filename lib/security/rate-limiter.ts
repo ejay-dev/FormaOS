@@ -23,6 +23,8 @@ interface RateLimitConfig {
   windowMs: number;
   maxRequests: number;
   keyPrefix: string;
+  /** When true, fail-closed (return 429) if Redis is unavailable instead of falling back to in-memory. Use for security-critical endpoints (auth). */
+  failClosed?: boolean;
 }
 
 interface RateLimitResult {
@@ -43,6 +45,7 @@ const RATE_LIMITS = {
     windowMs: 15 * 60 * 1000,
     maxRequests: 10,
     keyPrefix: 'rl:auth',
+    failClosed: true,
   } as RateLimitConfig,
 
   API: {
@@ -345,9 +348,22 @@ export async function checkRateLimit(
         userId,
       });
     }
+
+    // Fail-closed: for security-critical endpoints (e.g. AUTH), deny the request
+    // rather than fall back to per-process in-memory state that is not distributed.
+    if (config.failClosed) {
+      const windowMs = config.windowMs;
+      return {
+        success: false,
+        limit: config.maxRequests,
+        remaining: 0,
+        resetAt: now + windowMs,
+        retryAfter: Math.ceil(windowMs / 1000),
+      };
+    }
   }
 
-  // Fall back to in-memory
+  // Fall back to in-memory (non-critical paths only)
   return checkRateLimitMemory(config, key);
 }
 

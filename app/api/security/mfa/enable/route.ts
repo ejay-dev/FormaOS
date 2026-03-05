@@ -2,10 +2,14 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { enable2FA } from '@/lib/security';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   logSecurityEvent,
   SecurityEventTypes,
+
 } from '@/lib/security/session-security';
+
+const log = routeLog('/api/security/mfa/enable');
 import { safeString } from '@/lib/security/api-validation';
 import {
   checkRateLimit,
@@ -68,7 +72,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error('[security/mfa/enable] Error:', error);
+    log.error({ err: error }, "[security/mfa/enable] Error:");
     return NextResponse.json(
       { ok: false, error: 'mfa_enable_failed' },
       { status: 500 },

@@ -41,10 +41,10 @@ export async function fetchAuthEmailsByIds(
     }
 
     const users = data?.users ?? [];
-    users.forEach((candidate: any) => {
+    users.forEach((candidate: Record<string, unknown>) => {
       const id = String(candidate?.id ?? '');
       if (!id || !remaining.has(id)) return;
-      emails.set(id, candidate?.email ?? 'N/A');
+      emails.set(id, String(candidate?.email ?? 'N/A'));
       remaining.delete(id);
     });
 

@@ -2,6 +2,9 @@ import { requireFounderAccess } from '@/app/app/admin/access';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
 import { CURRENT_RELEASE_NAME, CURRENT_VERSION } from '@/config/release';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/admin/system');
 
 type RouteLatencyStat = {
   route: string;
@@ -23,7 +26,7 @@ function percentile(values: number[], p: number): number {
 }
 
 function buildRouteLatencyStats(
-  rows: Array<{ route: string | null; metadata: any }>,
+  rows: Array<{ route: string | null; metadata: unknown }>,
 ): {
   totalSamples: number;
   overallP50Ms: number | null;
@@ -34,7 +37,7 @@ function buildRouteLatencyStats(
   const allDurations: number[] = [];
 
   for (const row of rows) {
-    const metadata = row.metadata ?? {};
+    const metadata = (row.metadata ?? {}) as Record<string, unknown>;
     if (metadata.nav_source !== 'sidebar') continue;
 
     const route =
@@ -44,7 +47,11 @@ function buildRouteLatencyStats(
     if (!route.startsWith('/app')) continue;
 
     const durationMs = Number(metadata.duration_ms);
-    if (!Number.isFinite(durationMs) || durationMs <= 0 || durationMs > 120_000) {
+    if (
+      !Number.isFinite(durationMs) ||
+      durationMs <= 0 ||
+      durationMs > 120_000
+    ) {
       continue;
     }
 
@@ -70,8 +77,10 @@ function buildRouteLatencyStats(
 
   return {
     totalSamples: allDurations.length,
-    overallP50Ms: allDurations.length > 0 ? percentile(allDurations, 0.5) : null,
-    overallP95Ms: allDurations.length > 0 ? percentile(allDurations, 0.95) : null,
+    overallP50Ms:
+      allDurations.length > 0 ? percentile(allDurations, 0.5) : null,
+    overallP95Ms:
+      allDurations.length > 0 ? percentile(allDurations, 0.95) : null,
     routes,
   };
 }
@@ -96,7 +105,9 @@ export async function GET() {
     /* ── Table counts ──────────────────────────────────── */
     const [orgsResult, subsResult, membersResult, auditResult] =
       await Promise.all([
-        admin.from('organizations').select('id', { count: 'exact', head: true }),
+        admin
+          .from('organizations')
+          .select('id', { count: 'exact', head: true }),
         admin
           .from('org_subscriptions')
           .select('organization_id', { count: 'exact', head: true }),
@@ -127,7 +138,9 @@ export async function GET() {
       .gte('created_at', oneDayAgo)
       .order('created_at', { ascending: false })
       .limit(5000);
-    const routeTransitionStats = buildRouteLatencyStats(routeTransitionRows ?? []);
+    const routeTransitionStats = buildRouteLatencyStats(
+      routeTransitionRows ?? [],
+    );
 
     /* ── Build information from Vercel env ────────────── */
     const buildVersion =
@@ -166,15 +179,15 @@ export async function GET() {
         },
       },
     );
-  } catch (error: any) {
-    const msg = error?.message ?? '';
+  } catch (error: unknown) {
+    const msg = (error as Error)?.message ?? '';
     if (msg === 'Unauthorized' || msg === 'Forbidden') {
       return NextResponse.json(
         { error: 'Unavailable (permission)' },
         { status: 403 },
       );
     }
-    console.error('/api/admin/system error:', error);
+    log.error({ err: error }, '/api/admin/system error:');
     return NextResponse.json(
       { error: 'Failed to fetch system status' },
       { status: 500 },

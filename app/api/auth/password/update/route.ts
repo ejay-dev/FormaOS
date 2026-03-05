@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { validatePassword } from '@/lib/security/password-security';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   isPasswordReused,
   recordPasswordHistory,
+
 } from '@/lib/security/password-history';
+
+const log = routeLog('/api/auth/password/update');
 import {
   logSecurityEvent,
   SecurityEventTypes,
@@ -96,7 +100,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error('[auth/password/update] Error:', error);
+    log.error({ err: error }, "[auth/password/update] Error:");
     return NextResponse.json(
       { ok: false, error: 'password_update_failed' },
       { status: 500 },

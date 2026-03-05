@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requirePermission } from '@/app/app/actions/rbac';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   createRelayWebhook,
   listRelayWebhooks,
@@ -11,6 +12,8 @@ import {
   type CreateRelayWebhookInput,
   type RelayEventType,
 } from '@/lib/integrations/webhook-relay';
+
+const log = routeLog('/api/v1/webhooks');
 
 /**
  * =========================================================
@@ -77,8 +80,8 @@ export async function GET(request: Request) {
       webhooks: webhooks.map(sanitizeWebhookForResponse),
       total: webhooks.length,
     });
-  } catch (error: any) {
-    console.error('[API v1 /webhooks] Unexpected error:', error);
+  } catch (error: unknown) {
+    log.error({ err: error }, '[API v1 /webhooks] Unexpected error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },
@@ -232,8 +235,8 @@ export async function POST(request: Request) {
       },
       { status: 201 },
     );
-  } catch (error: any) {
-    console.error('[API v1 /webhooks] Unexpected error:', error);
+  } catch (error: unknown) {
+    log.error({ err: error }, '[API v1 /webhooks] Unexpected error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

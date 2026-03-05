@@ -11,10 +11,13 @@ import { isFounder } from '@/lib/utils/founder';
 import { fetchAuthEmailsByIds } from '@/app/api/admin/_auth-users';
 import { extractClientIP } from '@/lib/security/session-security';
 import { logUnauthorizedAccess } from '@/lib/security/event-logger';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   isSecurityDashboardEnabled,
   isSecurityMonitoringEnabled,
 } from '@/lib/security/monitoring-flags';
+
+const log = routeLog('/api/admin/sessions');
 
 type SessionRow = {
   id: string;
@@ -50,9 +53,9 @@ async function loadUserContext(
     .in('user_id', uniqueUserIds);
 
   const profileByUserId = new Map<string, { full_name: string | null }>();
-  (profiles ?? []).forEach((profile: any) => {
-    profileByUserId.set(profile.user_id, {
-      full_name: profile.full_name ?? null,
+  (profiles ?? []).forEach((profile: Record<string, unknown>) => {
+    profileByUserId.set(profile.user_id as string, {
+      full_name: (profile.full_name as string | null) ?? null,
     });
   });
 
@@ -96,7 +99,10 @@ export async function GET(request: Request) {
 
     if (!isFounder(user.email, user.id)) {
       logUnauthorizedSessionsAccess(request, user.id);
-      return NextResponse.json({ ok: false, error: 'forbidden' }, { status: 403 });
+      return NextResponse.json(
+        { ok: false, error: 'forbidden' },
+        { status: 403 },
+      );
     }
 
     const admin = createSupabaseAdminClient();
@@ -112,7 +118,7 @@ export async function GET(request: Request) {
       .limit(100);
 
     if (error) {
-      console.error('[Sessions] Failed to fetch:', error);
+      log.error({ err: error }, '[Sessions] Failed to fetch:');
       return NextResponse.json(
         { ok: false, error: 'db_error' },
         { status: 500 },
@@ -137,8 +143,11 @@ export async function GET(request: Request) {
     ]);
 
     const orgById = new Map<string, { id: string; name: string }>();
-    (organizations ?? []).forEach((org: any) => {
-      orgById.set(org.id, { id: org.id, name: org.name });
+    (organizations ?? []).forEach((org: Record<string, unknown>) => {
+      orgById.set(org.id as string, {
+        id: org.id as string,
+        name: org.name as string,
+      });
     });
 
     const enrichedSessions = sessionRows.map((session) => {
@@ -165,7 +174,7 @@ export async function GET(request: Request) {
       sessions: enrichedSessions,
     });
   } catch (error) {
-    console.error('[Sessions] Error:', error);
+    log.error({ err: error }, '[Sessions] Error:');
     return NextResponse.json(
       { ok: false, error: 'internal_error' },
       { status: 500 },

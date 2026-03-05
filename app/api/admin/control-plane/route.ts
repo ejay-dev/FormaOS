@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { handleAdminError } from '@/app/api/admin/_helpers';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   enqueueAdminJob,
   getAdminControlPlaneSnapshot,
@@ -10,7 +11,10 @@ import {
   upsertSystemSetting,
   writeControlPlaneAudit,
   resolveControlPlaneEnvironment,
+
 } from '@/lib/control-plane/server';
+
+const log = routeLog('/api/admin/control-plane');
 
 function asObject(value: unknown): Record<string, unknown> {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
@@ -238,7 +242,7 @@ async function handleAction(
     });
 
     void runAdminJob(job.id, environment).catch((error) => {
-      console.error('[control-plane] async job runner failed:', error);
+      log.error({ err: error }, "[control-plane] async job runner failed:");
     });
 
     return NextResponse.json({ ok: true, job });

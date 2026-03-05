@@ -9,11 +9,15 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { isFounder } from '@/lib/utils/founder';
 import { extractClientIP } from '@/lib/security/session-security';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   logSecurityEventEnhanced,
   logUnauthorizedAccess,
   logUserActivity,
+
 } from '@/lib/security/event-logger';
+
+const log = routeLog('/api/session/revoke');
 import { isSecurityMonitoringEnabled } from '@/lib/security/monitoring-flags';
 
 export async function POST(request: Request) {
@@ -85,7 +89,7 @@ export async function POST(request: Request) {
       .eq('session_id', body.sessionId);
 
     if (revokeError) {
-      console.error('[Revoke] Failed to revoke session:', revokeError);
+      log.error({ err: revokeError }, "[Revoke] Failed to revoke session:");
       return NextResponse.json(
         { ok: false, error: 'db_error' },
         { status: 500 },
@@ -126,7 +130,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error('[Revoke] Error:', error);
+    log.error({ err: error }, "[Revoke] Error:");
     return NextResponse.json(
       { ok: false, error: 'internal_error' },
       { status: 500 },

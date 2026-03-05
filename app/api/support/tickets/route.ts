@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   checkRateLimit,
   getClientIdentifier,
   createRateLimitHeaders,
   RATE_LIMITS,
+
 } from '@/lib/security/rate-limiter';
+
+const log = routeLog('/api/support/tickets');
 
 export async function POST(request: Request) {
   try {
@@ -59,7 +63,7 @@ export async function POST(request: Request) {
     });
 
     if (error) {
-      console.error('[support/tickets] Insert failed:', error);
+      log.error({ err: error }, "[support/tickets] Insert failed:");
       return NextResponse.json(
         { error: 'Failed to submit ticket' },
         { status: 500 },
@@ -68,7 +72,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error('[support/tickets] Error:', err);
+    log.error({ err: err }, "[support/tickets] Error:");
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

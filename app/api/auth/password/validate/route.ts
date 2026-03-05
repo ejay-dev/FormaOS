@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
 import { validatePassword } from '@/lib/security/password-security';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   rateLimitAuth,
+
 } from '@/lib/security/rate-limiter';
+
+const log = routeLog('/api/auth/password/validate');
 
 export const runtime = 'nodejs';
 
@@ -42,7 +46,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error('[auth/password/validate] Error:', error);
+    log.error({ err: error }, "[auth/password/validate] Error:");
     return NextResponse.json(
       { ok: false, errors: ['Unable to validate password'] },
       { status: 500 },

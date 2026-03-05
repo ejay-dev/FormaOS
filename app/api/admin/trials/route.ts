@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     const MAX_SEARCH_SCAN = 1500;
     const SEARCH_BATCH_SIZE = 100;
 
-    let subscriptions: any[] = [];
+    let subscriptions: Record<string, unknown>[] = [];
     let total = 0;
 
     if (query) {
@@ -69,14 +69,20 @@ export async function GET(request: Request) {
 
     // Get org names
     const orgIds = Array.from(
-      new Set((subscriptions ?? []).map((item: any) => item.organization_id)),
+      new Set(
+        (subscriptions ?? []).map(
+          (item: Record<string, unknown>) => item.organization_id,
+        ),
+      ),
     );
     const { data: orgs } = await admin
       .from('organizations')
       .select('id, name')
       .in('id', orgIds);
 
-    const orgMap = new Map((orgs ?? []).map((o: any) => [o.id, o.name]));
+    const orgMap = new Map(
+      (orgs ?? []).map((o: Record<string, unknown>) => [o.id, o.name]),
+    );
 
     // Get owner emails
     const { data: ownerships } = await admin
@@ -88,26 +94,27 @@ export async function GET(request: Request) {
     const ownerIds: string[] = Array.from(
       new Set(
         (ownerships ?? [])
-          .map((owner: any) => String(owner.user_id ?? '').trim())
+          .map((owner: Record<string, unknown>) =>
+            String(owner.user_id ?? '').trim(),
+          )
           .filter(Boolean),
       ),
     );
     const ownerEmailMap = await fetchAuthEmailsByIds(admin, ownerIds);
 
     const orgOwnerMap = new Map(
-      (ownerships ?? []).map((o: any) => [
+      (ownerships ?? []).map((o: Record<string, unknown>) => [
         o.organization_id,
-        ownerEmailMap.get(o.user_id),
+        ownerEmailMap.get(o.user_id as string),
       ]),
     );
 
     const trials = subscriptions
-      .map((sub: any) => {
-        const trialEnd =
-          sub.trial_expires_at ?? sub.current_period_end ?? null;
+      .map((sub: Record<string, unknown>) => {
+        const trialEnd = sub.trial_expires_at ?? sub.current_period_end ?? null;
         if (!trialEnd) return null;
 
-        const trialEndDate = new Date(trialEnd);
+        const trialEndDate = new Date(trialEnd as string);
         const now = new Date();
         const diffDays = Math.ceil(
           (trialEndDate.getTime() - now.getTime()) / 86_400_000,

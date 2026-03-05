@@ -4,10 +4,13 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { isFounder } from '@/lib/utils/founder';
 import { fetchAuthEmailsByIds } from '@/app/api/admin/_auth-users';
 import { extractClientIP } from '@/lib/security/session-security';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   logUnauthorizedAccess,
   logUserActivity,
 } from '@/lib/security/event-logger';
+
+const log = routeLog('/api/admin/security-live');
 import {
   isSecurityDashboardEnabled,
   isSecurityMonitoringEnabled,
@@ -79,9 +82,9 @@ async function loadUserContext(
     .in('user_id', uniqueUserIds);
 
   const profileByUserId = new Map<string, { full_name: string | null }>();
-  (profiles ?? []).forEach((profile: any) => {
-    profileByUserId.set(profile.user_id, {
-      full_name: profile.full_name ?? null,
+  (profiles ?? []).forEach((profile: Record<string, unknown>) => {
+    profileByUserId.set(profile.user_id as string, {
+      full_name: (profile.full_name as string | null) ?? null,
     });
   });
 
@@ -166,7 +169,7 @@ export async function GET(request: Request) {
 
     const { data: events, error: eventsError } = await eventQuery;
     if (eventsError) {
-      console.error('[SecurityLive] Failed to fetch events:', eventsError);
+      log.error({ err: eventsError }, '[SecurityLive] Failed to fetch events:');
       return NextResponse.json(
         { ok: false, error: 'db_error' },
         { status: 500 },
@@ -210,7 +213,7 @@ export async function GET(request: Request) {
 
     const { data: alerts, error: alertsError } = await alertQuery;
     if (alertsError) {
-      console.error('[SecurityLive] Failed to fetch alerts:', alertsError);
+      log.error({ err: alertsError }, '[SecurityLive] Failed to fetch alerts:');
       return NextResponse.json(
         { ok: false, error: 'db_error' },
         { status: 500 },
@@ -227,10 +230,14 @@ export async function GET(request: Request) {
       .filter((alert) => alert.event !== null);
 
     const orgIds = Array.from(
-      new Set(eventRows.map((event) => event.org_id).filter(Boolean) as string[]),
+      new Set(
+        eventRows.map((event) => event.org_id).filter(Boolean) as string[],
+      ),
     );
     const userIds = Array.from(
-      new Set(eventRows.map((event) => event.user_id).filter(Boolean) as string[]),
+      new Set(
+        eventRows.map((event) => event.user_id).filter(Boolean) as string[],
+      ),
     );
 
     const [{ data: organizations }, userContext] = await Promise.all([
@@ -241,8 +248,11 @@ export async function GET(request: Request) {
     ]);
 
     const organizationById = new Map<string, { id: string; name: string }>();
-    (organizations ?? []).forEach((organization: any) => {
-      organizationById.set(organization.id, organization);
+    (organizations ?? []).forEach((organization: Record<string, unknown>) => {
+      organizationById.set(
+        organization.id as string,
+        organization as { id: string; name: string },
+      );
     });
 
     const enrichedEvents = eventRows.map((event) => {
@@ -294,7 +304,7 @@ export async function GET(request: Request) {
       filterOptions,
     });
   } catch (error) {
-    console.error('[SecurityLive] Error:', error);
+    log.error({ err: error }, '[SecurityLive] Error:');
     return NextResponse.json(
       { ok: false, error: 'internal_error' },
       { status: 500 },
@@ -365,7 +375,7 @@ export async function PATCH(request: Request) {
       .single();
 
     if (alertError || !alert) {
-      console.error('[SecurityLive] Failed to update alert:', alertError);
+      log.error({ err: alertError }, '[SecurityLive] Failed to update alert:');
       return NextResponse.json(
         { ok: false, error: 'db_error' },
         { status: 500 },
@@ -393,7 +403,7 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error('[SecurityLive] PATCH error:', error);
+    log.error({ err: error }, '[SecurityLive] PATCH error:');
     return NextResponse.json(
       { ok: false, error: 'internal_error' },
       { status: 500 },

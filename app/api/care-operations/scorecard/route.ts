@@ -3,8 +3,11 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { generateCareScorecard } from '@/lib/care-scorecard/scorecard-service';
 import { generateCredentialAlerts } from '@/lib/care-scorecard/credential-monitor';
 import type { CareIndustry, CareScorecardAPIResponse, CareScorecardAlert } from '@/lib/care-scorecard/types';
+import { routeLog } from '@/lib/monitoring/server-logger';
 
 // Industries that support care operations scorecard
+const log = routeLog('/api/care-operations/scorecard');
+
 const CARE_INDUSTRIES = ['ndis', 'healthcare', 'aged_care', 'childcare'];
 
 /**
@@ -39,7 +42,7 @@ export async function GET() {
 
     userId = user.id;
   } catch (authError) {
-    console.error('[Care Scorecard] Auth error:', authError);
+    log.error({ err: authError }, "[Care Scorecard] Auth error:");
     return NextResponse.json(
       {
         error: 'Unauthorized',
@@ -103,7 +106,7 @@ export async function GET() {
 
     industry = org.industry as CareIndustry;
   } catch (orgError) {
-    console.error('[Care Scorecard] Org lookup error:', orgError);
+    log.error({ err: orgError }, "[Care Scorecard] Org lookup error:");
     return NextResponse.json(
       {
         error: 'Internal Server Error',
@@ -222,7 +225,7 @@ export async function GET() {
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('[Care Scorecard] Calculation error:', error);
+    log.error({ err: error }, "[Care Scorecard] Calculation error:");
     return NextResponse.json(
       {
         error: 'Internal Server Error',

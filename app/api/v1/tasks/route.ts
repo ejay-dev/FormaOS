@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requirePermission } from '@/app/app/actions/rbac';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
+import { routeLog } from '@/lib/monitoring/server-logger';
 
 /**
  * =========================================================
@@ -12,6 +13,8 @@ import { rateLimitApi } from '@/lib/security/rate-limiter';
  * Authentication: Bearer token (Supabase JWT)
  * Rate limit: 100 requests per minute
  */
+
+const log = routeLog('/api/v1/tasks');
 
 export async function GET(request: Request) {
   try {
@@ -73,7 +76,7 @@ export async function GET(request: Request) {
     const { data: tasks, error } = await query;
 
     if (error) {
-      console.error('[API v1 /tasks] Database error:', error);
+      log.error({ err: error }, "[API v1 /tasks] Database error:");
       return NextResponse.json(
         { error: 'Failed to fetch tasks' },
         { status: 500 },
@@ -88,8 +91,8 @@ export async function GET(request: Request) {
       status: status || 'all',
       priority: priority || 'all',
     });
-  } catch (error: any) {
-    console.error('[API v1 /tasks] Unexpected error:', error);
+  } catch (error: unknown) {
+    log.error({ err: error }, "[API v1 /tasks] Unexpected error:");
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

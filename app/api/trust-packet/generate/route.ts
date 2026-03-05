@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { randomBytes } from 'crypto';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   checkRateLimit,
   getClientIdentifier,
   createRateLimitHeaders,
   RATE_LIMITS,
+
 } from '@/lib/security/rate-limiter';
+
+const log = routeLog('/api/trust-packet/generate');
 
 async function getMembershipOrganization(
   supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
@@ -206,10 +210,7 @@ export async function POST(request: NextRequest) {
 
     // If table doesn't exist yet, return the packet data directly
     if (insertError) {
-      console.warn(
-        'Trust packets table may not exist yet:',
-        insertError.message,
-      );
+      log.warn({ data: insertError.message, }, "Trust packets table may not exist yet:");
       // Still return the packet data — just without persistence
       return NextResponse.json({
         success: true,
@@ -231,7 +232,7 @@ export async function POST(request: NextRequest) {
       packet: packetData,
     });
   } catch (error) {
-    console.error('Trust packet generation failed:', error);
+    log.error({ err: error }, "Trust packet generation failed:");
     return NextResponse.json(
       { error: 'Failed to generate trust packet' },
       { status: 500 },

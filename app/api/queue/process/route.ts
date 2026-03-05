@@ -12,6 +12,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { timingSafeEqual } from 'crypto';
 import { processQueueJobs, getQueueClient } from '@/lib/queue';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/queue/process');
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -51,7 +54,7 @@ function verifyCronSecret(request: NextRequest): { valid: boolean; error?: strin
 export async function POST(request: NextRequest) {
   const auth = verifyCronSecret(request);
   if (!auth.valid) {
-    console.error(`[Queue API] ${auth.error}`);
+    log.error({}, `[Queue API] ${auth.error}`);
     const status = auth.error === 'CRON_SECRET not configured' ? 500 : 401;
     return NextResponse.json(
       { error: auth.error === 'CRON_SECRET not configured' ? 'Queue not configured' : 'Unauthorized' },
@@ -70,14 +73,14 @@ export async function POST(request: NextRequest) {
     // Ignore parse errors, use default
   }
 
-  console.log('[Queue API] Starting job processing...');
+  log.info({}, "[Queue API] Starting job processing...");
   const startTime = Date.now();
 
   try {
     const result = await processQueueJobs(batchSize);
     const duration = Date.now() - startTime;
 
-    console.log('[Queue API] Processing completed:', { duration: `${duration}ms`, ...result });
+    log.info({ data: { duration: `${duration}ms`, ...result } }, "[Queue API] Processing completed:");
 
     return NextResponse.json({
       success: true,
@@ -85,7 +88,7 @@ export async function POST(request: NextRequest) {
       ...result,
     });
   } catch (error) {
-    console.error('[Queue API] Processing failed:', error);
+    log.error({ err: error }, "[Queue API] Processing failed:");
 
     return NextResponse.json(
       {

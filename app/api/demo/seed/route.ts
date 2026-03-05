@@ -8,6 +8,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireFounderAccess } from '@/app/app/admin/access';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/demo/seed');
 
 export async function POST(request: NextRequest) {
   // 🔐 SECURITY: Require founder access to seed demo data
@@ -148,7 +151,7 @@ export async function POST(request: NextRequest) {
       );
 
     if (scoreError) {
-      console.error('Failed to update compliance score:', scoreError);
+      log.error({ err: scoreError }, "Failed to update compliance score:");
     }
 
     return NextResponse.json({
@@ -162,7 +165,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Demo seed error:', error);
+    log.error({ err: error }, "Demo seed error:");
     return NextResponse.json(
       {
         error: 'Failed to seed demo data',

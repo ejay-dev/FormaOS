@@ -79,9 +79,16 @@ export function requirePermission(
 }
 
 /**
- * Create unauthorized response
+ * Create unauthorized response (not authenticated — HTTP 401)
  */
 export function unauthorizedResponse(reason: string = 'Unauthorized') {
+  return NextResponse.json({ error: reason }, { status: 401 });
+}
+
+/**
+ * Create forbidden response (authenticated but insufficient permissions — HTTP 403)
+ */
+export function forbiddenResponse(reason: string = 'Forbidden') {
   return NextResponse.json({ error: reason }, { status: 403 });
 }
 

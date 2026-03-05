@@ -13,11 +13,15 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { extractClientIP } from '@/lib/security/session-security';
 import { isSecurityMonitoringEnabled } from '@/lib/security/monitoring-flags';
 import { logRateLimitExceeded } from '@/lib/security/event-logger';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   checkRateLimit,
   createRateLimitHeaders,
   createRateLimitedResponse,
+
 } from '@/lib/security/rate-limiter';
+
+const log = routeLog('/api/session/heartbeat');
 
 const RATE_LIMITS = {
   HEARTBEAT: {
@@ -99,7 +103,7 @@ export async function POST(request: Request) {
     );
 
     if (sessionError) {
-      console.error('[Heartbeat] Failed to update session:', sessionError);
+      log.error({ err: sessionError }, "[Heartbeat] Failed to update session:");
       return NextResponse.json(
         { ok: false, error: 'db_error' },
         { status: 500 },
@@ -108,7 +112,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true, reason });
   } catch (error) {
-    console.error('[Heartbeat] Error:', error);
+    log.error({ err: error }, "[Heartbeat] Error:");
     return NextResponse.json(
       { ok: false, error: 'internal_error' },
       { status: 500 },

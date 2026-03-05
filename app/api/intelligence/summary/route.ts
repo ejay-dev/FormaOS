@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   getCachedIntelligence,
   setCachedIntelligence,
   checkRateLimit,
   getRateLimitStatus,
 } from '@/lib/cache/intelligence-cache';
+
+const log = routeLog('/api/intelligence/summary');
 
 export async function GET() {
   let supabase;
@@ -15,7 +18,10 @@ export async function GET() {
   // TENANT ISOLATION: Get user from session
   try {
     supabase = await createSupabaseServerClient();
-    const { data: { user: authUser }, error: userError } = await supabase.auth.getUser();
+    const {
+      data: { user: authUser },
+      error: userError,
+    } = await supabase.auth.getUser();
 
     if (userError || !authUser) {
       return NextResponse.json(
@@ -24,20 +30,20 @@ export async function GET() {
           message: 'Session expired. Please sign in again.',
           code: 'AUTH_REQUIRED',
         },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
     user = authUser;
   } catch (authError) {
-    console.error('Intelligence auth error:', authError);
+    log.error({ err: authError }, 'Intelligence auth error:');
     return NextResponse.json(
       {
         error: 'Unauthorized',
         message: 'Session expired. Please sign in again.',
         code: 'AUTH_ERROR',
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -50,14 +56,17 @@ export async function GET() {
       .maybeSingle();
 
     if (membershipError) {
-      console.error('Intelligence membership lookup error:', membershipError);
+      log.error(
+        { err: membershipError },
+        'Intelligence membership lookup error:',
+      );
       return NextResponse.json(
         {
           error: 'Forbidden',
           message: 'Unable to verify organization membership.',
           code: 'ORG_LOOKUP_ERROR',
         },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -68,20 +77,20 @@ export async function GET() {
           message: 'No organization found. Please contact support.',
           code: 'NO_ORGANIZATION',
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     orgId = membership.organization_id;
   } catch (orgError) {
-    console.error('Intelligence organization error:', orgError);
+    log.error({ err: orgError }, 'Intelligence organization error:');
     return NextResponse.json(
       {
         error: 'Forbidden',
         message: 'Unable to verify organization membership.',
         code: 'ORG_ERROR',
       },
-      { status: 403 }
+      { status: 403 },
     );
   }
 
@@ -103,11 +112,11 @@ export async function GET() {
             'X-RateLimit-Remaining': '0',
             'X-RateLimit-Reset': status.resetAt.toString(),
           },
-        }
+        },
       );
     }
   } catch (rateLimitError) {
-    console.warn('Intelligence rate limit check failed:', rateLimitError);
+    log.warn({ data: rateLimitError }, 'Intelligence rate limit check failed:');
     // Continue without rate limiting if check fails
   }
 
@@ -122,13 +131,12 @@ export async function GET() {
       });
     }
   } catch (cacheError) {
-    console.warn('Intelligence cache check failed:', cacheError);
+    log.warn({ data: cacheError }, 'Intelligence cache check failed:');
     // Continue without cache if check fails
   }
 
   // DATA FETCHING: Fetch intelligence data
   try {
-
     // TENANT ISOLATION: All queries explicitly scoped by organization_id
     // Fetch data in parallel
     const [
@@ -177,43 +185,71 @@ export async function GET() {
     ]);
 
     // Calculate compliance score trend
-    const scoreHistory = (complianceScores.data || []).map((score: any) => {
-      const total = score.total_count || 1;
-      const passed = score.pass_count || 0;
-      return {
-        date: score.created_at,
-        score: Math.round((passed / total) * 100),
-      };
-    }).reverse();
+    const scoreHistory = (complianceScores.data || [])
+      .map((score: Record<string, unknown>) => {
+        const total = Number(score.total_count) || 1;
+        const passed = Number(score.pass_count) || 0;
+        return {
+          date: score.created_at,
+          score: Math.round((passed / total) * 100),
+        };
+      })
+      .reverse();
 
     const latestScore = scoreHistory[scoreHistory.length - 1]?.score || 0;
-    const previousScore = scoreHistory[scoreHistory.length - 2]?.score || latestScore;
+    const previousScore =
+      scoreHistory[scoreHistory.length - 2]?.score || latestScore;
     const scoreTrend = latestScore - previousScore;
 
     // Calculate automation stats
     const completedRuns = (automationRuns.data || []).filter(
-      (run: any) => run.status === 'completed'
+      (run: Record<string, unknown>) => run.status === 'completed',
     ).length;
     const totalRuns = automationRuns.data?.length || 0;
-    const successRate = totalRuns > 0 ? Math.round((completedRuns / totalRuns) * 100) : 0;
+    const successRate =
+      totalRuns > 0 ? Math.round((completedRuns / totalRuns) * 100) : 0;
 
     // Calculate task completion
     const allTasks = tasks.data || [];
-    const completedTasks = allTasks.filter((t: any) => t.status === 'completed').length;
+    const completedTasks = allTasks.filter(
+      (t: Record<string, unknown>) => t.status === 'completed',
+    ).length;
     const totalTasks = allTasks.length;
-    const taskCompletionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+    const taskCompletionRate =
+      totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
     // Calculate audit readiness
     const evidenceCount = evidence.count || 0;
     const auditReadiness = Math.min(
       100,
-      Math.round((latestScore * 0.6) + (taskCompletionRate * 0.3) + (Math.min(evidenceCount / 10, 1) * 10))
+      Math.round(
+        latestScore * 0.6 +
+          taskCompletionRate * 0.3 +
+          Math.min(evidenceCount / 10, 1) * 10,
+      ),
     );
 
     // Calculate risk reductions (based on failed controls trend)
-    const recentFailures = scoreHistory.slice(-7).reduce((sum: number, s: any) => sum + (100 - s.score), 0) / 7;
-    const olderFailures = scoreHistory.slice(0, 7).reduce((sum: number, s: any) => sum + (100 - s.score), 0) / 7;
-    const riskReduction = Math.max(0, Math.round(olderFailures - recentFailures));
+    const recentFailures =
+      scoreHistory
+        .slice(-7)
+        .reduce(
+          (sum: number, s: Record<string, unknown>) =>
+            sum + (100 - (s.score as number)),
+          0,
+        ) / 7;
+    const olderFailures =
+      scoreHistory
+        .slice(0, 7)
+        .reduce(
+          (sum: number, s: Record<string, unknown>) =>
+            sum + (100 - (s.score as number)),
+          0,
+        ) / 7;
+    const riskReduction = Math.max(
+      0,
+      Math.round(olderFailures - recentFailures),
+    );
 
     const responseData = {
       complianceScore: {
@@ -229,21 +265,33 @@ export async function GET() {
       },
       riskReduction: {
         percentage: riskReduction,
-        trend: riskReduction > 0 ? 'improving' : riskReduction < 0 ? 'worsening' : 'stable',
+        trend:
+          riskReduction > 0
+            ? 'improving'
+            : riskReduction < 0
+              ? 'worsening'
+              : 'stable',
       },
       tasks: {
         total: totalTasks,
         completed: completedTasks,
         completionRate: taskCompletionRate,
       },
-      upcomingDeadlines: (upcomingDeadlines.data || []).map((task: any) => ({
-        title: task.title,
-        dueDate: task.due_date,
-        status: task.status,
-      })),
+      upcomingDeadlines: (upcomingDeadlines.data || []).map(
+        (task: Record<string, unknown>) => ({
+          title: task.title,
+          dueDate: task.due_date,
+          status: task.status,
+        }),
+      ),
       auditReadiness: {
         score: auditReadiness,
-        trend: scoreTrend > 0 ? 'improving' : scoreTrend < 0 ? 'declining' : 'stable',
+        trend:
+          scoreTrend > 0
+            ? 'improving'
+            : scoreTrend < 0
+              ? 'declining'
+              : 'stable',
       },
     };
 
@@ -251,7 +299,7 @@ export async function GET() {
     try {
       await setCachedIntelligence(orgId, responseData);
     } catch (cacheError) {
-      console.warn('Intelligence cache set failed:', cacheError);
+      log.warn({ data: cacheError }, 'Intelligence cache set failed:');
       // Continue even if caching fails
     }
 
@@ -261,14 +309,14 @@ export async function GET() {
       },
     });
   } catch (dataError) {
-    console.error('Intelligence data fetching error:', dataError);
+    log.error({ err: dataError }, 'Intelligence data fetching error:');
     return NextResponse.json(
       {
         error: 'Internal Server Error',
         message: 'Unable to fetch intelligence data. Please try again later.',
         code: 'DATA_FETCH_ERROR',
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -26,7 +26,9 @@ export async function proxy(request: NextRequest) {
       if (typeof globalThis.crypto?.getRandomValues === 'function') {
         const bytes = new Uint8Array(16);
         globalThis.crypto.getRandomValues(bytes);
-        return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+        return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join(
+          '',
+        );
       }
       // Non-cryptographic last resort — should never be reached in any supported runtime
       return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
@@ -39,6 +41,30 @@ export async function proxy(request: NextRequest) {
     const startTime = Date.now();
 
     const pathname = request.nextUrl.pathname;
+
+    // -------------------------------
+    // CORS — Public REST API v1
+    // -------------------------------
+    // These routes use Bearer-token auth, not cookie sessions.
+    // Handle OPTIONS preflight immediately before any auth logic.
+    if (pathname.startsWith('/api/v1/')) {
+      const corsHeaders = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods':
+          'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Max-Age': '86400',
+      };
+      if (request.method === 'OPTIONS') {
+        return new NextResponse(null, { status: 204, headers: corsHeaders });
+      }
+      Object.entries(corsHeaders).forEach(([k, v]) =>
+        response.headers.set(k, v),
+      );
+      response.headers.set('Server-Timing', `mw;dur=${Date.now() - startTime}`);
+      return response;
+    }
+
     const middlewareDebug = process.env.MIDDLEWARE_DEBUG === 'true';
     const serverTiming = () => `mw;dur=${Date.now() - startTime}`;
     const logTiming = (label: string) => {
@@ -411,5 +437,6 @@ export const config = {
     '/workspace-recovery/:path*',
     '/submit/:path*',
     '/signin/:path*',
+    '/api/v1/:path*',
   ],
 };

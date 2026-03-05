@@ -2,11 +2,14 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { calculateHealthScore } from '@/lib/customer-health/health-score-engine';
 import type { HealthScoreInput } from '@/lib/customer-health/health-types';
+import { routeLog } from '@/lib/monitoring/server-logger';
 
 /**
  * GET /api/customer-health/score
  * Returns the health score for the current user's organization
  */
+const log = routeLog('/api/customer-health/score');
+
 export async function GET() {
   let supabase;
   let userId: string;
@@ -33,7 +36,7 @@ export async function GET() {
 
     userId = user.id;
   } catch (authError) {
-    console.error('[Health Score] Auth error:', authError);
+    log.error({ err: authError }, "[Health Score] Auth error:");
     return NextResponse.json(
       {
         error: 'Unauthorized',
@@ -65,7 +68,7 @@ export async function GET() {
 
     orgId = membership.organization_id;
   } catch (orgError) {
-    console.error('[Health Score] Org lookup error:', orgError);
+    log.error({ err: orgError }, "[Health Score] Org lookup error:");
     return NextResponse.json(
       {
         error: 'Internal Server Error',
@@ -234,7 +237,7 @@ export async function GET() {
       },
       { onConflict: 'organization_id' }
     ).catch((upsertError: unknown) => {
-      console.error('[Health Score] Failed to cache score:', upsertError);
+      log.error({ err: upsertError }, "[Health Score] Failed to cache score:");
     });
 
     return NextResponse.json({
@@ -242,7 +245,7 @@ export async function GET() {
       generatedAt: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('[Health Score] Calculation error:', error);
+    log.error({ err: error }, "[Health Score] Calculation error:");
     return NextResponse.json(
       {
         error: 'Internal Server Error',

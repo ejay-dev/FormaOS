@@ -4,12 +4,15 @@ import { calculateAuditForecast } from '@/lib/executive/multi-framework-rollup';
 import { getDeadlineSummary, getActionRequiredDeadlines } from '@/lib/executive/deadline-tracker';
 import type { AuditReadinessForecast, AutomationMetrics } from '@/lib/executive/types';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { routeLog } from '@/lib/monitoring/server-logger';
 
 /**
  * GET /api/executive/audit-forecast
  * Returns audit readiness forecast and automation metrics
  * Restricted to owner/admin roles
  */
+const log = routeLog('/api/executive/audit-forecast');
+
 export async function GET(request: NextRequest) {
   let supabase;
   let userId: string;
@@ -40,7 +43,7 @@ export async function GET(request: NextRequest) {
 
     userId = user.id;
   } catch (authError) {
-    console.error('[Audit Forecast] Auth error:', authError);
+    log.error({ err: authError }, "[Audit Forecast] Auth error:");
     return NextResponse.json(
       {
         error: 'Unauthorized',
@@ -84,7 +87,7 @@ export async function GET(request: NextRequest) {
 
     orgId = membership.organization_id;
   } catch (orgError) {
-    console.error('[Audit Forecast] Org lookup error:', orgError);
+    log.error({ err: orgError }, "[Audit Forecast] Org lookup error:");
     return NextResponse.json(
       {
         error: 'Internal Server Error',
@@ -119,7 +122,7 @@ export async function GET(request: NextRequest) {
       generatedAt: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('[Audit Forecast] Calculation error:', error);
+    log.error({ err: error }, "[Audit Forecast] Calculation error:");
     return NextResponse.json(
       {
         error: 'Internal Server Error',

@@ -7,6 +7,9 @@ import { emailSchema } from '@/lib/security/api-validation';
 import { rateLimitAuth } from '@/lib/security/rate-limiter';
 import { sendAuthEmail } from '@/lib/email/send-auth-email';
 import { buildHostedAuthConfirmLink } from '@/lib/auth/hosted-auth-link';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/auth/email-signup');
 
 export const runtime = 'nodejs';
 
@@ -128,10 +131,10 @@ export async function POST(request: Request) {
     });
 
     if (!emailResult.success) {
-      console.error('[auth/email-signup] confirmation email failed:', {
+      log.error({ err: {
         email,
         error: emailResult.error,
-      });
+      } }, "[auth/email-signup] confirmation email failed:");
       return NextResponse.json(
         { ok: false, error: 'email_delivery_failed' },
         { status: 502, headers },
@@ -146,7 +149,7 @@ export async function POST(request: Request) {
       { headers },
     );
   } catch (error) {
-    console.error('[auth/email-signup] unexpected error:', error);
+    log.error({ err: error }, "[auth/email-signup] unexpected error:");
     return NextResponse.json(
       { ok: false, error: 'signup_failed' },
       { status: 500, headers },

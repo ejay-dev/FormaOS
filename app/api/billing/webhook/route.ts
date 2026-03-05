@@ -1,9 +1,13 @@
 import Stripe from 'stripe';
 import { NextResponse } from 'next/server';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   getStripeClient,
   resolvePlanKeyFromPriceId,
+
 } from '@/lib/billing/stripe';
+
+const log = routeLog('/api/billing/webhook');
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { resolvePlanKey } from '@/lib/plans';
 import { syncEntitlementsForPlan } from '@/lib/billing/entitlements';
@@ -32,7 +36,7 @@ export async function POST(request: Request) {
   try {
     event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
   } catch (error) {
-    console.error('Stripe webhook signature error:', error);
+    log.error({ err: error }, "Stripe webhook signature error:");
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
   }
 
@@ -49,10 +53,7 @@ export async function POST(request: Request) {
     if (insertEventError.code === '23505') {
       return NextResponse.json({ received: true });
     }
-    console.error(
-      '[billing/webhook] billing_events insert failed:',
-      insertEventError.message,
-    );
+    log.error({ err: insertEventError.message, }, "[billing/webhook] billing_events insert failed:");
     return NextResponse.json(
       { error: 'Webhook persistence failed' },
       { status: 500 },
@@ -120,10 +121,7 @@ export async function POST(request: Request) {
           updated_at: new Date().toISOString(),
         });
       if (subUpsertErr) {
-        console.error(
-          '[billing/webhook] org_subscriptions upsert failed:',
-          subUpsertErr.message,
-        );
+        log.error({ err: subUpsertErr.message, }, "[billing/webhook] org_subscriptions upsert failed:");
         throw subUpsertErr;
       }
 
@@ -132,10 +130,7 @@ export async function POST(request: Request) {
         .update({ plan_key: planKey })
         .eq('id', targetOrgId);
       if (orgUpdateErr) {
-        console.error(
-          '[billing/webhook] organizations plan_key update failed:',
-          orgUpdateErr.message,
-        );
+        log.error({ err: orgUpdateErr.message, }, "[billing/webhook] organizations plan_key update failed:");
         throw orgUpdateErr;
       }
 
@@ -181,10 +176,7 @@ export async function POST(request: Request) {
             updated_at: new Date().toISOString(),
           });
         if (checkoutSubErr) {
-          console.error(
-            '[billing/webhook] checkout org_subscriptions upsert failed:',
-            checkoutSubErr.message,
-          );
+          log.error({ err: checkoutSubErr.message, }, "[billing/webhook] checkout org_subscriptions upsert failed:");
           throw checkoutSubErr;
         }
 
@@ -193,10 +185,7 @@ export async function POST(request: Request) {
           .update({ plan_key: planKey })
           .eq('id', orgId);
         if (checkoutOrgErr) {
-          console.error(
-            '[billing/webhook] checkout organizations plan_key update failed:',
-            checkoutOrgErr.message,
-          );
+          log.error({ err: checkoutOrgErr.message, }, "[billing/webhook] checkout organizations plan_key update failed:");
           throw checkoutOrgErr;
         }
 
@@ -225,10 +214,7 @@ export async function POST(request: Request) {
         })
         .eq('stripe_subscription_id', subscriptionId);
       if (cancelErr) {
-        console.error(
-          '[billing/webhook] subscription cancellation update failed:',
-          cancelErr.message,
-        );
+        log.error({ err: cancelErr.message, }, "[billing/webhook] subscription cancellation update failed:");
         throw cancelErr;
       }
     }
@@ -253,10 +239,7 @@ export async function POST(request: Request) {
               : { stripe_customer_id: customerId },
           );
         if (paidErr) {
-          console.error(
-            '[billing/webhook] invoice.paid update failed:',
-            paidErr.message,
-          );
+          log.error({ err: paidErr.message, }, "[billing/webhook] invoice.paid update failed:");
           throw paidErr;
         }
       }
@@ -280,16 +263,13 @@ export async function POST(request: Request) {
               : { stripe_customer_id: customerId },
           );
         if (failedErr) {
-          console.error(
-            '[billing/webhook] invoice.payment_failed update failed:',
-            failedErr.message,
-          );
+          log.error({ err: failedErr.message, }, "[billing/webhook] invoice.payment_failed update failed:");
           throw failedErr;
         }
       }
     }
   } catch (error) {
-    console.error('Stripe webhook processing error:', error);
+    log.error({ err: error }, "Stripe webhook processing error:");
     return NextResponse.json(
       { error: 'Webhook processing failed' },
       { status: 500 },

@@ -9,6 +9,9 @@ import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { handleAdminError } from '@/app/api/admin/_helpers';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/admin/support/billing-timeline');
 
 interface BillingEvent {
   id: string;
@@ -67,7 +70,7 @@ export async function GET(request: Request) {
     const { data: billingEvents, error: eventsError } = await query;
 
     if (eventsError) {
-      console.error('[billing-timeline] Events query error:', eventsError);
+      log.error({ err: eventsError }, "[billing-timeline] Events query error:");
     }
 
     // Get subscription states with org names
@@ -95,7 +98,7 @@ export async function GET(request: Request) {
     const { data: subscriptions, error: subError } = await subQuery;
 
     if (subError) {
-      console.error('[billing-timeline] Subscriptions query error:', subError);
+      log.error({ err: subError }, "[billing-timeline] Subscriptions query error:");
     }
 
     // Transform billing events

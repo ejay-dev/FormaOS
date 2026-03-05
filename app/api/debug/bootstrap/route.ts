@@ -3,6 +3,9 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { resolvePlanKey } from "@/lib/plans";
 import { ensureSubscription } from "@/lib/billing/subscriptions";
 import { ensureDebugAccess } from "@/app/api/debug/_guard";
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/debug/bootstrap');
 
 export const runtime = "nodejs";
 
@@ -26,7 +29,7 @@ export async function POST(request: Request) {
     });
 
     if (createUserError) {
-      console.error("[debug/bootstrap] createUser failed:", createUserError);
+      log.error({ err: createUserError }, "[debug/bootstrap] createUser failed:");
       const payload = {
         message: createUserError.message ?? null,
         details: (createUserError as any)?.details ?? null,
@@ -40,13 +43,13 @@ export async function POST(request: Request) {
         });
 
         if (inviteError) {
-          console.error("[debug/bootstrap] inviteUserByEmail failed:", inviteError);
+          log.error({ err: inviteError }, "[debug/bootstrap] inviteUserByEmail failed:");
           return NextResponse.json({ ok: false, error: { create: payload, invite: inviteError } }, { status: 500 });
         }
 
         return NextResponse.json({ ok: true, invited: true, inviteData });
       } catch (invErr) {
-        console.error("[debug/bootstrap] invite fallback unexpected error:", invErr);
+        log.error({ err: invErr }, "[debug/bootstrap] invite fallback unexpected error:");
         return NextResponse.json({ ok: false, error: { create: payload, inviteFallback: String(invErr) } }, { status: 500 });
       }
     }
@@ -72,7 +75,7 @@ export async function POST(request: Request) {
       .single();
 
     if (orgError) {
-      console.error("[debug/bootstrap] organization insert failed:", orgError);
+      log.error({ err: orgError }, "[debug/bootstrap] organization insert failed:");
       return NextResponse.json({ ok: false, error: orgError }, { status: 500 });
     }
 
@@ -85,7 +88,7 @@ export async function POST(request: Request) {
     });
 
     if (memberError) {
-      console.error("[debug/bootstrap] org_members insert failed:", memberError);
+      log.error({ err: memberError }, "[debug/bootstrap] org_members insert failed:");
       return NextResponse.json({ ok: false, error: memberError }, { status: 500 });
     }
 
@@ -96,20 +99,20 @@ export async function POST(request: Request) {
     });
 
     if (onboardingError) {
-      console.error("[debug/bootstrap] org_onboarding_status insert failed:", onboardingError);
+      log.error({ err: onboardingError }, "[debug/bootstrap] org_onboarding_status insert failed:");
       return NextResponse.json({ ok: false, error: onboardingError }, { status: 500 });
     }
 
     try {
       await ensureSubscription(organizationId, plan);
     } catch (subErr) {
-      console.error("[debug/bootstrap] ensureSubscription failed:", subErr);
+      log.error({ err: subErr }, "[debug/bootstrap] ensureSubscription failed:");
       // don't fail the whole flow for subscription sync errors
     }
 
     return NextResponse.json({ ok: true, userId, organizationId });
   } catch (err) {
-    console.error("[debug/bootstrap] unexpected error:", err);
+    log.error({ err: err }, "[debug/bootstrap] unexpected error:");
     return NextResponse.json({ ok: false, error: String(err) }, { status: 500 });
   }
 }

@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSamlClient, isAllowedDomain } from '@/lib/sso/saml';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/sso/saml/acs/[orgId]');
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -88,7 +91,7 @@ export async function POST(
     });
 
     if (error || !link?.properties?.action_link) {
-      console.error('[saml/acs] generateLink failed:', error?.message);
+      log.error({ err: error?.message }, "[saml/acs] generateLink failed:");
       return NextResponse.redirect(
         `${appBase}/auth/signin?error=sso_failed&message=${encodeURIComponent(
           'SSO sign-in failed. Please contact your administrator.',
@@ -98,7 +101,7 @@ export async function POST(
 
     return NextResponse.redirect(link.properties.action_link);
   } catch (err) {
-    console.error('[saml/acs] assertion validation failed:', err);
+    log.error({ err: err }, "[saml/acs] assertion validation failed:");
     return NextResponse.redirect(
       `${((process.env.NEXT_PUBLIC_APP_URL ?? '').replace(/\/$/, '') || FALLBACK_APP_BASE)}/auth/signin?error=sso_failed&message=${encodeURIComponent(
         'SSO assertion could not be validated.',

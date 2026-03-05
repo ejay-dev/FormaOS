@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { disable2FA } from '@/lib/security';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   logSecurityEvent,
   SecurityEventTypes,
+
 } from '@/lib/security/session-security';
+
+const log = routeLog('/api/security/mfa/disable');
 import {
   checkRateLimit,
   getClientIdentifier,
@@ -56,7 +60,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error('[security/mfa/disable] Error:', error);
+    log.error({ err: error }, "[security/mfa/disable] Error:");
     return NextResponse.json(
       { ok: false, error: 'mfa_disable_failed' },
       { status: 500 },

@@ -6,6 +6,9 @@ import { emailSchema } from '@/lib/security/api-validation';
 import { rateLimitAuth } from '@/lib/security/rate-limiter';
 import { sendAuthEmail } from '@/lib/email/send-auth-email';
 import { buildHostedAuthConfirmLink } from '@/lib/auth/hosted-auth-link';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/auth/resend-confirmation');
 
 export const runtime = 'nodejs';
 
@@ -61,10 +64,10 @@ export async function POST(request: Request) {
     });
 
     if (error) {
-      console.warn('[auth/resend-confirmation] magic link generation failed:', {
+      log.warn({ data: {
         email,
         error: error.message,
-      });
+      } }, "[auth/resend-confirmation] magic link generation failed:");
       return NextResponse.json(
         {
           ok: true,
@@ -97,10 +100,10 @@ export async function POST(request: Request) {
     });
 
     if (!emailResult.success) {
-      console.error('[auth/resend-confirmation] email send failed:', {
+      log.error({ err: {
         email,
         error: emailResult.error,
-      });
+      } }, "[auth/resend-confirmation] email send failed:");
     }
 
     return NextResponse.json(
@@ -111,7 +114,7 @@ export async function POST(request: Request) {
       { headers },
     );
   } catch (error) {
-    console.error('[auth/resend-confirmation] unexpected error:', error);
+    log.error({ err: error }, "[auth/resend-confirmation] unexpected error:");
     return NextResponse.json(
       {
         ok: true,

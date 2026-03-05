@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requirePermission } from '@/app/app/actions/rbac';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
+import { routeLog } from '@/lib/monitoring/server-logger';
 
 /**
  * =========================================================
@@ -12,6 +13,8 @@ import { rateLimitApi } from '@/lib/security/rate-limiter';
  * Authentication: Bearer token (Supabase JWT)
  * Rate limit: 60 requests per minute
  */
+
+const log = routeLog('/api/v1/audit-logs');
 
 export async function GET(request: Request) {
   try {
@@ -77,7 +80,7 @@ export async function GET(request: Request) {
     const { data: logs, error } = await query;
 
     if (error) {
-      console.error('[API v1 /audit-logs] Database error:', error);
+      log.error({ err: error }, "[API v1 /audit-logs] Database error:");
       return NextResponse.json(
         { error: 'Failed to fetch audit logs' },
         { status: 500 },
@@ -95,8 +98,8 @@ export async function GET(request: Request) {
         endDate: endDate || null,
       },
     });
-  } catch (error: any) {
-    console.error('[API v1 /audit-logs] Unexpected error:', error);
+  } catch (error: unknown) {
+    log.error({ err: error }, "[API v1 /audit-logs] Unexpected error:");
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

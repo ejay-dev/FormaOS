@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireFounderAccess } from '@/app/app/admin/access';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   handleAdminError,
   ADMIN_CACHE_HEADERS,
+
 } from '@/app/api/admin/_helpers';
+
+const log = routeLog('/api/admin/releases');
 import { logAdminAction } from '@/lib/admin/audit';
 import { isValidVersionCode } from '@/config/release';
 
@@ -22,7 +26,7 @@ export async function GET() {
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('/api/admin/releases query error:', error);
+      log.error({ err: error }, "/api/admin/releases query error:");
     }
 
     return NextResponse.json(

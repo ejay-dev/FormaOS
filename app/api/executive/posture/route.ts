@@ -2,12 +2,15 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { calculateExecutivePosture } from '@/lib/executive/posture-calculator';
 import type { ExecutivePosture } from '@/lib/executive/types';
+import { routeLog } from '@/lib/monitoring/server-logger';
 
 /**
  * GET /api/executive/posture
  * Returns the executive compliance posture for the current user's organization
  * Restricted to owner/admin roles
  */
+const log = routeLog('/api/executive/posture');
+
 export async function GET() {
   let supabase;
   let userId: string;
@@ -34,7 +37,7 @@ export async function GET() {
 
     userId = user.id;
   } catch (authError) {
-    console.error('[Executive Posture] Auth error:', authError);
+    log.error({ err: authError }, "[Executive Posture] Auth error:");
     return NextResponse.json(
       {
         error: 'Unauthorized',
@@ -78,7 +81,7 @@ export async function GET() {
 
     orgId = membership.organization_id;
   } catch (orgError) {
-    console.error('[Executive Posture] Org lookup error:', orgError);
+    log.error({ err: orgError }, "[Executive Posture] Org lookup error:");
     return NextResponse.json(
       {
         error: 'Internal Server Error',
@@ -97,7 +100,7 @@ export async function GET() {
       generatedAt: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('[Executive Posture] Calculation error:', error);
+    log.error({ err: error }, "[Executive Posture] Calculation error:");
     return NextResponse.json(
       {
         error: 'Internal Server Error',

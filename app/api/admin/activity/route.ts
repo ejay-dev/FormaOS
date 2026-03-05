@@ -11,10 +11,13 @@ import { isFounder } from '@/lib/utils/founder';
 import { fetchAuthEmailsByIds } from '@/app/api/admin/_auth-users';
 import { extractClientIP } from '@/lib/security/session-security';
 import { logUnauthorizedAccess } from '@/lib/security/event-logger';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   isSecurityDashboardEnabled,
   isSecurityMonitoringEnabled,
 } from '@/lib/security/monitoring-flags';
+
+const log = routeLog('/api/admin/activity');
 
 type ActivityRow = {
   id: string;
@@ -46,9 +49,9 @@ async function loadUserContext(
     .in('user_id', uniqueUserIds);
 
   const profileByUserId = new Map<string, { full_name: string | null }>();
-  (profiles ?? []).forEach((profile: any) => {
-    profileByUserId.set(profile.user_id, {
-      full_name: profile.full_name ?? null,
+  (profiles ?? []).forEach((profile: Record<string, unknown>) => {
+    profileByUserId.set(profile.user_id as string, {
+      full_name: (profile.full_name as string | null) ?? null,
     });
   });
 
@@ -92,7 +95,10 @@ export async function GET(request: Request) {
 
     if (!isFounder(user.email, user.id)) {
       logUnauthorizedActivityAccess(request, user.id);
-      return NextResponse.json({ ok: false, error: 'forbidden' }, { status: 403 });
+      return NextResponse.json(
+        { ok: false, error: 'forbidden' },
+        { status: 403 },
+      );
     }
 
     const { searchParams } = new URL(request.url);
@@ -123,7 +129,7 @@ export async function GET(request: Request) {
     const { data: activity, error } = await query;
 
     if (error) {
-      console.error('[Activity] Failed to fetch:', error);
+      log.error({ err: error }, '[Activity] Failed to fetch:');
       return NextResponse.json(
         { ok: false, error: 'db_error' },
         { status: 500 },
@@ -131,7 +137,9 @@ export async function GET(request: Request) {
     }
 
     const activityRows = (activity ?? []) as ActivityRow[];
-    const userIds = Array.from(new Set(activityRows.map((entry) => entry.user_id)));
+    const userIds = Array.from(
+      new Set(activityRows.map((entry) => entry.user_id)),
+    );
     const orgIds = Array.from(
       new Set(
         activityRows
@@ -148,8 +156,11 @@ export async function GET(request: Request) {
     ]);
 
     const orgById = new Map<string, { id: string; name: string }>();
-    (organizations ?? []).forEach((org: any) => {
-      orgById.set(org.id, { id: org.id, name: org.name });
+    (organizations ?? []).forEach((org: Record<string, unknown>) => {
+      orgById.set(org.id as string, {
+        id: org.id as string,
+        name: org.name as string,
+      });
     });
 
     const enrichedActivity = activityRows.map((entry) => {
@@ -174,7 +185,7 @@ export async function GET(request: Request) {
       timeRange,
     });
   } catch (error) {
-    console.error('[Activity] Error:', error);
+    log.error({ err: error }, '[Activity] Error:');
     return NextResponse.json(
       { ok: false, error: 'internal_error' },
       { status: 500 },

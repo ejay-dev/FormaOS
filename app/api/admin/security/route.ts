@@ -1,10 +1,13 @@
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   handleAdminError,
   ADMIN_CACHE_HEADERS,
 } from '@/app/api/admin/_helpers';
+
+const log = routeLog('/api/admin/security');
 
 /**
  * GET /api/admin/security — Real security events from admin_audit_log
@@ -27,7 +30,7 @@ export async function GET() {
       .limit(50);
 
     if (error) {
-      console.error('/api/admin/security audit query error:', error);
+      log.error({ err: error }, '/api/admin/security audit query error:');
     }
 
     /* ── Map audit events to security event shape ──────── */
@@ -48,10 +51,11 @@ export async function GET() {
       'repair_user',
     ]);
 
-    const events = (auditEvents ?? []).map((e: any) => {
+    const events = (auditEvents ?? []).map((e: Record<string, unknown>) => {
       let severity: 'low' | 'medium' | 'high' = 'low';
-      if (HIGH_SEVERITY_ACTIONS.has(e.action)) severity = 'high';
-      else if (MEDIUM_SEVERITY_ACTIONS.has(e.action)) severity = 'medium';
+      if (HIGH_SEVERITY_ACTIONS.has(e.action as string)) severity = 'high';
+      else if (MEDIUM_SEVERITY_ACTIONS.has(e.action as string))
+        severity = 'medium';
 
       return {
         id: e.id,
@@ -60,7 +64,7 @@ export async function GET() {
         actor_id: e.actor_id,
         target_type: e.target_type,
         target_id: e.target_id,
-        description: `${e.action} on ${e.target_type} ${e.target_id?.slice(0, 8)}…`,
+        description: `${e.action as string} on ${e.target_type as string} ${(e.target_id as string)?.slice(0, 8)}…`,
         timestamp: e.created_at,
         meta: e.meta,
       };
@@ -69,10 +73,10 @@ export async function GET() {
     /* ── Summary counts ────────────────────────────────── */
     const totalEvents = events.length;
     const highSeverity = events.filter(
-      (e: any) => e.severity === 'high',
+      (e: Record<string, unknown>) => e.severity === 'high',
     ).length;
     const mediumSeverity = events.filter(
-      (e: any) => e.severity === 'medium',
+      (e: Record<string, unknown>) => e.severity === 'medium',
     ).length;
 
     return NextResponse.json(

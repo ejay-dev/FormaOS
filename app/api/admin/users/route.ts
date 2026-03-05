@@ -22,7 +22,7 @@ export async function GET(request: Request) {
     const MAX_SEARCH_SCAN = 2000;
     const PAGE_BATCH_SIZE = 100;
 
-    let users: any[] = [];
+    let users: Record<string, unknown>[] = [];
     let totalUsers = 0;
 
     if (query) {
@@ -50,13 +50,15 @@ export async function GET(request: Request) {
     }
 
     const queryFilteredUsers = query
-      ? users.filter((candidate: any) => {
-          const email = (candidate.email ?? '').toLowerCase();
+      ? users.filter((candidate: Record<string, unknown>) => {
+          const email = ((candidate.email as string) ?? '').toLowerCase();
           const fullName = (
-            candidate.user_metadata?.full_name ??
-            candidate.user_metadata?.name ??
+            (candidate.user_metadata as Record<string, unknown>)?.full_name ??
+            (candidate.user_metadata as Record<string, unknown>)?.name ??
             ''
-          ).toLowerCase();
+          )
+            .toString()
+            .toLowerCase();
           return email.includes(query) || fullName.includes(query);
         })
       : users;
@@ -67,7 +69,9 @@ export async function GET(request: Request) {
       ? queryFilteredUsers.slice(from, to)
       : queryFilteredUsers;
 
-    const userIds = pagedUsers.map((candidate: any) => candidate.id);
+    const userIds = pagedUsers.map(
+      (candidate: Record<string, unknown>) => candidate.id,
+    );
     const { data: memberships } = userIds.length
       ? await admin
           .from('org_members')
@@ -81,34 +85,38 @@ export async function GET(request: Request) {
           .select('id, name')
           .in(
             'id',
-            memberships.map((row: any) => row.organization_id),
+            memberships.map(
+              (row: Record<string, unknown>) => row.organization_id,
+            ),
           )
       : { data: [] };
 
     const orgMap = new Map<string, string>();
-    (organizations ?? []).forEach((org: any) => {
-      orgMap.set(org.id, org.name ?? 'N/A');
+    (organizations ?? []).forEach((org: Record<string, unknown>) => {
+      orgMap.set(org.id as string, (org.name as string) ?? 'N/A');
     });
 
     const membershipMap = new Map<
       string,
       { role: string | null; organization: string }
     >();
-    (memberships ?? []).forEach((membership: any) => {
-      membershipMap.set(membership.user_id, {
-        role: membership.role,
-        organization: orgMap.get(membership.organization_id) ?? 'N/A',
+    (memberships ?? []).forEach((membership: Record<string, unknown>) => {
+      membershipMap.set(membership.user_id as string, {
+        role: membership.role as string | null,
+        organization: orgMap.get(membership.organization_id as string) ?? 'N/A',
       });
     });
 
-    const rows = pagedUsers.map((candidate: any) => ({
+    const rows = pagedUsers.map((candidate: Record<string, unknown>) => ({
       id: candidate.id,
       email: candidate.email ?? 'N/A',
-      provider: candidate.app_metadata?.provider ?? 'N/A',
+      provider:
+        (candidate.app_metadata as Record<string, unknown>)?.provider ?? 'N/A',
       email_confirmed: Boolean(candidate.email_confirmed_at),
       last_sign_in_at: candidate.last_sign_in_at ?? null,
-      role: membershipMap.get(candidate.id)?.role ?? 'N/A',
-      organization: membershipMap.get(candidate.id)?.organization ?? 'N/A',
+      role: membershipMap.get(candidate.id as string)?.role ?? 'N/A',
+      organization:
+        membershipMap.get(candidate.id as string)?.organization ?? 'N/A',
     }));
 
     return NextResponse.json({

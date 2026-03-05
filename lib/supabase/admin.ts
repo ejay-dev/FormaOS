@@ -1,5 +1,5 @@
-import { createClient } from "@supabase/supabase-js";
-import { getSupabaseServiceRoleKey, getSupabaseUrl } from "@/lib/supabase/env";
+import { createClient } from '@supabase/supabase-js';
+import { getSupabaseServiceRoleKey, getSupabaseUrl } from '@/lib/supabase/env';
 
 export function createSupabaseAdminClient() {
   const url = getSupabaseUrl();
@@ -15,7 +15,12 @@ export function createSupabaseAdminClient() {
   })();
 
   if (!hasValidUrl || !serviceKey) {
-    console.error("[Supabase] Missing service role configuration.");
+    if (process.env.NODE_ENV !== 'test') {
+      throw new Error(
+        '[Supabase] Cannot create admin client — SUPABASE_SERVICE_ROLE_KEY is missing or invalid. ' +
+          'Check environment configuration.',
+      );
+    }
     return createFallbackAdminClient();
   }
 
@@ -26,17 +31,29 @@ export function createSupabaseAdminClient() {
       },
     });
   } catch (error) {
-    console.error("[Supabase] Failed to initialize admin client:", error);
+    if (process.env.NODE_ENV !== 'test') {
+      throw new Error(
+        `[Supabase] Failed to initialize admin client: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
     return createFallbackAdminClient();
   }
 }
 
 function createFallbackAdminClient() {
-  const error = { message: "Supabase admin client is not configured." };
-  const emptyResult: { data: unknown; error: { message: string } } = { data: null, error };
-  const emptyListResult: { data: unknown[]; error: { message: string } } = { data: [], error };
+  const error = { message: 'Supabase admin client is not configured.' };
+  const emptyResult: { data: unknown; error: { message: string } } = {
+    data: null,
+    error,
+  };
+  const emptyListResult: { data: unknown[]; error: { message: string } } = {
+    data: [],
+    error,
+  };
 
-  const buildQuery = (result: { data: unknown; error: { message: string } } = emptyListResult) => {
+  const buildQuery = (
+    result: { data: unknown; error: { message: string } } = emptyListResult,
+  ) => {
     const builder: any = {
       select: () => buildQuery(emptyListResult),
       insert: () => buildQuery(emptyResult),
@@ -55,9 +72,12 @@ function createFallbackAdminClient() {
       limit: () => builder,
       single: () => Promise.resolve(emptyResult),
       maybeSingle: () => Promise.resolve(emptyResult),
-      then: (resolve: (value: typeof result) => void) => Promise.resolve(result).then(resolve),
-      catch: (reject: (reason?: unknown) => void) => Promise.resolve(result).catch(reject),
-      finally: (callback: () => void) => Promise.resolve(result).finally(callback),
+      then: (resolve: (value: typeof result) => void) =>
+        Promise.resolve(result).then(resolve),
+      catch: (reject: (reason?: unknown) => void) =>
+        Promise.resolve(result).catch(reject),
+      finally: (callback: () => void) =>
+        Promise.resolve(result).finally(callback),
     };
     return builder;
   };

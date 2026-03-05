@@ -1,8 +1,12 @@
+import { randomUUID } from 'crypto';
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { resolvePlanKey } from '@/lib/plans';
 import { ensureSubscription } from '@/lib/billing/subscriptions';
 import { ensureDebugAccess } from '@/app/api/debug/_guard';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/auth/signup');
 
 export const runtime = 'nodejs';
 
@@ -26,9 +30,7 @@ export async function POST(request: Request) {
     }
 
     // Generate a user id so related rows can be created first
-    const userId =
-      (globalThis as any).crypto?.randomUUID?.() ??
-      `00000000-0000-4000-8000-${Date.now()}`;
+    const userId = randomUUID();
 
     const now = new Date().toISOString();
 
@@ -46,7 +48,7 @@ export async function POST(request: Request) {
       .single();
 
     if (orgError) {
-      console.error('[api/auth/signup] organization insert failed:', orgError);
+      log.error({ err: orgError }, "[api/auth/signup] organization insert failed:");
       return NextResponse.json(
         { ok: false, error: 'organization_creation_failed' },
         { status: 500 },
@@ -62,10 +64,7 @@ export async function POST(request: Request) {
     });
 
     if (memberError) {
-      console.error(
-        '[api/auth/signup] org_members insert failed:',
-        memberError,
-      );
+      log.error({ err: memberError, }, "[api/auth/signup] org_members insert failed:");
       return NextResponse.json(
         { ok: false, error: 'membership_creation_failed' },
         { status: 500 },
@@ -81,10 +80,7 @@ export async function POST(request: Request) {
       });
 
     if (onboardingError) {
-      console.error(
-        '[api/auth/signup] org_onboarding_status insert failed:',
-        onboardingError,
-      );
+      log.error({ err: onboardingError, }, "[api/auth/signup] org_onboarding_status insert failed:");
       return NextResponse.json(
         { ok: false, error: 'onboarding_setup_failed' },
         { status: 500 },
@@ -101,7 +97,7 @@ export async function POST(request: Request) {
       });
 
     if (createUserError) {
-      console.error('[api/auth/signup] createUser failed:', createUserError);
+      log.error({ err: createUserError }, "[api/auth/signup] createUser failed:");
       // attempt cleanup
       try {
         await admin
@@ -113,14 +109,21 @@ export async function POST(request: Request) {
           .delete()
           .match({ id: organizationId });
       } catch (cleanupErr) {
-        console.error('[api/auth/signup] cleanup failed:', cleanupErr);
+        log.error({ err: cleanupErr }, "[api/auth/signup] cleanup failed:");
       }
       // Return a safe error — never leak Supabase internals to the client
       const isEmailTaken =
         createUserError.message?.toLowerCase().includes('already registered') ||
-        createUserError.message?.toLowerCase().includes('already been registered');
+        createUserError.message
+          ?.toLowerCase()
+          .includes('already been registered');
       return NextResponse.json(
-        { ok: false, error: isEmailTaken ? 'email_already_registered' : 'user_creation_failed' },
+        {
+          ok: false,
+          error: isEmailTaken
+            ? 'email_already_registered'
+            : 'user_creation_failed',
+        },
         { status: isEmailTaken ? 409 : 500 },
       );
     }
@@ -128,12 +131,12 @@ export async function POST(request: Request) {
     try {
       await ensureSubscription(organizationId, plan);
     } catch (subErr) {
-      console.error('[api/auth/signup] ensureSubscription failed:', subErr);
+      log.error({ err: subErr }, "[api/auth/signup] ensureSubscription failed:");
     }
 
     return NextResponse.json({ ok: true, userId, organizationId });
   } catch (err) {
-    console.error('[api/auth/signup] unexpected error:', err);
+    log.error({ err: err }, "[api/auth/signup] unexpected error:");
     return NextResponse.json(
       { ok: false, error: 'signup_failed' },
       { status: 500 },

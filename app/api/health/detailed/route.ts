@@ -8,7 +8,7 @@ interface DetailedCheck {
   name: string;
   status: 'healthy' | 'degraded' | 'error';
   responseTime: number;
-  details?: any;
+  details?: unknown;
   error?: string;
 }
 

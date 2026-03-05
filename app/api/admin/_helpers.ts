@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { routeLog } from '@/lib/monitoring/server-logger';
 
 /**
  * Standard error handler for admin API routes.
@@ -6,6 +7,8 @@ import { NextResponse } from 'next/server';
  * Distinguishes auth/permission errors (403) from server errors (500).
  * Auth errors show "Unavailable (permission)" — never leak stack traces.
  */
+const log = routeLog('/api/admin/');
+
 export function handleAdminError(error: unknown, route: string) {
   const msg =
     error instanceof Error ? error.message : String(error ?? 'Unknown');
@@ -24,7 +27,7 @@ export function handleAdminError(error: unknown, route: string) {
     );
   }
 
-  console.error(`${route} error:`, error);
+  log.error({ err: error, route }, 'admin route error');
   return NextResponse.json(
     { error: `Failed to process ${route}` },
     { status: 500 },

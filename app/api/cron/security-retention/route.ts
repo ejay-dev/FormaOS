@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { timingSafeEqual } from 'crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/cron/security-retention');
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -44,7 +47,7 @@ async function runSecurityRetention(request: Request) {
 
     const { error } = await admin.rpc('cleanup_old_security_data');
     if (error) {
-      console.error('[SecurityRetentionCron] cleanup failed:', error);
+      log.error({ err: error }, "[SecurityRetentionCron] cleanup failed:");
       return NextResponse.json(
         { ok: false, error: 'cleanup_failed', detail: error.message },
         { status: 500 },
@@ -57,7 +60,7 @@ async function runSecurityRetention(request: Request) {
       durationMs: Date.now() - startedAt,
     });
   } catch (error) {
-    console.error('[SecurityRetentionCron] unexpected error:', error);
+    log.error({ err: error }, "[SecurityRetentionCron] unexpected error:");
     return NextResponse.json(
       { ok: false, error: 'internal_error' },
       { status: 500 },

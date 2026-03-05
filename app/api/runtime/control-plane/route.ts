@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   getRuntimeSnapshot,
   resolveControlPlaneEnvironment,
+
 } from '@/lib/control-plane/server';
+
+const log = routeLog('/api/runtime/control-plane');
 
 async function resolveContext() {
   const supabase = await createSupabaseServerClient();
@@ -54,7 +58,7 @@ export async function GET(request: Request) {
       },
     });
   } catch (error) {
-    console.error('[runtime/control-plane] failed:', error);
+    log.error({ err: error }, "[runtime/control-plane] failed:");
     return NextResponse.json(
       { error: 'runtime_unavailable' },
       {

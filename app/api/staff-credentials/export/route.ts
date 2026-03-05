@@ -1,12 +1,16 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   checkRateLimit,
   getClientIdentifier,
   getUserIdentifier,
   createRateLimitHeaders,
   RATE_LIMITS,
+
 } from '@/lib/security/rate-limiter';
+
+const log = routeLog('/api/staff-credentials/export');
 
 function escapeCsv(value: unknown): string {
   if (value === null || value === undefined) return '';
@@ -74,7 +78,7 @@ export async function GET() {
       .limit(5000);
 
     if (error) {
-      console.error('[staff-credentials/export] query failed:', error.message);
+      log.error({ err: error.message }, "[staff-credentials/export] query failed:");
       return NextResponse.json({ error: 'export_query_failed' }, { status: 500 });
     }
 
@@ -121,7 +125,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error('[api/staff-credentials/export] Error:', error);
+    log.error({ err: error }, "[api/staff-credentials/export] Error:");
     return NextResponse.json(
       { error: 'Failed to export staff credentials' },
       { status: 500 },

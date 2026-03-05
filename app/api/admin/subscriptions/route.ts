@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     const MAX_SEARCH_SCAN = 1500;
     const SEARCH_BATCH_SIZE = 100;
 
-    let subscriptions: any[] = [];
+    let subscriptions: Record<string, unknown>[] = [];
     let total = 0;
 
     if (search) {
@@ -68,7 +68,11 @@ export async function GET(request: Request) {
     }
 
     const orgIds = Array.from(
-      new Set(subscriptions.map((row: any) => row.organization_id)),
+      new Set(
+        subscriptions.map(
+          (row: Record<string, unknown>) => row.organization_id,
+        ),
+      ),
     );
 
     const { data: organizations } = orgIds.length
@@ -76,21 +80,24 @@ export async function GET(request: Request) {
       : { data: [] };
 
     const orgMap = new Map<string, string>();
-    (organizations ?? []).forEach((org: any) => {
-      orgMap.set(org.id, org.name ?? 'N/A');
+    (organizations ?? []).forEach((org: Record<string, unknown>) => {
+      orgMap.set(org.id as string, (org.name as string) ?? 'N/A');
     });
 
-    const rowsWithOrg = subscriptions.map((subscription: any) => ({
-      ...subscription,
-      organization_name: orgMap.get(subscription.organization_id) ?? 'N/A',
-      trial_expires_at:
-        subscription.trial_expires_at ??
-        subscription.current_period_end ??
-        null,
-    }));
+    const rowsWithOrg = subscriptions.map(
+      (subscription: Record<string, unknown>) => ({
+        ...subscription,
+        organization_name:
+          orgMap.get(subscription.organization_id as string) ?? 'N/A',
+        trial_expires_at:
+          subscription.trial_expires_at ??
+          subscription.current_period_end ??
+          null,
+      }),
+    );
 
     const filteredRows = search
-      ? rowsWithOrg.filter((row: any) => {
+      ? rowsWithOrg.filter((row: Record<string, unknown>) => {
           const orgName = String(row.organization_name ?? '').toLowerCase();
           const customerId = String(row.stripe_customer_id ?? '').toLowerCase();
           const subscriptionId = String(

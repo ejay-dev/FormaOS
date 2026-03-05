@@ -9,6 +9,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { timingSafeEqual } from 'crypto';
 import { runScheduledAutomation } from '@/lib/automation/scheduled-processor';
 import { processQueueJobs } from '@/lib/queue';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/automation/cron');
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -29,7 +32,7 @@ export async function POST(request: NextRequest) {
   const cronSecret = process.env.CRON_SECRET;
 
   if (!cronSecret) {
-    console.error('[Cron] CRON_SECRET not configured');
+    log.error({}, "[Cron] CRON_SECRET not configured");
     return NextResponse.json(
       { error: 'Cron not configured' },
       { status: 500 }
@@ -44,14 +47,14 @@ export async function POST(request: NextRequest) {
     timingSafeEqual(tokenBuffer, secretBuffer);
 
   if (!isValid) {
-    console.error('[Cron] Invalid cron secret');
+    log.error({}, "[Cron] Invalid cron secret");
     return NextResponse.json(
       { error: 'Unauthorized' },
       { status: 401 }
     );
   }
 
-  console.log('[Cron] Starting scheduled automation...');
+  log.info({}, "[Cron] Starting scheduled automation...");
 
   try {
     const startTime = Date.now();
@@ -60,16 +63,16 @@ export async function POST(request: NextRequest) {
     const automationResult = await runScheduledAutomation();
 
     // Process pending queue jobs
-    console.log('[Cron] Processing job queue...');
+    log.info({}, "[Cron] Processing job queue...");
     const queueResult = await processQueueJobs();
 
     const duration = Date.now() - startTime;
 
-    console.log('[Cron] Automation completed:', {
+    log.info({ data: {
       duration: `${duration}ms`,
       automation: automationResult,
       queue: queueResult,
-    });
+    } }, "[Cron] Automation completed:");
 
     return NextResponse.json({
       success: true,
@@ -88,7 +91,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('[Cron] Automation failed:', error);
+    log.error({ err: error }, "[Cron] Automation failed:");
 
     return NextResponse.json(
       {

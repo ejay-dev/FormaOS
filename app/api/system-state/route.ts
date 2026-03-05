@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { fetchSystemState } from '@/lib/system-state/server';
+import { routeLog } from '@/lib/monitoring/server-logger';
 
 /**
  * =========================================================
@@ -22,6 +23,8 @@ import { fetchSystemState } from '@/lib/system-state/server';
  * ⚡ Performance: ~80-120ms (one Supabase multi-query)
  */
 
+const log = routeLog('/api/system-state');
+
 export async function GET(_request: Request) {
   try {
     // Check if user is authenticated
@@ -43,7 +46,7 @@ export async function GET(_request: Request) {
       entitlements: systemState.entitlements,
     });
   } catch (error) {
-    console.error('[/api/system-state] Error:', error);
+    log.error({ err: error }, "[/api/system-state] Error:");
     return NextResponse.json(
       { error: 'Failed to fetch system state' },
       { status: 500 }

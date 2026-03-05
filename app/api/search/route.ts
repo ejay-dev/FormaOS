@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requirePermission } from '@/app/app/actions/rbac';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/search');
 
 type SearchItemType = 'policy' | 'task' | 'evidence';
 
@@ -59,26 +62,26 @@ export async function GET(request: Request) {
     ]);
 
     if (policies.error || tasks.error || evidence.error) {
-      console.error('[api/search] query error', {
+      log.error({ err: {
         policies: policies.error?.message ?? null,
         tasks: tasks.error?.message ?? null,
         evidence: evidence.error?.message ?? null,
-      });
+      } }, "[api/search] query error");
       return NextResponse.json({ error: 'Search failed' }, { status: 500 });
     }
 
     const results: SearchItem[] = [
-      ...(policies.data ?? []).map((row: any) => ({
+      ...(policies.data ?? []).map((row: Record<string, unknown>) => ({
         id: row.id,
         title: row.title ?? 'Untitled policy',
         type: 'policy' as const,
       })),
-      ...(tasks.data ?? []).map((row: any) => ({
+      ...(tasks.data ?? []).map((row: Record<string, unknown>) => ({
         id: row.id,
         title: row.title ?? 'Untitled task',
         type: 'task' as const,
       })),
-      ...(evidence.data ?? []).map((row: any) => ({
+      ...(evidence.data ?? []).map((row: Record<string, unknown>) => ({
         id: row.id,
         title: row.title ?? row.file_name ?? 'Untitled evidence',
         type: 'evidence' as const,
@@ -94,7 +97,7 @@ export async function GET(request: Request) {
     if (message.toLowerCase().includes('access denied')) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
-    console.error('[api/search] unexpected error', error);
+    log.error({ err: error }, "[api/search] unexpected error");
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

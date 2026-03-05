@@ -1,10 +1,13 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { requireFounderAccess } from '@/app/app/admin/access';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   rateLimitApi,
   createRateLimitHeaders,
 } from '@/lib/security/rate-limiter';
+
+const log = routeLog('/api/email/test');
 import { logAdminAction } from '@/lib/admin/audit';
 
 export async function GET(request: Request) {
@@ -109,13 +112,13 @@ export async function GET(request: Request) {
         targetType: 'system',
         targetId: 'email-test',
         metadata: { to: to.join(', '), subject },
-      }).catch((e) => console.error('Failed to log admin action:', e));
+      }).catch((e) => log.error({ err: e }, 'Failed to log admin action:'));
     }
 
     return NextResponse.json({ ok: true, id: data?.id }, { status: 200 });
-  } catch (err: any) {
+  } catch (err: unknown) {
     return NextResponse.json(
-      { error: err?.message || 'Unknown error' },
+      { error: (err as Error)?.message || 'Unknown error' },
       { status: 500 },
     );
   }

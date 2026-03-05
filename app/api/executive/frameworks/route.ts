@@ -1,12 +1,15 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getMultiFrameworkRollup, getFrameworkComparison } from '@/lib/executive/multi-framework-rollup';
+import { routeLog } from '@/lib/monitoring/server-logger';
 
 /**
  * GET /api/executive/frameworks
  * Returns framework rollup with scores and trends
  * Restricted to owner/admin roles
  */
+const log = routeLog('/api/executive/frameworks');
+
 export async function GET() {
   let supabase;
   let userId: string;
@@ -33,7 +36,7 @@ export async function GET() {
 
     userId = user.id;
   } catch (authError) {
-    console.error('[Executive Frameworks] Auth error:', authError);
+    log.error({ err: authError }, "[Executive Frameworks] Auth error:");
     return NextResponse.json(
       {
         error: 'Unauthorized',
@@ -77,7 +80,7 @@ export async function GET() {
 
     orgId = membership.organization_id;
   } catch (orgError) {
-    console.error('[Executive Frameworks] Org lookup error:', orgError);
+    log.error({ err: orgError }, "[Executive Frameworks] Org lookup error:");
     return NextResponse.json(
       {
         error: 'Internal Server Error',
@@ -100,7 +103,7 @@ export async function GET() {
       generatedAt: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('[Executive Frameworks] Calculation error:', error);
+    log.error({ err: error }, "[Executive Frameworks] Calculation error:");
     return NextResponse.json(
       {
         error: 'Internal Server Error',

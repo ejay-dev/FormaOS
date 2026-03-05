@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { handleAdminError, ADMIN_CACHE_HEADERS } from '@/app/api/admin/_helpers';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/admin/exports');
 
 export async function GET() {
   try {
@@ -26,13 +29,13 @@ export async function GET() {
     ]);
 
     if (complianceRes.error || reportRes.error) {
-      console.error('/api/admin/exports query errors:', {
+      log.error({ err: {
         compliance: complianceRes.error,
         report: reportRes.error,
-      });
+      } }, "/api/admin/exports query errors:");
     }
 
-    const complianceJobs = (complianceRes.data ?? []).map((job: any) => ({
+    const complianceJobs = (complianceRes.data ?? []).map((job: Record<string, unknown>) => ({
       id: job.id,
       organizationId: job.organization_id,
       type: 'compliance',
@@ -46,7 +49,7 @@ export async function GET() {
       completedAt: job.completed_at,
     }));
 
-    const reportJobs = (reportRes.data ?? []).map((job: any) => ({
+    const reportJobs = (reportRes.data ?? []).map((job: Record<string, unknown>) => ({
       id: job.id,
       organizationId: job.organization_id,
       type: 'report',
@@ -75,7 +78,7 @@ export async function GET() {
         .from('organizations')
         .select('id, name')
         .in('id', orgIds);
-      orgMap = new Map((orgs ?? []).map((org: any) => [org.id, org.name]));
+      orgMap = new Map((orgs ?? []).map((org: Record<string, unknown>) => [org.id, org.name]));
     }
 
     const jobsWithOrg = jobs.map((job) => ({

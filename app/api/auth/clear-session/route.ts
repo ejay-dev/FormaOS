@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/auth/clear-session');
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -100,7 +103,10 @@ export async function POST() {
     maxAge: 0,
   });
 
-  console.log('[auth/clear-session] Cleared session cookies:', clearedCookies);
+  log.info(
+    { data: clearedCookies },
+    '[auth/clear-session] Cleared session cookies:',
+  );
 
   return response;
 }
@@ -169,7 +175,8 @@ export async function GET(request: Request) {
     maxAge: 0,
   });
 
-  console.log(
+  log.info(
+    {},
     '[auth/clear-session] GET: Cleared session and redirecting to signin',
   );
 

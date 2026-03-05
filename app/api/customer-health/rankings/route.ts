@@ -3,12 +3,15 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { calculateHealthScore } from '@/lib/customer-health/health-score-engine';
 import { isFounder } from '@/lib/utils/founder';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import type {
   HealthRankings,
   HealthSummary,
   CustomerHealthScore,
   HealthScoreInput,
 } from '@/lib/customer-health/health-types';
+
+const log = routeLog('/api/customer-health/rankings');
 
 type OrgRow = {
   id: string;
@@ -76,7 +79,7 @@ export async function GET() {
     userEmail = user.email || '';
     userId = user.id;
   } catch (authError) {
-    console.error('[Health Rankings] Auth error:', authError);
+    log.error({ err: authError }, '[Health Rankings] Auth error:');
     return NextResponse.json(
       {
         error: 'Unauthorized',
@@ -141,7 +144,10 @@ export async function GET() {
         calculatedAt: new Date().toISOString(),
       };
 
-      return NextResponse.json({ rankings, generatedAt: new Date().toISOString() });
+      return NextResponse.json({
+        rankings,
+        generatedAt: new Date().toISOString(),
+      });
     }
 
     const orgIds = orgRows.map((org) => org.id);
@@ -221,7 +227,9 @@ export async function GET() {
         lastLoginAt: current.lastLoginAt ?? row.created_at,
         last7:
           current.last7 +
-          (new Date(row.created_at).getTime() >= sevenDaysAgo.getTime() ? 1 : 0),
+          (new Date(row.created_at).getTime() >= sevenDaysAgo.getTime()
+            ? 1
+            : 0),
         last30: current.last30 + 1,
       };
 
@@ -274,7 +282,9 @@ export async function GET() {
         const trialEnd = new Date(subscription.trial_expires_at);
         trialDaysRemaining = Math.max(
           0,
-          Math.ceil((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)),
+          Math.ceil(
+            (trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
+          ),
         );
       }
 
@@ -341,7 +351,7 @@ export async function GET() {
       generatedAt: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('[Health Rankings] Error:', error);
+    log.error({ err: error }, '[Health Rankings] Error:');
     return NextResponse.json(
       {
         error: 'Internal Server Error',

@@ -10,6 +10,9 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { enterpriseMonitor } from '@/lib/observability/enterprise-monitor';
 import { handleAdminError } from '@/app/api/admin/_helpers';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/admin/support/automation-failures');
 
 interface AutomationFailure {
   id: string;
@@ -50,7 +53,7 @@ export async function GET(request: Request) {
       .limit(limit);
 
     if (error) {
-      console.error('[automation-failures] Query error:', error);
+      log.error({ err: error }, "[automation-failures] Query error:");
     }
 
     // Transform audit logs to failure format

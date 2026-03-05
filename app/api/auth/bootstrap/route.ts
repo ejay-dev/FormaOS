@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
 import { rateLimitAuth } from '@/lib/security/rate-limiter';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   createTrackedSession,
   generateDeviceFingerprint,
@@ -10,7 +11,10 @@ import {
   extractClientIP,
   logSecurityEvent,
   SecurityEventTypes,
+
 } from '@/lib/security/session-security';
+
+const log = routeLog('/api/auth/bootstrap');
 import {
   TRACKED_SESSION_COOKIE,
   TRACKED_SESSION_MAX_AGE,
@@ -97,7 +101,7 @@ export async function POST(request: Request) {
         ...(cookieDomain ? { domain: cookieDomain } : {}),
       });
     } catch (error) {
-      console.error('[auth/bootstrap] Session tracking failed:', error);
+      log.error({ err: error }, "[auth/bootstrap] Session tracking failed:");
     }
   }
 

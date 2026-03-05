@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requirePermission } from '@/app/app/actions/rbac';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   getRelayWebhook,
   updateRelayWebhook,
@@ -13,6 +14,8 @@ import {
   type UpdateRelayWebhookInput,
   type RelayEventType,
 } from '@/lib/integrations/webhook-relay';
+
+const log = routeLog('/api/v1/webhooks/[id]');
 
 /**
  * =========================================================
@@ -69,10 +72,7 @@ export async function GET(request: Request, context: RouteContext) {
     const webhook = await getRelayWebhook(id);
 
     if (!webhook) {
-      return NextResponse.json(
-        { error: 'Webhook not found' },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: 'Webhook not found' }, { status: 404 });
     }
 
     // Verify organization ownership
@@ -103,8 +103,8 @@ export async function GET(request: Request, context: RouteContext) {
         delivery_count: deliveries.length,
       }),
     });
-  } catch (error: any) {
-    console.error('[API v1 /webhooks/:id] Unexpected error:', error);
+  } catch (error: unknown) {
+    log.error({ err: error }, '[API v1 /webhooks/:id] Unexpected error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },
@@ -154,10 +154,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     const existing = await getRelayWebhook(id);
 
     if (!existing) {
-      return NextResponse.json(
-        { error: 'Webhook not found' },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: 'Webhook not found' }, { status: 404 });
     }
 
     if (existing.organization_id !== permissionCtx.orgId) {
@@ -172,20 +169,28 @@ export async function PATCH(request: Request, context: RouteContext) {
     try {
       body = await request.json();
     } catch {
-      return NextResponse.json(
-        { error: 'Invalid JSON body' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
     }
 
-    const { name, url, provider, events, enabled, retry_count, headers, description } =
-      body as Record<string, any>;
+    const {
+      name,
+      url,
+      provider,
+      events,
+      enabled,
+      retry_count,
+      headers,
+      description,
+    } = body as Record<string, any>;
 
     // Validate individual fields if provided
     if (url !== undefined) {
       if (typeof url !== 'string' || !isValidWebhookUrl(url)) {
         return NextResponse.json(
-          { error: 'Invalid webhook URL. Must be HTTPS (or localhost for development).' },
+          {
+            error:
+              'Invalid webhook URL. Must be HTTPS (or localhost for development).',
+          },
           { status: 400 },
         );
       }
@@ -208,14 +213,20 @@ export async function PATCH(request: Request, context: RouteContext) {
       }
     }
 
-    if (provider !== undefined && !['zapier', 'make', 'custom'].includes(provider)) {
+    if (
+      provider !== undefined &&
+      !['zapier', 'make', 'custom'].includes(provider)
+    ) {
       return NextResponse.json(
         { error: 'Invalid provider. Must be one of: zapier, make, custom' },
         { status: 400 },
       );
     }
 
-    if (name !== undefined && (typeof name !== 'string' || name.trim().length === 0)) {
+    if (
+      name !== undefined &&
+      (typeof name !== 'string' || name.trim().length === 0)
+    ) {
       return NextResponse.json(
         { error: 'name must be a non-empty string' },
         { status: 400 },
@@ -240,8 +251,8 @@ export async function PATCH(request: Request, context: RouteContext) {
       webhook: sanitizeWebhookForResponse(updated),
       message: 'Webhook updated successfully',
     });
-  } catch (error: any) {
-    console.error('[API v1 /webhooks/:id] Unexpected error:', error);
+  } catch (error: unknown) {
+    log.error({ err: error }, '[API v1 /webhooks/:id] Unexpected error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },
@@ -291,10 +302,7 @@ export async function DELETE(request: Request, context: RouteContext) {
     const existing = await getRelayWebhook(id);
 
     if (!existing) {
-      return NextResponse.json(
-        { error: 'Webhook not found' },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: 'Webhook not found' }, { status: 404 });
     }
 
     if (existing.organization_id !== permissionCtx.orgId) {
@@ -311,8 +319,8 @@ export async function DELETE(request: Request, context: RouteContext) {
       message: 'Webhook deleted successfully',
       id,
     });
-  } catch (error: any) {
-    console.error('[API v1 /webhooks/:id] Unexpected error:', error);
+  } catch (error: unknown) {
+    log.error({ err: error }, '[API v1 /webhooks/:id] Unexpected error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

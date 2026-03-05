@@ -5,6 +5,9 @@ import { emailSchema } from '@/lib/security/api-validation';
 import { rateLimitAuth } from '@/lib/security/rate-limiter';
 import { sendAuthEmail } from '@/lib/email/send-auth-email';
 import { buildHostedAuthConfirmLink } from '@/lib/auth/hosted-auth-link';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/auth/password/reset-request');
 
 export const runtime = 'nodejs';
 
@@ -56,10 +59,10 @@ export async function POST(request: Request) {
     });
 
     if (error) {
-      console.warn('[auth/password/reset-request] generateLink failed:', {
+      log.warn({ data: {
         email,
         error: error.message,
-      });
+      } }, "[auth/password/reset-request] generateLink failed:");
       return NextResponse.json(
         {
           ok: true,
@@ -94,10 +97,10 @@ export async function POST(request: Request) {
     });
 
     if (!emailResult.success) {
-      console.error('[auth/password/reset-request] email send failed:', {
+      log.error({ err: {
         email,
         error: emailResult.error,
-      });
+      } }, "[auth/password/reset-request] email send failed:");
     }
 
     return NextResponse.json(
@@ -109,7 +112,7 @@ export async function POST(request: Request) {
       { headers },
     );
   } catch (error) {
-    console.error('[auth/password/reset-request] unexpected error:', error);
+    log.error({ err: error }, "[auth/password/reset-request] unexpected error:");
     return NextResponse.json(
       {
         ok: true,

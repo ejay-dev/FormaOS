@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { detectScoreRegression } from '@/lib/compliance/snapshot-service'
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/compliance/snapshots/regression');
 
 export async function GET(request: Request) {
   try {
@@ -35,7 +38,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ ok: true, regression })
   } catch (error) {
-    console.error('[snapshots/regression] Error:', error)
+    log.error({ err: error }, "[snapshots/regression] Error:")
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

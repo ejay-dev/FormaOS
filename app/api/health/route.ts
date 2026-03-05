@@ -85,7 +85,7 @@ export async function GET() {
         responseTime: Date.now() - dbStart,
         error: error?.message || null,
       };
-    } catch (dbError: any) {
+    } catch (dbError: unknown) {
       health.checks.database = {
         status: 'error',
         responseTime: Date.now() - dbStart,

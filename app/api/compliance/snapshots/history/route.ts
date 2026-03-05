@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { getSnapshotHistory } from '@/lib/compliance/snapshot-service'
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/compliance/snapshots/history');
 
 export async function GET(request: Request) {
   try {
@@ -36,7 +39,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ ok: true, snapshots })
   } catch (error) {
-    console.error('[snapshots/history] Error:', error)
+    log.error({ err: error }, "[snapshots/history] Error:")
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

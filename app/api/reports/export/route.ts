@@ -14,6 +14,9 @@ import {
   createReportExportJob,
   processReportExportJob,
 } from '@/lib/reports/export-jobs';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/reports/export');
 
 const VALID_REPORT_TYPES: ReportType[] = [
   'soc2',
@@ -86,7 +89,7 @@ export async function GET(request: NextRequest) {
 
     userId = user.id;
   } catch (authError) {
-    console.error('[Report Export] Auth error:', authError);
+    log.error({ err: authError }, '[Report Export] Auth error:');
     return NextResponse.json(
       {
         error: 'Unauthorized',
@@ -130,7 +133,7 @@ export async function GET(request: NextRequest) {
 
     orgId = membership.organization_id;
   } catch (orgError) {
-    console.error('[Report Export] Org lookup error:', orgError);
+    log.error({ err: orgError }, '[Report Export] Org lookup error:');
     return NextResponse.json(
       {
         error: 'Internal Server Error',
@@ -170,9 +173,9 @@ export async function GET(request: NextRequest) {
           workerId: 'inline',
           maxAttempts: 3,
         }).catch((err) => {
-          console.error(
-            `[Report Export] Background job ${jobResult.jobId} failed:`,
-            err,
+          log.error(
+            { err },
+            `[Report Export] Background job ${jobResult.jobId} failed`,
           );
         });
       }
@@ -212,7 +215,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('[Report Export] Generation error:', error);
+    log.error({ err: error }, '[Report Export] Generation error:');
     return NextResponse.json(
       {
         error: 'Internal Server Error',

@@ -3,6 +3,9 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { resolvePlanKey } from '@/lib/plans';
 import { ensureSubscription } from '@/lib/billing/subscriptions';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/onboarding/select-plan');
 
 export async function POST(request: Request) {
   const rlResult = await rateLimitApi(request);
@@ -66,7 +69,7 @@ export async function POST(request: Request) {
       .single();
 
     if (orgError || !organization?.id) {
-      console.error('Organization bootstrap failed:', orgError);
+      log.error({ err: orgError }, "Organization bootstrap failed:");
       return NextResponse.json(
         { ok: false, error: 'Organization creation failed' },
         { status: 500 },
@@ -79,7 +82,7 @@ export async function POST(request: Request) {
       role: 'owner',
     });
 
-    if (memberError) console.error('Membership bootstrap failed:', memberError);
+    if (memberError) log.error({ err: memberError }, "Membership bootstrap failed:");
 
     await supabase.from('org_onboarding_status').insert({
       organization_id: organization.id,
@@ -94,7 +97,7 @@ export async function POST(request: Request) {
       redirect: `/onboarding?plan=${encodeURIComponent(plan)}`,
     });
   } catch (err) {
-    console.error('/api/onboarding/select-plan error:', err);
+    log.error({ err: err }, "/api/onboarding/select-plan error:");
     return NextResponse.json(
       { ok: false, error: 'plan_selection_failed' },
       { status: 500 },

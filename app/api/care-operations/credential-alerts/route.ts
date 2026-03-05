@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   getExpiringCredentials,
   getExpiredCredentials,
   getCredentialSummaryByType,
+
 } from '@/lib/care-scorecard/credential-monitor';
+
+const log = routeLog('/api/care-operations/credential-alerts');
 import type { CredentialType, Credential } from '@/lib/care-scorecard/types';
 
 /**
@@ -43,7 +47,7 @@ export async function GET(request: NextRequest) {
 
     userId = user.id;
   } catch (authError) {
-    console.error('[Credential Alerts] Auth error:', authError);
+    log.error({ err: authError }, "[Credential Alerts] Auth error:");
     return NextResponse.json(
       {
         error: 'Unauthorized',
@@ -87,7 +91,7 @@ export async function GET(request: NextRequest) {
 
     orgId = membership.organization_id;
   } catch (orgError) {
-    console.error('[Credential Alerts] Org lookup error:', orgError);
+    log.error({ err: orgError }, "[Credential Alerts] Org lookup error:");
     return NextResponse.json(
       {
         error: 'Internal Server Error',
@@ -134,7 +138,7 @@ export async function GET(request: NextRequest) {
       generatedAt: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('[Credential Alerts] Fetch error:', error);
+    log.error({ err: error }, "[Credential Alerts] Fetch error:");
     return NextResponse.json(
       {
         error: 'Internal Server Error',

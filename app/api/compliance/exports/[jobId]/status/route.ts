@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server'
 import { createSupabaseServerClient } from '@/lib/supabase/server'
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/compliance/exports/[jobId]/status');
 
 export async function GET(
   request: Request,
@@ -54,7 +57,7 @@ export async function GET(
       },
     })
   } catch (error) {
-    console.error('[exports/status] Error:', error)
+    log.error({ err: error }, "[exports/status] Error:")
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

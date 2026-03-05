@@ -8,10 +8,14 @@
 
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   logRateLimitExceeded,
   logUserActivity,
+
 } from '@/lib/security/event-logger';
+
+const log = routeLog('/api/activity/track');
 import { extractClientIP } from '@/lib/security/session-security';
 import { isSecurityMonitoringEnabled } from '@/lib/security/monitoring-flags';
 import {
@@ -121,7 +125,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error('[Activity] Error:', error);
+    log.error({ err: error }, "[Activity] Error:");
     return NextResponse.json(
       { ok: false, error: 'internal_error' },
       { status: 500 },

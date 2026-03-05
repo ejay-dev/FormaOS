@@ -32,7 +32,9 @@ export async function GET(request: Request) {
     }
 
     const { data: organizations, count } = await orgQuery;
-    const orgIds = (organizations ?? []).map((org: any) => org.id);
+    const orgIds = (organizations ?? []).map(
+      (org: Record<string, unknown>) => org.id,
+    );
 
     const [{ data: members }, { data: subscriptions }] = await Promise.all([
       orgIds.length
@@ -52,9 +54,12 @@ export async function GET(request: Request) {
     ]);
 
     const ownersByOrg = new Map<string, string>();
-    (members ?? []).forEach((member: any) => {
+    (members ?? []).forEach((member: Record<string, unknown>) => {
       if (member.role === 'owner') {
-        ownersByOrg.set(member.organization_id, member.user_id);
+        ownersByOrg.set(
+          member.organization_id as string,
+          member.user_id as string,
+        );
       }
     });
 
@@ -63,15 +68,20 @@ export async function GET(request: Request) {
 
     const subscriptionByOrg = new Map<
       string,
-      typeof subscriptions extends Array<infer T> ? T : any
+      typeof subscriptions extends Array<infer T> ? T : unknown
     >();
-    (subscriptions ?? []).forEach((subscription: any) => {
-      subscriptionByOrg.set(subscription.organization_id, subscription);
+    (subscriptions ?? []).forEach((subscription: Record<string, unknown>) => {
+      subscriptionByOrg.set(
+        subscription.organization_id as string,
+        subscription,
+      );
     });
 
-    const rows = (organizations ?? []).map((org: any) => {
-      const subscription = subscriptionByOrg.get(org.id);
-      const ownerId = ownersByOrg.get(org.id);
+    const rows = (organizations ?? []).map((org: Record<string, unknown>) => {
+      const subscription = subscriptionByOrg.get(org.id as string) as
+        | Record<string, unknown>
+        | undefined;
+      const ownerId = ownersByOrg.get(org.id as string);
       return {
         id: org.id,
         name: org.name,

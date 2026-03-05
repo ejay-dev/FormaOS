@@ -1,12 +1,16 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   checkRateLimit,
   getClientIdentifier,
   getUserIdentifier,
   createRateLimitHeaders,
   RATE_LIMITS,
+
 } from '@/lib/security/rate-limiter';
+
+const log = routeLog('/api/incidents/export');
 
 function escapeCsv(value: unknown): string {
   if (value === null || value === undefined) return '';
@@ -76,7 +80,7 @@ export async function GET() {
       .limit(5000);
 
     if (error) {
-      console.error('[incidents/export] query failed:', error.message);
+      log.error({ err: error.message }, "[incidents/export] query failed:");
       return NextResponse.json({ error: 'export_query_failed' }, { status: 500 });
     }
 
@@ -127,7 +131,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error('[api/incidents/export] Error:', error);
+    log.error({ err: error }, "[api/incidents/export] Error:");
     return NextResponse.json(
       { error: 'Failed to export incidents' },
       { status: 500 },

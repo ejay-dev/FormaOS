@@ -1,10 +1,13 @@
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   handleAdminError,
   ADMIN_CACHE_HEADERS,
 } from '@/app/api/admin/_helpers';
+
+const log = routeLog('/api/admin/features');
 
 /**
  * GET /api/admin/features — Real feature usage from org_entitlements
@@ -47,7 +50,7 @@ export async function GET() {
       .select('feature_key, enabled, value_limit');
 
     if (error) {
-      console.error('/api/admin/features query error:', error);
+      log.error({ err: error }, '/api/admin/features query error:');
     }
 
     /* ── Aggregate by feature key ──────────────────────── */
@@ -61,8 +64,8 @@ export async function GET() {
       }
     > = {};
 
-    (entitlements ?? []).forEach((e: any) => {
-      const key = e.feature_key;
+    (entitlements ?? []).forEach((e: Record<string, unknown>) => {
+      const key = e.feature_key as string;
       if (!featureStats[key]) {
         featureStats[key] = {
           enabled_count: 0,
@@ -77,7 +80,7 @@ export async function GET() {
       if (e.value_limit != null) {
         featureStats[key].max_limit = Math.max(
           featureStats[key].max_limit ?? 0,
-          e.value_limit,
+          e.value_limit as number,
         );
       }
     });

@@ -28,8 +28,15 @@ function getTotpKey(): Buffer | null {
 function encryptTotpSecret(plaintext: string): string {
   const key = getTotpKey();
   if (!key) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error(
+        '[security] TOTP_ENCRYPTION_KEY is not configured or invalid. ' +
+          'Set TOTP_ENCRYPTION_KEY to a 64-character hex string before storing TOTP secrets.',
+      );
+    }
+    // Development/test: warn and store plaintext to avoid breaking local workflows
     console.warn(
-      '[security] TOTP_ENCRYPTION_KEY not configured — TOTP secret stored unencrypted',
+      '[security] TOTP_ENCRYPTION_KEY not configured — TOTP secret stored unencrypted (dev/test only)',
     );
     return plaintext;
   }

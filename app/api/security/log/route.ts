@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   logSecurityEvent,
   SecurityEventTypes,
+
 } from '@/lib/security/session-security';
+
+const log = routeLog('/api/security/log');
 import { extractClientIP } from '@/lib/security/session-security';
 import {
   checkRateLimit,
@@ -79,7 +83,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error('[security/log] Error:', error);
+    log.error({ err: error }, "[security/log] Error:");
     return NextResponse.json(
       { ok: false, error: 'log_failed' },
       { status: 500 },

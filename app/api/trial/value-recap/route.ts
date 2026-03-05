@@ -2,11 +2,14 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { calculateTrialValue, generateValueRecapMessage } from '@/lib/trial-engagement/value-calculator';
 import { TRIAL_DURATION_DAYS } from '@/lib/trial/constants';
+import { routeLog } from '@/lib/monitoring/server-logger';
 
 /**
  * GET /api/trial/value-recap
  * Returns trial value metrics for the current user's organization
  */
+const log = routeLog('/api/trial/value-recap');
+
 export async function GET() {
   let supabase;
   let userId: string;
@@ -33,7 +36,7 @@ export async function GET() {
 
     userId = user.id;
   } catch (authError) {
-    console.error('[Trial Value Recap] Auth error:', authError);
+    log.error({ err: authError }, "[Trial Value Recap] Auth error:");
     return NextResponse.json(
       {
         error: 'Unauthorized',
@@ -65,7 +68,7 @@ export async function GET() {
 
     orgId = membership.organization_id;
   } catch (orgError) {
-    console.error('[Trial Value Recap] Org lookup error:', orgError);
+    log.error({ err: orgError }, "[Trial Value Recap] Org lookup error:");
     return NextResponse.json(
       {
         error: 'Internal Server Error',
@@ -116,7 +119,7 @@ export async function GET() {
       trialEndDate: trialEndDate.toISOString(),
     });
   } catch (error) {
-    console.error('[Trial Value Recap] Calculation error:', error);
+    log.error({ err: error }, "[Trial Value Recap] Calculation error:");
     return NextResponse.json(
       {
         error: 'Internal Server Error',

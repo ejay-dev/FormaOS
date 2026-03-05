@@ -1,11 +1,15 @@
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { logActivity } from '@/lib/audit-logger';
+import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   checkRateLimit,
   getClientIdentifier,
   createRateLimitHeaders,
   RATE_LIMITS,
+
 } from '@/lib/security/rate-limiter';
+
+const log = routeLog('/api/admin/trials/extend');
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { MAX_TRIAL_EXTENSION_DAYS } from '@/lib/trial/constants';
 import { NextResponse, type NextRequest } from 'next/server';
@@ -82,7 +86,7 @@ export async function PATCH(request: NextRequest) {
       .maybeSingle();
 
     if (fetchError) {
-      console.error('[admin/trials/extend] fetch error:', fetchError);
+      log.error({ err: fetchError }, "[admin/trials/extend] fetch error:");
       return NextResponse.json(
         { error: 'Failed to fetch subscription' },
         { status: 500 },
@@ -134,7 +138,7 @@ export async function PATCH(request: NextRequest) {
       .eq('organization_id', organization_id);
 
     if (updateError) {
-      console.error('[admin/trials/extend] update error:', updateError);
+      log.error({ err: updateError }, "[admin/trials/extend] update error:");
       return NextResponse.json(
         { error: 'Failed to extend trial' },
         { status: 500 },
@@ -153,12 +157,12 @@ export async function PATCH(request: NextRequest) {
       metadata: { ip },
     });
 
-    console.log('[admin/trials/extend] ✅ Trial extended', {
+    log.info({ data: {
       organization_id,
       additional_days,
       new_trial_end: newTrialEnd,
       previous_end: currentEnd,
-    });
+    } }, "[admin/trials/extend] ✅ Trial extended");
 
     // Get org name for response
     const { data: org } = await admin

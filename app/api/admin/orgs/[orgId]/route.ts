@@ -43,7 +43,7 @@ export async function GET(request: Request, { params }: OrgRouteProps) {
     ]);
 
     const memberRows = await Promise.all(
-      (members ?? []).map(async (member: any) => {
+      (members ?? []).map(async (member: Record<string, unknown>) => {
         try {
           const { data } = await (admin as any).auth.admin.getUserById(
             member.user_id,

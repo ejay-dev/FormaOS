@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requirePermission } from '@/app/app/actions/rbac';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { getDashboardMetrics } from '@/lib/data/analytics';
+import { routeLog } from '@/lib/monitoring/server-logger';
 
 /**
  * =========================================================
@@ -13,6 +14,8 @@ import { getDashboardMetrics } from '@/lib/data/analytics';
  * Authentication: Bearer token (Supabase JWT)
  * Rate limit: 60 requests per minute
  */
+
+const log = routeLog('/api/v1/compliance');
 
 export async function GET(request: Request) {
   try {
@@ -75,8 +78,8 @@ export async function GET(request: Request) {
       anomalies: metrics.anomalies,
       lastUpdated: new Date().toISOString(),
     });
-  } catch (error: any) {
-    console.error('[API v1 /compliance] Unexpected error:', error);
+  } catch (error: unknown) {
+    log.error({ err: error }, "[API v1 /compliance] Unexpected error:");
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },
