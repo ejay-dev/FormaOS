@@ -108,7 +108,7 @@ export default function SecurityReviewContent() {
         visualContent={<SecurityReviewHeroVisual />}
         badge={{ icon: <ShieldCheck className="h-4 w-4" />, text: 'Procurement Ready' }}
         headline="Security Review Packet for Enterprise Buyers"
-        subheadline="Everything your security team, legal team, and procurement team will ask — documented before they ask it. Architecture, AES-256 encryption, SAML 2.0 SSO, penetration testing, data residency, and DPA."
+        subheadline="Everything your security, legal, and procurement teams will ask — documented before they ask it. Encryption, SSO, pen testing, data residency, and DPA."
         primaryCta={{ href: '/contact', label: 'Security Walkthrough' }}
         secondaryCta={{ href: `${appBase}/auth/signup?source=security_review`, label: 'Start Trust-Ready Trial' }}
       />

@@ -21,6 +21,8 @@ const eslintConfig = [
       'playwright-report/**/*',
       'QA_UPGRADES/**/*.txt',
       'coverage/**/*',
+      // External subproject — has its own lint config
+      'gitnexus/**/*',
       // CI-only artifacts and legacy test outputs (avoid warning-count blowups)
       'tests/visual/backstop_data/**/*',
       'tests/accessibility/reports/**/*',

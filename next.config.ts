@@ -70,8 +70,9 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              // Scripts: self + inline (Next.js requires unsafe-inline), Sentry, PostHog, Stripe
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.sentry.io https://*.posthog.com https://js.stripe.com https://vercel.live",
+              // Scripts: self + inline (Next.js requires unsafe-inline for RSC hydration)
+              // unsafe-eval removed — Next.js 15 no longer requires it for production builds.
+              "script-src 'self' 'unsafe-inline' https://*.sentry.io https://*.posthog.com https://js.stripe.com https://vercel.live",
               // Styles: self + inline (Tailwind CSS-in-JS requires this)
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               // Fonts: Google Fonts

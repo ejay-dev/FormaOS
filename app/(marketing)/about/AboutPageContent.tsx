@@ -74,7 +74,7 @@ function AboutHero() {
           </span>
         </>
       }
-      subheadline="FormaOS was built for regulated teams where compliance failure has real consequences — and where leadership needs more than a spreadsheet to prove they're in control."
+      subheadline="Built for regulated teams where compliance failure has real consequences — and leadership needs more than a spreadsheet to prove control."
       primaryCta={{ href: '/our-story', label: 'Read Our Story' }}
       secondaryCta={{ href: '/product', label: 'See How It Works' }}
     />

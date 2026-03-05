@@ -1,8 +1,13 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getChecklistCountsForOrg } from '@/lib/onboarding/checklist-data';
+import { rateLimitApi } from '@/lib/security/rate-limiter';
 
-export async function GET() {
+export async function GET(request: Request) {
+  const rlResult = await rateLimitApi(request);
+  if (!rlResult.success) {
+    return NextResponse.json({ error: 'too_many_requests' }, { status: 429 });
+  }
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },

@@ -2,9 +2,17 @@ import { NextResponse } from 'next/server';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import { TRUST_SUBPROCESSORS } from '@/lib/trust/subprocessors';
 import { fetchPublicUptimeChecks } from '@/lib/status/public-uptime';
+import {
+  checkRateLimit,
+  getClientIdentifier,
+  createRateLimitHeaders,
+  RATE_LIMITS,
+} from '@/lib/security/rate-limiter';
 
 export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
+// Cache at CDN/edge for 1 hour; uptime data changes slowly.
+// force-dynamic removed so Next.js can honour Cache-Control on the response.
+export const dynamic = 'force-static';
 
 function pct(ok: number, total: number) {
   if (total <= 0) return 0;
@@ -28,12 +36,24 @@ async function buildVendorTrustPacketPdf(payload: {
   let y = height - margin;
 
   const drawH1 = (text: string) => {
-    page.drawText(text, { x: margin, y, size: 22, font: fontBold, color: rgb(0.05, 0.05, 0.07) });
+    page.drawText(text, {
+      x: margin,
+      y,
+      size: 22,
+      font: fontBold,
+      color: rgb(0.05, 0.05, 0.07),
+    });
     y -= 30;
   };
 
   const drawH2 = (text: string) => {
-    page.drawText(text, { x: margin, y, size: 12, font: fontBold, color: rgb(0.12, 0.12, 0.16) });
+    page.drawText(text, {
+      x: margin,
+      y,
+      size: 12,
+      font: fontBold,
+      color: rgb(0.12, 0.12, 0.16),
+    });
     y -= 18;
   };
 
@@ -47,7 +67,13 @@ async function buildVendorTrustPacketPdf(payload: {
       const test = line ? `${line} ${w}` : w;
       const tw = font.widthOfTextAtSize(test, size);
       if (tw > maxWidth) {
-        page.drawText(line, { x: margin, y, size, font, color: rgb(0.2, 0.2, 0.24) });
+        page.drawText(line, {
+          x: margin,
+          y,
+          size,
+          font,
+          color: rgb(0.2, 0.2, 0.24),
+        });
         y -= lineHeight;
         line = w;
       } else {
@@ -55,7 +81,13 @@ async function buildVendorTrustPacketPdf(payload: {
       }
     }
     if (line) {
-      page.drawText(line, { x: margin, y, size, font, color: rgb(0.2, 0.2, 0.24) });
+      page.drawText(line, {
+        x: margin,
+        y,
+        size,
+        font,
+        color: rgb(0.2, 0.2, 0.24),
+      });
       y -= lineHeight;
     }
   };
@@ -94,17 +126,29 @@ async function buildVendorTrustPacketPdf(payload: {
   y -= 8;
 
   drawH2('Security Posture Overview');
-  drawP('Identity: Google OAuth supported. Enterprise plans can enable SAML SSO (SP metadata + ACS endpoints; signed assertion validation).');
-  drawP('Access control: Role-based access model with tenant isolation enforced at the database layer (RLS).');
-  drawP('Auditability: Sensitive actions are logged and export actions are traceable for audit readiness.');
-  drawP('Encryption: Data is encrypted in transit and at rest using infrastructure primitives.');
+  drawP(
+    'Identity: Google OAuth supported. Enterprise plans can enable SAML SSO (SP metadata + ACS endpoints; signed assertion validation).',
+  );
+  drawP(
+    'Access control: Role-based access model with tenant isolation enforced at the database layer (RLS).',
+  );
+  drawP(
+    'Auditability: Sensitive actions are logged and export actions are traceable for audit readiness.',
+  );
+  drawP(
+    'Encryption: Data is encrypted in transit and at rest using infrastructure primitives.',
+  );
 
   y -= 8;
 
   drawH2('Uptime Signals (Non-SLA)');
   drawP(`Last 24/7 ops signal based on published health checks:`);
-  drawP(`7 days uptime: ${payload.uptime.last7d.uptimePercent}% (${payload.uptime.last7d.checks} checks)`);
-  drawP(`30 days uptime: ${payload.uptime.last30d.uptimePercent}% (${payload.uptime.last30d.checks} checks)`);
+  drawP(
+    `7 days uptime: ${payload.uptime.last7d.uptimePercent}% (${payload.uptime.last7d.checks} checks)`,
+  );
+  drawP(
+    `30 days uptime: ${payload.uptime.last30d.uptimePercent}% (${payload.uptime.last30d.checks} checks)`,
+  );
 
   y -= 8;
 
@@ -122,7 +166,13 @@ async function buildVendorTrustPacketPdf(payload: {
   let y2 = h2 - margin;
 
   const drawH2p2 = (text: string) => {
-    page2.drawText(text, { x: margin, y: y2, size: 12, font: fontBold, color: rgb(0.12, 0.12, 0.16) });
+    page2.drawText(text, {
+      x: margin,
+      y: y2,
+      size: 12,
+      font: fontBold,
+      color: rgb(0.12, 0.12, 0.16),
+    });
     y2 -= 18;
   };
 
@@ -136,7 +186,13 @@ async function buildVendorTrustPacketPdf(payload: {
       const test = line ? `${line} ${w}` : w;
       const tw = font.widthOfTextAtSize(test, size);
       if (tw > maxWidth) {
-        page2.drawText(line, { x: margin, y: y2, size, font, color: rgb(0.2, 0.2, 0.24) });
+        page2.drawText(line, {
+          x: margin,
+          y: y2,
+          size,
+          font,
+          color: rgb(0.2, 0.2, 0.24),
+        });
         y2 -= lineHeight;
         line = w;
       } else {
@@ -144,7 +200,13 @@ async function buildVendorTrustPacketPdf(payload: {
       }
     }
     if (line) {
-      page2.drawText(line, { x: margin, y: y2, size, font, color: rgb(0.2, 0.2, 0.24) });
+      page2.drawText(line, {
+        x: margin,
+        y: y2,
+        size,
+        font,
+        color: rgb(0.2, 0.2, 0.24),
+      });
       y2 -= lineHeight;
     }
   };
@@ -156,18 +218,23 @@ async function buildVendorTrustPacketPdf(payload: {
     font: fontBold,
     color: rgb(0.05, 0.05, 0.07),
   });
-  page2.drawText(`Generated: ${new Date(payload.generatedAt).toLocaleString()}`, {
-    x: margin,
-    y: h2 - 62,
-    size: 9,
-    font,
-    color: rgb(0.3, 0.3, 0.35),
-  });
+  page2.drawText(
+    `Generated: ${new Date(payload.generatedAt).toLocaleString()}`,
+    {
+      x: margin,
+      y: h2 - 62,
+      size: 9,
+      font,
+      color: rgb(0.3, 0.3, 0.35),
+    },
+  );
 
   y2 = h2 - 100;
 
   drawH2p2('Subprocessors (Current)');
-  drawP2('This list reflects vendors used by the deployed FormaOS system. Roadmap vendors are intentionally excluded.');
+  drawP2(
+    'This list reflects vendors used by the deployed FormaOS system. Roadmap vendors are intentionally excluded.',
+  );
 
   y2 -= 8;
 
@@ -176,9 +243,21 @@ async function buildVendorTrustPacketPdf(payload: {
       // If we overflow, add a third page.
       break;
     }
-    page2.drawText(sp.name, { x: margin, y: y2, size: 11, font: fontBold, color: rgb(0.12, 0.12, 0.16) });
+    page2.drawText(sp.name, {
+      x: margin,
+      y: y2,
+      size: 11,
+      font: fontBold,
+      color: rgb(0.12, 0.12, 0.16),
+    });
     y2 -= 14;
-    page2.drawText(`${sp.category} | ${sp.location}`, { x: margin, y: y2, size: 9, font, color: rgb(0.35, 0.35, 0.4) });
+    page2.drawText(`${sp.category} | ${sp.location}`, {
+      x: margin,
+      y: y2,
+      size: 9,
+      font,
+      color: rgb(0.35, 0.35, 0.4),
+    });
     y2 -= 12;
     drawP2(`Purpose: ${sp.purpose}`);
     y2 -= 6;
@@ -195,11 +274,29 @@ async function buildVendorTrustPacketPdf(payload: {
   return await pdfDoc.save();
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  // Rate-limit: 5 requests / 10 min per IP (unauthenticated public endpoint)
+  const identifier = await getClientIdentifier();
+  const rl = await checkRateLimit(RATE_LIMITS.EXPORT, identifier);
+  if (!rl.success) {
+    return new NextResponse(
+      JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
+      {
+        status: 429,
+        headers: {
+          'Content-Type': 'application/json',
+          ...createRateLimitHeaders(rl),
+        },
+      },
+    );
+  }
+
   const generatedAt = new Date().toISOString();
 
   const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-  const since30d = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const since30d = new Date(
+    Date.now() - 30 * 24 * 60 * 60 * 1000,
+  ).toISOString();
 
   const [rows7, rows30] = await Promise.all([
     fetchPublicUptimeChecks({ sinceIso: since7d, limit: 5000 }),
@@ -227,7 +324,8 @@ export async function GET() {
       'Content-Type': 'application/pdf',
       'Content-Disposition': `attachment; filename="${filename}"`,
       'Content-Length': buffer.length.toString(),
-      'Cache-Control': 'no-store',
+      // Cache at CDN/browser for 1 hour; stale-while-revalidate for 24 h
+      'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
     },
   });
 }

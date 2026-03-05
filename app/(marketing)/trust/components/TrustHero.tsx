@@ -23,7 +23,7 @@ export function TrustHero() {
           </span>
         </>
       }
-      subheadline="FormaOS gives enterprise buyers, security teams, and auditors controlled visibility into live compliance posture, evidence integrity, AES-256 encryption controls, SAML 2.0 SSO, data residency, and procurement artifacts — before the first security review question is asked."
+      subheadline="Controlled visibility into live compliance posture, evidence integrity, encryption, SSO, data residency, and procurement artifacts for enterprise buyers."
       primaryCta={{ href: '/auth/signup?source=trust_center', label: 'Start Trust-Ready Trial' }}
       secondaryCta={{ href: '/contact', label: 'Security Walkthrough' }}
     />

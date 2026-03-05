@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
+import { rateLimitAuth } from '@/lib/security/rate-limiter';
 import {
   createTrackedSession,
   generateDeviceFingerprint,
@@ -19,6 +20,14 @@ import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
+  const { allowed, headers: rlHeaders } = await rateLimitAuth(request);
+  if (!allowed) {
+    return NextResponse.json(
+      { ok: false, error: 'too_many_requests' },
+      { status: 429, headers: rlHeaders },
+    );
+  }
+
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -26,7 +35,10 @@ export async function POST(request: Request) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 });
+    return NextResponse.json(
+      { ok: false, error: 'unauthorized' },
+      { status: 401 },
+    );
   }
 
   const recovery = await recoverUserWorkspace({
@@ -36,7 +48,10 @@ export async function POST(request: Request) {
   });
 
   if (!recovery.ok) {
-    return NextResponse.json({ ok: false, error: 'recovery_failed' }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: 'recovery_failed' },
+      { status: 500 },
+    );
   }
 
   const response = NextResponse.json({

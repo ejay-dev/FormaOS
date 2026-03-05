@@ -126,7 +126,7 @@ export default function EnterprisePage() {
     <MarketingPageShell>
       <CompactHero
         title="FormaOS for Enterprise"
-        description="Enterprise-grade compliance governance — SAML 2.0 SSO, data residency controls, 99.9% SLA, multi-entity management, and a full procurement artifact suite. Built for regulated industries where accountability is non-negotiable."
+        description="Enterprise-grade compliance governance — SAML 2.0 SSO, data residency, 99.9% SLA, multi-entity management, and procurement artifacts. Built for regulated industries."
         topColor="emerald"
         bottomColor="cyan"
         visualContent={

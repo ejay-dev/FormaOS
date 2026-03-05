@@ -28,7 +28,7 @@ export default function VendorAssurancePage() {
     <MarketingPageShell>
       <CompactHero
         title="Vendor Assurance"
-        description="FormaOS ships with enterprise-grade vendor assurance artifacts — DPA, vendor assurance questionnaire, security review packet, subprocessor disclosures, and annual penetration test summary. Ready for your legal, risk, and procurement team before the first question."
+        description="Enterprise-grade vendor assurance artifacts — DPA, questionnaire, security review packet, subprocessor disclosures, and pen test summary. Procurement-ready."
         topColor="emerald"
         bottomColor="cyan"
         visualContent={<CompactHeroIcon icon={<ShieldCheck className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}

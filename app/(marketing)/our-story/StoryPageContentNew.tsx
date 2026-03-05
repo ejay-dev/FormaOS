@@ -57,7 +57,7 @@ export function StoryHero() {
           </span>
         </>
       }
-      subheadline="FormaOS was built for organizations where a compliance failure isn't a setback — it's a shutdown. We built the infrastructure that makes accountability unavoidable."
+      subheadline="Built for organizations where a compliance failure isn't a setback — it's a shutdown. Infrastructure that makes accountability unavoidable."
       primaryCta={{
         href: `${appBase}/auth/signup`,
         label: 'Start Free Trial',

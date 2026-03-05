@@ -2,8 +2,17 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { resolvePlanKey } from '@/lib/plans';
 import { ensureSubscription } from '@/lib/billing/subscriptions';
+import { rateLimitApi } from '@/lib/security/rate-limiter';
 
 export async function POST(request: Request) {
+  const rlResult = await rateLimitApi(request);
+  if (!rlResult.success) {
+    return NextResponse.json(
+      { ok: false, error: 'too_many_requests' },
+      { status: 429 },
+    );
+  }
+
   try {
     const body = await request.json();
     const planRaw = body?.plan as string | undefined;

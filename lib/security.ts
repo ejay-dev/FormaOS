@@ -5,9 +5,70 @@
  * Two-Factor Authentication (2FA) and Single Sign-On (SSO)
  */
 
+import { randomBytes, createCipheriv, createDecipheriv } from 'crypto';
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
+
+// ---------------------------------------------------------------------------
+// TOTP Secret Encryption (AES-256-GCM)
+// Set TOTP_ENCRYPTION_KEY to a 64-char hex string (32 bytes).
+// Existing plaintext secrets are transparently readable so live users aren't
+// locked out during the transition; new secrets are always stored encrypted.
+// ---------------------------------------------------------------------------
+const ENC_PREFIX = 'enc:v1:';
+
+function getTotpKey(): Buffer | null {
+  const hex = process.env.TOTP_ENCRYPTION_KEY;
+  if (!hex || hex.length !== 64) return null;
+  return Buffer.from(hex, 'hex');
+}
+
+function encryptTotpSecret(plaintext: string): string {
+  const key = getTotpKey();
+  if (!key) {
+    console.warn(
+      '[security] TOTP_ENCRYPTION_KEY not configured — TOTP secret stored unencrypted',
+    );
+    return plaintext;
+  }
+  const iv = randomBytes(12); // 96-bit IV for AES-GCM
+  const cipher = createCipheriv('aes-256-gcm', key, iv);
+  const encrypted = Buffer.concat([
+    cipher.update(plaintext, 'utf8'),
+    cipher.final(),
+  ]);
+  const tag = cipher.getAuthTag();
+  return (
+    ENC_PREFIX +
+    [iv.toString('hex'), tag.toString('hex'), encrypted.toString('hex')].join(
+      ':',
+    )
+  );
+}
+
+function decryptTotpSecret(stored: string): string {
+  if (!stored.startsWith(ENC_PREFIX)) return stored; // legacy plaintext — still usable
+  const key = getTotpKey();
+  if (!key)
+    throw new Error(
+      'TOTP_ENCRYPTION_KEY is required to decrypt a stored 2FA secret',
+    );
+  const parts = stored.slice(ENC_PREFIX.length).split(':');
+  if (parts.length !== 3) throw new Error('Malformed encrypted TOTP secret');
+  const [ivHex, tagHex, ctHex] = parts;
+  const decipher = createDecipheriv(
+    'aes-256-gcm',
+    key,
+    Buffer.from(ivHex, 'hex'),
+  );
+  decipher.setAuthTag(Buffer.from(tagHex, 'hex'));
+  return (
+    decipher.update(Buffer.from(ctHex, 'hex'), undefined, 'utf8') +
+    decipher.final('utf8')
+  );
+}
 
 export interface TwoFactorSecret {
   secret: string;
@@ -42,17 +103,17 @@ export async function generate2FASecret(
   // Generate QR code
   const qrCode = await QRCode.toDataURL(secret.otpauth_url || '');
 
-  // Generate backup codes
+  // Generate backup codes using a CSPRNG (not Math.random)
   const backupCodes = Array.from({ length: 8 }, () =>
-    Math.random().toString(36).substring(2, 10).toUpperCase(),
+    randomBytes(6).toString('hex').toUpperCase(),
   );
 
-  // Store secret (encrypted)
+  // Store secret encrypted at rest
   const supabase = await createClient();
   await supabase.from('user_security').upsert(
     {
       user_id: userId,
-      two_factor_secret: secret.base32,
+      two_factor_secret: encryptTotpSecret(secret.base32),
       backup_codes: backupCodes,
       two_factor_enabled: false,
       updated_at: new Date().toISOString(),
@@ -89,12 +150,15 @@ export async function enable2FA(
     throw new Error('2FA secret not found. Please generate a new secret.');
   }
 
-  // Verify token
+  // Decrypt secret before verifying
+  const rawSecret = decryptTotpSecret(security.two_factor_secret);
+
+  // Verify token (window: 1 = ±30s, per NIST recommendation)
   const verified = speakeasy.totp.verify({
-    secret: security.two_factor_secret,
+    secret: rawSecret,
     encoding: 'base32',
     token,
-    window: 2, // Allow 2 time steps before/after
+    window: 1,
   });
 
   if (!verified) {
@@ -148,27 +212,45 @@ export async function verify2FAToken(
     return true;
   }
 
-  // Verify TOTP token
+  // Decrypt and verify TOTP token
+  const rawSecret = decryptTotpSecret(security.two_factor_secret);
   return speakeasy.totp.verify({
-    secret: security.two_factor_secret,
+    secret: rawSecret,
     encoding: 'base32',
     token,
-    window: 2,
+    window: 1,
   });
 }
 
 /**
  * Disable 2FA
+ * Requires the user's current password to prevent a stolen session from
+ * silently removing two-factor protection.
  */
 export async function disable2FA(
   userId: string,
-  _password: string,
+  password: string,
 ): Promise<boolean> {
-  const supabase = await createClient();
+  if (!password) return false;
 
-  // Verify password (implement password verification)
-  // const passwordValid = await verifyPassword(userId, password);
-  // if (!passwordValid) return false;
+  const supabase = await createClient();
+  const adminClient = createSupabaseAdminClient();
+
+  // Fetch the user's email so we can re-verify via signInWithPassword
+  const { data: userData, error: userError } =
+    await adminClient.auth.admin.getUserById(userId);
+  if (userError || !userData?.user?.email) {
+    throw new Error('Unable to retrieve user for re-authentication');
+  }
+
+  // Re-verify password — this is a fresh credential check, not a session check
+  const { error: authError } = await supabase.auth.signInWithPassword({
+    email: userData.user.email,
+    password,
+  });
+  if (authError) {
+    return false; // Wrong password
+  }
 
   // Disable 2FA
   await supabase

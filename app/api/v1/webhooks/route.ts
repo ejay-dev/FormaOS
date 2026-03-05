@@ -63,7 +63,11 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const enabledParam = searchParams.get('enabled');
     const enabled =
-      enabledParam === 'true' ? true : enabledParam === 'false' ? false : undefined;
+      enabledParam === 'true'
+        ? true
+        : enabledParam === 'false'
+          ? false
+          : undefined;
 
     // 4. Fetch webhooks
     const webhooks = await listRelayWebhooks(permissionCtx.orgId, { enabled });
@@ -110,10 +114,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const permissionCtx = await requirePermission('VIEW_CONTROLS');
+    // Webhook registration is a privileged write — requires EDIT_CONTROLS (owner/admin only)
+    const permissionCtx = await requirePermission('EDIT_CONTROLS');
     if (!permissionCtx) {
       return NextResponse.json(
-        { error: 'Forbidden - Insufficient permissions' },
+        { error: 'Forbidden - Admin access required to manage webhooks' },
         { status: 403 },
       );
     }
@@ -123,14 +128,19 @@ export async function POST(request: Request) {
     try {
       body = await request.json();
     } catch {
-      return NextResponse.json(
-        { error: 'Invalid JSON body' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
     }
 
-    const { name, url, provider, events, enabled, retry_count, headers, description } =
-      body as Record<string, any>;
+    const {
+      name,
+      url,
+      provider,
+      events,
+      enabled,
+      retry_count,
+      headers,
+      description,
+    } = body as Record<string, any>;
 
     // Required fields
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
@@ -149,14 +159,20 @@ export async function POST(request: Request) {
 
     if (!isValidWebhookUrl(url)) {
       return NextResponse.json(
-        { error: 'Invalid webhook URL. Must be HTTPS (or localhost for development).' },
+        {
+          error:
+            'Invalid webhook URL. Must be HTTPS (or localhost for development).',
+        },
         { status: 400 },
       );
     }
 
     if (!Array.isArray(events) || events.length === 0) {
       return NextResponse.json(
-        { error: 'Missing or invalid field: events. Must be a non-empty array of event types.' },
+        {
+          error:
+            'Missing or invalid field: events. Must be a non-empty array of event types.',
+        },
         { status: 400 },
       );
     }
@@ -211,7 +227,8 @@ export async function POST(request: Request) {
           // Expose full secret ONLY on creation so the caller can store it
           secret: webhook.secret,
         },
-        message: 'Webhook created successfully. Store the secret securely — it will not be shown again.',
+        message:
+          'Webhook created successfully. Store the secret securely — it will not be shown again.',
       },
       { status: 201 },
     );

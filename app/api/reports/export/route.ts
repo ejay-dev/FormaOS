@@ -1,11 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { buildReport } from '@/lib/audit-reports/report-builder';
+import {
+  checkRateLimit,
+  getClientIdentifier,
+  getUserIdentifier,
+  createRateLimitHeaders,
+  RATE_LIMITS,
+} from '@/lib/security/rate-limiter';
 import { generateReportPdf } from '@/lib/audit-reports/pdf-generator';
 import type { ReportType } from '@/lib/audit-reports/types';
-import { createReportExportJob, processReportExportJob } from '@/lib/reports/export-jobs';
+import {
+  createReportExportJob,
+  processReportExportJob,
+} from '@/lib/reports/export-jobs';
 
-const VALID_REPORT_TYPES: ReportType[] = ['soc2', 'iso27001', 'ndis', 'hipaa', 'trust'];
+const VALID_REPORT_TYPES: ReportType[] = [
+  'soc2',
+  'iso27001',
+  'ndis',
+  'hipaa',
+  'trust',
+];
 
 /**
  * GET /api/reports/export
@@ -15,6 +31,16 @@ const VALID_REPORT_TYPES: ReportType[] = ['soc2', 'iso27001', 'ndis', 'hipaa', '
  *   - format: pdf | json (default: pdf)
  */
 export async function GET(request: NextRequest) {
+  const rlUserId = await getUserIdentifier();
+  const rlIdentifier = rlUserId ?? (await getClientIdentifier());
+  const rl = await checkRateLimit(RATE_LIMITS.EXPORT, rlIdentifier, rlUserId);
+  if (!rl.success) {
+    return NextResponse.json(
+      { error: 'Rate limit exceeded', code: 'RATE_LIMIT_EXCEEDED' },
+      { status: 429, headers: createRateLimitHeaders(rl) },
+    );
+  }
+
   let supabase;
   let userId: string;
   let orgId: string;
@@ -35,7 +61,7 @@ export async function GET(request: NextRequest) {
         message: `Invalid report type. Valid types: ${VALID_REPORT_TYPES.join(', ')}`,
         code: 'INVALID_REPORT_TYPE',
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -54,7 +80,7 @@ export async function GET(request: NextRequest) {
           message: 'Session expired. Please sign in again.',
           code: 'AUTH_REQUIRED',
         },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -67,7 +93,7 @@ export async function GET(request: NextRequest) {
         message: 'Authentication failed.',
         code: 'AUTH_ERROR',
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -86,7 +112,7 @@ export async function GET(request: NextRequest) {
           message: 'Organization membership not found.',
           code: 'ORG_NOT_FOUND',
         },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -98,7 +124,7 @@ export async function GET(request: NextRequest) {
           message: 'Admin access required to generate reports.',
           code: 'ADMIN_REQUIRED',
         },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -111,7 +137,7 @@ export async function GET(request: NextRequest) {
         message: 'Failed to lookup organization.',
         code: 'ORG_LOOKUP_ERROR',
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
@@ -132,7 +158,7 @@ export async function GET(request: NextRequest) {
             message: jobResult.error ?? 'Failed to create export job.',
             code: 'JOB_CREATE_FAILED',
           },
-          { status: 500 }
+          { status: 500 },
         );
       }
 
@@ -146,7 +172,7 @@ export async function GET(request: NextRequest) {
         }).catch((err) => {
           console.error(
             `[Report Export] Background job ${jobResult.jobId} failed:`,
-            err
+            err,
           );
         });
       }
@@ -193,7 +219,7 @@ export async function GET(request: NextRequest) {
         message: 'Failed to generate report.',
         code: 'GENERATION_ERROR',
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

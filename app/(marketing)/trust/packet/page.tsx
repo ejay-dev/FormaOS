@@ -104,7 +104,7 @@ export default function TrustPacketPage() {
     <MarketingPageShell>
       <CompactHero
         title="Vendor Trust Packet"
-        description="A procurement-ready PDF generated from current system status. Covers architecture, encryption, identity governance, data residency, subprocessors, and assurance commitments — ready for your legal, risk, and security teams."
+        description="A procurement-ready PDF from current system status. Covers architecture, encryption, identity, data residency, subprocessors, and assurance commitments."
         topColor="emerald"
         bottomColor="cyan"
         visualContent={<CompactHeroIcon icon={<Package className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}

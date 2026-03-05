@@ -327,7 +327,7 @@ describe('homepage-experience: policy matrix regression', () => {
       name: 'mid-tier, motion on',
       context: makeMotionContext({ deviceTier: 'mid' }),
       expectedProfile: 'balanced',
-      expectedOrbital: true,
+      expectedOrbital: false, // orbital motion requires highTier
       expectedTelemetry: true,
     },
     {

@@ -5,7 +5,7 @@
 
 'use client';
 
-import { onCLS, onFID, onLCP, onTTFB, onINP, Metric } from 'web-vitals';
+import { onCLS, onLCP, onTTFB, onINP, Metric } from 'web-vitals';
 
 // Custom metrics interface
 export interface CustomMetric {
@@ -18,7 +18,7 @@ export interface CustomMetric {
 // Performance thresholds (based on Web Vitals recommendations)
 const THRESHOLDS = {
   LCP: { good: 2500, needsImprovement: 4000 }, // Largest Contentful Paint
-  FID: { good: 100, needsImprovement: 300 }, // First Input Delay
+  FID: { good: 100, needsImprovement: 300 }, // Historical metric (replaced by INP)
   CLS: { good: 0.1, needsImprovement: 0.25 }, // Cumulative Layout Shift
   TTFB: { good: 800, needsImprovement: 1800 }, // Time to First Byte
   INP: { good: 200, needsImprovement: 500 }, // Interaction to Next Paint
@@ -97,7 +97,6 @@ export function initPerformanceMonitoring() {
 
   // Core Web Vitals
   onCLS(sendToAnalytics);
-  onFID(sendToAnalytics);
   onLCP(sendToAnalytics);
   onTTFB(sendToAnalytics);
   onINP(sendToAnalytics);

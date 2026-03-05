@@ -140,7 +140,8 @@ export async function PATCH(request: Request, context: RouteContext) {
       );
     }
 
-    const permissionCtx = await requirePermission('VIEW_CONTROLS');
+    // Webhook mutation is a privileged write — requires EDIT_CONTROLS (owner/admin only)
+    const permissionCtx = await requirePermission('EDIT_CONTROLS');
     if (!permissionCtx) {
       return NextResponse.json(
         { error: 'Forbidden - Insufficient permissions' },
@@ -276,7 +277,8 @@ export async function DELETE(request: Request, context: RouteContext) {
       );
     }
 
-    const permissionCtx = await requirePermission('VIEW_CONTROLS');
+    // Webhook mutation is a privileged write — requires EDIT_CONTROLS (owner/admin only)
+    const permissionCtx = await requirePermission('EDIT_CONTROLS');
     if (!permissionCtx) {
       return NextResponse.json(
         { error: 'Forbidden - Insufficient permissions' },

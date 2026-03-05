@@ -40,7 +40,7 @@ export function IndustriesHero() {
           </span>
         </>
       }
-      subheadline="FormaOS adapts to your industry's regulatory requirements — NDIS, AHPRA, NSQHS, ASIC, AUSTRAC, WHS, NQF. Pre-built frameworks. System-enforced controls. Evidence that regulators, auditors, and procurement teams trust."
+      subheadline="FormaOS adapts to your regulatory requirements — NDIS, AHPRA, NSQHS, ASIC, AUSTRAC, WHS, NQF. Pre-built frameworks. System-enforced controls."
       extras={<IndustriesExtras />}
       primaryCta={{ href: '/auth/signup', label: 'Start Free Trial' }}
       secondaryCta={{ href: '/contact', label: 'Request Demo' }}

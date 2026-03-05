@@ -34,7 +34,7 @@ export default function DPAPage() {
     <MarketingPageShell>
       <CompactHero
         title="Data Processing Agreement"
-        description="FormaOS processes customer data in accordance with the Australian Privacy Act 1988 (APPs), GDPR, and other applicable data protection obligations. AU-based hosting by default. Data residency controls, sub-processor disclosure, and signed DPA available for enterprise customers."
+        description="Customer data processed under the Australian Privacy Act 1988, GDPR, and applicable data protection laws. AU-hosted by default. Signed DPA available for enterprise."
         topColor="emerald"
         bottomColor="cyan"
         visualContent={<CompactHeroIcon icon={<FileText className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}

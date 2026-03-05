@@ -110,16 +110,21 @@ export interface SubscriptionData {
 
 /**
  * Layered caching:
- * 1. unstable_cache: cross-request TTL (300s) with tag-based invalidation
+ * 1. unstable_cache: cross-request TTL (300s) with per-org key + tag-based invalidation
  * 2. React.cache: per-request deduplication within the RSC render tree
  * Use getSubscriptionDataFresh() for post-mutation refetches that bypass cache.
+ *
+ * NOTE: The cache key explicitly includes orgId to prevent cross-org data bleed.
+ * Tags include both the global 'subscription' tag and a per-org 'subscription:<orgId>'
+ * tag so revalidateTag() can target a single org.
  */
-const getSubscriptionDataCached = unstable_cache(
-  async (orgId: string) => getSubscriptionDataFresh(orgId),
-  ['subscription-data'],
-  { revalidate: 300, tags: ['subscription'] },
+export const getSubscriptionData = cache(async (orgId: string) =>
+  unstable_cache(
+    () => getSubscriptionDataFresh(orgId),
+    [`subscription-data:${orgId}`],
+    { revalidate: 300, tags: ['subscription', `subscription:${orgId}`] },
+  )(),
 );
-export const getSubscriptionData = cache(getSubscriptionDataCached);
 
 async function getSubscriptionDataFresh(
   orgId: string,
@@ -187,20 +192,21 @@ export interface EntitlementData {
 
 /**
  * Layered caching (same pattern as subscription):
- * 1. unstable_cache: cross-request TTL (300s) with tag-based invalidation
+ * 1. unstable_cache: cross-request TTL (300s) with per-org key + tag-based invalidation
  * 2. React.cache: per-request deduplication
  * Use getEntitlementsFresh() for post-mutation refetches.
+ *
+ * NOTE: Cache key explicitly includes orgId — see getSubscriptionData for rationale.
  */
-const getEntitlementsCached = unstable_cache(
-  async (orgId: string) => getEntitlementsFresh(orgId),
-  ['entitlements-data'],
-  { revalidate: 300, tags: ['entitlements'] },
+export const getEntitlements = cache(async (orgId: string) =>
+  unstable_cache(
+    () => getEntitlementsFresh(orgId),
+    [`entitlements-data:${orgId}`],
+    { revalidate: 300, tags: ['entitlements', `entitlements:${orgId}`] },
+  )(),
 );
-export const getEntitlements = cache(getEntitlementsCached);
 
-async function getEntitlementsFresh(
-  orgId: string,
-): Promise<EntitlementData[]> {
+async function getEntitlementsFresh(orgId: string): Promise<EntitlementData[]> {
   const supabase = await createSupabaseServerClient();
 
   const { data, error } = await supabase
@@ -250,8 +256,7 @@ function pickPrimaryMembership<
     memberships
       .slice()
       .sort((a, b) => weight(b.role) - weight(a.role))
-      .at(0) ??
-    memberships[0]
+      .at(0) ?? memberships[0]
   );
 }
 
@@ -498,8 +503,8 @@ async function fetchSystemStateFresh(preloadedUser?: {
   };
 }
 
-const fetchSystemStateCached = cache(async (): Promise<SystemStatePayload | null> =>
-  fetchSystemStateFresh(),
+const fetchSystemStateCached = cache(
+  async (): Promise<SystemStatePayload | null> => fetchSystemStateFresh(),
 );
 
 /**

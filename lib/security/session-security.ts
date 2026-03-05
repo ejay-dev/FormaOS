@@ -68,14 +68,16 @@ export async function hashSessionToken(token: string): Promise<string> {
  * Generate a cryptographically secure session token
  */
 export function generateSessionToken(): string {
-  const bytes = new Uint8Array(32);
-  if (globalThis.crypto?.getRandomValues) {
-    globalThis.crypto.getRandomValues(bytes);
-  } else {
-    for (let i = 0; i < bytes.length; i++) {
-      bytes[i] = Math.floor(Math.random() * 256);
-    }
+  if (!globalThis.crypto?.getRandomValues) {
+    // This should never happen in Node 18+ / Vercel functions.
+    // Throwing hard here prevents a silent fallback to Math.random().
+    throw new Error(
+      'crypto.getRandomValues is not available — cannot generate a secure session token',
+    );
   }
+
+  const bytes = new Uint8Array(32);
+  globalThis.crypto.getRandomValues(bytes);
 
   let binary = '';
   bytes.forEach((b) => {
@@ -330,11 +332,13 @@ export function logSecurityEvent(event: {
   userAgent?: string;
   metadata?: Record<string, any>;
 }): void {
-  const withTimeout = async <T,>(promise: Promise<T>, operationName: string) => {
+  const withTimeout = async <T>(promise: Promise<T>, operationName: string) => {
     let timeoutId: NodeJS.Timeout | undefined;
     const timeoutPromise = new Promise<null>((resolve) => {
       timeoutId = setTimeout(() => {
-        console.warn(`[Security] ${operationName} exceeded 200ms; skipping write`);
+        console.warn(
+          `[Security] ${operationName} exceeded 200ms; skipping write`,
+        );
         resolve(null);
       }, 200);
     });
@@ -358,7 +362,10 @@ export function logSecurityEvent(event: {
           ? 'token_anomaly'
           : event.eventType;
 
-  const severityByType: Record<string, 'info' | 'low' | 'medium' | 'high' | 'critical'> = {
+  const severityByType: Record<
+    string,
+    'info' | 'low' | 'medium' | 'high' | 'critical'
+  > = {
     [SecurityEventTypes.LOGIN_SUCCESS]: 'info',
     [SecurityEventTypes.LOGIN_FAILURE]: 'medium',
     [SecurityEventTypes.LOGIN_MFA_REQUIRED]: 'low',

@@ -57,7 +57,7 @@ export default function SlaPage() {
     <MarketingPageShell>
       <CompactHero
         title="SLA"
-        description="Enterprise plans include a 99.9% monthly uptime SLA with documented incident response tiers. Contract terms are defined in your executed MSA/SOW. Starter and Professional plans operate on a best-effort basis with public status reporting."
+        description="Enterprise plans include a 99.9% monthly uptime SLA with documented incident response tiers. Contract terms defined in your MSA/SOW. Other plans are best-effort."
         topColor="emerald"
         bottomColor="cyan"
         visualContent={<CompactHeroIcon icon={<Clock className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}

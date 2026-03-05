@@ -33,13 +33,16 @@ export async function getUserContext(): Promise<UserContext | null> {
     } = await supabase.auth.getUser();
     if (!user?.id) return null;
 
-    // Get org membership
-    const { data: membership } = await supabase
+    // Get org membership — order by created_at ASC so the primary (oldest) org is
+    // always selected consistently for multi-org users, matching system-state behaviour.
+    const { data: memberships } = await supabase
       .from('org_members')
       .select('organization_id, role')
       .eq('user_id', user.id)
-      .maybeSingle();
+      .order('created_at', { ascending: true })
+      .limit(1);
 
+    const membership = memberships?.[0] ?? null;
     if (!membership?.organization_id) return null;
 
     return {

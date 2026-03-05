@@ -167,16 +167,18 @@ function backoffDelay(attempt: number): number {
 
 /**
  * Validate that a URL is a plausible webhook endpoint.
- * Must be HTTPS (or localhost for dev).
+ * Must be HTTPS. Localhost/127.0.0.1 only allowed in development.
  */
 export function isValidWebhookUrl(url: string): boolean {
   try {
     const parsed = new URL(url);
-    return (
-      parsed.protocol === 'https:' ||
-      parsed.hostname === 'localhost' ||
-      parsed.hostname === '127.0.0.1'
-    );
+    if (parsed.protocol === 'https:') return true;
+    // Allow localhost only in non-production environments
+    const isDev = process.env.NODE_ENV !== 'production';
+    if (isDev && (parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1')) {
+      return true;
+    }
+    return false;
   } catch {
     return false;
   }
