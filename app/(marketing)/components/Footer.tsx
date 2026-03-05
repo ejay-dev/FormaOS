@@ -33,7 +33,7 @@ const footerLinks = {
     { href: '/use-cases/incident-management', label: 'Incidents' },
   ],
   resources: [
-    { href: '/docs', label: 'Documentation' },
+    { href: '/documentation', label: 'Documentation' },
     { href: '/blog', label: 'Blog' },
     { href: '/trust', label: 'Trust Center' },
     { href: '/security-review', label: 'Security Review Packet' },

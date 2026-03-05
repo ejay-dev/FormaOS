@@ -34,7 +34,7 @@ const resourceLinks = [
   { href: '/compare', label: 'Compare' },
   { href: '/changelog', label: 'Changelog' },
   { href: '/status', label: 'Status' },
-  { href: '/docs', label: 'Documentation' },
+  { href: '/documentation', label: 'Documentation' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ];

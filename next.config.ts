@@ -39,6 +39,17 @@ const nextConfig: NextConfig = {
         destination: '/legal/privacy',
         permanent: true,
       },
+      // Canonical docs route: /docs has been intermittently unreliable on some deployments
+      {
+        source: '/docs',
+        destination: '/documentation',
+        permanent: true,
+      },
+      {
+        source: '/docs/:path*',
+        destination: '/documentation/:path*',
+        permanent: true,
+      },
       // Legacy auth paths -> canonical auth routes
       {
         source: '/signup',

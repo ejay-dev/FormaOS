@@ -186,7 +186,7 @@ const QUICK_LINK_ITEMS: CommandItem[] = [
     id: 'link-help',
     label: 'Help & Support',
     icon: HelpCircle,
-    href: '/docs',
+    href: '/documentation',
     keywords: ['support', 'documentation', 'faq', 'contact'],
   },
 ];
