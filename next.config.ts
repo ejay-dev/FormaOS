@@ -39,6 +39,17 @@ const nextConfig: NextConfig = {
         destination: '/legal/privacy',
         permanent: true,
       },
+      // Legacy auth paths -> canonical auth routes
+      {
+        source: '/signup',
+        destination: '/auth/signup',
+        permanent: true,
+      },
+      {
+        source: '/signup/:path*',
+        destination: '/auth/signup/:path*',
+        permanent: true,
+      },
     ];
   },
   async headers() {
