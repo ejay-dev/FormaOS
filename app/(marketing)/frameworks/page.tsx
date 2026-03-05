@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import FrameworksContent from './FrameworksContent';
-import { breadcrumbSchema } from '@/lib/seo';
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
-
+import { breadcrumbSchema,
+  siteUrl} from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'ISO, SOC 2, NDIS Framework Coverage — FormaOS',
   description:

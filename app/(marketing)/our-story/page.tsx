@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import { StoryHero, StoryContent } from './StoryPageContentNew';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
-
+import { siteUrl } from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'Our Story | FormaOS',
   description:

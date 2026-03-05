@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import { ComparePageTemplate } from '../components/ComparePageTemplate';
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
-
+import { siteUrl } from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'FormaOS | Compare: Drata',
   description:

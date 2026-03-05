@@ -1,11 +1,9 @@
 import type { Metadata } from 'next';
 import PricingPageContent from './PricingPageContent';
-import { breadcrumbSchema } from '@/lib/seo';
+import { breadcrumbSchema,
+  siteUrl} from '@/lib/seo';
 
 export const dynamic = 'force-static';
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
-
 export const metadata: Metadata = {
   title: 'Pricing — Compliance Management Software | FormaOS',
   description:

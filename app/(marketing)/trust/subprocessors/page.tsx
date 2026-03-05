@@ -5,9 +5,7 @@ import { TRUST_SUBPROCESSORS } from '@/lib/trust/subprocessors';
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
 import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
-
+import { siteUrl } from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'FormaOS | Sub-processors',
   description:

@@ -74,7 +74,8 @@ export async function GET() {
       .limit(5000);
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      console.error('[staff-credentials/export] query failed:', error.message);
+      return NextResponse.json({ error: 'export_query_failed' }, { status: 500 });
     }
 
     const headers = [

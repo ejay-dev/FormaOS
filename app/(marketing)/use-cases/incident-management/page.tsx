@@ -1,8 +1,6 @@
 import { Metadata } from 'next';
 import IncidentContent from './IncidentContent';
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
-
+import { siteUrl } from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'Incident Management & Investigation | FormaOS',
   description:

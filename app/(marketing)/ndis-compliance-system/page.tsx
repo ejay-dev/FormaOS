@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import NdisContent from './NdisContent';
-import { breadcrumbSchema, faqSchema } from '@/lib/seo';
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
-
+import { breadcrumbSchema, faqSchema,
+  siteUrl} from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'NDIS Compliance System — Practice Standards & Quality Indicators | FormaOS',
   description:

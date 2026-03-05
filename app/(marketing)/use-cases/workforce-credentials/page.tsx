@@ -1,8 +1,6 @@
 import { Metadata } from 'next';
 import WorkforceContent from './WorkforceContent';
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
-
+import { siteUrl } from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'Workforce Credential Management | FormaOS',
   description:

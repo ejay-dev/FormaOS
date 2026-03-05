@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import { OutcomeJourneyPage } from '../components/outcome-journey-page';
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
-
+import { siteUrl } from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'FormaOS | Prove Compliance',
   description:

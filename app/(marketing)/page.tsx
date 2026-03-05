@@ -1,11 +1,10 @@
 import type { Metadata } from 'next';
 import { HomeClientMarker } from './components/home-client-marker';
 import FigmaHomepage from './components/FigmaHomepage';
+import { HeroStaticShell } from './components/HeroStaticShell';
+import { siteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-static';
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
-
 export const metadata: Metadata = {
   title: 'FormaOS | Turn Process Into Provable Truth',
   description:
@@ -33,8 +32,11 @@ export default function HomePage() {
     <div className="relative min-h-screen overflow-x-hidden">
       <HomeClientMarker />
 
-      {/* New Figma-based design implementation */}
-      <FigmaHomepage />
+      {/* Server-rendered hero: copy is in the initial HTML for crawlers and LCP */}
+      <HeroStaticShell />
+
+      {/* Client sections: animations, control-plane overrides, below-fold content */}
+      <FigmaHomepage skipHero />
     </div>
   );
 }

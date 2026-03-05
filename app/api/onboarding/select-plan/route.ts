@@ -96,7 +96,7 @@ export async function POST(request: Request) {
   } catch (err) {
     console.error('/api/onboarding/select-plan error:', err);
     return NextResponse.json(
-      { ok: false, error: String(err) },
+      { ok: false, error: 'plan_selection_failed' },
       { status: 500 },
     );
   }

@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import FAQPageContent from './FAQPageContent';
-import { faqSchema, breadcrumbSchema } from '@/lib/seo';
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
-
+import { faqSchema, breadcrumbSchema,
+  siteUrl} from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'Frequently Asked Questions — FormaOS Compliance Platform',
   description:

@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import SecurityReviewContent from './SecurityReviewContent';
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
-
+import { siteUrl } from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'FormaOS | Security Review Packet',
   description:

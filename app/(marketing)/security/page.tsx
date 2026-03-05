@@ -1,11 +1,9 @@
 import type { Metadata } from 'next';
 import SecurityPageContent from './SecurityPageContent';
-import { faqSchema, breadcrumbSchema } from '@/lib/seo';
+import { faqSchema, breadcrumbSchema,
+  siteUrl} from '@/lib/seo';
 
 export const dynamic = 'force-static';
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
-
 export const metadata: Metadata = {
   title: 'Security & Compliance Infrastructure — FormaOS',
   description:

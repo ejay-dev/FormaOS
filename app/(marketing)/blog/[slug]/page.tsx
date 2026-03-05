@@ -6,15 +6,11 @@ import { blogPosts, getCategoryId } from '../blogData';
 import { BlogHeroVisual } from '@/components/blog/BlogHeroVisual';
 import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
 import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
-import { articleSchema, breadcrumbSchema, siteUrl as seoSiteUrl } from '@/lib/seo';
+import { articleSchema, breadcrumbSchema, siteUrl } from '@/lib/seo';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
-
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
-
 export const generateStaticParams = () =>
   blogPosts.map((post) => ({ slug: post.id }));
 
@@ -51,6 +47,20 @@ export async function generateMetadata({
       description: post.excerpt,
       type: 'article',
       url: `${siteUrl}/blog/${post.id}`,
+      images: [
+        {
+          url: `${siteUrl}/og-image.png`,
+          width: 1200,
+          height: 630,
+          alt: `${post.title} — FormaOS Blog`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${post.title} | FormaOS`,
+      description: post.excerpt,
+      images: [`${siteUrl}/og-image.png`],
     },
   };
 }
@@ -72,7 +82,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             articleSchema({
               title: post.title,
               description: post.excerpt,
-              url: `${seoSiteUrl}/blog/${post.id}`,
+              url: `${siteUrl}/blog/${post.id}`,
               datePublished: new Date(post.date).toISOString(),
               author: post.author,
             }),

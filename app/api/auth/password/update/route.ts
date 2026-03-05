@@ -80,7 +80,7 @@ export async function POST(request: Request) {
 
     if (updateError) {
       return NextResponse.json(
-        { ok: false, error: updateError.message },
+        { ok: false, error: 'password_update_failed' },
         { status: 400 },
       );
     }

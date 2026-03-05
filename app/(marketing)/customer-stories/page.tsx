@@ -1,27 +1,25 @@
 import type { Metadata } from 'next';
 import CustomerStoriesContent from './CustomerStoriesContent';
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
-
+import { siteUrl } from '@/lib/seo';
 export const metadata: Metadata = {
-  title: 'FormaOS | Use Case Scenarios',
+  title: 'Customer Stories — Compliance Operations in Practice | FormaOS',
   description:
-    'Example scenarios showing how regulated operators use FormaOS to govern controls, evidence, and audit readiness.',
+    'See how regulated operators use FormaOS to govern controls, evidence, and audit readiness in healthcare, NDIS, aged care, and financial services.',
   alternates: {
     canonical: `${siteUrl}/customer-stories`,
   },
   openGraph: {
-    title: 'FormaOS | Use Case Scenarios',
+    title: 'Customer Stories | FormaOS',
     description:
-      'Example scenarios showing how regulated operators use FormaOS to govern controls, evidence, and audit readiness.',
+      'See how regulated operators use FormaOS to govern controls, evidence, and audit readiness.',
     type: 'website',
     url: `${siteUrl}/customer-stories`,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Customer Use Cases | FormaOS',
+    title: 'Customer Stories — Compliance Operations in Practice | FormaOS',
     description:
-      'See how regulated operators use FormaOS to govern controls, evidence, and audit readiness.',
+      'See how regulated operators use FormaOS to govern controls, evidence, and audit readiness in regulated industries.',
   },
 };
 

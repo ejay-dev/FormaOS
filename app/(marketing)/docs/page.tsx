@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import DocsPageContent from './DocsPageContent';
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
-
+import { siteUrl } from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'Documentation & Knowledge Base | FormaOS',
   description:

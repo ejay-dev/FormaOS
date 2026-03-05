@@ -166,15 +166,42 @@ function backoffDelay(attempt: number): number {
 }
 
 /**
+ * Returns true when the hostname resolves to a private/internal network address.
+ * Blocks RFC 1918, loopback, link-local, and other non-routable ranges.
+ */
+function isPrivateHostname(hostname: string): boolean {
+  // IPv4 private/reserved ranges
+  const parts = hostname.split('.').map(Number);
+  if (parts.length === 4 && parts.every((n) => Number.isInteger(n) && n >= 0 && n <= 255)) {
+    if (parts[0] === 10) return true;                                  // 10.0.0.0/8
+    if (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) return true; // 172.16.0.0/12
+    if (parts[0] === 192 && parts[1] === 168) return true;            // 192.168.0.0/16
+    if (parts[0] === 127) return true;                                 // 127.0.0.0/8
+    if (parts[0] === 169 && parts[1] === 254) return true;            // link-local
+    if (parts[0] === 0) return true;                                   // 0.0.0.0/8
+  }
+  if (hostname === 'localhost' || hostname === '[::1]') return true;
+  return false;
+}
+
+/**
  * Validate that a URL is a plausible webhook endpoint.
- * Must be HTTPS. Localhost/127.0.0.1 only allowed in development.
+ * Must be HTTPS. Private/internal IPs are blocked in production.
+ * Localhost only allowed in development.
  */
 export function isValidWebhookUrl(url: string): boolean {
   try {
     const parsed = new URL(url);
-    if (parsed.protocol === 'https:') return true;
-    // Allow localhost only in non-production environments
     const isDev = process.env.NODE_ENV !== 'production';
+
+    // In production, block all private/internal targets (SSRF prevention)
+    if (!isDev && isPrivateHostname(parsed.hostname)) {
+      return false;
+    }
+
+    if (parsed.protocol === 'https:') return true;
+
+    // Allow localhost only in non-production environments
     if (isDev && (parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1')) {
       return true;
     }

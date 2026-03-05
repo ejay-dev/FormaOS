@@ -45,9 +45,7 @@ export function softwareApplicationSchema() {
   };
 }
 
-export function breadcrumbSchema(
-  items: { name: string; path: string }[],
-) {
+export function breadcrumbSchema(items: { name: string; path: string }[]) {
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -60,9 +58,7 @@ export function breadcrumbSchema(
   };
 }
 
-export function faqSchema(
-  questions: { question: string; answer: string }[],
-) {
+export function faqSchema(questions: { question: string; answer: string }[]) {
   return {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -106,6 +102,11 @@ export function articleSchema(opts: {
   };
 }
 
+/**
+ * @deprecated Do not use until real review data is available.
+ * Google prohibits fabricated AggregateRating structured data.
+ * Remove the aggregateRating property and populate from a real review source.
+ */
 export function aggregateRatingSchema(opts?: {
   ratingValue?: number;
   reviewCount?: number;
@@ -128,6 +129,10 @@ export function aggregateRatingSchema(opts?: {
   };
 }
 
+/**
+ * @deprecated Only emit this schema when a real video exists with a contentUrl or embedUrl.
+ * Google requires at least one of contentUrl/embedUrl to generate a video rich result.
+ */
 export function videoObjectSchema(opts: {
   name: string;
   description: string;
@@ -164,7 +169,9 @@ export function videoObjectSchema(opts: {
  * Renders a JSON-LD script tag for use in page components.
  * Usage: <JsonLd data={schema} /> or <JsonLd data={[schema1, schema2]} />
  */
-export function jsonLdScript(data: Record<string, unknown> | Record<string, unknown>[]) {
+export function jsonLdScript(
+  data: Record<string, unknown> | Record<string, unknown>[],
+) {
   return JSON.stringify(data);
 }
 

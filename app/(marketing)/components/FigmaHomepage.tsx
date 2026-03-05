@@ -106,7 +106,11 @@ const TaskShowcase = dynamic(
   { ssr: false, loading: () => null },
 );
 
-export default function FormaOSHomepage() {
+export default function FormaOSHomepage({
+  skipHero = false,
+}: {
+  skipHero?: boolean;
+}) {
   const { snapshot } = useControlPlaneRuntime();
   const shouldReduceMotion = useReducedMotion();
   const tierConfig = useDeviceTier();
@@ -194,7 +198,7 @@ export default function FormaOSHomepage() {
       <div className="figma-homepage mk-page-bg relative min-h-screen overflow-x-hidden">
         {/* Page Sections */}
         <div className="mk-marketing-flow relative z-10">
-          {renderSection('hero', <HeroSection />)}
+          {!skipHero && renderSection('hero', <HeroSection />)}
           {renderSection(
             'framework_trust_strip',
             <FrameworkTrustStrip className="-mt-2 sm:-mt-4 mb-2" />,

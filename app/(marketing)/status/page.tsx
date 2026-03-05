@@ -4,9 +4,7 @@ import { fetchPublicUptimeChecks } from '@/lib/status/public-uptime';
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
 import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
-
+import { siteUrl } from '@/lib/seo';
 // Status page fetches live uptime data — must override layout's force-static
 export const dynamic = 'force-dynamic';
 

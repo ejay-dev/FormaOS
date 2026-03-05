@@ -103,7 +103,7 @@ export async function POST(request: Request) {
     if (error) {
       const mapped = mapSignupError(error.message || 'signup_failed');
       return NextResponse.json(
-        { ok: false, error: mapped.error, message: error.message },
+        { ok: false, error: mapped.error },
         { status: mapped.status, headers },
       );
     }

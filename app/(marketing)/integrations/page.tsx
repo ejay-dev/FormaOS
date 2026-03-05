@@ -1,11 +1,9 @@
 import type { Metadata } from 'next';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
+import { siteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-static';
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.formaos.com.au';
-
 export const metadata: Metadata = {
   title: 'Integrations — FormaOS',
   description:
