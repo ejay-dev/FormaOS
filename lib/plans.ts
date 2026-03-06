@@ -4,6 +4,8 @@ export type PlanConfig = {
   key: PlanKey;
   name: string;
   summary: string;
+  /** Monthly price in USD (0 = custom / contact sales) */
+  priceMonthly: number;
   limits: {
     maxSites: number | "unlimited";
     maxUsers: number | "unlimited";
@@ -17,6 +19,7 @@ export const PLAN_CATALOG: Record<PlanKey, PlanConfig> = {
     key: "basic",
     name: "Starter",
     summary: "For small providers and solo operators running essential compliance workflows.",
+    priceMonthly: 29,
     limits: {
       maxSites: 2,
       maxUsers: 15,
@@ -28,6 +31,7 @@ export const PLAN_CATALOG: Record<PlanKey, PlanConfig> = {
     key: "pro",
     name: "Pro",
     summary: "For growing organizations operating across sites and teams.",
+    priceMonthly: 99,
     limits: {
       maxSites: 10,
       maxUsers: 75,
@@ -44,17 +48,22 @@ export const PLAN_CATALOG: Record<PlanKey, PlanConfig> = {
   enterprise: {
     key: "enterprise",
     name: "Enterprise",
-    summary: "For organizations seeking full implementation and white-glove support.",
+    summary: "For organizations seeking full compliance coverage with unlimited scale.",
+    priceMonthly: 399,
     limits: {
       maxSites: "unlimited",
       maxUsers: "unlimited",
       maxFrameworks: "unlimited",
     },
     features: [
-      "White-glove onboarding",
+      "Everything in Pro",
+      "Unlimited sites, users & frameworks",
+      "SSO & SAML authentication",
       "Custom compliance frameworks",
-      "Org-wide deployment",
-      "Dedicated support",
+      "Webhook integrations",
+      "Priority support SLA",
+      "White-glove onboarding",
+      "Dedicated account manager",
     ],
   },
 };

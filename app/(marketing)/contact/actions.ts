@@ -5,7 +5,6 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
   checkRateLimit,
   getClientIdentifier,
-  RATE_LIMITS,
 } from '@/lib/security/rate-limiter';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;

@@ -66,9 +66,7 @@ export async function startCheckout(formData: FormData) {
     redirect(`${siteUrl.replace(/\/$/, "")}/pricing`);
   }
 
-  if (planKey === "enterprise") {
-    redirect("/app/billing?status=contact");
-  }
+  // Enterprise is now self-serve — checkout via Stripe like other plans
 
   const stripe = getStripeClient();
   if (!stripe) {

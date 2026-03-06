@@ -35,13 +35,12 @@ export async function ensureSubscription(orgId: string, planKey: string | null) 
   if (existing?.status && ["active", "trialing"].includes(existing.status)) {
     // BACKFILL: Ensure entitlements exist even for existing subscriptions
     const existingPlan = resolvePlanKey(existing.plan_key) || resolvedPlan;
-    if (existingPlan === "basic" || existingPlan === "pro") {
-      await syncEntitlementsForPlan(orgId, existingPlan);
-    }
+    await syncEntitlementsForPlan(orgId, existingPlan);
     return;
   }
 
   const isTrialEligible = resolvedPlan === "basic" || resolvedPlan === "pro";
+  const isEnterprise = resolvedPlan === "enterprise";
   const now = new Date();
   const nowIso = now.toISOString();
   const trialEndIso = isTrialEligible ? getTrialEndIso() : null;
@@ -77,7 +76,7 @@ export async function ensureSubscription(orgId: string, planKey: string | null) 
   const basePayload = {
     organization_id: orgId,
     plan_key: resolvedPlan,
-    status: isTrialEligible ? "trialing" : "pending",
+    status: isTrialEligible ? "trialing" : (isEnterprise ? "active" : "pending"),
     current_period_end: trialEndIso,
     trial_started_at: isTrialEligible ? nowIso : null,
     trial_expires_at: trialEndIso,
@@ -112,8 +111,6 @@ export async function ensureSubscription(orgId: string, planKey: string | null) 
     }
   }
 
-  // Always sync entitlements for trial-eligible plans
-  if (isTrialEligible) {
-    await syncEntitlementsForPlan(orgId, resolvedPlan as Extract<PlanKey, "basic" | "pro">);
-  }
+  // Sync entitlements for all plans (trial-eligible + enterprise)
+  await syncEntitlementsForPlan(orgId, resolvedPlan);
 }

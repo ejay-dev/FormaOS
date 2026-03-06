@@ -256,15 +256,28 @@ export function UpgradeModal() {
               Starter — $29/mo
             </button>
             <button
+              onClick={() => handleUpgrade('enterprise')}
+              disabled={loadingPlan !== null}
+              className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-slate-200 hover:bg-white/10 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {loadingPlan === 'enterprise' ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : null}
+              Enterprise — $399/mo
+            </button>
+          </div>
+
+          <div className="flex justify-center">
+            <button
               onClick={handleClose}
-              className="flex-1 rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-all"
+              className="rounded-xl border border-white/10 px-6 py-2.5 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-all"
             >
               Maybe later
             </button>
           </div>
 
           <p className="text-xs text-center text-slate-500">
-            14-day free trial included · Cancel anytime · Your data is safe
+            14-day free trial on Starter &amp; Pro · Cancel anytime · Your data is safe
           </p>
         </div>
       </div>

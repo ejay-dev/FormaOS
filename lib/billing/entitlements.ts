@@ -24,7 +24,9 @@ const PLAN_ENTITLEMENTS: Record<PlanKey, { enabled: EntitlementKey[]; limits: Re
   },
   enterprise: {
     enabled: ["audit_export", "reports", "framework_evaluations", "certifications", "team_limit"],
-    limits: {},
+    limits: {
+      team_limit: null as unknown as number, // unlimited
+    },
   },
 };
 

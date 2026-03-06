@@ -60,12 +60,14 @@ const FEATURE_ROWS: {
   { label: 'Custom Frameworks', basic: '—', pro: '—', enterprise: '✓' },
   { label: 'Dedicated Support', basic: '—', pro: '—', enterprise: '✓' },
   { label: 'SSO & SAML', basic: '—', pro: '—', enterprise: '✓' },
+  { label: 'Webhook Integrations', basic: '—', pro: '—', enterprise: '✓' },
+  { label: 'Priority Support SLA', basic: '—', pro: '—', enterprise: '✓' },
 ];
 
 const PLAN_PRICES: Record<PlanKey, { monthly: number; label: string }> = {
   basic: { monthly: 29, label: '/mo' },
   pro: { monthly: 99, label: '/mo' },
-  enterprise: { monthly: 0, label: 'Custom' },
+  enterprise: { monthly: 399, label: '/mo' },
 };
 
 const PLAN_ICONS: Record<
@@ -83,7 +85,6 @@ export function PlanComparisonTable() {
   const [error, setError] = useState<string | null>(null);
 
   const handleUpgrade = async (targetPlan: PlanKey) => {
-    if (targetPlan === 'enterprise') return; // Contact sales
     setLoadingPlan(targetPlan);
     setError(null);
 
@@ -195,14 +196,7 @@ export function PlanComparisonTable() {
                 </div>
 
                 {/* CTA */}
-                {planKey === 'enterprise' ? (
-                  <a
-                    href="mailto:sales@formaos.com"
-                    className="block w-full rounded-lg border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-semibold text-slate-100 hover:bg-white/10 transition-all text-center"
-                  >
-                    Contact Sales
-                  </a>
-                ) : isCurrent ? (
+                {isCurrent ? (
                   <div className="rounded-lg bg-emerald-500/10 border border-emerald-400/20 px-4 py-2.5 text-sm font-semibold text-emerald-300 text-center">
                     Active
                   </div>

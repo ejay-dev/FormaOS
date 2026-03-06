@@ -3,6 +3,7 @@
 ## [2.0.2] - 2026-03-05
 
 ### Security Hardening
+
 - **TOTP encryption enforced in production** — `encryptTotpSecret()` now throws at boot if `TOTP_ENCRYPTION_KEY` is absent; plaintext fallback restricted to dev/test only.
 - **Supabase admin client fail-safe** — missing `SUPABASE_SERVICE_ROLE_KEY` now throws in non-test environments instead of silently returning a no-op client that swallowed all queries.
 - **Rate limiter fail-closed on AUTH routes** — when Redis is unavailable, authentication endpoints now block (fail-closed) rather than falling back to in-memory state.
@@ -10,11 +11,13 @@
 - **Signup UUID hardened** — replaced malformed `00000000-0000-4000-8000-${Date.now()}` fallback with Node's `crypto.randomUUID()`.
 
 ### API Correctness
+
 - **HTTP 401 vs 403 semantics fixed** — `unauthorizedResponse()` now returns 401 (unauthenticated); new `forbiddenResponse()` added for 403 (unauthorized access).
 - **CORS on all `/api/v1/` routes** — preflight `OPTIONS` handled and CORS headers (`Access-Control-Allow-*`) injected via middleware for the public REST API.
 - **`npm audit fix` applied** — reduced high-severity npm vulnerabilities from 6 → 3 (remaining 3 are devDependency-only via `lighthouse-ci` with no upstream patch available).
 
 ### Code Quality
+
 - **Zero `console.*` calls in `app/api/`** — all 159 console statements across 71 route files migrated to structured Pino logger via `routeLog()` factory.
 - **Zero `: any` types in `app/api/`** — all 65 untyped parameters replaced with `Record<string, unknown>`, proper casts, or `unknown` with narrowing.
 - **Dead code removed** — `lib/permissions.ts` and its test file deleted (superseded by `lib/api-permission-guards.ts`).
