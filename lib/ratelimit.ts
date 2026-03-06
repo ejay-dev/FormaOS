@@ -36,7 +36,7 @@ const failOpenWarningTimestamps = new Map<string, number>();
 
 function logFailOpenWarning(
   reason: string,
-  metadata: Record<string, unknown> = {}
+  metadata: Record<string, unknown> = {},
 ): void {
   const now = Date.now();
   const lastLogAt = failOpenWarningTimestamps.get(reason) ?? 0;
@@ -58,7 +58,7 @@ function logFailOpenWarning(
 async function rateLimit(
   key: string,
   limit: number,
-  windowMs: number
+  windowMs: number,
 ): Promise<RateLimitResult> {
   // If Redis not configured, allow all requests (dev mode)
   const { url, token } = getRedisConfig();
@@ -116,7 +116,10 @@ async function rateLimit(
     }
 
     // Add current request
-    await redis.zadd(redisKey, { score: now, member: `${now}-${Math.random()}` });
+    await redis.zadd(redisKey, {
+      score: now,
+      member: `${now}-${Math.random()}`,
+    });
 
     // Set expiry on the key
     await redis.expire(redisKey, Math.ceil(windowMs / 1000));
@@ -149,9 +152,7 @@ async function rateLimit(
  * Rate limit for authentication endpoints (signin, signup)
  * 10 requests per 10 minutes per IP
  */
-export async function checkAuthRateLimit(
-  ip: string
-): Promise<RateLimitResult> {
+export async function checkAuthRateLimit(ip: string): Promise<RateLimitResult> {
   return rateLimit(`auth:${ip}`, 10, 10 * 60 * 1000); // 10 req / 10 min
 }
 
@@ -160,7 +161,7 @@ export async function checkAuthRateLimit(
  * 60 requests per minute per user/IP
  */
 export async function checkApiRateLimit(
-  identifier: string
+  identifier: string,
 ): Promise<RateLimitResult> {
   return rateLimit(`api:${identifier}`, 60, 60 * 1000); // 60 req / min
 }
@@ -169,10 +170,19 @@ export async function checkApiRateLimit(
  * Rate limit for public forms (contact, leads)
  * 5 requests per 10 minutes per IP
  */
-export async function checkFormRateLimit(
-  ip: string
-): Promise<RateLimitResult> {
+export async function checkFormRateLimit(ip: string): Promise<RateLimitResult> {
   return rateLimit(`form:${ip}`, 5, 10 * 60 * 1000); // 5 req / 10 min
+}
+
+/**
+ * Rate limit for privileged admin/founder mutation endpoints.
+ * 30 requests per minute per IP — tight enough to limit abuse from a
+ * compromised session while still allowing normal admin workflows.
+ */
+export async function checkAdminRateLimit(
+  identifier: string,
+): Promise<RateLimitResult> {
+  return rateLimit(`admin:${identifier}`, 30, 60 * 1000); // 30 req / min
 }
 
 /**
@@ -209,7 +219,7 @@ export function getClientIp(request: Request): string {
  */
 export function addRateLimitHeaders(
   response: Response,
-  result: RateLimitResult
+  result: RateLimitResult,
 ): Response {
   response.headers.set('X-RateLimit-Limit', result.limit.toString());
   response.headers.set('X-RateLimit-Remaining', result.remaining.toString());

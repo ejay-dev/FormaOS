@@ -35,11 +35,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run npm audit (high severity)
+      - name: Run npm audit (high severity - prod deps, blocking)
         run: npm audit --audit-level=high --omit=dev
-        continue-on-error: true
 
-      - name: Run npm audit (all packages)
+      - name: Run npm audit (all packages, advisory)
         run: npm audit --audit-level=moderate
         continue-on-error: true
 

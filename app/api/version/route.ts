@@ -7,15 +7,8 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   return NextResponse.json(
     {
-      commitSha:
-        process.env.VERCEL_GIT_COMMIT_SHA ??
-        process.env.GIT_COMMIT_SHA ??
-        'unknown',
-      commitRef:
-        process.env.VERCEL_GIT_COMMIT_REF ??
-        process.env.GIT_COMMIT_REF ??
-        'unknown',
-      deploymentId: process.env.VERCEL_DEPLOYMENT_ID ?? 'unknown',
+      version: '1.0.0',
+      status: 'ok',
       builtAt: BUILT_AT,
     },
     {

@@ -34,9 +34,7 @@ export async function createSupabaseServerClient() {
   })();
 
   if (!hasValidUrl || !supabaseKey) {
-    console.error(
-      '[Supabase] Missing Supabase URL or anon key.',
-    );
+    console.error('[Supabase] Missing Supabase URL or anon key.');
     return createFallbackSupabaseClient();
   }
 
@@ -51,7 +49,7 @@ export async function createSupabaseServerClient() {
             cookiesToSet.forEach(({ name, value, options }) => {
               const normalized = { ...options };
               if (!normalized.sameSite) {
-                normalized.sameSite = isHttps ? 'none' : 'lax';
+                normalized.sameSite = 'lax';
               }
               if (!normalized.path) {
                 normalized.path = '/';

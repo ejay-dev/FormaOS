@@ -3,6 +3,8 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { logAdminAction } from '@/lib/admin/audit';
 import { handleAdminError } from '@/app/api/admin/_helpers';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { checkAdminRateLimit, getClientIp } from '@/lib/ratelimit';
 
 type Params = {
   params: Promise<{ userId: string }>;
@@ -10,6 +12,15 @@ type Params = {
 
 export async function POST(request: Request, { params }: Params) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
+    const ip = getClientIp(request);
+    const rl = await checkAdminRateLimit(ip);
+    if (!rl.success) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
+
     const { user } = await requireFounderAccess();
     const { userId } = await params;
     const contentType = request.headers.get('content-type') ?? '';

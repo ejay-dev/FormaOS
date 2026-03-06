@@ -10,7 +10,6 @@ function resolveBrowserCookieOptions() {
   if (typeof window === 'undefined') return undefined;
   const domain = getCookieDomain(window.location.hostname);
   const secure = window.location.protocol === 'https:';
-  const sameSite = secure ? 'none' : 'lax';
   const options: {
     domain?: string;
     path: string;
@@ -18,7 +17,7 @@ function resolveBrowserCookieOptions() {
     secure?: boolean;
   } = {
     path: '/',
-    sameSite,
+    sameSite: 'lax',
   };
   if (domain) options.domain = domain;
   if (secure) options.secure = true;

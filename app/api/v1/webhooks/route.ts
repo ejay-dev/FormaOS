@@ -160,7 +160,7 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!isValidWebhookUrl(url)) {
+    if (!(await isValidWebhookUrl(url))) {
       return NextResponse.json(
         {
           error:

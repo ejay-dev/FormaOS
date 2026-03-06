@@ -185,7 +185,7 @@ export async function PATCH(request: Request, context: RouteContext) {
 
     // Validate individual fields if provided
     if (url !== undefined) {
-      if (typeof url !== 'string' || !isValidWebhookUrl(url)) {
+      if (typeof url !== 'string' || !(await isValidWebhookUrl(url))) {
         return NextResponse.json(
           {
             error:

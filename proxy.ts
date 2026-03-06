@@ -65,6 +65,43 @@ export async function proxy(request: NextRequest) {
       return response;
     }
 
+    // -------------------------------
+    // API Auth Backstop
+    // -------------------------------
+    // Public API routes that do NOT require session cookies.
+    // Everything else under /api/* must have a valid session.
+    const PUBLIC_API_ROUTES = [
+      '/api/health',
+      '/api/version',
+      '/api/auth/', // OAuth callbacks
+      '/api/cron/', // Vercel cron (secured by CRON_SECRET)
+      '/api/runtime/', // Next.js runtime internals
+      '/api/sso/', // SSO callbacks
+    ];
+
+    if (pathname.startsWith('/api/')) {
+      const isPublicApi = PUBLIC_API_ROUTES.some(
+        (prefix) => pathname === prefix || pathname.startsWith(prefix),
+      );
+      if (!isPublicApi) {
+        // Require a session cookie for non-public API routes
+        const hasSessionCookieForApi = request.cookies
+          .getAll()
+          .some(
+            (c) => c.name.startsWith('sb-') && c.name.includes('auth-token'),
+          );
+        if (!hasSessionCookieForApi) {
+          return NextResponse.json(
+            { error: 'Unauthorized' },
+            { status: 401, headers: { 'Cache-Control': 'no-store' } },
+          );
+        }
+      }
+      // API routes don't need further middleware processing (redirects, CSP, etc.)
+      response.headers.set('Server-Timing', `mw;dur=${Date.now() - startTime}`);
+      return response;
+    }
+
     const middlewareDebug = process.env.MIDDLEWARE_DEBUG === 'true';
     const serverTiming = () => `mw;dur=${Date.now() - startTime}`;
     const logTiming = (label: string) => {
@@ -255,7 +292,7 @@ export async function proxy(request: NextRequest) {
               cookiesToSet.forEach(({ name, value, options }) => {
                 const normalized = { ...options };
                 if (!normalized.sameSite) {
-                  normalized.sameSite = isHttps ? 'none' : 'lax';
+                  normalized.sameSite = 'lax';
                 }
                 if (!normalized.path) {
                   normalized.path = '/';
@@ -437,6 +474,6 @@ export const config = {
     '/workspace-recovery/:path*',
     '/submit/:path*',
     '/signin/:path*',
-    '/api/v1/:path*',
+    '/api/:path*',
   ],
 };

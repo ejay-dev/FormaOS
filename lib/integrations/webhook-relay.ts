@@ -10,6 +10,7 @@
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import { logActivity } from '@/lib/audit-trail';
 import crypto from 'crypto';
+import dns from 'dns/promises';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -166,30 +167,87 @@ function backoffDelay(attempt: number): number {
 }
 
 /**
- * Returns true when the hostname resolves to a private/internal network address.
- * Blocks RFC 1918, loopback, link-local, and other non-routable ranges.
+ * Returns true when the IP address falls within a private/internal/reserved range.
+ * Blocks RFC 1918, loopback, link-local, CGNAT, and other non-routable ranges.
+ */
+function isPrivateIp(ip: string): boolean {
+  const parts = ip.split('.').map(Number);
+  if (
+    parts.length === 4 &&
+    parts.every((n) => Number.isInteger(n) && n >= 0 && n <= 255)
+  ) {
+    if (parts[0] === 10) return true; // 10.0.0.0/8
+    if (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) return true; // 172.16.0.0/12
+    if (parts[0] === 192 && parts[1] === 168) return true; // 192.168.0.0/16
+    if (parts[0] === 127) return true; // 127.0.0.0/8
+    if (parts[0] === 169 && parts[1] === 254) return true; // link-local
+    if (parts[0] === 0) return true; // 0.0.0.0/8
+    if (parts[0] === 100 && parts[1] >= 64 && parts[1] <= 127) return true; // CGNAT
+    if (parts[0] === 198 && (parts[1] === 18 || parts[1] === 19)) return true; // benchmark
+  }
+  // IPv6 loopback & private ranges
+  if (
+    ip === '::1' ||
+    ip === '::' ||
+    ip.startsWith('fe80:') ||
+    ip.startsWith('fc') ||
+    ip.startsWith('fd')
+  ) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Returns true when the hostname itself is a known private name (before DNS).
  */
 function isPrivateHostname(hostname: string): boolean {
-  // IPv4 private/reserved ranges
-  const parts = hostname.split('.').map(Number);
-  if (parts.length === 4 && parts.every((n) => Number.isInteger(n) && n >= 0 && n <= 255)) {
-    if (parts[0] === 10) return true;                                  // 10.0.0.0/8
-    if (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) return true; // 172.16.0.0/12
-    if (parts[0] === 192 && parts[1] === 168) return true;            // 192.168.0.0/16
-    if (parts[0] === 127) return true;                                 // 127.0.0.0/8
-    if (parts[0] === 169 && parts[1] === 254) return true;            // link-local
-    if (parts[0] === 0) return true;                                   // 0.0.0.0/8
-  }
   if (hostname === 'localhost' || hostname === '[::1]') return true;
-  return false;
+  return isPrivateIp(hostname);
+}
+
+/**
+ * Resolve a hostname and verify none of its addresses point to private ranges.
+ * Returns true only if ALL resolved addresses are public.
+ */
+async function isPublicHostnameResolved(hostname: string): Promise<boolean> {
+  if (isPrivateIp(hostname)) return false;
+
+  try {
+    const [ipv4Result, ipv6Result] = await Promise.allSettled([
+      dns.resolve4(hostname),
+      dns.resolve6(hostname),
+    ]);
+
+    const addresses: string[] = [];
+    if (ipv4Result.status === 'fulfilled') addresses.push(...ipv4Result.value);
+    if (ipv6Result.status === 'fulfilled') addresses.push(...ipv6Result.value);
+
+    if (addresses.length === 0) return false;
+
+    for (const addr of addresses) {
+      if (isPrivateIp(addr)) {
+        console.warn('[WebhookRelay][SSRF] DNS resolved to private IP', {
+          hostname,
+          resolvedIp: addr,
+        });
+        return false;
+      }
+    }
+
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /**
  * Validate that a URL is a plausible webhook endpoint.
  * Must be HTTPS. Private/internal IPs are blocked in production.
  * Localhost only allowed in development.
+ * In production, DNS-resolves the hostname to block rebinding attacks.
  */
-export function isValidWebhookUrl(url: string): boolean {
+export async function isValidWebhookUrl(url: string): Promise<boolean> {
   try {
     const parsed = new URL(url);
     const isDev = process.env.NODE_ENV !== 'production';
@@ -199,10 +257,20 @@ export function isValidWebhookUrl(url: string): boolean {
       return false;
     }
 
-    if (parsed.protocol === 'https:') return true;
+    if (parsed.protocol === 'https:') {
+      // In production, also resolve DNS and verify the target IP
+      if (!isDev) {
+        const isPublic = await isPublicHostnameResolved(parsed.hostname);
+        if (!isPublic) return false;
+      }
+      return true;
+    }
 
     // Allow localhost only in non-production environments
-    if (isDev && (parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1')) {
+    if (
+      isDev &&
+      (parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1')
+    ) {
       return true;
     }
     return false;
@@ -243,7 +311,10 @@ export async function createRelayWebhook(
       secret,
       events: input.events,
       enabled: input.enabled ?? true,
-      retry_count: Math.min(input.retry_count ?? DEFAULT_RETRY_COUNT, MAX_RETRY_COUNT),
+      retry_count: Math.min(
+        input.retry_count ?? DEFAULT_RETRY_COUNT,
+        MAX_RETRY_COUNT,
+      ),
       headers: input.headers ?? {},
       metadata: {
         provider: input.provider ?? 'custom',
@@ -471,6 +542,25 @@ async function deliverRelay(
   payload: RelayPayload,
   attempt = 1,
 ): Promise<RelayDelivery> {
+  // SSRF: re-validate the target URL (including DNS) before every delivery
+  const urlSafe = await isValidWebhookUrl(config.url);
+  if (!urlSafe) {
+    console.warn('[WebhookRelay][SSRF] Blocked delivery to unsafe URL', {
+      webhookId: config.id,
+      url: config.url,
+    });
+    return {
+      id: '',
+      webhook_id: config.id,
+      event: payload.event,
+      payload,
+      status: 'failed',
+      error_message: 'Blocked: URL resolves to private/reserved address',
+      attempts: attempt,
+      created_at: new Date().toISOString(),
+    };
+  }
+
   const supabase = await createClient();
 
   // Create the delivery record
@@ -488,7 +578,10 @@ async function deliverRelay(
     .single();
 
   if (insertError || !deliveryRecord) {
-    console.error('[WebhookRelay] Failed to create delivery record:', insertError);
+    console.error(
+      '[WebhookRelay] Failed to create delivery record:',
+      insertError,
+    );
     return {
       id: '',
       webhook_id: config.id,
@@ -580,9 +673,11 @@ async function deliverRelay(
 /**
  * Send a test event to a specific webhook to confirm connectivity.
  */
-export async function testRelayWebhook(
-  webhookId: string,
-): Promise<{ success: boolean; message: string; response?: Record<string, unknown> }> {
+export async function testRelayWebhook(webhookId: string): Promise<{
+  success: boolean;
+  message: string;
+  response?: Record<string, unknown>;
+}> {
   const config = await getRelayWebhook(webhookId);
 
   if (!config) {
@@ -632,6 +727,15 @@ export async function testRelayUrl(
   url: string,
   organizationId: string,
 ): Promise<{ success: boolean; message: string; responseCode?: number }> {
+  // SSRF: validate URL (including DNS resolution) before sending
+  const urlSafe = await isValidWebhookUrl(url);
+  if (!urlSafe) {
+    return {
+      success: false,
+      message: 'URL is blocked: resolves to a private/reserved address',
+    };
+  }
+
   const timestamp = new Date().toISOString();
   const testSecret = crypto.randomBytes(32).toString('hex');
 

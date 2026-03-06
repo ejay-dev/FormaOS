@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { handleAdminError } from '@/app/api/admin/_helpers';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { checkAdminRateLimit, getClientIp } from '@/lib/ratelimit';
 import {
   enqueueAdminJob,
   getAdminControlPlaneSnapshot,
@@ -11,7 +13,6 @@ import {
   upsertSystemSetting,
   writeControlPlaneAudit,
   resolveControlPlaneEnvironment,
-
 } from '@/lib/control-plane/server';
 
 const log = routeLog('/api/admin/control-plane');
@@ -34,10 +35,15 @@ async function handleAction(
   if (action === 'set_feature_flag') {
     const flagKey = String(payload.flagKey ?? '').trim();
     const scopeType = String(payload.scopeType ?? 'global');
-    const rawScopeId = isNonEmptyString(payload.scopeId) ? payload.scopeId.trim() : null;
+    const rawScopeId = isNonEmptyString(payload.scopeId)
+      ? payload.scopeId.trim()
+      : null;
 
     if (!flagKey) {
-      return NextResponse.json({ error: 'flagKey is required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'flagKey is required' },
+        { status: 400 },
+      );
     }
 
     if (!['global', 'organization', 'user'].includes(scopeType)) {
@@ -123,7 +129,9 @@ async function handleAction(
       description: isNonEmptyString(payload.description)
         ? payload.description.trim()
         : null,
-      eventType: isNonEmptyString(payload.eventType) ? payload.eventType : undefined,
+      eventType: isNonEmptyString(payload.eventType)
+        ? payload.eventType
+        : undefined,
     });
 
     return NextResponse.json({ ok: true, systemSetting: result });
@@ -144,17 +152,18 @@ async function handleAction(
       jobsLimit: 20,
     });
 
-    const existing =
-      currentSnapshot.integrations.find((entry) => entry.key === integrationKey)?.value ?? {
-        enabled: true,
-        connection_status: 'disconnected' as const,
-        last_sync_at: null,
-        last_error: null,
-        error_logs: [],
-        scopes: [],
-        enabled_scopes: [],
-        retry_requested_at: null,
-      };
+    const existing = currentSnapshot.integrations.find(
+      (entry) => entry.key === integrationKey,
+    )?.value ?? {
+      enabled: true,
+      connection_status: 'disconnected' as const,
+      last_sync_at: null,
+      last_error: null,
+      error_logs: [],
+      scopes: [],
+      enabled_scopes: [],
+      retry_requested_at: null,
+    };
 
     const next = {
       ...existing,
@@ -191,17 +200,18 @@ async function handleAction(
       jobsLimit: 20,
     });
 
-    const existing =
-      currentSnapshot.integrations.find((entry) => entry.key === integrationKey)?.value ?? {
-        enabled: true,
-        connection_status: 'disconnected' as const,
-        last_sync_at: null,
-        last_error: null,
-        error_logs: [],
-        scopes: [],
-        enabled_scopes: [],
-        retry_requested_at: null,
-      };
+    const existing = currentSnapshot.integrations.find(
+      (entry) => entry.key === integrationKey,
+    )?.value ?? {
+      enabled: true,
+      connection_status: 'disconnected' as const,
+      last_sync_at: null,
+      last_error: null,
+      error_logs: [],
+      scopes: [],
+      enabled_scopes: [],
+      retry_requested_at: null,
+    };
 
     const nextErrorLogs = [
       {
@@ -231,7 +241,10 @@ async function handleAction(
   if (action === 'enqueue_job') {
     const jobType = String(payload.jobType ?? '').trim();
     if (!jobType) {
-      return NextResponse.json({ error: 'jobType is required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'jobType is required' },
+        { status: 400 },
+      );
     }
 
     const job = await enqueueAdminJob({
@@ -242,7 +255,7 @@ async function handleAction(
     });
 
     void runAdminJob(job.id, environment).catch((error) => {
-      log.error({ err: error }, "[control-plane] async job runner failed:");
+      log.error({ err: error }, '[control-plane] async job runner failed:');
     });
 
     return NextResponse.json({ ok: true, job });
@@ -258,7 +271,10 @@ async function handleAction(
     return NextResponse.json({ ok: true, job });
   }
 
-  return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 });
+  return NextResponse.json(
+    { error: `Unknown action: ${action}` },
+    { status: 400 },
+  );
 }
 
 export async function GET(request: Request) {
@@ -284,6 +300,15 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
+    const ip = getClientIp(request);
+    const rl = await checkAdminRateLimit(ip);
+    if (!rl.success) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    }
+
     const { user } = await requireFounderAccess();
 
     const body = await request.json().catch(() => ({}));
@@ -294,7 +319,10 @@ export async function POST(request: Request) {
     );
 
     if (!action) {
-      return NextResponse.json({ error: 'action is required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'action is required' },
+        { status: 400 },
+      );
     }
 
     const response = await handleAction(user.id, environment, action, payload);
