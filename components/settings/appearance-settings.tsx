@@ -1,28 +1,31 @@
 'use client';
 
-import { useTheme } from 'next-themes';
 import { Monitor } from 'lucide-react';
 import { useEffect, useState, useCallback } from 'react';
 import { saveThemePreference } from '@/app/app/actions/theme';
-import { THEMES } from '@/components/theme-provider';
-import { THEME_META } from '@/components/theme-switcher';
+import {
+  useFormaTheme,
+  THEME_IDS,
+  THEME_META,
+  type ThemeId,
+} from '@/lib/theme';
 
 /**
  * Appearance settings card — used on the Settings page.
  * Shows theme options with visual previews in a responsive grid.
  */
 export function AppearanceSettings() {
-  const { theme, setTheme } = useTheme();
+  const { themeId, setThemeWithMode, isSystemMode } = useFormaTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
   const selectTheme = useCallback(
-    (newTheme: string) => {
-      setTheme(newTheme);
-      saveThemePreference(newTheme).catch(() => {});
+    (newTheme: ThemeId | 'system') => {
+      setThemeWithMode(newTheme);
+      if (newTheme !== 'system') saveThemePreference(newTheme).catch(() => {});
     },
-    [setTheme],
+    [setThemeWithMode],
   );
 
   if (!mounted) {
@@ -51,9 +54,41 @@ export function AppearanceSettings() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {THEMES.map((t) => {
+        {/* System theme card */}
+        <button
+          onClick={() => selectTheme('system')}
+          className={`group relative rounded-2xl border-2 p-4 text-left transition-all ${
+            isSystemMode
+              ? 'border-primary ring-2 ring-primary/20 shadow-lg'
+              : 'border-border hover:border-primary/40'
+          }`}
+        >
+          <div className="h-20 rounded-xl mb-3 overflow-hidden border border-border/50 bg-gradient-to-r from-[#0a101f] to-[#f8fafc]">
+            <div className="h-full flex items-center justify-center">
+              <Monitor className="h-8 w-8 text-white/60" />
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Monitor className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+            <span
+              className={`text-sm font-bold ${isSystemMode ? 'text-foreground' : 'text-muted-foreground'}`}
+            >
+              System
+            </span>
+          </div>
+          <p className="text-[11px] text-muted-foreground mt-1 leading-snug">
+            Follows your OS light / dark preference
+          </p>
+          {isSystemMode && (
+            <div className="absolute top-3 right-3 h-5 w-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold">
+              ✓
+            </div>
+          )}
+        </button>
+
+        {THEME_IDS.map((t) => {
           const meta = THEME_META[t];
-          const isActive = theme === t;
+          const isActive = themeId === t && !isSystemMode;
 
           return (
             <button

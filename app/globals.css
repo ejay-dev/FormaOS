@@ -101,52 +101,52 @@
   --glow-blue: 0 0 24px rgba(51, 153, 255, 0.3);
   --glow-violet: 0 0 24px rgba(160, 131, 255, 0.3);
 
-  /* Semantic color tokens - Tailwind compatible */
-  --background: 230 50% 3%;
-  --foreground: 210 40% 98%;
+  /* Semantic color tokens — FormaOS Dark (default) */
+  --background: 232 65% 5%;
+  --foreground: 220 14% 91%;
 
-  --card: 228 40% 8%;
-  --card-foreground: 210 40% 98%;
+  --card: 221 39% 11%;
+  --card-foreground: 220 14% 91%;
   --panel-2: 226 35% 12%;
 
-  --popover: 228 40% 10%;
-  --popover-foreground: 210 40% 98%;
+  --popover: 224 50% 8%;
+  --popover-foreground: 220 14% 91%;
 
-  --primary: 193 100% 49%;
-  --primary-foreground: 230 50% 3%;
+  --primary: 189 94% 53%;
+  --primary-foreground: 232 65% 5%;
 
-  --secondary: 213 100% 60%;
-  --secondary-foreground: 210 40% 98%;
+  --secondary: 258 90% 66%;
+  --secondary-foreground: 220 14% 91%;
 
-  --muted: 225 30% 20%;
-  --muted-foreground: 215 15% 65%;
+  --muted: 225 30% 18%;
+  --muted-foreground: 215 16% 65%;
 
-  --accent: 265 100% 72%;
-  --accent-foreground: 210 40% 98%;
+  --accent: 258 90% 66%;
+  --accent-foreground: 220 14% 91%;
 
   --destructive: 0 85% 58%;
-  --destructive-foreground: 210 40% 98%;
+  --destructive-foreground: 220 14% 91%;
 
-  --border: 220 20% 18%;
-  --input: 228 40% 10%;
-  --ring: 193 100% 49%;
+  --border: 220 20% 16%;
+  --input: 224 50% 8%;
+  --ring: 189 94% 53%;
 
   --sidebar: 228 40% 6%;
-  --sidebar-foreground: 210 40% 98%;
-  --sidebar-primary: 193 100% 49%;
-  --sidebar-primary-foreground: 230 50% 3%;
+  --sidebar-foreground: 220 14% 91%;
+  --sidebar-primary: 189 94% 53%;
+  --sidebar-primary-foreground: 232 65% 5%;
   --sidebar-accent: 228 40% 12%;
-  --sidebar-accent-foreground: 210 40% 98%;
+  --sidebar-accent-foreground: 220 14% 91%;
   --sidebar-border: 220 20% 14%;
-  --sidebar-ring: 193 100% 49%;
+  --sidebar-ring: 189 94% 53%;
 
   /* Marketing surface tokens — use instead of hardcoded hex */
-  --marketing-bg: 228 55% 5%; /* #0a0f1c equivalent */
-  --marketing-bg-alt: 227 45% 7%; /* #0d1421 equivalent */
-  --marketing-surface: 228 50% 6%; /* #0b1022 equivalent */
-  --marketing-card: 228 40% 8%;
+  --marketing-bg: 232 60% 5%;
+  --marketing-bg-alt: 230 50% 7%;
+  --marketing-surface: 228 50% 6%;
+  --marketing-card: 221 39% 11%;
   --marketing-card-border: 0 0% 100% / 0.08;
-  --marketing-glow: 193 100% 49% / 0.15;
+  --marketing-glow: 189 94% 53% / 0.15;
 
   /* Status semantic tokens */
   --success: 142 76% 36%;
@@ -158,62 +158,77 @@
 }
 
 /* =========================================================
- * PREMIUM LIGHT THEME — "Enterprise Ivory"
- * Soft ivory/stone palette, layered shadows, warm neutrals.
- * Feels expensive, not clinical.
+ * LIGHT ENTERPRISE — Clean SaaS light mode
+ * Tailwind Slate palette, layered shadows, neutral cool.
  * ======================================================== */
-[data-theme='light-premium'] {
+[data-theme='light'] {
   color-scheme: light;
 
-  /* Backgrounds — warm ivory, not pure white */
-  --background: 40 20% 97%;
-  --foreground: 220 20% 12%;
+  /* Backgrounds — #F8FAFC / #FFFFFF / #F1F5F9 */
+  --background: 210 40% 98%;
+  --foreground: 222 47% 11%;
 
-  --card: 40 18% 99%;
-  --card-foreground: 220 20% 12%;
-  --panel-2: 40 14% 95%;
+  --card: 210 40% 96%;
+  --card-foreground: 222 47% 11%;
+  --panel-2: 210 30% 93%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 220 20% 12%;
+  --popover-foreground: 222 47% 11%;
 
-  /* Brand — same hues, tuned for light surface */
-  --primary: 213 85% 48%;
+  /* Brand — blue #2563EB, violet #7C3AED */
+  --primary: 221 83% 53%;
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 40 12% 93%;
-  --secondary-foreground: 220 15% 15%;
+  --secondary: 210 40% 93%;
+  --secondary-foreground: 222 30% 15%;
 
-  --muted: 40 10% 93%;
-  --muted-foreground: 220 10% 42%;
+  --muted: 210 30% 93%;
+  --muted-foreground: 215 20% 40%;
 
-  --accent: 265 75% 55%;
+  --accent: 262 83% 58%;
   --accent-foreground: 0 0% 100%;
 
   --destructive: 0 78% 50%;
   --destructive-foreground: 0 0% 100%;
 
-  /* Borders — very subtle, warm */
-  --border: 40 10% 88%;
-  --input: 40 15% 96%;
-  --ring: 213 85% 48%;
+  /* Borders — neutral cool */
+  --border: 214 20% 88%;
+  --input: 210 40% 96%;
+  --ring: 221 83% 53%;
 
   /* Sidebar */
-  --sidebar: 40 15% 95%;
-  --sidebar-foreground: 220 20% 12%;
-  --sidebar-primary: 213 85% 48%;
+  --sidebar: 210 30% 95%;
+  --sidebar-foreground: 222 47% 11%;
+  --sidebar-primary: 221 83% 53%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 40 12% 90%;
-  --sidebar-accent-foreground: 220 15% 15%;
-  --sidebar-border: 40 10% 88%;
-  --sidebar-ring: 213 85% 48%;
+  --sidebar-accent: 210 25% 91%;
+  --sidebar-accent-foreground: 222 30% 15%;
+  --sidebar-border: 214 20% 88%;
+  --sidebar-ring: 221 83% 53%;
+
+  /* Marketing — light overrides */
+  --marketing-bg: 210 40% 98%;
+  --marketing-bg-alt: 210 30% 95%;
+  --marketing-surface: 210 40% 96%;
+  --marketing-card: 210 40% 96%;
+  --marketing-card-border: 0 0% 0% / 0.06;
+  --marketing-glow: 221 83% 53% / 0.08;
+
+  /* Status */
+  --success: 142 76% 36%;
+  --success-foreground: 0 0% 100%;
+  --warning: 38 92% 50%;
+  --warning-foreground: 0 0% 0%;
+  --info: 221 83% 53%;
+  --info-foreground: 0 0% 100%;
 
   /* Glassmorphism — inverted for light bg */
   --glass-bg: rgba(255, 255, 255, 0.7);
   --glass-bg-strong: rgba(255, 255, 255, 0.85);
-  --glass-border: rgba(0, 0, 0, 0.06);
-  --glass-border-strong: rgba(0, 0, 0, 0.1);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-border-strong: rgba(0, 0, 0, 0.12);
 
-  /* Shadows — soft, layered, warm */
+  /* Shadows — soft, layered */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
   --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
   --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
@@ -221,25 +236,25 @@
   --shadow-2xl: 0 16px 48px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.05);
 
   /* Glows — subtle on light */
-  --glow-cyan: 0 0 16px rgba(0, 180, 220, 0.1);
-  --glow-blue: 0 0 16px rgba(51, 130, 255, 0.1);
-  --glow-violet: 0 0 16px rgba(130, 100, 255, 0.1);
+  --glow-cyan: 0 0 16px rgba(34, 211, 238, 0.1);
+  --glow-blue: 0 0 16px rgba(37, 99, 235, 0.1);
+  --glow-violet: 0 0 16px rgba(124, 58, 237, 0.1);
 
   /* Gradients */
   --gradient-primary: linear-gradient(
     135deg,
-    #00b8df 0%,
-    #0066cc 50%,
-    #7050cc 100%
+    #2563eb 0%,
+    #4f46e5 50%,
+    #7c3aed 100%
   );
   --gradient-surface: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.9) 0%,
-    rgba(250, 248, 245, 0.6) 100%
+    rgba(248, 250, 252, 0.6) 100%
   );
   --gradient-glow: radial-gradient(
     ellipse at top,
-    rgba(0, 180, 220, 0.05) 0%,
+    rgba(37, 99, 235, 0.05) 0%,
     transparent 65%
   );
 }
@@ -507,19 +522,17 @@
 }
 
 /* Light theme scrollbar overrides */
-[data-theme='light-premium'] ::-webkit-scrollbar-thumb,
-[data-theme='champagne'] ::-webkit-scrollbar-thumb {
+[data-theme='light'] ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.06));
   background-clip: padding-box;
 }
-[data-theme='light-premium'] ::-webkit-scrollbar-thumb:hover,
-[data-theme='champagne'] ::-webkit-scrollbar-thumb:hover {
+[data-theme='light'] ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.1));
   background-clip: padding-box;
 }
 
-/* Midnight-ink scrollbar — blue-tinted */
-[data-theme='midnight-ink'] ::-webkit-scrollbar-thumb {
+/* Midnight Blue scrollbar — blue-tinted */
+[data-theme='midnight-blue'] ::-webkit-scrollbar-thumb {
   background: linear-gradient(
     180deg,
     rgba(140, 180, 255, 0.14),
@@ -527,7 +540,7 @@
   );
   background-clip: padding-box;
 }
-[data-theme='midnight-ink'] ::-webkit-scrollbar-thumb:hover {
+[data-theme='midnight-blue'] ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(
     180deg,
     rgba(140, 180, 255, 0.22),
@@ -536,20 +549,20 @@
   background-clip: padding-box;
 }
 
-/* Aurora scrollbar — teal-tinted */
+/* Aurora scrollbar — teal/violet-tinted */
 [data-theme='aurora'] ::-webkit-scrollbar-thumb {
   background: linear-gradient(
     180deg,
-    rgba(100, 220, 200, 0.14),
-    rgba(100, 220, 200, 0.06)
+    rgba(34, 211, 238, 0.14),
+    rgba(34, 211, 238, 0.06)
   );
   background-clip: padding-box;
 }
 [data-theme='aurora'] ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(
     180deg,
-    rgba(100, 220, 200, 0.22),
-    rgba(100, 220, 200, 0.1)
+    rgba(34, 211, 238, 0.22),
+    rgba(34, 211, 238, 0.1)
   );
   background-clip: padding-box;
 }
@@ -589,59 +602,74 @@
 :root {
   color-scheme: dark;
 }
-[data-theme='light-premium'],
-[data-theme='champagne'] {
+[data-theme='light'] {
   color-scheme: light;
 }
 
 /* =========================================================
- * MIDNIGHT INK — Executive dark, deeper + cleaner
- * Near-black with slight blue/ink tint, soft-white text
+ * MIDNIGHT BLUE — Corporate enterprise SaaS
+ * Deep midnight palette with blue tints, professional atmosphere
  * ======================================================== */
-[data-theme='midnight-ink'] {
+[data-theme='midnight-blue'] {
   color-scheme: dark;
 
-  --background: 222 47% 4%;
+  --background: 226 60% 10%;
   --foreground: 214 32% 91%;
 
-  --card: 222 40% 7%;
+  --card: 224 50% 21%;
   --card-foreground: 214 32% 91%;
 
-  --popover: 222 40% 8%;
+  --popover: 224 62% 15%;
   --popover-foreground: 214 32% 91%;
 
-  --primary: 200 95% 48%;
-  --primary-foreground: 222 47% 4%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 226 60% 10%;
 
-  --secondary: 220 80% 56%;
+  --secondary: 198 93% 60%;
   --secondary-foreground: 214 32% 91%;
 
-  --muted: 222 25% 14%;
-  --muted-foreground: 218 15% 55%;
+  --muted: 224 35% 18%;
+  --muted-foreground: 218 15% 62%;
 
-  --accent: 262 85% 65%;
-  --accent-foreground: 214 32% 91%;
+  --accent: 198 93% 60%;
+  --accent-foreground: 226 60% 10%;
 
   --destructive: 0 80% 55%;
   --destructive-foreground: 214 32% 91%;
 
-  --border: 222 20% 13%;
-  --input: 222 35% 9%;
-  --ring: 200 95% 48%;
+  --border: 224 25% 16%;
+  --input: 224 50% 13%;
+  --ring: 217 91% 60%;
 
-  --sidebar: 222 45% 5%;
+  --sidebar: 226 55% 8%;
   --sidebar-foreground: 214 32% 91%;
-  --sidebar-primary: 200 95% 48%;
-  --sidebar-primary-foreground: 222 47% 4%;
-  --sidebar-accent: 222 35% 10%;
+  --sidebar-primary: 217 91% 60%;
+  --sidebar-primary-foreground: 226 60% 10%;
+  --sidebar-accent: 224 40% 16%;
   --sidebar-accent-foreground: 214 32% 91%;
-  --sidebar-border: 222 20% 11%;
-  --sidebar-ring: 200 95% 48%;
+  --sidebar-border: 224 25% 14%;
+  --sidebar-ring: 217 91% 60%;
 
-  --glass-bg: rgba(180, 210, 255, 0.03);
-  --glass-bg-strong: rgba(180, 210, 255, 0.06);
-  --glass-border: rgba(180, 210, 255, 0.08);
-  --glass-border-strong: rgba(180, 210, 255, 0.14);
+  /* Marketing */
+  --marketing-bg: 226 55% 8%;
+  --marketing-bg-alt: 225 50% 10%;
+  --marketing-surface: 224 50% 12%;
+  --marketing-card: 224 50% 21%;
+  --marketing-card-border: 0 0% 100% / 0.06;
+  --marketing-glow: 217 91% 60% / 0.12;
+
+  /* Status */
+  --success: 142 76% 36%;
+  --success-foreground: 0 0% 100%;
+  --warning: 38 92% 50%;
+  --warning-foreground: 0 0% 0%;
+  --info: 217 91% 60%;
+  --info-foreground: 0 0% 100%;
+
+  --glass-bg: rgba(140, 180, 255, 0.03);
+  --glass-bg-strong: rgba(140, 180, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border-strong: rgba(255, 255, 255, 0.16);
 
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.6);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.7);
@@ -649,76 +677,92 @@
   --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.85);
   --shadow-2xl: 0 24px 64px rgba(0, 0, 0, 0.9);
 
-  --glow-cyan: 0 0 24px rgba(0, 190, 240, 0.25);
-  --glow-blue: 0 0 24px rgba(60, 140, 255, 0.25);
-  --glow-violet: 0 0 24px rgba(140, 110, 255, 0.25);
+  --glow-cyan: 0 0 24px rgba(56, 189, 248, 0.25);
+  --glow-blue: 0 0 24px rgba(59, 130, 246, 0.3);
+  --glow-violet: 0 0 24px rgba(139, 92, 246, 0.25);
 
   --gradient-primary: linear-gradient(
     135deg,
-    #00c0f0 0%,
-    #3080ff 50%,
-    #9070ff 100%
+    #38bdf8 0%,
+    #3b82f6 50%,
+    #6366f1 100%
   );
   --gradient-surface: linear-gradient(
     180deg,
-    rgba(180, 210, 255, 0.04) 0%,
-    rgba(180, 210, 255, 0.01) 100%
+    rgba(140, 180, 255, 0.04) 0%,
+    rgba(140, 180, 255, 0.01) 100%
   );
   --gradient-glow: radial-gradient(
     ellipse at top,
-    rgba(0, 190, 240, 0.1) 0%,
+    rgba(59, 130, 246, 0.1) 0%,
     transparent 65%
   );
 }
 
 /* =========================================================
- * GRAPHITE — Neutral dark, "finance-grade"
- * Warm-neutral greys, restrained accents, low fatigue
+ * GRAPHITE — Minimal Executive
+ * Pure neutral greys, restrained violet accent, low fatigue
  * ======================================================== */
 [data-theme='graphite'] {
   color-scheme: dark;
 
-  --background: 0 0% 7%;
-  --foreground: 0 0% 90%;
+  --background: 0 0% 4%;
+  --foreground: 0 0% 93%;
 
-  --card: 0 0% 10%;
-  --card-foreground: 0 0% 90%;
+  --card: 0 0% 12%;
+  --card-foreground: 0 0% 93%;
 
-  --popover: 0 0% 11%;
-  --popover-foreground: 0 0% 90%;
+  --popover: 0 0% 10%;
+  --popover-foreground: 0 0% 93%;
 
-  --primary: 200 65% 50%;
-  --primary-foreground: 0 0% 7%;
+  --primary: 255 92% 76%;
+  --primary-foreground: 0 0% 4%;
 
-  --secondary: 215 45% 52%;
-  --secondary-foreground: 0 0% 90%;
+  --secondary: 189 94% 53%;
+  --secondary-foreground: 0 0% 4%;
 
   --muted: 0 0% 16%;
   --muted-foreground: 0 0% 55%;
 
-  --accent: 260 50% 58%;
-  --accent-foreground: 0 0% 90%;
+  --accent: 189 94% 53%;
+  --accent-foreground: 0 0% 4%;
 
   --destructive: 0 65% 52%;
-  --destructive-foreground: 0 0% 90%;
+  --destructive-foreground: 0 0% 93%;
 
-  --border: 0 0% 15%;
-  --input: 0 0% 12%;
-  --ring: 200 65% 50%;
+  --border: 0 0% 14%;
+  --input: 0 0% 10%;
+  --ring: 255 92% 76%;
 
-  --sidebar: 0 0% 8%;
-  --sidebar-foreground: 0 0% 90%;
-  --sidebar-primary: 200 65% 50%;
-  --sidebar-primary-foreground: 0 0% 7%;
+  --sidebar: 0 0% 5%;
+  --sidebar-foreground: 0 0% 93%;
+  --sidebar-primary: 255 92% 76%;
+  --sidebar-primary-foreground: 0 0% 4%;
   --sidebar-accent: 0 0% 13%;
-  --sidebar-accent-foreground: 0 0% 90%;
-  --sidebar-border: 0 0% 13%;
-  --sidebar-ring: 200 65% 50%;
+  --sidebar-accent-foreground: 0 0% 93%;
+  --sidebar-border: 0 0% 12%;
+  --sidebar-ring: 255 92% 76%;
+
+  /* Marketing */
+  --marketing-bg: 0 0% 5%;
+  --marketing-bg-alt: 0 0% 6%;
+  --marketing-surface: 0 0% 7%;
+  --marketing-card: 0 0% 12%;
+  --marketing-card-border: 0 0% 100% / 0.06;
+  --marketing-glow: 255 92% 76% / 0.1;
+
+  /* Status */
+  --success: 142 76% 36%;
+  --success-foreground: 0 0% 100%;
+  --warning: 38 92% 50%;
+  --warning-foreground: 0 0% 0%;
+  --info: 255 92% 76%;
+  --info-foreground: 0 0% 100%;
 
   --glass-bg: rgba(255, 255, 255, 0.03);
   --glass-bg-strong: rgba(255, 255, 255, 0.06);
-  --glass-border: rgba(255, 255, 255, 0.07);
-  --glass-border-strong: rgba(255, 255, 255, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-strong: rgba(255, 255, 255, 0.14);
 
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.45);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.55);
@@ -726,15 +770,15 @@
   --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.75);
   --shadow-2xl: 0 24px 64px rgba(0, 0, 0, 0.8);
 
-  --glow-cyan: 0 0 20px rgba(0, 170, 210, 0.15);
-  --glow-blue: 0 0 20px rgba(60, 130, 220, 0.15);
-  --glow-violet: 0 0 20px rgba(130, 100, 210, 0.15);
+  --glow-cyan: 0 0 20px rgba(34, 211, 238, 0.15);
+  --glow-blue: 0 0 20px rgba(59, 130, 246, 0.15);
+  --glow-violet: 0 0 20px rgba(167, 139, 250, 0.2);
 
   --gradient-primary: linear-gradient(
     135deg,
-    #00aad0 0%,
-    #2870cc 50%,
-    #7858b8 100%
+    #a78bfa 0%,
+    #818cf8 50%,
+    #22d3ee 100%
   );
   --gradient-surface: linear-gradient(
     180deg,
@@ -743,141 +787,75 @@
   );
   --gradient-glow: radial-gradient(
     ellipse at top,
-    rgba(0, 170, 210, 0.06) 0%,
+    rgba(167, 139, 250, 0.08) 0%,
     transparent 65%
   );
 }
 
 /* =========================================================
- * CHAMPAGNE — Warm light, premium ivory/boardroom
- * Cream/sand backgrounds, warm charcoal text, soft cool accents
- * ======================================================== */
-[data-theme='champagne'] {
-  color-scheme: light;
-
-  --background: 35 25% 95%;
-  --foreground: 25 18% 15%;
-
-  --card: 35 22% 98%;
-  --card-foreground: 25 18% 15%;
-
-  --popover: 30 20% 99%;
-  --popover-foreground: 25 18% 15%;
-
-  --primary: 213 75% 45%;
-  --primary-foreground: 0 0% 100%;
-
-  --secondary: 35 15% 90%;
-  --secondary-foreground: 25 15% 18%;
-
-  --muted: 35 12% 91%;
-  --muted-foreground: 25 10% 45%;
-
-  --accent: 260 60% 50%;
-  --accent-foreground: 0 0% 100%;
-
-  --destructive: 0 70% 48%;
-  --destructive-foreground: 0 0% 100%;
-
-  --border: 35 12% 85%;
-  --input: 35 18% 94%;
-  --ring: 213 75% 45%;
-
-  --sidebar: 35 20% 93%;
-  --sidebar-foreground: 25 18% 15%;
-  --sidebar-primary: 213 75% 45%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 35 14% 88%;
-  --sidebar-accent-foreground: 25 15% 18%;
-  --sidebar-border: 35 12% 85%;
-  --sidebar-ring: 213 75% 45%;
-
-  --glass-bg: rgba(255, 255, 255, 0.65);
-  --glass-bg-strong: rgba(255, 255, 255, 0.82);
-  --glass-border: rgba(120, 100, 60, 0.08);
-  --glass-border-strong: rgba(120, 100, 60, 0.14);
-
-  --shadow-sm:
-    0 1px 3px rgba(80, 60, 20, 0.05), 0 1px 2px rgba(80, 60, 20, 0.03);
-  --shadow-md:
-    0 2px 8px rgba(80, 60, 20, 0.06), 0 1px 3px rgba(80, 60, 20, 0.04);
-  --shadow-lg:
-    0 4px 16px rgba(80, 60, 20, 0.07), 0 2px 6px rgba(80, 60, 20, 0.04);
-  --shadow-xl:
-    0 8px 24px rgba(80, 60, 20, 0.09), 0 4px 10px rgba(80, 60, 20, 0.05);
-  --shadow-2xl:
-    0 16px 48px rgba(80, 60, 20, 0.12), 0 8px 16px rgba(80, 60, 20, 0.06);
-
-  --glow-cyan: 0 0 16px rgba(0, 170, 210, 0.08);
-  --glow-blue: 0 0 16px rgba(51, 120, 230, 0.08);
-  --glow-violet: 0 0 16px rgba(120, 90, 230, 0.08);
-
-  --gradient-primary: linear-gradient(
-    135deg,
-    #00a8cc 0%,
-    #1a60b0 50%,
-    #6848a8 100%
-  );
-  --gradient-surface: linear-gradient(
-    180deg,
-    rgba(255, 252, 245, 0.9) 0%,
-    rgba(248, 242, 230, 0.6) 100%
-  );
-  --gradient-glow: radial-gradient(
-    ellipse at top,
-    rgba(0, 170, 210, 0.04) 0%,
-    transparent 65%
-  );
-}
-
-/* =========================================================
- * AURORA — Signature modern, dark with subtle aurora tint
- * Very dark base with tasteful teal/purple aurora accents
+ * AURORA — Premium Futuristic Tech
+ * Deep dark base with vivid cyan/violet aurora glow
  * ======================================================== */
 [data-theme='aurora'] {
   color-scheme: dark;
 
-  --background: 240 30% 5%;
-  --foreground: 220 25% 92%;
+  --background: 229 84% 5%;
+  --foreground: 220 14% 91%;
 
-  --card: 240 25% 8%;
-  --card-foreground: 220 25% 92%;
+  --card: 221 39% 11%;
+  --card-foreground: 220 14% 91%;
 
-  --popover: 240 25% 9%;
-  --popover-foreground: 220 25% 92%;
+  --popover: 222 47% 11%;
+  --popover-foreground: 220 14% 91%;
 
-  --primary: 168 70% 50%;
-  --primary-foreground: 240 30% 5%;
+  --primary: 189 94% 53%;
+  --primary-foreground: 229 84% 5%;
 
-  --secondary: 270 60% 60%;
-  --secondary-foreground: 220 25% 92%;
+  --secondary: 270 95% 75%;
+  --secondary-foreground: 220 14% 91%;
 
-  --muted: 240 18% 15%;
+  --muted: 230 20% 15%;
   --muted-foreground: 230 12% 55%;
 
-  --accent: 195 80% 55%;
-  --accent-foreground: 240 30% 5%;
+  --accent: 270 95% 75%;
+  --accent-foreground: 229 84% 5%;
 
   --destructive: 350 80% 55%;
-  --destructive-foreground: 220 25% 92%;
+  --destructive-foreground: 220 14% 91%;
 
-  --border: 240 15% 14%;
-  --input: 240 22% 10%;
-  --ring: 168 70% 50%;
+  --border: 230 18% 14%;
+  --input: 225 30% 10%;
+  --ring: 189 94% 53%;
 
-  --sidebar: 240 28% 6%;
-  --sidebar-foreground: 220 25% 92%;
-  --sidebar-primary: 168 70% 50%;
-  --sidebar-primary-foreground: 240 30% 5%;
-  --sidebar-accent: 240 22% 11%;
-  --sidebar-accent-foreground: 220 25% 92%;
-  --sidebar-border: 240 15% 12%;
-  --sidebar-ring: 168 70% 50%;
+  --sidebar: 229 70% 6%;
+  --sidebar-foreground: 220 14% 91%;
+  --sidebar-primary: 189 94% 53%;
+  --sidebar-primary-foreground: 229 84% 5%;
+  --sidebar-accent: 228 30% 12%;
+  --sidebar-accent-foreground: 220 14% 91%;
+  --sidebar-border: 230 18% 12%;
+  --sidebar-ring: 189 94% 53%;
 
-  --glass-bg: rgba(120, 220, 200, 0.03);
-  --glass-bg-strong: rgba(120, 220, 200, 0.06);
-  --glass-border: rgba(120, 220, 200, 0.08);
-  --glass-border-strong: rgba(120, 220, 200, 0.14);
+  /* Marketing */
+  --marketing-bg: 229 80% 5%;
+  --marketing-bg-alt: 228 60% 7%;
+  --marketing-surface: 226 50% 8%;
+  --marketing-card: 221 39% 11%;
+  --marketing-card-border: 0 0% 100% / 0.08;
+  --marketing-glow: 189 94% 53% / 0.15;
+
+  /* Status */
+  --success: 142 76% 36%;
+  --success-foreground: 0 0% 100%;
+  --warning: 38 92% 50%;
+  --warning-foreground: 0 0% 0%;
+  --info: 189 94% 53%;
+  --info-foreground: 0 0% 100%;
+
+  --glass-bg: rgba(34, 211, 238, 0.03);
+  --glass-bg-strong: rgba(34, 211, 238, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-border-strong: rgba(255, 255, 255, 0.2);
 
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.55);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.65);
@@ -885,65 +863,63 @@
   --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.85);
   --shadow-2xl: 0 24px 64px rgba(0, 0, 0, 0.9);
 
-  --glow-cyan: 0 0 24px rgba(0, 210, 180, 0.25);
-  --glow-blue: 0 0 24px rgba(80, 160, 255, 0.25);
-  --glow-violet: 0 0 24px rgba(150, 100, 255, 0.3);
+  --glow-cyan: 0 0 24px rgba(34, 211, 238, 0.3);
+  --glow-blue: 0 0 24px rgba(96, 165, 250, 0.25);
+  --glow-violet: 0 0 24px rgba(192, 132, 252, 0.35);
 
   --gradient-primary: linear-gradient(
     135deg,
-    #00d4b0 0%,
-    #4090ff 50%,
-    #a060ff 100%
+    #22d3ee 0%,
+    #8b5cf6 50%,
+    #c084fc 100%
   );
   --gradient-surface: linear-gradient(
     180deg,
-    rgba(120, 220, 200, 0.04) 0%,
-    rgba(150, 100, 255, 0.02) 100%
+    rgba(34, 211, 238, 0.04) 0%,
+    rgba(192, 132, 252, 0.02) 100%
   );
   --gradient-glow: radial-gradient(
     ellipse at top,
-    rgba(0, 210, 180, 0.1) 0%,
-    rgba(150, 100, 255, 0.05) 40%,
+    rgba(34, 211, 238, 0.12) 0%,
+    rgba(139, 92, 246, 0.06) 40%,
     transparent 70%
   );
 }
 
 /* Light theme glass overrides for utility classes */
-[data-theme='light-premium'] .glass-intense,
-[data-theme='champagne'] .glass-intense {
+[data-theme='light'] .glass-intense {
   background: rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(16px) saturate(180%);
   border: 1px solid rgba(0, 0, 0, 0.06);
 }
-[data-theme='light-premium'] .glass-frosted,
-[data-theme='champagne'] .glass-frosted {
+[data-theme='light'] .glass-frosted {
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(24px) saturate(120%);
   border: 1px solid rgba(0, 0, 0, 0.04);
 }
 
-/* Midnight-ink glass overrides — ink-tinted */
-[data-theme='midnight-ink'] .glass-intense {
+/* Midnight Blue glass overrides — blue-tinted */
+[data-theme='midnight-blue'] .glass-intense {
   background: rgba(140, 180, 255, 0.05);
   backdrop-filter: blur(16px) saturate(180%);
   border: 1px solid rgba(140, 180, 255, 0.1);
 }
-[data-theme='midnight-ink'] .glass-frosted {
+[data-theme='midnight-blue'] .glass-frosted {
   background: rgba(140, 180, 255, 0.025);
   backdrop-filter: blur(24px) saturate(120%);
   border: 1px solid rgba(140, 180, 255, 0.06);
 }
 
-/* Aurora glass overrides — teal/purple tinted */
+/* Aurora glass overrides — cyan/violet tinted */
 [data-theme='aurora'] .glass-intense {
-  background: rgba(100, 220, 200, 0.05);
+  background: rgba(34, 211, 238, 0.05);
   backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(100, 220, 200, 0.1);
+  border: 1px solid rgba(34, 211, 238, 0.1);
 }
 [data-theme='aurora'] .glass-frosted {
-  background: rgba(100, 220, 200, 0.025);
+  background: rgba(34, 211, 238, 0.025);
   backdrop-filter: blur(24px) saturate(120%);
-  border: 1px solid rgba(100, 220, 200, 0.06);
+  border: 1px solid rgba(34, 211, 238, 0.06);
 }
 
 /* =========================================================

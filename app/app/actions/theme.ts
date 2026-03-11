@@ -6,14 +6,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
  * Save theme preference to user_profiles.
  * Called client-side after theme switch.
  */
-const VALID_THEMES = [
-  'dark',
-  'light-premium',
-  'midnight-ink',
-  'graphite',
-  'champagne',
-  'aurora',
-];
+const VALID_THEMES = ['dark', 'midnight-blue', 'graphite', 'light', 'aurora'];
 
 export async function saveThemePreference(theme: string) {
   if (!VALID_THEMES.includes(theme)) return;

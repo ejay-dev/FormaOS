@@ -1,53 +1,17 @@
 'use client';
 
-import { useTheme } from 'next-themes';
-import { Moon, Sun, Palette, ChevronRight } from 'lucide-react';
+import { Moon, Sun, Palette, ChevronRight, Monitor } from 'lucide-react';
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { saveThemePreference } from '@/app/app/actions/theme';
-import { THEMES, type ThemeId } from '@/components/theme-provider';
+import {
+  useFormaTheme,
+  THEME_IDS,
+  THEME_META,
+  type ThemeId,
+} from '@/lib/theme';
 
-/** Theme metadata — single source of truth for labels + swatches. */
-export const THEME_META: Record<
-  ThemeId,
-  { label: string; description: string; swatch: string; isDark: boolean }
-> = {
-  dark: {
-    label: 'Dark',
-    description: 'Deep space — the default FormaOS experience',
-    swatch: '#0a101f',
-    isDark: true,
-  },
-  'light-premium': {
-    label: 'Light Premium',
-    description: 'Ivory stone — enterprise clarity',
-    swatch: '#f5f2ec',
-    isDark: false,
-  },
-  'midnight-ink': {
-    label: 'Midnight Ink',
-    description: 'Executive dark — deeper, cleaner, cooler',
-    swatch: '#0b1120',
-    isDark: true,
-  },
-  graphite: {
-    label: 'Graphite',
-    description: 'Finance-grade — neutral, restrained, low fatigue',
-    swatch: '#1a1a1a',
-    isDark: true,
-  },
-  champagne: {
-    label: 'Champagne',
-    description: 'Warm boardroom — cream, sand, premium feel',
-    swatch: '#f0e8d8',
-    isDark: false,
-  },
-  aurora: {
-    label: 'Aurora',
-    description: 'Signature modern — dark glass with teal & violet',
-    swatch: '#10102a',
-    isDark: true,
-  },
-};
+// Re-export for backwards compatibility
+export { THEME_META };
 
 /**
  * Persist theme to DB (fire-and-forget).
@@ -59,10 +23,10 @@ function persistTheme(theme: string) {
 
 /**
  * Full-width theme menu item for the user dropdown.
- * Opens a flyout sub-menu with all themes.
+ * Opens a flyout sub-menu with all themes + system option.
  */
 export function ThemeSwitcher({ className }: { className?: string }) {
-  const { theme, setTheme } = useTheme();
+  const { themeId, setThemeWithMode, isSystemMode } = useFormaTheme();
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -81,12 +45,12 @@ export function ThemeSwitcher({ className }: { className?: string }) {
   }, [open]);
 
   const selectTheme = useCallback(
-    (t: string) => {
-      setTheme(t);
-      persistTheme(t);
+    (t: ThemeId | 'system') => {
+      setThemeWithMode(t);
+      if (t !== 'system') persistTheme(t);
       setOpen(false);
     },
-    [setTheme],
+    [setThemeWithMode],
   );
 
   if (!mounted) {
@@ -100,7 +64,7 @@ export function ThemeSwitcher({ className }: { className?: string }) {
     );
   }
 
-  const current = THEME_META[(theme as ThemeId) ?? 'dark'];
+  const current = THEME_META[themeId] ?? THEME_META.dark;
 
   return (
     <div ref={ref} className={`relative ${className ?? ''}`}>
@@ -120,10 +84,26 @@ export function ThemeSwitcher({ className }: { className?: string }) {
       </button>
 
       {open && (
-        <div className="absolute left-0 right-0 bottom-full mb-1 bg-popover border border-border rounded-xl shadow-lg z-50 py-1 max-h-[280px] overflow-y-auto">
-          {THEMES.map((t) => {
+        <div className="absolute left-0 right-0 bottom-full mb-1 bg-popover border border-border rounded-xl shadow-lg z-50 py-1 max-h-[320px] overflow-y-auto">
+          {/* System theme option */}
+          <button
+            onClick={() => selectTheme('system')}
+            className={`w-full flex items-center gap-2.5 px-3 py-2 text-sm text-left transition-colors ${
+              isSystemMode
+                ? 'bg-primary/10 text-primary font-semibold'
+                : 'text-popover-foreground hover:bg-muted/50'
+            }`}
+          >
+            <Monitor className="h-4 w-4 flex-shrink-0" />
+            <span className="flex-1">System</span>
+            {isSystemMode && <span className="text-primary text-xs">✓</span>}
+          </button>
+
+          <div className="h-px bg-border my-1" />
+
+          {THEME_IDS.map((t) => {
             const meta = THEME_META[t];
-            const isActive = theme === t;
+            const isActive = themeId === t && !isSystemMode;
             return (
               <button
                 key={t}
@@ -154,22 +134,22 @@ export function ThemeSwitcher({ className }: { className?: string }) {
  * Cycles to the next theme in the list.
  */
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { themeId, setThemeWithMode } = useFormaTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
-  const currentIdx = THEMES.indexOf((theme as ThemeId) ?? 'dark');
+  const currentIdx = THEME_IDS.indexOf(themeId);
   const safeCurrentIdx = currentIdx >= 0 ? currentIdx : 0;
-  const nextIdx = (safeCurrentIdx + 1) % THEMES.length;
-  const nextTheme = THEMES[nextIdx] ?? 'dark';
+  const nextIdx = (safeCurrentIdx + 1) % THEME_IDS.length;
+  const nextTheme = THEME_IDS[nextIdx] ?? 'dark';
   const nextMeta = THEME_META[nextTheme];
-  const isDark = THEME_META[(theme as ThemeId) ?? 'dark']?.isDark ?? true;
+  const isDark = THEME_META[themeId]?.isDark ?? true;
 
   const toggle = useCallback(() => {
-    setTheme(nextTheme);
+    setThemeWithMode(nextTheme);
     persistTheme(nextTheme);
-  }, [nextTheme, setTheme]);
+  }, [nextTheme, setThemeWithMode]);
 
   if (!mounted) return <div className="h-9 w-9" />;
 
