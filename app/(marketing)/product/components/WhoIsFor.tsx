@@ -1,6 +1,15 @@
 'use client';
 
-import { Shield, TrendingUp, Settings, FileCheck, AlertTriangle, Users, Lock, Activity } from 'lucide-react';
+import {
+  Shield,
+  TrendingUp,
+  Settings,
+  FileCheck,
+  AlertTriangle,
+  Users,
+  Lock,
+  Activity,
+} from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
@@ -9,38 +18,43 @@ const audiences = [
   {
     icon: Shield,
     role: 'CCO / Head of Compliance',
-    label: 'Chief Compliance Officers building defensible governance infrastructure',
+    label:
+      'Chief Compliance Officers building defensible governance infrastructure',
     detail: 'Control ownership, evidence trails, posture reporting',
   },
   {
     icon: Lock,
     role: 'CISO',
-    label: 'CISOs who need governance aligned to security controls and frameworks',
+    label:
+      'CISOs who need governance aligned to security controls and frameworks',
     detail: 'SOC 2, ISO 27001, Essential Eight alignment',
   },
   {
     icon: TrendingUp,
     role: 'CEO / Executive Leadership',
-    label: 'Executives accountable to regulators, boards, and public stakeholders',
+    label:
+      'Executives accountable to regulators, boards, and public stakeholders',
     detail: 'Board-ready posture reports, executive dashboards',
   },
   {
     icon: Settings,
     role: 'Director of Operations',
-    label: 'Operations directors managing cross-site compliance and incident tracking',
+    label:
+      'Operations directors managing cross-site compliance and incident tracking',
     detail: 'Multi-entity oversight, workflow automation',
   },
   {
     icon: Activity,
     role: 'Risk & Audit Manager',
-    label: 'Risk managers who need real-time control visibility and gap analysis',
+    label:
+      'Risk managers who need real-time control visibility and gap analysis',
     detail: 'Gap detection, drift alerts, risk scoring',
   },
   {
     icon: Users,
     role: 'IT / Infrastructure Lead',
     label: 'IT teams implementing identity governance and access controls',
-    detail: 'SAML SSO, SCIM, RBAC, MFA enforcement',
+    detail: 'SAML SSO, RBAC, MFA enforcement (SCIM on roadmap)',
   },
   {
     icon: FileCheck,
@@ -78,12 +92,17 @@ export function WhoIsFor() {
               </span>
             </h2>
             <p className="mt-4 text-slate-400 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
-              Every role in a regulated organization has a stake in compliance. FormaOS gives each of them what they need.
+              Every role in a regulated organization has a stake in compliance.
+              FormaOS gives each of them what they need.
             </p>
           </div>
         </ScrollReveal>
 
-        <SectionChoreography pattern="stagger-wave" stagger={0.05} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <SectionChoreography
+          pattern="stagger-wave"
+          stagger={0.05}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+        >
           {audiences.map((audience) => {
             const Icon = audience.icon;
             return (

@@ -38,15 +38,15 @@ export const metadata: Metadata = {
 const enterpriseFeatures = [
   {
     icon: Lock,
-    title: 'SAML 2.0 SSO & SCIM Provisioning',
+    title: 'SAML 2.0 SSO & MFA Enforcement',
     description:
-      'Metadata-based SAML 2.0 configuration with Okta, Microsoft Entra ID (Azure AD), and Google Workspace. SCIM 2.0 user provisioning syncs your identity provider with FormaOS automatically.',
+      'Metadata-based SAML 2.0 configuration with Okta, Microsoft Entra ID (Azure AD), and Google Workspace. MFA enforcement and session policy management. SCIM provisioning on the roadmap.',
   },
   {
     icon: Globe,
-    title: 'Data Residency Controls',
+    title: 'Data Residency',
     description:
-      'AU-based hosting by default. Enterprise customers select residency at onboarding - Australia, United States, or European Union. Standard Contractual Clauses for international transfers.',
+      'AU-based hosting by default. Enterprise data residency expansion to US and EU regions is on the roadmap. Standard Contractual Clauses available for international transfers.',
   },
   {
     icon: Users,

@@ -13,9 +13,12 @@ const securityFeatures = [
   { label: 'RBAC with 4 organizational roles', icon: UserCheck },
   { label: 'Continuous compliance scoring engine', icon: Shield },
   { label: 'Correlation ID tracking for all system events', icon: Lock },
-  { label: 'Session management, rate limiting, and IP controls', icon: Database },
-  { label: 'Data residency controls (AU / US / EU)', icon: Shield },
-  { label: 'Annual independent penetration testing', icon: Lock },
+  {
+    label: 'Session management, rate limiting, and IP controls',
+    icon: Database,
+  },
+  { label: 'Data residency: AU default (US / EU on roadmap)', icon: Shield },
+  { label: 'Independent penetration testing (planned)', icon: Lock },
   { label: 'Vendor assurance packet and DPA available', icon: Database },
 ] as const;
 
@@ -44,11 +47,17 @@ export function EnterpriseSecurity() {
                 Security built into the operating layer
               </h2>
               <p className="text-slate-400 max-w-2xl mx-auto leading-relaxed">
-                FormaOS is built for organizations under regulatory scrutiny. Security controls, identity governance, and audit infrastructure are core - not bolt-on features.
+                FormaOS is built for organizations under regulatory scrutiny.
+                Security controls, identity governance, and audit infrastructure
+                are core - not bolt-on features.
               </p>
             </div>
 
-            <SectionChoreography pattern="cascade" stagger={0.04} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <SectionChoreography
+              pattern="cascade"
+              stagger={0.04}
+              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3"
+            >
               {securityFeatures.map((feature) => {
                 const Icon = feature.icon;
                 return (
@@ -59,7 +68,9 @@ export function EnterpriseSecurity() {
                     <div className="inline-flex items-center justify-center rounded-lg border border-teal-400/20 bg-teal-500/10 p-2 shrink-0">
                       <Icon className="w-4 h-4 text-teal-400" />
                     </div>
-                    <span className="text-sm text-slate-300 leading-snug">{feature.label}</span>
+                    <span className="text-sm text-slate-300 leading-snug">
+                      {feature.label}
+                    </span>
                   </div>
                 );
               })}

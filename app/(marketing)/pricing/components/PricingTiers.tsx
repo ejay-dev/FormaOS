@@ -180,7 +180,7 @@ const pricingTiers = [
       'Executive risk dashboard with trend analytics',
       'Compliance Gate Enforcement: audit-blocking control enforcement',
       'Cross-framework control mappings (SOC 2, NIST CSF, CIS, HIPAA)',
-      'Data residency controls (AU / US / EU)',
+      'Data residency: AU default (US / EU on roadmap)',
       'Custom regulatory export bundles and evidence packages',
       'Compliance score engine with historical trending',
       'Dedicated implementation and onboarding engineer',

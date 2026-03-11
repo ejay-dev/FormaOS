@@ -23,18 +23,18 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 const SIGNAL_CARDS = [
   {
     label: 'Framework Coverage',
-    value: '147 active controls',
-    detail: '+12 this quarter',
+    value: '7 framework packs',
+    detail: '70+ pre-built controls',
   },
   {
-    label: 'Evidence Continuity',
-    value: '99.98% chain confidence',
-    detail: 'All systems verified',
+    label: 'Evidence Chain',
+    value: 'Full chain-of-custody',
+    detail: 'Every artifact tracked',
   },
   {
-    label: 'Audit Packet SLA',
-    value: '94 sec average export',
-    detail: 'P95 delivery speed',
+    label: 'Audit Export',
+    value: 'Minutes, not weeks',
+    detail: 'Framework-mapped bundles',
   },
 ] as const;
 

@@ -14,10 +14,7 @@ import {
   Sparkles,
   Building2,
 } from 'lucide-react';
-import {
-  motion,
-  AnimatePresence,
-} from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { duration } from '@/config/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
@@ -79,11 +76,11 @@ const faqCategories = [
       },
       {
         q: 'Does FormaOS support SSO and MFA?',
-        a: 'FormaOS supports Google OAuth on all plans. Enterprise plans include SAML 2.0 SSO for Okta, Azure AD, and Google Workspace. SCIM provisioning is available for automated user lifecycle management. MFA policy enforcement is supported across all SSO providers. Session duration controls and access governance policies are configurable at the organizational level.',
+        a: 'FormaOS supports Google OAuth on all plans. Enterprise plans include SAML 2.0 SSO for Okta, Azure AD, and Google Workspace. SCIM provisioning is on our roadmap for automated user lifecycle management. MFA policy enforcement is supported across all SSO providers. Session duration controls and access governance policies are configurable at the organizational level.',
       },
       {
         q: 'Where is data stored and what residency options exist?',
-        a: 'FormaOS is AU-based hosted by default, designed for Australian-regulated organizations. Enterprise customers can request US or EU data residency for international regulatory requirements. All residency options come with region-specific data handling controls. A Data Processing Agreement (DPA) is available for enterprise sign-off, covering GDPR, Privacy Act 1988, and cross-border transfer requirements.',
+        a: 'FormaOS is AU-based hosted by default, designed for Australian-regulated organizations. US and EU data residency are on our roadmap for international regulatory requirements. A Data Processing Agreement (DPA) is available for enterprise sign-off, covering GDPR, Privacy Act 1988, and cross-border transfer requirements.',
       },
       {
         q: 'How do you handle data privacy and the Australian Privacy Principles?',
@@ -127,7 +124,7 @@ const faqCategories = [
     questions: [
       {
         q: 'Does FormaOS integrate with existing systems?',
-        a: 'FormaOS provides Google OAuth for authentication, REST API access, and live integrations with Slack, Microsoft Teams, Jira, Linear, Asana, Zapier, and Google Drive. Enterprise plans include SAML 2.0 SSO for Okta, Azure AD, and Google Workspace. Additional integrations including GitHub, Make, and SharePoint are in beta or coming soon.',
+        a: 'FormaOS provides Google OAuth for authentication, REST API access, and live integrations with Slack and Microsoft Teams. Jira, Linear, and Google Drive integrations are coming soon. Enterprise plans include SAML 2.0 SSO for Okta, Azure AD, and Google Workspace. Additional integrations including GitHub, Make, and SharePoint are in beta or coming soon.',
       },
       {
         q: 'Are APIs available?',
@@ -191,11 +188,11 @@ const faqCategories = [
       },
       {
         q: 'Can FormaOS support multi-entity or multi-site deployments?',
-        a: 'Yes. Enterprise plans support multi-entity and multi-site deployments with separate organizational boundaries, role-based access governance per entity, and consolidated compliance posture reporting across the group. SAML SSO and SCIM provisioning ensure identity governance scales with your organizational structure.',
+        a: 'Yes. Enterprise plans support multi-entity and multi-site deployments with separate organizational boundaries, role-based access governance per entity, and consolidated compliance posture reporting across the group. SAML SSO ensures identity governance scales with your organizational structure. SCIM provisioning is on our roadmap.',
       },
       {
         q: 'Does FormaOS conduct penetration testing?',
-        a: 'Yes. FormaOS conducts annual independent penetration tests against the production environment. Penetration test summaries are available to Enterprise customers under NDA as part of the security review packet. Our vulnerability disclosure policy and remediation timelines are documented and available for enterprise procurement review.',
+        a: 'FormaOS plans to conduct independent penetration tests against the production environment. Penetration test summaries will be available to Enterprise customers under NDA as part of the security review packet. Our vulnerability disclosure policy and remediation timelines are documented and available for enterprise procurement review.',
       },
     ],
   },
@@ -267,7 +264,10 @@ function FAQHero() {
         </div>
       }
       primaryCta={{ href: '/contact', label: 'Contact Us' }}
-      secondaryCta={{ href: `${appBase}/auth/signup`, label: 'Start Free Trial' }}
+      secondaryCta={{
+        href: `${appBase}/auth/signup`,
+        label: 'Start Free Trial',
+      }}
     />
   );
 }
@@ -329,11 +329,7 @@ function FAQItem({
 // FAQ CATEGORY SECTION
 // ============================================================================
 
-function FAQCategory({
-  category,
-}: {
-  category: (typeof faqCategories)[0];
-}) {
+function FAQCategory({ category }: { category: (typeof faqCategories)[0] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const Icon = category.icon;
 
@@ -374,38 +370,38 @@ function FAQCategory({
   const colors = colorMap[category.color] || colorMap.cyan;
 
   return (
-      <div id={category.id} className="scroll-mt-24">
-        <div className="relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-white/10 transition-all duration-500 shadow-2xl shadow-black/30">
-          {/* Top accent line */}
+    <div id={category.id} className="scroll-mt-24">
+      <div className="relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-white/10 transition-all duration-500 shadow-2xl shadow-black/30">
+        {/* Top accent line */}
+        <div
+          className={`absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent`}
+        />
+
+        {/* Category Header */}
+        <div className="flex items-center gap-4 mb-6 pb-6 border-b border-white/5">
           <div
-            className={`absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent`}
-          />
-
-          {/* Category Header */}
-          <div className="flex items-center gap-4 mb-6 pb-6 border-b border-white/5">
-            <div
-              className={`w-12 h-12 rounded-xl ${colors.bg} flex items-center justify-center`}
-            >
-              <Icon className={`w-6 h-6 ${colors.text}`} />
-            </div>
-            <h2 className="text-2xl font-bold text-white">{category.title}</h2>
+            className={`w-12 h-12 rounded-xl ${colors.bg} flex items-center justify-center`}
+          >
+            <Icon className={`w-6 h-6 ${colors.text}`} />
           </div>
+          <h2 className="text-2xl font-bold text-white">{category.title}</h2>
+        </div>
 
-          {/* Questions */}
-          <div>
-            {category.questions.map((faq, i) => (
-              <FAQItem
-                key={i}
-                question={faq.q}
-                answer={faq.a}
-                isOpen={openIndex === i}
-                onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                index={i}
-              />
-            ))}
-          </div>
+        {/* Questions */}
+        <div>
+          {category.questions.map((faq, i) => (
+            <FAQItem
+              key={i}
+              question={faq.q}
+              answer={faq.a}
+              isOpen={openIndex === i}
+              onClick={() => setOpenIndex(openIndex === i ? null : i)}
+              index={i}
+            />
+          ))}
         </div>
       </div>
+    </div>
   );
 }
 
@@ -436,7 +432,10 @@ function FAQContent() {
         />
       </div>
 
-      <SectionChoreography pattern="cascade" className="relative max-w-4xl mx-auto px-6 lg:px-12 space-y-8">
+      <SectionChoreography
+        pattern="cascade"
+        className="relative max-w-4xl mx-auto px-6 lg:px-12 space-y-8"
+      >
         {faqCategories.map((category) => (
           <FAQCategory key={category.id} category={category} />
         ))}

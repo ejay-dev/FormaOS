@@ -74,10 +74,10 @@ const featureComparison = [
   { feature: 'NDIS Practice Standards (all 8 modules)', formaos: 'yes', competitor: 'no' },
   { feature: 'Incident management with corrective actions', formaos: 'yes', competitor: 'partial' },
   { feature: 'Credential / workforce governance', formaos: 'yes', competitor: 'no' },
-  { feature: 'AU-first data residency (AU/US/EU)', formaos: 'yes', competitor: 'US-first, limited AU' },
+  { feature: 'AU-first data residency', formaos: 'AU (US/EU on roadmap)', competitor: 'US-first, limited AU' },
   { feature: 'SAML 2.0 SSO (Okta, Azure AD, Google)', formaos: 'Enterprise plan', competitor: 'Business plan+' },
-  { feature: 'SCIM user provisioning', formaos: 'yes', competitor: 'yes' },
-  { feature: 'Pre-built frameworks', formaos: '9 frameworks', competitor: '20+ frameworks' },
+  { feature: 'SCIM user provisioning', formaos: 'Roadmap', competitor: 'yes' },
+  { feature: 'Pre-built frameworks', formaos: '7 frameworks', competitor: '20+ frameworks' },
   { feature: 'Continuous compliance scoring', formaos: 'yes', competitor: 'yes' },
   { feature: 'Cloud infrastructure scanning', formaos: 'Via integrations', competitor: 'Native (200+ integrations)' },
 ] as const;
@@ -92,7 +92,7 @@ const procurementChecks = [
   {
     title: 'Data residency documentation',
     detail:
-      'AU-based hosting by default; US and EU residency options. GDPR and Privacy Act 1988 data handling controls documented and ready for your legal team.',
+      'AU-based hosting by default. US and EU residency options on the roadmap. GDPR and Privacy Act 1988 data handling controls documented and ready for your legal team.',
   },
   {
     title: 'Security review packet',
@@ -102,7 +102,7 @@ const procurementChecks = [
   {
     title: 'Enterprise SSO and identity governance',
     detail:
-      'SAML 2.0 SSO (Okta, Azure AD, Google Workspace), SCIM provisioning, and MFA policy enforcement - ready for enterprise identity requirements.',
+      'SAML 2.0 SSO (Okta, Azure AD, Google Workspace) and MFA policy enforcement - ready for enterprise identity requirements. SCIM provisioning on the roadmap.',,
   },
 ] as const;
 

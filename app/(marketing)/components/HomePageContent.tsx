@@ -99,7 +99,7 @@ const industries = [
 
 const platformArchitecture = {
   'Compliance Engine': [
-    '7 framework packs (85+ controls)',
+    '7 framework packs (70+ controls)',
     'Control deduplication & mapping',
     'Risk scoring & gap detection',
     'Real-time evaluation engine',
@@ -108,7 +108,7 @@ const platformArchitecture = {
     '12 workflow triggers (evidence expiry, policy review, control status, task overdue, cert expiry, shift completion, etc.)',
     'Conditional task generation',
     'Auto-escalation & notifications',
-    'Scheduled compliance checks (every 6 hours)',
+    'On-demand compliance checks',
   ],
   'Evidence Vault': [
     'Secure encrypted artifact storage',
@@ -141,7 +141,7 @@ const capabilities = [
   'Multi-organization + multi-site hierarchies (fully operational)',
   'Role-based access control (RBAC) + row-level security isolation',
   'Immutable audit trail (every action logged with before/after state)',
-  'Evidence version control with SHA-256 checksums and rollback',
+  'Evidence version control with checksums and rollback',
   'REST API v1 with rate limiting for integrations',
 ];
 
@@ -593,7 +593,9 @@ export function HomePageContent() {
               >
                 <div className="p-6 rounded-xl bg-card/50 border border-border/50 backdrop-blur-sm hover:border-primary/50 transition-colors">
                   <feature.icon className="h-8 w-8 text-primary mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+                  <h3 className="text-lg font-semibold mb-2">
+                    {feature.title}
+                  </h3>
                   <p className="text-sm text-muted-foreground">
                     {feature.description}
                   </p>

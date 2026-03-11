@@ -49,7 +49,7 @@ const capabilities = [
     icon: GitBranch,
     title: 'Framework Packs',
     description:
-      '9 pre-built frameworks: ISO 27001, SOC 2, GDPR, HIPAA, PCI-DSS, NIST CSF, CIS Controls, NDIS Practice Standards, and Essential Eight.',
+      '7 pre-built frameworks: ISO 27001, SOC 2, GDPR, HIPAA, PCI-DSS, NIST CSF, and CIS Controls. NDIS Practice Standards and Essential Eight available as industry add-ons.',
     color: 'from-pink-500 to-rose-500',
   },
   {

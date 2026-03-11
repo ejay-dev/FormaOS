@@ -37,7 +37,7 @@ const sections = [
     items: [
       'Application security architecture and threat model summary',
       'OWASP Top 10 coverage and mitigation approach',
-      'Annual penetration test cadence and findings classification',
+      'Penetration testing planned - findings classification and remediation tracking policy',
       'Vulnerability disclosure and remediation tracking policy',
     ],
   },
@@ -57,7 +57,7 @@ const sections = [
     title: 'Data Residency & Subprocessors',
     items: [
       'Default hosting: Australia (AU region)',
-      'Enterprise residency options: AU / US / EU - configurable at onboarding',
+      'Enterprise residency options: AU default (US / EU on roadmap) - configurable at onboarding',
       'Subprocessor list with hosting regions and data processing purposes',
       'Standard Contractual Clauses (SCCs) for international transfers',
       'Data flow diagram from collection to storage to deletion',
@@ -105,7 +105,12 @@ export default function TrustPacketPage() {
         description="A procurement-ready PDF from current system status. Covers architecture, encryption, identity, data residency, subprocessors, and assurance commitments."
         topColor="emerald"
         bottomColor="cyan"
-        visualContent={<CompactHeroIcon icon={<Package className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
+        visualContent={
+          <CompactHeroIcon
+            icon={<Package className="w-8 h-8 text-emerald-400" />}
+            color="52,211,153"
+          />
+        }
       />
 
       <div className="mx-auto max-w-4xl px-6 pb-24">
@@ -144,15 +149,24 @@ export default function TrustPacketPage() {
                 className="rounded-2xl border border-border bg-card p-6"
               >
                 <div className="flex items-center gap-2 mb-4">
-                  <Icon className="h-4 w-4 text-primary shrink-0" aria-hidden="true" />
+                  <Icon
+                    className="h-4 w-4 text-primary shrink-0"
+                    aria-hidden="true"
+                  />
                   <h3 className="text-sm font-semibold text-foreground">
                     {section.title}
                   </h3>
                 </div>
                 <ul className="space-y-2">
                   {section.items.map((item) => (
-                    <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <CheckCircle className="h-3.5 w-3.5 text-primary/60 shrink-0 mt-0.5" aria-hidden="true" />
+                    <li
+                      key={item}
+                      className="flex items-start gap-2 text-sm text-muted-foreground"
+                    >
+                      <CheckCircle
+                        className="h-3.5 w-3.5 text-primary/60 shrink-0 mt-0.5"
+                        aria-hidden="true"
+                      />
                       {item}
                     </li>
                   ))}
@@ -164,9 +178,16 @@ export default function TrustPacketPage() {
 
         {/* Who it's for */}
         <div className="mt-10 rounded-2xl border border-border bg-card p-6">
-          <h3 className="text-sm font-semibold text-foreground mb-2">Who this is designed for</h3>
+          <h3 className="text-sm font-semibold text-foreground mb-2">
+            Who this is designed for
+          </h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            The Trust Packet is designed to answer the first wave of questions from your security team, legal counsel, and procurement reviewers - before a formal vendor questionnaire arrives. It uses intentional "aligned vs certified" language so your team knows exactly what we are claiming and what we are not. For NDA-gated artifacts (penetration test executive summary), use the request form below.
+            The Trust Packet is designed to answer the first wave of questions
+            from your security team, legal counsel, and procurement reviewers -
+            before a formal vendor questionnaire arrives. It uses intentional
+            "aligned vs certified" language so your team knows exactly what we
+            are claiming and what we are not. For NDA-gated artifacts
+            (penetration test executive summary), use the request form below.
           </p>
         </div>
 
@@ -192,7 +213,10 @@ export default function TrustPacketPage() {
           <Link href="/trust" className="text-primary hover:underline">
             ← Back to Trust Center
           </Link>
-          <Link href="/trust/vendor-assurance" className="text-primary hover:underline">
+          <Link
+            href="/trust/vendor-assurance"
+            className="text-primary hover:underline"
+          >
             Vendor Assurance Process <ArrowRight className="inline h-4 w-4" />
           </Link>
         </div>

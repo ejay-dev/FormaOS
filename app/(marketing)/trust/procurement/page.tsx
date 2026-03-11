@@ -28,7 +28,7 @@ const faqs = [
   {
     question: 'Where is customer data stored?',
     answer:
-      'Customer data is hosted in Australia by default (AU region). Enterprise customers can select data residency in Australia, the United States, or the European Union. All data is encrypted at rest (AES-256) and in transit (TLS 1.3). A full subprocessor list with hosting regions is available at formaos.com.au/trust/subprocessors.',
+      'Customer data is hosted in Australia by default (AU region). US and EU data residency options are on our roadmap for Enterprise customers. All data is encrypted at rest (AES-256) and in transit (TLS 1.3). A full subprocessor list with hosting regions is available at formaos.com.au/trust/subprocessors.',
   },
   {
     question: 'Do you have a SOC 2 report?',
@@ -80,7 +80,12 @@ export default function ProcurementFAQPage() {
         description="Common questions from procurement, security, and legal teams evaluating FormaOS."
         topColor="emerald"
         bottomColor="cyan"
-        visualContent={<CompactHeroIcon icon={<ClipboardList className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
+        visualContent={
+          <CompactHeroIcon
+            icon={<ClipboardList className="w-8 h-8 text-emerald-400" />}
+            color="52,211,153"
+          />
+        }
       />
       <div className="mx-auto max-w-4xl px-6 pb-24">
         <div className="space-y-6">

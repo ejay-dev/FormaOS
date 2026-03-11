@@ -27,12 +27,16 @@ export function PricingHero() {
       subheadline={
         <>
           Not a productivity tool. Not a document repository.
-          <br />
-          A compliance operating system - priced for regulated accountability.
+          <br />A compliance operating system - priced for regulated
+          accountability.
         </>
       }
       extras={<PricingExtras />}
-      primaryCta={{ href: '/auth/signup', label: 'Start Free Trial', testId: 'pricing-hero-start-trial' }}
+      primaryCta={{
+        href: '/auth/signup',
+        label: 'Start Free Trial',
+        testId: 'pricing-hero-start-trial',
+      }}
       secondaryCta={{ href: '/contact', label: 'Contact Sales' }}
     />
   );
@@ -45,22 +49,34 @@ function PricingExtras() {
         <div className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3">
           <Check className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
           <div>
-            <span className="block font-semibold text-white text-sm">No lock-in</span>
-            <span className="text-xs text-slate-400">Upgrade, downgrade, or exit on your terms</span>
+            <span className="block font-semibold text-white text-sm">
+              No lock-in
+            </span>
+            <span className="text-xs text-slate-400">
+              Upgrade, downgrade, or exit on your terms
+            </span>
           </div>
         </div>
         <div className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3">
           <Check className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
           <div>
-            <span className="block font-semibold text-white text-sm">Enterprise-ready</span>
-            <span className="text-xs text-slate-400">SSO, SAML, audit export, and data residency controls</span>
+            <span className="block font-semibold text-white text-sm">
+              Enterprise-ready
+            </span>
+            <span className="text-xs text-slate-400">
+              SSO, SAML, audit export, and data residency (AU default)
+            </span>
           </div>
         </div>
         <div className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3">
           <Check className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
           <div>
-            <span className="block font-semibold text-white text-sm">Procurement support</span>
-            <span className="text-xs text-slate-400">Security review packet, DPA, and vendor assurance docs</span>
+            <span className="block font-semibold text-white text-sm">
+              Procurement support
+            </span>
+            <span className="text-xs text-slate-400">
+              Security review packet, DPA, and vendor assurance docs
+            </span>
           </div>
         </div>
       </div>

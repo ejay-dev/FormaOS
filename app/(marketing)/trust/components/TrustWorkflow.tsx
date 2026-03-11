@@ -84,9 +84,7 @@ function PulseNode({
         stroke={color}
         strokeWidth="1.2"
         animate={
-          reducedMotion
-            ? undefined
-            : { scale: [1, 1.55], opacity: [0.4, 0] }
+          reducedMotion ? undefined : { scale: [1, 1.55], opacity: [0.4, 0] }
         }
         transition={{
           duration: 2.2,
@@ -107,8 +105,8 @@ const trustWorkflow = [
     subpoints: [
       'Multi-tenant architecture with Row-Level Security - strict org boundary enforcement reviewed upfront',
       'AES-256 encryption at rest, TLS 1.3 in transit - no exceptions across all data types and environments',
-      'Data residency options (AU default, US, EU) documented with Privacy Act 1988 and GDPR alignment',
-      'Annual independent penetration test summary available under NDA for Enterprise security reviewers',
+      'Data residency: AU default (US and EU on roadmap) documented with Privacy Act 1988 and GDPR alignment',
+      'Independent penetration testing planned - summary will be available under NDA for Enterprise security reviewers',
     ],
   },
   {
@@ -117,7 +115,7 @@ const trustWorkflow = [
       'Buyer stakeholders verify control ownership, evidence traceability, and operational accountability against their internal requirements.',
     subpoints: [
       'SAML 2.0 SSO integration with Okta, Azure AD, and Google Workspace - verified during trial setup',
-      'SCIM provisioning for automated user lifecycle management and role-based access control validation',
+      'SCIM provisioning on roadmap for automated user lifecycle management and role-based access control validation',
       'Tamper-evident audit logs reviewed: every compliance action timestamped, immutable, and exportable',
       'DPA, vendor assurance questionnaire, and SLA documentation provided for legal and risk sign-off',
     ],
@@ -192,30 +190,66 @@ export function TrustWorkflow() {
                 aria-label="Animated compliance graph connecting trust workflow stages"
               >
                 <defs>
-                  <linearGradient id="trustPathA" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <linearGradient
+                    id="trustPathA"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="0%"
+                  >
                     <stop offset="0%" stopColor="rgba(34,211,238,0.1)" />
                     <stop offset="100%" stopColor="rgba(34,211,238,0.9)" />
                   </linearGradient>
-                  <linearGradient id="trustPathB" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <linearGradient
+                    id="trustPathB"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="0%"
+                  >
                     <stop offset="0%" stopColor="rgba(59,130,246,0.1)" />
                     <stop offset="100%" stopColor="rgba(59,130,246,0.9)" />
                   </linearGradient>
-                  <linearGradient id="trustPathC" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <linearGradient
+                    id="trustPathC"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="0%"
+                  >
                     <stop offset="0%" stopColor="rgba(16,185,129,0.1)" />
                     <stop offset="100%" stopColor="rgba(16,185,129,0.9)" />
                   </linearGradient>
                   {/* Glow trail gradients – brighter, shorter stops */}
-                  <linearGradient id="trustGlowA" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <linearGradient
+                    id="trustGlowA"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="0%"
+                  >
                     <stop offset="0%" stopColor="rgba(34,211,238,0.0)" />
                     <stop offset="60%" stopColor="rgba(34,211,238,0.6)" />
                     <stop offset="100%" stopColor="rgba(34,211,238,1)" />
                   </linearGradient>
-                  <linearGradient id="trustGlowB" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <linearGradient
+                    id="trustGlowB"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="0%"
+                  >
                     <stop offset="0%" stopColor="rgba(59,130,246,0.0)" />
                     <stop offset="60%" stopColor="rgba(59,130,246,0.6)" />
                     <stop offset="100%" stopColor="rgba(59,130,246,1)" />
                   </linearGradient>
-                  <linearGradient id="trustGlowC" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <linearGradient
+                    id="trustGlowC"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="0%"
+                  >
                     <stop offset="0%" stopColor="rgba(16,185,129,0.0)" />
                     <stop offset="60%" stopColor="rgba(16,185,129,0.6)" />
                     <stop offset="100%" stopColor="rgba(16,185,129,1)" />
@@ -308,24 +342,34 @@ export function TrustWorkflow() {
             </motion.div>
           </div>
 
-          <SectionChoreography pattern="alternating" stagger={0.05} className="mt-6 grid gap-3 md:grid-cols-3">
+          <SectionChoreography
+            pattern="alternating"
+            stagger={0.05}
+            className="mt-6 grid gap-3 md:grid-cols-3"
+          >
             {trustWorkflow.map((item) => (
-                <article key={item.step} className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-cyan-200">
-                    {item.step}
-                  </p>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                    {item.detail}
-                  </p>
-                  <ul className="mt-3 space-y-1.5">
-                    {item.subpoints.map((sp) => (
-                      <li key={sp} className="flex items-start gap-2 text-xs leading-relaxed text-slate-400">
-                        <span className="mt-1 h-1 w-1 flex-shrink-0 rounded-full bg-cyan-400/60" />
-                        <span>{sp}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </article>
+              <article
+                key={item.step}
+                className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wider text-cyan-200">
+                  {item.step}
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                  {item.detail}
+                </p>
+                <ul className="mt-3 space-y-1.5">
+                  {item.subpoints.map((sp) => (
+                    <li
+                      key={sp}
+                      className="flex items-start gap-2 text-xs leading-relaxed text-slate-400"
+                    >
+                      <span className="mt-1 h-1 w-1 flex-shrink-0 rounded-full bg-cyan-400/60" />
+                      <span>{sp}</span>
+                    </li>
+                  ))}
+                </ul>
+              </article>
             ))}
           </SectionChoreography>
         </div>

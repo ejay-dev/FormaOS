@@ -16,12 +16,12 @@ const faqs = [
   {
     question: 'Do you support enterprise identity and access requirements?',
     answer:
-      'Google OAuth and MFA enforcement are available on all plans. Enterprise plans include SAML 2.0 SSO with support for Okta, Azure AD, and Google Workspace. Session policy management, IP restrictions, and SCIM provisioning can be discussed during security review.',
+      'Google OAuth and MFA enforcement are available on all plans. Enterprise plans include SAML 2.0 SSO with support for Okta, Azure AD, and Google Workspace. Session policy management and IP restrictions are available. SCIM provisioning is on our roadmap.',
   },
   {
     question: 'Where is data stored, and can we select our region?',
     answer:
-      'FormaOS stores data on infrastructure based in Australia by default. Enterprise plans can enable data residency controls for AU, US, or EU regions. All data is encrypted at rest (AES-256) and in transit (TLS 1.3). A full Data Processing Agreement (DPA) is available on request.',
+      'FormaOS stores data on infrastructure based in Australia by default. US and EU data residency options are on our roadmap for Enterprise plans. All data is encrypted at rest (AES-256) and in transit (TLS 1.3). A full Data Processing Agreement (DPA) is available on request.',
   },
   {
     question: 'What are your uptime and SLA commitments?',
@@ -73,7 +73,11 @@ export function FAQSection() {
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
-        <ScrollReveal variant="depthScale" range={[0, 0.35]} className="text-center mb-16">
+        <ScrollReveal
+          variant="depthScale"
+          range={[0, 0.35]}
+          className="text-center mb-16"
+        >
           <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6">
               <HelpCircle className="h-3 w-3 text-purple-400" />
@@ -90,50 +94,55 @@ export function FAQSection() {
           </h2>
 
           <p className="text-lg text-gray-400">
-            Answers for compliance leaders, procurement teams, and IT security evaluating platform fit, data handling, and enterprise readiness
+            Answers for compliance leaders, procurement teams, and IT security
+            evaluating platform fit, data handling, and enterprise readiness
           </p>
         </ScrollReveal>
 
         {/* FAQ Items */}
-        <SectionChoreography pattern="cascade" stagger={0.05} className="space-y-4">
+        <SectionChoreography
+          pattern="cascade"
+          stagger={0.05}
+          className="space-y-4"
+        >
           {faqs.map((faq, idx) => (
-              <button
-                onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
-                className={`w-full text-left backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl p-6 border transition-all duration-300 ${
-                  openIndex === idx
-                    ? 'border-purple-500/30'
-                    : 'border-white/10 hover:border-white/20'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-white pr-4">
-                    {faq.question}
-                  </h3>
-                  <motion.div
-                    animate={{ rotate: openIndex === idx ? 180 : 0 }}
-                    transition={{ duration: duration.fast }}
-                    className="flex-shrink-0"
-                  >
-                    <ChevronDown className="w-5 h-5 text-gray-400" />
-                  </motion.div>
-                </div>
+            <button
+              onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
+              className={`w-full text-left backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl p-6 border transition-all duration-300 ${
+                openIndex === idx
+                  ? 'border-purple-500/30'
+                  : 'border-white/10 hover:border-white/20'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-white pr-4">
+                  {faq.question}
+                </h3>
+                <motion.div
+                  animate={{ rotate: openIndex === idx ? 180 : 0 }}
+                  transition={{ duration: duration.fast }}
+                  className="flex-shrink-0"
+                >
+                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                </motion.div>
+              </div>
 
-                <AnimatePresence>
-                  {openIndex === idx && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: duration.fast }}
-                      className="overflow-hidden"
-                    >
-                      <p className="text-gray-400 mt-4 leading-relaxed">
-                        {faq.answer}
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </button>
+              <AnimatePresence>
+                {openIndex === idx && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: duration.fast }}
+                    className="overflow-hidden"
+                  >
+                    <p className="text-gray-400 mt-4 leading-relaxed">
+                      {faq.answer}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </button>
           ))}
         </SectionChoreography>
       </div>

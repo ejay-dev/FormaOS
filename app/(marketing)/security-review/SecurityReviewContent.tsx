@@ -40,7 +40,7 @@ const sections = [
     points: [
       'Google OAuth on all plans; SAML 2.0 SSO for Okta, Azure AD, Google Workspace on Enterprise plan',
       'MFA policy enforcement with configurable session duration and idle timeout controls',
-      'SCIM provisioning for automated user lifecycle management - onboarding, role changes, and offboarding',
+      'SCIM provisioning on roadmap for automated user lifecycle management - onboarding, role changes, and offboarding',
       'Role-based access control with granular permissions: admin, compliance lead, reviewer, auditor, read-only',
       'Session management with forced re-authentication for sensitive operations (evidence approval, user management)',
       'SSO enforcement mode: block password login when SSO is configured to prevent shadow authentication',
@@ -74,8 +74,8 @@ const sections = [
     icon: ClipboardCheck,
     title: 'Operational assurance and residency',
     points: [
-      'AU-based hosting by default; US and EU data residency options for international regulatory obligations',
-      'Annual independent penetration test by qualified assessors - summary report available under NDA for Enterprise',
+      'AU-based hosting by default; US and EU data residency options on roadmap for international regulatory obligations',
+      'Independent penetration testing planned - summary report will be available under NDA for Enterprise',
       'DPA (Data Processing Agreement) covering GDPR and Privacy Act 1988 obligations, available pre-signature',
       'Vendor assurance questionnaire (CAIQ-aligned) pre-completed and available for procurement review',
       'SLA documentation with uptime commitments, incident response targets, and escalation procedures',
@@ -90,8 +90,8 @@ const checklist = [
   'AES-256 at rest + TLS 1.3 in transit encryption confirmation',
   'Evidence storage approach, access controls, and chain-of-custody metadata',
   'Audit logging coverage, tamper-evident history, and export capabilities',
-  'Data residency options (AU/US/EU) and DPA documentation',
-  'Annual penetration test summary (available under NDA)',
+  'Data residency (AU default; US/EU on roadmap) and DPA documentation',
+  'Penetration test summary (available under NDA when completed)',
   'Incident response posture and operational escalation contacts',
   'Data portability confirmation - portable export, 30-day deletion on exit',
   'Subprocessor list with data categories, locations, and processing purposes',
@@ -106,11 +106,17 @@ export default function SecurityReviewContent() {
       <ImmersiveHero
         theme="security-review"
         visualContent={<SecurityReviewHeroVisual />}
-        badge={{ icon: <ShieldCheck className="h-4 w-4" />, text: 'Procurement Ready' }}
+        badge={{
+          icon: <ShieldCheck className="h-4 w-4" />,
+          text: 'Procurement Ready',
+        }}
         headline="Security Review Packet for Enterprise Buyers"
         subheadline="Everything your security, legal, and procurement teams will ask - documented before they ask it. Encryption, SSO, pen testing, data residency, and DPA."
         primaryCta={{ href: '/contact', label: 'Security Walkthrough' }}
-        secondaryCta={{ href: `${appBase}/auth/signup?source=security_review`, label: 'Start Trust-Ready Trial' }}
+        secondaryCta={{
+          href: `${appBase}/auth/signup?source=security_review`,
+          label: 'Start Trust-Ready Trial',
+        }}
       />
 
       <VisualDivider />
@@ -132,7 +138,9 @@ export default function SecurityReviewContent() {
                   <div className="mb-4 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
                     <s.icon className="h-5 w-5 text-cyan-200" />
                   </div>
-                  <h2 className="text-lg font-semibold text-white">{s.title}</h2>
+                  <h2 className="text-lg font-semibold text-white">
+                    {s.title}
+                  </h2>
                   <ul className="mt-3 space-y-2 text-sm leading-relaxed text-slate-300">
                     {s.points.map((p) => (
                       <li key={p} className="flex items-start gap-2">
@@ -163,8 +171,8 @@ export default function SecurityReviewContent() {
                   <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
                     The items below match typical procurement questionnaires. If
                     your organization needs additional detail (DPA, vendor risk
-                    artifacts, or proof-of-control screenshots), we can support that
-                    during the walkthrough.
+                    artifacts, or proof-of-control screenshots), we can support
+                    that during the walkthrough.
                   </p>
                 </div>
                 <Link
@@ -190,9 +198,7 @@ export default function SecurityReviewContent() {
                     variant="fadeUp"
                     range={[0, 0.3 + i * 0.04]}
                   >
-                    <div
-                      className="rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm text-slate-200"
-                    >
+                    <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm text-slate-200">
                       {item}
                     </div>
                   </ScrollReveal>
@@ -200,8 +206,8 @@ export default function SecurityReviewContent() {
               </div>
 
               <p className="mt-6 text-xs text-slate-500">
-                Note: Content here describes the FormaOS review experience. Do not
-                treat it as a formal certification claim.
+                Note: Content here describes the FormaOS review experience. Do
+                not treat it as a formal certification claim.
               </p>
             </div>
           </Reveal>

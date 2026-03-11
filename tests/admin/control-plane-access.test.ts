@@ -22,6 +22,12 @@ import { getAdminControlPlaneSnapshot } from '@/lib/control-plane/server';
 describe('/api/admin/control-plane permissions', () => {
   const requireFounderAccessMock = requireFounderAccess as jest.Mock;
   const getAdminSnapshotMock = getAdminControlPlaneSnapshot as jest.Mock;
+  const trustedOrigin =
+    process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+  const csrfHeaders = {
+    'Content-Type': 'application/json',
+    Origin: trustedOrigin,
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -77,12 +83,13 @@ describe('/api/admin/control-plane permissions', () => {
     const response = await POST(
       new Request('http://localhost/api/admin/control-plane', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: csrfHeaders,
         body: JSON.stringify({ action: 'set_system_setting', payload: {} }),
       }),
     );
 
     expect(response.status).toBe(403);
+    expect(requireFounderAccessMock).toHaveBeenCalled();
   });
 
   it('POST returns 400 for unknown actions', async () => {
@@ -93,7 +100,7 @@ describe('/api/admin/control-plane permissions', () => {
     const response = await POST(
       new Request('http://localhost/api/admin/control-plane', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: csrfHeaders,
         body: JSON.stringify({ action: 'unknown_action', payload: {} }),
       }),
     );
@@ -101,5 +108,18 @@ describe('/api/admin/control-plane permissions', () => {
     expect(response.status).toBe(400);
     const payload = await response.json();
     expect(String(payload.error)).toContain('Unknown action');
+  });
+
+  it('POST rejects requests without a trusted origin header', async () => {
+    const response = await POST(
+      new Request('http://localhost/api/admin/control-plane', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'unknown_action', payload: {} }),
+      }),
+    );
+
+    expect(response.status).toBe(403);
+    expect(requireFounderAccessMock).not.toHaveBeenCalled();
   });
 });

@@ -13,18 +13,18 @@ import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 const OUTCOME_METRICS = [
   {
     label: 'Live Control Coverage',
-    value: '147 controls',
-    trend: '+12 this quarter',
+    value: '70+ controls',
+    trend: 'Across 7 frameworks',
   },
   {
     label: 'Evidence Continuity',
-    value: '99.98%',
-    trend: 'Chain verified',
+    value: 'Full chain',
+    trend: 'Chain-of-custody tracked',
   },
   {
     label: 'Audit Packet Delivery',
-    value: '94 sec',
-    trend: 'P95 export time',
+    value: 'Minutes',
+    trend: 'Not weeks',
   },
 ] as const;
 
@@ -32,17 +32,20 @@ const CAPABILITIES = [
   {
     icon: ShieldCheck,
     title: 'System-Enforced Controls',
-    detail: 'Convert obligations into enforceable workflows with named ownership.',
+    detail:
+      'Convert obligations into enforceable workflows with named ownership.',
   },
   {
     icon: FileCheck,
     title: 'Defensible Evidence Chain',
-    detail: 'Capture immutable artifacts with actor attribution and approval lineage.',
+    detail:
+      'Capture immutable artifacts with actor attribution and approval lineage.',
   },
   {
     icon: BarChart3,
     title: 'Executive Readiness Reporting',
-    detail: 'Give leadership always-current posture, findings, and board-ready packets.',
+    detail:
+      'Give leadership always-current posture, findings, and board-ready packets.',
   },
 ] as const;
 
@@ -68,7 +71,7 @@ const WORKFLOW_STAGES = [
   {
     stage: 'Export Audit Packet',
     owner: 'Reporting',
-    sla: '94 sec',
+    sla: 'Minutes',
     status: 'Ready',
   },
 ] as const;
@@ -84,8 +87,12 @@ function ProductHeroExtras() {
             key={metric.label}
             className="rounded-xl border border-white/[0.1] bg-slate-950/55 px-3.5 py-3 text-left"
           >
-            <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">{metric.label}</p>
-            <p className="mt-1 text-sm font-semibold text-white">{metric.value}</p>
+            <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
+              {metric.label}
+            </p>
+            <p className="mt-1 text-sm font-semibold text-white">
+              {metric.value}
+            </p>
             <p className="mt-1 text-[11px] text-emerald-300">{metric.trend}</p>
           </div>
         ))}
@@ -102,8 +109,12 @@ function ProductHeroExtras() {
               <div className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-lg border border-cyan-300/20 bg-cyan-400/10">
                 <Icon className="h-4 w-4 text-cyan-300" />
               </div>
-              <p className="text-sm font-semibold text-white">{capability.title}</p>
-              <p className="mt-1 text-xs leading-relaxed text-slate-300">{capability.detail}</p>
+              <p className="text-sm font-semibold text-white">
+                {capability.title}
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-slate-300">
+                {capability.detail}
+              </p>
             </div>
           );
         })}
@@ -123,12 +134,18 @@ function ProductHeroExtras() {
               className="grid grid-cols-[1fr_auto] gap-2 rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-2"
             >
               <div>
-                <p className="text-xs font-semibold text-white">{stage.stage}</p>
+                <p className="text-xs font-semibold text-white">
+                  {stage.stage}
+                </p>
                 <p className="text-[11px] text-slate-400">{stage.owner}</p>
               </div>
               <div className="text-right">
-                <p className="text-xs font-semibold text-cyan-300">{stage.sla}</p>
-                <p className="text-[10px] uppercase tracking-[0.12em] text-emerald-300">{stage.status}</p>
+                <p className="text-xs font-semibold text-cyan-300">
+                  {stage.sla}
+                </p>
+                <p className="text-[10px] uppercase tracking-[0.12em] text-emerald-300">
+                  {stage.status}
+                </p>
               </div>
             </div>
           ))}
@@ -138,10 +155,7 @@ function ProductHeroExtras() {
       <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3">
         <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-300">
           {FRAMEWORKS.map((framework) => (
-            <span
-              key={framework}
-              className="inline-flex items-center gap-1"
-            >
+            <span key={framework} className="inline-flex items-center gap-1">
               <CheckCircle className="h-3 w-3 text-emerald-300/80" />
               {framework}
             </span>

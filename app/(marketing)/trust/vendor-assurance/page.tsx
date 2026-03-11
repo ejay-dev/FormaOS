@@ -30,12 +30,20 @@ export default function VendorAssurancePage() {
         description="Enterprise-grade vendor assurance artifacts - DPA, questionnaire, security review packet, subprocessor disclosures, and pen test summary. Procurement-ready."
         topColor="emerald"
         bottomColor="cyan"
-        visualContent={<CompactHeroIcon icon={<ShieldCheck className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
+        visualContent={
+          <CompactHeroIcon
+            icon={<ShieldCheck className="w-8 h-8 text-emerald-400" />}
+            color="52,211,153"
+          />
+        }
       />
       <div className="mx-auto max-w-5xl px-6 pb-24">
         <section className="rounded-2xl border border-border bg-card p-7">
           <div className="flex items-start gap-3">
-            <FileText className="mt-0.5 h-5 w-5 text-primary" aria-hidden="true" />
+            <FileText
+              className="mt-0.5 h-5 w-5 text-primary"
+              aria-hidden="true"
+            />
             <div>
               <h2 className="text-lg font-semibold text-foreground">
                 Independent Security Assessment Plan (Process)
@@ -63,7 +71,7 @@ export default function VendorAssurancePage() {
                     Cadence
                   </div>
                   <ul className="mt-2 space-y-2 text-sm text-foreground/90">
-                    <li>Annual independent penetration test</li>
+                    <li>Independent penetration testing planned</li>
                     <li>Re-assessment after major platform changes</li>
                     <li>Remediation tracking and verified fix documentation</li>
                     <li>Summary available to Enterprise customers under NDA</li>
@@ -93,7 +101,10 @@ export default function VendorAssurancePage() {
 
         <section className="mt-8 rounded-2xl border border-border bg-card p-7">
           <div className="flex items-start gap-3">
-            <CalendarDays className="mt-0.5 h-5 w-5 text-primary" aria-hidden="true" />
+            <CalendarDays
+              className="mt-0.5 h-5 w-5 text-primary"
+              aria-hidden="true"
+            />
             <div>
               <h2 className="text-lg font-semibold text-foreground">
                 How To Request Vendor Assurance Artifacts

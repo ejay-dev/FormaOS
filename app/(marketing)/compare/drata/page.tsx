@@ -52,7 +52,7 @@ const points = [
   {
     title: 'Enterprise procurement artifacts included',
     detail:
-      'FormaOS ships with DPA, vendor assurance questionnaire, SAML 2.0 SSO, MFA enforcement, and data residency controls (AU/US/EU) - accelerating enterprise procurement.',
+      'FormaOS ships with DPA, vendor assurance questionnaire, SAML 2.0 SSO, MFA enforcement, and AU data residency (US/EU on roadmap) - accelerating enterprise procurement.',
   },
 ] as const;
 
@@ -66,20 +66,72 @@ const idealIf = [
 ] as const;
 
 const featureComparison = [
-  { feature: 'Operational workflow enforcement', formaos: 'yes', competitor: 'no' },
-  { feature: 'Named control ownership with audit trail', formaos: 'yes', competitor: 'partial' },
-  { feature: 'Evidence verification with approval chain', formaos: 'yes', competitor: 'partial' },
-  { feature: 'Immutable, tamper-evident audit logs', formaos: 'yes', competitor: 'yes' },
-  { feature: 'Healthcare compliance (AHPRA, NSQHS, RACGP)', formaos: 'yes', competitor: 'no' },
-  { feature: 'NDIS Practice Standards (all 8 modules)', formaos: 'yes', competitor: 'no' },
-  { feature: 'Incident management with corrective actions', formaos: 'yes', competitor: 'partial' },
-  { feature: 'Credential / workforce governance', formaos: 'yes', competitor: 'no' },
-  { feature: 'AU-first data residency (AU/US/EU)', formaos: 'yes', competitor: 'US-first, AU on request' },
-  { feature: 'SAML 2.0 SSO (Okta, Azure AD, Google)', formaos: 'Enterprise plan', competitor: 'Enterprise plan' },
-  { feature: 'SCIM user provisioning', formaos: 'yes', competitor: 'yes' },
-  { feature: 'Pre-built frameworks', formaos: '9 frameworks', competitor: '14+ frameworks' },
-  { feature: 'Continuous compliance scoring', formaos: 'yes', competitor: 'yes' },
-  { feature: 'DPA and vendor assurance packet', formaos: 'Included', competitor: 'On request' },
+  {
+    feature: 'Operational workflow enforcement',
+    formaos: 'yes',
+    competitor: 'no',
+  },
+  {
+    feature: 'Named control ownership with audit trail',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
+  {
+    feature: 'Evidence verification with approval chain',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
+  {
+    feature: 'Immutable, tamper-evident audit logs',
+    formaos: 'yes',
+    competitor: 'yes',
+  },
+  {
+    feature: 'Healthcare compliance (AHPRA, NSQHS, RACGP)',
+    formaos: 'yes',
+    competitor: 'no',
+  },
+  {
+    feature: 'NDIS Practice Standards (all 8 modules)',
+    formaos: 'yes',
+    competitor: 'no',
+  },
+  {
+    feature: 'Incident management with corrective actions',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
+  {
+    feature: 'Credential / workforce governance',
+    formaos: 'yes',
+    competitor: 'no',
+  },
+  {
+    feature: 'AU-first data residency',
+    formaos: 'AU (US/EU on roadmap)',
+    competitor: 'US-first, AU on request',
+  },
+  {
+    feature: 'SAML 2.0 SSO (Okta, Azure AD, Google)',
+    formaos: 'Enterprise plan',
+    competitor: 'Enterprise plan',
+  },
+  { feature: 'SCIM user provisioning', formaos: 'Roadmap', competitor: 'yes' },
+  {
+    feature: 'Pre-built frameworks',
+    formaos: '7 frameworks',
+    competitor: '14+ frameworks',
+  },
+  {
+    feature: 'Continuous compliance scoring',
+    formaos: 'yes',
+    competitor: 'yes',
+  },
+  {
+    feature: 'DPA and vendor assurance packet',
+    formaos: 'Included',
+    competitor: 'On request',
+  },
 ] as const;
 
 const competitorStrengths = [
@@ -102,7 +154,7 @@ const procurementChecks = [
   {
     title: 'Enterprise identity controls',
     detail:
-      'SAML 2.0 SSO (Okta, Azure AD, Google Workspace), SCIM provisioning, and MFA policy enforcement ready for enterprise identity requirements.',
+      'SAML 2.0 SSO (Okta, Azure AD, Google Workspace) and MFA policy enforcement ready for enterprise identity requirements. SCIM provisioning on the roadmap.',
   },
 ] as const;
 

@@ -13,8 +13,11 @@ const customJestConfig = {
     '<rootDir>/.next/',
     '<rootDir>/node_modules/',
     '<rootDir>/e2e/',
+    '<rootDir>/gitnexus/',
+    '<rootDir>/.gitnexus/',
     '<rootDir>/tests/cta.spec.ts',
   ],
+  modulePathIgnorePatterns: ['<rootDir>/gitnexus/', '<rootDir>/.gitnexus/'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },

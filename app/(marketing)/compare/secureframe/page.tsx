@@ -66,20 +66,72 @@ const idealIf = [
 ] as const;
 
 const featureComparison = [
-  { feature: 'Operational workflow enforcement', formaos: 'yes', competitor: 'no' },
-  { feature: 'Named control ownership with audit trail', formaos: 'yes', competitor: 'partial' },
-  { feature: 'Evidence verification with approval chain', formaos: 'yes', competitor: 'yes' },
-  { feature: 'Immutable, tamper-evident audit logs', formaos: 'yes', competitor: 'yes' },
-  { feature: 'Healthcare compliance (AHPRA, NSQHS, RACGP)', formaos: 'yes', competitor: 'no' },
-  { feature: 'NDIS Practice Standards (all 8 modules)', formaos: 'yes', competitor: 'no' },
-  { feature: 'Incident management with corrective actions', formaos: 'yes', competitor: 'partial' },
-  { feature: 'Credential / workforce governance', formaos: 'yes', competitor: 'no' },
-  { feature: 'AU-first data residency (AU/US/EU)', formaos: 'yes', competitor: 'US-first, AU on request' },
-  { feature: 'SAML 2.0 SSO (Okta, Azure AD, Google)', formaos: 'Enterprise plan', competitor: 'Growth plan+' },
-  { feature: 'SCIM user provisioning', formaos: 'yes', competitor: 'yes' },
-  { feature: 'Pre-built frameworks', formaos: '9 frameworks', competitor: '15+ frameworks' },
-  { feature: 'Continuous compliance scoring', formaos: 'yes', competitor: 'yes' },
-  { feature: 'Compliance program setup wizard', formaos: 'Framework templates', competitor: 'Guided onboarding wizard' },
+  {
+    feature: 'Operational workflow enforcement',
+    formaos: 'yes',
+    competitor: 'no',
+  },
+  {
+    feature: 'Named control ownership with audit trail',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
+  {
+    feature: 'Evidence verification with approval chain',
+    formaos: 'yes',
+    competitor: 'yes',
+  },
+  {
+    feature: 'Immutable, tamper-evident audit logs',
+    formaos: 'yes',
+    competitor: 'yes',
+  },
+  {
+    feature: 'Healthcare compliance (AHPRA, NSQHS, RACGP)',
+    formaos: 'yes',
+    competitor: 'no',
+  },
+  {
+    feature: 'NDIS Practice Standards (all 8 modules)',
+    formaos: 'yes',
+    competitor: 'no',
+  },
+  {
+    feature: 'Incident management with corrective actions',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
+  {
+    feature: 'Credential / workforce governance',
+    formaos: 'yes',
+    competitor: 'no',
+  },
+  {
+    feature: 'AU-first data residency',
+    formaos: 'AU (US/EU on roadmap)',
+    competitor: 'US-first, AU on request',
+  },
+  {
+    feature: 'SAML 2.0 SSO (Okta, Azure AD, Google)',
+    formaos: 'Enterprise plan',
+    competitor: 'Growth plan+',
+  },
+  { feature: 'SCIM user provisioning', formaos: 'Roadmap', competitor: 'yes' },
+  {
+    feature: 'Pre-built frameworks',
+    formaos: '7 frameworks',
+    competitor: '15+ frameworks',
+  },
+  {
+    feature: 'Continuous compliance scoring',
+    formaos: 'yes',
+    competitor: 'yes',
+  },
+  {
+    feature: 'Compliance program setup wizard',
+    formaos: 'Framework templates',
+    competitor: 'Guided onboarding wizard',
+  },
 ] as const;
 
 const competitorStrengths = [

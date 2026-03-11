@@ -56,7 +56,7 @@ const outcomeStats = [
     icon: TrendingUp,
   },
   {
-    value: '9 frameworks',
+    value: '7 frameworks',
     label: 'Pre-built, audit-ready out of the box',
     icon: GitBranch,
   },

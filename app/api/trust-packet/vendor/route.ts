@@ -274,7 +274,7 @@ async function buildVendorTrustPacketPdf(payload: {
   return await pdfDoc.save();
 }
 
-export async function GET(request: Request) {
+export async function GET() {
   // Rate-limit: 5 requests / 10 min per IP (unauthenticated public endpoint)
   const identifier = await getClientIdentifier();
   const rl = await checkRateLimit(RATE_LIMITS.EXPORT, identifier);

@@ -10,7 +10,7 @@ const FullControlMapViz = dynamic(
 
 const CONTROL_MAP_STATS = {
   frameworks: 7,
-  controls: 147,
+  controls: 70,
   crossEdges: 42,
 };
 
@@ -20,55 +20,55 @@ const frameworkChips = [
     color: 'bg-teal-400',
     glow: 'shadow-teal-400/40',
     label: 'ISO 27001',
-    count: 21,
+    count: 10,
   },
   {
     id: 'soc',
     color: 'bg-indigo-400',
     glow: 'shadow-indigo-400/40',
     label: 'SOC 2',
-    count: 21,
+    count: 11,
   },
   {
     id: 'nist',
     color: 'bg-sky-400',
     glow: 'shadow-sky-400/40',
     label: 'NIST CSF',
-    count: 21,
+    count: 10,
   },
   {
     id: 'hipaa',
     color: 'bg-pink-400',
     glow: 'shadow-pink-400/40',
     label: 'HIPAA',
-    count: 20,
+    count: 10,
   },
   {
     id: 'gdpr',
     color: 'bg-violet-400',
     glow: 'shadow-violet-400/40',
     label: 'GDPR',
-    count: 19,
+    count: 10,
   },
   {
     id: 'pci',
     color: 'bg-orange-400',
     glow: 'shadow-orange-400/40',
     label: 'PCI DSS',
-    count: 19,
+    count: 10,
   },
   {
     id: 'cis',
     color: 'bg-emerald-400',
     glow: 'shadow-emerald-400/40',
     label: 'CIS Controls',
-    count: 22,
+    count: 10,
   },
 ];
 
 const statBlocks = [
   { label: 'Frameworks', value: '7', accent: 'text-teal-300/80' },
-  { label: 'Controls', value: '147', accent: 'text-indigo-300/80' },
+  { label: 'Controls', value: '70+', accent: 'text-indigo-300/80' },
   { label: 'Cross-Links', value: '42', accent: 'text-sky-300/80' },
   { label: 'Coverage', value: '100%', accent: 'text-emerald-300/80' },
 ];
@@ -111,7 +111,7 @@ export function FullControlMapSection() {
           </h2>
 
           <p className="mx-auto mb-10 max-w-3xl text-base leading-relaxed text-gray-400 sm:text-lg lg:text-xl">
-            147 controls across 7 enterprise frameworks - all interconnected,
+            70+ controls across 7 enterprise frameworks — all interconnected,
             all continuously monitored, all audit-ready. Hover any node to trace
             its cross-framework compliance chain.
           </p>
@@ -179,7 +179,7 @@ export function FullControlMapSection() {
                   </p>
                 </div>
                 <p className="text-xs text-slate-300/80 leading-relaxed">
-                  All 147 controls mapped across 7 frameworks with cross-linked
+                  All 70+ controls mapped across 7 frameworks with cross-linked
                   compliance chains.
                 </p>
               </div>
@@ -235,7 +235,7 @@ export function FullControlMapSection() {
                     <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-teal-400" />
                   </span>
                   <p className="text-[10px] uppercase tracking-[0.18em] text-teal-300/80">
-                    147 Controls Mapped
+                    70+ Controls Mapped
                   </p>
                 </div>
                 <p className="mt-1.5 text-xs text-slate-300">
