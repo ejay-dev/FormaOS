@@ -26,6 +26,7 @@ export const resourceLinks = [
   { href: '/trust/packet', label: 'Trust Packet (PDF)' },
   { href: '/frameworks', label: 'Framework Coverage' },
   { href: '/integrations', label: 'Integrations' },
+  { href: '/enterprise', label: 'Enterprise' },
   { href: '/customer-stories', label: 'Customer Stories' },
   { href: '/compare', label: 'Compare' },
   { href: '/changelog', label: 'Changelog' },
