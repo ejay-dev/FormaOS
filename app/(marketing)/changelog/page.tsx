@@ -45,7 +45,7 @@ const ENTRIES: readonly ChangelogEntry[] = [
       'Linear integration launched — compliance task push/sync via GraphQL API with automatic state mapping.',
       'Google Drive integration launched — link Drive files as evidence artifacts with chain-of-custody metadata and version tracking.',
       'SHA-256 evidence checksums wired end-to-end — client-side hash computation before upload, stored alongside every evidence artifact for tamper detection.',
-      'Automated compliance posture checks running every 6 hours via Vercel cron — expiring credentials, overdue tasks, evidence gaps, and score drift detection.',
+      'Automated compliance posture checks running daily via Vercel cron \u2014 expiring credentials, overdue tasks, evidence gaps, and score drift detection.',
       'Data residency configuration system built — AU region active, US and EU regions infrastructure-ready with per-organisation region selection.',
       'OWASP Top 10 automated security scanner added — 8 pattern checks covering secrets, SQL injection, XSS, SSRF, insecure crypto, and dependency vulnerabilities.',
       'Platform Features marketing page shipped — 18 core features across compliance, workflow, security, and collaboration categories.',

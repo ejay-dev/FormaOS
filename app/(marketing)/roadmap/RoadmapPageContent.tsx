@@ -76,7 +76,7 @@ const ROADMAP_ITEMS: RoadmapItem[] = [
   {
     title: 'Scheduled Compliance Checks',
     description:
-      'Automated compliance posture checks running every 6 hours: expiring credentials, overdue tasks, evidence gaps, and score updates.',
+      'Automated compliance posture checks running daily: expiring credentials, overdue tasks, evidence gaps, and score updates.',
     status: 'shipped',
     quarter: 'Q1 2026',
     category: 'Compliance Core',

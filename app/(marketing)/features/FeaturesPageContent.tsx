@@ -49,7 +49,7 @@ const features: PlatformFeature[] = [
     icon: ClipboardCheck,
     title: 'Compliance Scoring Engine',
     description:
-      'Real-time compliance posture scoring with historical trending. Scheduled checks run every 6 hours to detect drift, expiring credentials, and evidence gaps.',
+      'Real-time compliance posture scoring with historical trending. Scheduled checks run daily to detect drift, expiring credentials, and evidence gaps.',
     category: 'Compliance Core',
   },
   {

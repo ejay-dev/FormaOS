@@ -66,20 +66,76 @@ const idealIf = [
 ] as const;
 
 const featureComparison = [
-  { feature: 'Operational workflow enforcement', formaos: 'yes', competitor: 'no' },
-  { feature: 'Named control ownership with audit trail', formaos: 'yes', competitor: 'partial' },
-  { feature: 'Evidence verification with approval chain', formaos: 'yes', competitor: 'partial' },
-  { feature: 'Immutable, tamper-evident audit logs', formaos: 'yes', competitor: 'yes' },
-  { feature: 'Healthcare compliance (AHPRA, NSQHS, RACGP)', formaos: 'yes', competitor: 'no' },
-  { feature: 'NDIS Practice Standards (all 8 modules)', formaos: 'yes', competitor: 'no' },
-  { feature: 'Incident management with corrective actions', formaos: 'yes', competitor: 'partial' },
-  { feature: 'Credential / workforce governance', formaos: 'yes', competitor: 'no' },
-  { feature: 'AU-first data residency', formaos: 'AU (US/EU on roadmap)', competitor: 'US-first, limited AU' },
-  { feature: 'SAML 2.0 SSO (Okta, Azure AD, Google)', formaos: 'Enterprise plan', competitor: 'Business plan+' },
-  { feature: 'SCIM user provisioning', formaos: 'Enterprise plan', competitor: 'yes' },
-  { feature: 'Pre-built frameworks', formaos: '7 frameworks', competitor: '20+ frameworks' },
-  { feature: 'Continuous compliance scoring', formaos: 'yes', competitor: 'yes' },
-  { feature: 'Cloud infrastructure scanning', formaos: 'Via integrations', competitor: 'Native (200+ integrations)' },
+  {
+    feature: 'Operational workflow enforcement',
+    formaos: 'yes',
+    competitor: 'no',
+  },
+  {
+    feature: 'Named control ownership with audit trail',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
+  {
+    feature: 'Evidence verification with approval chain',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
+  {
+    feature: 'Immutable, tamper-evident audit logs',
+    formaos: 'yes',
+    competitor: 'yes',
+  },
+  {
+    feature: 'Healthcare compliance (AHPRA, NSQHS, RACGP)',
+    formaos: 'yes',
+    competitor: 'no',
+  },
+  {
+    feature: 'NDIS Practice Standards (all 8 modules)',
+    formaos: 'yes',
+    competitor: 'no',
+  },
+  {
+    feature: 'Incident management with corrective actions',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
+  {
+    feature: 'Credential / workforce governance',
+    formaos: 'yes',
+    competitor: 'no',
+  },
+  {
+    feature: 'AU-first data residency',
+    formaos: 'AU (US/EU on roadmap)',
+    competitor: 'US-first, limited AU',
+  },
+  {
+    feature: 'SAML 2.0 SSO (Okta, Azure AD, Google)',
+    formaos: 'Enterprise plan',
+    competitor: 'Business plan+',
+  },
+  {
+    feature: 'SCIM user provisioning',
+    formaos: 'Enterprise plan',
+    competitor: 'yes',
+  },
+  {
+    feature: 'Pre-built frameworks',
+    formaos: '7 frameworks',
+    competitor: '20+ frameworks',
+  },
+  {
+    feature: 'Continuous compliance scoring',
+    formaos: 'yes',
+    competitor: 'yes',
+  },
+  {
+    feature: 'Cloud infrastructure scanning',
+    formaos: 'Via integrations',
+    competitor: 'Native (200+ integrations)',
+  },
 ] as const;
 
 const competitorStrengths = [

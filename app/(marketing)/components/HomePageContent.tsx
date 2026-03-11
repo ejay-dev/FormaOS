@@ -108,7 +108,7 @@ const platformArchitecture = {
     '12 workflow triggers (evidence expiry, policy review, control status, task overdue, cert expiry, shift completion, etc.)',
     'Conditional task generation',
     'Auto-escalation & notifications',
-    'Scheduled compliance checks every 6 hours',
+    'Scheduled daily compliance checks',
   ],
   'Evidence Vault': [
     'Secure encrypted artifact storage',
