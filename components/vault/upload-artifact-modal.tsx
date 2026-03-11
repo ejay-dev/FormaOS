@@ -1,18 +1,18 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import { createSupabaseClient } from "@/lib/supabase/client"
-import { registerVaultArtifact } from "@/app/app/actions/vault"
-import { 
-  FileUp, 
-  Loader2, 
-  X, 
-  ShieldCheck, 
+import { useState, useEffect } from 'react';
+import { createSupabaseClient } from '@/lib/supabase/client';
+import { registerVaultArtifact } from '@/app/app/actions/vault';
+import {
+  FileUp,
+  Loader2,
+  X,
+  ShieldCheck,
   FileText,
-  CheckCircle2
-} from "lucide-react"
-import { useComplianceAction } from "@/components/compliance-system"
-import { useAppStore } from "@/lib/stores/app"
+  CheckCircle2,
+} from 'lucide-react';
+import { useComplianceAction } from '@/components/compliance-system';
+import { useAppStore } from '@/lib/stores/app';
 
 /**
  * =========================================================
@@ -22,94 +22,111 @@ import { useAppStore } from "@/lib/stores/app"
  * =========================================================
  */
 
-export function UploadArtifactModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-  const [file, setFile] = useState<File | null>(null)
-  const [title, setTitle] = useState("")
-  const [uploading, setUploading] = useState(false)
-  const [uploadProgress, setUploadProgress] = useState(0)
-  const [success, setSuccess] = useState(false)
-  const supabase = createSupabaseClient()
-  const { evidenceAdded, reportError } = useComplianceAction()
-  const orgId = useAppStore((state) => state.organization?.id ?? null)
+export function UploadArtifactModal({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+}) {
+  const [file, setFile] = useState<File | null>(null);
+  const [title, setTitle] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [success, setSuccess] = useState(false);
+  const supabase = createSupabaseClient();
+  const { evidenceAdded, reportError } = useComplianceAction();
+  const orgId = useAppStore((state) => state.organization?.id ?? null);
 
   // Reset state when modal closes
   useEffect(() => {
     if (!isOpen) {
-      setFile(null)
-      setTitle("")
-      setSuccess(false)
-      setUploadProgress(0)
+      setFile(null);
+      setTitle('');
+      setSuccess(false);
+      setUploadProgress(0);
     }
-  }, [isOpen])
+  }, [isOpen]);
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   const handleUpload = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!file) return
+    e.preventDefault();
+    if (!file) return;
 
-    setUploading(true)
-    setUploadProgress(0)
-    
+    setUploading(true);
+    setUploadProgress(0);
+
     // Simulate progress for better UX
     const progressInterval = setInterval(() => {
-      setUploadProgress(prev => {
+      setUploadProgress((prev) => {
         if (prev >= 85) {
-          clearInterval(progressInterval)
-          return 85
+          clearInterval(progressInterval);
+          return 85;
         }
-        return prev + 5
-      })
-    }, 100)
+        return prev + 5;
+      });
+    }, 100);
 
     try {
       if (!orgId) {
-        throw new Error("Organization context missing")
+        throw new Error('Organization context missing');
       }
 
+      // 0. Compute SHA-256 checksum of file for chain-of-custody
+      const arrayBuffer = await file.arrayBuffer();
+      const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const checksum = hashArray
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join('');
+
       // 1. Upload Binary to Supabase Storage
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${Math.random()}.${fileExt}`
-      const filePath = `${orgId}/vault/${fileName}`
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `${orgId}/vault/${fileName}`;
 
       const { error: storageError } = await supabase.storage
         .from('evidence')
-        .upload(filePath, file)
+        .upload(filePath, file);
 
-      if (storageError) throw storageError
-      
-      setUploadProgress(95)
+      if (storageError) throw storageError;
 
-      // 2. Register Artifact in Database via Server Action
-      const artifactTitle = title || file.name
+      setUploadProgress(95);
+
+      // 2. Register Artifact in Database via Server Action (with checksum)
+      const artifactTitle = title || file.name;
       await registerVaultArtifact({
         title: artifactTitle,
         filePath: filePath,
         fileType: fileExt || 'unknown',
-        fileSize: file.size
-      })
+        fileSize: file.size,
+        checksum,
+      });
 
-      clearInterval(progressInterval)
-      setUploadProgress(100)
-      
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+
       // Show success state
-      setSuccess(true)
-      
+      setSuccess(true);
+
       // Report to compliance system
-      evidenceAdded(artifactTitle)
-      
+      evidenceAdded(artifactTitle);
+
       // Close after animation
       setTimeout(() => {
-        onClose()
-      }, 1500)
-      
+        onClose();
+      }, 1500);
     } catch (error: any) {
-      clearInterval(progressInterval)
-      reportError({ title: "Upload failed", message: error.message || "Unknown error" })
+      clearInterval(progressInterval);
+      reportError({
+        title: 'Upload failed',
+        message: error.message || 'Unknown error',
+      });
     } finally {
-      setUploading(false)
+      setUploading(false);
     }
-  }
+  };
 
   // Success state
   if (success) {
@@ -125,7 +142,7 @@ export function UploadArtifactModal({ isOpen, onClose }: { isOpen: boolean; onCl
           </p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -136,9 +153,14 @@ export function UploadArtifactModal({ isOpen, onClose }: { isOpen: boolean; onCl
             <div className="h-8 w-8 rounded-full bg-violet-400/20 flex items-center justify-center">
               <div className="h-2 w-2 rounded-full bg-violet-400" />
             </div>
-            <h3 className="font-bold text-slate-100">Upload Evidence Artifact</h3>
+            <h3 className="font-bold text-slate-100">
+              Upload Evidence Artifact
+            </h3>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-xl transition-colors">
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-white/10 rounded-xl transition-colors"
+          >
             <X className="h-4 w-4 text-slate-400" />
           </button>
         </div>
@@ -146,31 +168,45 @@ export function UploadArtifactModal({ isOpen, onClose }: { isOpen: boolean; onCl
         <form onSubmit={handleUpload} className="p-6 space-y-6">
           {/* File Dropzone */}
           <div className="group relative border-2 border-dashed border-violet-400/30 rounded-2xl p-8 transition-all hover:border-violet-400/50 hover:bg-violet-400/5 flex flex-col items-center justify-center text-center">
-            <input 
-              type="file" 
+            <input
+              type="file"
               onChange={(e) => setFile(e.target.files?.[0] || null)}
-              className="absolute inset-0 opacity-0 cursor-pointer" 
+              className="absolute inset-0 opacity-0 cursor-pointer"
             />
             {file ? (
               <div className="flex flex-col items-center">
                 <div className="h-12 w-12 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center mb-2 border border-violet-400/30">
                   <FileText className="h-6 w-6" />
                 </div>
-                <p className="text-sm font-bold text-slate-100 truncate max-w-[200px]">{file.name}</p>
-                <p className="text-xs text-violet-300 uppercase font-bold mt-1">Ready to Secure</p>
+                <p className="text-sm font-bold text-slate-100 truncate max-w-[200px]">
+                  {file.name}
+                </p>
+                <p className="text-xs text-violet-300 uppercase font-bold mt-1">
+                  Ready to Secure
+                </p>
               </div>
             ) : (
               <>
                 <FileUp className="h-8 w-8 text-violet-400/50 mb-3 group-hover:text-violet-400 transition-colors" />
-                <p className="text-sm font-bold text-slate-100">Drop artifact here</p>
-                <p className="text-xs text-slate-400 mt-1">PDF, JPG, PNG, DOC, XLS (Max 10MB)</p>
+                <p className="text-sm font-bold text-slate-100">
+                  Drop artifact here
+                </p>
+                <p className="text-xs text-slate-400 mt-1">
+                  PDF, JPG, PNG, DOC, XLS (Max 10MB)
+                </p>
               </>
             )}
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="field-104" className="text-xs font-bold uppercase text-slate-400 tracking-widest ml-1">Artifact Label</label>
-            <input id="field-104" 
+            <label
+              htmlFor="field-104"
+              className="text-xs font-bold uppercase text-slate-400 tracking-widest ml-1"
+            >
+              Artifact Label
+            </label>
+            <input
+              id="field-104"
               placeholder="e.g. Annual Fire Safety Certificate 2025"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -182,11 +218,13 @@ export function UploadArtifactModal({ isOpen, onClose }: { isOpen: boolean; onCl
           {uploading && (
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
-                <span className="text-violet-300 font-medium">Securing artifact...</span>
+                <span className="text-violet-300 font-medium">
+                  Securing artifact...
+                </span>
                 <span className="text-slate-400">{uploadProgress}%</span>
               </div>
               <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                <div 
+                <div
                   className="h-full bg-gradient-to-r from-violet-500 to-purple-500 rounded-full transition-all duration-300"
                   style={{ width: `${uploadProgress}%` }}
                 />
@@ -194,8 +232,8 @@ export function UploadArtifactModal({ isOpen, onClose }: { isOpen: boolean; onCl
             </div>
           )}
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={!file || uploading}
             className="w-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 text-white p-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50 shadow-[0_10px_30px_rgba(139,92,246,0.35)] active:scale-[0.98]"
           >
@@ -214,5 +252,5 @@ export function UploadArtifactModal({ isOpen, onClose }: { isOpen: boolean; onCl
         </form>
       </div>
     </div>
-  )
+  );
 }

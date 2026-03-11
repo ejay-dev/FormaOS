@@ -16,7 +16,7 @@ const faqs = [
   {
     question: 'Do you support enterprise identity and access requirements?',
     answer:
-      'Google OAuth and MFA enforcement are available on all plans. Enterprise plans include SAML 2.0 SSO with support for Okta, Azure AD, and Google Workspace. Session policy management and IP restrictions are available. SCIM provisioning is on our roadmap.',
+      'Google OAuth and MFA enforcement are available on all plans. Enterprise plans include SAML 2.0 SSO with support for Okta, Azure AD, and Google Workspace. Session policy management, IP restrictions, and SCIM provisioning are available on Enterprise plans.',
   },
   {
     question: 'Where is data stored, and can we select our region?',

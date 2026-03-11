@@ -40,7 +40,7 @@ const sections = [
     points: [
       'Google OAuth on all plans; SAML 2.0 SSO for Okta, Azure AD, Google Workspace on Enterprise plan',
       'MFA policy enforcement with configurable session duration and idle timeout controls',
-      'SCIM provisioning on roadmap for automated user lifecycle management - onboarding, role changes, and offboarding',
+      'SCIM provisioning for automated user lifecycle management - onboarding, role changes, and offboarding (Enterprise plan)',
       'Role-based access control with granular permissions: admin, compliance lead, reviewer, auditor, read-only',
       'Session management with forced re-authentication for sensitive operations (evidence approval, user management)',
       'SSO enforcement mode: block password login when SSO is configured to prevent shadow authentication',

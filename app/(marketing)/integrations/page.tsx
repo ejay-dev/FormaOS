@@ -44,7 +44,7 @@ const INTEGRATIONS: Integration[] = [
     description:
       'Sync compliance tasks bidirectionally with Jira issues. Control owners work in their existing workflow - task status, evidence links, and deadlines stay in sync.',
     complianceUseCase: 'SOC 2 CC8 change management evidence',
-    status: 'coming-soon',
+    status: 'live',
     initials: 'Ji',
     color: 'bg-blue-500/20 text-blue-400',
   },
@@ -54,7 +54,7 @@ const INTEGRATIONS: Integration[] = [
     description:
       'Push compliance action items to Linear with full context. Status updates sync back automatically with timestamps for audit trail.',
     complianceUseCase: 'ISO 27001 A.12.1.2 change management',
-    status: 'coming-soon',
+    status: 'live',
     initials: 'Li',
     color: 'bg-violet-500/20 text-violet-400',
   },
@@ -94,7 +94,7 @@ const INTEGRATIONS: Integration[] = [
     name: 'Okta',
     category: 'Identity & SSO',
     description:
-      'SAML 2.0 SSO with Okta. MFA policy enforcement supported. SCIM provisioning on the roadmap.',
+      'SAML 2.0 SSO with Okta. MFA policy enforcement supported. SCIM provisioning available on Enterprise plan.',
     complianceUseCase: 'ISO 27001 A.9 access control evidence',
     status: 'live',
     initials: 'Ok',
@@ -104,7 +104,7 @@ const INTEGRATIONS: Integration[] = [
     name: 'Microsoft Entra ID',
     category: 'Identity & SSO',
     description:
-      'Azure Active Directory integration for enterprise SSO and conditional access evidence. SCIM provisioning on the roadmap.',
+      'Azure Active Directory integration for enterprise SSO and conditional access evidence. SCIM provisioning available on Enterprise plan.',
     complianceUseCase: 'SOC 2 CC6 logical access controls',
     status: 'live',
     initials: 'ME',
@@ -190,7 +190,7 @@ const INTEGRATIONS: Integration[] = [
     description:
       'Link Google Drive files directly as evidence artifacts. Version history and access timestamps preserved for audit trail.',
     complianceUseCase: 'Evidence chain-of-custody documentation',
-    status: 'coming-soon',
+    status: 'live',
     initials: 'GD',
     color: 'bg-yellow-500/20 text-yellow-400',
   },

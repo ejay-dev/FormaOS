@@ -40,7 +40,7 @@ const enterpriseFeatures = [
     icon: Lock,
     title: 'SAML 2.0 SSO & MFA Enforcement',
     description:
-      'Metadata-based SAML 2.0 configuration with Okta, Microsoft Entra ID (Azure AD), and Google Workspace. MFA enforcement and session policy management. SCIM provisioning on the roadmap.',
+      'Metadata-based SAML 2.0 configuration with Okta, Microsoft Entra ID (Azure AD), and Google Workspace. MFA enforcement and session policy management. SCIM provisioning for automated user lifecycle management.',
   },
   {
     icon: Globe,

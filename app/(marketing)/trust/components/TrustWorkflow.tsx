@@ -115,7 +115,7 @@ const trustWorkflow = [
       'Buyer stakeholders verify control ownership, evidence traceability, and operational accountability against their internal requirements.',
     subpoints: [
       'SAML 2.0 SSO integration with Okta, Azure AD, and Google Workspace - verified during trial setup',
-      'SCIM provisioning on roadmap for automated user lifecycle management and role-based access control validation',
+      'SCIM provisioning for automated user lifecycle management and role-based access control validation (Enterprise plan)',
       'Tamper-evident audit logs reviewed: every compliance action timestamped, immutable, and exportable',
       'DPA, vendor assurance questionnaire, and SLA documentation provided for legal and risk sign-off',
     ],

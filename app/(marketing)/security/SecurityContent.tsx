@@ -64,7 +64,7 @@ const securityLayers = {
     'Role-based access control (RBAC) with segregation of duties',
     'SAML 2.0 SSO - Okta, Azure AD, Google Workspace (Enterprise)',
     'MFA policy enforcement and session duration controls',
-    'SCIM provisioning on roadmap for automated user lifecycle management',
+    'SCIM provisioning for automated user lifecycle management (Enterprise plan)',
   ],
   'Data Protection': [
     'AES-256 encryption at rest - evidence, controls, and audit logs',

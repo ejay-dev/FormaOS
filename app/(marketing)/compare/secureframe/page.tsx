@@ -116,7 +116,11 @@ const featureComparison = [
     formaos: 'Enterprise plan',
     competitor: 'Growth plan+',
   },
-  { feature: 'SCIM user provisioning', formaos: 'Roadmap', competitor: 'yes' },
+  {
+    feature: 'SCIM user provisioning',
+    formaos: 'Enterprise plan',
+    competitor: 'yes',
+  },
   {
     feature: 'Pre-built frameworks',
     formaos: '7 frameworks',

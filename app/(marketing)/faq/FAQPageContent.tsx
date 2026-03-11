@@ -76,7 +76,7 @@ const faqCategories = [
       },
       {
         q: 'Does FormaOS support SSO and MFA?',
-        a: 'FormaOS supports Google OAuth on all plans. Enterprise plans include SAML 2.0 SSO for Okta, Azure AD, and Google Workspace. SCIM provisioning is on our roadmap for automated user lifecycle management. MFA policy enforcement is supported across all SSO providers. Session duration controls and access governance policies are configurable at the organizational level.',
+        a: 'FormaOS supports Google OAuth on all plans. Enterprise plans include SAML 2.0 SSO for Okta, Azure AD, and Google Workspace. SCIM provisioning is available on Enterprise plans for automated user lifecycle management. MFA policy enforcement is supported across all SSO providers. Session duration controls and access governance policies are configurable at the organizational level.',
       },
       {
         q: 'Where is data stored and what residency options exist?',
@@ -188,7 +188,7 @@ const faqCategories = [
       },
       {
         q: 'Can FormaOS support multi-entity or multi-site deployments?',
-        a: 'Yes. Enterprise plans support multi-entity and multi-site deployments with separate organizational boundaries, role-based access governance per entity, and consolidated compliance posture reporting across the group. SAML SSO ensures identity governance scales with your organizational structure. SCIM provisioning is on our roadmap.',
+        a: 'Yes. Enterprise plans support multi-entity and multi-site deployments with separate organizational boundaries, role-based access governance per entity, and consolidated compliance posture reporting across the group. SAML SSO and SCIM provisioning ensure identity governance scales with your organizational structure.',
       },
       {
         q: 'Does FormaOS conduct penetration testing?',

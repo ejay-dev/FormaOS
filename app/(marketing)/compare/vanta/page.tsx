@@ -76,7 +76,7 @@ const featureComparison = [
   { feature: 'Credential / workforce governance', formaos: 'yes', competitor: 'no' },
   { feature: 'AU-first data residency', formaos: 'AU (US/EU on roadmap)', competitor: 'US-first, limited AU' },
   { feature: 'SAML 2.0 SSO (Okta, Azure AD, Google)', formaos: 'Enterprise plan', competitor: 'Business plan+' },
-  { feature: 'SCIM user provisioning', formaos: 'Roadmap', competitor: 'yes' },
+  { feature: 'SCIM user provisioning', formaos: 'Enterprise plan', competitor: 'yes' },
   { feature: 'Pre-built frameworks', formaos: '7 frameworks', competitor: '20+ frameworks' },
   { feature: 'Continuous compliance scoring', formaos: 'yes', competitor: 'yes' },
   { feature: 'Cloud infrastructure scanning', formaos: 'Via integrations', competitor: 'Native (200+ integrations)' },
@@ -102,7 +102,7 @@ const procurementChecks = [
   {
     title: 'Enterprise SSO and identity governance',
     detail:
-      'SAML 2.0 SSO (Okta, Azure AD, Google Workspace) and MFA policy enforcement - ready for enterprise identity requirements. SCIM provisioning on the roadmap.',,
+      'SAML 2.0 SSO (Okta, Azure AD, Google Workspace) and MFA policy enforcement - ready for enterprise identity requirements. SCIM provisioning available on Enterprise plan.',,
   },
 ] as const;
 

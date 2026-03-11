@@ -104,7 +104,7 @@ const milestones = [
     year: '2025',
     title: 'Enterprise-grade infrastructure',
     detail:
-      'Data residency AU default (US/EU on roadmap), SCIM provisioning (on roadmap), APRA CPS 234 framework support, and the full enterprise procurement package - DPA, vendor assurance, SLA, and security review packet.',
+      'Data residency AU default (US/EU on roadmap), SCIM provisioning, APRA CPS 234 framework support, and the full enterprise procurement package - DPA, vendor assurance, SLA, and security review packet.',
   },
 ] as const;
 

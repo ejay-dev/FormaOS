@@ -116,7 +116,11 @@ const featureComparison = [
     formaos: 'Enterprise plan',
     competitor: 'Enterprise plan',
   },
-  { feature: 'SCIM user provisioning', formaos: 'Roadmap', competitor: 'yes' },
+  {
+    feature: 'SCIM user provisioning',
+    formaos: 'Enterprise plan',
+    competitor: 'yes',
+  },
   {
     feature: 'Pre-built frameworks',
     formaos: '7 frameworks',
@@ -154,7 +158,7 @@ const procurementChecks = [
   {
     title: 'Enterprise identity controls',
     detail:
-      'SAML 2.0 SSO (Okta, Azure AD, Google Workspace) and MFA policy enforcement ready for enterprise identity requirements. SCIM provisioning on the roadmap.',
+      'SAML 2.0 SSO (Okta, Azure AD, Google Workspace) and MFA policy enforcement ready for enterprise identity requirements. SCIM provisioning available on Enterprise plan.',
   },
 ] as const;
 
