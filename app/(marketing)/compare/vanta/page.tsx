@@ -102,7 +102,7 @@ const procurementChecks = [
   {
     title: 'Enterprise SSO and identity governance',
     detail:
-      'SAML 2.0 SSO (Okta, Azure AD, Google Workspace) and MFA policy enforcement - ready for enterprise identity requirements. SCIM provisioning available on Enterprise plan.',,
+      'SAML 2.0 SSO (Okta, Azure AD, Google Workspace) and MFA policy enforcement - ready for enterprise identity requirements. SCIM provisioning available on Enterprise plan.',
   },
 ] as const;
 

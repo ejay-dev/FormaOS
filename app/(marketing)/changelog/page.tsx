@@ -291,13 +291,9 @@ export default function ChangelogPage() {
       <div className="mx-auto max-w-3xl px-4 pt-12 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-center justify-center gap-3 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-6 py-4 backdrop-blur-sm">
           <span className="text-xs text-slate-500">Releases:</span>
-          <span className="text-xs font-semibold text-violet-400">
-            v2.1.0
-          </span>
+          <span className="text-xs font-semibold text-violet-400">v2.1.0</span>
           <span className="text-[10px] text-slate-700">·</span>
-          <span className="text-xs text-slate-500">
-            v2.0.2 Citadel
-          </span>
+          <span className="text-xs text-slate-500">v2.0.2 Citadel</span>
           <span className="text-[10px] text-slate-700">·</span>
           <span className="text-xs text-slate-500">v1.1 — v1.8</span>
           <span className="text-[10px] text-slate-700">·</span>
