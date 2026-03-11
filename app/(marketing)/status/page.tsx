@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
-import { CheckCircle2, XCircle, Clock, Activity } from 'lucide-react';
 import { fetchPublicUptimeChecks } from '@/lib/status/public-uptime';
-import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
-import { CompactHero } from '@/components/motion/CompactHero';
-import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
+import StatusPageContent from './StatusPageContent';
+import type { StatusRow } from './StatusPageContent';
 import { siteUrl } from '@/lib/seo';
+
 // Status page fetches live uptime data — use ISR with 60-second revalidation
 export const revalidate = 60;
 
@@ -12,13 +11,6 @@ export const metadata: Metadata = {
   title: 'FormaOS | Status',
   description: 'Public uptime checks and status for FormaOS.',
   alternates: { canonical: `${siteUrl}/status` },
-};
-
-type Row = {
-  checked_at: string;
-  ok: boolean;
-  latency_ms: number | null;
-  source: string;
 };
 
 function pct(ok: number, total: number) {
@@ -31,12 +23,12 @@ export default async function StatusPage() {
   const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
-  let rows: Row[] = [];
+  let rows: StatusRow[] = [];
   try {
     rows = (await fetchPublicUptimeChecks({
       sinceIso: since7d,
       limit: 4000,
-    })) as Row[];
+    })) as StatusRow[];
   } catch {
     // Graceful degradation — render the page with empty data
   }
@@ -60,118 +52,17 @@ export default async function StatusPage() {
   })();
 
   return (
-    <MarketingPageShell>
-      <CompactHero
-        title="System Status"
-        description="Uptime checks are published from a scheduled health probe. This page reports platform availability signals, not contractual SLAs."
-        topColor="emerald"
-        bottomColor="cyan"
-        visualContent={
-          <CompactHeroIcon
-            icon={<Activity className="w-8 h-8 text-emerald-400" />}
-            color="52,211,153"
-          />
-        }
-      />
-
-      <div className="mx-auto max-w-5xl px-6 pb-24">
-        <p className="text-sm text-muted-foreground mb-8">
-          Updated: {now.toLocaleString()}
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="rounded-2xl border border-border bg-card p-6">
-            <div className="flex items-center justify-between">
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Latest Check
-              </p>
-              {latest?.ok ? (
-                <CheckCircle2
-                  className="h-5 w-5 text-emerald-500"
-                  aria-hidden="true"
-                />
-              ) : (
-                <XCircle className="h-5 w-5 text-rose-500" aria-hidden="true" />
-              )}
-            </div>
-            <div className="mt-3 text-sm text-foreground">
-              {latest ? (latest.ok ? 'Operational' : 'Degraded') : 'No data'}
-            </div>
-            <div className="mt-1 text-xs text-muted-foreground">
-              {latest ? new Date(latest.checked_at).toLocaleString() : 'N/A'}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-border bg-card p-6">
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Uptime (24h)
-            </p>
-            <div className="mt-3 text-3xl font-bold text-foreground">
-              {uptime24}%
-            </div>
-            <div className="mt-1 text-xs text-muted-foreground">
-              Checks: {last24.length}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-border bg-card p-6">
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Uptime (7d)
-            </p>
-            <div className="mt-3 text-3xl font-bold text-foreground">
-              {uptime7}%
-            </div>
-            <div className="mt-1 text-xs text-muted-foreground">
-              Avg latency: {latencyAvgMs !== null ? `${latencyAvgMs}ms` : 'N/A'}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-10 rounded-2xl border border-border bg-card overflow-hidden">
-          <div className="flex items-center gap-2 border-b border-border px-6 py-4">
-            <Clock className="h-4 w-4 text-primary" aria-hidden="true" />
-            <h2 className="text-sm font-semibold text-foreground">
-              Recent Checks
-            </h2>
-          </div>
-          <div className="divide-y divide-border">
-            {(rows ?? []).slice(0, 40).map((r) => (
-              <div
-                key={r.checked_at}
-                className="flex items-center justify-between px-6 py-3"
-              >
-                <div className="flex items-center gap-3">
-                  {r.ok ? (
-                    <CheckCircle2
-                      className="h-4 w-4 text-emerald-500"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    <XCircle
-                      className="h-4 w-4 text-rose-500"
-                      aria-hidden="true"
-                    />
-                  )}
-                  <div className="text-sm text-foreground">
-                    {new Date(r.checked_at).toLocaleString()}
-                  </div>
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  {typeof r.latency_ms === 'number'
-                    ? `${r.latency_ms}ms`
-                    : 'N/A'}{' '}
-                  · {r.source}
-                </div>
-              </div>
-            ))}
-            {rows.length === 0 ? (
-              <div className="px-6 py-6 text-sm text-muted-foreground">
-                No uptime data has been published yet.
-              </div>
-            ) : null}
-          </div>
-        </div>
-      </div>
-    </MarketingPageShell>
+    <StatusPageContent
+      data={{
+        rows,
+        uptime7,
+        uptime24,
+        latencyAvgMs,
+        latest,
+        totalChecks7d: rows.length,
+        totalChecks24h: last24.length,
+        updatedAt: now.toLocaleString(),
+      }}
+    />
   );
 }

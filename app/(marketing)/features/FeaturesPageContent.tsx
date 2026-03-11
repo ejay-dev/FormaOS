@@ -1,5 +1,12 @@
 'use client';
 
+import { useRef, useState } from 'react';
+import {
+  motion,
+  useScroll,
+  useTransform,
+  AnimatePresence,
+} from 'framer-motion';
 import {
   Shield,
   FileCheck,
@@ -17,26 +24,31 @@ import {
   Lock,
   ClipboardCheck,
   Workflow,
+  ChevronRight,
+  Sparkles,
+  ArrowRight,
+  CheckCircle2,
   type LucideIcon,
 } from 'lucide-react';
 
-/* ─── Section Data ──────────────────────────────────────── */
+/* ─── Feature Data ──────────────────────────────────────── */
 
 interface PlatformFeature {
   icon: LucideIcon;
   title: string;
   description: string;
   category: string;
+  highlight?: string;
 }
 
 const features: PlatformFeature[] = [
-  // Compliance Core
   {
     icon: Layers,
     title: '7 Pre-Built Framework Packs',
     description:
       'ISO 27001, SOC 2, GDPR, HIPAA, PCI-DSS, NIST CSF, and CIS Controls — each with mapped controls, evidence requirements, and audit-ready reporting.',
     category: 'Compliance Core',
+    highlight: 'Most popular',
   },
   {
     icon: Shield,
@@ -58,9 +70,8 @@ const features: PlatformFeature[] = [
     description:
       'Upload, version, and verify compliance evidence with SHA-256 checksums. Every artifact gets tamper-evident chain-of-custody from upload through audit.',
     category: 'Compliance Core',
+    highlight: 'Enterprise-grade',
   },
-
-  // Workflow & Operations
   {
     icon: Workflow,
     title: 'Workflow Automation',
@@ -89,14 +100,13 @@ const features: PlatformFeature[] = [
       'NDIS and healthcare-specific: manage participant care plans, visits, progress notes, and service delivery logs with compliance evidence at every step.',
     category: 'Workflow & Operations',
   },
-
-  // Identity & Security
   {
     icon: Lock,
     title: 'SAML 2.0 SSO & SCIM Provisioning',
     description:
       'Enterprise identity governance with Okta, Azure AD, and Google Workspace. SCIM 2.0 for automated user lifecycle management — onboarding, role changes, and offboarding.',
     category: 'Identity & Security',
+    highlight: 'Enterprise',
   },
   {
     icon: Globe,
@@ -119,8 +129,6 @@ const features: PlatformFeature[] = [
       'Visual risk posture across your compliance program. Identify concentrations of overdue controls, evidence gaps, and credential expirations at a glance.',
     category: 'Identity & Security',
   },
-
-  // Collaboration & UX
   {
     icon: MessageSquare,
     title: 'Inline Comments & Collaboration',
@@ -170,110 +178,776 @@ const categories = [
   'Workflow & Operations',
   'Identity & Security',
   'Collaboration & UX',
-];
+] as const;
 
-const categoryDescriptions: Record<string, string> = {
-  'Compliance Core':
-    'Framework coverage, control enforcement, evidence management, and posture scoring.',
-  'Workflow & Operations':
-    'Automate compliance workflows, manage incidents, and handle bulk operations.',
-  'Identity & Security':
-    'Enterprise SSO, audit trails, data residency, and risk visualization.',
-  'Collaboration & UX':
-    'Comments, notifications, search, and power-user tools for daily operators.',
+const categoryMeta: Record<
+  string,
+  {
+    description: string;
+    gradient: string;
+    accent: string;
+    icon: LucideIcon;
+    dotColor: string;
+  }
+> = {
+  'Compliance Core': {
+    description:
+      'Framework coverage, control enforcement, evidence management, and posture scoring.',
+    gradient: 'from-emerald-500/20 via-emerald-500/5 to-transparent',
+    accent: 'emerald',
+    icon: Shield,
+    dotColor: 'bg-emerald-400',
+  },
+  'Workflow & Operations': {
+    description:
+      'Automate compliance workflows, manage incidents, and handle bulk operations.',
+    gradient: 'from-blue-500/20 via-blue-500/5 to-transparent',
+    accent: 'blue',
+    icon: Workflow,
+    dotColor: 'bg-blue-400',
+  },
+  'Identity & Security': {
+    description:
+      'Enterprise SSO, audit trails, data residency, and risk visualization.',
+    gradient: 'from-violet-500/20 via-violet-500/5 to-transparent',
+    accent: 'violet',
+    icon: Lock,
+    dotColor: 'bg-violet-400',
+  },
+  'Collaboration & UX': {
+    description:
+      'Comments, notifications, search, and power-user tools for daily operators.',
+    gradient: 'from-cyan-500/20 via-cyan-500/5 to-transparent',
+    accent: 'cyan',
+    icon: MessageSquare,
+    dotColor: 'bg-cyan-400',
+  },
 };
 
-/* ─── Component ─────────────────────────────────────────── */
+/* ─── Ambient Background ────────────────────────────────── */
+
+function FeatureHeroBackground() {
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      <motion.div
+        className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-emerald-500/[0.07] blur-[120px]"
+        animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.8, 0.5] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="absolute -bottom-20 -left-40 h-[500px] w-[500px] rounded-full bg-cyan-500/[0.06] blur-[100px]"
+        animate={{ scale: [1.1, 1, 1.1], opacity: [0.4, 0.7, 0.4] }}
+        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[400px] rounded-full bg-violet-500/[0.04] blur-[80px]"
+        animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <div
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
+          backgroundSize: '60px 60px',
+        }}
+      />
+      <div className="absolute inset-0 opacity-[0.015] mix-blend-overlay bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iMC4wNSIvPjwvc3ZnPg==')]" />
+    </div>
+  );
+}
+
+/* ─── Feature Card ──────────────────────────────────────── */
+
+function FeatureCard({
+  feature,
+  index,
+  accentColor,
+}: {
+  feature: PlatformFeature;
+  index: number;
+  accentColor: string;
+}) {
+  const Icon = feature.icon;
+  const [isHovered, setIsHovered] = useState(false);
+
+  const accentMap: Record<string, string> = {
+    emerald:
+      'group-hover:border-emerald-500/30 group-hover:shadow-emerald-500/5',
+    blue: 'group-hover:border-blue-500/30 group-hover:shadow-blue-500/5',
+    violet: 'group-hover:border-violet-500/30 group-hover:shadow-violet-500/5',
+    cyan: 'group-hover:border-cyan-500/30 group-hover:shadow-cyan-500/5',
+  };
+
+  const iconBgMap: Record<string, string> = {
+    emerald: 'bg-emerald-500/10 group-hover:bg-emerald-500/20',
+    blue: 'bg-blue-500/10 group-hover:bg-blue-500/20',
+    violet: 'bg-violet-500/10 group-hover:bg-violet-500/20',
+    cyan: 'bg-cyan-500/10 group-hover:bg-cyan-500/20',
+  };
+
+  const iconColorMap: Record<string, string> = {
+    emerald: 'text-emerald-400',
+    blue: 'text-blue-400',
+    violet: 'text-violet-400',
+    cyan: 'text-cyan-400',
+  };
+
+  const highlightBadgeMap: Record<string, string> = {
+    emerald: 'bg-emerald-400/10 text-emerald-400 border-emerald-400/20',
+    blue: 'bg-blue-400/10 text-blue-400 border-blue-400/20',
+    violet: 'bg-violet-400/10 text-violet-400 border-violet-400/20',
+    cyan: 'bg-cyan-400/10 text-cyan-400 border-cyan-400/20',
+  };
+
+  const glowColorMap: Record<string, string> = {
+    emerald: 'rgba(16,185,129,0.06)',
+    blue: 'rgba(59,130,246,0.06)',
+    violet: 'rgba(139,92,246,0.06)',
+    cyan: 'rgba(6,182,212,0.06)',
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{
+        duration: 0.5,
+        delay: index * 0.08,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`group relative rounded-2xl border border-white/[0.06] bg-white/[0.015] p-6 transition-all duration-500 hover:bg-white/[0.04] ${accentMap[accentColor]} hover:shadow-2xl`}
+    >
+      <AnimatePresence>
+        {isHovered && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="pointer-events-none absolute inset-0 rounded-2xl"
+            style={{
+              background: `radial-gradient(400px circle at top right, ${glowColorMap[accentColor]}, transparent)`,
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      {feature.highlight && (
+        <div className="absolute -top-2.5 right-4">
+          <span
+            className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${highlightBadgeMap[accentColor]}`}
+          >
+            <Sparkles className="h-2.5 w-2.5" />
+            {feature.highlight}
+          </span>
+        </div>
+      )}
+
+      <div className="relative z-10">
+        <div className="relative mb-5">
+          <div
+            className={`flex h-12 w-12 items-center justify-center rounded-xl ${iconBgMap[accentColor]} transition-all duration-500`}
+          >
+            <Icon
+              className={`h-5 w-5 ${iconColorMap[accentColor]} transition-all duration-300`}
+            />
+          </div>
+          <div
+            className={`absolute -inset-1 rounded-xl border ${
+              accentColor === 'emerald'
+                ? 'border-emerald-400/0 group-hover:border-emerald-400/20'
+                : accentColor === 'blue'
+                  ? 'border-blue-400/0 group-hover:border-blue-400/20'
+                  : accentColor === 'violet'
+                    ? 'border-violet-400/0 group-hover:border-violet-400/20'
+                    : 'border-cyan-400/0 group-hover:border-cyan-400/20'
+            } transition-all duration-500`}
+          />
+        </div>
+
+        <h3 className="mb-2.5 text-[15px] font-semibold text-white group-hover:text-white/95 transition-colors">
+          {feature.title}
+        </h3>
+        <p className="text-sm leading-relaxed text-slate-400 transition-colors">
+          {feature.description}
+        </p>
+        <div className="mt-4 flex items-center gap-1 text-xs font-medium text-slate-500 group-hover:text-slate-300 transition-colors">
+          <span>Learn more</span>
+          <ChevronRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5" />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ─── Category Section ──────────────────────────────────── */
+
+function CategorySection({ category }: { category: string }) {
+  const meta = categoryMeta[category];
+  const categoryFeatures = features.filter((f) => f.category === category);
+  const CategoryIcon = meta.icon;
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start end', 'end start'],
+  });
+  const backgroundOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.3, 0.7, 1],
+    [0, 1, 1, 0],
+  );
+
+  return (
+    <motion.section
+      ref={sectionRef}
+      className="relative mb-28 last:mb-0"
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.6, delay: 0.1 }}
+    >
+      <motion.div
+        className={`pointer-events-none absolute -inset-x-20 -inset-y-10 bg-gradient-to-b ${meta.gradient} rounded-3xl blur-3xl`}
+        style={{ opacity: backgroundOpacity }}
+      />
+
+      <div className="relative mb-10">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="flex items-center gap-4"
+        >
+          <div
+            className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${
+              meta.accent === 'emerald'
+                ? 'from-emerald-500/20 to-emerald-600/10'
+                : meta.accent === 'blue'
+                  ? 'from-blue-500/20 to-blue-600/10'
+                  : meta.accent === 'violet'
+                    ? 'from-violet-500/20 to-violet-600/10'
+                    : 'from-cyan-500/20 to-cyan-600/10'
+            } ring-1 ring-white/[0.06]`}
+          >
+            <CategoryIcon
+              className={`h-5 w-5 ${
+                meta.accent === 'emerald'
+                  ? 'text-emerald-400'
+                  : meta.accent === 'blue'
+                    ? 'text-blue-400'
+                    : meta.accent === 'violet'
+                      ? 'text-violet-400'
+                      : 'text-cyan-400'
+              }`}
+            />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+              {category}
+            </h2>
+            <p className="mt-1 text-sm text-slate-400">{meta.description}</p>
+          </div>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-1"
+        >
+          <span className={`h-1.5 w-1.5 rounded-full ${meta.dotColor}`} />
+          <span className="text-[11px] font-medium text-slate-400">
+            {categoryFeatures.length} features
+          </span>
+        </motion.div>
+      </div>
+
+      <div className="relative grid gap-5 sm:grid-cols-2">
+        {categoryFeatures.map((feature, i) => (
+          <FeatureCard
+            key={feature.title}
+            feature={feature}
+            index={i}
+            accentColor={meta.accent}
+          />
+        ))}
+      </div>
+    </motion.section>
+  );
+}
+
+/* ─── Stats Bar ─────────────────────────────────────────── */
+
+function StatsBar() {
+  const stats = [
+    {
+      value: '18',
+      label: 'Core Features',
+      color: 'text-emerald-400',
+      glow: 'from-emerald-500/[0.03]',
+    },
+    {
+      value: '7',
+      label: 'Framework Packs',
+      color: 'text-cyan-400',
+      glow: 'from-cyan-500/[0.03]',
+    },
+    {
+      value: '12+',
+      label: 'Automation Triggers',
+      color: 'text-violet-400',
+      glow: 'from-violet-500/[0.03]',
+    },
+    {
+      value: '5',
+      label: 'Security Layers',
+      color: 'text-blue-400',
+      glow: 'from-blue-500/[0.03]',
+    },
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: 0.3 }}
+      className="mx-auto max-w-4xl"
+    >
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        {stats.map((stat, i) => (
+          <motion.div
+            key={stat.label}
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.15 * i }}
+            className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 text-center backdrop-blur-sm"
+          >
+            <div className={`text-3xl font-bold ${stat.color} mb-1`}>
+              {stat.value}
+            </div>
+            <div className="text-xs text-slate-500 font-medium">
+              {stat.label}
+            </div>
+            <div
+              className={`absolute inset-0 bg-gradient-to-t ${stat.glow} to-transparent pointer-events-none`}
+            />
+          </motion.div>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+/* ─── Category Nav ──────────────────────────────────────── */
+
+function CategoryNav() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+      className="mx-auto max-w-3xl"
+    >
+      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-2 backdrop-blur-sm">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {categories.map((category) => {
+            const meta = categoryMeta[category];
+            const CatIcon = meta.icon;
+            return (
+              <button
+                key={category}
+                onClick={() => {
+                  const el = document.getElementById(
+                    category.toLowerCase().replace(/\s+/g, '-'),
+                  );
+                  el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                className="group flex items-center gap-2 rounded-xl px-3 py-2.5 text-left transition-all hover:bg-white/[0.04]"
+              >
+                <CatIcon
+                  className={`h-4 w-4 shrink-0 ${
+                    meta.accent === 'emerald'
+                      ? 'text-emerald-400/60 group-hover:text-emerald-400'
+                      : meta.accent === 'blue'
+                        ? 'text-blue-400/60 group-hover:text-blue-400'
+                        : meta.accent === 'violet'
+                          ? 'text-violet-400/60 group-hover:text-violet-400'
+                          : 'text-cyan-400/60 group-hover:text-cyan-400'
+                  } transition-colors`}
+                />
+                <span className="text-xs font-medium text-slate-400 group-hover:text-white transition-colors truncate">
+                  {category}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ─── Comparison Section ────────────────────────────────── */
+
+function ComparisonSection() {
+  const comparisonItems = [
+    'Pre-built framework packs vs manual control mapping',
+    'SHA-256 evidence verification vs trust-based uploads',
+    'Compliance gate enforcement vs honor-system reviews',
+    'SCIM automated provisioning vs manual user management',
+    'Real-time scoring engine vs periodic manual audits',
+    'Immutable audit trail vs editable log entries',
+  ];
+
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="relative mx-auto max-w-4xl"
+    >
+      <div className="rounded-3xl border border-white/[0.06] bg-gradient-to-b from-white/[0.03] to-transparent p-10 backdrop-blur-sm">
+        <div className="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-br from-emerald-500/[0.03] via-transparent to-cyan-500/[0.03]" />
+        <div className="relative">
+          <div className="mb-8 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
+              <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-white">Built Different</h2>
+              <p className="text-sm text-slate-400">
+                How FormaOS compares to legacy compliance tools
+              </p>
+            </div>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {comparisonItems.map((item, i) => {
+              const [formaos, legacy] = item.split(' vs ');
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -10 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.08 }}
+                  className="group flex items-start gap-3 rounded-xl border border-white/[0.04] bg-white/[0.01] p-4 transition-all hover:border-emerald-500/20 hover:bg-white/[0.03]"
+                >
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400/70 group-hover:text-emerald-400 transition-colors" />
+                  <div>
+                    <span className="text-sm font-medium text-white">
+                      {formaos}
+                    </span>
+                    <span className="text-sm text-slate-600"> vs </span>
+                    <span className="text-sm text-slate-500 line-through decoration-slate-700">
+                      {legacy}
+                    </span>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </motion.section>
+  );
+}
+
+/* ─── Architecture Visual ───────────────────────────────── */
+
+function ArchitectureVisual() {
+  const layers = [
+    {
+      label: 'Collaboration Layer',
+      items: ['Comments', 'Notifications', 'Search', 'Command Palette'],
+      color: 'cyan',
+    },
+    {
+      label: 'Workflow Layer',
+      items: ['Automation', 'Bulk Ops', 'Incidents', 'Care Plans'],
+      color: 'blue',
+    },
+    {
+      label: 'Compliance Engine',
+      items: ['Frameworks', 'Gates', 'Scoring', 'Evidence Vault'],
+      color: 'emerald',
+    },
+    {
+      label: 'Security Foundation',
+      items: ['SSO/SCIM', 'Audit Trail', 'Residency', 'Risk Heatmap'],
+      color: 'violet',
+    },
+  ];
+
+  const colorMap: Record<string, { dot: string; gradient: string }> = {
+    cyan: { dot: 'bg-cyan-400', gradient: 'from-cyan-500/[0.04]' },
+    blue: { dot: 'bg-blue-400', gradient: 'from-blue-500/[0.04]' },
+    emerald: { dot: 'bg-emerald-400', gradient: 'from-emerald-500/[0.04]' },
+    violet: { dot: 'bg-violet-400', gradient: 'from-violet-500/[0.04]' },
+  };
+
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className="mx-auto max-w-3xl"
+    >
+      <div className="text-center mb-10">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] px-4 py-1.5 text-xs font-medium text-slate-400 mb-5"
+        >
+          <Layers className="h-3.5 w-3.5 text-emerald-400" />
+          Platform Architecture
+        </motion.div>
+        <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+          Four layers. One platform.
+        </h2>
+        <p className="mt-3 text-sm text-slate-400 max-w-xl mx-auto">
+          Every feature works together through a unified architecture — from
+          security foundation to collaboration tools.
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        {layers.map((layer, i) => {
+          const cm = colorMap[layer.color];
+          return (
+            <motion.div
+              key={layer.label}
+              initial={{ opacity: 0, y: 20, scaleX: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 0.5,
+                delay: i * 0.1,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 transition-all duration-500 hover:bg-white/[0.04]"
+            >
+              <div
+                className={`pointer-events-none absolute inset-0 bg-gradient-to-r ${cm.gradient} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+              />
+              <div className="relative flex items-center justify-between flex-wrap gap-3">
+                <div className="flex items-center gap-3">
+                  <div className={`h-2 w-2 rounded-full ${cm.dot}`} />
+                  <span className="text-sm font-semibold text-white">
+                    {layer.label}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2 justify-end">
+                  {layer.items.map((item) => (
+                    <span
+                      key={item}
+                      className="rounded-lg border border-white/[0.04] bg-white/[0.02] px-2.5 py-1 text-[11px] font-medium text-slate-400 group-hover:text-slate-300 transition-all duration-300"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              {i < layers.length - 1 && (
+                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 h-6 w-px bg-gradient-to-b from-white/10 to-transparent" />
+              )}
+            </motion.div>
+          );
+        })}
+      </div>
+    </motion.section>
+  );
+}
+
+/* ─── CTA Section ───────────────────────────────────────── */
+
+function EnterpriseCTA() {
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="relative overflow-hidden rounded-3xl border border-white/[0.06]"
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/[0.08] via-cyan-500/[0.04] to-violet-500/[0.06]" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute h-1 w-1 rounded-full bg-emerald-400/30"
+            style={{ left: `${15 + i * 15}%`, top: `${20 + (i % 3) * 25}%` }}
+            animate={{
+              y: [0, -20, 0],
+              opacity: [0.2, 0.6, 0.2],
+              scale: [1, 1.5, 1],
+            }}
+            transition={{
+              duration: 3 + i * 0.5,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: i * 0.3,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="relative px-8 py-16 sm:px-16 sm:py-20 text-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-1.5 text-xs font-semibold text-emerald-400 mb-6"
+        >
+          <Sparkles className="h-3.5 w-3.5" />
+          14-day free trial
+        </motion.div>
+
+        <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+          See it all in action
+        </h2>
+        <p className="mx-auto mt-5 max-w-xl text-base text-slate-300 leading-relaxed">
+          Start a 14-day free trial — no credit card required. Every feature
+          listed above is available from day one on all plans.
+        </p>
+
+        <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+          <motion.a
+            href={`${process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.formaos.com.au'}/auth/signup`}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.98 }}
+            className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all hover:shadow-xl hover:shadow-emerald-500/30"
+          >
+            Start Free Trial
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </motion.a>
+          <motion.a
+            href="/product"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.98 }}
+            className="inline-flex items-center gap-2 rounded-xl border border-white/[0.1] bg-white/[0.03] px-8 py-3.5 text-sm font-semibold text-slate-200 backdrop-blur-sm transition-all hover:bg-white/[0.06] hover:border-white/[0.15]"
+          >
+            Explore Product
+          </motion.a>
+        </div>
+
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-500">
+          {[
+            'No credit card',
+            'Full platform access',
+            'Cancel anytime',
+            'SOC 2 ready',
+          ].map((text) => (
+            <span key={text} className="flex items-center gap-1.5">
+              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400/60" />
+              {text}
+            </span>
+          ))}
+        </div>
+      </div>
+    </motion.section>
+  );
+}
+
+/* ─── Main Component ────────────────────────────────────── */
 
 export default function FeaturesPageContent() {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  });
+  const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
+
   return (
-    <div className="relative min-h-screen bg-[#09090b] text-white">
+    <div className="relative min-h-screen bg-canvas-900 text-white">
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-white/5">
-        <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 via-transparent to-transparent" />
-        <div className="relative mx-auto max-w-5xl px-6 pb-16 pt-28 text-center sm:pt-36">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-4 py-1.5 text-xs font-medium text-emerald-400">
+      <motion.section
+        ref={heroRef}
+        style={{ opacity: heroOpacity, scale: heroScale }}
+        className="relative overflow-hidden border-b border-white/5"
+      >
+        <FeatureHeroBackground />
+        <div className="relative mx-auto max-w-5xl px-6 pb-20 pt-28 text-center sm:pt-36">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-7 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-5 py-2 text-xs font-medium text-emerald-400 backdrop-blur-sm"
+          >
             <Layers className="h-3.5 w-3.5" />
             Platform Overview
-          </div>
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+          </motion.div>
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl"
+          >
             Everything inside{' '}
-            <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-300 bg-clip-text text-transparent">
               FormaOS
             </span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-400">
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="mx-auto mt-6 max-w-2xl text-lg text-slate-400 leading-relaxed"
+          >
             18 core features across compliance operations, workflow automation,
             enterprise security, and team collaboration — built for regulated
             organizations that need defensible, auditable compliance.
-          </p>
+          </motion.p>
+          <div className="mt-10">
+            <CategoryNav />
+          </div>
+          <div className="mt-10">
+            <StatsBar />
+          </div>
         </div>
-      </section>
+      </motion.section>
+
+      <div className="h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
 
       {/* Feature Grid by Category */}
       <section className="mx-auto max-w-6xl px-6 py-20">
         {categories.map((category) => (
-          <div key={category} className="mb-20 last:mb-0">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                {category}
-              </h2>
-              <p className="mt-2 text-sm text-slate-400">
-                {categoryDescriptions[category]}
-              </p>
-            </div>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-2">
-              {features
-                .filter((f) => f.category === category)
-                .map((feature) => {
-                  const Icon = feature.icon;
-                  return (
-                    <div
-                      key={feature.title}
-                      className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-all hover:border-white/10 hover:bg-white/[0.04]"
-                    >
-                      <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
-                        <Icon className="h-5 w-5 text-emerald-400" />
-                      </div>
-                      <h3 className="mb-2 text-base font-semibold text-white">
-                        {feature.title}
-                      </h3>
-                      <p className="text-sm leading-relaxed text-slate-400">
-                        {feature.description}
-                      </p>
-                    </div>
-                  );
-                })}
-            </div>
+          <div key={category} id={category.toLowerCase().replace(/\s+/g, '-')}>
+            <CategorySection category={category} />
           </div>
         ))}
       </section>
 
+      {/* Architecture visual */}
+      <section className="mx-auto max-w-6xl px-6 pb-20">
+        <ArchitectureVisual />
+      </section>
+
+      {/* Comparison section */}
+      <section className="mx-auto max-w-6xl px-6 pb-20">
+        <ComparisonSection />
+      </section>
+
+      <div className="h-px bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
+
       {/* CTA */}
-      <section className="border-t border-white/5 bg-gradient-to-b from-transparent to-emerald-500/5">
-        <div className="mx-auto max-w-3xl px-6 py-20 text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            See it all in action
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-base text-slate-400">
-            Start a 14-day free trial — no credit card required. Every feature
-            listed above is available from day one.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <a
-              href={`${process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.formaos.com.au'}/auth/signup`}
-              className="rounded-xl bg-emerald-500 px-8 py-3 text-sm font-semibold text-white transition-colors hover:bg-emerald-600"
-            >
-              Start Free Trial
-            </a>
-            <a
-              href="/product"
-              className="rounded-xl border border-white/10 px-8 py-3 text-sm font-semibold text-slate-300 transition-colors hover:bg-white/5"
-            >
-              Explore Product
-            </a>
-          </div>
-        </div>
+      <section className="mx-auto max-w-5xl px-6 py-20">
+        <EnterpriseCTA />
       </section>
     </div>
   );
