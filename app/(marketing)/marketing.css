@@ -1182,9 +1182,6 @@
     max-width: 100vw;
   }
 
-  .glass-panel-strong {
-    backdrop-filter: blur(12px);
-  }
 }
 
 @media (max-width: 390px) {

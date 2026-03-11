@@ -13,8 +13,8 @@ import {
 } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
-import { brand } from '@/config/brand';
 import { easing, duration } from '@/config/motion';
+import { getAppBaseUrl } from '@/lib/urls';
 
 /* ── Cursor-tracking light-sweep wrapper for pricing cards ── */
 function PricingCard({
@@ -100,7 +100,7 @@ function PricingCard({
   );
 }
 
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+const appBase = getAppBaseUrl();
 
 const pricingTiers = [
   {
@@ -167,8 +167,8 @@ const pricingTiers = [
   },
   {
     name: 'Enterprise',
-    price: 'Custom',
-    period: '',
+    price: '$399',
+    period: '/ month',
     tagline:
       'For organizations where compliance is mission-critical and non-negotiable',
     description:
@@ -189,8 +189,8 @@ const pricingTiers = [
     ],
     useCase:
       'Compliance is mission-critical, audits are frequent and high-stakes, and regulatory defensibility is non-negotiable.',
-    cta: 'Contact Sales',
-    href: '/contact',
+    cta: 'Start Free Trial',
+    href: `${appBase}/auth/signup?plan=enterprise`,
     featured: false,
     color: 'purple',
     gradientFrom: 'from-purple-500/20',
