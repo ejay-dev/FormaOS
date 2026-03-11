@@ -247,9 +247,7 @@ export default function RoadmapPageContent() {
             const config = STATUS_CONFIG[status];
             return (
               <span key={status} className="flex items-center gap-1.5">
-                <span
-                  className={`h-2 w-2 rounded-full ${config.dot}`}
-                />
+                <span className={`h-2 w-2 rounded-full ${config.dot}`} />
                 {config.label} (
                 {ROADMAP_ITEMS.filter((i) => i.status === status).length})
               </span>
@@ -279,9 +277,7 @@ export default function RoadmapPageContent() {
           return (
             <section key={status} className="mb-14">
               <div className="mb-6 flex items-center gap-3">
-                <span
-                  className={`h-3 w-3 rounded-full ${config.dot}`}
-                />
+                <span className={`h-3 w-3 rounded-full ${config.dot}`} />
                 <h2 className="text-base font-bold text-white">
                   {config.label}
                 </h2>
