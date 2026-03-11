@@ -235,9 +235,7 @@ export function TopBar({
         </Button>
 
         {/* Theme Toggle */}
-        <div className="hidden sm:block">
-          <ThemeToggle />
-        </div>
+        <ThemeToggle />
 
         {/* USER DROPDOWN */}
         <div className="relative" ref={userMenuRef}>

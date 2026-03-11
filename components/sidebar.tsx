@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { signOut } from '@/app/app/actions/logout';
 import { LogOut, Command } from 'lucide-react';
+import { ThemeSwitcher } from '@/components/theme-switcher';
 import Button from './ui/button';
 import { useAppStore } from '@/lib/stores/app';
 import { markSidebarRouteTransition } from '@/lib/monitoring/route-transition';
@@ -152,6 +153,9 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
 
       {/* Bottom actions */}
       <div className="space-y-2 border-t border-border pt-5">
+        {/* Theme Switcher */}
+        <ThemeSwitcher />
+
         {/* Quick search */}
         <Button
           variant="ghost"
