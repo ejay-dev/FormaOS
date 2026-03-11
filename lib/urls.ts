@@ -18,9 +18,7 @@ const _appBase: string | null = (() => {
 export function getAppBaseUrl(): string {
   if (_appBase) return _appBase;
   if (process.env.NODE_ENV === 'development') return 'http://localhost:3000';
-  throw new Error(
-    'NEXT_PUBLIC_APP_URL is missing or invalid. Set it in your environment.',
-  );
+  return 'https://app.formaos.com.au';
 }
 
 export function getSignInUrl(): string {
