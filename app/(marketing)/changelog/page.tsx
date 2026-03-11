@@ -22,93 +22,204 @@ export const metadata: Metadata = {
   },
 };
 
-const ENTRIES = [
+interface ChangelogEntry {
+  readonly version: string;
+  readonly date: string;
+  readonly tag: string;
+  readonly tagColor: string;
+  readonly title: string;
+  readonly releaseName?: string;
+  readonly items: readonly string[];
+}
+
+const ENTRIES: readonly ChangelogEntry[] = [
   {
-    version: '1.9',
-    date: '2026-03-01',
-    tag: 'Feature',
-    tagColor: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20',
-    title: 'Enterprise identity governance and data residency controls',
+    version: '2.0.2',
+    date: '2026-03-05',
+    tag: 'Security',
+    tagColor: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20',
+    title: 'Security hardening & API quality sweep',
     items: [
-      'SAML 2.0 SSO now supports metadata URL import with automatic ACS endpoint configuration - compatible with Okta, Microsoft Entra ID (Azure AD), and Google Workspace.',
-      'SCIM 2.0 provisioning available for Enterprise plans: automated user lifecycle management synced from your identity provider.',
-      'Data residency selection added to Enterprise tenant settings - choose AU, US, or EU at onboarding or via migration request.',
-      'Audit log now surfaces identity provider events: SSO login, SCIM provisioning actions, and MFA enforcement outcomes alongside platform activity.',
+      'Full codebase security audit completed — 21 findings identified and resolved across critical, high, and medium severity.',
+      'TOTP encryption enforced in production — plaintext fallback restricted to dev/test only.',
+      'Rate limiter now fails closed on authentication routes when Redis is unavailable.',
+      'HTTP 401 vs 403 semantics corrected across all API routes — proper unauthenticated vs unauthorized responses.',
+      'CORS support enabled for the public REST API with preflight OPTIONS handling.',
+      'All 159 console statements across 71 API route files migrated to structured Pino logging via routeLog() factory.',
+      'All 65 untyped parameters in the API layer replaced with proper TypeScript types — zero `: any` remaining.',
+      'Dead code removed, 35+ broken multi-line imports repaired, full test suite passing: 442 tests across 45 suites, 0 TypeScript errors.',
     ],
   },
   {
-    version: '1.8',
-    date: '2026-02-14',
-    tag: 'Feature',
-    tagColor: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20',
-    title: 'Multi-framework control mapping',
-    items: [
-      'Controls can now be mapped across multiple frameworks simultaneously - ISO 27001, SOC 2, NDIS Practice Standards, Essential Eight, and custom frameworks in a single view.',
-      'Automated gap analysis flags controls that are compliant in one framework but open in another.',
-      'Framework coverage dashboard added to the governance overview.',
-    ],
-  },
-  {
-    version: '1.7',
-    date: '2026-01-28',
+    version: '2.0.1',
+    date: '2026-02-26',
     tag: 'Improvement',
     tagColor: 'text-blue-400 bg-blue-400/10 border-blue-400/20',
-    title: 'Evidence chain defensibility upgrade',
+    title: 'SEO overhaul, care provider vertical & architecture audit',
     items: [
-      'Evidence records now display full chain-of-custody history: uploaded by, verified by, approval timestamp, and linked control.',
-      'Bulk evidence export now generates a signed manifest with SHA-256 checksums for each artifact.',
-      'Auditor view added - share a read-only evidence room with external reviewers without exposing operational data.',
+      'Full SEO overhaul with 6 high-intent landing pages, canonical URLs, and OG/Twitter card coverage across all key routes.',
+      'Care provider vertical launched — industry-specific marketing, compliance network visualisation, and role-based onboarding.',
+      'All 5 critical risks and 8 structural weaknesses from full architecture audit resolved.',
+      '10 UX/conversion gaps and 8 performance opportunities addressed across the platform.',
+      'Premium 3D hero visuals deployed across all 44 marketing pages with reduced-motion guards.',
+      'Comprehensive mobile UX hardening — iPhone X layout fixes across marketing and app shells.',
+      'Force-static rendering applied across all marketing pages for performance and cacheability.',
     ],
   },
   {
-    version: '1.6',
-    date: '2026-01-10',
+    version: '2.0.0',
+    date: '2026-02-13',
+    tag: 'Major Release',
+    tagColor: 'text-violet-400 bg-violet-400/10 border-violet-400/20',
+    releaseName: 'Citadel',
+    title: 'FormaOS Citadel — enterprise platform release',
+    items: [
+      'SAML 2.0 SSO with metadata URL import — compatible with Okta, Microsoft Entra ID, and Google Workspace.',
+      'Trust center, governance export packs, and enterprise visual system shipped.',
+      'Enterprise QA audit completed: authentication, user journeys, compliance graph, performance, and security validated to production grade.',
+      'Mobile performance optimisation — LCP improvements with deferred non-critical effects and dynamic code-splitting.',
+      '5-layer security architecture validated: frontend gating, API guards, database RLS, environment isolation, and service role restriction.',
+      'Unified release versioning and freeze architecture — footer badge, admin system page, and API metadata all reflect release state.',
+    ],
+  },
+  {
+    version: '1.8.0',
+    date: '2026-02-12',
     tag: 'Feature',
     tagColor: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20',
-    title: 'Real-time posture dashboard',
+    title: 'Enterprise UX maturity overhaul & release architecture',
     items: [
-      'Live compliance posture score updated automatically as tasks complete and evidence is verified.',
-      'Risk heat map by framework domain highlights where attention is needed before an audit.',
-      'Executive summary export available as PDF or structured JSON for board reporting.',
+      '20-item enterprise upgrade roadmap implemented across 3 tiers covering UX, marketing, and platform.',
+      '5 monolithic marketing pages decomposed into modular section components for maintainability.',
+      'Enterprise product versioning, release freeze architecture, and controlled upgrade pipeline added.',
+      'Premium dark theme upgrade applied to use-case pages, error states, footer, and navigation.',
+      'Procurement flow section and admin risk heatmap added for enterprise buyer workflows.',
+      'CI hardened — CodeQL SARIF non-blocking, security scans, and health endpoint integration.',
     ],
   },
   {
-    version: '1.5',
-    date: '2025-12-19',
+    version: '1.7.0',
+    date: '2026-02-11',
+    tag: 'Improvement',
+    tagColor: 'text-blue-400 bg-blue-400/10 border-blue-400/20',
+    title: 'Interactive product demos & app stability',
+    items: [
+      'Static marketing screenshots replaced with interactive product demo components across all pages.',
+      'React hook-order crashes fixed on app shell and onboarding handoff.',
+      'Onboarding loop resolved by healing framework state and completion drift.',
+      'App link integrity audit — all broken /app routes identified and repaired.',
+      'Auth email delivery fixed via Resend with branded auth email templates.',
+      'Workspace recovery route added for stuck sessions.',
+    ],
+  },
+  {
+    version: '1.6.0',
+    date: '2026-02-09',
+    tag: 'Feature',
+    tagColor: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20',
+    title: 'Premium themes, admin console & cybersecurity hardening',
+    items: [
+      '4 premium themes launched — Midnight Ink, Graphite, Champagne, and Aurora — with dark + ivory light modes and database-persisted preferences.',
+      'Admin console rebuilt — all fake data removed, real database metrics wired in, sidebar navigation fixed.',
+      'Google login crash fixed by eliminating double fetchSystemState on OAuth callback.',
+      'Mobile Safari OAuth cookie persistence resolved.',
+      'Enterprise cybersecurity hardening pass — platform audit covering auth, security, and data integrity.',
+      'Dashboard fixes: duplicate sidebar eliminated, quick actions, collapsible roadmap, and role badges.',
+    ],
+  },
+  {
+    version: '1.5.0',
+    date: '2026-02-07',
+    tag: 'Improvement',
+    tagColor: 'text-blue-400 bg-blue-400/10 border-blue-400/20',
+    title: 'Controlled product visibility & enterprise observability',
+    items: [
+      '20 verified production-ready features exposed in a controlled product visibility upgrade.',
+      'Enterprise hardening pass — observability, billing reliability, and security improvements.',
+      'Marketing aligned with product reality — surface key differentiators, remove speculative claims.',
+      'Auth session persistence and timeout UX fixed for enterprise sign-in flows.',
+    ],
+  },
+  {
+    version: '1.4.0',
+    date: '2026-02-06',
+    tag: 'Feature',
+    tagColor: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20',
+    title: 'Automation engine, compliance intelligence & framework packs',
+    items: [
+      'Production-ready workflow automation engine — compliance controls trigger automated task creation on threshold conditions.',
+      'Escalation rules: overdue tasks escalate automatically to the next owner level after a configurable window.',
+      'Compliance Intelligence Summary system launched with real-time insights.',
+      'Framework Pack Engine (Phases 1–5) completed — GDPR and PCI-DSS now selectable alongside existing frameworks.',
+      'Blog system shipped — Next.js 15+ compatible pages, hero images, and integrated navigation.',
+      'Guided demo mode, in-app tour, onboarding checklist, and contextual help assistant added.',
+      'Redis health check and safe client for production reliability.',
+    ],
+  },
+  {
+    version: '1.3.0',
+    date: '2026-02-05',
     tag: 'Fix',
     tagColor: 'text-amber-400 bg-amber-400/10 border-amber-400/20',
-    title: 'Notifications and task assignment stability',
+    title: 'Auth flow hardening & subscription billing',
     items: [
-      'Fixed a race condition where task assignment notifications could arrive before the task was visible in the assignee\'s queue.',
-      'Deadline reminders now respect the organization\'s local timezone setting.',
-      'Fixed bulk task re-assignment not triggering workflow automation rules.',
+      'Email signup bootstrap fixed for organisation creation — new users no longer hit a blank state.',
+      'Signup access-token hash handling on signin corrected for edge cases.',
+      'Subscription upsert hardened for legacy columns with automatic backfill for older organisations.',
+      'Task creation and owner settings edits unblocked across all plan types.',
+      'Invite auth flow hardened — organisation membership now created on invite acceptance.',
+      'Marketing CTAs pointed to real app signup, replacing placeholder links.',
     ],
   },
   {
-    version: '1.4',
-    date: '2025-11-30',
-    tag: 'Feature',
-    tagColor: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20',
-    title: 'Workflow automation engine',
-    items: [
-      'Compliance controls can now trigger automated task creation when a threshold condition is met.',
-      'Escalation rules: overdue tasks escalate automatically to the next owner level after a configurable window.',
-      'Audit log now records all automation rule triggers with full context.',
-    ],
-  },
-  {
-    version: '1.3',
-    date: '2025-10-15',
+    version: '1.2.0',
+    date: '2026-01-22',
     tag: 'Improvement',
     tagColor: 'text-blue-400 bg-blue-400/10 border-blue-400/20',
-    title: 'NDIS Practice Standards deep integration',
+    title: 'Marketing design sync & QA hardening',
     items: [
-      'Pre-built NDIS module now covers all 7 Practice Standard Groups with 34 Quality Indicators mapped to controls.',
-      'NDIS audit preparation checklist generates automatically from your current control and evidence status.',
-      'Worker registration verification workflow added for NDIS worker screening compliance.',
+      'Complete marketing pages design sync with homepage design system — consistent typography, spacing, and components.',
+      'Resources section added to footer — FAQ, Blog, and Documentation links.',
+      'Mobile layout and performance fixes applied across Industries and Security sections.',
+      'CTA links, auth cookies, QA scripts, and performance thresholds corrected.',
+      'Node and wire integrity audit — all marketing CTAs standardised.',
+      'Default RLS policies added and Supabase warnings resolved.',
     ],
   },
-] as const;
+  {
+    version: '1.1.0',
+    date: '2026-01-15',
+    tag: 'Feature',
+    tagColor: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20',
+    title: 'Brand identity, signature motion system & auth security',
+    items: [
+      'Enterprise SVG logo and brand assets wired across the entire application.',
+      'FormaOS Signature Motion System — one-way scroll animations, micro-interactions, and premium header motion.',
+      'Brand configuration centralised — header and footer use mark + text consistently.',
+      'Complete authentication flow audit with OAuth redirect loop fix.',
+      'Node-wire compliance graph validation reports for data integrity assurance.',
+      'Feature flag infrastructure and baseline safety measures deployed (Phase 0).',
+    ],
+  },
+  {
+    version: '1.0.0',
+    date: '2026-01-14',
+    tag: 'Major Release',
+    tagColor: 'text-violet-400 bg-violet-400/10 border-violet-400/20',
+    releaseName: 'Sovereign',
+    title: 'FormaOS Sovereign — initial enterprise release',
+    items: [
+      'Full compliance operating system launched — controls, evidence, policies, tasks, vault, audits, reports, registers, and team management.',
+      'Node-wire compliance graph architecture with 7 core node types and 5 wire types for relational integrity.',
+      'Complete RBAC integration with role-based routing and multi-layer permission guards.',
+      'Row-level security deployed on all database tables — full multi-tenant data isolation.',
+      'Enterprise content transformation across Home, Product, Industries, Security, and Pricing pages.',
+      'Pricing aligned with Stripe billing — Pro and Enterprise plans with trial support.',
+      'Comprehensive QA audit across Phases 1–6: real-time, analytics, workflow, AI, caching, mobile PWA, multi-org, enterprise security, and billing.',
+      '81 routes configured, TypeScript clean, production build verified.',
+    ],
+  },
+];
 
 function TagBadge({ tag, className }: { tag: string; className: string }) {
   return (
@@ -120,7 +231,32 @@ function TagBadge({ tag, className }: { tag: string; className: string }) {
   );
 }
 
+function LatestBadge() {
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-400">
+      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+      Latest
+    </span>
+  );
+}
+
+function YearDivider({ year }: { year: number }) {
+  return (
+    <div className="relative flex items-center gap-4 py-2">
+      <div className="absolute -left-[29px] h-5 w-5 rounded-md bg-canvas-900 ring-1 ring-white/10 flex items-center justify-center">
+        <span className="text-[8px] font-bold text-slate-400">★</span>
+      </div>
+      <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
+        {year}
+      </span>
+      <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
+    </div>
+  );
+}
+
 export default function ChangelogPage() {
+  let lastYear: number | null = null;
+
   return (
     <MarketingPageShell>
       <CompactHero
@@ -130,54 +266,115 @@ export default function ChangelogPage() {
         bottomColor="blue"
       />
 
-      <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
+      {/* Version summary strip */}
+      <div className="mx-auto max-w-3xl px-4 pt-12 sm:px-6 lg:px-8">
+        <div className="flex flex-wrap items-center justify-center gap-3 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-6 py-4 backdrop-blur-sm">
+          <span className="text-xs text-slate-500">Releases:</span>
+          <span className="text-xs font-semibold text-violet-400">
+            v2.0.2 Citadel
+          </span>
+          <span className="text-[10px] text-slate-700">·</span>
+          <span className="text-xs text-slate-500">v1.1 — v1.8</span>
+          <span className="text-[10px] text-slate-700">·</span>
+          <span className="text-xs font-semibold text-violet-400">
+            v1.0 Sovereign
+          </span>
+          <span className="text-[10px] text-slate-700">·</span>
+          <span className="text-xs text-slate-600">
+            {ENTRIES.length} updates
+          </span>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="relative">
           {/* Timeline spine */}
           <div className="absolute left-0 top-0 h-full w-px bg-gradient-to-b from-cyan-500/40 via-white/10 to-transparent" />
 
           <div className="space-y-14 pl-8">
-            {ENTRIES.map((entry) => (
-              <article key={entry.version} className="relative">
-                {/* Timeline dot */}
-                <div className="absolute -left-[33px] top-1.5 h-3 w-3 rounded-full bg-canvas-800 ring-2 ring-cyan-500/60" />
+            {ENTRIES.map((entry, index) => {
+              const entryYear = new Date(entry.date).getFullYear();
+              const showYear = entryYear !== lastYear;
+              lastYear = entryYear;
+              const isLatest = index === 0;
+              const isMajor = entry.tag === 'Major Release';
 
-                {/* Date and version */}
-                <div className="mb-3 flex items-center gap-3">
-                  <time
-                    dateTime={entry.date}
-                    className="text-xs font-mono text-slate-500"
-                  >
-                    {new Date(entry.date).toLocaleDateString('en-AU', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </time>
-                  <span className="text-xs text-slate-600">v{entry.version}</span>
-                </div>
+              return (
+                <div key={entry.version}>
+                  {showYear && <YearDivider year={entryYear} />}
 
-                {/* Card */}
-                <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 backdrop-blur-sm">
-                  <div className="mb-4 flex items-center gap-3">
-                    <TagBadge tag={entry.tag} className={entry.tagColor} />
-                    <h2 className="text-base font-bold text-white">{entry.title}</h2>
-                  </div>
-                  <ul className="space-y-2.5">
-                    {entry.items.map((item, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-slate-400">
-                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-500/50" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
+                  <article className="relative">
+                    {/* Timeline dot — larger + glowing for major */}
+                    {isMajor ? (
+                      <div className="absolute -left-[35px] top-1.5 h-4 w-4 rounded-full bg-violet-500/20 ring-2 ring-violet-400/80 shadow-[0_0_12px_rgba(139,92,246,0.4)]" />
+                    ) : (
+                      <div className="absolute -left-[33px] top-1.5 h-3 w-3 rounded-full bg-canvas-800 ring-2 ring-cyan-500/60" />
+                    )}
+
+                    {/* Date, version, badges */}
+                    <div className="mb-3 flex flex-wrap items-center gap-2">
+                      <time
+                        dateTime={entry.date}
+                        className="text-xs font-mono text-slate-500"
+                      >
+                        {new Date(entry.date).toLocaleDateString('en-AU', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                      </time>
+                      <span
+                        className={`text-xs ${isMajor ? 'font-semibold text-violet-400' : 'text-slate-600'}`}
+                      >
+                        v{entry.version}
+                      </span>
+                      {entry.releaseName && (
+                        <span className="text-xs italic text-violet-300/70">
+                          {entry.releaseName}
+                        </span>
+                      )}
+                      {isLatest && <LatestBadge />}
+                    </div>
+
+                    {/* Card — elevated border for major releases */}
+                    <div
+                      className={`rounded-2xl border p-6 backdrop-blur-sm ${
+                        isMajor
+                          ? 'border-violet-500/20 bg-violet-500/[0.03] shadow-[0_0_40px_-12px_rgba(139,92,246,0.15)]'
+                          : 'border-white/[0.06] bg-white/[0.02]'
+                      }`}
+                    >
+                      <div className="mb-4 flex flex-wrap items-center gap-3">
+                        <TagBadge tag={entry.tag} className={entry.tagColor} />
+                        <h2 className="text-base font-bold text-white">
+                          {entry.title}
+                        </h2>
+                      </div>
+                      <ul className="space-y-2.5">
+                        {entry.items.map((item, i) => (
+                          <li
+                            key={i}
+                            className="flex items-start gap-2 text-sm text-slate-400"
+                          >
+                            <span
+                              className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${
+                                isMajor ? 'bg-violet-400/50' : 'bg-cyan-500/50'
+                              }`}
+                            />
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </article>
                 </div>
-              </article>
-            ))}
+              );
+            })}
           </div>
         </div>
 
         {/* Subscribe nudge */}
-        <div className="mt-16 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 text-center">
+        <div className="mt-20 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 text-center">
           <p className="text-sm font-semibold text-white">Stay in the loop</p>
           <p className="mt-2 text-sm text-slate-400">
             Subscribe to release notes or follow us for product updates.
