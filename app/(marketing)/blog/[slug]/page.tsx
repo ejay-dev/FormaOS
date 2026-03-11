@@ -47,20 +47,11 @@ export async function generateMetadata({
       description: post.excerpt,
       type: 'article',
       url: `${siteUrl}/blog/${post.id}`,
-      images: [
-        {
-          url: `${siteUrl}/og-image.png`,
-          width: 1200,
-          height: 630,
-          alt: `${post.title} - FormaOS Blog`,
-        },
-      ],
     },
     twitter: {
       card: 'summary_large_image',
       title: `${post.title} | FormaOS`,
       description: post.excerpt,
-      images: [`${siteUrl}/og-image.png`],
     },
   };
 }

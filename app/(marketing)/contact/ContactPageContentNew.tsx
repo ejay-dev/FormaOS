@@ -204,6 +204,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                     id="email"
                     name="email"
                     required
+                    maxLength={254}
                     className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                     placeholder="you@organization.com"
                   />
@@ -214,15 +215,17 @@ function ContactForm({ submitAction }: ContactFormProps) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label
-                    htmlFor="company"
+                    htmlFor="organization"
                     className="block text-sm font-medium text-gray-300 mb-2"
                   >
-                    Organization
+                    Organization *
                   </label>
                   <input
                     type="text"
-                    id="company"
-                    name="company"
+                    id="organization"
+                    name="organization"
+                    required
+                    maxLength={200}
                     className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                     placeholder="Your organization name"
                   />

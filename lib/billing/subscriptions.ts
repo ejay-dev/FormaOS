@@ -1,6 +1,6 @@
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { syncEntitlementsForPlan } from "@/lib/billing/entitlements";
-import { resolvePlanKey, type PlanKey } from "@/lib/plans";
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { syncEntitlementsForPlan } from '@/lib/billing/entitlements';
+import { resolvePlanKey, type PlanKey } from '@/lib/plans';
 
 const TRIAL_DAYS = 14;
 
@@ -14,33 +14,36 @@ function getTrialEndIso() {
 // plan_key: basic, pro, enterprise
 // plan_code (legacy FK): starter, pro, enterprise
 function toLegacyPlanCode(planKey: string): string {
-  return planKey === "basic" ? "starter" : planKey;
+  return planKey === 'basic' ? 'starter' : planKey;
 }
 
 // Default plan if none provided - ensures no "No Plan" users
-const DEFAULT_PLAN: PlanKey = "basic";
+const DEFAULT_PLAN: PlanKey = 'basic';
 
-export async function ensureSubscription(orgId: string, planKey: string | null) {
+export async function ensureSubscription(
+  orgId: string,
+  planKey: string | null,
+) {
   // HARDENING: Default to 'basic' if no valid plan provided
   const resolvedPlan = resolvePlanKey(planKey) || DEFAULT_PLAN;
 
   const admin = createSupabaseAdminClient();
   const { data: existing } = await admin
-    .from("org_subscriptions")
-    .select("status, plan_key")
-    .eq("organization_id", orgId)
+    .from('org_subscriptions')
+    .select('status, plan_key')
+    .eq('organization_id', orgId)
     .maybeSingle();
 
   // If subscription exists with valid status, just ensure entitlements
-  if (existing?.status && ["active", "trialing"].includes(existing.status)) {
+  if (existing?.status && ['active', 'trialing'].includes(existing.status)) {
     // BACKFILL: Ensure entitlements exist even for existing subscriptions
     const existingPlan = resolvePlanKey(existing.plan_key) || resolvedPlan;
     await syncEntitlementsForPlan(orgId, existingPlan);
     return;
   }
 
-  const isTrialEligible = resolvedPlan === "basic" || resolvedPlan === "pro";
-  const isEnterprise = resolvedPlan === "enterprise";
+  const isTrialEligible = resolvedPlan === 'basic' || resolvedPlan === 'pro';
+  const isEnterprise = resolvedPlan === 'enterprise';
   const now = new Date();
   const nowIso = now.toISOString();
   const trialEndIso = isTrialEligible ? getTrialEndIso() : null;
@@ -48,13 +51,13 @@ export async function ensureSubscription(orgId: string, planKey: string | null) 
   // BACKFILL: Ensure legacy orgs table entry exists for org_subscriptions.org_id FK
   try {
     const { data: org } = await admin
-      .from("organizations")
-      .select("name, created_by")
-      .eq("id", orgId)
+      .from('organizations')
+      .select('name, created_by')
+      .eq('id', orgId)
       .maybeSingle();
 
     if (org?.name) {
-      const { error: legacyOrgError } = await admin.from("orgs").upsert(
+      const { error: legacyOrgError } = await admin.from('orgs').upsert(
         {
           id: orgId,
           name: org.name,
@@ -62,21 +65,24 @@ export async function ensureSubscription(orgId: string, planKey: string | null) 
           created_at: nowIso,
           updated_at: nowIso,
         },
-        { onConflict: "id" },
+        { onConflict: 'id' },
       );
 
       if (legacyOrgError) {
-        console.error("[ensureSubscription] legacy orgs upsert failed", legacyOrgError);
+        console.error(
+          '[ensureSubscription] legacy orgs upsert failed',
+          legacyOrgError,
+        );
       }
     }
   } catch (error) {
-    console.error("[ensureSubscription] legacy orgs backfill error", error);
+    console.error('[ensureSubscription] legacy orgs backfill error', error);
   }
 
   const basePayload = {
     organization_id: orgId,
     plan_key: resolvedPlan,
-    status: isTrialEligible ? "trialing" : (isEnterprise ? "active" : "pending"),
+    status: isTrialEligible ? 'trialing' : isEnterprise ? 'active' : 'pending',
     current_period_end: trialEndIso,
     trial_started_at: isTrialEligible ? nowIso : null,
     trial_expires_at: trialEndIso,
@@ -90,24 +96,27 @@ export async function ensureSubscription(orgId: string, planKey: string | null) 
   };
 
   const { error: legacyError } = await admin
-    .from("org_subscriptions")
+    .from('org_subscriptions')
     .upsert(legacyPayload);
 
   if (legacyError) {
-    const message = legacyError.message?.toLowerCase() ?? "";
+    const message = legacyError.message?.toLowerCase() ?? '';
     const missingLegacyColumn =
-      message.includes("column \"org_id\" does not exist") ||
-      message.includes("column \"plan_code\" does not exist");
+      message.includes('column "org_id" does not exist') ||
+      message.includes('column "plan_code" does not exist');
 
     if (missingLegacyColumn) {
       const { error: fallbackError } = await admin
-        .from("org_subscriptions")
+        .from('org_subscriptions')
         .upsert(basePayload);
       if (fallbackError) {
-        console.error("[ensureSubscription] fallback upsert failed", fallbackError);
+        console.error(
+          '[ensureSubscription] fallback upsert failed',
+          fallbackError,
+        );
       }
     } else {
-      console.error("[ensureSubscription] upsert failed", legacyError);
+      console.error('[ensureSubscription] upsert failed', legacyError);
     }
   }
 

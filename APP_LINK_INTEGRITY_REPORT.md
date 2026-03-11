@@ -1,6 +1,6 @@
 # APP Link Integrity Report
 
-Generated: 2026-03-05T04:20:48.339Z
+Generated: 2026-03-11T01:11:13.706Z
 
 ## Summary
 
@@ -13,7 +13,7 @@ Generated: 2026-03-05T04:20:48.339Z
 
 | Source | Target Route | Exists | Requires Auth | Requires Role | Matched Route |
 |---|---|---|---|---|---|
-| `app/(marketing)/accept-invite/[token]/page.tsx` | `/app` | YES | YES | auth | `/app` |
+| `app/(standalone)/accept-invite/[token]/page.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/admin/layout.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/app/audit/page.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/app/dashboard/page.tsx` | `/app` | YES | YES | auth | `/app` |
@@ -272,7 +272,7 @@ Generated: 2026-03-05T04:20:48.339Z
 - `/contact`
 - `/customer-stories`
 - `/customer-stories/template`
-- `/docs`
+- `/documentation`
 - `/enterprise`
 - `/evaluate`
 - `/faq`

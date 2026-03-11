@@ -5,39 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { ChevronDown } from 'lucide-react';
-
-/* ── Link data ───────────────────────────────────────────── */
-
-const primaryLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/product', label: 'Product' },
-  { href: '/industries', label: 'Industries' },
-  { href: '/security', label: 'Security' },
-  { href: '/trust', label: 'Trust' },
-  { href: '/pricing', label: 'Pricing' },
-];
-
-const outcomeLinks = [
-  { href: '/evaluate', label: 'Evaluate' },
-  { href: '/prove', label: 'Prove' },
-  { href: '/operate', label: 'Operate' },
-  { href: '/govern', label: 'Govern' },
-];
-
-const resourceLinks = [
-  { href: '/security-review', label: 'Security Review Packet' },
-  { href: '/security-review/faq', label: 'Security Review FAQ' },
-  { href: '/trust/packet', label: 'Trust Packet (PDF)' },
-  { href: '/frameworks', label: 'Framework Coverage' },
-  { href: '/integrations', label: 'Integrations' },
-  { href: '/customer-stories', label: 'Customer Stories' },
-  { href: '/compare', label: 'Compare' },
-  { href: '/changelog', label: 'Changelog' },
-  { href: '/status', label: 'Status' },
-  { href: '/documentation', label: 'Documentation' },
-  { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
-];
+import { primaryLinks, outcomeLinks, resourceLinks } from '@/config/navigation';
 
 /* ── Accessible dropdown ─────────────────────────────────── */
 
@@ -48,7 +16,7 @@ function NavDropdown({
   wide,
 }: {
   label: string;
-  items: { href: string; label: string }[];
+  items: readonly { href: string; label: string }[];
   pathname: string;
   wide?: boolean;
 }) {
@@ -77,7 +45,8 @@ function NavDropdown({
     }
     if (e.key === 'ArrowDown' && open) {
       e.preventDefault();
-      const first = ref.current?.querySelector<HTMLElement>('[role="menuitem"]');
+      const first =
+        ref.current?.querySelector<HTMLElement>('[role="menuitem"]');
       first?.focus();
     }
   }
@@ -139,11 +108,16 @@ function NavDropdown({
                 onKeyDown={(e) => {
                   if (e.key === 'ArrowDown') {
                     e.preventDefault();
-                    (e.currentTarget.nextElementSibling as HTMLElement | null)?.focus();
+                    (
+                      e.currentTarget.nextElementSibling as HTMLElement | null
+                    )?.focus();
                   }
                   if (e.key === 'ArrowUp') {
                     e.preventDefault();
-                    (e.currentTarget.previousElementSibling as HTMLElement | null)?.focus();
+                    (
+                      e.currentTarget
+                        .previousElementSibling as HTMLElement | null
+                    )?.focus();
                   }
                 }}
                 className={clsx(
@@ -172,6 +146,11 @@ interface NavLinksProps {
 
 export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
   const pathname = usePathname() || '/';
+  const [mobileOpen, setMobileOpen] = useState<Record<string, boolean>>({});
+
+  function toggleMobileSection(key: string) {
+    setMobileOpen((prev) => ({ ...prev, [key]: !prev[key] }));
+  }
 
   /* ── Mobile ──────────────────────────────────────────── */
   if (variant === 'mobile') {
@@ -199,52 +178,88 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
             </Link>
           );
         })}
+
         <div className="mx-4 my-2 h-px bg-white/10" />
-        <div className="px-4 py-2 text-[11px] uppercase tracking-wider text-slate-500">
+
+        {/* Collapsible Outcome Journeys */}
+        <button
+          type="button"
+          onClick={() => toggleMobileSection('outcomes')}
+          className="w-full flex items-center justify-between px-4 py-2 text-[11px] uppercase tracking-wider text-slate-500 hover:text-slate-400 transition-colors"
+          aria-expanded={!!mobileOpen.outcomes}
+        >
           Outcome Journeys
-        </div>
-        {outcomeLinks.map((l) => {
-          const isActive = pathname === l.href;
-          return (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={onLinkClick}
-              className={clsx(
-                'block rounded-xl px-4 py-3 transition-all text-sm leading-relaxed break-words',
-                isActive
-                  ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
-                  : 'hover:bg-white/5 text-slate-300 hover:text-white',
-              )}
-              aria-current={isActive ? 'page' : undefined}
-            >
-              {l.label}
-            </Link>
-          );
-        })}
+          <ChevronDown
+            className={clsx(
+              'h-3 w-3 transition-transform duration-200',
+              mobileOpen.outcomes && 'rotate-180',
+            )}
+          />
+        </button>
+        {mobileOpen.outcomes && (
+          <div className="space-y-1">
+            {outcomeLinks.map((l) => {
+              const isActive = pathname === l.href;
+              return (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  onClick={onLinkClick}
+                  className={clsx(
+                    'block rounded-xl px-4 py-3 transition-all text-sm leading-relaxed break-words',
+                    isActive
+                      ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
+                      : 'hover:bg-white/5 text-slate-300 hover:text-white',
+                  )}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  {l.label}
+                </Link>
+              );
+            })}
+          </div>
+        )}
+
         <div className="mx-4 my-2 h-px bg-white/10" />
-        <div className="px-4 py-2 text-[11px] uppercase tracking-wider text-slate-500">
+
+        {/* Collapsible Resources */}
+        <button
+          type="button"
+          onClick={() => toggleMobileSection('resources')}
+          className="w-full flex items-center justify-between px-4 py-2 text-[11px] uppercase tracking-wider text-slate-500 hover:text-slate-400 transition-colors"
+          aria-expanded={!!mobileOpen.resources}
+        >
           Resources
-        </div>
-        {resourceLinks.map((l) => {
-          const isActive = pathname === l.href;
-          return (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={onLinkClick}
-              className={clsx(
-                'block rounded-xl px-4 py-3 transition-all text-sm leading-relaxed break-words',
-                isActive
-                  ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
-                  : 'hover:bg-white/5 text-slate-300 hover:text-white',
-              )}
-              aria-current={isActive ? 'page' : undefined}
-            >
-              {l.label}
-            </Link>
-          );
-        })}
+          <ChevronDown
+            className={clsx(
+              'h-3 w-3 transition-transform duration-200',
+              mobileOpen.resources && 'rotate-180',
+            )}
+          />
+        </button>
+        {mobileOpen.resources && (
+          <div className="space-y-1">
+            {resourceLinks.map((l) => {
+              const isActive = pathname === l.href;
+              return (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  onClick={onLinkClick}
+                  className={clsx(
+                    'block rounded-xl px-4 py-3 transition-all text-sm leading-relaxed break-words',
+                    isActive
+                      ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
+                      : 'hover:bg-white/5 text-slate-300 hover:text-white',
+                  )}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  {l.label}
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </div>
     );
   }
@@ -275,7 +290,12 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
 
       {/* Dropdowns on the right */}
       <NavDropdown label="Outcomes" items={outcomeLinks} pathname={pathname} />
-      <NavDropdown label="Resources" items={resourceLinks} pathname={pathname} wide />
+      <NavDropdown
+        label="Resources"
+        items={resourceLinks}
+        pathname={pathname}
+        wide
+      />
     </nav>
   );
 }

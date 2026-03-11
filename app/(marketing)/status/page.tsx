@@ -5,8 +5,8 @@ import { MarketingPageShell } from '@/app/(marketing)/components/shared/Marketin
 import { CompactHero } from '@/components/motion/CompactHero';
 import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 import { siteUrl } from '@/lib/seo';
-// Status page fetches live uptime data - must override layout's force-static
-export const dynamic = 'force-dynamic';
+// Status page fetches live uptime data — use ISR with 60-second revalidation
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'FormaOS | Status',
@@ -31,10 +31,15 @@ export default async function StatusPage() {
   const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
-  const rows = (await fetchPublicUptimeChecks({
-    sinceIso: since7d,
-    limit: 4000,
-  })) as Row[];
+  let rows: Row[] = [];
+  try {
+    rows = (await fetchPublicUptimeChecks({
+      sinceIso: since7d,
+      limit: 4000,
+    })) as Row[];
+  } catch {
+    // Graceful degradation — render the page with empty data
+  }
   const last24 = rows.filter((r) => r.checked_at >= since24h);
 
   const ok7 = rows.filter((r) => r.ok).length;
@@ -46,7 +51,9 @@ export default async function StatusPage() {
   const latest = rows[0] ?? null;
 
   const latencyAvgMs = (() => {
-    const values = rows.map((r) => r.latency_ms).filter((v): v is number => typeof v === 'number');
+    const values = rows
+      .map((r) => r.latency_ms)
+      .filter((v): v is number => typeof v === 'number');
     if (values.length === 0) return null;
     const sum = values.reduce((a, b) => a + b, 0);
     return Math.round(sum / values.length);
@@ -59,7 +66,12 @@ export default async function StatusPage() {
         description="Uptime checks are published from a scheduled health probe. This page reports platform availability signals, not contractual SLAs."
         topColor="emerald"
         bottomColor="cyan"
-        visualContent={<CompactHeroIcon icon={<Activity className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
+        visualContent={
+          <CompactHeroIcon
+            icon={<Activity className="w-8 h-8 text-emerald-400" />}
+            color="52,211,153"
+          />
+        }
       />
 
       <div className="mx-auto max-w-5xl px-6 pb-24">
@@ -74,7 +86,10 @@ export default async function StatusPage() {
                 Latest Check
               </p>
               {latest?.ok ? (
-                <CheckCircle2 className="h-5 w-5 text-emerald-500" aria-hidden="true" />
+                <CheckCircle2
+                  className="h-5 w-5 text-emerald-500"
+                  aria-hidden="true"
+                />
               ) : (
                 <XCircle className="h-5 w-5 text-rose-500" aria-hidden="true" />
               )}
@@ -91,7 +106,9 @@ export default async function StatusPage() {
             <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Uptime (24h)
             </p>
-            <div className="mt-3 text-3xl font-bold text-foreground">{uptime24}%</div>
+            <div className="mt-3 text-3xl font-bold text-foreground">
+              {uptime24}%
+            </div>
             <div className="mt-1 text-xs text-muted-foreground">
               Checks: {last24.length}
             </div>
@@ -101,7 +118,9 @@ export default async function StatusPage() {
             <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Uptime (7d)
             </p>
-            <div className="mt-3 text-3xl font-bold text-foreground">{uptime7}%</div>
+            <div className="mt-3 text-3xl font-bold text-foreground">
+              {uptime7}%
+            </div>
             <div className="mt-1 text-xs text-muted-foreground">
               Avg latency: {latencyAvgMs !== null ? `${latencyAvgMs}ms` : 'N/A'}
             </div>
@@ -111,23 +130,37 @@ export default async function StatusPage() {
         <div className="mt-10 rounded-2xl border border-border bg-card overflow-hidden">
           <div className="flex items-center gap-2 border-b border-border px-6 py-4">
             <Clock className="h-4 w-4 text-primary" aria-hidden="true" />
-            <h2 className="text-sm font-semibold text-foreground">Recent Checks</h2>
+            <h2 className="text-sm font-semibold text-foreground">
+              Recent Checks
+            </h2>
           </div>
           <div className="divide-y divide-border">
             {(rows ?? []).slice(0, 40).map((r) => (
-              <div key={r.checked_at} className="flex items-center justify-between px-6 py-3">
+              <div
+                key={r.checked_at}
+                className="flex items-center justify-between px-6 py-3"
+              >
                 <div className="flex items-center gap-3">
                   {r.ok ? (
-                    <CheckCircle2 className="h-4 w-4 text-emerald-500" aria-hidden="true" />
+                    <CheckCircle2
+                      className="h-4 w-4 text-emerald-500"
+                      aria-hidden="true"
+                    />
                   ) : (
-                    <XCircle className="h-4 w-4 text-rose-500" aria-hidden="true" />
+                    <XCircle
+                      className="h-4 w-4 text-rose-500"
+                      aria-hidden="true"
+                    />
                   )}
                   <div className="text-sm text-foreground">
                     {new Date(r.checked_at).toLocaleString()}
                   </div>
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  {typeof r.latency_ms === 'number' ? `${r.latency_ms}ms` : 'N/A'} · {r.source}
+                  {typeof r.latency_ms === 'number'
+                    ? `${r.latency_ms}ms`
+                    : 'N/A'}{' '}
+                  · {r.source}
                 </div>
               </div>
             ))}

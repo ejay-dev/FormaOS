@@ -138,7 +138,12 @@ export function UpgradeModal() {
       <div
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            (e.currentTarget as HTMLElement).click();
+          }
+        }}
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={handleClose}
       />
@@ -277,7 +282,8 @@ export function UpgradeModal() {
           </div>
 
           <p className="text-xs text-center text-slate-500">
-            14-day free trial on Starter &amp; Pro · Cancel anytime · Your data is safe
+            14-day free trial on Starter &amp; Pro · Cancel anytime · Your data
+            is safe
           </p>
         </div>
       </div>

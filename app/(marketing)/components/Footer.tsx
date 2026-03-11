@@ -1,12 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { brand } from '@/config/brand';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Logo } from '@/components/brand/Logo';
 import { easing, duration } from '@/config/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { CURRENT_RELEASE_DISPLAY, CURRENT_RELEASE_TAG } from '@/config/release';
+import { getSignUpUrl } from '@/lib/urls';
+import { footerLinks as navFooterLinks } from '@/config/navigation';
 import {
   ArrowUpRight,
   Mail,
@@ -16,49 +17,9 @@ import {
   FileCheck,
 } from 'lucide-react';
 
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+const signUpUrl = getSignUpUrl();
 
-const footerLinks = {
-  platform: [
-    { href: '/product', label: 'How it works' },
-    { href: '/industries', label: 'Industries' },
-    { href: '/security', label: 'Security' },
-    { href: '/frameworks', label: 'Framework Coverage' },
-    { href: '/pricing', label: 'Pricing' },
-  ],
-  useCases: [
-    { href: '/use-cases/healthcare', label: 'Healthcare' },
-    { href: '/use-cases/ndis-aged-care', label: 'NDIS & Aged Care' },
-    { href: '/use-cases/workforce-credentials', label: 'Workforce' },
-    { href: '/use-cases/incident-management', label: 'Incidents' },
-  ],
-  resources: [
-    { href: '/documentation', label: 'Documentation' },
-    { href: '/blog', label: 'Blog' },
-    { href: '/trust', label: 'Trust Center' },
-    { href: '/security-review', label: 'Security Review Packet' },
-    { href: '/trust/packet', label: 'Trust Packet (PDF)' },
-    { href: '/status', label: 'Status' },
-    { href: '/customer-stories', label: 'Customer Stories' },
-    { href: '/compare', label: 'Compare' },
-    { href: '/faq', label: 'FAQ' },
-  ],
-  company: [
-    { href: '/about', label: 'About' },
-    { href: '/our-story', label: 'Our Story' },
-    { href: '/contact', label: 'Contact' },
-  ],
-  legal: [
-    { href: '/legal', label: 'Legal' },
-    {
-      href: 'https://www.formaos.com.au/legal/privacy',
-      label: 'Privacy Policy',
-    },
-    { href: '/legal/terms', label: 'Terms of Service' },
-    { href: '/security', label: 'Security' },
-    { href: '/trust', label: 'Assurance Portal' },
-  ],
-};
+const footerLinks = navFooterLinks;
 
 const trustBadges = [
   { icon: Shield, label: 'Security-first controls', color: 'primary' },
@@ -95,33 +56,39 @@ function AnimatedFooterLink({
 }
 
 function FooterCTA() {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <ScrollReveal
       variant="fadeUp"
       className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-500/10 via-blue-500/5 to-purple-500/10 border border-white/10 p-5 sm:p-8 lg:p-10"
     >
-      {/* Animated gradient orb */}
-      <motion.div
-        className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-cyan-500/20 blur-3xl"
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.3, 0.5, 0.3],
-        }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-blue-500/20 blur-3xl"
-        animate={{
-          scale: [1.2, 1, 1.2],
-          opacity: [0.3, 0.5, 0.3],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: 'easeInOut',
-          delay: 2,
-        }}
-      />
+      {/* Animated gradient orb — respects prefers-reduced-motion */}
+      {!prefersReducedMotion && (
+        <>
+          <motion.div
+            className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-cyan-500/20 blur-3xl"
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.5, 0.3],
+            }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            className="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-blue-500/20 blur-3xl"
+            animate={{
+              scale: [1.2, 1, 1.2],
+              opacity: [0.3, 0.5, 0.3],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: 2,
+            }}
+          />
+        </>
+      )}
 
       <div className="relative z-10">
         <h3 className="text-xl sm:text-2xl font-bold mb-3 font-display">
@@ -138,7 +105,7 @@ function FooterCTA() {
             transition={{ duration: duration.fast, ease: easing.signature }}
           >
             <Link
-              href={`${appBase}/auth/signup`}
+              href={signUpUrl}
               className="mk-btn mk-btn-primary rounded-xl px-6 py-3"
             >
               Start Free Trial

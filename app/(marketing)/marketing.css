@@ -218,31 +218,8 @@
 }
 
 /* ── Glass panels ──────────────────────────────────────── */
-.glass-panel {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.06) 0%,
-    rgba(255, 255, 255, 0.02) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-}
-
-.glass-panel-strong {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.04) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(16px);
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
+/* Defined in design-system.css — .mk-glass-card / .glass-intense / .mk-shell .glass-panel */
+/* Legacy aliases kept for backwards compat; design-system.css takes precedence via specificity. */
 
 /* ── Fade-up entrance ──────────────────────────────────── */
 .mk-fade-up {
