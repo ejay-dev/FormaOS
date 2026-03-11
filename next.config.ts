@@ -85,8 +85,24 @@ const nextConfig: NextConfig = {
             value:
               'camera=(), microphone=(), geolocation=(), interest-cohort=()',
           },
-          // CSP is now set by middleware.ts with per-request nonces.
-          // See middleware.ts for the full Content-Security-Policy.
+          {
+            // Content Security Policy for marketing pages (static headers).
+            // App routes (/app/*, /admin/*, /auth/*) get nonce-based CSP from proxy.ts.
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' https://*.sentry.io https://*.posthog.com https://js.stripe.com https://vercel.live",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "font-src 'self' https://fonts.gstatic.com data:",
+              "img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in https://vercel.com",
+              "connect-src 'self' https://*.supabase.co https://*.supabase.in wss://*.supabase.co wss://*.supabase.in https://*.sentry.io https://*.posthog.com https://api.stripe.com https://vitals.vercel-insights.com",
+              'frame-src https://js.stripe.com https://hooks.stripe.com',
+              "worker-src 'self' blob:",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join('; '),
+          },
         ],
       },
     ];
