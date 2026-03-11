@@ -1,12 +1,30 @@
 'use client';
 
-import { useRef, useState, useEffect, type ReactNode } from 'react';
-import { motion, useScroll, useTransform, useReducedMotion, useMotionValueEvent } from 'framer-motion';
+import { useRef, useState, type ReactNode } from 'react';
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+  useMotionValueEvent,
+} from 'framer-motion';
 
 type RevealVariant =
-  | 'fadeUp' | 'fadeDown' | 'fadeLeft' | 'fadeRight'
-  | 'scaleUp' | 'blurIn' | 'slideUp' | 'clipUp' | 'rotateIn' | 'staggerFade'
-  | 'depthScale' | 'depthSlide' | 'perspectiveUp' | 'splitLeft' | 'splitRight';
+  | 'fadeUp'
+  | 'fadeDown'
+  | 'fadeLeft'
+  | 'fadeRight'
+  | 'scaleUp'
+  | 'blurIn'
+  | 'slideUp'
+  | 'clipUp'
+  | 'rotateIn'
+  | 'staggerFade'
+  | 'depthScale'
+  | 'depthSlide'
+  | 'perspectiveUp'
+  | 'splitLeft'
+  | 'splitRight';
 
 interface ScrollRevealProps {
   children: ReactNode;
@@ -20,10 +38,14 @@ interface ScrollRevealProps {
   parallax?: boolean;
   /** Parallax intensity in px (default: 30) */
   parallaxDistance?: number;
+  /** Lock to revealed state after first reveal (default: true). Prevents content staying blurred/faded. */
+  once?: boolean;
 }
 
- 
-const VARIANT_CONFIG: Record<RevealVariant, { from: Record<string, any>; to: Record<string, any> }> = {
+const VARIANT_CONFIG: Record<
+  RevealVariant,
+  { from: Record<string, any>; to: Record<string, any> }
+> = {
   fadeUp: { from: { opacity: 0, y: 24 }, to: { opacity: 1, y: 0 } },
   fadeDown: { from: { opacity: 0, y: -20 }, to: { opacity: 1, y: 0 } },
   fadeLeft: { from: { opacity: 0, x: -24 }, to: { opacity: 1, x: 0 } },
@@ -31,19 +53,44 @@ const VARIANT_CONFIG: Record<RevealVariant, { from: Record<string, any>; to: Rec
   scaleUp: { from: { opacity: 0, scale: 0.92 }, to: { opacity: 1, scale: 1 } },
   blurIn: { from: { opacity: 0, blur: 8 }, to: { opacity: 1, blur: 0 } },
   slideUp: { from: { opacity: 0, y: 32 }, to: { opacity: 1, y: 0 } },
-  clipUp: { from: { opacity: 0, y: 18, scale: 0.97 }, to: { opacity: 1, y: 0, scale: 1 } },
-  rotateIn: { from: { opacity: 0, rotate: -2, y: 14 }, to: { opacity: 1, rotate: 0, y: 0 } },
+  clipUp: {
+    from: { opacity: 0, y: 18, scale: 0.97 },
+    to: { opacity: 1, y: 0, scale: 1 },
+  },
+  rotateIn: {
+    from: { opacity: 0, rotate: -2, y: 14 },
+    to: { opacity: 1, rotate: 0, y: 0 },
+  },
   staggerFade: { from: { opacity: 0, y: 16 }, to: { opacity: 1, y: 0 } },
   // 3D depth variants
-  depthScale: { from: { opacity: 0, scale: 0.88, blur: 4 }, to: { opacity: 1, scale: 1, blur: 0 } },
-  depthSlide: { from: { opacity: 0, y: 28, scale: 0.95, blur: 2 }, to: { opacity: 1, y: 0, scale: 1, blur: 0 } },
-  perspectiveUp: { from: { opacity: 0, y: 32, rotateX: 4, scale: 0.95 }, to: { opacity: 1, y: 0, rotateX: 0, scale: 1 } },
-  splitLeft: { from: { opacity: 0, x: -30, scale: 0.95 }, to: { opacity: 1, x: 0, scale: 1 } },
-  splitRight: { from: { opacity: 0, x: 30, scale: 0.95 }, to: { opacity: 1, x: 0, scale: 1 } },
+  depthScale: {
+    from: { opacity: 0, scale: 0.88, blur: 4 },
+    to: { opacity: 1, scale: 1, blur: 0 },
+  },
+  depthSlide: {
+    from: { opacity: 0, y: 28, scale: 0.95, blur: 2 },
+    to: { opacity: 1, y: 0, scale: 1, blur: 0 },
+  },
+  perspectiveUp: {
+    from: { opacity: 0, y: 32, rotateX: 4, scale: 0.95 },
+    to: { opacity: 1, y: 0, rotateX: 0, scale: 1 },
+  },
+  splitLeft: {
+    from: { opacity: 0, x: -30, scale: 0.95 },
+    to: { opacity: 1, x: 0, scale: 1 },
+  },
+  splitRight: {
+    from: { opacity: 0, x: 30, scale: 0.95 },
+    to: { opacity: 1, x: 0, scale: 1 },
+  },
 };
 
 /** Variants that use blur animation */
-const BLUR_VARIANTS = new Set<RevealVariant>(['blurIn', 'depthScale', 'depthSlide']);
+const BLUR_VARIANTS = new Set<RevealVariant>([
+  'blurIn',
+  'depthScale',
+  'depthSlide',
+]);
 /** Variants that use rotateX (perspective) */
 const PERSPECTIVE_VARIANTS = new Set<RevealVariant>(['perspectiveUp']);
 
@@ -54,9 +101,11 @@ export function ScrollReveal({
   className = '',
   parallax = false,
   parallaxDistance = 30,
+  once = true,
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
+  const [isRevealed, setIsRevealed] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -68,38 +117,72 @@ export function ScrollReveal({
   const hasPerspective = PERSPECTIVE_VARIANTS.has(variant);
 
   // Map scroll progress to animation values
-  const opacity = useTransform(scrollYProgress, [range[0], range[1]], [config.from.opacity ?? 0, config.to.opacity ?? 1]);
-  const y = useTransform(scrollYProgress, [range[0], range[1]], [config.from.y ?? 0, config.to.y ?? 0]);
-  const x = useTransform(scrollYProgress, [range[0], range[1]], [config.from.x ?? 0, config.to.x ?? 0]);
-  const scale = useTransform(scrollYProgress, [range[0], range[1]], [config.from.scale ?? 1, config.to.scale ?? 1]);
-  const rotate = useTransform(scrollYProgress, [range[0], range[1]], [config.from.rotate ?? 0, config.to.rotate ?? 0]);
-  const rotateX = useTransform(scrollYProgress, [range[0], range[1]], [config.from.rotateX ?? 0, config.to.rotateX ?? 0]);
+  const opacity = useTransform(
+    scrollYProgress,
+    [range[0], range[1]],
+    [config.from.opacity ?? 0, config.to.opacity ?? 1],
+  );
+  const y = useTransform(
+    scrollYProgress,
+    [range[0], range[1]],
+    [config.from.y ?? 0, config.to.y ?? 0],
+  );
+  const x = useTransform(
+    scrollYProgress,
+    [range[0], range[1]],
+    [config.from.x ?? 0, config.to.x ?? 0],
+  );
+  const scale = useTransform(
+    scrollYProgress,
+    [range[0], range[1]],
+    [config.from.scale ?? 1, config.to.scale ?? 1],
+  );
+  const rotate = useTransform(
+    scrollYProgress,
+    [range[0], range[1]],
+    [config.from.rotate ?? 0, config.to.rotate ?? 0],
+  );
+  const rotateX = useTransform(
+    scrollYProgress,
+    [range[0], range[1]],
+    [config.from.rotateX ?? 0, config.to.rotateX ?? 0],
+  );
 
   // Blur filter (as proper CSS filter string)
-  const blurRaw = useTransform(scrollYProgress, [range[0], range[1]], [config.from.blur ?? 0, config.to.blur ?? 0]);
-  const filter = useTransform(blurRaw, (v: number) => (v > 0.1 ? `blur(${v}px)` : 'none'));
+  const blurRaw = useTransform(
+    scrollYProgress,
+    [range[0], range[1]],
+    [config.from.blur ?? 0, config.to.blur ?? 0],
+  );
+  const filter = useTransform(blurRaw, (v: number) =>
+    v > 0.1 ? `blur(${v}px)` : 'none',
+  );
 
   // Parallax effect (continues after reveal)
-  const parallaxY = useTransform(scrollYProgress, [0, 1], [parallaxDistance, -parallaxDistance]);
+  const parallaxY = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [parallaxDistance, -parallaxDistance],
+  );
 
-  // Dynamic will-change: only set during animation window, remove after
-  const [isAnimating, setIsAnimating] = useState(true);
+  // Lock to revealed state once animation completes — prevents content staying blurred/faded
   useMotionValueEvent(scrollYProgress, 'change', (v) => {
-    if (v > range[1] + 0.05 && isAnimating) setIsAnimating(false);
+    if (once && !isRevealed && v >= range[1]) {
+      setIsRevealed(true);
+    }
   });
-  // Also clear on unmount timeout to avoid stale will-change
-  useEffect(() => {
-    const t = setTimeout(() => setIsAnimating(false), 5000);
-    return () => clearTimeout(t);
-  }, []);
 
-  if (shouldReduceMotion) {
-    return <div ref={ref} className={className}>{children}</div>;
+  if (shouldReduceMotion || isRevealed) {
+    return (
+      <div ref={ref} className={className}>
+        {children}
+      </div>
+    );
   }
 
-  const willChangeValue = isAnimating
-    ? (hasBlur ? 'opacity, transform, filter' : 'opacity, transform')
-    : 'auto';
+  const willChangeValue = hasBlur
+    ? 'opacity, transform, filter'
+    : 'opacity, transform';
 
   // Build style object
   const style: Record<string, unknown> = {
@@ -115,10 +198,12 @@ export function ScrollReveal({
   if (hasPerspective) style.rotateX = rotateX;
 
   return (
-    <div ref={ref} className={className} style={hasPerspective ? { perspective: '800px' } : undefined}>
-      <motion.div style={style}>
-        {children}
-      </motion.div>
+    <div
+      ref={ref}
+      className={className}
+      style={hasPerspective ? { perspective: '800px' } : undefined}
+    >
+      <motion.div style={style}>{children}</motion.div>
     </div>
   );
 }
@@ -133,7 +218,11 @@ interface ParallaxDepthProps {
 
 const LAYER_SPEEDS = { slow: 15, medium: 30, fast: 50 };
 
-export function ParallaxDepth({ children, layer = 'medium', className = '' }: ParallaxDepthProps) {
+export function ParallaxDepth({
+  children,
+  layer = 'medium',
+  className = '',
+}: ParallaxDepthProps) {
   const ref = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
   const distance = LAYER_SPEEDS[layer];
@@ -146,7 +235,11 @@ export function ParallaxDepth({ children, layer = 'medium', className = '' }: Pa
   const y = useTransform(scrollYProgress, [0, 1], [distance, -distance]);
 
   if (shouldReduceMotion) {
-    return <div ref={ref} className={className}>{children}</div>;
+    return (
+      <div ref={ref} className={className}>
+        {children}
+      </div>
+    );
   }
 
   return (
