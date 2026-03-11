@@ -19,15 +19,15 @@ export default function AuditEvidenceContent() {
       subheadline="Capture immutable evidence during daily operations, map it to controls, and export auditor-ready packages on demand."
       introParagraphs={[
         'Audit evidence is the currency of compliance. Without organized, verifiable evidence, controls are just claims. With it, you demonstrate that your organization actually does what it says it does.',
-        'The fundamental problem with audit evidence isn\'t collection — it\'s timing. When evidence is gathered after the fact, retroactively assembled from email threads, screenshots, and spreadsheets, it\'s incomplete, inconsistent, and unconvincing. Auditors can tell the difference between evidence that was captured in real-time and evidence that was reconstructed for an audit.',
+        'The fundamental problem with audit evidence isn\'t collection - it\'s timing. When evidence is gathered after the fact, retroactively assembled from email threads, screenshots, and spreadsheets, it\'s incomplete, inconsistent, and unconvincing. Auditors can tell the difference between evidence that was captured in real-time and evidence that was reconstructed for an audit.',
         'FormaOS solves this by embedding evidence capture into operational workflows. Every task completion, every approval, every policy acknowledgment, every control verification creates an evidence record at the moment it happens. The result is a continuous, immutable evidence chain that auditors trust because it reflects actual operations.',
-        'This isn\'t just about audit preparation efficiency — though that improves dramatically. It\'s about evidence quality. Real-time evidence is more complete, more accurate, and more defensible than retroactive evidence collection can ever be.',
+        'This isn\'t just about audit preparation efficiency - though that improves dramatically. It\'s about evidence quality. Real-time evidence is more complete, more accurate, and more defensible than retroactive evidence collection can ever be.',
       ]}
       problemSections={[
         {
           heading: 'The evidence collection anti-pattern',
           paragraphs: [
-            'Most organizations follow a predictable pattern: compliance requirements are documented, controls are designed, and then — months later — someone needs to prove the controls actually worked. This triggers the evidence scramble.',
+            'Most organizations follow a predictable pattern: compliance requirements are documented, controls are designed, and then - months later - someone needs to prove the controls actually worked. This triggers the evidence scramble.',
             'The evidence scramble looks like this:',
           ],
           bullets: [
@@ -87,7 +87,7 @@ export default function AuditEvidenceContent() {
         {
           heading: 'Auditor-ready export packages',
           paragraphs: [
-            'Generate evidence packages organized exactly how auditors expect — by framework, control, time period, and evidence type.',
+            'Generate evidence packages organized exactly how auditors expect - by framework, control, time period, and evidence type.',
           ],
           bullets: [
             'Structured exports organized by framework and control',

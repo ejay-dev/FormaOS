@@ -56,11 +56,11 @@ const workflows: UseCaseWorkflow[] = [
   {
     title: 'Credential intake and verification',
     description:
-      'Collect artifacts, validate completeness, and assign verification ownership in one governed workflow — from initial hire through ongoing role changes.',
+      'Collect artifacts, validate completeness, and assign verification ownership in one governed workflow - from initial hire through ongoing role changes.',
     steps: [
       'Define required credential schema by role, site, and regulatory jurisdiction (AHPRA, NDIS, SafeWork)',
       'Capture credential artifacts: registration certificates, clearance letters, training records, and photo ID',
-      'Validate completeness against role-specific requirements — block assignment to regulated roles until all credentials are verified',
+      'Validate completeness against role-specific requirements - block assignment to regulated roles until all credentials are verified',
       'Assign named verifier for each credential with segregation of duties (verifier cannot be the credential holder)',
       'Record reviewer decision history: approved, rejected with reason, or pending further documentation',
       'Link verified credentials to the individual\'s compliance profile with tamper-evident timestamps',
@@ -69,7 +69,7 @@ const workflows: UseCaseWorkflow[] = [
   {
     title: 'Renewal and escalation engine',
     description:
-      'Trigger reminder cadences and escalate overdue renewals before they become high-risk gaps — with automatic role-restriction for expired credentials.',
+      'Trigger reminder cadences and escalate overdue renewals before they become high-risk gaps - with automatic role-restriction for expired credentials.',
     steps: [
       'Set policy-based renewal intervals per credential type: annual AHPRA, biennial WWC, 3-year first aid',
       'Send automated reminders at 90, 60, 30, 14, and 7 days before expiry to the credential holder and their manager',
@@ -82,7 +82,7 @@ const workflows: UseCaseWorkflow[] = [
   {
     title: 'Audit and assurance output',
     description:
-      'Generate workforce readiness views with linked evidence and verification status by individual, team, site, or credential type — audit-ready at any moment.',
+      'Generate workforce readiness views with linked evidence and verification status by individual, team, site, or credential type - audit-ready at any moment.',
     steps: [
       'View live compliance posture by role, team, site, or business unit with red/amber/green status indicators',
       'Drill into any individual\'s credential chain: artifact → verifier → decision → timestamp → linked control',
@@ -94,10 +94,10 @@ const workflows: UseCaseWorkflow[] = [
   {
     title: 'Contractor and locum credential onboarding',
     description:
-      'Apply the same credential governance to short-term contractors, locums, and agency staff — ensuring temporary workers meet the same regulatory standards as permanent employees.',
+      'Apply the same credential governance to short-term contractors, locums, and agency staff - ensuring temporary workers meet the same regulatory standards as permanent employees.',
     steps: [
       'Define contractor-specific credential requirements by engagement type: locum doctor, agency support worker, IT contractor',
-      'Capture and verify credentials before the contractor\'s first shift — block rostering until all requirements are met',
+      'Capture and verify credentials before the contractor\'s first shift - block rostering until all requirements are met',
       'Track agency-supplied credential evidence separately with source attribution (agency-verified vs self-declared)',
       'Set engagement-end date triggers: archive credentials, revoke system access, and generate exit compliance summary',
       'Maintain full contractor credential history for retrospective audits even after engagement ends',
@@ -108,7 +108,7 @@ const workflows: UseCaseWorkflow[] = [
 const standards: UseCaseStandard[] = [
   {
     name: 'AHPRA & Health Practitioner Regulation',
-    description: 'Australian Health Practitioner Regulation Agency — registration, CPD, and scope-of-practice obligations',
+    description: 'Australian Health Practitioner Regulation Agency - registration, CPD, and scope-of-practice obligations',
     features: [
       'AHPRA registration expiry tracking by practitioner, profession, and specialty',
       'CPD hour and competency evidence capture with immutable timestamps',
@@ -152,22 +152,22 @@ const metrics: UseCaseMetric[] = [
   {
     value: '90/60/30',
     label: 'Day Renewal Alerts',
-    description: 'Automated reminder cadence — no more expiry surprises for licenses and clearances.',
+    description: 'Automated reminder cadence - no more expiry surprises for licenses and clearances.',
   },
   {
     value: '< 2 min',
     label: 'Credential Status Check',
-    description: 'Live posture view by team, role, or individual — audit-ready at any moment.',
+    description: 'Live posture view by team, role, or individual - audit-ready at any moment.',
   },
   {
     value: 'Named',
-    label: 'Verifier — Always',
+    label: 'Verifier - Always',
     description: 'Every credential item has a documented reviewer and approval decision on record.',
   },
   {
     value: '100%',
     label: 'Audit Traceability',
-    description: 'Current and historical credential proof in one exportable chain — no reconstruction.',
+    description: 'Current and historical credential proof in one exportable chain - no reconstruction.',
   },
 ];
 
@@ -183,7 +183,7 @@ export default function WorkforceContent() {
           with continuous audit readiness
         </>
       }
-      description="Manage credential obligations, automated renewal alerts, verification workflows, and audit-ready evidence for every role — in a system built for regulated operational environments where expiry has consequences."
+      description="Manage credential obligations, automated renewal alerts, verification workflows, and audit-ready evidence for every role - in a system built for regulated operational environments where expiry has consequences."
       challenges={challenges}
       demoTitle="Credential operations simulation"
       demoDescription="See credential lifecycle tracking and live compliance posture as obligations change."
@@ -196,7 +196,7 @@ export default function WorkforceContent() {
       workflows={workflows}
       standards={standards}
       metrics={metrics}
-      ctaTitle="Operationalize credential compliance — with zero expiry surprises"
+      ctaTitle="Operationalize credential compliance - with zero expiry surprises"
       ctaDescription="Replace fragmented spreadsheets and ad-hoc reminders with a governed credential system. Named owners, automated renewal cadences, and export-ready evidence for every workforce compliance review."
     />
   );

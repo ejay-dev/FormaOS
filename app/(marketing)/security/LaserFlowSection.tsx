@@ -58,7 +58,7 @@ export function LaserFlowSection() {
             </span>
           </h2>
           <p className="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto">
-            Every compliance event follows a secured pipeline — ingested, verified, and sealed into an immutable record.
+            Every compliance event follows a secured pipeline - ingested, verified, and sealed into an immutable record.
           </p>
         </motion.div>
 
@@ -79,7 +79,7 @@ export function LaserFlowSection() {
               {[
                 { text: 'Events are ingested with cryptographic timestamps and actor identity', icon: FileText },
                 { text: 'Multi-layer verification ensures data integrity before sealing', icon: Shield },
-                { text: 'Immutable audit logs are append-only — no edits, no deletions', icon: Lock },
+                { text: 'Immutable audit logs are append-only - no edits, no deletions', icon: Lock },
               ].map((bullet) => (
                 <div key={bullet.text} className="flex items-start gap-3">
                   <div className="flex-shrink-0 mt-0.5 w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
@@ -109,7 +109,7 @@ export function LaserFlowSection() {
             {/* Pipeline flow card */}
             <div className="relative rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.05] to-white/[0.02] p-6 sm:p-8 shadow-[0_8px_32px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.06)]">
 
-              {/* Pipeline steps — vertical on mobile, horizontal on sm+ */}
+              {/* Pipeline steps - vertical on mobile, horizontal on sm+ */}
               <div className="flex flex-col sm:flex-row items-stretch gap-4 sm:gap-0">
                 {PIPELINE_STEPS.map((step, i) => {
                   const Icon = step.icon;

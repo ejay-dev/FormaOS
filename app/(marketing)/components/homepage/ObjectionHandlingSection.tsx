@@ -7,7 +7,7 @@ const objectionCards = [
   {
     objection: '"How do we complete security review before procurement sign-off?"',
     response:
-      'FormaOS ships with a pre-built security review packet: architecture overview, penetration test summary, vendor assurance questionnaire, and DPA — pre-answering 90% of procurement questions.',
+      'FormaOS ships with a pre-built security review packet: architecture overview, penetration test summary, vendor assurance questionnaire, and DPA - pre-answering 90% of procurement questions.',
     icon: ShieldAlert,
     proof: 'Security packet included',
   },
@@ -21,7 +21,7 @@ const objectionCards = [
   {
     objection: '"How do we know evidence is regulator-defensible?"',
     response:
-      'Every evidence item is linked to its creator, workflow step, approver, control, and framework. Immutable audit logs preserve chain of custody — auditors can trace any action back to its origin.',
+      'Every evidence item is linked to its creator, workflow step, approver, control, and framework. Immutable audit logs preserve chain of custody - auditors can trace any action back to its origin.',
     icon: FileCheck2,
     proof: 'Immutable audit trail',
   },
@@ -35,14 +35,14 @@ const objectionCards = [
   {
     objection: '"Will this work across multiple operating sites or entities?"',
     response:
-      'Multi-entity and multi-site management is a core capability. Each entity has its own controls, evidence, and audit trail — with centralized oversight from the executive dashboard.',
+      'Multi-entity and multi-site management is a core capability. Each entity has its own controls, evidence, and audit trail - with centralized oversight from the executive dashboard.',
     icon: CircleCheckBig,
     proof: 'Multi-entity by design',
   },
   {
     objection: '"Is this only for compliance teams, or does it work for operators?"',
     response:
-      'Execution is mapped to real operators — not just compliance teams. Task routing, shift tracking, incident workflows, and credential management work for frontline and operational staff.',
+      'Execution is mapped to real operators - not just compliance teams. Task routing, shift tracking, incident workflows, and credential management work for frontline and operational staff.',
     icon: Lock,
     proof: 'Workflow-first design',
   },
@@ -62,10 +62,10 @@ export function ObjectionHandlingSection() {
             Buyer Objections
           </div>
           <h2 className="text-2xl font-bold text-white sm:text-3xl">
-            Answer every procurement and security objection — before they slow you down
+            Answer every procurement and security objection - before they slow you down
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-slate-400 sm:text-base">
-            FormaOS ships with the artifacts, controls, and documentation to satisfy security teams, legal, procurement, and regulators — without a multi-week review process.
+            FormaOS ships with the artifacts, controls, and documentation to satisfy security teams, legal, procurement, and regulators - without a multi-week review process.
           </p>
         </ScrollReveal>
 

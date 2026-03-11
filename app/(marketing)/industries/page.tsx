@@ -5,7 +5,7 @@ import { breadcrumbSchema,
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
-  title: 'Industry Compliance Solutions — Healthcare, NDIS, Aged Care | FormaOS',
+  title: 'Industry Compliance Solutions - Healthcare, NDIS, Aged Care | FormaOS',
   description:
     'Pre-built compliance frameworks for NDIS, healthcare, aged care, disability services, financial services, and government. Purpose-built for regulated industries.',
   alternates: {
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Industry Compliance Solutions — Healthcare, NDIS, Aged Care | FormaOS',
+    title: 'Industry Compliance Solutions - Healthcare, NDIS, Aged Care | FormaOS',
     description:
       'Purpose-built compliance for NDIS, healthcare, aged care, financial services, and government regulated industries.',
   },

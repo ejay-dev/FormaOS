@@ -17,7 +17,7 @@ const proofScenarios = [
   {
     title: 'Audit request lifecycle',
     before:
-      'Evidence hunted across email threads, shared drives, and spreadsheets — days before auditor arrives.',
+      'Evidence hunted across email threads, shared drives, and spreadsheets - days before auditor arrives.',
     after:
       'Framework-mapped evidence bundles exported in under 2 minutes. Every control linked to its proof.',
     impact: 'Audit prep: days → hours',
@@ -26,7 +26,7 @@ const proofScenarios = [
   {
     title: 'Incident response workflow',
     before:
-      'Ownership unclear. Escalation inconsistent. Regulator asks for evidence trail — nothing exists.',
+      'Ownership unclear. Escalation inconsistent. Regulator asks for evidence trail - nothing exists.',
     after:
       'Routed triage with named owners, timestamped actions, and full audit trail from detection to resolution.',
     impact: 'From ad-hoc to defensible',
@@ -89,7 +89,7 @@ export function OutcomeProofSection() {
             Real outcomes. Before and after FormaOS.
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-slate-300 sm:text-base">
-            Regulated teams don't need more features — they need fewer
+            Regulated teams don't need more features - they need fewer
             compliance crises. FormaOS connects governance to measurable
             operational outcomes that matter to regulators, executives, and
             operators.

@@ -1,5 +1,5 @@
 /**
- * HeroStaticShell — Server Component
+ * HeroStaticShell - Server Component
  *
  * Renders the above-the-fold hero content as plain HTML using the default
  * runtime copy from DEFAULT_RUNTIME_MARKETING. This component has no
@@ -59,7 +59,7 @@ export function HeroStaticShell() {
       className="home-hero relative isolate overflow-hidden"
       aria-label="Hero"
     >
-      {/* Static background — no animation, preserved for SEO and no-JS users */}
+      {/* Static background - no animation, preserved for SEO and no-JS users */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/5 via-slate-950/25 to-slate-950/75" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_-5%,transparent_55%,rgba(3,7,18,0.65)_100%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_100%_at_0%_50%,rgba(3,7,18,0.40),transparent_70%)]" />
@@ -74,7 +74,7 @@ export function HeroStaticShell() {
           </span>
         </div>
 
-        {/* Primary headline — the core SEO H1 */}
+        {/* Primary headline - the core SEO H1 */}
         <h1 className="max-w-5xl text-[clamp(1.75rem,5vw+0.5rem,2.35rem)] font-semibold leading-[1.04] tracking-tight text-white sm:text-5xl lg:text-7xl">
           <span>{heroCopy.headlinePrimary}</span>
           <br />

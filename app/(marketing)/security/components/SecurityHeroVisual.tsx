@@ -218,7 +218,7 @@ function SecurityHeroVisualInner() {
             animate={{ opacity: 1 }}
             transition={animate ? { duration: 0.6, delay: 0.4 } : { duration: 0 }}
           >
-            {/* Shield outline — pathLength animation */}
+            {/* Shield outline - pathLength animation */}
             <motion.path
               d="M60 8 L108 34 L108 76 Q108 118 60 138 Q12 118 12 76 L12 34 Z"
               fill="none"

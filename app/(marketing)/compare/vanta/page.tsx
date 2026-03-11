@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FormaOS vs Vanta — Compare Compliance Platforms',
+    title: 'FormaOS vs Vanta - Compare Compliance Platforms',
     description:
       'FormaOS vs Vanta: operational compliance execution with defensible evidence workflows and audit-ready governance.',
   },
@@ -27,12 +27,12 @@ const points = [
   {
     title: 'Execution-first operating system',
     detail:
-      'FormaOS is designed to run compliance as work: controls become tasks, owners, deadlines, and evidence requirements — not just monitoring rules and scanning alerts.',
+      'FormaOS is designed to run compliance as work: controls become tasks, owners, deadlines, and evidence requirements - not just monitoring rules and scanning alerts.',
   },
   {
     title: 'Evidence defensibility workflows',
     detail:
-      'Verification status, audit history, and chain-of-custody context reduce reviewer ambiguity and improve audit response time — every control, timestamped and traceable.',
+      'Verification status, audit history, and chain-of-custody context reduce reviewer ambiguity and improve audit response time - every control, timestamped and traceable.',
   },
   {
     title: 'Built for regulated operators',
@@ -42,27 +42,27 @@ const points = [
   {
     title: 'Data sovereignty by default',
     detail:
-      'AU-based hosting by default with US and EU residency options. DPA and data handling controls included — essential for organizations under Privacy Act or GDPR obligations.',
+      'AU-based hosting by default with US and EU residency options. DPA and data handling controls included - essential for organizations under Privacy Act or GDPR obligations.',
   },
   {
     title: 'Incident management with audit trail',
     detail:
-      'Structured incident intake, investigation, corrective action, and closure — with full accountability chain and regulator-ready evidence export built into the workflow.',
+      'Structured incident intake, investigation, corrective action, and closure - with full accountability chain and regulator-ready evidence export built into the workflow.',
   },
   {
-    title: 'Named ownership — never assumed',
+    title: 'Named ownership - never assumed',
     detail:
       'Every control, evidence item, and action has a named owner with timestamped history. Regulators can trace exactly who did what, when, and with what authority.',
   },
 ] as const;
 
 const idealIf = [
-  'You need workflows that enforce accountability across operational teams — not just security automation',
-  'Evidence should be verified and defensible with approval history — not only collected and organized',
+  'You need workflows that enforce accountability across operational teams - not just security automation',
+  'Evidence should be verified and defensible with approval history - not only collected and organized',
   'You want posture reporting that maps to operational reality and regulator expectations',
   'Your organization operates in healthcare, NDIS, disability, aged care, or financial services',
   'Data residency and sovereignty are non-negotiable requirements for your enterprise',
-  'You need incident management linked to compliance evidence — not a separate disconnected workflow',
+  'You need incident management linked to compliance evidence - not a separate disconnected workflow',
 ] as const;
 
 const featureComparison = [
@@ -102,7 +102,7 @@ const procurementChecks = [
   {
     title: 'Enterprise SSO and identity governance',
     detail:
-      'SAML 2.0 SSO (Okta, Azure AD, Google Workspace), SCIM provisioning, and MFA policy enforcement — ready for enterprise identity requirements.',
+      'SAML 2.0 SSO (Okta, Azure AD, Google Workspace), SCIM provisioning, and MFA policy enforcement - ready for enterprise identity requirements.',
   },
 ] as const;
 
@@ -110,7 +110,7 @@ export default function CompareVantaPage() {
   return (
     <ComparePageTemplate
       competitor="Vanta"
-      heroDescription="Vanta is widely used for security compliance automation. FormaOS is built to operationalize compliance as a full execution system — with named accountability, evidence defensibility, data sovereignty, and regulated-sector coverage beyond security teams."
+      heroDescription="Vanta is widely used for security compliance automation. FormaOS is built to operationalize compliance as a full execution system - with named accountability, evidence defensibility, data sovereignty, and regulated-sector coverage beyond security teams."
       points={points}
       idealIf={idealIf}
       procurementChecks={procurementChecks}

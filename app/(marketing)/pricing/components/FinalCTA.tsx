@@ -85,7 +85,7 @@ export function FinalCTA() {
                     <div className="flex items-center gap-3 justify-center lg:justify-start">
                       <div className="w-2 h-2 rounded-full bg-emerald-400" />
                       <span className="text-sm text-gray-400">
-                        14-day free trial — no credit card required
+                        14-day free trial - no credit card required
                       </span>
                     </div>
                     <div className="flex items-center gap-3 justify-center lg:justify-start">

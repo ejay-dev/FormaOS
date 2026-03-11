@@ -28,7 +28,7 @@ export function PricingHero() {
         <>
           Not a productivity tool. Not a document repository.
           <br />
-          A compliance operating system — priced for regulated accountability.
+          A compliance operating system - priced for regulated accountability.
         </>
       }
       extras={<PricingExtras />}

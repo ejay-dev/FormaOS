@@ -5,7 +5,7 @@ import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const outcomes = [
-  { outcome: 'Continuous compliance posture — not periodic audit scrambles', stat: '24/7' },
+  { outcome: 'Continuous compliance posture - not periodic audit scrambles', stat: '24/7' },
   { outcome: 'Audit preparation reduced from weeks to hours', stat: '~90%' },
   { outcome: 'Every control has a named owner, status, and evidence trail', stat: '100%' },
   { outcome: 'Regulator-ready evidence packages exportable in minutes', stat: '< 2 min' },

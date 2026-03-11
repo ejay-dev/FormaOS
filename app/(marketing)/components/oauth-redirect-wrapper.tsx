@@ -49,7 +49,6 @@ export function OAuthRedirectWrapper() {
       try {
         if (error) {
           // Handle OAuth error
-          console.log('[OAuthRedirectWrapper] OAuth error detected:', error);
           window.location.assign(
             `${appBase}/auth/signin?error=oauth_cancelled&message=${encodeURIComponent('Sign in was cancelled. Please try again.')}`,
           );
@@ -58,10 +57,6 @@ export function OAuthRedirectWrapper() {
 
         if (code) {
           // This is an OAuth redirect, send to callback handler
-          console.log(
-            '[OAuthRedirectWrapper] OAuth code detected, redirecting to callback',
-          );
-
           // Get the current URL to preserve all query parameters
           const currentUrl = new URL(window.location.href);
           const callbackUrl = new URL(`${appBase}/auth/callback`);
@@ -73,11 +68,7 @@ export function OAuthRedirectWrapper() {
           // instead of attempting a client-side App Router render (which yields 404).
           window.location.replace(callbackUrl.toString());
         }
-      } catch (error) {
-        console.error(
-          '[OAuthRedirectWrapper] Error handling OAuth redirect:',
-          error,
-        );
+      } catch {
         window.location.assign(
           `${appBase}/auth/signin?error=oauth_error&message=An error occurred during sign in. Please try again.`,
         );

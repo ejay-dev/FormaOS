@@ -77,7 +77,7 @@ function buildBezierPath(node: FrameworkNode): string {
 /**
  * TrustHeroVisual
  * ───────────────
- * Compliance Framework Web — a 3D constellation of framework nodes
+ * Compliance Framework Web - a 3D constellation of framework nodes
  * connected to a central FormaOS hub via animated bezier paths,
  * with cursor-reactive parallax and floating evidence particles.
  *
@@ -95,7 +95,7 @@ function TrustHeroVisualInner() {
   const rotateX = useTransform(mouseY, [0, 1], [4, -4]);
   const rotateY = useTransform(mouseX, [0, 1], [-4, 4]);
 
-  // Per-node parallax transforms — each node gets extra offset based on parallaxScale
+  // Per-node parallax transforms - each node gets extra offset based on parallaxScale
   const nodeTransforms = useMemo(() => {
     return FRAMEWORK_NODES.map((node) => ({
       // We'll compute these as style in the render using the raw approach
@@ -127,7 +127,7 @@ function TrustHeroVisualInner() {
     { x: n5x, y: n5y },
   ];
 
-  // SVG viewBox is centered on 0,0 — size 500x500 → -250 to 250
+  // SVG viewBox is centered on 0,0 - size 500x500 → -250 to 250
   const svgSize = 500;
   const half = svgSize / 2;
 

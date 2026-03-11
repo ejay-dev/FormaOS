@@ -44,7 +44,7 @@ export function EnterpriseSecurity() {
                 Security built into the operating layer
               </h2>
               <p className="text-slate-400 max-w-2xl mx-auto leading-relaxed">
-                FormaOS is built for organizations under regulatory scrutiny. Security controls, identity governance, and audit infrastructure are core — not bolt-on features.
+                FormaOS is built for organizations under regulatory scrutiny. Security controls, identity governance, and audit infrastructure are core - not bolt-on features.
               </p>
             </div>
 

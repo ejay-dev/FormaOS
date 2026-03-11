@@ -26,7 +26,7 @@ const sections = [
     icon: ShieldCheck,
     title: 'Security architecture overview',
     points: [
-      'Multi-tenant architecture with Row-Level Security (RLS) — strict org boundary enforcement at the database layer',
+      'Multi-tenant architecture with Row-Level Security (RLS) - strict org boundary enforcement at the database layer',
       'Application-layer authorization with RBAC model and segregation of duties across all compliance workflows',
       'Change management controls: code review, CI/CD pipeline gates, staging environments, and rollback procedures',
       'Infrastructure hosted on enterprise-grade cloud providers with automatic failover and disaster recovery',
@@ -40,7 +40,7 @@ const sections = [
     points: [
       'Google OAuth on all plans; SAML 2.0 SSO for Okta, Azure AD, Google Workspace on Enterprise plan',
       'MFA policy enforcement with configurable session duration and idle timeout controls',
-      'SCIM provisioning for automated user lifecycle management — onboarding, role changes, and offboarding',
+      'SCIM provisioning for automated user lifecycle management - onboarding, role changes, and offboarding',
       'Role-based access control with granular permissions: admin, compliance lead, reviewer, auditor, read-only',
       'Session management with forced re-authentication for sensitive operations (evidence approval, user management)',
       'SSO enforcement mode: block password login when SSO is configured to prevent shadow authentication',
@@ -50,11 +50,11 @@ const sections = [
     icon: Lock,
     title: 'Data handling and encryption',
     points: [
-      'AES-256 encryption at rest; TLS 1.3 in transit — no exceptions across all data types and environments',
+      'AES-256 encryption at rest; TLS 1.3 in transit - no exceptions across all data types and environments',
       'Evidence chain-of-custody metadata: uploader identity, verifier, timestamps, and control linkage preserved',
       'Retention policies aligned to your regulatory requirements with configurable retention periods per data type',
       'Full data portability on exit: structured export of all data, evidence, and audit history within 30 days',
-      'Backup encryption with separate key management — backups are encrypted independently of primary storage',
+      'Backup encryption with separate key management - backups are encrypted independently of primary storage',
       'No data sharing with third parties beyond documented subprocessors; subprocessor list publicly available',
     ],
   },
@@ -62,7 +62,7 @@ const sections = [
     icon: FileLock2,
     title: 'Audit logging and evidence defensibility',
     points: [
-      'Tamper-evident, immutable audit logs for every compliance action — timestamped, uneditable, and append-only',
+      'Tamper-evident, immutable audit logs for every compliance action - timestamped, uneditable, and append-only',
       'Evidence verification workflow with approval, rejection, and segregation controls fully documented',
       'Framework-mapped audit bundles exportable in under 2 minutes for regulator, auditor, or board review',
       'User activity logs: login history, permission changes, evidence access, and administrative actions recorded',
@@ -75,7 +75,7 @@ const sections = [
     title: 'Operational assurance and residency',
     points: [
       'AU-based hosting by default; US and EU data residency options for international regulatory obligations',
-      'Annual independent penetration test by qualified assessors — summary report available under NDA for Enterprise',
+      'Annual independent penetration test by qualified assessors - summary report available under NDA for Enterprise',
       'DPA (Data Processing Agreement) covering GDPR and Privacy Act 1988 obligations, available pre-signature',
       'Vendor assurance questionnaire (CAIQ-aligned) pre-completed and available for procurement review',
       'SLA documentation with uptime commitments, incident response targets, and escalation procedures',
@@ -86,17 +86,17 @@ const sections = [
 
 const checklist = [
   'Data flow diagram (high level) + tenant isolation model (RLS posture)',
-  'Authentication methods — Google OAuth, SAML 2.0 SSO, MFA enforcement',
+  'Authentication methods - Google OAuth, SAML 2.0 SSO, MFA enforcement',
   'AES-256 at rest + TLS 1.3 in transit encryption confirmation',
   'Evidence storage approach, access controls, and chain-of-custody metadata',
   'Audit logging coverage, tamper-evident history, and export capabilities',
   'Data residency options (AU/US/EU) and DPA documentation',
   'Annual penetration test summary (available under NDA)',
   'Incident response posture and operational escalation contacts',
-  'Data portability confirmation — portable export, 30-day deletion on exit',
+  'Data portability confirmation - portable export, 30-day deletion on exit',
   'Subprocessor list with data categories, locations, and processing purposes',
   'Business continuity and disaster recovery posture (RPO/RTO targets)',
-  'Vendor risk management — third-party dependency governance and review cadence',
+  'Vendor risk management - third-party dependency governance and review cadence',
 ] as const;
 
 export default function SecurityReviewContent() {
@@ -108,7 +108,7 @@ export default function SecurityReviewContent() {
         visualContent={<SecurityReviewHeroVisual />}
         badge={{ icon: <ShieldCheck className="h-4 w-4" />, text: 'Procurement Ready' }}
         headline="Security Review Packet for Enterprise Buyers"
-        subheadline="Everything your security, legal, and procurement teams will ask — documented before they ask it. Encryption, SSO, pen testing, data residency, and DPA."
+        subheadline="Everything your security, legal, and procurement teams will ask - documented before they ask it. Encryption, SSO, pen testing, data residency, and DPA."
         primaryCta={{ href: '/contact', label: 'Security Walkthrough' }}
         secondaryCta={{ href: `${appBase}/auth/signup?source=security_review`, label: 'Start Trust-Ready Trial' }}
       />

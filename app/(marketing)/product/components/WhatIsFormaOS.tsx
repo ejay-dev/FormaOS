@@ -59,7 +59,7 @@ export function WhatIsFormaOS() {
             <p className="text-base sm:text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed">
               Not a GRC checklist tool. Not a document repository. FormaOS is an
               operational layer that enforces compliance as your organization
-              works — continuously, with evidence generated automatically.
+              works - continuously, with evidence generated automatically.
             </p>
           </div>
         </ScrollReveal>

@@ -5,7 +5,7 @@ import { motion, useReducedMotion, useTransform } from 'framer-motion';
 import { useCursorPosition } from '@/components/motion/CursorContext';
 
 /**
- * DocsHeroVisual — "Knowledge Architecture"
+ * DocsHeroVisual - "Knowledge Architecture"
  * ──────────────────────────────────────────
  * Open book/document motif with 3 page layers fanning from a center spine.
  * 4 floating chapter marker pills orbit at different Z depths.
@@ -201,7 +201,7 @@ function DocsHeroVisualInner() {
           ))}
         </motion.div>
 
-        {/* Center page (z=0) — on top */}
+        {/* Center page (z=0) - on top */}
         <motion.div
           className={`absolute left-1/2 top-1/2 ${GLASS} p-4 flex flex-col gap-2.5`}
           style={{

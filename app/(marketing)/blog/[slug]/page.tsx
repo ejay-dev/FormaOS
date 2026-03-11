@@ -52,7 +52,7 @@ export async function generateMetadata({
           url: `${siteUrl}/og-image.png`,
           width: 1200,
           height: 630,
-          alt: `${post.title} — FormaOS Blog`,
+          alt: `${post.title} - FormaOS Blog`,
         },
       ],
     },

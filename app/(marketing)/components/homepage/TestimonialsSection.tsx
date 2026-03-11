@@ -27,7 +27,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      'Finally, a compliance platform designed for operations teams, not just IT. Our frontline staff actually use it — because the workflows make sense to them.',
+      'Finally, a compliance platform designed for operations teams, not just IT. Our frontline staff actually use it - because the workflows make sense to them.',
     name: 'Rachel K.',
     role: 'Head of Governance & Risk',
     org: 'Regional Financial Services Group',
@@ -37,7 +37,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      'Standard 8 reporting used to consume two full weeks per quarter. With FormaOS we close the same governance cycle in under two days — with a traceable evidence trail the Commission accepts without question.',
+      'Standard 8 reporting used to consume two full weeks per quarter. With FormaOS we close the same governance cycle in under two days - with a traceable evidence trail the Commission accepts without question.',
     name: 'Michael D.',
     role: 'Quality & Compliance Lead',
     org: 'Residential Aged Care Group',
@@ -47,7 +47,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      'Our SafeWork audit was the first one where we walked in with a complete digital evidence package. Incident logs, corrective actions, worker credential records — all exportable in under five minutes.',
+      'Our SafeWork audit was the first one where we walked in with a complete digital evidence package. Incident logs, corrective actions, worker credential records - all exportable in under five minutes.',
     name: 'Priya N.',
     role: 'WHS & Compliance Manager',
     org: 'Construction & Infrastructure Group',
@@ -78,13 +78,13 @@ export function TestimonialsSection() {
         </h2>
         <p className="mt-4 text-base text-slate-400">
           Healthcare, disability services, and financial teams running
-          compliance as governance — not guesswork.
+          compliance as governance - not guesswork.
         </p>
       </motion.div>
 
       {/* Cards */}
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {/* Note: 5 items — last card spans full width on tablet to avoid orphan */}
+        {/* Note: 5 items - last card spans full width on tablet to avoid orphan */}
         {TESTIMONIALS.map((t, i) => (
           <motion.article
             key={t.name}

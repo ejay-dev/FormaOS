@@ -39,7 +39,7 @@ export async function submitMarketingLead(formData: FormData) {
   // ── Honeypot: reject submissions that fill the bot trap field ─────────────
   const honeypot = safeValue(formData.get('_honey'), 10);
   if (honeypot.length > 0) {
-    // Silent success — don't tell bots they were caught
+    // Silent success - don't tell bots they were caught
     redirect('/contact?success=1');
   }
 

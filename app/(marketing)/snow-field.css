@@ -6,14 +6,14 @@
   z-index: 1;
 }
 
-/* Intensity: subtle — lighter, slower */
+/* Intensity: subtle - lighter, slower */
 .snow-field--subtle {
   --snow-color: rgba(255, 255, 255, 0.2);
   --snow-speed: 22s;
   --snow-speed-slow: 32s;
 }
 
-/* Intensity: strong — denser, slightly faster */
+/* Intensity: strong - denser, slightly faster */
 .snow-field--strong {
   --snow-color: rgba(255, 255, 255, 0.45);
   --snow-speed: 14s;
@@ -29,7 +29,7 @@
   height: 200%;
   pointer-events: none;
   will-change: transform;
-  /* Layer 1: medium particles — foreground drift */
+  /* Layer 1: medium particles - foreground drift */
   background-image:
     radial-gradient(1.5px 1.5px at  8% 12%, var(--snow-color), transparent),
     radial-gradient(1px   1px   at 22% 38%, var(--snow-color), transparent),
@@ -48,7 +48,7 @@
 }
 
 .snow-field::after {
-  /* Layer 2: smaller particles — slower background depth layer */
+  /* Layer 2: smaller particles - slower background depth layer */
   background-image:
     radial-gradient(0.8px 0.8px at  5% 28%, var(--snow-color), transparent),
     radial-gradient(1px   1px   at 18% 68%, var(--snow-color), transparent),

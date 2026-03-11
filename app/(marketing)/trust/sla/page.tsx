@@ -39,7 +39,7 @@ const tiers = [
   {
     tier: 'Enterprise',
     points: [
-      '99.9% monthly uptime SLA target — included in executed MSA/SOW.',
+      '99.9% monthly uptime SLA target - included in executed MSA/SOW.',
       'P1 critical incident response: acknowledgement within 1 business hour.',
       'P2 high priority: acknowledgement within 4 business hours.',
       'Dedicated success support and named escalation path.',

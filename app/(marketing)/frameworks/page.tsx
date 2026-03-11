@@ -3,7 +3,7 @@ import FrameworksContent from './FrameworksContent';
 import { breadcrumbSchema,
   siteUrl} from '@/lib/seo';
 export const metadata: Metadata = {
-  title: 'ISO, SOC 2, NDIS Framework Coverage — FormaOS',
+  title: 'ISO, SOC 2, NDIS Framework Coverage - FormaOS',
   description:
     'Framework-mapped controls and evidence workflows for ISO 27001, SOC 2, NDIS Practice Standards, and more. Build repeatable compliance execution, not static checklists.',
   alternates: {
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ISO, SOC 2, NDIS Framework Coverage — FormaOS',
+    title: 'ISO, SOC 2, NDIS Framework Coverage - FormaOS',
     description:
       'Framework-mapped controls and evidence workflows for ISO 27001, SOC 2, NDIS Practice Standards, and more.',
   },

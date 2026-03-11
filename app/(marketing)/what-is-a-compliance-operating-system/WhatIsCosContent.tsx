@@ -38,10 +38,10 @@ export default function WhatIsCosContent() {
         <ScrollReveal variant="fadeUp" range={[0, 0.3]}>
           <div className="space-y-6 text-base leading-relaxed text-slate-300">
             <p>
-              A <strong className="text-white">compliance operating system</strong> is a category of software that goes beyond traditional governance, risk, and compliance (GRC) tools. While GRC platforms manage compliance documentation — policies, risk registers, and audit checklists — a compliance operating system <em>runs</em> your compliance program as an integral part of daily operations.
+              A <strong className="text-white">compliance operating system</strong> is a category of software that goes beyond traditional governance, risk, and compliance (GRC) tools. While GRC platforms manage compliance documentation - policies, risk registers, and audit checklists - a compliance operating system <em>runs</em> your compliance program as an integral part of daily operations.
             </p>
             <p>
-              Think of it like this: a word processor helps you write policies. A project management tool helps you assign tasks. A compliance operating system connects policies to tasks, tasks to evidence, evidence to controls, and controls to regulatory requirements — creating a continuous, defensible chain of accountability.
+              Think of it like this: a word processor helps you write policies. A project management tool helps you assign tasks. A compliance operating system connects policies to tasks, tasks to evidence, evidence to controls, and controls to regulatory requirements - creating a continuous, defensible chain of accountability.
             </p>
             <p>
               The shift from compliance documentation to compliance operations represents a fundamental change in how organizations approach regulatory obligations. Instead of treating compliance as a periodic project (annual audits, quarterly reviews, pre-assessment preparation), a compliance operating system makes compliance a natural output of how your organization works every day.
@@ -64,7 +64,7 @@ export default function WhatIsCosContent() {
             {[
               {
                 title: 'Framework-to-workflow mapping',
-                description: 'Regulatory requirements and compliance frameworks are mapped directly to operational workflows — not just documented. Each control has an owner, a process, and evidence requirements that connect to daily operations.',
+                description: 'Regulatory requirements and compliance frameworks are mapped directly to operational workflows - not just documented. Each control has an owner, a process, and evidence requirements that connect to daily operations.',
               },
               {
                 title: 'Continuous evidence capture',
@@ -72,11 +72,11 @@ export default function WhatIsCosContent() {
               },
               {
                 title: 'Immutable audit trails',
-                description: 'Every action is logged with full context — who, what, when, and why — in append-only records that cannot be modified after creation. This creates a tamper-evident chain that auditors trust.',
+                description: 'Every action is logged with full context - who, what, when, and why - in append-only records that cannot be modified after creation. This creates a tamper-evident chain that auditors trust.',
               },
               {
                 title: 'Control ownership and accountability',
-                description: 'Every control has an explicit owner responsible for its execution. Ownership isn\'t assumed or implied — it\'s enforced through the system, creating clear lines of accountability.',
+                description: 'Every control has an explicit owner responsible for its execution. Ownership isn\'t assumed or implied - it\'s enforced through the system, creating clear lines of accountability.',
               },
               {
                 title: 'Real-time compliance visibility',
@@ -196,13 +196,13 @@ export default function WhatIsCosContent() {
             <div className="space-y-6 text-base leading-relaxed text-slate-300">
               <h2 className="text-2xl font-bold text-white sm:text-3xl">The evolution of compliance technology</h2>
               <p>
-                Compliance technology has evolved through three generations. The first generation was <strong className="text-white">document management</strong> — storing policies and procedures in shared drives and intranets. The second generation was <strong className="text-white">GRC platforms</strong> — tracking risks, controls, and audit findings in structured databases with workflow capabilities.
+                Compliance technology has evolved through three generations. The first generation was <strong className="text-white">document management</strong> - storing policies and procedures in shared drives and intranets. The second generation was <strong className="text-white">GRC platforms</strong> - tracking risks, controls, and audit findings in structured databases with workflow capabilities.
               </p>
               <p>
-                The third generation is the <strong className="text-white">compliance operating system</strong>. It doesn&apos;t just store compliance information or track compliance activities — it embeds compliance into the operational fabric of the organization. The difference is like the difference between a recipe book and a commercial kitchen: one describes what should happen, the other makes it happen reliably at scale.
+                The third generation is the <strong className="text-white">compliance operating system</strong>. It doesn&apos;t just store compliance information or track compliance activities - it embeds compliance into the operational fabric of the organization. The difference is like the difference between a recipe book and a commercial kitchen: one describes what should happen, the other makes it happen reliably at scale.
               </p>
               <p>
-                This evolution matters because regulatory complexity is increasing, not decreasing. Organizations face more frameworks, more oversight, and higher expectations for evidence quality. The only sustainable approach is making compliance a natural output of operations — not a separate workstream that competes with operational delivery.
+                This evolution matters because regulatory complexity is increasing, not decreasing. Organizations face more frameworks, more oversight, and higher expectations for evidence quality. The only sustainable approach is making compliance a natural output of operations - not a separate workstream that competes with operational delivery.
               </p>
             </div>
           </ScrollReveal>
@@ -218,7 +218,7 @@ export default function WhatIsCosContent() {
           <div className="mt-8 space-y-6">
             {[
               { question: 'What is a compliance operating system?', answer: 'A compliance operating system is operational infrastructure that turns regulatory obligations into executable workflows with continuous evidence capture and real-time audit readiness. Unlike traditional GRC tools that manage documents and checklists, a compliance OS runs your compliance program as part of daily operations.' },
-              { question: 'How is a compliance operating system different from GRC software?', answer: 'GRC software focuses on governance documentation, risk registers, and compliance checklists. A compliance operating system goes further by embedding compliance into operational workflows — turning requirements into executable processes that capture evidence automatically as work happens.' },
+              { question: 'How is a compliance operating system different from GRC software?', answer: 'GRC software focuses on governance documentation, risk registers, and compliance checklists. A compliance operating system goes further by embedding compliance into operational workflows - turning requirements into executable processes that capture evidence automatically as work happens.' },
               { question: 'Who needs a compliance operating system?', answer: 'Any organization that must demonstrate compliance to regulators, auditors, or accreditation bodies. This includes healthcare providers, disability service organizations, financial services firms, technology companies pursuing SOC 2 or ISO certification, and government agencies.' },
               { question: 'What are the benefits over spreadsheets?', answer: 'A compliance operating system eliminates manual evidence gathering, ensures continuous audit readiness, connects controls to operational workflows, and provides immutable audit trails. Spreadsheets create compliance gaps, lack accountability, and require periodic reconstruction of evidence.' },
             ].map((item, idx) => (

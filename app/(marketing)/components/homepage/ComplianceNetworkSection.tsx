@@ -73,7 +73,7 @@ export function ComplianceNetworkSection() {
             relationships.
           </p>
 
-          {/* Legend row — enhanced with live status pulse */}
+          {/* Legend row - enhanced with live status pulse */}
           <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 lg:gap-5">
             {legendItems.map((item) => (
               <div
@@ -103,7 +103,7 @@ export function ComplianceNetworkSection() {
           </div>
         </ScrollReveal>
 
-        {/* Full-width canvas — upgraded container */}
+        {/* Full-width canvas - upgraded container */}
         <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
           {/* Mobile info cards */}
           <div className="mb-4 grid gap-2 sm:hidden">

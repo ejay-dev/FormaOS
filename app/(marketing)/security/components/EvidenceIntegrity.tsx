@@ -189,7 +189,7 @@ export function EvidenceIntegrity() {
           </motion.div>
         )}
 
-        {/* Horizontal Timeline — nodes reveal on intersection */}
+        {/* Horizontal Timeline - nodes reveal on intersection */}
         {!prefersReducedMotion && (
           <div className="hidden md:grid grid-cols-4 gap-4 mb-16">
             {evidenceProperties.map((property, index) => (

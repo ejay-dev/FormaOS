@@ -145,7 +145,7 @@ function IndustriesHeroVisualInner() {
           }}
           className="relative w-full h-full"
         >
-          {/* Orbital plane — tilts with cursor */}
+          {/* Orbital plane - tilts with cursor */}
           <motion.div
             style={{
               ...(cursor.isActive ? { rotateX: tiltX, rotateY: tiltY } : {}),

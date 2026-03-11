@@ -15,8 +15,7 @@ export function OAuthRedirectHandler() {
       const plan = searchParams.get("plan");
       const appBase = brand.seo.appUrl.replace(/\/$/, "");
       const planParam = plan ? `&plan=${encodeURIComponent(plan)}` : "";
-      
-      console.log("OAuth code detected on homepage, redirecting to callback...");
+
       window.location.href = `${appBase}/auth/callback?code=${encodeURIComponent(code)}${planParam}`;
     }
   }, [searchParams]);

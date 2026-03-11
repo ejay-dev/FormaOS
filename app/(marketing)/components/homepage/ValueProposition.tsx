@@ -5,7 +5,7 @@ import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 
 const BEFORE_ITEMS = [
-  'No control enforcement — just documentation',
+  'No control enforcement - just documentation',
   'Point-in-time snapshots, not continuous posture',
   'Manual evidence collection before every audit',
   'Ownership is assumed, not assigned or enforced',
@@ -13,7 +13,7 @@ const BEFORE_ITEMS = [
 ] as const;
 
 const AFTER_ITEMS = [
-  'Workflow enforcement — controls block non-compliance',
+  'Workflow enforcement - controls block non-compliance',
   'Real-time continuous compliance posture',
   'Immutable, timestamped audit trail',
   'Every control owned by a named person or team',
@@ -98,7 +98,7 @@ export function ValueProposition() {
                 FormaOS runs your program.
               </h3>
               <p className="text-slate-400 text-sm mb-5 mt-3 leading-relaxed">
-                A live operating layer. Controls are enforced before work proceeds. Evidence is generated as teams operate. Accountability is structural — not cultural.
+                A live operating layer. Controls are enforced before work proceeds. Evidence is generated as teams operate. Accountability is structural - not cultural.
               </p>
               <ul className="space-y-2">
                 {AFTER_ITEMS.map((item) => (

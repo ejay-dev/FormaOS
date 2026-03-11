@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'About FormaOS — Built for Teams Accountable to Regulators';
+export const alt = 'About FormaOS - Built for Teams Accountable to Regulators';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 

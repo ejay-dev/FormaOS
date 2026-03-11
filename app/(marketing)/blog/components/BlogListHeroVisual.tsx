@@ -5,7 +5,7 @@ import { motion, useReducedMotion, useTransform } from 'framer-motion';
 import { useCursorPosition } from '@/components/motion/CursorContext';
 
 /**
- * BlogListHeroVisual — "Editorial Stack"
+ * BlogListHeroVisual - "Editorial Stack"
  * ───────────────────────────────────────
  * 4 article cards stacked in 3D depth with progressive blur and rotation.
  * Cursor fans out the stack horizontally; each card gets independent rotateY.

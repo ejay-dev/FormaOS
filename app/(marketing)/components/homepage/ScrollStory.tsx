@@ -135,7 +135,7 @@ function LifecycleCard({ step, index }: { step: (typeof steps)[0]; index: number
             </motion.div>
           </div>
 
-          {/* Visual side — flow indicator */}
+          {/* Visual side - flow indicator */}
           <div className={`hidden lg:flex items-center ${isEven ? 'justify-end' : 'justify-start lg:col-start-1 lg:row-start-1'}`}>
             <div className="relative">
               {/* Arrow connecting to next step */}
@@ -175,12 +175,12 @@ export function ScrollStory() {
             </span>
           </h2>
           <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            From framework mapping to audit defense — a complete workflow that
+            From framework mapping to audit defense - a complete workflow that
             transforms obligations into enforceable controls with clear ownership.
           </p>
         </ScrollReveal>
 
-        {/* Lifecycle steps — vertical flow */}
+        {/* Lifecycle steps - vertical flow */}
         <div className="relative">
           {/* Central timeline line (desktop) */}
           <div className="hidden lg:block absolute left-1/2 -translate-x-px top-0 bottom-0 w-px bg-gradient-to-b from-teal-400/20 via-emerald-500/15 to-teal-600/20" />

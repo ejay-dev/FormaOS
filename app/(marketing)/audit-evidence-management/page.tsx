@@ -3,7 +3,7 @@ import AuditEvidenceContent from './AuditEvidenceContent';
 import { breadcrumbSchema, faqSchema,
   siteUrl} from '@/lib/seo';
 export const metadata: Metadata = {
-  title: 'Audit Evidence Management — Immutable Evidence & Audit Trails | FormaOS',
+  title: 'Audit Evidence Management - Immutable Evidence & Audit Trails | FormaOS',
   description:
     'Capture, organize, and export audit evidence automatically. FormaOS creates immutable audit trails tied to compliance controls, eliminating pre-audit evidence scrambles.',
   alternates: { canonical: `${siteUrl}/audit-evidence-management` },

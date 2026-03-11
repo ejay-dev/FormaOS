@@ -11,7 +11,7 @@ const faqs = [
   {
     question: 'Can we run a security review before purchase?',
     answer:
-      'Yes. Request the FormaOS security review packet — it includes our security posture summary, penetration test overview, vulnerability disclosure policy, and vendor assurance documentation. Guided walkthroughs for procurement and security teams are available on Enterprise engagements.',
+      'Yes. Request the FormaOS security review packet - it includes our security posture summary, penetration test overview, vulnerability disclosure policy, and vendor assurance documentation. Guided walkthroughs for procurement and security teams are available on Enterprise engagements.',
   },
   {
     question: 'Do you support enterprise identity and access requirements?',

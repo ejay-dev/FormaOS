@@ -6,7 +6,7 @@ import { siteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
-  title: 'FormaOS | Turn Process Into Provable Truth',
+  title: 'Turn Process Into Provable Truth',
   description:
     'Model workflows. Execute with precision. Verify in real-time. Prove compliance. Enterprise-grade process evidence platform for regulated industries.',
   alternates: {

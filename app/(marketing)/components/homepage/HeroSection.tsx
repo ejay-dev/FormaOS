@@ -178,7 +178,7 @@ export function HeroSection() {
       ref={containerRef}
       className="home-hero relative isolate overflow-hidden"
     >
-      {/* Aurora + sparkles + beams — enterprise atmosphere */}
+      {/* Aurora + sparkles + beams - enterprise atmosphere */}
       <AuroraBackground className="absolute inset-0" />
 
       {/* Vignette layers for text legibility */}

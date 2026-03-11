@@ -11,7 +11,7 @@ const navCards = [
     icon: ShieldCheck,
     title: 'Security Review Packet',
     description:
-      'Architecture, AES-256 encryption, SAML 2.0 SSO, penetration testing summary, data residency options, and DPA — before your security team asks the first question.',
+      'Architecture, AES-256 encryption, SAML 2.0 SSO, penetration testing summary, data residency options, and DPA - before your security team asks the first question.',
     linkText: 'Review packet',
   },
   {
@@ -19,7 +19,7 @@ const navCards = [
     icon: FileLock2,
     title: 'Framework Coverage',
     description:
-      'ISO 27001, SOC 2, HIPAA, GDPR, NDIS Practice Standards, NSQHS, and more — mapped controls that become executable work with contextual evidence.',
+      'ISO 27001, SOC 2, HIPAA, GDPR, NDIS Practice Standards, NSQHS, and more - mapped controls that become executable work with contextual evidence.',
     linkText: 'View coverage',
   },
   {
@@ -27,7 +27,7 @@ const navCards = [
     icon: CheckCircle2,
     title: 'Compare Platforms',
     description:
-      'Compare FormaOS against Drata, Vanta, and Secureframe — evaluate the operational execution difference for regulated industries.',
+      'Compare FormaOS against Drata, Vanta, and Secureframe - evaluate the operational execution difference for regulated industries.',
     linkText: 'See comparisons',
   },
   {
@@ -35,7 +35,7 @@ const navCards = [
     icon: FileLock2,
     title: 'Download Trust Packet',
     description:
-      'Vendor trust packet covering architecture, encryption, identity governance, data residency, and assurance commitments — procurement-ready PDF.',
+      'Vendor trust packet covering architecture, encryption, identity governance, data residency, and assurance commitments - procurement-ready PDF.',
     linkText: 'Download PDF',
   },
   {
@@ -43,7 +43,7 @@ const navCards = [
     icon: ShieldCheck,
     title: 'Vendor Assurance',
     description:
-      'DPA, vendor assurance questionnaire, SLA documentation, and independent assessment artifacts — ready for legal, risk, and procurement sign-off.',
+      'DPA, vendor assurance questionnaire, SLA documentation, and independent assessment artifacts - ready for legal, risk, and procurement sign-off.',
     linkText: 'View process',
   },
 ] as const;
@@ -52,7 +52,7 @@ const assuranceModules = [
   {
     title: 'Live compliance posture',
     detail:
-      'Share real-time framework-level posture snapshots — control coverage, drift alerts, and evidence readiness — with auditors and enterprise buyers.',
+      'Share real-time framework-level posture snapshots - control coverage, drift alerts, and evidence readiness - with auditors and enterprise buyers.',
   },
   {
     title: 'Security questionnaire acceleration',
@@ -62,7 +62,7 @@ const assuranceModules = [
   {
     title: 'Controlled document access',
     detail:
-      'Grant time-bound, auditable access to policies, controls, certification artifacts, and evidence bundles — with a traceable access log for every view.',
+      'Grant time-bound, auditable access to policies, controls, certification artifacts, and evidence bundles - with a traceable access log for every view.',
   },
 ];
 

@@ -5,7 +5,7 @@ import { siteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
-  title: 'Changelog — FormaOS',
+  title: 'Changelog - FormaOS',
   description:
     'Stay up to date with the latest improvements, new features, and fixes shipped by the FormaOS team.',
   alternates: { canonical: `${siteUrl}/changelog` },
@@ -30,9 +30,9 @@ const ENTRIES = [
     tagColor: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20',
     title: 'Enterprise identity governance and data residency controls',
     items: [
-      'SAML 2.0 SSO now supports metadata URL import with automatic ACS endpoint configuration — compatible with Okta, Microsoft Entra ID (Azure AD), and Google Workspace.',
+      'SAML 2.0 SSO now supports metadata URL import with automatic ACS endpoint configuration - compatible with Okta, Microsoft Entra ID (Azure AD), and Google Workspace.',
       'SCIM 2.0 provisioning available for Enterprise plans: automated user lifecycle management synced from your identity provider.',
-      'Data residency selection added to Enterprise tenant settings — choose AU, US, or EU at onboarding or via migration request.',
+      'Data residency selection added to Enterprise tenant settings - choose AU, US, or EU at onboarding or via migration request.',
       'Audit log now surfaces identity provider events: SSO login, SCIM provisioning actions, and MFA enforcement outcomes alongside platform activity.',
     ],
   },
@@ -43,7 +43,7 @@ const ENTRIES = [
     tagColor: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20',
     title: 'Multi-framework control mapping',
     items: [
-      'Controls can now be mapped across multiple frameworks simultaneously — ISO 27001, SOC 2, NDIS Practice Standards, Essential Eight, and custom frameworks in a single view.',
+      'Controls can now be mapped across multiple frameworks simultaneously - ISO 27001, SOC 2, NDIS Practice Standards, Essential Eight, and custom frameworks in a single view.',
       'Automated gap analysis flags controls that are compliant in one framework but open in another.',
       'Framework coverage dashboard added to the governance overview.',
     ],
@@ -57,7 +57,7 @@ const ENTRIES = [
     items: [
       'Evidence records now display full chain-of-custody history: uploaded by, verified by, approval timestamp, and linked control.',
       'Bulk evidence export now generates a signed manifest with SHA-256 checksums for each artifact.',
-      'Auditor view added — share a read-only evidence room with external reviewers without exposing operational data.',
+      'Auditor view added - share a read-only evidence room with external reviewers without exposing operational data.',
     ],
   },
   {

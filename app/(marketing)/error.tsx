@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
 
 export default function MarketingError({
@@ -10,15 +9,6 @@ export default function MarketingError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  useEffect(() => {
-    console.error("[Marketing Error]", {
-      message: error.message,
-      name: error.name,
-      digest: error.digest,
-      stack: error.stack,
-    });
-  }, [error]);
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0a0f1c] px-6">
       <div className="w-full max-w-lg backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-8 text-center shadow-xl">

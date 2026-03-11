@@ -116,7 +116,7 @@ export function ProcurementFlowSection() {
           <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 relative overflow-hidden">
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/20 to-transparent" />
             <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">
-              Buyer-Facing Artifacts — available from day one
+              Buyer-Facing Artifacts - available from day one
             </p>
             <div className="flex flex-wrap gap-2">
               {artifactBadges.map((badge) => (

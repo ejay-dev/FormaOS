@@ -36,14 +36,14 @@ const differentiators = [
     details: [
       'Automatic evidence capture from task completions and approvals',
       'Tamper-evident audit logs with cryptographic integrity checks',
-      'Evidence linked directly to the control it satisfies — no manual mapping',
+      'Evidence linked directly to the control it satisfies - no manual mapping',
     ],
   },
   {
     icon: UserCheck,
     title: 'Accountability at Scale',
     description:
-      'Every control has a defined owner, status, and outcome. Accountability is structural — not cultural.',
+      'Every control has a defined owner, status, and outcome. Accountability is structural - not cultural.',
     details: [
       'Control ownership assigned by name, role, and team',
       'Automated escalation when controls drift or tasks overdue',
@@ -54,7 +54,7 @@ const differentiators = [
     icon: Shield,
     title: 'Audit Defense, Not Audit Prep',
     description:
-      'You are always audit-ready because your compliance runs continuously — evidence is never reconstructed.',
+      'You are always audit-ready because your compliance runs continuously - evidence is never reconstructed.',
     details: [
       'Evidence generated automatically at point of execution',
       'Framework-mapped audit packets exportable in minutes',
@@ -86,7 +86,7 @@ export function WhatMakesDifferent() {
             </h2>
             <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
               FormaOS is infrastructure. It orchestrates governance, execution,
-              and evidence across your organization — not just records.
+              and evidence across your organization - not just records.
             </p>
           </div>
         </ScrollReveal>
@@ -120,7 +120,7 @@ export function WhatMakesDifferent() {
                   {item.description}
                 </p>
 
-                {/* Detail bullets — always visible */}
+                {/* Detail bullets - always visible */}
                 <ul className="space-y-2">
                   {item.details.map((detail) => (
                     <li

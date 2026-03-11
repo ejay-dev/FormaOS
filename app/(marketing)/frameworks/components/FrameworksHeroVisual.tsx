@@ -5,7 +5,7 @@ import { motion, useReducedMotion, useTransform } from 'framer-motion';
 import { useCursorPosition } from '@/components/motion/CursorContext';
 
 /**
- * FrameworksHeroVisual — "Framework Stack"
+ * FrameworksHeroVisual - "Framework Stack"
  * ─────────────────────────────────────────
  * 5 compliance framework cards stacked in a cascading fan.
  * Front card is detailed; back cards progressively simpler and blurred.

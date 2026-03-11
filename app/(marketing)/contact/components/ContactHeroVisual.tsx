@@ -5,7 +5,7 @@ import { motion, useReducedMotion, useTransform } from 'framer-motion';
 import { useCursorPosition } from '@/components/motion/CursorContext';
 
 /**
- * ContactHeroVisual — "Communication Portal"
+ * ContactHeroVisual - "Communication Portal"
  * ───────────────────────────────────────────
  * Large glass form panel with 3 fake input fields (staggered glow),
  * a shimmer submit button, and 3 orbiting "sent message" glass cards.

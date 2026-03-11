@@ -3,7 +3,7 @@ import Soc2Content from './Soc2Content';
 import { breadcrumbSchema, faqSchema,
   siteUrl} from '@/lib/seo';
 export const metadata: Metadata = {
-  title: 'SOC 2 Compliance Automation — Trust Service Criteria Platform | FormaOS',
+  title: 'SOC 2 Compliance Automation - Trust Service Criteria Platform | FormaOS',
   description:
     'Automate SOC 2 compliance with FormaOS. Map Trust Service Criteria to operational controls, capture evidence continuously, and streamline Type II audit readiness.',
   alternates: { canonical: `${siteUrl}/soc2-compliance-automation` },

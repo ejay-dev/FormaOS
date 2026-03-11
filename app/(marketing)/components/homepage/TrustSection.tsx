@@ -63,7 +63,7 @@ const trustSignals = [
   { value: 9, suffix: '', unit: 'packs', label: 'Framework mappings available' },
   { value: 100, suffix: '%', unit: '', label: 'Immutable audit event history' },
   { value: 4, suffix: '', unit: 'roles', label: 'Least-privilege access control' },
-  { value: 14, suffix: '', unit: 'day', label: 'Free trial — no credit card' },
+  { value: 14, suffix: '', unit: 'day', label: 'Free trial - no credit card' },
 ] as const;
 
 export function TrustSection() {

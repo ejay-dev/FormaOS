@@ -17,32 +17,32 @@ const safeguards = [
   {
     icon: Lock,
     title: "Tenant isolation",
-    description: "Row-Level Security (RLS) enforces strict organizational boundaries. Every record, audit log, and evidence item is scoped to its organization — no cross-tenant data access.",
+    description: "Row-Level Security (RLS) enforces strict organizational boundaries. Every record, audit log, and evidence item is scoped to its organization - no cross-tenant data access.",
   },
   {
     icon: Activity,
     title: "Tamper-evident audit logs",
-    description: "Immutable, timestamped audit events capture who did what, when, and in relation to which control. Every compliance decision is permanently recorded — uneditable after creation.",
+    description: "Immutable, timestamped audit events capture who did what, when, and in relation to which control. Every compliance decision is permanently recorded - uneditable after creation.",
   },
   {
     icon: UserCheck,
     title: "Role-based access and RBAC",
-    description: "Granular permissions with segregation of duties. Approvals, evidence exports, and control sign-offs are gated by role — preventing unauthorized access or self-approval.",
+    description: "Granular permissions with segregation of duties. Approvals, evidence exports, and control sign-offs are gated by role - preventing unauthorized access or self-approval.",
   },
   {
     icon: Eye,
     title: "Chain-of-custody evidence",
-    description: "Every evidence artifact links to its uploader, approver, associated controls, and export timestamps — providing a complete defensible custody record for auditors.",
+    description: "Every evidence artifact links to its uploader, approver, associated controls, and export timestamps - providing a complete defensible custody record for auditors.",
   },
   {
     icon: FileCheck,
     title: "Regulator-ready audit bundles",
-    description: "Generate framework-mapped evidence bundles with control snapshots, verification records, and audit trail exports — ready for external audit or regulator review in under 2 minutes.",
+    description: "Generate framework-mapped evidence bundles with control snapshots, verification records, and audit trail exports - ready for external audit or regulator review in under 2 minutes.",
   },
   {
     icon: Shield,
     title: "Compliance workflow gates",
-    description: "Critical actions are blocked when required controls are unresolved or evidence is missing. Accountability is enforced by the system — before work proceeds, not after.",
+    description: "Critical actions are blocked when required controls are unresolved or evidence is missing. Accountability is enforced by the system - before work proceeds, not after.",
   },
 ];
 
@@ -50,24 +50,24 @@ const securityLayers = {
   "Application Security": [
     "Multi-tenant architecture with Row-Level Security (RLS)",
     "Role-based access control (RBAC) with segregation of duties",
-    "SAML 2.0 SSO — Okta, Azure AD, Google Workspace (Enterprise)",
+    "SAML 2.0 SSO - Okta, Azure AD, Google Workspace (Enterprise)",
     "MFA policy enforcement and session duration controls",
     "SCIM provisioning for automated user lifecycle management",
   ],
   "Data Protection": [
-    "AES-256 encryption at rest — evidence, controls, and audit logs",
-    "TLS 1.3 encryption in transit — no exceptions",
-    "Immutable audit log storage — tamper-evident by design",
+    "AES-256 encryption at rest - evidence, controls, and audit logs",
+    "TLS 1.3 encryption in transit - no exceptions",
+    "Immutable audit log storage - tamper-evident by design",
     "Backup, disaster recovery, and business continuity controls",
   ],
   "Compliance Controls": [
     "Evidence approval workflows with sign-off chain",
     "Change tracking, versioning, and before/after audit capture",
-    "Audit trail completeness — every compliance action recorded",
-    "Penetration testing — annual independent security review",
+    "Audit trail completeness - every compliance action recorded",
+    "Penetration testing - annual independent security review",
   ],
   "Infrastructure & Residency": [
-    "AU-based hosting by default — aligned for Australian-regulated orgs",
+    "AU-based hosting by default - aligned for Australian-regulated orgs",
     "US and EU data residency options for international requirements",
     "Private storage buckets with network isolation",
     "DDoS protection and cloud-native availability controls",
@@ -101,7 +101,7 @@ function LightSection({ children, className = '' }: { children: React.ReactNode;
         background: 'linear-gradient(180deg, #030712 0%, #0a0f1f 50%, #0f172a 100%)',
       }}
     >
-      {/* Single subtle glow — no blur filter, just a radial gradient */}
+      {/* Single subtle glow - no blur filter, just a radial gradient */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -125,7 +125,7 @@ function LightSection({ children, className = '' }: { children: React.ReactNode;
   );
 }
 
-/* ─── Lightweight card — no backdrop-filter, uses solid bg ─── */
+/* ─── Lightweight card - no backdrop-filter, uses solid bg ─── */
 function LightCard({ children, className = '', glow = false }: { children: React.ReactNode; className?: string; glow?: boolean }) {
   return (
     <div
@@ -251,7 +251,7 @@ export function SecurityCTA() {
           <LightCard
             className="p-8 sm:p-12 lg:p-16 text-center relative overflow-hidden"
           >
-            {/* Subtle gradient mesh — static, no animation */}
+            {/* Subtle gradient mesh - static, no animation */}
             <div
               className="absolute inset-0 pointer-events-none opacity-30"
               style={{
@@ -269,7 +269,7 @@ export function SecurityCTA() {
               </h2>
 
               <p className="text-lg sm:text-xl text-foreground/70 mb-8 sm:mb-10 max-w-2xl mx-auto">
-                Enterprise security review packet available now — architecture, encryption, identity governance, penetration testing, data residency, and DPA. No delays for your procurement team.
+                Enterprise security review packet available now - architecture, encryption, identity governance, penetration testing, data residency, and DPA. No delays for your procurement team.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">

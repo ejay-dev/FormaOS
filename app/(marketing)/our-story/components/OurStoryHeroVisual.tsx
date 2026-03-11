@@ -5,7 +5,7 @@ import { motion, useReducedMotion, useTransform } from 'framer-motion';
 import { useCursorPosition } from '@/components/motion/CursorContext';
 
 /**
- * OurStoryHeroVisual — "Origin Path"
+ * OurStoryHeroVisual - "Origin Path"
  * ────────────────────────────────────
  * 3D path stretching into perspective depth with converging SVG lines,
  * milestone markers (2022-2026), and floating glass icon cards.
@@ -48,7 +48,7 @@ const FLOATING_CARDS = [
 const GLASS =
   'rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02]';
 
-/* Converging path coordinates — 3 lines from wide bottom to narrow top */
+/* Converging path coordinates - 3 lines from wide bottom to narrow top */
 const PATHS = [
   'M 100 380 Q 140 200 175 30',   // left line
   'M 175 380 Q 175 200 175 30',   // center line

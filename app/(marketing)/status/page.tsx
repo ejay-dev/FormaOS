@@ -5,7 +5,7 @@ import { MarketingPageShell } from '@/app/(marketing)/components/shared/Marketin
 import { CompactHero } from '@/components/motion/CompactHero';
 import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 import { siteUrl } from '@/lib/seo';
-// Status page fetches live uptime data — must override layout's force-static
+// Status page fetches live uptime data - must override layout's force-static
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {

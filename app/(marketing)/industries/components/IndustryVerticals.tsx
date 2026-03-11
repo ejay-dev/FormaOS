@@ -34,7 +34,7 @@ const industries = [
     icon: Heart,
     title: 'Disability and Aged Care',
     description:
-      'Operationalize NDIS Practice Standards, Aged Care Quality Standards, safeguarding, reportable incident obligations, and NDIS Commission audit readiness — for providers where unannounced visits are real.',
+      'Operationalize NDIS Practice Standards, Aged Care Quality Standards, safeguarding, reportable incident obligations, and NDIS Commission audit readiness - for providers where unannounced visits are real.',
     features: [
       'NDIS Practice Standards (all 8 modules)',
       'NDIS Commission Reportable Incidents',
@@ -56,7 +56,7 @@ const industries = [
     icon: Shield,
     title: 'Healthcare and Allied Health',
     description:
-      'Manage AHPRA practitioner registration, NSQHS Standards accreditation, clinical governance, credential expiry, Privacy Act compliance, and adverse event tracking — continuously, not just before audits.',
+      'Manage AHPRA practitioner registration, NSQHS Standards accreditation, clinical governance, credential expiry, Privacy Act compliance, and adverse event tracking - continuously, not just before audits.',
     features: [
       'AHPRA Registration & CPD Tracking',
       'NSQHS Standards (8/8 covered)',
@@ -78,7 +78,7 @@ const industries = [
     icon: TrendingUp,
     title: 'Financial Services',
     description:
-      'Track ASIC, APRA, AUSTRAC, and AML/CTF regulatory obligations, risk controls, internal audit programs, and board-level compliance reporting — with named ownership at every level.',
+      'Track ASIC, APRA, AUSTRAC, and AML/CTF regulatory obligations, risk controls, internal audit programs, and board-level compliance reporting - with named ownership at every level.',
     features: [
       'ASIC, APRA & AUSTRAC Obligations',
       'AML/CTF Risk Control Mapping',
@@ -100,7 +100,7 @@ const industries = [
     icon: Building2,
     title: 'Construction and Infrastructure',
     description:
-      'Manage WHS Act safety systems, contractor compliance programs, incident reporting, SafeWork obligations, and multi-site regulatory audit readiness — with defensible evidence at every stage.',
+      'Manage WHS Act safety systems, contractor compliance programs, incident reporting, SafeWork obligations, and multi-site regulatory audit readiness - with defensible evidence at every stage.',
     features: [
       'WHS Act & SafeWork Obligations',
       'Contractor License Verification',
@@ -122,7 +122,7 @@ const industries = [
     icon: Users,
     title: 'Education and Childcare',
     description:
-      'Operationalize ACECQA National Quality Framework compliance, staff credential governance, child safety policy adherence, and inspection readiness — with continuous evidence, not pre-visit scrambles.',
+      'Operationalize ACECQA National Quality Framework compliance, staff credential governance, child safety policy adherence, and inspection readiness - with continuous evidence, not pre-visit scrambles.',
     features: [
       'ACECQA National Quality Framework (NQF)',
       'Child Safety Compliance Workflows',

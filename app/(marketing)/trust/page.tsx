@@ -5,7 +5,7 @@ import { breadcrumbSchema,
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
-  title: 'Trust Center — Security & Compliance Assurance | FormaOS',
+  title: 'Trust Center - Security & Compliance Assurance | FormaOS',
   description:
     'Review FormaOS security posture, compliance controls, data handling policies, and audit readiness artifacts. Enterprise trust documentation in one portal.',
   alternates: { canonical: `${siteUrl}/trust` },

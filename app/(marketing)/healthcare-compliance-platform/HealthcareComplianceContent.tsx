@@ -19,7 +19,7 @@ export default function HealthcareComplianceContent() {
       subheadline="Run NSQHS, AHPRA, incidents, and accreditation evidence in one clinical governance operating system."
       introParagraphs={[
         'Healthcare organizations operate under some of the most demanding compliance requirements of any industry. The National Safety and Quality Health Service Standards, AHPRA practitioner requirements, state health regulations, and accreditation standards create a complex web of obligations that must be met while delivering patient care.',
-        'Clinical governance isn\'t optional — it\'s the foundation that ensures patient safety, care quality, and organizational accountability. But managing governance obligations through disconnected systems creates dangerous gaps between documented procedures and actual practice.',
+        'Clinical governance isn\'t optional - it\'s the foundation that ensures patient safety, care quality, and organizational accountability. But managing governance obligations through disconnected systems creates dangerous gaps between documented procedures and actual practice.',
         'FormaOS provides a unified compliance platform that connects clinical governance frameworks to operational workflows. Credential management, incident reporting, policy compliance, and accreditation evidence are managed through structured processes that capture evidence as care is delivered.',
         'For healthcare leaders, this means visibility into compliance status across services and sites, confidence in accreditation readiness, and reduced administrative burden on clinical staff who can focus on patient care.',
       ]}
@@ -41,7 +41,7 @@ export default function HealthcareComplianceContent() {
         {
           heading: 'Why document management isn\'t clinical governance',
           paragraphs: [
-            'Many healthcare organizations equate compliance with document management — policies stored in shared drives, checklists completed periodically, and evidence gathered before accreditation assessments.',
+            'Many healthcare organizations equate compliance with document management - policies stored in shared drives, checklists completed periodically, and evidence gathered before accreditation assessments.',
             'This approach confuses documentation with governance. A policy that exists but isn\'t connected to operational workflows provides no assurance of compliance. A checklist completed quarterly doesn\'t capture what happens daily. Evidence gathered retroactively may not accurately reflect operational reality.',
           ],
         },
@@ -53,8 +53,8 @@ export default function HealthcareComplianceContent() {
             'Map all eight NSQHS Standards to operational controls with evidence requirements and ownership.',
           ],
           bullets: [
-            'Standard 1: Clinical Governance — leadership, accountability, and oversight workflows',
-            'Standard 2: Partnering with Consumers — feedback collection and participation tracking',
+            'Standard 1: Clinical Governance - leadership, accountability, and oversight workflows',
+            'Standard 2: Partnering with Consumers - feedback collection and participation tracking',
             'Standards 3-8: Clinical standards with specific evidence requirements per domain',
             'Cross-standard evidence sharing where controls satisfy multiple requirements',
           ],

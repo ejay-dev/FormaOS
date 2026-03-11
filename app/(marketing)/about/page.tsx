@@ -5,7 +5,7 @@ import { breadcrumbSchema,
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
-  title: 'About FormaOS — Our Mission for Regulated Industries',
+  title: 'About FormaOS - Our Mission for Regulated Industries',
   description:
     'Why FormaOS exists: building the compliance operating system that turns regulatory obligations into structured controls, owned actions, and immutable audit evidence.',
   alternates: {
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'About FormaOS — Our Mission for Regulated Industries',
+    title: 'About FormaOS - Our Mission for Regulated Industries',
     description:
       'Why FormaOS exists: building the compliance operating system for regulated teams who need defensible audit evidence.',
   },

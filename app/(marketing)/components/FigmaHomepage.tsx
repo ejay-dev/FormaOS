@@ -247,7 +247,7 @@ export default function FormaOSHomepage({
           {sectionVisibility.outcome_proof !== false
             ? renderSection('outcome_proof', <OutcomeProofSection />, 620)
             : null}
-          {/* Social proof — always shown; not gated by control plane */}
+          {/* Social proof - always shown; not gated by control plane */}
           <DeferredSection minHeight={520}>
             <TestimonialsSection />
           </DeferredSection>

@@ -16,7 +16,7 @@ const allPlansFeatures = [
   {
     icon: FileCheck,
     title: 'Immutable Audit Trail',
-    description: 'Every action timestamped and tamper-evident — ready for regulator review',
+    description: 'Every action timestamped and tamper-evident - ready for regulator review',
   },
   {
     icon: Database,
@@ -46,7 +46,7 @@ const allPlansFeatures = [
   {
     icon: Globe,
     title: 'Multi-Framework Support',
-    description: 'ISO 27001, SOC 2, HIPAA, GDPR, NDIS, and more — mapped and maintained',
+    description: 'ISO 27001, SOC 2, HIPAA, GDPR, NDIS, and more - mapped and maintained',
   },
 ];
 

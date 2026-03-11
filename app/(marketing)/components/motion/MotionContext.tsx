@@ -11,7 +11,7 @@ interface MotionContextType {
   /**
    * Normalized global scroll progress (0 → top, 1 → bottom).
    * Use this in place of calling `useScroll()` without a target inside
-   * marketing components — a single listener shared across all consumers.
+   * marketing components - a single listener shared across all consumers.
    */
   scrollYProgress: MotionValue<number>;
 }

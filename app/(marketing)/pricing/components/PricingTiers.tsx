@@ -109,7 +109,7 @@ const pricingTiers = [
     period: '/ month',
     tagline: 'For teams formalizing their first compliance layer',
     description:
-      'Establish structured workflows, traceable evidence, and audit-ready records — without the overhead of enterprise complexity.',
+      'Establish structured workflows, traceable evidence, and audit-ready records - without the overhead of enterprise complexity.',
     features: [
       'Core workflow modeling (Model → Execute → Verify → Prove)',
       'Task management & recurring compliance activities',
@@ -122,7 +122,7 @@ const pricingTiers = [
       'Standard email support (business hours)',
     ],
     useCase:
-      'You need structured processes, traceable ownership, and defensible records — without enterprise overhead.',
+      'You need structured processes, traceable ownership, and defensible records - without enterprise overhead.',
     cta: 'Start Free Trial',
     href: `${appBase}/auth/signup?plan=basic`,
     featured: false,
@@ -172,10 +172,10 @@ const pricingTiers = [
     tagline:
       'For organizations where compliance is mission-critical and non-negotiable',
     description:
-      'Governance at scale for healthcare providers, NDIS operators, financial institutions, and government bodies — with enterprise security and procurement controls.',
+      'Governance at scale for healthcare providers, NDIS operators, financial institutions, and government bodies - with enterprise security and procurement controls.',
     professionalPlus: true,
     features: [
-      'Enterprise SSO (SAML 2.0 — Okta, Azure AD, Google Workspace)',
+      'Enterprise SSO (SAML 2.0 - Okta, Azure AD, Google Workspace)',
       'MFA enforcement and session policy management',
       'Executive risk dashboard with trend analytics',
       'Compliance Gate Enforcement: audit-blocking control enforcement',

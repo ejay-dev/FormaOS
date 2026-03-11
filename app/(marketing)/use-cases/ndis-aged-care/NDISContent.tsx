@@ -92,7 +92,7 @@ const workflows: UseCaseWorkflow[] = [
 const standards: UseCaseStandard[] = [
   {
     name: 'NDIS Practice Standards',
-    description: 'Core module and supplementary module obligations — NDIS Quality and Safeguards Commission',
+    description: 'Core module and supplementary module obligations - NDIS Quality and Safeguards Commission',
     features: [
       'Module 1 (Rights and Responsibility): participant rights controls and safeguard evidence',
       'Module 3 (Supporting Effective Transitions): incident and complaints management workflows',
@@ -102,7 +102,7 @@ const standards: UseCaseStandard[] = [
   },
   {
     name: 'Aged Care Quality Standards',
-    description: 'Aged Care Quality and Safety Commission standards — 8 standards applicable',
+    description: 'Aged Care Quality and Safety Commission standards - 8 standards applicable',
     features: [
       'Standard 1 (Consumer Dignity): rights and care planning evidence chain',
       'Standard 8 (Organisational Governance): board-level accountability and posture reporting',
@@ -136,16 +136,16 @@ const metrics: UseCaseMetric[] = [
   {
     value: '< 24 hr',
     label: 'Incident Response',
-    description: 'Reportable incidents routed with named owner and SLA target — within hours of intake.',
+    description: 'Reportable incidents routed with named owner and SLA target - within hours of intake.',
   },
   {
     value: '4 hrs',
     label: 'Audit Preparation',
-    description: 'vs. weeks of manual reconstruction — evidence packs ready on demand for NDIS Commission visits.',
+    description: 'vs. weeks of manual reconstruction - evidence packs ready on demand for NDIS Commission visits.',
   },
   {
     value: 'Named',
-    label: 'Owner — Always',
+    label: 'Owner - Always',
     description: 'Every control, participant record, and obligation has a traceable accountable owner.',
   },
   {
@@ -181,7 +181,7 @@ export default function NDISContent() {
       workflows={workflows}
       standards={standards}
       metrics={metrics}
-      ctaTitle="Build a provider compliance operating model auditors can verify — not just review"
+      ctaTitle="Build a provider compliance operating model auditors can verify - not just review"
       ctaDescription="Start with NDIS Practice Standards-aligned workflows, then adapt controls and evidence rules to your service delivery model. Full defensibility from governance board to participant record."
     />
   );

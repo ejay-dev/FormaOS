@@ -5,7 +5,7 @@ import { motion, useReducedMotion, useTransform } from 'framer-motion';
 import { useCursorPosition } from '@/components/motion/CursorContext';
 
 /**
- * AboutHeroVisual — "Timeline Pillar"
+ * AboutHeroVisual - "Timeline Pillar"
  * ────────────────────────────────────
  * Vertical glass pillar with animated energy line and 5 milestone nodes.
  * Nodes alternate left/right at different Z depths.

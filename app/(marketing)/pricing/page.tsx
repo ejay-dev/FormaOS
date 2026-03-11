@@ -5,7 +5,7 @@ import { breadcrumbSchema,
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
-  title: 'Pricing — Compliance Management Software | FormaOS',
+  title: 'Pricing - Compliance Management Software | FormaOS',
   description:
     'Simple, transparent pricing for compliance teams. Start with a free 14-day trial, scale as you grow. No setup fees, cancel anytime.',
   alternates: {
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Pricing — Compliance Management Software | FormaOS',
+    title: 'Pricing - Compliance Management Software | FormaOS',
     description:
       'Transparent pricing for compliance management. Free 14-day trial, no setup fees, cancel anytime.',
   },

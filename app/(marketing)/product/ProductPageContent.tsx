@@ -103,9 +103,9 @@ const FinalCTA = dynamic(
 export default function ProductPageContent() {
   return (
     <MarketingPageShell className="product-page-flow">
-      {/* Hero — headline, gradient text, CTAs */}
+      {/* Hero - headline, gradient text, CTAs */}
       <ProductHeroSection />
-      {/* Interactive showcase — tabs left, app panel right */}
+      {/* Interactive showcase - tabs left, app panel right */}
       <DeferredSection minHeight={620} rootMargin="120px 0px">
         <ProductShowcaseSection />
       </DeferredSection>

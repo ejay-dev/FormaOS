@@ -5,7 +5,7 @@ import { breadcrumbSchema,
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
-  title: 'Compliance Operating System Platform — FormaOS',
+  title: 'Compliance Operating System Platform - FormaOS',
   description:
     'See how FormaOS connects tasks, evidence, audit trails, and compliance reporting into a single defensible workflow for regulated operations.',
   alternates: {

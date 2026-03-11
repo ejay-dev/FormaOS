@@ -71,11 +71,11 @@ const faqCategories = [
     questions: [
       {
         q: 'Is FormaOS SOC 2 aligned?',
-        a: 'FormaOS is built with SOC 2-aligned controls across the Common Criteria, Availability, and Confidentiality trust service categories. We implement AES-256 encryption, identity governance, tamper-evident audit logs, and structured incident response procedures aligned with the framework. Our security review packet — covering architecture, controls, and data handling — is available for enterprise procurement and security teams on request.',
+        a: 'FormaOS is built with SOC 2-aligned controls across the Common Criteria, Availability, and Confidentiality trust service categories. We implement AES-256 encryption, identity governance, tamper-evident audit logs, and structured incident response procedures aligned with the framework. Our security review packet - covering architecture, controls, and data handling - is available for enterprise procurement and security teams on request.',
       },
       {
         q: 'How is data encrypted?',
-        a: 'All data is encrypted at rest using AES-256 and in transit using TLS 1.3 — no exceptions. Encryption key management follows enterprise cloud-provider best practices. Sensitive compliance evidence and audit trail data receive additional protection layers. Encryption controls are documented in our security review packet.',
+        a: 'All data is encrypted at rest using AES-256 and in transit using TLS 1.3 - no exceptions. Encryption key management follows enterprise cloud-provider best practices. Sensitive compliance evidence and audit trail data receive additional protection layers. Encryption controls are documented in our security review packet.',
       },
       {
         q: 'Does FormaOS support SSO and MFA?',
@@ -103,7 +103,7 @@ const faqCategories = [
       },
       {
         q: 'Is evidence immutable?',
-        a: 'Yes. Evidence records in FormaOS are append-only and tamper-evident. Once uploaded, evidence cannot be modified or deleted — only superseded by a new version, with the original preserved in the audit trail. Every upload, update, approval, and version change is recorded with an immutable timestamp, the identity of the actor, and a correlation ID linking it to the originating control or workflow. This chain-of-custody model ensures that auditors and regulators see a complete, unaltered history of every compliance artifact from creation through current state.',
+        a: 'Yes. Evidence records in FormaOS are append-only and tamper-evident. Once uploaded, evidence cannot be modified or deleted - only superseded by a new version, with the original preserved in the audit trail. Every upload, update, approval, and version change is recorded with an immutable timestamp, the identity of the actor, and a correlation ID linking it to the originating control or workflow. This chain-of-custody model ensures that auditors and regulators see a complete, unaltered history of every compliance artifact from creation through current state.',
       },
       {
         q: 'Can we export regulatory reports?',
@@ -135,7 +135,7 @@ const faqCategories = [
       },
       {
         q: 'Do you support webhooks?',
-        a: 'Yes — FormaOS includes webhook endpoints for real-time event notifications out of the box via our REST API v1.',
+        a: 'Yes - FormaOS includes webhook endpoints for real-time event notifications out of the box via our REST API v1.',
       },
       {
         q: 'Can FormaOS connect to our existing systems?',
@@ -179,7 +179,7 @@ const faqCategories = [
     questions: [
       {
         q: 'What procurement documentation is available for enterprise sign-off?',
-        a: 'FormaOS ships with a full enterprise procurement package: Data Processing Agreement (DPA), vendor assurance questionnaire, SLA documentation, and security review packet covering architecture, encryption, identity governance, penetration testing, and data residency. These are available before the first procurement question is asked — request them via the security review page or contact sales engineering.',
+        a: 'FormaOS ships with a full enterprise procurement package: Data Processing Agreement (DPA), vendor assurance questionnaire, SLA documentation, and security review packet covering architecture, encryption, identity governance, penetration testing, and data residency. These are available before the first procurement question is asked - request them via the security review page or contact sales engineering.',
       },
       {
         q: 'What are the SLA commitments for Enterprise customers?',
@@ -207,7 +207,7 @@ const faqCategories = [
     questions: [
       {
         q: 'What onboarding is provided?',
-        a: 'All paid plans include structured onboarding delivered over 2–3 weeks. Week 1: platform configuration, user provisioning, and first framework setup. Week 2: workflow modeling, evidence structure design, and control ownership assignment. Week 3: first audit readiness review and posture baseline. Enterprise plans include a dedicated implementation manager, custom framework configuration, and extended onboarding with multi-site deployment support. Onboarding is not self-serve — every customer works with our team to ensure the platform matches their regulatory environment.',
+        a: 'All paid plans include structured onboarding delivered over 2–3 weeks. Week 1: platform configuration, user provisioning, and first framework setup. Week 2: workflow modeling, evidence structure design, and control ownership assignment. Week 3: first audit readiness review and posture baseline. Enterprise plans include a dedicated implementation manager, custom framework configuration, and extended onboarding with multi-site deployment support. Onboarding is not self-serve - every customer works with our team to ensure the platform matches their regulatory environment.',
       },
       {
         q: 'Is enterprise support available?',
@@ -227,7 +227,7 @@ const faqCategories = [
       },
       {
         q: 'What happens during an audit if we need urgent help?',
-        a: 'Enterprise customers have access to audit-support escalation — a direct path to our team during active audits or regulator visits. This includes help with evidence export, posture snapshot generation, and auditor read-only access configuration. Professional plan customers can request audit-period support as an add-on. We understand that audit timelines are not flexible — our support commitments reflect that reality.',
+        a: 'Enterprise customers have access to audit-support escalation - a direct path to our team during active audits or regulator visits. This includes help with evidence export, posture snapshot generation, and auditor read-only access configuration. Professional plan customers can request audit-period support as an add-on. We understand that audit timelines are not flexible - our support commitments reflect that reality.',
       },
     ],
   },

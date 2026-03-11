@@ -40,7 +40,7 @@ export function IndustriesHero() {
           </span>
         </>
       }
-      subheadline="FormaOS adapts to your regulatory requirements — NDIS, AHPRA, NSQHS, ASIC, AUSTRAC, WHS, NQF. Pre-built frameworks. System-enforced controls."
+      subheadline="FormaOS adapts to your regulatory requirements - NDIS, AHPRA, NSQHS, ASIC, AUSTRAC, WHS, NQF. Pre-built frameworks. System-enforced controls."
       extras={<IndustriesExtras />}
       primaryCta={{ href: '/auth/signup', label: 'Start Free Trial' }}
       secondaryCta={{ href: '/contact', label: 'Request Demo' }}
@@ -57,7 +57,7 @@ function IndustriesExtras() {
   return (
     <div className="max-w-2xl mx-auto text-center">
       <p className="text-sm text-gray-500 mb-3">
-        5 regulated industries covered — from NDIS Commission to ASIC and AHPRA
+        5 regulated industries covered - from NDIS Commission to ASIC and AHPRA
       </p>
       <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600">
         {PILLS.map((pill) => (

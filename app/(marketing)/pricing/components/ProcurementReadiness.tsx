@@ -10,7 +10,7 @@ const assurancePillars = [
     icon: ClipboardCheck,
     title: 'Security review packet',
     detail:
-      'Structured packet covering architecture, identity, encryption, data handling, penetration testing, and audit defensibility — ready for your security team.',
+      'Structured packet covering architecture, identity, encryption, data handling, penetration testing, and audit defensibility - ready for your security team.',
   },
   {
     icon: FileCheck2,
@@ -22,7 +22,7 @@ const assurancePillars = [
     icon: ShieldCheck,
     title: 'Operational proof',
     detail:
-      'Export compliance posture snapshots on demand — evidence packages, control coverage reports, and framework alignment summaries without spreadsheet reconstruction.',
+      'Export compliance posture snapshots on demand - evidence packages, control coverage reports, and framework alignment summaries without spreadsheet reconstruction.',
   },
   {
     icon: Lock,
@@ -49,7 +49,7 @@ export function ProcurementReadiness() {
             Built to survive security and procurement scrutiny
           </h2>
           <p className="mt-4 text-base leading-relaxed text-slate-300">
-            Enterprise procurement teams have rigorous requirements. FormaOS ships with the artifacts, controls, and documentation to meet them — before the first question is asked.
+            Enterprise procurement teams have rigorous requirements. FormaOS ships with the artifacts, controls, and documentation to meet them - before the first question is asked.
           </p>
         </ScrollReveal>
 

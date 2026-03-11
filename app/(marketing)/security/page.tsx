@@ -5,7 +5,7 @@ import { faqSchema, breadcrumbSchema,
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
-  title: 'Security & Compliance Infrastructure — FormaOS',
+  title: 'Security & Compliance Infrastructure - FormaOS',
   description:
     'Enterprise-grade security with encryption at rest and in transit, immutable audit trails, role-based access, SSO, and privacy-by-design architecture for regulated data.',
   alternates: {
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 };
 
 const securityFaqItems = [
-  { question: 'How does FormaOS ensure audit integrity?', answer: 'Every action in FormaOS is automatically logged with full context — who did what, when, and in relation to which control or workflow. Audit trails are immutable and timestamped, providing a complete chain of evidence.' },
+  { question: 'How does FormaOS ensure audit integrity?', answer: 'Every action in FormaOS is automatically logged with full context - who did what, when, and in relation to which control or workflow. Audit trails are immutable and timestamped, providing a complete chain of evidence.' },
   { question: 'How is evidence made immutable?', answer: 'Evidence records are tracked with audit logs and timestamps. Every upload, update, and approval is recorded for full traceability, creating a defensible chain of evidence.' },
   { question: 'Does FormaOS support ISO and SOC frameworks?', answer: 'Yes. FormaOS is framework-agnostic and supports ISO 27001, SOC 2, NDIS Practice Standards, healthcare regulations, and other frameworks simultaneously.' },
   { question: 'Is FormaOS multi-tenant secure?', answer: 'FormaOS implements enterprise-grade security with data encryption in transit and at rest, role-based access controls, SSO support, and isolated tenant environments.' },

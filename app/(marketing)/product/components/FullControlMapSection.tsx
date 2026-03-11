@@ -111,7 +111,7 @@ export function FullControlMapSection() {
           </h2>
 
           <p className="mx-auto mb-10 max-w-3xl text-base leading-relaxed text-gray-400 sm:text-lg lg:text-xl">
-            147 controls across 7 enterprise frameworks — all interconnected,
+            147 controls across 7 enterprise frameworks - all interconnected,
             all continuously monitored, all audit-ready. Hover any node to trace
             its cross-framework compliance chain.
           </p>
@@ -142,7 +142,7 @@ export function FullControlMapSection() {
           </div>
         </ScrollReveal>
 
-        {/* Canvas container — cinematic 16:9-ish ratio */}
+        {/* Canvas container - cinematic 16:9-ish ratio */}
         <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
           <div className="relative overflow-hidden rounded-3xl border border-white/[0.06] bg-gradient-to-br from-gray-950/95 via-[#050a18] to-[#030710] shadow-2xl shadow-black/50 ring-1 ring-white/[0.03]">
             {/* Radial overlays */}
@@ -244,7 +244,7 @@ export function FullControlMapSection() {
               </div>
             </div>
 
-            {/* Canvas — large aspect ratio */}
+            {/* Canvas - large aspect ratio */}
             <div className="relative aspect-[3/2] min-h-[280px] sm:aspect-[16/10] sm:min-h-[520px] lg:aspect-[16/9] lg:min-h-0 xl:aspect-[2/1]">
               <FullControlMapViz className="absolute inset-0 z-10" />
             </div>

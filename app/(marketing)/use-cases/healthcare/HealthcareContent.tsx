@@ -64,7 +64,7 @@ const workflows: UseCaseWorkflow[] = [
   {
     title: 'Clinical policy lifecycle',
     description:
-      'Policies are versioned, assigned to accountable owners, and moved through review and acknowledgement workflows — with full audit trail for RACGP and NSQHS inspections.',
+      'Policies are versioned, assigned to accountable owners, and moved through review and acknowledgement workflows - with full audit trail for RACGP and NSQHS inspections.',
     steps: [
       'Map each policy to NSQHS Standards, RACGP, or Privacy Act controls',
       'Assign named owner, review due date, and escalation path',
@@ -86,7 +86,7 @@ const workflows: UseCaseWorkflow[] = [
   {
     title: 'Incident to remediation',
     description:
-      'Adverse events, near-misses, and reportable incidents route through investigation, corrective action assignment, and closure evidence — defensible for NSQHS Standard 1 and 2.',
+      'Adverse events, near-misses, and reportable incidents route through investigation, corrective action assignment, and closure evidence - defensible for NSQHS Standard 1 and 2.',
     steps: [
       'Capture incident context, severity, and patient safety classification',
       'Assign corrective action to accountable clinical or governance lead',
@@ -109,7 +109,7 @@ const workflows: UseCaseWorkflow[] = [
 const standards: UseCaseStandard[] = [
   {
     name: 'AHPRA',
-    description: 'Practitioner registration and professional standards — Australian Health Practitioner Regulation Agency',
+    description: 'Practitioner registration and professional standards - Australian Health Practitioner Regulation Agency',
     features: [
       'AHPRA registration expiry tracking by practitioner and specialty',
       'CPD hours and competency evidence capture with timestamps',
@@ -129,7 +129,7 @@ const standards: UseCaseStandard[] = [
   },
   {
     name: 'NSQHS Standards',
-    description: 'National Safety and Quality Health Service Standards — all 8 applicable standards',
+    description: 'National Safety and Quality Health Service Standards - all 8 applicable standards',
     features: [
       'Standard 1 (Clinical Governance): leadership accountability and control mapping',
       'Standard 2 (Partnering with Consumers): feedback and safety workflow evidence',
@@ -153,12 +153,12 @@ const metrics: UseCaseMetric[] = [
   {
     value: '< 2 hrs',
     label: 'Audit Pack Export',
-    description: 'Generate framework-mapped evidence bundles without manual reconstruction — export-ready on demand.',
+    description: 'Generate framework-mapped evidence bundles without manual reconstruction - export-ready on demand.',
   },
   {
     value: '90 days',
     label: 'Renewal Lead Time',
-    description: 'Automated alert windows for AHPRA, CPD, and immunization renewals — never miss an expiry.',
+    description: 'Automated alert windows for AHPRA, CPD, and immunization renewals - never miss an expiry.',
   },
   {
     value: '100%',
@@ -184,7 +184,7 @@ export default function HealthcareContent() {
           as operational workflow
         </>
       }
-      description="Run clinical policy governance, credential tracking, incident management, and safety controls in one purpose-built system — continuously audit-ready for AHPRA, NSQHS, RACGP, and Privacy Act obligations."
+      description="Run clinical policy governance, credential tracking, incident management, and safety controls in one purpose-built system - continuously audit-ready for AHPRA, NSQHS, RACGP, and Privacy Act obligations."
       challenges={challenges}
       demoTitle="Healthcare workflow simulation"
       demoDescription="Preview policy lifecycle, credential monitoring, compliance posture, and audit trail integrity."
@@ -200,7 +200,7 @@ export default function HealthcareContent() {
       standards={standards}
       metrics={metrics}
       ctaTitle="Build a healthcare compliance operating model that holds up at audit time"
-      ctaDescription="Start with pre-built control frameworks mapped to AHPRA, NSQHS Standards, and the Privacy Act. Every action stays tied to accountable ownership and defensible timestamped evidence — no reconstruction required."
+      ctaDescription="Start with pre-built control frameworks mapped to AHPRA, NSQHS Standards, and the Privacy Act. Every action stays tied to accountable ownership and defensible timestamped evidence - no reconstruction required."
     />
   );
 }

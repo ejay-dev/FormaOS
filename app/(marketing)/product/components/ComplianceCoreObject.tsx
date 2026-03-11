@@ -13,7 +13,7 @@ import { useDeviceTier } from '@/lib/device-tier';
 /**
  * ComplianceCoreObject
  * ────────────────────
- * Massive 3D floating compliance core — centerpiece of product hero.
+ * Massive 3D floating compliance core - centerpiece of product hero.
  *
  * Starts VISIBLE with glass shell + UI fragments inside.
  * On scroll: rotates → layers separate → morphs into full product UI.

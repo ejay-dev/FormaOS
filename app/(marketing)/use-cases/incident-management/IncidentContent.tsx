@@ -56,7 +56,7 @@ const workflows: UseCaseWorkflow[] = [
   {
     title: 'Intake and risk classification',
     description:
-      'Route incidents through standardized intake, severity assignment, and escalation paths — with structured context capture from the first moment.',
+      'Route incidents through standardized intake, severity assignment, and escalation paths - with structured context capture from the first moment.',
     steps: [
       'Capture who, what, when, where, and affected-party context at intake using structured forms',
       'Apply severity classification rules: critical (immediate regulator notification), high (24-hour SLA), medium, low',
@@ -94,7 +94,7 @@ const workflows: UseCaseWorkflow[] = [
   {
     title: 'Cross-framework incident classification',
     description:
-      'Map a single incident to every applicable framework and regulator obligation — so one event triggers the right reporting, evidence, and corrective workflows across all jurisdictions.',
+      'Map a single incident to every applicable framework and regulator obligation - so one event triggers the right reporting, evidence, and corrective workflows across all jurisdictions.',
     steps: [
       'Classify the incident against all mapped frameworks simultaneously (ISO 27001, WHS, SIRS, APRA, ASIC)',
       'Identify reportable-incident thresholds per framework: 24-hour SIRS, immediate SafeWork, 30-day ASIC',
@@ -108,7 +108,7 @@ const workflows: UseCaseWorkflow[] = [
 const standards: UseCaseStandard[] = [
   {
     name: 'ISO 27001 / SOC 2',
-    description: 'Information security incident management — Annex A.16 and SOC 2 CC7/CC8 controls',
+    description: 'Information security incident management - Annex A.16 and SOC 2 CC7/CC8 controls',
     features: [
       'Structured incident response aligned to Annex A.16.1 requirements',
       'Corrective-action ownership with Annex A.16.1.5 root-cause analysis',
@@ -118,7 +118,7 @@ const standards: UseCaseStandard[] = [
   },
   {
     name: 'WHS Act & SafeWork',
-    description: 'Work Health and Safety Act 2011 — notifiable incident and SafeWork reporting obligations',
+    description: 'Work Health and Safety Act 2011 - notifiable incident and SafeWork reporting obligations',
     features: [
       'Notifiable incident classification per WHS Act s35–37 (death, serious injury, dangerous incident)',
       'SafeWork notification evidence with timestamps and decision records',
@@ -128,7 +128,7 @@ const standards: UseCaseStandard[] = [
   },
   {
     name: 'NDIS / SIRS',
-    description: 'NDIS Serious Incident Response Scheme — reportable incident obligations under the NDIS Commission',
+    description: 'NDIS Serious Incident Response Scheme - reportable incident obligations under the NDIS Commission',
     features: [
       'SIRS reportable incident intake aligned to NDIS (Incident Management and Reportable Incidents) Rules 2018',
       'Severity classification and 24-hour / 5-day notification workflow',
@@ -138,7 +138,7 @@ const standards: UseCaseStandard[] = [
   },
   {
     name: 'ASIC / APRA',
-    description: 'Financial services incident reporting — ASIC breach reporting and APRA CPS 234 obligations',
+    description: 'Financial services incident reporting - ASIC breach reporting and APRA CPS 234 obligations',
     features: [
       'ASIC reportable situation classification and notification timelines',
       'APRA CPS 234 material information security incident reporting',
@@ -183,7 +183,7 @@ export default function IncidentContent() {
           defensible operational evidence
         </>
       }
-      description="Coordinate intake, triage, investigation, corrective action, and closure in one incident system with named ownership, timestamped evidence, and regulator-ready export — audit-ready by design, not by sprint."
+      description="Coordinate intake, triage, investigation, corrective action, and closure in one incident system with named ownership, timestamped evidence, and regulator-ready export - audit-ready by design, not by sprint."
       challenges={challenges}
       demoTitle="Incident workflow simulation"
       demoDescription="Follow incident lifecycle state changes and see how closure evidence is preserved."
@@ -196,8 +196,8 @@ export default function IncidentContent() {
       workflows={workflows}
       standards={standards}
       metrics={metrics}
-      ctaTitle="Run incidents as accountable operations — with proof that holds under scrutiny"
-      ctaDescription="Replace reactive reporting with structured response workflows. Every incident gets a named owner, documented investigation, and closure evidence — ready for regulators, customers, or the board in minutes."
+      ctaTitle="Run incidents as accountable operations - with proof that holds under scrutiny"
+      ctaDescription="Replace reactive reporting with structured response workflows. Every incident gets a named owner, documented investigation, and closure evidence - ready for regulators, customers, or the board in minutes."
     />
   );
 }

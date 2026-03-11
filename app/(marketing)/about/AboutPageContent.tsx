@@ -74,7 +74,7 @@ function AboutHero() {
           </span>
         </>
       }
-      subheadline="Built for regulated teams where compliance failure has real consequences — and leadership needs more than a spreadsheet to prove control."
+      subheadline="Built for regulated teams where compliance failure has real consequences - and leadership needs more than a spreadsheet to prove control."
       primaryCta={{ href: '/our-story', label: 'Read Our Story' }}
       secondaryCta={{ href: '/product', label: 'See How It Works' }}
     />
@@ -92,7 +92,7 @@ const milestones = [
     year: '2023',
     title: 'First regulated deployment',
     detail:
-      'FormaOS deployed with its first NDIS provider — 400+ staff across multiple states. The platform proved that compliance could run as operational workflow with named ownership and defensible evidence.',
+      'FormaOS deployed with its first NDIS provider - 400+ staff across multiple states. The platform proved that compliance could run as operational workflow with named ownership and defensible evidence.',
   },
   {
     year: '2024',
@@ -104,7 +104,7 @@ const milestones = [
     year: '2025',
     title: 'Enterprise-grade infrastructure',
     detail:
-      'Data residency controls (AU/US/EU), SCIM provisioning, APRA CPS 234 framework support, and the full enterprise procurement package — DPA, vendor assurance, SLA, and security review packet.',
+      'Data residency controls (AU/US/EU), SCIM provisioning, APRA CPS 234 framework support, and the full enterprise procurement package - DPA, vendor assurance, SLA, and security review packet.',
   },
 ] as const;
 
@@ -113,25 +113,25 @@ const values = [
     icon: Eye,
     title: 'Transparency over promises',
     detail:
-      'We ship the security review packet before your procurement team asks for it. Our architecture, encryption, and controls are documented and available — not hidden behind an NDA wall.',
+      'We ship the security review packet before your procurement team asks for it. Our architecture, encryption, and controls are documented and available - not hidden behind an NDA wall.',
   },
   {
     icon: Layers,
     title: 'Infrastructure over features',
     detail:
-      'We build compliance infrastructure — not a feature checklist. Every capability connects to the operating model: controls link to evidence, evidence links to owners, owners link to audit trails.',
+      'We build compliance infrastructure - not a feature checklist. Every capability connects to the operating model: controls link to evidence, evidence links to owners, owners link to audit trails.',
   },
   {
     icon: Zap,
     title: 'Execution over documentation',
     detail:
-      'Documentation without execution is liability. FormaOS enforces compliance as work: tasks with deadlines, evidence with verification, controls with named owners — not PDFs in a folder.',
+      'Documentation without execution is liability. FormaOS enforces compliance as work: tasks with deadlines, evidence with verification, controls with named owners - not PDFs in a folder.',
   },
   {
     icon: Award,
     title: 'Accountability over aspiration',
     detail:
-      'We build for organizations where compliance failure has real consequences — sanctions, registration loss, enforcement actions. Our platform is designed for the teams regulators hold accountable.',
+      'We build for organizations where compliance failure has real consequences - sanctions, registration loss, enforcement actions. Our platform is designed for the teams regulators hold accountable.',
   },
 ] as const;
 
@@ -190,15 +190,15 @@ export default function AboutPageContent() {
                   <p>
                     FormaOS didn&apos;t start as a product idea. It started as
                     frustration. After years building technology for regulated
-                    organizations — healthcare networks, NDIS providers,
-                    financial services firms — the same pattern emerged
+                    organizations - healthcare networks, NDIS providers,
+                    financial services firms - the same pattern emerged
                     everywhere: compliance teams managing critical obligations
                     in spreadsheets, shared drives, and email threads. Evidence
                     scattered. Ownership unclear. Audit preparation consuming
                     weeks that should have been hours.
                   </p>
                   <p>
-                    The tools available solved storage — not execution. They
+                    The tools available solved storage - not execution. They
                     could hold documents, but they couldn&apos;t enforce
                     accountability. They could generate reports, but they
                     couldn&apos;t prove who owned what, when it was verified, or
@@ -209,7 +209,7 @@ export default function AboutPageContent() {
                   <p>
                     FormaOS was built to close that gap. Not as another document
                     repository or checklist tool, but as a compliance operating
-                    system — infrastructure that connects obligations to
+                    system - infrastructure that connects obligations to
                     controls, controls to owners, owners to evidence, and
                     evidence to defensible audit trails. The system regulators
                     expect, built the way engineers think about systems:
@@ -344,7 +344,7 @@ export default function AboutPageContent() {
                 </h3>
                 <p className="text-gray-400 leading-relaxed text-sm">
                   Compliance teams are stuck managing obligations across
-                  spreadsheets, shared drives, and disconnected tools — with no
+                  spreadsheets, shared drives, and disconnected tools - with no
                   single source of truth when auditors arrive.
                 </p>
               </div>
@@ -358,7 +358,7 @@ export default function AboutPageContent() {
                 </h3>
                 <p className="text-gray-400 leading-relaxed text-sm">
                   FormaOS is built for the organizations where compliance
-                  failure has real consequences — clinical, financial,
+                  failure has real consequences - clinical, financial,
                   reputational. We take that accountability seriously.
                 </p>
               </div>
@@ -449,7 +449,7 @@ export default function AboutPageContent() {
                   stat: '< 2 min',
                   label: 'Audit packet export',
                   detail:
-                    'Framework-mapped evidence bundles generated on demand — no manual reconstruction',
+                    'Framework-mapped evidence bundles generated on demand - no manual reconstruction',
                 },
                 {
                   stat: '9',
@@ -461,7 +461,7 @@ export default function AboutPageContent() {
                   stat: '100%',
                   label: 'Control ownership',
                   detail:
-                    'Every control has a named owner, review cadence, and evidence trail — no orphaned obligations',
+                    'Every control has a named owner, review cadence, and evidence trail - no orphaned obligations',
                 },
                 {
                   stat: '~90%',
@@ -600,7 +600,7 @@ export default function AboutPageContent() {
                 The Audit Trail Never Lies
               </h3>
               <p className="text-sm text-gray-400">
-                Every action timestamped, attributed, and preserved — exactly as
+                Every action timestamped, attributed, and preserved - exactly as
                 regulators expect
               </p>
             </ScrollReveal>
@@ -611,7 +611,7 @@ export default function AboutPageContent() {
                   {
                     action: 'Audit packet exported',
                     user: 'Sarah Chen',
-                    target: 'SOC 2 Type II — Q4 2025',
+                    target: 'SOC 2 Type II - Q4 2025',
                     time: '09:47',
                     type: 'compliance',
                   },
@@ -625,7 +625,7 @@ export default function AboutPageContent() {
                   {
                     action: 'Evidence uploaded',
                     user: 'Emma Rodriguez',
-                    target: 'ISO 27001 A.12.1.3 — Capacity Management',
+                    target: 'ISO 27001 A.12.1.3 - Capacity Management',
                     time: '08:42',
                     type: 'evidence',
                   },
@@ -639,14 +639,14 @@ export default function AboutPageContent() {
                   {
                     action: 'Control verified',
                     user: 'Priya Nair',
-                    target: 'HIPAA § 164.312(a)(1) — Access Control',
+                    target: 'HIPAA § 164.312(a)(1) - Access Control',
                     time: '07:58',
                     type: 'task',
                   },
                   {
                     action: 'Control mapped',
                     user: 'System',
-                    target: 'NDIS Practice Standard 4.2 — Incident Management',
+                    target: 'NDIS Practice Standard 4.2 - Incident Management',
                     time: '07:30',
                     type: 'system',
                   },

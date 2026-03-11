@@ -46,7 +46,7 @@ const enterpriseFeatures = [
     icon: Globe,
     title: 'Data Residency Controls',
     description:
-      'AU-based hosting by default. Enterprise customers select residency at onboarding — Australia, United States, or European Union. Standard Contractual Clauses for international transfers.',
+      'AU-based hosting by default. Enterprise customers select residency at onboarding - Australia, United States, or European Union. Standard Contractual Clauses for international transfers.',
   },
   {
     icon: Users,
@@ -70,7 +70,7 @@ const enterpriseFeatures = [
     icon: FileText,
     title: 'Procurement Artifacts on Day One',
     description:
-      'DPA, vendor assurance questionnaire, security review packet, subprocessor disclosures, and penetration test executive summary — available before procurement asks the first question.',
+      'DPA, vendor assurance questionnaire, security review packet, subprocessor disclosures, and penetration test executive summary - available before procurement asks the first question.',
   },
 ];
 
@@ -93,8 +93,8 @@ const procurementChecklist = [
 
 const slaCommitments = [
   { label: 'Monthly uptime SLA', value: '99.9%' },
-  { label: 'P1 critical — acknowledgement', value: '< 1 hr' },
-  { label: 'P2 high priority — acknowledgement', value: '< 4 hrs' },
+  { label: 'P1 critical - acknowledgement', value: '< 1 hr' },
+  { label: 'P2 high priority - acknowledgement', value: '< 4 hrs' },
   { label: 'Planned maintenance notice', value: '48 hrs min' },
   { label: 'Annual uptime report', value: 'On request' },
   { label: 'Named escalation path', value: 'Included' },
@@ -124,7 +124,7 @@ export default function EnterprisePage() {
     <MarketingPageShell>
       <CompactHero
         title="FormaOS for Enterprise"
-        description="Enterprise-grade compliance governance — SAML 2.0 SSO, data residency, 99.9% SLA, multi-entity management, and procurement artifacts. Built for regulated industries."
+        description="Enterprise-grade compliance governance - SAML 2.0 SSO, data residency, 99.9% SLA, multi-entity management, and procurement artifacts. Built for regulated industries."
         topColor="emerald"
         bottomColor="cyan"
         visualContent={
@@ -172,7 +172,7 @@ export default function EnterprisePage() {
           <div className="flex items-center gap-2 mb-5">
             <Clock className="h-5 w-5 text-primary" aria-hidden="true" />
             <h2 className="text-lg font-semibold text-foreground">
-              SLA Commitments — Enterprise
+              SLA Commitments - Enterprise
             </h2>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

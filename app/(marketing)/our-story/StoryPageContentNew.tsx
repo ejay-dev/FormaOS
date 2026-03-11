@@ -57,7 +57,7 @@ export function StoryHero() {
           </span>
         </>
       }
-      subheadline="Built for organizations where a compliance failure isn't a setback — it's a shutdown. Infrastructure that makes accountability unavoidable."
+      subheadline="Built for organizations where a compliance failure isn't a setback - it's a shutdown. Infrastructure that makes accountability unavoidable."
       primaryCta={{
         href: `${appBase}/auth/signup`,
         label: 'Start Free Trial',
@@ -179,7 +179,7 @@ function FounderQuote() {
 function TheProblem() {
   const problems = [
     'Evidence reconstructed hours before audits',
-    'Fragmented ownership — nobody knows who owns what',
+    'Fragmented ownership - nobody knows who owns what',
     'Controls documented but never enforced',
     'Framework coverage gaps discovered at audit time',
     'No single source of truth for regulators',

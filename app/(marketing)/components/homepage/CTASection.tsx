@@ -22,7 +22,7 @@ export function CTASection() {
   const { snapshot } = useControlPlaneRuntime();
   const runtime = snapshot?.marketing.runtime ?? DEFAULT_RUNTIME_MARKETING.runtime;
 
-  // Suppress lint warning — runtime gating kept for future use
+  // Suppress lint warning - runtime gating kept for future use
   void runtime;
 
   return (
@@ -60,7 +60,7 @@ export function CTASection() {
 
         <ScrollReveal variant="fadeUp" range={[0.02, 0.32]}>
           <p className="text-base sm:text-lg md:text-xl text-slate-400 mb-10 sm:mb-12 max-w-2xl mx-auto leading-relaxed">
-            Regulators don't accept "we were working on it." FormaOS enforces controls, captures evidence automatically, and keeps your organization audit-ready — every day, not just before the audit.
+            Regulators don't accept "we were working on it." FormaOS enforces controls, captures evidence automatically, and keeps your organization audit-ready - every day, not just before the audit.
           </p>
         </ScrollReveal>
 

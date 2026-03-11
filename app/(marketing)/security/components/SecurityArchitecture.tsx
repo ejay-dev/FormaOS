@@ -161,7 +161,7 @@ export function SecurityArchitecture() {
           </div>
         </ScrollReveal>
 
-        {/* Security Layers Grid — scroll-driven layer separation */}
+        {/* Security Layers Grid - scroll-driven layer separation */}
         <motion.div
           ref={layersRef}
           style={prefersReducedMotion ? {} : { gap: gapValue }}

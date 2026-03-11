@@ -71,7 +71,7 @@ export function MissionCriticalContext() {
               When compliance failures have serious consequences
             </h3>
             <p className="text-sm text-gray-500 text-center mb-8 max-w-2xl mx-auto">
-              In regulated industries, the cost of a compliance failure is not a fine — it is a shutdown. FormaOS is built for organizations that cannot afford to treat governance as optional.
+              In regulated industries, the cost of a compliance failure is not a fine - it is a shutdown. FormaOS is built for organizations that cannot afford to treat governance as optional.
             </p>
 
             <SectionChoreography pattern="center-burst" stagger={0.06} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">

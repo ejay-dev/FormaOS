@@ -31,7 +31,7 @@ function SecurityHeroLaserInner() {
   const prefersReduced = useReducedMotion();
   const [isDesktop, setIsDesktop] = useState(false);
 
-  // Desktop-only check — WebGL only on devices with hover + fine pointer
+  // Desktop-only check - WebGL only on devices with hover + fine pointer
   useEffect(() => {
     const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
     setIsDesktop(mq.matches);
@@ -40,7 +40,7 @@ function SecurityHeroLaserInner() {
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
-  // Scroll parallax — laser drifts slower than content
+  // Scroll parallax - laser drifts slower than content
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
@@ -56,12 +56,12 @@ function SecurityHeroLaserInner() {
       style={{ zIndex: 0 }}
       aria-hidden
     >
-      {/* Parallax wrapper — moves at ~0.15x scroll speed */}
+      {/* Parallax wrapper - moves at ~0.15x scroll speed */}
       <motion.div
         className="absolute inset-0"
         style={prefersReduced ? undefined : { y: laserY }}
       >
-        {/* Oversized canvas — bleeds past viewport edges */}
+        {/* Oversized canvas - bleeds past viewport edges */}
         <div
           className="absolute"
           style={{
@@ -99,7 +99,7 @@ function SecurityHeroLaserInner() {
                 fogFallSpeed={0.5}
               />
             ) : (
-              /* Static gradient fallback — visible on mobile + reduced motion */
+              /* Static gradient fallback - visible on mobile + reduced motion */
               <div
                 className="w-full h-full"
                 style={{
@@ -115,7 +115,7 @@ function SecurityHeroLaserInner() {
         </div>
       </motion.div>
 
-      {/* Text scrim — subtle darkening behind hero text for readability */}
+      {/* Text scrim - subtle darkening behind hero text for readability */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -125,7 +125,7 @@ function SecurityHeroLaserInner() {
         }}
       />
 
-      {/* Noise overlay — breaks color banding from WebGL gradients */}
+      {/* Noise overlay - breaks color banding from WebGL gradients */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.03]"
         style={{
@@ -136,7 +136,7 @@ function SecurityHeroLaserInner() {
         }}
       />
 
-      {/* Bottom vignette — dissolves laser into page content below */}
+      {/* Bottom vignette - dissolves laser into page content below */}
       <div
         className="absolute bottom-0 left-0 right-0 h-[35%] pointer-events-none"
         style={{

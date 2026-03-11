@@ -18,10 +18,10 @@ const stories = [
   {
     title: 'National disability services provider',
     context:
-      'NDIS provider — 400+ staff, multi-state operations, NDIS Commission registered',
+      'NDIS provider - 400+ staff, multi-state operations, NDIS Commission registered',
     framework: 'NDIS Practice Standards (all 8 modules)',
     situation:
-      'Rapid growth created fragmented evidence, unclear ownership, and high audit risk across multiple sites. Reportable incidents were tracked in spreadsheets — NDIS Commission audits required days of reconstruction.',
+      'Rapid growth created fragmented evidence, unclear ownership, and high audit risk across multiple sites. Reportable incidents were tracked in spreadsheets - NDIS Commission audits required days of reconstruction.',
     outcome: [
       'Centralized evidence vault with verification and sign-off chain',
       'Clear control ownership at every practice standard module',
@@ -29,16 +29,16 @@ const stories = [
       'Audit preparation time reduced from 3 weeks to under 4 hours',
     ],
     quote:
-      'We stopped chasing evidence in folders. FormaOS made accountability explicit and defensible — the Commission auditor had everything in front of them in 2 hours.',
+      'We stopped chasing evidence in folders. FormaOS made accountability explicit and defensible - the Commission auditor had everything in front of them in 2 hours.',
     attribution: 'Head of Quality & Compliance',
   },
   {
     title: 'Regional healthcare operator',
     context:
-      'Healthcare network — 6 sites, NSQHS accredited, AHPRA practitioners',
+      'Healthcare network - 6 sites, NSQHS accredited, AHPRA practitioners',
     framework: 'NSQHS Standards + AHPRA + RACGP',
     situation:
-      'Clinical governance controls existed on paper, but proof was inconsistent across sites. AHPRA registration renewals were tracked manually — two near-misses in 12 months. Leadership had no live posture view ahead of accreditation.',
+      'Clinical governance controls existed on paper, but proof was inconsistent across sites. AHPRA registration renewals were tracked manually - two near-misses in 12 months. Leadership had no live posture view ahead of accreditation.',
     outcome: [
       'Control-to-evidence mapping with NSQHS Standards linkage',
       'AHPRA registration expiry alerts at 90/60/30-day intervals',
@@ -52,7 +52,7 @@ const stories = [
   {
     title: 'Multi-site aged care organization',
     context:
-      'Aged care provider — 12 residential facilities, Aged Care Quality and Safety Commission registered',
+      'Aged care provider - 12 residential facilities, Aged Care Quality and Safety Commission registered',
     framework: 'Aged Care Quality Standards (8 standards)',
     situation:
       'Policy changes were hard to roll out uniformly, periodic reviews slipped without reliable triggers, and Standard 8 governance reporting consumed weeks of executive time before each Commission visit.',
@@ -60,19 +60,19 @@ const stories = [
       'Policy review cadence enforced with automated task triggers',
       'Evidence renewal and expiry tracking across all 12 facilities',
       'Standard 8 governance reporting cut from 3 weeks to 2 days',
-      'Commission visit resulted in commendable outcomes — no sanctions',
+      'Commission visit resulted in commendable outcomes - no sanctions',
     ],
     quote:
-      'The system makes compliance routine. We can focus on care delivery and still be fully audit-ready — Commission or not.',
+      'The system makes compliance routine. We can focus on care delivery and still be fully audit-ready - Commission or not.',
     attribution: 'CEO & Registered Provider',
   },
   {
     title: 'Mid-market financial services firm',
     context:
-      'Financial services — 200+ staff, ASIC and APRA regulated, AML/CTF reporting obligations',
+      'Financial services - 200+ staff, ASIC and APRA regulated, AML/CTF reporting obligations',
     framework: 'ISO 27001 + APRA CPS 234 + AML/CTF Act',
     situation:
-      'Rapid fintech partnerships introduced new third-party risk, but control ownership and evidence collection remained manual. ASIC breach reporting timelines were tight — the team relied on email threads and shared drives to reconstruct incident histories. Board governance reporting consumed days of analyst time each quarter.',
+      'Rapid fintech partnerships introduced new third-party risk, but control ownership and evidence collection remained manual. ASIC breach reporting timelines were tight - the team relied on email threads and shared drives to reconstruct incident histories. Board governance reporting consumed days of analyst time each quarter.',
     outcome: [
       'APRA CPS 234 control mapping with named owners and evidence trails',
       'ASIC reportable situation response time reduced from days to under 4 hours',
@@ -171,7 +171,7 @@ export default function CustomerStoriesContent() {
                       </p>
                       {'attribution' in s && (
                         <p className="mt-2 text-xs font-medium text-slate-400">
-                          — {s.attribution}
+                          - {s.attribution}
                         </p>
                       )}
                     </div>
@@ -213,13 +213,13 @@ export default function CustomerStoriesContent() {
         </section>
       </DeferredSection>
 
-      {/* ROI Proof — Worked Example */}
+      {/* ROI Proof - Worked Example */}
       <DeferredSection minHeight={500}>
         <section className="relative mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
           <ScrollReveal variant="depthSlide" range={[0, 0.35]}>
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7 lg:p-10">
               <h3 className="text-lg font-semibold text-white">
-                ROI Proof — Worked Example
+                ROI Proof - Worked Example
               </h3>
               <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-300">
                 Based on an NDIS provider with 400 staff, 3 FTE compliance team,

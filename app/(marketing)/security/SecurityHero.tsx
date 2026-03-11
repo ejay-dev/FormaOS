@@ -30,7 +30,7 @@ export function SecurityHero() {
           </span>
         </>
       }
-      subheadline="AES-256 encryption, SAML 2.0 SSO, tamper-evident audit logs, and compliance workflow gates — built for organizations where a breach is a regulatory event."
+      subheadline="AES-256 encryption, SAML 2.0 SSO, tamper-evident audit logs, and compliance workflow gates - built for organizations where a breach is a regulatory event."
       extras={
         <div className="flex flex-wrap justify-center gap-3">
           {SECURITY_PILLS.map((item) => (

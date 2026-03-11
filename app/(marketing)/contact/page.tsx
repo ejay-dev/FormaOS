@@ -3,7 +3,7 @@ import { submitMarketingLead } from './actions';
 import ContactPageContentNew from './ContactPageContentNew';
 import { siteUrl } from '@/lib/seo';
 export const metadata: Metadata = {
-  title: 'Request a Demo — Compliance Operating System | FormaOS',
+  title: 'Request a Demo - Compliance Operating System | FormaOS',
   description:
     'Request a personalized demo or get in touch with the FormaOS team. See how FormaOS works for your regulated industry.',
   alternates: {
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Contact FormaOS — Request a Demo',
+    title: 'Contact FormaOS - Request a Demo',
     description:
       'Request a personalized demo or get in touch with the FormaOS team.',
   },

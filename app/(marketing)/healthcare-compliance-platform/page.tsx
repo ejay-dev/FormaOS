@@ -3,7 +3,7 @@ import HealthcareComplianceContent from './HealthcareComplianceContent';
 import { breadcrumbSchema, faqSchema,
   siteUrl} from '@/lib/seo';
 export const metadata: Metadata = {
-  title: 'Healthcare Compliance Platform — Clinical Governance & Accreditation | FormaOS',
+  title: 'Healthcare Compliance Platform - Clinical Governance & Accreditation | FormaOS',
   description:
     'Healthcare compliance platform for hospitals, clinics, and care providers. Manage NSQHS Standards, AHPRA requirements, clinical governance, incident reporting, and accreditation readiness in one system.',
   alternates: { canonical: `${siteUrl}/healthcare-compliance-platform` },

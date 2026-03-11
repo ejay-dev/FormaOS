@@ -22,7 +22,7 @@ const LAYER_BLUR = ['none', 'blur(1px)', 'blur(2px)'] as const;
 
 /* ────────────────────────────────────────────────────────────────────── */
 /*  ProductHeroVisual                                                    */
-/*  Compliance OS Dashboard — 3 stacked glass panels in CSS 3D          */
+/*  Compliance OS Dashboard - 3 stacked glass panels in CSS 3D          */
 /* ────────────────────────────────────────────────────────────────────── */
 
 function ProductHeroVisualInner() {
@@ -156,7 +156,7 @@ function PanelShell({
 }
 
 /* ────────────────────────────────────────────────────────────────────── */
-/*  Front Panel — Compliance Dashboard                                   */
+/*  Front Panel - Compliance Dashboard                                   */
 /* ────────────────────────────────────────────────────────────────────── */
 
 function ComplianceDashboard() {
@@ -182,10 +182,10 @@ function ComplianceDashboard() {
       {/* Status rows */}
       <div className="space-y-2.5">
         <StatusRow color="emerald" label="SOC 2 Type II" sublabel="All controls passing" />
-        <StatusRow color="emerald" label="ISO 27001" sublabel="Certified — next audit Q3" />
+        <StatusRow color="emerald" label="ISO 27001" sublabel="Certified - next audit Q3" />
         <StatusRow color="amber" label="GDPR Article 30" sublabel="2 items need review" />
         <StatusRow color="emerald" label="HIPAA Security Rule" sublabel="Fully compliant" />
-        <StatusRow color="rose" label="PCI DSS v4.0" sublabel="Action required — 1 finding" />
+        <StatusRow color="rose" label="PCI DSS v4.0" sublabel="Action required - 1 finding" />
       </div>
     </>
   );
@@ -229,7 +229,7 @@ function StatusRow({
 }
 
 /* ────────────────────────────────────────────────────────────────────── */
-/*  Middle Panel — Evidence Collection Checklist                         */
+/*  Middle Panel - Evidence Collection Checklist                         */
 /* ────────────────────────────────────────────────────────────────────── */
 
 function EvidenceChecklist() {
@@ -287,7 +287,7 @@ function EvidenceChecklist() {
 }
 
 /* ────────────────────────────────────────────────────────────────────── */
-/*  Back Panel — Audit Report Summary                                    */
+/*  Back Panel - Audit Report Summary                                    */
 /* ────────────────────────────────────────────────────────────────────── */
 
 function AuditReport() {

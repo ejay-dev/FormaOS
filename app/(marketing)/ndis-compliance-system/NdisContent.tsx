@@ -19,8 +19,8 @@ export default function NdisContent() {
       subheadline="Translate NDIS Practice Standards into owned workflows with continuous evidence for Commission reviews."
       introParagraphs={[
         'NDIS providers face a unique compliance challenge. The NDIS Practice Standards define what quality looks like, but turning those standards into daily operational practice requires systems that connect policy to execution.',
-        'Most providers manage compliance through a combination of policy documents, spreadsheets, incident logs, and folder structures. This approach creates gaps between what policies say and what staff actually do. When the NDIS Quality and Safeguards Commission conducts an audit, providers scramble to demonstrate that standards are met consistently — not just documented.',
-        'FormaOS is purpose-built for this challenge. It maps NDIS Practice Standards and Quality Indicators to operational workflows that staff interact with daily. Evidence is captured as work happens — incident reports, staff training records, participant feedback, and service delivery documentation — creating a continuous compliance record.',
+        'Most providers manage compliance through a combination of policy documents, spreadsheets, incident logs, and folder structures. This approach creates gaps between what policies say and what staff actually do. When the NDIS Quality and Safeguards Commission conducts an audit, providers scramble to demonstrate that standards are met consistently - not just documented.',
+        'FormaOS is purpose-built for this challenge. It maps NDIS Practice Standards and Quality Indicators to operational workflows that staff interact with daily. Evidence is captured as work happens - incident reports, staff training records, participant feedback, and service delivery documentation - creating a continuous compliance record.',
         'The result is a compliance system that works for providers, not against them. Staff focus on service delivery while the platform ensures every action creates the evidence trail that auditors and the Commission require.',
       ]}
       problemSections={[
@@ -42,7 +42,7 @@ export default function NdisContent() {
         {
           heading: 'The audit readiness gap',
           paragraphs: [
-            'NDIS audits (both verification and certification) assess whether your organization consistently meets Practice Standards in practice — not just on paper. Auditors interview staff, review evidence, and observe operations.',
+            'NDIS audits (both verification and certification) assess whether your organization consistently meets Practice Standards in practice - not just on paper. Auditors interview staff, review evidence, and observe operations.',
             'Providers who rely on manual compliance tracking face a common pattern: policies are well-written, but operational evidence is scattered, incomplete, or inconsistent. The gap between documented intent and operational reality is where audit findings originate.',
           ],
         },
@@ -87,7 +87,7 @@ export default function NdisContent() {
         {
           heading: 'Continuous evidence collection',
           paragraphs: [
-            'Evidence is captured through daily operations — service delivery records, training completions, incident resolutions, and participant feedback — creating an always-current compliance record.',
+            'Evidence is captured through daily operations - service delivery records, training completions, incident resolutions, and participant feedback - creating an always-current compliance record.',
           ],
           bullets: [
             'Evidence linked to specific Practice Standards and Quality Indicators',

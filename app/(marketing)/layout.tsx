@@ -21,7 +21,7 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: {
     default: 'FormaOS | Compliance Operating System',
-    template: '%s | FormaOS',
+    template: '%s',
   },
   description:
     'FormaOS is the compliance operating system for regulated industries. Manage frameworks, policies, controls, and evidence in a single platform.',

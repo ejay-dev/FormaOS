@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'FormaOS vs Competitors — Compare Compliance Platforms';
+export const alt = 'FormaOS vs Competitors - Compare Compliance Platforms';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -37,7 +37,7 @@ export default function Image() {
             Why compliance teams choose FormaOS
           </div>
           <div style={{ color: '#94a3b8', fontSize: 22, lineHeight: 1.5, maxWidth: 700 }}>
-            Operational execution, defensible evidence, and audit-ready governance — not just monitoring.
+            Operational execution, defensible evidence, and audit-ready governance - not just monitoring.
           </div>
         </div>
 

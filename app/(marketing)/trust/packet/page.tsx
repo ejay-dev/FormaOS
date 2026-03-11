@@ -45,7 +45,7 @@ const sections = [
     icon: Lock,
     title: 'Encryption & Access Controls',
     items: [
-      'AES-256 encryption at rest — all tenant data and evidence artifacts',
+      'AES-256 encryption at rest - all tenant data and evidence artifacts',
       'TLS 1.3 encryption in transit for all platform traffic',
       'Role-based access controls with principle of least privilege',
       'SAML 2.0 SSO configuration guide (Okta, Azure AD, Google Workspace)',
@@ -57,7 +57,7 @@ const sections = [
     title: 'Data Residency & Subprocessors',
     items: [
       'Default hosting: Australia (AU region)',
-      'Enterprise residency options: AU / US / EU — configurable at onboarding',
+      'Enterprise residency options: AU / US / EU - configurable at onboarding',
       'Subprocessor list with hosting regions and data processing purposes',
       'Standard Contractual Clauses (SCCs) for international transfers',
       'Data flow diagram from collection to storage to deletion',
@@ -69,7 +69,7 @@ const sections = [
     items: [
       'Hosting provider SOC 2 reports available on request',
       'Automated backup and point-in-time recovery',
-      'Enterprise uptime target: 99.9% monthly — incorporated in MSA/SOW',
+      'Enterprise uptime target: 99.9% monthly - incorporated in MSA/SOW',
       'Incident response process and breach notification timelines',
       'Planned maintenance window notification policy (48 hours minimum)',
     ],
@@ -78,7 +78,7 @@ const sections = [
     icon: FileText,
     title: 'Compliance & Legal Artifacts',
     items: [
-      'Data Processing Agreement (DPA) — countersigned copy available for Enterprise',
+      'Data Processing Agreement (DPA) - countersigned copy available for Enterprise',
       'Vendor assurance questionnaire pre-filled responses',
       'Privacy Act 1988 (Australian Privacy Principles) alignment summary',
       'GDPR data subject rights support overview',
@@ -166,7 +166,7 @@ export default function TrustPacketPage() {
         <div className="mt-10 rounded-2xl border border-border bg-card p-6">
           <h3 className="text-sm font-semibold text-foreground mb-2">Who this is designed for</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            The Trust Packet is designed to answer the first wave of questions from your security team, legal counsel, and procurement reviewers — before a formal vendor questionnaire arrives. It uses intentional "aligned vs certified" language so your team knows exactly what we are claiming and what we are not. For NDA-gated artifacts (penetration test executive summary), use the request form below.
+            The Trust Packet is designed to answer the first wave of questions from your security team, legal counsel, and procurement reviewers - before a formal vendor questionnaire arrives. It uses intentional "aligned vs certified" language so your team knows exactly what we are claiming and what we are not. For NDA-gated artifacts (penetration test executive summary), use the request form below.
           </p>
         </div>
 

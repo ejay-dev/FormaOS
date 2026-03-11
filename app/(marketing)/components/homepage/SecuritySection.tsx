@@ -23,19 +23,19 @@ const securityFeatures = [
   {
     icon: Lock,
     title: 'AES-256 + TLS 1.3 encryption',
-    description: 'Data encrypted at rest with AES-256, in transit with TLS 1.3 — no exceptions',
+    description: 'Data encrypted at rest with AES-256, in transit with TLS 1.3 - no exceptions',
     badge: 'AES-256',
   },
   {
     icon: Eye,
     title: 'Tamper-evident audit logs',
-    description: 'Immutable, timestamped action logs for every compliance event — ready for regulator review',
+    description: 'Immutable, timestamped action logs for every compliance event - ready for regulator review',
     badge: 'Immutable',
   },
   {
     icon: History,
     title: 'Evidence chain of custody',
-    description: 'Every evidence item linked to its owner, workflow, approval, and timestamp — full defensibility trail',
+    description: 'Every evidence item linked to its owner, workflow, approval, and timestamp - full defensibility trail',
     badge: 'Traceable',
   },
   {
@@ -106,7 +106,7 @@ export function SecuritySection() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
-          {/* Left — copy + feature grid */}
+          {/* Left - copy + feature grid */}
           <ScrollReveal variant="slideUp" range={[0, 0.35]}>
             <div>
               <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-teal-500/10 border border-teal-400/20 text-teal-400 text-xs sm:text-sm font-medium mb-5">
@@ -119,10 +119,10 @@ export function SecuritySection() {
                 <span className="text-slate-400"> the operating layer</span>
               </h2>
               <p className="text-sm sm:text-base text-slate-400 mb-3 leading-relaxed">
-                Controls are enforced, not just recorded. Security is embedded at the operating layer — where compliance evidence is generated automatically and audit trails are always complete.
+                Controls are enforced, not just recorded. Security is embedded at the operating layer - where compliance evidence is generated automatically and audit trails are always complete.
               </p>
               <p className="text-xs sm:text-sm text-slate-500 mb-8 leading-relaxed">
-                FormaOS ships with enterprise security controls as infrastructure: encryption, identity governance, immutable audit logs, and data residency — ready for your procurement team before the first question is asked.
+                FormaOS ships with enterprise security controls as infrastructure: encryption, identity governance, immutable audit logs, and data residency - ready for your procurement team before the first question is asked.
               </p>
 
               <SectionChoreography pattern="depth-reveal" stagger={0.04} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -156,7 +156,7 @@ export function SecuritySection() {
             </div>
           </ScrollReveal>
 
-          {/* Right — live audit log visual */}
+          {/* Right - live audit log visual */}
           <ScrollReveal variant="slideUp" range={[0.05, 0.4]}>
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] overflow-hidden">
               {/* Panel header */}

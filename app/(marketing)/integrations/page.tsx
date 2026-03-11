@@ -5,9 +5,9 @@ import { siteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
-  title: 'Integrations — FormaOS',
+  title: 'Integrations - FormaOS',
   description:
-    'FormaOS integrates with your existing tools — Jira, Slack, Microsoft Teams, GitHub, Zapier, AWS, Azure, and more — to embed compliance into the workflows your team already uses.',
+    'FormaOS integrates with your existing tools - Jira, Slack, Microsoft Teams, GitHub, Zapier, AWS, Azure, and more - to embed compliance into the workflows your team already uses.',
   alternates: { canonical: `${siteUrl}/integrations` },
   openGraph: {
     title: 'Integrations | FormaOS',
@@ -39,7 +39,7 @@ const INTEGRATIONS: Integration[] = [
   {
     name: 'Jira',
     category: 'Task Management',
-    description: 'Sync compliance tasks bidirectionally with Jira issues. Control owners work in their existing workflow — task status, evidence links, and deadlines stay in sync.',
+    description: 'Sync compliance tasks bidirectionally with Jira issues. Control owners work in their existing workflow - task status, evidence links, and deadlines stay in sync.',
     complianceUseCase: 'SOC 2 CC8 change management evidence',
     status: 'live',
     initials: 'Ji',
@@ -114,7 +114,7 @@ const INTEGRATIONS: Integration[] = [
   {
     name: 'GitHub',
     category: 'Development',
-    description: 'Pull evidence from GitHub repositories — commit logs, PR approval records, branch protection rules, and code review history.',
+    description: 'Pull evidence from GitHub repositories - commit logs, PR approval records, branch protection rules, and code review history.',
     complianceUseCase: 'SOC 2 CC8.1 change management evidence',
     status: 'beta',
     initials: 'GH',
@@ -237,7 +237,7 @@ const INTEGRATIONS: Integration[] = [
   {
     name: 'Deputy',
     category: 'HR & Workforce',
-    description: 'Shift scheduling and workforce compliance data for NDIS and aged care — credential-to-shift validation evidence.',
+    description: 'Shift scheduling and workforce compliance data for NDIS and aged care - credential-to-shift validation evidence.',
     complianceUseCase: 'Credential-to-role mapping evidence',
     status: 'coming-soon',
     initials: 'Dp',

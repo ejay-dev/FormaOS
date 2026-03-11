@@ -120,7 +120,7 @@ const industrySolutions: IndustrySolution[] = [
     ],
     cta: {
       text: 'Explore NDIS Solution',
-      href: '/use-cases/ndis',
+      href: '/use-cases/ndis-aged-care',
     },
   },
   {
@@ -160,7 +160,7 @@ const industrySolutions: IndustrySolution[] = [
     ],
     cta: {
       text: 'Explore Financial Solution',
-      href: '/use-cases/financial-services',
+      href: '/soc2-compliance-automation',
     },
   },
   {
@@ -201,7 +201,7 @@ const industrySolutions: IndustrySolution[] = [
     ],
     cta: {
       text: 'Explore Education Solution',
-      href: '/use-cases/education',
+      href: '/industries',
     },
   },
   {
@@ -242,7 +242,7 @@ const industrySolutions: IndustrySolution[] = [
     ],
     cta: {
       text: 'Explore Government Solution',
-      href: '/use-cases/government',
+      href: '/industries',
     },
   },
 ];

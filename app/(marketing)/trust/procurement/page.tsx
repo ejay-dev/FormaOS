@@ -43,7 +43,7 @@ const faqs = [
   {
     question: 'What are your data retention policies?',
     answer:
-      'Retention periods are configurable and can be tailored to your regulatory obligations — for example, 7-year ASIC record retention or NDIS evidence retention requirements. On termination or plan cancellation, customers have 30 days to export all compliance data, evidence artifacts, and audit trail records in portable formats (CSV, JSON, ZIP). After the export window, data is securely deleted and written confirmation is available on request. No lock-in penalty applies to data portability.',
+      'Retention periods are configurable and can be tailored to your regulatory obligations - for example, 7-year ASIC record retention or NDIS evidence retention requirements. On termination or plan cancellation, customers have 30 days to export all compliance data, evidence artifacts, and audit trail records in portable formats (CSV, JSON, ZIP). After the export window, data is securely deleted and written confirmation is available on request. No lock-in penalty applies to data portability.',
   },
   {
     question: 'Do you support SSO/SAML?',

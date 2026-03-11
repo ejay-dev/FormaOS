@@ -84,7 +84,7 @@ const capabilities = [
     icon: Globe,
     title: 'Multi-Site Operations',
     description:
-      'Multi-entity and multi-site operations with centralized oversight. Each entity maintains its own controls, evidence, and audit trail — with cross-site rollup reporting for executive governance.',
+      'Multi-entity and multi-site operations with centralized oversight. Each entity maintains its own controls, evidence, and audit trail - with cross-site rollup reporting for executive governance.',
     color: 'from-green-500 to-teal-500',
   },
   {
