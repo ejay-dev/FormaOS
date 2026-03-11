@@ -109,10 +109,10 @@ export default function UserActivityPage() {
   if (loading) {
     return (
       <div className="space-y-6 p-6">
-        <div className="h-8 w-56 animate-pulse rounded-md bg-slate-800" />
-        <div className="h-24 animate-pulse rounded-lg bg-slate-900/60" />
-        <div className="h-24 animate-pulse rounded-lg bg-slate-900/60" />
-        <div className="h-24 animate-pulse rounded-lg bg-slate-900/60" />
+        <div className="h-8 w-56 animate-pulse rounded-md bg-muted" />
+        <div className="h-24 animate-pulse rounded-lg bg-card/60" />
+        <div className="h-24 animate-pulse rounded-lg bg-card/60" />
+        <div className="h-24 animate-pulse rounded-lg bg-card/60" />
       </div>
     );
   }
@@ -121,8 +121,8 @@ export default function UserActivityPage() {
     <div className="space-y-6 p-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-100">User Activity</h1>
-          <p className="mt-1 text-sm text-slate-400">
+          <h1 className="text-3xl font-bold text-foreground">User Activity</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             {activity.length} recent action{activity.length === 1 ? '' : 's'}.
           </p>
         </div>
@@ -131,7 +131,7 @@ export default function UserActivityPage() {
             className={`rounded-md border px-2.5 py-1 text-xs font-semibold ${
               connected
                 ? 'border-emerald-700 bg-emerald-900/20 text-emerald-300'
-                : 'border-slate-700 bg-slate-800 text-slate-400'
+                : 'border-border bg-muted text-muted-foreground'
             }`}
           >
             {connected ? 'Realtime connected' : 'Realtime reconnecting'}
@@ -139,7 +139,7 @@ export default function UserActivityPage() {
           <select
             value={timeRange}
             onChange={(event) => setTimeRange(event.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-slate-200"
+            className="rounded-lg border border-border bg-muted px-4 py-2 text-sm text-foreground"
           >
             <option value="1h">Last hour</option>
             <option value="24h">Last 24 hours</option>
@@ -159,22 +159,22 @@ export default function UserActivityPage() {
           visibleActivity.map((item) => (
             <div
               key={item.id}
-              className="rounded-lg border border-slate-800 bg-slate-900/50 p-4 transition-colors hover:bg-slate-900/70"
+              className="rounded-lg border border-border bg-card p-4 transition-colors hover:bg-card/70"
             >
               <div className="flex items-start gap-3">
-                <div className="rounded-lg border border-slate-700 bg-slate-800/50 p-2 text-slate-400">
+                <div className="rounded-lg border border-border bg-muted/50 p-2 text-muted-foreground">
                   {getActionIcon(item.action)}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                     <div className="min-w-0">
-                      <p className="truncate font-medium text-slate-100">
+                      <p className="truncate font-medium text-foreground">
                         {item.user.full_name || item.user.email || item.user_id}
                       </p>
-                      <p className="mt-0.5 text-sm text-slate-300">
+                      <p className="mt-0.5 text-sm text-muted-foreground">
                         {formatAction(item.action)}
                         {item.entity_type && (
-                          <span className="text-slate-500">
+                          <span className="text-muted-foreground">
                             {' '}
                             • {item.entity_type}
                             {item.entity_id ? `: ${item.entity_id.slice(0, 12)}...` : ''}
@@ -182,17 +182,17 @@ export default function UserActivityPage() {
                         )}
                       </p>
                       {item.org?.name && (
-                        <p className="mt-1 text-xs text-slate-500">
+                        <p className="mt-1 text-xs text-muted-foreground">
                           Organization: {item.org.name}
                         </p>
                       )}
                       {item.route && (
-                        <p className="mt-1 break-all font-mono text-xs text-slate-500">
+                        <p className="mt-1 break-all font-mono text-xs text-muted-foreground">
                           {item.route}
                         </p>
                       )}
                     </div>
-                    <span className="whitespace-nowrap text-xs text-slate-500">
+                    <span className="whitespace-nowrap text-xs text-muted-foreground">
                       {relativeTime(item.created_at)}
                     </span>
                   </div>
@@ -201,13 +201,13 @@ export default function UserActivityPage() {
             </div>
           ))
         ) : (
-          <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-12 text-center">
-            <Activity className="mx-auto mb-4 h-16 w-16 text-slate-500/30" />
-            <p className="text-slate-400">No activity recorded.</p>
+          <div className="rounded-lg border border-border bg-card p-12 text-center">
+            <Activity className="mx-auto mb-4 h-16 w-16 text-muted-foreground/30" />
+            <p className="text-muted-foreground">No activity recorded.</p>
           </div>
         )}
         {activity.length > visibleActivity.length && (
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-muted-foreground">
             Showing {visibleActivity.length} most recent events.
           </p>
         )}

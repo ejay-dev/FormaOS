@@ -75,8 +75,8 @@ export default async function AdminUsersPage({
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-100">Users</h1>
-        <p className="mt-2 text-sm text-slate-400">
+        <h1 className="text-3xl font-bold text-foreground">Users</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
           Manage platform users and account access
         </p>
       </div>
@@ -87,63 +87,63 @@ export default async function AdminUsersPage({
           name="query"
           defaultValue={resolved?.query ?? ''}
           placeholder="Search by email or name"
-          className="rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:border-slate-600 focus:outline-none"
+          className="rounded-lg border border-border bg-card px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none"
         />
         <button
           type="submit"
-          className="rounded-lg border border-slate-800 bg-slate-800/50 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-slate-700/50"
+          className="rounded-lg border border-border bg-muted/50 px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/50"
         >
           Search
         </button>
       </form>
 
       {/* Table */}
-      <div className="rounded-lg border border-slate-800 bg-slate-900/50 overflow-hidden">
+      <div className="rounded-lg border border-border bg-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-800 bg-slate-900/80">
-                <th className="px-6 py-3 text-left font-semibold text-slate-300">
+              <tr className="border-b border-border bg-card/80">
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
                   User
                 </th>
-                <th className="px-6 py-3 text-left font-semibold text-slate-300">
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
                   Organization
                 </th>
-                <th className="px-6 py-3 text-left font-semibold text-slate-300">
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
                   Role
                 </th>
-                <th className="px-6 py-3 text-left font-semibold text-slate-300">
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
                   Provider
                 </th>
-                <th className="px-6 py-3 text-left font-semibold text-slate-300">
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
                   Last Login
                 </th>
-                <th className="px-6 py-3 text-left font-semibold text-slate-300">
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
                   Status
                 </th>
-                <th className="px-6 py-3 text-right font-semibold text-slate-300">
+                <th className="px-6 py-3 text-right font-semibold text-muted-foreground">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y divide-border">
               {rows.map((user) => (
                 <tr
                   key={user.id}
-                  className="hover:bg-slate-800/50 transition-colors"
+                  className="hover:bg-muted/50 transition-colors"
                 >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-slate-700 flex items-center justify-center">
-                        <Mail className="h-4 w-4 text-slate-400" />
+                      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-border flex items-center justify-center">
+                        <Mail className="h-4 w-4 text-muted-foreground" />
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-slate-100">
+                        <div className="text-sm font-medium text-foreground">
                           {user.email.includes('@')
                             ? user.email.split('@')[0]
                             : user.email}
                         </div>
-                        <div className="text-xs text-slate-500">
+                        <div className="text-xs text-muted-foreground">
                           {user.email.includes('@')
                             ? user.email.split('@')[1]
                             : 'No email domain'}
@@ -152,25 +152,25 @@ export default async function AdminUsersPage({
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-2 text-slate-300">
-                      <Building2 className="h-4 w-4 text-slate-500" />
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Building2 className="h-4 w-4 text-muted-foreground" />
                       {user.organization || 'N/A'}
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <Shield className="h-4 w-4 text-slate-500" />
-                      <span className="text-slate-300 capitalize">
+                      <Shield className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-muted-foreground capitalize">
                         {user.role}
                       </span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-slate-400">{user.provider}</span>
+                    <span className="text-muted-foreground">{user.provider}</span>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-2 text-slate-400">
-                      <Clock className="h-4 w-4 text-slate-600" />
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
                       {formatDate(user.last_sign_in_at)}
                     </div>
                   </td>
@@ -194,7 +194,7 @@ export default async function AdminUsersPage({
                 <tr>
                   <td
                     colSpan={7}
-                    className="px-6 py-8 text-center text-slate-500"
+                    className="px-6 py-8 text-center text-muted-foreground"
                   >
                     <div className="flex flex-col items-center gap-2">
                       <Mail className="h-8 w-8 opacity-20" />
@@ -210,8 +210,8 @@ export default async function AdminUsersPage({
 
       {/* Pagination */}
       {totalPages > 1 ? (
-        <div className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-3">
-          <p className="text-xs text-slate-400">
+        <div className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3">
+          <p className="text-xs text-muted-foreground">
             Showing {(currentPage - 1) * pageSize + 1}-
             {Math.min(currentPage * pageSize, total)} of {total} users
           </p>
@@ -221,13 +221,13 @@ export default async function AdminUsersPage({
               aria-disabled={currentPage <= 1}
               className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${
                 currentPage <= 1
-                  ? 'pointer-events-none border-slate-800 text-slate-600'
-                  : 'border-slate-700 text-slate-200 hover:bg-slate-800/70'
+                  ? 'pointer-events-none border-border text-muted-foreground'
+                  : 'border-border text-foreground hover:bg-muted/70'
               }`}
             >
               Previous
             </a>
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-muted-foreground">
               Page {currentPage} of {totalPages}
             </span>
             <a
@@ -235,8 +235,8 @@ export default async function AdminUsersPage({
               aria-disabled={currentPage >= totalPages}
               className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${
                 currentPage >= totalPages
-                  ? 'pointer-events-none border-slate-800 text-slate-600'
-                  : 'border-slate-700 text-slate-200 hover:bg-slate-800/70'
+                  ? 'pointer-events-none border-border text-muted-foreground'
+                  : 'border-border text-foreground hover:bg-muted/70'
               }`}
             >
               Next

@@ -63,11 +63,11 @@ function KPICard({
       className={`rounded-lg border bg-gradient-to-br ${colorMap[color]} p-6 space-y-2`}
     >
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-slate-400">{label}</span>
+        <span className="text-sm font-medium text-muted-foreground">{label}</span>
         <Icon className="h-5 w-5 opacity-50" />
       </div>
-      <div className="text-3xl font-bold text-slate-100">{value}</div>
-      {detail && <div className="text-xs text-slate-400">{detail}</div>}
+      <div className="text-3xl font-bold text-foreground">{value}</div>
+      {detail && <div className="text-xs text-muted-foreground">{detail}</div>}
     </div>
   );
 }
@@ -125,13 +125,13 @@ function RiskHeatmap({
   } as const;
 
   return (
-    <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
+    <div className="rounded-lg border border-border bg-card p-6">
       <div className="mb-4 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <Layers className="h-5 w-5 text-cyan-200" />
-          <h2 className="text-lg font-semibold text-slate-100">Risk Heatmap</h2>
+          <h2 className="text-lg font-semibold text-foreground">Risk Heatmap</h2>
         </div>
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-muted-foreground">
           Cross-tenant pressure indicators (normalized)
         </p>
       </div>
@@ -140,14 +140,14 @@ function RiskHeatmap({
           <Link
             key={cell.key}
             href={cell.href}
-            className={`rounded-lg border border-slate-800 p-4 transition-colors hover:bg-slate-800/60 ${intensity[cell.grade]}`}
+            className={`rounded-lg border border-border p-4 transition-colors hover:bg-muted/60 ${intensity[cell.grade]}`}
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold text-slate-100">
+                <p className="text-sm font-semibold text-foreground">
                   {cell.label}
                 </p>
-                <p className="mt-1 text-xs text-slate-400">{cell.metric}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{cell.metric}</p>
               </div>
               <span
                 className={`rounded border px-2 py-1 text-[10px] font-semibold uppercase tracking-wider ${riskGradeStyles(cell.grade)}`}
@@ -156,13 +156,13 @@ function RiskHeatmap({
               </span>
             </div>
             <div className="mt-3">
-              <div className="h-2 w-full rounded-full bg-slate-800">
+              <div className="h-2 w-full rounded-full bg-muted">
                 <div
                   className="h-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600"
                   style={{ width: `${Math.min(Math.round(cell.ratio * 100), 100)}%` }}
                 />
               </div>
-              <p className="mt-2 text-xs text-slate-500">
+              <p className="mt-2 text-xs text-muted-foreground">
                 {Math.round(cell.ratio * 100)}% normalized pressure
               </p>
             </div>
@@ -178,8 +178,8 @@ export default async function AdminDashboard() {
 
   if (!data) {
     return (
-      <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-8 text-center">
-        <p className="text-slate-400">Unable to load dashboard data</p>
+      <div className="rounded-lg border border-border bg-card p-8 text-center">
+        <p className="text-muted-foreground">Unable to load dashboard data</p>
       </div>
     );
   }
@@ -393,8 +393,8 @@ export default async function AdminDashboard() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-100">Platform Overview</h1>
-        <p className="mt-2 text-sm text-slate-400">
+        <h1 className="text-3xl font-bold text-foreground">Platform Overview</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
           Real-time operational metrics for FormaOS
         </p>
       </div>
@@ -453,8 +453,8 @@ export default async function AdminDashboard() {
 
       {/* Charts Section */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
-          <h2 className="text-lg font-semibold text-slate-100 mb-4">
+        <div className="rounded-lg border border-border bg-card p-6">
+          <h2 className="text-lg font-semibold text-foreground mb-4">
             Organization Growth
           </h2>
           <div className="h-48 flex items-end gap-2 overflow-hidden">
@@ -466,7 +466,7 @@ export default async function AdminDashboard() {
                     height: `${Math.max(Math.round((day.count / maxOrgCount) * 140), 4)}px`,
                   }}
                 />
-                <span className="text-[10px] text-slate-500 mt-2">
+                <span className="text-[10px] text-muted-foreground mt-2">
                   {new Date(day.date + 'T00:00:00').toLocaleDateString(
                     'en-US',
                     {
@@ -480,19 +480,19 @@ export default async function AdminDashboard() {
           </div>
         </div>
 
-        <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
-          <h2 className="text-lg font-semibold text-slate-100 mb-4">
+        <div className="rounded-lg border border-border bg-card p-6">
+          <h2 className="text-lg font-semibold text-foreground mb-4">
             Plan Distribution
           </h2>
           <div className="space-y-4">
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-400">Starter</span>
-                <span className="text-sm font-semibold text-slate-100">
+                <span className="text-sm text-muted-foreground">Starter</span>
+                <span className="text-sm font-semibold text-foreground">
                   {basicCount}
                 </span>
               </div>
-              <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                 <div
                   className="h-full bg-purple-500"
                   style={{
@@ -506,12 +506,12 @@ export default async function AdminDashboard() {
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-400">Pro</span>
-                <span className="text-sm font-semibold text-slate-100">
+                <span className="text-sm text-muted-foreground">Pro</span>
+                <span className="text-sm font-semibold text-foreground">
                   {proCount}
                 </span>
               </div>
-              <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                 <div
                   className="h-full bg-emerald-500"
                   style={{
@@ -523,12 +523,12 @@ export default async function AdminDashboard() {
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-400">Enterprise</span>
-                <span className="text-sm font-semibold text-slate-100">
+                <span className="text-sm text-muted-foreground">Enterprise</span>
+                <span className="text-sm font-semibold text-foreground">
                   {enterpriseCount}
                 </span>
               </div>
-              <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                 <div
                   className="h-full bg-blue-500"
                   style={{
@@ -546,10 +546,10 @@ export default async function AdminDashboard() {
       <RiskHeatmap cells={[...riskHeatmapCells]} />
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
+        <div className="rounded-lg border border-border bg-card p-6">
           <div className="mb-4 flex items-center gap-2">
             <ShieldAlert className="h-5 w-5 text-amber-300" />
-            <h2 className="text-lg font-semibold text-slate-100">
+            <h2 className="text-lg font-semibold text-foreground">
               Risk Alert Triage
             </h2>
           </div>
@@ -558,13 +558,13 @@ export default async function AdminDashboard() {
               <Link
                 key={risk.label}
                 href={risk.href}
-                className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/60 px-4 py-3 transition-colors hover:bg-slate-800/60"
+                className="flex items-center justify-between rounded-lg border border-border bg-card/60 px-4 py-3 transition-colors hover:bg-muted/60"
               >
                 <div>
-                  <p className="text-sm font-medium text-slate-100">
+                  <p className="text-sm font-medium text-foreground">
                     {risk.label}
                   </p>
-                  <p className="text-xs text-slate-400">{risk.guidance}</p>
+                  <p className="text-xs text-muted-foreground">{risk.guidance}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <span
@@ -578,17 +578,17 @@ export default async function AdminDashboard() {
                   >
                     {risk.value}
                   </span>
-                  <ArrowRight className="h-4 w-4 text-slate-500" />
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </div>
               </Link>
             ))}
           </div>
         </div>
 
-        <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
+        <div className="rounded-lg border border-border bg-card p-6">
           <div className="mb-4 flex items-center gap-2">
             <AlertTriangle className="h-5 w-5 text-blue-300" />
-            <h2 className="text-lg font-semibold text-slate-100">
+            <h2 className="text-lg font-semibold text-foreground">
               Operator Shortcuts
             </h2>
           </div>
@@ -597,35 +597,35 @@ export default async function AdminDashboard() {
               <Link
                 key={shortcut.href}
                 href={shortcut.href}
-                className="rounded-lg border border-slate-800 bg-slate-900/60 px-4 py-3 text-sm text-slate-200 transition-colors hover:bg-slate-800/60"
+                className="rounded-lg border border-border bg-card/60 px-4 py-3 text-sm text-foreground transition-colors hover:bg-muted/60"
               >
                 <div className="flex items-center justify-between gap-2">
                   <span>{shortcut.label}</span>
-                  <ArrowRight className="h-4 w-4 text-slate-500" />
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </div>
               </Link>
             ))}
           </div>
-          <p className="mt-4 text-xs text-slate-500">
+          <p className="mt-4 text-xs text-muted-foreground">
             Command-center shortcuts prioritize the highest-frequency platform
             operations workflows.
           </p>
         </div>
       </div>
 
-      <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
+      <div className="rounded-lg border border-border bg-card p-6">
         <div className="mb-4 flex items-center justify-between gap-3">
           <div>
-            <h2 className="text-lg font-semibold text-slate-100">
+            <h2 className="text-lg font-semibold text-foreground">
               Orchestration Queue
             </h2>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-muted-foreground">
               Highest-impact operator workflows ranked by live counts.
             </p>
           </div>
           <Link
             href="/admin/support"
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/60 px-3 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-700/60"
+            className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted/60 px-3 py-2 text-xs font-semibold text-foreground hover:bg-muted/60"
           >
             Open Support
             <ArrowRight className="h-3.5 w-3.5" />
@@ -636,21 +636,21 @@ export default async function AdminDashboard() {
             <Link
               key={item.id}
               href={item.href}
-              className="rounded-lg border border-slate-800 bg-slate-900/60 p-4 transition-colors hover:bg-slate-800/70"
+              className="rounded-lg border border-border bg-card/60 p-4 transition-colors hover:bg-muted/70"
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-sm font-semibold text-slate-100">
+                  <p className="text-sm font-semibold text-foreground">
                     {item.label}
                   </p>
-                  <p className="mt-1 text-xs leading-relaxed text-slate-400">
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                     {item.detail}
                   </p>
                   <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <span className="rounded-full border border-slate-700/60 bg-slate-800/40 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-200">
+                    <span className="rounded-full border border-border/60 bg-muted/40 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-foreground">
                       Owner: {item.ownerLabel}
                     </span>
-                    <span className="rounded-full border border-slate-700/60 bg-slate-800/40 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-200">
+                    <span className="rounded-full border border-border/60 bg-muted/40 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-foreground">
                       SLA: {item.slaLabel}
                     </span>
                   </div>
@@ -662,7 +662,7 @@ export default async function AdminDashboard() {
                 </span>
               </div>
               <div className="mt-3 flex items-center justify-between gap-3">
-                <span className="text-2xl font-bold text-slate-100">
+                <span className="text-2xl font-bold text-foreground">
                   {item.count}
                 </span>
                 <span className="inline-flex items-center gap-1 text-xs font-semibold text-cyan-200">
@@ -675,20 +675,20 @@ export default async function AdminDashboard() {
         </div>
       </div>
 
-      <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
+      <div className="rounded-lg border border-border bg-card p-6">
         <div className="mb-4 flex items-center justify-between gap-3">
           <div>
-            <h2 className="text-lg font-semibold text-slate-100">
+            <h2 className="text-lg font-semibold text-foreground">
               Cross-Tenant Health View
             </h2>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-muted-foreground">
               Aggregated platform risk posture across revenue, conversion, and
               enterprise operations.
             </p>
           </div>
           <Link
             href="/admin/security/triage"
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/60 px-3 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-700/60"
+            className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted/60 px-3 py-2 text-xs font-semibold text-foreground hover:bg-muted/60"
           >
             Open Triage
             <ArrowRight className="h-3.5 w-3.5" />
@@ -699,17 +699,17 @@ export default async function AdminDashboard() {
             <Link
               key={item.key}
               href={item.href}
-              className="rounded-lg border border-slate-800 bg-slate-900/60 p-4 transition-colors hover:bg-slate-800/70"
+              className="rounded-lg border border-border bg-card/60 p-4 transition-colors hover:bg-muted/70"
             >
               <div className="flex items-center justify-between gap-3">
-                <p className="text-sm font-semibold text-slate-100">{item.area}</p>
+                <p className="text-sm font-semibold text-foreground">{item.area}</p>
                 <span
                   className={`rounded border px-2 py-1 text-[10px] font-semibold uppercase tracking-wider ${statusStyles[item.status]}`}
                 >
                   {item.status}
                 </span>
               </div>
-              <p className="mt-2 text-xs leading-relaxed text-slate-400">
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
                 {item.note}
               </p>
             </Link>

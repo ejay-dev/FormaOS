@@ -43,7 +43,7 @@ function getStatusIcon(status?: string | null) {
     case 'payment_failed':
       return <span className="text-red-400">●</span>;
     default:
-      return <span className="text-slate-400">●</span>;
+      return <span className="text-muted-foreground">●</span>;
   }
 }
 
@@ -104,8 +104,8 @@ export default async function AdminBillingPage({
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-100">Billing</h1>
-        <p className="mt-2 text-sm text-slate-400">
+        <h1 className="text-3xl font-bold text-foreground">Billing</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
           Manage subscriptions, payments, and trial extensions
         </p>
       </div>
@@ -116,12 +116,12 @@ export default async function AdminBillingPage({
           name="query"
           defaultValue={resolved?.query ?? ''}
           placeholder="Search by org, plan, customer ID, subscription ID"
-          className="rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:border-slate-600 focus:outline-none"
+          className="rounded-lg border border-border bg-card px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none"
         />
         <select
           name="status"
           defaultValue={resolved?.status ?? ''}
-          className="rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-2 text-sm text-slate-200 focus:border-slate-600 focus:outline-none"
+          className="rounded-lg border border-border bg-card px-4 py-2 text-sm text-foreground focus:border-ring focus:outline-none"
         >
           <option value="">All statuses</option>
           <option value="active">Active</option>
@@ -133,7 +133,7 @@ export default async function AdminBillingPage({
         </select>
         <button
           type="submit"
-          className="rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-slate-700/50"
+          className="rounded-lg border border-border bg-muted/50 px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/50"
         >
           Filter
         </button>
@@ -141,29 +141,29 @@ export default async function AdminBillingPage({
 
       {/* Metrics Row */}
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-4">
+        <div className="rounded-lg border border-border bg-card p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-slate-400">Active Subscriptions</p>
-              <p className="text-2xl font-bold text-slate-100">{activeCount}</p>
+              <p className="text-sm text-muted-foreground">Active Subscriptions</p>
+              <p className="text-2xl font-bold text-foreground">{activeCount}</p>
             </div>
             <CreditCard className="h-6 w-6 text-emerald-500/50" />
           </div>
         </div>
-        <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-4">
+        <div className="rounded-lg border border-border bg-card p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-slate-400">Active Trials</p>
-              <p className="text-2xl font-bold text-slate-100">{trialsCount}</p>
+              <p className="text-sm text-muted-foreground">Active Trials</p>
+              <p className="text-2xl font-bold text-foreground">{trialsCount}</p>
             </div>
             <Calendar className="h-6 w-6 text-amber-500/50" />
           </div>
         </div>
-        <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-4">
+        <div className="rounded-lg border border-border bg-card p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-slate-400">Payment Issues</p>
-              <p className="text-2xl font-bold text-slate-100">{failedCount}</p>
+              <p className="text-sm text-muted-foreground">Payment Issues</p>
+              <p className="text-2xl font-bold text-foreground">{failedCount}</p>
             </div>
             <AlertCircle className="h-6 w-6 text-red-500/50" />
           </div>
@@ -171,52 +171,52 @@ export default async function AdminBillingPage({
       </div>
 
       {/* Subscriptions Table */}
-      <div className="rounded-lg border border-slate-800 bg-slate-900/50 overflow-hidden">
+      <div className="rounded-lg border border-border bg-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-800 bg-slate-900/80">
-                <th className="px-6 py-3 text-left font-semibold text-slate-300">
+              <tr className="border-b border-border bg-card/80">
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
                   Organization
                 </th>
-                <th className="px-6 py-3 text-left font-semibold text-slate-300">
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left font-semibold text-slate-300">
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
                   Plan
                 </th>
-                <th className="px-6 py-3 text-left font-semibold text-slate-300">
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
                   Trial Ends
                 </th>
-                <th className="px-6 py-3 text-left font-semibold text-slate-300">
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
                   Billing Details
                 </th>
-                <th className="px-6 py-3 text-right font-semibold text-slate-300">
+                <th className="px-6 py-3 text-right font-semibold text-muted-foreground">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y divide-border">
               {rows.map((row) => (
                 <tr
                   key={row.organization_id}
-                  className="hover:bg-slate-800/50 transition-colors"
+                  className="hover:bg-muted/50 transition-colors"
                 >
                   <td className="px-6 py-4">
-                    <span className="text-sm font-medium text-slate-100">
+                    <span className="text-sm font-medium text-foreground">
                       {row.organization_name}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       {getStatusIcon(row.status)}
-                      <span className="text-sm text-slate-400 capitalize">
+                      <span className="text-sm text-muted-foreground capitalize">
                         {row.status ?? 'N/A'}
                       </span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium bg-slate-600/10 text-slate-300">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium bg-muted/40 text-muted-foreground">
                       <Zap className="h-3 w-3" />
                       {row.plan_key
                         ? row.plan_key.charAt(0).toUpperCase() +
@@ -225,18 +225,18 @@ export default async function AdminBillingPage({
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-sm text-slate-400">
+                    <span className="text-sm text-muted-foreground">
                       {formatDate(row.trial_expires_at)}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <div className="space-y-1">
-                      <code className="block text-xs text-slate-500 bg-slate-900/50 px-2 py-1 rounded">
+                      <code className="block text-xs text-muted-foreground bg-card px-2 py-1 rounded">
                         {row.stripe_subscription_id
                           ? row.stripe_subscription_id.slice(0, 12) + '...'
                           : 'No Stripe subscription'}
                       </code>
-                      <p className="text-[11px] text-slate-500">
+                      <p className="text-[11px] text-muted-foreground">
                         Next renewal: {formatDate(row.current_period_end)}
                       </p>
                       {Number(row.payment_failures ?? 0) > 0 ? (
@@ -256,7 +256,7 @@ export default async function AdminBillingPage({
                   <td colSpan={6} className="px-6 py-8 text-center">
                     <div className="flex flex-col items-center gap-2">
                       <CreditCard className="h-8 w-8 opacity-20" />
-                      <p className="text-slate-500">No subscriptions found</p>
+                      <p className="text-muted-foreground">No subscriptions found</p>
                     </div>
                   </td>
                 </tr>
@@ -268,8 +268,8 @@ export default async function AdminBillingPage({
 
       {/* Pagination */}
       {totalPages > 1 ? (
-        <div className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-3">
-          <p className="text-xs text-slate-400">
+        <div className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3">
+          <p className="text-xs text-muted-foreground">
             Showing {(currentPage - 1) * pageSize + 1}-
             {Math.min(currentPage * pageSize, total)} of {total} subscriptions
           </p>
@@ -279,13 +279,13 @@ export default async function AdminBillingPage({
               aria-disabled={currentPage <= 1}
               className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${
                 currentPage <= 1
-                  ? 'pointer-events-none border-slate-800 text-slate-600'
-                  : 'border-slate-700 text-slate-200 hover:bg-slate-800/70'
+                  ? 'pointer-events-none border-border text-muted-foreground'
+                  : 'border-border text-foreground hover:bg-muted/70'
               }`}
             >
               Previous
             </a>
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-muted-foreground">
               Page {currentPage} of {totalPages}
             </span>
             <a
@@ -293,8 +293,8 @@ export default async function AdminBillingPage({
               aria-disabled={currentPage >= totalPages}
               className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${
                 currentPage >= totalPages
-                  ? 'pointer-events-none border-slate-800 text-slate-600'
-                  : 'border-slate-700 text-slate-200 hover:bg-slate-800/70'
+                  ? 'pointer-events-none border-border text-muted-foreground'
+                  : 'border-border text-foreground hover:bg-muted/70'
               }`}
             >
               Next

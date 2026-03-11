@@ -70,8 +70,8 @@ export default async function AdminSystemPage() {
 
   if (!data) {
     return (
-      <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-8 text-center">
-        <p className="text-slate-400">System status unavailable</p>
+      <div className="rounded-lg border border-border bg-card p-8 text-center">
+        <p className="text-muted-foreground">System status unavailable</p>
       </div>
     );
   }
@@ -86,17 +86,17 @@ export default async function AdminSystemPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-100">System Status</h1>
-        <p className="mt-2 text-sm text-slate-400">
+        <h1 className="text-3xl font-bold text-foreground">System Status</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
           Live infrastructure metrics — all values from database
         </p>
       </div>
 
       {/* Primary Metrics */}
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
+        <div className="rounded-lg border border-border bg-card p-6">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-slate-400">
+            <span className="text-sm font-medium text-muted-foreground">
               DB Latency
             </span>
             <Database className="h-5 w-5 text-emerald-500/50" />
@@ -108,64 +108,64 @@ export default async function AdminSystemPage() {
           >
             {dbLatency}ms
           </div>
-          <p className="text-xs text-slate-500 mt-2">Round-trip query time</p>
+          <p className="text-xs text-muted-foreground mt-2">Round-trip query time</p>
         </div>
 
-        <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
+        <div className="rounded-lg border border-border bg-card p-6">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-slate-400">
+            <span className="text-sm font-medium text-muted-foreground">
               Organizations
             </span>
             <Building2 className="h-5 w-5 text-blue-500/50" />
           </div>
-          <div className="text-3xl font-bold text-slate-100">
+          <div className="text-3xl font-bold text-foreground">
             {metric(data.total_organizations)}
           </div>
-          <p className="text-xs text-slate-500 mt-2">Total tenants</p>
+          <p className="text-xs text-muted-foreground mt-2">Total tenants</p>
         </div>
 
-        <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
+        <div className="rounded-lg border border-border bg-card p-6">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-slate-400">
+            <span className="text-sm font-medium text-muted-foreground">
               Team Members
             </span>
             <Users className="h-5 w-5 text-purple-500/50" />
           </div>
-          <div className="text-3xl font-bold text-slate-100">
+          <div className="text-3xl font-bold text-foreground">
             {metric(data.total_members)}
           </div>
-          <p className="text-xs text-slate-500 mt-2">Across all orgs</p>
+          <p className="text-xs text-muted-foreground mt-2">Across all orgs</p>
         </div>
       </div>
 
       {/* Activity Metrics */}
-      <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
-        <h2 className="text-lg font-semibold text-slate-100 mb-4">
+      <section className="rounded-lg border border-border bg-card p-6">
+        <h2 className="text-lg font-semibold text-foreground mb-4">
           Activity (Last 24h)
         </h2>
         <div className="grid gap-4 md:grid-cols-3">
-          <div className="flex items-center justify-between p-4 rounded-lg border border-slate-800/50 bg-slate-800/20">
+          <div className="flex items-center justify-between p-4 rounded-lg border border-border/50 bg-muted/20">
             <div>
-              <p className="text-sm text-slate-400">Admin Actions</p>
-              <p className="text-2xl font-bold text-slate-100 mt-1">
+              <p className="text-sm text-muted-foreground">Admin Actions</p>
+              <p className="text-2xl font-bold text-foreground mt-1">
                 {data.recent_admin_actions_24h}
               </p>
             </div>
             <FileText className="h-8 w-8 text-blue-500/30" />
           </div>
-          <div className="flex items-center justify-between p-4 rounded-lg border border-slate-800/50 bg-slate-800/20">
+          <div className="flex items-center justify-between p-4 rounded-lg border border-border/50 bg-muted/20">
             <div>
-              <p className="text-sm text-slate-400">Billing Events</p>
-              <p className="text-2xl font-bold text-slate-100 mt-1">
+              <p className="text-sm text-muted-foreground">Billing Events</p>
+              <p className="text-2xl font-bold text-foreground mt-1">
                 {data.recent_billing_events_24h}
               </p>
             </div>
             <Zap className="h-8 w-8 text-emerald-500/30" />
           </div>
-          <div className="flex items-center justify-between p-4 rounded-lg border border-slate-800/50 bg-slate-800/20">
+          <div className="flex items-center justify-between p-4 rounded-lg border border-border/50 bg-muted/20">
             <div>
-              <p className="text-sm text-slate-400">Subscriptions</p>
-              <p className="text-2xl font-bold text-slate-100 mt-1">
+              <p className="text-sm text-muted-foreground">Subscriptions</p>
+              <p className="text-2xl font-bold text-foreground mt-1">
                 {metric(data.total_subscriptions)}
               </p>
             </div>
@@ -175,30 +175,30 @@ export default async function AdminSystemPage() {
       </section>
 
       {/* Route Transition Latency */}
-      <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
-        <h2 className="text-lg font-semibold text-slate-100 mb-4">
+      <section className="rounded-lg border border-border bg-card p-6">
+        <h2 className="text-lg font-semibold text-foreground mb-4">
           Sidebar Route Transition Latency (Last 24h)
         </h2>
 
         <div className="grid gap-4 md:grid-cols-3 mb-4">
-          <div className="rounded-lg border border-slate-800/50 bg-slate-800/20 p-4">
-            <p className="text-xs uppercase tracking-wider text-slate-500">Samples</p>
-            <p className="mt-1 text-2xl font-bold text-slate-100">
+          <div className="rounded-lg border border-border/50 bg-muted/20 p-4">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Samples</p>
+            <p className="mt-1 text-2xl font-bold text-foreground">
               {data.route_transition_samples_24h.toLocaleString()}
             </p>
           </div>
-          <div className="rounded-lg border border-slate-800/50 bg-slate-800/20 p-4">
-            <p className="text-xs uppercase tracking-wider text-slate-500">Overall P50</p>
+          <div className="rounded-lg border border-border/50 bg-muted/20 p-4">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Overall P50</p>
             <p className="mt-1 text-2xl font-bold text-emerald-300">
               {transitionP50 == null ? '—' : `${transitionP50}ms`}
             </p>
           </div>
-          <div className="rounded-lg border border-slate-800/50 bg-slate-800/20 p-4">
-            <p className="text-xs uppercase tracking-wider text-slate-500">Overall P95</p>
+          <div className="rounded-lg border border-border/50 bg-muted/20 p-4">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Overall P95</p>
             <p
               className={`mt-1 text-2xl font-bold ${
                 transitionP95 == null
-                  ? 'text-slate-300'
+                  ? 'text-muted-foreground'
                   : transitionP95 <= 600
                     ? 'text-emerald-300'
                     : transitionP95 <= 1500
@@ -212,13 +212,13 @@ export default async function AdminSystemPage() {
         </div>
 
         {routeRows.length === 0 ? (
-          <div className="rounded-lg border border-slate-800/50 bg-slate-800/20 p-4 text-sm text-slate-400">
+          <div className="rounded-lg border border-border/50 bg-muted/20 p-4 text-sm text-muted-foreground">
             No sidebar transition telemetry yet. Navigate through the left sidebar in `/app` to collect p50/p95 route data.
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-slate-800/50">
+          <div className="overflow-x-auto rounded-lg border border-border/50">
             <table className="w-full min-w-[720px] text-sm">
-              <thead className="bg-slate-800/30 text-slate-400">
+              <thead className="bg-muted/30 text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3 text-left font-medium">Route</th>
                   <th className="px-4 py-3 text-left font-medium">Samples</th>
@@ -228,10 +228,10 @@ export default async function AdminSystemPage() {
                   <th className="px-4 py-3 text-left font-medium">Max</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/50 text-slate-200">
+              <tbody className="divide-y divide-border/50 text-foreground">
                 {routeRows.map((row) => (
                   <tr key={row.route}>
-                    <td className="px-4 py-3 font-mono text-xs text-slate-300">
+                    <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
                       {row.route}
                     </td>
                     <td className="px-4 py-3">{row.samples}</td>
@@ -248,38 +248,38 @@ export default async function AdminSystemPage() {
       </section>
 
       {/* Build Information */}
-      <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
-        <h2 className="text-lg font-semibold text-slate-100 mb-4">
+      <section className="rounded-lg border border-border bg-card p-6">
+        <h2 className="text-lg font-semibold text-foreground mb-4">
           Build Information
         </h2>
         <div className="space-y-3">
-          <div className="flex items-center justify-between p-3 rounded-lg border border-slate-800/50 bg-slate-800/20">
-            <span className="text-sm text-slate-400">Version</span>
-            <code className="text-xs bg-slate-900 px-2 py-1 rounded font-mono text-slate-100">
+          <div className="flex items-center justify-between p-3 rounded-lg border border-border/50 bg-muted/20">
+            <span className="text-sm text-muted-foreground">Version</span>
+            <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">
               {data.build_version}
             </code>
           </div>
-          <div className="flex items-center justify-between p-3 rounded-lg border border-slate-800/50 bg-slate-800/20">
-            <span className="text-sm text-slate-400">Product Release</span>
-            <code className="text-xs bg-slate-900 px-2 py-1 rounded font-mono text-slate-100">
+          <div className="flex items-center justify-between p-3 rounded-lg border border-border/50 bg-muted/20">
+            <span className="text-sm text-muted-foreground">Product Release</span>
+            <code className="text-xs bg-muted px-2 py-1 rounded font-mono text-foreground">
               FormaOS {data.product_release_name} — v{data.product_release_version}
             </code>
           </div>
-          <div className="flex items-center justify-between p-3 rounded-lg border border-slate-800/50 bg-slate-800/20">
-            <span className="text-sm text-slate-400">Environment</span>
-            <span className="text-sm text-slate-100 capitalize">
+          <div className="flex items-center justify-between p-3 rounded-lg border border-border/50 bg-muted/20">
+            <span className="text-sm text-muted-foreground">Environment</span>
+            <span className="text-sm text-foreground capitalize">
               {data.environment}
             </span>
           </div>
-          <div className="flex items-center justify-between p-3 rounded-lg border border-slate-800/50 bg-slate-800/20">
-            <span className="text-sm text-slate-400">Build Time</span>
-            <span className="text-sm text-slate-100">
+          <div className="flex items-center justify-between p-3 rounded-lg border border-border/50 bg-muted/20">
+            <span className="text-sm text-muted-foreground">Build Time</span>
+            <span className="text-sm text-foreground">
               {formatDate(data.build_timestamp)}
             </span>
           </div>
-          <div className="flex items-center justify-between p-3 rounded-lg border border-slate-800/50 bg-slate-800/20">
-            <span className="text-sm text-slate-400">Total Audit Entries</span>
-            <span className="text-sm text-slate-100">
+          <div className="flex items-center justify-between p-3 rounded-lg border border-border/50 bg-muted/20">
+            <span className="text-sm text-muted-foreground">Total Audit Entries</span>
+            <span className="text-sm text-foreground">
               {metric(data.total_audit_entries)}
             </span>
           </div>
@@ -287,8 +287,8 @@ export default async function AdminSystemPage() {
       </section>
 
       {/* Service Status Grid */}
-      <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
-        <h2 className="text-lg font-semibold text-slate-100 mb-4">
+      <section className="rounded-lg border border-border bg-card p-6">
+        <h2 className="text-lg font-semibold text-foreground mb-4">
           Service Status
         </h2>
         <div className="grid gap-3 md:grid-cols-2">
@@ -350,7 +350,7 @@ export default async function AdminSystemPage() {
                     >
                       {service.name}
                     </span>
-                    <p className="text-xs text-slate-500">{service.detail}</p>
+                    <p className="text-xs text-muted-foreground">{service.detail}</p>
                   </div>
                 </div>
                 <span
@@ -370,7 +370,7 @@ export default async function AdminSystemPage() {
       </section>
 
       {/* Timestamp */}
-      <div className="text-xs text-slate-500 text-right">
+      <div className="text-xs text-muted-foreground text-right">
         Data as of {formatDate(data.timestamp)}
       </div>
     </div>

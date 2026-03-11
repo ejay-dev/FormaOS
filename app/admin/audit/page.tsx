@@ -27,7 +27,7 @@ function getActionIcon(targetType: string) {
     case 'subscription':
       return <Shield className="h-4 w-4 text-purple-400" />;
     default:
-      return <Calendar className="h-4 w-4 text-gray-400" />;
+      return <Calendar className="h-4 w-4 text-muted-foreground" />;
   }
 }
 
@@ -56,19 +56,19 @@ export default async function AdminAuditPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-slate-100">Audit Log</h1>
-        <p className="mt-2 text-sm text-slate-400">
+        <h1 className="text-3xl font-bold text-foreground">Audit Log</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
           Administrative actions and system events.
         </p>
       </div>
 
       {entries.length === 0 ? (
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-12 text-center">
-          <Shield className="mx-auto h-12 w-12 text-slate-600 mb-4" />
-          <h3 className="text-lg font-semibold text-slate-300 mb-2">
+        <div className="rounded-2xl border border-border bg-card p-12 text-center">
+          <Shield className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+          <h3 className="text-lg font-semibold text-muted-foreground mb-2">
             No audit entries
           </h3>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-muted-foreground">
             Administrative actions will appear here.
           </p>
         </div>
@@ -77,32 +77,32 @@ export default async function AdminAuditPage({
           {entries.map((entry) => (
             <div
               key={entry.id}
-              className="rounded-lg border border-white/10 bg-white/5 p-4 hover:bg-white/10 transition-colors"
+              className="rounded-lg border border-border bg-card p-4 hover:bg-muted transition-colors"
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-3">
                   <div className="mt-1">{getActionIcon(entry.target_type)}</div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-slate-100">
+                    <div className="text-sm font-medium text-foreground">
                       {entry.action}
                     </div>
-                    <div className="text-xs text-slate-400 mt-1">
+                    <div className="text-xs text-muted-foreground mt-1">
                       <span className="font-mono">
                         {entry.target_type}:{entry.target_id.substring(0, 8)}...
                       </span>
                       {entry.metadata &&
                         Object.keys(entry.metadata).length > 0 && (
-                          <span className="ml-2 text-slate-500">
+                          <span className="ml-2 text-muted-foreground">
                             • {JSON.stringify(entry.metadata)}
                           </span>
                         )}
                     </div>
-                    <div className="text-xs text-slate-500 mt-1 font-mono">
+                    <div className="text-xs text-muted-foreground mt-1 font-mono">
                       Actor: {entry.actor_user_id.substring(0, 8)}...
                     </div>
                   </div>
                 </div>
-                <div className="text-xs text-slate-500 ml-4 flex-shrink-0">
+                <div className="text-xs text-muted-foreground ml-4 flex-shrink-0">
                   {formatDate(entry.created_at)}
                 </div>
               </div>
@@ -112,8 +112,8 @@ export default async function AdminAuditPage({
       )}
 
       {data?.pagination && data.pagination.totalPages > 1 && (
-        <div className="flex items-center justify-between border-t border-white/10 pt-4">
-          <p className="text-sm text-slate-400">
+        <div className="flex items-center justify-between border-t border-border pt-4">
+          <p className="text-sm text-muted-foreground">
             Page {data.pagination.page} of {data.pagination.totalPages} •{' '}
             {data.pagination.total} total entries
           </p>
@@ -121,7 +121,7 @@ export default async function AdminAuditPage({
             {data.pagination.page > 1 && (
               <a
                 href={`/admin/audit?page=${data.pagination.page - 1}`}
-                className="px-3 py-1.5 text-xs font-medium rounded-lg bg-white/10 text-slate-300 hover:bg-white/20 transition-colors"
+                className="px-3 py-1.5 text-xs font-medium rounded-lg bg-muted text-muted-foreground hover:bg-muted/50 transition-colors"
               >
                 Previous
               </a>
@@ -129,7 +129,7 @@ export default async function AdminAuditPage({
             {data.pagination.page < data.pagination.totalPages && (
               <a
                 href={`/admin/audit?page=${data.pagination.page + 1}`}
-                className="px-3 py-1.5 text-xs font-medium rounded-lg bg-white/10 text-slate-300 hover:bg-white/20 transition-colors"
+                className="px-3 py-1.5 text-xs font-medium rounded-lg bg-muted text-muted-foreground hover:bg-muted/50 transition-colors"
               >
                 Next
               </a>

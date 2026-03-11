@@ -55,7 +55,7 @@ function getPlanColor(plan?: string | null) {
     case 'enterprise':
       return 'bg-blue-500/10 text-blue-300';
     default:
-      return 'bg-slate-600/10 text-slate-300';
+      return 'bg-muted/40 text-muted-foreground';
   }
 }
 
@@ -68,7 +68,7 @@ function getStatusColor(status?: string) {
     case 'suspended':
       return 'bg-red-500/10 text-red-300';
     default:
-      return 'bg-slate-600/10 text-slate-300';
+      return 'bg-muted/40 text-muted-foreground';
   }
 }
 
@@ -104,8 +104,8 @@ export default async function AdminOrgsPage({
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-100">Organizations</h1>
-        <p className="mt-2 text-sm text-slate-400">
+        <h1 className="text-3xl font-bold text-foreground">Organizations</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
           Manage tenant subscriptions, plans, and account status
         </p>
       </div>
@@ -116,63 +116,63 @@ export default async function AdminOrgsPage({
           name="query"
           defaultValue={resolved?.query ?? ''}
           placeholder="Search by organization name or owner"
-          className="rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:border-slate-600 focus:outline-none"
+          className="rounded-lg border border-border bg-card px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none"
         />
         <button
           type="submit"
-          className="rounded-lg border border-slate-800 bg-slate-800/50 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-slate-700/50"
+          className="rounded-lg border border-border bg-muted/50 px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/50"
         >
           Search
         </button>
       </form>
 
       {/* Table */}
-      <div className="rounded-lg border border-slate-800 bg-slate-900/50 overflow-hidden">
+      <div className="rounded-lg border border-border bg-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-800 bg-slate-900/80">
-                <th className="px-6 py-3 text-left font-semibold text-slate-300">
+              <tr className="border-b border-border bg-card/80">
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
                   Organization
                 </th>
-                <th className="px-6 py-3 text-left font-semibold text-slate-300">
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
                   Owner
                 </th>
-                <th className="px-6 py-3 text-left font-semibold text-slate-300">
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
                   Plan
                 </th>
-                <th className="px-6 py-3 text-left font-semibold text-slate-300">
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left font-semibold text-slate-300">
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
                   Trial Expires
                 </th>
-                <th className="px-6 py-3 text-right font-semibold text-slate-300">
+                <th className="px-6 py-3 text-right font-semibold text-muted-foreground">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y divide-border">
               {rows.map((org) => (
                 <tr
                   key={org.id}
-                  className="hover:bg-slate-800/50 transition-colors"
+                  className="hover:bg-muted/50 transition-colors"
                 >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-slate-700 flex items-center justify-center">
-                        <Building2 className="h-4 w-4 text-slate-400" />
+                      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-border flex items-center justify-center">
+                        <Building2 className="h-4 w-4 text-muted-foreground" />
                       </div>
                       <Link
                         href={`/admin/orgs/${org.id}`}
-                        className="text-sm font-medium text-slate-100 hover:text-sky-300 transition-colors"
+                        className="text-sm font-medium text-foreground hover:text-sky-300 transition-colors"
                       >
                         {org.name ?? 'Untitled Organization'}
                       </Link>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-slate-400 text-sm">
+                    <span className="text-muted-foreground text-sm">
                       {org.owner_email}
                     </span>
                   </td>
@@ -202,8 +202,8 @@ export default async function AdminOrgsPage({
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-2 text-slate-400 text-sm">
-                      <Calendar className="h-4 w-4 text-slate-600" />
+                    <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
                       {formatDate(org.trial_expires_at)}
                     </div>
                   </td>
@@ -221,7 +221,7 @@ export default async function AdminOrgsPage({
                   <td colSpan={6} className="px-6 py-8 text-center">
                     <div className="flex flex-col items-center gap-2">
                       <Building2 className="h-8 w-8 opacity-20" />
-                      <p className="text-slate-500">No organizations found</p>
+                      <p className="text-muted-foreground">No organizations found</p>
                     </div>
                   </td>
                 </tr>
@@ -233,8 +233,8 @@ export default async function AdminOrgsPage({
 
       {/* Pagination */}
       {totalPages > 1 ? (
-        <div className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-3">
-          <p className="text-xs text-slate-400">
+        <div className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3">
+          <p className="text-xs text-muted-foreground">
             Showing {(currentPage - 1) * pageSize + 1}-
             {Math.min(currentPage * pageSize, total)} of {total} organizations
           </p>
@@ -244,13 +244,13 @@ export default async function AdminOrgsPage({
               aria-disabled={currentPage <= 1}
               className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${
                 currentPage <= 1
-                  ? 'pointer-events-none border-slate-800 text-slate-600'
-                  : 'border-slate-700 text-slate-200 hover:bg-slate-800/70'
+                  ? 'pointer-events-none border-border text-muted-foreground'
+                  : 'border-border text-foreground hover:bg-muted/70'
               }`}
             >
               Previous
             </a>
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-muted-foreground">
               Page {currentPage} of {totalPages}
             </span>
             <a
@@ -258,8 +258,8 @@ export default async function AdminOrgsPage({
               aria-disabled={currentPage >= totalPages}
               className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${
                 currentPage >= totalPages
-                  ? 'pointer-events-none border-slate-800 text-slate-600'
-                  : 'border-slate-700 text-slate-200 hover:bg-slate-800/70'
+                  ? 'pointer-events-none border-border text-muted-foreground'
+                  : 'border-border text-foreground hover:bg-muted/70'
               }`}
             >
               Next

@@ -16,8 +16,8 @@ export default async function AdminRevenuePage() {
 
   if (!data) {
     return (
-      <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-8 text-center">
-        <p className="text-slate-400">Revenue data unavailable</p>
+      <div className="rounded-lg border border-border bg-card p-8 text-center">
+        <p className="text-muted-foreground">Revenue data unavailable</p>
       </div>
     );
   }
@@ -58,22 +58,22 @@ export default async function AdminRevenuePage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-100">Revenue</h1>
-        <p className="mt-2 text-sm text-slate-400">
+        <h1 className="text-3xl font-bold text-foreground">Revenue</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
           Monthly recurring revenue computed from active subscriptions × plan
           prices
         </p>
       </div>
 
       {/* MRR Highlight */}
-      <div className="rounded-lg border border-emerald-800/30 bg-gradient-to-br from-emerald-900/20 to-slate-900/50 p-8">
+      <div className="rounded-lg border border-emerald-800/30 bg-gradient-to-br from-emerald-900/20 to-card p-8">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-sm font-medium text-slate-400">MRR (from DB)</p>
-            <p className="mt-4 text-4xl font-bold text-slate-100">
+            <p className="text-sm font-medium text-muted-foreground">MRR (from DB)</p>
+            <p className="mt-4 text-4xl font-bold text-foreground">
               {formatMoney(data.mrrCents ?? 0)}
             </p>
-            <p className="mt-2 text-xs text-slate-500">
+            <p className="mt-2 text-xs text-muted-foreground">
               {totalSubs} active subscription{totalSubs !== 1 ? 's' : ''}
             </p>
           </div>
@@ -83,7 +83,7 @@ export default async function AdminRevenuePage() {
 
       {/* Plan Breakdown */}
       <div>
-        <h2 className="text-lg font-semibold text-slate-100 mb-4">
+        <h2 className="text-lg font-semibold text-foreground mb-4">
           Revenue by Plan
         </h2>
         {planMetrics.length > 0 ? (
@@ -91,62 +91,62 @@ export default async function AdminRevenuePage() {
             {planMetrics.map((plan) => (
               <div
                 key={plan.key}
-                className="rounded-lg border border-slate-800 bg-slate-900/50 p-6"
+                className="rounded-lg border border-border bg-card p-6"
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-xs font-medium text-slate-400 uppercase">
+                    <p className="text-xs font-medium text-muted-foreground uppercase">
                       {plan.key}
                     </p>
-                    <p className="mt-3 text-2xl font-bold text-slate-100">
+                    <p className="mt-3 text-2xl font-bold text-foreground">
                       {plan.subscriptions}
                     </p>
-                    <p className="mt-1 text-xs text-slate-500">subscriptions</p>
+                    <p className="mt-1 text-xs text-muted-foreground">subscriptions</p>
                     {plan.priceCents > 0 ? (
                       <p className="mt-3 text-sm font-semibold text-emerald-400">
                         {formatMoney(plan.revenue)}
                       </p>
                     ) : (
-                      <p className="mt-3 text-sm text-slate-500 italic">
+                      <p className="mt-3 text-sm text-muted-foreground italic">
                         Custom pricing
                       </p>
                     )}
                     {plan.priceCents > 0 && (
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-muted-foreground">
                         @ {formatMoney(plan.priceCents)}/mo each
                       </p>
                     )}
                   </div>
-                  <Zap className="h-6 w-6 text-slate-600" />
+                  <Zap className="h-6 w-6 text-muted-foreground" />
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-8 text-center">
-            <p className="text-slate-400">No active paid subscriptions</p>
+          <div className="rounded-lg border border-border bg-card p-8 text-center">
+            <p className="text-muted-foreground">No active paid subscriptions</p>
           </div>
         )}
       </div>
 
       {/* Summary */}
-      <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
-        <h2 className="text-lg font-semibold text-slate-100 mb-4">Summary</h2>
+      <div className="rounded-lg border border-border bg-card p-6">
+        <h2 className="text-lg font-semibold text-foreground mb-4">Summary</h2>
         <div className="space-y-3 text-sm">
           <div className="flex justify-between">
-            <span className="text-slate-400">Total Active Subscriptions</span>
-            <span className="font-semibold text-slate-100">{totalSubs}</span>
+            <span className="text-muted-foreground">Total Active Subscriptions</span>
+            <span className="font-semibold text-foreground">{totalSubs}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Failed Payments</span>
+            <span className="text-muted-foreground">Failed Payments</span>
             <span
-              className={`font-semibold ${data.failedPayments > 0 ? 'text-red-400' : 'text-slate-100'}`}
+              className={`font-semibold ${data.failedPayments > 0 ? 'text-red-400' : 'text-foreground'}`}
             >
               {data.failedPayments}
             </span>
           </div>
-          <div className="border-t border-slate-800 pt-3 flex justify-between">
-            <span className="text-slate-400">Monthly Recurring Revenue</span>
+          <div className="border-t border-border pt-3 flex justify-between">
+            <span className="text-muted-foreground">Monthly Recurring Revenue</span>
             <span className="font-semibold text-emerald-400">
               {formatMoney(data.mrrCents ?? 0)}
             </span>
