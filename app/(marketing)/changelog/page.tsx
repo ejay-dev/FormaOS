@@ -34,6 +34,27 @@ interface ChangelogEntry {
 
 const ENTRIES: readonly ChangelogEntry[] = [
   {
+    version: '2.1.0',
+    date: '2026-03-11',
+    tag: 'Feature',
+    tagColor: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20',
+    title: 'SCIM 2.0, integrations expansion & marketing integrity sweep',
+    items: [
+      'SCIM 2.0 provisioning server shipped (RFC 7644) — Users and Groups CRUD with bearer-token auth for Okta, Entra ID, and other identity providers.',
+      'Jira integration launched — bidirectional compliance task sync via Atlassian REST API v3 with status transitions and evidence linking.',
+      'Linear integration launched — compliance task push/sync via GraphQL API with automatic state mapping.',
+      'Google Drive integration launched — link Drive files as evidence artifacts with chain-of-custody metadata and version tracking.',
+      'SHA-256 evidence checksums wired end-to-end — client-side hash computation before upload, stored alongside every evidence artifact for tamper detection.',
+      'Automated compliance posture checks running every 6 hours via Vercel cron — expiring credentials, overdue tasks, evidence gaps, and score drift detection.',
+      'Data residency configuration system built — AU region active, US and EU regions infrastructure-ready with per-organisation region selection.',
+      'OWASP Top 10 automated security scanner added — 8 pattern checks covering secrets, SQL injection, XSS, SSRF, insecure crypto, and dependency vulnerabilities.',
+      'Platform Features marketing page shipped — 18 core features across compliance, workflow, security, and collaboration categories.',
+      'Public Roadmap page launched — transparent product planning with shipped, in-progress, planned, and exploring items.',
+      'Full marketing integrity audit completed — overclaims corrected across 29+ pages, under-advertised features surfaced, fabricated metrics removed.',
+      'Integration sync infrastructure added — integration_configs and integration_sync_log tables for cross-system entity mapping.',
+    ],
+  },
+  {
     version: '2.0.2',
     date: '2026-03-05',
     tag: 'Security',
@@ -271,6 +292,10 @@ export default function ChangelogPage() {
         <div className="flex flex-wrap items-center justify-center gap-3 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-6 py-4 backdrop-blur-sm">
           <span className="text-xs text-slate-500">Releases:</span>
           <span className="text-xs font-semibold text-violet-400">
+            v2.1.0
+          </span>
+          <span className="text-[10px] text-slate-700">·</span>
+          <span className="text-xs text-slate-500">
             v2.0.2 Citadel
           </span>
           <span className="text-[10px] text-slate-700">·</span>

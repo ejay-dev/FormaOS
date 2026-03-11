@@ -77,7 +77,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${siteUrl}/integrations`,
-      lastModified: new Date('2026-01-01'),
+      lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.7,
     },
@@ -85,6 +85,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${siteUrl}/changelog`,
       lastModified: now,
       changeFrequency: 'weekly',
+      priority: 0.7,
+    },
+    {
+      url: `${siteUrl}/features`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/roadmap`,
+      lastModified: now,
+      changeFrequency: 'monthly',
       priority: 0.7,
     },
     {

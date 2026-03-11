@@ -6,6 +6,7 @@
 export const primaryLinks = [
   { href: '/', label: 'Home' },
   { href: '/product', label: 'Product' },
+  { href: '/features', label: 'Features' },
   { href: '/industries', label: 'Industries' },
   { href: '/security', label: 'Security' },
   { href: '/trust', label: 'Trust' },
@@ -28,6 +29,7 @@ export const resourceLinks = [
   { href: '/customer-stories', label: 'Customer Stories' },
   { href: '/compare', label: 'Compare' },
   { href: '/changelog', label: 'Changelog' },
+  { href: '/roadmap', label: 'Roadmap' },
   { href: '/status', label: 'Status' },
   { href: '/documentation', label: 'Documentation' },
   { href: '/about', label: 'About' },
@@ -37,6 +39,7 @@ export const resourceLinks = [
 export const footerLinks = {
   platform: [
     { href: '/product', label: 'How it works' },
+    { href: '/features', label: 'Features' },
     { href: '/industries', label: 'Industries' },
     { href: '/security', label: 'Security' },
     { href: '/frameworks', label: 'Framework Coverage' },
@@ -55,6 +58,8 @@ export const footerLinks = {
     { href: '/security-review', label: 'Security Review Packet' },
     { href: '/trust/packet', label: 'Trust Packet (PDF)' },
     { href: '/status', label: 'Status' },
+    { href: '/changelog', label: 'Changelog' },
+    { href: '/roadmap', label: 'Roadmap' },
     { href: '/customer-stories', label: 'Customer Stories' },
     { href: '/compare', label: 'Compare' },
     { href: '/faq', label: 'FAQ' },
