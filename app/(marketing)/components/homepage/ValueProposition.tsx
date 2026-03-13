@@ -2,64 +2,69 @@
 
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
-const BEFORE_ITEMS = [
-  'No control enforcement — just documentation',
+const BEFORE = [
   'Point-in-time snapshots, not continuous posture',
-  'Manual evidence collection before every audit',
-  'Ownership assumed, never assigned or enforced',
+  'Evidence reconstructed days before every audit',
+  'Ownership assumed — never assigned or enforced',
   'No single source of truth when regulators ask',
+  'Controls documented. Never enforced.',
 ] as const;
 
-const AFTER_ITEMS = [
-  'Controls block non-compliance before work proceeds',
-  'Real-time continuous compliance posture',
-  'Immutable, timestamped evidence trail',
+const AFTER = [
+  'Real-time compliance posture — always current',
+  'Immutable evidence generated as work happens',
   'Every control owned by a named person or team',
-  'Audit packets ready to export in minutes',
+  'Framework-mapped audit packets in minutes',
+  'Controls block non-compliance before it occurs',
 ] as const;
 
 export function ValueProposition() {
   return (
-    <section className="mk-section home-section home-section--contrast">
-      <div className="max-w-5xl mx-auto px-6 lg:px-8">
-        <ScrollReveal variant="slideUp" range={[0, 0.3]}>
-          <div className="text-center mb-16">
-            <div className="mk-badge mk-badge--section mb-6">
-              Operating System Architecture
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white">
-              Built different. Works different.
+    <section className="mk-section home-section home-section--contrast relative">
+      <div className="mx-auto max-w-6xl px-6 lg:px-8">
+
+        {/* Editorial statement — left-aligned, large, no badge */}
+        <ScrollReveal variant="fadeUp">
+          <div className="mb-14 max-w-2xl">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-600 mb-4">
+              The architecture difference
+            </p>
+            <h2 className="text-3xl font-semibold leading-[1.15] tracking-[-0.02em] text-white sm:text-4xl">
+              Most compliance tools help you{' '}
+              <span className="text-slate-500">document.</span>
+              <br />
+              FormaOS{' '}
+              <span className="text-teal-400">enforces.</span>
             </h2>
-            <p className="mt-4 text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              FormaOS is the operating system that runs your compliance program.
-              Not a repository. Not a checklist. A live system that enforces
-              governance, tracks accountability, and produces defensible
-              evidence.
+            <p className="mt-5 text-base leading-[1.75] text-slate-400 max-w-xl">
+              The difference isn't features. It's architecture. FormaOS is an
+              operating layer that runs your compliance program continuously —
+              not a repository you update before audits.
             </p>
           </div>
         </ScrollReveal>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        {/* Comparison — two columns, no card wrapper */}
+        <div className="grid md:grid-cols-2 gap-0.5 overflow-hidden rounded-2xl border border-white/[0.07]">
+
           {/* Before */}
-          <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
-            <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6">
-              <h3 className="text-base font-medium text-slate-300 mb-5 flex items-center gap-2.5">
-                <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-rose-500/15 bg-rose-500/10 text-sm text-rose-400">
+          <ScrollReveal variant="fadeUp">
+            <div className="bg-slate-900/40 px-7 py-8">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded bg-rose-500/10 text-[11px] font-bold text-rose-400">
                   ✕
                 </span>
-                Other tools store documents.
-              </h3>
-              <p className="text-sm text-slate-500 mb-5 leading-relaxed">
-                Static repositories. Spreadsheets passed around. Evidence
-                reconstructed days before audits.
-              </p>
-              <ul className="space-y-2.5">
-                {BEFORE_ITEMS.map((item) => (
+                <p className="text-sm font-medium text-slate-400">
+                  Other tools
+                </p>
+              </div>
+              <ul className="space-y-3">
+                {BEFORE.map((item) => (
                   <li
                     key={item}
-                    className="flex items-start gap-2.5 text-sm text-slate-500"
+                    className="flex items-start gap-3 text-sm text-slate-500 leading-[1.6]"
                   >
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-600" />
+                    <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-slate-700" />
                     {item}
                   </li>
                 ))}
@@ -68,25 +73,23 @@ export function ValueProposition() {
           </ScrollReveal>
 
           {/* After */}
-          <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
-            <div className="rounded-xl border border-teal-500/15 bg-teal-500/[0.03] p-6">
-              <h3 className="text-base font-medium text-white mb-5 flex items-center gap-2.5">
-                <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-teal-500/20 bg-teal-500/10 text-sm text-teal-400">
+          <ScrollReveal variant="fadeUp">
+            <div className="bg-slate-900/60 border-l border-white/[0.07] px-7 py-8">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded bg-teal-500/10 text-[11px] font-bold text-teal-400">
                   ✓
                 </span>
-                FormaOS runs your program.
-              </h3>
-              <p className="text-sm text-slate-400 mb-5 leading-relaxed">
-                A live operating layer. Controls are enforced. Evidence is
-                generated as teams operate. Accountability is structural.
-              </p>
-              <ul className="space-y-2.5">
-                {AFTER_ITEMS.map((item) => (
+                <p className="text-sm font-medium text-slate-200">
+                  FormaOS
+                </p>
+              </div>
+              <ul className="space-y-3">
+                {AFTER.map((item) => (
                   <li
                     key={item}
-                    className="flex items-start gap-2.5 text-sm text-slate-300"
+                    className="flex items-start gap-3 text-sm text-slate-300 leading-[1.6]"
                   >
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-500/60" />
+                    <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-teal-500/50" />
                     {item}
                   </li>
                 ))}

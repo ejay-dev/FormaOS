@@ -1,96 +1,91 @@
 'use client';
 
-import {
-  Building2,
-  FileCheck,
-  Database,
-  AlertTriangle,
-  Shield,
-  CheckCircle,
-  Users,
-  Lock,
-} from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
 const UNIFIES = [
-  { icon: Building2, label: 'Governance structure and framework alignment' },
-  { icon: FileCheck, label: 'Policy, control, and obligation execution' },
-  { icon: Database, label: 'Automated evidence generation and vault' },
-  { icon: AlertTriangle, label: 'Real-time risk scoring and drift detection' },
-  { icon: Shield, label: 'Audit defense with exportable evidence packages' },
-  { icon: Users, label: 'Control ownership across teams and entities' },
-  { icon: Lock, label: 'Role-based accountability and access governance' },
+  { label: 'Governance structure and framework alignment' },
+  { label: 'Policy, control, and obligation execution' },
+  { label: 'Automated evidence generation and chain-of-custody' },
+  { label: 'Real-time risk scoring and drift detection' },
+  { label: 'Audit defense with exportable evidence packages' },
+  { label: 'Control ownership across teams and entities' },
+  { label: 'Role-based accountability and access governance' },
 ] as const;
 
-const PROOF_POINTS = [
-  'No compliance silos',
-  'No manual evidence reconciliation',
-  'No last-minute audit reconstruction',
-  'No undocumented ownership gaps',
+const WHAT_IT_IS_NOT = [
+  'A document repository',
+  'A GRC checklist tool',
+  'A point-in-time assessment platform',
+  'Another spreadsheet replacement',
 ] as const;
 
 export function WhatIsFormaOS() {
   return (
     <section className="relative py-24 sm:py-32">
-      <div className="max-w-5xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="fadeUp">
-          <div className="text-center mb-12">
-            <span className="mk-badge mk-badge--section mb-6">
-              What Is FormaOS?
-            </span>
+      <div className="mx-auto max-w-6xl px-6 lg:px-12">
 
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-5 text-white">
-              An end-to-end{' '}
-              <span className="text-teal-400">Compliance Operating System</span>
-            </h2>
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
 
-            <p className="text-base sm:text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed">
-              Not a GRC checklist tool. Not a document repository. FormaOS is an
-              operational layer that enforces compliance as your organization
-              works — continuously, with evidence generated automatically.
+          {/* Left — what it is */}
+          <ScrollReveal variant="fadeUp">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-600 mb-5">
+              What is FormaOS?
             </p>
-          </div>
-        </ScrollReveal>
+            <h2 className="text-3xl font-semibold leading-[1.15] tracking-[-0.02em] text-white mb-5 sm:text-4xl">
+              An end-to-end compliance
+              <br />
+              <span className="text-teal-400">operating system.</span>
+            </h2>
+            <p className="text-base leading-[1.75] text-slate-400 mb-8">
+              FormaOS is an operational layer that enforces compliance as your
+              organization works — continuously, with evidence generated
+              automatically and accountability built into the system.
+            </p>
 
-        <ScrollReveal variant="fadeUp">
-          <div className="rounded-2xl border border-white/[0.08] bg-slate-900/60 p-8 sm:p-10">
-            <h3 className="text-lg font-semibold text-white text-center mb-8">
-              FormaOS unifies:
-            </h3>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
-              {UNIFIES.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <div
-                    key={item.label}
-                    className="flex flex-col items-center text-center rounded-xl border border-white/[0.06] bg-slate-900/50 px-2 py-3 sm:px-3 sm:py-4 last:col-span-2 sm:last:col-span-1"
+            {/* What it&rsquo;s not */}
+            <div className="mb-8">
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-3">
+                Not a:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {WHAT_IT_IS_NOT.map((item) => (
+                  <span
+                    key={item}
+                    className="text-xs text-slate-600 border border-white/[0.05] bg-slate-900/30 rounded-full px-3 py-1"
                   >
-                    <div className="inline-flex items-center justify-center rounded-xl border border-teal-400/20 bg-teal-500/10 p-3 mb-3">
-                      <Icon className="w-5 h-5 text-teal-400" />
-                    </div>
-                    <span className="text-xs text-slate-400 leading-snug">
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </ScrollReveal>
+
+          {/* Right — what it unifies */}
+          <ScrollReveal variant="fadeUp">
+            <div className="rounded-2xl border border-white/[0.08] bg-slate-900/50 px-7 py-7">
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-5">
+                FormaOS unifies:
+              </p>
+              <ul className="space-y-3">
+                {UNIFIES.map((item, i) => (
+                  <li key={item.label} className="flex items-start gap-3">
+                    <span className="mt-[6px] text-[10px] font-semibold tabular-nums text-teal-500/50 w-4 shrink-0">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span className="text-sm leading-[1.6] text-slate-300">
                       {item.label}
                     </span>
-                  </div>
-                );
-              })}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-6 pt-5 border-t border-white/[0.06] text-xs text-slate-600 leading-relaxed">
+                Unified in a single, continuously operating compliance layer.
+                No silos. No manual reconciliation. No last-minute
+                reconstruction.
+              </p>
             </div>
-
-            <p className="text-center text-slate-600 mt-8 text-sm">
-              Unified in a single, continuously operating compliance layer.
-            </p>
-
-            <div className="flex flex-wrap items-center justify-center gap-4 mt-6 text-sm text-slate-400">
-              {PROOF_POINTS.map((point) => (
-                <span key={point} className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-teal-400" />
-                  {point}
-                </span>
-              ))}
-            </div>
-          </div>
-        </ScrollReveal>
+          </ScrollReveal>
+        </div>
       </div>
     </section>
   );

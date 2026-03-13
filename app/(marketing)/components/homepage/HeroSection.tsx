@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
-import { type MouseEvent } from 'react';
+import { useMemo, type MouseEvent } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { brand } from '@/config/brand';
 import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
@@ -10,36 +10,16 @@ import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 import {
   normalizeHeroCopy,
   resolveHomepageCtas,
+  deriveHomepageMotionPolicy,
 } from '@/lib/marketing/homepage-experience';
 import { useHomepageTelemetry } from '@/lib/marketing/homepage-telemetry';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 const PROOF_POINTS = [
-  {
-    stat: '7',
-    label: 'Framework packs',
-    detail: 'ISO 27001, SOC 2, NDIS, HIPAA, GDPR + more',
-  },
-  {
-    stat: '70+',
-    label: 'Pre-built controls',
-    detail: 'Ready to deploy, not configure',
-  },
-  {
-    stat: '<5min',
-    label: 'Audit export',
-    detail: 'Framework-mapped evidence bundles',
-  },
-] as const;
-
-const FRAMEWORKS = [
-  'ISO 27001',
-  'SOC 2',
-  'NDIS',
-  'HIPAA',
-  'GDPR',
-  'Essential Eight',
+  { stat: '7', label: 'Framework packs', sub: 'ISO 27001 · SOC 2 · NDIS · HIPAA · GDPR' },
+  { stat: '70+', label: 'Pre-built controls', sub: 'Ready to deploy' },
+  { stat: '< 5 min', label: 'Audit export', sub: 'Framework-mapped evidence bundles' },
 ] as const;
 
 function isExternalHref(href: string) {
@@ -55,14 +35,18 @@ export function HeroSection() {
     DEFAULT_RUNTIME_MARKETING.hero,
   );
   const ctas = resolveHomepageCtas(heroCopy, appBase);
-  const telemetry = useHomepageTelemetry(
-    {
-      allowIntroMotion: !shouldReduceMotion,
-      allowOrbitalMotion: false,
-      performanceProfile: 'balanced' as const,
-    },
-    { samplingRate: 0.75 },
+  const motionPolicy = useMemo(
+    () =>
+      deriveHomepageMotionPolicy({
+        reducedMotion: Boolean(shouldReduceMotion),
+        expensiveEffectsEnabled: runtimeMarketing.runtime.expensiveEffectsEnabled,
+        pageVisible: true,
+        heroInView: true,
+        deviceTier: 'mid',
+      }),
+    [shouldReduceMotion, runtimeMarketing.runtime.expensiveEffectsEnabled],
   );
+  const telemetry = useHomepageTelemetry(motionPolicy, { samplingRate: 0.75 });
 
   const handlePrimaryClick = (event: MouseEvent<HTMLAnchorElement>) => {
     telemetry.trackCtaClick('primary', ctas.primary.label, ctas.primary.href, {
@@ -73,15 +57,10 @@ export function HeroSection() {
   };
 
   const handleSecondaryClick = (event: MouseEvent<HTMLAnchorElement>) => {
-    telemetry.trackCtaClick(
-      'secondary',
-      ctas.secondary.label,
-      ctas.secondary.href,
-      {
-        isAppDomain: ctas.secondary.isAppDomain,
-        isAuthRoute: ctas.secondary.isAuthRoute,
-      },
-    );
+    telemetry.trackCtaClick('secondary', ctas.secondary.label, ctas.secondary.href, {
+      isAppDomain: ctas.secondary.isAppDomain,
+      isAuthRoute: ctas.secondary.isAuthRoute,
+    });
     if (event.defaultPrevented) return;
   };
 
@@ -91,31 +70,32 @@ export function HeroSection() {
   const secondaryExternal = isExternalHref(secondaryCtaHref);
 
   const fadeUp = (delay: number) => ({
-    initial: animate ? { opacity: 0, y: 16 } : false,
+    initial: animate ? { opacity: 0, y: 20 } : false,
     animate: { opacity: 1, y: 0 },
     transition: animate
-      ? { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] as const }
+      ? { duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] as const }
       : { duration: 0 },
   });
 
   return (
     <section className="home-hero relative isolate overflow-hidden">
-      {/* Subtle top-center gradient */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(20,184,166,0.08),transparent_70%)]" />
+      {/* Single restrained gradient — top-center only */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_-10%,rgba(20,184,166,0.07),transparent_65%)]" />
 
-      <div className="relative z-10 mx-auto flex min-h-[inherit] max-w-5xl flex-col items-center justify-center px-6 pb-20 pt-24 text-center sm:px-8 sm:pt-32 lg:pt-40">
-        {/* Badge */}
-        <motion.div
+      <div className="relative z-10 mx-auto flex min-h-[inherit] max-w-4xl flex-col items-center justify-center px-6 pb-20 pt-28 text-center sm:px-8 sm:pt-36 lg:pt-44">
+
+        {/* Eyebrow — not a badge pill, just a label */}
+        <motion.p
           {...fadeUp(0.05)}
-          className="mk-badge mk-badge--section mb-8"
+          className="mb-8 text-[11px] font-semibold uppercase tracking-[0.12em] text-teal-500/80"
         >
           {heroCopy.badgeText}
-        </motion.div>
+        </motion.p>
 
-        {/* Headline */}
+        {/* Headline — large, restrained, weighted */}
         <motion.h1
-          {...fadeUp(0.15)}
-          className="max-w-4xl text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-[3.5rem] lg:leading-[1.08]"
+          {...fadeUp(0.12)}
+          className="max-w-3xl text-[2.6rem] font-semibold leading-[1.07] tracking-[-0.03em] text-white sm:text-5xl lg:text-[3.75rem] lg:leading-[1.05]"
         >
           {heroCopy.headlinePrimary}
           <br />
@@ -124,31 +104,31 @@ export function HeroSection() {
 
         {/* Subheadline */}
         <motion.p
-          {...fadeUp(0.25)}
-          className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-400 sm:text-xl"
+          {...fadeUp(0.22)}
+          className="mt-7 max-w-xl text-[1.05rem] leading-[1.75] text-slate-400 sm:text-lg"
         >
           {heroCopy.subheadline}
         </motion.p>
 
         {/* CTAs */}
         <motion.div
-          {...fadeUp(0.35)}
-          className="mt-10 flex w-full max-w-md flex-col justify-center gap-3 sm:flex-row sm:gap-4"
+          {...fadeUp(0.32)}
+          className="mt-10 flex w-full max-w-sm flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center sm:gap-3"
         >
           <a
             href={primaryCtaHref}
             onClick={handlePrimaryClick}
-            className="mk-btn mk-btn-primary group min-h-[48px] justify-center px-7 py-3.5 text-base"
+            className="mk-btn mk-btn-primary group min-h-[50px] justify-center px-8 py-3.5 text-[0.9375rem] font-semibold"
           >
             <span>{heroCopy.primaryCtaLabel}</span>
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            <ArrowRight className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5" />
           </a>
 
           {secondaryExternal ? (
             <a
               href={secondaryCtaHref}
               onClick={handleSecondaryClick}
-              className="mk-btn mk-btn-secondary min-h-[48px] justify-center px-7 py-3.5 text-base"
+              className="mk-btn mk-btn-secondary min-h-[50px] justify-center px-8 py-3.5 text-[0.9375rem]"
             >
               {heroCopy.secondaryCtaLabel}
             </a>
@@ -156,42 +136,31 @@ export function HeroSection() {
             <Link
               href={secondaryCtaHref}
               onClick={handleSecondaryClick}
-              className="mk-btn mk-btn-secondary min-h-[48px] justify-center px-7 py-3.5 text-base"
+              className="mk-btn mk-btn-secondary min-h-[50px] justify-center px-8 py-3.5 text-[0.9375rem]"
             >
               {heroCopy.secondaryCtaLabel}
             </Link>
           )}
         </motion.div>
 
-        {/* Proof points */}
+        {/* Proof bar — clean grid, no decorative chrome */}
         <motion.div
-          {...fadeUp(0.45)}
-          className="mt-16 grid w-full max-w-3xl gap-px overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.03] sm:grid-cols-3"
+          {...fadeUp(0.42)}
+          className="mt-16 w-full max-w-2xl"
         >
-          {PROOF_POINTS.map((item) => (
-            <div key={item.label} className="px-6 py-5 text-left">
-              <p className="text-2xl font-semibold text-white">{item.stat}</p>
-              <p className="mt-1 text-sm font-medium text-slate-300">
-                {item.label}
-              </p>
-              <p className="mt-1 text-xs text-slate-500">{item.detail}</p>
-            </div>
-          ))}
-        </motion.div>
-
-        {/* Framework strip */}
-        <motion.div
-          {...fadeUp(0.5)}
-          className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2"
-        >
-          <span className="text-xs font-medium uppercase tracking-wider text-slate-600">
-            Built for
-          </span>
-          {FRAMEWORKS.map((fw) => (
-            <span key={fw} className="text-sm text-slate-500">
-              {fw}
-            </span>
-          ))}
+          <div className="grid grid-cols-3 divide-x divide-white/[0.05] overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02]">
+            {PROOF_POINTS.map((item) => (
+              <div key={item.label} className="px-5 py-5 text-center">
+                <p className="text-2xl font-semibold tabular-nums text-white lg:text-3xl">
+                  {item.stat}
+                </p>
+                <p className="mt-1 text-xs font-medium text-slate-300">
+                  {item.label}
+                </p>
+                <p className="mt-0.5 text-[11px] text-slate-600">{item.sub}</p>
+              </div>
+            ))}
+          </div>
         </motion.div>
       </div>
     </section>

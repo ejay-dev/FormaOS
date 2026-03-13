@@ -1,127 +1,101 @@
 'use client';
 
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { Box, Zap, ShieldCheck, FileCheck } from 'lucide-react';
 
 const steps = [
   {
-    id: 'model',
     step: '01',
     title: 'Structure',
     description:
-      'Define your governance architecture. Map obligations to controls, controls to owners, and owners to evidence requirements.',
-    icon: Box,
-    features: [
-      'Governance hierarchy as code',
+      'Define your governance architecture. Map obligations to controls, assign named owners, set evidence requirements.',
+    details: [
       'Framework-to-control mapping',
       'Ownership and accountability chains',
+      'Governance hierarchy as a live data model',
     ],
   },
   {
-    id: 'execute',
     step: '02',
     title: 'Operationalize',
     description:
-      'Controls become enforced workflows. Tasks are assigned, deadlines are tracked, escalations are automatic.',
-    icon: Zap,
-    features: [
-      'Automated control enforcement',
-      'Deadline and escalation rules',
-      'Immutable execution logs',
+      'Controls become enforced workflows. Tasks route to named owners, deadlines are tracked, escalations fire automatically.',
+    details: [
+      'Automated task generation from control state',
+      'Deadline tracking with escalation rules',
+      'Immutable execution logs on every action',
     ],
   },
   {
-    id: 'verify',
     step: '03',
     title: 'Validate',
     description:
-      'The OS continuously verifies control status. Gaps are flagged instantly. Compliance posture is always current.',
-    icon: ShieldCheck,
-    features: [
+      'The OS continuously verifies control status. Gaps surface instantly. Your compliance posture is always current — not estimated.',
+    details: [
       'Real-time control verification',
-      'Continuous posture monitoring',
-      'Instant gap detection',
+      'Continuous posture scoring',
+      'Instant gap detection with root cause',
     ],
   },
   {
-    id: 'prove',
     step: '04',
     title: 'Defend',
     description:
-      'When auditors arrive, the evidence is already assembled. Chain of custody, timestamps, attestations - all exportable.',
-    icon: FileCheck,
-    features: [
-      'Pre-assembled evidence packages',
-      'Immutable audit trail',
-      'One-click regulatory export',
+      'When auditors arrive, the evidence is already assembled — timestamped, chain-of-custody tracked, and exportable by framework.',
+    details: [
+      'Pre-assembled, framework-mapped evidence packages',
+      'Immutable audit trail with actor attribution',
+      'One-click regulatory export in minutes',
     ],
   },
 ];
 
 export function ScrollStory() {
   return (
-    <section className="mk-section relative">
-      <div className="max-w-6xl mx-auto px-6">
-        <ScrollReveal variant="fadeUp" className="text-center mb-16">
-          <span className="mk-badge mk-badge--section mb-6">How It Works</span>
+    <section className="mk-section home-section relative">
+      <div className="mx-auto max-w-6xl px-6 lg:px-8">
 
-          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4">
-            The Compliance <span className="text-teal-400">Lifecycle</span>
-          </h2>
-          <p className="text-base md:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            From framework mapping to audit defense — a complete workflow that
-            transforms obligations into enforceable controls with clear
-            ownership.
+        {/* Section label — minimal, no pill badge */}
+        <ScrollReveal variant="fadeUp">
+          <p className="mb-14 text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-600">
+            How it works
           </p>
         </ScrollReveal>
 
-        <div className="max-w-3xl mx-auto">
-          {steps.map((step, i) => {
-            const Icon = step.icon;
-            const isLast = i === steps.length - 1;
-            return (
-              <ScrollReveal key={step.id} variant="fadeUp">
-                <div className="relative flex gap-6">
-                  {/* Step indicator + connector */}
-                  <div className="flex flex-col items-center shrink-0">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-teal-500/10 border border-teal-500/20">
-                      <span className="text-sm font-semibold text-teal-400 tabular-nums">
-                        {step.step}
-                      </span>
-                    </div>
-                    {!isLast && (
-                      <div className="w-px flex-1 bg-white/[0.06] my-2" />
-                    )}
-                  </div>
-
-                  {/* Content */}
-                  <div className={isLast ? 'pb-0' : 'pb-10'}>
-                    <div className="flex items-center gap-3 mb-2">
-                      <Icon className="w-4 h-4 text-slate-500" />
-                      <h3 className="text-lg font-semibold text-white">
-                        {step.title}
-                      </h3>
-                    </div>
-                    <p className="text-sm text-slate-400 leading-relaxed mb-3">
-                      {step.description}
-                    </p>
-
-                    <ul className="space-y-1.5">
-                      {step.features.map((feature) => (
-                        <li
-                          key={feature}
-                          className="flex items-center gap-2 text-sm text-slate-500"
-                        >
-                          <span className="w-1 h-1 rounded-full bg-teal-400/60 shrink-0" />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+        {/* Steps — 2-column grid, alternating */}
+        <div className="grid sm:grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.03]">
+          {steps.map((step) => (
+            <ScrollReveal key={step.step} variant="fadeUp">
+              <div className="flex gap-5 p-7 sm:p-8">
+                {/* Step number */}
+                <div className="shrink-0 pt-0.5">
+                  <span className="text-[11px] font-semibold tabular-nums text-teal-500/70 tracking-wide">
+                    {step.step}
+                  </span>
                 </div>
-              </ScrollReveal>
-            );
-          })}
+
+                {/* Content */}
+                <div>
+                  <h3 className="text-base font-semibold tracking-tight text-white mb-2">
+                    {step.title}
+                  </h3>
+                  <p className="text-sm leading-[1.7] text-slate-400 mb-4">
+                    {step.description}
+                  </p>
+                  <ul className="space-y-1.5">
+                    {step.details.map((d) => (
+                      <li
+                        key={d}
+                        className="flex items-start gap-2 text-xs text-slate-600 leading-[1.5]"
+                      >
+                        <span className="mt-[5px] h-1 w-1 shrink-0 rounded-full bg-teal-500/40" />
+                        {d}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </ScrollReveal>
+          ))}
         </div>
       </div>
     </section>
