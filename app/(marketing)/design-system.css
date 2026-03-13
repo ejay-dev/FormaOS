@@ -1,163 +1,167 @@
 /* =========================================================
  * FORMAOS MARKETING DESIGN SYSTEM
- * Clean, enterprise-grade tokens + primitives
- * Benchmark: Linear, Vercel, Stripe
+ * Unified tokens + primitives for premium marketing surfaces
  * ======================================================= */
 
 :root {
-  /* ── Color tokens ────────────────────────────────────── */
-  --mk-bg-1: #030712;
-  --mk-bg-2: #0a0f1c;
-  --mk-surface: #111827;
-  --mk-surface-raised: #1a2332;
-  --mk-border: rgba(255, 255, 255, 0.08);
-  --mk-border-hover: rgba(255, 255, 255, 0.14);
+  --mk-bg-1: hsl(var(--marketing-bg));
+  --mk-bg-2: hsl(var(--marketing-bg-alt));
+  --mk-surface: hsl(var(--marketing-surface));
+  --mk-card: hsl(var(--marketing-card));
+  --mk-card-border: hsl(var(--marketing-card-border));
+  --mk-ink: hsl(var(--foreground));
+  --mk-muted: hsl(var(--muted-foreground));
 
-  --mk-ink: #f1f5f9;
-  --mk-ink-secondary: #94a3b8;
-  --mk-ink-muted: #64748b;
-  --mk-ink-faint: #475569;
+  --mk-cyan: #2dd4bf;
+  --mk-blue: #14b8a6;
+  --mk-violet: #f59e0b;
 
-  --mk-accent: #14b8a6;
-  --mk-accent-light: #2dd4bf;
-  --mk-accent-muted: rgba(20, 184, 166, 0.15);
-
-  /* ── Shadows ─────────────────────────────────────────── */
-  --mk-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-  --mk-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.25);
-  --mk-shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.3);
-
-  /* ── Layout ──────────────────────────────────────────── */
-  --mk-section-y: clamp(5rem, 8vw, 8rem);
-  --mk-nav-height: 64px;
-  --mk-content-width: 72rem;
-  --mk-content-narrow: 48rem;
-
-  /* ── Radius ──────────────────────────────────────────── */
-  --mk-radius-sm: 8px;
-  --mk-radius-md: 12px;
-  --mk-radius-lg: 16px;
-  --mk-radius-pill: 999px;
-
-  /* ── Motion ──────────────────────────────────────────── */
-  --mk-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --mk-duration: 200ms;
-
-  /* ── Legacy compat aliases ───────────────────────────── */
-  --mk-rgb-bg: 10, 15, 28;
-  --mk-rgb-cyan: 13, 148, 136;
-  --mk-rgb-cyan-alt: 20, 184, 166;
-  --mk-rgb-blue: 45, 212, 191;
-  --mk-rgb-blue-alt: 52, 211, 153;
-  --mk-rgb-violet: 245, 158, 11;
-  --mk-rgb-violet-alt: 251, 191, 36;
-  --mk-rgb-emerald: 52, 211, 153;
-  --mk-rgb-emerald-alt: 16, 185, 129;
-  --mk-rgb-bg-dark: 3, 7, 18;
-  --mk-glass-border: rgba(255, 255, 255, 0.08);
-  --mk-gradient-brand: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 100%);
-  --mk-gradient-surface: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.04) 0%,
-    rgba(255, 255, 255, 0.01) 100%
+  --mk-gradient-brand: linear-gradient(
+    135deg,
+    var(--mk-cyan) 0%,
+    var(--mk-blue) 48%,
+    #34d399 100%
   );
-  --mk-transition: 200ms cubic-bezier(0.22, 1, 0.36, 1);
-  --mk-focus: 0 0 0 2px var(--mk-bg-1), 0 0 0 4px var(--mk-accent);
-  --mk-radius-card: 16px;
-  --mk-shadow-glow-cyan: none;
-  --mk-shadow-glow-violet: none;
+  --mk-gradient-surface: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.03) 55%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  --mk-gradient-shell: linear-gradient(
+    180deg,
+    rgba(10, 15, 28, 0.96) 0%,
+    rgba(10, 15, 28, 0.92) 100%
+  );
+
+  --mk-glass-bg: rgba(255, 255, 255, 0.06);
+  --mk-glass-bg-strong: rgba(255, 255, 255, 0.1);
+  --mk-glass-border: rgba(255, 255, 255, 0.12);
+
+  --mk-shadow-md:
+    0 12px 32px rgba(2, 6, 23, 0.35), 0 4px 16px rgba(0, 0, 0, 0.2);
+  --mk-shadow-lg:
+    0 24px 64px rgba(2, 6, 23, 0.42), 0 8px 24px rgba(0, 0, 0, 0.28);
+  --mk-shadow-glow-cyan: 0 0 28px rgba(45, 212, 191, 0.22);
+  --mk-shadow-glow-violet: 0 0 28px rgba(245, 158, 11, 0.22);
+
+  --mk-focus: 0 0 0 3px rgba(56, 189, 248, 0.35);
+  --mk-radius-pill: 999px;
+  --mk-radius-card: 20px;
+  --mk-transition: 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  --mk-section-y: clamp(4.75rem, 8.2vw, 8.5rem);
+  --mk-nav-height: clamp(4.25rem, 6.4vw, 4.75rem);
 }
 
-/* ── Base shell ────────────────────────────────────────── */
+/* Base shell consistency */
 .mk-shell {
   background-color: var(--mk-bg-1);
   color: var(--mk-ink);
 }
 
 .mk-page-bg {
-  background-color: var(--mk-bg-1);
+  background: linear-gradient(
+    180deg,
+    var(--mk-bg-1) 0%,
+    var(--mk-bg-2) 55%,
+    var(--mk-bg-1) 100%
+  );
 }
 
-/* ── Typography ────────────────────────────────────────── */
-.mk-shell h1 {
-  letter-spacing: -0.025em;
-  line-height: 1.08;
-  font-weight: 600;
+.mk-page-bg-alt {
+  background: linear-gradient(
+    180deg,
+    var(--mk-bg-2) 0%,
+    var(--mk-bg-1) 60%,
+    var(--mk-bg-2) 100%
+  );
 }
 
-.mk-shell h2 {
-  letter-spacing: -0.02em;
-  line-height: 1.12;
-  font-weight: 600;
-}
-
-.mk-shell h3 {
-  letter-spacing: -0.01em;
-  line-height: 1.2;
-  font-weight: 500;
-}
-
-/* ── Gradient text ─────────────────────────────────────── */
+/* Canonical visual primitives */
 .mk-gradient-text,
 .text-gradient {
-  background: linear-gradient(
-    135deg,
-    var(--mk-accent-light) 0%,
-    var(--mk-accent) 100%
-  );
+  background: var(--mk-gradient-brand);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-/* ── Card primitives ───────────────────────────────────── */
-.mk-card {
-  background: var(--mk-surface);
-  border: 1px solid var(--mk-border);
-  border-radius: var(--mk-radius-lg);
-  box-shadow: var(--mk-shadow-sm);
-  transition:
-    border-color var(--mk-duration) var(--mk-ease),
-    box-shadow var(--mk-duration) var(--mk-ease);
-}
-
-.mk-card:hover {
-  border-color: var(--mk-border-hover);
+.mk-glass-card,
+.glass-intense {
+  background: var(--mk-gradient-surface);
+  border: 1px solid var(--mk-glass-border);
+  backdrop-filter: blur(20px) saturate(150%);
   box-shadow: var(--mk-shadow-md);
 }
 
 .mk-surface-card {
-  background: var(--mk-surface);
-  border: 1px solid var(--mk-border);
-  border-radius: var(--mk-radius-lg);
-  box-shadow: var(--mk-shadow-md);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  border: 1px solid var(--mk-glass-border);
+  border-radius: var(--mk-radius-card);
+  box-shadow: var(--mk-shadow-lg);
 }
 
-/* Legacy glass aliases — now use clean solid cards */
-.mk-glass-card,
-.glass-intense,
-.mk-glass-panel,
-.glass-panel,
-.glass-panel-strong {
-  background: var(--mk-surface);
-  border: 1px solid var(--mk-border);
-  border-radius: var(--mk-radius-lg);
-  box-shadow: var(--mk-shadow-sm);
-  backdrop-filter: none;
+.mk-dropdown-surface {
+  background: linear-gradient(
+    135deg,
+    rgba(10, 16, 31, 0.97) 0%,
+    rgba(5, 7, 17, 0.98) 100%
+  );
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: var(--mk-shadow-lg);
 }
 
-/* ── Button system ─────────────────────────────────────── */
+.mk-mobile-sheet {
+  background: linear-gradient(
+    180deg,
+    rgba(10, 16, 31, 0.98) 0%,
+    rgba(5, 7, 17, 0.98) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 40px 80px rgba(2, 6, 23, 0.5),
+    0 16px 32px rgba(0, 0, 0, 0.35);
+}
+
+.mk-security-grid,
+.security-grid {
+  background-image:
+    linear-gradient(to right, rgba(0, 217, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 217, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.mk-glow-cyan,
+.glow-cyan {
+  box-shadow: var(--mk-shadow-glow-cyan);
+}
+
+.mk-glow-violet,
+.glow-violet {
+  box-shadow: var(--mk-shadow-glow-violet);
+}
+
+/* Unified CTA system */
 .mk-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   border-radius: var(--mk-radius-pill);
+  border: 1px solid var(--mk-glass-border);
   font-weight: 600;
   line-height: 1;
-  border: 1px solid transparent;
-  transition: all var(--mk-duration) var(--mk-ease);
-  cursor: pointer;
+  transition:
+    transform var(--mk-transition),
+    box-shadow var(--mk-transition),
+    background-color var(--mk-transition),
+    border-color var(--mk-transition),
+    color var(--mk-transition);
 }
 
 .mk-btn:focus-visible {
@@ -165,98 +169,135 @@
   box-shadow: var(--mk-focus);
 }
 
+.mk-btn:hover {
+  transform: translateY(-2px);
+}
+
+.mk-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
 .mk-btn-primary {
   color: #fff;
-  background: var(--mk-accent);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  background: var(--mk-gradient-brand);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 10px 30px rgba(0, 217, 255, 0.24),
+    0 0 14px rgba(77, 159, 255, 0.22);
 }
 
 .mk-btn-primary:hover {
-  background: var(--mk-accent-light);
-  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.25);
+  box-shadow:
+    0 16px 40px rgba(0, 217, 255, 0.3),
+    0 0 20px rgba(77, 159, 255, 0.26);
 }
 
 .mk-btn-secondary {
-  color: var(--mk-ink);
-  background: rgba(255, 255, 255, 0.06);
-  border-color: var(--mk-border);
+  color: rgba(241, 245, 249, 0.95);
+  background: rgba(255, 255, 255, 0.07);
 }
 
 .mk-btn-secondary:hover {
   color: #fff;
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--mk-border-hover);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .mk-btn-ghost {
-  color: var(--mk-ink-secondary);
-  background: transparent;
+  color: rgba(148, 163, 184, 1);
   border-color: transparent;
+  background: transparent;
 }
 
 .mk-btn-ghost:hover {
   color: #fff;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.14);
 }
 
 .mk-btn > svg {
-  transition: transform var(--mk-duration) var(--mk-ease);
+  transition: transform var(--mk-transition);
 }
 
 .mk-btn:hover > svg {
   transform: translateX(1px);
 }
 
-/* ── Section spacing ───────────────────────────────────── */
+/* Shared section spacing primitive */
 .mk-section {
   position: relative;
   padding-top: var(--mk-section-y);
   padding-bottom: var(--mk-section-y);
 }
 
+/* Keep marketing sections on one rhythm scale without changing structure */
 .mk-shell section[class*='py-20'],
 .mk-shell section[class*='py-24'],
 .mk-shell section[class*='py-28'],
 .mk-shell section[class*='py-32'],
-.mk-shell section[class*='py-36'],
-.mk-shell section[class*='py-12'],
-.mk-shell section[class*='py-14'],
-.mk-shell section[class*='py-16'],
-.mk-shell section[class*='py-18'] {
+.mk-shell section[class*='py-36'] {
   padding-top: var(--mk-section-y);
   padding-bottom: var(--mk-section-y);
 }
 
+.mk-shell main {
+  background: linear-gradient(
+    180deg,
+    var(--mk-bg-1) 0%,
+    var(--mk-bg-2) 55%,
+    var(--mk-bg-1) 100%
+  );
+}
+
 .mk-marketing-flow > section {
   background-color: transparent;
+  background-image: linear-gradient(
+    180deg,
+    var(--mk-bg-1) 0%,
+    var(--mk-bg-2) 52%,
+    var(--mk-bg-1) 100%
+  );
+}
+
+@supports (content-visibility: auto) {
+  .mk-deferred-section {
+    content-visibility: auto;
+    contain: layout style;
+    contain-intrinsic-size: 600px;
+    overflow: visible;
+  }
 }
 
 .mk-marketing-flow section {
   scroll-margin-top: calc(var(--mk-nav-height) + 1.5rem);
 }
 
-/* ── Section divider ───────────────────────────────────── */
-.mk-divider {
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--mk-border),
-    transparent
-  );
-}
-
-/* ── Hero sizing ───────────────────────────────────────── */
 .mk-marketing-flow section:first-of-type,
 .mk-marketing-flow .mk-hero {
   position: relative;
-  min-height: clamp(36rem, 80vh, 52rem);
-  padding-top: clamp(7rem, 10vw, 9rem);
-  padding-bottom: clamp(4rem, 6vw, 6rem);
+  min-height: clamp(38rem, 84vh, 54rem);
+  padding-top: clamp(7rem, 10vw, 9.5rem);
+  padding-bottom: clamp(4.25rem, 7vw, 6.5rem);
   overflow: hidden;
 }
 
+@media (max-width: 767px) {
+  .mk-marketing-flow section:first-of-type,
+  .mk-marketing-flow .mk-hero {
+    min-height: clamp(28rem, 75vh, 40rem);
+    padding-top: clamp(5rem, 8vw, 6.5rem);
+    padding-bottom: clamp(3rem, 5vw, 4rem);
+  }
+}
+
+.mk-marketing-flow .mk-hero h1,
+.mk-marketing-flow .mk-hero h2,
+.mk-marketing-flow section:first-of-type h1,
+.mk-marketing-flow section:first-of-type h2 {
+  text-wrap: balance;
+}
+
+/* Compact hero for informational pages (legal, trust sub-pages, etc.) */
 .mk-hero--compact {
   min-height: clamp(14rem, 28vh, 20rem);
   padding-top: clamp(5rem, 8vw, 7rem);
@@ -269,15 +310,19 @@
   padding-bottom: clamp(2rem, 4vw, 3.5rem);
 }
 
+.mk-marketing-flow .mk-hero > [class*='max-w-4xl'],
+.mk-marketing-flow .mk-hero > [class*='max-w-5xl'],
+.mk-marketing-flow .mk-hero > [class*='max-w-6xl'],
+.mk-marketing-flow section:first-of-type > [class*='max-w-4xl'],
+.mk-marketing-flow section:first-of-type > [class*='max-w-5xl'],
+.mk-marketing-flow section:first-of-type > [class*='max-w-6xl'] {
+  max-width: 80rem;
+}
+
 .mk-marketing-flow .mk-hero h1,
 .mk-marketing-flow section:first-of-type h1 {
   letter-spacing: -0.025em;
   line-height: 1.05;
-  text-wrap: balance;
-}
-
-.mk-marketing-flow .mk-hero h2,
-.mk-marketing-flow section:first-of-type h2 {
   text-wrap: balance;
 }
 
@@ -290,17 +335,6 @@
   pointer-events: none;
 }
 
-/* ── Content visibility ────────────────────────────────── */
-@supports (content-visibility: auto) {
-  .mk-deferred-section {
-    content-visibility: auto;
-    contain: layout style;
-    contain-intrinsic-size: 600px;
-    overflow: visible;
-  }
-}
-
-/* ── Header ────────────────────────────────────────────── */
 .mk-shell .mk-header-premium {
   min-height: var(--mk-nav-height);
 }
@@ -315,129 +349,164 @@
   min-width: 0;
 }
 
-/* ── Badge primitive ───────────────────────────────────── */
-.mk-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.375rem 0.875rem;
-  border-radius: var(--mk-radius-pill);
-  border: 1px solid rgba(20, 184, 166, 0.2);
-  background: rgba(20, 184, 166, 0.08);
-  color: var(--mk-accent-light);
-  font-size: 0.8125rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
+.mk-shell .mk-header-premium [class*='text-[13.5px]'] {
+  white-space: nowrap;
 }
 
-/* Section badge — heavier weight for section headers */
-.mk-badge--section {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 0.4375rem 1rem;
-  border-color: rgba(20, 184, 166, 0.25);
-  background: rgba(20, 184, 166, 0.1);
+/* One visual treatment for glass/card/shadow primitives */
+.mk-shell .glass-panel,
+.mk-shell .glass-panel-strong,
+.mk-shell .glass-intense,
+.mk-shell .mk-glass-panel {
+  background: var(--mk-gradient-surface);
+  border: 1px solid var(--mk-glass-border);
+  backdrop-filter: blur(20px) saturate(160%);
+  box-shadow: var(--mk-shadow-md);
 }
 
-/* Meta badge — lightweight for supporting labels */
-.mk-badge--meta {
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  padding: 0 0;
-  border: none;
-  background: none;
-  color: rgb(100 116 139); /* slate-500 */
+.mk-shell .mk-card,
+.mk-shell .mk-surface-card {
+  border-color: var(--mk-glass-border);
+  box-shadow: var(--mk-shadow-lg);
 }
 
-/* ── Legacy CTA compat ─────────────────────────────────── */
+.mk-shell .mk-glass-card,
+.mk-shell .glass-panel,
+.mk-shell .glass-panel-strong,
+.mk-shell .glass-intense,
+.mk-shell .mk-glass-panel,
+.mk-shell [class*='backdrop-blur'][class*='border-white/10'],
+.mk-shell [class*='backdrop-blur'][class*='border-white/[0.1]'] {
+  background: var(--mk-gradient-surface);
+  border: 1px solid var(--mk-glass-border);
+  backdrop-filter: blur(20px) saturate(160%);
+  box-shadow: var(--mk-shadow-md);
+}
+
+/* Legacy .btn classes align to mk-btn so older pages match current CTA language */
 .mk-shell .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   border-radius: var(--mk-radius-pill);
-  border: 1px solid transparent;
+  border: 1px solid var(--mk-glass-border);
   font-weight: 600;
   line-height: 1;
-  transition: all var(--mk-duration) var(--mk-ease);
+  transition:
+    transform var(--mk-transition),
+    box-shadow var(--mk-transition),
+    background-color var(--mk-transition),
+    border-color var(--mk-transition),
+    color var(--mk-transition);
+}
+
+.mk-shell .btn:hover {
+  transform: translateY(-2px);
 }
 
 .mk-shell .btn-primary {
   color: #fff;
-  background: var(--mk-accent);
-  border-color: rgba(255, 255, 255, 0.1);
+  background: var(--mk-gradient-brand);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 10px 30px rgba(0, 217, 255, 0.24),
+    0 0 14px rgba(77, 159, 255, 0.22);
 }
 
 .mk-shell .btn-primary:hover {
-  background: var(--mk-accent-light);
-  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.25);
+  box-shadow:
+    0 16px 40px rgba(0, 217, 255, 0.3),
+    0 0 20px rgba(77, 159, 255, 0.26);
 }
 
 .mk-shell .btn-secondary,
 .mk-shell .btn-ghost {
-  color: var(--mk-ink);
-  background: rgba(255, 255, 255, 0.06);
-  border-color: var(--mk-border);
+  color: rgba(241, 245, 249, 0.95);
+  background: rgba(255, 255, 255, 0.07);
 }
 
 .mk-shell .btn-secondary:hover,
 .mk-shell .btn-ghost:hover {
   color: #fff;
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--mk-border-hover);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Legacy inline CTA normalization */
+/* Normalize frequently repeated inline CTA class patterns */
 .mk-shell
   a[class*='bg-gradient-to-r'][class*='from-teal-500'][class*='to-emerald-600'],
 .mk-shell
   button[class*='bg-gradient-to-r'][class*='from-teal-500'][class*='to-emerald-600'] {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  transition: all var(--mk-duration) var(--mk-ease);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 10px 30px rgba(20, 184, 166, 0.24),
+    0 0 14px rgba(52, 211, 153, 0.22);
+  transition:
+    transform var(--mk-transition),
+    box-shadow var(--mk-transition),
+    border-color var(--mk-transition);
 }
 
 .mk-shell
   a[class*='bg-gradient-to-r'][class*='from-teal-500'][class*='to-emerald-600']:hover,
 .mk-shell
   button[class*='bg-gradient-to-r'][class*='from-teal-500'][class*='to-emerald-600']:hover {
-  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.25);
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 40px rgba(20, 184, 166, 0.3),
+    0 0 20px rgba(52, 211, 153, 0.26);
 }
 
 .mk-shell a[class*='border-white/20'][class*='bg-white/5'],
 .mk-shell button[class*='border-white/20'][class*='bg-white/5'] {
-  border-color: var(--mk-border);
-  background: rgba(255, 255, 255, 0.06);
-  transition: all var(--mk-duration) var(--mk-ease);
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(16px) saturate(150%);
+  transition:
+    transform var(--mk-transition),
+    border-color var(--mk-transition),
+    background-color var(--mk-transition);
 }
 
 .mk-shell a[class*='border-white/20'][class*='bg-white/5']:hover,
 .mk-shell button[class*='border-white/20'][class*='bg-white/5']:hover {
-  border-color: var(--mk-border-hover);
-  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.12);
 }
 
-/* Legacy glass compat for inline backdrop-blur elements */
-.mk-shell [class*='backdrop-blur'][class*='border-white/10'],
-.mk-shell [class*='backdrop-blur'][class*='border-white/[0.1]'] {
-  background: var(--mk-surface);
-  border: 1px solid var(--mk-border);
-  backdrop-filter: none;
-  box-shadow: var(--mk-shadow-sm);
+/* Layered depth: background should move slower than content */
+.mk-bg-depth {
+  transform: translate3d(
+    0,
+    calc(var(--mk-scroll-depth, 0px) * var(--mk-depth-factor, 0)),
+    0
+  );
+  will-change: transform;
 }
 
-/* Legacy shadow normalization */
-.mk-marketing-flow [class*='shadow-2xl'],
-.mk-marketing-flow [class*='shadow-xl'],
-.mk-marketing-flow [class*='shadow-lg'] {
-  box-shadow: var(--mk-shadow-md);
+.mk-bg-depth--far {
+  --mk-depth-factor: 0.02;
 }
 
-/* Content width normalization */
+.mk-bg-depth--mid {
+  --mk-depth-factor: 0.035;
+}
+
+.mk-bg-depth--near {
+  --mk-depth-factor: 0.055;
+}
+
+.mk-marketing-flow .mk-section,
+.mk-marketing-flow section[class*='py-12'],
+.mk-marketing-flow section[class*='py-14'],
+.mk-marketing-flow section[class*='py-16'],
+.mk-marketing-flow section[class*='py-18'] {
+  padding-top: var(--mk-section-y);
+  padding-bottom: var(--mk-section-y);
+}
+
 .mk-marketing-flow [class*='max-w-7xl'],
 .mk-marketing-flow [class*='max-w-6xl'],
 .mk-marketing-flow [class*='max-w-5xl'],
@@ -445,33 +514,41 @@
   width: 100%;
 }
 
-.mk-marketing-flow .mk-hero > [class*='max-w-4xl'],
-.mk-marketing-flow .mk-hero > [class*='max-w-5xl'],
-.mk-marketing-flow .mk-hero > [class*='max-w-6xl'],
-.mk-marketing-flow section:first-of-type > [class*='max-w-4xl'],
-.mk-marketing-flow section:first-of-type > [class*='max-w-5xl'],
-.mk-marketing-flow section:first-of-type > [class*='max-w-6xl'] {
-  max-width: 80rem;
+.mk-marketing-flow [class*='shadow-2xl'],
+.mk-marketing-flow [class*='shadow-xl'],
+.mk-marketing-flow [class*='shadow-lg'] {
+  box-shadow: var(--mk-shadow-lg);
 }
 
-/* ── Reduced motion ────────────────────────────────────── */
+/* Motion-safe defaults */
 @media (prefers-reduced-motion: reduce) {
-  .mk-btn {
+  .mk-btn,
+  .mk-btn:hover,
+  .mk-btn:active {
     transition: none;
+    transform: none;
   }
 
-  .mk-card,
-  .mk-surface-card {
+  .mk-shell .btn,
+  .mk-shell .btn:hover {
     transition: none;
+    transform: none;
   }
 
   .mk-gradient-text,
   .text-gradient {
     background-size: 100% 100%;
   }
+
+  .mk-bg-depth,
+  .mk-bg-depth--far,
+  .mk-bg-depth--mid,
+  .mk-bg-depth--near {
+    transform: none;
+    will-change: auto;
+  }
 }
 
-/* ── Mobile ────────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .mk-shell .mk-nav-item {
     padding-inline: 0.62rem;
@@ -480,20 +557,27 @@
 }
 
 @media (max-width: 767px) {
-  :root {
-    --mk-section-y: clamp(3.5rem, 8vw, 5rem);
-  }
-
-  .mk-marketing-flow section:first-of-type,
-  .mk-marketing-flow .mk-hero {
-    min-height: clamp(28rem, 75vh, 40rem);
-    padding-top: clamp(5rem, 8vw, 6.5rem);
-    padding-bottom: clamp(3rem, 5vw, 4rem);
+  .mk-shell section[class*='py-20'],
+  .mk-shell section[class*='py-24'],
+  .mk-shell section[class*='py-28'],
+  .mk-shell section[class*='py-32'],
+  .mk-shell section[class*='py-36'] {
+    padding-top: clamp(4rem, 10vw, 5rem);
+    padding-bottom: clamp(4rem, 10vw, 5rem);
   }
 
   .mk-header-premium {
     backdrop-filter: blur(12px) saturate(120%);
     -webkit-backdrop-filter: blur(12px) saturate(120%);
+  }
+
+  .mk-shell .mk-glass-card,
+  .mk-shell .glass-panel,
+  .mk-shell .glass-panel-strong,
+  .mk-shell .glass-intense,
+  .mk-shell [class*='backdrop-blur'] {
+    backdrop-filter: blur(10px) saturate(115%);
+    -webkit-backdrop-filter: blur(10px) saturate(115%);
   }
 
   .mk-marketing-flow [class*='shadow-2xl'],

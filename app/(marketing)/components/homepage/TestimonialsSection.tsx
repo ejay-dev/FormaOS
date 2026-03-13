@@ -1,6 +1,8 @@
 'use client';
 
-import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+import { Quote } from 'lucide-react';
 
 const TESTIMONIALS = [
   {
@@ -10,115 +12,144 @@ const TESTIMONIALS = [
     role: 'Operations Manager',
     org: 'Disability Services Provider',
     sector: 'NDIS',
+    accentClass: 'from-cyan-500/20 to-blue-500/20',
+    borderClass: 'border-cyan-500/20',
   },
   {
     quote:
-      'The evidence chain reduced our SOC 2 audit cycle from six months to six weeks. Auditors have everything in a single defensible package.',
+      'The evidence chain reduced our SOC 2 audit cycle from six months to six weeks. Auditors now have everything they need in a single defensible package.',
     name: 'James T.',
-    role: 'CISO',
+    role: 'Chief Information Security Officer',
     org: 'Healthcare Technology Platform',
     sector: 'Healthcare',
+    accentClass: 'from-blue-500/20 to-violet-500/20',
+    borderClass: 'border-blue-500/20',
   },
   {
     quote:
-      'Finally a compliance platform designed for operations teams, not just IT. Our frontline staff actually use it — because the workflows make sense to them.',
+      'Finally, a compliance platform designed for operations teams, not just IT. Our frontline staff actually use it - because the workflows make sense to them.',
     name: 'Rachel K.',
     role: 'Head of Governance & Risk',
     org: 'Regional Financial Services Group',
     sector: 'Financial Services',
+    accentClass: 'from-violet-500/20 to-indigo-500/20',
+    borderClass: 'border-violet-500/20',
   },
   {
     quote:
-      'Standard 8 reporting used to consume two full weeks per quarter. With FormaOS we close the same cycle in under two days with a traceable evidence trail.',
+      'Standard 8 reporting used to consume two full weeks per quarter. With FormaOS we close the same governance cycle in under two days - with a traceable evidence trail the Commission accepts without question.',
     name: 'Michael D.',
     role: 'Quality & Compliance Lead',
     org: 'Residential Aged Care Group',
     sector: 'Aged Care',
+    accentClass: 'from-emerald-500/20 to-teal-500/20',
+    borderClass: 'border-emerald-500/20',
+  },
+  {
+    quote:
+      'Our SafeWork audit was the first one where we walked in with a complete digital evidence package. Incident logs, corrective actions, worker credential records - all exportable in under five minutes.',
+    name: 'Priya N.',
+    role: 'WHS & Compliance Manager',
+    org: 'Construction & Infrastructure Group',
+    sector: 'Construction',
+    accentClass: 'from-amber-500/20 to-orange-500/20',
+    borderClass: 'border-amber-500/20',
   },
 ] as const;
 
-const TRUST_STATS = [
-  { value: 'SOC 2-aligned', label: 'Trust framework' },
-  { value: 'AES-256', label: 'Encryption at rest' },
-  { value: 'AU-hosted', label: 'US / EU residency on roadmap' },
-  { value: 'SAML 2.0', label: 'Enterprise SSO + MFA' },
-  { value: '14-day', label: 'Free trial — no card required' },
-] as const;
-
 export function TestimonialsSection() {
-  const [featured, ...rest] = TESTIMONIALS;
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section className="mk-section home-section relative">
-      <div className="mx-auto max-w-6xl px-6 lg:px-8">
+    <section ref={ref} className="relative py-24 px-4 sm:px-6 lg:px-8">
+      {/* Section header */}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="mx-auto mb-16 max-w-2xl text-center"
+      >
+        <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-cyan-400">
+          From the teams using FormaOS
+        </p>
+        <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          Proof from regulated operations
+        </h2>
+        <p className="mt-4 text-base text-slate-400">
+          Healthcare, disability services, and financial teams running
+          compliance as governance - not guesswork.
+        </p>
+      </motion.div>
 
-        {/* Section label */}
-        <ScrollReveal variant="fadeUp">
-          <p className="mb-12 text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-600">
-            From regulated teams
-          </p>
-        </ScrollReveal>
+      {/* Cards */}
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Note: 5 items - last card spans full width on tablet to avoid orphan */}
+        {TESTIMONIALS.map((t, i) => (
+          <motion.article
+            key={t.name}
+            initial={{ opacity: 0, y: 32 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{
+              duration: 0.6,
+              delay: i * 0.12,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className={`relative flex flex-col rounded-2xl border bg-white/[0.03] p-5 sm:p-8 backdrop-blur-sm ${t.borderClass} ${i === TESTIMONIALS.length - 1 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
+          >
+            {/* Gradient tint */}
+            <div
+              className={`pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br ${t.accentClass} opacity-40`}
+            />
 
-        {/* Featured testimonial — editorial, full-width */}
-        <ScrollReveal variant="fadeUp">
-          <blockquote className="mb-8 relative">
-            <span className="absolute -top-4 -left-2 text-5xl leading-none text-white/[0.06] font-serif select-none" aria-hidden>
-              &ldquo;
-            </span>
-            <p className="text-xl font-medium leading-[1.65] text-slate-200 max-w-3xl sm:text-2xl">
-              {featured.quote}
-            </p>
-            <footer className="mt-6 flex items-center gap-4">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-teal-500/10 border border-teal-500/15 text-sm font-semibold text-teal-400">
-                {featured.name.charAt(0)}
+            {/* Quote icon */}
+            <Quote
+              className="relative mb-5 h-6 w-6 text-slate-500"
+              aria-hidden="true"
+            />
+
+            {/* Quote text */}
+            <blockquote className="relative flex-1 text-base leading-relaxed text-slate-200">
+              &ldquo;{t.quote}&rdquo;
+            </blockquote>
+
+            {/* Attribution */}
+            <div className="relative mt-8 border-t border-white/[0.06] pt-6">
+              <div className="flex items-start gap-4">
+                {/* Avatar placeholder */}
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-sm font-bold text-slate-300">
+                  {t.name.charAt(0)}
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-white">
+                    {t.name}
+                  </div>
+                  <div className="mt-0.5 text-xs text-slate-400">{t.role}</div>
+                  <div className="mt-0.5 text-xs text-slate-500">{t.org}</div>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-medium text-white">{featured.name}</p>
-                <p className="text-xs text-slate-500">
-                  {featured.role} · {featured.org}
-                </p>
-              </div>
-              <span className="ml-auto text-[10px] font-semibold uppercase tracking-wider text-teal-500/60 border border-teal-500/20 rounded-full px-2.5 py-1">
-                {featured.sector}
+              <span className="mt-4 inline-block rounded-full bg-white/[0.06] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">
+                {t.sector}
               </span>
-            </footer>
-          </blockquote>
-        </ScrollReveal>
-
-        {/* Supporting testimonials — 3-column */}
-        <div className="grid gap-2 sm:grid-cols-3 mb-12">
-          {rest.map((t) => (
-            <ScrollReveal key={t.name} variant="fadeUp">
-              <article className="rounded-xl border border-white/[0.06] bg-slate-900/40 p-5 h-full flex flex-col">
-                <blockquote className="flex-1 text-sm leading-[1.7] text-slate-400">
-                  &ldquo;{t.quote}&rdquo;
-                </blockquote>
-                <footer className="mt-5 pt-4 border-t border-white/[0.05] flex items-center gap-2.5">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs font-semibold text-slate-400">
-                    {t.name.charAt(0)}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-xs font-medium text-white truncate">{t.name}</p>
-                    <p className="text-[11px] text-slate-600 truncate">{t.org}</p>
-                  </div>
-                </footer>
-              </article>
-            </ScrollReveal>
-          ))}
-        </div>
-
-        {/* Trust strip — inline, no card chrome */}
-        <ScrollReveal variant="fadeUp">
-          <div className="border-t border-white/[0.06] pt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-            {TRUST_STATS.map((stat) => (
-              <div key={stat.label} className="text-center">
-                <p className="text-xs font-semibold text-slate-300">{stat.value}</p>
-                <p className="text-[10px] text-slate-600 mt-0.5">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </ScrollReveal>
+            </div>
+          </motion.article>
+        ))}
       </div>
+
+      {/* CTA under testimonials */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={inView ? { opacity: 1 } : {}}
+        transition={{ duration: 0.6, delay: 0.5 }}
+        className="mt-12 text-center"
+      >
+        <a
+          href="/customer-stories"
+          className="text-sm font-semibold text-cyan-400 underline-offset-4 hover:underline"
+        >
+          Read full customer stories →
+        </a>
+      </motion.div>
     </section>
   );
 }
