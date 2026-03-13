@@ -350,7 +350,7 @@ const DetailDrawer = memo(function DetailDrawer({
             animate={{ opacity: 1, x: 0 }}
             exit={reduced ? { opacity: 0 } : { opacity: 0, x: 80 }}
             transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute top-0 right-0 bottom-0 z-40 w-full sm:w-[360px] bg-slate-900/95 border-l border-white/[0.08] flex flex-col overflow-hidden"
+            className="absolute top-0 right-0 bottom-0 z-40 w-full sm:w-[400px] bg-slate-900/98 border-l border-white/[0.08] flex flex-col overflow-hidden backdrop-blur-sm"
           >
             {/* Header */}
             <div className="flex items-start justify-between gap-3 px-5 py-4 border-b border-white/[0.06] shrink-0">
@@ -425,30 +425,30 @@ const ListHeader = memo(function ListHeader({
   onNew: () => void;
 }) {
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3 shrink-0">
-      <div className="flex items-center gap-2">
-        <h3 className="text-sm font-semibold text-white/85">{title}</h3>
-        <span className="text-[10px] text-white/30 bg-white/[0.04] px-1.5 py-0.5 rounded">{count}</span>
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 mb-4 shrink-0">
+      <div className="flex items-center gap-2.5">
+        <h3 className="text-sm font-semibold text-white/90">{title}</h3>
+        <span className="text-[10px] text-white/35 bg-white/[0.05] px-2 py-0.5 rounded-md font-medium">{count}</span>
       </div>
       <div className="flex items-center gap-2 w-full sm:w-auto">
         {/* Search */}
-        <div className="relative flex-1 sm:flex-initial sm:w-40">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25" />
+        <div className="relative flex-1 sm:flex-initial sm:w-44">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/25" />
           <input
             type="text"
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search…"
-            className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.07] text-xs text-white/70 placeholder-white/20 focus:outline-none focus:border-teal-400/30 focus:ring-1 focus:ring-teal-400/20 transition-colors"
+            className="w-full pl-9 pr-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.07] text-xs text-white/70 placeholder-white/20 focus:outline-none focus:border-teal-400/30 focus:ring-1 focus:ring-teal-400/20 transition-colors"
           />
         </div>
         {/* Sort */}
         <div className="relative">
-          <ArrowUpDown className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-white/25 pointer-events-none" />
+          <ArrowUpDown className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-white/25 pointer-events-none" />
           <select
             value={sort}
             onChange={(e) => onSortChange(e.target.value as SortOption)}
-            className="appearance-none pl-7 pr-6 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.07] text-xs text-white/50 focus:outline-none focus:border-teal-400/30 cursor-pointer"
+            className="appearance-none pl-7 pr-7 py-2 rounded-lg bg-white/[0.03] border border-white/[0.07] text-xs text-white/50 focus:outline-none focus:border-teal-400/30 cursor-pointer"
             style={{ colorScheme: 'dark' }}
           >
             <option value="default">Default</option>
@@ -456,14 +456,14 @@ const ListHeader = memo(function ListHeader({
             <option value="name-desc">Name Z–A</option>
             <option value="status">Status</option>
           </select>
-          <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 text-white/25 pointer-events-none" />
+          <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-white/25 pointer-events-none" />
         </div>
         {/* Actions */}
-        <button onClick={onExport} className="p-1.5 rounded-lg bg-white/[0.03] border border-white/[0.07] text-white/35 hover:text-white/55 hover:bg-white/[0.05] transition-colors" title="Export">
-          <Download className="w-3.5 h-3.5" />
+        <button onClick={onExport} className="p-2 rounded-lg bg-white/[0.03] border border-white/[0.07] text-white/35 hover:text-white/55 hover:bg-white/[0.06] transition-colors" title="Export">
+          <Download className="w-4 h-4" />
         </button>
-        <button onClick={onNew} className="p-1.5 rounded-lg bg-teal-400/10 border border-teal-400/20 text-teal-300 hover:bg-teal-400/15 transition-colors" title="New">
-          <Plus className="w-3.5 h-3.5" />
+        <button onClick={onNew} className="p-2 rounded-lg bg-teal-400/10 border border-teal-400/20 text-teal-300 hover:bg-teal-400/15 transition-colors" title="New">
+          <Plus className="w-4 h-4" />
         </button>
       </div>
     </div>
@@ -474,7 +474,7 @@ const ListHeader = memo(function ListHeader({
    ROW COMPONENT
    ═══════════════════════════════════════════════════════════════════════ */
 
-const ROW_BASE = 'flex items-center gap-2.5 rounded-lg bg-white/[0.02] border border-white/[0.06] px-4 py-2.5 hover:bg-white/[0.05] hover:border-white/[0.10] transition-colors cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-teal-400/40';
+const ROW_BASE = 'flex items-center gap-3 rounded-xl bg-white/[0.02] border border-white/[0.06] px-4 py-3 hover:bg-white/[0.05] hover:border-white/[0.10] transition-all cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-teal-400/40';
 
 /* ═══════════════════════════════════════════════════════════════════════
    VIEW RENDERERS
@@ -564,17 +564,17 @@ export function ProductLiveDemo() {
       return (
         <div className="flex flex-col h-full">
           {/* Stat cards */}
-          <div className="grid grid-cols-3 gap-2 mb-3 shrink-0">
+          <div className="grid grid-cols-3 gap-3 mb-4 shrink-0">
             {DASH_STATS.map((s) => (
-              <div key={s.label} className="rounded-lg bg-white/[0.025] border border-white/[0.06] p-3">
-                <div className="text-[10px] text-white/25 uppercase tracking-wider">{s.label}</div>
-                <div className="text-base font-bold text-white/85 mt-0.5">{s.value}</div>
-                <div className="text-[10px] text-white/20">{s.sub}</div>
+              <div key={s.label} className="rounded-xl bg-white/[0.03] border border-white/[0.07] p-4">
+                <div className="text-[10px] text-white/30 uppercase tracking-wider font-medium">{s.label}</div>
+                <div className="text-lg font-bold text-white/90 mt-1">{s.value}</div>
+                <div className="text-[10px] text-white/25 mt-0.5">{s.sub}</div>
               </div>
             ))}
           </div>
-          <div className="text-[10px] text-white/25 font-medium uppercase tracking-wider mb-2 shrink-0">Active Tasks</div>
-          <div className="flex-1 min-h-0 overflow-y-auto space-y-1.5" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.07) transparent' }}>
+          <div className="text-[10px] text-white/30 font-medium uppercase tracking-wider mb-2.5 shrink-0">Active Tasks</div>
+          <div className="flex-1 min-h-0 overflow-y-auto space-y-2" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.07) transparent' }}>
             {TASKS.slice(0, 8).map((t) => (
               <button key={t.id} type="button" className={ROW_BASE + ' w-full text-left'} onClick={() => openDetail('tasks', t)}>
                 <div className="w-2 h-2 rounded-full bg-teal-400/60 shrink-0" />
@@ -612,7 +612,7 @@ export function ProductLiveDemo() {
           onExport={handleExport}
           onNew={handleNew}
         />
-        <div className="flex-1 min-h-0 overflow-y-auto space-y-1.5" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.07) transparent' }}>
+        <div className="flex-1 min-h-0 overflow-y-auto space-y-2" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.07) transparent' }}>
           {items.length === 0 && (
             <div className="text-xs text-white/25 text-center py-8">No items match your search.</div>
           )}
@@ -684,21 +684,25 @@ export function ProductLiveDemo() {
 
       <div className="absolute inset-0 flex flex-col overflow-hidden">
         {/* Browser chrome bar */}
-        <div className="flex items-center justify-between px-3 py-2 sm:px-4 sm:py-2.5 border-b border-white/[0.07] bg-white/[0.015] shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="flex gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-red-400/50" />
-              <div className="w-2.5 h-2.5 rounded-full bg-amber-400/50" />
-              <div className="w-2.5 h-2.5 rounded-full bg-emerald-400/50" />
+        <div className="flex items-center justify-between px-3 py-2.5 sm:px-5 sm:py-3 border-b border-white/[0.07] bg-white/[0.02] shrink-0">
+          <div className="flex items-center gap-4">
+            <div className="flex gap-2">
+              <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
+              <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
+              <div className="w-3 h-3 rounded-full bg-[#28c840]" />
             </div>
-            <div className="text-[11px] text-white/28 font-mono tracking-wider hidden sm:block">app.formaos.com.au / {activeView}</div>
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.06] min-w-[220px]">
+              <svg className="w-3 h-3 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" /></svg>
+              <span className="text-[11px] text-white/30 font-mono">app.formaos.com.au / {activeView}</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="hidden min-[420px]:flex w-24 sm:w-28 h-6 rounded-md bg-white/[0.03] border border-white/[0.07] items-center px-2">
+          <div className="flex items-center gap-3">
+            <div className="hidden min-[420px]:flex w-28 sm:w-32 h-7 rounded-lg bg-white/[0.03] border border-white/[0.06] items-center px-2.5 gap-1.5">
+              <Search className="w-3 h-3 text-white/20" />
               <span className="text-[10px] text-white/20">Search…</span>
             </div>
-            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-teal-400/25 to-emerald-500/15 flex items-center justify-center">
-              <span className="text-[10px] font-bold text-white/55">FO</span>
+            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-teal-400/30 to-emerald-500/20 flex items-center justify-center ring-1 ring-white/[0.08]">
+              <span className="text-[10px] font-bold text-white/60">FO</span>
             </div>
           </div>
         </div>
@@ -707,14 +711,14 @@ export function ProductLiveDemo() {
         <div className="flex flex-1 min-h-0 overflow-hidden">
           {/* Sidebar — desktop only */}
           {!isMobile && (
-            <div className="w-[140px] shrink-0 border-r border-white/[0.06] bg-white/[0.02] py-3 px-2 flex flex-col overflow-hidden">
-              <div className="flex items-center gap-2 px-2 mb-4">
-                <div className="w-5 h-5 rounded-md bg-gradient-to-br from-teal-400/25 to-emerald-500/15 flex items-center justify-center">
-                  <span className="text-[9px] font-bold text-teal-400/80">FO</span>
+            <div className="w-[180px] shrink-0 border-r border-white/[0.06] bg-white/[0.015] py-4 px-3 flex flex-col overflow-hidden">
+              <div className="flex items-center gap-2.5 px-2 mb-5">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400/30 to-emerald-500/20 flex items-center justify-center ring-1 ring-teal-400/10">
+                  <span className="text-[10px] font-bold text-teal-400/90">FO</span>
                 </div>
                 <div>
-                  <div className="text-[10px] font-semibold text-white/55">FormaOS</div>
-                  <div className="text-[8px] text-white/20">Enterprise</div>
+                  <div className="text-[11px] font-semibold text-white/65">FormaOS</div>
+                  <div className="text-[9px] text-white/25">Enterprise</div>
                 </div>
               </div>
               <nav className="space-y-0.5" role="tablist" aria-label="App navigation">
@@ -730,22 +734,22 @@ export function ProductLiveDemo() {
                       tabIndex={isActive ? 0 : -1}
                       onClick={() => switchView(v.id)}
                       onKeyDown={(e) => handleSidebarKeyDown(e, idx)}
-                      className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-[11px] text-left transition-colors duration-100 focus:outline-none focus-visible:ring-1 focus-visible:ring-teal-400/40 ${
+                      className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-left transition-all duration-100 focus:outline-none focus-visible:ring-1 focus-visible:ring-teal-400/40 ${
                         isActive
-                          ? 'bg-teal-400/[0.08] text-teal-300 border border-teal-400/12'
-                          : 'text-white/30 hover:text-white/55 hover:bg-white/[0.03] border border-transparent'
+                          ? 'bg-teal-400/[0.10] text-teal-300 border border-teal-400/15 shadow-[0_0_12px_-3px_rgba(45,212,191,0.12)]'
+                          : 'text-white/35 hover:text-white/60 hover:bg-white/[0.04] border border-transparent'
                       }`}
                     >
-                      <VIcon className="w-3.5 h-3.5 opacity-70" />
+                      <VIcon className={`w-4 h-4 ${isActive ? 'opacity-90' : 'opacity-60'}`} />
                       <span className="truncate">{v.label}</span>
                     </button>
                   );
                 })}
               </nav>
-              <div className="mt-auto pt-2 border-t border-white/[0.06]">
-                <div className="flex items-center gap-1.5 px-2 mt-1">
-                  <div className="w-5 h-5 rounded-full bg-gradient-to-br from-amber-400/25 to-teal-400/15 shrink-0" />
-                  <span className="text-[10px] text-white/30 truncate">Nancy M.</span>
+              <div className="mt-auto pt-3 border-t border-white/[0.06]">
+                <div className="flex items-center gap-2 px-2 mt-1">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-400/30 to-teal-400/20 shrink-0 ring-1 ring-white/[0.06]" />
+                  <span className="text-[11px] text-white/35 truncate">Nancy M.</span>
                 </div>
               </div>
             </div>
@@ -777,24 +781,26 @@ export function ProductLiveDemo() {
             )}
 
             {/* Topbar */}
-            <div className="flex items-center justify-between px-3 py-2 sm:px-4 sm:py-2.5 border-b border-white/[0.06] shrink-0">
-              <div className="flex items-center gap-2">
-                <Icon className="w-4 h-4 text-white/40" />
+            <div className="flex items-center justify-between px-4 py-3 sm:px-5 sm:py-3.5 border-b border-white/[0.06] shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center">
+                  <Icon className="w-4 h-4 text-white/50" />
+                </div>
                 <div>
-                  <div className="text-sm font-semibold text-white/85">{viewMeta.label}</div>
-                  <div className="text-[10px] text-white/20">Last synced 2 min ago</div>
+                  <div className="text-sm font-semibold text-white/90">{viewMeta.label}</div>
+                  <div className="text-[10px] text-white/25">Last synced 2 min ago</div>
                 </div>
               </div>
               {activeView === 'dashboard' && (
                 <div className="flex items-center gap-2">
-                  <button onClick={handleExport} className="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.07] text-[10px] text-white/30 hover:bg-white/[0.05] transition-colors">Export</button>
-                  <button onClick={handleNew} className="px-2.5 py-1 rounded-md bg-teal-400/10 border border-teal-400/20 text-[10px] text-teal-300 hover:bg-teal-400/15 transition-colors">+ New</button>
+                  <button onClick={handleExport} className="px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.07] text-[11px] text-white/35 hover:bg-white/[0.06] transition-colors">Export</button>
+                  <button onClick={handleNew} className="px-3 py-1.5 rounded-lg bg-teal-400/12 border border-teal-400/20 text-[11px] text-teal-300 hover:bg-teal-400/18 transition-colors">+ New</button>
                 </div>
               )}
             </div>
 
             {/* Content */}
-            <div className="flex-1 min-h-0 overflow-hidden p-2.5 sm:p-4">
+            <div className="flex-1 min-h-0 overflow-hidden p-3 sm:p-5">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeView}

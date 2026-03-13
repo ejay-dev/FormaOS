@@ -117,10 +117,10 @@ export function ProductShowcaseSection() {
         </p>
       </div>
 
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-12">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-12">
         <div
           className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-slate-900/60"
-          style={{ height: 'clamp(340px, 52vh, 640px)' }}
+          style={{ height: 'clamp(480px, 65vh, 820px)' }}
         >
           {shouldRenderInteractive ? (
             <ProductLiveDemo />
