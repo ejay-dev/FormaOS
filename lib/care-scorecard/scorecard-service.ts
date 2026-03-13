@@ -337,8 +337,8 @@ async function calculateVisitMetrics(orgId: string): Promise<VisitMetrics> {
     inProgress,
     averageDuration,
     weeklyTrend,
-    byType: byType as any,
-    byStatus: byStatus as any,
+    byType: byType as Record<string, number>,
+    byStatus: byStatus as Record<string, number>,
   };
 }
 
@@ -539,8 +539,8 @@ async function calculateIncidentMetrics(orgId: string): Promise<IncidentMetrics>
     averageResolutionTime,
     weeklyTrend,
     monthlyTrend,
-    bySeverity: bySeverity as any,
-    byType: byType as any,
+    bySeverity: bySeverity as Record<string, number>,
+    byType: byType as Record<string, number>,
     requireFollowUp,
     overdueFollowUp,
   };
@@ -601,8 +601,8 @@ async function calculateWorkloadMetrics(orgId: string): Promise<WorkloadMetrics>
 
     distribution.push({
       userId: member.user_id,
-      staffName: (member as any).profiles?.full_name || 'Unknown',
-      staffEmail: (member as any).profiles?.email || '',
+      staffName: (member as { profiles?: { full_name?: string } }).profiles?.full_name || 'Unknown',
+      staffEmail: (member as { profiles?: { email?: string } }).profiles?.email || '',
       role: member.role,
       load: loadScore,
       activeClients,

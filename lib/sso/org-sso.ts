@@ -2,6 +2,28 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { parseIdpMetadataXml, type OrgSsoConfig } from '@/lib/sso/saml';
 
+interface SsoRow {
+  enabled: boolean;
+  enforce_sso: boolean;
+  idp_metadata_xml: string | null;
+  idp_entity_id: string | null;
+  sso_url: string | null;
+  certificate: string | null;
+  allowed_domains: string[] | null;
+}
+
+interface SsoDiscoveryRow {
+  organization_id: string;
+  enabled: boolean;
+  enforce_sso: boolean;
+  allowed_domains: string[] | null;
+}
+
+interface SubscriptionRow {
+  plan_key: string | null;
+  status: string | null;
+}
+
 export async function getOrgSsoConfig(orgId: string): Promise<OrgSsoConfig | null> {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
@@ -17,16 +39,15 @@ export async function getOrgSsoConfig(orgId: string): Promise<OrgSsoConfig | nul
 
   if (!data) return null;
 
+  const row = data as unknown as SsoRow;
   return {
-    enabled: Boolean((data as any).enabled),
-    enforceSso: Boolean((data as any).enforce_sso),
-    idpMetadataXml: (data as any).idp_metadata_xml ?? null,
-    idpEntityId: (data as any).idp_entity_id ?? null,
-    ssoUrl: (data as any).sso_url ?? null,
-    certificate: (data as any).certificate ?? null,
-    allowedDomains: Array.isArray((data as any).allowed_domains)
-      ? ((data as any).allowed_domains as string[])
-      : [],
+    enabled: Boolean(row.enabled),
+    enforceSso: Boolean(row.enforce_sso),
+    idpMetadataXml: row.idp_metadata_xml ?? null,
+    idpEntityId: row.idp_entity_id ?? null,
+    ssoUrl: row.sso_url ?? null,
+    certificate: row.certificate ?? null,
+    allowedDomains: Array.isArray(row.allowed_domains) ? row.allowed_domains : [],
   };
 }
 
@@ -100,9 +121,10 @@ export async function discoverOrgSsoByEmail(email: string): Promise<{
     return { ok: false, error: 'not_found' };
   }
 
-  const orgId = (data as any).organization_id as string;
-  const enabled = Boolean((data as any).enabled);
-  const enforceConfigured = Boolean((data as any).enforce_sso);
+  const row = data as unknown as SsoDiscoveryRow;
+  const orgId = row.organization_id;
+  const enabled = Boolean(row.enabled);
+  const enforceConfigured = Boolean(row.enforce_sso);
 
   // Commercial gate: only enforce SSO for active Enterprise plan orgs.
   let enforceSso = false;
@@ -112,8 +134,9 @@ export async function discoverOrgSsoByEmail(email: string): Promise<{
       .select('plan_key, status')
       .eq('organization_id', orgId)
       .maybeSingle();
-    const isActive = (sub as any)?.status === 'active' || (sub as any)?.status === 'trialing';
-    const isEnterprise = (sub as any)?.plan_key === 'enterprise';
+    const subRow = sub as unknown as SubscriptionRow | null;
+    const isActive = subRow?.status === 'active' || subRow?.status === 'trialing';
+    const isEnterprise = subRow?.plan_key === 'enterprise';
     enforceSso = Boolean(enabled && enforceConfigured && isActive && isEnterprise);
   } catch {
     enforceSso = false;

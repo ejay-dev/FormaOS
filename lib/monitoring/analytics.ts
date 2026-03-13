@@ -5,9 +5,37 @@
 
 'use client';
 
+// PostHog window augmentation — avoids `(window as any)` casts throughout
+interface PostHogInstance {
+  init: (key: string, config: Record<string, unknown>) => void;
+  identify: (userId: string, properties?: Record<string, unknown>) => void;
+  reset: () => void;
+  capture: (event: string, properties?: Record<string, unknown>) => void;
+  getAllFlags: () => Promise<Record<string, boolean | string>>;
+  isFeatureEnabled: (flag: string) => boolean;
+  register: (properties: Record<string, unknown>) => void;
+  people: { set: (properties: Record<string, unknown>) => void };
+  opt_out_capturing: () => void;
+  opt_in_capturing: () => void;
+}
+
+interface WindowWithPostHog extends Window {
+  posthog?: PostHogInstance;
+}
+
+function getPostHog(): PostHogInstance | undefined {
+  if (typeof window === 'undefined') return undefined;
+  return (window as WindowWithPostHog).posthog;
+}
+
+function setPostHog(instance: PostHogInstance): void {
+  if (typeof window === 'undefined') return;
+  (window as WindowWithPostHog).posthog = instance;
+}
+
 interface AnalyticsEvent {
   event: string;
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
   timestamp: number;
   sessionId: string;
   userId?: string;
@@ -72,7 +100,7 @@ class Analytics {
     if (typeof window === 'undefined') return;
 
     // Check if PostHog is already loaded
-    if ((window as any).posthog) return;
+    if (getPostHog()) return;
 
     // Only initialize in production or when explicitly enabled
     const isEnabled =
@@ -119,7 +147,7 @@ class Analytics {
       });
 
       // Make PostHog available globally
-      (window as any).posthog = posthog;
+      setPostHog(posthog as unknown as PostHogInstance);
     } catch (error) {
       console.error('Failed to initialize PostHog:', error);
     }
@@ -132,9 +160,8 @@ class Analytics {
     this.userId = userId;
     this.userProperties = { ...this.userProperties, userId, ...properties };
 
-    if (typeof window !== 'undefined' && (window as any).posthog) {
-      (window as any).posthog.identify(userId, properties);
-    }
+    const ph = getPostHog();
+    if (ph) ph.identify(userId, properties ? { ...properties } : undefined);
   }
 
   /**
@@ -144,15 +171,14 @@ class Analytics {
     this.userId = undefined;
     this.userProperties = {};
 
-    if (typeof window !== 'undefined' && (window as any).posthog) {
-      (window as any).posthog.reset();
-    }
+    const ph = getPostHog();
+    if (ph) ph.reset();
   }
 
   /**
    * Track an event
    */
-  track(event: string, properties?: Record<string, any>) {
+  track(event: string, properties?: Record<string, unknown>) {
     const analyticsEvent: AnalyticsEvent = {
       event,
       properties: {
@@ -179,7 +205,7 @@ class Analytics {
   /**
    * Track page view
    */
-  page(pageName?: string, properties?: Record<string, any>) {
+  page(pageName?: string, properties?: Record<string, unknown>) {
     if (typeof window === 'undefined') return;
 
     const pageProperties = {
@@ -194,9 +220,8 @@ class Analytics {
     this.track('page_view', pageProperties);
 
     // Also send to PostHog's page tracking
-    if ((window as any).posthog) {
-      (window as any).posthog.capture('$pageview', pageProperties);
-    }
+    const ph = getPostHog();
+    if (ph) ph.capture('$pageview', pageProperties);
   }
 
   /**
@@ -205,7 +230,7 @@ class Analytics {
   feature(
     featureName: string,
     action: string,
-    properties?: Record<string, any>,
+    properties?: Record<string, unknown>,
   ) {
     this.track('feature_used', {
       feature_name: featureName,
@@ -220,7 +245,7 @@ class Analytics {
   journey(
     step: string,
     status: 'started' | 'completed' | 'failed',
-    properties?: Record<string, any>,
+    properties?: Record<string, unknown>,
   ) {
     this.track('user_journey', {
       journey_step: step,
@@ -232,7 +257,7 @@ class Analytics {
   /**
    * Track business metrics
    */
-  business(metric: string, value: number, properties?: Record<string, any>) {
+  business(metric: string, value: number, properties?: Record<string, unknown>) {
     this.track('business_metric', {
       metric_name: metric,
       metric_value: value,
@@ -243,7 +268,7 @@ class Analytics {
   /**
    * Track conversion events
    */
-  conversion(event: string, value?: number, properties?: Record<string, any>) {
+  conversion(event: string, value?: number, properties?: Record<string, unknown>) {
     this.track('conversion', {
       conversion_event: event,
       conversion_value: value,
@@ -254,7 +279,7 @@ class Analytics {
   /**
    * Track performance metrics
    */
-  performance(metric: string, value: number, properties?: Record<string, any>) {
+  performance(metric: string, value: number, properties?: Record<string, unknown>) {
     this.track('performance_metric', {
       metric_name: metric,
       metric_value: value,
@@ -268,7 +293,7 @@ class Analytics {
   experiment(
     testName: string,
     variant: string,
-    properties?: Record<string, any>,
+    properties?: Record<string, unknown>,
   ) {
     this.track('experiment_viewed', {
       experiment_name: testName,
@@ -281,12 +306,13 @@ class Analytics {
    * Get feature flags
    */
   async getFeatureFlags(): Promise<Record<string, boolean | string>> {
-    if (typeof window === 'undefined' || !(window as any).posthog) {
+    const ph = getPostHog();
+    if (typeof window === 'undefined' || !ph) {
       return {};
     }
 
     try {
-      const flags = await (window as any).posthog.getAllFlags();
+      const flags = await ph.getAllFlags();
       return flags || {};
     } catch (error) {
       console.warn('Failed to get feature flags:', error);
@@ -298,12 +324,13 @@ class Analytics {
    * Check if feature flag is enabled
    */
   isFeatureEnabled(flag: string): boolean {
-    if (typeof window === 'undefined' || !(window as any).posthog) {
+    const ph = getPostHog();
+    if (typeof window === 'undefined' || !ph) {
       return false;
     }
 
     try {
-      return (window as any).posthog.isFeatureEnabled(flag) || false;
+      return ph.isFeatureEnabled(flag) || false;
     } catch (error) {
       console.warn('Failed to check feature flag:', error);
       return false;
@@ -317,9 +344,10 @@ class Analytics {
     if (typeof window === 'undefined') return;
 
     // Send to PostHog
-    if ((window as any).posthog) {
+    const ph = getPostHog();
+    if (ph) {
       try {
-        (window as any).posthog.capture(event.event, event.properties);
+        ph.capture(event.event, event.properties);
       } catch (error) {
         console.warn('Failed to send event to PostHog:', error);
       }
@@ -361,27 +389,24 @@ class Analytics {
   setUserProperties(properties: UserProperties) {
     this.userProperties = { ...this.userProperties, ...properties };
 
-    if (typeof window !== 'undefined' && (window as any).posthog) {
-      (window as any).posthog.people.set(properties);
-    }
+    const ph = getPostHog();
+    if (ph) ph.people.set({ ...properties });
   }
 
   /**
    * Opt user out of tracking
    */
   optOut() {
-    if (typeof window !== 'undefined' && (window as any).posthog) {
-      (window as any).posthog.opt_out_capturing();
-    }
+    const ph = getPostHog();
+    if (ph) ph.opt_out_capturing();
   }
 
   /**
    * Opt user back into tracking
    */
   optIn() {
-    if (typeof window !== 'undefined' && (window as any).posthog) {
-      (window as any).posthog.opt_in_capturing();
-    }
+    const ph = getPostHog();
+    if (ph) ph.opt_in_capturing();
   }
 }
 
@@ -410,7 +435,7 @@ export function useAnalytics() {
  */
 export function useTrackMount(
   componentName: string,
-  properties?: Record<string, any>,
+  properties?: Record<string, unknown>,
 ) {
   const analytics = useAnalytics();
 
@@ -429,19 +454,19 @@ export function useTrackLifecycle(componentName: string) {
   const analytics = useAnalytics();
 
   return {
-    onMount: (properties?: Record<string, any>) => {
+    onMount: (properties?: Record<string, unknown>) => {
       analytics.track('component_mounted', {
         component_name: componentName,
         ...properties,
       });
     },
-    onUnmount: (properties?: Record<string, any>) => {
+    onUnmount: (properties?: Record<string, unknown>) => {
       analytics.track('component_unmounted', {
         component_name: componentName,
         ...properties,
       });
     },
-    onUpdate: (properties?: Record<string, any>) => {
+    onUpdate: (properties?: Record<string, unknown>) => {
       analytics.track('component_updated', {
         component_name: componentName,
         ...properties,

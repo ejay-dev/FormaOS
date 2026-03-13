@@ -3,6 +3,8 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requirePermission } from '@/app/app/actions/rbac';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { z } from 'zod';
+import { formatZodError } from '@/lib/security/api-validation';
 import {
   createRelayWebhook,
   listRelayWebhooks,
@@ -12,6 +14,29 @@ import {
   type CreateRelayWebhookInput,
   type RelayEventType,
 } from '@/lib/integrations/webhook-relay';
+
+const VALID_EVENTS = [
+  'member.added',
+  'member.removed',
+  'task.created',
+  'task.completed',
+  'evidence.uploaded',
+  'evidence.verified',
+  'policy.published',
+  'incident.created',
+  'compliance.score_changed',
+] as const;
+
+const createWebhookSchema = z.object({
+  name: z.string().trim().min(1, 'Name is required').max(200, 'Name too long'),
+  url: z.string().url('Invalid URL').max(2048, 'URL too long'),
+  provider: z.enum(['zapier', 'make', 'custom']).default('custom'),
+  events: z.array(z.string().min(1).max(100)).min(1, 'At least one event is required').max(20),
+  enabled: z.boolean().default(true),
+  retry_count: z.number().int().min(0).max(10).default(3),
+  headers: z.record(z.string().max(200), z.string().max(2000)).default({}),
+  description: z.string().max(1000).default(''),
+});
 
 const log = routeLog('/api/v1/webhooks');
 
@@ -127,55 +152,26 @@ export async function POST(request: Request) {
     }
 
     // 3. Parse & validate request body
-    let body: Record<string, unknown>;
+    let rawBody: unknown;
     try {
-      body = await request.json();
+      rawBody = await request.json();
     } catch {
       return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
     }
 
-    const {
-      name,
-      url,
-      provider,
-      events,
-      enabled,
-      retry_count,
-      headers,
-      description,
-    } = body as Record<string, any>;
-
-    // Required fields
-    if (!name || typeof name !== 'string' || name.trim().length === 0) {
+    const parsed = createWebhookSchema.safeParse(rawBody);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: 'Missing or invalid field: name' },
+        formatZodError(parsed.error),
         { status: 400 },
       );
     }
 
-    if (!url || typeof url !== 'string') {
-      return NextResponse.json(
-        { error: 'Missing or invalid field: url' },
-        { status: 400 },
-      );
-    }
+    const { name, url, provider, events, enabled, retry_count, headers, description } = parsed.data;
 
     if (!(await isValidWebhookUrl(url))) {
       return NextResponse.json(
-        {
-          error:
-            'Invalid webhook URL. Must be HTTPS (or localhost for development).',
-        },
-        { status: 400 },
-      );
-    }
-
-    if (!Array.isArray(events) || events.length === 0) {
-      return NextResponse.json(
-        {
-          error:
-            'Missing or invalid field: events. Must be a non-empty array of event types.',
-        },
+        { error: 'Invalid webhook URL. Must be HTTPS (or localhost for development).' },
         { status: 400 },
       );
     }
@@ -185,39 +181,22 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           error: `Invalid event types: ${invalidEvents.join(', ')}`,
-          valid_events: [
-            'member.added',
-            'member.removed',
-            'task.created',
-            'task.completed',
-            'evidence.uploaded',
-            'evidence.verified',
-            'policy.published',
-            'incident.created',
-            'compliance.score_changed',
-          ],
+          valid_events: VALID_EVENTS,
         },
-        { status: 400 },
-      );
-    }
-
-    if (provider && !['zapier', 'make', 'custom'].includes(provider)) {
-      return NextResponse.json(
-        { error: 'Invalid provider. Must be one of: zapier, make, custom' },
         { status: 400 },
       );
     }
 
     // 4. Create webhook
     const input: CreateRelayWebhookInput = {
-      name: name.trim(),
+      name,
       url,
-      provider: provider ?? 'custom',
+      provider,
       events: events as RelayEventType[],
-      enabled: enabled ?? true,
-      retry_count: retry_count ?? 3,
-      headers: headers ?? {},
-      description: description ?? '',
+      enabled,
+      retry_count,
+      headers,
+      description,
     };
 
     const webhook = await createRelayWebhook(permissionCtx.orgId, input);

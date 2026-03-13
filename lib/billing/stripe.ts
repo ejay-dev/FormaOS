@@ -1,5 +1,6 @@
 import Stripe from 'stripe';
 import { resolvePlanKey, type PlanKey } from '@/lib/plans';
+import { billingLogger } from '@/lib/observability/structured-logger';
 
 let stripeClient: Stripe | null = null;
 
@@ -14,7 +15,7 @@ export function getStripeClient(): Stripe | null {
 
   const secretKey = process.env.STRIPE_SECRET_KEY;
   if (!secretKey) {
-    console.error('[Stripe] Missing STRIPE_SECRET_KEY.');
+    billingLogger.warn('stripe_secret_key_missing');
     return null;
   }
 
@@ -35,7 +36,7 @@ export function getStripePriceId(planKey: string): string | null {
 
   const priceId = priceMap[planKey];
   if (!priceId) {
-    console.error(`[Stripe] Missing price ID for plan ${planKey}.`);
+    billingLogger.warn('stripe_price_id_missing', { planKey });
     return null;
   }
 

@@ -61,18 +61,29 @@ export async function PATCH(request: Request) {
     );
   }
 
-  const body = await request.json();
-  const region = body.region as DataRegion;
-
-  if (!region) {
-    return NextResponse.json({ error: 'region is required' }, { status: 400 });
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  const result = await setOrgDataRegion(membership.organization_id, region);
+  const VALID_REGIONS: DataRegion[] = ['au', 'us', 'eu'];
+  const region = (body as Record<string, unknown>)?.region;
+
+  if (!region || typeof region !== 'string' || !VALID_REGIONS.includes(region as DataRegion)) {
+    return NextResponse.json(
+      { error: `region is required and must be one of: ${VALID_REGIONS.join(', ')}` },
+      { status: 400 },
+    );
+  }
+
+  const validRegion = region as DataRegion;
+  const result = await setOrgDataRegion(membership.organization_id, validRegion);
 
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 400 });
   }
 
-  return NextResponse.json({ ok: true, region });
+  return NextResponse.json({ ok: true, region: validRegion });
 }

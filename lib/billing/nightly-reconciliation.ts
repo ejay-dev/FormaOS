@@ -328,7 +328,7 @@ async function logReconciliationEvent(
     }).then(({ error }: { error: { message: string } | null }) => {
       // Ignore if table doesn't exist yet
       if (error && !error.message.includes("does not exist")) {
-        console.error("[reconciliation] Log insert error:", error);
+        billingLogger.warn("reconciliation_log_insert_error", { error: error.message });
       }
     });
   } catch {

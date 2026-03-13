@@ -1,6 +1,7 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { syncEntitlementsForPlan } from '@/lib/billing/entitlements';
 import { resolvePlanKey, type PlanKey } from '@/lib/plans';
+import { billingLogger } from '@/lib/observability/structured-logger';
 
 const TRIAL_DAYS = 14;
 
@@ -69,14 +70,14 @@ export async function ensureSubscription(
       );
 
       if (legacyOrgError) {
-        console.error(
-          '[ensureSubscription] legacy orgs upsert failed',
-          legacyOrgError,
-        );
+        billingLogger.warn('legacy_orgs_upsert_failed', { orgId, error: legacyOrgError.message });
       }
     }
   } catch (error) {
-    console.error('[ensureSubscription] legacy orgs backfill error', error);
+    billingLogger.warn('legacy_orgs_backfill_error', {
+      orgId,
+      error: error instanceof Error ? error.message : String(error),
+    });
   }
 
   const basePayload = {
@@ -110,13 +111,16 @@ export async function ensureSubscription(
         .from('org_subscriptions')
         .upsert(basePayload);
       if (fallbackError) {
-        console.error(
-          '[ensureSubscription] fallback upsert failed',
-          fallbackError,
-        );
+        billingLogger.error('subscription_upsert_failed', {
+          code: 'FALLBACK_UPSERT_ERROR',
+          message: fallbackError.message,
+        }, { orgId });
       }
     } else {
-      console.error('[ensureSubscription] upsert failed', legacyError);
+      billingLogger.error('subscription_upsert_failed', {
+        code: 'UPSERT_ERROR',
+        message: legacyError.message ?? 'Unknown error',
+      }, { orgId });
     }
   }
 
