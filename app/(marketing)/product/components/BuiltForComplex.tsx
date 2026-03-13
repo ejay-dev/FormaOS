@@ -1,8 +1,7 @@
 'use client';
 
-import { Building2, Globe, GitBranch, Users, Eye } from 'lucide-react';
+import { Globe, GitBranch, Users, Eye } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const scales = [
   { label: 'Multi-site operations', icon: Globe },
@@ -13,37 +12,41 @@ const scales = [
 
 export function BuiltForComplex() {
   return (
-    <section className="product-section product-section--core relative py-32 overflow-hidden">
-      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="depthSlide" range={[0, 0.35]}>
-          <div className="product-panel product-panel--strong backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 sm:p-12 text-center">
-            <ScrollReveal variant="depthScale" range={[0, 0.3]}>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm font-medium mb-6">
-                <Building2 className="w-4 h-4" />
-                Built for Complex Organizations
-              </div>
-            </ScrollReveal>
+    <section className="relative py-24 sm:py-32">
+      <div className="max-w-5xl mx-auto px-6 lg:px-12">
+        <ScrollReveal variant="fadeUp">
+          <div className="rounded-3xl border border-white/[0.08] bg-slate-900/60 p-8 sm:p-12 text-center">
+            <span className="mk-badge mk-badge--section mb-6">
+              Built for Complex Organizations
+            </span>
 
             <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-white">
               One System. One Source of Truth.
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto mb-10">
+            <p className="text-slate-400 max-w-2xl mx-auto mb-10">
               Whether you manage one site or hundreds, FormaOS scales across:
             </p>
 
-            <SectionChoreography pattern="cascade" stagger={0.04} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               {scales.map((scale) => {
                 const Icon = scale.icon;
                 return (
-                  <div key={scale.label} className="product-panel product-panel--soft flex items-center gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/5">
-                    <Icon className="w-5 h-5 text-indigo-400" />
-                    <span className="text-sm text-gray-300">{scale.label}</span>
+                  <div
+                    key={scale.label}
+                    className="flex items-center gap-3 p-4 rounded-xl border border-white/[0.06] bg-slate-900/50"
+                  >
+                    <Icon className="w-5 h-5 text-teal-400" />
+                    <span className="text-sm text-slate-300">
+                      {scale.label}
+                    </span>
                   </div>
                 );
               })}
-            </SectionChoreography>
+            </div>
 
-            <p className="text-lg font-medium text-white">Full organizational alignment.</p>
+            <p className="text-lg font-medium text-white">
+              Full organizational alignment.
+            </p>
           </div>
         </ScrollReveal>
       </div>

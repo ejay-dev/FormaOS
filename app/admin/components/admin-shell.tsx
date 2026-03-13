@@ -53,10 +53,18 @@ const NAV_SECTIONS = [
   {
     label: 'Platform',
     items: [
-      { name: 'Command Center', href: '/admin/control-plane', icon: SlidersHorizontal },
+      {
+        name: 'Command Center',
+        href: '/admin/control-plane',
+        icon: SlidersHorizontal,
+      },
       { name: 'Features', href: '/admin/features', icon: Zap },
       { name: 'Security', href: '/admin/security', icon: Shield },
-      { name: 'Risk Triage', href: '/admin/security/triage', icon: ShieldAlert },
+      {
+        name: 'Risk Triage',
+        href: '/admin/security/triage',
+        icon: ShieldAlert,
+      },
       { name: 'System', href: '/admin/system', icon: Activity },
       { name: 'Audit', href: '/admin/audit', icon: FileText },
       { name: 'Releases', href: '/admin/releases', icon: Tag },
@@ -109,7 +117,9 @@ export function AdminShell({
             <Logo variant="mark" size={40} />
             <div className="hidden sm:block">
               <div className="text-sm font-bold">{brand.appName} Admin</div>
-              <div className="text-xs text-muted-foreground">Platform Console</div>
+              <div className="text-xs text-muted-foreground">
+                Platform Console
+              </div>
             </div>
           </Link>
         </div>
@@ -192,7 +202,12 @@ export function AdminShell({
         <div
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              (e.currentTarget as HTMLElement).click();
+            }
+          }}
           className="fixed inset-0 bg-black/50 lg:hidden z-30"
           onClick={() => setSidebarOpen(false)}
         />

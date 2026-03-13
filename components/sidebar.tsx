@@ -32,7 +32,8 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
 
   const prefetchRoute = useCallback(
     (href: string) => {
-      if (!href || href === pathname || prefetchedRoutes.current.has(href)) return;
+      if (!href || href === pathname || prefetchedRoutes.current.has(href))
+        return;
       prefetchedRoutes.current.add(href);
       router.prefetch(href);
     },
@@ -47,7 +48,9 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
     const saveData = connection?.saveData === true;
     const effectiveType = connection?.effectiveType as string | undefined;
     const isSlowNetwork =
-      effectiveType === 'slow-2g' || effectiveType === '2g' || effectiveType === '3g';
+      effectiveType === 'slow-2g' ||
+      effectiveType === '2g' ||
+      effectiveType === '3g';
 
     // Avoid eager prefetch on constrained networks.
     if (saveData || isSlowNetwork) return;
@@ -65,9 +68,12 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
       | undefined;
 
     if (idleCallback) {
-      const id = idleCallback(() => {
-        candidates.forEach(prefetchRoute);
-      }, { timeout: 1200 });
+      const id = idleCallback(
+        () => {
+          candidates.forEach(prefetchRoute);
+        },
+        { timeout: 1200 },
+      );
       return () => {
         const cancelIdle = (window as any).cancelIdleCallback as
           | ((idleId: number) => void)

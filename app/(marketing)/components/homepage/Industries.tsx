@@ -1,7 +1,6 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { duration } from '@/config/motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import Link from 'next/link';
@@ -24,21 +23,11 @@ interface IndustrySolution {
   icon: LucideIcon;
   title: string;
   subtitle: string;
-  problemStatement: string;
   regulators: string;
-  solutionMapping: {
-    title: string;
-    features: string[];
-  };
-  capabilities: {
-    icon: LucideIcon;
-    title: string;
-    description: string;
-  }[];
-  cta: {
-    text: string;
-    href: string;
-  };
+  problemStatement: string;
+  solutionMapping: { title: string; features: string[] };
+  capabilities: { icon: LucideIcon; title: string; description: string }[];
+  cta: { text: string; href: string };
 }
 
 const industrySolutions: IndustrySolution[] = [
@@ -48,7 +37,7 @@ const industrySolutions: IndustrySolution[] = [
     subtitle: 'HIPAA · RACGP · AHPRA · NSQHS',
     regulators: 'RACGP, AHPRA, NSQHS',
     problemStatement:
-      'Healthcare providers face mounting pressure from patient safety requirements, clinical governance obligations, and audit cycles that demand instant evidence retrieval. One compliance gap can mean regulatory sanctions, accreditation loss, or worse: patient harm.',
+      'Healthcare providers face mounting pressure from patient safety requirements, clinical governance obligations, and audit cycles that demand instant evidence retrieval.',
     solutionMapping: {
       title: 'FormaOS Healthcare Module',
       features: [
@@ -78,10 +67,7 @@ const industrySolutions: IndustrySolution[] = [
           'Aligned to RACGP, AHPRA, and NSQHS standards with configurable templates',
       },
     ],
-    cta: {
-      text: 'Explore Healthcare Solution',
-      href: '/use-cases/healthcare',
-    },
+    cta: { text: 'Explore Healthcare Solution', href: '/use-cases/healthcare' },
   },
   {
     icon: Users,
@@ -89,7 +75,7 @@ const industrySolutions: IndustrySolution[] = [
     subtitle: 'NDIS Practice Standards · Quality & Safeguards Commission',
     regulators: 'NDIS Quality and Safeguards Commission',
     problemStatement:
-      'NDIS providers operate under intense scrutiny from the Quality and Safeguards Commission. Participant safety incidents, worker screening lapses, and missing evidence during audits can result in registration revocation and service shutdown.',
+      'NDIS providers operate under intense scrutiny from the Quality and Safeguards Commission. Participant safety incidents, worker screening lapses, and missing evidence during audits can result in registration revocation.',
     solutionMapping: {
       title: 'FormaOS NDIS Module',
       features: [
@@ -115,13 +101,11 @@ const industrySolutions: IndustrySolution[] = [
       {
         icon: CheckCircle,
         title: 'Audit Evidence',
-        description: 'Evidence bundles and exports structured for NDIS auditor access',
+        description:
+          'Evidence bundles and exports structured for NDIS auditor access',
       },
     ],
-    cta: {
-      text: 'Explore NDIS Solution',
-      href: '/use-cases/ndis-aged-care',
-    },
+    cta: { text: 'Explore NDIS Solution', href: '/use-cases/ndis-aged-care' },
   },
   {
     icon: TrendingUp,
@@ -129,7 +113,7 @@ const industrySolutions: IndustrySolution[] = [
     subtitle: 'SOC 2 · ISO 27001 · ASIC · APRA',
     regulators: 'ASIC, APRA, ACCC',
     problemStatement:
-      'Financial institutions face relentless compliance demands from multiple frameworks simultaneously. Manual evidence collection for audits consumes significant time, while security incidents require immediate documentation and defensible response trails.',
+      'Financial institutions face relentless compliance demands from multiple frameworks simultaneously. Manual evidence collection consumes significant time, while security incidents require immediate documentation.',
     solutionMapping: {
       title: 'FormaOS Financial Module',
       features: [
@@ -155,7 +139,8 @@ const industrySolutions: IndustrySolution[] = [
       {
         icon: CheckCircle,
         title: 'Audit Acceleration',
-        description: 'Average audit prep reduced from weeks to under 2 days for financial services teams',
+        description:
+          'Average audit prep reduced from weeks to under 2 days for financial services teams',
       },
     ],
     cta: {
@@ -169,7 +154,7 @@ const industrySolutions: IndustrySolution[] = [
     subtitle: 'TEQSA · ASQA · RTO Standards · VRQA',
     regulators: 'TEQSA, ASQA, VRQA',
     problemStatement:
-      'Education providers preparing for TEQSA registration or ASQA audits spend months gathering evidence across departments. Missing documentation, outdated policies, or incomplete staff records can delay registration or trigger compliance conditions.',
+      'Education providers preparing for TEQSA registration or ASQA audits spend months gathering evidence across departments. Missing documentation or incomplete staff records can delay registration.',
     solutionMapping: {
       title: 'FormaOS Education Module',
       features: [
@@ -199,10 +184,7 @@ const industrySolutions: IndustrySolution[] = [
           'Evidence organized by TEQSA/ASQA standard for instant retrieval during site audits',
       },
     ],
-    cta: {
-      text: 'Explore Education Solution',
-      href: '/industries',
-    },
+    cta: { text: 'Explore Education Solution', href: '/industries' },
   },
   {
     icon: Building2,
@@ -210,7 +192,7 @@ const industrySolutions: IndustrySolution[] = [
     subtitle: 'FOI · ISM · PSPF · Essential Eight',
     regulators: 'ASD, AGD, OAIC',
     problemStatement:
-      'Government agencies face unique accountability requirements: Freedom of Information requests, ministerial briefings, and public sector performance reporting. Every decision must be documented, defensible, and retrievable on demand.',
+      'Government agencies face unique accountability requirements: Freedom of Information requests, ministerial briefings, and public sector performance reporting. Every decision must be documented and defensible.',
     solutionMapping: {
       title: 'FormaOS Government Module',
       features: [
@@ -240,41 +222,26 @@ const industrySolutions: IndustrySolution[] = [
           'Essential Eight maturity tracking with evidence mapped to each mitigation strategy',
       },
     ],
-    cta: {
-      text: 'Explore Government Solution',
-      href: '/industries',
-    },
+    cta: { text: 'Explore Government Solution', href: '/industries' },
   },
 ];
 
 export function Industries() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
 
-  const toggleExpand = (index: number) => {
-    setExpandedIndex(expandedIndex === index ? null : index);
-  };
-
   return (
-    <section className="mk-section home-section home-section--contrast relative overflow-hidden">
-      {/* Section dividers */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
-        <ScrollReveal variant="slideUp" range={[0, 0.3]} className="text-center mb-16 lg:mb-20">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-400/20 text-teal-400 text-sm font-medium mb-6">
-            <span className="w-2 h-2 rounded-full bg-teal-400" />
+    <section className="mk-section relative">
+      <div className="max-w-6xl mx-auto px-6">
+        <ScrollReveal variant="fadeUp" className="text-center mb-12">
+          <span className="mk-badge mk-badge--section mb-6">
             Industry Solutions
-          </div>
+          </span>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
-            Built for{' '}
-            <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
-              High-Accountability
-            </span>{' '}
+          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-4 text-white">
+            Built for <span className="text-teal-400">High-Accountability</span>{' '}
             Industries
           </h2>
-          <p className="text-base md:text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed">
             When compliance failure means regulatory action, accreditation loss,
             or operational shutdown, FormaOS delivers the evidence
             infrastructure your industry demands.
@@ -287,124 +254,115 @@ export function Industries() {
             const isExpanded = expandedIndex === index;
 
             return (
-              <ScrollReveal
-                key={solution.title}
-                variant="fadeUp"
-                range={[index * 0.04, 0.3 + index * 0.04]}
-              >
-                {/* Accordion trigger */}
+              <div key={solution.title}>
                 <button
-                  onClick={() => toggleExpand(index)}
-                  className={`w-full p-5 lg:p-6 rounded-2xl border text-left transition-all duration-300 ${
+                  onClick={() => setExpandedIndex(isExpanded ? null : index)}
+                  className={`w-full p-5 rounded-xl border text-left transition-colors duration-200 ${
                     isExpanded
-                      ? 'bg-white/[0.06] border-teal-400/25'
-                      : 'bg-white/[0.02] border-white/[0.06] hover:border-teal-400/20 hover:bg-white/[0.04]'
+                      ? 'bg-slate-900/80 border-teal-500/20'
+                      : 'bg-slate-900/50 border-white/[0.06] hover:border-teal-500/20'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4 lg:gap-5">
-                      <div className={`inline-flex items-center justify-center rounded-xl border border-teal-400/20 bg-teal-500/10 p-3 transition-transform duration-300 ${isExpanded ? 'scale-110' : ''}`}>
-                        <Icon className="w-5 h-5 lg:w-6 lg:h-6 text-teal-400" />
+                    <div className="flex items-center gap-4">
+                      <div className="inline-flex items-center justify-center rounded-lg bg-teal-500/10 border border-teal-500/20 p-2.5">
+                        <Icon className="w-5 h-5 text-teal-400" />
                       </div>
                       <div>
-                        <h3 className="text-base lg:text-xl font-bold text-white mb-0.5">
+                        <h3 className="text-base font-semibold text-white">
                           {solution.title}
                         </h3>
-                        <p className="text-xs lg:text-sm text-slate-500">
+                        <p className="text-xs text-slate-500 mt-0.5">
                           {solution.subtitle}
                         </p>
                       </div>
                     </div>
                     <motion.div
                       animate={{ rotate: isExpanded ? 180 : 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="text-teal-400 ml-4 shrink-0"
+                      transition={{ duration: 0.2 }}
+                      className="text-slate-400 ml-4 shrink-0"
                     >
                       <ChevronDown className="w-5 h-5" />
                     </motion.div>
                   </div>
                 </button>
 
-                {/* Expanded panel */}
                 <AnimatePresence>
                   {isExpanded && (
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: duration.normal, ease: 'easeInOut' }}
+                      transition={{ duration: 0.2 }}
                       className="overflow-hidden"
                     >
-                      <div className="mt-1 rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6 lg:p-8">
-                        {/* Regulator badge */}
-                        <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-6">
-                          Regulated by: <span className="text-teal-400">{solution.regulators}</span>
+                      <div className="mt-1 rounded-xl border border-white/[0.06] bg-slate-900/50 p-6">
+                        <p className="text-[11px] font-medium uppercase tracking-wider text-slate-500 mb-5">
+                          Regulated by:{' '}
+                          <span className="text-teal-400">
+                            {solution.regulators}
+                          </span>
                         </p>
 
-                        <div className="grid lg:grid-cols-2 gap-8 mb-8">
-                          {/* Challenge */}
-                          <div className="space-y-3">
-                            <div className="flex items-center gap-2 text-rose-400 text-sm font-medium">
+                        <div className="grid lg:grid-cols-2 gap-6 mb-6">
+                          <div>
+                            <div className="flex items-center gap-2 text-rose-400 text-sm font-medium mb-2">
                               <AlertCircle className="w-4 h-4" />
                               The Challenge
                             </div>
-                            <p className="text-slate-300 text-sm leading-relaxed">
+                            <p className="text-slate-400 text-sm leading-relaxed">
                               {solution.problemStatement}
                             </p>
                           </div>
-
-                          {/* Solution */}
-                          <div className="space-y-3">
-                            <div className="flex items-center gap-2 text-emerald-400 text-sm font-medium">
+                          <div>
+                            <div className="flex items-center gap-2 text-emerald-400 text-sm font-medium mb-2">
                               <CheckCircle className="w-4 h-4" />
                               {solution.solutionMapping.title}
                             </div>
-                            <ul className="space-y-2.5">
-                              {solution.solutionMapping.features.map((feature, i) => (
-                                <motion.li
-                                  key={i}
-                                  initial={{ opacity: 0, x: -10 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: 0.1 + i * 0.08 }}
-                                  className="flex items-start gap-2.5"
-                                >
-                                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-400/60" />
-                                  <span className="text-slate-300 text-sm">{feature}</span>
-                                </motion.li>
-                              ))}
+                            <ul className="space-y-2">
+                              {solution.solutionMapping.features.map(
+                                (feature, i) => (
+                                  <li
+                                    key={i}
+                                    className="flex items-start gap-2"
+                                  >
+                                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-teal-400/60" />
+                                    <span className="text-slate-400 text-sm">
+                                      {feature}
+                                    </span>
+                                  </li>
+                                ),
+                              )}
                             </ul>
                           </div>
                         </div>
 
-                        {/* Capability cards */}
-                        <div className="grid md:grid-cols-3 gap-3 mb-8">
-                          {solution.capabilities.map((capability, i) => {
-                            const CapIcon = capability.icon;
+                        <div className="grid md:grid-cols-3 gap-3 mb-6">
+                          {solution.capabilities.map((cap) => {
+                            const CapIcon = cap.icon;
                             return (
-                              <motion.div
-                                key={capability.title}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.2 + i * 0.1 }}
-                                className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4"
+                              <div
+                                key={cap.title}
+                                className="rounded-lg border border-white/[0.06] bg-slate-800/30 p-4"
                               >
-                                <div className="inline-flex items-center justify-center rounded-lg border border-teal-400/20 bg-teal-500/10 p-2 mb-3">
+                                <div className="inline-flex items-center justify-center rounded-lg bg-teal-500/10 border border-teal-500/20 p-2 mb-3">
                                   <CapIcon className="w-4 h-4 text-teal-400" />
                                 </div>
-                                <h4 className="text-white text-sm font-semibold mb-1.5">
-                                  {capability.title}
+                                <h4 className="text-white text-sm font-semibold mb-1">
+                                  {cap.title}
                                 </h4>
                                 <p className="text-slate-500 text-xs leading-relaxed">
-                                  {capability.description}
+                                  {cap.description}
                                 </p>
-                              </motion.div>
+                              </div>
                             );
                           })}
                         </div>
 
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-5 border-t border-white/[0.06]">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-white/[0.06]">
                           <p className="text-slate-500 text-sm">
-                            See how FormaOS transforms {solution.title.toLowerCase()} compliance
+                            See how FormaOS transforms{' '}
+                            {solution.title.toLowerCase()} compliance
                           </p>
                           <Link
                             href={solution.cta.href}
@@ -418,21 +376,21 @@ export function Industries() {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </ScrollReveal>
+              </div>
             );
           })}
         </div>
 
-        <ScrollReveal variant="slideUp" range={[0.05, 0.35]} className="mt-12 text-center">
-          <p className="text-slate-500 mb-5">
+        <ScrollReveal variant="fadeUp" className="mt-10 text-center">
+          <p className="text-slate-500 mb-4 text-sm">
             Not sure which solution fits your organization?
           </p>
           <Link
             href="/contact"
-            className="mk-btn mk-btn-primary inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold"
+            className="mk-btn mk-btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-medium"
           >
             Talk to a Compliance Expert
-            <ArrowRight className="w-5 h-5" />
+            <ArrowRight className="w-4 h-4" />
           </Link>
         </ScrollReveal>
       </div>

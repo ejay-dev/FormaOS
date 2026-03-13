@@ -85,7 +85,7 @@ function ProductHeroExtras() {
         {OUTCOME_METRICS.map((metric) => (
           <div
             key={metric.label}
-            className="rounded-xl border border-white/[0.1] bg-slate-950/55 px-3.5 py-3 text-left"
+            className="rounded-xl border border-white/[0.08] bg-slate-900/60 px-3.5 py-3 text-left"
           >
             <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
               {metric.label}
@@ -93,7 +93,7 @@ function ProductHeroExtras() {
             <p className="mt-1 text-sm font-semibold text-white">
               {metric.value}
             </p>
-            <p className="mt-1 text-[11px] text-emerald-300">{metric.trend}</p>
+            <p className="mt-1 text-[11px] text-teal-400">{metric.trend}</p>
           </div>
         ))}
       </div>
@@ -104,10 +104,10 @@ function ProductHeroExtras() {
           return (
             <div
               key={capability.title}
-              className="rounded-xl border border-white/[0.09] bg-white/[0.03] px-4 py-3.5 text-left"
+              className="rounded-xl border border-white/[0.06] bg-slate-900/50 px-4 py-3.5 text-left"
             >
-              <div className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-lg border border-cyan-300/20 bg-cyan-400/10">
-                <Icon className="h-4 w-4 text-cyan-300" />
+              <div className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-lg border border-teal-500/20 bg-teal-500/10">
+                <Icon className="h-4 w-4 text-teal-400" />
               </div>
               <p className="text-sm font-semibold text-white">
                 {capability.title}
@@ -120,9 +120,9 @@ function ProductHeroExtras() {
         })}
       </div>
 
-      <div className="rounded-2xl border border-white/[0.1] bg-slate-950/55 p-3.5">
+      <div className="rounded-2xl border border-white/[0.08] bg-slate-900/60 p-3.5">
         <div className="mb-3 flex items-center gap-2 border-b border-white/[0.08] pb-3">
-          <Workflow className="h-4 w-4 text-cyan-300" />
+          <Workflow className="h-4 w-4 text-teal-400" />
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-300">
             Governance Workflow Snapshot
           </p>
@@ -131,7 +131,7 @@ function ProductHeroExtras() {
           {WORKFLOW_STAGES.map((stage) => (
             <div
               key={stage.stage}
-              className="grid grid-cols-[1fr_auto] gap-2 rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-2"
+              className="grid grid-cols-[1fr_auto] gap-2 rounded-lg border border-white/[0.06] bg-slate-900/40 px-3 py-2"
             >
               <div>
                 <p className="text-xs font-semibold text-white">
@@ -140,10 +140,10 @@ function ProductHeroExtras() {
                 <p className="text-[11px] text-slate-400">{stage.owner}</p>
               </div>
               <div className="text-right">
-                <p className="text-xs font-semibold text-cyan-300">
+                <p className="text-xs font-semibold text-teal-400">
                   {stage.sla}
                 </p>
-                <p className="text-[10px] uppercase tracking-[0.12em] text-emerald-300">
+                <p className="text-[10px] uppercase tracking-[0.12em] text-slate-500">
                   {stage.status}
                 </p>
               </div>
@@ -152,11 +152,11 @@ function ProductHeroExtras() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3">
+      <div className="rounded-xl border border-white/[0.06] bg-slate-900/40 px-4 py-3">
         <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-300">
           {FRAMEWORKS.map((framework) => (
             <span key={framework} className="inline-flex items-center gap-1">
-              <CheckCircle className="h-3 w-3 text-emerald-300/80" />
+              <CheckCircle className="h-3 w-3 text-teal-400" />
               {framework}
             </span>
           ))}
@@ -171,17 +171,15 @@ export function ProductScrollHero() {
     <ImmersiveHero
       theme="product"
       badge={{
-        icon: <Sparkles className="h-4 w-4 text-violet-300" />,
+        icon: <Sparkles className="h-4 w-4 text-teal-400" />,
         text: 'Compliance Operating System',
-        colorClass: 'violet',
+        colorClass: 'teal',
       }}
       headline={
         <>
           Run Compliance Like
           <br />
-          <span className="bg-gradient-to-r from-violet-300 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">
-            Mission-Critical Operations
-          </span>
+          <span className="text-teal-400">Mission-Critical Operations</span>
         </>
       }
       subheadline="FormaOS turns obligations into governed execution loops with owned evidence, real-time posture visibility, and audit packets leadership can defend."

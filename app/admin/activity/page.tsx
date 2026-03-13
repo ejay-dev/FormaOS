@@ -94,7 +94,9 @@ export default function UserActivityPage() {
   };
 
   const formatAction = (action: string) =>
-    action.replaceAll('_', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
+    action
+      .replaceAll('_', ' ')
+      .replace(/\b\w/g, (letter) => letter.toUpperCase());
 
   const relativeTime = (value: string) => {
     const diff = Date.now() - new Date(value).getTime();
@@ -177,7 +179,9 @@ export default function UserActivityPage() {
                           <span className="text-muted-foreground">
                             {' '}
                             • {item.entity_type}
-                            {item.entity_id ? `: ${item.entity_id.slice(0, 12)}...` : ''}
+                            {item.entity_id
+                              ? `: ${item.entity_id.slice(0, 12)}...`
+                              : ''}
                           </span>
                         )}
                       </p>

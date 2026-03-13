@@ -200,14 +200,14 @@ export function TopBar({
 
         {/* 🔔 NOTIFICATIONS */}
         <div className="relative" ref={notifRef}>
-        <Button
-          variant="ghost"
-          onClick={() => setShowNotifications((v) => !v)}
-          className="relative rounded-full p-2 md:p-2.5 text-sidebar-foreground/90 hover:bg-card/8 transition-colors"
-          aria-label="Notifications"
-        >
-          <Bell className="h-5 w-5" />
-        </Button>
+          <Button
+            variant="ghost"
+            onClick={() => setShowNotifications((v) => !v)}
+            className="relative rounded-full p-2 md:p-2.5 text-sidebar-foreground/90 hover:bg-card/8 transition-colors"
+            aria-label="Notifications"
+          >
+            <Bell className="h-5 w-5" />
+          </Button>
 
           {/* DROPDOWN PANEL (only when open) */}
           {showNotifications && (

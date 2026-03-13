@@ -1,8 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { Quote } from 'lucide-react';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
 const TESTIMONIALS = [
   {
@@ -12,8 +10,6 @@ const TESTIMONIALS = [
     role: 'Operations Manager',
     org: 'Disability Services Provider',
     sector: 'NDIS',
-    accentClass: 'from-cyan-500/20 to-blue-500/20',
-    borderClass: 'border-cyan-500/20',
   },
   {
     quote:
@@ -22,8 +18,6 @@ const TESTIMONIALS = [
     role: 'Chief Information Security Officer',
     org: 'Healthcare Technology Platform',
     sector: 'Healthcare',
-    accentClass: 'from-blue-500/20 to-violet-500/20',
-    borderClass: 'border-blue-500/20',
   },
   {
     quote:
@@ -32,18 +26,14 @@ const TESTIMONIALS = [
     role: 'Head of Governance & Risk',
     org: 'Regional Financial Services Group',
     sector: 'Financial Services',
-    accentClass: 'from-violet-500/20 to-indigo-500/20',
-    borderClass: 'border-violet-500/20',
   },
   {
     quote:
-      'Standard 8 reporting used to consume two full weeks per quarter. With FormaOS we close the same governance cycle in under two days - with a traceable evidence trail the Commission accepts without question.',
+      'Standard 8 reporting used to consume two full weeks per quarter. With FormaOS we close the same governance cycle in under two days - with a traceable evidence trail.',
     name: 'Michael D.',
     role: 'Quality & Compliance Lead',
     org: 'Residential Aged Care Group',
     sector: 'Aged Care',
-    accentClass: 'from-emerald-500/20 to-teal-500/20',
-    borderClass: 'border-emerald-500/20',
   },
   {
     quote:
@@ -52,104 +42,95 @@ const TESTIMONIALS = [
     role: 'WHS & Compliance Manager',
     org: 'Construction & Infrastructure Group',
     sector: 'Construction',
-    accentClass: 'from-amber-500/20 to-orange-500/20',
-    borderClass: 'border-amber-500/20',
   },
 ] as const;
 
 export function TestimonialsSection() {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
+  const [featured, ...supporting] = TESTIMONIALS;
 
   return (
-    <section ref={ref} className="relative py-24 px-4 sm:px-6 lg:px-8">
-      {/* Section header */}
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="mx-auto mb-16 max-w-2xl text-center"
-      >
-        <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-cyan-400">
-          From the teams using FormaOS
-        </p>
-        <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
-          Proof from regulated operations
-        </h2>
-        <p className="mt-4 text-base text-slate-400">
-          Healthcare, disability services, and financial teams running
-          compliance as governance - not guesswork.
-        </p>
-      </motion.div>
+    <section className="mk-section relative">
+      <div className="max-w-6xl mx-auto px-6">
+        <ScrollReveal
+          variant="fadeUp"
+          className="mx-auto mb-12 max-w-2xl text-center"
+        >
+          <p className="mk-badge mk-badge--meta mb-3">
+            From the teams using FormaOS
+          </p>
+          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white">
+            Proof from regulated operations
+          </h2>
+          <p className="mt-3 text-base text-slate-400">
+            Healthcare, disability services, and financial teams running
+            compliance as governance — not guesswork.
+          </p>
+        </ScrollReveal>
 
-      {/* Cards */}
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {/* Note: 5 items - last card spans full width on tablet to avoid orphan */}
-        {TESTIMONIALS.map((t, i) => (
-          <motion.article
-            key={t.name}
-            initial={{ opacity: 0, y: 32 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{
-              duration: 0.6,
-              delay: i * 0.12,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className={`relative flex flex-col rounded-2xl border bg-white/[0.03] p-5 sm:p-8 backdrop-blur-sm ${t.borderClass} ${i === TESTIMONIALS.length - 1 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
-          >
-            {/* Gradient tint */}
-            <div
-              className={`pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br ${t.accentClass} opacity-40`}
-            />
-
-            {/* Quote icon */}
-            <Quote
-              className="relative mb-5 h-6 w-6 text-slate-500"
-              aria-hidden="true"
-            />
-
-            {/* Quote text */}
-            <blockquote className="relative flex-1 text-base leading-relaxed text-slate-200">
-              &ldquo;{t.quote}&rdquo;
+        {/* Tier 1 — Featured testimonial */}
+        <ScrollReveal variant="fadeUp" className="mb-4">
+          <article className="rounded-xl border border-white/[0.08] bg-slate-900/60 p-8">
+            <blockquote className="text-lg md:text-xl leading-relaxed text-slate-200 mb-6">
+              &ldquo;{featured.quote}&rdquo;
             </blockquote>
 
-            {/* Attribution */}
-            <div className="relative mt-8 border-t border-white/[0.06] pt-6">
-              <div className="flex items-start gap-4">
-                {/* Avatar placeholder */}
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-sm font-bold text-slate-300">
-                  {t.name.charAt(0)}
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-teal-500/10 border border-teal-500/20 text-sm font-semibold text-teal-400">
+                  {featured.name.charAt(0)}
                 </div>
                 <div>
-                  <div className="text-sm font-semibold text-white">
-                    {t.name}
-                  </div>
-                  <div className="mt-0.5 text-xs text-slate-400">{t.role}</div>
-                  <div className="mt-0.5 text-xs text-slate-500">{t.org}</div>
+                  <p className="text-sm font-medium text-white">
+                    {featured.name}
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    {featured.role}, {featured.org}
+                  </p>
                 </div>
               </div>
-              <span className="mt-4 inline-block rounded-full bg-white/[0.06] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">
-                {t.sector}
+              <span className="rounded-full bg-teal-500/[0.06] border border-teal-500/20 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-teal-400/80">
+                {featured.sector}
               </span>
             </div>
-          </motion.article>
-        ))}
-      </div>
+          </article>
+        </ScrollReveal>
 
-      {/* CTA under testimonials */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-        transition={{ duration: 0.6, delay: 0.5 }}
-        className="mt-12 text-center"
-      >
-        <a
-          href="/customer-stories"
-          className="text-sm font-semibold text-cyan-400 underline-offset-4 hover:underline"
-        >
-          Read full customer stories →
-        </a>
-      </motion.div>
+        {/* Tier 2 — Supporting testimonials */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {supporting.map((t) => (
+            <ScrollReveal key={t.name} variant="fadeUp">
+              <article className="flex flex-col rounded-xl border border-white/[0.05] bg-slate-900/40 p-5 h-full">
+                <blockquote className="flex-1 text-sm leading-relaxed text-slate-400">
+                  &ldquo;{t.quote}&rdquo;
+                </blockquote>
+
+                <div className="mt-5 pt-4 border-t border-white/[0.05]">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-800 text-xs font-semibold text-slate-400">
+                      {t.name.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-white">{t.name}</p>
+                      <p className="text-xs text-slate-500">
+                        {t.role}, {t.org}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </ScrollReveal>
+          ))}
+        </div>
+
+        <div className="mt-8 text-center">
+          <a
+            href="/customer-stories"
+            className="text-sm font-medium text-teal-400 hover:text-teal-300 transition-colors"
+          >
+            Read full customer stories &rarr;
+          </a>
+        </div>
+      </div>
     </section>
   );
 }

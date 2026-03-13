@@ -10,9 +10,7 @@ import {
   Lock,
   Activity,
 } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const audiences = [
   {
@@ -72,24 +70,17 @@ const audiences = [
 
 export function WhoIsFor() {
   return (
-    <section className="relative py-24 sm:py-32 overflow-hidden">
-      {/* Section dividers */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-
-      <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="slideUp" range={[0, 0.3]}>
+    <section className="relative py-24 sm:py-32">
+      <div className="max-w-6xl mx-auto px-6 lg:px-12">
+        <ScrollReveal variant="fadeUp">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-400/20 text-teal-400 text-sm font-medium mb-5">
-              <Users className="w-4 h-4" />
+            <span className="mk-badge mk-badge--section mb-5">
               Who FormaOS Is For
-            </div>
+            </span>
 
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
               Built for those who{' '}
-              <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
-                can't afford to guess
-              </span>
+              <span className="text-teal-400">can&apos;t afford to guess</span>
             </h2>
             <p className="mt-4 text-slate-400 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
               Every role in a regulated organization has a stake in compliance.
@@ -98,38 +89,33 @@ export function WhoIsFor() {
           </div>
         </ScrollReveal>
 
-        <SectionChoreography
-          pattern="stagger-wave"
-          stagger={0.05}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
-        >
-          {audiences.map((audience) => {
-            const Icon = audience.icon;
-            return (
-              <motion.div
-                key={audience.role}
-                whileHover={{ y: -4 }}
-                className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 hover:border-teal-400/20 hover:bg-white/[0.04] transition-all duration-300 group overflow-hidden relative"
-              >
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/0 group-hover:via-teal-400/20 to-transparent transition-all duration-500" />
+        <ScrollReveal variant="fadeUp">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {audiences.map((audience) => {
+              const Icon = audience.icon;
+              return (
+                <div
+                  key={audience.role}
+                  className="rounded-2xl border border-white/[0.06] bg-slate-900/50 p-5"
+                >
+                  <div className="inline-flex items-center justify-center rounded-xl border border-teal-400/20 bg-teal-500/10 p-2.5 mb-3">
+                    <Icon className="w-4 h-4 text-teal-400" />
+                  </div>
 
-                <div className="inline-flex items-center justify-center rounded-xl border border-teal-400/20 bg-teal-500/10 p-2.5 mb-3">
-                  <Icon className="w-4 h-4 text-teal-400" />
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-teal-400/70 mb-1.5">
+                    {audience.role}
+                  </div>
+                  <p className="text-sm text-slate-300 leading-snug mb-2">
+                    {audience.label}
+                  </p>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    {audience.detail}
+                  </p>
                 </div>
-
-                <div className="text-[10px] font-bold uppercase tracking-wider text-teal-400/70 mb-1.5">
-                  {audience.role}
-                </div>
-                <p className="text-sm text-slate-300 leading-snug mb-2">
-                  {audience.label}
-                </p>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  {audience.detail}
-                </p>
-              </motion.div>
-            );
-          })}
-        </SectionChoreography>
+              );
+            })}
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );
