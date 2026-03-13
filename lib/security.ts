@@ -25,21 +25,32 @@ function getTotpKey(): Buffer | null {
   return Buffer.from(hex, 'hex');
 }
 
-function encryptTotpSecret(plaintext: string): string {
+/**
+ * Deterministic dev-only fallback key so TOTP secrets are never stored
+ * as plaintext — even in development. NOT secure for production.
+ */
+function getDevFallbackKey(): Buffer {
+  const { createHash } = require('crypto') as typeof import('crypto');
+  return createHash('sha256').update('formaos-dev-totp-key-not-for-production').digest();
+}
+
+function getRequiredTotpKey(): Buffer {
   const key = getTotpKey();
-  if (!key) {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error(
-        '[security] TOTP_ENCRYPTION_KEY is not configured or invalid. ' +
-          'Set TOTP_ENCRYPTION_KEY to a 64-character hex string before storing TOTP secrets.',
-      );
-    }
-    // Development/test: warn and store plaintext to avoid breaking local workflows
-    console.warn(
-      '[security] TOTP_ENCRYPTION_KEY not configured — TOTP secret stored unencrypted (dev/test only)',
+  if (key) return key;
+
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error(
+      '[security] TOTP_ENCRYPTION_KEY is not configured or invalid. ' +
+        'Set TOTP_ENCRYPTION_KEY to a 64-character hex string before storing TOTP secrets.',
     );
-    return plaintext;
   }
+
+  // Dev/test: use a deterministic fallback so secrets are still encrypted at rest
+  return getDevFallbackKey();
+}
+
+function encryptTotpSecret(plaintext: string): string {
+  const key = getRequiredTotpKey();
   const iv = randomBytes(12); // 96-bit IV for AES-GCM
   const cipher = createCipheriv('aes-256-gcm', key, iv);
   const encrypted = Buffer.concat([
@@ -57,11 +68,7 @@ function encryptTotpSecret(plaintext: string): string {
 
 function decryptTotpSecret(stored: string): string {
   if (!stored.startsWith(ENC_PREFIX)) return stored; // legacy plaintext — still usable
-  const key = getTotpKey();
-  if (!key)
-    throw new Error(
-      'TOTP_ENCRYPTION_KEY is required to decrypt a stored 2FA secret',
-    );
+  const key = getRequiredTotpKey();
   const parts = stored.slice(ENC_PREFIX.length).split(':');
   if (parts.length !== 3) throw new Error('Malformed encrypted TOTP secret');
   const [ivHex, tagHex, ctHex] = parts;

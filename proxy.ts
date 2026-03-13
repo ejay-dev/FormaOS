@@ -48,17 +48,12 @@ export async function proxy(request: NextRequest) {
     // These routes use Bearer-token auth, not cookie sessions.
     // Handle OPTIONS preflight immediately before any auth logic.
     if (pathname.startsWith('/api/v1/')) {
-      const corsHeaders = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods':
-          'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        'Access-Control-Max-Age': '86400',
-      };
+      const { getCorsHeaders } = await import('@/lib/api/cors');
+      const corsH = getCorsHeaders(request);
       if (request.method === 'OPTIONS') {
-        return new NextResponse(null, { status: 204, headers: corsHeaders });
+        return new NextResponse(null, { status: 204, headers: corsH });
       }
-      Object.entries(corsHeaders).forEach(([k, v]) =>
+      Object.entries(corsH).forEach(([k, v]) =>
         response.headers.set(k, v),
       );
       response.headers.set('Server-Timing', `mw;dur=${Date.now() - startTime}`);
@@ -315,17 +310,9 @@ export async function proxy(request: NextRequest) {
       const { data, error } = await supabase.auth.getUser();
       if (!error) {
         user = data.user ?? null;
-      } else {
-        // TEMP: Diagnostic logging for JWT rotation recovery
-        console.warn('[Middleware] getUser error:', {
-          code: error.code,
-          message: error.message,
-          status: error.status,
-          path: pathname,
-        });
       }
-    } catch (error) {
-      console.error('[Middleware] Supabase init failed:', error);
+      // Intentionally silent — auth errors are expected for unauthenticated routes.
+    } catch {
       user = null;
     }
 

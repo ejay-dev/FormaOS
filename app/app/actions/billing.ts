@@ -27,19 +27,7 @@ export async function startCheckout(formData: FormData) {
   const userId = user?.id ?? '';
   const isUserFounder = isFounder(userEmail, userId);
 
-  // Add detailed logging for debugging billing issues
-  console.log('[billing.ts] 🔍 BILLING CHECKOUT ATTEMPT', {
-    userEmail: userEmail ? userEmail.substring(0, 3) + '***' : 'none',
-    userId: userId ? userId.substring(0, 8) + '...' : 'none',
-    isFounder: isUserFounder,
-    timestamp: new Date().toISOString(),
-  });
-
   if (isUserFounder) {
-    console.log(
-      '[billing.ts] 🚫 FOUNDER attempted checkout - redirecting to admin',
-      { email: userEmail },
-    );
     redirect('/admin');
   }
 

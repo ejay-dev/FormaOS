@@ -24,7 +24,7 @@ module.exports = {
   rules: {
     // TypeScript specific rules
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-    '@typescript-eslint/no-explicit-any': 'warn',
+    '@typescript-eslint/no-explicit-any': 'error',
     '@typescript-eslint/prefer-const': 'error',
 
     // React/Next.js rules
@@ -51,7 +51,7 @@ module.exports = {
     'no-new-func': 'error',
 
     // Performance rules
-    'no-console': 'warn',
+    'no-console': ['error', { allow: ['warn', 'error'] }],
     'no-debugger': 'error',
   },
   overrides: [

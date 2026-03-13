@@ -52,6 +52,7 @@ const RATE_LIMITS = {
     windowMs: 60 * 1000,
     maxRequests: 100,
     keyPrefix: 'rl:api',
+    failClosed: true,
   } as RateLimitConfig,
 
   GENERAL: {
@@ -64,11 +65,13 @@ const RATE_LIMITS = {
     windowMs: 60 * 1000,
     maxRequests: 20,
     keyPrefix: 'rl:upload',
+    failClosed: true,
   } as RateLimitConfig,
   EXPORT: {
     windowMs: 10 * 60 * 1000,
     maxRequests: 5,
     keyPrefix: 'rl:export',
+    failClosed: true,
   } as RateLimitConfig,
 
   HEARTBEAT: {
@@ -441,7 +444,6 @@ export function createRateLimitedResponse(
     status,
     headers: {
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
       ...headers,
     },
   });
