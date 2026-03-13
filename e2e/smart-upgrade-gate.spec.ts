@@ -153,7 +153,7 @@ test.describe('Checkout Flow', () => {
 
     if (hasCheckout) {
       // Click and verify navigation (may go to Stripe)
-      const [response] = await Promise.all([
+      await Promise.all([
         page.waitForResponse(resp => resp.url().includes('stripe') || resp.url().includes('billing'), { timeout: 10000 }).catch(() => null),
         checkoutBtn.first().click(),
       ]);

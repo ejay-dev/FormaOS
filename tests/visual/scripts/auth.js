@@ -3,7 +3,7 @@
  * Simulates user authentication for protected routes
  */
 
-module.exports = async (page, scenario, vp) => {
+module.exports = async (page, scenario, _vp) => {
   console.log('AUTH > ' + scenario.label);
 
   // For visual testing, we'll simulate authentication by setting localStorage

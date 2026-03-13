@@ -86,7 +86,7 @@ function generateTaskData(context, events, done) {
  */
 function logResponseMetrics(context, events, done) {
   events.on('response', (data) => {
-    const { statusCode, body } = data;
+    const { statusCode } = data;
 
     // Log slow responses
     if (data.timings && data.timings.response > 2000) {

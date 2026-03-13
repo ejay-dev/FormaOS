@@ -69,7 +69,7 @@ async function dismissProductTour(page: Page) {
       // Extra wait for state persistence
       await page.waitForTimeout(500);
     }
-  } catch (err) {
+  } catch (_err) {
     // Tour not present or already closed
     console.log('[E2E] No Product Tour to dismiss');
   }

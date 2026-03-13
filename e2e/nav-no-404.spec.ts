@@ -65,7 +65,6 @@ test.describe('Navigation — No 404s', () => {
 
       // If the page redirects to /auth/signin that's OK (auth required)
       // but the route itself should not be a Next.js 404
-      const url = page.url();
       const is404 = response?.status() === 404;
       const hasNotFoundText = await page
         .locator('text=This page could not be found')
@@ -81,7 +80,7 @@ test.describe('Navigation — No 404s', () => {
 
   test('sidebar nav items should all resolve', async ({ page }) => {
     // Navigate to the app dashboard
-    const response = await page.goto('/app', {
+    await page.goto('/app', {
       waitUntil: 'domcontentloaded',
       timeout: 30_000,
     });
@@ -118,7 +117,7 @@ test.describe('Navigation — No 404s', () => {
   });
 
   test('product tour should NOT appear on any page', async ({ page }) => {
-    const response = await page.goto('/app', {
+    await page.goto('/app', {
       waitUntil: 'domcontentloaded',
       timeout: 30_000,
     });

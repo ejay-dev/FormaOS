@@ -75,20 +75,24 @@ type RateLimitFailOpenInput = {
   keyPrefix: string;
   identifier?: string;
   userId?: string | null;
+  fallbackMode: 'in_memory' | 'fail_closed';
 };
 
 export function logRateLimitFailOpenWarning(
   input: RateLimitFailOpenInput,
 ): void {
+  const reasonLabel =
+    input.reason === 'redis_unavailable' ? 'Redis unavailable' : 'Redis error';
   const message =
-    input.reason === 'redis_unavailable'
-      ? '[RateLimit] Redis unavailable. Falling back to in-memory limiter (degraded enforcement).'
-      : '[RateLimit] Redis error. Falling back to in-memory limiter (degraded enforcement).';
+    input.fallbackMode === 'fail_closed'
+      ? `[RateLimit] ${reasonLabel}. Denying requests because this limiter is fail-closed.`
+      : `[RateLimit] ${reasonLabel}. Falling back to in-memory limiter (degraded enforcement).`;
 
   console.warn(message, {
     keyPrefix: input.keyPrefix,
     userId: input.userId ?? null,
     identifier: input.identifier ?? null,
+    fallbackMode: input.fallbackMode,
   });
 
   try {
@@ -99,7 +103,7 @@ export function logRateLimitFailOpenWarning(
           input.userId ??
           input.identifier ??
           `degraded:${input.keyPrefix.replaceAll(':', '_')}`,
-        endpoint: `[fail_open:${input.reason}] ${input.keyPrefix}`,
+        endpoint: `[${input.fallbackMode}:${input.reason}] ${input.keyPrefix}`,
         request_count: 0,
         window_start: new Date().toISOString(),
         blocked_at: null,

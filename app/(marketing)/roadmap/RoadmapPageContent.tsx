@@ -9,7 +9,6 @@ import {
   useInView,
 } from 'framer-motion';
 import {
-  Rocket,
   Loader2,
   Calendar,
   Compass,
@@ -19,18 +18,8 @@ import {
   ChevronRight,
   Sparkles,
   Shield,
-  Globe,
   Link2,
-  Server,
-  Brain,
-  Smartphone,
-  Users,
-  FileSearch,
-  Zap,
   Eye,
-  Clock,
-  Target,
-  Share2,
   BarChart3,
   Lock,
   Layers,
@@ -38,10 +27,7 @@ import {
   Bell,
   MessageSquare,
   GitBranch,
-  Star,
   Map,
-  Flag,
-  Milestone,
   type LucideIcon,
 } from 'lucide-react';
 import Link from 'next/link';

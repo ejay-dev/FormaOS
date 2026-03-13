@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useMemo } from 'react';
+import { useRef, useState } from 'react';
 import {
   motion,
   useScroll,
@@ -13,25 +13,18 @@ import {
   ShieldCheck,
   Lock,
   Globe,
-  Users,
   FileText,
   CheckCircle2,
   ArrowRight,
   Building2,
-  Clock,
   Server,
   BadgeCheck,
-  CalendarDays,
   ChevronDown,
   ChevronRight,
-  Sparkles,
   Shield,
-  Zap,
   Eye,
   Database,
   Key,
-  Network,
-  Settings,
   HeartPulse,
   Scale,
   Fingerprint,
@@ -41,11 +34,9 @@ import {
   UserCheck,
   Activity,
   AlertTriangle,
-  BarChart3,
   Bell,
   GitBranch,
   Layers,
-  Workflow,
   type LucideIcon,
 } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';

@@ -3,7 +3,7 @@
  * Simulates founder authentication for admin routes
  */
 
-module.exports = async (page, scenario, vp) => {
+module.exports = async (page, scenario, _vp) => {
   console.log('ADMIN AUTH > ' + scenario.label);
 
   // Set mock founder authentication

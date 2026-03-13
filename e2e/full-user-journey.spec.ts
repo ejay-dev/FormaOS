@@ -7,8 +7,6 @@ import { test, expect } from '@playwright/test';
 
 const TEST_EMAIL = `test-${Date.now()}@formaos-qa.com`;
 const TEST_PASSWORD = 'TestPass123!@#';
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-
 test.describe('Complete User Journey', () => {
 
   // Test 1: Marketing CTAs
@@ -150,7 +148,7 @@ test.describe('Complete User Journey', () => {
   });
 
   // Test 6: Session Persistence
-  test('Session persists on refresh', async ({ page, context }) => {
+  test('Session persists on refresh', async ({ page }) => {
     await page.goto('/app/dashboard');
 
     // Hard refresh

@@ -38,7 +38,7 @@ async function checkSchema() {
 
   try {
     // Try to query with RPC
-    const { data, error } = await supabase.rpc('get_table_schema', {
+    const { data } = await supabase.rpc('get_table_schema', {
       table_name: 'org_subscriptions',
       schema_name: 'public'
     }).catch(() => null);

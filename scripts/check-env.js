@@ -124,7 +124,9 @@ if (supabaseUrl) {
 }
 
 if (invalidRequired.length > 0 || invalidSupabaseUrl) {
-  const strictValidation = process.env.STRICT_ENV_VALIDATION === 'true';
+  const strictValidation =
+    process.env.STRICT_ENV_VALIDATION === 'true' ||
+    process.env.CHECK_ENV_STRICT === '1';
   const logger = strictValidation ? console.error : console.warn;
 
   logger('\nInvalid placeholder environment variables detected:');

@@ -20,8 +20,6 @@ const admin =
       })
     : null;
 
-const appBase = process.env.PLAYWRIGHT_APP_BASE ?? 'https://app.formaos.com.au';
-
 async function createTestUser(email: string): Promise<{ userId: string }> {
   if (!admin) throw new Error('Admin client not available');
 

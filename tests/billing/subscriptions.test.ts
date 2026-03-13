@@ -32,7 +32,7 @@ function resetDb() {
 function mockAdminClient() {
   return {
     from: (table: string) => ({
-      select: (columns: string) => {
+      select: (_columns: string) => {
         const filterState: Record<string, unknown> = {};
         const chain = {
           eq: (col: string, val: unknown) => {
@@ -48,7 +48,7 @@ function mockAdminClient() {
         };
         return chain;
       },
-      upsert: (data: unknown, opts?: unknown) => {
+      upsert: (data: unknown, _opts?: unknown) => {
         dbCalls.upserts.push({ table, data });
         const key = `${table}.upsert`;
         if (upsertOverrides[key]) return upsertOverrides[key];
@@ -238,11 +238,9 @@ describe('ensureSubscription', () => {
   describe('legacy org backfill', () => {
     it('upserts into orgs table when organization exists', async () => {
       // First select is org_subscriptions (no existing), second is organizations
-      let selectCount = 0;
       selectOverrides['org_subscriptions.select'] = { data: null, error: null };
 
       // Override organizations lookup
-      const origOverrides = { ...selectOverrides };
       selectOverrides['organizations.select'] = {
         data: { name: 'Test Org', created_by: 'user-1' },
         error: null,

@@ -3,7 +3,7 @@
  * Runs before each test scenario
  */
 
-module.exports = async (page, scenario, vp) => {
+module.exports = async (page, scenario, _vp) => {
   console.log('SCENARIO > ' + scenario.label);
 
   // Set up authentication state if needed

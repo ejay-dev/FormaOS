@@ -3,7 +3,7 @@
  * Runs when page is ready for screenshot
  */
 
-module.exports = async (page, scenario, vp) => {
+module.exports = async (page, scenario, _vp) => {
   console.log('READY > ' + scenario.label);
 
   // Ensure all images are loaded

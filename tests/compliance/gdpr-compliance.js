@@ -4,8 +4,6 @@
  */
 
 const playwright = require('playwright');
-const fs = require('fs').promises;
-const path = require('path');
 
 class GDPRComplianceTest {
   constructor(baseUrl = 'http://localhost:3000') {

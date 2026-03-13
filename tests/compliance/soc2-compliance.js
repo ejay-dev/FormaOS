@@ -4,10 +4,6 @@
  */
 
 const playwright = require('playwright');
-const fs = require('fs').promises;
-const https = require('https');
-const crypto = require('crypto');
-
 class SOC2ComplianceTest {
   constructor(baseUrl = 'http://localhost:3000') {
     this.baseUrl = baseUrl;

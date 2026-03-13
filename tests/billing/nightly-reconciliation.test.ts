@@ -14,7 +14,6 @@
 // ---- Mocks ----
 
 let mockSubscriptions: Array<Record<string, unknown>> = [];
-let mockStripeSubscriptions: Record<string, Record<string, unknown>> = {};
 let dbUpdates: Array<{ table: string; data: unknown; filter: Record<string, unknown> }> = [];
 let dbInserts: Array<{ table: string; data: unknown }> = [];
 let mockSubError: { message: string } | null = null;
@@ -22,7 +21,6 @@ let mockUpdateErrors: Record<string, { message: string } | null> = {};
 
 function resetMocks() {
   mockSubscriptions = [];
-  mockStripeSubscriptions = {};
   dbUpdates = [];
   dbInserts = [];
   mockSubError = null;
@@ -32,8 +30,8 @@ function resetMocks() {
 jest.mock('@/lib/supabase/admin', () => ({
   createSupabaseAdminClient: () => ({
     from: (table: string) => ({
-      select: (columns: string) => ({
-        not: (col: string, op: string, val: unknown) => {
+      select: (_columns: string) => ({
+        not: (_col: string, _op: string, _val: unknown) => {
           if (table === 'org_subscriptions') {
             return {
               data: mockSubError ? null : mockSubscriptions,
@@ -93,7 +91,6 @@ jest.mock('@/lib/billing/stripe', () => ({
 
 import {
   runBillingReconciliation,
-  shouldAutoCancelMissingStripe,
 } from '@/lib/billing/nightly-reconciliation';
 
 beforeEach(() => {

@@ -1,7 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-const APP_URL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000';
-
 /**
  * Google OAuth Smoke Tests
  *

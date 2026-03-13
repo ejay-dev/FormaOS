@@ -124,7 +124,7 @@ export default function () {
             return false;
           }
         },
-        'login completes in < 1s': (r) => loginTime < 1000,
+        'login completes in < 1s': () => loginTime < 1000,
       });
 
       if (loginSuccess) {
@@ -135,7 +135,7 @@ export default function () {
         try {
           const body = JSON.parse(loginResponse.body);
           authToken = body.access_token;
-        } catch (error) {
+        } catch (_error) {
           console.log('Failed to parse login response');
           errorRate.add(1);
           return;
@@ -161,7 +161,7 @@ export default function () {
 
           check(dashboardResponse, {
             'dashboard status is 200': (r) => r.status === 200,
-            'dashboard loads in < 3s': (r) => dashboardTime < 3000,
+            'dashboard loads in < 3s': () => dashboardTime < 3000,
             'dashboard contains navigation': (r) =>
               r.body.includes('nav') || r.body.includes('Navigation'),
           });
@@ -192,7 +192,7 @@ export default function () {
             const endpointName = endpoint.replace('/api/', '');
             check(apiResponse, {
               [`${endpointName} status is 200`]: (r) => r.status === 200,
-              [`${endpointName} responds in < 1s`]: (r) => apiTime < 1000,
+              [`${endpointName} responds in < 1s`]: () => apiTime < 1000,
             });
 
             if (apiResponse.status >= 400) {

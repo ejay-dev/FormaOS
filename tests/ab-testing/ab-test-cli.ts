@@ -48,7 +48,7 @@ class ABTestManager {
   private async ensureResultsDirectory() {
     try {
       await fs.mkdir(this.resultsDir, { recursive: true });
-    } catch (error) {
+    } catch (_error) {
       console.warn('Failed to create results directory:', error);
     }
   }
@@ -211,7 +211,7 @@ class ABTestManager {
       }
 
       console.log(`✅ Report generated: ${fileName}.${outputFormat}`);
-    } catch (error) {
+    } catch (_error) {
       console.error('❌ Failed to generate report:', error);
     }
   }
@@ -255,7 +255,7 @@ class ABTestManager {
       } else {
         console.log('\\n⏳ Results not yet statistically significant');
       }
-    } catch (error) {
+    } catch (_error) {
       console.log('\\n📊 No results data available yet');
     }
   }

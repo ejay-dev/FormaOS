@@ -349,6 +349,7 @@ export async function checkRateLimit(
         keyPrefix: config.keyPrefix,
         identifier,
         userId,
+        fallbackMode: config.failClosed ? 'fail_closed' : 'in_memory',
       });
     }
 

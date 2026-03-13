@@ -19,7 +19,7 @@ test.describe('CTA click sweep', () => {
                 '__TEST_MOCK_USER__',
                 JSON.stringify({ role }),
               );
-            } catch (e) {
+            } catch (_e) {
               // noop
             }
           }, userType);
@@ -41,7 +41,7 @@ test.describe('CTA click sweep', () => {
               });
               return;
             }
-          } catch (e) {
+          } catch (_e) {
             // if URL parsing fails, continue
           }
           await route.continue();
@@ -67,7 +67,7 @@ test.describe('CTA click sweep', () => {
           // Click and wait briefly for navigation or network idle
           try {
             const clickPromise = el.click({ force: true }).catch(() => null);
-            const nav = await Promise.race([
+            await Promise.race([
               page
                 .waitForNavigation({ waitUntil: 'networkidle', timeout: 5000 })
                 .catch(() => null),

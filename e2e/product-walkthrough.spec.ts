@@ -412,8 +412,6 @@ test.describe('E) Edge Cases', () => {
 
     if (userData?.user) {
       const userId = userData.user.id;
-      const now = new Date().toISOString();
-
       // Create org with onboarding incomplete
       const { data: org } = await admin
         .from('organizations')
