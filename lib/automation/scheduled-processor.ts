@@ -18,7 +18,7 @@ export async function runScheduledAutomation(): Promise<{
   triggersExecuted: number;
   errors: string[];
 }> {
-  console.log('[Scheduled Automation] Starting scheduled checks...');
+  automationLogger.info('scheduled_checks_started');
 
   const results = {
     checksRun: 0,
@@ -62,11 +62,12 @@ export async function runScheduledAutomation(): Promise<{
       }
     }
 
-    console.log(
-      `[Scheduled Automation] Completed: ${results.checksRun} checks, ${results.triggersExecuted} triggers`,
-    );
+    automationLogger.info('scheduled_checks_completed', {
+      checksRun: results.checksRun,
+      triggersExecuted: results.triggersExecuted,
+    });
   } catch (error) {
-    console.error('[Scheduled Automation] Fatal error:', error);
+    automationLogger.error('scheduled_checks_fatal', error instanceof Error ? error : new Error(String(error)));
     results.errors.push(
       error instanceof Error ? error.message : 'Unknown error',
     );
@@ -106,9 +107,7 @@ async function checkExpiringEvidence(): Promise<{
     return results;
   }
 
-  console.log(
-    `[Scheduled] Found ${expiringEvidence.length} expiring evidence items`,
-  );
+  automationLogger.info('expiring_evidence_found', { count: expiringEvidence.length });
 
   // Trigger renewal for each
   for (const evidence of expiringEvidence) {
@@ -176,9 +175,7 @@ async function checkPolicyReviews(): Promise<{
     return results;
   }
 
-  console.log(
-    `[Scheduled] Found ${policiesDueReview.length} policies due for review`,
-  );
+  automationLogger.info('policies_due_review_found', { count: policiesDueReview.length });
 
   for (const policy of policiesDueReview) {
     try {
@@ -242,7 +239,7 @@ async function checkOverdueTasks(): Promise<{
     return results;
   }
 
-  console.log(`[Scheduled] Found ${overdueTasks.length} overdue tasks`);
+  automationLogger.info('overdue_tasks_found', { count: overdueTasks.length });
 
   for (const task of overdueTasks) {
     try {
@@ -328,9 +325,7 @@ async function checkExpiringCertifications(): Promise<{
     },
   );
 
-  console.log(
-    `[Scheduled] Found ${expiringWithinThreshold.length} expiring certifications`,
-  );
+  automationLogger.info('expiring_certifications_found', { count: expiringWithinThreshold.length });
 
   for (const cert of expiringWithinThreshold) {
     try {
@@ -398,7 +393,7 @@ async function updateAllComplianceScores(): Promise<{
     return results;
   }
 
-  console.log(`[Scheduled] Updating scores for ${orgs.length} organizations`);
+  automationLogger.info('compliance_scores_updating', { orgCount: orgs.length });
 
   // Update scores in batches
   const batchSize = 10;

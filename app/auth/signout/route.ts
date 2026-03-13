@@ -8,6 +8,7 @@ import {
   revokeSessionByToken,
 } from '@/lib/security/session-security';
 import { TRACKED_SESSION_COOKIE } from '@/lib/security/session-constants';
+import { authLogger } from '@/lib/observability/structured-logger';
 
 function getProjectRef(url: string): string {
   try {
@@ -126,7 +127,7 @@ export async function GET(request: Request) {
   // Clear all Supabase cookies for complete cleanup
   await clearSupabaseCookies(response);
 
-  console.log('[auth/signout] Session cleared, redirecting to signin');
+  authLogger.info('session_cleared', { method: 'GET' });
 
   return response;
 }
@@ -177,7 +178,7 @@ export async function POST(request: Request) {
   // Clear all Supabase cookies for complete cleanup
   await clearSupabaseCookies(response);
 
-  console.log('[auth/signout] POST: Session cleared, redirecting to signin');
+  authLogger.info('session_cleared', { method: 'POST' });
 
   return response;
 }

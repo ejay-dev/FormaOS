@@ -7,9 +7,10 @@ import { logActivity } from '@/lib/logger';
 import { isProvisioningRole } from '@/lib/onboarding/roles';
 import { revalidatePath } from 'next/cache';
 import { onIndustryPackApplied } from '@/lib/automation/integration';
+import { authLogger } from '@/lib/observability/structured-logger';
 
 export async function applyIndustryPack(industryId: string) {
-  console.log(`🚀 Starting Industry Pack: ${industryId}`);
+  authLogger.info('industry_pack_starting', { industryId });
 
   const supabase = await createSupabaseServerClient();
   const admin = createSupabaseAdminClient();
@@ -168,7 +169,7 @@ export async function applyIndustryPack(industryId: string) {
 
   revalidatePath('/app');
 
-  console.log('✅ Industry pack applied successfully:', pack.name);
+  authLogger.info('industry_pack_applied', { packName: pack.name });
 
   return { success: true };
 }
