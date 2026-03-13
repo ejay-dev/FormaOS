@@ -66,6 +66,29 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        // CORS headers for the public REST API v1 (browser-based integrators).
+        //
+        // Security note: Access-Control-Allow-Origin: * is intentional here.
+        // Per the CORS spec, wildcard origin prevents the browser from sending
+        // cookies or other credentials — so this does NOT create a CSRF risk.
+        // Integrators must authenticate via a Bearer token (Supabase JWT) in the
+        // Authorization header; cookie-based sessions do not work cross-origin
+        // with a wildcard origin.
+        source: '/api/v1/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'Authorization, Content-Type, X-Requested-With',
+          },
+          { key: 'Access-Control-Max-Age', value: '86400' },
+        ],
+      },
+      {
         // Security headers for all routes (marketing + app)
         source: '/:path*',
         headers: [
