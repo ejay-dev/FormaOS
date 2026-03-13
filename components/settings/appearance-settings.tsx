@@ -63,7 +63,12 @@ export function AppearanceSettings() {
               : 'border-border hover:border-primary/40'
           }`}
         >
-          <div className="h-20 rounded-xl mb-3 overflow-hidden border border-border/50 bg-gradient-to-r from-[#0a101f] to-[#f8fafc]">
+          <div
+            className="h-20 rounded-xl mb-3 overflow-hidden border border-border/50"
+            style={{
+              backgroundImage: 'linear-gradient(to right, #0a101f, #f8fafc)',
+            }}
+          >
             <div className="h-full flex items-center justify-center">
               <Monitor className="h-8 w-8 text-white/60" />
             </div>

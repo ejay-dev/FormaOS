@@ -3,8 +3,6 @@
  * Tests WCAG 2.1 AA compliance using multiple tools
  */
 
-const pa11y = require('pa11y');
-const axeCore = require('axe-core');
 const playwright = require('playwright');
 const fs = require('fs').promises;
 const path = require('path');
@@ -75,45 +73,22 @@ async function setupAuth(page, authType) {
 }
 
 /**
- * Run Pa11y accessibility test
+ * Legacy Pa11y compatibility shim.
+ *
+ * The repo now standardizes on Playwright + axe-core for accessibility checks,
+ * but this script still records a placeholder Pa11y result shape so older
+ * report consumers do not crash.
  */
 async function runPa11yTest(url, options = {}) {
-  const pa11yOptions = {
-    standard: 'WCAG2AA',
-    level: 'error',
-    chromeLaunchConfig: {
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    },
-    timeout: 30000,
-    wait: 2000,
-    hideElements: [
-      '.timestamp',
-      '.last-updated',
-      '.relative-time',
-      '[data-testid="dynamic-content"]',
-    ],
-    actions: options.actions || [],
+  return {
+    url,
+    tool: 'pa11y',
+    issues: [],
+    skipped: true,
+    note:
+      'Pa11y checks are retired in this workspace; use the Playwright axe-core results instead.',
     viewport: options.viewport || { width: 1920, height: 1080 },
-    ...options,
   };
-
-  try {
-    const results = await pa11y(url, pa11yOptions);
-    return {
-      url,
-      tool: 'pa11y',
-      issues: results.issues || [],
-      documentTitle: results.documentTitle || '',
-      pageUrl: results.pageUrl || url,
-    };
-  } catch (error) {
-    return {
-      url,
-      tool: 'pa11y',
-      error: error.message,
-      issues: [],
-    };
-  }
 }
 
 /**

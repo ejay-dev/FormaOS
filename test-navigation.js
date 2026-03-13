@@ -6,17 +6,17 @@
  * navigation between pages works correctly.
  */
 
-const puppeteer = require('puppeteer');
+const { chromium } = require('@playwright/test');
 
 async function testNavigation() {
   console.log('Starting navigation tests...');
 
-  const browser = await puppeteer.launch({
+  const browser = await chromium.launch({
     headless: false,
-    defaultViewport: { width: 1280, height: 800 },
   });
 
   const page = await browser.newPage();
+  await page.setViewportSize({ width: 1280, height: 800 });
 
   try {
     // Test 1: Home page loads correctly

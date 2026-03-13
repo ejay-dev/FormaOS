@@ -5,7 +5,7 @@
  * CTAs, navigation flows, and edge cases with evidence-based validation.
  */
 
-const puppeteer = require('puppeteer');
+const { chromium } = require('@playwright/test');
 const fs = require('fs');
 
 // Test results storage
@@ -74,13 +74,13 @@ async function runComprehensiveQA() {
     fs.mkdirSync('test-results/screenshots', { recursive: true });
   }
 
-  const browser = await puppeteer.launch({
+  const browser = await chromium.launch({
     headless: false,
-    defaultViewport: { width: 1280, height: 800 },
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
 
   const page = await browser.newPage();
+  await page.setViewportSize({ width: 1280, height: 800 });
 
   // Enable console logging from the page
   page.on('console', (msg) => {

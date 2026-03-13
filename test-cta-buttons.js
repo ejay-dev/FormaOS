@@ -5,7 +5,7 @@
  * to ensure they navigate correctly and don't crash.
  */
 
-const puppeteer = require('puppeteer');
+const { chromium } = require('@playwright/test');
 
 const CTA_TESTS = [
   // HOME PAGE
@@ -88,12 +88,12 @@ const CTA_TESTS = [
 async function testCTAButtons() {
   console.log('🚀 Starting CTA Button Testing...\n');
 
-  const browser = await puppeteer.launch({
+  const browser = await chromium.launch({
     headless: false,
-    defaultViewport: { width: 1280, height: 800 },
   });
 
   const page = await browser.newPage();
+  await page.setViewportSize({ width: 1280, height: 800 });
   const results = [];
 
   try {

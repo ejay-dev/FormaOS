@@ -16,8 +16,6 @@ import {
   Zap,
   Globe,
   Lock,
-  Users,
-  FileCheck,
   ArrowRight,
   ChevronRight,
   ChevronDown,
@@ -25,12 +23,10 @@ import {
   Star,
   Calendar,
   Tag,
-  Clock,
   Eye,
   Command,
   Layers,
   Workflow,
-  BarChart3,
   Bell,
   GitBranch,
   GitCommit,
@@ -820,6 +816,10 @@ function ChangeItem({
 }) {
   const [expanded, setExpanded] = useState(false);
   const config = TAG_CONFIG[change.tag];
+  const itemClassName = `rounded-xl border border-white/[0.06] bg-white/[0.02] p-4
+          transition-all duration-300
+          hover:bg-white/[0.04] hover:border-white/[0.1]
+          hover:shadow-[0_0_30px_rgba(${config.colorRgb},0.04)]`;
 
   return (
     <motion.div
@@ -829,35 +829,26 @@ function ChangeItem({
       transition={{ duration: 0.4, delay: index * 0.04, ease: EASE_OUT_EXPO }}
       className="group"
     >
-      <div
-        className={`rounded-xl border border-white/[0.06] bg-white/[0.02] p-4
-          transition-all duration-300 cursor-pointer
-          hover:bg-white/[0.04] hover:border-white/[0.1]
-          hover:shadow-[0_0_30px_rgba(${config.colorRgb},0.04)]`}
-        onClick={() => change.detail && setExpanded(!expanded)}
-        role={change.detail ? 'button' : undefined}
-        tabIndex={change.detail ? 0 : undefined}
-        onKeyDown={(e) => {
-          if (change.detail && (e.key === 'Enter' || e.key === ' ')) {
-            e.preventDefault();
-            setExpanded(!expanded);
-          }
-        }}
-      >
-        <div className="flex items-start gap-3">
-          <div
-            className="shrink-0 mt-1 w-1.5 h-1.5 rounded-full"
-            style={{ backgroundColor: `rgba(${config.colorRgb}, 0.8)` }}
-          />
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap items-center gap-2 mb-1">
-              <span className="text-sm text-white font-medium leading-snug">
-                {change.text}
-              </span>
-              <TagBadge tag={change.tag} />
+      {change.detail ? (
+        <button
+          type="button"
+          className={`${itemClassName} w-full cursor-pointer text-left`}
+          onClick={() => setExpanded(!expanded)}
+          aria-expanded={expanded}
+        >
+          <div className="flex items-start gap-3">
+            <div
+              className="shrink-0 mt-1 w-1.5 h-1.5 rounded-full"
+              style={{ backgroundColor: `rgba(${config.colorRgb}, 0.8)` }}
+            />
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-2 mb-1">
+                <span className="text-sm text-white font-medium leading-snug">
+                  {change.text}
+                </span>
+                <TagBadge tag={change.tag} />
+              </div>
             </div>
-          </div>
-          {change.detail && (
             <motion.div
               animate={{ rotate: expanded ? 180 : 0 }}
               transition={{ duration: 0.25 }}
@@ -865,27 +856,44 @@ function ChangeItem({
             >
               <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
             </motion.div>
-          )}
-        </div>
+          </div>
 
-        <AnimatePresence>
-          {expanded && change.detail && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3, ease: EASE_OUT_EXPO }}
-              className="overflow-hidden"
-            >
-              <div className="pt-3 pl-4 border-t border-white/[0.04] mt-3">
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  {change.detail}
-                </p>
+          <AnimatePresence>
+            {expanded && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3, ease: EASE_OUT_EXPO }}
+                className="overflow-hidden"
+              >
+                <div className="pt-3 pl-4 border-t border-white/[0.04] mt-3">
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    {change.detail}
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </button>
+      ) : (
+        <div className={itemClassName}>
+          <div className="flex items-start gap-3">
+            <div
+              className="shrink-0 mt-1 w-1.5 h-1.5 rounded-full"
+              style={{ backgroundColor: `rgba(${config.colorRgb}, 0.8)` }}
+            />
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-2 mb-1">
+                <span className="text-sm text-white font-medium leading-snug">
+                  {change.text}
+                </span>
+                <TagBadge tag={change.tag} />
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+            </div>
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 }

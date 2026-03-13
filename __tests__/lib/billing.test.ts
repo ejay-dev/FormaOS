@@ -7,7 +7,7 @@
  * Does not test Stripe API calls or Supabase interactions.
  */
 
-import { SUBSCRIPTION_PLANS, type SubscriptionTier } from '@/lib/billing';
+import { SUBSCRIPTION_PLANS, type SubscriptionTier } from '@/lib/billing/plans';
 
 // -------------------------------------------------------------------------
 // SUBSCRIPTION_PLANS structure

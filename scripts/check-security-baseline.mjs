@@ -40,6 +40,52 @@ function parseJson(path) {
   }
 }
 
+function getCommittedNodeRuntimePolicy() {
+  const packageJson = parseJson("package.json");
+  const packageNode = packageJson?.engines?.node ?? null;
+  const packageMajor = parseMajor(packageNode);
+  if (packageMajor !== null) {
+    return {
+      source: "package.json#engines.node",
+      version: String(packageNode),
+      major: packageMajor,
+    };
+  }
+
+  const nvmrc = safeRead(".nvmrc")?.trim() ?? null;
+  const nvmrcMajor = parseMajor(nvmrc);
+  if (nvmrcMajor !== null) {
+    return {
+      source: ".nvmrc",
+      version: nvmrc,
+      major: nvmrcMajor,
+    };
+  }
+
+  const nodeVersion = safeRead(".node-version")?.trim() ?? null;
+  const nodeVersionMajor = parseMajor(nodeVersion);
+  if (nodeVersionMajor !== null) {
+    return {
+      source: ".node-version",
+      version: nodeVersion,
+      major: nodeVersionMajor,
+    };
+  }
+
+  const vercelProject = parseJson(".vercel/project.json");
+  const vercelNode = vercelProject?.settings?.nodeVersion ?? null;
+  const vercelMajor = parseMajor(vercelNode);
+  if (vercelMajor !== null) {
+    return {
+      source: ".vercel/project.json",
+      version: String(vercelNode),
+      major: vercelMajor,
+    };
+  }
+
+  return null;
+}
+
 function createCheck(id, title, level, summary, details = [], recommendation = null) {
   return { id, title, level, summary, details, recommendation };
 }
@@ -96,18 +142,16 @@ function extractWorkflowNodeMajors(workflowText) {
 }
 
 function auditNodeRuntimeDrift() {
-  const vercelProject = parseJson(".vercel/project.json");
-  const vercelNode = vercelProject?.settings?.nodeVersion ?? null;
-  const vercelMajor = parseMajor(vercelNode);
+  const runtimePolicy = getCommittedNodeRuntimePolicy();
 
-  if (vercelMajor === null) {
+  if (!runtimePolicy) {
     return createCheck(
       "node_runtime_drift",
       "Node Runtime Drift",
       "warn",
-      "Unable to read Vercel nodeVersion from .vercel/project.json.",
+      "Unable to read a committed Node runtime policy from package.json, .nvmrc, .node-version, or .vercel/project.json.",
       [],
-      "Set and commit explicit runtime version policy in CI/docs."
+      "Commit one explicit runtime version policy, preferably package.json#engines.node, and align CI to it."
     );
   }
 
@@ -130,8 +174,10 @@ function auditNodeRuntimeDrift() {
     if (majors.length === 0) continue;
     inspected.push(`${file}: ${majors.join(",")}`);
     for (const major of majors) {
-      if (major !== vercelMajor) {
-        mismatches.push(`${file} uses Node ${major}, Vercel uses ${vercelNode}`);
+      if (major !== runtimePolicy.major) {
+        mismatches.push(
+          `${file} uses Node ${major}, runtime policy ${runtimePolicy.source} expects ${runtimePolicy.version}`
+        );
       }
     }
   }
@@ -141,9 +187,9 @@ function auditNodeRuntimeDrift() {
       "node_runtime_drift",
       "Node Runtime Drift",
       "warn",
-      `Detected ${mismatches.length} workflow/runtime mismatch(es) against Vercel Node ${vercelNode}.`,
+      `Detected ${mismatches.length} workflow/runtime mismatch(es) against ${runtimePolicy.source} (${runtimePolicy.version}).`,
       mismatches,
-      "Align CI and Vercel to one Node major version before enforcing strict mode."
+      "Align CI and deployment runtime to one committed Node major version before enforcing strict mode."
     );
   }
 
@@ -151,7 +197,7 @@ function auditNodeRuntimeDrift() {
     "node_runtime_drift",
     "Node Runtime Drift",
     "pass",
-    `CI workflow node majors align with Vercel Node ${vercelNode}.`,
+    `CI workflow node majors align with ${runtimePolicy.source} (${runtimePolicy.version}).`,
     inspected
   );
 }

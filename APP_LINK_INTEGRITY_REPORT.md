@@ -1,13 +1,13 @@
 # APP Link Integrity Report
 
-Generated: 2026-03-11T01:11:13.706Z
+Generated: 2026-03-13T23:09:43.691Z
 
 ## Summary
 
 - Total app internal links validated: 157
 - Valid links: 157
 - Broken links: 0
-- App routes discovered: 145
+- App routes discovered: 147
 
 ## Link Validation
 
@@ -276,6 +276,7 @@ Generated: 2026-03-11T01:11:13.706Z
 - `/enterprise`
 - `/evaluate`
 - `/faq`
+- `/features`
 - `/frameworks`
 - `/govern`
 - `/healthcare-compliance-platform`
@@ -294,6 +295,7 @@ Generated: 2026-03-11T01:11:13.706Z
 - `/pricing`
 - `/product`
 - `/prove`
+- `/roadmap`
 - `/security`
 - `/security-review`
 - `/security-review/faq`
