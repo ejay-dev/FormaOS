@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, CheckCircle } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { brand } from '@/config/brand';
 
@@ -9,46 +9,67 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 export function FinalCTA() {
   return (
-    <section className="relative py-24 sm:py-28">
-      <div className="mx-auto max-w-4xl px-6 lg:px-12">
-        <ScrollReveal variant="fadeUp">
-          <div className="rounded-2xl border border-white/[0.08] bg-slate-900/60 px-8 py-12 sm:px-12 text-center">
+    <section className="product-section product-section--cta relative py-16 sm:py-24 lg:py-32 overflow-hidden">
+      <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12">
+        <ScrollReveal variant="slideUp" range={[0, 0.35]}>
+          <div className="product-panel product-panel--strong backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-white/[0.08] to-white/[0.04] border-b border-white/10 px-5 sm:px-8 lg:px-12 py-8 sm:py-10 text-center">
+              <ScrollReveal variant="blurIn" range={[0.02, 0.35]}>
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white">
+                  Most platforms <span className="text-gray-500">store</span>{' '}
+                  compliance.
+                  <br />
+                  <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
+                    FormaOS operates it.
+                  </span>
+                </h2>
+              </ScrollReveal>
 
-            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-teal-500/70 mb-5">
-              Get started
-            </p>
-
-            <h2 className="text-3xl font-semibold leading-[1.12] tracking-[-0.02em] text-white mb-4 sm:text-4xl">
-              Most platforms{' '}
-              <span className="text-slate-500">store</span> compliance.
-              <br />
-              <span className="text-teal-400">FormaOS operates it.</span>
-            </h2>
-
-            <p className="text-base leading-[1.75] text-slate-400 max-w-xl mx-auto mb-10">
-              From obligation to execution, validation, and audit defense.
-              Start your trial and see the difference in the first week.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <a
-                href={`${appBase}/auth/signup?plan=pro`}
-                className="mk-btn mk-btn-primary group min-h-[50px] w-full sm:w-auto px-8 py-3.5 text-[0.9375rem] font-semibold justify-center"
-              >
-                Start Free Trial
-                <ArrowRight className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5" />
-              </a>
-              <Link
-                href="/contact"
-                className="mk-btn mk-btn-secondary min-h-[50px] w-full sm:w-auto px-8 py-3.5 text-[0.9375rem] justify-center"
-              >
-                Request a Demo
-              </Link>
+              <ScrollReveal variant="depthSlide" range={[0.05, 0.38]}>
+                <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+                  From obligation to execution, validation, and defense. FormaOS
+                  is the operating system for modern compliance.
+                </p>
+              </ScrollReveal>
             </div>
 
-            <p className="mt-6 text-xs text-slate-600">
-              14-day free trial · No credit card required · Full platform access
-            </p>
+            <div className="px-5 sm:px-8 lg:px-12 py-8 sm:py-10 text-center">
+              <ScrollReveal variant="slideUp" range={[0.08, 0.4]}>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+                  <Link
+                    href="/contact"
+                    className="mk-btn mk-btn-primary group w-full sm:w-auto px-8 py-4 text-base"
+                  >
+                    <span className="relative z-10">Request a Demo</span>
+                  </Link>
+
+                  <Link
+                    href={`${appBase}/auth/signup`}
+                    className="mk-btn mk-btn-secondary group w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 text-base"
+                  >
+                    <span>Start Free Trial</span>
+                    <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
+                  </Link>
+                </div>
+              </ScrollReveal>
+
+              <ScrollReveal variant="perspectiveUp" range={[0.1, 0.42]}>
+                <div className="flex flex-wrap items-center justify-center gap-6 mt-8 text-sm text-gray-500">
+                  <span className="product-panel product-panel--soft flex items-center gap-2 rounded-full px-3 py-1.5">
+                    <CheckCircle className="w-4 h-4 text-green-400" />
+                    14-day free trial
+                  </span>
+                  <span className="product-panel product-panel--soft flex items-center gap-2 rounded-full px-3 py-1.5">
+                    <CheckCircle className="w-4 h-4 text-green-400" />
+                    No credit card required
+                  </span>
+                  <span className="product-panel product-panel--soft flex items-center gap-2 rounded-full px-3 py-1.5">
+                    <CheckCircle className="w-4 h-4 text-green-400" />
+                    Full platform access
+                  </span>
+                </div>
+              </ScrollReveal>
+            </div>
           </div>
         </ScrollReveal>
       </div>
