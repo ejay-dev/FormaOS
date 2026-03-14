@@ -1,4 +1,4 @@
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import {
   getAdminControlPlaneSnapshot,
   readAdminStreamVersion,
@@ -22,7 +22,7 @@ function encodeSseComment(comment: string) {
 
 export async function GET(request: Request) {
   try {
-    await requireFounderAccess();
+    await requireAdminAccess({ permission: 'control_plane:view' });
 
     const { searchParams } = new URL(request.url);
     const environment = resolveControlPlaneEnvironment(

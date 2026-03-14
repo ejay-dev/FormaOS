@@ -5,6 +5,7 @@
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { graphLogger } from '@/lib/observability/structured-logger';
 
 export interface GraphNode {
   id: string;
@@ -50,9 +51,7 @@ export async function initializeComplianceGraph(
     const admin = createSupabaseAdminClient();
     const now = new Date().toISOString();
 
-    console.log(
-      `[compliance-graph] 🚀 Initializing graph for org: ${organizationId}`,
-    );
+    graphLogger.info('graph_initializing', { organizationId });
 
     // 1. ORGANIZATION NODE (already exists)
     const organizationNode: GraphNode = {
@@ -190,9 +189,7 @@ export async function initializeComplianceGraph(
     const allNodes = [organizationNode, roleNode, ...policyNodes];
     if (entityNode) allNodes.push(entityNode);
 
-    console.log(
-      `[compliance-graph] ✅ Graph initialized: ${allNodes.length} nodes, ${wires.length} wires`,
-    );
+    graphLogger.info('graph_initialized', { nodeCount: allNodes.length, wireCount: wires.length });
 
     return {
       success: true,

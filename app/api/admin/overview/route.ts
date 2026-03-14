@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { getAdminOverviewMetrics } from '@/lib/admin/metrics-service';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { ADMIN_CACHE_HEADERS } from '@/app/api/admin/_helpers';
@@ -8,7 +8,7 @@ const log = routeLog('/api/admin/overview');
 
 export async function GET() {
   try {
-    await requireFounderAccess();
+    await requireAdminAccess({ permission: 'dashboard:view' });
     const metrics = await getAdminOverviewMetrics();
 
     return NextResponse.json(metrics, {

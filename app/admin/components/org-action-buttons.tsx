@@ -8,7 +8,8 @@ import { useComplianceAction } from "@/components/compliance-system"
 interface OrgActionButtonsProps {
   orgId: string
   currentPlan: string | null
-  currentStatus: string
+  currentSubscriptionStatus: string
+  currentLifecycleStatus: string
 }
 
 /**
@@ -17,20 +18,36 @@ interface OrgActionButtonsProps {
  * Replaces native form POST with fetch + proper loading states.
  * Uses compliance feedback system for success/error notifications.
  */
-export function OrgActionButtons({ orgId, currentPlan, currentStatus }: OrgActionButtonsProps) {
+export function OrgActionButtons({
+  orgId,
+  currentPlan,
+  currentSubscriptionStatus,
+  currentLifecycleStatus,
+}: OrgActionButtonsProps) {
   const [loading, setLoading] = useState<string | null>(null)
   const [selectedPlan, setSelectedPlan] = useState(currentPlan || "basic")
   const [days, setDays] = useState(14)
   const { reportSuccess, reportError } = useComplianceAction()
 
+  function promptReason(message: string) {
+    const reason = window.prompt(message)
+    return reason?.trim() || null
+  }
+
   async function handlePlanUpdate() {
+    const reason = promptReason("Reason for plan change")
+    if (!reason) return
+
     setLoading("plan")
 
     try {
       const res = await fetch(`/api/admin/orgs/${orgId}/plan`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan: selectedPlan }),
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-reason": reason,
+        },
+        body: JSON.stringify({ plan: selectedPlan, reason }),
       })
 
       if (!res.ok) {
@@ -48,13 +65,19 @@ export function OrgActionButtons({ orgId, currentPlan, currentStatus }: OrgActio
   }
 
   async function handleExtendTrial() {
+    const reason = promptReason("Reason for trial extension")
+    if (!reason) return
+
     setLoading("trial")
 
     try {
       const res = await fetch(`/api/admin/orgs/${orgId}/trial/extend`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ days }),
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-reason": reason,
+        },
+        body: JSON.stringify({ days, reason }),
       })
 
       if (!res.ok) {
@@ -72,14 +95,21 @@ export function OrgActionButtons({ orgId, currentPlan, currentStatus }: OrgActio
   }
 
   async function handleToggleLock() {
-    const action = currentStatus === "blocked" ? "unblock" : "block"
+    const isBlockedNow = currentSubscriptionStatus === "blocked"
+    const action = isBlockedNow ? "unblock" : "block"
+    const reason = promptReason(`Reason to ${action} organization access`)
+    if (!reason) return
+
     setLoading("lock")
 
     try {
       const res = await fetch(`/api/admin/orgs/${orgId}/lock`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ locked: currentStatus !== "blocked" }),
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-reason": reason,
+        },
+        body: JSON.stringify({ locked: !isBlockedNow, reason }),
       })
 
       if (!res.ok) {
@@ -96,7 +126,44 @@ export function OrgActionButtons({ orgId, currentPlan, currentStatus }: OrgActio
     }
   }
 
-  const isBlocked = currentStatus === "blocked"
+  async function handleToggleLifecycle() {
+    const isSuspendedNow = currentLifecycleStatus === "suspended"
+    const targetStatus = isSuspendedNow ? "active" : "suspended"
+    const actionLabel = isSuspendedNow ? "restore" : "suspend"
+    const reason = promptReason(`Reason to ${actionLabel} organization lifecycle`)
+    if (!reason) return
+
+    setLoading("lifecycle")
+
+    try {
+      const res = await fetch(`/api/admin/orgs/${orgId}/lifecycle`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-reason": reason,
+        },
+        body: JSON.stringify({ status: targetStatus, reason }),
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || `Failed to ${actionLabel} organization`)
+      }
+
+      reportSuccess({ title: `Organization ${actionLabel}d` })
+      window.location.reload()
+    } catch (error: any) {
+      reportError({
+        title: "Lifecycle update failed",
+        message: error.message || `Failed to ${actionLabel} organization`,
+      })
+    } finally {
+      setLoading(null)
+    }
+  }
+
+  const isBlocked = currentSubscriptionStatus === "blocked"
+  const isSuspended = currentLifecycleStatus === "suspended"
 
   return (
     <div className="flex flex-col gap-2">
@@ -191,6 +258,29 @@ export function OrgActionButtons({ orgId, currentPlan, currentStatus }: OrgActio
           <Lock className="h-3 w-3" />
         )}
         {isBlocked ? "Unblock" : "Block"}
+      </button>
+
+      <button
+        onClick={handleToggleLifecycle}
+        disabled={loading !== null}
+        className={cn(
+          "rounded-lg border px-3 py-1.5 text-xs font-bold",
+          "transition-all flex items-center gap-2",
+          "disabled:opacity-50 disabled:cursor-not-allowed",
+          "active:scale-95 disabled:active:scale-100",
+          isSuspended
+            ? "border-cyan-400/30 text-cyan-200 hover:bg-cyan-500/20"
+            : "border-amber-400/30 text-amber-200 hover:bg-amber-500/20"
+        )}
+      >
+        {loading === "lifecycle" ? (
+          <Loader2 className="h-3 w-3 animate-spin" />
+        ) : isSuspended ? (
+          <Unlock className="h-3 w-3" />
+        ) : (
+          <Lock className="h-3 w-3" />
+        )}
+        {isSuspended ? "Restore" : "Suspend"}
       </button>
     </div>
   )

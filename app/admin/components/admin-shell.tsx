@@ -61,10 +61,17 @@ const NAV_SECTIONS = [
       { name: 'Features', href: '/admin/features', icon: Zap },
       { name: 'Security', href: '/admin/security', icon: Shield },
       {
+        name: 'Security Live',
+        href: '/admin/security-live',
+        icon: ShieldAlert,
+      },
+      {
         name: 'Risk Triage',
         href: '/admin/security/triage',
         icon: ShieldAlert,
       },
+      { name: 'Sessions', href: '/admin/sessions', icon: Users },
+      { name: 'Activity', href: '/admin/activity', icon: Activity },
       { name: 'System', href: '/admin/system', icon: Activity },
       { name: 'Audit', href: '/admin/audit', icon: FileText },
       { name: 'Releases', href: '/admin/releases', icon: Tag },

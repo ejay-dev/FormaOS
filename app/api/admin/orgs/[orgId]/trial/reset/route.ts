@@ -1,8 +1,14 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { logAdminAction } from '@/lib/admin/audit';
-import { handleAdminError } from '@/app/api/admin/_helpers';
+import {
+  extractAdminReason,
+  handleAdminError,
+  parseAdminMutationPayload,
+  requireAdminChangeControl,
+} from '@/app/api/admin/_helpers';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 type Params = {
   params: Promise<{ orgId: string }>;
@@ -10,8 +16,20 @@ type Params = {
 
 export async function POST(request: Request, { params }: Params) {
   try {
-    const { user } = await requireFounderAccess();
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
+    const access = await requireAdminAccess({ permission: 'trials:manage' });
     const { orgId } = await params;
+    const { payload: body } = await parseAdminMutationPayload(request);
+    const reason = await requireAdminChangeControl({
+      context: access,
+      action: 'trial_reset',
+      targetType: 'organization',
+      targetId: orgId,
+      reason: extractAdminReason(body, request),
+      requireApproval: true,
+    });
     const admin = createSupabaseAdminClient();
 
     const now = new Date();
@@ -29,10 +47,11 @@ export async function POST(request: Request, { params }: Params) {
     });
 
     await logAdminAction({
-      actorUserId: user.id,
+      actorUserId: access.user.id,
       action: 'trial_reset',
       targetType: 'organization',
       targetId: orgId,
+      metadata: { reason },
     });
 
     return NextResponse.json({ ok: true });

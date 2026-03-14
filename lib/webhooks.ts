@@ -232,10 +232,11 @@ async function deliverWebhook(
     });
 
     const responseBody = await response.text().catch(() => '');
+    const shouldRetry = !response.ok && attempt < (webhook.retry_count || 3);
 
     // Update delivery record with result
     const updateData: Partial<WebhookDelivery> = {
-      status: response.ok ? 'success' : 'failed',
+      status: response.ok ? 'success' : shouldRetry ? 'retrying' : 'failed',
       response_code: response.status,
       response_body: responseBody.substring(0, 1000), // Limit size
       delivered_at: new Date().toISOString(),
@@ -250,28 +251,44 @@ async function deliverWebhook(
       .update(updateData)
       .eq('id', deliveryRecord.id);
 
+    if (shouldRetry) {
+      const delayMs = Math.pow(2, attempt) * 1000;
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      return deliverWebhook(webhook, payload, attempt + 1);
+    }
+
+    if (!response.ok && attempt >= (webhook.retry_count || 3)) {
+      await supabase
+        .from('webhook_configs')
+        .update({ enabled: false, updated_at: new Date().toISOString() })
+        .eq('id', webhook.id);
+    }
+
     return { ...deliveryRecord, ...updateData };
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error';
+    const shouldRetry = attempt < (webhook.retry_count || 3);
 
     // Update delivery record with error
     await supabase
       .from('webhook_deliveries')
       .update({
-        status: 'failed',
+        status: shouldRetry ? 'retrying' : 'failed',
         error_message: errorMessage,
       })
       .eq('id', deliveryRecord.id);
 
-    // Retry if attempts remain
-    if (attempt < (webhook.retry_count || 3)) {
-      // Exponential backoff: 1s, 2s, 4s, etc.
+    if (shouldRetry) {
       const delayMs = Math.pow(2, attempt) * 1000;
       await new Promise((resolve) => setTimeout(resolve, delayMs));
-
       return deliverWebhook(webhook, payload, attempt + 1);
     }
+
+    await supabase
+      .from('webhook_configs')
+      .update({ enabled: false, updated_at: new Date().toISOString() })
+      .eq('id', webhook.id);
 
     return {
       ...deliveryRecord,
@@ -455,6 +472,10 @@ export function verifyWebhookSignature(
   secret: string,
 ): boolean {
   const expectedSignature = generateSignature(payload, secret);
+  if (signature.length !== expectedSignature.length) {
+    return false;
+  }
+
   return crypto.timingSafeEqual(
     Buffer.from(signature),
     Buffer.from(expectedSignature),

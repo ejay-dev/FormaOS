@@ -13,6 +13,7 @@
  */
 
 import { getRedisClient } from '@/lib/redis/client';
+import { queueLogger } from '@/lib/observability/structured-logger';
 import {
   type Job,
   type JobType,
@@ -107,7 +108,7 @@ export class QueueClient {
       });
       await pipeline.exec();
 
-      console.log(`[Queue] Enqueued job ${id} (${type}) scheduled at ${scheduledAt.toISOString()}`);
+      queueLogger.info('job_enqueued', { jobId: id, type, scheduledAt: scheduledAt.toISOString() });
       return { success: true, jobId: id, scheduledAt: scheduledAt.toISOString() };
     } catch (error) {
       console.error('[Queue] Failed to enqueue job:', error);
@@ -209,7 +210,7 @@ export class QueueClient {
       pipeline.incr(`${QUEUE_KEYS.METRICS_PREFIX}completed`);
       await pipeline.exec();
 
-      console.log(`[Queue] Job ${jobId} completed`);
+      queueLogger.info('job_completed', { jobId });
     } catch (error) {
       console.error(`[Queue] Failed to complete job ${jobId}:`, error);
     }
@@ -250,10 +251,7 @@ export class QueueClient {
         pipeline.incr(`${QUEUE_KEYS.METRICS_PREFIX}retried`);
         await pipeline.exec();
 
-        console.log(
-          `[Queue] Job ${jobId} failed (attempt ${job.attempts}/${job.maxAttempts}), ` +
-          `retrying in ${backoffMs}ms`,
-        );
+        queueLogger.info('job_retrying', { jobId, attempt: job.attempts, maxAttempts: job.maxAttempts, backoffMs });
         return 'retrying';
       } else {
         // Move to dead letter queue
@@ -270,9 +268,7 @@ export class QueueClient {
         pipeline.incr(`${QUEUE_KEYS.METRICS_PREFIX}dead`);
         await pipeline.exec();
 
-        console.log(
-          `[Queue] Job ${jobId} moved to dead letter queue after ${job.attempts} attempts`,
-        );
+        queueLogger.info('job_moved_to_dlq', { jobId, attempts: job.attempts });
         return 'dead';
       }
     } catch (err) {
@@ -311,7 +307,7 @@ export class QueueClient {
         if (outcome === 'retrying') recovered++;
       }
 
-      console.log(`[Queue] Recovered ${recovered} stale jobs`);
+      queueLogger.info('stale_jobs_recovered', { count: recovered });
       return recovered;
     } catch (error) {
       console.error('[Queue] Failed to recover stale jobs:', error);
@@ -442,7 +438,7 @@ export class QueueClient {
       });
       await pipeline.exec();
 
-      console.log(`[Queue] Dead job ${jobId} re-queued for retry`);
+      queueLogger.info('dead_job_requeued', { jobId });
       return true;
     } catch (error) {
       console.error(`[Queue] Failed to retry dead job ${jobId}:`, error);
@@ -478,7 +474,7 @@ export class QueueClient {
       }
 
       if (cleaned > 0) {
-        console.log(`[Queue] Cleaned up ${cleaned} expired dead-letter entries`);
+        queueLogger.info('dead_letter_cleanup', { cleaned });
       }
       return cleaned;
     } catch (error) {

@@ -9,6 +9,7 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
+import { decodeIntegrationConfig } from './config-crypto';
 
 export interface GoogleDriveConfig {
   organizationId: string;
@@ -44,7 +45,7 @@ async function getDriveConfig(orgId: string): Promise<GoogleDriveConfig | null> 
     .maybeSingle();
 
   if (!data) return null;
-  const config = data.config as Record<string, unknown>;
+  const config = decodeIntegrationConfig<Record<string, unknown>>(data.config);
 
   return {
     organizationId: orgId,

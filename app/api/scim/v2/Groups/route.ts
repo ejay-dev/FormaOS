@@ -1,82 +1,111 @@
 import { NextResponse } from 'next/server';
 import {
-  authenticateScimRequest,
-  listGroups,
   createGroup,
+  getScimContentHeaders,
+  listGroups,
 } from '@/lib/scim/scim-server';
+import {
+  auditScimOperation,
+  authenticateScimRequest,
+  scimError,
+} from '@/lib/scim/scim-auth';
 
 export const runtime = 'nodejs';
 
-function getBaseUrl(request: Request): string {
+function getBaseUrl(request: Request) {
   const url = new URL(request.url);
   return `${url.protocol}//${url.host}`;
 }
 
-const SCIM_HEADERS = { 'Content-Type': 'application/scim+json' };
+function getOrgId(request: Request) {
+  return new URL(request.url).searchParams.get('orgId');
+}
 
 export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const orgId = url.searchParams.get('orgId');
+  const orgId = getOrgId(request);
   if (!orgId) {
-    return NextResponse.json(
-      {
-        schemas: ['urn:ietf:params:scim:api:messages:2.0:Error'],
-        status: '400',
-        detail: 'orgId required',
-      },
-      { status: 400, headers: SCIM_HEADERS },
-    );
+    return NextResponse.json(scimError(400, 'orgId query param required'), {
+      status: 400,
+      headers: getScimContentHeaders(),
+    });
   }
 
   const auth = await authenticateScimRequest(request, orgId);
   if (!auth.ok) {
     return NextResponse.json(auth.error, {
       status: auth.status,
-      headers: SCIM_HEADERS,
+      headers: getScimContentHeaders(auth.headers),
     });
   }
 
-  const result = await listGroups(orgId, getBaseUrl(request), {
-    startIndex: Number(url.searchParams.get('startIndex')) || 1,
-    count: Number(url.searchParams.get('count')) || 100,
-  });
+  try {
+    const url = new URL(request.url);
+    const payload = await listGroups(orgId, getBaseUrl(request), {
+      startIndex: Number(url.searchParams.get('startIndex')) || 1,
+      count: Number(url.searchParams.get('count')) || 100,
+      filter: url.searchParams.get('filter'),
+      sortBy: url.searchParams.get('sortBy'),
+      sortOrder: url.searchParams.get('sortOrder'),
+    });
 
-  return NextResponse.json(result, { headers: SCIM_HEADERS });
+    return NextResponse.json(payload, {
+      headers: getScimContentHeaders(auth.context.headers),
+    });
+  } catch (error) {
+    return NextResponse.json(
+      scimError(400, error instanceof Error ? error.message : 'Invalid query'),
+      {
+        status: 400,
+        headers: getScimContentHeaders(auth.context.headers),
+      },
+    );
+  }
 }
 
 export async function POST(request: Request) {
-  const orgId = new URL(request.url).searchParams.get('orgId');
+  const orgId = getOrgId(request);
   if (!orgId) {
-    return NextResponse.json(
-      {
-        schemas: ['urn:ietf:params:scim:api:messages:2.0:Error'],
-        status: '400',
-        detail: 'orgId required',
-      },
-      { status: 400, headers: SCIM_HEADERS },
-    );
+    return NextResponse.json(scimError(400, 'orgId query param required'), {
+      status: 400,
+      headers: getScimContentHeaders(),
+    });
   }
 
   const auth = await authenticateScimRequest(request, orgId);
   if (!auth.ok) {
     return NextResponse.json(auth.error, {
       status: auth.status,
-      headers: SCIM_HEADERS,
+      headers: getScimContentHeaders(auth.headers),
     });
   }
 
-  const body = await request.json();
+  const body = (await request.json()) as Record<string, unknown>;
   const result = await createGroup(orgId, body, getBaseUrl(request));
 
-  if ('error' in result) {
+  await auditScimOperation({
+    orgId,
+    tokenLabel: auth.context.tokenLabel,
+    eventType: 'scim.group.create',
+    result: result.error ? 'failure' : 'success',
+    metadata: {
+      group_name: body.displayName,
+      error: result.error?.detail,
+    },
+    request,
+  });
+
+  if (result.error) {
     return NextResponse.json(result.error, {
       status: result.status,
-      headers: SCIM_HEADERS,
+      headers: getScimContentHeaders(auth.context.headers),
     });
   }
 
-  return NextResponse.json(result.group, {
-    status: 201,
-    headers: SCIM_HEADERS,
+  return NextResponse.json(result.data, {
+    status: result.status,
+    headers: getScimContentHeaders({
+      ...auth.context.headers,
+      ETag: result.data!.meta.version,
+    }),
   });
 }

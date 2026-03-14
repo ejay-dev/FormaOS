@@ -9,6 +9,8 @@ type OrgRow = {
   owner_email: string;
   plan_key: string | null;
   status: string;
+  lifecycle_status: string;
+  subscription_status: string;
   created_at: string | null;
   trial_expires_at: string | null;
 };
@@ -142,7 +144,7 @@ export default async function AdminOrgsPage({
                   Plan
                 </th>
                 <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
-                  Status
+                  Lifecycle / Billing
                 </th>
                 <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
                   Trial Expires
@@ -190,16 +192,21 @@ export default async function AdminOrgsPage({
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium ${getStatusColor(
-                        org.status,
-                      )}`}
-                    >
-                      {org.status
-                        ? org.status.charAt(0).toUpperCase() +
-                          org.status.slice(1)
-                        : 'N/A'}
-                    </span>
+                    <div className="flex flex-col gap-2">
+                      <span
+                        className={`inline-flex w-fit items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium ${getStatusColor(
+                          org.status,
+                        )}`}
+                      >
+                        {org.status
+                          ? org.status.charAt(0).toUpperCase() +
+                            org.status.slice(1)
+                          : 'N/A'}
+                      </span>
+                      <span className="text-[11px] text-muted-foreground">
+                        Billing: {org.subscription_status}
+                      </span>
+                    </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2 text-muted-foreground text-sm">
@@ -211,7 +218,8 @@ export default async function AdminOrgsPage({
                     <OrgActionButtons
                       orgId={org.id}
                       currentPlan={org.plan_key}
-                      currentStatus={org.status}
+                      currentSubscriptionStatus={org.subscription_status}
+                      currentLifecycleStatus={org.lifecycle_status}
                     />
                   </td>
                 </tr>

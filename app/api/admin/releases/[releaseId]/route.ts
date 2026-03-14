@@ -1,10 +1,16 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { requireFounderAccess } from '@/app/app/admin/access';
-import { handleAdminError } from '@/app/api/admin/_helpers';
+import { requireAdminAccess } from '@/app/app/admin/access';
+import {
+  extractAdminReason,
+  handleAdminError,
+  parseAdminMutationPayload,
+  requireAdminChangeControl,
+} from '@/app/api/admin/_helpers';
 import { logAdminAction } from '@/lib/admin/audit';
 import { invalidateReleaseCache } from '@/lib/release/service';
 import type { ReleaseStatus } from '@/config/release';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 type Params = { params: Promise<{ releaseId: string }> };
 
@@ -20,7 +26,7 @@ const VALID_TRANSITIONS: Record<ReleaseStatus, ReleaseStatus[]> = {
  */
 export async function GET(_request: Request, { params }: Params) {
   try {
-    await requireFounderAccess();
+    await requireAdminAccess({ permission: 'releases:view' });
     const { releaseId } = await params;
     const admin = createSupabaseAdminClient();
 
@@ -47,9 +53,12 @@ export async function GET(_request: Request, { params }: Params) {
  */
 export async function PATCH(request: Request, { params }: Params) {
   try {
-    const { user } = await requireFounderAccess();
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
+    const access = await requireAdminAccess({ permission: 'releases:manage' });
     const { releaseId } = await params;
-    const body = await request.json().catch(() => ({}));
+    const { payload: body } = await parseAdminMutationPayload(request);
 
     const admin = createSupabaseAdminClient();
 
@@ -62,6 +71,20 @@ export async function PATCH(request: Request, { params }: Params) {
     if (fetchError || !current) {
       return NextResponse.json({ error: 'Release not found' }, { status: 404 });
     }
+
+    const isHighRiskMutation =
+      body.release_status !== undefined || body.is_locked !== undefined;
+    const reason = await requireAdminChangeControl({
+      context: access,
+      action: 'release_updated',
+      targetType: 'product_release',
+      targetId: releaseId,
+      reason: extractAdminReason(body, request),
+      requireApproval:
+        isHighRiskMutation &&
+        body.release_status !== undefined &&
+        String(body.release_status) === 'stable',
+    });
 
     // Block edits on locked releases (except status changes and lock toggle)
     if (
@@ -135,11 +158,11 @@ export async function PATCH(request: Request, { params }: Params) {
     invalidateReleaseCache();
 
     await logAdminAction({
-      actorUserId: user.id,
+      actorUserId: access.user.id,
       action: 'release_updated',
       targetType: 'product_release',
       targetId: releaseId,
-      metadata: { updates: Object.keys(updates) },
+      metadata: { updates: Object.keys(updates), reason },
     });
 
     return NextResponse.json({ release: data });

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { handleAdminError, ADMIN_CACHE_HEADERS } from '@/app/api/admin/_helpers';
 import { routeLog } from '@/lib/monitoring/server-logger';
 
@@ -8,7 +8,7 @@ const log = routeLog('/api/admin/exports');
 
 export async function GET() {
   try {
-    await requireFounderAccess();
+    await requireAdminAccess({ permission: 'exports:view' });
     const admin = createSupabaseAdminClient();
 
     const [complianceRes, reportRes] = await Promise.all([
@@ -94,4 +94,3 @@ export async function GET() {
     return handleAdminError(error, '/api/admin/exports');
   }
 }
-

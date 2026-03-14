@@ -151,6 +151,12 @@ export default async function SettingsPage() {
                 : 'Risk Alerts Active'}
           </span>
         </div>
+        <Link
+          href="/app/settings/notifications"
+          className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-slate-200"
+        >
+          Notification Settings
+        </Link>
       </header>
 
       <form action={handleUpdateOrg}>

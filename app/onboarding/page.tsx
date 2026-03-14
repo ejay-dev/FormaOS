@@ -34,6 +34,8 @@ import {
 } from '@/lib/automation/integration';
 import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
 import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
+import { logActivity as logProductActivity } from '@/lib/activity/feed';
+import { authLogger } from '@/lib/observability/structured-logger';
 
 // Force dynamic rendering - this page uses cookies() for auth
 export const dynamic = 'force-dynamic';
@@ -186,10 +188,7 @@ async function getOrgContext() {
   );
 
   if (isFounder) {
-    console.log(
-      '[onboarding] 🚫 FOUNDER blocked from onboarding - redirecting to /admin',
-      { email: userEmail },
-    );
+    authLogger.info('founder_blocked_from_onboarding', { email: userEmail, redirect: '/admin' });
     redirect('/admin');
   }
 
@@ -507,7 +506,7 @@ async function saveRoleSelection(formData: FormData) {
 async function saveFrameworkSelection(formData: FormData) {
   'use server';
   try {
-    const { supabase, orgId, canProvision } = await getOrgContext();
+    const { supabase, orgId, canProvision, user } = await getOrgContext();
     const admin = createSupabaseAdminClient();
     const frameworks = formData
       .getAll('frameworks')
@@ -574,6 +573,22 @@ async function saveFrameworkSelection(formData: FormData) {
       } catch (error) {
         console.warn('[onboarding] frameworks automation hook failed', error);
       }
+
+      await logProductActivity(
+        orgId,
+        user.id,
+        'created',
+        {
+          type: 'framework',
+          id: selectedFrameworks.join(','),
+          name: selectedFrameworks.join(', '),
+          path: '/app/compliance/frameworks',
+        },
+        {
+          frameworks: selectedFrameworks,
+          source: 'onboarding',
+        },
+      );
     }
 
     await markStepComplete(orgId, 5, 6);

@@ -80,3 +80,9 @@ export function runQueueProcessBatch(batchSize?: number) {
     { success?: boolean; processed?: number; failed?: number; error?: string }
   >('/api/internal/trigger/queue-process', { batchSize });
 }
+
+export function runWebhookDeliveryJob(deliveryId: string) {
+  return postTriggerBridge<
+    { ok: boolean; status?: string; deliveryId?: string; error?: string }
+  >('/api/internal/trigger/webhook-delivery', { deliveryId });
+}

@@ -3,9 +3,11 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { MFAEnrollment } from '@/components/settings/mfa-enrollment';
 import { roleRequiresMFA } from '@/lib/security/mfa-enforcement';
 import { ShieldCheck } from 'lucide-react';
-import { SsoSettings } from '@/components/settings/SsoSettings';
+import { SsoConfigPanel } from '@/components/settings/sso-config';
+import { DirectorySyncPanel } from '@/components/settings/directory-sync';
 import { getOrgSsoConfig } from '@/lib/sso/org-sso';
 import { buildServiceProviderUrls } from '@/lib/sso/saml';
+import { getDirectorySyncStatus } from '@/lib/sso/directory-sync';
 
 export default async function SecuritySettingsPage() {
   const supabase = await createSupabaseServerClient();
@@ -34,7 +36,9 @@ export default async function SecuritySettingsPage() {
   const orgId = (membership as any)?.organization_id as string | undefined;
   const orgSso = orgId ? await getOrgSsoConfig(orgId) : null;
   const sp = orgId ? buildServiceProviderUrls(orgId) : null;
-  const spSigningAvailable = Boolean((process.env.SAML_SP_PRIVATE_KEY ?? '').trim());
+  const directoryStatus = orgId
+    ? await getDirectorySyncStatus(orgId)
+    : { configs: [], runs: [] };
 
   return (
     <div className="space-y-8 pb-24 max-w-5xl animate-in fade-in duration-700">
@@ -63,19 +67,31 @@ export default async function SecuritySettingsPage() {
       <MFAEnrollment initialEnabled={enabled} required={Boolean(required)} />
 
       {orgId && sp ? (
-        <SsoSettings
+        <SsoConfigPanel
           orgId={orgId}
           initial={{
             enabled: orgSso?.enabled ?? false,
             enforceSso: orgSso?.enforceSso ?? false,
             allowedDomains: orgSso?.allowedDomains ?? [],
             idpMetadataXml: orgSso?.idpMetadataXml ?? null,
-            idpEntityId: orgSso?.idpEntityId ?? null,
-            ssoUrl: orgSso?.ssoUrl ?? null,
-            certificatePresent: Boolean(orgSso?.certificate),
+            jitProvisioningEnabled: orgSso?.jitProvisioningEnabled ?? false,
+            jitDefaultRole: orgSso?.jitDefaultRole ?? 'member',
           }}
-          sp={{ metadataUrl: sp.metadataUrl, acsUrl: sp.acsUrl }}
-          spSigningAvailable={spSigningAvailable}
+          sp={{
+            metadataUrl: sp.metadataUrl,
+            acsUrl: sp.acsUrl,
+            entityId: sp.metadataUrl,
+          }}
+        />
+      ) : null}
+
+      {orgId ? (
+        <DirectorySyncPanel
+          orgId={orgId}
+          initialProvider={orgSso?.directorySyncProvider ?? ''}
+          initialIntervalMinutes={orgSso?.directorySyncIntervalMinutes ?? 60}
+          initialConfig={orgSso?.directorySyncConfig ?? {}}
+          initialStatus={directoryStatus}
         />
       ) : null}
     </div>

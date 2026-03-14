@@ -1,33 +1,21 @@
 import Link from 'next/link';
+import { ShieldCheck, Database, LockKeyhole, MapPinned, FileClock } from 'lucide-react';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { createGovernanceExportAction } from './actions';
-import { generateExportToken } from '@/lib/security/export-tokens';
-import { FileDown, Package, CalendarDays, ShieldCheck, Clock } from 'lucide-react';
+import { generateClassificationReport } from '@/lib/data-governance/classification';
+import { generateIsolationReport } from '@/lib/data-governance/isolation-verifier';
+import { listResidencyViolations } from '@/lib/data-governance/residency-enforcement';
+import {
+  listRetentionExecutions,
+  listRetentionPolicies,
+} from '@/lib/data-governance/retention';
+import { getOrgDataRegion } from '@/lib/data-residency';
+import { RetentionPolicies } from '@/components/governance/retention-policies';
+import { PiiDashboard } from '@/components/governance/pii-dashboard';
+import { IsolationStatus } from '@/components/governance/isolation-status';
+import { IdentityAuditLog } from '@/components/identity/identity-audit-log';
 
 export const dynamic = 'force-dynamic';
-
-type JobRow = {
-  id: string;
-  status: 'pending' | 'processing' | 'completed' | 'failed';
-  progress: number | null;
-  created_at: string;
-  completed_at: string | null;
-  file_size: number | null;
-  error_message: string | null;
-  options: any;
-};
-
-function fmtBytes(bytes: number | null) {
-  if (!bytes || bytes <= 0) return 'N/A';
-  const units = ['B', 'KB', 'MB', 'GB'];
-  let v = bytes;
-  let i = 0;
-  while (v >= 1024 && i < units.length - 1) {
-    v /= 1024;
-    i += 1;
-  }
-  return `${Math.round(v * 10) / 10} ${units[i]}`;
-}
 
 export default async function GovernancePage() {
   const supabase = await createSupabaseServerClient();
@@ -45,7 +33,6 @@ export default async function GovernancePage() {
 
   const orgId = (membership as any)?.organization_id as string | undefined;
   const role = (membership as any)?.role as string | undefined;
-
   if (!orgId || !role) return null;
 
   const isAdmin = role === 'owner' || role === 'admin';
@@ -53,10 +40,10 @@ export default async function GovernancePage() {
     return (
       <div className="space-y-4 pb-24">
         <h1 className="text-3xl font-black text-slate-100 tracking-tight">
-          Governance Packs
+          Data Governance
         </h1>
         <p className="text-sm text-slate-400">
-          Admin access is required to generate enterprise governance exports.
+          Admin access is required to manage retention, classification, residency, and identity audit controls.
         </p>
         <Link href="/app" className="text-sm text-cyan-300 hover:underline">
           ← Back to app
@@ -65,143 +52,146 @@ export default async function GovernancePage() {
     );
   }
 
-  const { data: jobs } = await supabase
-    .from('enterprise_export_jobs')
-    .select('id, status, progress, created_at, completed_at, file_size, error_message, options')
-    .eq('organization_id', orgId)
-    .order('created_at', { ascending: false })
-    .limit(20);
+  const admin = createSupabaseAdminClient();
+  const [policies, executions, classificationReport, isolationReport, region, violations, piiResults] =
+    await Promise.all([
+      listRetentionPolicies(orgId),
+      listRetentionExecutions(orgId),
+      generateClassificationReport(orgId),
+      generateIsolationReport(orgId),
+      getOrgDataRegion(orgId),
+      listResidencyViolations(orgId),
+      admin
+        .from('pii_scan_results')
+        .select('*')
+        .eq('org_id', orgId)
+        .order('created_at', { ascending: false })
+        .limit(10)
+        .then((result: { data: unknown[] | null }) => result.data ?? []),
+    ]);
 
-  const rows = (jobs ?? []) as JobRow[];
-
-  async function createAction(kind: 'proof_packet_14d' | 'monthly_exec_pack' | 'audit_ready_bundle') {
-    'use server';
-    await createGovernanceExportAction(kind);
-  }
+  const cards = [
+    {
+      title: 'Retention Policies',
+      value: policies.length,
+      description: 'Active lifecycle rules',
+      icon: FileClock,
+    },
+    {
+      title: 'PII Scan Runs',
+      value: piiResults.length,
+      description: 'Recent inventory snapshots',
+      icon: Database,
+    },
+    {
+      title: 'Isolation Checks',
+      value: (isolationReport.results?.[0] as any)?.summary?.passed ?? 0,
+      description: 'Latest checks passing',
+      icon: LockKeyhole,
+    },
+    {
+      title: 'Residency Region',
+      value: region.toUpperCase(),
+      description: `${violations.length} recorded violations`,
+      icon: MapPinned,
+    },
+  ];
 
   return (
-    <div className="space-y-8 pb-24 animate-in fade-in duration-500">
-      <header className="flex flex-col gap-2">
-        <h1 className="text-3xl font-black text-slate-100 tracking-tight">
-          Governance Packs
-        </h1>
-        <p className="text-sm text-slate-400">
-          Packaged, audit-ready exports for enterprise procurement, board reporting,
-          and auditor review. Exports are access-controlled and traceable.
-        </p>
+    <div className="space-y-8 pb-24 max-w-7xl animate-in fade-in duration-500">
+      <header className="flex flex-col gap-3">
+        <div className="flex items-center gap-3">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-300">
+            <ShieldCheck className="h-6 w-6" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-black tracking-tight text-slate-100">
+              Data Governance
+            </h1>
+            <p className="text-sm text-slate-400">
+              Retention, classification, tenant isolation, residency, and identity-aware audit evidence.
+            </p>
+          </div>
+        </div>
       </header>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <form action={createAction.bind(null, 'proof_packet_14d')}>
-          <button
-            type="submit"
-            className="w-full rounded-2xl border border-white/10 bg-white/5 p-6 text-left hover:bg-white/8 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <Package className="h-5 w-5 text-cyan-300" />
-              <div className="text-sm font-bold text-slate-100">14-Day Proof Packet</div>
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {cards.map((card) => (
+          <div key={card.title} className="rounded-3xl border border-white/10 bg-white/5 p-5">
+            <div className="flex items-center justify-between">
+              <div className="text-xs uppercase tracking-[0.24em] text-slate-500">{card.title}</div>
+              <card.icon className="h-5 w-5 text-slate-400" />
             </div>
-            <p className="mt-2 text-xs text-slate-400">
-              Generate a 14-day procurement proof bundle (ZIP) including a trust
-              packet PDF and time-scoped audit signals.
-            </p>
-          </button>
-        </form>
-
-        <form action={createAction.bind(null, 'monthly_exec_pack')}>
-          <button
-            type="submit"
-            className="w-full rounded-2xl border border-white/10 bg-white/5 p-6 text-left hover:bg-white/8 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <CalendarDays className="h-5 w-5 text-emerald-300" />
-              <div className="text-sm font-bold text-slate-100">Monthly Executive Pack</div>
-            </div>
-            <p className="mt-2 text-xs text-slate-400">
-              Monthly export bundle (ZIP) designed for governance cadence and board
-              updates.
-            </p>
-          </button>
-        </form>
-
-        <form action={createAction.bind(null, 'audit_ready_bundle')}>
-          <button
-            type="submit"
-            className="w-full rounded-2xl border border-white/10 bg-white/5 p-6 text-left hover:bg-white/8 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <ShieldCheck className="h-5 w-5 text-amber-300" />
-              <div className="text-sm font-bold text-slate-100">Audit-Ready Bundle</div>
-            </div>
-            <p className="mt-2 text-xs text-slate-400">
-              Full audit-ready export bundle (ZIP) for auditor handover.
-            </p>
-          </button>
-        </form>
-      </div>
-
-      <section className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
-        <div className="flex items-center gap-2 border-b border-white/10 px-6 py-4">
-          <Clock className="h-4 w-4 text-slate-300" />
-          <h2 className="text-sm font-semibold text-slate-100">Recent Exports</h2>
-        </div>
-
-        {rows.length === 0 ? (
-          <div className="px-6 py-6 text-sm text-slate-400">No exports yet.</div>
-        ) : (
-          <div className="divide-y divide-white/10">
-            {rows.map((j) => {
-              const bundleType = j.options?.bundleType ?? 'enterprise_full';
-              const token = generateExportToken(j.id, orgId, 1);
-              const downloadHref = `/api/exports/enterprise/${j.id}?token=${encodeURIComponent(token)}`;
-              const done = j.status === 'completed';
-              return (
-                <div key={j.id} className="flex flex-col gap-2 px-6 py-4 md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <div className="text-sm font-semibold text-slate-100">
-                      {bundleType}
-                    </div>
-                    <div className="mt-1 text-xs text-slate-400">
-                      Created: {new Date(j.created_at).toLocaleString()}
-                      {j.completed_at ? ` · Completed: ${new Date(j.completed_at).toLocaleString()}` : ''}
-                      {j.file_size ? ` · Size: ${fmtBytes(j.file_size)}` : ''}
-                    </div>
-                    {j.status === 'failed' && j.error_message ? (
-                      <div className="mt-1 text-xs text-rose-300">
-                        Error: {j.error_message}
-                      </div>
-                    ) : null}
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <div className="text-xs text-slate-400">
-                      {j.status}
-                      {typeof j.progress === 'number' ? ` · ${j.progress}%` : ''}
-                    </div>
-                    <a
-                      href={downloadHref}
-                      className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold border ${
-                        done
-                          ? 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200 hover:bg-emerald-500/15'
-                          : 'pointer-events-none border-white/10 bg-white/5 text-slate-500'
-                      }`}
-                      aria-disabled={!done}
-                    >
-                      <FileDown className="h-4 w-4" />
-                      Download
-                    </a>
-                  </div>
-                </div>
-              );
-            })}
+            <div className="mt-4 text-3xl font-black text-slate-100">{card.value}</div>
+            <div className="mt-2 text-sm text-slate-400">{card.description}</div>
           </div>
-        )}
+        ))}
       </section>
 
-      <div className="text-xs text-slate-500">
-        Note: Downloads require an active session and admin access. The download
-        link is signed and short-lived.
+      <div className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
+        <RetentionPolicies
+          orgId={orgId}
+          initialPolicies={policies as Array<Record<string, any>>}
+          initialExecutions={executions as Array<Record<string, any>>}
+        />
+        <div className="space-y-6">
+          <section className="rounded-3xl border border-white/10 bg-white/5 p-6 space-y-4">
+            <div>
+              <h2 className="text-xl font-black text-slate-100">Residency Compliance</h2>
+              <p className="text-sm text-slate-400">
+                Current org region is <span className="font-semibold text-slate-200">{region.toUpperCase()}</span>.
+              </p>
+            </div>
+            <div className="space-y-3">
+              {violations.length === 0 ? (
+                <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 text-sm text-emerald-200">
+                  No residency violations have been recorded.
+                </div>
+              ) : (
+                violations.slice(0, 5).map((violation: any) => (
+                  <div key={violation.id} className="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
+                    <div className="text-sm font-semibold text-slate-100">{violation.operation}</div>
+                    <div className="text-xs text-slate-400">
+                      {violation.source_region ?? region} → {violation.destination_region ?? region}
+                    </div>
+                    <div className="mt-2 text-xs text-rose-300">{violation.reason}</div>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
+
+          <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
+            <div className="text-xl font-black text-slate-100">Classification Breakdown</div>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {Object.entries(classificationReport.breakdown ?? {}).map(([key, value]) => (
+                <div key={key} className="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
+                  <div className="text-xs uppercase tracking-[0.2em] text-slate-500">{key}</div>
+                  <div className="mt-2 text-2xl font-black text-slate-100">{String(value)}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
       </div>
+
+      <PiiDashboard
+        orgId={orgId}
+        initialScans={piiResults as Array<Record<string, any>>}
+        initialClassificationReport={{
+          totalFields: classificationReport.totalFields,
+          breakdown: classificationReport.breakdown as Record<string, number>,
+        }}
+      />
+
+      <IsolationStatus
+        orgId={orgId}
+        initialReport={{
+          results: isolationReport.results as Array<Record<string, any>>,
+        }}
+      />
+
+      <IdentityAuditLog orgId={orgId} />
     </div>
   );
 }

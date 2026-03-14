@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
 import { logActivity } from "@/lib/logger";
+import { logActivity as logProductActivity } from "@/lib/activity/feed";
 import { requirePermission } from "@/app/app/actions/rbac";
 import { logAuditEvent } from "@/app/app/actions/audit-events";
 
@@ -48,6 +49,22 @@ export async function updateOrganization(data: {
     membership.organization_id, 
     "updated_policy", // Using as proxy for 'Governance Update'
     `Admin updated organization profile and domain settings.`
+  );
+
+  await logProductActivity(
+    membership.organization_id,
+    user.id,
+    "updated",
+    {
+      type: "organization",
+      id: membership.organization_id,
+      name: data.name,
+      path: "/app/settings",
+    },
+    {
+      domain: data.domain ?? null,
+      registrationNumber: data.registrationNumber ?? null,
+    },
   );
 
   await logAuditEvent({

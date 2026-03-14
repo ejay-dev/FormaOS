@@ -1,4 +1,4 @@
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
 import { routeLog } from '@/lib/monitoring/server-logger';
@@ -17,14 +17,14 @@ const log = routeLog('/api/admin/security');
  */
 export async function GET() {
   try {
-    await requireFounderAccess();
+    await requireAdminAccess({ permission: 'security:view' });
     const admin = createSupabaseAdminClient();
 
     /* ── Recent audit events (last 7 days, limit 50) ──── */
     const sevenDaysAgo = new Date(Date.now() - 7 * 86_400_000).toISOString();
     const { data: auditEvents, error } = await admin
-      .from('admin_audit_log')
-      .select('id, actor_id, action, target_type, target_id, meta, created_at')
+      .from('platform_admin_audit_feed')
+      .select('id, actor_user_id, action, target_type, target_id, metadata, created_at')
       .gte('created_at', sevenDaysAgo)
       .order('created_at', { ascending: false })
       .limit(50);
@@ -35,20 +35,24 @@ export async function GET() {
 
     /* ── Map audit events to security event shape ──────── */
     const HIGH_SEVERITY_ACTIONS = new Set([
-      'block_org',
-      'lock_user',
+      'org_lock',
+      'org_suspend',
+      'user_lock',
       'delete_org',
-      'reset_trial',
+      'trial_reset',
+      'emergency_lockdown',
     ]);
     const MEDIUM_SEVERITY_ACTIONS = new Set([
-      'change_plan',
-      'extend_trial',
+      'org_plan_update',
+      'trial_extend',
       'expire_trial',
-      'unlock_user',
-      'unblock_org',
-      'resync_stripe',
+      'user_unlock',
+      'org_unlock',
+      'org_restore',
+      'subscription_resync',
       'repair_org',
       'repair_user',
+      'session_revoke',
     ]);
 
     const events = (auditEvents ?? []).map((e: Record<string, unknown>) => {
@@ -61,12 +65,12 @@ export async function GET() {
         id: e.id,
         event_type: e.action,
         severity,
-        actor_id: e.actor_id,
+        actor_id: e.actor_user_id,
         target_type: e.target_type,
         target_id: e.target_id,
         description: `${e.action as string} on ${e.target_type as string} ${(e.target_id as string)?.slice(0, 8)}…`,
         timestamp: e.created_at,
-        meta: e.meta,
+        meta: e.metadata,
       };
     });
 

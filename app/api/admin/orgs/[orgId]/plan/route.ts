@@ -1,11 +1,17 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { resolvePlanKey } from '@/lib/plans';
 import { ensureSubscription } from '@/lib/billing/subscriptions';
 import { syncEntitlementsForPlan } from '@/lib/billing/entitlements';
 import { logAdminAction } from '@/lib/admin/audit';
-import { handleAdminError } from '@/app/api/admin/_helpers';
+import {
+  extractAdminReason,
+  handleAdminError,
+  parseAdminMutationPayload,
+  requireAdminChangeControl,
+} from '@/app/api/admin/_helpers';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 type Params = {
   params: Promise<{ orgId: string }>;
@@ -13,17 +19,24 @@ type Params = {
 
 export async function POST(request: Request, { params }: Params) {
   try {
-    const { user } = await requireFounderAccess();
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
+    const access = await requireAdminAccess({ permission: 'billing:manage' });
     const { orgId } = await params;
-    const contentType = request.headers.get('content-type') ?? '';
-    const body = contentType.includes('application/json')
-      ? await request.json().catch(() => ({}))
-      : Object.fromEntries(await request.formData());
+    const { payload: body } = await parseAdminMutationPayload(request);
     const planRaw = String(body?.plan ?? '');
     const plan = resolvePlanKey(planRaw);
     if (!plan) {
       return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
     }
+    const reason = await requireAdminChangeControl({
+      context: access,
+      action: 'org_plan_update',
+      targetType: 'organization',
+      targetId: orgId,
+      reason: extractAdminReason(body, request),
+    });
 
     const now = new Date().toISOString();
     const admin = createSupabaseAdminClient();
@@ -52,11 +65,11 @@ export async function POST(request: Request, { params }: Params) {
     }
 
     await logAdminAction({
-      actorUserId: user.id,
+      actorUserId: access.user.id,
       action: 'org_plan_update',
       targetType: 'organization',
       targetId: orgId,
-      metadata: { plan },
+      metadata: { plan, reason },
     });
 
     return NextResponse.json({ ok: true });

@@ -7,7 +7,7 @@
 
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { handleAdminError } from '@/app/api/admin/_helpers';
 import { routeLog } from '@/lib/monitoring/server-logger';
 
@@ -40,7 +40,7 @@ interface SubscriptionState {
 
 export async function GET(request: Request) {
   try {
-    await requireFounderAccess();
+    await requireAdminAccess({ permission: 'support:view' });
     const admin = createSupabaseAdminClient();
     const url = new URL(request.url);
 

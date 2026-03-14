@@ -1,5 +1,7 @@
 'use server';
 
+import { notify } from '@/lib/notifications/engine';
+import type { NotificationEventType } from '@/lib/notifications/types';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 /**
@@ -14,6 +16,21 @@ type CreateNotificationInput = {
   actionUrl?: string;
   metadata?: Record<string, any>;
 };
+
+const LEGACY_EVENT_MAP: Record<string, NotificationEventType> = {
+  POLICY_CREATED: 'system.release',
+  POLICY_UPDATED: 'system.release',
+  EVIDENCE_LINKED: 'evidence.review_requested',
+  TASK_CREATED: 'task.assigned',
+  TASK_COMPLETED: 'task.completed',
+  TASK_RECURRING: 'task.assigned',
+  TASK_GATE_BLOCKED: 'compliance.gap_detected',
+  SECURITY_ALERT: 'system.security_alert',
+};
+
+function mapLegacyType(type: string): NotificationEventType {
+  return LEGACY_EVENT_MAP[type] ?? 'system.release';
+}
 
 /**
  * 🔒 ADMIN / SYSTEM: Create notification for any user in org
@@ -57,54 +74,20 @@ export async function createNotification(input: CreateNotificationInput) {
     throw new Error('Recipient not in organization');
   }
 
-  /* 2️⃣ Load recipient notification preferences */
-  const { data: prefs, error: prefsError } = await supabase
-    .from('org_notification_prefs')
-    .select('*')
-    .eq('user_id', input.userId)
-    .single();
-
-  if (prefsError || !prefs) {
-    // Fail silently, never block core system logic because of prefs
-    return { skipped: true, reason: 'No preferences found' };
-  }
-
-  /* 3️⃣ Global in-app kill switch */
-  if (!prefs.in_app_enabled) {
-    return { skipped: true, reason: 'In-app notifications disabled' };
-  }
-
-  /* 4️⃣ Type-level preference enforcement */
-  const typeMap: Record<string, boolean> = {
-    POLICY_CREATED: prefs.policy_updates,
-    POLICY_UPDATED: prefs.policy_updates,
-    EVIDENCE_LINKED: prefs.evidence_updates,
-    TASK_CREATED: prefs.task_updates,
-    TASK_COMPLETED: prefs.task_updates,
-    TASK_RECURRING: prefs.task_updates,
-    TASK_GATE_BLOCKED: prefs.security_updates,
-    SECURITY_ALERT: prefs.security_updates,
-  };
-
-  if (typeMap[input.type] === false) {
-    return {
-      skipped: true,
-      reason: 'User opted out of this notification type',
-    };
-  }
-
-  /* 5️⃣ Insert notification */
-  const { error } = await supabase.from('org_notifications').insert({
-    organization_id: input.organizationId,
-    user_id: input.userId,
-    type: input.type,
+  await notify(input.organizationId, [input.userId], {
+    type: mapLegacyType(input.type),
     title: input.title,
-    body: input.body || null,
-    action_url: input.actionUrl || null,
-    metadata: input.metadata || {},
+    body: input.body || '',
+    data: {
+      ...(input.metadata ?? {}),
+      href: input.actionUrl,
+      dedupeKey:
+        typeof input.metadata?.dedupeKey === 'string'
+          ? input.metadata.dedupeKey
+          : `${input.type}:${input.userId}:${input.actionUrl ?? ''}`,
+    },
+    priority: input.type === 'SECURITY_ALERT' ? 'critical' : 'normal',
   });
-
-  if (error) throw error;
 
   return { success: true };
 }
@@ -131,11 +114,11 @@ export async function markNotificationRead(id: string) {
   }
 
   const { error } = await supabase
-    .from('org_notifications')
+    .from('notifications')
     .update({ read_at: new Date().toISOString() })
     .eq('id', id)
     .eq('user_id', user.id)
-    .eq('organization_id', membership.organization_id);
+    .eq('org_id', membership.organization_id);
 
   if (error) throw error;
 
@@ -164,10 +147,10 @@ export async function markAllNotificationsRead() {
   }
 
   const { error } = await supabase
-    .from('org_notifications')
+    .from('notifications')
     .update({ read_at: new Date().toISOString() })
     .eq('user_id', user.id)
-    .eq('organization_id', membership.organization_id)
+    .eq('org_id', membership.organization_id)
     .is('read_at', null);
 
   if (error) throw error;
@@ -195,43 +178,20 @@ export async function notifySelf(params: {
   } = await supabase.auth.getUser();
   if (!user) throw new Error('Unauthorized');
 
-  /* Load preferences */
-  const { data: prefs } = await supabase
-    .from('org_notification_prefs')
-    .select('*')
-    .eq('user_id', user.id)
-    .single();
-
-  if (!prefs || !prefs.in_app_enabled) {
-    return { skipped: true };
-  }
-
-  const typeMap: Record<string, boolean> = {
-    POLICY_CREATED: prefs.policy_updates,
-    POLICY_UPDATED: prefs.policy_updates,
-    EVIDENCE_LINKED: prefs.evidence_updates,
-    TASK_CREATED: prefs.task_updates,
-    TASK_COMPLETED: prefs.task_updates,
-    TASK_RECURRING: prefs.task_updates,
-    TASK_GATE_BLOCKED: prefs.security_updates,
-    SECURITY_ALERT: prefs.security_updates,
-  };
-
-  if (typeMap[params.type] === false) {
-    return { skipped: true };
-  }
-
-  const { error } = await supabase.from('org_notifications').insert({
-    organization_id: params.organizationId,
-    user_id: user.id,
-    type: params.type,
+  await notify(params.organizationId, [user.id], {
+    type: mapLegacyType(params.type),
     title: params.title,
-    body: params.body || null,
-    action_url: params.actionUrl || null,
-    metadata: params.metadata || {},
+    body: params.body || '',
+    data: {
+      ...(params.metadata ?? {}),
+      href: params.actionUrl,
+      dedupeKey:
+        typeof params.metadata?.dedupeKey === 'string'
+          ? params.metadata.dedupeKey
+          : `${params.type}:${user.id}:${params.actionUrl ?? ''}`,
+    },
+    priority: params.type === 'SECURITY_ALERT' ? 'critical' : 'normal',
   });
-
-  if (error) throw error;
 
   return { success: true };
 }

@@ -159,6 +159,12 @@ export default function ProcurementFAQPage() {
             ← Back to Trust Center
           </Link>
           <Link
+            href="/enterprise-proof"
+            className="text-sm text-primary hover:underline"
+          >
+            Open enterprise operations proof →
+          </Link>
+          <Link
             href="/contact"
             className="text-sm text-primary hover:underline"
           >

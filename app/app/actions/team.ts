@@ -2,6 +2,7 @@
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { logActivity } from "@/app/app/actions/audit";
+import { logActivity as logProductActivity } from "@/lib/activity/feed";
 import { revalidatePath } from "next/cache";
 import { requirePermission } from "@/app/app/actions/rbac";
 import { logAuditEvent } from "@/app/app/actions/audit-events";
@@ -65,6 +66,22 @@ export async function inviteMember(email: string, role: string) {
     assignedRole: role,
     inviteId: inviteData.user.id
   });
+
+  await logProductActivity(
+    membership.organization_id,
+    user.id,
+    "created",
+    {
+      type: "member",
+      id: inviteData.user.id,
+      name: email,
+      path: "/app/team",
+    },
+    {
+      role,
+      event: "invite_sent",
+    },
+  );
 
   await logAuditEvent({
     organizationId: membership.organization_id,
@@ -143,6 +160,21 @@ export async function removeTeamMember(targetUserId: string) {
     event: "Access revoked (Termination)",
     previousRole: targetMember.role
   });
+
+  await logProductActivity(
+    membership.organization_id,
+    user.id,
+    "deleted",
+    {
+      type: "member",
+      id: targetUserId,
+      name: targetUserId,
+      path: "/app/team",
+    },
+    {
+      previousRole: targetMember.role,
+    },
+  );
 
   await logAuditEvent({
     organizationId: membership.organization_id,

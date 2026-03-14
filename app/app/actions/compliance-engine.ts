@@ -3,6 +3,8 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { requireEntitlement } from "@/lib/billing/entitlements";
 import { logActivity as logger } from "@/lib/logger";
+import { logActivity as logProductActivity } from "@/lib/activity/feed";
+import { notify } from "@/lib/notifications/engine";
 import { logAuditEvent } from "@/app/app/actions/audit-events";
 import { createCorrelationId } from "@/lib/security/correlation";
 import { getFrameworkCodeForSlug } from "@/lib/frameworks/framework-installer";
@@ -467,6 +469,12 @@ export async function evaluateFrameworkControls(orgId: string, frameworkCode: st
   const correlationId = createCorrelationId();
   await requireEntitlement(orgId, "framework_evaluations");
 
+  const { data: previousStatus } = await supabase
+    .from("org_compliance_status")
+    .select("last_score")
+    .eq("organization_id", orgId)
+    .maybeSingle();
+
   const { data: framework, error: fwErr } = await supabase
     .from("compliance_frameworks")
     .select("id, code, title")
@@ -659,6 +667,58 @@ export async function evaluateFrameworkControls(orgId: string, frameworkCode: st
       });
   } catch {
     // ignore if table missing
+  }
+
+  const previousScore =
+    typeof previousStatus?.last_score === "number"
+      ? previousStatus.last_score
+      : null;
+  const scoreDelta = previousScore == null ? null : score - previousScore;
+
+  await logProductActivity(
+    orgId,
+    null,
+    "updated",
+    {
+      type: "compliance_score",
+      id: framework.id,
+      name: framework.code,
+      path: "/app/compliance/frameworks",
+    },
+    {
+      frameworkCode: framework.code,
+      score,
+      previousScore,
+      scoreDelta,
+      missingMandatoryCodes,
+    },
+  );
+
+  if (scoreDelta != null && scoreDelta !== 0) {
+    await notify(
+      orgId,
+      { roles: ["owner", "admin"] },
+      {
+        type:
+          scoreDelta > 0
+            ? "compliance.score_improved"
+            : "compliance.score_dropped",
+        title:
+          scoreDelta > 0
+            ? "Compliance score improved"
+            : "Compliance score dropped",
+        body: `${framework.code} moved from ${previousScore} to ${score}.`,
+        priority: scoreDelta < 0 ? "high" : "normal",
+        data: {
+          href: "/app/compliance/frameworks",
+          frameworkCode: framework.code,
+          score,
+          previousScore,
+          scoreDelta,
+          dedupeKey: `compliance.score:${orgId}:${framework.code}:${evaluatedAt}`,
+        },
+      },
+    );
   }
 
   await refreshComplianceBlocks(supabase, orgId, framework.code, missingMandatoryCodes);

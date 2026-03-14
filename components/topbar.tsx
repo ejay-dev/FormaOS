@@ -6,7 +6,6 @@ import { createSupabaseClient } from '@/lib/supabase/client';
 
 import { TopbarSearch } from './topbar-search';
 import {
-  Bell,
   Search,
   ChevronRight,
   User,
@@ -52,13 +51,11 @@ export function TopBar({
   orgId: string;
   role: UserRole;
 }) {
-  const [showNotifications, setShowNotifications] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState<string | null>(null);
   const { open: openHelp } = useHelpAssistant();
 
-  const notifRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   const router = useRouter();
@@ -67,13 +64,6 @@ export function TopBar({
   // Close dropdowns when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (
-        notifRef.current &&
-        !notifRef.current.contains(event.target as Node)
-      ) {
-        setShowNotifications(false);
-      }
-
       if (
         userMenuRef.current &&
         !userMenuRef.current.contains(event.target as Node)
@@ -198,31 +188,7 @@ export function TopBar({
           <Search className="h-5 w-5" />
         </Button>
 
-        {/* 🔔 NOTIFICATIONS */}
-        <div className="relative" ref={notifRef}>
-          <Button
-            variant="ghost"
-            onClick={() => setShowNotifications((v) => !v)}
-            className="relative rounded-full p-2 md:p-2.5 text-sidebar-foreground/90 hover:bg-card/8 transition-colors"
-            aria-label="Notifications"
-          >
-            <Bell className="h-5 w-5" />
-          </Button>
-
-          {/* DROPDOWN PANEL (only when open) */}
-          {showNotifications && (
-            <div
-              role="button"
-              tabIndex={0}
-              className="absolute right-0 top-full mt-1 z-50"
-              onKeyDown={(e) => {
-                if (e.key === 'Escape') setShowNotifications(false);
-              }}
-            >
-              <NotificationCenter orgId={orgId} />
-            </div>
-          )}
-        </div>
+        <NotificationCenter orgId={orgId} userId={userId} />
 
         {/* Help Assistant */}
         <Button

@@ -17,7 +17,9 @@ export type LogDomain =
   | 'billing'
   | 'auth'
   | 'rbac'
-  | 'api';
+  | 'api'
+  | 'queue'
+  | 'graph';
 
 export interface StructuredLog {
   timestamp: string;
@@ -205,3 +207,5 @@ export const billingLogger = createDomainLogger('billing');
 export const authLogger = createDomainLogger('auth');
 export const rbacLogger = createDomainLogger('rbac');
 export const apiLogger = createDomainLogger('api');
+export const queueLogger = createDomainLogger('queue');
+export const graphLogger = createDomainLogger('graph');

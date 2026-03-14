@@ -5,6 +5,14 @@ import {
   runQueueProcessBatch,
   runReportExportJob,
 } from './http';
+export { webhookDeliveryTask } from './webhook-delivery';
+export { notificationDigestTask } from './notification-digest';
+export {
+  executeWorkflowTask,
+  resumeWorkflowAfterApproval,
+  resumeWorkflowAfterDelay,
+  workflowTimeoutCheck,
+} from './workflow-execution';
 
 export const reportExportJobTask = task({
   id: 'report-export-job',

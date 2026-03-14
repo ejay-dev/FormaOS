@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { AdminShell } from '@/app/admin/components/admin-shell';
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { ComplianceSystemProvider } from '@/components/compliance-system/provider';
 import { CommandPalette } from '@/components/command-palette/CommandPalette';
 import { SecurityTrackingBootstrap } from '@/components/security/SecurityTrackingBootstrap';
@@ -15,7 +15,7 @@ export default async function AdminLayout({
   let userEmail: string | undefined;
 
   try {
-    const result = await requireFounderAccess();
+    const result = await requireAdminAccess();
     userEmail = result.user.email ?? undefined;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);

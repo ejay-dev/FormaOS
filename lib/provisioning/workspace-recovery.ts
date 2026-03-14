@@ -2,6 +2,7 @@ import 'server-only';
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { ensureUserProvisioning } from '@/lib/provisioning/ensure-provisioning';
+import { careOpsLogger } from '@/lib/observability/structured-logger';
 
 const TOTAL_ONBOARDING_STEPS = 7;
 
@@ -335,7 +336,7 @@ export async function recoverUserWorkspace({
 
   const nextPath = onboardingComplete ? '/app' : `/onboarding?step=${onboardingStep}`;
 
-  console.log('[BOOTSTRAP_RECOVERY]', {
+  careOpsLogger.info('bootstrap_recovery_completed', {
     source,
     userId,
     organizationId,

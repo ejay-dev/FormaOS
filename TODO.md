@@ -91,6 +91,24 @@
 
 ---
 
+## 🔄 NEW - Admin Operating Model & Platform Operations
+
+### Phase 8: Admin Governance And Operator Maturity
+
+- [x] Add delegated platform-admin assignments and approval records
+- [x] Unify admin audit reads across immutable and legacy feeds
+- [x] Require reasons for high-risk admin mutations
+- [x] Expand CSRF coverage on privileged admin routes
+- [x] Promote hidden ops pages into primary admin navigation
+- [x] Build customer-360 org view with members, entitlements, support, activity, sessions, security, and exports
+- [ ] Add org suspend / restore / retire lifecycle controls
+- [ ] Add export retry / cancel operator actions
+- [ ] Add billing intervention tools for refund, dunning, and invoice rescue
+- [ ] Add support case ownership, SLA state, and handoff notes
+- [ ] Add bulk operator actions with dry-run and blast-radius preview
+
+---
+
 ## 📊 DELIVERABLES
 
 ### Primary Output

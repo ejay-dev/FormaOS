@@ -1,4 +1,4 @@
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
 import { CURRENT_RELEASE_NAME, CURRENT_VERSION } from '@/config/release';
@@ -92,7 +92,7 @@ function buildRouteLatencyStats(
  */
 export async function GET() {
   try {
-    await requireFounderAccess();
+    await requireAdminAccess({ permission: 'system:view' });
     const admin = createSupabaseAdminClient();
 
     /* ── DB latency (timed round-trip) ─────────────────── */
@@ -113,14 +113,14 @@ export async function GET() {
           .select('organization_id', { count: 'exact', head: true }),
         admin.from('org_members').select('id', { count: 'exact', head: true }),
         admin
-          .from('admin_audit_log')
+          .from('platform_admin_audit_feed')
           .select('id', { count: 'exact', head: true }),
       ]);
 
     /* ── Recent admin actions (last 24 h) ─────────────── */
     const oneDayAgo = new Date(Date.now() - 86_400_000).toISOString();
     const { count: recentAdminActions } = await admin
-      .from('admin_audit_log')
+      .from('platform_admin_audit_feed')
       .select('id', { count: 'exact', head: true })
       .gte('created_at', oneDayAgo);
 

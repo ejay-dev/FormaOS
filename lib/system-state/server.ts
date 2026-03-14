@@ -101,7 +101,13 @@ export function mapUserRoleToRoleKey(userRole: UserRole): RoleKey {
 export interface SubscriptionData {
   planKey: PlanKey | null;
   planTier: PlanTier;
-  status: 'pending' | 'trialing' | 'active' | 'past_due' | 'canceled';
+  status:
+    | 'pending'
+    | 'trialing'
+    | 'active'
+    | 'past_due'
+    | 'canceled'
+    | 'blocked';
   trialActive: boolean;
   trialDaysRemaining: number;
   stripeCustomerId: string | null;
@@ -641,7 +647,11 @@ export function calculateModuleState(
   if (subscriptionStatus === 'past_due') {
     return 'restricted';
   }
-  if (subscriptionStatus === 'canceled' || subscriptionStatus === 'pending') {
+  if (
+    subscriptionStatus === 'canceled' ||
+    subscriptionStatus === 'pending' ||
+    subscriptionStatus === 'blocked'
+  ) {
     return 'locked';
   }
 

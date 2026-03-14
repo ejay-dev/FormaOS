@@ -6,7 +6,8 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
-import { sendNotification, logActivity } from '@/lib/realtime';
+import { logActivity } from '@/lib/activity/feed';
+import { notify } from '@/lib/notifications/engine';
 
 export type TriggerType =
   | 'member_added'
@@ -80,37 +81,47 @@ export class WorkflowEngine {
     context: AutomationContext,
   ): Promise<void> {
     const matchingRules = Array.from(this.rules.values()).filter(
-      (rule) => rule.trigger === trigger && rule.org_id === context.orgId,
+      (rule) =>
+        rule.enabled &&
+        rule.trigger === trigger &&
+        rule.org_id === context.orgId,
     );
 
     for (const rule of matchingRules) {
-      // Check conditions
-      if (
-        rule.conditions &&
-        !this.evaluateConditions(rule.conditions, context)
-      ) {
-        continue;
-      }
+      try {
+        if (
+          rule.conditions &&
+          !this.evaluateConditions(rule.conditions, context)
+        ) {
+          continue;
+        }
 
-      // Execute actions
-      for (const action of rule.actions) {
-        await this.executeAction(action, context);
-      }
+        for (const action of rule.actions) {
+          await this.executeAction(action, context);
+        }
 
-      // Log automation execution
-      if (context.userId) {
-        await logActivity(
-          context.orgId,
-          'system',
-          'Formaos.team@gmail.com',
-          'workflow_executed',
-          'workflow',
-          rule.id,
-          {
-            ruleName: rule.name,
-            trigger,
-            actionsCount: rule.actions.length,
-          },
+        if (context.userId) {
+          await logActivity(
+            context.orgId,
+            context.userId,
+            'updated',
+            {
+              type: 'workflow',
+              id: rule.id,
+              name: rule.name,
+              path: '/app/workflows',
+            },
+            {
+              ruleName: rule.name,
+              trigger,
+              actionsCount: rule.actions.length,
+            },
+          );
+        }
+      } catch (error) {
+        console.error(
+          `[workflow-engine] Failed to execute workflow ${rule.id}:`,
+          error,
         );
       }
     }
@@ -120,11 +131,61 @@ export class WorkflowEngine {
    * Evaluate conditions
    */
   private evaluateConditions(
-    _conditions: Record<string, any>,
-    _context: AutomationContext,
+    conditions: Record<string, any>,
+    context: AutomationContext,
   ): boolean {
-    // Simple condition evaluation (can be extended)
-    return true; // For now, always true
+    return Object.entries(conditions).every(([key, condition]) => {
+      const actual = this.getContextValue(context, key);
+
+      if (
+        condition !== null &&
+        typeof condition === 'object' &&
+        !Array.isArray(condition)
+      ) {
+        return Object.entries(condition).every(([operator, expected]) => {
+          switch (operator) {
+            case 'eq':
+              return actual === expected;
+            case 'neq':
+              return actual !== expected;
+            case 'gt':
+              return Number(actual) > Number(expected);
+            case 'gte':
+              return Number(actual) >= Number(expected);
+            case 'lt':
+              return Number(actual) < Number(expected);
+            case 'lte':
+              return Number(actual) <= Number(expected);
+            case 'contains':
+              return Array.isArray(actual)
+                ? actual.includes(expected)
+                : String(actual ?? '').includes(String(expected));
+            case 'in':
+              return Array.isArray(expected) && expected.includes(actual);
+            case 'notIn':
+              return Array.isArray(expected) && !expected.includes(actual);
+            case 'exists':
+              return expected ? actual != null : actual == null;
+            default:
+              return false;
+          }
+        });
+      }
+
+      return actual === condition;
+    });
+  }
+
+  private getContextValue(
+    context: AutomationContext,
+    path: string,
+  ): unknown {
+    return path.split('.').reduce<unknown>((value, segment) => {
+      if (value == null || typeof value !== 'object') {
+        return undefined;
+      }
+      return (value as Record<string, unknown>)[segment];
+    }, context);
   }
 
   /**
@@ -139,13 +200,19 @@ export class WorkflowEngine {
     switch (action.type) {
       case 'send_notification':
         if (context.userId) {
-          await sendNotification(
-            action.config.userId || context.userId,
-            action.config.title,
-            action.config.message,
-            action.config.type || 'info',
-            action.config.actionUrl,
-          );
+          await notify(context.orgId, [action.config.userId || context.userId], {
+            type: 'workflow.approval_requested',
+            title: action.config.title,
+            body: action.config.message,
+            priority:
+              action.config.type === 'warning' || action.config.type === 'error'
+                ? 'high'
+                : 'normal',
+            data: {
+              href: action.config.actionUrl || '/app/workflows',
+              dedupeKey: `workflow.rule:${context.orgId}:${action.config.userId || context.userId}:${action.config.title || 'notification'}`,
+            },
+          });
         }
         break;
 
@@ -197,13 +264,15 @@ export class WorkflowEngine {
           .in('role', ['owner', 'admin']);
 
         for (const admin of admins || []) {
-          await sendNotification(
-            admin.user_id,
-            action.config.title || 'Escalation Required',
-            action.config.message,
-            'warning',
-            action.config.actionUrl,
-          );
+          await notify(context.orgId, [admin.user_id], {
+            type: 'incident.escalated',
+            title: action.config.title || 'Escalation Required',
+            body: action.config.message,
+            priority: 'high',
+            data: {
+              href: action.config.actionUrl || '/app/workflows',
+            },
+          });
         }
         break;
     }

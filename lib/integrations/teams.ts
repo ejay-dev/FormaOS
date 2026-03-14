@@ -7,6 +7,7 @@
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import { logActivity } from '@/lib/audit-trail';
+import { decodeIntegrationConfig } from './config-crypto';
 
 export type TeamsEventType =
   | 'task_created'
@@ -499,7 +500,7 @@ export async function getTeamsConfig(
     .from('integration_configs')
     .select('*')
     .eq('organization_id', organizationId)
-    .eq('integration_type', 'teams')
+    .eq('provider', 'teams')
     .eq('enabled', true)
     .single();
 
@@ -507,11 +508,17 @@ export async function getTeamsConfig(
     return null;
   }
 
+  const config = decodeIntegrationConfig<Record<string, unknown>>(data.config);
+
   return {
-    webhookUrl: data.webhook_url,
-    channelName: data.channel,
-    enabledEvents: data.events as TeamsEventType[],
-    mentionUsers: data.mention_users || [],
+    webhookUrl: (config.webhook_url as string) ?? (data.webhook_url as string),
+    channelName: (config.channel_name as string) ?? (data.channel as string),
+    enabledEvents:
+      ((config.enabled_events as TeamsEventType[]) ??
+        (data.events as TeamsEventType[])) || [],
+    mentionUsers:
+      ((config.mention_users as string[]) ?? (data.mention_users as string[])) ||
+      [],
   };
 }
 
@@ -528,30 +535,33 @@ export async function saveTeamsConfig(
     .from('integration_configs')
     .select('id')
     .eq('organization_id', organizationId)
-    .eq('integration_type', 'teams')
+    .eq('provider', 'teams')
     .single();
 
   if (existing) {
     await supabase
       .from('integration_configs')
       .update({
-        webhook_url: config.webhookUrl,
-        channel: config.channelName,
-        events: config.enabledEvents,
-        mention_users: config.mentionUsers || [],
+        config: {
+          webhook_url: config.webhookUrl,
+          channel_name: config.channelName,
+          enabled_events: config.enabledEvents,
+          mention_users: config.mentionUsers || [],
+        },
         updated_at: new Date().toISOString(),
       })
       .eq('id', existing.id);
   } else {
     await supabase.from('integration_configs').insert({
       organization_id: organizationId,
-      integration_type: 'teams',
-      name: 'Microsoft Teams',
-      webhook_url: config.webhookUrl,
-      channel: config.channelName,
+      provider: 'teams',
       enabled: true,
-      events: config.enabledEvents,
-      mention_users: config.mentionUsers || [],
+      config: {
+        webhook_url: config.webhookUrl,
+        channel_name: config.channelName,
+        enabled_events: config.enabledEvents,
+        mention_users: config.mentionUsers || [],
+      },
     });
   }
 
@@ -631,7 +641,7 @@ export async function disableTeamsIntegration(
     .from('integration_configs')
     .update({ enabled: false })
     .eq('organization_id', organizationId)
-    .eq('integration_type', 'teams');
+    .eq('provider', 'teams');
 }
 
 /**
@@ -646,10 +656,10 @@ async function logTeamsEvent(
 
   await supabase.from('integration_events').insert({
     organization_id: organizationId,
-    integration_type: 'teams',
+    provider: 'teams',
     event_type: eventType,
     status: success ? 'sent' : 'failed',
-    payload: {},
+    metadata: {},
     created_at: new Date().toISOString(),
   });
 }
@@ -668,7 +678,7 @@ export async function getTeamsStats(organizationId: string): Promise<{
     .from('integration_events')
     .select('*')
     .eq('organization_id', organizationId)
-    .eq('integration_type', 'teams')
+    .eq('provider', 'teams')
     .gte(
       'created_at',
       new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),

@@ -1,6 +1,6 @@
 import { getAdminFetchConfig } from '@/app/admin/lib';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { repairOrgProvisioning, repairUserProvisioning } from './actions';
 import type { User } from '@supabase/supabase-js';
 
@@ -61,6 +61,43 @@ type EntitlementRow = {
   enabled: boolean | null;
 };
 
+type BillingTimelineResponse = {
+  summary?: {
+    totalEvents?: number;
+    totalSubscriptions?: number;
+    issuesCount?: number;
+    statusCounts?: Record<string, number>;
+  };
+  issues?: Array<{
+    type: string;
+    message: string;
+    orgId?: string;
+    orgName?: string;
+  }>;
+};
+
+type AutomationFailuresResponse = {
+  summary?: {
+    totalFailures?: number;
+    uniqueJobs?: number;
+    activeAlerts?: number;
+    jobStats?: Array<{
+      jobName: string;
+      failures: number;
+      failureRate: string;
+      avgDuration: number;
+    }>;
+  };
+  failures?: Array<{
+    id: string;
+    jobName: string;
+    orgId?: string;
+    errorCode: string;
+    errorMessage: string;
+    timestamp: string;
+  }>;
+};
+
 function formatDate(value?: string | null) {
   if (!value) return 'N/A';
   const date = new Date(value);
@@ -80,6 +117,29 @@ async function fetchSupport(status?: string) {
   return res.json();
 }
 
+async function fetchBillingTimeline() {
+  const { base, headers } = await getAdminFetchConfig();
+  const res = await fetch(`${base}/api/admin/support/billing-timeline?limit=25&days=30`, {
+    cache: 'no-store',
+    headers,
+  });
+  if (!res.ok) return null;
+  return (await res.json()) as BillingTimelineResponse;
+}
+
+async function fetchAutomationFailures() {
+  const { base, headers } = await getAdminFetchConfig();
+  const res = await fetch(
+    `${base}/api/admin/support/automation-failures?limit=25&hours=72`,
+    {
+      cache: 'no-store',
+      headers,
+    },
+  );
+  if (!res.ok) return null;
+  return (await res.json()) as AutomationFailuresResponse;
+}
+
 function isUuid(value: string) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
     value,
@@ -92,7 +152,7 @@ async function fetchProvisioningLookup(query?: string) {
     return { users: [] as UserSummary[], orgs: [] as OrgSummary[] };
   }
 
-  await requireFounderAccess();
+  await requireAdminAccess({ permission: 'support:view' });
   const admin = createSupabaseAdminClient();
 
   const { data: userList } = await admin.auth.admin.listUsers({
@@ -222,9 +282,18 @@ export default async function AdminSupportPage({
   searchParams?: Promise<{ status?: string; q?: string }>;
 }) {
   const resolved = await searchParams;
-  const data = await fetchSupport(resolved?.status);
+  const [data, provision, billingTimeline, automationFailures] =
+    await Promise.all([
+      fetchSupport(resolved?.status),
+      fetchProvisioningLookup(resolved?.q),
+      fetchBillingTimeline(),
+      fetchAutomationFailures(),
+    ]);
   const rows: SupportRow[] = data?.data ?? [];
-  const provision = await fetchProvisioningLookup(resolved?.q);
+  const billingSummary = billingTimeline?.summary;
+  const billingIssues = billingTimeline?.issues ?? [];
+  const automationSummary = automationFailures?.summary;
+  const failureRows = automationFailures?.failures ?? [];
 
   return (
     <div className="space-y-6">
@@ -234,6 +303,44 @@ export default async function AdminSupportPage({
           Inbound requests and contact queue.
         </p>
       </div>
+
+      <section className="grid gap-4 xl:grid-cols-3">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <div className="text-xs uppercase tracking-[0.3em] text-slate-500">
+            Billing Watch
+          </div>
+          <div className="mt-3 text-2xl font-semibold text-slate-100">
+            {billingSummary?.issuesCount ?? 0}
+          </div>
+          <p className="mt-2 text-sm text-slate-400">
+            Open billing anomalies across{' '}
+            {billingSummary?.totalSubscriptions ?? 0} subscriptions.
+          </p>
+        </div>
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <div className="text-xs uppercase tracking-[0.3em] text-slate-500">
+            Automation Failures
+          </div>
+          <div className="mt-3 text-2xl font-semibold text-slate-100">
+            {automationSummary?.totalFailures ?? 0}
+          </div>
+          <p className="mt-2 text-sm text-slate-400">
+            {automationSummary?.uniqueJobs ?? 0} failing job families in the last
+            72 hours.
+          </p>
+        </div>
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <div className="text-xs uppercase tracking-[0.3em] text-slate-500">
+            Active Alerts
+          </div>
+          <div className="mt-3 text-2xl font-semibold text-slate-100">
+            {automationSummary?.activeAlerts ?? 0}
+          </div>
+          <p className="mt-2 text-sm text-slate-400">
+            Support and platform signals requiring follow-up.
+          </p>
+        </div>
+      </section>
 
       <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
         <div className="overflow-x-auto">
@@ -279,6 +386,98 @@ export default async function AdminSupportPage({
           </table>
         </div>
       </div>
+
+      <section className="grid gap-6 xl:grid-cols-2">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-xl font-semibold text-slate-100">
+                Billing Timeline
+              </h2>
+              <p className="mt-1 text-sm text-slate-400">
+                Subscription health and trial drift surfaced for support.
+              </p>
+            </div>
+            <div className="text-xs text-slate-500">
+              Events {billingSummary?.totalEvents ?? 0}
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-400">
+            {Object.entries(billingSummary?.statusCounts ?? {}).map(
+              ([status, count]) => (
+                <span
+                  key={status}
+                  className="rounded-full border border-white/10 px-2 py-1"
+                >
+                  {status}: {count}
+                </span>
+              ),
+            )}
+          </div>
+          <div className="mt-4 space-y-3">
+            {billingIssues.slice(0, 6).map((issue) => (
+              <div
+                key={`${issue.type}:${issue.orgId ?? issue.message}`}
+                className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4"
+              >
+                <p className="text-sm font-medium text-amber-100">
+                  {issue.orgName ?? issue.orgId ?? issue.type}
+                </p>
+                <p className="mt-1 text-xs text-amber-100/80">{issue.message}</p>
+              </div>
+            ))}
+            {billingIssues.length === 0 ? (
+              <p className="text-sm text-slate-500">
+                No billing anomalies detected in the last 30 days.
+              </p>
+            ) : null}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-xl font-semibold text-slate-100">
+                Automation Failures
+              </h2>
+              <p className="mt-1 text-sm text-slate-400">
+                Job failures and error signatures from the last 72 hours.
+              </p>
+            </div>
+            <div className="text-xs text-slate-500">
+              Alerts {automationSummary?.activeAlerts ?? 0}
+            </div>
+          </div>
+          <div className="mt-4 space-y-3">
+            {failureRows.slice(0, 6).map((failure) => (
+              <div
+                key={failure.id}
+                className="rounded-xl border border-rose-500/20 bg-rose-500/5 p-4"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-medium text-rose-100">
+                    {failure.jobName}
+                  </p>
+                  <span className="text-[11px] uppercase tracking-wide text-rose-200/80">
+                    {failure.errorCode}
+                  </span>
+                </div>
+                <p className="mt-1 text-xs text-rose-100/80">
+                  {failure.errorMessage}
+                </p>
+                <p className="mt-2 text-[11px] text-rose-200/70">
+                  {formatDate(failure.timestamp)}
+                </p>
+              </div>
+            ))}
+            {failureRows.length === 0 ? (
+              <p className="text-sm text-slate-500">
+                No automation failures recorded in the last 72 hours.
+              </p>
+            ) : null}
+          </div>
+        </div>
+      </section>
 
       <div className="rounded-2xl border border-white/10 bg-white/5 p-6 space-y-5">
         <div>

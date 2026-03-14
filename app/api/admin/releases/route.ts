@@ -1,23 +1,26 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import {
+  extractAdminReason,
   handleAdminError,
   ADMIN_CACHE_HEADERS,
-
+  parseAdminMutationPayload,
+  requireAdminChangeControl,
 } from '@/app/api/admin/_helpers';
 
 const log = routeLog('/api/admin/releases');
 import { logAdminAction } from '@/lib/admin/audit';
 import { isValidVersionCode } from '@/config/release';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 /**
  * GET /api/admin/releases — List all product releases
  */
 export async function GET() {
   try {
-    await requireFounderAccess();
+    await requireAdminAccess({ permission: 'releases:view' });
     const admin = createSupabaseAdminClient();
 
     const { data, error } = await admin
@@ -43,8 +46,18 @@ export async function GET() {
  */
 export async function POST(request: Request) {
   try {
-    const { user } = await requireFounderAccess();
-    const body = await request.json().catch(() => ({}));
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
+    const access = await requireAdminAccess({ permission: 'releases:manage' });
+    const { payload: body } = await parseAdminMutationPayload(request);
+
+    const reason = await requireAdminChangeControl({
+      context: access,
+      action: 'release_created',
+      targetType: 'product_release',
+      reason: extractAdminReason(body, request),
+    });
 
     const version_code = String(body?.version_code ?? '').trim();
     const release_name = String(body?.release_name ?? '').trim();
@@ -73,7 +86,7 @@ export async function POST(request: Request) {
         release_status: 'draft',
         release_notes,
         feature_flags,
-        created_by: user.id,
+        created_by: access.user.id,
       })
       .select()
       .single();
@@ -89,11 +102,11 @@ export async function POST(request: Request) {
     }
 
     await logAdminAction({
-      actorUserId: user.id,
+      actorUserId: access.user.id,
       action: 'release_created',
       targetType: 'product_release',
       targetId: data.id,
-      metadata: { version_code, release_name },
+      metadata: { version_code, release_name, reason },
     });
 
     return NextResponse.json({ release: data }, { status: 201 });

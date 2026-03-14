@@ -1,4 +1,4 @@
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
 import { routeLog } from '@/lib/monitoring/server-logger';
@@ -41,13 +41,13 @@ const FEATURE_META: Record<string, { name: string; description: string }> = {
 
 export async function GET() {
   try {
-    await requireFounderAccess();
+    await requireAdminAccess({ permission: 'dashboard:view' });
     const admin = createSupabaseAdminClient();
 
     /* ── Fetch all entitlements ─────────────────────────── */
     const { data: entitlements, error } = await admin
       .from('org_entitlements')
-      .select('feature_key, enabled, value_limit');
+      .select('feature_key, enabled, limit_value');
 
     if (error) {
       log.error({ err: error }, '/api/admin/features query error:');
@@ -77,10 +77,10 @@ export async function GET() {
       featureStats[key].total_orgs += 1;
       if (e.enabled) featureStats[key].enabled_count += 1;
       else featureStats[key].disabled_count += 1;
-      if (e.value_limit != null) {
+      if (e.limit_value != null) {
         featureStats[key].max_limit = Math.max(
           featureStats[key].max_limit ?? 0,
-          e.value_limit as number,
+          e.limit_value as number,
         );
       }
     });

@@ -7,6 +7,8 @@ export type IndustryPack = {
     assets: { name: string; type: string; criticality: string }[];
 };
 
+export const INDUSTRY_PACK_VERSION = '2026.03.14';
+
 export const INDUSTRY_PACKS: Record<string, IndustryPack> = {
     "ndis": {
         id: "ndis",
@@ -175,3 +177,55 @@ export const INDUSTRY_PACKS: Record<string, IndustryPack> = {
         ]
     }
 };
+
+export function listIndustryPacks(): IndustryPack[] {
+    return Object.values(INDUSTRY_PACKS);
+}
+
+export function getIndustryPack(industryId: string): IndustryPack | null {
+    return INDUSTRY_PACKS[industryId] ?? null;
+}
+
+export function applyIndustryPackCustomization(
+    industryId: string,
+    customization: Partial<IndustryPack>,
+): IndustryPack | null {
+    const pack = getIndustryPack(industryId);
+    if (!pack) {
+        return null;
+    }
+
+    return {
+        ...pack,
+        ...customization,
+        policies: customization.policies ?? pack.policies,
+        tasks: customization.tasks ?? pack.tasks,
+        assets: customization.assets ?? pack.assets,
+    };
+}
+
+export function mapIndustryPackToFrameworks(
+    industryId: string,
+    frameworks: string[],
+): Array<{
+    industryId: string;
+    framework: string;
+    policyCount: number;
+    taskCount: number;
+    assetCount: number;
+    version: string;
+}> {
+    const pack = getIndustryPack(industryId);
+    if (!pack) {
+        return [];
+    }
+
+    return frameworks.map((framework) => ({
+        industryId,
+        framework,
+        policyCount: pack.policies.length,
+        taskCount: pack.tasks.length,
+        assetCount: pack.assets.length,
+        version: INDUSTRY_PACK_VERSION,
+    }));
+}

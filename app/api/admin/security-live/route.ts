@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { isFounder } from '@/lib/utils/founder';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { fetchAuthEmailsByIds } from '@/app/api/admin/_auth-users';
 import { extractClientIP } from '@/lib/security/session-security';
 import { routeLog } from '@/lib/monitoring/server-logger';
@@ -15,6 +15,11 @@ import {
   isSecurityDashboardEnabled,
   isSecurityMonitoringEnabled,
 } from '@/lib/security/monitoring-flags';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
+import {
+  assertAdminReason,
+  extractAdminReason,
+} from '@/app/api/admin/_helpers';
 
 type SecurityEventRow = {
   id: string;
@@ -126,7 +131,9 @@ export async function GET(request: Request) {
       );
     }
 
-    if (!isFounder(user.email, user.id)) {
+    try {
+      await requireAdminAccess({ permission: 'security:view' });
+    } catch {
       logUnauthorizedSecurityAccess(request, user.id);
       return NextResponse.json(
         { ok: false, error: 'forbidden' },
@@ -318,6 +325,9 @@ export async function PATCH(request: Request) {
   }
 
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     const supabase = await createSupabaseServerClient();
     const {
       data: { user },
@@ -332,7 +342,9 @@ export async function PATCH(request: Request) {
       );
     }
 
-    if (!isFounder(user.email, user.id)) {
+    try {
+      await requireAdminAccess({ permission: 'security:manage' });
+    } catch {
       logUnauthorizedSecurityAccess(request, user.id);
       return NextResponse.json(
         { ok: false, error: 'forbidden' },
@@ -354,6 +366,10 @@ export async function PATCH(request: Request) {
     }
 
     const admin = createSupabaseAdminClient();
+    const reason = assertAdminReason(
+      extractAdminReason(body as Record<string, unknown>, request),
+      'Security alert status change',
+    );
     const updateData: Record<string, unknown> = {
       status: body.status,
       updated_at: new Date().toISOString(),
@@ -398,6 +414,7 @@ export async function PATCH(request: Request) {
       metadata: {
         operation: 'alert_status_change',
         status: body.status,
+        reason,
       },
     });
 

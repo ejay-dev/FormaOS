@@ -1,7 +1,7 @@
 /** @jest-environment node */
 
 jest.mock('@/app/app/admin/access', () => ({
-  requireFounderAccess: jest.fn(),
+  requireAdminAccess: jest.fn(),
 }));
 
 jest.mock('@/lib/control-plane/server', () => ({
@@ -11,7 +11,7 @@ jest.mock('@/lib/control-plane/server', () => ({
 }));
 
 import { GET } from '@/app/api/admin/control-plane/stream/route';
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import {
   getAdminControlPlaneSnapshot,
   readAdminStreamVersion,
@@ -68,7 +68,7 @@ function createEventReader(stream: ReadableStream<Uint8Array>) {
 }
 
 describe('/api/admin/control-plane/stream live updates', () => {
-  const requireFounderAccessMock = requireFounderAccess as jest.Mock;
+  const requireAdminAccessMock = requireAdminAccess as jest.Mock;
   const getAdminSnapshotMock = getAdminControlPlaneSnapshot as jest.Mock;
   const readAdminStreamVersionMock = readAdminStreamVersion as jest.Mock;
 
@@ -77,8 +77,11 @@ describe('/api/admin/control-plane/stream live updates', () => {
   });
 
   it('pushes an updated snapshot within ~1.2s after stream version changes', async () => {
-    requireFounderAccessMock.mockResolvedValue({
+    requireAdminAccessMock.mockResolvedValue({
       user: { id: 'founder-1', email: 'founder@example.com' },
+      accessType: 'founder',
+      roleKey: 'founder',
+      permissions: new Set(['control_plane:view']),
     });
 
     let versionCall = 0;

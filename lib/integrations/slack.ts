@@ -6,6 +6,7 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
+import { decodeIntegrationConfig } from './config-crypto';
 
 export interface SlackConfig {
   organizationId: string;
@@ -394,12 +395,14 @@ export async function getSlackConfig(
 
   if (error || !data) return null;
 
+  const config = decodeIntegrationConfig<Record<string, unknown>>(data.config);
+
   return {
     organizationId: data.organization_id,
-    webhookUrl: data.webhook_url,
-    channel: data.config?.channel,
+    webhookUrl: (config.webhook_url as string) ?? (data.webhook_url as string),
+    channel: config.channel as string | undefined,
     enabled: data.enabled,
-    events: data.config?.events || [],
+    events: ((config.events as SlackEventType[]) ?? []) || [],
   };
 }
 
@@ -413,9 +416,9 @@ export async function saveSlackConfig(config: SlackConfig): Promise<void> {
     {
       organization_id: config.organizationId,
       provider: 'slack',
-      webhook_url: config.webhookUrl,
       enabled: config.enabled,
       config: {
+        webhook_url: config.webhookUrl,
         channel: config.channel,
         events: config.events,
       },

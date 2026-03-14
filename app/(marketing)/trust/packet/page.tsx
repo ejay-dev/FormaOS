@@ -207,6 +207,13 @@ export default function TrustPacketPage() {
             Full Security Review Packet
             <ArrowRight className="h-4 w-4" />
           </Link>
+          <Link
+            href="/enterprise-proof"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-background px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/30"
+          >
+            Enterprise Operations Proof
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
 
         <div className="mt-10 flex items-center justify-between text-sm">

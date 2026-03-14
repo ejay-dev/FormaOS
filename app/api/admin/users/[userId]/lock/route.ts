@@ -1,8 +1,13 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { logAdminAction } from '@/lib/admin/audit';
-import { handleAdminError } from '@/app/api/admin/_helpers';
+import {
+  extractAdminReason,
+  handleAdminError,
+  parseAdminMutationPayload,
+  requireAdminChangeControl,
+} from '@/app/api/admin/_helpers';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { checkAdminRateLimit, getClientIp } from '@/lib/ratelimit';
 
@@ -21,13 +26,18 @@ export async function POST(request: Request, { params }: Params) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
     }
 
-    const { user } = await requireFounderAccess();
+    const access = await requireAdminAccess({ permission: 'users:manage' });
     const { userId } = await params;
-    const contentType = request.headers.get('content-type') ?? '';
-    const body = contentType.includes('application/json')
-      ? await request.json().catch(() => ({}))
-      : Object.fromEntries(await request.formData());
+    const { payload: body } = await parseAdminMutationPayload(request);
     const locked = Boolean(body?.locked);
+    const reason = await requireAdminChangeControl({
+      context: access,
+      action: locked ? 'user_lock' : 'user_unlock',
+      targetType: 'user',
+      targetId: userId,
+      reason: extractAdminReason(body, request),
+      requireApproval: locked,
+    });
 
     const admin = createSupabaseAdminClient();
     const banDuration = locked ? '876000h' : 'none';
@@ -36,11 +46,11 @@ export async function POST(request: Request, { params }: Params) {
     });
 
     await logAdminAction({
-      actorUserId: user.id,
+      actorUserId: access.user.id,
       action: locked ? 'user_lock' : 'user_unlock',
       targetType: 'user',
       targetId: userId,
-      metadata: { locked },
+      metadata: { locked, reason },
     });
 
     return NextResponse.json({ ok: true });

@@ -19,6 +19,7 @@ import {
   RATE_LIMITS,
 } from '@/lib/security/rate-limiter';
 import { createCorrelationId } from '@/lib/security/correlation';
+import { exportLogger } from '@/lib/observability/structured-logger';
 
 // Performance monitoring
 let lastExportMetrics: {
@@ -412,9 +413,7 @@ export async function createAuditBundleAction() {
       success: true,
     };
 
-    console.log(
-      `[PERFORMANCE] Audit export completed in ${duration}ms (${(pdfSize / 1024).toFixed(2)} KB)`,
-    );
+    exportLogger.info('audit_export_completed', { durationMs: duration, pdfSizeKb: +(pdfSize / 1024).toFixed(2) });
 
     revalidatePath('/app/reports');
 

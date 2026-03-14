@@ -1,14 +1,15 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { parsePageParams } from '@/app/api/admin/_utils';
 import { handleAdminError } from '@/app/api/admin/_helpers';
 import { fetchAuthEmailsByIds } from '@/app/api/admin/_auth-users';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
+import { getEffectiveOrganizationStatus } from '@/lib/admin/org-lifecycle';
 
 export async function GET(request: Request) {
   try {
-    const { user } = await requireFounderAccess();
+    const { user } = await requireAdminAccess({ permission: 'orgs:view' });
 
     // Rate limiting for admin routes
     const rateLimitResult = await rateLimitApi(request, user.id);
@@ -23,7 +24,7 @@ export async function GET(request: Request) {
 
     const orgQuery = admin
       .from('organizations')
-      .select('id, name, created_at', { count: 'exact' })
+      .select('id, name, created_at, lifecycle_status', { count: 'exact' })
       .order('created_at', { ascending: false })
       .range(from, to);
 
@@ -82,13 +83,19 @@ export async function GET(request: Request) {
         | Record<string, unknown>
         | undefined;
       const ownerId = ownersByOrg.get(org.id as string);
+      const effectiveStatus = getEffectiveOrganizationStatus({
+        lifecycleStatus: org.lifecycle_status as string | null,
+        subscriptionStatus: (subscription?.status as string | null) ?? 'pending',
+      });
       return {
         id: org.id,
         name: org.name,
         created_at: org.created_at,
         owner_email: ownerId ? (ownerEmails.get(ownerId) ?? 'N/A') : 'N/A',
         plan_key: subscription?.plan_key ?? null,
-        status: subscription?.status ?? 'pending',
+        status: effectiveStatus.status,
+        lifecycle_status: effectiveStatus.lifecycleStatus,
+        subscription_status: effectiveStatus.subscriptionStatus,
         trial_expires_at:
           subscription?.trial_expires_at ??
           subscription?.current_period_end ??

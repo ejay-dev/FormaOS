@@ -1,7 +1,7 @@
 /** @jest-environment node */
 
 jest.mock('@/app/app/admin/access', () => ({
-  requireFounderAccess: jest.fn(),
+  requireAdminAccess: jest.fn(),
 }));
 
 jest.mock('@/lib/control-plane/server', () => ({
@@ -16,17 +16,18 @@ jest.mock('@/lib/control-plane/server', () => ({
 }));
 
 import { GET, POST } from '@/app/api/admin/control-plane/route';
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { getAdminControlPlaneSnapshot } from '@/lib/control-plane/server';
 
 describe('/api/admin/control-plane permissions', () => {
-  const requireFounderAccessMock = requireFounderAccess as jest.Mock;
+  const requireAdminAccessMock = requireAdminAccess as jest.Mock;
   const getAdminSnapshotMock = getAdminControlPlaneSnapshot as jest.Mock;
   const trustedOrigin =
     process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
   const csrfHeaders = {
     'Content-Type': 'application/json',
     Origin: trustedOrigin,
+    'x-admin-reason': 'control plane test reason',
   };
 
   beforeEach(() => {
@@ -34,7 +35,7 @@ describe('/api/admin/control-plane permissions', () => {
   });
 
   it('GET returns 403 for non-founder requests', async () => {
-    requireFounderAccessMock.mockRejectedValue(new Error('Forbidden'));
+    requireAdminAccessMock.mockRejectedValue(new Error('Forbidden'));
 
     const response = await GET(new Request('http://localhost/api/admin/control-plane'));
 
@@ -44,8 +45,11 @@ describe('/api/admin/control-plane permissions', () => {
   });
 
   it('GET returns snapshot for founders', async () => {
-    requireFounderAccessMock.mockResolvedValue({
+    requireAdminAccessMock.mockResolvedValue({
       user: { id: 'founder-1', email: 'founder@example.com' },
+      accessType: 'founder',
+      roleKey: 'founder',
+      permissions: new Set(['control_plane:view', 'control_plane:manage']),
     });
 
     getAdminSnapshotMock.mockResolvedValue({
@@ -78,7 +82,7 @@ describe('/api/admin/control-plane permissions', () => {
   });
 
   it('POST blocks unauthorized callers', async () => {
-    requireFounderAccessMock.mockRejectedValue(new Error('Forbidden'));
+    requireAdminAccessMock.mockRejectedValue(new Error('Forbidden'));
 
     const response = await POST(
       new Request('http://localhost/api/admin/control-plane', {
@@ -89,12 +93,15 @@ describe('/api/admin/control-plane permissions', () => {
     );
 
     expect(response.status).toBe(403);
-    expect(requireFounderAccessMock).toHaveBeenCalled();
+    expect(requireAdminAccessMock).toHaveBeenCalled();
   });
 
   it('POST returns 400 for unknown actions', async () => {
-    requireFounderAccessMock.mockResolvedValue({
+    requireAdminAccessMock.mockResolvedValue({
       user: { id: 'founder-1', email: 'founder@example.com' },
+      accessType: 'founder',
+      roleKey: 'founder',
+      permissions: new Set(['control_plane:view', 'control_plane:manage']),
     });
 
     const response = await POST(
@@ -120,6 +127,6 @@ describe('/api/admin/control-plane permissions', () => {
     );
 
     expect(response.status).toBe(403);
-    expect(requireFounderAccessMock).not.toHaveBeenCalled();
+    expect(requireAdminAccessMock).not.toHaveBeenCalled();
   });
 });

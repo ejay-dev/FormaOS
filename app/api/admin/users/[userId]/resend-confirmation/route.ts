@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { logAdminAction } from '@/lib/admin/audit';
 import { handleAdminError } from '@/app/api/admin/_helpers';
 import { sendAuthEmail } from '@/lib/email/send-auth-email';
@@ -12,7 +12,7 @@ type Params = {
 
 export async function POST(_request: Request, { params }: Params) {
   try {
-    const { user } = await requireFounderAccess();
+    const access = await requireAdminAccess({ permission: 'users:manage' });
     const { userId } = await params;
     const admin = createSupabaseAdminClient();
     const { data } = await (admin as any).auth.admin.getUserById(userId);
@@ -60,7 +60,7 @@ export async function POST(_request: Request, { params }: Params) {
     }
 
     await logAdminAction({
-      actorUserId: user.id,
+      actorUserId: access.user.id,
       action: 'user_resend_confirmation',
       targetType: 'user',
       targetId: userId,

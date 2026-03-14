@@ -1,4 +1,4 @@
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
 import { handleAdminError } from '@/app/api/admin/_helpers';
@@ -7,7 +7,7 @@ import { fetchAuthEmailsByIds } from '@/app/api/admin/_auth-users';
 
 export async function GET(request: Request) {
   try {
-    await requireFounderAccess();
+    await requireAdminAccess({ permission: 'trials:view' });
     const admin = createSupabaseAdminClient();
     const url = new URL(request.url);
     const statusFilter = (url.searchParams.get('status') ?? '').trim();

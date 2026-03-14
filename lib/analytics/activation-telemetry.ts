@@ -16,6 +16,8 @@
  * components and key app actions.
  */
 
+import { healthLogger } from '@/lib/observability/structured-logger';
+
 type ActivationEvent =
   | 'onboarding_started'
   | 'onboarding_step_completed'
@@ -67,7 +69,7 @@ export function trackActivation(
 
   // Development logging
   if (process.env.NODE_ENV === 'development') {
-    console.log(`[Activation] ${event}`, enrichedProperties);
+    healthLogger.info('activation_event_tracked', { event, ...enrichedProperties });
   }
 }
 

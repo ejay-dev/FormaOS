@@ -7,7 +7,7 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { isFounder } from '@/lib/utils/founder';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { fetchAuthEmailsByIds } from '@/app/api/admin/_auth-users';
 import { extractClientIP } from '@/lib/security/session-security';
 import { logUnauthorizedAccess } from '@/lib/security/event-logger';
@@ -97,7 +97,9 @@ export async function GET(request: Request) {
       );
     }
 
-    if (!isFounder(user.email, user.id)) {
+    try {
+      await requireAdminAccess({ permission: 'security:view' });
+    } catch {
       logUnauthorizedSessionsAccess(request, user.id);
       return NextResponse.json(
         { ok: false, error: 'forbidden' },

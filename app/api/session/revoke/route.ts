@@ -7,7 +7,7 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { isFounder } from '@/lib/utils/founder';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { extractClientIP } from '@/lib/security/session-security';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import {
@@ -19,6 +19,12 @@ import {
 
 const log = routeLog('/api/session/revoke');
 import { isSecurityMonitoringEnabled } from '@/lib/security/monitoring-flags';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
+import {
+  assertAdminReason,
+  extractAdminReason,
+} from '@/app/api/admin/_helpers';
+import { logAdminAction } from '@/lib/admin/audit';
 
 export async function POST(request: Request) {
   if (!isSecurityMonitoringEnabled()) {
@@ -26,6 +32,9 @@ export async function POST(request: Request) {
   }
 
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     const supabase = await createSupabaseServerClient();
     const {
       data: { user },
@@ -46,15 +55,17 @@ export async function POST(request: Request) {
       );
     }
 
-    // Only founders can revoke sessions
-    if (!isFounder(user.email, user.id)) {
+    let access;
+    try {
+      access = await requireAdminAccess({ permission: 'security:manage' });
+    } catch {
       logUnauthorizedAccess({
         userId: user.id,
         ip: extractClientIP(request.headers),
         userAgent: request.headers.get('user-agent') ?? 'unknown',
         path: '/api/session/revoke',
         method: request.method,
-        userRole: 'non_founder',
+        userRole: 'non_platform_admin',
       });
       return NextResponse.json(
         { ok: false, error: 'forbidden' },
@@ -72,6 +83,10 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
+    const reason = assertAdminReason(
+      extractAdminReason(body as Record<string, unknown>, request),
+      'Session revocation',
+    );
 
     const admin = createSupabaseAdminClient();
 
@@ -102,7 +117,7 @@ export async function POST(request: Request) {
     logSecurityEventEnhanced({
       type: 'session_revoked',
       severity: 'high',
-      userId: user.id,
+      userId: access.user.id,
       orgId: sessionRecord?.org_id ?? undefined,
       ip,
       userAgent,
@@ -116,7 +131,7 @@ export async function POST(request: Request) {
     });
 
     logUserActivity({
-      userId: user.id,
+      userId: access.user.id,
       orgId: sessionRecord?.org_id ?? undefined,
       action: 'role_change',
       entityType: 'session',
@@ -125,6 +140,18 @@ export async function POST(request: Request) {
       metadata: {
         operation: 'session_revoke',
         targetUserId: sessionRecord?.user_id ?? null,
+        reason,
+      },
+    });
+
+    await logAdminAction({
+      actorUserId: access.user.id,
+      action: 'session_revoke',
+      targetType: 'session',
+      targetId: body.sessionId,
+      metadata: {
+        targetUserId: sessionRecord?.user_id ?? null,
+        reason,
       },
     });
 

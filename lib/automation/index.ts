@@ -45,3 +45,10 @@ export {
   updateComplianceScoreAndCheckRisk,
   batchUpdateComplianceScores,
 } from './integration';
+
+// Workflow Engine v2
+export * from './workflow-types';
+export * from './workflow-context';
+export * from './workflow-executor';
+export * from './workflow-store';
+export * from './templates';

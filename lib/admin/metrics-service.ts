@@ -14,6 +14,12 @@ export type AdminOverviewMetrics = {
   orgsByDay: Array<{ date: string; count: number }>;
   planPrices: Record<string, number>;
   excludedSyntheticOrgs: number;
+  suspendedOrgs: number;
+  activationAtRisk: number;
+  pendingApprovals: number;
+  openSecurityAlerts: number;
+  failedExports: number;
+  highRiskAdminActions7d: number;
 };
 
 function isSyntheticOrgName(name: string | null | undefined): boolean {
@@ -29,15 +35,59 @@ function isSyntheticOrgName(name: string | null | undefined): boolean {
 
 async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
   const admin = createSupabaseAdminClient();
+  const sevenDaysAgo = new Date(
+    Date.now() - 7 * 24 * 60 * 60 * 1000,
+  ).toISOString();
 
-  const [orgsResult, subsResult, plansResult] = await Promise.all([
-    admin.from('organizations').select('id, name, created_at'),
+  const [
+    orgsResult,
+    subsResult,
+    plansResult,
+    healthScoresResult,
+    pendingApprovalsResult,
+    openSecurityAlertsResult,
+    failedComplianceExportsResult,
+    failedReportExportsResult,
+    highRiskActionsResult,
+  ] = await Promise.all([
+    admin
+      .from('organizations')
+      .select('id, name, created_at, onboarding_completed, lifecycle_status'),
     admin
       .from('org_subscriptions')
       .select(
         'organization_id, status, plan_key, current_period_end, trial_expires_at, payment_failures',
       ),
     admin.from('plans').select('key, price_cents'),
+    admin.from('org_health_scores').select('organization_id, status'),
+    admin
+      .from('platform_change_approvals')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'pending'),
+    admin
+      .from('security_alerts')
+      .select('id', { count: 'exact', head: true })
+      .in('status', ['open', 'acknowledged']),
+    admin
+      .from('compliance_export_jobs')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'failed'),
+    admin
+      .from('report_export_jobs')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'failed'),
+    admin
+      .from('platform_admin_audit_feed')
+      .select('id', { count: 'exact', head: true })
+      .gte('created_at', sevenDaysAgo)
+      .in('action', [
+        'org_lock',
+        'org_suspend',
+        'trial_reset',
+        'user_lock',
+        'session_revoke',
+        'emergency_lockdown',
+      ]),
   ]);
 
   if (orgsResult.error || subsResult.error) {
@@ -53,6 +103,12 @@ async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
   );
   const filteredOrgIds = new Set(filteredOrgs.map((org: any) => org.id));
   const excludedSyntheticOrgs = organizations.length - filteredOrgs.length;
+  const healthByOrg = new Map<string, string>();
+  (healthScoresResult.data ?? []).forEach((row: any) => {
+    if (filteredOrgIds.has(row.organization_id)) {
+      healthByOrg.set(row.organization_id, row.status ?? '');
+    }
+  });
 
   const subscriptions = (subsResult.data ?? []).filter((row: any) =>
     filteredOrgIds.has(row.organization_id),
@@ -72,6 +128,17 @@ async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
   let trialsExpiring = 0;
   let failedPayments = 0;
   let mrrCents = 0;
+  const suspendedOrgs = filteredOrgs.filter(
+    (org: any) => org.lifecycle_status === 'suspended',
+  ).length;
+  const activationAtRisk = filteredOrgs.filter((org: any) => {
+    const healthStatus = healthByOrg.get(org.id) ?? '';
+    return (
+      !org.onboarding_completed ||
+      healthStatus === 'at_risk' ||
+      healthStatus === 'critical'
+    );
+  }).length;
 
   for (const subscription of subscriptions) {
     const status = (subscription.status ?? '').toLowerCase();
@@ -130,6 +197,14 @@ async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
     orgsByDay,
     planPrices: Object.fromEntries(planPriceMap),
     excludedSyntheticOrgs,
+    suspendedOrgs,
+    activationAtRisk,
+    pendingApprovals: pendingApprovalsResult.count ?? 0,
+    openSecurityAlerts: openSecurityAlertsResult.count ?? 0,
+    failedExports:
+      (failedComplianceExportsResult.count ?? 0) +
+      (failedReportExportsResult.count ?? 0),
+    highRiskAdminActions7d: highRiskActionsResult.count ?? 0,
   };
 }
 

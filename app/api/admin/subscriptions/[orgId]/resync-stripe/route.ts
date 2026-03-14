@@ -1,12 +1,18 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { logAdminAction } from '@/lib/admin/audit';
 import {
   getStripeClient,
   resolvePlanKeyFromPriceId,
 } from '@/lib/billing/stripe';
-import { handleAdminError } from '@/app/api/admin/_helpers';
+import {
+  extractAdminReason,
+  handleAdminError,
+  parseAdminMutationPayload,
+  requireAdminChangeControl,
+} from '@/app/api/admin/_helpers';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 type Params = {
   params: Promise<{ orgId: string }>;
@@ -14,8 +20,19 @@ type Params = {
 
 export async function POST(request: Request, { params }: Params) {
   try {
-    const { user } = await requireFounderAccess();
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
+    const access = await requireAdminAccess({ permission: 'billing:manage' });
     const { orgId } = await params;
+    const { payload: body } = await parseAdminMutationPayload(request);
+    const reason = await requireAdminChangeControl({
+      context: access,
+      action: 'subscription_resync',
+      targetType: 'organization',
+      targetId: orgId,
+      reason: extractAdminReason(body, request),
+    });
     const admin = createSupabaseAdminClient();
 
     const { data: subscription } = await admin
@@ -70,11 +87,14 @@ export async function POST(request: Request, { params }: Params) {
     }
 
     await logAdminAction({
-      actorUserId: user.id,
+      actorUserId: access.user.id,
       action: 'subscription_resync',
       targetType: 'organization',
       targetId: orgId,
-      metadata: { stripe_subscription_id: subscription.stripe_subscription_id },
+      metadata: {
+        stripe_subscription_id: subscription.stripe_subscription_id,
+        reason,
+      },
     });
 
     return NextResponse.json({ ok: true });

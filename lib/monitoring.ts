@@ -5,6 +5,8 @@
  * Real-time monitoring for RBAC system, API health, and performance
  */
 
+import { healthLogger } from '@/lib/observability/structured-logger';
+
 export interface MonitoringMetrics {
   rbacChecks: {
     total: number;
@@ -90,7 +92,7 @@ export class RBACMonitor {
     // In production, send to monitoring service
     if (process.env.NODE_ENV === 'production') {
       // Send to Sentry/DataDog/CloudWatch
-      console.log('[MONITORING]', JSON.stringify(event));
+      healthLogger.info('monitoring_event', event);
     }
   }
 }

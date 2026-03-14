@@ -1,4 +1,4 @@
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { logActivity } from '@/lib/audit-logger';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import {
@@ -6,15 +6,21 @@ import {
   getClientIdentifier,
   createRateLimitHeaders,
   RATE_LIMITS,
-
 } from '@/lib/security/rate-limiter';
-
-const log = routeLog('/api/admin/trials/extend');
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { MAX_TRIAL_EXTENSION_DAYS } from '@/lib/trial/constants';
 import { NextResponse, type NextRequest } from 'next/server';
-import { handleAdminError } from '@/app/api/admin/_helpers';
+import {
+  extractAdminReason,
+  handleAdminError,
+  parseAdminMutationPayload,
+  requireAdminChangeControl,
+} from '@/app/api/admin/_helpers';
 import { logRateLimitEvent } from '@/lib/security/rate-limit-log';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { logAdminAction } from '@/lib/admin/audit';
+
+const log = routeLog('/api/admin/trials/extend');
 
 /**
  * =========================================================
@@ -29,7 +35,10 @@ import { logRateLimitEvent } from '@/lib/security/rate-limit-log';
  */
 export async function PATCH(request: NextRequest) {
   try {
-    await requireFounderAccess();
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
+    const access = await requireAdminAccess({ permission: 'trials:manage' });
 
     // Rate limit: use standard API rate limit
     const ip = await getClientIdentifier();
@@ -52,8 +61,16 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const body = await request.json();
+    const { payload: body } = await parseAdminMutationPayload(request);
     const { organization_id, additional_days } = body;
+
+    const reason = await requireAdminChangeControl({
+      context: access,
+      action: 'trial_extend',
+      targetType: 'organization',
+      targetId: typeof organization_id === 'string' ? organization_id : null,
+      reason: extractAdminReason(body, request),
+    });
 
     if (!organization_id || typeof organization_id !== 'string') {
       return NextResponse.json(
@@ -154,7 +171,7 @@ export async function PATCH(request: NextRequest) {
         before: { trial_expires_at: currentEnd },
         after: { trial_expires_at: newTrialEnd, additional_days },
       },
-      metadata: { ip },
+      metadata: { ip, actorUserId: access.user.id, reason },
     });
 
     log.info({ data: {
@@ -170,6 +187,19 @@ export async function PATCH(request: NextRequest) {
       .select('name')
       .eq('id', organization_id)
       .maybeSingle();
+
+    await logAdminAction({
+      actorUserId: access.user.id,
+      action: 'trial_extend',
+      targetType: 'organization',
+      targetId: organization_id,
+      metadata: {
+        additional_days,
+        previous_trial_end: currentEnd,
+        new_trial_end: newTrialEnd,
+        reason,
+      },
+    });
 
     return NextResponse.json({
       success: true,

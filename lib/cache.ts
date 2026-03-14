@@ -6,6 +6,7 @@
  */
 
 import { getRedisClient, getRedisConfig } from '@/lib/redis/client';
+import { apiLogger } from '@/lib/observability/structured-logger';
 
 // In-memory cache fallback when Redis is not available.
 // Uses LRU eviction to prevent unbounded memory growth.
@@ -90,7 +91,7 @@ async function getCache() {
       if (!cacheInstance) {
         throw new Error('Redis client unavailable');
       }
-      console.log('✅ Upstash Redis cache initialized');
+      apiLogger.info('redis_cache_initialized');
       return cacheInstance;
     } catch (_error) {
       console.warn('⚠️  Redis not available, using in-memory cache');

@@ -11,6 +11,7 @@
  */
 
 import { getQueueClient } from './client';
+import { queueLogger } from '@/lib/observability/structured-logger';
 import type {
   Job,
   JobHandler,
@@ -77,7 +78,7 @@ export class QueueProcessor {
       // Step 1: recover stale jobs
       const recovered = await this.queueClient.recoverStaleJobs();
       if (recovered > 0) {
-        console.log(`[QueueProcessor] Recovered ${recovered} stale jobs`);
+        queueLogger.info('processor_stale_recovered', { count: recovered });
       }
 
       // Step 2: fetch due pending jobs
@@ -87,7 +88,7 @@ export class QueueProcessor {
         return result;
       }
 
-      console.log(`[QueueProcessor] Processing ${jobs.length} jobs`);
+      queueLogger.info('processor_batch_started', { count: jobs.length });
 
       // Step 3: execute each job
       for (const job of jobs) {
@@ -113,10 +114,7 @@ export class QueueProcessor {
       // Step 4: cleanup expired dead-letter entries (best-effort)
       await this.queueClient.cleanupExpiredDeadJobs().catch(() => {});
 
-      console.log(
-        `[QueueProcessor] Batch complete: ${result.succeeded} succeeded, ` +
-        `${result.failed} failed, ${result.movedToDead} moved to DLQ`,
-      );
+      queueLogger.info('processor_batch_completed', { succeeded: result.succeeded, failed: result.failed, movedToDead: result.movedToDead });
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'Unknown processor error';
       result.errors.push(msg);
@@ -137,10 +135,7 @@ export class QueueProcessor {
       throw new Error(`No handler registered for job type: ${job.type}`);
     }
 
-    console.log(
-      `[QueueProcessor] Executing job ${job.id} (${job.type}) ` +
-      `attempt ${job.attempts}/${job.maxAttempts}`,
-    );
+    queueLogger.info('job_executing', { jobId: job.id, type: job.type, attempt: job.attempts, maxAttempts: job.maxAttempts });
 
     const startTime = Date.now();
 
@@ -150,9 +145,7 @@ export class QueueProcessor {
 
       await this.queueClient.completeJob(job.id, result);
 
-      console.log(
-        `[QueueProcessor] Job ${job.id} completed in ${duration}ms`,
-      );
+      queueLogger.info('job_execution_completed', { jobId: job.id, durationMs: duration });
     } catch (error) {
       const duration = Date.now() - startTime;
       console.error(
@@ -230,19 +223,19 @@ const defaultHandlers: JobHandlerMap = {
   },
 
   'email-send': async (job) => {
-    console.log(`[Handler:email-send] Processing job ${job.id}`, job.payload);
+    queueLogger.info('handler_email_send', { jobId: job.id });
     // Actual implementation would call Resend / email service
     return { status: 'sent' };
   },
 
   'webhook-delivery': async (job) => {
-    console.log(`[Handler:webhook-delivery] Processing job ${job.id}`, job.payload);
+    queueLogger.info('handler_webhook_delivery', { jobId: job.id });
     // Actual implementation would make the HTTP request
     return { status: 'delivered' };
   },
 
   'automation-trigger': async (job) => {
-    console.log(`[Handler:automation-trigger] Processing job ${job.id}`, job.payload);
+    queueLogger.info('handler_automation_trigger', { jobId: job.id });
     // Actual implementation would invoke the trigger engine
     return { status: 'triggered' };
   },

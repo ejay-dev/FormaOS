@@ -21,6 +21,12 @@ type OverviewData = {
   mrrCents: number;
   failedPayments: number;
   orgsByDay: Array<{ date: string; count: number }>;
+  suspendedOrgs: number;
+  activationAtRisk: number;
+  pendingApprovals: number;
+  openSecurityAlerts: number;
+  failedExports: number;
+  highRiskAdminActions7d: number;
 };
 
 type RiskGrade = 'low' | 'watch' | 'high' | 'critical';
@@ -220,20 +226,27 @@ export default async function AdminDashboard() {
           : 'No urgent trial churn risk',
     },
     {
-      label: 'Enterprise readiness',
-      value: enterpriseCount,
-      href: '/admin/security/triage',
-      severity: enterpriseCount === 0 ? 'medium' : 'low',
+      label: 'Activation at risk',
+      value: data.activationAtRisk,
+      href: '/admin/orgs',
+      severity:
+        data.activationAtRisk > 3
+          ? 'high'
+          : data.activationAtRisk > 0
+            ? 'medium'
+            : 'low',
       guidance:
-        enterpriseCount === 0
-          ? 'No enterprise tenants detected'
-          : 'Enterprise footprint active',
+        data.activationAtRisk > 0
+          ? 'Customer rescue intervention recommended'
+          : 'No urgent activation rescues',
     },
   ] as const;
 
   const quickOps = [
     { label: 'Triage incidents', href: '/admin/security/triage' },
+    { label: 'Review live security', href: '/admin/security-live' },
     { label: 'Review audit stream', href: '/admin/audit' },
+    { label: 'Approve admin changes', href: '/admin/settings' },
     { label: 'Publish release notes', href: '/admin/releases' },
     { label: 'Validate system health', href: '/admin/health' },
   ] as const;
@@ -267,23 +280,23 @@ export default async function AdminDashboard() {
     },
     {
       key: 'enterprise',
-      area: 'Enterprise Footprint',
-      status: enterpriseCount === 0 ? 'watch' : 'healthy',
+      area: 'Security Alerts',
+      status: data.openSecurityAlerts > 0 ? 'critical' : 'healthy',
       note:
-        enterpriseCount === 0
-          ? 'No enterprise tenants detected yet'
-          : `${enterpriseCount} enterprise tenants active`,
-      href: '/admin/security/triage',
+        data.openSecurityAlerts > 0
+          ? `${data.openSecurityAlerts} alerts require review`
+          : 'No unresolved security alerts',
+      href: '/admin/security-live',
     },
     {
       key: 'growth',
-      area: 'Tenant Growth Load',
-      status: data.totalOrgs > 200 ? 'watch' : 'healthy',
+      area: 'Governance Throughput',
+      status: data.pendingApprovals > 0 ? 'watch' : 'healthy',
       note:
-        data.totalOrgs > 200
-          ? 'Validate support and operations capacity'
-          : 'Growth load currently within expected range',
-      href: '/admin/orgs',
+        data.pendingApprovals > 0
+          ? `${data.pendingApprovals} approvals waiting for review`
+          : 'Approval queue is clear',
+      href: '/admin/settings',
     },
   ] as const;
   const statusStyles = {
@@ -293,12 +306,10 @@ export default async function AdminDashboard() {
   } as const;
   const healthRatio =
     data.totalOrgs > 0 ? Math.min(data.failedPayments / data.totalOrgs, 1) : 0;
-  const enterpriseRatio =
-    data.totalOrgs > 0 ? Math.min(enterpriseCount / data.totalOrgs, 1) : 0;
-  const growthRatio =
-    data.totalOrgs > 0
-      ? Math.min(data.orgsByDay[data.orgsByDay.length - 1]?.count / data.totalOrgs, 1)
-      : 0;
+  const alertRatio =
+    data.totalOrgs > 0 ? Math.min(data.openSecurityAlerts / data.totalOrgs, 1) : 0;
+  const approvalRatio =
+    data.totalOrgs > 0 ? Math.min(data.pendingApprovals / data.totalOrgs, 1) : 0;
   const riskHeatmapCells = [
     {
       key: 'revenue_pressure',
@@ -318,19 +329,19 @@ export default async function AdminDashboard() {
     },
     {
       key: 'enterprise_footprint',
-      label: 'Enterprise Footprint',
-      ratio: enterpriseRatio,
-      grade: enterpriseRatio === 0 ? 'watch' : enterpriseRatio > 0.25 ? 'low' : 'watch',
-      metric: `${enterpriseCount} enterprise tenants`,
-      href: '/admin/security/triage',
+      label: 'Security Alerts',
+      ratio: alertRatio,
+      grade: riskGradeFromRatio(alertRatio),
+      metric: `${data.openSecurityAlerts} open alerts`,
+      href: '/admin/security-live',
     },
     {
       key: 'growth_load',
-      label: 'Growth Load',
-      ratio: growthRatio,
-      grade: riskGradeFromRatio(growthRatio),
-      metric: `${data.orgsByDay[data.orgsByDay.length - 1]?.count ?? 0} orgs added (latest day)`,
-      href: '/admin/orgs',
+      label: 'Governance Backlog',
+      ratio: approvalRatio,
+      grade: riskGradeFromRatio(approvalRatio),
+      metric: `${data.pendingApprovals} pending approvals`,
+      href: '/admin/settings',
     },
   ] as const;
 
@@ -368,21 +379,24 @@ export default async function AdminDashboard() {
       id: 'security_triage',
       label: 'Security triage routing',
       detail: 'Route incidents to the correct operational owner queues.',
-      count: riskQueue[2].value,
-      href: '/admin/security/triage',
-      grade: enterpriseCount === 0 ? 'watch' : 'low',
+      count: data.openSecurityAlerts,
+      href: '/admin/security-live',
+      grade:
+        data.openSecurityAlerts > 0
+          ? riskGradeFromRatio(data.openSecurityAlerts / Math.max(data.totalOrgs, 1))
+          : 'low',
       ownerLabel: 'Security Operations',
       slaLabel: 'Same day',
     },
     {
-      id: 'system_health',
-      label: 'Validate system health',
-      detail: 'Confirm platform uptime, error rates, and health checks.',
-      count: 1,
-      href: '/admin/health',
-      grade: 'watch',
-      ownerLabel: 'Platform Operations',
-      slaLabel: 'Same day',
+      id: 'governance_reviews',
+      label: 'Governance approval queue',
+      detail: 'High-risk delegated admin actions pending founder approval.',
+      count: data.pendingApprovals,
+      href: '/admin/settings',
+      grade: data.pendingApprovals > 0 ? 'watch' : 'low',
+      ownerLabel: 'Founder Operations',
+      slaLabel: data.pendingApprovals > 0 ? '4h' : 'Weekly',
     },
   ];
   const orchestrationQueue = orchestrationQueueItems
@@ -448,6 +462,41 @@ export default async function AdminDashboard() {
             data.failedPayments > 0 ? 'Action required' : 'All payments current'
           }
           color={data.failedPayments > 0 ? 'amber' : 'blue'}
+        />
+        <KPICard
+          icon={AlertTriangle}
+          label="Activation At Risk"
+          value={data.activationAtRisk}
+          detail="Customers needing rescue or onboarding help"
+          color="amber"
+        />
+        <KPICard
+          icon={ShieldAlert}
+          label="Open Security Alerts"
+          value={data.openSecurityAlerts}
+          detail="Open or acknowledged investigations"
+          color={data.openSecurityAlerts > 0 ? 'amber' : 'blue'}
+        />
+        <KPICard
+          icon={Layers}
+          label="Pending Approvals"
+          value={data.pendingApprovals}
+          detail="Delegated admin changes awaiting founder review"
+          color={data.pendingApprovals > 0 ? 'amber' : 'green'}
+        />
+        <KPICard
+          icon={Building2}
+          label="Suspended Orgs"
+          value={data.suspendedOrgs}
+          detail="Operationally suspended tenants"
+          color={data.suspendedOrgs > 0 ? 'amber' : 'blue'}
+        />
+        <KPICard
+          icon={Activity}
+          label="Failed Exports"
+          value={data.failedExports}
+          detail="Compliance and report exports needing retry"
+          color={data.failedExports > 0 ? 'amber' : 'green'}
         />
       </div>
 

@@ -1,18 +1,18 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { parsePageParams } from '@/app/api/admin/_utils';
 import { handleAdminError } from '@/app/api/admin/_helpers';
 
 export async function GET(request: Request) {
   try {
-    await requireFounderAccess();
+    await requireAdminAccess({ permission: 'audit:view' });
     const admin = createSupabaseAdminClient();
     const url = new URL(request.url);
     const { page, limit, from, to } = parsePageParams(url.searchParams);
 
     const { data, count } = await admin
-      .from('admin_audit_log')
+      .from('platform_admin_audit_feed')
       .select(
         `
         id,
@@ -21,6 +21,8 @@ export async function GET(request: Request) {
         target_type,
         target_id,
         metadata,
+        source,
+        environment,
         created_at
       `,
         { count: 'exact' },

@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { parsePageParams } from '@/app/api/admin/_utils';
 import { handleAdminError } from '@/app/api/admin/_helpers';
 
 export async function GET(request: Request) {
   try {
-    await requireFounderAccess();
+    await requireAdminAccess({ permission: 'billing:view' });
     const admin = createSupabaseAdminClient();
     const url = new URL(request.url);
     const status = (url.searchParams.get('status') ?? '').trim();

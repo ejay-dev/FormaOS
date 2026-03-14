@@ -6,7 +6,13 @@ type TriggerTaskId =
   | 'report-export-job'
   | 'compliance-export-job'
   | 'enterprise-export-job'
-  | 'queue-process-batch';
+  | 'queue-process-batch'
+  | 'notification-digest'
+  | 'webhook-delivery'
+  | 'execute-workflow'
+  | 'resume-workflow-after-delay'
+  | 'resume-workflow-after-approval'
+  | 'workflow-timeout-check';
 
 export function isTriggerConfigured(): boolean {
   return Boolean(
@@ -36,8 +42,9 @@ export async function triggerTaskIfConfigured(
   payload: Record<string, unknown>,
   options?: {
     queue?: string;
-    idempotencyKey?: string;
+    idempotencyKey?: string | string[];
     tags?: string[];
+    delay?: string | Date;
   },
 ): Promise<boolean> {
   if (!isTriggerExecutionEnabled()) {
@@ -49,6 +56,7 @@ export async function triggerTaskIfConfigured(
       queue: options?.queue ?? 'exports',
       idempotencyKey: options?.idempotencyKey,
       tags: options?.tags,
+      delay: options?.delay,
     });
     return true;
   } catch (error) {

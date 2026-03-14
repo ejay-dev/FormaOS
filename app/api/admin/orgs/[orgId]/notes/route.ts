@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { logAdminAction } from '@/lib/admin/audit';
-import { handleAdminError } from '@/app/api/admin/_helpers';
+import {
+  handleAdminError,
+  parseAdminMutationPayload,
+} from '@/app/api/admin/_helpers';
 
 type Params = {
   params: Promise<{ orgId: string }>;
@@ -10,12 +13,9 @@ type Params = {
 
 export async function POST(request: Request, { params }: Params) {
   try {
-    const { user } = await requireFounderAccess();
+    const access = await requireAdminAccess({ permission: 'orgs:manage' });
     const { orgId } = await params;
-    const contentType = request.headers.get('content-type') ?? '';
-    const body = contentType.includes('application/json')
-      ? await request.json().catch(() => ({}))
-      : Object.fromEntries(await request.formData());
+    const { payload: body } = await parseAdminMutationPayload(request);
     const note = String(body?.note ?? '').trim();
 
     if (!note) {
@@ -26,11 +26,11 @@ export async function POST(request: Request, { params }: Params) {
     await admin.from('admin_notes').insert({
       org_id: orgId,
       note,
-      created_by: user.id,
+      created_by: access.user.id,
     });
 
     await logAdminAction({
-      actorUserId: user.id,
+      actorUserId: access.user.id,
       action: 'admin_note_create',
       targetType: 'organization',
       targetId: orgId,

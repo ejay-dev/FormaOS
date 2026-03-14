@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { parsePageParams } from '@/app/api/admin/_utils';
 import { handleAdminError } from '@/app/api/admin/_helpers';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 
 export async function GET(request: Request) {
   try {
-    const { user } = await requireFounderAccess();
+    const { user } = await requireAdminAccess({ permission: 'users:view' });
 
     // Rate limiting for admin routes
     const rateLimitResult = await rateLimitApi(request, user.id);

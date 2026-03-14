@@ -2,6 +2,8 @@
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { logActivity } from "@/app/app/actions/audit"; // ✅ Standardized Logger
+import { logActivity as logProductActivity } from "@/lib/activity/feed";
+import { notify } from "@/lib/notifications/engine";
 import { revalidatePath } from "next/cache";
 import { requirePermission } from "@/app/app/actions/rbac";
 import { logAuditEvent } from "@/app/app/actions/audit-events";
@@ -53,7 +55,7 @@ export async function uploadEvidence(formData: FormData) {
   // We fetch this FIRST to ensure we don't upload files for non-existent tasks.
   const { data: task, error: taskError } = await supabase
     .from('org_tasks')
-    .select('organization_id, title, entity_id, patient_id')
+    .select('organization_id, title, entity_id, patient_id, assigned_to')
     .eq('id', taskId)
     .eq('organization_id', membership.orgId)
     .single();
@@ -114,6 +116,24 @@ export async function uploadEvidence(formData: FormData) {
     fileSize: `${(file.size / 1024).toFixed(2)} KB`
   });
 
+  await logProductActivity(
+    task.organization_id,
+    user.id,
+    "uploaded",
+    {
+      type: "evidence",
+      id: createdEvidence?.id ?? null,
+      name: file.name,
+      path: "/app/evidence",
+    },
+    {
+      taskId,
+      taskTitle: task.title,
+      fileType: file.type,
+      fileSize: file.size,
+    },
+  );
+
   await logAuditEvent({
     organizationId: task.organization_id,
     actorUserId: user.id,
@@ -128,6 +148,23 @@ export async function uploadEvidence(formData: FormData) {
       file_size: file.size,
     },
   });
+
+  if (task.assigned_to && task.assigned_to !== user.id) {
+    await notify(task.organization_id, [task.assigned_to], {
+      type: "evidence.review_requested",
+      title: "Evidence ready for review",
+      body: `${file.name} was attached to ${task.title}.`,
+      priority: "high",
+      data: {
+        href: "/app/tasks",
+        taskId,
+        evidenceId: createdEvidence?.id ?? null,
+        resourceType: "evidence",
+        resourceName: file.name,
+        dedupeKey: `evidence.review_requested:${createdEvidence?.id ?? filePath}`,
+      },
+    });
+  }
 
   revalidatePath("/app/tasks");
   return { success: true };
@@ -201,6 +238,23 @@ export async function verifyEvidence(
     outcome: status
   });
 
+  await logProductActivity(
+    membership.orgId,
+    user.id,
+    status === "verified" ? "approved" : "rejected",
+    {
+      type: "evidence",
+      id: evidenceId,
+      name: evidence.file_name,
+      path: "/app/vault",
+    },
+    {
+      taskId: evidence.task_id,
+      verificationStatus: status,
+      reason: resolvedReason,
+    },
+  );
+
   await logAuditEvent({
     organizationId: membership.orgId,
     actorUserId: user.id,
@@ -212,6 +266,30 @@ export async function verifyEvidence(
     afterState: { verification_status: status, correlation_id: correlationId },
     reason: resolvedReason,
   });
+
+  if (evidence.uploaded_by && evidence.uploaded_by !== user.id) {
+    await notify(membership.orgId, [evidence.uploaded_by], {
+      type:
+        status === "verified" ? "evidence.approved" : "evidence.rejected",
+      title:
+        status === "verified"
+          ? "Evidence approved"
+          : "Evidence needs changes",
+      body:
+        status === "verified"
+          ? `${evidence.file_name} was approved.`
+          : `${evidence.file_name} was rejected: ${resolvedReason}`,
+      priority: status === "verified" ? "normal" : "high",
+      data: {
+        href: "/app/vault",
+        evidenceId,
+        taskId: evidence.task_id,
+        resourceType: "evidence",
+        resourceName: evidence.file_name,
+        dedupeKey: `evidence.${status}:${evidenceId}`,
+      },
+    });
+  }
 
   revalidatePath("/app/vault");
   revalidatePath("/app/tasks"); // Unblocks the task UI

@@ -9,6 +9,7 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
+import { decodeIntegrationConfig } from './config-crypto';
 
 export type JiraEventType =
   | 'task_created'
@@ -60,7 +61,7 @@ async function getJiraConfig(orgId: string): Promise<JiraConfig | null> {
     .maybeSingle();
 
   if (!data) return null;
-  const config = data.config as Record<string, unknown>;
+  const config = decodeIntegrationConfig<Record<string, unknown>>(data.config);
 
   return {
     organizationId: orgId,

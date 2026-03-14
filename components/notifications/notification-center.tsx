@@ -1,176 +1,386 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-import { Bell, Check, CheckCheck } from "lucide-react";
-import { createSupabaseClient } from "@/lib/supabase/client";
-import { markAllNotificationsRead, markNotificationRead } from "@/app/app/actions/notifications";
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Bell, CheckCheck, Filter, Inbox, Loader2 } from 'lucide-react';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import Button from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { createSupabaseClient } from '@/lib/supabase/client';
+import {
+  EVENT_CATEGORY_MAP,
+  NOTIFICATION_CATEGORY_LABELS,
+  type NotificationCategory,
+  type NotificationRecord,
+} from '@/lib/notifications/types';
+import { NotificationItem } from './notification-item';
 
-type Notif = {
-  id: string;
-  title: string;
-  body: string | null;
-  action_url: string | null;
-  read_at: string | null;
-  created_at: string;
-  type: string;
+const CATEGORY_OPTIONS: Array<'all' | NotificationCategory> = [
+  'all',
+  'tasks',
+  'compliance',
+  'team',
+  'workflow',
+  'incident',
+  'system',
+  'reports',
+];
+
+function groupLabel(dateValue: string) {
+  const date = new Date(dateValue);
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+  const oneDay = 24 * 60 * 60 * 1000;
+
+  if (diff < oneDay && now.getDate() === date.getDate()) return 'Today';
+  if (diff < oneDay * 2) return 'Yesterday';
+  if (diff < oneDay * 7) return 'This Week';
+  return 'Earlier';
+}
+
+type NotificationResponse = {
+  items: NotificationRecord[];
+  nextCursor: string | null;
 };
 
-export function NotificationCenter({ orgId }: { orgId: string }) {
+export function NotificationCenter({
+  orgId,
+  userId,
+}: {
+  orgId: string;
+  userId: string;
+}) {
+  const router = useRouter();
   const supabase = useMemo(() => createSupabaseClient(), []);
-  const [items, setItems] = useState<Notif[]>([]);
-  const unreadCount = items.filter(n => !n.read_at).length;
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState<NotificationRecord[]>([]);
+  const [filter, setFilter] = useState<'all' | NotificationCategory>('all');
+  const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+  const fetchUnreadCount = useCallback(async () => {
+    const response = await fetch(
+      `/api/notifications/unread-count?orgId=${encodeURIComponent(orgId)}`,
+      { cache: 'no-store' },
+    );
+
+    if (!response.ok) return;
+    const payload = (await response.json()) as { unreadCount: number };
+    setUnreadCount(payload.unreadCount);
+  }, [orgId]);
+
+  const fetchNotifications = useCallback(
+    async (cursor?: string | null, reset?: boolean) => {
+      const params = new URLSearchParams({ orgId, limit: '20' });
+      if (filter !== 'all') params.set('category', filter);
+      if (cursor) params.set('cursor', cursor);
+
+      if (reset) {
+        setLoading(true);
+      } else {
+        setLoadingMore(true);
+      }
+
+      try {
+        const response = await fetch(`/api/notifications?${params.toString()}`, {
+          cache: 'no-store',
+        });
+        if (!response.ok) return;
+
+        const payload = (await response.json()) as NotificationResponse;
+        setItems((previous) =>
+          reset ? payload.items : [...previous, ...payload.items],
+        );
+        setNextCursor(payload.nextCursor);
+      } finally {
+        setLoading(false);
+        setLoadingMore(false);
+      }
+    },
+    [filter, orgId],
+  );
 
   useEffect(() => {
-    let mounted = true;
-    let channel: ReturnType<typeof supabase.channel> | null = null;
+    void fetchUnreadCount();
+  }, [fetchUnreadCount]);
 
-    async function bootstrap() {
-      const { data: auth } = await supabase.auth.getUser();
-      const userId = auth?.user?.id;
-      if (!userId) return;
-      if (!orgId) return;
+  useEffect(() => {
+    if (!open) return;
+    void fetchNotifications(null, true);
+  }, [fetchNotifications, open]);
 
-      const { data } = await supabase
-        .from("org_notifications")
-        .select("id,title,body,action_url,read_at,created_at,type")
-        .eq("user_id", userId)
-        .eq("organization_id", orgId)
-        .order("created_at", { ascending: false })
-        .limit(20);
+  useEffect(() => {
+    const channel = supabase
+      .channel(`notifications:${userId}:${orgId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${userId}`,
+        },
+        (payload: any) => {
+          const next = payload.new as NotificationRecord | undefined;
+          const previous = payload.old as NotificationRecord | undefined;
 
-      if (!mounted) return;
-      setItems((data as Notif[]) || []);
-
-      channel = supabase
-        .channel("notif-stream")
-        .on(
-          "postgres_changes",
-          {
-            event: "INSERT",
-            schema: "public",
-            table: "org_notifications",
-            filter: `user_id=eq.${userId},organization_id=eq.${orgId}`,
-          },
-          (payload: { new: Notif }) => {
-            const n = payload.new as Notif;
-            setItems(prev => [n, ...prev].slice(0, 30));
+          if (next?.org_id && next.org_id !== orgId) {
+            return;
           }
-        )
-        .subscribe();
-    }
 
-    bootstrap();
+          setItems((current) => {
+            if (payload.eventType === 'INSERT' && next) {
+              return [next, ...current.filter((item) => item.id !== next.id)];
+            }
+
+            if (payload.eventType === 'UPDATE' && next) {
+              return current.map((item) => (item.id === next.id ? next : item));
+            }
+
+            if (payload.eventType === 'DELETE' && previous) {
+              return current.filter((item) => item.id !== previous.id);
+            }
+
+            return current;
+          });
+
+          void fetchUnreadCount();
+        },
+      )
+      .subscribe();
 
     return () => {
-      mounted = false;
-      if (channel) supabase.removeChannel(channel);
+      void supabase.removeChannel(channel);
     };
-  }, [supabase]);
+  }, [fetchUnreadCount, orgId, supabase, userId]);
 
-  async function handleMarkRead(id: string) {
-    setItems(prev => prev.map(n => n.id === id ? { ...n, read_at: new Date().toISOString() } : n));
-    try {
-      await markNotificationRead(id);
-    } catch {
-      setItems(prev => prev.map(n => n.id === id ? { ...n, read_at: null } : n));
-    }
-  }
+  useEffect(() => {
+    if (!open || !nextCursor || !sentinelRef.current) return;
 
-  async function handleMarkAll() {
-    const ts = new Date().toISOString();
-    setItems(prev => prev.map(n => n.read_at ? n : ({ ...n, read_at: ts })));
-    await markAllNotificationsRead();
-  }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting) && !loadingMore) {
+          void fetchNotifications(nextCursor, false);
+        }
+      },
+      { rootMargin: '120px' },
+    );
+
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+  }, [fetchNotifications, loadingMore, nextCursor, open]);
+
+  const groupedItems = useMemo(() => {
+    const visible = items.filter((item) =>
+      filter === 'all' ? true : EVENT_CATEGORY_MAP[item.type] === filter,
+    );
+
+    return visible.reduce<Record<string, NotificationRecord[]>>((groups, item) => {
+      const key = groupLabel(item.created_at);
+      groups[key] = [...(groups[key] ?? []), item];
+      return groups;
+    }, {});
+  }, [filter, items]);
+
+  const handleMarkRead = useCallback(
+    async (id: string) => {
+      setItems((current) =>
+        current.map((item) =>
+          item.id === id ? { ...item, read_at: new Date().toISOString() } : item,
+        ),
+      );
+      setUnreadCount((count) => Math.max(0, count - 1));
+
+      await fetch('/api/notifications', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orgId, ids: [id], action: 'mark_read' }),
+      });
+    },
+    [orgId],
+  );
+
+  const handleArchive = useCallback(
+    async (id: string) => {
+      const target = items.find((item) => item.id === id);
+      setItems((current) => current.filter((item) => item.id !== id));
+      if (target && !target.read_at) {
+        setUnreadCount((count) => Math.max(0, count - 1));
+      }
+
+      await fetch('/api/notifications', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orgId, ids: [id], action: 'archive' }),
+      });
+    },
+    [items, orgId],
+  );
+
+  const handleMarkAllRead = useCallback(async () => {
+    setItems((current) =>
+      current.map((item) =>
+        item.read_at ? item : { ...item, read_at: new Date().toISOString() },
+      ),
+    );
+    setUnreadCount(0);
+
+    await fetch('/api/notifications', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orgId, action: 'mark_all_read' }),
+    });
+  }, [orgId]);
 
   return (
-    <div className="relative">
-      {/* Bell */}
-      <div className="relative">
-        <Bell className="h-5 w-5 text-slate-400" />
-        {unreadCount > 0 && (
-          <span className="absolute -top-2 -right-2 h-5 min-w-[20px] px-1 rounded-full bg-red-600 text-white text-xs font-black flex items-center justify-center">
-            {unreadCount}
-          </span>
-        )}
-      </div>
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
+        <Button
+          variant="ghost"
+          className="relative rounded-full p-2 md:p-2.5 text-sidebar-foreground/90 hover:bg-card/8 transition-colors"
+          aria-label="Notifications"
+        >
+          <Bell className="h-5 w-5" />
+          {unreadCount > 0 && (
+            <span className="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1.5 text-[10px] font-black text-white">
+              {unreadCount > 9 ? '10+' : unreadCount}
+            </span>
+          )}
+        </Button>
+      </SheetTrigger>
 
-      {/* Panel */}
-      <div className="mt-3 w-[min(360px,calc(100vw-1.5rem))] rounded-2xl border border-white/10 bg-white/10 shadow-xl overflow-hidden">
-        <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
-          <div className="text-xs font-black uppercase tracking-widest text-slate-400">
-            Notifications
-          </div>
-          <button
-            onClick={handleMarkAll}
-            className="text-xs font-black uppercase tracking-widest text-slate-400 hover:text-slate-100 flex items-center gap-2"
-          >
-            <CheckCheck className="h-4 w-4" />
-            Mark all read
-          </button>
-        </div>
-
-        <div className="max-h-[420px] overflow-y-auto">
-          {items.length === 0 ? (
-            <div className="p-10 text-center text-sm text-slate-400 font-medium">
-              No notifications yet.
+      <SheetContent side="right" className="w-[96vw] max-w-[440px] bg-slate-950/95">
+        <SheetHeader className="border-b border-white/10 pb-4 pr-10">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <SheetTitle className="text-lg font-black tracking-tight">
+                Notification Center
+              </SheetTitle>
+              <SheetDescription>
+                Real-time alerts, approvals, and delivery history.
+              </SheetDescription>
             </div>
-          ) : (
-            items.map((n) => (
-              <div
-                key={n.id}
-                className={`px-4 py-3 border-b border-white/10 ${
-                  n.read_at ? "bg-white/10" : "bg-sky-500/10"
+            <Badge variant="outline" className="border-white/10 bg-white/10 text-slate-200">
+              {unreadCount} unread
+            </Badge>
+          </div>
+
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            {CATEGORY_OPTIONS.map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => setFilter(option)}
+                className={`rounded-full border px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition ${
+                  filter === option
+                    ? 'border-sky-400/30 bg-sky-500/15 text-sky-100'
+                    : 'border-white/10 bg-white/[0.04] text-slate-400 hover:text-slate-200'
                 }`}
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="text-xs font-black text-slate-100 truncate">
-                      {n.title}
-                    </div>
-                    {n.body && (
-                      <div className="text-[11px] text-slate-400 mt-1 leading-relaxed">
-                        {n.body}
-                      </div>
-                    )}
-                    <div className="text-xs text-slate-400 font-mono mt-2">
-                      {new Date(n.created_at).toLocaleString()}
-                    </div>
+                {option === 'all'
+                  ? 'All'
+                  : NOTIFICATION_CATEGORY_LABELS[option]}
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-4 flex items-center justify-between gap-2">
+            <Button
+              variant="ghost"
+              onClick={handleMarkAllRead}
+              className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-200"
+            >
+              <CheckCheck className="mr-2 h-4 w-4" />
+              Mark all read
+            </Button>
+
+            <Button
+              variant="ghost"
+              onClick={() => router.push('/app/settings/notifications')}
+              className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-200"
+            >
+              <Filter className="mr-2 h-4 w-4" />
+              Preferences
+            </Button>
+          </div>
+        </SheetHeader>
+
+        <div className="flex-1 overflow-y-auto px-4 pb-6 pt-4">
+          {loading ? (
+            <div className="flex items-center justify-center gap-2 py-12 text-sm text-slate-400">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Loading notifications
+            </div>
+          ) : items.length === 0 ? (
+            <div className="rounded-3xl border border-dashed border-white/10 bg-white/[0.04] px-6 py-14 text-center">
+              <Inbox className="mx-auto h-10 w-10 text-slate-500" />
+              <p className="mt-4 text-sm font-semibold text-slate-200">
+                No notifications yet
+              </p>
+              <p className="mt-2 text-sm text-slate-500">
+                New activity, review requests, and system alerts will appear here.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {Object.entries(groupedItems).map(([group, groupItems]) => (
+                <section key={group}>
+                  <div className="mb-3 flex items-center gap-2">
+                    <div className="h-px flex-1 bg-white/10" />
+                    <span className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-500">
+                      {group}
+                    </span>
+                    <div className="h-px flex-1 bg-white/10" />
                   </div>
 
-                  <div className="flex flex-col items-end gap-2 shrink-0">
-                    {!n.read_at && (
-                      <button
-                        onClick={() => handleMarkRead(n.id)}
-                        className="p-2 rounded-lg hover:bg-white/10 border border-transparent hover:border-white/10"
-                      >
-                        <Check className="h-4 w-4 text-slate-400" />
-                      </button>
-                    )}
-                    {n.action_url && (
-                      <Link
-                        href={n.action_url}
-                        className="text-xs font-black uppercase tracking-widest text-sky-300 hover:text-blue-900"
-                      >
-                        Open
-                      </Link>
-                    )}
+                  <div className="space-y-3">
+                    {groupItems.map((notification) => (
+                      <NotificationItem
+                        key={notification.id}
+                        notification={notification}
+                        onMarkRead={handleMarkRead}
+                        onArchive={handleArchive}
+                        onView={(item) => {
+                          if (!item.read_at) {
+                            void handleMarkRead(item.id);
+                          }
+
+                          const href =
+                            typeof item.data?.href === 'string'
+                              ? item.data.href
+                              : '/app';
+                          setOpen(false);
+                          router.push(href);
+                        }}
+                      />
+                    ))}
                   </div>
-                </div>
+                </section>
+              ))}
+
+              <div ref={sentinelRef} className="flex items-center justify-center py-4">
+                {loadingMore ? (
+                  <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
+                ) : nextCursor ? (
+                  <span className="text-xs text-slate-500">Loading more…</span>
+                ) : (
+                  <span className="text-xs text-slate-600">End of feed</span>
+                )}
               </div>
-            ))
+            </div>
           )}
         </div>
-
-        <div className="px-4 py-3 bg-white/10 border-t border-white/10">
-          <Link
-            href="/app/settings/email-preferences"
-            className="text-xs font-black uppercase tracking-widest text-slate-400 hover:text-slate-100"
-          >
-            Notification Preferences →
-          </Link>
-        </div>
-      </div>
-    </div>
+      </SheetContent>
+    </Sheet>
   );
 }

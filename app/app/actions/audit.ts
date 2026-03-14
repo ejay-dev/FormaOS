@@ -1,6 +1,7 @@
 'use server';
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { rbacLogger } from '@/lib/observability/structured-logger';
 
 export type AuditAction =
   | 'CREATE_ORGANIZATION'
@@ -55,7 +56,7 @@ export async function logActivity(
     if (error) {
       console.error(`[AUDIT FAILURE] DB rejected log: ${error.message}`);
     } else {
-      console.log(`[AUDIT SUCCESS] Recorded ${action} by ${user.id}`);
+      rbacLogger.info('audit_event_recorded', { action, actorId: user.id });
     }
   } catch (err) {
     console.error(`[AUDIT CRASH] Logger failed:`, err);

@@ -9,6 +9,7 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
+import { decodeIntegrationConfig } from './config-crypto';
 
 export type LinearEventType =
   | 'task_created'
@@ -40,7 +41,7 @@ async function getLinearConfig(orgId: string): Promise<LinearConfig | null> {
     .maybeSingle();
 
   if (!data) return null;
-  const config = data.config as Record<string, unknown>;
+  const config = decodeIntegrationConfig<Record<string, unknown>>(data.config);
 
   return {
     organizationId: orgId,

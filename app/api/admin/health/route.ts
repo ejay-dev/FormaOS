@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { requireFounderAccess } from '@/app/app/admin/access';
+import { requireAdminAccess } from '@/app/app/admin/access';
 import { handleAdminError } from '@/app/api/admin/_helpers';
 
 export async function GET() {
   try {
-    await requireFounderAccess();
+    await requireAdminAccess({ permission: 'system:view' });
     const admin = createSupabaseAdminClient();
 
     const [{ data: billingEvents }, { data: auditEvents }] = await Promise.all([
@@ -15,8 +15,8 @@ export async function GET() {
         .order('processed_at', { ascending: false })
         .limit(20),
       admin
-        .from('admin_audit_log')
-        .select('id, action, target_type, target_id, created_at')
+        .from('platform_admin_audit_feed')
+        .select('id, action, target_type, target_id, source, created_at')
         .order('created_at', { ascending: false })
         .limit(20),
     ]);

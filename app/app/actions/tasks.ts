@@ -2,6 +2,7 @@
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { logActivity } from "@/app/app/actions/audit";
+import { logActivity as logProductActivity } from "@/lib/activity/feed";
 import { revalidatePath } from "next/cache";
 import { notifySelf, createNotification } from "@/app/app/actions/notifications";
 import { requirePermission } from "@/app/app/actions/rbac";
@@ -69,6 +70,23 @@ export async function createTask(formData: FormData) {
     taskId: newTask.id,
   });
 
+  await logProductActivity(
+    membership.organization_id,
+    user.id,
+    "created",
+    {
+      type: "task",
+      id: newTask.id,
+      name: title,
+      path: "/app/tasks",
+    },
+    {
+      priority,
+      dueDate,
+      recurrenceDays,
+    },
+  );
+
   await logAuditEvent({
     organizationId: membership.organization_id,
     actorUserId: user.id,
@@ -132,6 +150,22 @@ async function _completeTaskCore(supabase: any, taskId: string, user: any) {
     taskId,
   });
 
+  await logProductActivity(
+    task.organization_id,
+    user.id,
+    "completed",
+    {
+      type: "task",
+      id: taskId,
+      name: task.title,
+      path: "/app/tasks",
+    },
+    {
+      previousStatus: task.status ?? null,
+      nextStatus: "completed",
+    },
+  );
+
   await logAuditEvent({
     organizationId: task.organization_id,
     actorUserId: user.id,
@@ -180,6 +214,23 @@ async function _completeTaskCore(supabase: any, taskId: string, user: any) {
         event: "Recurring task auto-generated",
         taskId: nextTask.id,
       });
+
+      await logProductActivity(
+        task.organization_id,
+        user.id,
+        "created",
+        {
+          type: "task",
+          id: nextTask.id,
+          name: task.title,
+          path: "/app/tasks",
+        },
+        {
+          sourceTaskId: taskId,
+          recurring: true,
+          dueDate: nextDueDate.toISOString(),
+        },
+      );
 
       // 🔔 Admin-level: notify assigned user (not self)
       await createNotification({

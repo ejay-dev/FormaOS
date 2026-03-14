@@ -20,6 +20,7 @@ import {
   initializeComplianceGraph,
   validateComplianceGraph,
 } from '@/lib/compliance-graph';
+import { authLogger } from '@/lib/observability/structured-logger';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -134,7 +135,7 @@ export async function GET(request: Request) {
   // --- Minimal diagnostic logging ---
   const cookieNames = cookieSnapshot.map((c) => c.name);
   const hasPkceVerifier = cookieNames.some((n) => n.includes('code-verifier'));
-  console.log('[auth/callback]', {
+  authLogger.info('callback_received', {
     hasCode: !!code,
     hasError: !!oauthError,
     hasPkceVerifier,
@@ -273,16 +274,12 @@ export async function GET(request: Request) {
 
     if (data?.user) {
       // User has an existing session — just send them to the app
-      console.log(
-        '[auth/callback] No code but session exists for',
-        data.user.email,
-        '→ /app',
-      );
+      authLogger.info('no_code_session_exists', { email: data.user.email });
       return redirectWithCookies(`${appBase}${requestedNext ?? '/app'}`);
     }
 
     // No code, no session — redirect to sign-in
-    console.log('[auth/callback] No code, no session → /auth/signin');
+    authLogger.info('no_code_no_session');
     return redirectWithCookies(`${appBase}/auth/signin`);
   }
 
@@ -331,10 +328,7 @@ export async function GET(request: Request) {
       // Found a verifier cookie - try to use it
       for (const verifierCookie of possibleVerifierCookies) {
         try {
-          console.log(
-            '[auth/callback] Trying verifier from cookie:',
-            verifierCookie.name,
-          );
+          authLogger.info('trying_verifier_cookie', { cookieName: verifierCookie.name });
           const tokenRes = await fetch(
             `${supabaseUrl}/auth/v1/token?grant_type=pkce`,
             {
@@ -361,10 +355,7 @@ export async function GET(request: Request) {
               if (!setErr && sessionData?.user) {
                 exchangeData = sessionData as any;
                 exchangeError = null;
-                console.log(
-                  '[auth/callback] ✅ PKCE exchange with found verifier succeeded for:',
-                  sessionData.user.email,
-                );
+                authLogger.info('pkce_verifier_exchange_succeeded', { email: sessionData.user.email });
                 break;
               }
             }
@@ -410,10 +401,7 @@ export async function GET(request: Request) {
             if (!setErr && sessionData?.user) {
               exchangeData = sessionData as any;
               exchangeError = null;
-              console.log(
-                '[auth/callback] ✅ Admin API token exchange succeeded for:',
-                sessionData.user.email,
-              );
+              authLogger.info('admin_token_exchange_succeeded', { email: sessionData.user.email });
             }
           }
         } else {
@@ -451,13 +439,13 @@ export async function GET(request: Request) {
   }
 
   const user = exchangeData.user;
-  console.log('[auth/callback] Session established for:', user.email);
+  authLogger.info('session_established', { email: user.email });
 
   // 2. CHECK IF USER IS A FOUNDER
   const founderCheck = isFounder(user.email, user.id);
 
   if (founderCheck) {
-    console.log(`[auth/callback] Founder: ${user.email} → /admin/dashboard`);
+    authLogger.info('founder_detected', { email: user.email });
 
     // Ensure founder has proper role in org_members
     const { data: founderMembership } = await admin
@@ -470,9 +458,7 @@ export async function GET(request: Request) {
     if (founderMembership?.organization_id) {
       // Update role to owner if not already
       if (founderMembership.role !== 'owner') {
-        console.log(
-          `[auth/callback] 🔧 Fixing founder role from ${founderMembership.role} to owner`,
-        );
+        authLogger.info('founder_role_fix', { previousRole: founderMembership.role });
         await admin
           .from('org_members')
           .update({ role: 'owner' })
@@ -495,9 +481,7 @@ export async function GET(request: Request) {
       });
     } else {
       // Founder has NO org yet (first login) — bootstrap one
-      console.log(
-        '[auth/callback] 🆕 Founder first login — bootstrapping organization',
-      );
+      authLogger.info('founder_first_login_bootstrap');
       try {
         await bootstrapOrganizationAtomic({
           userId: user.id,
@@ -505,7 +489,7 @@ export async function GET(request: Request) {
           orgName: `${user.email?.split('@')[0] ?? 'Founder'}'s Organization`,
           planKey: 'pro',
         });
-        console.log('[auth/callback] ✅ Founder org bootstrapped successfully');
+        authLogger.info('founder_org_bootstrapped');
       } catch (bootstrapErr) {
         console.error(
           '[auth/callback] ❌ Founder org bootstrap failed:',
@@ -514,15 +498,11 @@ export async function GET(request: Request) {
       }
     }
 
-    console.log(
-      `[auth/callback] ✅ Founder setup complete, redirecting to /admin/dashboard`,
-    );
+    authLogger.info('founder_setup_complete');
     return redirectWithCookies(`${appBase}/admin/dashboard`);
   }
 
-  console.log(
-    `[auth/callback] ℹ️  Regular user (not founder), proceeding with org setup`,
-  );
+  authLogger.info('regular_user_org_setup');
 
   if (plan) {
     try {
@@ -568,12 +548,7 @@ export async function GET(request: Request) {
       .maybeSingle();
 
     if (pendingInvite) {
-      console.log(
-        '[auth/callback] 📧 Auto-accepting pending invitation for',
-        user.email,
-        '→ org',
-        pendingInvite.organization_id,
-      );
+      authLogger.info('auto_accepting_invitation', { email: user.email, orgId: pendingInvite.organization_id });
       const { error: joinError } = await admin.from('org_members').upsert(
         {
           organization_id: pendingInvite.organization_id,
@@ -596,12 +571,10 @@ export async function GET(request: Request) {
           .maybeSingle();
 
         if (inviteOrg?.onboarding_completed) {
-          console.log('[auth/callback] ✅ Auto-joined via invitation → /app');
+          authLogger.info('auto_joined_via_invitation', { destination: '/app' });
           return redirectWithCookies(`${appBase}${requestedNext ?? '/app'}`);
         }
-        console.log(
-          '[auth/callback] ✅ Auto-joined via invitation → /onboarding',
-        );
+        authLogger.info('auto_joined_via_invitation', { destination: '/onboarding' });
         return redirectWithCookies(`${appBase}/onboarding`);
       }
       console.error(
@@ -619,9 +592,7 @@ export async function GET(request: Request) {
       );
     }
 
-    console.log(
-      '[auth/callback] 🔧 EXISTING USER without org - fixing orphaned account',
-    );
+    authLogger.info('existing_user_without_org');
 
     // Check if this user has an organization that they created but aren't a member of (data integrity issue)
     const { data: orphanedOrg } = await admin
@@ -631,9 +602,7 @@ export async function GET(request: Request) {
       .maybeSingle();
 
     if (orphanedOrg) {
-      console.log(
-        '[auth/callback] 📎 Found orphaned org, restoring membership',
-      );
+      authLogger.info('orphaned_org_found_restoring_membership');
 
       // Restore membership
       const { error: restoreError } = await admin.from('org_members').insert({
@@ -648,7 +617,7 @@ export async function GET(request: Request) {
           restoreError,
         );
       } else {
-        console.log('[auth/callback] ✅ Restored membership to existing org');
+        authLogger.info('membership_restored');
 
         // Continue with existing org flow
         const { data: restoredOrg } = await supabase
@@ -680,9 +649,7 @@ export async function GET(request: Request) {
     }
 
     // If we reach here, create new organization for this user
-    console.log(
-      '[auth/callback] 🚀 NEW USER: Creating organization and setting up onboarding',
-    );
+    authLogger.info('new_user_creating_org');
 
     const fallbackName =
       user.user_metadata?.full_name ||
@@ -712,22 +679,17 @@ export async function GET(request: Request) {
     }
 
     const organizationId = bootstrapResult.organizationId;
-    console.log(
-      '[auth/callback] ✅ Atomic bootstrap succeeded:',
-      organizationId,
-    );
+    authLogger.info('atomic_bootstrap_succeeded', { organizationId });
 
     // Initialize compliance graph (non-critical, can fail)
     try {
-      console.log('[auth/callback] 🏗️  Initializing compliance graph');
+      authLogger.info('initializing_compliance_graph');
       const graphResult = await initializeComplianceGraph(
         organizationId,
         user.id,
       );
       if (graphResult.success) {
-        console.log(
-          `[auth/callback] ✅ Compliance graph initialized: ${graphResult.nodes?.length} nodes, ${graphResult.wires?.length} wires`,
-        );
+        authLogger.info('compliance_graph_initialized', { nodeCount: graphResult.nodes?.length, wireCount: graphResult.wires?.length });
       } else {
         console.warn(
           `[auth/callback] ⚠️  Graph initialization warning: ${graphResult.error}`,
@@ -740,21 +702,17 @@ export async function GET(request: Request) {
       );
     }
 
-    console.log(
-      '[auth/callback] ✅ NEW USER setup complete, redirecting to onboarding',
-    );
+    authLogger.info('new_user_setup_complete');
     const planQuery = plan ? `?plan=${encodeURIComponent(plan)}` : '';
     return redirectWithCookies(`${appBase}/onboarding${planQuery}`);
   }
 
   // 5. EXISTING USER WITH ORGANIZATION - Check their onboarding status and backfill missing data
-  console.log(
-    '[auth/callback] 🔍 EXISTING USER with org - checking onboarding status',
-  );
+  authLogger.info('existing_user_checking_onboarding');
 
   // Ensure user has proper role assignment
   if (membership.role === null || membership.role === undefined) {
-    console.log('[auth/callback] 🔧 Fixing missing role for existing user');
+    authLogger.info('fixing_missing_role');
     await admin
       .from('org_members')
       .update({ role: 'member' }) // Default role for existing users
@@ -780,9 +738,7 @@ export async function GET(request: Request) {
 
   // BACKFILL: Update org with plan if missing
   if (!organization?.plan_key) {
-    console.log(
-      '[auth/callback] 🔧 Backfilling missing plan_key for existing org',
-    );
+    authLogger.info('backfilling_plan_key');
     await admin
       .from('organizations')
       .update({
@@ -800,7 +756,7 @@ export async function GET(request: Request) {
     .maybeSingle();
 
   if (!legacyOrg) {
-    console.log('[auth/callback] 🔧 Backfilling legacy orgs table entry');
+    authLogger.info('backfilling_legacy_orgs_entry');
     const now = new Date().toISOString();
     await admin.from('orgs').upsert(
       {
@@ -845,13 +801,10 @@ export async function GET(request: Request) {
     organization?.frameworks ?? null,
   );
   if (frameworkResolution.repairedFromOrgFrameworks) {
-    console.log(
-      '[auth/callback] Repaired organization.frameworks from org_frameworks',
-      {
-        orgId: membership.organization_id,
-        frameworkCount: frameworkResolution.frameworks.length,
-      },
-    );
+    authLogger.info('repaired_org_frameworks', {
+      orgId: membership.organization_id,
+      frameworkCount: frameworkResolution.frameworks.length,
+    });
   }
   const hasFrameworks = frameworkResolution.frameworks.length > 0;
   const { data: onboardingStatus } = await admin
@@ -878,7 +831,7 @@ export async function GET(request: Request) {
 
     if (!promoteError) {
       onboardingCompleted = true;
-      console.log('[auth/callback] Promoted onboarding_completed from status', {
+      authLogger.info('promoted_onboarding_completed', {
         orgId: membership.organization_id,
       });
     }
@@ -900,10 +853,7 @@ export async function GET(request: Request) {
       current_step: onboardingStep,
       updated_at: new Date().toISOString(),
     });
-    console.log(
-      '[auth/callback] 📋 Onboarding incomplete, redirecting to onboarding step',
-      onboardingStep,
-    );
+    authLogger.info('onboarding_incomplete_redirecting', { onboardingStep });
     const query = new URLSearchParams();
     query.set('step', String(onboardingStep));
     if (resolvedPlan) {
@@ -916,6 +866,6 @@ export async function GET(request: Request) {
     return redirectWithCookies(`${appBase}/onboarding${planQuery}`);
   }
 
-  console.log('[auth/callback] ✅ User fully onboarded, redirecting to app');
+  authLogger.info('user_fully_onboarded');
   return redirectWithCookies(`${appBase}${requestedNext ?? '/app'}`);
 }

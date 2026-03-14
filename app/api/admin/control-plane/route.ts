@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
-import { requireFounderAccess } from '@/app/app/admin/access';
-import { handleAdminError } from '@/app/api/admin/_helpers';
+import { requireAdminAccess } from '@/app/app/admin/access';
+import {
+  extractAdminReason,
+  handleAdminError,
+  requireAdminChangeControl,
+} from '@/app/api/admin/_helpers';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { checkAdminRateLimit, getClientIp } from '@/lib/ratelimit';
@@ -279,7 +283,7 @@ async function handleAction(
 
 export async function GET(request: Request) {
   try {
-    await requireFounderAccess();
+    await requireAdminAccess({ permission: 'control_plane:view' });
 
     const { searchParams } = new URL(request.url);
     const environment = resolveControlPlaneEnvironment(
@@ -309,7 +313,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
     }
 
-    const { user } = await requireFounderAccess();
+    const access = await requireAdminAccess({ permission: 'control_plane:manage' });
 
     const body = await request.json().catch(() => ({}));
     const action = String(body?.action ?? '').trim();
@@ -325,20 +329,36 @@ export async function POST(request: Request) {
       );
     }
 
-    const response = await handleAction(user.id, environment, action, payload);
+    const isHighRiskAction =
+      action === 'enqueue_job' ||
+      action === 'retry_integration' ||
+      (action === 'set_system_setting' &&
+        String(payload.category ?? '') === 'ops') ||
+      (action === 'set_feature_flag' && Boolean(payload.killSwitch));
+    const reason = await requireAdminChangeControl({
+      context: access,
+      action,
+      targetType: 'control_plane',
+      targetId: action,
+      reason: extractAdminReason(payload, request),
+      requireApproval: isHighRiskAction,
+    });
+
+    const response = await handleAction(access.user.id, environment, action, payload);
 
     if (response.status >= 400) {
       return response;
     }
 
     await writeControlPlaneAudit({
-      actorUserId: user.id,
+      actorUserId: access.user.id,
       environment,
       eventType: 'control_plane.action',
       targetType: 'control_plane',
       targetId: action,
       metadata: {
         action,
+        reason,
       },
     });
 
