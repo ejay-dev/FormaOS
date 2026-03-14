@@ -42,9 +42,6 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
       {/* Add OAuthRedirectWrapper to handle OAuth redirects */}
       <OAuthRedirectWrapper />
       <div className="relative min-h-screen overflow-hidden">
-        {/* Shared background layer: gradient + grid + grain + vignette */}
-        <MarketingBackgroundLayer />
-
         {/* Premium header with glass effect and micro-animations */}
         <header className="mk-header-premium sticky top-0 z-50">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -85,7 +82,10 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
           id="main-content"
           className="relative z-10 mk-page-bg mk-marketing-flow"
         >
-          <PageTransition>{children}</PageTransition>
+          <MarketingBackgroundLayer />
+          <div className="relative z-10">
+            <PageTransition>{children}</PageTransition>
+          </div>
         </main>
         <script
           type="application/ld+json"

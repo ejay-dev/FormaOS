@@ -2,9 +2,11 @@
 
 import { memo, useEffect, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
+import { usePathname } from 'next/navigation';
 import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 import { useDeviceTier } from '@/lib/device-tier';
+import { selectMarketingBackgroundTheme } from '@/lib/marketing/background-media';
 
 /**
  * MarketingBackgroundLayer
@@ -19,12 +21,15 @@ import { useDeviceTier } from '@/lib/device-tier';
  * - low: bloom + vignette only
  */
 function MarketingBackgroundLayerInner() {
+  const pathname = usePathname();
   const shouldReduceMotion = useReducedMotion();
   const tierConfig = useDeviceTier();
   const [enhancedReady, setEnhancedReady] = useState(false);
+  const [saveDataEnabled, setSaveDataEnabled] = useState(false);
   const { snapshot } = useControlPlaneRuntime();
   const runtime = snapshot?.marketing.runtime ?? DEFAULT_RUNTIME_MARKETING.runtime;
   const expensiveEffectsEnabled = runtime.expensiveEffectsEnabled;
+  const activeTheme = selectMarketingBackgroundTheme(pathname);
   const allowScrollDepthParallax =
     !shouldReduceMotion &&
     expensiveEffectsEnabled &&
@@ -58,6 +63,30 @@ function MarketingBackgroundLayerInner() {
   }, [allowScrollDepthParallax]);
 
   useEffect(() => {
+    if (typeof navigator === 'undefined') return;
+
+    const connection = (
+      navigator as Navigator & {
+        connection?: { saveData?: boolean };
+      }
+    ).connection;
+
+    setSaveDataEnabled(connection?.saveData === true);
+  }, []);
+
+  useEffect(() => {
+    const root = document.documentElement;
+
+    root.style.setProperty('--mk-route-photo', `url("${activeTheme.imageSrc}")`);
+    root.style.setProperty('--mk-route-photo-position', activeTheme.imagePosition);
+
+    return () => {
+      root.style.removeProperty('--mk-route-photo');
+      root.style.removeProperty('--mk-route-photo-position');
+    };
+  }, [activeTheme.imagePosition, activeTheme.imageSrc]);
+
+  useEffect(() => {
     if (shouldReduceMotion || !expensiveEffectsEnabled) return;
 
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
@@ -89,14 +118,59 @@ function MarketingBackgroundLayerInner() {
 
   // Tiered overlay rendering: grid + grain only on high-tier devices
   const showOverlays = enhancedReady && tierConfig.enableOverlays && expensiveEffectsEnabled;
+  const showVideo =
+    enhancedReady &&
+    expensiveEffectsEnabled &&
+    !shouldReduceMotion &&
+    !saveDataEnabled &&
+    tierConfig.tier !== 'low' &&
+    Boolean(activeTheme.videoSrc);
 
   return (
     <div
       aria-hidden
       data-theme-variant={runtime.themeVariant}
       data-background-variant={runtime.backgroundVariant}
+      data-media-theme={activeTheme.id}
       className="mk-bg-layer pointer-events-none fixed inset-0 z-0"
     >
+      <div className="mk-bg-depth mk-bg-depth--far absolute inset-0 overflow-hidden">
+        <img
+          key={activeTheme.imageSrc}
+          src={activeTheme.imageSrc}
+          alt=""
+          className="mk-bg-media-image"
+          decoding="async"
+          fetchPriority="high"
+          style={{
+            objectPosition: activeTheme.imagePosition,
+            opacity: activeTheme.imageOpacity,
+          }}
+        />
+        {showVideo ? (
+          <video
+            key={activeTheme.videoSrc}
+            className="mk-bg-media-video"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            poster={activeTheme.posterSrc}
+            style={{
+              objectPosition: activeTheme.videoPosition ?? activeTheme.imagePosition,
+              opacity: activeTheme.videoOpacity ?? activeTheme.imageOpacity,
+            }}
+          >
+            <source src={activeTheme.videoSrc} type="video/mp4" />
+          </video>
+        ) : null}
+        <div
+          className="mk-bg-media-tint absolute inset-0"
+          style={{ background: activeTheme.tint }}
+        />
+      </div>
+
       {/* Vertical depth gradient */}
       <div className="mk-bg-depth mk-bg-depth--far absolute inset-0 bg-gradient-to-b from-transparent via-[#0d1421]/30 to-transparent" />
 

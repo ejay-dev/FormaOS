@@ -387,10 +387,67 @@
   position: relative;
 }
 
+.mk-marketing-flow section,
+.mk-marketing-flow .mk-hero {
+  position: relative;
+  isolation: isolate;
+}
+
+.mk-marketing-flow section::before,
+.mk-marketing-flow .mk-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(5, 10, 20, 0.84) 0%,
+      rgba(6, 16, 24, 0.64) 48%,
+      rgba(4, 10, 18, 0.88) 100%
+    ),
+    var(--mk-route-photo);
+  background-size: cover, cover;
+  background-position: center center, var(--mk-route-photo-position, center center);
+  background-repeat: no-repeat;
+  opacity: 0.28;
+  filter: saturate(0.88) contrast(1.04);
+}
+
+.mk-marketing-flow section > *,
+.mk-marketing-flow .mk-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
 /* ── Background depth layers ───────────────────────────── */
 .mk-bg-layer {
   position: fixed;
   inset: 0;
+  pointer-events: none;
+}
+
+.mk-bg-media-image,
+.mk-bg-media-video {
+  position: absolute;
+  inset: -2%;
+  width: 104%;
+  height: 104%;
+  object-fit: cover;
+  filter: saturate(0.9) contrast(1.03) brightness(0.72);
+  transform: scale(1.03);
+}
+
+.mk-bg-media-image {
+  transition: opacity 320ms ease;
+}
+
+.mk-bg-media-video {
+  mix-blend-mode: screen;
+}
+
+.mk-bg-media-tint {
   pointer-events: none;
 }
 
