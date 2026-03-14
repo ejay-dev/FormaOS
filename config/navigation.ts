@@ -9,6 +9,7 @@ export const primaryLinks = [
   { href: '/features', label: 'Features' },
   { href: '/industries', label: 'Industries' },
   { href: '/security', label: 'Security' },
+  { href: '/enterprise', label: 'Enterprise' },
   { href: '/trust', label: 'Trust' },
   { href: '/pricing', label: 'Pricing' },
 ] as const;
@@ -26,7 +27,6 @@ export const resourceLinks = [
   { href: '/trust/packet', label: 'Trust Packet (PDF)' },
   { href: '/frameworks', label: 'Framework Coverage' },
   { href: '/integrations', label: 'Integrations' },
-  { href: '/enterprise', label: 'Enterprise' },
   { href: '/customer-stories', label: 'Customer Stories' },
   { href: '/compare', label: 'Compare' },
   { href: '/changelog', label: 'Changelog' },
@@ -34,7 +34,6 @@ export const resourceLinks = [
   { href: '/status', label: 'Status' },
   { href: '/documentation', label: 'Documentation' },
   { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
 ] as const;
 
 export const footerLinks = {

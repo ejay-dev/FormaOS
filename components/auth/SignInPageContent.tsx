@@ -70,6 +70,19 @@ const fetchWithTimeout = async (
   }
 };
 
+const getAuthBackendMessage = (
+  error: string | null | undefined,
+  fallback: string,
+) => {
+  if (error === 'backend_unavailable') {
+    return 'Secure sign-in is temporarily unavailable while background services reconnect. Please try again shortly.';
+  }
+  if (error === 'too_many_requests') {
+    return 'Too many requests. Please wait a few minutes and try again.';
+  }
+  return fallback;
+};
+
 function SignInContent() {
   const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
@@ -110,7 +123,15 @@ function SignInContent() {
         method: 'POST',
       });
       if (!response.ok) {
-        return { ok: false, status: response.status };
+        const payload = await response.json().catch(() => ({}));
+        return {
+          ok: false,
+          status: response.status,
+          error:
+            typeof payload?.error === 'string'
+              ? payload.error
+              : undefined,
+        };
       }
       const payload = await response.json().catch(() => ({}));
       const next = typeof payload?.next === 'string' ? payload.next : '/app';
@@ -223,7 +244,10 @@ function SignInContent() {
           const bootstrapResult = await bootstrapAndRedirect();
           if (!bootstrapResult?.ok) {
             setErrorMessage(
-              'We could not complete sign-in. Please refresh and try again.',
+              getAuthBackendMessage(
+                bootstrapResult?.error,
+                'We could not complete sign-in. Please refresh and try again.',
+              ),
             );
           }
         }
@@ -373,7 +397,10 @@ function SignInContent() {
       const bootstrapResult = await bootstrapAndRedirect();
       if (!bootstrapResult?.ok) {
         setErrorMessage(
-          'We could not complete sign-in. Please refresh and try again.',
+          getAuthBackendMessage(
+            bootstrapResult?.error,
+            'We could not complete sign-in. Please refresh and try again.',
+          ),
         );
         setIsLoading(false);
         return;

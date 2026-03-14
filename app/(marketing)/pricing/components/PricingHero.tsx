@@ -8,6 +8,7 @@ import { PricingHeroVisual } from './PricingHeroVisual';
 export function PricingHero() {
   return (
     <ImmersiveHero
+      className="pricing-hero--dense"
       theme="pricing"
       visualContent={<PricingHeroVisual />}
       badge={{

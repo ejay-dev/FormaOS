@@ -1,6 +1,10 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { syncEntitlementsForPlan } from '@/lib/billing/entitlements';
-import { resolvePlanKey, type PlanKey } from '@/lib/plans';
+import {
+  isTrialEligiblePlan,
+  resolvePlanKey,
+  type PlanKey,
+} from '@/lib/plans';
 import { billingLogger } from '@/lib/observability/structured-logger';
 
 const TRIAL_DAYS = 14;
@@ -43,8 +47,7 @@ export async function ensureSubscription(
     return;
   }
 
-  const isTrialEligible = resolvedPlan === 'basic' || resolvedPlan === 'pro';
-  const isEnterprise = resolvedPlan === 'enterprise';
+  const isTrialEligible = isTrialEligiblePlan(resolvedPlan);
   const now = new Date();
   const nowIso = now.toISOString();
   const trialEndIso = isTrialEligible ? getTrialEndIso() : null;
@@ -83,7 +86,7 @@ export async function ensureSubscription(
   const basePayload = {
     organization_id: orgId,
     plan_key: resolvedPlan,
-    status: isTrialEligible ? 'trialing' : isEnterprise ? 'active' : 'pending',
+    status: isTrialEligible ? 'trialing' : 'active',
     current_period_end: trialEndIso,
     trial_started_at: isTrialEligible ? nowIso : null,
     trial_expires_at: trialEndIso,

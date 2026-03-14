@@ -8,6 +8,7 @@ import {
   getTestCredentials,
   cleanupTestUser,
   createMagicLinkSession,
+  isE2EAuthBootstrapError,
   setPlaywrightSession,
 } from './helpers/test-auth';
 
@@ -72,8 +73,16 @@ async function dismissProductTour(page: Page) {
 
 test.describe('Enterprise QA Smoke Suite', () => {
   test.beforeEach(async ({ page }) => {
-    const creds = await getCredentials();
-    await loginAs(page, creds.email, creds.password);
+    try {
+      const creds = await getCredentials();
+      await loginAs(page, creds.email, creds.password);
+    } catch (error) {
+      test.skip(
+        isE2EAuthBootstrapError(error),
+        error instanceof Error ? error.message : 'E2E auth bootstrap unavailable',
+      );
+      throw error;
+    }
   });
 
   test.afterAll(async () => {

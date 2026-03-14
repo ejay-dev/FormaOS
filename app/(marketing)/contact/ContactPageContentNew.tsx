@@ -30,6 +30,7 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 function ContactHero() {
   return (
     <ImmersiveHero
+      className="contact-hero--focused"
       theme="contact"
       visualContent={<ContactHeroVisual />}
       badge={{
@@ -473,12 +474,12 @@ export default function ContactPageContent({
     <MarketingPageShell>
       <ContactHero />
       <VisualDivider gradient />
-      <DeferredSection minHeight={300}>
-        <ContactInformation />
-      </DeferredSection>
-      <VisualDivider />
       <DeferredSection minHeight={500}>
         <ContactForm submitAction={submitAction} />
+      </DeferredSection>
+      <VisualDivider />
+      <DeferredSection minHeight={300}>
+        <ContactInformation />
       </DeferredSection>
       <VisualDivider />
       <DeferredSection minHeight={250}>

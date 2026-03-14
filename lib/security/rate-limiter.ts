@@ -33,6 +33,7 @@ interface RateLimitResult {
   remaining: number;
   resetAt: number;
   retryAfter?: number;
+  degradedReason?: 'redis_unavailable' | 'redis_error';
 }
 
 type RedisCheckOutcome = {
@@ -363,6 +364,7 @@ export async function checkRateLimit(
         remaining: 0,
         resetAt: now + windowMs,
         retryAfter: Math.ceil(windowMs / 1000),
+        degradedReason: redisOutcome.failOpenReason,
       };
     }
   }
@@ -385,6 +387,7 @@ export function createRateLimitHeaders(
 export async function rateLimitAuth(request: Request): Promise<{
   allowed: boolean;
   headers: Record<string, string>;
+  error?: 'too_many_requests' | 'backend_unavailable';
 }> {
   const identifier = await getClientIdentifier();
   const result = await checkRateLimit(RATE_LIMITS.AUTH, identifier);
@@ -405,7 +408,17 @@ export async function rateLimitAuth(request: Request): Promise<{
     });
   }
 
-  return { allowed: result.success, headers };
+  return {
+    allowed: result.success,
+    headers,
+    ...(result.success
+      ? {}
+      : {
+          error: result.degradedReason
+            ? 'backend_unavailable'
+            : 'too_many_requests',
+        }),
+  };
 }
 
 export async function rateLimitApi(

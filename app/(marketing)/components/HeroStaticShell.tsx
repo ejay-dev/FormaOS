@@ -56,7 +56,7 @@ export function HeroStaticShell() {
 
   return (
     <section
-      className="home-hero relative isolate overflow-hidden"
+      className="home-hero home-hero--dense relative isolate overflow-hidden"
       aria-label="Hero"
     >
       {/* Static background - no animation, preserved for SEO and no-JS users */}
@@ -65,9 +65,9 @@ export function HeroStaticShell() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_100%_at_0%_50%,rgba(3,7,18,0.40),transparent_70%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_100%_at_100%_50%,rgba(3,7,18,0.40),transparent_70%)]" />
 
-      <div className="relative z-10 mx-auto flex min-h-[inherit] max-w-7xl flex-col items-center justify-center px-6 pb-16 pt-20 text-center sm:px-8 sm:pt-28 lg:px-12 lg:pt-32">
+      <div className="relative z-10 mx-auto flex min-h-[inherit] max-w-7xl flex-col items-center justify-center px-6 pb-12 pt-16 text-center sm:px-8 sm:pt-24 lg:px-12 lg:pt-28">
         {/* Badge */}
-        <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-cyan-300/35 bg-cyan-500/10 px-4 py-2.5 backdrop-blur-md">
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-300/35 bg-cyan-500/10 px-4 py-2.5 backdrop-blur-md">
           <ShieldCheck className="h-4 w-4 text-cyan-300" aria-hidden="true" />
           <span className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-100 sm:text-sm">
             {heroCopy.badgeText}
@@ -89,7 +89,7 @@ export function HeroStaticShell() {
         </p>
 
         {/* CTAs */}
-        <div className="mt-9 flex w-full max-w-xl flex-col justify-center gap-3 sm:flex-row sm:gap-4">
+        <div className="mt-8 flex w-full max-w-xl flex-col justify-center gap-3 sm:flex-row sm:gap-4">
           <a
             href={primaryHref}
             className="mk-btn mk-btn-primary group min-h-[50px] justify-center px-8 py-4 text-base sm:text-lg"
@@ -120,7 +120,7 @@ export function HeroStaticShell() {
         </div>
 
         {/* Signal cards */}
-        <div className="mt-8 grid w-full max-w-5xl gap-3 sm:grid-cols-3">
+        <div className="mt-6 grid w-full max-w-5xl gap-3 sm:grid-cols-3">
           {SIGNAL_CARDS.map((card) => (
             <div
               key={card.label}
@@ -138,7 +138,7 @@ export function HeroStaticShell() {
         </div>
 
         {/* Trust pills */}
-        <div className="mt-6 flex w-full max-w-5xl flex-wrap items-center justify-center gap-2">
+        <div className="mt-4 flex w-full max-w-5xl flex-wrap items-center justify-center gap-2">
           {TRUST_PILLS.map((pill) => (
             <span
               key={pill}

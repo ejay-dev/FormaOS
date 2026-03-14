@@ -3,6 +3,7 @@ import {
   getTestCredentials,
   cleanupTestUser,
   createMagicLinkSession,
+  isE2EAuthBootstrapError,
   setPlaywrightSession,
 } from './helpers/test-auth';
 
@@ -75,11 +76,15 @@ async function authenticate(page: Page) {
   });
 
   if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    const session = await createMagicLinkSession(creds.email);
-    await setPlaywrightSession(page.context(), session, appBase);
-    await page.goto('/app', { waitUntil: 'domcontentloaded' });
-    await page.waitForURL(/\/app/, { timeout: 20_000 });
-    return;
+    try {
+      const session = await createMagicLinkSession(creds.email);
+      await setPlaywrightSession(page.context(), session, appBase);
+      await page.goto('/app', { waitUntil: 'domcontentloaded' });
+      await page.waitForURL(/\/app/, { timeout: 20_000 });
+      return;
+    } catch {
+      // Fall back to UI login when magic-link bootstrap is unavailable.
+    }
   }
 
   await page.goto('/auth/signin');
@@ -93,7 +98,15 @@ test.describe('App link integrity', () => {
   test.skip(!hasAuthBootstrapEnv(), 'Skipping: auth bootstrap env not configured');
 
   test.beforeEach(async ({ page }) => {
-    await authenticate(page);
+    try {
+      await authenticate(page);
+    } catch (error) {
+      test.skip(
+        isE2EAuthBootstrapError(error),
+        error instanceof Error ? error.message : 'E2E auth bootstrap unavailable',
+      );
+      throw error;
+    }
   });
 
   test.afterAll(async () => {

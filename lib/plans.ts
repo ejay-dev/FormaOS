@@ -1,5 +1,11 @@
 export type PlanKey = 'basic' | 'pro' | 'enterprise';
 
+export const TRIAL_ELIGIBLE_PLANS: readonly PlanKey[] = [
+  'basic',
+  'pro',
+  'enterprise',
+] as const;
+
 export type PlanConfig = {
   key: PlanKey;
   name: string;
@@ -86,4 +92,8 @@ export function resolvePlanKey(
   if (!value) return null;
   const normalized = value.toLowerCase();
   return isPlanKey(normalized) ? normalized : null;
+}
+
+export function isTrialEligiblePlan(planKey: PlanKey): boolean {
+  return TRIAL_ELIGIBLE_PLANS.includes(planKey);
 }

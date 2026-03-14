@@ -439,6 +439,10 @@
   background: linear-gradient(180deg, #060b17 0%, #091224 48%, #060b17 100%);
 }
 
+.home-hero--dense {
+  min-height: clamp(34rem, 76vh, 48rem);
+}
+
 .hero-aurora {
   position: absolute;
   pointer-events: none;
@@ -1150,6 +1154,10 @@
     min-height: clamp(88svh, 100vh, 1080px);
     padding-top: 2rem;
     padding-bottom: 2.5rem;
+  }
+
+  .home-hero--dense {
+    min-height: clamp(80svh, 92vh, 960px);
   }
 
   .hero-grid-overlay {

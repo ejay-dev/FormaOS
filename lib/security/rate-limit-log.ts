@@ -14,6 +14,7 @@ type RateLimitLogInput = {
 };
 
 const DB_WRITE_TIMEOUT_MS = 200;
+const IS_BUILD_PHASE = process.env.NEXT_PHASE === 'phase-production-build';
 
 async function withDbTimeout<T>(
   promise: Promise<T>,
@@ -35,6 +36,10 @@ async function withDbTimeout<T>(
 }
 
 export function logRateLimitEvent(input: RateLimitLogInput): void {
+  if (IS_BUILD_PHASE) {
+    return;
+  }
+
   try {
     const admin = createSupabaseAdminClient();
 
@@ -94,6 +99,10 @@ export function logRateLimitFailOpenWarning(
     identifier: input.identifier ?? null,
     fallbackMode: input.fallbackMode,
   });
+
+  if (IS_BUILD_PHASE) {
+    return;
+  }
 
   try {
     const admin = createSupabaseAdminClient();

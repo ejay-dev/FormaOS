@@ -12,10 +12,18 @@ export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
   // Rate limiting: Prevent brute force password validation attempts
-  const { allowed, headers } = await rateLimitAuth(request);
+  const { allowed, headers, error } = await rateLimitAuth(request);
   if (!allowed) {
     return NextResponse.json(
-      { ok: false, errors: ['Too many requests. Please try again later.'] },
+      {
+        ok: false,
+        error: error ?? 'too_many_requests',
+        errors: [
+          error === 'backend_unavailable'
+            ? 'Secure password checks are temporarily unavailable. Please try again shortly.'
+            : 'Too many requests. Please try again later.',
+        ],
+      },
       { status: 429, headers },
     );
   }

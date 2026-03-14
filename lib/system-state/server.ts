@@ -2,6 +2,7 @@ import 'server-only';
 
 import { cache } from 'react';
 import { unstable_cache } from 'next/cache';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { resolvePlanKey, type PlanKey } from '@/lib/plans';
 import { normalizeRole, type RoleKey } from '@/app/app/actions/rbac';
@@ -131,7 +132,7 @@ async function getSubscriptionDataFresh(
 ): Promise<SubscriptionData | null> {
   const supabase = await createSupabaseServerClient();
 
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from('org_subscriptions')
     .select(
       `
@@ -146,6 +147,27 @@ async function getSubscriptionDataFresh(
     )
     .eq('organization_id', orgId)
     .maybeSingle();
+
+  if (error || !data) {
+    const admin = createSupabaseAdminClient();
+    const fallback = await admin
+      .from('org_subscriptions')
+      .select(
+        `
+      plan_key,
+      status,
+      stripe_customer_id,
+      stripe_subscription_id,
+      current_period_end,
+      trial_started_at,
+      trial_expires_at
+    `,
+      )
+      .eq('organization_id', orgId)
+      .maybeSingle();
+    data = fallback.data;
+    error = fallback.error;
+  }
 
   if (error || !data) {
     return null;
@@ -209,10 +231,20 @@ export const getEntitlements = cache(async (orgId: string) =>
 async function getEntitlementsFresh(orgId: string): Promise<EntitlementData[]> {
   const supabase = await createSupabaseServerClient();
 
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from('org_entitlements')
     .select('feature_key, enabled, limit_value')
     .eq('organization_id', orgId);
+
+  if (error || !data || data.length === 0) {
+    const admin = createSupabaseAdminClient();
+    const fallback = await admin
+      .from('org_entitlements')
+      .select('feature_key, enabled, limit_value')
+      .eq('organization_id', orgId);
+    data = fallback.data;
+    error = fallback.error;
+  }
 
   if (error || !data) {
     return [];
@@ -239,6 +271,18 @@ export interface MembershipData {
   industry: string | null;
 }
 
+type MembershipOrganizationRow = {
+  name?: string | null;
+  onboarding_completed?: boolean | null;
+  industry?: string | null;
+};
+
+type MembershipQueryRow = {
+  organization_id: string | null;
+  role?: string | null;
+  organizations?: MembershipOrganizationRow | MembershipOrganizationRow[] | null;
+};
+
 function pickPrimaryMembership<
   T extends {
     role?: string | null;
@@ -258,6 +302,28 @@ function pickPrimaryMembership<
       .sort((a, b) => weight(b.role) - weight(a.role))
       .at(0) ?? memberships[0]
   );
+}
+
+function normalizeMembershipResult(
+  userId: string,
+  membership: MembershipQueryRow | null,
+): MembershipData | null {
+  if (!membership?.organization_id) return null;
+
+  const org = Array.isArray(membership.organizations)
+    ? membership.organizations[0]
+    : membership.organizations;
+  const roleKey = normalizeRole(membership.role as string | null);
+
+  return {
+    userId,
+    orgId: membership.organization_id,
+    role: roleKey,
+    userRole: mapRoleKeyToUserRole(roleKey),
+    organizationName: org?.name ?? 'Unknown Organization',
+    onboardingCompleted: org?.onboarding_completed ?? false,
+    industry: org?.industry ?? null,
+  };
 }
 
 export async function getMembershipData(preloadedUser?: {
@@ -290,24 +356,54 @@ export async function getMembershipData(preloadedUser?: {
     .eq('user_id', user.id)
     .limit(50);
 
-  const membership = pickPrimaryMembership((membershipRows ?? []) as any[]);
+  const membership = normalizeMembershipResult(
+    user.id,
+    pickPrimaryMembership((membershipRows ?? []) as MembershipQueryRow[]),
+  );
 
-  if (error || !membership?.organization_id) {
+  if (membership) {
+    return membership;
+  }
+
+  const admin = createSupabaseAdminClient();
+  const { data: adminRows, error: adminError } = await admin
+    .from('org_members')
+    .select(
+      `
+      organization_id,
+      role,
+      organizations:organization_id (
+        name,
+        onboarding_completed,
+        industry
+      )
+    `,
+    )
+    .eq('user_id', user.id)
+    .limit(50);
+
+  const adminMembership = normalizeMembershipResult(
+    user.id,
+    pickPrimaryMembership((adminRows ?? []) as MembershipQueryRow[]),
+  );
+
+  if (!adminMembership) {
+    if (error || adminError) {
+      console.error('[getMembershipData] membership lookup failed', {
+        userId: user.id,
+        error: error?.message ?? null,
+        adminError: adminError?.message ?? null,
+      });
+    }
     return null;
   }
 
-  const org = membership.organizations as any;
-  const roleKey = normalizeRole(membership.role as string | null);
-
-  return {
+  console.warn('[getMembershipData] recovered membership via admin fallback', {
     userId: user.id,
-    orgId: membership.organization_id as string,
-    role: roleKey,
-    userRole: mapRoleKeyToUserRole(roleKey),
-    organizationName: org?.name ?? 'Unknown Organization',
-    onboardingCompleted: org?.onboarding_completed ?? false,
-    industry: org?.industry ?? null,
-  };
+    orgId: adminMembership.orgId,
+    hadRlsError: Boolean(error),
+  });
+  return adminMembership;
 }
 
 // =========================================================
@@ -384,12 +480,8 @@ async function fetchSystemStateFresh(preloadedUser?: {
   let trialActive = subscription?.trialActive ?? false;
   let trialDaysRemaining = subscription?.trialDaysRemaining ?? 0;
 
-  const resolvedPlanForEntitlements = resolvePlanKey(
-    subscription?.planKey ?? null,
-  );
-  const needsEntitlements =
-    resolvedPlanForEntitlements === 'basic' ||
-    resolvedPlanForEntitlements === 'pro';
+  const resolvedPlanForEntitlements = resolvePlanKey(subscription?.planKey ?? null);
+  const needsEntitlements = Boolean(resolvedPlanForEntitlements);
   const needsRepair =
     !subscription || (needsEntitlements && dbEntitlements.length === 0);
 

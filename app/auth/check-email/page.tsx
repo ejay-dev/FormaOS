@@ -111,7 +111,14 @@ function CheckEmailContent() {
       });
 
       if (!response.ok) {
-        setErrorMessage('Failed to resend email. Please try again.');
+        const payload = await response.json().catch(() => ({}));
+        setErrorMessage(
+          payload?.error === 'backend_unavailable'
+            ? 'Secure email confirmation is temporarily unavailable while background services reconnect. Please try again shortly.'
+            : payload?.error === 'too_many_requests'
+              ? 'Too many requests. Please wait a few minutes and try again.'
+              : 'Failed to resend email. Please try again.',
+        );
       } else {
         setResendMessage('A fresh secure sign-in email has been sent.');
       }

@@ -176,7 +176,7 @@ export function HeroSection() {
   return (
     <section
       ref={containerRef}
-      className="home-hero relative isolate overflow-hidden"
+      className="home-hero home-hero--dense relative isolate overflow-hidden"
     >
       {/* Aurora + sparkles + beams - enterprise atmosphere */}
       <AuroraBackground className="absolute inset-0" />
@@ -188,7 +188,7 @@ export function HeroSection() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_100%_at_0%_50%,rgba(3,7,18,0.40),transparent_70%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_100%_at_100%_50%,rgba(3,7,18,0.40),transparent_70%)]" />
 
-      <div className="relative z-10 mx-auto flex min-h-[inherit] max-w-7xl flex-col items-center justify-center px-6 pb-16 pt-20 text-center sm:px-8 sm:pt-28 lg:px-12 lg:pt-32">
+      <div className="relative z-10 mx-auto flex min-h-[inherit] max-w-7xl flex-col items-center justify-center px-6 pb-12 pt-16 text-center sm:px-8 sm:pt-24 lg:px-12 lg:pt-28">
         <motion.div
           initial={shouldAnimateIntro ? { opacity: 0, y: 16 } : false}
           animate={{ opacity: 1, y: 0 }}
@@ -197,7 +197,7 @@ export function HeroSection() {
               ? { duration: duration.slow, delay: 0.12 }
               : { duration: 0 }
           }
-          className="mb-7 inline-flex items-center gap-2 rounded-full border border-cyan-300/35 bg-cyan-500/10 px-4 py-2.5 backdrop-blur-md"
+          className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-300/35 bg-cyan-500/10 px-4 py-2.5 backdrop-blur-md"
         >
           <ShieldCheck className="h-4 w-4 text-cyan-300" />
           <span className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-100 sm:text-sm">
@@ -243,7 +243,7 @@ export function HeroSection() {
               ? { duration: duration.slower, delay: 0.5 }
               : { duration: 0 }
           }
-          className="mt-9 flex w-full max-w-xl flex-col justify-center gap-3 sm:flex-row sm:gap-4"
+          className="mt-8 flex w-full max-w-xl flex-col justify-center gap-3 sm:flex-row sm:gap-4"
         >
           <motion.a
             href={primaryCtaHref}
@@ -283,7 +283,7 @@ export function HeroSection() {
               ? { duration: duration.slower, delay: 0.62 }
               : { duration: 0 }
           }
-          className="mt-8 grid w-full max-w-5xl gap-3 sm:grid-cols-3"
+          className="mt-6 grid w-full max-w-5xl gap-3 sm:grid-cols-3"
         >
           {SIGNAL_CARDS.map((card) => (
             <div
@@ -309,7 +309,7 @@ export function HeroSection() {
               ? { duration: duration.slower, delay: 0.72 }
               : { duration: 0 }
           }
-          className="mt-6 flex w-full max-w-5xl flex-wrap items-center justify-center gap-2"
+          className="mt-4 flex w-full max-w-5xl flex-wrap items-center justify-center gap-2"
         >
           {TRUST_PILLS.map((pill) => (
             <span

@@ -229,6 +229,14 @@ export function MobileNav() {
                     <ChevronRight className="h-4 w-4 text-white/50" />
                   </Link>
                   <Link
+                    href="/contact"
+                    onClick={handleLinkClick}
+                    className="mk-btn mk-btn-secondary flex items-center justify-between w-full rounded-xl px-4 py-3.5 text-sm"
+                  >
+                    <span>Contact Sales</span>
+                    <ChevronRight className="h-4 w-4 text-white/50" />
+                  </Link>
+                  <Link
                     href={`${appBase}/auth/signup?plan=pro&source=mobile_nav`}
                     onClick={handleLinkClick}
                     className="mk-btn mk-btn-primary flex items-center justify-center w-full rounded-xl px-4 py-3.5 text-sm font-bold"

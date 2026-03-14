@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { redirect } from 'next/navigation';
+import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { Building2, ShieldCheck, Sparkles } from 'lucide-react';
 import { SubmitButton } from '@/components/ui/submit-button';
 import { applyIndustryPack } from '@/app/app/onboarding/actions';
@@ -103,6 +104,19 @@ type OnboardingStatusRow = {
 type FrameworkRow = {
   framework_slug: string | null;
 };
+
+function handleOnboardingActionFailure(
+  actionName: string,
+  step: number,
+  error: unknown,
+): never {
+  if (isRedirectError(error)) {
+    throw error;
+  }
+
+  console.error(`[onboarding] ${actionName} failed`, error);
+  redirect(`/onboarding?step=${step}&error=1`);
+}
 
 function normalizeFrameworks(input: unknown): string[] {
   if (!Array.isArray(input)) return [];
@@ -297,350 +311,447 @@ async function markStepComplete(orgId: string, step: number, nextStep: number) {
   });
 }
 
+async function upsertSelectedFrameworks(
+  admin: ReturnType<typeof createSupabaseAdminClient>,
+  orgId: string,
+  frameworkSlugs: string[],
+) {
+  if (!frameworkSlugs.length) return;
+
+  const timestamp = new Date().toISOString();
+  const primaryPayload = frameworkSlugs.map((slug) => ({
+    organization_id: orgId,
+    framework_slug: slug,
+    enabled_at: timestamp,
+  }));
+
+  const { error: primaryError } = await admin
+    .from('org_frameworks')
+    .upsert(primaryPayload, {
+      onConflict: 'organization_id,framework_slug',
+    });
+
+  if (!primaryError) return;
+
+  const message = primaryError.message?.toLowerCase() ?? '';
+  const missingOrganizationIdColumn =
+    message.includes('organization_id') && message.includes('does not exist');
+  const missingOrganizationOnConflict =
+    message.includes('organization_id,framework_slug') &&
+    message.includes('does not exist');
+
+  if (!missingOrganizationIdColumn && !missingOrganizationOnConflict) {
+    throw primaryError;
+  }
+
+  const legacyPayload = frameworkSlugs.map((slug) => ({
+    org_id: orgId,
+    framework_slug: slug,
+    enabled_at: timestamp,
+  }));
+
+  const { error: legacyError } = await admin.from('org_frameworks').upsert(
+    legacyPayload,
+    { onConflict: 'org_id,framework_slug' },
+  );
+
+  if (legacyError) {
+    throw legacyError;
+  }
+}
+
 async function advanceWelcome() {
   'use server';
-  const { orgId } = await getOrgContext();
-  await markStepComplete(orgId, 1, 2);
-  redirect('/onboarding?step=2');
+  try {
+    const { orgId } = await getOrgContext();
+    await markStepComplete(orgId, 1, 2);
+    redirect('/onboarding?step=2');
+  } catch (error) {
+    handleOnboardingActionFailure('advanceWelcome', 1, error);
+  }
 }
 
 async function saveOrgDetails(formData: FormData) {
   'use server';
-  const { orgId, orgRecord } = await getOrgContext();
-  const admin = createSupabaseAdminClient();
+  try {
+    const { orgId, orgRecord } = await getOrgContext();
+    const admin = createSupabaseAdminClient();
 
-  const nameRaw = (formData.get('organizationName') as string | null) ?? '';
-  const teamSize = (formData.get('teamSize') as string | null) ?? '';
-  const planInput = (formData.get('plan') as string | null) ?? '';
+    const nameRaw = (formData.get('organizationName') as string | null) ?? '';
+    const teamSize = (formData.get('teamSize') as string | null) ?? '';
+    const planInput = (formData.get('plan') as string | null) ?? '';
 
-  const nameCheck = validateOrganizationName(nameRaw);
-  const teamCheck = validateTeamSize(teamSize);
-  const planCandidate = planInput || orgRecord?.plan_key || '';
-  const planCheck = validatePlan(planCandidate);
+    const nameCheck = validateOrganizationName(nameRaw);
+    const teamCheck = validateTeamSize(teamSize);
+    const planCandidate = planInput || orgRecord?.plan_key || '';
+    const planCheck = validatePlan(planCandidate);
 
-  if (!nameCheck.valid || !teamCheck.valid) {
-    redirect('/onboarding?step=2&error=1');
+    if (!nameCheck.valid || !teamCheck.valid) {
+      redirect('/onboarding?step=2&error=1');
+    }
+
+    if (!planCheck.valid) {
+      redirect('/onboarding?step=2&error=1');
+    }
+
+    const sanitizedName = sanitizeOrganizationName(nameRaw);
+    const resolvedPlan = resolvePlanKey(planCandidate);
+
+    if (!resolvedPlan) {
+      redirect('/onboarding?step=2&error=1');
+    }
+
+    await admin
+      .from('organizations')
+      .update({
+        name: sanitizedName,
+        team_size: teamSize,
+        plan_key: resolvedPlan,
+        plan_selected_at: new Date().toISOString(),
+      })
+      .eq('id', orgId);
+
+    await ensureSubscription(orgId, resolvedPlan);
+
+    await markStepComplete(orgId, 2, 3);
+    redirect('/onboarding?step=3');
+  } catch (error) {
+    handleOnboardingActionFailure('saveOrgDetails', 2, error);
   }
-
-  if (!planCheck.valid) {
-    redirect('/onboarding?step=2&error=1');
-  }
-
-  const sanitizedName = sanitizeOrganizationName(nameRaw);
-  const resolvedPlan = resolvePlanKey(planCandidate);
-
-  if (!resolvedPlan) {
-    redirect('/onboarding?step=2&error=1');
-  }
-
-  await admin
-    .from('organizations')
-    .update({
-      name: sanitizedName,
-      team_size: teamSize,
-      plan_key: resolvedPlan,
-      plan_selected_at: new Date().toISOString(),
-    })
-    .eq('id', orgId);
-
-  await ensureSubscription(orgId, resolvedPlan);
-
-  await markStepComplete(orgId, 2, 3);
-  redirect('/onboarding?step=3');
 }
 
 async function saveIndustrySelection(formData: FormData) {
   'use server';
-  const { orgId, orgRecord, canProvision } = await getOrgContext();
-  const admin = createSupabaseAdminClient();
-  const industry = (formData.get('industry') as string | null) ?? '';
+  try {
+    const { orgId, orgRecord, canProvision } = await getOrgContext();
+    const admin = createSupabaseAdminClient();
+    const industry = (formData.get('industry') as string | null) ?? '';
 
-  const validation = validateIndustry(industry);
-  if (!validation.valid) {
-    redirect('/onboarding?step=3&error=1');
-  }
-
-  if (!canProvision) {
-    redirect('/onboarding?step=3&error=1');
-  }
-
-  await admin.from('organizations').update({ industry }).eq('id', orgId);
-
-  if (!orgRecord?.industry && INDUSTRY_PACKS[industry]) {
-    try {
-      await applyIndustryPack(industry);
-    } catch (error) {
-      console.error('Industry pack failed:', error);
+    const validation = validateIndustry(industry);
+    if (!validation.valid) {
+      redirect('/onboarding?step=3&error=1');
     }
+
+    if (!canProvision) {
+      redirect('/onboarding?step=3&error=1');
+    }
+
+    await admin.from('organizations').update({ industry }).eq('id', orgId);
+
+    if (!orgRecord?.industry && INDUSTRY_PACKS[industry]) {
+      try {
+        await applyIndustryPack(industry);
+      } catch (error) {
+        console.error('Industry pack failed:', error);
+      }
+    }
+
+    try {
+      await onIndustryConfigured(orgId, industry);
+    } catch (error) {
+      console.warn('[onboarding] industry automation hook failed', error);
+    }
+
+    await markStepComplete(orgId, 3, 4);
+    redirect('/onboarding?step=4');
+  } catch (error) {
+    handleOnboardingActionFailure('saveIndustrySelection', 3, error);
   }
-
-  // Trigger automation for industry configuration
-  await onIndustryConfigured(orgId, industry);
-
-  await markStepComplete(orgId, 3, 4);
-  redirect('/onboarding?step=4');
 }
 
 async function saveRoleSelection(formData: FormData) {
   'use server';
-  const { supabase, orgId, user, orgRecord } = await getOrgContext();
-  const roleSelection = (formData.get('role') as string | null) ?? '';
+  try {
+    const { supabase, orgId, user, orgRecord } = await getOrgContext();
+    const roleSelection = (formData.get('role') as string | null) ?? '';
 
-  const match = ROLE_OPTIONS.find((option) => option.id === roleSelection);
-  if (!match) {
-    redirect('/onboarding?step=4&error=1');
-  }
+    const match = ROLE_OPTIONS.find((option) => option.id === roleSelection);
+    if (!match) {
+      redirect('/onboarding?step=4&error=1');
+    }
 
-  await supabase
-    .from('org_members')
-    .update({ role: match.role })
-    .eq('organization_id', orgId)
-    .eq('user_id', user.id);
+    await supabase
+      .from('org_members')
+      .update({ role: match.role })
+      .eq('organization_id', orgId)
+      .eq('user_id', user.id);
 
-  // Fast-track non-provisioning personas to first proof with defaults already
-  // managed by the organization profile.
-  if (!isProvisioningRole(match.role)) {
-    const defaultFrameworks =
-      Array.isArray(orgRecord?.frameworks) && orgRecord.frameworks.length > 0
-        ? orgRecord.frameworks
-        : ['iso27001'];
+    // Fast-track non-provisioning personas to first proof with defaults already
+    // managed by the organization profile.
+    if (!isProvisioningRole(match.role)) {
+      const defaultFrameworks =
+        Array.isArray(orgRecord?.frameworks) && orgRecord.frameworks.length > 0
+          ? orgRecord.frameworks
+          : ['iso27001'];
 
-    await createSupabaseAdminClient()
-      .from('organizations')
-      .update({ frameworks: defaultFrameworks })
-      .eq('id', orgId);
+      await createSupabaseAdminClient()
+        .from('organizations')
+        .update({ frameworks: defaultFrameworks })
+        .eq('id', orgId);
+
+      await markStepComplete(orgId, 4, 5);
+      await markStepComplete(orgId, 5, 6);
+      await markStepComplete(orgId, 6, 7);
+      redirect(
+        `/onboarding?step=7&fast_track=1&persona=${encodeURIComponent(match.role)}`,
+      );
+    }
 
     await markStepComplete(orgId, 4, 5);
-    await markStepComplete(orgId, 5, 6);
-    await markStepComplete(orgId, 6, 7);
-    redirect(
-      `/onboarding?step=7&fast_track=1&persona=${encodeURIComponent(match.role)}`,
-    );
+    redirect('/onboarding?step=5');
+  } catch (error) {
+    handleOnboardingActionFailure('saveRoleSelection', 4, error);
   }
-
-  await markStepComplete(orgId, 4, 5);
-  redirect('/onboarding?step=5');
 }
 
 async function saveFrameworkSelection(formData: FormData) {
   'use server';
-  const { supabase, orgId, canProvision } = await getOrgContext();
-  const admin = createSupabaseAdminClient();
-  const frameworks = formData
-    .getAll('frameworks')
-    .map((item) => item.toString())
-    .filter(Boolean);
-
-  const validation = validateFrameworks(frameworks);
-  if (!validation.valid) {
-    redirect('/onboarding?step=5&error=1');
-  }
-
-  if (!canProvision) {
-    redirect('/onboarding?step=5&error=1');
-  }
-
-  const { error: frameworkUpdateError } = await supabase
-    .from('organizations')
-    .update({ frameworks })
-    .eq('id', orgId);
-  if (frameworkUpdateError) {
-    console.warn(
-      '[onboarding] organizations.frameworks update failed; retrying with admin client',
-      frameworkUpdateError,
-    );
-    await admin.from('organizations').update({ frameworks }).eq('id', orgId);
-  }
-
   try {
+    const { supabase, orgId, canProvision } = await getOrgContext();
+    const admin = createSupabaseAdminClient();
+    const frameworks = formData
+      .getAll('frameworks')
+      .map((item) => item.toString())
+      .filter(Boolean);
+
+    const validation = validateFrameworks(frameworks);
+    if (!validation.valid) {
+      redirect('/onboarding?step=5&error=1');
+    }
+
+    if (!canProvision) {
+      redirect('/onboarding?step=5&error=1');
+    }
+
+    const { error: frameworkUpdateError } = await supabase
+      .from('organizations')
+      .update({ frameworks })
+      .eq('id', orgId);
+
+    if (frameworkUpdateError) {
+      console.warn(
+        '[onboarding] organizations.frameworks update failed; retrying with admin client',
+        frameworkUpdateError,
+      );
+      const { error: adminFrameworkUpdateError } = await admin
+        .from('organizations')
+        .update({ frameworks })
+        .eq('id', orgId);
+
+      if (adminFrameworkUpdateError) {
+        throw adminFrameworkUpdateError;
+      }
+    }
+
     const selectedFrameworks = getProvisioningFrameworkSlugs(frameworks);
 
     if (selectedFrameworks.length) {
-      const upsertPayload = selectedFrameworks.map((slug) => ({
-        org_id: orgId,
-        framework_slug: slug,
-        enabled_at: new Date().toISOString(),
-      }));
-      const { error: adminUpsertError } = await admin
-        .from('org_frameworks')
-        .upsert(upsertPayload, { onConflict: 'org_id,framework_slug' });
+      await upsertSelectedFrameworks(admin, orgId, selectedFrameworks);
 
-      if (adminUpsertError) {
-        console.warn(
-          '[onboarding] admin org_frameworks upsert failed',
-          adminUpsertError,
-        );
-        await supabase.from('org_frameworks').upsert(upsertPayload, {
-          onConflict: 'org_id,framework_slug',
+      const provisioningResults = await Promise.allSettled(
+        selectedFrameworks.map((slug) =>
+          provisionFrameworkControls(orgId, slug, {
+            force: true,
+            client: admin,
+          }),
+        ),
+      );
+
+      const provisioningFailures = provisioningResults.filter(
+        (result) => result.status === 'rejected',
+      );
+
+      if (provisioningFailures.length > 0) {
+        console.warn('[onboarding] framework provisioning encountered failures', {
+          orgId,
+          failureCount: provisioningFailures.length,
+          frameworks: selectedFrameworks,
         });
       }
 
       try {
-        await Promise.all(
-          selectedFrameworks.map((slug) =>
-            provisionFrameworkControls(orgId, slug, {
-              force: true,
-              client: admin,
-            }),
-          ),
-        );
-      } catch (error) {
-        console.warn('[onboarding] admin provisioning failed', error);
-      }
-
-      try {
-        await Promise.all(
-          selectedFrameworks.map((slug) =>
-            provisionFrameworkControls(orgId, slug, {
-              force: true,
-              client: supabase,
-            }),
-          ),
-        );
-
-        // Trigger automation for frameworks provisioned
         await onFrameworksProvisioned(orgId, selectedFrameworks);
       } catch (error) {
-        console.warn('[onboarding] user provisioning failed', error);
+        console.warn('[onboarding] frameworks automation hook failed', error);
       }
     }
-  } catch (error) {
-    console.warn('[onboarding] Framework provisioning skipped:', error);
-  }
 
-  await markStepComplete(orgId, 5, 6);
-  redirect('/onboarding?step=6');
+    await markStepComplete(orgId, 5, 6);
+    redirect('/onboarding?step=6');
+  } catch (error) {
+    handleOnboardingActionFailure('saveFrameworkSelection', 5, error);
+  }
 }
 
 async function saveInvites(formData: FormData) {
   'use server';
-  const { orgId, user } = await getOrgContext();
-  const inviteEmails = parseInviteEmails(
-    formData.get('inviteEmails') as string | null,
-  );
-  const validation = validateInviteEmails(inviteEmails);
-
-  if (!validation.valid) {
-    redirect('/onboarding?step=6&error=1');
-  }
-
-  if (validation.validEmails.length > 0) {
-    await Promise.all(
-      validation.validEmails.map((email) =>
-        createInvitation({
-          organizationId: orgId,
-          email,
-          role: 'member',
-          invitedBy: user.id,
-        }),
-      ),
+  try {
+    const { orgId, user } = await getOrgContext();
+    const inviteEmails = parseInviteEmails(
+      formData.get('inviteEmails') as string | null,
     );
-  }
+    const validation = validateInviteEmails(inviteEmails);
 
-  await markStepComplete(orgId, 6, 7);
-  redirect('/onboarding?step=7');
+    if (!validation.valid) {
+      redirect('/onboarding?step=6&error=1');
+    }
+
+    if (validation.validEmails.length > 0) {
+      const inviteResults = await Promise.allSettled(
+        validation.validEmails.map((email) =>
+          createInvitation({
+            organizationId: orgId,
+            email,
+            role: 'member',
+            invitedBy: user.id,
+          }),
+        ),
+      );
+
+      const failedInvites = inviteResults.filter(
+        (result) => result.status === 'rejected',
+      );
+
+      if (failedInvites.length > 0) {
+        console.warn('[onboarding] invitation creation encountered failures', {
+          orgId,
+          failureCount: failedInvites.length,
+          inviteCount: validation.validEmails.length,
+        });
+      }
+    }
+
+    await markStepComplete(orgId, 6, 7);
+    redirect('/onboarding?step=7');
+  } catch (error) {
+    handleOnboardingActionFailure('saveInvites', 6, error);
+  }
 }
 
 async function completeFirstAction(formData: FormData) {
   'use server';
-  const { supabase, orgId, orgRecord, user } = await getOrgContext();
-  const admin = createSupabaseAdminClient();
-  const action = (formData.get('firstAction') as string | null) ?? '';
+  try {
+    const { supabase, orgId, orgRecord, user } = await getOrgContext();
+    const admin = createSupabaseAdminClient();
+    const action = (formData.get('firstAction') as string | null) ?? '';
 
-  if (!action) {
-    redirect('/onboarding?step=7&error=1');
-  }
+    if (!action) {
+      redirect('/onboarding?step=7&error=1');
+    }
 
-  if (action === 'create_task') {
-    await supabase.from('org_tasks').insert({
+    if (action === 'create_task') {
+      await supabase.from('org_tasks').insert({
+        organization_id: orgId,
+        title: 'Kickoff compliance task',
+        description:
+          'Review your first compliance requirement and assign an owner.',
+        status: 'pending',
+        priority: 'high',
+        assigned_to: user.id,
+      });
+    }
+
+    if (action === 'upload_evidence') {
+      await supabase.from('org_tasks').insert({
+        organization_id: orgId,
+        title: 'Upload first evidence artifact',
+        description:
+          'Attach a policy, credential, or control evidence file to validate the workflow.',
+        status: 'pending',
+        priority: 'medium',
+        assigned_to: user.id,
+      });
+    }
+
+    if (action === 'run_evaluation') {
+      const frameworks = Array.isArray(orgRecord?.frameworks)
+        ? orgRecord?.frameworks
+        : [];
+      const evaluationResults = await Promise.allSettled(
+        frameworks.map((frameworkCode: string) =>
+          evaluateFrameworkControls(orgId, frameworkCode),
+        ),
+      );
+      const failedEvaluations = evaluationResults.filter(
+        (result) => result.status === 'rejected',
+      );
+
+      if (failedEvaluations.length > 0) {
+        console.warn('[onboarding] framework evaluation encountered failures', {
+          orgId,
+          failureCount: failedEvaluations.length,
+          frameworkCount: frameworks.length,
+        });
+      }
+    }
+
+    if (action === 'review_dashboard') {
+      // Read-only onboarding action; no mutation required.
+    }
+
+    await admin
+      .from('organizations')
+      .update({
+        onboarding_completed: true,
+        onboarding_completed_at: new Date().toISOString(),
+      })
+      .eq('id', orgId);
+
+    const { data: existing } = await supabase
+      .from('org_onboarding_status')
+      .select('completed_steps')
+      .eq('organization_id', orgId)
+      .maybeSingle();
+
+    const completed = new Set<number>(existing?.completed_steps ?? []);
+    completed.add(7);
+
+    await supabase.from('org_onboarding_status').upsert({
       organization_id: orgId,
-      title: 'Kickoff compliance task',
-      description:
-        'Review your first compliance requirement and assign an owner.',
-      status: 'pending',
-      priority: 'high',
-      assigned_to: user.id,
+      current_step: 7,
+      completed_steps: Array.from(completed).sort((a, b) => a - b),
+      first_action: action,
+      completed_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     });
+
+    try {
+      await onOnboardingCompleted(orgId);
+    } catch (error) {
+      console.warn('[onboarding] completion automation hook failed', error);
+    }
+
+    try {
+      await updateComplianceScoreAndCheckRisk(orgId);
+    } catch (error) {
+      console.warn('[onboarding] compliance score update failed', error);
+    }
+
+    const { data: subscription } = await supabase
+      .from('org_subscriptions')
+      .select('status, current_period_end, trial_expires_at')
+      .eq('organization_id', orgId)
+      .maybeSingle();
+
+    const subscriptionActive =
+      subscription?.status &&
+      ['active', 'trialing'].includes(subscription.status);
+    const trialEndValue =
+      subscription?.trial_expires_at ?? subscription?.current_period_end;
+    const trialExpired =
+      subscription?.status === 'trialing' &&
+      (!trialEndValue ||
+        Number.isNaN(new Date(trialEndValue).getTime()) ||
+        Date.now() > new Date(trialEndValue).getTime());
+
+    if (!subscriptionActive || trialExpired) {
+      redirect('/app/billing');
+    }
+
+    redirect('/app');
+  } catch (error) {
+    handleOnboardingActionFailure('completeFirstAction', 7, error);
   }
-
-  if (action === 'upload_evidence') {
-    await supabase.from('org_tasks').insert({
-      organization_id: orgId,
-      title: 'Upload first evidence artifact',
-      description:
-        'Attach a policy, credential, or control evidence file to validate the workflow.',
-      status: 'pending',
-      priority: 'medium',
-      assigned_to: user.id,
-    });
-  }
-
-  if (action === 'run_evaluation') {
-    const frameworks = Array.isArray(orgRecord?.frameworks)
-      ? orgRecord?.frameworks
-      : [];
-    await Promise.all(
-      frameworks.map((frameworkCode: string) =>
-        evaluateFrameworkControls(orgId, frameworkCode),
-      ),
-    );
-  }
-
-  if (action === 'review_dashboard') {
-    // Read-only onboarding action; no mutation required.
-  }
-
-  await admin
-    .from('organizations')
-    .update({
-      onboarding_completed: true,
-      onboarding_completed_at: new Date().toISOString(),
-    })
-    .eq('id', orgId);
-
-  const { data: existing } = await supabase
-    .from('org_onboarding_status')
-    .select('completed_steps')
-    .eq('organization_id', orgId)
-    .maybeSingle();
-
-  const completed = new Set<number>(existing?.completed_steps ?? []);
-  completed.add(7);
-
-  await supabase.from('org_onboarding_status').upsert({
-    organization_id: orgId,
-    current_step: 7,
-    completed_steps: Array.from(completed).sort((a, b) => a - b),
-    first_action: action,
-    completed_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  });
-
-  await onOnboardingCompleted(orgId);
-  await updateComplianceScoreAndCheckRisk(orgId);
-
-  const { data: subscription } = await supabase
-    .from('org_subscriptions')
-    .select('status, current_period_end, trial_expires_at')
-    .eq('organization_id', orgId)
-    .maybeSingle();
-
-  const subscriptionActive =
-    subscription?.status &&
-    ['active', 'trialing'].includes(subscription.status);
-  const trialEndValue =
-    subscription?.trial_expires_at ?? subscription?.current_period_end;
-  const trialExpired =
-    subscription?.status === 'trialing' &&
-    (!trialEndValue ||
-      Number.isNaN(new Date(trialEndValue).getTime()) ||
-      Date.now() > new Date(trialEndValue).getTime());
-
-  if (!subscriptionActive || trialExpired) {
-    redirect('/app/billing');
-  }
-
-  redirect('/app');
 }
 
 type OnboardingPageProps = {

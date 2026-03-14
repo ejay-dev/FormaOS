@@ -87,7 +87,14 @@ export default function JoinOrCreatePage() {
         const next = typeof data?.next === 'string' ? data.next : '/onboarding';
         router.push(next);
       } else {
-        setError('Failed to create organization. Please try again.');
+        const payload = await response.json().catch(() => ({}));
+        setError(
+          payload?.error === 'backend_unavailable'
+            ? 'Organization setup is temporarily unavailable while background services reconnect. Please try again shortly.'
+            : payload?.error === 'too_many_requests'
+              ? 'Too many requests. Please wait a few minutes and try again.'
+              : 'Failed to create organization. Please try again.',
+        );
         setCreating(false);
       }
     } catch {

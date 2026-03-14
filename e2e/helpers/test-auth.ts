@@ -22,6 +22,19 @@ type SupabaseEnv = {
   serviceRoleKey: string;
 };
 
+export class E2EAuthBootstrapError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'E2EAuthBootstrapError';
+  }
+}
+
+export function isE2EAuthBootstrapError(
+  error: unknown,
+): error is E2EAuthBootstrapError {
+  return error instanceof E2EAuthBootstrapError;
+}
+
 // Test user state (module-level for cleanup)
 let createdTestUser: TestUser | null = null;
 
@@ -55,7 +68,7 @@ function resolveSupabaseEnv(): SupabaseEnv {
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !anonKey || !serviceRoleKey) {
-    throw new Error(
+    throw new E2EAuthBootstrapError(
       'Supabase env missing: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY are required',
     );
   }
@@ -186,7 +199,7 @@ async function createTemporaryTestUser(): Promise<TestUser> {
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !serviceRoleKey) {
-    throw new Error(
+    throw new E2EAuthBootstrapError(
       'E2E tests require either E2E_TEST_EMAIL/PASSWORD or SUPABASE_SERVICE_ROLE_KEY',
     );
   }
@@ -213,7 +226,17 @@ async function createTemporaryTestUser(): Promise<TestUser> {
     });
 
   if (userError || !userData.user) {
-    throw new Error(`Failed to create test user: ${userError?.message}`);
+    const message = userError?.message ?? 'unknown_error';
+    if (
+      message.toLowerCase().includes('invalid api key') ||
+      message.toLowerCase().includes('invalid jwt') ||
+      message.toLowerCase().includes('unauthorized')
+    ) {
+      throw new E2EAuthBootstrapError(
+        'E2E auth bootstrap unavailable: set E2E_TEST_EMAIL/E2E_TEST_PASSWORD or a valid SUPABASE_SERVICE_ROLE_KEY.',
+      );
+    }
+    throw new Error(`Failed to create test user: ${message}`);
   }
 
   // Create test organization

@@ -130,20 +130,7 @@ export async function initiatePlanUpgrade(targetPlan: PlanTier): Promise<ActionR
       return { success: false, error: "Invalid upgrade: target plan is not higher" };
     }
 
-    // For enterprise, redirect to contact sales
-    if (targetPlan === "enterprise") {
-      return { 
-        success: true, 
-        data: { 
-          checkoutUrl: "/contact?type=enterprise", 
-          requiresPayment: true 
-        } 
-      };
-    }
-
-    // For basic/pro, create Stripe checkout session
-    // Note: This would integrate with your existing billing flow
-    // For now, return the billing page URL
+    // Upgrades flow through the billing surface for all paid plans.
     return { 
       success: true, 
       data: { 

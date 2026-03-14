@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
+import { fetchSystemState } from '@/lib/system-state/server';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,6 +32,20 @@ export default async function WorkspaceRecoveryPage({
     source: `workspace-recovery:${source}`,
   });
 
+  if (recovery.nextPath === '/app') {
+    const systemState = await fetchSystemState({
+      id: user.id,
+      email: user.email ?? null,
+      user_metadata: user.user_metadata ?? {},
+    });
+
+    if (!systemState) {
+      const message = encodeURIComponent(
+        'We could not restore your workspace automatically. Please sign in again or contact support.',
+      );
+      redirect(`/auth/signin?error=workspace_recovery_failed&message=${message}`);
+    }
+  }
+
   redirect(recovery.nextPath);
 }
-

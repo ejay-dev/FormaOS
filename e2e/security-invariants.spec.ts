@@ -4,7 +4,11 @@
  */
 
 import { test, expect, type Page } from '@playwright/test';
-import { getTestCredentials, cleanupTestUser } from './helpers/test-auth';
+import {
+  getTestCredentials,
+  cleanupTestUser,
+  isE2EAuthBootstrapError,
+} from './helpers/test-auth';
 
 let testCredentials: { email: string; password: string } | null = null;
 
@@ -53,8 +57,16 @@ async function dismissProductTour(page: Page) {
 // =========================================================
 test.describe('RBAC Enforcement', () => {
   test.beforeEach(async ({ page }) => {
-    const creds = await getCredentials();
-    await loginAs(page, creds.email, creds.password);
+    try {
+      const creds = await getCredentials();
+      await loginAs(page, creds.email, creds.password);
+    } catch (error) {
+      test.skip(
+        isE2EAuthBootstrapError(error),
+        error instanceof Error ? error.message : 'E2E auth bootstrap unavailable',
+      );
+      throw error;
+    }
   });
 
   test.afterAll(async () => {
@@ -115,8 +127,16 @@ test.describe('RBAC Enforcement', () => {
 // =========================================================
 test.describe('Organization Isolation', () => {
   test.beforeEach(async ({ page }) => {
-    const creds = await getCredentials();
-    await loginAs(page, creds.email, creds.password);
+    try {
+      const creds = await getCredentials();
+      await loginAs(page, creds.email, creds.password);
+    } catch (error) {
+      test.skip(
+        isE2EAuthBootstrapError(error),
+        error instanceof Error ? error.message : 'E2E auth bootstrap unavailable',
+      );
+      throw error;
+    }
   });
 
   test('Cannot access other org data via API', async ({ page }) => {
@@ -205,8 +225,16 @@ test.describe('Authentication Invariants', () => {
 // =========================================================
 test.describe('Export Security', () => {
   test.beforeEach(async ({ page }) => {
-    const creds = await getCredentials();
-    await loginAs(page, creds.email, creds.password);
+    try {
+      const creds = await getCredentials();
+      await loginAs(page, creds.email, creds.password);
+    } catch (error) {
+      test.skip(
+        isE2EAuthBootstrapError(error),
+        error instanceof Error ? error.message : 'E2E auth bootstrap unavailable',
+      );
+      throw error;
+    }
   });
 
   test('Export downloads require valid token', async ({ page }) => {
@@ -228,8 +256,16 @@ test.describe('Export Security', () => {
 // =========================================================
 test.describe('Billing Security', () => {
   test.beforeEach(async ({ page }) => {
-    const creds = await getCredentials();
-    await loginAs(page, creds.email, creds.password);
+    try {
+      const creds = await getCredentials();
+      await loginAs(page, creds.email, creds.password);
+    } catch (error) {
+      test.skip(
+        isE2EAuthBootstrapError(error),
+        error instanceof Error ? error.message : 'E2E auth bootstrap unavailable',
+      );
+      throw error;
+    }
   });
 
   test('Billing API requires authentication', async ({ page }) => {

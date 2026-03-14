@@ -6,8 +6,8 @@
  * Covers:
  * - Default plan fallback when null/invalid plan provided
  * - Existing active/trialing subscription short-circuit
- * - New subscription creation with trial for basic/pro
- * - Enterprise subscription creation (no trial)
+ * - New subscription creation with trial for all self-serve plans
+ * - Enterprise subscription creation aligns with priced trial flow
  * - Legacy column fallback (org_id, plan_code missing)
  * - Entitlement sync on all paths
  */
@@ -169,14 +169,14 @@ describe('ensureSubscription', () => {
       expect(data.status).toBe('trialing');
     });
 
-    it('sets active status for enterprise plan (no trial)', async () => {
+    it('sets trialing status for enterprise plan', async () => {
       await ensureSubscription(ORG, 'enterprise');
 
       const subUpsert = dbCalls.upserts.find(u => u.table === 'org_subscriptions');
       const data = subUpsert!.data as Record<string, unknown>;
-      expect(data.status).toBe('active');
-      expect(data.trial_started_at).toBeNull();
-      expect(data.trial_expires_at).toBeNull();
+      expect(data.status).toBe('trialing');
+      expect(data.trial_started_at).toBeTruthy();
+      expect(data.trial_expires_at).toBeTruthy();
     });
   });
 

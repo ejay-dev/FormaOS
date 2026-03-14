@@ -24,10 +24,10 @@ import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
-  const { allowed, headers: rlHeaders } = await rateLimitAuth(request);
+  const { allowed, headers: rlHeaders, error } = await rateLimitAuth(request);
   if (!allowed) {
     return NextResponse.json(
-      { ok: false, error: 'too_many_requests' },
+      { ok: false, error: error ?? 'too_many_requests' },
       { status: 429, headers: rlHeaders },
     );
   }

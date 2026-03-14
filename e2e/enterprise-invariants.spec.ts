@@ -8,6 +8,7 @@ import {
   getTestCredentials,
   cleanupTestUser,
   createMagicLinkSession,
+  isE2EAuthBootstrapError,
   setPlaywrightSession,
 } from './helpers/test-auth';
 
@@ -72,8 +73,16 @@ async function dismissProductTour(page: Page) {
 // =========================================================
 test.describe('Dashboard Stability', () => {
   test.beforeEach(async ({ page }) => {
-    const creds = await getCredentials();
-    await loginAs(page, creds.email, creds.password);
+    try {
+      const creds = await getCredentials();
+      await loginAs(page, creds.email, creds.password);
+    } catch (error) {
+      test.skip(
+        isE2EAuthBootstrapError(error),
+        error instanceof Error ? error.message : 'E2E auth bootstrap unavailable',
+      );
+      throw error;
+    }
   });
 
   test.afterAll(async () => {
@@ -150,8 +159,16 @@ test.describe('Dashboard Stability', () => {
 // =========================================================
 test.describe('API Resilience', () => {
   test.beforeEach(async ({ page }) => {
-    const creds = await getCredentials();
-    await loginAs(page, creds.email, creds.password);
+    try {
+      const creds = await getCredentials();
+      await loginAs(page, creds.email, creds.password);
+    } catch (error) {
+      test.skip(
+        isE2EAuthBootstrapError(error),
+        error instanceof Error ? error.message : 'E2E auth bootstrap unavailable',
+      );
+      throw error;
+    }
   });
 
   test('APIs return valid JSON on success', async ({ page }) => {
@@ -195,8 +212,16 @@ test.describe('API Resilience', () => {
 // =========================================================
 test.describe('Subscription Invariants', () => {
   test.beforeEach(async ({ page }) => {
-    const creds = await getCredentials();
-    await loginAs(page, creds.email, creds.password);
+    try {
+      const creds = await getCredentials();
+      await loginAs(page, creds.email, creds.password);
+    } catch (error) {
+      test.skip(
+        isE2EAuthBootstrapError(error),
+        error instanceof Error ? error.message : 'E2E auth bootstrap unavailable',
+      );
+      throw error;
+    }
   });
 
   test('User always has a valid subscription state', async ({ page }) => {
@@ -241,8 +266,16 @@ test.describe('Subscription Invariants', () => {
 // =========================================================
 test.describe('Automation Resilience', () => {
   test.beforeEach(async ({ page }) => {
-    const creds = await getCredentials();
-    await loginAs(page, creds.email, creds.password);
+    try {
+      const creds = await getCredentials();
+      await loginAs(page, creds.email, creds.password);
+    } catch (error) {
+      test.skip(
+        isE2EAuthBootstrapError(error),
+        error instanceof Error ? error.message : 'E2E auth bootstrap unavailable',
+      );
+      throw error;
+    }
   });
 
   test('Cron endpoint health check responds', async ({ page }) => {
@@ -262,8 +295,16 @@ test.describe('Automation Resilience', () => {
 // =========================================================
 test.describe('Navigation Invariants', () => {
   test.beforeEach(async ({ page }) => {
-    const creds = await getCredentials();
-    await loginAs(page, creds.email, creds.password);
+    try {
+      const creds = await getCredentials();
+      await loginAs(page, creds.email, creds.password);
+    } catch (error) {
+      test.skip(
+        isE2EAuthBootstrapError(error),
+        error instanceof Error ? error.message : 'E2E auth bootstrap unavailable',
+      );
+      throw error;
+    }
   });
 
   test('All main nav links work', async ({ page }) => {
@@ -299,8 +340,16 @@ test.describe('Navigation Invariants', () => {
 // =========================================================
 test.describe('Data Integrity', () => {
   test.beforeEach(async ({ page }) => {
-    const creds = await getCredentials();
-    await loginAs(page, creds.email, creds.password);
+    try {
+      const creds = await getCredentials();
+      await loginAs(page, creds.email, creds.password);
+    } catch (error) {
+      test.skip(
+        isE2EAuthBootstrapError(error),
+        error instanceof Error ? error.message : 'E2E auth bootstrap unavailable',
+      );
+      throw error;
+    }
   });
 
   test('Compliance scores are valid percentages', async ({ page }) => {

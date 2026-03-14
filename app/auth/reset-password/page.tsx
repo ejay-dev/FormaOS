@@ -83,7 +83,13 @@ export default function ResetPasswordPage() {
         const payload = await response.json().catch(() => ({}));
         const errors = Array.isArray(payload?.errors)
           ? payload.errors
-          : [payload?.error || 'Unable to update password'];
+          : [
+              payload?.error === 'backend_unavailable'
+                ? 'Secure password reset is temporarily unavailable while background services reconnect. Please try again shortly.'
+                : payload?.error === 'too_many_requests'
+                  ? 'Too many requests. Please wait a few minutes and try again.'
+                  : payload?.error || 'Unable to update password',
+            ];
         setErrorMessage(errors.join(' '));
         setIsLoading(false);
         return;

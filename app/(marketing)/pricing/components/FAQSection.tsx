@@ -31,7 +31,7 @@ const faqs = [
   {
     question: 'How does procurement and billing work?',
     answer:
-      'Starter and Professional plans are self-serve with monthly card billing. Enterprise engagements support invoice-based procurement, multi-year agreements, and purchase-order workflows. All plans include the security and vendor assurance documentation required for enterprise procurement.',
+      'Starter and Professional plans are self-serve with monthly card billing. Enterprise can also be activated with self-serve monthly checkout, while invoice-based procurement, multi-year agreements, and purchase-order workflows remain available for larger deployments. All plans include the security and vendor assurance documentation required for enterprise procurement.',
   },
   {
     question: 'Can we pilot one team first and expand later?',

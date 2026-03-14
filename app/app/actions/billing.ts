@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { getStripeClient, getStripePriceId } from '@/lib/billing/stripe';
-import { resolvePlanKey } from '@/lib/plans';
+import { isTrialEligiblePlan, resolvePlanKey } from '@/lib/plans';
 import { isFounder } from '@/lib/utils/founder';
 
 // Legacy plan_code uses different values (starter vs basic)
@@ -57,7 +57,7 @@ export async function startCheckout(formData: FormData) {
     redirect(`${siteUrl.replace(/\/$/, '')}/pricing`);
   }
 
-  // Enterprise is now self-serve — checkout via Stripe like other plans
+  // Enterprise now follows the same priced self-serve checkout path.
 
   const stripe = getStripeClient();
   if (!stripe) {
@@ -90,7 +90,7 @@ export async function startCheckout(formData: FormData) {
   }
   const siteBase = siteUrl.replace(/\/$/, '');
   const appBase = appUrl.replace(/\/$/, '');
-  const isTrialEligible = planKey === 'basic' || planKey === 'pro';
+  const isTrialEligible = isTrialEligiblePlan(planKey);
 
   const session = await stripe.checkout.sessions.create({
     mode: 'subscription',

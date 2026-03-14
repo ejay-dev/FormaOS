@@ -25,7 +25,13 @@ export default function ForgotPasswordPage() {
 
       if (!response.ok) {
         const payload = await response.json().catch(() => ({}));
-        setErrorMessage(payload?.error || 'Unable to send reset email.');
+        const message =
+          payload?.error === 'backend_unavailable'
+            ? 'Secure password reset is temporarily unavailable while background services reconnect. Please try again shortly.'
+            : payload?.error === 'too_many_requests'
+              ? 'Too many requests. Please wait a few minutes and try again.'
+              : payload?.error || 'Unable to send reset email.';
+        setErrorMessage(message);
         setIsLoading(false);
         return;
       }

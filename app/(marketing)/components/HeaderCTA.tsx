@@ -16,10 +16,10 @@ export function HeaderCTA() {
         Login
       </Link>
       <Link
-        href="/pricing"
+        href="/contact"
         className="mk-btn mk-btn-secondary px-4 py-1.5 whitespace-nowrap"
       >
-        Plans
+        Contact
       </Link>
       <Link
         href={signUpUrl}

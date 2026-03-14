@@ -194,6 +194,10 @@ function SignUpContent() {
         const mappedMessage =
           payload?.error === 'account_already_exists'
             ? 'An account with this email already exists. Please sign in instead.'
+            : payload?.error === 'backend_unavailable'
+              ? 'Secure sign up is temporarily unavailable while background services reconnect. Please try again shortly.'
+              : payload?.error === 'too_many_requests'
+                ? 'Too many requests. Please wait a few minutes and try again.'
             : payload?.error === 'email_delivery_failed'
               ? 'Account created but we could not deliver the confirmation email. Please use resend.'
               : Array.isArray(payload?.errors)

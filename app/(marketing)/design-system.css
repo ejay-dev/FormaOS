@@ -281,12 +281,31 @@
   overflow: hidden;
 }
 
+.mk-marketing-flow .pricing-hero--dense {
+  min-height: clamp(30rem, 74vh, 46rem);
+  padding-top: clamp(5.75rem, 8vw, 7.25rem);
+  padding-bottom: clamp(2.75rem, 5vw, 4rem);
+}
+
+.mk-marketing-flow .contact-hero--focused {
+  min-height: clamp(31rem, 76vh, 47rem);
+  padding-top: clamp(6rem, 8.5vw, 7.5rem);
+  padding-bottom: clamp(3rem, 5vw, 4.25rem);
+}
+
 @media (max-width: 767px) {
   .mk-marketing-flow section:first-of-type,
   .mk-marketing-flow .mk-hero {
     min-height: clamp(28rem, 75vh, 40rem);
     padding-top: clamp(5rem, 8vw, 6.5rem);
     padding-bottom: clamp(3rem, 5vw, 4rem);
+  }
+
+  .mk-marketing-flow .pricing-hero--dense,
+  .mk-marketing-flow .contact-hero--focused {
+    min-height: clamp(26rem, 68vh, 34rem);
+    padding-top: clamp(4.75rem, 7vw, 5.75rem);
+    padding-bottom: clamp(2.5rem, 4.5vw, 3.5rem);
   }
 }
 

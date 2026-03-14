@@ -188,8 +188,8 @@ export default function BillingPage() {
       ) : null}
       {status === 'contact' ? (
         <div className="rounded-xl border border-sky-400/30 bg-sky-500/10 px-4 py-3 text-sm text-sky-200">
-          Enterprise plans require a sales-led setup. Contact sales@formaos.com
-          to proceed.
+          Enterprise billing can be completed here or coordinated via invoiced
+          procurement with sales@formaos.com.
         </div>
       ) : null}
       {trialExpired ? (
@@ -214,23 +214,18 @@ export default function BillingPage() {
         <p className="mt-4 text-sm text-slate-400">
           {plan?.summary ?? 'Select a plan to activate billing.'}
         </p>
+        <BillingActionButtons
+          planKey={planKey}
+          canSelfServe={canSelfServe}
+          canManagePortal={canManagePortal}
+        />
         {planKey === 'enterprise' ? (
-          <div className="mt-6 space-y-3 text-sm text-slate-300">
-            <p>Enterprise billing is handled via assisted onboarding.</p>
-            <a
-              href="mailto:sales@formaos.com"
-              className="inline-flex rounded-lg bg-white/10 px-6 py-3 text-sm font-semibold text-slate-100"
-            >
-              Contact sales
-            </a>
+          <div className="mt-4 text-xs text-slate-400">
+            Enterprise customers can self-serve checkout or coordinate
+            invoiced procurement, security review, and onboarding with
+            sales@formaos.com.
           </div>
-        ) : (
-          <BillingActionButtons
-            planKey={planKey}
-            canSelfServe={canSelfServe}
-            canManagePortal={canManagePortal}
-          />
-        )}
+        ) : null}
         {trialEndsAt && !trialExpired ? (
           <div className="mt-4 text-xs text-slate-400">
             Trial active until {new Date(trialEndsAt).toLocaleDateString()}.
