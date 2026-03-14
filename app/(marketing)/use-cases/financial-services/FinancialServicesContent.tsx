@@ -169,6 +169,7 @@ export default function FinancialServicesContent() {
       workflows={workflows}
       standards={standards}
       metrics={metrics}
+      industryKey="financial_services"
       ctaTitle="Move from control documentation to control truth"
       ctaDescription="Give risk, compliance, and operations a shared system for ownership, evidence, remediation, and procurement proof - without separate spreadsheet programs."
     />

@@ -7,6 +7,7 @@ import { Reveal, VisualDivider } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
 import { DeferredSection } from '../../components/shared';
 import { motion } from 'framer-motion';
@@ -36,6 +37,97 @@ export interface ComparePageTemplateProps {
   source: string;
 }
 
+const relatedLinksBySource: Record<
+  string,
+  { href: string; label: string; description: string }[]
+> = {
+  compare_vanta: [
+    {
+      href: '/trust',
+      label: 'Trust Center',
+      description: 'Show buyers live assurance artifacts and procurement-ready posture.',
+    },
+    {
+      href: '/security',
+      label: 'Security Overview',
+      description: 'Review encryption, access controls, and deployment posture in one place.',
+    },
+    {
+      href: '/pricing',
+      label: 'Pricing',
+      description: 'See plan structure before moving into trial or procurement.',
+    },
+  ],
+  compare_drata: [
+    {
+      href: '/trust',
+      label: 'Trust Center',
+      description: 'Connect evaluation to buyer-facing assurance and security review flow.',
+    },
+    {
+      href: '/use-cases/healthcare',
+      label: 'Healthcare Use Case',
+      description: 'See how operational controls and evidence work in regulated service delivery.',
+    },
+    {
+      href: '/pricing',
+      label: 'Pricing',
+      description: 'Validate buyer fit against plan depth and procurement readiness.',
+    },
+  ],
+  compare_secureframe: [
+    {
+      href: '/trust',
+      label: 'Trust Center',
+      description: 'Move from checklist evaluation to trust acceleration and buyer proof.',
+    },
+    {
+      href: '/use-cases/ndis-aged-care',
+      label: 'NDIS & Aged Care',
+      description: 'Inspect a frontline regulated workflow where accountability cannot drift.',
+    },
+    {
+      href: '/pricing',
+      label: 'Pricing',
+      description: 'Compare rollout path, procurement support, and plan coverage.',
+    },
+  ],
+  compare_auditboard: [
+    {
+      href: '/use-cases/financial-services',
+      label: 'Financial Services',
+      description: 'See control ownership, incidents, and assurance workflows in a regulated setting.',
+    },
+    {
+      href: '/use-cases/government-public-sector',
+      label: 'Government & Public Sector',
+      description: 'Review decision trails, approvals, and export-ready governance evidence.',
+    },
+    {
+      href: '/trust',
+      label: 'Trust Center',
+      description: 'Inspect the buyer-facing trust and procurement path alongside the comparison.',
+    },
+  ],
+  compare_hyperproof: [
+    {
+      href: '/use-cases/financial-services',
+      label: 'Financial Services',
+      description: 'Evaluate accountable control execution and export-ready evidence depth.',
+    },
+    {
+      href: '/use-cases/workforce-credentials',
+      label: 'Workforce Credentials',
+      description: 'See how regulated operational obligations remain auditable over time.',
+    },
+    {
+      href: '/pricing',
+      label: 'Pricing',
+      description: 'Review plan fit and procurement path after product comparison.',
+    },
+  ],
+};
+
 function FeatureCell({ value }: { value: string }) {
   if (value === 'yes') return <Check className="h-4 w-4 text-emerald-400 mx-auto" />;
   if (value === 'no') return <Minus className="h-4 w-4 text-slate-600 mx-auto" />;
@@ -53,6 +145,9 @@ export function ComparePageTemplate({
   competitorStrengths,
   source,
 }: ComparePageTemplateProps) {
+  const { trackCtaClick } = useMarketingTelemetry();
+  const relatedLinks = relatedLinksBySource[source] ?? relatedLinksBySource.compare_vanta;
+
   return (
     <MarketingPageShell>
       {/* Hero */}
@@ -78,6 +173,30 @@ export function ComparePageTemplate({
           href: `${appBase}/auth/signup?source=${source}`,
           label: 'Start Free Trial',
         }}
+        onPrimaryCtaClick={() =>
+          trackCtaClick({
+            surface: 'compare',
+            section: 'hero',
+            location: 'hero_primary',
+            ctaLabel: 'Book Buyer Demo',
+            ctaHref: '/contact',
+            variant: 'primary',
+            competitor,
+            compareSource: source,
+          })
+        }
+        onSecondaryCtaClick={() =>
+          trackCtaClick({
+            surface: 'compare',
+            section: 'hero',
+            location: 'hero_secondary',
+            ctaLabel: 'Start Free Trial',
+            ctaHref: `${appBase}/auth/signup?source=${source}`,
+            variant: 'secondary',
+            competitor,
+            compareSource: source,
+          })
+        }
       />
 
       <VisualDivider />
@@ -176,6 +295,51 @@ export function ComparePageTemplate({
 
       <VisualDivider gradient={false} />
 
+      <DeferredSection minHeight={240}>
+        <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Reveal>
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7">
+              <h2 className="text-lg font-semibold text-white">
+                Continue your evaluation
+              </h2>
+              <p className="mt-2 text-sm text-slate-400">
+                Use adjacent trust, pricing, and use-case pages to see how FormaOS behaves outside a single competitor comparison.
+              </p>
+              <div className="mt-5 grid gap-3 md:grid-cols-3">
+                {relatedLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() =>
+                      trackCtaClick({
+                        surface: 'compare',
+                        section: 'related_paths',
+                        location: link.href,
+                        ctaLabel: link.label,
+                        ctaHref: link.href,
+                        variant: 'resource',
+                        competitor,
+                        compareSource: source,
+                      })
+                    }
+                    className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4 transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
+                  >
+                    <div className="text-sm font-semibold text-white">
+                      {link.label}
+                    </div>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                      {link.description}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+        </section>
+      </DeferredSection>
+
+      <VisualDivider gradient={false} />
+
       {/* Procurement Evaluation */}
       <DeferredSection minHeight={280}>
         <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -222,6 +386,18 @@ export function ComparePageTemplate({
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Link
                   href="/security-review"
+                  onClick={() =>
+                    trackCtaClick({
+                      surface: 'compare',
+                      section: 'resource_cta',
+                      location: 'security_review',
+                      ctaLabel: 'Security Review Packet',
+                      ctaHref: '/security-review',
+                      variant: 'resource',
+                      competitor,
+                      compareSource: source,
+                    })
+                  }
                   className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/[0.04] px-6 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
                 >
                   Security Review Packet
@@ -229,6 +405,18 @@ export function ComparePageTemplate({
                 </Link>
                 <Link
                   href="/frameworks"
+                  onClick={() =>
+                    trackCtaClick({
+                      surface: 'compare',
+                      section: 'resource_cta',
+                      location: 'frameworks',
+                      ctaLabel: 'Framework Coverage',
+                      ctaHref: '/frameworks',
+                      variant: 'resource',
+                      competitor,
+                      compareSource: source,
+                    })
+                  }
                   className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/[0.04] px-6 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
                 >
                   Framework Coverage

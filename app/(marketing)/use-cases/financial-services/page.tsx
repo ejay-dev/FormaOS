@@ -1,6 +1,13 @@
 import { Metadata } from 'next';
 import FinancialServicesContent from './FinancialServicesContent';
-import { siteUrl } from '@/lib/seo';
+import {
+  articleSchema,
+  breadcrumbSchema,
+  jsonLdScript,
+  organizationSchema,
+  siteUrl,
+  softwareApplicationSchema,
+} from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Financial Services Compliance Operations | FormaOS',
@@ -23,5 +30,33 @@ export const metadata: Metadata = {
 };
 
 export default function FinancialServicesUseCasePage() {
-  return <FinancialServicesContent />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript([
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              {
+                name: 'Financial Services Compliance Operations',
+                path: '/use-cases/financial-services',
+              },
+            ]),
+            articleSchema({
+              title: 'Financial Services Compliance Operations',
+              description:
+                'Operational compliance workflows for financial services teams managing control ownership, incidents, vendor assurance, and regulator-ready evidence.',
+              url: `${siteUrl}/use-cases/financial-services`,
+              datePublished: '2026-03-14',
+              author: 'FormaOS Team',
+            }),
+            organizationSchema(),
+            softwareApplicationSchema(),
+          ]),
+        }}
+      />
+      <FinancialServicesContent />
+    </>
+  );
 }

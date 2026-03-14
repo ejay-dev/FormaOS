@@ -1,6 +1,13 @@
 import { Metadata } from 'next';
 import GovernmentPublicSectorContent from './GovernmentPublicSectorContent';
-import { siteUrl } from '@/lib/seo';
+import {
+  articleSchema,
+  breadcrumbSchema,
+  jsonLdScript,
+  organizationSchema,
+  siteUrl,
+  softwareApplicationSchema,
+} from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Government & Public Sector Governance | FormaOS',
@@ -23,5 +30,33 @@ export const metadata: Metadata = {
 };
 
 export default function GovernmentPublicSectorUseCasePage() {
-  return <GovernmentPublicSectorContent />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript([
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              {
+                name: 'Government & Public Sector Governance',
+                path: '/use-cases/government-public-sector',
+              },
+            ]),
+            articleSchema({
+              title: 'Government & Public Sector Governance',
+              description:
+                'Operational governance workflows for government and public sector teams managing approvals, evidence, records, and defensible accountability.',
+              url: `${siteUrl}/use-cases/government-public-sector`,
+              datePublished: '2026-03-14',
+              author: 'FormaOS Team',
+            }),
+            organizationSchema(),
+            softwareApplicationSchema(),
+          ]),
+        }}
+      />
+      <GovernmentPublicSectorContent />
+    </>
+  );
 }

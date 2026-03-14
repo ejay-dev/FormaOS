@@ -18,8 +18,10 @@ export const brand = {
     appleTouchIcon: '/apple-touch-icon.png',
   },
   email: {
+    contactEmail:
+      process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'Formaos.team@gmail.com',
     senderName: 'FormaOS',
-    senderEmail: process.env.RESEND_FROM_EMAIL || 'no-reply@formaos.com.au',
+    senderEmail: process.env.RESEND_FROM_EMAIL || 'Formaos.team@gmail.com',
   },
   seo: {
     defaultTitle: 'FormaOS — Compliance Operating System',

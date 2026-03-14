@@ -78,10 +78,10 @@ export default function SubprocessorsPage() {
             Enterprise customers on paid plans receive 30 days advance email
             notification before any new sub-processor is engaged. Contact{' '}
             <a
-              href="mailto:privacy@formaos.com.au"
+              href="mailto:Formaos.team@gmail.com"
               className="text-primary hover:underline"
             >
-              privacy@formaos.com.au
+              Formaos.team@gmail.com
             </a>{' '}
             to subscribe to notifications or raise objections.
           </p>

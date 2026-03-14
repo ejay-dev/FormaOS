@@ -1,6 +1,13 @@
 import type { Metadata } from 'next';
 import { ComparePageTemplate } from '../components/ComparePageTemplate';
-import { siteUrl } from '@/lib/seo';
+import {
+  articleSchema,
+  breadcrumbSchema,
+  jsonLdScript,
+  organizationSchema,
+  siteUrl,
+  softwareApplicationSchema,
+} from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'FormaOS | Compare: AuditBoard',
@@ -91,15 +98,39 @@ const procurementChecks = [
 
 export default function CompareAuditBoardPage() {
   return (
-    <ComparePageTemplate
-      competitor="AuditBoard"
-      heroDescription="AuditBoard is strong for internal audit and risk programs. FormaOS is built to run compliance as an operating system where control execution, evidence, ownership, and procurement proof stay connected."
-      points={points}
-      idealIf={idealIf}
-      procurementChecks={procurementChecks}
-      featureComparison={featureComparison}
-      competitorStrengths={competitorStrengths}
-      source="compare_auditboard"
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript([
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Compare', path: '/compare' },
+              { name: 'AuditBoard', path: '/compare/auditboard' },
+            ]),
+            articleSchema({
+              title: 'FormaOS vs AuditBoard',
+              description:
+                'Compare AuditBoard and FormaOS across audit defensibility, operational accountability, and procurement readiness.',
+              url: `${siteUrl}/compare/auditboard`,
+              datePublished: '2026-03-14',
+              author: 'FormaOS Team',
+            }),
+            organizationSchema(),
+            softwareApplicationSchema(),
+          ]),
+        }}
+      />
+      <ComparePageTemplate
+        competitor="AuditBoard"
+        heroDescription="AuditBoard is strong for internal audit and risk programs. FormaOS is built to run compliance as an operating system where control execution, evidence, ownership, and procurement proof stay connected."
+        points={points}
+        idealIf={idealIf}
+        procurementChecks={procurementChecks}
+        featureComparison={featureComparison}
+        competitorStrengths={competitorStrengths}
+        source="compare_auditboard"
+      />
+    </>
   );
 }

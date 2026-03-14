@@ -22,5 +22,5 @@ export function getFromEmail() {
     return `${fromName} <${configured}>`;
   }
 
-  return `${fromName} <no-reply@formaos.com.au>`;
+  return `${fromName} <Formaos.team@gmail.com>`;
 }

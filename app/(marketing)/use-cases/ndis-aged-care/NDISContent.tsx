@@ -181,6 +181,7 @@ export default function NDISContent() {
       workflows={workflows}
       standards={standards}
       metrics={metrics}
+      industryKey="ndis_aged_care"
       ctaTitle="Build a provider compliance operating model auditors can verify - not just review"
       ctaDescription="Start with NDIS Practice Standards-aligned workflows, then adapt controls and evidence rules to your service delivery model. Full defensibility from governance board to participant record."
     />

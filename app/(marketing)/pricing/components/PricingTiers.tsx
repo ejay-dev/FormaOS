@@ -14,6 +14,7 @@ import {
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { easing, duration } from '@/config/motion';
+import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 import { getAppBaseUrl } from '@/lib/urls';
 
 /* ── Cursor-tracking light-sweep wrapper for pricing cards ── */
@@ -203,6 +204,7 @@ const pricingTiers = [
 
 export function PricingTiers() {
   const shouldReduceMotion = useReducedMotion();
+  const { trackCtaClick } = useMarketingTelemetry();
 
   return (
     <section className="relative overflow-hidden py-18 sm:py-24 lg:py-32">
@@ -390,6 +392,17 @@ export function PricingTiers() {
                 <Link
                   href={tier.href}
                   data-testid={`pricing-${tier.name.toLowerCase()}-cta`}
+                  onClick={() =>
+                    trackCtaClick({
+                      surface: 'pricing',
+                      section: 'tiers',
+                      location: 'pricing_card',
+                      ctaLabel: tier.cta,
+                      ctaHref: tier.href,
+                      variant: 'plan',
+                      plan: tier.name.toLowerCase(),
+                    })
+                  }
                   className={`group/btn relative block w-full py-4 px-6 rounded-2xl text-center font-semibold transition-all duration-300 overflow-hidden ${
                     tier.featured
                       ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-lg hover:shadow-xl hover:shadow-emerald-500/30 hover:scale-105'

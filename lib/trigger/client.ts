@@ -15,6 +15,22 @@ export function isTriggerConfigured(): boolean {
   );
 }
 
+function isTriggerExecutionEnabled(): boolean {
+  if (!isTriggerConfigured()) {
+    return false;
+  }
+
+  if (process.env.TRIGGER_DISABLED === '1') {
+    return false;
+  }
+
+  if (process.env.NODE_ENV !== 'development') {
+    return true;
+  }
+
+  return process.env.TRIGGER_DEV_ENABLED === '1';
+}
+
 export async function triggerTaskIfConfigured(
   id: TriggerTaskId,
   payload: Record<string, unknown>,
@@ -24,7 +40,7 @@ export async function triggerTaskIfConfigured(
     tags?: string[];
   },
 ): Promise<boolean> {
-  if (!isTriggerConfigured()) {
+  if (!isTriggerExecutionEnabled()) {
     return false;
   }
 

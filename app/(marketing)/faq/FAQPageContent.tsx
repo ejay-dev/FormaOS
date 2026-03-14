@@ -212,7 +212,7 @@ const faqCategories = [
       },
       {
         q: 'How do I get help if I have an issue?',
-        a: 'All customers have access to the in-app help center, the FormaOS knowledge base, and email support at support@formaos.com.au. Professional plans include priority email with an 8-hour response window during business hours. Enterprise plans add a dedicated Slack channel and a 4-hour response SLA. For platform-critical issues (data access, authentication, evidence integrity), all plans receive expedited response regardless of tier.',
+        a: 'All customers have access to the in-app help center, the FormaOS knowledge base, and email support at Formaos.team@gmail.com. Professional plans include priority email with an 8-hour response window during business hours. Enterprise plans add a dedicated Slack channel and a 4-hour response SLA. For platform-critical issues (data access, authentication, evidence integrity), all plans receive expedited response regardless of tier.',
       },
       {
         q: 'Do you provide training for our team?',

@@ -191,8 +191,8 @@ export function ContactOptionsGrid() {
       icon: Mail,
       title: "Email us",
       description: "General inquiries and support",
-      value: "sales@formaos.com",
-      action: "mailto:sales@formaos.com"
+      value: "Formaos.team@gmail.com",
+      action: "mailto:Formaos.team@gmail.com"
     },
     {
       icon: Phone,
@@ -322,7 +322,7 @@ export function ErrorMessage() {
         <div>
           <div className="font-semibold text-lg mb-1">Submission failed</div>
           <div className="text-sm text-rose-200/80">
-            Please email sales@formaos.com or try again shortly.
+            Please email Formaos.team@gmail.com or try again shortly.
           </div>
         </div>
       </div>

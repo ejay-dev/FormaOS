@@ -1,7 +1,7 @@
 import { brand } from '@/config/brand';
 import { getFromEmail, getResendClient } from '@/lib/email/resend-client';
 
-const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL || 'support@formaos.com.au';
+const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL || 'Formaos.team@gmail.com';
 
 export type AuthEmailTemplate =
   | 'confirm-signup'

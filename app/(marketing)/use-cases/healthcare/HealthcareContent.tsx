@@ -199,6 +199,7 @@ export default function HealthcareContent() {
       workflows={workflows}
       standards={standards}
       metrics={metrics}
+      industryKey="healthcare"
       ctaTitle="Build a healthcare compliance operating model that holds up at audit time"
       ctaDescription="Start with pre-built control frameworks mapped to AHPRA, NSQHS Standards, and the Privacy Act. Every action stays tied to accountable ownership and defensible timestamped evidence - no reconstruction required."
     />

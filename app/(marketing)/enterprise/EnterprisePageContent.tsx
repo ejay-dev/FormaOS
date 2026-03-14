@@ -45,6 +45,7 @@ import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { brand } from '@/config/brand';
+import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -277,6 +278,44 @@ interface ProcurementItem {
   question: string;
   answer: string;
   icon: LucideIcon;
+}
+
+function EnterpriseResourceLinks({
+  onClick,
+  section,
+}: {
+  onClick: ReturnType<typeof useMarketingTelemetry>['trackCtaClick'];
+  section: 'hero' | 'final_cta';
+}) {
+  const links = [
+    { href: '/trust', label: 'Visit Trust Center', location: 'trust' },
+    { href: '/security', label: 'Review Security', location: 'security' },
+    { href: '/pricing', label: 'See Pricing', location: 'pricing' },
+  ] as const;
+
+  return (
+    <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm">
+      {links.map((link) => (
+        <Link
+          key={link.href}
+          href={link.href}
+          onClick={() =>
+            onClick({
+              surface: 'enterprise',
+              section,
+              location: link.location,
+              ctaLabel: link.label,
+              ctaHref: link.href,
+              variant: 'resource',
+            })
+          }
+          className="font-medium text-slate-300 underline decoration-white/20 underline-offset-4 hover:text-white"
+        >
+          {link.label}
+        </Link>
+      ))}
+    </div>
+  );
 }
 
 const procurementItems: ProcurementItem[] = [
@@ -1096,6 +1135,8 @@ function ProcurementFAQ() {
 /* ─── Enterprise CTA ──────────────────────────────────────── */
 
 function EnterpriseCTA() {
+  const { trackCtaClick } = useMarketingTelemetry();
+
   return (
     <DeferredSection minHeight={350}>
       <section className="mk-section relative">
@@ -1155,6 +1196,16 @@ function EnterpriseCTA() {
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <Link
                     href={`${appBase}/contact?type=enterprise`}
+                    onClick={() =>
+                      trackCtaClick({
+                        surface: 'enterprise',
+                        section: 'final_cta',
+                        location: 'final_primary',
+                        ctaLabel: 'Contact Enterprise Sales',
+                        ctaHref: `${appBase}/contact?type=enterprise`,
+                        variant: 'primary',
+                      })
+                    }
                     className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
                       bg-gradient-to-r from-violet-500 to-blue-500
                       text-white font-semibold text-sm
@@ -1167,6 +1218,16 @@ function EnterpriseCTA() {
                   </Link>
                   <Link
                     href={appBase}
+                    onClick={() =>
+                      trackCtaClick({
+                        surface: 'enterprise',
+                        section: 'final_cta',
+                        location: 'final_secondary',
+                        ctaLabel: 'Start Free Trial',
+                        ctaHref: appBase,
+                        variant: 'secondary',
+                      })
+                    }
                     className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
                       border border-white/[0.12] bg-white/[0.04]
                       text-white font-semibold text-sm
@@ -1177,6 +1238,11 @@ function EnterpriseCTA() {
                     <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>
+
+                <EnterpriseResourceLinks
+                  onClick={trackCtaClick}
+                  section="final_cta"
+                />
 
                 <div className="flex flex-wrap justify-center gap-6 mt-10 text-xs text-slate-500">
                   {[
@@ -1204,6 +1270,7 @@ function EnterpriseCTA() {
 /* ─── Hero ────────────────────────────────────────────────── */
 
 function EnterpriseHero() {
+  const { trackCtaClick } = useMarketingTelemetry();
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -1318,6 +1385,16 @@ function EnterpriseHero() {
         >
           <Link
             href={`${appBase}/contact?type=enterprise`}
+            onClick={() =>
+              trackCtaClick({
+                surface: 'enterprise',
+                section: 'hero',
+                location: 'hero_primary',
+                ctaLabel: 'Talk to Enterprise Sales',
+                ctaHref: `${appBase}/contact?type=enterprise`,
+                variant: 'primary',
+              })
+            }
             className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
               bg-gradient-to-r from-violet-500 to-blue-500
               text-white font-semibold text-sm
@@ -1330,6 +1407,16 @@ function EnterpriseHero() {
           </Link>
           <Link
             href={appBase}
+            onClick={() =>
+              trackCtaClick({
+                surface: 'enterprise',
+                section: 'hero',
+                location: 'hero_secondary',
+                ctaLabel: 'Start Free Trial',
+                ctaHref: appBase,
+                variant: 'secondary',
+              })
+            }
             className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
               border border-white/[0.12] bg-white/[0.04]
               text-white font-semibold text-sm
@@ -1339,6 +1426,14 @@ function EnterpriseHero() {
             Start Free Trial
             <ChevronRight className="w-4 h-4" />
           </Link>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.36, ease: EASE_OUT_EXPO }}
+        >
+          <EnterpriseResourceLinks onClick={trackCtaClick} section="hero" />
         </motion.div>
 
         <motion.div

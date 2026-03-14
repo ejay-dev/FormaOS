@@ -196,6 +196,7 @@ export default function IncidentContent() {
       workflows={workflows}
       standards={standards}
       metrics={metrics}
+      industryKey="incident_management"
       ctaTitle="Run incidents as accountable operations - with proof that holds under scrutiny"
       ctaDescription="Replace reactive reporting with structured response workflows. Every incident gets a named owner, documented investigation, and closure evidence - ready for regulators, customers, or the board in minutes."
     />

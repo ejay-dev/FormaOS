@@ -306,11 +306,11 @@ export function Footer() {
 
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6">
             <Link
-              href="mailto:hello@formaos.com.au"
+              href="mailto:Formaos.team@gmail.com"
               className="flex items-center gap-2 text-sm text-gray-500 hover:text-white transition-colors"
             >
               <Mail className="h-4 w-4 shrink-0" />
-              <span className="text-xs sm:text-sm">hello@formaos.com.au</span>
+              <span className="text-xs sm:text-sm">Formaos.team@gmail.com</span>
             </Link>
             <span className="hidden sm:inline text-gray-700">|</span>
             <div className="flex items-center gap-2 text-sm text-gray-500">

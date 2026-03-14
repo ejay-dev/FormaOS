@@ -88,10 +88,10 @@ function ContactInformation() {
               </div>
               <h3 className="text-lg font-semibold text-white mb-2">Email</h3>
               <a
-                href="mailto:hello@formaos.com.au"
+                href="mailto:Formaos.team@gmail.com"
                 className="text-blue-400 hover:text-blue-300 transition-colors"
               >
-                hello@formaos.com.au
+                Formaos.team@gmail.com
               </a>
             </div>
           </ScrollReveal>
@@ -371,11 +371,11 @@ function EnterpriseInquiries() {
               or strategic partnerships, contact us directly.
             </p>
             <a
-              href="mailto:hello@formaos.com.au"
+              href="mailto:Formaos.team@gmail.com"
               className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-medium text-lg transition-colors"
             >
               <Mail className="w-5 h-5" />
-              hello@formaos.com.au
+              Formaos.team@gmail.com
             </a>
           </div>
         </ScrollReveal>

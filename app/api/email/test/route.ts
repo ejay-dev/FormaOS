@@ -41,7 +41,7 @@ export async function GET(request: Request) {
   const ctaHref = url.searchParams.get('ctaHref');
 
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM_EMAIL || 'no-reply@formaos.com.au';
+  const from = process.env.RESEND_FROM_EMAIL || 'Formaos.team@gmail.com';
 
   if (!apiKey) {
     return NextResponse.json(

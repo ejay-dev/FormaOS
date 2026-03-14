@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
           trigger_type: 'scheduled',
           is_active: true,
           actions: {
-            notifications: ['demo@formaos.com'],
+            notifications: ['Formaos.team@gmail.com'],
             create_tasks: true,
             update_scores: true,
           },

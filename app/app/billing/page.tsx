@@ -189,7 +189,7 @@ export default function BillingPage() {
       {status === 'contact' ? (
         <div className="rounded-xl border border-sky-400/30 bg-sky-500/10 px-4 py-3 text-sm text-sky-200">
           Enterprise billing can be completed here or coordinated via invoiced
-          procurement with sales@formaos.com.
+          procurement with Formaos.team@gmail.com.
         </div>
       ) : null}
       {trialExpired ? (
@@ -223,7 +223,7 @@ export default function BillingPage() {
           <div className="mt-4 text-xs text-slate-400">
             Enterprise customers can self-serve checkout or coordinate
             invoiced procurement, security review, and onboarding with
-            sales@formaos.com.
+            Formaos.team@gmail.com.
           </div>
         ) : null}
         {trialEndsAt && !trialExpired ? (

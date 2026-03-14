@@ -102,7 +102,7 @@ export class WorkflowEngine {
         await logActivity(
           context.orgId,
           'system',
-          'automation@formaos.com',
+          'Formaos.team@gmail.com',
           'workflow_executed',
           'workflow',
           rule.id,

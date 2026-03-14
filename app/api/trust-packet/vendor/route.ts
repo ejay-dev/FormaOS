@@ -263,7 +263,7 @@ async function buildVendorTrustPacketPdf(payload: {
     y2 -= 6;
   }
 
-  page2.drawText('Contact: security@formaos.com.au | privacy@formaos.com.au', {
+  page2.drawText('Contact: Formaos.team@gmail.com', {
     x: margin,
     y: margin - 10,
     size: 9,

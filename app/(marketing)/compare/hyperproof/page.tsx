@@ -1,6 +1,13 @@
 import type { Metadata } from 'next';
 import { ComparePageTemplate } from '../components/ComparePageTemplate';
-import { siteUrl } from '@/lib/seo';
+import {
+  articleSchema,
+  breadcrumbSchema,
+  jsonLdScript,
+  organizationSchema,
+  siteUrl,
+  softwareApplicationSchema,
+} from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'FormaOS | Compare: Hyperproof',
@@ -91,15 +98,39 @@ const procurementChecks = [
 
 export default function CompareHyperproofPage() {
   return (
-    <ComparePageTemplate
-      competitor="Hyperproof"
-      heroDescription="Hyperproof helps teams manage controls and compliance programs. FormaOS is built to make that work operationally defensible, buyer-ready, and accountable across the frontline workflows that actually determine compliance truth."
-      points={points}
-      idealIf={idealIf}
-      procurementChecks={procurementChecks}
-      featureComparison={featureComparison}
-      competitorStrengths={competitorStrengths}
-      source="compare_hyperproof"
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript([
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Compare', path: '/compare' },
+              { name: 'Hyperproof', path: '/compare/hyperproof' },
+            ]),
+            articleSchema({
+              title: 'FormaOS vs Hyperproof',
+              description:
+                'Compare Hyperproof and FormaOS across workflow accountability, evidence verification, and procurement readiness.',
+              url: `${siteUrl}/compare/hyperproof`,
+              datePublished: '2026-03-14',
+              author: 'FormaOS Team',
+            }),
+            organizationSchema(),
+            softwareApplicationSchema(),
+          ]),
+        }}
+      />
+      <ComparePageTemplate
+        competitor="Hyperproof"
+        heroDescription="Hyperproof helps teams manage controls and compliance programs. FormaOS is built to make that work operationally defensible, buyer-ready, and accountable across the frontline workflows that actually determine compliance truth."
+        points={points}
+        idealIf={idealIf}
+        procurementChecks={procurementChecks}
+        featureComparison={featureComparison}
+        competitorStrengths={competitorStrengths}
+        source="compare_hyperproof"
+      />
+    </>
   );
 }

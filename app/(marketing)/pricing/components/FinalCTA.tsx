@@ -5,10 +5,13 @@ import { ArrowRight, Building2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { brand } from '@/config/brand';
+import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 export function FinalCTA() {
+  const { trackCtaClick } = useMarketingTelemetry();
+
   return (
     <section className="relative py-32 overflow-hidden">
       {/* Background */}
@@ -118,6 +121,16 @@ export function FinalCTA() {
                   <div className="space-y-4 mb-8">
                     <Link
                       href={`${appBase}/auth/signup`}
+                      onClick={() =>
+                        trackCtaClick({
+                          surface: 'pricing',
+                          section: 'final_cta',
+                          location: 'final_primary',
+                          ctaLabel: 'Start Free Trial',
+                          ctaHref: `${appBase}/auth/signup`,
+                          variant: 'final',
+                        })
+                      }
                       className="mk-btn mk-btn-primary group w-full inline-block px-8 py-4 text-base"
                     >
                       <span className="relative z-10">Start Free Trial</span>
@@ -125,6 +138,16 @@ export function FinalCTA() {
 
                     <Link
                       href="/contact"
+                      onClick={() =>
+                        trackCtaClick({
+                          surface: 'pricing',
+                          section: 'final_cta',
+                          location: 'final_secondary',
+                          ctaLabel: 'Talk to Sales',
+                          ctaHref: '/contact',
+                          variant: 'final',
+                        })
+                      }
                       className="mk-btn mk-btn-secondary group w-full flex items-center justify-center gap-2 px-8 py-4 text-base"
                     >
                       <span>Talk to Sales</span>

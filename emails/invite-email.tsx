@@ -25,7 +25,7 @@ interface InviteEmailProps {
 
 export default function InviteEmail({
   inviterName = 'A team member',
-  inviterEmail = 'member@formaos.com',
+  inviterEmail = 'Formaos.team@gmail.com',
   organizationName = 'Organization',
   inviteUrl = `${DEFAULT_APP_URL.replace(/\/$/, '')}/accept-invite`,
   role = 'member',

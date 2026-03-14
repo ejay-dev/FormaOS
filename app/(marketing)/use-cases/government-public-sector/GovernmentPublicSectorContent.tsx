@@ -169,6 +169,7 @@ export default function GovernmentPublicSectorContent() {
       workflows={workflows}
       standards={standards}
       metrics={metrics}
+      industryKey="government_public_sector"
       ctaTitle="Give oversight teams proof that survives scrutiny"
       ctaDescription="Replace fragmented approval trails with a single governed workflow for policies, evidence, procurement reviews, and export-ready oversight artifacts."
     />
