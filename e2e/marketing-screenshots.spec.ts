@@ -41,11 +41,15 @@ const MARKETING_ROUTES = [
   '/compare/vanta',
   '/compare/drata',
   '/compare/secureframe',
+  '/compare/auditboard',
+  '/compare/hyperproof',
   // Use Cases
   '/use-cases/healthcare',
   '/use-cases/incident-management',
   '/use-cases/workforce-credentials',
   '/use-cases/ndis-aged-care',
+  '/use-cases/financial-services',
+  '/use-cases/government-public-sector',
   // Trust sub-pages
   '/trust/dpa',
   '/trust/vendor-assurance',
@@ -140,6 +144,7 @@ test.describe('Interaction traces (3 flagship pages)', () => {
 });
 
 test('generate checklist table', async () => {
+  fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
   // Tier 1 pages with full 3D hero visuals
   const tier1 = ['/', '/product', '/security', '/trust', '/pricing', '/industries'];
   // Tier 2 pages with hero visuals

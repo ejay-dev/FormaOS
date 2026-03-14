@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import PricingPageContent from './PricingPageContent';
+import { PRICING_FAQS } from './components/faq-data';
+import { faqSchema } from '@/lib/seo';
 import { breadcrumbSchema,
   siteUrl} from '@/lib/seo';
 
@@ -32,12 +34,16 @@ export default function PricingPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
+          __html: JSON.stringify([
+            faqSchema(PRICING_FAQS.map((faq) => ({
+              question: faq.question,
+              answer: faq.answer,
+            }))),
             breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Pricing', path: '/pricing' },
-            ])
-          ),
+            ]),
+          ]),
         }}
       />
       <PricingPageContent />

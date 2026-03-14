@@ -29,6 +29,16 @@ const comparisons = [
     name: 'Secureframe',
     tagline: 'Program setup vs defensible workflow and evidence chain',
   },
+  {
+    href: '/compare/auditboard',
+    name: 'AuditBoard',
+    tagline: 'Audit management vs operating-system-level control execution',
+  },
+  {
+    href: '/compare/hyperproof',
+    name: 'Hyperproof',
+    tagline: 'Control management vs accountable workflow and evidence posture',
+  },
 ] as const;
 
 const differentiators = [

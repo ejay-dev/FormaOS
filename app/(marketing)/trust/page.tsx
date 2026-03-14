@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import TrustPageContent from './TrustPageContent';
+import { TrustProofStaticShell } from './TrustProofStaticShell';
 import { breadcrumbSchema,
   siteUrl} from '@/lib/seo';
 
@@ -32,7 +33,7 @@ export default function TrustCenterPage() {
           ),
         }}
       />
-      <TrustPageContent />
+      <TrustPageContent leadContent={<TrustProofStaticShell />} />
     </>
   );
 }

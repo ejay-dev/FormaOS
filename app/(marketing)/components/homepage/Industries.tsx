@@ -160,7 +160,7 @@ const industrySolutions: IndustrySolution[] = [
     ],
     cta: {
       text: 'Explore Financial Solution',
-      href: '/soc2-compliance-automation',
+      href: '/use-cases/financial-services',
     },
   },
   {
@@ -242,7 +242,7 @@ const industrySolutions: IndustrySolution[] = [
     ],
     cta: {
       text: 'Explore Government Solution',
-      href: '/industries',
+      href: '/use-cases/government-public-sector',
     },
   },
 ];

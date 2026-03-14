@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { HomeClientMarker } from './components/home-client-marker';
 import FigmaHomepage from './components/FigmaHomepage';
 import { HeroStaticShell } from './components/HeroStaticShell';
+import { HomeProofStaticShell } from './components/HomeProofStaticShell';
 import { siteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-static';
@@ -34,6 +35,7 @@ export default function HomePage() {
 
       {/* Server-rendered hero: copy is in the initial HTML for crawlers and LCP */}
       <HeroStaticShell />
+      <HomeProofStaticShell />
 
       {/* Client sections: animations, control-plane overrides, below-fold content */}
       <FigmaHomepage skipHero />

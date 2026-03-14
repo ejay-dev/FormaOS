@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, type ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { VisualDivider } from '@/components/motion';
@@ -140,11 +140,16 @@ function TrustWirePaths() {
   );
 }
 
-export default function TrustPageContent() {
+export default function TrustPageContent({
+  leadContent,
+}: {
+  leadContent?: ReactNode;
+}) {
   return (
     <MarketingPageShell>
       <TrustWirePaths />
       <TrustHero />
+      {leadContent}
       <FrameworkTrustStrip className="mt-2 mb-2" />
       <VisualDivider />
       <DeferredSection minHeight={520}>
