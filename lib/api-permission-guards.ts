@@ -7,8 +7,9 @@
  */
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { DatabaseRole, hasPermission, Permission } from '@/lib/roles';
+import { DatabaseRole, Permission } from '@/lib/roles';
 import { NextResponse } from 'next/server';
+import { abilityCanPermission } from '@/lib/authz/ability';
 
 /**
  * User context fetched from database
@@ -68,7 +69,7 @@ export function requirePermission(
     return { allowed: false, reason: 'Not authenticated' };
   }
 
-  if (!hasPermission(context.role, permission)) {
+  if (!abilityCanPermission(context.role, permission)) {
     return {
       allowed: false,
       reason: `Role ${context.role} does not have permission: ${permission}`,
@@ -160,7 +161,7 @@ export function canModifyResource(
   };
 
   const requiredPermissions = permissionMap[resourceType] || [];
-  return requiredPermissions.some((p) => hasPermission(context.role, p));
+  return requiredPermissions.some((p) => abilityCanPermission(context.role, p));
 }
 
 /**

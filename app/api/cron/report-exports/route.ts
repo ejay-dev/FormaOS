@@ -27,7 +27,7 @@ async function handleReportExportsCron(request: Request) {
 
   // If the Redis queue is configured, prefer the queue worker to avoid double-processing.
   const redisCfg = getRedisConfig()
-  if (redisCfg.url && redisCfg.token) {
+  if (redisCfg.restUrl && redisCfg.token) {
     return NextResponse.json({ ok: true, skipped: true, reason: 'redis_queue_enabled' })
   }
 

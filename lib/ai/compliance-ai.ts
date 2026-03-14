@@ -14,33 +14,12 @@
  * - Rate limiting to 10 requests/minute
  */
 
-import OpenAI from 'openai';
 import type { ComplianceFramework } from '@/lib/compliance/scanner';
-
-// ---------------------------------------------------------------------------
-// OpenAI client (lazy-initialised, null when key is missing)
-// ---------------------------------------------------------------------------
-
-let openaiClient: OpenAI | null = null;
-
-function getOpenAIClient(): OpenAI | null {
-  if (openaiClient) return openaiClient;
-
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    console.warn(
-      '[compliance-ai] OPENAI_API_KEY is not set. AI features will use fallback responses.',
-    );
-    return null;
-  }
-
-  openaiClient = new OpenAI({ apiKey });
-  return openaiClient;
-}
+import { generateAIText, isAISDKConfigured } from '@/lib/ai/sdk-client';
 
 /** Check whether the OpenAI integration is available */
 export function isAIAvailable(): boolean {
-  return !!process.env.OPENAI_API_KEY;
+  return isAISDKConfigured();
 }
 
 // ---------------------------------------------------------------------------
@@ -120,36 +99,29 @@ export function getAIRateLimitStatus(): {
 // Shared helper: call OpenAI with error handling
 // ---------------------------------------------------------------------------
 
-const MODEL = 'gpt-4o-mini';
-
 async function callOpenAI(
   systemPrompt: string,
   userPrompt: string,
 ): Promise<string | null> {
-  const client = getOpenAIClient();
-  if (!client) return null;
+  if (!isAISDKConfigured()) {
+    console.warn(
+      '[compliance-ai] OPENAI_API_KEY is not set. AI features will use fallback responses.',
+    );
+    return null;
+  }
 
   if (!checkAIRateLimit()) {
     console.warn('[compliance-ai] Rate limit reached. Skipping OpenAI call.');
     return null;
   }
 
-  try {
-    const response = await client.chat.completions.create({
-      model: MODEL,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
-      ],
-      temperature: 0.3, // lower temperature for deterministic compliance output
-      max_tokens: 1024,
-    });
-
-    return response.choices[0]?.message?.content?.trim() ?? null;
-  } catch (error) {
-    console.error('[compliance-ai] OpenAI API error:', error);
-    return null;
-  }
+  return generateAIText({
+    name: 'compliance-ai-analysis',
+    systemPrompt,
+    userPrompt,
+    temperature: 0.3,
+    maxOutputTokens: 1024,
+  });
 }
 
 // ---------------------------------------------------------------------------

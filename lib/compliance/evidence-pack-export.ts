@@ -7,6 +7,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin'
 import { getSnapshotHistory } from './snapshot-service'
 import archiver from 'archiver'
 import { getQueueClient } from '@/lib/queue'
+import { triggerTaskIfConfigured } from '@/lib/trigger/client'
 
 export type ExportManifest = {
   exportId: string
@@ -67,18 +68,35 @@ export async function createExportJob(
     // Enqueue the job for background processing when Redis queue is configured.
     // (The DB-backed cron worker remains a fallback.)
     try {
-      const queue = getQueueClient()
-      await queue.enqueue(
-        'compliance-export',
+      const triggered = await triggerTaskIfConfigured(
+        'compliance-export-job',
         {
           jobId: job.id,
           organizationId: orgId,
-          frameworkId: frameworkSlug,
-          format: 'json',
+          frameworkSlug,
           requestedBy: userId,
         },
-        { organizationId: orgId },
+        {
+          queue: 'exports',
+          idempotencyKey: `compliance-export:${job.id}`,
+          tags: ['compliance-export', frameworkSlug],
+        },
       )
+
+      if (!triggered) {
+        const queue = getQueueClient()
+        await queue.enqueue(
+          'compliance-export',
+          {
+            jobId: job.id,
+            organizationId: orgId,
+            frameworkId: frameworkSlug,
+            format: 'json',
+            requestedBy: userId,
+          },
+          { organizationId: orgId },
+        )
+      }
     } catch {
       // ignore
     }

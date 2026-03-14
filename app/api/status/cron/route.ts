@@ -62,8 +62,8 @@ async function handleStatusCron(request: Request) {
   }
 
   // Redis check (optional but critical for enterprise-grade reliability)
-  const { url, token } = getRedisConfig();
-  if (url && token) {
+  const { restUrl, token } = getRedisConfig();
+  if (restUrl && token) {
     try {
       const redis = getRedisClient();
       if (!redis) throw new Error('Redis client unavailable');

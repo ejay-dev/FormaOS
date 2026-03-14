@@ -70,6 +70,7 @@ export async function proxy(request: NextRequest) {
       '/api/version',
       '/api/auth/', // OAuth callbacks
       '/api/cron/', // Vercel cron (secured by CRON_SECRET)
+      '/api/internal/trigger/', // Trigger.dev callbacks (secured by CRON_SECRET)
       '/api/runtime/', // Next.js runtime internals
       '/api/sso/', // SSO callbacks
     ];

@@ -14,6 +14,7 @@ import { buildReport } from '@/lib/audit-reports/report-builder';
 import { generateReportPdf } from '@/lib/audit-reports/pdf-generator';
 import type { ReportType } from '@/lib/audit-reports/types';
 import { getQueueClient } from '@/lib/queue';
+import { triggerTaskIfConfigured } from '@/lib/trigger/client';
 
 export interface EnterpriseExportOptions {
   includeCompliance: boolean;
@@ -118,12 +119,24 @@ export async function createEnterpriseExportJob(
 
     // Enqueue for background processing when Redis queue is available.
     try {
-      const queue = getQueueClient();
-      await queue.enqueue(
-        'enterprise-export',
+      const triggered = await triggerTaskIfConfigured(
+        'enterprise-export-job',
         { jobId: job.id, organizationId: orgId, requestedBy: userId },
-        { organizationId: orgId },
+        {
+          queue: 'exports',
+          idempotencyKey: `enterprise-export:${job.id}`,
+          tags: ['enterprise-export', options.bundleType ?? 'enterprise_full'],
+        },
       );
+
+      if (!triggered) {
+        const queue = getQueueClient();
+        await queue.enqueue(
+          'enterprise-export',
+          { jobId: job.id, organizationId: orgId, requestedBy: userId },
+          { organizationId: orgId },
+        );
+      }
     } catch {
       // ignore (cron/manual trigger can still process)
     }

@@ -61,8 +61,8 @@ async function rateLimit(
   windowMs: number,
 ): Promise<RateLimitResult> {
   // If Redis not configured, allow all requests (dev mode)
-  const { url, token } = getRedisConfig();
-  if (!url || !token) {
+  const { restUrl, token } = getRedisConfig();
+  if (!restUrl || !token) {
     logFailOpenWarning('redis_not_configured', { key, limit, windowMs });
     return {
       success: true,

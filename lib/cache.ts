@@ -5,6 +5,8 @@
  * Redis-based caching with intelligent invalidation
  */
 
+import { getRedisClient, getRedisConfig } from '@/lib/redis/client';
+
 // In-memory cache fallback when Redis is not available.
 // Uses LRU eviction to prevent unbounded memory growth.
 const MAX_CACHE_ENTRIES = 1000;
@@ -80,19 +82,14 @@ let cacheInstance: any = null;
 async function getCache() {
   if (cacheInstance) return cacheInstance;
 
-  // Try Upstash Redis first
-  const redisUrl =
-    process.env.UPSTASH_REDIS_REST_URL ?? process.env.UPSTASH_REDIS_URL;
-  const redisToken =
-    process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.UPSTASH_REDIS_TOKEN;
-
-  if (redisUrl && redisToken) {
+  // Try Upstash Redis first using the shared REST client.
+  const { restUrl, token } = getRedisConfig();
+  if (restUrl && token) {
     try {
-      const { Redis } = await import('@upstash/redis');
-      cacheInstance = new Redis({
-        url: redisUrl,
-        token: redisToken,
-      });
+      cacheInstance = getRedisClient();
+      if (!cacheInstance) {
+        throw new Error('Redis client unavailable');
+      }
       console.log('✅ Upstash Redis cache initialized');
       return cacheInstance;
     } catch (_error) {

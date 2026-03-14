@@ -3,6 +3,7 @@ import { buildReport } from '@/lib/audit-reports/report-builder'
 import { generateReportPdf } from '@/lib/audit-reports/pdf-generator'
 import type { ReportType } from '@/lib/audit-reports/types'
 import { getQueueClient } from '@/lib/queue'
+import { triggerTaskIfConfigured } from '@/lib/trigger/client'
 
 type ReportFormat = 'pdf' | 'json'
 
@@ -49,17 +50,34 @@ export async function createReportExportJob(params: {
   // If the Redis-backed queue is configured, enqueue for background processing.
   // This reduces reliance on scheduled DB claim cron and avoids long-running inline exports.
   try {
-    const queue = getQueueClient()
-    await queue.enqueue(
-      'report-export',
+    const triggered = await triggerTaskIfConfigured(
+      'report-export-job',
       {
         jobId: job.id,
         organizationId: params.organizationId,
         reportType: params.reportType,
         requestedBy: params.requestedBy,
       },
-      { organizationId: params.organizationId },
+      {
+        queue: 'exports',
+        idempotencyKey: `report-export:${job.id}`,
+        tags: ['report-export', params.reportType],
+      },
     )
+
+    if (!triggered) {
+      const queue = getQueueClient()
+      await queue.enqueue(
+        'report-export',
+        {
+          jobId: job.id,
+          organizationId: params.organizationId,
+          reportType: params.reportType,
+          requestedBy: params.requestedBy,
+        },
+        { organizationId: params.organizationId },
+      )
+    }
   } catch {
     // No-op: cron/inline processing can still handle the job.
   }

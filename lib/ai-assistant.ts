@@ -5,6 +5,8 @@
  * OpenAI integration for intelligent compliance automation
  */
 
+import { generateAIText, isAISDKConfigured } from '@/lib/ai/sdk-client';
+
 export interface AIComplianceRequest {
   type: 'analyze' | 'recommend' | 'query' | 'categorize' | 'report';
   context: string;
@@ -22,13 +24,6 @@ export interface AIComplianceResponse {
  * AI Compliance Assistant using OpenAI
  */
 export class AIComplianceAssistant {
-  private apiKey: string;
-  private baseUrl = 'https://api.openai.com/v1/chat/completions';
-
-  constructor(apiKey?: string) {
-    this.apiKey = apiKey || process.env.OPENAI_API_KEY || '';
-  }
-
   /**
    * Analyze compliance document
    */
@@ -235,40 +230,24 @@ Provide JSON response with:
    * Call OpenAI API
    */
   private async callOpenAI(prompt: string): Promise<string> {
-    if (!this.apiKey) {
+    if (!isAISDKConfigured()) {
       throw new Error('OpenAI API key not configured');
     }
 
-    const response = await fetch(this.baseUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.apiKey}`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-4',
-        messages: [
-          {
-            role: 'system',
-            content:
-              'You are an expert compliance consultant specializing in workplace safety, certifications, and regulatory requirements.',
-          },
-          {
-            role: 'user',
-            content: prompt,
-          },
-        ],
-        temperature: 0.7,
-        max_tokens: 1500,
-      }),
+    const text = await generateAIText({
+      name: 'compliance-assistant',
+      systemPrompt:
+        'You are an expert compliance consultant specializing in workplace safety, certifications, and regulatory requirements.',
+      userPrompt: prompt,
+      temperature: 0.7,
+      maxOutputTokens: 1500,
     });
 
-    if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.statusText}`);
+    if (!text) {
+      throw new Error('OpenAI API error: empty response');
     }
 
-    const data = await response.json();
-    return data.choices[0].message.content;
+    return text;
   }
 }
 
