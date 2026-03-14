@@ -25,6 +25,11 @@ export function InviteModal({
   const [role, setRole] = useState<'admin' | 'member' | 'viewer'>('member');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [delivery, setDelivery] = useState<'sent' | 'manual_share_required'>(
+    'sent',
+  );
+  const [manualShareUrl, setManualShareUrl] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;
@@ -39,13 +44,20 @@ export function InviteModal({
       const result = await inviteMember(email, role);
 
       if (result?.success) {
+        setDelivery(result.delivery);
+        setManualShareUrl(result.delivery === 'manual_share_required' ? result.inviteUrl : null);
         setSuccess(true);
-        setTimeout(() => {
-          setSuccess(false);
-          setEmail('');
-          setRole('member');
-          onCloseAction();
-        }, 2000);
+        if (result.delivery === 'sent') {
+          setTimeout(() => {
+            setSuccess(false);
+            setDelivery('sent');
+            setManualShareUrl(null);
+            setCopied(false);
+            setEmail('');
+            setRole('member');
+            onCloseAction();
+          }, 2000);
+        }
       } else {
         // Show server-side errors (e.g., "User already invited")
         setError(result?.error || 'Invitation failed. Please try again.');
@@ -55,6 +67,16 @@ export function InviteModal({
       setError('System connection error.');
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleCopyLink() {
+    if (!manualShareUrl) return;
+    try {
+      await navigator.clipboard.writeText(manualShareUrl);
+      setCopied(true);
+    } catch {
+      setCopied(false);
     }
   }
 
@@ -85,11 +107,51 @@ export function InviteModal({
               <CheckCircle2 className="h-10 w-10" />
             </div>
             <h4 className="text-xl font-black text-neutral-900 tracking-tight">
-              Invitation Dispatched
+              {delivery === 'sent'
+                ? 'Invitation Dispatched'
+                : 'Invitation Created'}
             </h4>
             <p className="text-sm text-neutral-500 mt-2 font-medium">
-              The audit ledger has been updated successfully.
+              {delivery === 'sent'
+                ? 'The invite email was sent and the audit ledger was updated.'
+                : 'Email delivery is unavailable. Share the secure invite link manually.'}
             </p>
+            {manualShareUrl ? (
+              <>
+                <div className="mt-6 w-full rounded-2xl border border-neutral-200 bg-neutral-50 p-3 text-left">
+                  <p className="text-[11px] font-black uppercase tracking-[0.18em] text-neutral-400">
+                    Manual Share Link
+                  </p>
+                  <p className="mt-2 break-all text-sm font-medium text-neutral-700">
+                    {manualShareUrl}
+                  </p>
+                </div>
+                <div className="mt-4 flex gap-3">
+                  <button
+                    type="button"
+                    onClick={handleCopyLink}
+                    className="rounded-xl bg-neutral-900 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-neutral-700"
+                  >
+                    {copied ? 'Copied' : 'Copy Link'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSuccess(false);
+                      setDelivery('sent');
+                      setManualShareUrl(null);
+                      setCopied(false);
+                      setEmail('');
+                      setRole('member');
+                      onCloseAction();
+                    }}
+                    className="rounded-xl border border-neutral-200 px-4 py-2 text-sm font-bold text-neutral-700 transition-colors hover:bg-neutral-50"
+                  >
+                    Close
+                  </button>
+                </div>
+              </>
+            ) : null}
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-8 space-y-8">

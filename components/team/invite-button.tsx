@@ -19,6 +19,9 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
   const [role, setRole] = useState("member")
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [delivery, setDelivery] = useState<"sent" | "manual_share_required">("sent")
+  const [manualShareUrl, setManualShareUrl] = useState("")
+  const [copied, setCopied] = useState(false)
   const router = useRouter()
   const { nodeCreated, reportError, reportInfo } = useComplianceAction()
 
@@ -44,21 +47,48 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
       return
     }
 
+    const payload = await response.json().catch(() => null)
+    const result = payload?.data ?? null
+
     // Show success state
     setSuccess(true)
+    setDelivery(result?.delivery === "manual_share_required" ? "manual_share_required" : "sent")
+    setManualShareUrl(typeof result?.inviteUrl === "string" ? result.inviteUrl : "")
+    setCopied(false)
     
     // Report to compliance system
     nodeCreated("entity", email)
-    reportInfo({ title: "Invitation sent", message: `Sent to ${email}` })
+    reportInfo({
+      title: result?.delivery === "manual_share_required" ? "Invitation created" : "Invitation sent",
+      message:
+        result?.delivery === "manual_share_required"
+          ? `Share the secure invite link with ${email}`
+          : `Sent to ${email}`,
+    })
     
     // Close after animation
-    setTimeout(() => {
-      setOpen(false)
-      setEmail("")
-      setRole("member")
-      setSuccess(false)
-      router.refresh()
-    }, 1500)
+    if (result?.delivery !== "manual_share_required") {
+      setTimeout(() => {
+        setOpen(false)
+        setEmail("")
+        setRole("member")
+        setSuccess(false)
+        setDelivery("sent")
+        setManualShareUrl("")
+        setCopied(false)
+        router.refresh()
+      }, 1500)
+    }
+  }
+
+  const handleCopyLink = async () => {
+    if (!manualShareUrl) return
+    try {
+      await navigator.clipboard.writeText(manualShareUrl)
+      setCopied(true)
+    } catch {
+      setCopied(false)
+    }
   }
 
   return (
@@ -80,10 +110,51 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                     <div className="h-20 w-20 rounded-full bg-emerald-400/20 flex items-center justify-center mb-4 border-2 border-emerald-400/40">
                       <CheckCircle2 className="h-10 w-10 text-emerald-400" />
                     </div>
-                    <h3 className="text-xl font-bold text-slate-100">Invitation Sent</h3>
+                    <h3 className="text-xl font-bold text-slate-100">
+                      {delivery === "sent" ? "Invitation Sent" : "Invitation Created"}
+                    </h3>
                     <p className="text-sm text-slate-400 mt-2 text-center">
-                      {email} will receive an invitation email
+                      {delivery === "sent"
+                        ? `${email} will receive an invitation email`
+                        : "Email delivery is unavailable. Share the secure invite link manually."}
                     </p>
+                    {delivery === "manual_share_required" && manualShareUrl ? (
+                      <>
+                        <div className="mt-5 w-full rounded-xl border border-white/10 bg-white/5 p-3 text-left">
+                          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                            Manual Share Link
+                          </p>
+                          <p className="mt-2 break-all text-sm text-slate-200">
+                            {manualShareUrl}
+                          </p>
+                        </div>
+                        <div className="mt-4 flex w-full gap-3">
+                          <button
+                            type="button"
+                            onClick={handleCopyLink}
+                            className="flex-1 rounded-xl bg-white/10 px-4 py-2 text-sm font-bold text-slate-100 transition-colors hover:bg-white/15"
+                          >
+                            {copied ? "Copied" : "Copy Link"}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setOpen(false)
+                              setEmail("")
+                              setRole("member")
+                              setSuccess(false)
+                              setDelivery("sent")
+                              setManualShareUrl("")
+                              setCopied(false)
+                              router.refresh()
+                            }}
+                            className="flex-1 rounded-xl border border-white/10 px-4 py-2 text-sm font-bold text-slate-100 transition-colors hover:bg-white/5"
+                          >
+                            Close
+                          </button>
+                        </div>
+                      </>
+                    ) : null}
                   </div>
                 ) : (
                   <>

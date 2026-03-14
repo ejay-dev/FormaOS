@@ -6,11 +6,41 @@ import {
   rateLimitApi,
   createRateLimitHeaders,
 } from '@/lib/security/rate-limiter';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('/api/email/test');
 import { logAdminAction } from '@/lib/admin/audit';
 
-export async function GET(request: Request) {
+type EmailTestPayload = {
+  to?: string;
+  subject?: string;
+  message?: string;
+  ctaText?: string;
+  ctaHref?: string;
+};
+
+async function readPayload(request: Request): Promise<EmailTestPayload> {
+  const url = new URL(request.url);
+  const queryPayload: EmailTestPayload = {
+    to: url.searchParams.get('to') ?? undefined,
+    subject: url.searchParams.get('subject') ?? undefined,
+    message: url.searchParams.get('message') ?? undefined,
+    ctaText: url.searchParams.get('ctaText') ?? undefined,
+    ctaHref: url.searchParams.get('ctaHref') ?? undefined,
+  };
+
+  try {
+    const body = (await request.json()) as EmailTestPayload | null;
+    return { ...queryPayload, ...(body ?? {}) };
+  } catch {
+    return queryPayload;
+  }
+}
+
+export async function POST(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   // Security: Only founders can use this test endpoint
   let founderId: string | undefined;
   try {
@@ -31,14 +61,14 @@ export async function GET(request: Request) {
     );
   }
 
-  const url = new URL(request.url);
-  const toParam = url.searchParams.get('to');
-  const subject = url.searchParams.get('subject') || 'FormaOS Email Test';
+  const payload = await readPayload(request);
+  const toParam = payload.to;
+  const subject = payload.subject || 'FormaOS Email Test';
   const message =
-    url.searchParams.get('message') ||
+    payload.message ||
     'This is a test email from the FormaOS test endpoint.';
-  const ctaText = url.searchParams.get('ctaText');
-  const ctaHref = url.searchParams.get('ctaHref');
+  const ctaText = payload.ctaText;
+  const ctaHref = payload.ctaHref;
 
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM_EMAIL || 'Formaos.team@gmail.com';
@@ -122,4 +152,11 @@ export async function GET(request: Request) {
       { status: 500 },
     );
   }
+}
+
+export async function GET() {
+  return NextResponse.json(
+    { error: 'Method Not Allowed. Use POST.' },
+    { status: 405, headers: { Allow: 'POST' } },
+  );
 }

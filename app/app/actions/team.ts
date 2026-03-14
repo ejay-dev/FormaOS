@@ -7,13 +7,39 @@ import { revalidatePath } from "next/cache";
 import { requirePermission } from "@/app/app/actions/rbac";
 import { logAuditEvent } from "@/app/app/actions/audit-events";
 import { getEntitlementLimit } from "@/lib/billing/entitlements";
+import { createInvitation } from "@/lib/invitations/create-invitation";
+import { sendEmail } from "@/lib/email/send-email";
+
+const VALID_INVITE_ROLES = new Set(["admin", "member", "viewer"]);
+
+type InviteMemberResult =
+  | {
+      success: true;
+      delivery: "sent" | "manual_share_required";
+      inviteId: string;
+      inviteUrl: string;
+    }
+  | {
+      success: false;
+      error: string;
+    };
 
 /**
  * ✅ INVITE MEMBER (Direct Argument Version - NEW)
  * Optimized for Client Components (Modal/Sheet) using React Hook Form.
  */
-export async function inviteMember(email: string, role: string) {
+export async function inviteMember(email: string, role: string): Promise<InviteMemberResult> {
   const supabase = await createSupabaseServerClient();
+  const normalizedEmail = email.trim().toLowerCase();
+  const normalizedRole = role.trim().toLowerCase();
+
+  if (!normalizedEmail || !normalizedEmail.includes("@")) {
+    return { success: false, error: "A valid email address is required." };
+  }
+
+  if (!VALID_INVITE_ROLES.has(normalizedRole)) {
+    return { success: false, error: "Invalid role selected." };
+  }
 
   // 1. Auth Guard
   const { data: { user } } = await supabase.auth.getUser();
@@ -34,37 +60,114 @@ export async function inviteMember(email: string, role: string) {
 
   const limit = await getEntitlementLimit(permissionCtx.orgId, "team_limit");
   if (limit) {
-    const { count } = await supabase
-      .from("org_members")
-      .select("id", { count: "exact", head: true })
-      .eq("organization_id", permissionCtx.orgId);
+    const [{ count: memberCount }, { count: inviteCount }] = await Promise.all([
+      supabase
+        .from("org_members")
+        .select("id", { count: "exact", head: true })
+        .eq("organization_id", permissionCtx.orgId),
+      supabase
+        .from("team_invitations")
+        .select("id", { count: "exact", head: true })
+        .eq("organization_id", permissionCtx.orgId)
+        .eq("status", "pending"),
+    ]);
 
-    if ((count ?? 0) >= limit) {
+    if ((memberCount ?? 0) + (inviteCount ?? 0) >= limit) {
       throw new Error("Team limit reached for current plan.");
     }
   }
 
-  // 3. Send Invite via Supabase Auth
-  const { data: inviteData, error: inviteError } = await supabase
-    .auth.admin.inviteUserByEmail(email, {
-      data: {
-        organization_id: membership.organization_id,
-        role: role, // Stored in metadata for auto-assignment on login
-        invited_by: user.id
-      }
-    });
-
-  if (inviteError) {
-    console.error("Invite Error:", inviteError);
-    return { success: false, error: inviteError.message };
+  if (user.email?.toLowerCase() === normalizedEmail) {
+    return { success: false, error: "You are already a member of this organization." };
   }
 
-  // 4. ✅ SECURITY LOGGING
+  const { data: existingInvite } = await supabase
+    .from("team_invitations")
+    .select("id")
+    .eq("organization_id", permissionCtx.orgId)
+    .eq("email", normalizedEmail)
+    .eq("status", "pending")
+    .maybeSingle();
+
+  if (existingInvite?.id) {
+    return { success: false, error: "Invitation already sent to this email." };
+  }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("email", normalizedEmail)
+    .maybeSingle();
+
+  if (profile?.id) {
+    const { data: existingMember } = await supabase
+      .from("org_members")
+      .select("id")
+      .eq("organization_id", permissionCtx.orgId)
+      .eq("user_id", profile.id)
+      .maybeSingle();
+
+    if (existingMember?.id) {
+      return { success: false, error: "This user is already a member of the organization." };
+    }
+  }
+
+  const invitationResult = await createInvitation({
+    organizationId: permissionCtx.orgId,
+    email: normalizedEmail,
+    role: normalizedRole as "admin" | "member" | "viewer",
+    invitedBy: user.id,
+  });
+
+  if (!invitationResult.success || !invitationResult.data) {
+    const errorMessage =
+      invitationResult.error instanceof Error
+        ? invitationResult.error.message
+        : "Failed to create invitation.";
+    return { success: false, error: errorMessage };
+  }
+
+  const { data: organization } = await supabase
+    .from("organizations")
+    .select("name")
+    .eq("id", permissionCtx.orgId)
+    .maybeSingle();
+
+  const inviteBase =
+    process.env.NEXT_PUBLIC_APP_URL ??
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    "https://app.formaos.com.au";
+  const inviteUrl = `${inviteBase.replace(/\/$/, "")}/accept-invite/${invitationResult.data.token}`;
+  const inviterName =
+    user.user_metadata?.full_name ||
+    user.user_metadata?.name ||
+    user.email?.split("@")[0] ||
+    "A team member";
+  const inviterEmail = user.email ?? process.env.SUPPORT_EMAIL ?? "Formaos.team@gmail.com";
+
+  const emailResult = await sendEmail({
+    type: "invite",
+    to: normalizedEmail,
+    inviterName,
+    inviterEmail,
+    organizationName: organization?.name || "Organization",
+    inviteUrl,
+    role: normalizedRole,
+    organizationId: permissionCtx.orgId,
+    userId: user.id,
+  });
+
+  const delivery = emailResult.success ? "sent" : "manual_share_required";
+
   await logActivity(membership.organization_id, "INVITE_USER", {
-    resourceName: email,
-    event: "Security access granted (Invitation)",
-    assignedRole: role,
-    inviteId: inviteData.user.id
+    resourceName: normalizedEmail,
+    event:
+      delivery === "sent"
+        ? "Invitation created and email sent"
+        : "Invitation created; manual share required",
+    assignedRole: normalizedRole,
+    inviteId: invitationResult.data.id,
+    delivery,
   });
 
   await logProductActivity(
@@ -72,14 +175,15 @@ export async function inviteMember(email: string, role: string) {
     user.id,
     "created",
     {
-      type: "member",
-      id: inviteData.user.id,
-      name: email,
+      type: "invitation",
+      id: invitationResult.data.id,
+      name: normalizedEmail,
       path: "/app/team",
     },
     {
-      role,
+      role: normalizedRole,
       event: "invite_sent",
+      delivery,
     },
   );
 
@@ -87,15 +191,20 @@ export async function inviteMember(email: string, role: string) {
     organizationId: membership.organization_id,
     actorUserId: user.id,
     actorRole: permissionCtx.role,
-    entityType: "user",
-    entityId: inviteData.user.id,
+    entityType: "invitation",
+    entityId: invitationResult.data.id,
     actionType: "USER_INVITED",
-    afterState: { email, role },
+    afterState: { email: normalizedEmail, role: normalizedRole, delivery },
     reason: "invite",
   });
 
   revalidatePath("/app/team");
-  return { success: true };
+  return {
+    success: true,
+    delivery,
+    inviteId: invitationResult.data.id,
+    inviteUrl,
+  };
 }
 
 /**

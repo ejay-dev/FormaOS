@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
       'https://app.formaos.com.au';
     const inviteUrl = `${inviteBase.replace(/\/$/, '')}/accept-invite/${result.data.token}`;
 
-    await sendEmail({
+    const emailResult = await sendEmail({
       type: 'invite',
       to: email,
       inviterName,
@@ -162,6 +162,8 @@ export async function POST(request: NextRequest) {
       userId: data.user.id,
     });
 
+    const delivery = emailResult.success ? 'sent' : 'manual_share_required';
+
     return NextResponse.json({
       success: true,
       data: {
@@ -169,6 +171,8 @@ export async function POST(request: NextRequest) {
         email: result.data.email,
         role: result.data.role,
         expiresAt: result.data.expires_at,
+        inviteUrl,
+        delivery,
       },
     });
   } catch (error) {

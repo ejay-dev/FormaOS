@@ -7,11 +7,25 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { logActivity } from '@/lib/audit-trail';
 import { queueWebhookDelivery } from '@/lib/webhooks/delivery-queue';
 import { dispatchIntegrationEvent } from '@/lib/integrations/manager';
+import { sendAuthEmail } from '@/lib/email/send-auth-email';
 
 const VALID_ROLES = new Set(['owner', 'admin', 'member', 'viewer']);
 const INVITE_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000;
+const DEFAULT_INVITE_BASE = 'https://app.formaos.com.au';
 
 export const runtime = 'nodejs';
+
+function getInviteBase() {
+  const raw =
+    (process.env.NEXT_PUBLIC_APP_URL ||
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      DEFAULT_INVITE_BASE).trim();
+  try {
+    return new URL(raw).origin.replace(/\/$/, '');
+  } catch {
+    return DEFAULT_INVITE_BASE;
+  }
+}
 
 export async function GET(request: Request) {
   const auth = await authenticateV1Request(request, {
@@ -127,22 +141,41 @@ export async function POST(request: Request) {
     return response;
   }
 
-  if (auth.context.userId && 'auth' in admin && admin.auth?.admin?.inviteUserByEmail) {
-    await admin.auth.admin
-      .inviteUserByEmail(email, {
-        data: {
-          organization_id: auth.context.orgId,
-          role,
-          invited_by: auth.context.userId,
-        },
-      })
-      .catch(() => null);
-  }
+  const inviteUrl = `${getInviteBase()}/accept-invite/${token}`;
+  const [{ data: organization }, sessionUserResult] = await Promise.all([
+    admin
+      .from('organizations')
+      .select('name')
+      .eq('id', auth.context.orgId)
+      .maybeSingle(),
+    auth.context.accessType === 'session'
+      ? auth.context.supabase.auth.getUser()
+      : Promise.resolve({ data: { user: null }, error: null }),
+  ]);
+  const invitedByName =
+    sessionUserResult.data.user?.user_metadata?.full_name ||
+    sessionUserResult.data.user?.user_metadata?.name ||
+    sessionUserResult.data.user?.email?.split('@')[0] ||
+    'a team administrator';
+  const emailResult = await sendAuthEmail({
+    to: email,
+    template: 'invite',
+    actionLink: inviteUrl,
+    organizationName: organization?.name || 'your organization',
+    invitedByName,
+  });
+  const delivery =
+    emailResult.success
+      ? { status: 'sent' as const, id: emailResult.id ?? null }
+      : {
+          status: 'manual_share_required' as const,
+          error: emailResult.error ?? 'invite_delivery_failed',
+        };
 
   await logActivity(auth.context.orgId, actorId, 'invite', 'member', {
     entityId: invitation.id,
     entityName: email,
-    details: { role, type: 'team_invitation' },
+    details: { role, type: 'team_invitation', delivery: delivery.status },
   });
 
   await Promise.allSettled([
@@ -167,5 +200,15 @@ export async function POST(request: Request) {
   ]);
 
   await logV1Access(auth.context, 201, 'members:write');
-  return jsonWithContext(auth.context, createEnvelope({ invitation }), { status: 201 });
+  return jsonWithContext(
+    auth.context,
+    createEnvelope({
+      invitation: {
+        ...invitation,
+        inviteUrl,
+        delivery,
+      },
+    }),
+    { status: 201 },
+  );
 }

@@ -1,13 +1,13 @@
 # APP Link Integrity Report
 
-Generated: 2026-03-14T00:39:16.987Z
+Generated: 2026-03-14T14:49:19.238Z
 
 ## Summary
 
-- Total app internal links validated: 157
-- Valid links: 157
+- Total app internal links validated: 166
+- Valid links: 166
 - Broken links: 0
-- App routes discovered: 147
+- App routes discovered: 157
 
 ## Link Validation
 
@@ -29,6 +29,8 @@ Generated: 2026-03-14T00:39:16.987Z
 | `components/command-palette/CommandPalette.tsx` | `/app` | YES | YES | auth | `/app` |
 | `components/dashboard/employee-dashboard.tsx` | `/app` | YES | YES | auth | `/app` |
 | `components/feature-discovery/FeatureDiscoverySystem.tsx` | `/app` | YES | YES | auth | `/app` |
+| `components/notifications/notification-center.tsx` | `/app` | YES | YES | auth | `/app` |
+| `components/notifications/notification-toast.tsx` | `/app` | YES | YES | auth | `/app` |
 | `lib/navigation/industry-sidebar.ts` | `/app` | YES | YES | auth | `/app` |
 | `lib/onboarding/industry-checklists.ts` | `/app` | YES | YES | auth | `/app` |
 | `components/command-palette/CommandPalette.tsx` | `/app/audit` | YES | YES | auth | `/app/audit` |
@@ -59,6 +61,7 @@ Generated: 2026-03-14T00:39:16.987Z
 | `components/automation/ComplianceDashboardWidget.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `components/dashboard/IndustryGuidancePanel.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `components/empty-states/empty-state.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
+| `app/app/actions/compliance-engine.ts` | `/app/compliance/frameworks` | YES | YES | auth | `/app/compliance/frameworks` |
 | `app/app/compliance/page.tsx` | `/app/compliance/frameworks` | YES | YES | auth | `/app/compliance/frameworks` |
 | `app/app/executive/ExecutiveDashboardClient.tsx` | `/app/compliance/frameworks` | YES | YES | auth | `/app/compliance/frameworks` |
 | `lib/onboarding/industry-checklists.ts` | `/app/compliance/frameworks` | YES | YES | auth | `/app/compliance/frameworks` |
@@ -116,14 +119,17 @@ Generated: 2026-03-14T00:39:16.987Z
 | `components/dashboard/employer-dashboard.tsx` | `/app/reports` | YES | YES | auth | `/app/reports` |
 | `lib/navigation/industry-sidebar.ts` | `/app/reports` | YES | YES | auth | `/app/reports` |
 | `lib/onboarding/industry-checklists.ts` | `/app/reports` | YES | YES | auth | `/app/reports` |
+| `app/api/admin/orgs/[orgId]/members/[userId]/route.ts` | `/app/settings` | YES | YES | auth | `/app/settings` |
+| `app/app/settings/integrations/page.tsx` | `/app/settings` | YES | YES | auth | `/app/settings` |
 | `app/app/settings/security/page.tsx` | `/app/settings` | YES | YES | auth | `/app/settings` |
 | `components/command-palette/CommandPalette.tsx` | `/app/settings` | YES | YES | auth | `/app/settings` |
 | `components/dashboard/employer-dashboard.tsx` | `/app/settings` | YES | YES | auth | `/app/settings` |
 | `components/topbar.tsx` | `/app/settings` | YES | YES | auth | `/app/settings` |
 | `components/user-nav.tsx` | `/app/settings` | YES | YES | auth | `/app/settings` |
 | `lib/navigation/industry-sidebar.ts` | `/app/settings` | YES | YES | auth | `/app/settings` |
-| `components/notifications/notification-center.tsx` | `/app/settings/email-preferences` | YES | YES | auth | `/app/settings/email-preferences` |
 | `lib/navigation/industry-sidebar.ts` | `/app/settings/email-preferences` | YES | YES | auth | `/app/settings/email-preferences` |
+| `app/app/settings/page.tsx` | `/app/settings/notifications` | YES | YES | auth | `/app/settings/notifications` |
+| `components/notifications/notification-center.tsx` | `/app/settings/notifications` | YES | YES | auth | `/app/settings/notifications` |
 | `components/command-palette/CommandPalette.tsx` | `/app/settings/security` | YES | YES | auth | `/app/settings/security` |
 | `components/feature-discovery/FeatureDiscoverySystem.tsx` | `/app/staff` | YES | YES | auth | `/app/staff` |
 | `lib/navigation/industry-sidebar.ts` | `/app/staff` | YES | YES | auth | `/app/staff` |
@@ -135,6 +141,7 @@ Generated: 2026-03-14T00:39:16.987Z
 | `lib/navigation/industry-sidebar.ts` | `/app/staff-compliance` | YES | YES | auth | `/app/staff-compliance` |
 | `app/app/certificates/page.tsx` | `/app/staff-compliance/new` | YES | YES | auth | `/app/staff-compliance/new` |
 | `app/app/staff-compliance/page.tsx` | `/app/staff-compliance/new` | YES | YES | auth | `/app/staff-compliance/new` |
+| `app/app/actions/evidence.ts` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
 | `app/app/patients/[id]/page.tsx` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
 | `app/app/staff/page.tsx` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
 | `app/app/tasks/page.tsx` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
@@ -149,6 +156,7 @@ Generated: 2026-03-14T00:39:16.987Z
 | `components/dashboard/employer-dashboard.tsx` | `/app/team` | YES | YES | auth | `/app/team` |
 | `lib/navigation/industry-sidebar.ts` | `/app/team` | YES | YES | auth | `/app/team` |
 | `lib/onboarding/industry-checklists.ts` | `/app/team` | YES | YES | auth | `/app/team` |
+| `app/app/actions/evidence.ts` | `/app/vault` | YES | YES | auth | `/app/vault` |
 | `app/app/evidence/page.tsx` | `/app/vault` | YES | YES | auth | `/app/vault` |
 | `app/app/vault/page.tsx` | `/app/vault` | YES | YES | auth | `/app/vault` |
 | `components/command-palette/CommandPalette.tsx` | `/app/vault` | YES | YES | auth | `/app/vault` |
@@ -170,6 +178,7 @@ Generated: 2026-03-14T00:39:16.987Z
 | `app/app/participants/[id]/page.tsx` | `/app/visits/new` | YES | YES | auth | `/app/visits/new` |
 | `app/app/visits/page.tsx` | `/app/visits/new` | YES | YES | auth | `/app/visits/new` |
 | `app/app/executive/ExecutiveDashboardClient.tsx` | `/app/workflows` | YES | YES | auth | `/app/workflows` |
+| `app/app/workflows/WorkflowManagementClient.tsx` | `/app/workflows/:param` | YES | YES | auth | `/app/workflows/:id` |
 
 ## App Route Inventory
 
@@ -201,6 +210,7 @@ Generated: 2026-03-14T00:39:16.987Z
 - `/admin/trials`
 - `/admin/users`
 - `/app`
+- `/app/activity`
 - `/app/admin`
 - `/app/admin/orgs/:orgId`
 - `/app/audit`
@@ -238,6 +248,8 @@ Generated: 2026-03-14T00:39:16.987Z
 - `/app/settings`
 - `/app/settings/email-history`
 - `/app/settings/email-preferences`
+- `/app/settings/integrations`
+- `/app/settings/notifications`
 - `/app/settings/security`
 - `/app/staff`
 - `/app/staff-compliance`
@@ -251,6 +263,7 @@ Generated: 2026-03-14T00:39:16.987Z
 - `/app/visits/:id`
 - `/app/visits/new`
 - `/app/workflows`
+- `/app/workflows/:id`
 - `/audit-evidence-management`
 - `/auth`
 - `/auth-redirect`
@@ -266,14 +279,18 @@ Generated: 2026-03-14T00:39:16.987Z
 - `/blog/:slug`
 - `/changelog`
 - `/compare`
+- `/compare/auditboard`
 - `/compare/drata`
+- `/compare/hyperproof`
 - `/compare/secureframe`
 - `/compare/vanta`
 - `/contact`
 - `/customer-stories`
 - `/customer-stories/template`
 - `/documentation`
+- `/documentation/api`
 - `/enterprise`
+- `/enterprise-proof`
 - `/evaluate`
 - `/faq`
 - `/features`
@@ -314,6 +331,8 @@ Generated: 2026-03-14T00:39:16.987Z
 - `/trust/subprocessors`
 - `/trust/vendor-assurance`
 - `/unauthorized`
+- `/use-cases/financial-services`
+- `/use-cases/government-public-sector`
 - `/use-cases/healthcare`
 - `/use-cases/incident-management`
 - `/use-cases/ndis-aged-care`

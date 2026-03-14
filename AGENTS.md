@@ -214,7 +214,7 @@ This is a starting point. Add your own conventions, style, and rules as you figu
 <!-- gitnexus:start -->
 # GitNexus MCP
 
-This project is indexed by GitNexus as **formaos** (7558 symbols, 18083 relationships, 300 execution flows).
+This project is indexed by GitNexus as **formaos** (8712 symbols, 26010 relationships, 300 execution flows).
 
 ## Always Start Here
 
