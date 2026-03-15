@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useEffect, useState } from 'react';
+import { memo, useLayoutEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import { selectMarketingRouteMedia } from '@/lib/marketing/background-media';
@@ -10,11 +10,53 @@ function MarketingRouteBackdropInner() {
   const activeMedia = selectMarketingRouteMedia(pathname);
   const [heroTarget, setHeroTarget] = useState<HTMLElement | null>(null);
 
-  useEffect(() => {
-    const nextTarget = document.querySelector<HTMLElement>(
-      '#main-content .mk-hero, #main-content section',
-    );
-    setHeroTarget(nextTarget);
+  useLayoutEffect(() => {
+    let observer: MutationObserver | null = null;
+    let rafId = 0;
+    let attempts = 0;
+    let cancelled = false;
+
+    const resolveTarget = () => {
+      const nextTarget = document.querySelector<HTMLElement>(
+        '#main-content .mk-hero, #main-content section',
+      );
+
+      setHeroTarget((currentTarget) =>
+        currentTarget === nextTarget ? currentTarget : nextTarget,
+      );
+
+      return Boolean(nextTarget);
+    };
+
+    const tick = () => {
+      if (cancelled) return;
+      if (resolveTarget()) return;
+
+      attempts += 1;
+      if (attempts < 120) {
+        rafId = window.requestAnimationFrame(tick);
+      }
+    };
+
+    tick();
+
+    const mainContent = document.getElementById('main-content');
+    if (mainContent) {
+      observer = new MutationObserver(() => {
+        resolveTarget();
+      });
+
+      observer.observe(mainContent, {
+        childList: true,
+        subtree: true,
+      });
+    }
+
+    return () => {
+      cancelled = true;
+      if (rafId) window.cancelAnimationFrame(rafId);
+      observer?.disconnect();
+    };
   }, [pathname]);
 
   if (!activeMedia) return null;

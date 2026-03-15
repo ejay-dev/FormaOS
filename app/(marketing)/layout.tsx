@@ -84,9 +84,11 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
           className="relative z-10 mk-page-bg mk-marketing-flow"
         >
           <MarketingBackgroundLayer />
-          <MarketingRouteBackdrop />
           <div className="relative z-10">
-            <PageTransition>{children}</PageTransition>
+            <MarketingRouteBackdrop />
+            <div className="relative z-10">
+              <PageTransition>{children}</PageTransition>
+            </div>
           </div>
         </main>
         <script
