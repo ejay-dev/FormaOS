@@ -28,6 +28,8 @@ import {
   Baby,
   Landmark,
   Building2,
+  ShieldCheck,
+  Bot,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -704,6 +706,22 @@ export const SAAS_TECHNOLOGY_NAV: NavItem[] = [
     testId: 'nav-audit',
   },
 
+  // Certification
+  {
+    name: 'SOC 2 Readiness',
+    href: '/app/compliance/soc2',
+    icon: ShieldCheck,
+    category: 'Certification',
+    testId: 'nav-soc2',
+  },
+  {
+    name: 'AI Assistant',
+    href: '#ai-assistant',
+    icon: Bot,
+    category: 'Certification',
+    testId: 'nav-ai-assistant',
+  },
+
   // System
   {
     name: 'Settings',
@@ -793,6 +811,22 @@ export const ENTERPRISE_NAV: NavItem[] = [
     icon: History,
     category: 'Intelligence',
     testId: 'nav-audit',
+  },
+
+  // Certification
+  {
+    name: 'SOC 2 Readiness',
+    href: '/app/compliance/soc2',
+    icon: ShieldCheck,
+    category: 'Certification',
+    testId: 'nav-soc2',
+  },
+  {
+    name: 'AI Assistant',
+    href: '#ai-assistant',
+    icon: Bot,
+    category: 'Certification',
+    testId: 'nav-ai-assistant',
   },
 
   // System
@@ -886,6 +920,23 @@ export const DEFAULT_ADMIN_NAV: NavItem[] = [
     category: 'Intelligence',
     testId: 'nav-audit',
   },
+
+  // Certification
+  {
+    name: 'SOC 2 Readiness',
+    href: '/app/compliance/soc2',
+    icon: ShieldCheck,
+    category: 'Certification',
+    testId: 'nav-soc2',
+  },
+  {
+    name: 'AI Assistant',
+    href: '#ai-assistant',
+    icon: Bot,
+    category: 'Certification',
+    testId: 'nav-ai-assistant',
+  },
+
   {
     name: 'Settings',
     href: '/app/settings',

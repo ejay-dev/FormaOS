@@ -12,6 +12,7 @@ import { UpgradeSuggestionEngine } from '@/components/billing/UpgradeSuggestionE
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';
 import { HelpAssistant } from '@/components/help/HelpAssistant';
+import { AiAssistant } from '@/components/ai-assistant/AiAssistant';
 import { NotificationToast } from '@/components/notifications/notification-toast';
 import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
 import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
@@ -198,6 +199,7 @@ export default async function AppLayout({
             <UpgradeModal />
             <UpgradeSuggestionEngine />
             <HelpAssistant />
+            <AiAssistant />
             <NotificationToast
               userId={systemState.user.id}
               orgId={systemState.organization.id}

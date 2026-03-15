@@ -7,7 +7,9 @@ export type EntitlementKey =
   | 'reports'
   | 'framework_evaluations'
   | 'certifications'
-  | 'team_limit';
+  | 'team_limit'
+  | 'ai_assistant'
+  | 'soc2_certification';
 
 const PLAN_ENTITLEMENTS: Record<
   PlanKey,
@@ -26,6 +28,8 @@ const PLAN_ENTITLEMENTS: Record<
       'framework_evaluations',
       'certifications',
       'team_limit',
+      'ai_assistant',
+      'soc2_certification',
     ],
     limits: {
       team_limit: PLAN_CATALOG.pro.limits.maxUsers as number,
@@ -38,6 +42,8 @@ const PLAN_ENTITLEMENTS: Record<
       'framework_evaluations',
       'certifications',
       'team_limit',
+      'ai_assistant',
+      'soc2_certification',
     ],
     limits: {
       team_limit: null as unknown as number, // unlimited

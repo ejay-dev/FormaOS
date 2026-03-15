@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
-import { ShieldCheck, Layers, CheckCircle2 } from 'lucide-react'
+import Link from 'next/link'
+import { ShieldCheck, Layers, CheckCircle2, ArrowRight } from 'lucide-react'
 import { getCurrentOrgId, getOrgFrameworkOverview } from '@/lib/frameworks/org-frameworks'
 import { getControlMappingSummary } from '@/lib/frameworks/mappings'
 import { SkeletonCard, SkeletonTable } from '@/components/ui/skeleton'
@@ -165,6 +166,23 @@ export default async function ComplianceFrameworksPage() {
       }>
         <FrameworkGrid orgId={orgId} />
       </Suspense>
+
+      {/* SOC 2 Readiness CTA */}
+      <Link
+        href="/app/compliance/soc2"
+        className="flex items-center justify-between rounded-2xl border border-cyan-400/20 bg-gradient-to-r from-cyan-400/10 to-transparent p-6 hover:border-cyan-400/30 transition-colors group"
+      >
+        <div className="flex items-center gap-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-cyan-400/20 bg-cyan-400/10">
+            <ShieldCheck className="h-5 w-5 text-cyan-400" />
+          </div>
+          <div>
+            <div className="text-lg font-semibold text-slate-100">SOC 2 Readiness Dashboard</div>
+            <div className="text-sm text-slate-400">Automated evidence checks, gap analysis, and certification tracking</div>
+          </div>
+        </div>
+        <ArrowRight className="h-5 w-5 text-cyan-400 group-hover:translate-x-1 transition-transform" />
+      </Link>
 
       {/* SOC2 mapping table — streams independently */}
       <Suspense fallback={<SkeletonTable rows={4} />}>

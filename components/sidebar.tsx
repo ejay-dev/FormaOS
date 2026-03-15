@@ -57,7 +57,7 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
 
     const candidates = navigation
       .map((item) => item.href)
-      .filter((href) => href !== pathname)
+      .filter((href) => href !== pathname && !href.startsWith('#'))
       .slice(0, 6);
 
     if (candidates.length === 0) return;
@@ -114,6 +114,25 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
               {navigation
                 .filter((item) => item.category === cat)
                 .map((item) => {
+                  // Handle hash-based actions (e.g. #ai-assistant)
+                  if (item.href.startsWith('#')) {
+                    return (
+                      <button
+                        key={item.name}
+                        data-testid={item.testId}
+                        onClick={() => {
+                          window.dispatchEvent(
+                            new CustomEvent('app-action', { detail: item.href.slice(1) }),
+                          );
+                        }}
+                        className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium transition-all text-foreground/70 hover:bg-muted/50 hover:text-foreground"
+                      >
+                        <item.icon className="h-4 w-4 text-foreground/50" />
+                        {item.name}
+                      </button>
+                    );
+                  }
+
                   const isExact = pathname === item.href;
                   const isChildRoute =
                     item.href !== '/app' &&
