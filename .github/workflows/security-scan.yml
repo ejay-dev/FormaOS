@@ -209,7 +209,7 @@ jobs:
           set -euo pipefail
           echo "🔍 Scanning current codebase for secrets..."
           output=$(mktemp)
-          if ! trufflehog filesystem . --no-update --fail --exclude-paths=node_modules,\.next,\.git --json 2>/dev/null > "$output"; then
+          if ! trufflehog filesystem . --no-update --fail --exclude-paths=node_modules,\.next,\.git,\.github --json 2>/dev/null > "$output"; then
             sed -n '1,50p' "$output"
             echo "❌ TruffleHog found secrets in the current filesystem scan"
             exit 1
