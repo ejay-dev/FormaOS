@@ -210,11 +210,13 @@ jobs:
           echo "🔍 Scanning current codebase for secrets..."
           output=$(mktemp)
           if ! trufflehog filesystem . --no-update --fail --only-verified --exclude-paths=node_modules,\.next,\.git,\.github --json 2>/dev/null > "$output"; then
-            sed -n '1,50p' "$output"
+            echo "=== TruffleHog findings (base64) ==="
+            base64 "$output" || true
+            echo "=== End findings ==="
             echo "❌ TruffleHog found secrets in the current filesystem scan"
             exit 1
           fi
-          sed -n '1,50p' "$output"
+          wc -l "$output" || true
 
       - name: Run TruffleHog git history scan
         shell: bash
