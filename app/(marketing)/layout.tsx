@@ -13,6 +13,7 @@ import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';
 import { organizationSchema, softwareApplicationSchema } from '@/lib/seo';
 import MarketingBackgroundLayer from '@/components/motion/MarketingBackgroundLayer';
+import MarketingRouteBackdrop from '@/components/motion/MarketingRouteBackdrop';
 import { PageTransition } from '@/components/motion/PageTransition';
 
 // Force static rendering for all marketing pages
@@ -83,6 +84,7 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
           className="relative z-10 mk-page-bg mk-marketing-flow"
         >
           <MarketingBackgroundLayer />
+          <MarketingRouteBackdrop />
           <div className="relative z-10">
             <PageTransition>{children}</PageTransition>
           </div>

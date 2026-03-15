@@ -1,6 +1,7 @@
 import {
+  getMarketingRouteMediaEntries,
   normalizeMarketingPath,
-  selectMarketingBackgroundTheme,
+  selectMarketingRouteMedia,
 } from '@/lib/marketing/background-media';
 
 describe('normalizeMarketingPath', () => {
@@ -14,38 +15,30 @@ describe('normalizeMarketingPath', () => {
   });
 });
 
-describe('selectMarketingBackgroundTheme', () => {
-  it('uses the executive theme on the homepage', () => {
-    expect(selectMarketingBackgroundTheme('/').id).toBe('executive');
-  });
-
-  it('routes security surfaces to the security media stack', () => {
-    expect(selectMarketingBackgroundTheme('/trust/vendor-assurance').id).toBe(
-      'security',
+describe('selectMarketingRouteMedia', () => {
+  it('returns exact media entries for known marketing routes', () => {
+    expect(selectMarketingRouteMedia('/')?.imageSrc).toBe(
+      '/marketing-media/home.jpg',
     );
-    expect(selectMarketingBackgroundTheme('/compare/vanta').id).toBe(
-      'security',
+    expect(selectMarketingRouteMedia('/trust')?.imageSrc).toBe(
+      '/marketing-media/trust.jpg',
     );
-  });
-
-  it('routes care and industry surfaces to the care media stack', () => {
-    expect(selectMarketingBackgroundTheme('/industries').id).toBe('care');
-    expect(
-      selectMarketingBackgroundTheme('/use-cases/healthcare').id,
-    ).toBe('care');
-  });
-
-  it('routes product and documentation surfaces to operations media', () => {
-    expect(selectMarketingBackgroundTheme('/product').id).toBe('operations');
-    expect(selectMarketingBackgroundTheme('/documentation/api').id).toBe(
-      'operations',
+    expect(selectMarketingRouteMedia('/industries')?.imageSrc).toBe(
+      '/marketing-media/industries.jpg',
     );
   });
 
-  it('routes company and funnel surfaces to executive media', () => {
-    expect(selectMarketingBackgroundTheme('/pricing').id).toBe('executive');
-    expect(selectMarketingBackgroundTheme('/customer-stories').id).toBe(
-      'executive',
-    );
+  it('does not reuse a catch-all image for unknown or dynamic paths', () => {
+    expect(selectMarketingRouteMedia('/blog/a-real-post')).toBeNull();
+    expect(selectMarketingRouteMedia('/not-a-page')).toBeNull();
+  });
+});
+
+describe('getMarketingRouteMediaEntries', () => {
+  it('keeps each route image unique', () => {
+    const entries = getMarketingRouteMediaEntries();
+    const uniqueSources = new Set(entries.map((entry) => entry.imageSrc));
+
+    expect(uniqueSources.size).toBe(entries.length);
   });
 });

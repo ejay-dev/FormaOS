@@ -466,20 +466,6 @@ export function SystemBackground({
           'linear-gradient(180deg, #030712 0%, #0a0f1f 50%, #0f172a 100%)',
       }}
     >
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage:
-            'linear-gradient(180deg, rgba(5,10,20,0.84) 0%, rgba(6,16,24,0.54) 48%, rgba(4,10,18,0.88) 100%), var(--mk-route-photo)',
-          backgroundSize: 'cover, cover',
-          backgroundPosition:
-            'center center, var(--mk-route-photo-position, center center)',
-          backgroundRepeat: 'no-repeat',
-          opacity: 0.24,
-          filter: 'saturate(0.9) contrast(1.02)',
-        }}
-      />
-
       {/* Layer 1: Base gradients with parallax */}
       <motion.div
         className="absolute inset-0"
