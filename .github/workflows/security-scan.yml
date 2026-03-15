@@ -209,14 +209,17 @@ jobs:
           set -euo pipefail
           echo "🔍 Scanning current codebase for secrets..."
           output=$(mktemp)
-          if ! trufflehog filesystem . --no-update --fail --only-verified --exclude-paths=node_modules,\.next,\.git,\.github --json 2>/dev/null > "$output"; then
-            echo "=== TruffleHog findings (base64) ==="
+          errout=$(mktemp)
+          if ! trufflehog filesystem . --no-update --fail --only-verified --exclude-paths=node_modules,\.next,\.git,\.github --json > "$output" 2>"$errout"; then
+            echo "=== TruffleHog stderr ==="
+            cat "$errout" || true
+            echo "=== TruffleHog stdout (base64) ==="
             base64 "$output" || true
-            echo "=== End findings ==="
-            echo "❌ TruffleHog found secrets in the current filesystem scan"
+            echo "=== End ==="
+            echo "❌ TruffleHog scan failed"
             exit 1
           fi
-          wc -l "$output" || true
+          echo "✅ TruffleHog: $(wc -l < "$output") findings (should be 0)"
 
       - name: Run TruffleHog git history scan
         shell: bash
