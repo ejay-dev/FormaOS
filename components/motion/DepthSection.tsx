@@ -7,7 +7,7 @@ interface DepthSectionProps {
   children: ReactNode;
   /** Optional background decoration content (slower parallax) */
   backgroundContent?: ReactNode;
-  /** Fade in/out as section enters/exits viewport */
+  /** Fade in as section enters viewport */
   fade?: boolean;
   /** Additional className */
   className?: string;
@@ -44,11 +44,11 @@ export function DepthSection({
     [40 * backgroundRate, -40 * backgroundRate],
   );
 
-  // Optional fade envelope
+  // Optional fade-in envelope. Exit fade caused readability issues on long sections.
   const contentOpacity = useTransform(
     scrollYProgress,
-    [0, 0.15, 0.85, 1],
-    fade ? [0, 1, 1, 0] : [1, 1, 1, 1],
+    [0, 0.12, 1],
+    fade ? [0, 1, 1] : [1, 1, 1],
   );
 
   if (shouldReduceMotion) {

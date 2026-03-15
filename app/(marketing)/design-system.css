@@ -275,9 +275,9 @@
 .mk-marketing-flow section:first-of-type,
 .mk-marketing-flow .mk-hero {
   position: relative;
-  min-height: clamp(38rem, 84vh, 54rem);
+  min-height: clamp(32rem, 72vh, 48rem);
   padding-top: clamp(7rem, 10vw, 9.5rem);
-  padding-bottom: clamp(4.25rem, 7vw, 6.5rem);
+  padding-bottom: clamp(3rem, 5vw, 4.75rem);
   overflow: hidden;
 }
 
@@ -296,9 +296,9 @@
 @media (max-width: 767px) {
   .mk-marketing-flow section:first-of-type,
   .mk-marketing-flow .mk-hero {
-    min-height: clamp(28rem, 75vh, 40rem);
+    min-height: clamp(24rem, 64vh, 34rem);
     padding-top: clamp(5rem, 8vw, 6.5rem);
-    padding-bottom: clamp(3rem, 5vw, 4rem);
+    padding-bottom: clamp(2.25rem, 4vw, 3rem);
   }
 
   .mk-marketing-flow .pricing-hero--dense,

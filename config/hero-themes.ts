@@ -56,9 +56,9 @@ const defaultEntrance: HeroTheme['entrance'] = {
 };
 
 const defaultScrollExit: HeroTheme['scrollExit'] = {
-  holdUntil: 0.24,
-  fadeStart: 0.82,
-  fadeEnd: 0.96,
+  holdUntil: 0.42,
+  fadeStart: 0.94,
+  fadeEnd: 1,
 };
 
 const defaultParallax: HeroTheme['parallax'] = {
@@ -85,7 +85,7 @@ export const heroThemes: Record<string, HeroTheme> = {
     gradient: { topColor: 'violet', bottomColor: 'blue' },
     tilt: { intensity: 3, glowColor: '139,92,246', perspective: 1200 },
     entrance: { ...defaultEntrance, duration: 1.1 },
-    scrollExit: { holdUntil: 0.15, fadeStart: 0.6, fadeEnd: 0.85 },
+    scrollExit: { holdUntil: 0.36, fadeStart: 0.9, fadeEnd: 1 },
     parallax: defaultParallax,
     particleIntensity: 'normal',
   },

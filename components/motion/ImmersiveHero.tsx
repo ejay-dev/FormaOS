@@ -221,17 +221,17 @@ export function ImmersiveHero({
   const contentOpacity = useTransform(
     scrollYProgress,
     [0, t.scrollExit.holdUntil, t.scrollExit.fadeStart, t.scrollExit.fadeEnd],
-    [1, 1, 0.35, 0],
+    [1, 1, 0.9, 0.72],
   );
   const contentScale = useTransform(
     scrollYProgress,
     [0, t.scrollExit.holdUntil, t.scrollExit.fadeStart, t.scrollExit.fadeEnd],
-    [1, 1, 0.97, 0.94],
+    [1, 1, 0.992, 0.985],
   );
   const contentY = useTransform(
     scrollYProgress,
     [0, t.scrollExit.fadeStart, 1],
-    [0, 52, 110],
+    [0, 18, 40],
   );
 
   // Dynamic will-change: remove after hero scrolls past

@@ -72,7 +72,7 @@ export const FrameworkTrustStrip = memo(function FrameworkTrustStrip({
   return (
     <section
       className={`framework-trust-strip home-section home-section--contrast relative z-10 ${className}`}
-      style={{ height: 80 }}
+      style={{ height: 68 }}
       aria-label="Supported compliance frameworks"
     >
       <div className="absolute inset-0 flex items-center">

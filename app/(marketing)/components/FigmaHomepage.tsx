@@ -202,6 +202,7 @@ export default function FormaOSHomepage({
           {renderSection(
             'framework_trust_strip',
             <FrameworkTrustStrip className="-mt-2 sm:-mt-4 mb-2" />,
+            96,
           )}
           {sectionVisibility.value_proposition !== false
             ? renderSection('value_proposition', <ValueProposition />)
