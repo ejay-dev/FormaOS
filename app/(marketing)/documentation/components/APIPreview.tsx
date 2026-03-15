@@ -696,7 +696,7 @@ export function APIPreview() {
             <CodeBlock
               code={`# Include your Bearer token in every request
 curl -X GET "https://api.formaos.com/v1/compliance" \\
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..." \\
+  -H "Authorization: Bearer <YOUR_API_TOKEN>" \\
   -H "Content-Type: application/json"`}
               filename="auth-example.sh"
               language="bash"
