@@ -22,6 +22,7 @@ import {
   Tag,
   ShieldAlert,
   SlidersHorizontal,
+  Layers,
 } from 'lucide-react';
 import { useState } from 'react';
 import { createSupabaseClient } from '@/lib/supabase/client';
@@ -82,6 +83,7 @@ const NAV_SECTIONS = [
     label: 'Admin',
     items: [
       { name: 'Support', href: '/admin/support', icon: LifeBuoy },
+      { name: 'Bulk Actions', href: '/admin/bulk', icon: Layers },
       { name: 'Settings', href: '/admin/settings', icon: Settings },
     ],
   },

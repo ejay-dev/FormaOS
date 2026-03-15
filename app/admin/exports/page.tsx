@@ -1,5 +1,6 @@
 import { getAdminFetchConfig } from '@/app/admin/lib';
 import { ExternalLink, FileArchive, AlertTriangle } from 'lucide-react';
+import { ExportActionButtons } from '@/app/admin/components/export-action-buttons';
 
 type ExportJob = {
   id: string;
@@ -35,14 +36,14 @@ export default async function AdminExportsPage() {
         <div>
           <h1 className="text-xl font-semibold text-slate-100">Exports</h1>
           <p className="text-xs text-slate-400">
-            Recent evidence packs and certification reports.
+            Recent evidence packs and certification reports. Retry failed jobs or cancel stuck ones.
           </p>
         </div>
       </div>
 
       <div className="rounded-2xl border border-slate-800 bg-slate-900/50">
         <div className="overflow-x-auto">
-          <table className="min-w-[900px] w-full text-left text-sm">
+          <table className="min-w-[960px] w-full text-left text-sm">
             <thead className="border-b border-slate-800 text-slate-400">
               <tr>
                 <th className="px-6 py-4">Type</th>
@@ -51,12 +52,13 @@ export default async function AdminExportsPage() {
                 <th className="px-6 py-4">Created</th>
                 <th className="px-6 py-4">Completed</th>
                 <th className="px-6 py-4">File</th>
+                <th className="px-6 py-4">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800 text-slate-200">
               {jobs.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-10 text-center text-slate-400">
+                  <td colSpan={7} className="px-6 py-10 text-center text-slate-400">
                     No exports found.
                   </td>
                 </tr>
@@ -130,6 +132,13 @@ export default async function AdminExportsPage() {
                         <span className="text-slate-500 text-xs">—</span>
                       )}
                     </td>
+                    <td className="px-6 py-4">
+                      <ExportActionButtons
+                        jobId={job.id}
+                        jobType={job.type}
+                        status={job.status}
+                      />
+                    </td>
                   </tr>
                 ))
               )}
@@ -140,4 +149,3 @@ export default async function AdminExportsPage() {
     </div>
   );
 }
-

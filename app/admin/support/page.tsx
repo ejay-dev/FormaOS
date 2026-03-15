@@ -2,6 +2,7 @@ import { getAdminFetchConfig } from '@/app/admin/lib';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireAdminAccess } from '@/app/app/admin/access';
 import { repairOrgProvisioning, repairUserProvisioning } from './actions';
+import { SupportCaseActions } from '@/app/admin/components/support-case-actions';
 import type { User } from '@supabase/supabase-js';
 
 type SupportRow = {
@@ -350,6 +351,7 @@ export default async function AdminSupportPage({
                 <th className="py-2">Subject</th>
                 <th className="py-2">Status</th>
                 <th className="py-2">Created</th>
+                <th className="py-2">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
@@ -367,8 +369,14 @@ export default async function AdminSupportPage({
                       {row.message}
                     </div>
                   </td>
-                  <td className="py-3">{row.status}</td>
+                  <td className="py-3 capitalize">{row.status}</td>
                   <td className="py-3">{formatDate(row.created_at)}</td>
+                  <td className="py-3">
+                    <SupportCaseActions
+                      requestId={row.id}
+                      currentStatus={row.status}
+                    />
+                  </td>
                 </tr>
               ))}
               {rows.length === 0 ? (

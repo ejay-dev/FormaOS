@@ -255,11 +255,14 @@ export async function proxy(request: NextRequest) {
     const PUBLIC_API_ROUTES = [
       '/api/health',
       '/api/version',
-      '/api/auth/', // OAuth callbacks
-      '/api/cron/', // Vercel cron (secured by CRON_SECRET)
+      '/api/status',        // Platform status feeds
+      '/api/auth/',         // OAuth callbacks
+      '/api/cron/',         // Vercel cron (secured by CRON_SECRET)
       '/api/internal/trigger/', // Trigger.dev callbacks (secured by CRON_SECRET)
-      '/api/runtime/', // Next.js runtime internals
-      '/api/sso/', // SSO callbacks
+      '/api/runtime/',      // Next.js runtime internals
+      '/api/sso/',          // SSO callbacks
+      '/api/trust-packet/', // Public vendor trust packet (rate-limited separately)
+      '/api/webhooks/',     // Stripe/Trigger.dev webhooks (HMAC-secured)
     ];
 
     if (pathname.startsWith('/api/')) {
