@@ -7,6 +7,8 @@
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import { logActivity } from './audit-trail';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 export type WidgetType =
   | 'metric'
@@ -144,6 +146,161 @@ export interface ReportTemplate {
   created_by: string;
   created_at?: string;
   updated_at?: string;
+}
+
+function escapeXml(value: unknown): string {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&apos;');
+}
+
+function normaliseTabularData(value: unknown): Record<string, unknown>[] {
+  if (Array.isArray(value)) {
+    return value.map((item) =>
+      item && typeof item === 'object'
+        ? (item as Record<string, unknown>)
+        : { value: item },
+    );
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.entries(value as Record<string, unknown>).map(([key, nested]) =>
+      nested && typeof nested === 'object' && !Array.isArray(nested)
+        ? { key, ...((nested as Record<string, unknown>) ?? {}) }
+        : { key, value: nested },
+    );
+  }
+
+  return [{ value }];
+}
+
+function buildReportPdf(report: {
+  template: ReportTemplate;
+  data: Record<string, unknown>;
+}): Buffer {
+  const doc = new jsPDF();
+  let y = 20;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.text(report.template.name, 14, y);
+  y += 8;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(11);
+  doc.text(
+    `Generated ${new Date().toLocaleString()} • ${Object.keys(report.data).length} widget(s)`,
+    14,
+    y,
+  );
+  y += 10;
+
+  if (report.template.description) {
+    const lines = doc.splitTextToSize(report.template.description, 180);
+    doc.text(lines, 14, y);
+    y += lines.length * 6 + 4;
+  }
+
+  for (const widget of report.template.widgets) {
+    const widgetData = report.data[widget.id];
+    const rows = normaliseTabularData(widgetData);
+
+    if (y > 240) {
+      doc.addPage();
+      y = 20;
+    }
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.text(widget.title, 14, y);
+    y += 6;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.text(`Type: ${widget.type} • Source: ${widget.dataSource}`, 14, y);
+    y += 4;
+
+    const columns = Array.from(
+      new Set(rows.flatMap((row) => Object.keys(row))),
+    );
+
+    autoTable(doc, {
+      startY: y + 2,
+      head: [columns.length ? columns : ['value']],
+      body: rows.map((row) =>
+        (columns.length ? columns : ['value']).map((column) =>
+          String(row[column] ?? ''),
+        ),
+      ),
+      styles: {
+        fontSize: 9,
+        overflow: 'linebreak',
+      },
+      headStyles: {
+        fillColor: [15, 23, 42],
+      },
+      margin: { left: 14, right: 14 },
+    });
+
+    y = ((doc as jsPDF & { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? y + 12) + 10;
+  }
+
+  const arrayBuffer = doc.output('arraybuffer');
+  return Buffer.from(arrayBuffer);
+}
+
+function buildExcelWorkbook(report: {
+  template: ReportTemplate;
+  data: Record<string, unknown>;
+}): Buffer {
+  const worksheets = report.template.widgets.map((widget) => {
+    const rows = normaliseTabularData(report.data[widget.id]);
+    const columns = Array.from(new Set(rows.flatMap((row) => Object.keys(row))));
+    const headerColumns = columns.length ? columns : ['value'];
+
+    const headerRow = headerColumns
+      .map((column) => `<Cell><Data ss:Type="String">${escapeXml(column)}</Data></Cell>`)
+      .join('');
+    const bodyRows = rows
+      .map((row) => {
+        const cells = headerColumns
+          .map((column) => {
+            const value = row[column];
+            const isNumber = typeof value === 'number' && Number.isFinite(value);
+            const type = isNumber ? 'Number' : 'String';
+            return `<Cell><Data ss:Type="${type}">${escapeXml(value ?? '')}</Data></Cell>`;
+          })
+          .join('');
+        return `<Row>${cells}</Row>`;
+      })
+      .join('');
+
+    const sheetName = widget.title.replace(/[\\/*?:[\]]/g, '').slice(0, 31) || 'Sheet';
+    return `
+      <Worksheet ss:Name="${escapeXml(sheetName)}">
+        <Table>
+          <Row>${headerRow}</Row>
+          ${bodyRows}
+        </Table>
+      </Worksheet>
+    `;
+  });
+
+  const workbook = `<?xml version="1.0"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+    <Title>${escapeXml(report.template.name)}</Title>
+  </DocumentProperties>
+  ${worksheets.join('\n')}
+</Workbook>`;
+
+  return Buffer.from(workbook, 'utf-8');
 }
 
 /**
@@ -480,9 +637,10 @@ export async function exportReport(
     }
 
     case 'pdf':
+      return buildReportPdf(report);
+
     case 'excel':
-      // TODO: Implement PDF and Excel export
-      throw new Error(`${format.toUpperCase()} export not yet implemented`);
+      return buildExcelWorkbook(report);
 
     default:
       throw new Error(`Unsupported format: ${format}`);

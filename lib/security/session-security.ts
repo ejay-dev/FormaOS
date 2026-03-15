@@ -330,9 +330,9 @@ export function logSecurityEvent(event: {
   organizationId?: string;
   ipAddress?: string;
   userAgent?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }): void {
-  const withTimeout = async <T>(promise: Promise<T>, operationName: string) => {
+  const withTimeout = async <T>(promise: Promise<T> | PromiseLike<T>, operationName: string) => {
     let timeoutId: NodeJS.Timeout | undefined;
     const timeoutPromise = new Promise<null>((resolve) => {
       timeoutId = setTimeout(() => {

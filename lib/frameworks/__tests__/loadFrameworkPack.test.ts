@@ -30,7 +30,7 @@ framework:
 `
 
     const admin = createAdminStub()
-    const result = await loadFrameworkPack(yamlPack, { adminClient: admin as any })
+    const result = await loadFrameworkPack(yamlPack, { adminClient: admin as unknown as Parameters<typeof loadFrameworkPack>[1]['adminClient'] })
 
     expect(result.ok).toBe(true)
     expect(admin.calls).toHaveLength(1)
@@ -39,7 +39,7 @@ framework:
   })
 
   test('returns error when framework metadata is missing', async () => {
-    const result = await loadFrameworkPack('{}', { adminClient: createAdminStub() as any })
+    const result = await loadFrameworkPack('{}', { adminClient: createAdminStub() as unknown as Parameters<typeof loadFrameworkPack>[1]['adminClient'] })
     expect(result.ok).toBe(false)
     if (!result.ok) {
       expect(result.error).toMatch(/framework metadata/i)

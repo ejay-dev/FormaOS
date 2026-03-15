@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import type { AuthUser } from '@supabase/supabase-js';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireAdminAccess } from '@/app/app/admin/access';
 import { parsePageParams } from '@/app/api/admin/_utils';
@@ -22,13 +23,13 @@ export async function GET(request: Request) {
     const MAX_SEARCH_SCAN = 2000;
     const PAGE_BATCH_SIZE = 100;
 
-    let users: Record<string, unknown>[] = [];
+    let users: AuthUser[] = [];
     let totalUsers = 0;
 
     if (query) {
       let currentPage = 1;
       while (users.length < MAX_SEARCH_SCAN) {
-        const { data, error } = await (admin as any).auth.admin.listUsers({
+        const { data, error } = await admin.auth.admin.listUsers({
           page: currentPage,
           perPage: PAGE_BATCH_SIZE,
         });
@@ -40,7 +41,7 @@ export async function GET(request: Request) {
         currentPage += 1;
       }
     } else {
-      const { data, error } = await (admin as any).auth.admin.listUsers({
+      const { data, error } = await admin.auth.admin.listUsers({
         page,
         perPage: limit,
       });
@@ -50,8 +51,8 @@ export async function GET(request: Request) {
     }
 
     const queryFilteredUsers = query
-      ? users.filter((candidate: Record<string, unknown>) => {
-          const email = ((candidate.email as string) ?? '').toLowerCase();
+      ? users.filter((candidate) => {
+          const email = (candidate.email ?? '').toLowerCase();
           const fullName = (
             (candidate.user_metadata as Record<string, unknown>)?.full_name ??
             (candidate.user_metadata as Record<string, unknown>)?.name ??
@@ -70,7 +71,7 @@ export async function GET(request: Request) {
       : queryFilteredUsers;
 
     const userIds = pagedUsers.map(
-      (candidate: Record<string, unknown>) => candidate.id,
+      (candidate) => candidate.id,
     );
     const { data: memberships } = userIds.length
       ? await admin
@@ -107,16 +108,16 @@ export async function GET(request: Request) {
       });
     });
 
-    const rows = pagedUsers.map((candidate: Record<string, unknown>) => ({
+    const rows = pagedUsers.map((candidate) => ({
       id: candidate.id,
       email: candidate.email ?? 'N/A',
       provider:
         (candidate.app_metadata as Record<string, unknown>)?.provider ?? 'N/A',
       email_confirmed: Boolean(candidate.email_confirmed_at),
       last_sign_in_at: candidate.last_sign_in_at ?? null,
-      role: membershipMap.get(candidate.id as string)?.role ?? 'N/A',
+      role: membershipMap.get(candidate.id)?.role ?? 'N/A',
       organization:
-        membershipMap.get(candidate.id as string)?.organization ?? 'N/A',
+        membershipMap.get(candidate.id)?.organization ?? 'N/A',
     }));
 
     return NextResponse.json({

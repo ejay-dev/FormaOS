@@ -18,8 +18,16 @@ import { z } from 'zod';
 const inviteSchema = z.object({
   organizationId: uuidSchema,
   email: emailSchema,
-  role: z.enum(['owner', 'admin', 'member', 'viewer']),
+  role: z.enum(['admin', 'member', 'viewer']),
 });
+
+/** Role hierarchy: higher rank = more privileged. Invited role must be < inviter's rank. */
+const ROLE_RANK: Record<string, number> = {
+  owner: 4,
+  admin: 3,
+  member: 2,
+  viewer: 1,
+};
 
 export async function POST(request: NextRequest) {
   try {
@@ -62,6 +70,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Prevent privilege escalation: invited role must be strictly below inviter's role
+    const inviterRank = ROLE_RANK[membership.role?.toLowerCase() ?? ''] ?? 0;
+    const invitedRank = ROLE_RANK[role] ?? 0;
+    if (invitedRank >= inviterRank) {
+      return NextResponse.json(
+        { error: 'Cannot invite someone to a role equal to or above your own' },
+        { status: 403 },
+      );
+    }
+
     try {
       const limit = await getEntitlementLimit(organizationId, 'team_limit');
       if (limit) {
@@ -85,9 +103,9 @@ export async function POST(request: NextRequest) {
           );
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       return NextResponse.json(
-        { error: error?.message || 'Subscription required' },
+        { error: error instanceof Error ? error.message : 'Subscription required' },
         { status: 403 },
       );
     }

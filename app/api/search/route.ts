@@ -72,18 +72,18 @@ export async function GET(request: Request) {
 
     const results: SearchItem[] = [
       ...(policies.data ?? []).map((row: Record<string, unknown>) => ({
-        id: row.id,
-        title: row.title ?? 'Untitled policy',
+        id: String(row.id),
+        title: String(row.title ?? 'Untitled policy'),
         type: 'policy' as const,
       })),
       ...(tasks.data ?? []).map((row: Record<string, unknown>) => ({
-        id: row.id,
-        title: row.title ?? 'Untitled task',
+        id: String(row.id),
+        title: String(row.title ?? 'Untitled task'),
         type: 'task' as const,
       })),
       ...(evidence.data ?? []).map((row: Record<string, unknown>) => ({
-        id: row.id,
-        title: row.title ?? row.file_name ?? 'Untitled evidence',
+        id: String(row.id),
+        title: String(row.title ?? row.file_name ?? 'Untitled evidence'),
         type: 'evidence' as const,
       })),
     ];

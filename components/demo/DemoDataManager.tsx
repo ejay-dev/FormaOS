@@ -7,6 +7,7 @@
 
 import { useEffect, useState } from 'react';
 import { useDemo } from '@/lib/demo/demo-context';
+import { healthLogger } from '@/lib/observability/structured-logger';
 
 export function DemoDataManager() {
   const { isDemoMode } = useDemo();
@@ -23,7 +24,7 @@ export function DemoDataManager() {
     setIsSeeding(true);
 
     try {
-      console.log('[Demo Mode] Seeding demo data...');
+      healthLogger.info('demo_seed_started');
 
       // Get demo organization ID from session or use default
       const demoOrgId = sessionStorage.getItem('formaos_demo_org_id');
@@ -51,7 +52,7 @@ export function DemoDataManager() {
       }
 
       const result = await response.json();
-      console.log('[Demo Mode] Demo data seeded:', result);
+      healthLogger.info('demo_seed_completed', { result });
 
       // Mark as seeded
       setHasSeeded(true);

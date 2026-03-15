@@ -90,7 +90,7 @@ export function CredentialInspectorModal({
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/70 sm:bg-gradient-to-r sm:from-blue-600 sm:via-indigo-600 sm:to-cyan-500/60 backdrop-blur-md p-4 animate-in fade-in duration-300">
+    <div className="fixed inset-0 z-[var(--z-tour)] flex items-end sm:items-center justify-center bg-black/70 sm:bg-gradient-to-r sm:from-blue-600 sm:via-indigo-600 sm:to-cyan-500/60 backdrop-blur-md p-4 animate-in fade-in duration-300">
       <div className="w-full max-w-6xl h-[92vh] sm:h-[90vh] bg-white/10 rounded-t-[3rem] sm:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row">
         
         {/* LEFT: Document Preview (The "Proof") */}

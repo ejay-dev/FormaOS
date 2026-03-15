@@ -187,7 +187,7 @@ export async function processEnterpriseExportJob(
       job = { ...fallbackJob, options: null };
     }
   } else if (enterpriseJob) {
-    job = enterpriseJob as typeof job;
+    job = enterpriseJob as unknown as typeof job;
   }
 
   if (!job) {
@@ -377,7 +377,7 @@ export async function getExportJobStatus(jobId: string): Promise<ExportJobResult
     (process.env.NEXT_PUBLIC_APP_URL ?? '').trim() || 'http://localhost:3000';
   const computedDownloadUrl =
     job.status === 'completed'
-      ? generateSignedDownloadUrl(baseUrl, job.id, (job as any).organization_id ?? '')
+      ? generateSignedDownloadUrl(baseUrl, job.id, (job as Record<string, unknown>).organization_id as string ?? '')
       : undefined;
 
   return {
@@ -419,7 +419,7 @@ async function updateJobStatus(
 async function getComplianceData(orgId: string): Promise<Record<string, unknown>> {
   const admin = createSupabaseAdminClient();
 
-  const safe = async <T>(fn: () => Promise<T>): Promise<T | null> => {
+  const safe = async <T>(fn: () => PromiseLike<T>): Promise<T | null> => {
     try {
       return await fn();
     } catch {
@@ -447,8 +447,8 @@ async function getComplianceData(orgId: string): Promise<Record<string, unknown>
   ]);
 
   return {
-    evaluations: (evaluations as any)?.data || [],
-    snapshots: (snapshots as any)?.data || [],
+    evaluations: (evaluations as { data?: unknown[] } | null)?.data || [],
+    snapshots: (snapshots as { data?: unknown[] } | null)?.data || [],
   };
 }
 
@@ -481,7 +481,7 @@ async function getAuditLogs(
       const q = admin.from(table).select(select).eq('organization_id', orgId);
       return await q.order('created_at', { ascending: false }).limit(10_000);
     } catch {
-      return { data: null as any, error: null as any };
+      return { data: null, error: null } as { data: null; error: null };
     }
   };
 
@@ -611,7 +611,7 @@ async function buildIncludedReportPdfs(
   for (const reportType of types) {
     try {
       const report = await buildReport(orgId, reportType);
-      const pdfBlob = generateReportPdf(report as any, reportType);
+      const pdfBlob = generateReportPdf(report, reportType);
       const ab = await pdfBlob.arrayBuffer();
       pdfs.push({
         name: `reports/${reportType}.pdf`,

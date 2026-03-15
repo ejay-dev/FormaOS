@@ -39,8 +39,9 @@ async function handleStatusCron(request: Request) {
   const startedAt = Date.now();
   let ok = true;
 
+  const checks: Record<string, unknown> = {};
   const details: Record<string, unknown> = {
-    checks: {},
+    checks,
     commit: process.env.VERCEL_GIT_COMMIT_SHA ?? null,
     region: process.env.VERCEL_REGION ?? null,
   };
@@ -53,11 +54,11 @@ async function handleStatusCron(request: Request) {
       .limit(1);
 
     if (res.error) throw new Error(res.error.message);
-    (details.checks as any).database = true;
+    checks.database = true;
   } catch (err) {
     ok = false;
-    (details.checks as any).database = false;
-    (details.checks as any).database_error =
+    checks.database = false;
+    checks.database_error =
       err instanceof Error ? err.message : String(err);
   }
 
@@ -68,15 +69,15 @@ async function handleStatusCron(request: Request) {
       const redis = getRedisClient();
       if (!redis) throw new Error('Redis client unavailable');
       await redis.set('status:ping', String(Date.now()), { ex: 60 });
-      (details.checks as any).redis = true;
+      checks.redis = true;
     } catch (err) {
-      (details.checks as any).redis = false;
-      (details.checks as any).redis_error =
+      checks.redis = false;
+      checks.redis_error =
         err instanceof Error ? err.message : String(err);
       // Redis failure degrades enterprise posture but does not necessarily mean the app is down.
     }
   } else {
-    (details.checks as any).redis = null;
+    checks.redis = null;
   }
 
   const latencyMs = Date.now() - startedAt;

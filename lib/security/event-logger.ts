@@ -219,7 +219,7 @@ async function runDetectionRules(
 }
 
 async function withDbTimeout<T>(
-  promise: Promise<T>,
+  promise: Promise<T> | PromiseLike<T>,
   operationName: string,
 ): Promise<T | null> {
   let timeoutId: NodeJS.Timeout | undefined;
@@ -321,16 +321,19 @@ async function flushSecurityEventsBatch(
     metadata: entry.baseMetadata,
   }));
 
-  const inserted = await withDbTimeout(
+  const inserted = await withDbTimeout<{
+    data: Array<{ id: string }> | null;
+    error: unknown;
+  }>(
     admin.from('security_events').insert(insertPayload).select('id'),
     'security_events.insert',
   );
 
-  if (!inserted || (inserted as any).error || !(inserted as any).data) {
+  if (!inserted || inserted.error || !inserted.data) {
     return;
   }
 
-  const insertedRows = (inserted as any).data as Array<{ id: string }>;
+  const insertedRows = inserted.data as Array<{ id: string }>;
   if (!insertedRows.length) return;
 
   const updates: Array<{ id: string; severity: Severity; metadata: Record<string, unknown> }> = [];

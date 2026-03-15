@@ -64,10 +64,13 @@ export async function getExpiringCredentials(
     .in('user_id', userIds);
 
   const userMap = new Map<string, { name: string; email: string }>(
-    members?.map((m: { user_id: string; profiles?: { full_name?: string; email?: string } }) => [
-      m.user_id,
-      { name: m.profiles?.full_name || 'Unknown', email: m.profiles?.email || '' },
-    ]) || []
+    members?.map((m: { user_id: string; profiles: { full_name?: string; email?: string }[] | { full_name?: string; email?: string } | null }) => {
+      const profile = Array.isArray(m.profiles) ? m.profiles[0] : m.profiles;
+      return [
+        m.user_id,
+        { name: profile?.full_name || 'Unknown', email: profile?.email || '' },
+      ] as [string, { name: string; email: string }];
+    }) || []
   );
 
   return (credentials || []).map((cred: { id: string; user_id: string; credential_type?: string; name?: string; credential_number?: string; expires_at: string; status?: string; document_url?: string }) => {
@@ -129,10 +132,13 @@ export async function getExpiredCredentials(
     .in('user_id', userIds);
 
   const userMap = new Map<string, { name: string; email: string }>(
-    members?.map((m: { user_id: string; profiles?: { full_name?: string; email?: string } }) => [
-      m.user_id,
-      { name: m.profiles?.full_name || 'Unknown', email: m.profiles?.email || '' },
-    ]) || []
+    members?.map((m: { user_id: string; profiles: { full_name?: string; email?: string }[] | { full_name?: string; email?: string } | null }) => {
+      const profile = Array.isArray(m.profiles) ? m.profiles[0] : m.profiles;
+      return [
+        m.user_id,
+        { name: profile?.full_name || 'Unknown', email: profile?.email || '' },
+      ] as [string, { name: string; email: string }];
+    }) || []
   );
 
   return (credentials || []).map((cred: { id: string; user_id: string; credential_type?: string; name?: string; credential_number?: string; expires_at: string; status?: string; document_url?: string }) => {
@@ -255,7 +261,10 @@ export async function getCredentialSummaryByType(
   const summary: Record<
     CredentialType,
     { total: number; verified: number; pending: number; expired: number; expiringSoon: number }
-  > = {} as any;
+  > = {} as Record<
+    CredentialType,
+    { total: number; verified: number; pending: number; expired: number; expiringSoon: number }
+  >;
 
   for (const type of Object.keys(typeLabels) as CredentialType[]) {
     summary[type] = { total: 0, verified: 0, pending: 0, expired: 0, expiringSoon: 0 };

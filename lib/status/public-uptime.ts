@@ -19,7 +19,7 @@ const REDIS_KEY = 'status:public_uptime_checks:v1';
 const REDIS_MAX = 6000;
 
 function isMissingTableError(err: unknown): boolean {
-  const e = err as any;
+  const e = err as Record<string, unknown> | null | undefined;
   const code = String(e?.code ?? '');
   const msg = String(e?.message ?? '');
   return (

@@ -55,7 +55,7 @@ export async function POST(request: Request) {
       : `${appBase}/auth/callback`;
 
     const admin = createSupabaseAdminClient();
-    const { data, error } = await (admin as any).auth.admin.generateLink({
+    const { data, error } = await admin.auth.admin.generateLink({
       type: 'magiclink',
       email,
       options: {

@@ -20,9 +20,15 @@ jest.mock('@/lib/supabase/server', () => ({
   createSupabaseServerClient: jest.fn(async () => supabase.client),
 }));
 
+const sendAuthEmail = jest.fn(async () => ({ success: true, id: 'email-1' }));
+
 jest.mock('@/lib/cache', () => ({
   getCached: (...args: unknown[]) => getCached(...args),
   invalidateCache: (...args: unknown[]) => invalidateCache(...args),
+}));
+
+jest.mock('@/lib/email/send-auth-email', () => ({
+  sendAuthEmail: (...args: unknown[]) => sendAuthEmail(...args),
 }));
 
 describe('multi-org', () => {
@@ -30,6 +36,7 @@ describe('multi-org', () => {
     supabase.reset();
     getCached.mockClear();
     invalidateCache.mockClear();
+    sendAuthEmail.mockClear();
     jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
@@ -226,7 +233,7 @@ describe('multi-org', () => {
     expect(invalidateCache).toHaveBeenCalledWith('user:member-1:organizations');
   });
 
-  it('creates invited memberships for known users and blocks duplicate invites', async () => {
+  it('creates invited memberships for known users and sends an invite email', async () => {
     supabase.setResolver((operation) => {
       if (operation.table === 'team_members' && operation.action === 'select') {
         if (
@@ -245,7 +252,29 @@ describe('multi-org', () => {
         }
       }
       if (operation.table === 'profiles') {
-        return { data: { id: 'user-2' }, error: null };
+        if (
+          operation.filters.some(
+            (filter) => filter.column === 'email' && filter.value === 'user2@example.com',
+          )
+        ) {
+          return { data: { id: 'user-2' }, error: null };
+        }
+        if (
+          operation.filters.some(
+            (filter) => filter.column === 'id' && filter.value === 'admin-1',
+          )
+        ) {
+          return {
+            data: { full_name: 'Admin User', email: 'admin@example.com' },
+            error: null,
+          };
+        }
+      }
+      if (operation.table === 'organizations') {
+        return { data: { name: 'Acme Org' }, error: null };
+      }
+      if (operation.table === 'team_members' && operation.action === 'insert') {
+        return { data: { id: 'membership-2' }, error: null };
       }
       return { data: null, error: null };
     });
@@ -264,6 +293,92 @@ describe('multi-org', () => {
         user_id: 'user-2',
         role: 'viewer',
         status: 'invited',
+      }),
+    );
+    expect(sendAuthEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: 'user2@example.com',
+        template: 'invite',
+        organizationName: 'Acme Org',
+      }),
+    );
+  });
+
+  it('creates a token invitation for unknown users and emails the signup link', async () => {
+    supabase.setResolver((operation) => {
+      if (operation.table === 'team_members' && operation.action === 'select') {
+        if (
+          operation.filters.some(
+            (filter) => filter.column === 'user_id' && filter.value === 'admin-1',
+          )
+        ) {
+          return { data: { role: 'admin' }, error: null };
+        }
+      }
+      if (
+        operation.table === 'profiles' &&
+        operation.filters.some(
+          (filter) =>
+            filter.column === 'email' && filter.value === 'new.user@example.com',
+        )
+      ) {
+        return { data: null, error: null };
+      }
+      if (
+        operation.table === 'team_invitations' &&
+        operation.action === 'select'
+      ) {
+        return { data: null, error: null };
+      }
+      if (
+        operation.table === 'team_invitations' &&
+        operation.action === 'insert'
+      ) {
+        return {
+          data: { id: 'invite-1', token: 'token-1', email: 'new.user@example.com' },
+          error: null,
+        };
+      }
+      if (
+        operation.table === 'profiles' &&
+        operation.filters.some(
+          (filter) => filter.column === 'id' && filter.value === 'admin-1',
+        )
+      ) {
+        return {
+          data: { full_name: 'Admin User', email: 'admin@example.com' },
+          error: null,
+        };
+      }
+      if (operation.table === 'organizations') {
+        return { data: { name: 'Acme Org' }, error: null };
+      }
+      return { data: null, error: null };
+    });
+
+    await expect(
+      inviteToOrganization('org-1', 'admin-1', 'new.user@example.com', 'member'),
+    ).resolves.toBeUndefined();
+
+    const tokenInvite = supabase.operations.find(
+      (operation) =>
+        operation.table === 'team_invitations' &&
+        operation.action === 'insert',
+    );
+    expect(tokenInvite?.values).toEqual(
+      expect.objectContaining({
+        organization_id: 'org-1',
+        email: 'new.user@example.com',
+        role: 'member',
+        status: 'pending',
+      }),
+    );
+    expect(sendAuthEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: 'new.user@example.com',
+        template: 'invite',
+        actionLink: expect.stringContaining('/accept-invite/token-1'),
+        organizationName: 'Acme Org',
       }),
     );
   });
@@ -295,4 +410,3 @@ describe('multi-org', () => {
     expect(invalidateCache).toHaveBeenCalledWith('user:user-9:organizations');
   });
 });
-

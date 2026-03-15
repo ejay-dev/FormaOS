@@ -4,6 +4,7 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { billingLogger } from '@/lib/observability/structured-logger';
 
 export async function autoProvisionTrialAccess(
   supabase: SupabaseClient,
@@ -72,7 +73,10 @@ export async function autoProvisionTrialAccess(
       console.error('[Auto-Provision] Failed to create subscription:', subscriptionError);
     }
 
-    console.log('[Auto-Provision] Trial access created for user:', userId);
+    billingLogger.info('trial_access_auto_provisioned', {
+      userId,
+      organizationId: newOrg.id,
+    });
     return { success: true, organizationId: newOrg.id };
   } catch (error) {
     console.error('[Auto-Provision] Unexpected error:', error);

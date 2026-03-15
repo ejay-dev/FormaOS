@@ -6,6 +6,7 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
+import { jsPDF } from 'jspdf';
 import {
   getComplianceMetrics,
   getTeamMetrics,
@@ -553,14 +554,41 @@ export async function generateAuditReport(
  * This is a placeholder - in production, use puppeteer, wkhtmltopdf, or a service like DocRaptor
  */
 export async function htmlToPdf(html: string): Promise<Buffer> {
-  // TODO: Implement PDF conversion
-  // Options:
-  // 1. Puppeteer: const browser = await puppeteer.launch(); const page = await browser.newPage(); await page.setContent(html); const pdf = await page.pdf();
-  // 2. wkhtmltopdf: const pdf = await wkhtmltopdf(html);
-  // 3. Cloud service: await fetch('https://api.docraptor.com/docs', { method: 'POST', body: { document_content: html } });
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 18;
+  const lineHeight = 6;
+  const plainText = html
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<\/(p|div|h1|h2|h3|li|tr)>/gi, '\n')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\n\s+/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 
-  // For now, return HTML as buffer
-  return Buffer.from(html, 'utf-8');
+  const lines = doc.splitTextToSize(plainText, pageWidth - margin * 2);
+  let y = margin;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(11);
+
+  for (const line of lines) {
+    if (y > pageHeight - margin) {
+      doc.addPage();
+      y = margin;
+    }
+    doc.text(line, margin, y);
+    y += lineHeight;
+  }
+
+  return Buffer.from(doc.output('arraybuffer'));
 }
 
 /**

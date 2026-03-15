@@ -212,7 +212,7 @@ export async function ensureUserProvisioning(
     let userEmail = input.email ?? `user-${input.userId.slice(0, 8)}`;
     let userName = userEmail.split('@')[0];
     try {
-      const { data: userData } = await (admin as any).auth.admin.getUserById(
+      const { data: userData } = await admin.auth.admin.getUserById(
         input.userId,
       );
       if (userData?.user) {

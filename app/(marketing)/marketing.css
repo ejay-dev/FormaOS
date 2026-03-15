@@ -4,9 +4,10 @@
    ========================================================= */
 
 /* ── Design tokens ─────────────────────────────────────── */
+/* RGB values for rgba() usage — derived from globals.css palette */
 :root {
-  --mk-rgb-bg: 10, 15, 28;
-  --mk-rgb-cyan: 13, 148, 136;
+  --mk-rgb-bg: 10, 15, 28; /* --space-800 */
+  --mk-rgb-cyan: 13, 148, 136; /* --cyan-600 range */
   --mk-rgb-cyan-alt: 20, 184, 166;
   --mk-rgb-blue: 45, 212, 191;
   --mk-rgb-blue-alt: 52, 211, 153;
@@ -14,14 +15,12 @@
   --mk-rgb-violet-alt: 251, 191, 36;
   --mk-rgb-emerald: 52, 211, 153;
   --mk-rgb-emerald-alt: 16, 185, 129;
-  --mk-ink: 210, 20%, 96%;
-  --mk-ink-muted: 215, 14%, 62%;
-  --mk-rgb-bg-dark: 3, 7, 18;
+  --mk-rgb-bg-dark: 3, 7, 18; /* --space-950 */
 }
 
 /* ── Shell (page wrapper) ──────────────────────────────── */
 .mk-shell {
-  background-color: rgb(var(--mk-rgb-bg));
+  background-color: var(--mk-bg-1, rgb(var(--mk-rgb-bg)));
   background-image:
     radial-gradient(
       circle at 20% 15%,
@@ -38,10 +37,10 @@
       rgba(var(--mk-rgb-violet), 0.1),
       transparent 60%
     ),
-    linear-gradient(180deg, #0a0f1c 0%, #0d1421 55%, #0f1320 100%);
+    linear-gradient(180deg, var(--mk-bg-1, #0a0f1c) 0%, var(--mk-bg-2, #0d1421) 55%, var(--mk-bg-1, #0f1320) 100%);
   background-repeat: no-repeat;
   background-size: 140% 140%;
-  color: hsl(var(--mk-ink));
+  color: var(--mk-ink);
   position: relative;
   isolation: isolate;
 }
@@ -162,7 +161,7 @@
   );
   transform: scaleX(0);
   transform-origin: center;
-  transition: transform 250ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform var(--motion-fast) var(--ease-signature);
 }
 
 .mk-nav-item:hover::after {
@@ -891,7 +890,7 @@
     transparent 34%
   );
   opacity: 0;
-  transition: opacity 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity var(--motion-fast) var(--ease-signature);
   pointer-events: none;
 }
 
@@ -1124,7 +1123,7 @@
     rgba(var(--mk-rgb-cyan), 0.2),
     transparent 34%
   );
-  transition: opacity 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity var(--motion-fast) var(--ease-signature);
 }
 
 .product-panel:hover {
@@ -1256,7 +1255,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .mk-anchor {
     border-radius: 16px;
     padding: 1.5rem;
@@ -1296,4 +1295,41 @@
     transform: none;
     transition: none;
   }
+}
+
+/* ── Theme-aware marketing overrides ──────────────────── */
+/* Midnight Blue — cool blue-tinted marketing surfaces */
+[data-theme='midnight-blue'] {
+  --mk-rgb-bg: 15, 23, 48;
+  --mk-rgb-cyan: 96, 165, 250;
+  --mk-rgb-blue: 59, 130, 246;
+  --mk-rgb-violet: 139, 92, 246;
+  --mk-rgb-bg-dark: 10, 17, 38;
+}
+
+/* Graphite — neutral warm-grey marketing surfaces */
+[data-theme='graphite'] {
+  --mk-rgb-bg: 17, 17, 21;
+  --mk-rgb-cyan: 148, 163, 184;
+  --mk-rgb-blue: 100, 116, 139;
+  --mk-rgb-violet: 148, 163, 184;
+  --mk-rgb-bg-dark: 9, 9, 11;
+}
+
+/* Aurora — cyan/violet iridescent marketing surfaces */
+[data-theme='aurora'] {
+  --mk-rgb-bg: 8, 15, 28;
+  --mk-rgb-cyan: 34, 211, 238;
+  --mk-rgb-blue: 139, 92, 246;
+  --mk-rgb-violet: 192, 132, 252;
+  --mk-rgb-bg-dark: 3, 7, 18;
+}
+
+/* Light — inverted for light marketing surfaces */
+[data-theme='light'] {
+  --mk-rgb-bg: 248, 250, 252;
+  --mk-rgb-cyan: 14, 116, 144;
+  --mk-rgb-blue: 37, 99, 235;
+  --mk-rgb-violet: 124, 58, 237;
+  --mk-rgb-bg-dark: 241, 245, 249;
 }

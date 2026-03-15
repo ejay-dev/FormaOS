@@ -178,10 +178,13 @@ async function calculateCredentialMetrics(orgId: string): Promise<CredentialMetr
     .in('user_id', userIds);
 
   const userMap = new Map<string, { name: string; email: string }>(
-    members?.map((m: { user_id: string; profiles?: { full_name?: string; email?: string } }) => [
-      m.user_id,
-      { name: m.profiles?.full_name || 'Unknown', email: m.profiles?.email || '' },
-    ]) || []
+    members?.map((m: { user_id: string; profiles: { full_name?: string; email?: string }[] | { full_name?: string; email?: string } | null }) => {
+      const profile = Array.isArray(m.profiles) ? m.profiles[0] : m.profiles;
+      return [
+        m.user_id,
+        { name: profile?.full_name || 'Unknown', email: profile?.email || '' },
+      ] as [string, { name: string; email: string }];
+    }) || []
   );
 
   const total = credentials?.length || 0;

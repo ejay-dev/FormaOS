@@ -67,6 +67,10 @@ export const OPTIONAL_VALIDATED_VARS = [
   'LANGFUSE_TRACING_ENVIRONMENT',
 ] as const;
 
+const PUBLIC_SECRET_ENV_VARS = [
+  'NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY',
+] as const;
+
 /**
  * All required environment variable names
  */
@@ -210,6 +214,15 @@ export function validateAllEnvVars(): EnvValidationResult {
     }
   }
 
+  for (const varName of PUBLIC_SECRET_ENV_VARS) {
+    if (process.env[varName]) {
+      result.valid = false;
+      result.errors.push(
+        `${varName}: service-role secrets must never be exposed via NEXT_PUBLIC_ variables`,
+      );
+    }
+  }
+
   // Validate Supabase URL format
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   if (supabaseUrl) {
@@ -306,6 +319,10 @@ export function getEnvSummary(): Record<string, string> {
 
   summary['SUPABASE_SERVICE_ROLE_KEY'] = process.env.SUPABASE_SERVICE_ROLE_KEY
     ? '(set)'
+    : '(not set)';
+  summary['NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY'] = process.env
+    .NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY
+    ? '(invalid: exposed)'
     : '(not set)';
 
   // Add app URLs

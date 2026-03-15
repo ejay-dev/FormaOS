@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { exportIdentityEvents, queryIdentityEvents } from '@/lib/identity/audit';
+import { exportIdentityEvents, queryIdentityEvents, type IdentityEventType } from '@/lib/identity/audit';
 import { requireOrgAdminContext } from '@/lib/identity/org-access';
 
 export const runtime = 'nodejs';
@@ -11,7 +11,7 @@ export async function GET(request: Request) {
     const format = (url.searchParams.get('format') as 'json' | 'csv' | 'pdf' | null) ?? null;
     const filters = {
       orgId: context.orgId,
-      eventTypes: url.searchParams.getAll('eventType') as any,
+      eventTypes: url.searchParams.getAll('eventType') as IdentityEventType[],
       actorId: url.searchParams.get('actorId'),
       actorLabel: url.searchParams.get('actorLabel'),
       targetUserId: url.searchParams.get('targetUserId'),

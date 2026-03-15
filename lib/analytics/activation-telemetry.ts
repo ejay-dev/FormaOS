@@ -62,8 +62,9 @@ export function trackActivation(
   };
 
   // PostHog tracking (client-side)
-  if (typeof window !== 'undefined' && (window as any).posthog) {
-    (window as any).posthog.capture(event, enrichedProperties);
+  const posthog = typeof window !== 'undefined' ? (window as Window & { posthog?: { capture: (event: string, properties: Record<string, unknown>) => void } }).posthog : undefined;
+  if (posthog) {
+    posthog.capture(event, enrichedProperties);
     return;
   }
 

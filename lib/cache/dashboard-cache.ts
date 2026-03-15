@@ -4,6 +4,8 @@
  * Simple TTL cache for expensive dashboard queries.
  */
 
+import { apiLogger } from '@/lib/observability/structured-logger';
+
 interface CacheEntry<T> {
   data: T;
   expiresAt: number;
@@ -157,12 +159,12 @@ export async function cacheWithFallback<T>(
 
     // Return stale data if available
     if (hasStale && staleEntry) {
-      console.log(`[Cache] Returning stale data for ${key}`);
+      apiLogger.info('dashboard_cache_returning_stale', { key });
       return staleEntry.data as T;
     }
 
     // Return fallback
-    console.log(`[Cache] Returning fallback for ${key}`);
+    apiLogger.info('dashboard_cache_returning_fallback', { key });
     return fallback;
   }
 }
@@ -209,4 +211,3 @@ export async function cacheWithBackgroundRefresh<T>(
     return null;
   }
 }
-

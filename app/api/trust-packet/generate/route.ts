@@ -35,10 +35,11 @@ async function getMembershipOrganization(
     .eq('user_id', userId)
     .maybeSingle();
 
-  if (!legacy.error && (legacy.data as any)?.org_id) {
+  const legacyRow = legacy.data as { org_id?: string; role?: string } | null;
+  if (!legacy.error && legacyRow?.org_id) {
     return {
-      organizationId: (legacy.data as any).org_id,
-      role: (legacy.data as any).role ?? null,
+      organizationId: legacyRow.org_id,
+      role: legacyRow.role ?? null,
     };
   }
 
@@ -148,7 +149,7 @@ export async function POST(request: NextRequest) {
       .eq('organization_id', organizationId)
       .maybeSingle();
     const isEnterprisePlan =
-      (subscriptionRow as any)?.plan_key === 'enterprise';
+      (subscriptionRow as { plan_key?: string } | null)?.plan_key === 'enterprise';
 
     const packetData = {
       generated_at: new Date().toISOString(),

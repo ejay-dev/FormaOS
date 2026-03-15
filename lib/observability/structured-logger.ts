@@ -102,7 +102,7 @@ export function logStructured(log: StructuredLog): void {
       console.warn(fullMessage);
       break;
     default:
-      console.log(fullMessage);
+      console.info(fullMessage);
   }
 }
 

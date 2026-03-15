@@ -31,8 +31,8 @@ export default async function GovernancePage() {
     .eq('user_id', user.id)
     .maybeSingle();
 
-  const orgId = (membership as any)?.organization_id as string | undefined;
-  const role = (membership as any)?.role as string | undefined;
+  const orgId = membership?.organization_id as string | undefined;
+  const role = membership?.role as string | undefined;
   if (!orgId || !role) return null;
 
   const isAdmin = role === 'owner' || role === 'admin';
@@ -85,7 +85,7 @@ export default async function GovernancePage() {
     },
     {
       title: 'Isolation Checks',
-      value: (isolationReport.results?.[0] as any)?.summary?.passed ?? 0,
+      value: (isolationReport.results?.[0] as { summary?: { passed?: number } } | undefined)?.summary?.passed ?? 0,
       description: 'Latest checks passing',
       icon: LockKeyhole,
     },

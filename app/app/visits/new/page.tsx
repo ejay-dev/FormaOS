@@ -82,7 +82,7 @@ export default async function NewVisitPage() {
                 <option value="">Assign later...</option>
                 {staffMembers?.map((member: StaffMember) => (
                   <option key={member.user_id} value={member.user_id}>
-                    {(member.users as { email: string } | null)?.email?.split("@")[0] || member.user_id}
+                    {(() => { const u = member.users; const profile = Array.isArray(u) ? u[0] : u; return (profile as { email?: string } | null)?.email?.split("@")[0] || member.user_id; })()}
                   </option>
                 ))}
               </select>

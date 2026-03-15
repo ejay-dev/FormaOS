@@ -139,9 +139,15 @@ export class FeatureFlagManager {
   }
 
   private checkFounderAccess(): boolean {
-    // TODO: Implement actual founder check
-    // For now, return false for safety
-    return false
+    if (typeof window === 'undefined') {
+      return false
+    }
+
+    try {
+      return localStorage.getItem('formaos_is_founder') === 'true'
+    } catch {
+      return false
+    }
   }
 }
 

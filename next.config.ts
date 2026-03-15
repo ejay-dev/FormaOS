@@ -15,6 +15,15 @@ const nextConfig: NextConfig = {
     ],
   },
   poweredByHeader: false,
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: '**.supabase.co' },
+      { protocol: 'https', hostname: '**.supabase.in' },
+      { protocol: 'https', hostname: '**.googleusercontent.com' },
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+    ],
+  },
 
   generateBuildId: async () =>
     process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 12) ??
@@ -59,6 +68,16 @@ const nextConfig: NextConfig = {
       {
         source: '/signup/:path*',
         destination: '/auth/signup/:path*',
+        permanent: true,
+      },
+      {
+        source: '/admin/organizations',
+        destination: '/admin/orgs',
+        permanent: true,
+      },
+      {
+        source: '/admin/organisations',
+        destination: '/admin/orgs',
         permanent: true,
       },
     ];

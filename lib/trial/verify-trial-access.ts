@@ -9,6 +9,7 @@
  */
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { billingLogger } from '@/lib/observability/structured-logger';
 
 export type TrialAccessResult = {
   hasAccess: boolean;
@@ -132,7 +133,7 @@ export async function verifyTrialAccess(): Promise<TrialAccessResult> {
 
       // Trial is still active
       const daysRemaining = calculateDaysRemaining(trialExpiration);
-      console.log('[verifyTrialAccess] Trial active', {
+      billingLogger.info('trial_access_active', {
         daysRemaining,
         expiresAt: new Date(trialExpiration).toISOString(),
       });

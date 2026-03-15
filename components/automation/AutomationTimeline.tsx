@@ -26,7 +26,7 @@ interface AutomationEvent {
   status: string;
   actionsExecuted: number;
   executedAt: string;
-  errorMessage?: string;
+  errorMessage?: string | null;
 }
 
 const TRIGGER_ICONS: Record<string, any> = {

@@ -8,6 +8,7 @@
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import { logActivity } from '@/lib/activity/feed';
 import { notify } from '@/lib/notifications/engine';
+import { automationLogger } from '@/lib/observability/structured-logger';
 
 export type TriggerType =
   | 'member_added'
@@ -231,7 +232,9 @@ export class WorkflowEngine {
 
       case 'send_email':
         // Integration with email service (SendGrid, Resend, etc.)
-        console.log('Send email:', action.config);
+        automationLogger.warn('workflow_send_email_not_implemented', {
+          actionConfig: action.config,
+        });
         break;
 
       case 'update_status':

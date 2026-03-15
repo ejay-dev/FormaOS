@@ -9,6 +9,7 @@ import { PlanComparisonTable } from '@/components/billing/PlanComparisonTable';
 import { FeatureUsageIndicators } from '@/components/billing/FeatureUsageIndicators';
 import { useOrgId } from '@/lib/stores/app';
 import { createSupabaseClient } from '@/lib/supabase/client';
+import { PageSkeleton } from '@/components/ui/skeleton';
 
 type EntitlementRow = {
   feature_key: string;
@@ -48,7 +49,7 @@ export default function BillingPage() {
     null,
   );
   const [entitlements, setEntitlements] = useState<EntitlementRow[]>([]);
-  const [_isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const planKey = useMemo(
@@ -144,6 +145,10 @@ export default function BillingPage() {
     return (
       <div className="text-center text-slate-400">Loading organization...</div>
     );
+  }
+
+  if (isLoading) {
+    return <PageSkeleton title="Billing & Plan" cards={2} tableRows={0} />;
   }
 
   if (error) {

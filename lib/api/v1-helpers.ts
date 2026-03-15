@@ -46,16 +46,16 @@ export function buildIlikePattern(value: string): string {
   return `%${sanitizeLikeQuery(value)}%`;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic filter builder
+type FilterBuilder = { eq: (...args: any[]) => any; is: (...args: any[]) => any };
+
 export async function countRows(
   table: string,
-  build: (
-    query: ReturnType<ReturnType<typeof createSupabaseAdminClient>['from']>,
-  ) => ReturnType<ReturnType<typeof createSupabaseAdminClient>['from']>,
+  build: (query: FilterBuilder) => PromiseLike<{ count: number | null }>,
 ): Promise<number> {
   const admin = createSupabaseAdminClient();
   const base = admin.from(table).select('id', { count: 'exact', head: true });
-  const query = build(base as never);
-  const { count } = await query;
+  const { count } = await build(base);
   return count ?? 0;
 }
 

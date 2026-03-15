@@ -272,8 +272,10 @@ async function scanAccessControls(
 
   if (members) {
     const without2FA = members.filter(
-      (m: { profiles?: { two_factor_enabled?: boolean } }) =>
-        !m.profiles?.two_factor_enabled,
+      (m: { profiles?: { two_factor_enabled?: boolean }[] | { two_factor_enabled?: boolean } | null }) => {
+        const profile = Array.isArray(m.profiles) ? m.profiles[0] : m.profiles;
+        return !profile?.two_factor_enabled;
+      },
     );
     if (without2FA.length > 0) {
       findings.push({

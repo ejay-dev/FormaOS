@@ -294,8 +294,9 @@ class PerformanceMonitor {
     if (process.env.NODE_ENV !== 'production') return;
 
     // Send to PostHog or other analytics service
-    if (typeof window !== 'undefined' && (window as any).posthog) {
-      (window as any).posthog.capture('performance_metric', {
+    const posthog = typeof window !== 'undefined' ? (window as Window & { posthog?: { capture: (event: string, properties: Record<string, unknown>) => void } }).posthog : undefined;
+    if (posthog) {
+      posthog.capture('performance_metric', {
         metric_name: metric.name,
         metric_value: metric.value,
         session_id: metric.sessionId,

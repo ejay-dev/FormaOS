@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { performanceMonitor } from '@/lib/monitoring';
+import { healthLogger } from '@/lib/observability/structured-logger';
 
 /**
  * Hook to monitor page load performance
@@ -23,13 +24,15 @@ export function usePageLoadMonitoring(pageName: string) {
         const lcpObserver = new PerformanceObserver((lcpList) => {
           const lcpEntry = lcpList.getEntries().at(-1) as PerformanceEntry;
           if (lcpEntry) {
+            const lcpMetrics = lcpEntry as PerformanceEntry & { renderTime?: number; loadTime?: number };
             const lcp =
-              (lcpEntry as any).renderTime ||
-              (lcpEntry as any).loadTime ||
+              lcpMetrics.renderTime ||
+              lcpMetrics.loadTime ||
               lcpEntry.startTime;
             const renderTime = Date.now() - renderStartRef.current;
+            const perfWithMemory = performance as Performance & { memory?: { usedJSHeapSize: number } };
             const memoryUsage =
-              (performance as any).memory?.usedJSHeapSize || 0;
+              perfWithMemory.memory?.usedJSHeapSize || 0;
 
             performanceMonitor.trackPageLoad(
               pageName,
@@ -64,6 +67,11 @@ export function useRenderTime(componentName: string) {
 
   useEffect(() => {
     const renderTime = Date.now() - renderStartRef.current;
-    console.log(`[RENDER] ${componentName}: ${renderTime}ms`);
+    if (process.env.NODE_ENV === 'development') {
+      healthLogger.info('component_render_measured', {
+        componentName,
+        renderTime,
+      });
+    }
   }, [componentName]);
 }

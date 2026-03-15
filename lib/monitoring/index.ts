@@ -3,6 +3,8 @@
  * Provides easy access to all monitoring capabilities
  */
 
+import { healthLogger } from '@/lib/observability/structured-logger';
+
 export { getPerformanceMonitor, usePerformanceMonitor } from './performance';
 export type { PerformanceMetric, WebVitalsMetric } from './performance';
 
@@ -29,7 +31,7 @@ export { log, routeLog } from './server-logger';
  */
 export function initializeMonitoring() {
   // Log initialization
-  console.log('FormaOS monitoring initialized');
+  healthLogger.info('monitoring_initialized');
 }
 
 /**

@@ -87,6 +87,7 @@ export default async function IncidentsPage({
   if (error) {
     console.error("[IncidentsPage] Error fetching incidents:", error);
   }
+  const fetchErrorMessage = error?.message ?? null;
 
   type Incident = NonNullable<typeof incidents>[number];
   const incidentRows = (incidents ?? []) as Incident[];
@@ -95,7 +96,7 @@ export default async function IncidentsPage({
     if (severityFilter && incident.severity.toLowerCase() !== severityFilter) return false;
     if (!qLower) return true;
 
-    const patientName = ((incident.patient as any)?.full_name ?? "").toLowerCase();
+    const patientName = ((incident.patient as { full_name?: string } | null)?.full_name ?? "").toLowerCase();
     const description = (incident.description ?? "").toLowerCase();
     const incidentType = (incident.incident_type ?? "").toLowerCase();
     const location = (incident.location ?? "").toLowerCase();
@@ -147,6 +148,12 @@ export default async function IncidentsPage({
           </Link>
         </div>
       </div>
+
+      {fetchErrorMessage ? (
+        <div className="rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+          Incident data could not be loaded. {fetchErrorMessage}
+        </div>
+      ) : null}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -279,7 +286,7 @@ export default async function IncidentsPage({
                 </td>
                 <td className="px-4 py-3 hidden md:table-cell">
                   <span className="font-medium">
-                    {(incident.patient as any)?.full_name || "-"}
+                    {(incident.patient as { full_name?: string } | null)?.full_name || "-"}
                   </span>
                 </td>
                 <td className="px-4 py-3 hidden lg:table-cell">

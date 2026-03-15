@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { listExecutions } from '@/lib/automation/workflow-store';
+import type { WorkflowExecutionStatus } from '@/lib/automation/workflow-types';
 
 export async function GET(request: NextRequest) {
   const supabase = await createSupabaseServerClient();
@@ -29,7 +30,7 @@ export async function GET(request: NextRequest) {
 
   const { searchParams } = request.nextUrl;
   const workflowId = searchParams.get('workflowId') ?? undefined;
-  const status = searchParams.get('status') as any;
+  const status = (searchParams.get('status') ?? undefined) as WorkflowExecutionStatus | undefined;
   const limit = Number(searchParams.get('limit') ?? '50');
   const offset = Number(searchParams.get('offset') ?? '0');
 

@@ -7,6 +7,8 @@
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import { getCached, invalidateCache } from './cache';
+import { sendAuthEmail } from '@/lib/email/send-auth-email';
+import { createInvitation } from '@/lib/invitations/create-invitation';
 
 export interface Organization {
   id: string;
@@ -30,6 +32,29 @@ export interface OrganizationMembership {
   joined_at?: string;
   invited_by?: string;
   organization: Organization;
+}
+
+export interface PendingOrganizationInvitation {
+  id: string;
+  organization_id: string;
+  user_id: string;
+  role: 'owner' | 'admin' | 'member' | 'viewer';
+  status: 'active' | 'invited' | 'suspended';
+  organization_name?: string;
+  user_email?: string;
+}
+
+function getInviteBase(): string {
+  const raw =
+    process.env.NEXT_PUBLIC_APP_URL ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    'https://app.formaos.com.au';
+
+  try {
+    return new URL(raw).origin.replace(/\/$/, '');
+  } catch {
+    return 'https://app.formaos.com.au';
+  }
 }
 
 /**
@@ -345,8 +370,43 @@ export async function inviteToOrganization(
     .single();
 
   if (!user) {
-    // Send invitation email (to be implemented)
-    throw new Error('User not found. Email invitation not yet implemented.');
+    const invitation = await createInvitation({
+      organizationId,
+      email,
+      role,
+      invitedBy,
+    });
+
+    if (!invitation.success || !invitation.data?.token) {
+      throw new Error('Failed to create organization invitation');
+    }
+
+    const [{ data: organization }, { data: inviterProfile }] = await Promise.all([
+      supabase
+        .from('organizations')
+        .select('name')
+        .eq('id', organizationId)
+        .maybeSingle(),
+      supabase
+        .from('profiles')
+        .select('full_name, email')
+        .eq('id', invitedBy)
+        .maybeSingle(),
+    ]);
+
+    const invitedByName =
+      inviterProfile?.full_name ||
+      inviterProfile?.email?.split('@')[0] ||
+      'a team administrator';
+
+    await sendAuthEmail({
+      to: email,
+      template: 'invite',
+      actionLink: `${getInviteBase()}/accept-invite/${invitation.data.token}`,
+      organizationName: organization?.name || 'your organization',
+      invitedByName,
+    });
+    return;
   }
 
   // Check if already a member
@@ -362,15 +422,83 @@ export async function inviteToOrganization(
   }
 
   // Create membership
-  await supabase.from('team_members').insert({
-    organization_id: organizationId,
-    user_id: user.id,
-    role,
-    status: 'invited',
-    invited_by: invitedBy,
-  });
+  const { data: membership, error: insertError } = await supabase
+    .from('team_members')
+    .insert({
+      organization_id: organizationId,
+      user_id: user.id,
+      role,
+      status: 'invited',
+      invited_by: invitedBy,
+    })
+    .select('id')
+    .single();
 
-  // TODO: Send invitation email
+  if (insertError || !membership?.id) {
+    throw new Error(
+      `Failed to create organization invitation: ${insertError?.message ?? 'Unknown error'}`,
+    );
+  }
+
+  const [{ data: organization }, { data: inviterProfile }] = await Promise.all([
+    supabase
+      .from('organizations')
+      .select('name')
+      .eq('id', organizationId)
+      .maybeSingle(),
+    supabase
+      .from('profiles')
+      .select('full_name, email')
+      .eq('id', invitedBy)
+      .maybeSingle(),
+  ]);
+
+  const invitedByName =
+    inviterProfile?.full_name ||
+    inviterProfile?.email?.split('@')[0] ||
+    'a team administrator';
+
+  await sendAuthEmail({
+    to: email,
+    template: 'invite',
+    actionLink: `${getInviteBase()}/accept-organization-invite/${membership.id}`,
+    organizationName: organization?.name || 'your organization',
+    invitedByName,
+  });
+}
+
+export async function getPendingInvitation(
+  membershipId: string,
+): Promise<PendingOrganizationInvitation | null> {
+  const supabase = await createClient();
+  const { data: membership } = await supabase
+    .from('team_members')
+    .select('id, organization_id, user_id, role, status')
+    .eq('id', membershipId)
+    .maybeSingle();
+
+  if (!membership) {
+    return null;
+  }
+
+  const [{ data: organization }, { data: userProfile }] = await Promise.all([
+    supabase
+      .from('organizations')
+      .select('name')
+      .eq('id', membership.organization_id)
+      .maybeSingle(),
+    supabase
+      .from('profiles')
+      .select('email')
+      .eq('id', membership.user_id)
+      .maybeSingle(),
+  ]);
+
+  return {
+    ...(membership as PendingOrganizationInvitation),
+    organization_name: organization?.name,
+    user_email: userProfile?.email,
+  };
 }
 
 /**

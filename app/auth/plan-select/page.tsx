@@ -28,7 +28,8 @@ export default function PlanSelectPage() {
 
       // If user exists but email is unconfirmed, allow plan selection but surface a note.
       // Supabase may expose `email_confirmed_at` or `confirmed_at` depending on setup.
-      const emailConfirmed = (user as any).email_confirmed_at || (user as any).confirmed_at;
+      const userRecord = user as { email_confirmed_at?: string; confirmed_at?: string };
+      const emailConfirmed = userRecord.email_confirmed_at || userRecord.confirmed_at;
       if (!emailConfirmed) {
         // show a non-blocking notice to the user
         setError("Note: your email is unconfirmed. You can still choose a plan and continue.");

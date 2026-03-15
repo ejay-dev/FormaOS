@@ -91,7 +91,7 @@ export function UpgradeIntelligenceModal({
   ];
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto py-6">
+    <div className="fixed inset-0 z-[var(--z-tour)] flex items-center justify-center overflow-y-auto py-6">
       {/* Backdrop */}
       <div
         role="button"

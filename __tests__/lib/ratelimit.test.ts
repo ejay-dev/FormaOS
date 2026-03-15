@@ -3,10 +3,39 @@
 /**
  * Unit tests for lib/ratelimit.ts (pure functions only)
  *
- * Tests getClientIp() and addRateLimitHeaders() without requiring Redis.
+ * Tests header helpers and fail-closed behavior without requiring Redis.
  */
 
-import { getClientIp, addRateLimitHeaders } from '@/lib/ratelimit';
+const mockGetRedisClient = jest.fn();
+const mockGetRedisConfig = jest.fn(() => ({ restUrl: null, token: null }));
+
+jest.mock('@/lib/redis/client', () => ({
+  getRedisClient: (...args: unknown[]) => mockGetRedisClient(...args),
+  getRedisConfig: (...args: unknown[]) => mockGetRedisConfig(...args),
+}));
+
+import {
+  addRateLimitHeaders,
+  checkApiRateLimit,
+  checkAuthRateLimit,
+  checkFormRateLimit,
+  getClientIp,
+} from '@/lib/ratelimit';
+
+const ORIGINAL_NODE_ENV = process.env.NODE_ENV;
+const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+afterEach(() => {
+  process.env.NODE_ENV = ORIGINAL_NODE_ENV;
+  mockGetRedisClient.mockReset();
+  mockGetRedisConfig.mockReset();
+  mockGetRedisConfig.mockReturnValue({ restUrl: null, token: null });
+  consoleWarnSpy.mockClear();
+});
+
+afterAll(() => {
+  consoleWarnSpy.mockRestore();
+});
 
 // -------------------------------------------------------------------------
 // getClientIp
@@ -97,5 +126,37 @@ describe('addRateLimitHeaders', () => {
     });
 
     expect(result).toBe(response);
+  });
+});
+
+describe('rate-limit fail-closed behavior', () => {
+  it('fails closed for auth rate limits in production when Redis is unavailable', async () => {
+    process.env.NODE_ENV = 'production';
+    mockGetRedisConfig.mockReturnValue({ restUrl: null, token: null });
+
+    const result = await checkAuthRateLimit('203.0.113.10');
+
+    expect(result.success).toBe(false);
+    expect(result.remaining).toBe(0);
+  });
+
+  it('fails closed for API rate limits in production when Redis is unavailable', async () => {
+    process.env.NODE_ENV = 'production';
+    mockGetRedisConfig.mockReturnValue({ restUrl: null, token: null });
+
+    const result = await checkApiRateLimit('api-key-123');
+
+    expect(result.success).toBe(false);
+    expect(result.remaining).toBe(0);
+  });
+
+  it('still fails open for form rate limits when Redis is unavailable', async () => {
+    process.env.NODE_ENV = 'production';
+    mockGetRedisConfig.mockReturnValue({ restUrl: null, token: null });
+
+    const result = await checkFormRateLimit('198.51.100.20');
+
+    expect(result.success).toBe(true);
+    expect(result.remaining).toBe(result.limit);
   });
 });

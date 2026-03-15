@@ -11,10 +11,11 @@ import {
   SUBSCRIPTION_PLANS,
   type SubscriptionTier,
 } from '@/lib/billing/plans';
+import { sendEmail } from '@/lib/email/send-email';
 
 // Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-12-18.acacia' as any,
+  apiVersion: '2024-12-18.acacia' as Stripe.LatestApiVersion,
   typescript: true,
 });
 
@@ -22,6 +23,74 @@ export {
   SUBSCRIPTION_PLANS,
   type SubscriptionTier,
 } from '@/lib/billing/plans';
+
+function getBillingAppBase(): string {
+  const raw =
+    process.env.NEXT_PUBLIC_APP_URL ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    'https://app.formaos.com.au';
+
+  try {
+    return new URL(raw).origin.replace(/\/$/, '');
+  } catch {
+    return 'https://app.formaos.com.au';
+  }
+}
+
+async function sendPaymentFailedNotification(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  organizationId: string,
+): Promise<void> {
+  const [{ data: organization }, { data: memberships }] = await Promise.all([
+    supabase
+      .from('organizations')
+      .select('name')
+      .eq('id', organizationId)
+      .maybeSingle(),
+    supabase
+      .from('org_members')
+      .select('user_id, role')
+      .eq('organization_id', organizationId)
+      .in('role', ['owner', 'admin']),
+  ]);
+
+  const userIds = Array.from(
+    new Set((memberships ?? []).map((membership: any) => membership.user_id).filter(Boolean)),
+  );
+
+  if (!userIds.length) {
+    return;
+  }
+
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('id, email, full_name')
+    .in('id', userIds);
+
+  const appBase = getBillingAppBase();
+  const recipients = (profiles ?? []).filter((profile: any) => profile.email);
+
+  await Promise.allSettled(
+    recipients.map((profile: any) =>
+      sendEmail({
+        type: 'alert',
+        to: profile.email,
+        userName:
+          profile.full_name ||
+          profile.email.split('@')[0] ||
+          'team member',
+        alertType: 'warning',
+        alertTitle: 'Payment failed',
+        alertMessage:
+          'A subscription payment failed and your workspace has been marked past due. Review billing details to avoid service interruption.',
+        actionUrl: `${appBase}/app/billing`,
+        actionText: 'Review billing',
+        organizationId,
+        userId: profile.id,
+      }),
+    ),
+  );
+}
 
 /**
  * Create Stripe customer for organization
@@ -480,7 +549,7 @@ export async function handleStripeWebhook(event: Stripe.Event): Promise<void> {
           })
           .eq('id', org.id);
 
-        // TODO: Send payment failed notification
+        await sendPaymentFailedNotification(supabase, org.id);
       }
       break;
     }

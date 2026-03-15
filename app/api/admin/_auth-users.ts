@@ -31,7 +31,7 @@ export async function fetchAuthEmailsByIds(
   let page = 1;
 
   while (remaining.size > 0 && page <= maxPages) {
-    const { data, error } = await (admin as any).auth.admin.listUsers({
+    const { data, error } = await admin.auth.admin.listUsers({
       page,
       perPage,
     });
@@ -41,7 +41,7 @@ export async function fetchAuthEmailsByIds(
     }
 
     const users = data?.users ?? [];
-    users.forEach((candidate: Record<string, unknown>) => {
+    users.forEach((candidate) => {
       const id = String(candidate?.id ?? '');
       if (!id || !remaining.has(id)) return;
       emails.set(id, String(candidate?.email ?? 'N/A'));

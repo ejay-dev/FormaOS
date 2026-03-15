@@ -3,6 +3,7 @@ import { ReactElement } from 'react';
 import WelcomeEmail from '@/emails/welcome-email';
 import InviteEmail from '@/emails/invite-email';
 import AlertEmail from '@/emails/alert-email';
+import { apiLogger } from '@/lib/observability/structured-logger';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { brand } from '@/config/brand';
 
@@ -136,9 +137,10 @@ export async function sendEmail(data: EmailData) {
     // 1. Policy Enforcement: Check if user wants this email
     const allowed = await checkEmailPreferences(data.to, data.type);
     if (!allowed) {
-      console.log(
-        `[sendEmail] BLOCKED: User ${data.to} opted out of ${data.type}`,
-      );
+      apiLogger.info('email_blocked_by_preference', {
+        to: data.to,
+        emailType: data.type,
+      });
       return { success: false, error: 'OPTED_OUT' };
     }
 

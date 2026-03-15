@@ -51,7 +51,7 @@ export async function syncComplianceFramework(
       {
         code: frameworkCode,
         name: framework.name,
-        version: (framework as any).version ?? null,
+        version: (framework as Record<string, unknown>).version as string ?? null,
         description: framework.description ?? null,
       },
       { onConflict: 'code' },

@@ -22,6 +22,7 @@
  */
 
 import { getRedisClient, getRedisConfig } from '@/lib/redis/client';
+import { randomUUID } from 'crypto';
 
 // Simple rate limiter implementation
 interface RateLimitResult {
@@ -59,29 +60,43 @@ async function rateLimit(
   key: string,
   limit: number,
   windowMs: number,
+  options: { failClosed?: boolean } = {},
 ): Promise<RateLimitResult> {
+  const enforceFailClosed =
+    options.failClosed === true && process.env.NODE_ENV === 'production';
+  const denyRequest = (): RateLimitResult => ({
+    success: false,
+    limit,
+    remaining: 0,
+    reset: Date.now() + windowMs,
+  });
+
   // If Redis not configured, allow all requests (dev mode)
   const { restUrl, token } = getRedisConfig();
   if (!restUrl || !token) {
     logFailOpenWarning('redis_not_configured', { key, limit, windowMs });
-    return {
-      success: true,
-      limit,
-      remaining: limit,
-      reset: Date.now() + windowMs,
-    };
+    return enforceFailClosed
+      ? denyRequest()
+      : {
+          success: true,
+          limit,
+          remaining: limit,
+          reset: Date.now() + windowMs,
+        };
   }
 
   try {
     const redis = getRedisClient();
     if (!redis) {
       logFailOpenWarning('redis_client_unavailable', { key, limit, windowMs });
-      return {
-        success: true,
-        limit,
-        remaining: limit,
-        reset: Date.now() + windowMs,
-      };
+      return enforceFailClosed
+        ? denyRequest()
+        : {
+            success: true,
+            limit,
+            remaining: limit,
+            reset: Date.now() + windowMs,
+          };
     }
     const now = Date.now();
     const windowStart = now - windowMs;
@@ -118,7 +133,7 @@ async function rateLimit(
     // Add current request
     await redis.zadd(redisKey, {
       score: now,
-      member: `${now}-${Math.random()}`,
+      member: `${now}-${randomUUID()}`,
     });
 
     // Set expiry on the key
@@ -138,13 +153,14 @@ async function rateLimit(
       windowMs,
       error: error instanceof Error ? error.message : String(error),
     });
-    // On error, allow the request (fail open)
-    return {
-      success: true,
-      limit,
-      remaining: limit,
-      reset: Date.now() + windowMs,
-    };
+    return enforceFailClosed
+      ? denyRequest()
+      : {
+          success: true,
+          limit,
+          remaining: limit,
+          reset: Date.now() + windowMs,
+        };
   }
 }
 
@@ -153,7 +169,7 @@ async function rateLimit(
  * 10 requests per 10 minutes per IP
  */
 export async function checkAuthRateLimit(ip: string): Promise<RateLimitResult> {
-  return rateLimit(`auth:${ip}`, 10, 10 * 60 * 1000); // 10 req / 10 min
+  return rateLimit(`auth:${ip}`, 10, 10 * 60 * 1000, { failClosed: true }); // 10 req / 10 min
 }
 
 /**
@@ -163,7 +179,7 @@ export async function checkAuthRateLimit(ip: string): Promise<RateLimitResult> {
 export async function checkApiRateLimit(
   identifier: string,
 ): Promise<RateLimitResult> {
-  return rateLimit(`api:${identifier}`, 60, 60 * 1000); // 60 req / min
+  return rateLimit(`api:${identifier}`, 60, 60 * 1000, { failClosed: true }); // 60 req / min
 }
 
 /**
@@ -182,7 +198,7 @@ export async function checkFormRateLimit(ip: string): Promise<RateLimitResult> {
 export async function checkAdminRateLimit(
   identifier: string,
 ): Promise<RateLimitResult> {
-  return rateLimit(`admin:${identifier}`, 30, 60 * 1000); // 30 req / min
+  return rateLimit(`admin:${identifier}`, 30, 60 * 1000, { failClosed: true }); // 30 req / min
 }
 
 /**

@@ -71,7 +71,7 @@ export async function generateCertification(frameworkCode: string, reason?: stri
         .select("id, title, status, verification_status, created_at")
         .eq("organization_id", permissionCtx.orgId)
         .in("id", evidenceIds)
-    : { data: [] as any[], error: null };
+    : { data: [] as Record<string, unknown>[], error: null };
   if (evidenceError) throw evidenceError;
 
   const issuedAt = new Date().toISOString();

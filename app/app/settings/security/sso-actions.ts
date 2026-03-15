@@ -30,8 +30,9 @@ export async function saveOrgSsoConfigAction(input: {
     .eq('organization_id', input.orgId)
     .maybeSingle();
 
-  const planKey = (sub as any)?.plan_key ?? null;
-  const status = (sub as any)?.status ?? null;
+  const subRow = sub as { plan_key?: string; status?: string } | null;
+  const planKey = subRow?.plan_key ?? null;
+  const status = subRow?.status ?? null;
   const isActive = status === 'active' || status === 'trialing';
   const isEnterprise = planKey === 'enterprise';
 

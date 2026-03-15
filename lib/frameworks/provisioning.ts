@@ -146,7 +146,8 @@ export async function provisionFrameworkControls(
 
   const evaluations: any[] = []
 
-  for (const control of complianceControls as any[]) {
+  type ComplianceControlRow = { id: string; code?: string; title?: string; description?: string; risk_level?: string; framework_control_id?: string };
+  for (const control of complianceControls as ComplianceControlRow[]) {
     if (existingControlIds.has(control.id)) {
       continue
     }

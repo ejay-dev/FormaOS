@@ -148,19 +148,27 @@ export async function discoverOrgSsoByEmail(email: string): Promise<{
     return { ok: false, error: 'not_found' };
   }
 
+  const ssoRow = data as unknown as {
+    organization_id: string;
+    enabled: boolean;
+    enforce_sso: boolean;
+    allowed_domains: string[];
+  };
+
   const { data: sub } = await admin
     .from('org_subscriptions')
     .select('plan_key, status')
-    .eq('organization_id', (data as any).organization_id)
+    .eq('organization_id', ssoRow.organization_id)
     .maybeSingle();
 
-  const isActive = (sub as any)?.status === 'active' || (sub as any)?.status === 'trialing';
-  const isEnterprise = (sub as any)?.plan_key === 'enterprise';
+  const subRow = sub as unknown as { plan_key?: string; status?: string } | null;
+  const isActive = subRow?.status === 'active' || subRow?.status === 'trialing';
+  const isEnterprise = subRow?.plan_key === 'enterprise';
 
   return {
     ok: true,
-    orgId: (data as any).organization_id as string,
-    enabled: Boolean((data as any).enabled),
-    enforceSso: Boolean((data as any).enforce_sso && isActive && isEnterprise),
+    orgId: ssoRow.organization_id,
+    enabled: Boolean(ssoRow.enabled),
+    enforceSso: Boolean(ssoRow.enforce_sso && isActive && isEnterprise),
   };
 }

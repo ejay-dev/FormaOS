@@ -1,4 +1,5 @@
 import { createServerClient } from '@supabase/ssr';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { cookies, headers } from 'next/headers';
 import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 import { getSupabaseAnonKey, getSupabaseUrl } from '@/lib/supabase/env';
@@ -140,5 +141,5 @@ function createFallbackSupabaseClient() {
         download: async () => emptyResult,
       }),
     },
-  } as any;
+  } as unknown as SupabaseClient;
 }

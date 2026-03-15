@@ -45,7 +45,7 @@ export async function createPolicy(formData: FormData) {
 
   if (error) throw new Error(`Policy Creation Failed: ${error.message}`);
 
-  await logActivity(membership.organization_id, "CREATE_POLICY" as any, {
+  await logActivity(membership.organization_id, "CREATE_POLICY", {
     resourceName: title,
     event: "Governance policy initialized",
     framework,
@@ -119,7 +119,7 @@ export async function updatePolicy(formData: FormData) {
 
   if (error) throw error;
 
-  await logActivity(oldPolicy.organization_id, "UPDATE_POLICY" as any, {
+  await logActivity(oldPolicy.organization_id, "UPDATE_POLICY", {
     resourceName: title,
     event: "Policy modification",
     previousTitle: oldPolicy.title !== title ? oldPolicy.title : undefined,
@@ -178,7 +178,7 @@ export async function linkArtifactToPolicy(policyId: string, evidenceId: string)
 
   if (error) throw new Error(`Linking Failed: ${error.message}`);
 
-  await logActivity(policy.organization_id, "UPDATE_POLICY" as any, {
+  await logActivity(policy.organization_id, "UPDATE_POLICY", {
     resourceName: policy.title,
     event: "Evidence linked to policy",
     evidenceId,

@@ -4,6 +4,7 @@ import {
   createWorkflow,
   listWorkflows,
 } from '@/lib/automation/workflow-store';
+import type { WorkflowTriggerType } from '@/lib/automation/workflow-types';
 import {
   canManageAutomation,
   getAutomationApiContext,
@@ -24,7 +25,7 @@ export async function GET(request: NextRequest) {
   const workflows = await listWorkflows(context.orgId, {
     enabled:
       enabledParam === null ? undefined : enabledParam === 'true',
-    trigger: trigger as any,
+    trigger: trigger as WorkflowTriggerType | undefined,
   });
 
   return NextResponse.json(workflows);

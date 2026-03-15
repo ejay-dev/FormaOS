@@ -99,7 +99,7 @@ export async function GET() {
     for (const row of rows ?? []) {
       const values = [
         row.id,
-        (row.user as any)?.email ?? '',
+        (row.user as { email?: string } | null)?.email ?? '',
         row.credential_type,
         row.credential_name,
         row.credential_number,

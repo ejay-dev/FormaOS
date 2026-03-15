@@ -106,7 +106,7 @@ export default async function VisitsPage({
     if (statusFilter && visit.status.toLowerCase() !== statusFilter) return false;
     if (!qLower) return true;
 
-    const clientName = ((visit.client as any)?.full_name ?? "").toLowerCase();
+    const clientName = ((visit.client as { full_name?: string } | null)?.full_name ?? "").toLowerCase();
     const visitType = (visit.visit_type ?? "").toLowerCase();
     const serviceCategory = (visit.service_category ?? "").toLowerCase();
     const locationType = (visit.location_type ?? "").toLowerCase();
@@ -253,7 +253,7 @@ export default async function VisitsPage({
                 </td>
                 <td className="px-4 py-3">
                   <span className="font-medium">
-                    {(visit.client as any)?.full_name || "Unassigned"}
+                    {(visit.client as { full_name?: string } | null)?.full_name || "Unassigned"}
                   </span>
                 </td>
                 <td className="px-4 py-3 hidden md:table-cell">
@@ -266,7 +266,7 @@ export default async function VisitsPage({
                 </td>
                 <td className="px-4 py-3 hidden lg:table-cell">
                   <span className="text-sm text-muted-foreground">
-                    {(visit.staff as any)?.email?.split("@")[0] || "-"}
+                    {(visit.staff as { email?: string } | null)?.email?.split("@")[0] || "-"}
                   </span>
                 </td>
                 <td className="px-4 py-3 hidden xl:table-cell">

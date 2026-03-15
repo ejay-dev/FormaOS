@@ -4,7 +4,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import type { ChecklistCompletionCounts } from '@/lib/onboarding/industry-checklists';
 
 async function safeCount(
-  query: Promise<{ count: number | null; error?: any }>,
+  query: PromiseLike<{ count: number | null; error?: unknown }>,
 ): Promise<number> {
   try {
     const { count, error } = await query;

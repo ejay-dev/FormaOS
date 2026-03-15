@@ -5,6 +5,9 @@
 
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+
+/** jsPDF extended with jspdf-autotable's undocumented `lastAutoTable` property */
+type jsPDFWithAutoTable = jsPDF & { lastAutoTable: { finalY: number } };
 import type {
   BaseReportPayload,
   Iso27001ReportPayload,
@@ -247,7 +250,7 @@ function addControlSummarySection(doc: jsPDF, report: BaseReportPayload, startY:
     },
   });
 
-  return (doc as any).lastAutoTable.finalY + 20;
+  return (doc as unknown as jsPDFWithAutoTable).lastAutoTable.finalY + 20;
 }
 
 /**
@@ -288,7 +291,7 @@ function addEvidenceSummarySection(doc: jsPDF, report: BaseReportPayload, startY
     },
   });
 
-  return (doc as any).lastAutoTable.finalY + 20;
+  return (doc as unknown as jsPDFWithAutoTable).lastAutoTable.finalY + 20;
 }
 
 /**
@@ -337,7 +340,7 @@ function addGapsSection(doc: jsPDF, report: BaseReportPayload, startY: number): 
     },
   });
 
-  return (doc as any).lastAutoTable.finalY + 20;
+  return (doc as unknown as jsPDFWithAutoTable).lastAutoTable.finalY + 20;
 }
 
 /**
@@ -414,7 +417,7 @@ function addNdisSections(doc: jsPDF, report: NdisReportPayload): void {
   });
 
   // Staff credentials summary
-  y = (doc as any).lastAutoTable.finalY + 20;
+  y = (doc as unknown as jsPDFWithAutoTable).lastAutoTable.finalY + 20;
   if (y > 240) {
     doc.addPage();
     y = 20;

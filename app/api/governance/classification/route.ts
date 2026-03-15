@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireOrgAdminContext } from '@/lib/identity/org-access';
+import type { DataClassificationLevel } from '@/lib/data-governance/classification';
 import {
   generateClassificationReport,
   upsertClassifications,
@@ -28,13 +29,16 @@ export async function PUT(request: Request) {
     await upsertClassifications(
       context.orgId,
       Array.isArray(body.entries)
-        ? body.entries.map((entry) => ({
-            resource_type: String((entry as any).resource_type ?? (entry as any).resourceType ?? ''),
-            field_name: String((entry as any).field_name ?? (entry as any).fieldName ?? ''),
-            level: (entry as any).level,
-            source: (entry as any).source ?? 'manual',
-            notes: (entry as any).notes ?? null,
-          }))
+        ? body.entries.map((entry) => {
+            const e = entry as Record<string, unknown>;
+            return {
+              resource_type: String(e.resource_type ?? e.resourceType ?? ''),
+              field_name: String(e.field_name ?? e.fieldName ?? ''),
+              level: e.level as DataClassificationLevel,
+              source: (e.source as 'manual' | 'automatic') ?? 'manual',
+              notes: (e.notes as string | null) ?? null,
+            };
+          })
         : [],
     );
     const report = await generateClassificationReport(context.orgId);

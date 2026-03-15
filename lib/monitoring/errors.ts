@@ -7,6 +7,24 @@
 
 import React, { ErrorInfo } from 'react';
 
+interface SentryLike {
+  setUser: (user: { id: string }) => void;
+  setTag: (key: string, value: unknown) => void;
+  addBreadcrumb: (breadcrumb: Record<string, unknown>) => void;
+  setContext: (name: string, context: Record<string, unknown>) => void;
+  captureException: (error: Error, options?: Record<string, unknown>) => void;
+}
+
+interface PostHogLike {
+  capture: (event: string, properties?: Record<string, unknown>) => void;
+}
+
+interface WindowWithVendors extends Window {
+  React?: typeof React;
+  Sentry?: SentryLike;
+  posthog?: PostHogLike;
+}
+
 interface ErrorReport {
   error: Error;
   errorInfo?: ErrorInfo;
@@ -75,7 +93,7 @@ class ErrorTracker {
     });
 
     // Handle React errors (if React is available)
-    if (typeof window !== 'undefined' && (window as any).React) {
+    if (typeof window !== 'undefined' && (window as WindowWithVendors).React) {
       this.initReactErrorBoundary();
     }
   }
@@ -253,7 +271,7 @@ class ErrorTracker {
     if (typeof window === 'undefined') return;
 
     // Check if Sentry is available
-    const Sentry = (window as any).Sentry;
+    const Sentry = (window as WindowWithVendors).Sentry;
     if (!Sentry) return;
 
     try {
@@ -278,7 +296,7 @@ class ErrorTracker {
           timestamp: breadcrumb.timestamp / 1000, // Sentry expects seconds
           category: breadcrumb.category,
           message: breadcrumb.message,
-          level: breadcrumb.level as any,
+          level: breadcrumb.level,
           data: breadcrumb.data,
         });
       });
@@ -310,7 +328,7 @@ class ErrorTracker {
     if (typeof window === 'undefined') return;
 
     // Send to PostHog if available
-    const posthog = (window as any).posthog;
+    const posthog = (window as WindowWithVendors).posthog;
     if (posthog) {
       try {
         posthog.capture('error_occurred', {

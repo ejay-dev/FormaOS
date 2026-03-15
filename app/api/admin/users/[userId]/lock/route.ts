@@ -41,7 +41,7 @@ export async function POST(request: Request, { params }: Params) {
 
     const admin = createSupabaseAdminClient();
     const banDuration = locked ? '876000h' : 'none';
-    await (admin as any).auth.admin.updateUserById(userId, {
+    await admin.auth.admin.updateUserById(userId, {
       ban_duration: banDuration,
     });
 

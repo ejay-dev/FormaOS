@@ -133,7 +133,7 @@ export function UpgradeModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+    <div className="fixed inset-0 z-[var(--z-tour)] flex items-center justify-center">
       {/* Backdrop */}
       <div
         role="button"

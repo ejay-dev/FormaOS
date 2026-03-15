@@ -24,7 +24,7 @@ export function RuntimeDebugIndicator() {
   } = useControlPlaneRuntime();
 
   return (
-    <div className="fixed bottom-3 right-3 z-[120] w-64 rounded-lg border border-slate-700 bg-slate-950/90 p-3 text-[11px] text-slate-200 shadow-xl backdrop-blur">
+    <div className="fixed bottom-3 right-3 z-[var(--z-debug)] w-64 rounded-lg border border-slate-700 bg-slate-950/90 p-3 text-[11px] text-slate-200 shadow-xl backdrop-blur">
       <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-1 font-semibold text-slate-100">
           <Activity className="h-3.5 w-3.5" />

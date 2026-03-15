@@ -17,7 +17,7 @@ const DB_WRITE_TIMEOUT_MS = 200;
 const IS_BUILD_PHASE = process.env.NEXT_PHASE === 'phase-production-build';
 
 async function withDbTimeout<T>(
-  promise: Promise<T>,
+  promise: Promise<T> | PromiseLike<T>,
   operationName: string,
 ): Promise<void> {
   let timeoutId: NodeJS.Timeout | undefined;

@@ -33,7 +33,7 @@ export default async function SecuritySettingsPage() {
     membership?.mfa_required ??
     roleRequiresMFA(membership?.role ?? null);
   const enabled = security?.two_factor_enabled ?? false;
-  const orgId = (membership as any)?.organization_id as string | undefined;
+  const orgId = membership?.organization_id as string | undefined;
   const orgSso = orgId ? await getOrgSsoConfig(orgId) : null;
   const sp = orgId ? buildServiceProviderUrls(orgId) : null;
   const directoryStatus = orgId

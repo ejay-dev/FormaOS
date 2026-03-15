@@ -33,7 +33,7 @@ export function RuntimeOpsGuard({
 
   return (
     <>
-      <div className="sticky top-0 z-[90] border-b border-amber-500/40 bg-amber-500/10 px-4 py-2 text-xs text-amber-100 backdrop-blur-sm">
+      <div className="sticky top-0 z-[var(--z-overlay)] border-b border-amber-500/40 bg-amber-500/10 px-4 py-2 text-xs text-amber-100 backdrop-blur-sm">
         <div className="mx-auto flex max-w-7xl items-center gap-2">
           <AlertTriangle className="h-3.5 w-3.5" />
           <span>
@@ -50,7 +50,7 @@ export function RuntimeOpsGuard({
       </div>
 
       {flags.emergencyLockdown && surface === 'marketing' ? (
-        <div className="pointer-events-none fixed inset-0 z-[95] bg-slate-950/60 backdrop-blur-[2px]">
+        <div className="pointer-events-none fixed inset-0 z-[var(--z-overlay)] bg-slate-950/60 backdrop-blur-[2px]">
           <div className="pointer-events-auto fixed left-1/2 top-24 w-[min(92vw,640px)] -translate-x-1/2 rounded-xl border border-rose-500/40 bg-slate-950/95 p-5 text-rose-100 shadow-2xl">
             <div className="mb-2 flex items-center gap-2 text-sm font-semibold">
               <ShieldAlert className="h-4 w-4" />

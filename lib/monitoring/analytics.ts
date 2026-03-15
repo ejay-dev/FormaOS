@@ -5,6 +5,8 @@
 
 'use client';
 
+import { healthLogger } from '@/lib/observability/structured-logger';
+
 // PostHog window augmentation — avoids `(window as any)` casts throughout
 interface PostHogInstance {
   init: (key: string, config: Record<string, unknown>) => void;
@@ -355,7 +357,11 @@ class Analytics {
 
     // Log in development
     if (process.env.NODE_ENV === 'development') {
-      console.log('Analytics event:', event);
+      healthLogger.info('analytics_event_queued', {
+        event: event.event,
+        timestamp: event.timestamp,
+        properties: event.properties,
+      });
     }
   }
 

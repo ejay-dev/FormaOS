@@ -6,6 +6,7 @@
 'use client';
 
 import { onCLS, onLCP, onTTFB, onINP, Metric } from 'web-vitals';
+import { healthLogger } from '@/lib/observability/structured-logger';
 
 // Custom metrics interface
 export interface CustomMetric {
@@ -84,7 +85,12 @@ function sendToAnalytics(metric: Metric | CustomMetric) {
 
   // Console logging in development
   if (process.env.NODE_ENV === 'development') {
-    console.log('📊 Performance Metric:', metric);
+    healthLogger.info('performance_metric_observed', {
+      name: metric.name,
+      value: metric.value,
+      timestamp: 'timestamp' in metric ? metric.timestamp : Date.now(),
+      metadata: 'metadata' in metric ? metric.metadata : undefined,
+    });
   }
 }
 
@@ -117,7 +123,7 @@ export function initPerformanceMonitoring() {
     });
   });
 
-  console.log('✅ Performance monitoring initialized');
+  healthLogger.info('performance_monitoring_initialized');
 }
 
 /**

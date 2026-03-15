@@ -98,7 +98,7 @@ export async function POST(request: Request) {
     };
 
     // Validate action
-    if (!body.action || !ALLOWED_ACTIONS.includes(body.action as any)) {
+    if (!body.action || !(ALLOWED_ACTIONS as readonly string[]).includes(body.action)) {
       return NextResponse.json(
         { ok: false, error: 'invalid_action' },
         { status: 400 },

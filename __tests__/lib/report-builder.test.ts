@@ -184,9 +184,11 @@ describe('report-builder', () => {
     const csv = await exportReport('template-1', 'org-1', 'csv');
     expect(csv.toString()).toContain('id,title,status');
 
-    await expect(exportReport('template-1', 'org-1', 'pdf')).rejects.toThrow(
-      'PDF export not yet implemented',
-    );
+    const pdf = await exportReport('template-1', 'org-1', 'pdf');
+    expect(pdf.toString('utf-8', 0, 4)).toBe('%PDF');
+
+    const excel = await exportReport('template-1', 'org-1', 'excel');
+    expect(excel.toString()).toContain('<Workbook');
   });
 
   it('disables unsafe custom queries instead of executing raw SQL', async () => {
@@ -277,4 +279,3 @@ describe('report-builder', () => {
     );
   });
 });
-

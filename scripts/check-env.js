@@ -33,6 +33,8 @@ const recommendedKeys = [
   'RESEND_FROM_EMAIL',
 ];
 
+const forbiddenPublicKeys = ['NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY'];
+
 const parseEnvFile = (content) => {
   const entries = {};
   for (const rawLine of content.split(/\r?\n/)) {
@@ -75,10 +77,17 @@ try {
 
 const combinedVars = { ...fileVars, ...process.env };
 const missingRequired = requiredKeys.filter((key) => !combinedVars[key]);
+const exposedPublicSecrets = forbiddenPublicKeys.filter((key) => !!combinedVars[key]);
 
-if (missingRequired.length > 0) {
+if (missingRequired.length > 0 || exposedPublicSecrets.length > 0) {
   console.error('\nMissing required environment variables in .env.local:');
-  console.error(missingRequired.map((key) => `- ${key}`).join('\n'));
+  if (missingRequired.length > 0) {
+    console.error(missingRequired.map((key) => `- ${key}`).join('\n'));
+  }
+  if (exposedPublicSecrets.length > 0) {
+    console.error('\nForbidden public secrets detected:');
+    console.error(exposedPublicSecrets.map((key) => `- ${key}`).join('\n'));
+  }
   console.error('\nUpdate .env.local and re-run npm run dev.');
   process.exit(1);
 }

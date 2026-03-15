@@ -11,6 +11,7 @@ import type { ModuleId, UserEntitlements, NodeState, PlanTier, UserRole } from "
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { apiLogger } from "@/lib/observability/structured-logger";
 
 /**
  * =========================================================
@@ -269,7 +270,10 @@ export async function recordModuleAccess(moduleId: ModuleId): Promise<ActionResu
     // This could write to an analytics table or external service
     const systemState = await fetchSystemState();
     if (systemState) {
-      console.log(`[Module Access] User ${systemState.user.id} accessed ${moduleId}`);
+      apiLogger.info('module_access_recorded', {
+        userId: systemState.user.id,
+        moduleId,
+      });
     }
 
     return { success: true };

@@ -230,7 +230,7 @@ export async function verifyEvidence(
   const resolvedReason = reason && reason.trim().length > 0 ? reason.trim() : "unspecified";
 
   // 4. ✅ COMPLIANCE LOGGING
-  await logActivity(membership.orgId, "UPDATE_POLICY" as any, { // Re-using broad category or add 'VERIFY_EVIDENCE' type
+  await logActivity(membership.orgId, "VERIFY_EVIDENCE", {
     resourceName: evidence.file_name,
     event: `Evidence marked as ${status.toUpperCase()}`,
     evidenceId: evidenceId,

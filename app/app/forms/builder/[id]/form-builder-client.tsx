@@ -8,6 +8,7 @@ import { FIELD_TEMPLATES } from "@/lib/forms/field-templates";
 import { Plus, Trash2, GripVertical, Settings, Eye, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useComplianceAction } from "@/components/compliance-system";
+import { Skeleton } from "@/components/ui/skeleton";
 
 /**
  * =========================================================
@@ -29,6 +30,7 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
   const [saving, setSaving] = useState(false);
   const [_showSaveSuccess, setShowSaveSuccess] = useState(false);
   const [orgId, setOrgId] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const { nodeUpdated, reportError } = useComplianceAction();
 
   useEffect(() => {
@@ -36,6 +38,7 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
   }, [formId]);
 
   async function loadForm() {
+    setLoadError(null);
     try {
       const supabase = createSupabaseClient();
       const { data: auth } = await supabase.auth.getUser();
@@ -67,9 +70,15 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
       if (data) {
         setForm(data);
         setFields(data.fields || []);
+      } else {
+        setLoadError("Form not found or you do not have access to it.");
       }
     } catch (error) {
       console.error("Error loading form:", error);
+      const message =
+        error instanceof Error ? error.message : "Failed to load form data.";
+      setLoadError(message);
+      reportError({ title: "Form load failed", message });
     } finally {
       setLoading(false);
     }
@@ -147,7 +156,68 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
   }
 
   if (loading) {
-    return <div className="p-6 text-slate-400">Loading...</div>;
+    return (
+      <div className="p-6 max-w-6xl mx-auto space-y-6 animate-in fade-in duration-300">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-56" />
+            <Skeleton className="h-4 w-72" />
+          </div>
+          <div className="flex gap-3">
+            <Skeleton className="h-10 w-24 rounded-lg" />
+            <Skeleton className="h-10 w-24 rounded-lg" />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="space-y-3 lg:col-span-2 rounded-lg border border-gray-800 bg-gray-900/50 p-6">
+            <Skeleton className="h-6 w-40" />
+            <Skeleton className="h-20 w-full rounded-lg" />
+            <Skeleton className="h-20 w-full rounded-lg" />
+            <Skeleton className="h-20 w-full rounded-lg" />
+          </div>
+          <div className="space-y-6">
+            <div className="space-y-3 rounded-lg border border-gray-800 bg-gray-900/50 p-6">
+              <Skeleton className="h-5 w-28" />
+              <Skeleton className="h-10 w-full rounded-lg" />
+              <Skeleton className="h-10 w-full rounded-lg" />
+              <Skeleton className="h-10 w-full rounded-lg" />
+            </div>
+            <div className="space-y-3 rounded-lg border border-gray-800 bg-gray-900/50 p-6">
+              <Skeleton className="h-5 w-36" />
+              <Skeleton className="h-24 w-full rounded-lg" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="mx-auto max-w-3xl p-6">
+        <div className="rounded-2xl border border-rose-400/30 bg-rose-500/10 p-6 text-rose-100">
+          <h1 className="text-xl font-semibold">Unable to load form builder</h1>
+          <p className="mt-2 text-sm text-rose-100/80">{loadError}</p>
+          <div className="mt-4 flex gap-3">
+            <button
+              onClick={() => {
+                setLoading(true);
+                void loadForm();
+              }}
+              className="rounded-lg bg-rose-500 px-4 py-2 text-sm font-medium text-white hover:bg-rose-400"
+            >
+              Retry
+            </button>
+            <button
+              onClick={() => router.push("/app")}
+              className="rounded-lg border border-rose-300/30 px-4 py-2 text-sm font-medium text-rose-100 hover:bg-white/10"
+            >
+              Back to dashboard
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (!form) {

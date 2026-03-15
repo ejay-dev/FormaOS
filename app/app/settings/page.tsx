@@ -60,13 +60,16 @@ export default async function SettingsPage() {
   const role = systemState.role;
   const orgId = systemState.organization.id;
 
-  const { data: activeOrganization } = await supabase
+  const { data: activeOrganization, error: activeOrganizationError } = await supabase
     .from('organizations')
     .select('*')
     .eq('id', orgId)
     .maybeSingle();
 
   if (!activeOrganization) {
+    const diagnosticReason =
+      activeOrganizationError?.message ??
+      'No organization record was returned for the active membership.';
     return (
       <div className="flex items-center justify-center p-12 min-h-[60vh]">
         <div className="max-w-2xl bg-white/5 rounded-[2.5rem] border border-white/10 p-12 shadow-2xl text-center animate-in fade-in zoom-in duration-500">
@@ -81,6 +84,20 @@ export default async function SettingsPage() {
             indicates a <strong>Row-Level Security (RLS)</strong> policy
             restriction or a missing membership record.
           </p>
+          <div className="mt-6 rounded-2xl border border-amber-400/20 bg-amber-500/10 p-4 text-left">
+            <p className="text-xs font-black uppercase tracking-widest text-amber-200">
+              Diagnostics
+            </p>
+            <p className="mt-2 text-sm text-amber-100/90">
+              Org ID: <span className="font-mono">{orgId}</span>
+            </p>
+            <p className="mt-1 text-sm text-amber-100/90">
+              Role: <span className="font-mono">{role}</span>
+            </p>
+            <p className="mt-1 text-sm text-amber-100/90">
+              Cause: {diagnosticReason}
+            </p>
+          </div>
           <div className="mt-10 pt-8 border-t border-white/10 flex flex-col gap-3">
             <p className="text-xs font-black text-slate-400 uppercase tracking-widest text-left ml-1">
               Diagnostic Identity

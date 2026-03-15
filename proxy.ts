@@ -16,31 +16,217 @@ const AUTH_PASSTHROUGH_ROUTES = [
   '/auth/callback',
 ];
 
+const LOOP_GUARD_COOKIE = 'fos_rlg';
+const LOOP_GUARD_TTL_MS = 30 * 1000;
+const encoder = new TextEncoder();
+const decoder = new TextDecoder();
+
+type LoopGuardState = {
+  count: number;
+  expiresAt: number;
+  targetPath: string;
+};
+
+function createSecureNonce(): string {
+  if (typeof globalThis.crypto?.randomUUID === 'function') {
+    return globalThis.crypto.randomUUID();
+  }
+
+  if (typeof globalThis.crypto?.getRandomValues === 'function') {
+    const bytes = new Uint8Array(16);
+    globalThis.crypto.getRandomValues(bytes);
+    return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join(
+      '',
+    );
+  }
+
+  throw new Error('Secure random source unavailable for CSP nonce generation');
+}
+
+function encodeBase64Url(bytes: Uint8Array): string {
+  return btoa(String.fromCharCode(...bytes))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/g, '');
+}
+
+function decodeBase64Url(value: string): Uint8Array | null {
+  try {
+    const normalized = value.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = normalized.padEnd(
+      normalized.length + ((4 - (normalized.length % 4)) % 4),
+      '=',
+    );
+    const binary = atob(padded);
+    return Uint8Array.from(binary, (char) => char.charCodeAt(0));
+  } catch {
+    return null;
+  }
+}
+
+function toArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  return bytes.buffer.slice(
+    bytes.byteOffset,
+    bytes.byteOffset + bytes.byteLength,
+  ) as ArrayBuffer;
+}
+
+let loopGuardKeyPromise: Promise<CryptoKey | null> | null = null;
+
+async function getLoopGuardKey(): Promise<CryptoKey | null> {
+  if (loopGuardKeyPromise) {
+    return loopGuardKeyPromise;
+  }
+
+  loopGuardKeyPromise = (async () => {
+    const secret =
+      process.env.MIDDLEWARE_REDIRECT_GUARD_SECRET ??
+      process.env.SUPABASE_SERVICE_ROLE_KEY ??
+      process.env.CRON_SECRET;
+
+    if (!secret || typeof globalThis.crypto?.subtle === 'undefined') {
+      return null;
+    }
+
+    return globalThis.crypto.subtle.importKey(
+      'raw',
+      encoder.encode(secret),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['sign', 'verify'],
+    );
+  })();
+
+  return loopGuardKeyPromise;
+}
+
+async function signLoopGuardPayload(payload: string): Promise<string | null> {
+  const key = await getLoopGuardKey();
+  if (!key) {
+    return null;
+  }
+
+  const signature = await globalThis.crypto.subtle.sign(
+    'HMAC',
+    key,
+    encoder.encode(payload),
+  );
+  return encodeBase64Url(new Uint8Array(signature));
+}
+
+async function serializeLoopGuardState(
+  state: LoopGuardState,
+): Promise<string | null> {
+  const payload = encodeBase64Url(encoder.encode(JSON.stringify(state)));
+  const signature = await signLoopGuardPayload(payload);
+  if (!signature) {
+    return null;
+  }
+
+  return `${payload}.${signature}`;
+}
+
+async function parseLoopGuardState(
+  rawValue: string | undefined,
+): Promise<LoopGuardState | null> {
+  if (!rawValue) {
+    return null;
+  }
+
+  const [payload, signature] = rawValue.split('.');
+  if (!payload || !signature) {
+    return null;
+  }
+
+  const key = await getLoopGuardKey();
+  if (!key || typeof globalThis.crypto?.subtle === 'undefined') {
+    return null;
+  }
+
+  const signatureBytes = decodeBase64Url(signature);
+  if (!signatureBytes) {
+    return null;
+  }
+
+  const isValid = await globalThis.crypto.subtle.verify(
+    'HMAC',
+    key,
+    toArrayBuffer(signatureBytes),
+    encoder.encode(payload),
+  );
+
+  if (!isValid) {
+    return null;
+  }
+
+  const payloadBytes = decodeBase64Url(payload);
+  if (!payloadBytes) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(decoder.decode(payloadBytes)) as Partial<LoopGuardState>;
+    if (
+      typeof parsed.count !== 'number' ||
+      !Number.isFinite(parsed.count) ||
+      parsed.count < 0 ||
+      typeof parsed.expiresAt !== 'number' ||
+      !Number.isFinite(parsed.expiresAt) ||
+      parsed.expiresAt <= Date.now() ||
+      typeof parsed.targetPath !== 'string' ||
+      !parsed.targetPath.startsWith('/')
+    ) {
+      return null;
+    }
+
+    return {
+      count: parsed.count,
+      expiresAt: parsed.expiresAt,
+      targetPath: parsed.targetPath,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function setLoopGuardCookie(
+  response: NextResponse,
+  request: NextRequest,
+  value: string | null,
+): void {
+  const secure = request.nextUrl.protocol === 'https:';
+
+  response.cookies.set(LOOP_GUARD_COOKIE, value ?? '', {
+    httpOnly: true,
+    maxAge: value ? LOOP_GUARD_TTL_MS / 1000 : 0,
+    path: '/',
+    sameSite: 'lax',
+    secure,
+  });
+}
+
 export async function proxy(request: NextRequest) {
   try {
-    const nonce = (() => {
-      if (typeof globalThis.crypto?.randomUUID === 'function') {
-        return globalThis.crypto.randomUUID();
-      }
-      // Cryptographic fallback for environments without randomUUID
-      if (typeof globalThis.crypto?.getRandomValues === 'function') {
-        const bytes = new Uint8Array(16);
-        globalThis.crypto.getRandomValues(bytes);
-        return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join(
-          '',
-        );
-      }
-      // Non-cryptographic last resort — should never be reached in any supported runtime
-      return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
-    })();
+    const nonce = createSecureNonce();
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set('x-nonce', nonce);
     const response = NextResponse.next({
       request: { headers: requestHeaders },
     });
     const startTime = Date.now();
+    const priorLoopGuardState = await parseLoopGuardState(
+      request.cookies.get(LOOP_GUARD_COOKIE)?.value,
+    );
 
     const pathname = request.nextUrl.pathname;
+    const finalizePassThrough = (passThroughResponse: NextResponse) => {
+      setLoopGuardCookie(passThroughResponse, request, null);
+      passThroughResponse.headers.set(
+        'Server-Timing',
+        `mw;dur=${Date.now() - startTime}`,
+      );
+      return passThroughResponse;
+    };
 
     // -------------------------------
     // CORS — Public REST API v1
@@ -51,13 +237,14 @@ export async function proxy(request: NextRequest) {
       const { getCorsHeaders } = await import('@/lib/api/cors');
       const corsH = getCorsHeaders(request);
       if (request.method === 'OPTIONS') {
-        return new NextResponse(null, { status: 204, headers: corsH });
+        return finalizePassThrough(
+          new NextResponse(null, { status: 204, headers: corsH }),
+        );
       }
       Object.entries(corsH).forEach(([k, v]) =>
         response.headers.set(k, v),
       );
-      response.headers.set('Server-Timing', `mw;dur=${Date.now() - startTime}`);
-      return response;
+      return finalizePassThrough(response);
     }
 
     // -------------------------------
@@ -87,15 +274,16 @@ export async function proxy(request: NextRequest) {
             (c) => c.name.startsWith('sb-') && c.name.includes('auth-token'),
           );
         if (!hasSessionCookieForApi) {
-          return NextResponse.json(
-            { error: 'Unauthorized' },
-            { status: 401, headers: { 'Cache-Control': 'no-store' } },
+          return finalizePassThrough(
+            NextResponse.json(
+              { error: 'Unauthorized' },
+              { status: 401, headers: { 'Cache-Control': 'no-store' } },
+            ),
           );
         }
       }
       // API routes don't need further middleware processing (redirects, CSP, etc.)
-      response.headers.set('Server-Timing', `mw;dur=${Date.now() - startTime}`);
-      return response;
+      return finalizePassThrough(response);
     }
 
     const middlewareDebug = process.env.MIDDLEWARE_DEBUG === 'true';
@@ -109,23 +297,19 @@ export async function proxy(request: NextRequest) {
         console.log('[Middleware] timing', { label, path: pathname, ms });
       }
     };
-    const redirectWithLoopGuard = (
+    const redirectWithLoopGuard = async (
       targetUrl: URL,
       userExists: boolean,
       reason: string,
     ) => {
-      const LOOP_COUNT_PARAM = '__rl';
-      const LOOP_TARGET_PARAM = '__rlt';
-      const prevTarget = request.nextUrl.searchParams.get(LOOP_TARGET_PARAM);
-      const prevCountRaw = request.nextUrl.searchParams.get(LOOP_COUNT_PARAM);
-      const prevCount = prevCountRaw ? Number.parseInt(prevCountRaw, 10) : 0;
       const targetPath = targetUrl.pathname;
-      const nextCount = prevTarget === targetPath ? prevCount + 1 : 1;
+      const nextCount =
+        priorLoopGuardState?.targetPath === targetPath
+          ? priorLoopGuardState.count + 1
+          : 1;
 
       if (Number.isFinite(nextCount) && nextCount > 2) {
         const safeUrl = request.nextUrl.clone();
-        safeUrl.searchParams.delete(LOOP_COUNT_PARAM);
-        safeUrl.searchParams.delete(LOOP_TARGET_PARAM);
         safeUrl.pathname = userExists ? '/onboarding' : '/auth/signin';
         console.warn('[Middleware] loop guard triggered', {
           path: pathname,
@@ -135,14 +319,19 @@ export async function proxy(request: NextRequest) {
         });
         logTiming('loop-guard');
         const loopResponse = NextResponse.redirect(safeUrl);
+        setLoopGuardCookie(loopResponse, request, null);
         loopResponse.headers.set('Server-Timing', serverTiming());
         return loopResponse;
       }
 
-      targetUrl.searchParams.set(LOOP_COUNT_PARAM, String(nextCount));
-      targetUrl.searchParams.set(LOOP_TARGET_PARAM, targetPath);
       logTiming('redirect');
       const redirectResponse = NextResponse.redirect(targetUrl);
+      const signedState = await serializeLoopGuardState({
+        count: nextCount,
+        expiresAt: Date.now() + LOOP_GUARD_TTL_MS,
+        targetPath,
+      });
+      setLoopGuardCookie(redirectResponse, request, signedState);
       redirectResponse.headers.set('Server-Timing', serverTiming());
       return redirectResponse;
     };
@@ -168,7 +357,11 @@ export async function proxy(request: NextRequest) {
     if (pathname === '/auth') {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = '/auth/signin';
-      return redirectWithLoopGuard(redirectUrl, false, '/auth -> /auth/signin');
+      return await redirectWithLoopGuard(
+        redirectUrl,
+        false,
+        '/auth -> /auth/signin',
+      );
     }
 
     // 🔒 CRITICAL: Never intercept /auth/callback, /auth/signin, /auth/signup
@@ -176,8 +369,7 @@ export async function proxy(request: NextRequest) {
     // Interfering here causes session-loss loops ("try again" errors).
     if (AUTH_PASSTHROUGH_ROUTES.includes(pathname)) {
       logTiming('auth-passthrough');
-      response.headers.set('Server-Timing', serverTiming());
-      return response;
+      return finalizePassThrough(response);
     }
 
     // Normalize legacy /app/* auth paths to /auth/*
@@ -185,7 +377,7 @@ export async function proxy(request: NextRequest) {
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname =
         pathname === '/app/signup' ? '/auth/signup' : '/auth/signin';
-      return redirectWithLoopGuard(redirectUrl, false, 'legacy-app-auth');
+      return await redirectWithLoopGuard(redirectUrl, false, 'legacy-app-auth');
     }
 
     const isAdminPath = pathname.startsWith('/admin');
@@ -216,14 +408,18 @@ export async function proxy(request: NextRequest) {
         const redirectUrl = request.nextUrl.clone();
         redirectUrl.protocol = appOrigin.protocol;
         redirectUrl.host = appOrigin.host;
-        return redirectWithLoopGuard(redirectUrl, false, 'admin-domain');
+        return await redirectWithLoopGuard(redirectUrl, false, 'admin-domain');
       }
 
       if (host === siteOrigin.hostname && isAppPath) {
         const redirectUrl = request.nextUrl.clone();
         redirectUrl.protocol = appOrigin.protocol;
         redirectUrl.host = appOrigin.host;
-        return redirectWithLoopGuard(redirectUrl, false, 'site->app-domain');
+        return await redirectWithLoopGuard(
+          redirectUrl,
+          false,
+          'site->app-domain',
+        );
       }
 
       if (
@@ -234,14 +430,17 @@ export async function proxy(request: NextRequest) {
         const redirectUrl = request.nextUrl.clone();
         redirectUrl.protocol = siteOrigin.protocol;
         redirectUrl.host = siteOrigin.host;
-        return redirectWithLoopGuard(redirectUrl, false, 'app->site-domain');
+        return await redirectWithLoopGuard(
+          redirectUrl,
+          false,
+          'app->site-domain',
+        );
       }
     }
 
     if (!isAppPath && !isAdminPath) {
       logTiming('no-auth-check');
-      response.headers.set('Server-Timing', serverTiming());
-      return response;
+      return finalizePassThrough(response);
     }
 
     const cookieDomain = getCookieDomain(request.nextUrl.hostname);
@@ -263,18 +462,25 @@ export async function proxy(request: NextRequest) {
       if (isAppPath || isAdminPath) {
         const url = request.nextUrl.clone();
         url.pathname = '/auth/signin';
-        return redirectWithLoopGuard(url, false, 'missing-supabase-env');
+        return await redirectWithLoopGuard(
+          url,
+          false,
+          'missing-supabase-env',
+        );
       }
       logTiming('no-supabase-env');
-      response.headers.set('Server-Timing', serverTiming());
-      return response;
+      return finalizePassThrough(response);
     }
 
     // Fast-path for unauthenticated requests without Supabase session cookie.
     if ((isAppPath || isAdminPath) && !hasSessionCookie) {
       const url = request.nextUrl.clone();
       url.pathname = '/auth/signin';
-      return redirectWithLoopGuard(url, false, 'missing-session-cookie');
+      return await redirectWithLoopGuard(
+        url,
+        false,
+        'missing-session-cookie',
+      );
     }
 
     let user: { id: string; email?: string | null } | null = null;
@@ -346,7 +552,7 @@ export async function proxy(request: NextRequest) {
         }
         const url = request.nextUrl.clone();
         url.pathname = '/auth/signin';
-        return redirectWithLoopGuard(url, false, '/admin-unauth');
+        return await redirectWithLoopGuard(url, false, '/admin-unauth');
       }
 
       if (isUserFounder) {
@@ -358,8 +564,7 @@ export async function proxy(request: NextRequest) {
           });
         }
         logTiming('admin-allow');
-        response.headers.set('Server-Timing', serverTiming());
-        return response;
+        return finalizePassThrough(response);
       } else {
         // ❌ NOT A FOUNDER → DENY ACCESS
         console.warn('[Middleware] non-founder blocked from /admin', {
@@ -368,7 +573,7 @@ export async function proxy(request: NextRequest) {
         });
         const url = request.nextUrl.clone();
         url.pathname = '/unauthorized';
-        return redirectWithLoopGuard(url, true, '/admin-non-founder');
+        return await redirectWithLoopGuard(url, true, '/admin-non-founder');
       }
     }
 
@@ -385,7 +590,7 @@ export async function proxy(request: NextRequest) {
       }
       const url = request.nextUrl.clone();
       url.pathname = '/auth/signin';
-      return redirectWithLoopGuard(url, false, '/app-unauth');
+      return await redirectWithLoopGuard(url, false, '/app-unauth');
     }
 
     // -------------------------------
@@ -409,6 +614,10 @@ export async function proxy(request: NextRequest) {
     const scriptSrc = [
       "'self'",
       `'nonce-${nonce}'`,
+      'https://*.sentry.io',
+      'https://*.posthog.com',
+      'https://js.stripe.com',
+      'https://vercel.live',
       allowInlineScripts ? "'unsafe-inline'" : null,
       allowEvalScripts ? "'unsafe-eval'" : null,
     ]
@@ -428,10 +637,11 @@ export async function proxy(request: NextRequest) {
         `script-src ${scriptSrc}`,
         "script-src-attr 'none'",
         `style-src ${styleSrc}`,
-        "img-src 'self' data: https:",
+        "img-src 'self' data: blob: https:",
         "font-src 'self' data: https://fonts.gstatic.com",
-        "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
-        "frame-src 'self'",
+        "connect-src 'self' https://*.supabase.co https://*.supabase.in wss://*.supabase.co wss://*.supabase.in https://*.sentry.io https://*.posthog.com https://api.stripe.com https://vitals.vercel-insights.com",
+        "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
+        "worker-src 'self' blob:",
         "object-src 'none'",
         "base-uri 'self'",
         "form-action 'self'",
@@ -443,8 +653,7 @@ export async function proxy(request: NextRequest) {
     // -------------------------------
     // No redirects here. Onboarding is handled inside the app.
     logTiming('allow');
-    response.headers.set('Server-Timing', serverTiming());
-    return response;
+    return finalizePassThrough(response);
   } catch (err) {
     console.error('Middleware runtime error:', err);
     return NextResponse.next();

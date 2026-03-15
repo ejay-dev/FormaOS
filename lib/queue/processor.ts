@@ -13,12 +13,15 @@
 import { getQueueClient } from './client';
 import { queueLogger } from '@/lib/observability/structured-logger';
 import type {
+  ComplianceExportPayload,
+  EnterpriseExportPayload,
   Job,
   JobHandler,
   JobHandlerMap,
   JobType,
   ProcessResult,
   QueueConfig,
+  ReportExportPayload,
 } from './types';
 
 export class QueueProcessor {
@@ -164,7 +167,7 @@ export class QueueProcessor {
 
 const defaultHandlers: JobHandlerMap = {
   'compliance-export': async (job) => {
-    const payload = job.payload as any;
+    const payload = job.payload as ComplianceExportPayload;
     const jobId = payload?.jobId as string | undefined;
     if (!jobId) {
       throw new Error('Missing compliance export jobId');
@@ -185,7 +188,7 @@ const defaultHandlers: JobHandlerMap = {
   },
 
   'report-export': async (job) => {
-    const payload = job.payload as any;
+    const payload = job.payload as ReportExportPayload;
     const jobId = payload?.jobId as string | undefined;
     if (!jobId) {
       throw new Error('Missing report export jobId');
@@ -206,7 +209,7 @@ const defaultHandlers: JobHandlerMap = {
   },
 
   'enterprise-export': async (job) => {
-    const payload = job.payload as any;
+    const payload = job.payload as EnterpriseExportPayload;
     const jobId = payload?.jobId as string | undefined;
     if (!jobId) {
       throw new Error('Missing enterprise export jobId');

@@ -8,6 +8,7 @@ import { getSnapshotHistory } from './snapshot-service'
 import archiver from 'archiver'
 import { getQueueClient } from '@/lib/queue'
 import { triggerTaskIfConfigured } from '@/lib/trigger/client'
+import { exportLogger } from '@/lib/observability/structured-logger'
 
 export type ExportManifest = {
   exportId: string
@@ -138,7 +139,7 @@ export async function processExportJob(
   const preclaimed = options.preclaimed ?? false
 
   try {
-    console.log(`[processExportJob] Starting job ${jobId}`)
+    exportLogger.info('compliance_export_job_started', { jobId, workerId })
     // Load job details
     const { data: job } = await admin
       .from('compliance_export_jobs')
@@ -283,7 +284,7 @@ export async function processExportJob(
       })
       .eq('id', jobId)
 
-    console.log(`[processExportJob] Job ${jobId} completed successfully`)
+    exportLogger.info('compliance_export_job_completed', { jobId, workerId })
     return { ok: true, fileUrl }
   } catch (error) {
     console.error(`[processExportJob] Job ${jobId} failed:`, error)

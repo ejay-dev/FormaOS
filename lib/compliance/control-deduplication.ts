@@ -25,10 +25,7 @@ type FrameworkControlRow = {
   summary_description: string | null
   default_risk_level: string | null
   framework_id: string
-  frameworks: {
-    slug: string
-    name: string
-  } | null
+  frameworks: { slug: string; name: string } | { slug: string; name: string }[] | null
 }
 
 /**

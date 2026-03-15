@@ -6,6 +6,7 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
+import { getFromEmail, getResendClient } from '@/lib/email/resend-client';
 
 export type EmailTemplate =
   | 'task_assignment'
@@ -43,6 +44,20 @@ export interface EmailPreferences {
     start: string; // HH:MM
     end: string; // HH:MM
   };
+}
+
+function stripHtml(html: string): string {
+  return html
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&mdash;/g, ' - ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 /**
@@ -398,49 +413,71 @@ function generateWeeklyDigestEmail(data: {
 export async function sendEmail(
   notification: EmailNotification,
 ): Promise<boolean> {
+  const supabase = await createClient();
+
   try {
     // Generate email HTML based on template
-    let _html = '';
+    let html = '';
     switch (notification.template) {
       case 'task_assignment':
-        _html = generateTaskAssignmentEmail(notification.data as any);
+        html = generateTaskAssignmentEmail(notification.data as Parameters<typeof generateTaskAssignmentEmail>[0]);
         break;
       case 'certificate_expiring':
-        _html = generateCertificateExpiringEmail(notification.data as any);
+        html = generateCertificateExpiringEmail(notification.data as Parameters<typeof generateCertificateExpiringEmail>[0]);
         break;
       case 'compliance_alert':
-        _html = generateComplianceAlertEmail(notification.data as any);
+        html = generateComplianceAlertEmail(notification.data as Parameters<typeof generateComplianceAlertEmail>[0]);
         break;
       case 'weekly_digest':
-        _html = generateWeeklyDigestEmail(notification.data as any);
+        html = generateWeeklyDigestEmail(notification.data as Parameters<typeof generateWeeklyDigestEmail>[0]);
         break;
       default:
         console.error(`Unknown email template: ${notification.template}`);
         return false;
     }
 
-    // TODO: Integrate with email service (Resend, SendGrid, AWS SES, etc.)
-    // For now, log the email
-    console.log('Email would be sent:', {
+    const resend = getResendClient();
+    if (!resend) {
+      throw new Error('Resend is not configured');
+    }
+
+    const result = await resend.emails.send({
+      from: getFromEmail(),
       to: notification.to,
+      cc: notification.cc,
+      bcc: notification.bcc,
       subject: notification.subject,
-      template: notification.template,
+      html,
+      text: stripHtml(html),
     });
 
+    if (result.error) {
+      throw new Error(result.error.message);
+    }
+
     // Log email sent
-    const supabase = await createClient();
     await supabase.from('email_logs').insert({
       organization_id: notification.organizationId,
       recipients: notification.to,
       subject: notification.subject,
       template: notification.template,
       status: 'sent',
+      provider_id: result.data?.id ?? null,
       sent_at: new Date().toISOString(),
     });
 
     return true;
   } catch (error) {
     console.error('Failed to send email:', error);
+    await supabase.from('email_logs').insert({
+      organization_id: notification.organizationId,
+      recipients: notification.to,
+      subject: notification.subject,
+      template: notification.template,
+      status: 'failed',
+      error_message: error instanceof Error ? error.message : String(error),
+      sent_at: new Date().toISOString(),
+    });
     return false;
   }
 }
@@ -582,12 +619,14 @@ export async function scheduleWeeklyDigest(
 
   // Send digest to each user
   for (const pref of preferences) {
+    const profileRaw = (pref as Record<string, unknown>).profiles;
+    const profile = (Array.isArray(profileRaw) ? profileRaw[0] : profileRaw) as { email?: string; full_name?: string } | null;
     await sendEmail({
-      to: [pref.profiles.email],
+      to: profile?.email ? [profile.email] : [],
       subject: `Weekly Compliance Summary - ${org?.name}`,
       template: 'weekly_digest',
       data: {
-        userName: pref.profiles.full_name,
+        userName: profile?.full_name,
         orgName: org?.name,
         weekStart: weekStart.toISOString(),
         weekEnd: weekEnd.toISOString(),

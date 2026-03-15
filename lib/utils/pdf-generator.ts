@@ -31,7 +31,7 @@ export const generatePolicyPDF = (title: string, content: string, orgName: strin
   doc.text(splitText, 20, 60);
 
   // Footer
-  const pageCount = (doc as any).internal.getNumberOfPages();
+  const pageCount = (doc as jsPDF & { internal: jsPDF['internal'] & { getNumberOfPages: () => number } }).internal.getNumberOfPages();
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
     doc.setFontSize(8);

@@ -72,7 +72,7 @@ export default async function NewCredentialPage() {
               >
                 {staffMembers?.map((member: StaffMember) => (
                   <option key={member.user_id} value={member.user_id}>
-                    {(member.users as { email: string } | null)?.email || member.user_id}
+                    {(() => { const u = member.users; const profile = Array.isArray(u) ? u[0] : u; return (profile as { email?: string } | null)?.email || member.user_id; })()}
                   </option>
                 ))}
               </select>

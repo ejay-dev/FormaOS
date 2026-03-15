@@ -7,13 +7,16 @@ import type {
   ApprovalRequest,
   CreateWorkflowRequest,
   ExecutionHistoryFilters,
+  ExecutionResult,
   WorkflowApprovalRecord,
   WorkflowDefinition,
   WorkflowExecutionRecord,
   WorkflowExecutionStatus,
   WorkflowExecutionSummary,
+  WorkflowExecutionTrace,
   WorkflowListFilters,
   WorkflowStatus,
+  WorkflowTriggerType,
   UpdateWorkflowRequest,
 } from './workflow-types';
 import { normalizeWorkflowStatus } from './workflow-types';
@@ -105,8 +108,8 @@ function mapExecutionRow(row: ExecutionRow): WorkflowExecutionRecord {
     completed_at: row.completed_at,
     error: row.error,
     execution_trace: {
-      steps: Array.isArray(trace?.steps) ? (trace.steps as any[]) : [],
-      logs: Array.isArray(trace?.logs) ? (trace.logs as any[]) : [],
+      steps: Array.isArray(trace?.steps) ? (trace.steps as ExecutionResult[]) : [],
+      logs: Array.isArray(trace?.logs) ? (trace.logs as WorkflowExecutionTrace['logs']) : [],
     },
     current_step_id: row.current_step_id ?? null,
     context_snapshot: row.context_snapshot ?? {},
@@ -589,7 +592,7 @@ export async function getActiveWorkflowsByTrigger(
 ): Promise<WorkflowDefinition[]> {
   const result = await listWorkflows(orgId, {
     enabled: true,
-    trigger: triggerType as any,
+    trigger: triggerType as WorkflowTriggerType,
     limit: 200,
   });
 

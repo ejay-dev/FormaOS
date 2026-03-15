@@ -213,7 +213,7 @@ async function readLatestTimestamp(
     query = filter(query);
   }
   const { data } = await query.maybeSingle();
-  const value = data?.[column];
+  const value = (data as Record<string, unknown> | null)?.[column];
   return typeof value === 'string' ? value : '0';
 }
 
@@ -441,10 +441,13 @@ function materializeIntegrations(rows: SystemSettingRecord[]) {
         : [];
       const errorLogs = Array.isArray(value.error_logs)
         ? value.error_logs
-            .map((log) => ({
-              at: stableStringValue((log as any)?.at, nowIso()),
-              message: stableStringValue((log as any)?.message, ''),
-            }))
+            .map((log) => {
+              const entry = log as Record<string, unknown>;
+              return {
+                at: stableStringValue(entry?.at, nowIso()),
+                message: stableStringValue(entry?.message, ''),
+              };
+            })
             .filter((entry) => entry.message.length > 0)
         : [];
 

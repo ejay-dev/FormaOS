@@ -32,8 +32,8 @@ export async function POST(request: Request) {
       log.error({ err: createUserError }, "[debug/bootstrap] createUser failed:");
       const payload = {
         message: createUserError.message ?? null,
-        details: (createUserError as any)?.details ?? null,
-        code: (createUserError as any)?.code ?? null,
+        details: (createUserError as unknown as Record<string, unknown>)?.details ?? null,
+        code: (createUserError as unknown as Record<string, unknown>)?.code ?? null,
       };
 
       // Fallback: try sending an invite instead of creating the user directly

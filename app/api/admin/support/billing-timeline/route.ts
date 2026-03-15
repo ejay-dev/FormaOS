@@ -32,10 +32,10 @@ interface SubscriptionState {
   orgName?: string;
   planKey: string;
   status: string;
-  currentPeriodEnd?: string;
-  trialExpiresAt?: string;
-  stripeSubscriptionId?: string;
-  lastSyncedAt?: string;
+  currentPeriodEnd?: string | null;
+  trialExpiresAt?: string | null;
+  stripeSubscriptionId?: string | null;
+  lastSyncedAt?: string | null;
 }
 
 export async function GET(request: Request) {

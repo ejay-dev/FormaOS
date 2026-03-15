@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { getWorkflowExecutionHistory } from '@/lib/automation/workflow-store';
+import type { WorkflowExecutionStatus } from '@/lib/automation/workflow-types';
 import {
   automationUnauthorized,
   getAutomationApiContext,
@@ -19,7 +20,7 @@ export async function GET(
   const limit = Number(request.nextUrl.searchParams.get('limit') ?? '25');
 
   const executions = await getWorkflowExecutionHistory((await params).id, {
-    status: status as any,
+    status: status as WorkflowExecutionStatus | undefined,
     limit,
   });
 

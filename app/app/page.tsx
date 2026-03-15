@@ -25,7 +25,7 @@ type MembershipRow = {
 };
 
 function safeOrgName(membership?: MembershipRow | null) {
-  const orgs = membership?.organizations as any;
+  const orgs = membership?.organizations;
   const name = Array.isArray(orgs) ? orgs?.[0]?.name : orgs?.name;
   return (name || 'My Organization') as string;
 }
@@ -96,11 +96,11 @@ export default async function DashboardPage() {
       .limit(1)
       .maybeSingle();
 
-    membership = (data as any) || null;
+    membership = (data as MembershipRow) || null;
 
     // Extract industry from nested organizations object
-    const orgs = membership?.organizations as any;
-    industry = Array.isArray(orgs) ? orgs?.[0]?.industry : orgs?.industry;
+    const orgs = membership?.organizations as { name?: string; industry?: string } | { name?: string; industry?: string }[] | null;
+    industry = Array.isArray(orgs) ? orgs?.[0]?.industry ?? null : orgs?.industry ?? null;
   } catch {
     membership = null;
   }

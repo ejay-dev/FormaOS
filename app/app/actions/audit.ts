@@ -14,7 +14,10 @@ export type AuditAction =
   | 'INVITE_USER'
   | 'REMOVE_USER'
   | 'LOGIN_ATTEMPT'
-  | 'EXPORT_DATA';
+  | 'EXPORT_DATA'
+  | 'CREATE_TASK'
+  | 'COMPLETE_TASK'
+  | 'VERIFY_EVIDENCE';
 
 /**
  * ✅ CENTRALIZED AUDIT LOGGER

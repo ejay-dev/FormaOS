@@ -10,6 +10,7 @@ import {
   listWorkflows,
   createWorkflow,
 } from '@/lib/automation/workflow-store';
+import type { WorkflowStatus } from '@/lib/automation/workflow-types';
 
 async function getAuthContext() {
   const supabase = await createSupabaseServerClient();
@@ -41,7 +42,7 @@ export async function GET(request: NextRequest) {
   }
 
   const { searchParams } = request.nextUrl;
-  const status = searchParams.get('status') as any;
+  const status = (searchParams.get('status') ?? undefined) as WorkflowStatus | undefined;
   const limit = Number(searchParams.get('limit') ?? '50');
   const offset = Number(searchParams.get('offset') ?? '0');
 

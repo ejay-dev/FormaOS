@@ -196,7 +196,7 @@ export function ProductTourOverlay() {
   if (isE2ETest || !isActive || !step) return null;
 
   return (
-    <div className="fixed inset-0 z-[90]">
+    <div className="fixed inset-0 z-[var(--z-overlay)]">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       {highlightStyle ? (
         <div
@@ -206,7 +206,7 @@ export function ProductTourOverlay() {
       ) : null}
 
       <div
-        className={`absolute z-[100] w-full sm:w-[min(420px,calc(100vw-2rem))] ${
+        className={`absolute z-[var(--z-tour)] w-full sm:w-[min(420px,calc(100vw-2rem))] ${
           isMobile
             ? 'bottom-0 left-0 right-0 rounded-t-3xl border-t border-white/10 bg-[hsl(var(--card))] p-6'
             : 'rounded-2xl border border-white/10 bg-[hsl(var(--card))] p-6 shadow-2xl'

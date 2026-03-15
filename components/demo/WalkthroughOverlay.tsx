@@ -166,7 +166,7 @@ export function WalkthroughOverlay() {
   return (
     <>
       {/* Backdrop overlay */}
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] pointer-events-none">
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[var(--z-tour)] pointer-events-none">
         {/* Spotlight cutout for highlighted element */}
         {highlightedElement && (
           <div
@@ -184,7 +184,7 @@ export function WalkthroughOverlay() {
       {/* Animated pointer */}
       {highlightedElement && (
         <div
-          className="fixed z-[101] pointer-events-none animate-bounce"
+          className="fixed z-[calc(var(--z-tour)+1)] pointer-events-none animate-bounce"
           style={{
             top: highlightedElement.getBoundingClientRect().top + window.scrollY - 40,
             left:
@@ -200,7 +200,7 @@ export function WalkthroughOverlay() {
 
       {/* Tooltip card */}
       <Card
-        className="fixed z-[102] w-[min(400px,calc(100vw-2rem))] p-6 bg-white border-2 border-purple-300 shadow-2xl pointer-events-auto"
+        className="fixed z-[calc(var(--z-tour)+2)] w-[min(400px,calc(100vw-2rem))] p-6 bg-white border-2 border-purple-300 shadow-2xl pointer-events-auto"
         style={{
           top: tooltipPosition.top,
           left: tooltipPosition.left,

@@ -15,7 +15,7 @@ export async function POST(_request: Request, { params }: Params) {
     const access = await requireAdminAccess({ permission: 'users:manage' });
     const { userId } = await params;
     const admin = createSupabaseAdminClient();
-    const { data } = await (admin as any).auth.admin.getUserById(userId);
+    const { data } = await admin.auth.admin.getUserById(userId);
     const email = data?.user?.email;
 
     if (!email) {
@@ -28,7 +28,7 @@ export async function POST(_request: Request, { params }: Params) {
     const appBase = (
       process.env.NEXT_PUBLIC_APP_URL || 'https://app.formaos.com.au'
     ).replace(/\/$/, '');
-    const { data: linkData, error: linkError } = await (admin as any).auth.admin.generateLink({
+    const { data: linkData, error: linkError } = await admin.auth.admin.generateLink({
       type: 'magiclink',
       email,
       options: {

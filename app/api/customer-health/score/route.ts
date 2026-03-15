@@ -223,7 +223,7 @@ export async function GET() {
     const healthScore = calculateHealthScore(input);
 
     // Optionally cache the score
-    void supabase.from('org_health_scores').upsert(
+    void Promise.resolve(supabase.from('org_health_scores').upsert(
       {
         organization_id: orgId,
         score: healthScore.score,
@@ -236,7 +236,7 @@ export async function GET() {
         calculated_at: new Date().toISOString(),
       },
       { onConflict: 'organization_id' }
-    ).catch((upsertError: unknown) => {
+    )).catch((upsertError: unknown) => {
       log.error({ err: upsertError }, "[Health Score] Failed to cache score:");
     });
 

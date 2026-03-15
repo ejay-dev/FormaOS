@@ -233,7 +233,7 @@ export default async function CarePlansPage() {
                     <div className="flex items-center gap-2">
                       <User className="h-4 w-4 text-muted-foreground" />
                       <span className="font-medium">
-                        {(plan.client as any)?.full_name || "Unassigned"}
+                        {(plan.client as { full_name?: string } | null)?.full_name || "Unassigned"}
                       </span>
                     </div>
                   </td>

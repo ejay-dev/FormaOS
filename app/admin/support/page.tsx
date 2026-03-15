@@ -155,11 +155,10 @@ async function fetchProvisioningLookup(query?: string) {
   await requireAdminAccess({ permission: 'support:view' });
   const admin = createSupabaseAdminClient();
 
-  const { data: userList } = await admin.auth.admin.listUsers({
-    page: 1,
-    perPage: 8,
-    search: trimmed,
-  });
+  // GoTrue REST API supports `search` but @supabase/auth-js PageParams omits it.
+  // Build params object separately so TS doesn't reject the excess property.
+  const listParams: Record<string, unknown> = { page: 1, perPage: 8, search: trimmed };
+  const { data: userList } = await admin.auth.admin.listUsers(listParams as { page?: number; perPage?: number });
   const users: User[] = userList?.users ?? [];
 
   const userIds = users.map((user) => user.id);

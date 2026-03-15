@@ -103,7 +103,7 @@ export async function getAutomationHistory(limit: number = 50): Promise<
     status: string;
     actionsExecuted: number;
     executedAt: string;
-    errorMessage?: string;
+    errorMessage?: string | null;
   }>
 > {
   const { orgId } = await requirePermission('VIEW_CONTROLS');

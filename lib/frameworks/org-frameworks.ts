@@ -80,10 +80,11 @@ export async function getOrgFrameworkOverview(orgId: string) {
     .select('id, name, slug, version, description, is_active')
     .in('slug', enabledSlugs)
 
-  const _frameworkById = new Map((frameworks ?? []).map((fw: any) => [fw.id, fw]))
-  const frameworkBySlug = new Map((frameworks ?? []).map((fw: any) => [fw.slug, fw]))
+  type FrameworkRow = Record<string, unknown> & { id?: string; slug?: string; name?: string; version?: string; description?: string; is_active?: boolean };
+  const _frameworkById = new Map((frameworks ?? []).map((fw: FrameworkRow) => [fw.id, fw]))
+  const frameworkBySlug = new Map((frameworks ?? []).map((fw: FrameworkRow) => [fw.slug, fw]))
 
-  const frameworkIds = (frameworks ?? []).map((fw: any) => fw.id)
+  const frameworkIds = (frameworks ?? []).map((fw: FrameworkRow) => fw.id)
   if (!frameworkIds.length) {
     return enabledSlugs.map((slug: string) => ({
       slug,
@@ -93,7 +94,7 @@ export async function getOrgFrameworkOverview(orgId: string) {
       is_active: true,
       controlCount: 0,
       domains: [],
-      enabledAt: enabled?.find((row: any) => row.framework_slug === slug)?.enabled_at ?? null,
+      enabledAt: (enabled?.find((row: Record<string, unknown>) => row.framework_slug === slug)?.enabled_at as string) ?? null,
     }))
   }
 
@@ -114,7 +115,9 @@ export async function getOrgFrameworkOverview(orgId: string) {
   const controlsByFramework = new Map<string, number>()
   const controlsByDomain = new Map<string, number>()
 
-  controlRows.forEach((control: any) => {
+  type ControlRow = Record<string, unknown> & { framework_id: string; domain_id?: string };
+  type DomainRow = Record<string, unknown> & { id: string; framework_id: string; name: string; sort_order?: number };
+  controlRows.forEach((control: ControlRow) => {
     controlsByFramework.set(
       control.framework_id,
       (controlsByFramework.get(control.framework_id) ?? 0) + 1,
@@ -128,12 +131,12 @@ export async function getOrgFrameworkOverview(orgId: string) {
   })
 
   return enabledSlugs.map((slug: string) => {
-    const framework = frameworkBySlug.get(slug) as any
+    const framework = frameworkBySlug.get(slug) as FrameworkRow | undefined
     const frameworkId = framework?.id
-    const domainSummary = domainRows
-      .filter((domain: any) => domain.framework_id === frameworkId)
-      .sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
-      .map((domain: any) => ({
+    const domainSummary = (domainRows as DomainRow[])
+      .filter((domain) => domain.framework_id === frameworkId)
+      .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+      .map((domain) => ({
         id: domain.id,
         name: domain.name,
         controlCount: controlsByDomain.get(domain.id) ?? 0,
@@ -148,7 +151,7 @@ export async function getOrgFrameworkOverview(orgId: string) {
       is_active: framework?.is_active ?? true,
       controlCount: frameworkId ? controlsByFramework.get(frameworkId) ?? 0 : 0,
       domains: domainSummary,
-      enabledAt: enabled?.find((row: any) => row.framework_slug === slug)?.enabled_at ?? null,
+      enabledAt: (enabled?.find((row: Record<string, unknown>) => row.framework_slug === slug)?.enabled_at as string) ?? null,
     }
   })
 }

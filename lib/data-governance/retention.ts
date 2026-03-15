@@ -131,7 +131,7 @@ async function selectExpiredRows(
     throw new Error(error.message);
   }
 
-  return (data ?? []) as Array<{ id: string }>;
+  return (data ?? []) as unknown as Array<{ id: string }>;
 }
 
 export async function applyRetentionPolicy(

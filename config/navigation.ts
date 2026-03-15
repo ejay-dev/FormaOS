@@ -72,7 +72,7 @@ export const footerLinks = {
   legal: [
     { href: '/legal', label: 'Legal' },
     {
-      href: 'https://www.formaos.com.au/legal/privacy',
+      href: '/legal/privacy',
       label: 'Privacy Policy',
     },
     { href: '/legal/terms', label: 'Terms of Service' },

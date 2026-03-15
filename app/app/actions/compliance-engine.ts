@@ -112,6 +112,53 @@ type TaskRow = {
   completed_at?: string | null;
 };
 
+type LegacyFrameworkRecord = FrameworkRow & {
+  name?: string | null;
+};
+
+type EnabledFrameworkRow = {
+  framework_slug: string | null;
+};
+
+type LegacyEvidenceMappingRow = {
+  control_id: string;
+  evidence_id: string | null;
+  entity_id?: string | null;
+  org_evidence?: {
+    status?: EvidenceStatus | null;
+  } | null;
+};
+
+type ControlTaskLinkRow = {
+  control_id: string;
+  task_id: string;
+  entity_id?: string | null;
+};
+
+type ControlRow = {
+  id: string;
+  framework_id: string;
+  code: string;
+  title: string;
+  description?: string | null;
+  category?: string | null;
+  risk_level?: string | null;
+  weight?: number | null;
+  required_evidence_count?: number | null;
+  is_mandatory?: boolean | null;
+};
+
+type EvaluationRow = {
+  organization_id: string;
+  entity_id: string | null;
+  control_type: string;
+  control_key: string;
+  required: boolean;
+  status: ControlStatus;
+  last_evaluated_at: string;
+  details: Record<string, unknown>;
+};
+
 function riskMultiplier(riskLevel: string | null | undefined) {
   const level = (riskLevel || "medium").toLowerCase();
   if (level === "critical") return 1.4;
@@ -154,7 +201,7 @@ function stableHash(input: string) {
 async function safeLogActivity(orgId: string, action: string, description: string, metadata?: any) {
   try {
     if (typeof logger === "function") {
-      await (logger as any)(orgId, action, description, metadata);
+      await Reflect.apply(logger, undefined, [orgId, action, description, metadata]);
       return;
     }
   } catch {
@@ -188,7 +235,7 @@ async function safeSelectFrameworks(
       if (strict) throw new Error(error.message);
       return [];
     }
-    const frameworks = (data ?? []).map((row: any) => ({
+    const frameworks = ((data ?? []) as LegacyFrameworkRecord[]).map((row) => ({
       ...row,
       title: row.title ?? row.name ?? null,
     }));
@@ -200,14 +247,18 @@ async function safeSelectFrameworks(
         .select("framework_slug")
         .eq("organization_id", orgId);
 
-      const enabledSlugs = (enabled ?? []).map((row: any) => row.framework_slug);
+      const enabledSlugs = ((enabled ?? []) as EnabledFrameworkRow[]).map(
+        (row) => row.framework_slug,
+      );
       if (!enabledSlugs.length) return frameworks;
 
       const enabledCodes = new Set(
-        enabledSlugs.map((slug: string) => getFrameworkCodeForSlug(slug))
+        enabledSlugs
+          .filter((slug): slug is string => typeof slug === "string" && slug.length > 0)
+          .map((slug) => getFrameworkCodeForSlug(slug))
       );
 
-      return frameworks.filter((fw: any) => enabledCodes.has(fw.code));
+      return frameworks.filter((fw) => enabledCodes.has(fw.code));
     } catch {
       return frameworks;
     }
@@ -269,7 +320,7 @@ async function safeSelectControlEvidence(
       if (strict) throw new Error(lastError || "Failed to load control evidence");
       return [];
     }
-    return (data as any[]).map((row) => ({
+    return (data as LegacyEvidenceMappingRow[]).map((row) => ({
       control_id: row.control_id,
       evidence_id: row.evidence_id,
       status: (row.org_evidence?.status || "pending") as EvidenceStatus,
@@ -299,7 +350,7 @@ async function safeSelectControlTasks(
       if (strict) throw new Error(error.message);
       return [];
     }
-    return (data ?? []).map((row: any) => ({
+    return ((data ?? []) as ControlTaskLinkRow[]).map((row) => ({
       control_id: row.control_id,
       task_id: row.task_id,
       entity_id: row.entity_id ?? null,
@@ -334,7 +385,7 @@ async function safeSelectTasksByIds(
   }
 }
 
-async function upsertEvaluations(supabase: any, rows: any[]) {
+async function upsertEvaluations(supabase: any, rows: EvaluationRow[]) {
   if (!rows.length) return;
   try {
     await supabase
@@ -345,7 +396,7 @@ async function upsertEvaluations(supabase: any, rows: any[]) {
   }
 }
 
-async function logEvaluationAudit(supabase: any, orgId: string, rows: any[]) {
+async function logEvaluationAudit(supabase: any, orgId: string, rows: EvaluationRow[]) {
   if (!rows.length) return;
   try {
     const logs = rows.map((row) => ({
@@ -504,7 +555,7 @@ export async function evaluateFrameworkControls(orgId: string, frameworkCode: st
 
   const tasksByControl = new Map<string, TaskRow[]>();
   const entityByControl = new Map<string, string | null>();
-  for (const row of controlTaskRows as any[]) {
+  for (const row of controlTaskRows as ControlTaskLinkRow[]) {
     const task = taskById.get(row.task_id);
     if (!task) continue;
     if (!tasksByControl.has(row.control_id)) tasksByControl.set(row.control_id, []);
@@ -515,7 +566,7 @@ export async function evaluateFrameworkControls(orgId: string, frameworkCode: st
   }
 
   const evaluatedAt = new Date().toISOString();
-  const evaluations: any[] = [];
+  const evaluations: EvaluationRow[] = [];
   const missingMandatoryCodes: string[] = [];
   const atRiskCodes: string[] = [];
   let totalWeight = 0;
@@ -525,7 +576,7 @@ export async function evaluateFrameworkControls(orgId: string, frameworkCode: st
   let nonCompliantCount = 0;
   let notApplicableCount = 0;
 
-  for (const control of controls as any[]) {
+  for (const control of controls as ControlRow[]) {
     const evidenceList = evidenceByControl.get(control.id) ?? [];
     const taskList = tasksByControl.get(control.id) ?? [];
     const entityId =
@@ -806,7 +857,7 @@ export async function getOrgComplianceSnapshot(orgId: string, strict: boolean = 
 
   const tasksByControl = new Map<string, TaskRow[]>();
   const entityByControl = new Map<string, string | null>();
-  for (const row of controlTaskRows as any[]) {
+  for (const row of controlTaskRows as ControlTaskLinkRow[]) {
     const task = taskById.get(row.task_id);
     if (!task) continue;
     if (!tasksByControl.has(row.control_id)) tasksByControl.set(row.control_id, []);
@@ -837,7 +888,7 @@ export async function getOrgComplianceSnapshot(orgId: string, strict: boolean = 
   const openViolations: ComplianceSnapshot["openViolations"] = [];
   const highRiskControls: ComplianceSnapshot["highRiskControls"] = [];
 
-  for (const framework of frameworks as any[]) {
+  for (const framework of frameworks as FrameworkRow[]) {
     const controls = controlsByFramework[framework.id] || [];
     let fwWeight = 0;
     let fwScore = 0;

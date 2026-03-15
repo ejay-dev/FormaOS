@@ -6,6 +6,7 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { processTrigger, type TriggerEvent } from './trigger-engine';
 import { updateComplianceScore } from './compliance-score-engine';
+import { automationLogger } from '@/lib/observability/structured-logger';
 
 export type EventType =
   | 'evidence_uploaded'
@@ -32,7 +33,11 @@ export interface DatabaseEvent {
 export async function processEvent(
   event: DatabaseEvent
 ): Promise<{ triggered: boolean; result?: any }> {
-  console.log(`[Event Processor] Processing ${event.type} for org ${event.organizationId}`);
+  automationLogger.info('automation_event_processing_started', {
+    eventType: event.type,
+    organizationId: event.organizationId,
+    entityId: event.entityId,
+  });
 
   try {
     switch (event.type) {
@@ -253,9 +258,10 @@ async function handleTaskCompleted(
     });
 
     if (!error) {
-      console.log(
-        `[Event Processor] Generated next recurring task for ${task.title}`
-      );
+      automationLogger.info('automation_recurring_task_generated', {
+        organizationId: event.organizationId,
+        taskTitle: task.title,
+      });
     }
   }
 

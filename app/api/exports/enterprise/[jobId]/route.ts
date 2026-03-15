@@ -65,7 +65,7 @@ export async function GET(
       .eq('organization_id', payload.orgId)
       .maybeSingle();
 
-    if (!membership || !['owner', 'admin'].includes((membership as any).role)) {
+    if (!membership || !['owner', 'admin'].includes(membership.role as string)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -114,7 +114,7 @@ export async function GET(
       return NextResponse.json({ error: legacyError.message }, { status: 500 });
     }
 
-    const fileUrl = (legacy as any)?.file_url as string | null | undefined;
+    const fileUrl = (legacy as { file_url?: string } | null)?.file_url as string | null | undefined;
     if (fileUrl && typeof fileUrl === 'string' && fileUrl.startsWith('http')) {
       return NextResponse.redirect(fileUrl);
     }

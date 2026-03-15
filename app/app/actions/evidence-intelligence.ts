@@ -43,7 +43,7 @@ export async function scoreEvidenceQuality(reason?: string) {
         .from("compliance_controls")
         .select("id, code, title, risk_level")
         .in("id", controlIds)
-    : { data: [] as any[] };
+    : { data: [] as Record<string, unknown>[] };
 
   const controlsById = new Map((controls ?? []).map((c: any) => [c.id, c]));
   const evidenceToControls = new Map<string, any[]>();
@@ -53,15 +53,15 @@ export async function scoreEvidenceQuality(reason?: string) {
   }
 
   let scored = 0;
-  for (const evidence of evidenceRows as any[]) {
-    const status = (evidence.verification_status || evidence.status || "pending").toLowerCase();
+  for (const evidence of evidenceRows as Record<string, unknown>[]) {
+    const status = (String(evidence.verification_status || evidence.status || "pending")).toLowerCase();
     let base = 60;
     if (status === "approved" || status === "verified") base = 80;
     if (status === "rejected") base = 30;
 
-    const relatedControls = evidenceToControls.get(evidence.id) || [];
+    const relatedControls = evidenceToControls.get(evidence.id as string) || [];
     const evidenceText = normalize(`${evidence.title || ""}`);
-    const matchBonus = relatedControls.some((c: any) => {
+    const matchBonus = relatedControls.some((c: Record<string, unknown>) => {
       if (!c) return false;
       const controlText = normalize(`${c.code || ""} ${c.title || ""}`);
       return controlText.split(" ").some((t: string) => t && evidenceText.includes(t));
@@ -69,7 +69,7 @@ export async function scoreEvidenceQuality(reason?: string) {
       ? 10
       : 0;
 
-    const agePenalty = scoreAge(evidence.created_at);
+    const agePenalty = scoreAge(evidence.created_at as string | undefined);
     const score = Math.max(0, Math.min(100, base + matchBonus + agePenalty));
 
     const riskFlag = score < 50 ? "high" : score < 70 ? "medium" : "low";

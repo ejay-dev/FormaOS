@@ -423,7 +423,8 @@ async function updateAllComplianceScores(): Promise<{
               .single();
 
             if (
-              currentEval?.details?.riskLevel !== prevEval.details.riskLevel
+              currentEval &&
+              currentEval.details?.riskLevel !== prevEval.details.riskLevel
             ) {
               const triggerEvent: TriggerEvent = {
                 type: 'risk_score_change',

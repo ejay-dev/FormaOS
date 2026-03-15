@@ -155,7 +155,7 @@ export function HelpAssistant() {
       </div>
 
       {isOpen ? (
-        <div className="fixed bottom-0 left-0 right-0 z-[90] max-h-[85vh] overflow-hidden rounded-t-3xl border-t border-white/10 bg-[hsl(var(--card))] shadow-2xl sm:bottom-6 sm:left-auto sm:right-6 sm:max-h-[80vh] sm:w-[380px] sm:rounded-2xl sm:border sm:border-white/10 pb-[env(safe-area-inset-bottom)]">
+        <div className="fixed bottom-0 left-0 right-0 z-[var(--z-overlay)] max-h-[85vh] overflow-hidden rounded-t-3xl border-t border-white/10 bg-[hsl(var(--card))] shadow-2xl sm:bottom-6 sm:left-auto sm:right-6 sm:max-h-[80vh] sm:w-[380px] sm:rounded-2xl sm:border sm:border-white/10 pb-[env(safe-area-inset-bottom)]">
           <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
             <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-cyan-300" />

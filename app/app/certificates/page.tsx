@@ -212,7 +212,7 @@ export default async function CertificatesPage() {
                     <div className="flex items-center gap-2">
                       <User className="h-4 w-4 text-muted-foreground" />
                       <span className="font-medium">
-                        {(cert.staff as any)?.email?.split("@")[0] || "-"}
+                        {(cert.staff as { email?: string } | null)?.email?.split("@")[0] || "-"}
                       </span>
                     </div>
                   </td>

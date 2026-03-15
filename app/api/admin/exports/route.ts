@@ -64,8 +64,8 @@ export async function GET() {
     }));
 
     const jobs = [...complianceJobs, ...reportJobs].sort((a, b) => {
-      const aTime = new Date(a.createdAt ?? 0).getTime();
-      const bTime = new Date(b.createdAt ?? 0).getTime();
+      const aTime = new Date(String(a.createdAt ?? 0)).getTime();
+      const bTime = new Date(String(b.createdAt ?? 0)).getTime();
       return bTime - aTime;
     });
 
@@ -78,12 +78,12 @@ export async function GET() {
         .from('organizations')
         .select('id, name')
         .in('id', orgIds);
-      orgMap = new Map((orgs ?? []).map((org: Record<string, unknown>) => [org.id, org.name]));
+      orgMap = new Map((orgs ?? []).map((org: Record<string, unknown>) => [String(org.id), String(org.name)]));
     }
 
     const jobsWithOrg = jobs.map((job) => ({
       ...job,
-      organizationName: orgMap.get(job.organizationId) ?? null,
+      organizationName: orgMap.get(String(job.organizationId)) ?? null,
     }));
 
     return NextResponse.json(

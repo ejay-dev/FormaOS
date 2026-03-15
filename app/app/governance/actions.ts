@@ -24,8 +24,8 @@ export async function createGovernanceExportAction(kind: ExportKind): Promise<{
     .eq('user_id', user.id)
     .maybeSingle();
 
-  const orgId = (membership as any)?.organization_id as string | undefined;
-  const role = (membership as any)?.role as string | undefined;
+  const orgId = membership?.organization_id as string | undefined;
+  const role = membership?.role as string | undefined;
 
   if (!orgId || !role) return { ok: false, error: 'Organization not found' };
   if (!['owner', 'admin'].includes(role)) return { ok: false, error: 'Admin access required' };
@@ -62,7 +62,7 @@ export async function createGovernanceExportAction(kind: ExportKind): Promise<{
             dateRangeDays: 90,
           };
 
-  const res = await createEnterpriseExportJob(orgId, user.id, options as any);
+  const res = await createEnterpriseExportJob(orgId, user.id, options);
   if (!res.ok || !res.jobId) {
     return { ok: false, error: res.error ?? 'Failed to create export job' };
   }

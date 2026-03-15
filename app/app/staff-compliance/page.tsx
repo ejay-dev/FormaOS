@@ -225,7 +225,7 @@ export default async function StaffCompliancePage() {
                     <div className="flex items-center gap-2">
                       <User className="h-4 w-4 text-muted-foreground" />
                       <span className="font-medium">
-                        {(credential.staff as any)?.email?.split("@")[0] || "-"}
+                        {(credential.staff as { email?: string } | null)?.email?.split("@")[0] || "-"}
                       </span>
                     </div>
                   </td>

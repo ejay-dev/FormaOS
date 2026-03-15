@@ -145,8 +145,9 @@ export async function getComments(
     data.map(
       async (comment: {
         id: string;
-        profiles?: any;
-        comment_reactions?: any[];
+        profiles?: { full_name?: string; email?: string; avatar_url?: string } | { full_name?: string; email?: string; avatar_url?: string }[];
+        comment_reactions?: CommentReaction[];
+        [key: string]: unknown;
       }) => {
         const { data: replies } = await supabase
           .from('comments')
@@ -159,17 +160,23 @@ export async function getComments(
           .eq('parent_id', comment.id)
           .order('created_at', { ascending: true });
 
+        const { profiles: _p, comment_reactions: _cr, ...commentRest } = comment;
+        const commentProfile = Array.isArray(comment.profiles) ? comment.profiles[0] : comment.profiles;
         return {
-          ...comment,
-          user: comment.profiles,
+          ...commentRest,
+          user: commentProfile,
           reactions: comment.comment_reactions || [],
           replies:
-            replies?.map((reply: { profiles?: any }) => ({
-              ...reply,
-              user: reply.profiles,
-              reactions: [],
-            })) || [],
-        };
+            replies?.map((reply: { profiles?: { full_name?: string; email?: string; avatar_url?: string } | { full_name?: string; email?: string; avatar_url?: string }[]; [key: string]: unknown }) => {
+              const { profiles: _rp, ...replyRest } = reply;
+              const replyProfile = Array.isArray(reply.profiles) ? reply.profiles[0] : reply.profiles;
+              return {
+                ...replyRest,
+                user: replyProfile,
+                reactions: [] as CommentReaction[],
+              };
+            }) || [],
+        } as Comment;
       },
     ),
   );
@@ -421,11 +428,15 @@ export async function getUserRecentComments(
 
   if (error || !data) return [];
 
-  return data.map((comment: { profiles?: any }) => ({
-    ...comment,
-    user: comment.profiles,
-    reactions: [],
-  }));
+  return data.map((comment: { profiles?: { full_name?: string; email?: string; avatar_url?: string } | { full_name?: string; email?: string; avatar_url?: string }[]; [key: string]: unknown }) => {
+    const { profiles: _p, ...commentRest } = comment;
+    const profile = Array.isArray(comment.profiles) ? comment.profiles[0] : comment.profiles;
+    return {
+      ...commentRest,
+      user: profile,
+      reactions: [] as CommentReaction[],
+    } as Comment;
+  });
 }
 
 /**
@@ -451,11 +462,15 @@ export async function getMentionedComments(
 
   if (error || !data) return [];
 
-  return data.map((comment: { profiles?: any }) => ({
-    ...comment,
-    user: comment.profiles,
-    reactions: [],
-  }));
+  return data.map((comment: { profiles?: { full_name?: string; email?: string; avatar_url?: string } | { full_name?: string; email?: string; avatar_url?: string }[]; [key: string]: unknown }) => {
+    const { profiles: _p, ...commentRest } = comment;
+    const profile = Array.isArray(comment.profiles) ? comment.profiles[0] : comment.profiles;
+    return {
+      ...commentRest,
+      user: profile,
+      reactions: [] as CommentReaction[],
+    } as Comment;
+  });
 }
 
 /**
@@ -501,9 +516,13 @@ export async function searchComments(
 
   if (error || !data) return [];
 
-  return data.map((comment: { profiles?: any }) => ({
-    ...comment,
-    user: comment.profiles,
-    reactions: [],
-  }));
+  return data.map((comment: { profiles?: { full_name?: string; email?: string; avatar_url?: string } | { full_name?: string; email?: string; avatar_url?: string }[]; [key: string]: unknown }) => {
+    const { profiles: _p, ...commentRest } = comment;
+    const profile = Array.isArray(comment.profiles) ? comment.profiles[0] : comment.profiles;
+    return {
+      ...commentRest,
+      user: profile,
+      reactions: [] as CommentReaction[],
+    } as Comment;
+  });
 }

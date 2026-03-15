@@ -34,7 +34,7 @@ interface Execution {
   status: string;
   actionsExecuted: number;
   executedAt: string;
-  errorMessage?: string;
+  errorMessage?: string | null;
 }
 
 export function AutomationStats() {

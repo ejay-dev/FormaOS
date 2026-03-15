@@ -64,7 +64,7 @@ async function safeLogActivity(
     if (typeof logger === 'function') {
       // logger signature in repo: logActivity(orgId, action, description)
       try {
-        await (logger as any)(orgId, action, description, metadata);
+        await (logger as (...args: unknown[]) => Promise<void>)(orgId, action, description, metadata);
         return;
       } catch {
         // continue to fallback
@@ -112,7 +112,7 @@ export async function getOrgIdForUser() {
 
   return {
     orgId: membership.organization_id as string,
-    role: (membership as any).role as string | undefined,
+    role: membership.role as string | undefined,
     userId: user.id,
   };
 }

@@ -3,6 +3,13 @@ import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
 import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import {
+  exchangeOAuthCode,
+  isPkceExchangeError,
+  resolveFrameworksForOrganization,
+  selectPrimaryMembership,
+  type MembershipRow,
+} from '@/lib/auth/callback';
 import { bootstrapOrganizationAtomic } from '@/lib/supabase/transaction';
 import { resolvePlanKey } from '@/lib/plans';
 import { ensureSubscription } from '@/lib/billing/subscriptions';
@@ -28,97 +35,9 @@ export const dynamic = 'force-dynamic';
 // Default plan for users without a plan selection - ensures no one lands with "No Plan"
 const DEFAULT_PLAN = 'basic';
 
-// Legacy plan_code mapping (basic -> starter for FK constraint)
-function _toLegacyPlanCode(planKey: string): string {
-  return planKey === 'basic' ? 'starter' : planKey;
-}
-
-type MembershipRow = {
-  organization_id: string | null;
-  role: string | null;
-  created_at?: string | null;
-};
-
-type FrameworkRow = {
-  framework_slug: string | null;
-};
-
-function normalizeFrameworks(input: unknown): string[] {
-  if (!Array.isArray(input)) return [];
-  return Array.from(
-    new Set(
-      input
-        .map((value) => (typeof value === 'string' ? value.trim() : ''))
-        .filter(Boolean),
-    ),
-  );
-}
-
-function selectPrimaryMembership(
-  memberships: MembershipRow[],
-): MembershipRow | null {
-  if (!memberships.length) return null;
-
-  const weight = (role?: string | null) => {
-    const normalized = (role ?? '').toLowerCase();
-    if (normalized === 'owner') return 3;
-    if (normalized === 'admin') return 2;
-    return 1;
-  };
-
-  return (
-    memberships
-      .slice()
-      .sort((a, b) => {
-        const roleDelta = weight(b.role) - weight(a.role);
-        if (roleDelta !== 0) return roleDelta;
-        const aTime = a.created_at ? Date.parse(a.created_at) : 0;
-        const bTime = b.created_at ? Date.parse(b.created_at) : 0;
-        return bTime - aTime;
-      })
-      .at(0) ?? memberships[0]
-  );
-}
-
-async function resolveFrameworksForOrganization(
-  admin: ReturnType<typeof createSupabaseAdminClient>,
-  organizationId: string,
-  organizationFrameworks: unknown,
-) {
-  const directFrameworks = normalizeFrameworks(organizationFrameworks);
-  if (directFrameworks.length > 0) {
-    return {
-      frameworks: directFrameworks,
-      repairedFromOrgFrameworks: false,
-    };
-  }
-
-  const { data: frameworkRows } = await admin
-    .from('org_frameworks')
-    .select('framework_slug')
-    .eq('organization_id', organizationId)
-    .limit(100);
-
-  const fallbackFrameworks = normalizeFrameworks(
-    (frameworkRows as FrameworkRow[] | null)?.map((row) => row.framework_slug),
-  );
-
-  if (!fallbackFrameworks.length) {
-    return {
-      frameworks: [],
-      repairedFromOrgFrameworks: false,
-    };
-  }
-
-  const { error: backfillError } = await admin
-    .from('organizations')
-    .update({ frameworks: fallbackFrameworks })
-    .eq('id', organizationId);
-
-  return {
-    frameworks: fallbackFrameworks,
-    repairedFromOrgFrameworks: !backfillError,
-  };
+function toError(error: unknown): Error {
+  if (error instanceof Error) return error;
+  return new Error(String(error));
 }
 
 export async function GET(request: Request) {
@@ -204,10 +123,17 @@ export async function GET(request: Request) {
 
   // Handle OAuth errors (user denied permission, etc.)
   if (oauthError) {
-    console.error('[auth/callback] OAuth error:', {
-      oauthError,
-      errorDescription,
-    });
+    authLogger.error(
+      'oauth_callback_error',
+      {
+        code: oauthError,
+        message: errorDescription || 'Authentication failed during OAuth callback',
+      },
+      {
+        oauthError,
+        errorDescription,
+      },
+    );
     return redirectWithCookies(
       `${appBase}/auth/signin?error=oauth_error&message=${encodeURIComponent(
         errorDescription || 'Authentication failed. Please try again.',
@@ -219,10 +145,14 @@ export async function GET(request: Request) {
   // Without this, user creation will fail and create orphaned auth users
   const serviceRoleKey = getSupabaseServiceRoleKey();
   if (!serviceRoleKey) {
-    console.error(
-      '[auth/callback] CRITICAL: SUPABASE_SERVICE_ROLE_KEY not configured. Cannot create user records.',
+    authLogger.critical(
+      'service_role_key_missing',
+      {
+        code: 'SUPABASE_SERVICE_ROLE_KEY_MISSING',
+        message:
+          'SUPABASE_SERVICE_ROLE_KEY not configured. Cannot create user records.',
+      },
     );
-    // Redirect to error page with clear message
     return redirectWithCookies(
       `${appBase}/auth/signin?error=configuration_error&message=${encodeURIComponent(
         'Server configuration error. Please contact support.',
@@ -234,8 +164,12 @@ export async function GET(request: Request) {
   const supabaseAnonKey = getSupabaseAnonKey();
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.error(
-      '[auth/callback] CRITICAL: Missing Supabase URL or anonymous key.',
+    authLogger.critical(
+      'supabase_env_missing',
+      {
+        code: 'SUPABASE_ENV_INCOMPLETE',
+        message: 'Missing Supabase URL or anonymous key.',
+      },
     );
     return redirectWithCookies(
       `${appBase}/auth/signin?error=configuration_error&message=${encodeURIComponent(
@@ -283,152 +217,47 @@ export async function GET(request: Request) {
     return redirectWithCookies(`${appBase}/auth/signin`);
   }
 
-  // 1. Exchange the code for a session
-  let exchangeData: { user: any; session: any } | null = null;
-  let exchangeError: any = null;
-
-  try {
-    const result = await supabase.auth.exchangeCodeForSession(code);
-    exchangeData = result.data as any;
-    exchangeError = result.error;
-  } catch (err) {
-    exchangeError = err;
-  }
-
-  // PKCE fallback: if the code verifier cookie was lost (common on mobile Safari,
-  // cross-origin redirects, or ITP), fall back to a server-to-server exchange
-  // using the admin client which bypasses PKCE verification.
-  if (
-    exchangeError &&
-    (String(exchangeError?.code ?? '').includes('pkce') ||
-      String(exchangeError?.message ?? '').includes('code verifier') ||
-      String(exchangeError?.message ?? '').includes('verifier'))
-  ) {
-    console.warn(
-      '[auth/callback] PKCE verifier missing – attempting server-side fallback',
-      {
-        errorCode: exchangeError?.code,
-        errorMessage: exchangeError?.message,
-        hasPkceVerifier,
-        cookieNames: cookieNames.filter((n) => n.startsWith('sb-')),
-        allCookieNames: cookieNames,
-        cookieDomain,
-        requestHost: requestUrl.hostname,
-      },
-    );
-
-    // IMPROVED FALLBACK: Try to get the code verifier from all possible cookie locations
-    // Sometimes the verifier is stored under different names
-    const possibleVerifierCookies = cookieSnapshot.filter(
-      (c) =>
-        c.name.includes('code-verifier') || c.name.includes('code_verifier'),
-    );
-
-    if (possibleVerifierCookies.length > 0) {
-      // Found a verifier cookie - try to use it
-      for (const verifierCookie of possibleVerifierCookies) {
-        try {
-          authLogger.info('trying_verifier_cookie', { cookieName: verifierCookie.name });
-          const tokenRes = await fetch(
-            `${supabaseUrl}/auth/v1/token?grant_type=pkce`,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                apikey: supabaseAnonKey,
-              },
-              body: JSON.stringify({
-                auth_code: code,
-                code_verifier: verifierCookie.value,
-              }),
-            },
-          );
-
-          if (tokenRes.ok) {
-            const tokenData = await tokenRes.json();
-            if (tokenData?.access_token && tokenData?.refresh_token) {
-              const { data: sessionData, error: setErr } =
-                await supabase.auth.setSession({
-                  access_token: tokenData.access_token,
-                  refresh_token: tokenData.refresh_token,
-                });
-              if (!setErr && sessionData?.user) {
-                exchangeData = sessionData as any;
-                exchangeError = null;
-                authLogger.info('pkce_verifier_exchange_succeeded', { email: sessionData.user.email });
-                break;
-              }
-            }
-          }
-        } catch (verifierErr) {
-          console.error(
-            '[auth/callback] Verifier exchange failed:',
-            verifierErr,
-          );
-        }
-      }
-    }
-
-    // If still no success, try authorization_code grant with service role (Supabase Admin API)
-    if (!exchangeData?.user) {
-      try {
-        // Use the admin API to exchange the code directly
-        // This requires the service role key
-        const adminTokenRes = await fetch(
-          `${supabaseUrl}/auth/v1/token?grant_type=authorization_code`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              apikey: supabaseAnonKey,
-              Authorization: `Bearer ${serviceRoleKey}`,
-            },
-            body: JSON.stringify({
-              code,
-              redirect_uri: `${appBase}/auth/callback`,
-            }),
-          },
-        );
-
-        if (adminTokenRes.ok) {
-          const tokenData = await adminTokenRes.json();
-          if (tokenData?.access_token && tokenData?.refresh_token) {
-            const { data: sessionData, error: setErr } =
-              await supabase.auth.setSession({
-                access_token: tokenData.access_token,
-                refresh_token: tokenData.refresh_token,
-              });
-            if (!setErr && sessionData?.user) {
-              exchangeData = sessionData as any;
-              exchangeError = null;
-              authLogger.info('admin_token_exchange_succeeded', { email: sessionData.user.email });
-            }
-          }
-        } else {
-          const errBody = await adminTokenRes.text();
-          console.error('[auth/callback] Admin token exchange failed:', {
-            status: adminTokenRes.status,
-            body: errBody,
-          });
-        }
-      } catch (fallbackErr) {
-        console.error(
-          '[auth/callback] Server-side fallback failed:',
-          fallbackErr,
-        );
-      }
-    }
-  }
+  const { exchangeData, exchangeError } = await exchangeOAuthCode({
+    appBase,
+    code,
+    cookieDomain,
+    cookieNames,
+    cookieSnapshot,
+    hasPkceVerifier,
+    requestHost: requestUrl.hostname,
+    serviceRoleKey,
+    supabase,
+    supabaseAnonKey,
+    supabaseUrl,
+  });
 
   if (exchangeError || !exchangeData?.user) {
-    console.error('[auth/callback] OAuth code exchange failed:', {
-      errorCode: exchangeError?.code,
-      errorMessage: exchangeError?.message,
-      hasPkceVerifier,
-    });
-    const isPkce =
-      String(exchangeError?.code ?? '').includes('pkce') ||
-      String(exchangeError?.message ?? '').includes('code verifier');
+    authLogger.error(
+      'oauth_code_exchange_failed',
+      {
+        code: isPkceExchangeError(exchangeError)
+          ? 'PKCE_EXCHANGE_FAILED'
+          : 'OAUTH_EXCHANGE_FAILED',
+        message:
+          isPkceExchangeError(exchangeError)
+            ? 'Sign-in verification failed during PKCE exchange.'
+            : 'Failed to exchange OAuth code for a session.',
+      },
+      {
+        errorCode:
+          exchangeError && typeof exchangeError === 'object' && 'code' in exchangeError
+            ? exchangeError.code
+            : undefined,
+        errorMessage:
+          exchangeError &&
+          typeof exchangeError === 'object' &&
+          'message' in exchangeError
+            ? exchangeError.message
+            : undefined,
+        hasPkceVerifier,
+      },
+    );
+    const isPkce = isPkceExchangeError(exchangeError);
     const errorType = isPkce ? 'pkce_failed' : 'oauth_exchange_failed';
     const errorMsg = isPkce
       ? 'Sign-in verification failed. This can happen on some browsers. Please try again.'
@@ -491,10 +320,7 @@ export async function GET(request: Request) {
         });
         authLogger.info('founder_org_bootstrapped');
       } catch (bootstrapErr) {
-        console.error(
-          '[auth/callback] ❌ Founder org bootstrap failed:',
-          bootstrapErr,
-        );
+        authLogger.error('founder_org_bootstrap_failed', toError(bootstrapErr));
       }
     }
 
@@ -508,7 +334,7 @@ export async function GET(request: Request) {
     try {
       await supabase.auth.updateUser({ data: { selected_plan: plan } });
     } catch (err) {
-      console.error('User metadata update failed:', err);
+      authLogger.error('user_metadata_update_failed', toError(err), { plan });
     }
   }
 
@@ -526,7 +352,7 @@ export async function GET(request: Request) {
   const membership = selectPrimaryMembership(scopedMembershipRows);
 
   if (membershipError) {
-    console.error('Membership lookup failed:', membershipError);
+    authLogger.error('membership_lookup_failed', toError(membershipError));
   }
 
   // 4. EXISTING USER WITHOUT ORGANIZATION - Fix orphaned accounts
@@ -577,10 +403,7 @@ export async function GET(request: Request) {
         authLogger.info('auto_joined_via_invitation', { destination: '/onboarding' });
         return redirectWithCookies(`${appBase}/onboarding`);
       }
-      console.error(
-        '[auth/callback] Failed to auto-accept invitation:',
-        joinError,
-      );
+      authLogger.error('auto_accept_invitation_failed', toError(joinError));
     } else if (ssoOrgId) {
       // Enterprise SSO is scoped to a specific org. If the user is not a member
       // and does not have a pending invitation, do not create a new org.
@@ -612,10 +435,7 @@ export async function GET(request: Request) {
       });
 
       if (restoreError) {
-        console.error(
-          '[auth/callback] Failed to restore membership:',
-          restoreError,
-        );
+        authLogger.error('restore_membership_failed', toError(restoreError));
       } else {
         authLogger.info('membership_restored');
 
@@ -667,9 +487,13 @@ export async function GET(request: Request) {
       });
 
     if (bootstrapError || !bootstrapResult) {
-      console.error(
-        '[auth/callback] ❌ Atomic bootstrap failed:',
-        bootstrapError?.message,
+      authLogger.error(
+        'atomic_bootstrap_failed',
+        {
+          code: 'ATOMIC_BOOTSTRAP_FAILED',
+          message:
+            bootstrapError?.message ?? 'Account bootstrap failed unexpectedly.',
+        },
       );
       return redirectWithCookies(
         `${appBase}/auth/signin?error=org_creation_failed&message=${encodeURIComponent(
@@ -691,14 +515,14 @@ export async function GET(request: Request) {
       if (graphResult.success) {
         authLogger.info('compliance_graph_initialized', { nodeCount: graphResult.nodes?.length, wireCount: graphResult.wires?.length });
       } else {
-        console.warn(
-          `[auth/callback] ⚠️  Graph initialization warning: ${graphResult.error}`,
-        );
+        authLogger.warn('compliance_graph_initialization_warning', {
+          error: graphResult.error,
+        });
       }
     } catch (graphErr) {
-      console.error(
-        '[auth/callback] Graph initialization failed (non-critical):',
-        graphErr,
+      authLogger.error(
+        'compliance_graph_initialization_failed',
+        toError(graphErr),
       );
     }
 
@@ -729,7 +553,7 @@ export async function GET(request: Request) {
     .maybeSingle();
 
   if (orgError) {
-    console.error('Organization lookup failed:', orgError);
+    authLogger.error('organization_lookup_failed', toError(orgError));
   }
 
   // HARDENING: Default to 'basic' if org has no plan
@@ -774,10 +598,10 @@ export async function GET(request: Request) {
   try {
     await ensureSubscription(membership.organization_id, resolvedPlan);
   } catch (subErr) {
-    console.error(
-      '[auth/callback] ensureSubscription failed (non-critical):',
-      subErr,
-    );
+    authLogger.error('ensure_subscription_failed', toError(subErr), {
+      orgId: membership.organization_id,
+      plan: resolvedPlan,
+    });
   }
 
   // PERF: Validate compliance graph in background (non-blocking).
@@ -785,10 +609,9 @@ export async function GET(request: Request) {
   validateComplianceGraph(membership.organization_id)
     .then((result) => {
       if (!result.isValid) {
-        console.warn(
-          '[auth/callback] Graph issues (async):',
-          result.issues.join(', '),
-        );
+        authLogger.warn('compliance_graph_async_issues', {
+          issues: result.issues,
+        });
       }
     })
     .catch(() => {});

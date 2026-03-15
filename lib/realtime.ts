@@ -8,6 +8,7 @@
 import { createSupabaseClient } from '@/lib/supabase/client';
 import { useEffect, useState } from 'react';
 import type { RealtimeChannel } from '@supabase/supabase-js';
+import { healthLogger } from '@/lib/observability/structured-logger';
 
 export interface RealtimeEvent<T = any> {
   type: 'INSERT' | 'UPDATE' | 'DELETE';
@@ -83,9 +84,9 @@ export function useRealtimeTable<T>(
           table: table,
           filter: filter ? `${filter.column}=eq.${filter.value}` : undefined,
         },
-        (payload: any) => {
+        (payload: { eventType: string; table: string; new: Record<string, unknown>; old: Record<string, unknown> }) => {
           const event: RealtimeEvent<T> = {
-            type: payload.eventType as any,
+            type: payload.eventType as RealtimeEvent<T>['type'],
             table: payload.table,
             new: payload.new as T,
             old: payload.old as T,
@@ -97,13 +98,17 @@ export function useRealtimeTable<T>(
             setData((prev) => [...prev, payload.new as T]);
           } else if (payload.eventType === 'UPDATE' && payload.new) {
             setData((prev) =>
-              prev.map((item: any) =>
-                item.id === (payload.new as any).id ? (payload.new as T) : item,
-              ),
+              prev.map((item) => {
+                const itemRecord = item as Record<string, unknown>;
+                return itemRecord.id === (payload.new as Record<string, unknown>).id ? (payload.new as T) : item;
+              }),
             );
           } else if (payload.eventType === 'DELETE' && payload.old) {
             setData((prev) =>
-              prev.filter((item: any) => item.id !== (payload.old as any).id),
+              prev.filter((item) => {
+                const itemRecord = item as Record<string, unknown>;
+                return itemRecord.id !== (payload.old as Record<string, unknown>).id;
+              }),
             );
           }
 
@@ -151,13 +156,17 @@ export function usePresence(
     presenceChannel
       .on('presence', { event: 'sync' }, () => {
         const state = presenceChannel.presenceState();
-        setPresenceState(state as any);
+        setPresenceState(state as Record<string, PresenceState>);
       })
       .on('presence', { event: 'join' }, ({ key, newPresences }: any) => {
-        console.log('User joined:', key, newPresences);
+        if (process.env.NODE_ENV === 'development') {
+          healthLogger.info('realtime_presence_joined', { key, newPresences });
+        }
       })
       .on('presence', { event: 'leave' }, ({ key, leftPresences }: any) => {
-        console.log('User left:', key, leftPresences);
+        if (process.env.NODE_ENV === 'development') {
+          healthLogger.info('realtime_presence_left', { key, leftPresences });
+        }
       })
       .subscribe(async (status: any) => {
         if (status === 'SUBSCRIBED') {
@@ -208,7 +217,11 @@ export function useNotifications(userId: string) {
     (event) => {
       if (event.type === 'INSERT' && event.new) {
         // Show toast notification
-        console.log('New notification:', event.new);
+        if (process.env.NODE_ENV === 'development') {
+          healthLogger.info('realtime_notification_received', {
+            notification: event.new,
+          });
+        }
         setUnreadCount((prev) => prev + 1);
       }
     },

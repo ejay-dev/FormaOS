@@ -63,7 +63,7 @@ export async function createTask(formData: FormData) {
 
   if (error) throw new Error(`Task Creation Failed: ${error.message}`);
 
-  await logActivity(membership.organization_id, "CREATE_TASK" as any, {
+  await logActivity(membership.organization_id, "CREATE_TASK", {
     resourceName: title,
     event: "Task created manually",
     priority,
@@ -144,7 +144,7 @@ async function _completeTaskCore(supabase: any, taskId: string, user: any) {
 
   if (updateError) throw updateError;
 
-  await logActivity(task.organization_id, "COMPLETE_TASK" as any, {
+  await logActivity(task.organization_id, "COMPLETE_TASK", {
     resourceName: task.title,
     event: "Task marked as complete",
     taskId,
@@ -209,7 +209,7 @@ async function _completeTaskCore(supabase: any, taskId: string, user: any) {
       .single();
 
     if (nextTask) {
-      await logActivity(task.organization_id, "CREATE_TASK" as any, {
+      await logActivity(task.organization_id, "CREATE_TASK", {
         resourceName: task.title,
         event: "Recurring task auto-generated",
         taskId: nextTask.id,

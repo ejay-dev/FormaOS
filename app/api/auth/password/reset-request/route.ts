@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     const redirectTo = `${appBase}/auth/reset-password`;
     const admin = createSupabaseAdminClient();
 
-    const { data, error } = await (admin as any).auth.admin.generateLink({
+    const { data, error } = await admin.auth.admin.generateLink({
       type: 'recovery',
       email,
       options: {

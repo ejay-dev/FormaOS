@@ -283,9 +283,14 @@ export async function generateDigest(
     throw new Error(error.message);
   }
 
-  const rows = (queueRows ?? []).filter(
-    (row: any) => row.notification && !row.notification.archived_at,
-  ) as Array<{
+  const rows = (queueRows ?? [])
+    .map((row: Record<string, unknown>) => ({
+      ...row,
+      notification: Array.isArray(row.notification) ? row.notification[0] : row.notification,
+    }))
+    .filter(
+      (row) => row.notification && !(row.notification as Record<string, unknown>)?.archived_at,
+    ) as Array<{
     id: string;
     org_id: string;
     frequency: NotificationDigestFrequency;

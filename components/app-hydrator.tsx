@@ -96,5 +96,14 @@ export function AppHydrator({ children, initialState }: AppHydratorProps) {
     fetchAndHydrate();
   }, [isHydrated, initialState, hydrate, setHydrating, setHydrationError]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const isFounder = initialState?.isFounder ?? useAppStore.getState().isFounder;
+    localStorage.setItem('formaos_is_founder', isFounder ? 'true' : 'false');
+  }, [initialState?.isFounder, isHydrated]);
+
   return <>{children}</>;
 }
