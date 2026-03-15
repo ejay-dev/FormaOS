@@ -3,10 +3,10 @@
  * Single source of truth for product versioning metadata
  */
 
-export const CURRENT_VERSION = '2.0.2';
-export const CURRENT_RELEASE_NAME = 'Citadel';
+export const CURRENT_VERSION = '2.2.0';
+export const CURRENT_RELEASE_NAME = 'Vanguard';
 export const CURRENT_RELEASE_DISPLAY = `FormaOS ${CURRENT_RELEASE_NAME} — v${CURRENT_VERSION}`;
-export const CURRENT_RELEASE_TAG = 'Enterprise Release';
+export const CURRENT_RELEASE_TAG = 'Enterprise AI Release';
 
 /**
  * Release naming strategy: "FormaOS [Prestige Name]"

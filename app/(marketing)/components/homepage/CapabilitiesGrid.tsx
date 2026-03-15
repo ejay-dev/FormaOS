@@ -21,6 +21,8 @@ import {
   Building,
   ClipboardList,
   HeartPulse,
+  Bot,
+  ShieldCheck,
 } from 'lucide-react';
 
 const capabilities = [
@@ -143,6 +145,20 @@ const capabilities = [
       'Purpose-built modules for progress notes, patient management, and clinical workflows designed for healthcare and allied health providers.',
     color: 'from-pink-500 to-rose-500',
   },
+  {
+    icon: Bot,
+    title: 'AI Compliance Assistant',
+    description:
+      'Context-aware AI chat that understands your compliance posture. Draft policies, get evidence guidance, run gap analysis, and receive actionable implementation steps — powered by your live org data.',
+    color: 'from-cyan-400 to-blue-500',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'SOC 2 Self-Certification',
+    description:
+      'Automated readiness engine with weighted domain scoring, evidence collection across 11 controls, gap analysis with prioritised remediation, milestone tracking, and one-click certification reports.',
+    color: 'from-emerald-400 to-cyan-500',
+  },
 ];
 
 // Group capabilities into categories for visual differentiation
@@ -151,6 +167,7 @@ const capabilityCategories = [
   { label: 'Framework Intelligence', range: [4, 8] as const },
   { label: 'Operational Infrastructure', range: [8, 12] as const },
   { label: 'Domain Modules', range: [12, 16] as const },
+  { label: 'AI & Certification', range: [16, 19] as const },
 ];
 
 export function CapabilitiesGrid() {

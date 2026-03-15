@@ -144,6 +144,76 @@ interface ChangelogRelease {
 
 const releases: ChangelogRelease[] = [
   {
+    version: 'v2.2.0',
+    codename: 'Vanguard',
+    date: '2026-03-16',
+    summary:
+      'AI-powered compliance assistant, SOC 2 self-certification engine, and automated evidence collection.',
+    isMajor: true,
+    changes: [
+      {
+        text: 'AI Compliance Assistant with streaming chat',
+        tag: 'feature',
+        detail:
+          'In-app AI assistant powered by GPT-4o that understands your compliance posture. Ask questions about controls, draft auditor-ready policies, get evidence guidance, run gap analysis, and receive step-by-step implementation instructions — all contextualised to your organization.',
+      },
+      {
+        text: 'SOC 2 Self-Certification readiness engine',
+        tag: 'enterprise',
+        detail:
+          'Automated readiness assessment across all 5 SOC 2 Trust Service domains with weighted scoring. Calculates your certification readiness in real-time based on evidence, tasks, and control evaluations.',
+      },
+      {
+        text: 'Automated evidence collection with 11 system checks',
+        tag: 'feature',
+        detail:
+          'Continuous automated verification of compliance artifacts against SOC 2 controls. Checks for security policies, MFA evidence, monitoring configs, backup procedures, encryption policies, privacy notices, and more.',
+      },
+      {
+        text: 'Gap analyzer with prioritised remediation actions',
+        tag: 'feature',
+        detail:
+          'Intelligent gap analysis that identifies missing or partial controls and generates prioritised remediation actions. Risk-based priority mapping ensures critical gaps are addressed first.',
+      },
+      {
+        text: 'Certification milestone tracker with auto-evaluation',
+        tag: 'feature',
+        detail:
+          '8-milestone certification journey from framework enablement to report generation. Milestones auto-complete as your system state progresses, giving clear visibility into certification readiness.',
+      },
+      {
+        text: 'SOC 2 certification report generator',
+        tag: 'enterprise',
+        detail:
+          'One-click generation of comprehensive SOC 2 certification reports including domain scores, control results, automated checks, milestones, remediation status, and historical score trends.',
+      },
+      {
+        text: '5 AI prompt templates for compliance workflows',
+        tag: 'feature',
+        detail:
+          'Pre-built prompt templates for common compliance tasks: Compliance Q&A, Policy Drafting, Evidence Guidance, Gap Analysis, and Implementation Guidance. Each template enriches AI context with your organization data.',
+      },
+      {
+        text: 'Conversation history with persistent AI chat sessions',
+        tag: 'improvement',
+        detail:
+          'Full conversation management with searchable history, session persistence, and the ability to resume previous AI assistant conversations with complete context.',
+      },
+      {
+        text: 'New RBAC permissions for AI features',
+        tag: 'security',
+        detail:
+          'Fine-grained access control with USE_AI_ASSISTANT and DRAFT_AI_POLICIES permissions. All roles get AI access; policy drafting restricted to Owner and Compliance Officer.',
+      },
+      {
+        text: 'AI and SOC 2 entitlements gated by plan tier',
+        tag: 'enterprise',
+        detail:
+          'AI Assistant and SOC 2 Self-Certification available on Pro and Enterprise plans. Entitlement system ensures feature access matches subscription level.',
+      },
+    ],
+  },
+  {
     version: 'v2.1.0',
     codename: 'Aurora',
     date: '2026-03-08',

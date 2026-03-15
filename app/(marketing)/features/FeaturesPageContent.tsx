@@ -42,6 +42,8 @@ import {
   GitBranch,
   Settings,
   Monitor,
+  Bot,
+  ShieldCheck,
   type LucideIcon,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -341,6 +343,38 @@ const features: PlatformFeature[] = [
       'Simultaneous editing support',
     ],
   },
+  {
+    icon: Bot,
+    title: 'AI Compliance Assistant',
+    description:
+      'Context-aware AI chat that understands your compliance posture. Draft policies, get evidence guidance, run gap analysis, and receive actionable steps.',
+    longDescription:
+      'The AI Compliance Assistant is powered by your live organization data — controls, evidence, frameworks, and compliance scores. Ask questions about your compliance posture, get evidence collection guidance, draft policies from templates, and run AI-powered gap analysis. Five built-in prompt templates cover the most common compliance workflows, and full conversation history lets you pick up where you left off.',
+    category: 'AI & Certification',
+    highlight: 'New in v2.2',
+    capabilities: [
+      'Context-aware streaming chat',
+      'Policy drafting from templates',
+      'AI-powered gap analysis',
+      'Conversation history & recall',
+    ],
+  },
+  {
+    icon: ShieldCheck,
+    title: 'SOC 2 Self-Certification Engine',
+    description:
+      'Automated readiness scoring with weighted domain analysis, evidence collection across 11 controls, gap remediation, and one-click certification reports.',
+    longDescription:
+      'The SOC 2 Self-Certification Engine evaluates your readiness across all five Trust Service Criteria domains with weighted scoring (Security 30%, Availability 20%, Confidentiality 20%, Processing Integrity 15%, Privacy 15%). Automated evidence checks run across 11 controls, a gap analyzer generates prioritized remediation actions, and milestone tracking guides you from framework enablement to report generation. One-click certification reports package everything auditors need.',
+    category: 'AI & Certification',
+    highlight: 'New in v2.2',
+    capabilities: [
+      'Weighted domain readiness scoring',
+      'Automated evidence checks (11 controls)',
+      'Prioritized gap remediation',
+      'One-click certification reports',
+    ],
+  },
 ];
 
 const categories = [
@@ -348,6 +382,7 @@ const categories = [
   'Workflow & Operations',
   'Identity & Security',
   'Collaboration & UX',
+  'AI & Certification',
 ] as const;
 
 type CategoryName = (typeof categories)[number];
@@ -437,6 +472,23 @@ const categoryMeta: Record<CategoryName, CategoryConfig> = {
     badgeBg: 'bg-blue-500/10',
     badgeBorder: 'border-blue-400/20',
     badgeText: 'text-blue-400',
+  },
+  'AI & Certification': {
+    description:
+      'AI-powered compliance intelligence and automated self-certification engines that accelerate audit readiness.',
+    gradient: 'from-amber-500/20 via-amber-500/5 to-transparent',
+    accent: 'amber',
+    accentRgb: '245,158,11',
+    icon: Bot,
+    dotColor: 'bg-amber-400',
+    bgGlow: 'bg-amber-500/[0.04]',
+    borderHover: 'hover:border-amber-400/20',
+    iconBg: 'bg-amber-500/10',
+    iconBorder: 'border-amber-400/20',
+    textColor: 'text-amber-400',
+    badgeBg: 'bg-amber-500/10',
+    badgeBorder: 'border-amber-400/20',
+    badgeText: 'text-amber-400',
   },
 };
 

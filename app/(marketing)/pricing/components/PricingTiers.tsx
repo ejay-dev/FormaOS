@@ -152,6 +152,8 @@ const pricingTiers = [
       'Asset registers with ownership mapping',
       'Shift tracking, staff workflows, and visit logs',
       'Real-time activity feed and compliance alerts',
+      'AI Compliance Assistant with streaming chat',
+      'SOC 2 self-certification readiness engine',
       'Priority support with SLA acknowledgement',
     ],
     useCase:
@@ -184,6 +186,8 @@ const pricingTiers = [
       'Data residency: AU default (US / EU on roadmap)',
       'Custom regulatory export bundles and evidence packages',
       'Compliance score engine with historical trending',
+      'AI-powered gap analysis and policy drafting',
+      'Automated SOC 2 evidence collection and certification reports',
       'Dedicated implementation and onboarding engineer',
       'Vendor assurance packet, DPA, and SLA documentation',
       'Invoice-based procurement available',

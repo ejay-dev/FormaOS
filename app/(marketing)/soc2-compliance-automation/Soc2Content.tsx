@@ -48,6 +48,19 @@ export default function Soc2Content() {
       ]}
       solutionSections={[
         {
+          heading: 'AI-Powered Self-Certification Engine',
+          paragraphs: [
+            'FormaOS v2.2 introduces a purpose-built SOC 2 Self-Certification Engine with weighted domain scoring, automated evidence checks across 11 controls, and one-click certification reports.',
+          ],
+          bullets: [
+            'Weighted readiness scoring across all 5 Trust Service Criteria domains (Security 30%, Availability 20%, Confidentiality 20%, Processing Integrity 15%, Privacy 15%)',
+            'Automated evidence collection checks for each of the 11 SOC 2 controls',
+            'AI-powered gap analysis with prioritized remediation actions and implementation guidance',
+            'Milestone tracking from framework enablement through certification report generation',
+            'AI Compliance Assistant for policy drafting, evidence guidance, and interactive gap analysis',
+          ],
+        },
+        {
           heading: 'Trust Service Criteria mapping',
           paragraphs: [
             'Map controls across all five TSC categories with clear ownership, testing frequency, and evidence requirements.',
@@ -115,6 +128,8 @@ export default function Soc2Content() {
         { question: 'Which Trust Service Criteria does FormaOS cover?', answer: 'FormaOS supports all five Trust Service Criteria: Security (Common Criteria), Availability, Processing Integrity, Confidentiality, and Privacy. Controls can be mapped across one or multiple criteria.' },
         { question: 'Can FormaOS generate auditor-ready evidence packages?', answer: 'Yes. FormaOS generates exportable evidence packages that map directly to TSC requirements, including control descriptions, testing results, and exception tracking with timestamps and attribution.' },
         { question: 'How does FormaOS work alongside configuration monitoring tools?', answer: 'FormaOS complements technical monitoring tools by covering the operational and administrative controls that configuration scanners can\'t address - access reviews, change management, vendor management, and incident response workflows.' },
+        { question: 'What is the SOC 2 Self-Certification Engine?', answer: 'Introduced in FormaOS v2.2 Vanguard, the Self-Certification Engine provides weighted readiness scoring across all 5 TSC domains, automated evidence checks for 11 controls, AI-powered gap analysis with prioritized remediation, milestone tracking, and one-click certification report generation.' },
+        { question: 'Can the AI Assistant help with SOC 2 preparation?', answer: 'Yes. The AI Compliance Assistant understands your live compliance data and can draft SOC 2 policies, suggest evidence for specific controls, run interactive gap analysis, and provide step-by-step implementation guidance — all within a streaming chat interface.' },
       ]}
       relatedLinks={[
         { label: 'ISO 27001 Compliance', href: '/iso-compliance-software', description: 'Manage ISO 27001 alongside SOC 2 with shared controls.' },

@@ -37,6 +37,7 @@ import {
   Bell,
   GitBranch,
   Layers,
+  Bot,
   type LucideIcon,
 } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
@@ -269,6 +270,26 @@ const enterpriseFeatures: EnterpriseFeature[] = [
       'Continuous monitoring of your compliance posture across all active frameworks. Real-time scoring with configurable thresholds and rollback detection. Automated alerts when evidence expires, controls drift from compliant state, or review deadlines approach. Integration with infrastructure-as-code tools for automated configuration compliance.',
     highlights: ['live scoring', 'Drift detection', 'Expiry alerts', 'IaC integration'],
     colorRgb: '34,211,238',
+  },
+  {
+    icon: Bot,
+    title: 'AI Compliance Assistant',
+    description:
+      'Context-aware AI that understands your compliance posture and accelerates audit readiness.',
+    longDescription:
+      'The AI Compliance Assistant is powered by your live organization data — controls, evidence, frameworks, and compliance scores. Draft policies from templates, get evidence collection guidance, run AI-powered gap analysis, and receive prioritized implementation steps. Five built-in prompt templates cover the most common compliance workflows, with full conversation history for continuity.',
+    highlights: ['Streaming AI chat', 'Policy drafting', 'Gap analysis', 'Evidence guidance'],
+    colorRgb: '245,158,11',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'SOC 2 Self-Certification Engine',
+    description:
+      'Automated readiness scoring with weighted domain analysis and one-click certification reports.',
+    longDescription:
+      'Evaluate SOC 2 readiness across all five Trust Service Criteria domains with weighted scoring. Automated evidence checks across 11 controls, a gap analyzer with prioritized remediation actions, milestone tracking from enablement to certification, and one-click report generation that packages everything auditors need.',
+    highlights: ['Weighted domain scoring', '11 automated checks', 'Gap remediation', 'Certification reports'],
+    colorRgb: '52,211,153',
   },
 ];
 
