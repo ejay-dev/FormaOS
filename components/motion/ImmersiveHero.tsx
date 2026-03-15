@@ -294,9 +294,9 @@ export function ImmersiveHero({
       {/* 3D Depth Stage */}
       <DepthStage
         perspective={t.tilt.perspective}
-        cursorTilt
+        cursorTilt={false}
         tiltIntensity={t.tilt.intensity}
-        glowFollow
+        glowFollow={false}
         glowColor={t.tilt.glowColor}
         className="relative z-10 w-full"
       >
