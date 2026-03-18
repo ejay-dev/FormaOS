@@ -1,0 +1,433 @@
+/**
+ * =========================================================
+ * Workflow Automation Engine
+ * =========================================================
+ * Rule-based automation for compliance workflows
+ */
+
+import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
+import { logActivity } from '@/lib/activity/feed';
+import { notify } from '@/lib/notifications/engine';
+import { automationLogger } from '@/lib/observability/structured-logger';
+
+export type TriggerType =
+  | 'member_added'
+  | 'task_created'
+  | 'task_completed'
+  | 'certificate_expiring'
+  | 'certificate_expired'
+  | 'task_overdue'
+  | 'schedule';
+
+export type ActionType =
+  | 'send_notification'
+  | 'assign_task'
+  | 'send_email'
+  | 'update_status'
+  | 'create_task'
+  | 'escalate';
+
+export interface WorkflowRule {
+  id: string;
+  name: string;
+  description: string;
+  trigger: TriggerType;
+  conditions?: Record<string, any>;
+  actions: Array<{
+    type: ActionType;
+    config: Record<string, any>;
+  }>;
+  enabled: boolean;
+  org_id: string;
+}
+
+export interface AutomationContext {
+  orgId: string;
+  userId?: string;
+  userEmail?: string;
+  resource?: any;
+  metadata?: Record<string, any>;
+}
+
+/**
+ * Workflow automation engine
+ */
+export class WorkflowEngine {
+  private rules: Map<string, WorkflowRule> = new Map();
+
+  /**
+   * Load all active workflow rules for an organization
+   */
+  async loadRules(orgId: string) {
+    const supabase = await createClient();
+
+    const { data: rules } = await supabase
+      .from('workflow_rules')
+      .select('*')
+      .eq('org_id', orgId)
+      .eq('enabled', true);
+
+    if (rules) {
+      rules.forEach((rule: any) => {
+        this.rules.set(rule.id, rule);
+      });
+    }
+  }
+
+  /**
+   * Execute workflows for a trigger
+   */
+  async executeTrigger(
+    trigger: TriggerType,
+    context: AutomationContext,
+  ): Promise<void> {
+    const matchingRules = Array.from(this.rules.values()).filter(
+      (rule) =>
+        rule.enabled &&
+        rule.trigger === trigger &&
+        rule.org_id === context.orgId,
+    );
+
+    for (const rule of matchingRules) {
+      try {
+        if (
+          rule.conditions &&
+          !this.evaluateConditions(rule.conditions, context)
+        ) {
+          continue;
+        }
+
+        for (const action of rule.actions) {
+          await this.executeAction(action, context);
+        }
+
+        if (context.userId) {
+          await logActivity(
+            context.orgId,
+            context.userId,
+            'updated',
+            {
+              type: 'workflow',
+              id: rule.id,
+              name: rule.name,
+              path: '/app/workflows',
+            },
+            {
+              ruleName: rule.name,
+              trigger,
+              actionsCount: rule.actions.length,
+            },
+          );
+        }
+      } catch (error) {
+        console.error(
+          `[workflow-engine] Failed to execute workflow ${rule.id}:`,
+          error,
+        );
+      }
+    }
+  }
+
+  /**
+   * Evaluate conditions
+   */
+  private evaluateConditions(
+    conditions: Record<string, any>,
+    context: AutomationContext,
+  ): boolean {
+    return Object.entries(conditions).every(([key, condition]) => {
+      const actual = this.getContextValue(context, key);
+
+      if (
+        condition !== null &&
+        typeof condition === 'object' &&
+        !Array.isArray(condition)
+      ) {
+        return Object.entries(condition).every(([operator, expected]) => {
+          switch (operator) {
+            case 'eq':
+              return actual === expected;
+            case 'neq':
+              return actual !== expected;
+            case 'gt':
+              return Number(actual) > Number(expected);
+            case 'gte':
+              return Number(actual) >= Number(expected);
+            case 'lt':
+              return Number(actual) < Number(expected);
+            case 'lte':
+              return Number(actual) <= Number(expected);
+            case 'contains':
+              return Array.isArray(actual)
+                ? actual.includes(expected)
+                : String(actual ?? '').includes(String(expected));
+            case 'in':
+              return Array.isArray(expected) && expected.includes(actual);
+            case 'notIn':
+              return Array.isArray(expected) && !expected.includes(actual);
+            case 'exists':
+              return expected ? actual != null : actual == null;
+            default:
+              return false;
+          }
+        });
+      }
+
+      return actual === condition;
+    });
+  }
+
+  private getContextValue(
+    context: AutomationContext,
+    path: string,
+  ): unknown {
+    return path.split('.').reduce<unknown>((value, segment) => {
+      if (value == null || typeof value !== 'object') {
+        return undefined;
+      }
+      return (value as Record<string, unknown>)[segment];
+    }, context);
+  }
+
+  /**
+   * Execute a single action
+   */
+  private async executeAction(
+    action: { type: ActionType; config: Record<string, any> },
+    context: AutomationContext,
+  ): Promise<void> {
+    const supabase = await createClient();
+
+    switch (action.type) {
+      case 'send_notification':
+        if (context.userId) {
+          await notify(context.orgId, [action.config.userId || context.userId], {
+            type: 'workflow.approval_requested',
+            title: action.config.title,
+            body: action.config.message,
+            priority:
+              action.config.type === 'warning' || action.config.type === 'error'
+                ? 'high'
+                : 'normal',
+            data: {
+              href: action.config.actionUrl || '/app/workflows',
+              dedupeKey: `workflow.rule:${context.orgId}:${action.config.userId || context.userId}:${action.config.title || 'notification'}`,
+            },
+          });
+        }
+        break;
+
+      case 'assign_task':
+        await supabase.from('tasks').insert({
+          org_id: context.orgId,
+          title: action.config.title,
+          description: action.config.description,
+          assigned_to: action.config.assignedTo,
+          due_date: action.config.dueDate,
+          priority: action.config.priority || 'medium',
+          status: 'pending',
+          created_at: new Date().toISOString(),
+        });
+        break;
+
+      case 'send_email':
+        // Integration with email service (SendGrid, Resend, etc.)
+        automationLogger.warn('workflow_send_email_not_implemented', {
+          actionConfig: action.config,
+        });
+        break;
+
+      case 'update_status':
+        if (context.resource?.id && action.config.table) {
+          await supabase
+            .from(action.config.table)
+            .update({ status: action.config.status })
+            .eq('id', context.resource.id);
+        }
+        break;
+
+      case 'create_task':
+        await supabase.from('tasks').insert({
+          org_id: context.orgId,
+          title: action.config.title,
+          description: action.config.description,
+          assigned_to: action.config.assignedTo || context.userId,
+          due_date: action.config.dueDate,
+          priority: action.config.priority || 'medium',
+          status: 'pending',
+        });
+        break;
+
+      case 'escalate':
+        // Escalate to admin/owner
+        const { data: admins } = await supabase
+          .from('org_members')
+          .select('user_id')
+          .eq('org_id', context.orgId)
+          .in('role', ['owner', 'admin']);
+
+        for (const admin of admins || []) {
+          await notify(context.orgId, [admin.user_id], {
+            type: 'incident.escalated',
+            title: action.config.title || 'Escalation Required',
+            body: action.config.message,
+            priority: 'high',
+            data: {
+              href: action.config.actionUrl || '/app/workflows',
+            },
+          });
+        }
+        break;
+    }
+  }
+}
+
+/**
+ * Pre-defined workflow templates
+ */
+export const WORKFLOW_TEMPLATES: Omit<WorkflowRule, 'id' | 'org_id'>[] = [
+  {
+    name: 'Welcome New Member',
+    description: 'Automatically assign onboarding tasks to new team members',
+    trigger: 'member_added',
+    enabled: true,
+    actions: [
+      {
+        type: 'send_notification',
+        config: {
+          title: 'Welcome to the team!',
+          message:
+            'Check out your dashboard to get started with compliance training.',
+          type: 'success',
+        },
+      },
+      {
+        type: 'create_task',
+        config: {
+          title: 'Complete Onboarding Training',
+          description:
+            'Review company compliance policies and complete training modules.',
+          priority: 'high',
+          dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        },
+      },
+    ],
+  },
+  {
+    name: 'Certificate Expiring Soon',
+    description: 'Notify member 30 days before certificate expiration',
+    trigger: 'certificate_expiring',
+    enabled: true,
+    actions: [
+      {
+        type: 'send_notification',
+        config: {
+          title: 'Certificate Expiring Soon',
+          message: 'Your certificate will expire in 30 days. Please renew it.',
+          type: 'warning',
+        },
+      },
+      {
+        type: 'create_task',
+        config: {
+          title: 'Renew Certificate',
+          description:
+            'Certificate expiring soon. Please complete renewal process.',
+          priority: 'high',
+        },
+      },
+    ],
+  },
+  {
+    name: 'Overdue Task Escalation',
+    description: 'Escalate tasks that are overdue by 3 days to admins',
+    trigger: 'task_overdue',
+    conditions: {
+      daysOverdue: 3,
+    },
+    enabled: true,
+    actions: [
+      {
+        type: 'escalate',
+        config: {
+          title: 'Overdue Task Requires Attention',
+          message: 'A task assigned to a team member is 3+ days overdue.',
+        },
+      },
+    ],
+  },
+  {
+    name: 'Task Completion Celebration',
+    description: 'Send congratulations when member completes a task',
+    trigger: 'task_completed',
+    enabled: true,
+    actions: [
+      {
+        type: 'send_notification',
+        config: {
+          title: 'Task Completed! 🎉',
+          message: 'Great job completing your task. Keep up the good work!',
+          type: 'success',
+        },
+      },
+    ],
+  },
+];
+
+/**
+ * Check for certificate expirations and trigger workflows
+ */
+export async function checkCertificateExpirations(
+  orgId: string,
+): Promise<void> {
+  const supabase = await createClient();
+  const engine = new WorkflowEngine();
+  await engine.loadRules(orgId);
+
+  const thirtyDaysFromNow = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+  const { data: expiringCerts } = await supabase
+    .from('certificates')
+    .select('*, org_members!inner(user_id, email)')
+    .eq('org_id', orgId)
+    .lte('expiry_date', thirtyDaysFromNow.toISOString())
+    .gte('expiry_date', new Date().toISOString());
+
+  for (const cert of expiringCerts || []) {
+    await engine.executeTrigger('certificate_expiring', {
+      orgId,
+      userId: cert.org_members.user_id,
+      userEmail: cert.org_members.email,
+      resource: cert,
+    });
+  }
+}
+
+/**
+ * Check for overdue tasks and trigger workflows
+ */
+export async function checkOverdueTasks(orgId: string): Promise<void> {
+  const supabase = await createClient();
+  const engine = new WorkflowEngine();
+  await engine.loadRules(orgId);
+
+  const { data: overdueTasks } = await supabase
+    .from('tasks')
+    .select('*')
+    .eq('org_id', orgId)
+    .eq('status', 'pending')
+    .lt('due_date', new Date().toISOString());
+
+  for (const task of overdueTasks || []) {
+    await engine.executeTrigger('task_overdue', {
+      orgId,
+      userId: task.assigned_to,
+      resource: task,
+    });
+  }
+}
+
+/**
+ * Global workflow engine instance
+ */
+export const workflowEngine = new WorkflowEngine();

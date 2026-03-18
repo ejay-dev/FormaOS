@@ -1,0 +1,15 @@
+{
+  "defaults": {
+    "timeout": 30000,
+    "wait": 1000,
+    "chromeLaunchConfig": {
+      "args": ["--no-sandbox", "--disable-setuid-sandbox"]
+    }
+  },
+  "urls": [
+    "http://localhost:3000",
+    "http://localhost:3000/pricing",
+    "http://localhost:3000/auth/signin",
+    "http://localhost:3000/auth/signup"
+  ]
+}

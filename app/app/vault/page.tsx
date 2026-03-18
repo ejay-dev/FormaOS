@@ -1,0 +1,404 @@
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import {
+  ShieldCheck,
+  FileText,
+  Search,
+  FileUp,
+  HardDrive,
+  Filter,
+  CheckCircle2,
+  Clock,
+  ListFilter,
+} from 'lucide-react';
+import { verifyEvidence } from '@/app/app/actions/evidence';
+import { fetchSystemState } from '@/lib/system-state/server';
+import { redirect } from 'next/navigation';
+import { VaultUploadButton } from '@/components/vault/vault-upload-button';
+import { EvidenceFileActions } from '@/components/vault/evidence-file-actions';
+import Link from 'next/link';
+
+function getFileName(item: any) {
+  return item?.file_name || item?.title || item?.name || 'Untitled';
+}
+
+function getFileType(item: any) {
+  return item?.file_type || item?.mime_type || 'file';
+}
+
+function getFileSizeKB(item: any) {
+  const bytes = Number(item?.file_size) || 0;
+  return (bytes / 1024).toFixed(0);
+}
+
+type VaultPageProps = {
+  searchParams?: Promise<{
+    q?: string | string[];
+    status?: string | string[];
+  }>;
+};
+
+function parseSingleValue(input: string | string[] | undefined): string {
+  return Array.isArray(input) ? input[0] ?? '' : input ?? '';
+}
+
+export default async function VaultPage({ searchParams }: VaultPageProps) {
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const searchQueryRaw = parseSingleValue(resolvedSearchParams.q).trim();
+  const searchQuery = searchQueryRaw.toLowerCase();
+  const statusFilterRaw = parseSingleValue(resolvedSearchParams.status).trim().toLowerCase();
+  const statusFilter =
+    statusFilterRaw === 'pending' || statusFilterRaw === 'verified'
+      ? statusFilterRaw
+      : 'all';
+  const hasFilters = Boolean(searchQuery || statusFilter !== 'all');
+
+  const systemState = await fetchSystemState();
+  if (!systemState) {
+    redirect('/workspace-recovery?from=vault-page');
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const orgId = systemState.organization.id;
+  const isAuditor = systemState.role === 'owner' || systemState.role === 'admin';
+
+  // 2) Fetch Evidence with joins (limited to 100 for performance)
+  const { data: artifacts } = await supabase
+    .from('org_evidence')
+    .select(
+      `
+      id, title, file_name, file_type, file_size, name,
+      verification_status, quality_score, risk_flag,
+      verified_at, created_at, file_path,
+      task:task_id (title),
+      policy:policy_id (title)
+    `,
+    )
+    .eq('organization_id', orgId)
+    .order('created_at', { ascending: false })
+    .limit(100);
+
+  const allArtifacts = artifacts || [];
+  const filteredArtifacts = allArtifacts.filter((artifact: any) => {
+    const statusMatches =
+      statusFilter === 'all' || artifact.verification_status === statusFilter;
+    if (!statusMatches) return false;
+
+    if (!searchQuery) return true;
+
+    const haystack = [
+      getFileName(artifact),
+      artifact.file_type ?? '',
+      artifact.task?.title ?? '',
+      artifact.policy?.title ?? '',
+    ]
+      .join(' ')
+      .toLowerCase();
+
+    return haystack.includes(searchQuery);
+  });
+
+  // Storage calc (current feature)
+  const totalSize =
+    allArtifacts.reduce(
+      (acc: number, curr: any) => acc + (Number(curr.file_size) || 0),
+      0,
+    ) || 0;
+  const sizeInMB = (totalSize / (1024 * 1024)).toFixed(2);
+
+  // Split (upgrade feature)
+  const pending = filteredArtifacts.filter(
+    (a: any) => a.verification_status === 'pending',
+  );
+  const verified = filteredArtifacts.filter(
+    (a: any) => a.verification_status === 'verified',
+  );
+
+  return (
+    <div className="space-y-10 pb-24">
+      {/* Header with Storage Meter (current) + Total count (upgrade) */}
+      <div
+        className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between border-b border-white/10 pb-8"
+        data-tour="vault-header"
+      >
+        <div>
+          <h1 className="text-4xl font-black text-slate-100 tracking-tight">
+            Evidence Vault
+          </h1>
+          <p className="text-slate-400 mt-2 font-medium tracking-tight">
+            Encrypted repository for compliance artifacts. Review, verify, and
+            archive evidence.
+          </p>
+        </div>
+
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-3">
+          <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-xl text-xs font-bold text-slate-400">
+            <Filter className="h-4 w-4" />
+            <span>
+              {filteredArtifacts.length} Showing
+              {hasFilters ? ` (${allArtifacts.length} Total)` : ''}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-4 bg-white/5 border border-white/10 p-4 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+            <div className="h-10 w-10 rounded-xl bg-purple-500/10 text-purple-300 flex items-center justify-center shadow-[0_0_18px_rgba(168,85,247,0.2)]">
+              <HardDrive className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                Vault Usage
+              </p>
+              <p className="text-sm font-bold text-slate-100">
+                {sizeInMB} MB / 500 MB
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Action Toolbar (current) */}
+      <div className="flex flex-col lg:flex-row lg:items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+        <form method="get" className="flex flex-1 flex-col sm:flex-row sm:items-center gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <input
+              name="q"
+              defaultValue={searchQueryRaw}
+              placeholder="Search artifacts by name, type, or context..."
+              className="w-full pl-10 pr-4 py-2 text-sm outline-none bg-transparent text-slate-100 placeholder:text-slate-500"
+            />
+          </div>
+          <select
+            name="status"
+            defaultValue={statusFilter}
+            className="h-10 rounded-xl border border-white/10 bg-white/10 px-3 text-xs font-semibold uppercase tracking-wider text-slate-300"
+          >
+            <option value="all">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="verified">Verified</option>
+          </select>
+          <button
+            type="submit"
+            className="h-10 px-4 rounded-xl bg-white/10 text-xs font-semibold uppercase tracking-wider text-slate-100 hover:bg-white/20 transition-colors"
+          >
+            <ListFilter className="h-3.5 w-3.5 inline mr-2" />
+            Apply
+          </button>
+          {hasFilters ? (
+            <Link
+              href="/app/vault"
+              className="h-10 px-4 rounded-xl border border-white/10 text-xs font-semibold uppercase tracking-wider text-slate-300 hover:bg-white/10 transition-colors inline-flex items-center justify-center"
+            >
+              Clear
+            </Link>
+          ) : null}
+        </form>
+        <VaultUploadButton />
+      </div>
+
+      {/* PENDING REVIEW SECTION (upgrade) */}
+      {pending.length > 0 && (
+        <section className="space-y-6">
+          <div className="flex items-center gap-3 text-amber-300">
+            <Clock className="h-5 w-5" />
+            <h2 className="text-xs font-black uppercase tracking-[0.2em]">
+              Pending Review ({pending.length})
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {pending.map((item: any) => (
+              <div
+                key={item.id}
+                className="bg-amber-400/10 border border-amber-400/30 rounded-[2rem] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.35)] hover:shadow-[0_24px_70px_rgba(0,0,0,0.45)] transition-all relative overflow-hidden group"
+              >
+                <div className="absolute top-0 left-0 w-1 h-full bg-amber-400/80" />
+
+                <div className="flex justify-between items-start mb-4">
+                  <div className="h-10 w-10 bg-amber-400/10 rounded-xl flex items-center justify-center text-amber-300">
+                    <FileText className="h-5 w-5" />
+                  </div>
+                  <span className="text-xs font-black uppercase tracking-widest text-amber-200 bg-amber-400/10 px-2 py-1 rounded-lg">
+                    Needs Action
+                  </span>
+                </div>
+
+                <h3 className="font-bold text-slate-100 truncate pr-4">
+                  {getFileName(item)}
+                </h3>
+                <p className="text-xs text-slate-400 mt-1 mb-6 truncate">
+                  Linked to:{' '}
+                  {item.task?.title || item.policy?.title || 'General Upload'}
+                </p>
+
+                <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4">
+                  <p className="text-xs text-slate-400 font-bold uppercase tracking-tight">
+                    {getFileType(item)} • {getFileSizeKB(item)} KB
+                  </p>
+                  <span className="text-xs text-slate-400 font-medium">
+                    {item.created_at
+                      ? new Date(item.created_at).toLocaleDateString()
+                      : 'N/A'}
+                  </span>
+                </div>
+
+                {/* Action Bar */}
+                <div className="flex items-center gap-3 mt-4">
+                  <EvidenceFileActions filePath={item.file_path ?? null} variant="pending" />
+
+                  {isAuditor && (
+                    <form
+                      action={async (formData) => {
+                        'use server';
+                        const reason = (formData.get('reason') as string) || '';
+                        await verifyEvidence(item.id, 'verified', reason);
+                      }}
+                      className="flex-1"
+                    >
+                      <input
+                        name="reason"
+                        placeholder="Reason required"
+                        className="mb-3 w-full rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-xs font-bold uppercase tracking-widest text-slate-200 placeholder:text-slate-500"
+                        required
+                      />
+                      <button
+                        type="submit"
+                        className="w-full py-3 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-500 text-white hover:brightness-110 text-xs font-bold transition-all shadow-[0_10px_30px_rgba(16,185,129,0.35)] active:scale-95"
+                      >
+                        <CheckCircle2 className="h-4 w-4" />
+                        Verify
+                      </button>
+                    </form>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* VERIFIED SECTION (upgrade) */}
+      <section className="space-y-6">
+        <div className="flex items-center gap-3 text-emerald-300">
+          <ShieldCheck className="h-5 w-5" />
+          <h2 className="text-xs font-black uppercase tracking-[0.2em]">
+            Secured Assets ({verified.length})
+          </h2>
+        </div>
+
+        <div className="bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] border border-white/10 rounded-[2.5rem] shadow-[0_24px_70px_rgba(0,0,0,0.45)] overflow-hidden">
+          {verified.length === 0 ? (
+            <div className="p-12 text-center text-slate-400 text-sm font-bold">
+              No verified evidence yet.
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-[760px] w-full text-left">
+                <thead className="bg-white/5 border-b border-white/10 text-xs font-black uppercase text-slate-400 tracking-widest">
+                  <tr>
+                    <th className="px-8 py-6">Artifact</th>
+                    <th className="px-8 py-6">Context</th>
+                    <th className="px-8 py-6">AI Quality</th>
+                    <th className="px-8 py-6">Verification</th>
+                    <th className="px-8 py-6 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/10">
+                  {verified.map((item: any) => (
+                    <tr
+                      key={item.id}
+                      className="group hover:bg-white/5 transition-colors"
+                    >
+                      <td className="px-8 py-4">
+                        <div className="flex items-center gap-3">
+                          <FileText className="h-4 w-4 text-emerald-300" />
+                          <span className="text-xs font-bold text-slate-100">
+                            {getFileName(item)}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-400 font-bold uppercase tracking-tight mt-1">
+                          {getFileType(item)} • {getFileSizeKB(item)} KB
+                        </p>
+                      </td>
+
+                      <td className="px-8 py-4 text-xs text-slate-400">
+                        {item.task?.title || item.policy?.title || 'N/A'}
+                      </td>
+
+                      <td className="px-8 py-4">
+                        {item.quality_score != null ? (
+                          <div className="flex items-center gap-2">
+                            <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                              item.quality_score >= 70 ? 'bg-emerald-400/10 text-emerald-300' :
+                              item.quality_score >= 50 ? 'bg-amber-400/10 text-amber-300' :
+                              'bg-rose-400/10 text-rose-300'
+                            }`}>
+                              {item.quality_score}
+                            </div>
+                            <span className={`text-[9px] font-bold uppercase ${
+                              item.risk_flag === 'low' ? 'text-emerald-400' :
+                              item.risk_flag === 'medium' ? 'text-amber-400' :
+                              'text-rose-400'
+                            }`}>
+                              {item.risk_flag || 'N/A'}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-slate-500">Not scored</span>
+                        )}
+                      </td>
+
+                      <td className="px-8 py-4">
+                        <div className="flex items-center gap-2">
+                          <div className="h-6 w-6 rounded-full bg-emerald-400/10 flex items-center justify-center text-emerald-300">
+                            <ShieldCheck className="h-3 w-3" />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-xs font-bold text-slate-100">
+                              Verified
+                            </span>
+                            <span className="text-[9px] font-mono text-slate-400">
+                              {item.verified_at
+                                ? new Date(
+                                    item.verified_at,
+                                  ).toLocaleDateString()
+                                : item.created_at
+                                  ? new Date(
+                                      item.created_at,
+                                    ).toLocaleDateString()
+                                  : 'N/A'}
+                            </span>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className="px-8 py-4 text-right">
+                        <EvidenceFileActions filePath={item.file_path ?? null} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Empty state (current) if literally nothing exists */}
+      {filteredArtifacts.length === 0 && (
+        <div className="py-20 border-2 border-dashed border-white/10 rounded-3xl flex flex-col items-center justify-center bg-white/5">
+          <div className="h-16 w-16 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center mb-4 shadow-sm">
+            <FileUp className="h-8 w-8 text-slate-400" />
+          </div>
+          <h3 className="text-lg font-bold text-slate-100">
+            {allArtifacts.length === 0 ? 'Vault is Empty' : 'No matching artifacts'}
+          </h3>
+          <p className="text-sm text-slate-400 mt-1">
+            {allArtifacts.length === 0
+              ? 'Upload your first compliance artifact to begin.'
+              : 'Try adjusting your search and status filters.'}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}

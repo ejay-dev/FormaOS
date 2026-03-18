@@ -1,0 +1,26 @@
+import { Metadata } from 'next';
+import NDISContent from './NDISContent';
+import { siteUrl } from '@/lib/seo';
+export const metadata: Metadata = {
+  title: 'NDIS & Aged Care Compliance | FormaOS',
+  description:
+    'Compliance management for NDIS providers and aged care facilities. Support worker screening records, incident workflows, and audit readiness.',
+  alternates: { canonical: `${siteUrl}/use-cases/ndis-aged-care` },
+  openGraph: {
+    title: 'NDIS & Aged Care Compliance | FormaOS',
+    description:
+      'Compliance management for NDIS providers and aged care facilities. Support worker screening records, incident workflows, and audit readiness.',
+    type: 'website',
+    url: `${siteUrl}/use-cases/ndis-aged-care`,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'NDIS & Aged Care Compliance | FormaOS',
+    description:
+      'Support worker screening, incident workflows, and NDIS audit readiness for providers and aged care facilities.',
+  },
+};
+
+export default function NDISUseCasePage() {
+  return <NDISContent />;
+}

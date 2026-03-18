@@ -1,0 +1,178 @@
+{
+  "framework": {
+    "name": "PCI DSS",
+    "slug": "pci-dss",
+    "version": "4.0",
+    "description": "Security controls for payment card data environments.",
+    "is_active": true
+  },
+  "domains": [
+    { "name": "Network", "description": "Network security controls and segmentation.", "sort_order": 1, "key": "network" },
+    { "name": "Data Protection", "description": "Protect stored and transmitted card data.", "sort_order": 2, "key": "data" },
+    { "name": "Vulnerability", "description": "Identify and remediate vulnerabilities.", "sort_order": 3, "key": "vulnerability" },
+    { "name": "Monitoring", "description": "Monitor and test security controls.", "sort_order": 4, "key": "monitoring" },
+    { "name": "Policy", "description": "Maintain security policies and training.", "sort_order": 5, "key": "policy" }
+  ],
+  "controls": [
+    {
+      "control_code": "PCI-1",
+      "title": "Network security controls",
+      "summary_description": "Install and maintain network security controls to protect card data environments.",
+      "implementation_guidance": "Document firewall rules, segmentation, and approve changes.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Network",
+      "suggested_evidence_types": ["Firewall ruleset", "Network segmentation diagram"],
+      "suggested_automation_triggers": ["task_overdue"],
+      "suggested_task_templates": [
+        { "title": "Review firewall rules", "description": "Validate rules for PCI scope boundaries.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "PCI-2",
+      "title": "Secure configurations",
+      "summary_description": "Apply secure configuration standards for system components.",
+      "implementation_guidance": "Use hardened baselines and monitor configuration drift.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Network",
+      "suggested_evidence_types": ["Configuration baseline", "Hardening checklist"],
+      "suggested_automation_triggers": ["control_failed"],
+      "suggested_task_templates": [
+        { "title": "Validate secure configurations", "description": "Confirm baseline adherence for PCI systems.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "PCI-3",
+      "title": "Protect stored cardholder data",
+      "summary_description": "Securely store and limit retention of cardholder data.",
+      "implementation_guidance": "Encrypt stored data and define retention schedules.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Data Protection",
+      "suggested_evidence_types": ["Data retention policy", "Encryption configuration"],
+      "suggested_automation_triggers": ["policy_review_due"],
+      "suggested_task_templates": [
+        { "title": "Review card data retention", "description": "Validate retention and encryption controls.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "PCI-4",
+      "title": "Encrypt transmission",
+      "summary_description": "Encrypt cardholder data during transmission over open networks.",
+      "implementation_guidance": "Use strong encryption protocols and validate certificates.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Data Protection",
+      "suggested_evidence_types": ["TLS configuration", "Certificate inventory"],
+      "suggested_automation_triggers": ["control_incomplete"],
+      "suggested_task_templates": [
+        { "title": "Validate transmission encryption", "description": "Confirm TLS configurations for PCI data flows.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "PCI-5",
+      "title": "Malware protection",
+      "summary_description": "Protect systems against malware and monitor for threats.",
+      "implementation_guidance": "Deploy endpoint protection and review alerts.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 90,
+      "domain": "Vulnerability",
+      "suggested_evidence_types": ["Endpoint protection report", "Malware alert logs"],
+      "suggested_automation_triggers": ["control_failed"],
+      "suggested_task_templates": [
+        { "title": "Review malware alerts", "description": "Investigate and remediate malware findings.", "priority": "medium" }
+      ]
+    },
+    {
+      "control_code": "PCI-6",
+      "title": "Secure development",
+      "summary_description": "Develop and maintain secure systems and applications.",
+      "implementation_guidance": "Apply secure coding practices and vulnerability remediation SLAs.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 120,
+      "domain": "Vulnerability",
+      "suggested_evidence_types": ["Secure SDLC policy", "Vulnerability remediation log"],
+      "suggested_automation_triggers": ["risk_score_change"],
+      "suggested_task_templates": [
+        { "title": "Review secure SDLC controls", "description": "Validate code review and scanning coverage.", "priority": "medium" }
+      ]
+    },
+    {
+      "control_code": "PCI-7",
+      "title": "Access control",
+      "summary_description": "Restrict access to cardholder data by business need-to-know.",
+      "implementation_guidance": "Implement RBAC and monitor privileged access.",
+      "default_risk_level": "high",
+      "review_frequency_days": 90,
+      "domain": "Policy",
+      "suggested_evidence_types": ["Access control policy", "Access review records"],
+      "suggested_automation_triggers": ["control_incomplete"],
+      "suggested_task_templates": [
+        { "title": "Run access review", "description": "Validate access for PCI roles.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "PCI-8",
+      "title": "Identify and authenticate access",
+      "summary_description": "Assign unique IDs and strong authentication.",
+      "implementation_guidance": "Require MFA and monitor authentication failures.",
+      "default_risk_level": "high",
+      "review_frequency_days": 90,
+      "domain": "Policy",
+      "suggested_evidence_types": ["MFA enforcement report", "Authentication policy"],
+      "suggested_automation_triggers": ["control_failed"],
+      "suggested_task_templates": [
+        { "title": "Validate authentication controls", "description": "Confirm MFA and password standards.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "PCI-10",
+      "title": "Log and monitor",
+      "summary_description": "Track and monitor access to network resources and card data.",
+      "implementation_guidance": "Centralize logs and review security events.",
+      "default_risk_level": "high",
+      "review_frequency_days": 30,
+      "domain": "Monitoring",
+      "suggested_evidence_types": ["Log review records", "SIEM dashboard"],
+      "suggested_automation_triggers": ["control_failed"],
+      "suggested_task_templates": [
+        { "title": "Weekly log review", "description": "Review PCI system logs and alerts.", "priority": "high" }
+      ]
+    },
+    {
+      "control_code": "PCI-11",
+      "title": "Test security",
+      "summary_description": "Test security controls and vulnerability management regularly.",
+      "implementation_guidance": "Perform penetration tests and vulnerability scans.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 180,
+      "domain": "Monitoring",
+      "suggested_evidence_types": ["Penetration test report", "Vulnerability scan report"],
+      "suggested_automation_triggers": ["task_overdue"],
+      "suggested_task_templates": [
+        { "title": "Schedule penetration test", "description": "Plan and execute annual PCI penetration test.", "priority": "medium" }
+      ]
+    },
+    {
+      "control_code": "PCI-12",
+      "title": "Security policy and training",
+      "summary_description": "Maintain a security policy and training program.",
+      "implementation_guidance": "Publish policies and run annual training.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 365,
+      "domain": "Policy",
+      "suggested_evidence_types": ["Security policy", "Training completion report"],
+      "suggested_automation_triggers": ["policy_review_due"],
+      "suggested_task_templates": [
+        { "title": "Annual security training", "description": "Assign and track PCI awareness training.", "priority": "medium" }
+      ]
+    }
+  ],
+  "mappings": [
+    { "internal_control_code": "PCI-1", "framework_slug": "nist-csf", "external_control_reference": "PR-1", "mapping_strength": "primary" },
+    { "internal_control_code": "PCI-3", "framework_slug": "nist-csf", "external_control_reference": "PR-2", "mapping_strength": "primary" },
+    { "internal_control_code": "PCI-7", "framework_slug": "cis-controls", "external_control_reference": "CIS-05", "mapping_strength": "primary" },
+    { "internal_control_code": "PCI-10", "framework_slug": "cis-controls", "external_control_reference": "CIS-08", "mapping_strength": "primary" }
+  ]
+}

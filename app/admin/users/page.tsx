@@ -1,0 +1,249 @@
+import { getAdminFetchConfig } from '@/app/admin/lib';
+import { UserActionButtons } from '@/app/admin/components/user-action-buttons';
+import { Mail, Building2, Shield, Clock } from 'lucide-react';
+
+type UserRow = {
+  id: string;
+  email: string;
+  provider: string;
+  email_confirmed: boolean;
+  last_sign_in_at: string | null;
+  role: string;
+  organization: string;
+};
+
+type UsersResponse = {
+  page: number;
+  pageSize: number;
+  total: number;
+  data: UserRow[];
+};
+
+function formatDate(value?: string | null) {
+  if (!value) return 'N/A';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'N/A';
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(date);
+}
+
+async function fetchUsers(query?: string, page?: string) {
+  const { base, headers } = await getAdminFetchConfig();
+  const params = new URLSearchParams();
+  if (query) params.set('query', query);
+  if (page) params.set('page', page);
+  const res = await fetch(`${base}/api/admin/users?${params.toString()}`, {
+    cache: 'no-store',
+    headers,
+  });
+  if (!res.ok) return null;
+  return res.json();
+}
+
+export default async function AdminUsersPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ query?: string; page?: string }>;
+}) {
+  const resolved = await searchParams;
+  const data: UsersResponse | null = await fetchUsers(
+    resolved?.query,
+    resolved?.page,
+  );
+  const rows: UserRow[] = data?.data ?? [];
+  const requestedPage = Number(resolved?.page ?? '1');
+  const fallbackPage =
+    Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+  const currentPage = data?.page ?? fallbackPage;
+  const pageSize = data?.pageSize ?? (rows.length > 0 ? rows.length : 25);
+  const total = data?.total ?? rows.length;
+  const totalPages = Math.max(1, Math.ceil(total / Math.max(pageSize, 1)));
+  const previousPage = Math.max(1, currentPage - 1);
+  const nextPage = Math.min(totalPages, currentPage + 1);
+
+  const pageHref = (page: number) => {
+    const params = new URLSearchParams();
+    if (resolved?.query) params.set('query', resolved.query);
+    params.set('page', String(page));
+    return `/admin/users?${params.toString()}`;
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold text-foreground">Users</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Manage platform users and account access
+        </p>
+      </div>
+
+      {/* Search */}
+      <form className="flex items-center gap-2">
+        <input
+          name="query"
+          defaultValue={resolved?.query ?? ''}
+          placeholder="Search by email or name"
+          className="rounded-lg border border-border bg-card px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none"
+        />
+        <button
+          type="submit"
+          className="rounded-lg border border-border bg-muted/50 px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/50"
+        >
+          Search
+        </button>
+      </form>
+
+      {/* Table */}
+      <div className="rounded-lg border border-border bg-card overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border bg-card/80">
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
+                  User
+                </th>
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
+                  Organization
+                </th>
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
+                  Role
+                </th>
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
+                  Provider
+                </th>
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
+                  Last Login
+                </th>
+                <th className="px-6 py-3 text-left font-semibold text-muted-foreground">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-right font-semibold text-muted-foreground">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {rows.map((user) => (
+                <tr
+                  key={user.id}
+                  className="hover:bg-muted/50 transition-colors"
+                >
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-border flex items-center justify-center">
+                        <Mail className="h-4 w-4 text-muted-foreground" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-foreground">
+                          {user.email.includes('@')
+                            ? user.email.split('@')[0]
+                            : user.email}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {user.email.includes('@')
+                            ? user.email.split('@')[1]
+                            : 'No email domain'}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Building2 className="h-4 w-4 text-muted-foreground" />
+                      {user.organization || 'N/A'}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2">
+                      <Shield className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-muted-foreground capitalize">
+                        {user.role}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="text-muted-foreground">{user.provider}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      {formatDate(user.last_sign_in_at)}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span
+                      className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${
+                        user.email_confirmed
+                          ? 'bg-emerald-500/10 text-emerald-300'
+                          : 'bg-amber-500/10 text-amber-300'
+                      }`}
+                    >
+                      {user.email_confirmed ? 'Verified' : 'Pending'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <UserActionButtons userId={user.id} />
+                  </td>
+                </tr>
+              ))}
+              {rows.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={7}
+                    className="px-6 py-8 text-center text-muted-foreground"
+                  >
+                    <div className="flex flex-col items-center gap-2">
+                      <Mail className="h-8 w-8 opacity-20" />
+                      <p>No users found</p>
+                    </div>
+                  </td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Pagination */}
+      {totalPages > 1 ? (
+        <div className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3">
+          <p className="text-xs text-muted-foreground">
+            Showing {(currentPage - 1) * pageSize + 1}-
+            {Math.min(currentPage * pageSize, total)} of {total} users
+          </p>
+          <div className="flex items-center gap-2">
+            <a
+              href={pageHref(previousPage)}
+              aria-disabled={currentPage <= 1}
+              className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                currentPage <= 1
+                  ? 'pointer-events-none border-border text-muted-foreground'
+                  : 'border-border text-foreground hover:bg-muted/70'
+              }`}
+            >
+              Previous
+            </a>
+            <span className="text-xs text-muted-foreground">
+              Page {currentPage} of {totalPages}
+            </span>
+            <a
+              href={pageHref(nextPage)}
+              aria-disabled={currentPage >= totalPages}
+              className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                currentPage >= totalPages
+                  ? 'pointer-events-none border-border text-muted-foreground'
+                  : 'border-border text-foreground hover:bg-muted/70'
+              }`}
+            >
+              Next
+            </a>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}

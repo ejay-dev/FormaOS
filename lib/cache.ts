@@ -1,0 +1,342 @@
+/**
+ * =========================================================
+ * Advanced Caching Layer
+ * =========================================================
+ * Redis-based caching with intelligent invalidation
+ */
+
+import { getRedisClient, getRedisConfig } from '@/lib/redis/client';
+import { apiLogger } from '@/lib/observability/structured-logger';
+
+// In-memory cache fallback when Redis is not available.
+// Uses LRU eviction to prevent unbounded memory growth.
+const MAX_CACHE_ENTRIES = 1000;
+
+class InMemoryCache {
+  private cache: Map<string, { value: unknown; expiry: number }> = new Map();
+
+  private evictExpired(): void {
+    const now = Date.now();
+    for (const [key, item] of this.cache) {
+      if (now > item.expiry) this.cache.delete(key);
+    }
+  }
+
+  private evictIfNeeded(): void {
+    if (this.cache.size < MAX_CACHE_ENTRIES) return;
+    this.evictExpired();
+    // If still over limit, drop oldest entries (Map preserves insertion order)
+    while (this.cache.size >= MAX_CACHE_ENTRIES) {
+      const oldest = this.cache.keys().next().value;
+      if (oldest !== undefined) this.cache.delete(oldest);
+      else break;
+    }
+  }
+
+  async get(key: string): Promise<string | null> {
+    const item = this.cache.get(key);
+    if (!item) return null;
+
+    if (Date.now() > item.expiry) {
+      this.cache.delete(key);
+      return null;
+    }
+
+    // Move to end for LRU ordering
+    this.cache.delete(key);
+    this.cache.set(key, item);
+
+    return JSON.stringify(item.value);
+  }
+
+  async set(key: string, value: string, ttl: number): Promise<void> {
+    this.evictIfNeeded();
+    this.cache.delete(key);
+    this.cache.set(key, {
+      value: JSON.parse(value),
+      expiry: Date.now() + ttl * 1000,
+    });
+  }
+
+  async del(key: string): Promise<void> {
+    this.cache.delete(key);
+  }
+
+  async keys(pattern: string): Promise<string[]> {
+    const regex = new RegExp(pattern.replace('*', '.*'));
+    return Array.from(this.cache.keys()).filter((k) => regex.test(k));
+  }
+
+  get size(): number {
+    return this.cache.size;
+  }
+
+  clear(): void {
+    this.cache.clear();
+  }
+}
+
+// Initialize cache (Redis or in-memory fallback)
+ 
+let cacheInstance: any = null;
+
+async function getCache() {
+  if (cacheInstance) return cacheInstance;
+
+  // Try Upstash Redis first using the shared REST client.
+  const { restUrl, token } = getRedisConfig();
+  if (restUrl && token) {
+    try {
+      cacheInstance = getRedisClient();
+      if (!cacheInstance) {
+        throw new Error('Redis client unavailable');
+      }
+      apiLogger.info('redis_cache_initialized');
+      return cacheInstance;
+    } catch (_error) {
+      console.warn('⚠️  Redis not available, using in-memory cache');
+    }
+  }
+
+  // Fallback to in-memory
+  cacheInstance = new InMemoryCache();
+  return cacheInstance;
+}
+
+/**
+ * Cache key generators
+ */
+export const CacheKeys = {
+  // Organization
+  ORG_OVERVIEW: (orgId: string) => `org:${orgId}:overview`,
+  ORG_MEMBERS: (orgId: string, page = 0) => `org:${orgId}:members:${page}`,
+  ORG_SETTINGS: (orgId: string) => `org:${orgId}:settings`,
+
+  // User
+  USER_PROFILE: (userId: string) => `user:${userId}:profile`,
+  USER_COMPLIANCE: (userId: string) => `user:${userId}:compliance`,
+  USER_TASKS: (userId: string) => `user:${userId}:tasks`,
+  USER_PERMISSIONS: (userId: string) => `user:${userId}:permissions`,
+
+  // Analytics
+  ANALYTICS_COMPLIANCE: (orgId: string) => `analytics:${orgId}:compliance`,
+  ANALYTICS_TEAM: (orgId: string) => `analytics:${orgId}:team`,
+  ANALYTICS_TREND: (orgId: string) => `analytics:${orgId}:trend`,
+
+  // Certificates
+  CERTIFICATES_LIST: (orgId: string) => `certs:${orgId}:list`,
+  CERTIFICATE_DETAIL: (certId: string) => `cert:${certId}`,
+
+  // Search
+  SEARCH_RESULTS: (orgId: string, query: string) => `search:${orgId}:${query}`,
+
+  // Frameworks
+  FRAMEWORKS_LIST: (orgId: string) => `frameworks:${orgId}:list`,
+
+  // Tasks
+  TASKS_OVERVIEW: (orgId: string) => `tasks:${orgId}:overview`,
+
+  // Reports
+  REPORTS_LIST: (orgId: string) => `reports:${orgId}:list`,
+};
+
+/**
+ * Get cached data or fetch and cache
+ */
+export async function getCached<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl = 300, // 5 minutes default
+): Promise<T> {
+  const cache = await getCache();
+
+  try {
+    // Try to get from cache
+    const cached = await cache.get(key);
+    if (cached) {
+      return JSON.parse(cached) as T;
+    }
+  } catch (error) {
+    console.warn(`Cache get error for key ${key}:`, error);
+  }
+
+  // Fetch fresh data
+  const data = await fetcher();
+
+  try {
+    // Store in cache
+    await cache.set(key, JSON.stringify(data), ttl);
+  } catch (error) {
+    console.warn(`Cache set error for key ${key}:`, error);
+  }
+
+  return data;
+}
+
+/**
+ * Stale-While-Revalidate cache pattern.
+ * Returns stale/cached data immediately if available, then revalidates in background.
+ * Falls back to getCached behaviour if no stale data exists.
+ */
+export async function getCachedSWR<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl = 300, // 5 minutes
+): Promise<T> {
+  const cache = await getCache();
+
+  let stale: T | null = null;
+  try {
+    const cached = await cache.get(key);
+    if (cached) {
+      stale = JSON.parse(cached) as T;
+    }
+  } catch {
+    // ignore read errors
+  }
+
+  if (stale !== null) {
+    // Revalidate in background — don't await
+    void (async () => {
+      try {
+        const fresh = await fetcher();
+        await cache.set(key, JSON.stringify(fresh), ttl);
+      } catch {
+        // Background revalidation failure is non-fatal
+      }
+    })();
+    return stale;
+  }
+
+  // No stale data — must fetch synchronously
+  return getCached(key, fetcher, ttl);
+}
+
+/**
+ * Set cache value
+ */
+export async function setCache(
+  key: string,
+  value: unknown,
+  ttl = 300,
+): Promise<void> {
+  const cache = await getCache();
+
+  try {
+    await cache.set(key, JSON.stringify(value), ttl);
+  } catch (error) {
+    console.warn(`Cache set error for key ${key}:`, error);
+  }
+}
+
+/**
+ * Invalidate single cache key
+ */
+export async function invalidateCache(key: string): Promise<void> {
+  const cache = await getCache();
+
+  try {
+    await cache.del(key);
+  } catch (error) {
+    console.warn(`Cache invalidation error for key ${key}:`, error);
+  }
+}
+
+/**
+ * Invalidate multiple cache keys by pattern
+ */
+export async function invalidateCachePattern(pattern: string): Promise<void> {
+  const cache = await getCache();
+
+  try {
+    const keys = await cache.keys(pattern);
+    if (keys.length > 0) {
+      await Promise.all(keys.map((key: string) => cache.del(key)));
+    }
+  } catch (error) {
+    console.warn(`Cache pattern invalidation error for ${pattern}:`, error);
+  }
+}
+
+/**
+ * Invalidate all cache keys related to an organization
+ */
+export async function invalidateOrgCache(orgId: string): Promise<void> {
+  await Promise.all([
+    invalidateCachePattern(`org:${orgId}:*`),
+    invalidateCachePattern(`analytics:${orgId}:*`),
+    invalidateCachePattern(`certs:${orgId}:*`),
+    invalidateCachePattern(`search:${orgId}:*`),
+  ]);
+}
+
+/**
+ * Invalidate all cache keys related to a user
+ */
+export async function invalidateUserCache(userId: string): Promise<void> {
+  await invalidateCachePattern(`user:${userId}:*`);
+}
+
+/**
+ * Cache warming - preload frequently accessed data
+ */
+export async function warmCache(
+  orgId: string,
+  fetchers: Record<string, () => Promise<any>>,
+): Promise<void> {
+  const promises = Object.entries(fetchers).map(async ([key, fetcher]) => {
+    try {
+      const data = await fetcher();
+      await setCache(key, data, 600); // 10 minutes for warmed cache
+    } catch (error) {
+      console.warn(`Cache warming failed for ${key}:`, error);
+    }
+  });
+
+  await Promise.all(promises);
+}
+
+/**
+ * Get cache statistics
+ */
+export async function getCacheStats(): Promise<{
+  type: 'redis' | 'memory';
+  keys?: number;
+  memory?: string;
+}> {
+  const cache = await getCache();
+
+  if (cache instanceof InMemoryCache) {
+    return {
+      type: 'memory',
+      keys: cache.size,
+    };
+  }
+
+  try {
+    const info = await cache.info('memory');
+    return {
+      type: 'redis',
+      memory: info.match(/used_memory_human:(.+)/)?.[1] || 'unknown',
+    };
+  } catch {
+    return { type: 'redis' };
+  }
+}
+
+/**
+ * Clear all cache (use with caution)
+ */
+export async function clearAllCache(): Promise<void> {
+  const cache = await getCache();
+
+  if (cache instanceof InMemoryCache) {
+    cache.clear();
+  } else {
+    try {
+      await cache.flushdb();
+    } catch (error) {
+      console.error('Failed to clear cache:', error);
+    }
+  }
+}

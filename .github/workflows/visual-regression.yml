@@ -1,0 +1,64 @@
+name: Visual Verification
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'styles/**'
+      - 'public/**'
+      - '*.css'
+      - '*.scss'
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  visual-verification:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Build application
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || '' }}
+
+      - name: Start application
+        run: npm start &
+        env:
+          NODE_ENV: production
+          PORT: 3000
+
+      - name: Wait for application
+        run: npx wait-on http://localhost:3000 --timeout 60000
+
+      - name: Capture visual verification artifacts
+        run: npm run test:visual
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-verification-artifacts
+          path: |
+            screenshots/marketing/
+            test-results/
+          retention-days: 7

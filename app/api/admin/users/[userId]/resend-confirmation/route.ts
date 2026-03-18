@@ -1,0 +1,76 @@
+import { NextResponse } from 'next/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { requireAdminAccess } from '@/app/app/admin/access';
+import { logAdminAction } from '@/lib/admin/audit';
+import { handleAdminError } from '@/app/api/admin/_helpers';
+import { sendAuthEmail } from '@/lib/email/send-auth-email';
+import { buildHostedAuthConfirmLink } from '@/lib/auth/hosted-auth-link';
+
+type Params = {
+  params: Promise<{ userId: string }>;
+};
+
+export async function POST(_request: Request, { params }: Params) {
+  try {
+    const access = await requireAdminAccess({ permission: 'users:manage' });
+    const { userId } = await params;
+    const admin = createSupabaseAdminClient();
+    const { data } = await admin.auth.admin.getUserById(userId);
+    const email = data?.user?.email;
+
+    if (!email) {
+      return NextResponse.json(
+        { error: 'User email not found' },
+        { status: 404 },
+      );
+    }
+
+    const appBase = (
+      process.env.NEXT_PUBLIC_APP_URL || 'https://app.formaos.com.au'
+    ).replace(/\/$/, '');
+    const { data: linkData, error: linkError } = await admin.auth.admin.generateLink({
+      type: 'magiclink',
+      email,
+      options: {
+        redirectTo: `${appBase}/auth/callback`,
+      },
+    });
+
+    if (linkError) {
+      throw new Error(linkError.message || 'failed_to_generate_link');
+    }
+
+    const actionLink = buildHostedAuthConfirmLink({
+      appBase,
+      properties: linkData?.properties,
+      fallbackType: 'magiclink',
+      fallbackRedirectTo: `${appBase}/auth/callback`,
+    });
+    if (!actionLink) {
+      throw new Error('missing_action_link');
+    }
+
+    const emailResult = await sendAuthEmail({
+      to: email,
+      template: 'magic-link',
+      actionLink,
+    });
+    if (!emailResult.success) {
+      throw new Error(emailResult.error || 'failed_to_send_email');
+    }
+
+    await logAdminAction({
+      actorUserId: access.user.id,
+      action: 'user_resend_confirmation',
+      targetType: 'user',
+      targetId: userId,
+    });
+
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    return handleAdminError(
+      error,
+      '/api/admin/users/[userId]/resend-confirmation',
+    );
+  }
+}

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+  <style>
+    :root {
+      --fo-shell-start: #f8fbff;
+      --fo-shell-mid: #ecf4ff;
+      --fo-shell-end: #dfeeff;
+      --fo-inner-start: #3ce2ff;
+      --fo-inner-end: #3399ff;
+      --fo-edge-start: #00b8df;
+      --fo-edge-mid: #0066cc;
+      --fo-edge-end: #0099bd;
+      --fo-letter-start: #0099bd;
+      --fo-letter-mid: #0080ff;
+      --fo-letter-end: #0066cc;
+      --fo-letter-shadow-start: #004d99;
+      --fo-letter-shadow-end: #060a12;
+      --fo-outline: #0080ff;
+      --fo-outline-opacity: 0.34;
+      --fo-link-stroke: #0080ff;
+      --fo-link-opacity: 0.34;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fo-shell-start: #060a12;
+        --fo-shell-mid: #0a101f;
+        --fo-shell-end: #10162d;
+        --fo-inner-start: #00d4fb;
+        --fo-inner-end: #3399ff;
+        --fo-edge-start: #3ce2ff;
+        --fo-edge-mid: #3399ff;
+        --fo-edge-end: #00d4fb;
+        --fo-letter-start: #b8f5ff;
+        --fo-letter-mid: #3ce2ff;
+        --fo-letter-end: #66b3ff;
+        --fo-letter-shadow-start: #004d99;
+        --fo-letter-shadow-end: #060a12;
+        --fo-outline: #00d4fb;
+        --fo-link-stroke: #00d4fb;
+        --fo-link-opacity: 0.38;
+      }
+    }
+  </style>
+  <defs>
+    <linearGradient id="fo-shell" x1="24" y1="16" x2="108" y2="112" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="var(--fo-shell-start)" />
+      <stop offset="0.55" stop-color="var(--fo-shell-mid)" />
+      <stop offset="1" stop-color="var(--fo-shell-end)" />
+    </linearGradient>
+    <linearGradient id="fo-inner" x1="30" y1="24" x2="96" y2="102" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="var(--fo-inner-start)" stop-opacity="0.16" />
+      <stop offset="1" stop-color="var(--fo-inner-end)" stop-opacity="0.07" />
+    </linearGradient>
+    <linearGradient id="fo-edge" x1="20" y1="12" x2="108" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="var(--fo-edge-start)" />
+      <stop offset="0.5" stop-color="var(--fo-edge-mid)" />
+      <stop offset="1" stop-color="var(--fo-edge-end)" />
+    </linearGradient>
+    <linearGradient id="fo-letter" x1="36" y1="32" x2="100" y2="96" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="var(--fo-letter-start)" />
+      <stop offset="0.45" stop-color="var(--fo-letter-mid)" />
+      <stop offset="1" stop-color="var(--fo-letter-end)" />
+    </linearGradient>
+    <linearGradient id="fo-letter-shadow" x1="38" y1="34" x2="88" y2="92" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="var(--fo-letter-shadow-start)" />
+      <stop offset="1" stop-color="var(--fo-letter-shadow-end)" />
+    </linearGradient>
+  </defs>
+
+  <path d="M64 8L108 28V66C108 89 92 109 64 120C36 109 20 89 20 66V28L64 8Z" fill="url(#fo-shell)" stroke="url(#fo-edge)" stroke-width="3" />
+  <path d="M64 18L99 33V65C99 83 87 98 64 106C41 98 29 83 29 65V33L64 18Z" fill="url(#fo-inner)" />
+  <path d="M64 15L102 32.5V65.3C102 86 87.5 103.3 64 111.4C40.5 103.3 26 86 26 65.3V32.5L64 15Z" stroke="var(--fo-outline)" stroke-opacity="var(--fo-outline-opacity)" stroke-width="1.5" />
+
+  <path d="M36 38C36 35.8 37.8 34 40 34H71C73.2 34 75 35.8 75 38V40C75 42.2 73.2 44 71 44H48V57H66C68.2 57 70 58.8 70 61V63C70 65.2 68.2 67 66 67H48V88C48 90.2 46.2 92 44 92H40C37.8 92 36 90.2 36 88V38Z" fill="url(#fo-letter)" />
+  <path d="M38 40C38 38.9 38.9 38 40 38H68V40H44V90H40C38.9 90 38 89.1 38 88V40Z" fill="url(#fo-letter-shadow)" opacity="0.2" />
+
+  <circle cx="81" cy="63" r="20" stroke="url(#fo-letter)" stroke-width="10" />
+  <circle cx="81" cy="63" r="14.5" stroke="url(#fo-letter-shadow)" stroke-width="1.8" opacity="0.28" />
+  <path d="M66 84L93 69.5" stroke="var(--fo-link-stroke)" stroke-opacity="var(--fo-link-opacity)" stroke-width="2.2" stroke-linecap="round" />
+</svg>

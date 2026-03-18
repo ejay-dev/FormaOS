@@ -1,0 +1,28 @@
+import type { Metadata } from 'next';
+import BlogPageContent from './BlogPageContent';
+import { siteUrl } from '@/lib/seo';
+export const metadata: Metadata = {
+  title: 'Blog & Insights | FormaOS',
+  description:
+    'Expert insights on compliance management, regulatory technology, and operational excellence for regulated industries. Stay informed with the latest from FormaOS.',
+  alternates: {
+    canonical: `${siteUrl}/blog`,
+  },
+  openGraph: {
+    title: 'Blog & Insights | FormaOS',
+    description:
+      'Expert insights on compliance management, regulatory technology, and operational excellence for regulated industries.',
+    type: 'website',
+    url: `${siteUrl}/blog`,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Blog & Insights | FormaOS',
+    description:
+      'Expert insights on compliance management, regulatory technology, and operational excellence for regulated industries.',
+  },
+};
+
+export default function BlogPage() {
+  return <BlogPageContent />;
+}

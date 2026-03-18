@@ -1,0 +1,16 @@
+.git
+.gitnexus
+gitnexus
+.next
+node_modules
+mobile
+test-results
+e2e
+tests
+__tests__
+selenium-tests
+coverage
+docs
+scripts/ops
+*.log
+.DS_Store

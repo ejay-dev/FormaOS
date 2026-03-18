@@ -1,0 +1,115 @@
+import { NextResponse } from 'next/server';
+import { timingSafeEqual } from 'crypto';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { getRedisClient, getRedisConfig } from '@/lib/redis/client';
+import { appendPublicUptimeCheck } from '@/lib/status/public-uptime';
+
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
+function verifyCronSecret(request: Request): { ok: boolean; error?: string } {
+  const authHeader = request.headers.get('authorization');
+  const token = authHeader?.replace('Bearer ', '') ?? '';
+  const cronSecret = process.env.CRON_SECRET;
+
+  if (!cronSecret) {
+    return { ok: false, error: 'CRON_SECRET not configured' };
+  }
+
+  const tokenBuffer = Buffer.from(token, 'utf8');
+  const secretBuffer = Buffer.from(cronSecret, 'utf8');
+
+  const valid =
+    tokenBuffer.length === secretBuffer.length &&
+    timingSafeEqual(tokenBuffer, secretBuffer);
+
+  if (!valid) return { ok: false, error: 'Unauthorized' };
+  return { ok: true };
+}
+
+async function handleStatusCron(request: Request) {
+  const auth = verifyCronSecret(request);
+  if (!auth.ok) {
+    const status = auth.error === 'CRON_SECRET not configured' ? 500 : 401;
+    return NextResponse.json({ ok: false, error: auth.error }, { status });
+  }
+
+  const admin = createSupabaseAdminClient();
+
+  const startedAt = Date.now();
+  let ok = true;
+
+  const checks: Record<string, unknown> = {};
+  const details: Record<string, unknown> = {
+    checks,
+    commit: process.env.VERCEL_GIT_COMMIT_SHA ?? null,
+    region: process.env.VERCEL_REGION ?? null,
+  };
+
+  // DB health check (source of truth for app availability)
+  try {
+    const res = await admin
+      .from('organizations')
+      .select('id', { head: true, count: 'exact' })
+      .limit(1);
+
+    if (res.error) throw new Error(res.error.message);
+    checks.database = true;
+  } catch (err) {
+    ok = false;
+    checks.database = false;
+    checks.database_error =
+      err instanceof Error ? err.message : String(err);
+  }
+
+  // Redis check (optional but critical for enterprise-grade reliability)
+  const { restUrl, token } = getRedisConfig();
+  if (restUrl && token) {
+    try {
+      const redis = getRedisClient();
+      if (!redis) throw new Error('Redis client unavailable');
+      await redis.set('status:ping', String(Date.now()), { ex: 60 });
+      checks.redis = true;
+    } catch (err) {
+      checks.redis = false;
+      checks.redis_error =
+        err instanceof Error ? err.message : String(err);
+      // Redis failure degrades enterprise posture but does not necessarily mean the app is down.
+    }
+  } else {
+    checks.redis = null;
+  }
+
+  const latencyMs = Date.now() - startedAt;
+
+  const stored = await appendPublicUptimeCheck({
+    ok,
+    latency_ms: latencyMs,
+    source: 'vercel-cron',
+    details,
+  });
+
+  if (!stored.ok) {
+    return NextResponse.json(
+      { ok: false, error: stored.error ?? 'Failed to record uptime check' },
+      { status: 500 },
+    );
+  }
+
+  return NextResponse.json({
+    ok: true,
+    recorded: { ok, latencyMs },
+    stored: stored.stored,
+    details,
+  });
+}
+
+// Vercel Cron hits routes via GET by default (vercel.json "crons" only defines path+schedule).
+// Keep POST for manual/internal callers, but implement GET so schedules actually execute.
+export async function GET(request: Request) {
+  return handleStatusCron(request);
+}
+
+export async function POST(request: Request) {
+  return handleStatusCron(request);
+}

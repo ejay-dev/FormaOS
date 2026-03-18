@@ -1,0 +1,106 @@
+import { requireAdminAccess } from '@/app/app/admin/access';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { NextResponse } from 'next/server';
+import { routeLog } from '@/lib/monitoring/server-logger';
+import {
+  handleAdminError,
+  ADMIN_CACHE_HEADERS,
+} from '@/app/api/admin/_helpers';
+
+const log = routeLog('/api/admin/features');
+
+/**
+ * GET /api/admin/features — Real feature usage from org_entitlements
+ *
+ * Returns: feature keys with counts of how many orgs have each enabled.
+ * No random usage — all from live DB.
+ */
+
+const FEATURE_META: Record<string, { name: string; description: string }> = {
+  audit_export: {
+    name: 'Audit Export',
+    description: 'Export audit logs as CSV for external compliance',
+  },
+  certifications: {
+    name: 'Certifications',
+    description: 'Display security certifications and compliance badges',
+  },
+  framework_evaluations: {
+    name: 'Framework Evaluations',
+    description: 'Enable framework evaluation workflows',
+  },
+  reports: {
+    name: 'Reports',
+    description: 'Generate and download custom reports',
+  },
+  team_limit: {
+    name: 'Team Limit',
+    description: 'Maximum team members per organization',
+  },
+};
+
+export async function GET() {
+  try {
+    await requireAdminAccess({ permission: 'dashboard:view' });
+    const admin = createSupabaseAdminClient();
+
+    /* ── Fetch all entitlements ─────────────────────────── */
+    const { data: entitlements, error } = await admin
+      .from('org_entitlements')
+      .select('feature_key, enabled, limit_value');
+
+    if (error) {
+      log.error({ err: error }, '/api/admin/features query error:');
+    }
+
+    /* ── Aggregate by feature key ──────────────────────── */
+    const featureStats: Record<
+      string,
+      {
+        enabled_count: number;
+        disabled_count: number;
+        total_orgs: number;
+        max_limit: number | null;
+      }
+    > = {};
+
+    (entitlements ?? []).forEach((e: Record<string, unknown>) => {
+      const key = e.feature_key as string;
+      if (!featureStats[key]) {
+        featureStats[key] = {
+          enabled_count: 0,
+          disabled_count: 0,
+          total_orgs: 0,
+          max_limit: null,
+        };
+      }
+      featureStats[key].total_orgs += 1;
+      if (e.enabled) featureStats[key].enabled_count += 1;
+      else featureStats[key].disabled_count += 1;
+      if (e.limit_value != null) {
+        featureStats[key].max_limit = Math.max(
+          featureStats[key].max_limit ?? 0,
+          e.limit_value as number,
+        );
+      }
+    });
+
+    /* ── Build response ────────────────────────────────── */
+    const features = Object.entries(featureStats).map(([key, stats]) => ({
+      key,
+      name: FEATURE_META[key]?.name ?? key,
+      description: FEATURE_META[key]?.description ?? '',
+      enabled_count: stats.enabled_count,
+      disabled_count: stats.disabled_count,
+      total_orgs: stats.total_orgs,
+      global_limit: stats.max_limit,
+    }));
+
+    // Sort: most-used first
+    features.sort((a, b) => b.enabled_count - a.enabled_count);
+
+    return NextResponse.json({ features }, { headers: ADMIN_CACHE_HEADERS });
+  } catch (error) {
+    return handleAdminError(error, '/api/admin/features');
+  }
+}

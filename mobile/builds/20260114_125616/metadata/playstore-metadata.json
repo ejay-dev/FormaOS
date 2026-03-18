@@ -1,0 +1,11 @@
+{
+  "app_name": "FormaOS",
+  "short_description": "Operational Compliance Operating System - Streamline your compliance workflows",
+  "full_description": "FormaOS is a comprehensive operational compliance operating system designed for modern businesses to streamline their compliance workflows, risk management, and audit processes.\n\nKey Features:\n• Visual Node System: Intuitive node and wire interface for managing compliance workflows\n• Plan-Based Access: Flexible subscription plans with feature activation\n• Admin Dashboard: Comprehensive administrative controls and oversight\n• Risk Management: Advanced risk assessment and heatmap visualization\n• Audit Trail: Complete audit logging and compliance tracking\n• Team Collaboration: Role-based permissions and team management\n• Evidence Management: Secure document and evidence storage\n• Mobile Optimized: Full-featured mobile experience with native gestures",
+  "keywords": ["compliance management", "risk assessment", "audit software", "business productivity", "workflow automation"],
+  "category": "Business",
+  "content_rating": "Everyone",
+  "privacy_policy": "https://formaos.com.au/privacy",
+  "version": "1.0.0",
+  "release_notes": "Initial release of FormaOS Mobile - Full compliance management on the go."
+}

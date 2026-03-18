@@ -1,0 +1,113 @@
+{
+  "timestamp": "2026-01-16T06:07:21.006Z",
+  "controls": {
+    "security": [
+      {
+        "name": "Encryption in Transit",
+        "control": "CC6.7",
+        "passed": false,
+        "details": "HTTPS must be properly configured"
+      }
+    ],
+    "availability": [],
+    "processing": [],
+    "confidentiality": [],
+    "privacy": []
+  },
+  "violations": [
+    {
+      "category": "Security",
+      "control": "CC6.1",
+      "test": "Authentication Requirements",
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/app\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/app\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "category": "Security",
+      "control": "CC6.2",
+      "test": "Authorization Controls",
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/admin\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/admin\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "category": "Security",
+      "control": "CC6.1",
+      "test": "Session Management",
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "category": "Security",
+      "control": "CC6.6",
+      "test": "Input Validation",
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/contact\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/contact\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "category": "Availability",
+      "control": "A1.2",
+      "test": "System Health Monitoring",
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/api/health\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/api/health\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "category": "Availability",
+      "control": "A1.1",
+      "test": "Error Handling",
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/nonexistent-page\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/nonexistent-page\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "category": "Availability",
+      "control": "A1.2",
+      "test": "Performance Monitoring",
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "category": "Availability",
+      "control": "A1.3",
+      "test": "Backup and Recovery Indicators",
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/admin\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/admin\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "category": "Processing Integrity",
+      "control": "PI1.1",
+      "test": "Data Validation",
+      "error": "page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+    },
+    {
+      "category": "Processing Integrity",
+      "control": "PI1.2",
+      "test": "Audit Trail",
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/api/v1/audit-logs\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/api/v1/audit-logs\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "category": "Processing Integrity",
+      "control": "PI1.1",
+      "test": "Data Integrity Checks",
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/api/health/detailed\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/api/health/detailed\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "category": "Confidentiality",
+      "control": "C1.1",
+      "test": "Data Classification",
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/privacy\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/privacy\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "category": "Confidentiality",
+      "control": "C1.2",
+      "test": "Access Controls",
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/app/team\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/app/team\", waiting until \"load\"\u001b[22m\n"
+    },
+    {
+      "category": "Confidentiality",
+      "control": "C1.1",
+      "test": "Data Encryption",
+      "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3000/\", waiting until \"load\"\u001b[22m\n"
+    }
+  ],
+  "recommendations": [
+    "1 control tests failed. Address these for SOC2 compliance.",
+    "Security controls need attention. Implement proper authentication and authorization."
+  ],
+  "summary": {
+    "totalControls": 1,
+    "passedControls": 0,
+    "failedControls": 1,
+    "violations": 14
+  }
+}

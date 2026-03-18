@@ -1,0 +1,166 @@
+/**
+ * Session Revocation API
+ *
+ * Allows admins to revoke active sessions (kick users)
+ */
+
+import { NextResponse } from 'next/server';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { requireAdminAccess } from '@/app/app/admin/access';
+import { extractClientIP } from '@/lib/security/session-security';
+import { routeLog } from '@/lib/monitoring/server-logger';
+import {
+  logSecurityEventEnhanced,
+  logUnauthorizedAccess,
+  logUserActivity,
+
+} from '@/lib/security/event-logger';
+
+const log = routeLog('/api/session/revoke');
+import { isSecurityMonitoringEnabled } from '@/lib/security/monitoring-flags';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
+import {
+  assertAdminReason,
+  extractAdminReason,
+} from '@/app/api/admin/_helpers';
+import { logAdminAction } from '@/lib/admin/audit';
+
+export async function POST(request: Request) {
+  if (!isSecurityMonitoringEnabled()) {
+    return NextResponse.json({ ok: false, error: 'disabled' }, { status: 404 });
+  }
+
+  try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      logUnauthorizedAccess({
+        ip: extractClientIP(request.headers),
+        userAgent: request.headers.get('user-agent') ?? 'unknown',
+        path: '/api/session/revoke',
+        method: request.method,
+        userRole: 'anonymous',
+      });
+      return NextResponse.json(
+        { ok: false, error: 'unauthorized' },
+        { status: 401 },
+      );
+    }
+
+    let access;
+    try {
+      access = await requireAdminAccess({ permission: 'security:manage' });
+    } catch {
+      logUnauthorizedAccess({
+        userId: user.id,
+        ip: extractClientIP(request.headers),
+        userAgent: request.headers.get('user-agent') ?? 'unknown',
+        path: '/api/session/revoke',
+        method: request.method,
+        userRole: 'non_platform_admin',
+      });
+      return NextResponse.json(
+        { ok: false, error: 'forbidden' },
+        { status: 403 },
+      );
+    }
+
+    const body = (await request.json().catch(() => ({}))) as {
+      sessionId?: string;
+    };
+
+    if (!body.sessionId) {
+      return NextResponse.json(
+        { ok: false, error: 'missing_session_id' },
+        { status: 400 },
+      );
+    }
+    const reason = assertAdminReason(
+      extractAdminReason(body as Record<string, unknown>, request),
+      'Session revocation',
+    );
+
+    const admin = createSupabaseAdminClient();
+
+    const { data: sessionRecord } = await admin
+      .from('active_sessions')
+      .select('session_id, user_id, org_id')
+      .eq('session_id', body.sessionId)
+      .is('revoked_at', null)
+      .single();
+
+    // Revoke the session
+    const { error: revokeError } = await admin
+      .from('active_sessions')
+      .update({ revoked_at: new Date().toISOString() })
+      .eq('session_id', body.sessionId);
+
+    if (revokeError) {
+      log.error({ err: revokeError }, "[Revoke] Failed to revoke session:");
+      return NextResponse.json(
+        { ok: false, error: 'db_error' },
+        { status: 500 },
+      );
+    }
+
+    const ip = extractClientIP(request.headers);
+    const userAgent = request.headers.get('user-agent') ?? 'unknown';
+
+    logSecurityEventEnhanced({
+      type: 'session_revoked',
+      severity: 'high',
+      userId: access.user.id,
+      orgId: sessionRecord?.org_id ?? undefined,
+      ip,
+      userAgent,
+      path: '/api/session/revoke',
+      method: request.method,
+      metadata: {
+        revokedSessionId: body.sessionId,
+        revokedUserId: sessionRecord?.user_id ?? null,
+        initiatedBy: 'founder_dashboard',
+      },
+    });
+
+    logUserActivity({
+      userId: access.user.id,
+      orgId: sessionRecord?.org_id ?? undefined,
+      action: 'role_change',
+      entityType: 'session',
+      entityId: body.sessionId,
+      route: '/admin/sessions',
+      metadata: {
+        operation: 'session_revoke',
+        targetUserId: sessionRecord?.user_id ?? null,
+        reason,
+      },
+    });
+
+    await logAdminAction({
+      actorUserId: access.user.id,
+      action: 'session_revoke',
+      targetType: 'session',
+      targetId: body.sessionId,
+      metadata: {
+        targetUserId: sessionRecord?.user_id ?? null,
+        reason,
+      },
+    });
+
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    log.error({ err: error }, "[Revoke] Error:");
+    return NextResponse.json(
+      { ok: false, error: 'internal_error' },
+      { status: 500 },
+    );
+  }
+}

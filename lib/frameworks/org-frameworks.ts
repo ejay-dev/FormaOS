@@ -1,0 +1,176 @@
+import { createSupabaseAdminClient } from '@/lib/supabase/admin'
+import { createSupabaseServerClient } from '@/lib/supabase/server'
+import { ensureFrameworkPacksInstalled, PACK_SLUGS } from './framework-installer'
+import { getServerSideFeatureFlags } from '@/lib/feature-flags'
+
+const ORG_FRAMEWORK_MAP: Record<string, string> = {
+  soc2: 'soc2',
+  'nist-csf': 'nist-csf',
+  nist: 'nist-csf',
+  'cis-controls': 'cis-controls',
+  cis: 'cis-controls',
+  iso27001: 'iso27001',
+  iso: 'iso27001',
+  gdpr: 'gdpr',
+  hipaa: 'hipaa',
+  pci: 'pci-dss',
+  'pci-dss': 'pci-dss',
+}
+
+function normalizeFrameworkSlug(value: string) {
+  const normalized = value.trim().toLowerCase()
+  if (!normalized) return null
+  if (PACK_SLUGS.includes(normalized)) return normalized
+  return ORG_FRAMEWORK_MAP[normalized] ?? null
+}
+
+export async function syncOrgFrameworksFromOrgRecord(orgId: string) {
+  const flags = getServerSideFeatureFlags()
+  if (!flags.enableFrameworkEngine) return []
+
+  await ensureFrameworkPacksInstalled()
+  const admin = createSupabaseAdminClient()
+
+  const { data: orgRow } = await admin
+    .from('organizations')
+    .select('frameworks')
+    .eq('id', orgId)
+    .maybeSingle()
+
+  const frameworksRaw = Array.isArray(orgRow?.frameworks) ? orgRow?.frameworks : []
+  const slugs = Array.from(
+    new Set(
+      frameworksRaw
+        .map((entry: any) => normalizeFrameworkSlug(String(entry)))
+        .filter((slug: string | null): slug is string => Boolean(slug)),
+    ),
+  )
+
+  if (!slugs.length) return []
+
+  const rows = slugs.map((slug) => ({
+    organization_id: orgId,
+    framework_slug: slug,
+    enabled_at: new Date().toISOString(),
+  }))
+
+  await admin.from('org_frameworks').upsert(rows, { onConflict: 'organization_id,framework_slug' })
+
+  return slugs
+}
+
+export async function getOrgFrameworkOverview(orgId: string) {
+  const flags = getServerSideFeatureFlags()
+  if (!flags.enableFrameworkEngine) return []
+
+  await ensureFrameworkPacksInstalled()
+  await syncOrgFrameworksFromOrgRecord(orgId)
+
+  const admin = createSupabaseAdminClient()
+  const { data: enabled } = await admin
+    .from('org_frameworks')
+    .select('framework_slug, enabled_at')
+    .eq('organization_id', orgId)
+
+  const enabledSlugs = (enabled ?? []).map((row: any) => row.framework_slug)
+  if (!enabledSlugs.length) return []
+
+  const { data: frameworks } = await admin
+    .from('frameworks')
+    .select('id, name, slug, version, description, is_active')
+    .in('slug', enabledSlugs)
+
+  type FrameworkRow = Record<string, unknown> & { id?: string; slug?: string; name?: string; version?: string; description?: string; is_active?: boolean };
+  const _frameworkById = new Map((frameworks ?? []).map((fw: FrameworkRow) => [fw.id, fw]))
+  const frameworkBySlug = new Map((frameworks ?? []).map((fw: FrameworkRow) => [fw.slug, fw]))
+
+  const frameworkIds = (frameworks ?? []).map((fw: FrameworkRow) => fw.id)
+  if (!frameworkIds.length) {
+    return enabledSlugs.map((slug: string) => ({
+      slug,
+      name: slug.toUpperCase(),
+      description: null,
+      version: null,
+      is_active: true,
+      controlCount: 0,
+      domains: [],
+      enabledAt: (enabled?.find((row: Record<string, unknown>) => row.framework_slug === slug)?.enabled_at as string) ?? null,
+    }))
+  }
+
+  const [domains, controls] = await Promise.all([
+    admin
+      .from('framework_domains')
+      .select('id, framework_id, name, sort_order')
+      .in('framework_id', frameworkIds),
+    admin
+      .from('framework_controls')
+      .select('id, framework_id, domain_id')
+      .in('framework_id', frameworkIds),
+  ])
+
+  const domainRows = domains.data ?? []
+  const controlRows = controls.data ?? []
+
+  const controlsByFramework = new Map<string, number>()
+  const controlsByDomain = new Map<string, number>()
+
+  type ControlRow = Record<string, unknown> & { framework_id: string; domain_id?: string };
+  type DomainRow = Record<string, unknown> & { id: string; framework_id: string; name: string; sort_order?: number };
+  controlRows.forEach((control: ControlRow) => {
+    controlsByFramework.set(
+      control.framework_id,
+      (controlsByFramework.get(control.framework_id) ?? 0) + 1,
+    )
+    if (control.domain_id) {
+      controlsByDomain.set(
+        control.domain_id,
+        (controlsByDomain.get(control.domain_id) ?? 0) + 1,
+      )
+    }
+  })
+
+  return enabledSlugs.map((slug: string) => {
+    const framework = frameworkBySlug.get(slug) as FrameworkRow | undefined
+    const frameworkId = framework?.id
+    const domainSummary = (domainRows as DomainRow[])
+      .filter((domain) => domain.framework_id === frameworkId)
+      .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+      .map((domain) => ({
+        id: domain.id,
+        name: domain.name,
+        controlCount: controlsByDomain.get(domain.id) ?? 0,
+      }))
+
+    return {
+      id: framework?.id ?? null,
+      slug,
+      name: framework?.name ?? slug.toUpperCase(),
+      description: framework?.description ?? null,
+      version: framework?.version ?? null,
+      is_active: framework?.is_active ?? true,
+      controlCount: frameworkId ? controlsByFramework.get(frameworkId) ?? 0 : 0,
+      domains: domainSummary,
+      enabledAt: (enabled?.find((row: Record<string, unknown>) => row.framework_slug === slug)?.enabled_at as string) ?? null,
+    }
+  })
+}
+
+export async function getCurrentOrgId() {
+  const supabase = await createSupabaseServerClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) throw new Error('Unauthorized')
+
+  const { data: membership } = await supabase
+    .from('org_members')
+    .select('organization_id')
+    .eq('user_id', user.id)
+    .maybeSingle()
+
+  if (!membership?.organization_id) throw new Error('Organization not found')
+
+  return membership.organization_id as string
+}

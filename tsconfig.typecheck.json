@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "incremental": false
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next",
+    "mobile",
+    "gitnexus",
+    ".claude",
+    "__tests__",
+    "**/__tests__",
+    "tests",
+    "e2e"
+  ]
+}
