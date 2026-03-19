@@ -15,10 +15,16 @@
         ]
       }
     ],
-    "declaration-block-trailing-semicolon": null,
     "no-descending-specificity": null,
     "selector-class-pattern": null,
-    "custom-property-pattern": null
+    "custom-property-pattern": null,
+    "no-duplicate-selectors": null,
+    "property-no-unknown": [
+      true,
+      {
+        "ignoreProperties": ["inset-x", "inset-y", "inset-block", "inset-inline"]
+      }
+    ]
   },
   "ignoreFiles": ["node_modules/**/*", ".next/**/*", "out/**/*", "build/**/*"]
 }

@@ -36,7 +36,8 @@ jobs:
       - run: npm ci
       - name: ESLint (max 30 warnings)
         run: npx eslint --ext .js,.jsx,.ts,.tsx . --max-warnings 30
-      - run: npm run stylelint
+      - name: CSS/SCSS style lint
+        run: npm run stylelint
       - run: npm run type-check
 
       - name: App route/link integrity check
@@ -126,7 +127,10 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || '' }}
       - run: npm run start &
       - run: npx wait-on http://localhost:3000
-      - run: npm run test:a11y
+      - name: Run accessibility tests
+        run: npm run test:a11y
+        env:
+          PW_SKIP_WEBSERVER: '1' # Server already running above — avoid port conflict
 
   e2e-tests:
     name: End-to-End Tests
@@ -141,8 +145,22 @@ jobs:
 
       - run: npm ci
       - run: npx playwright install --with-deps chromium firefox webkit
+      # Check whether Supabase credentials are available before running auth-dependent tests.
+      - name: Check E2E prerequisites
+        id: e2e_prereqs
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL || '' }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || '' }}
+        run: |
+          if [ -z "$NEXT_PUBLIC_SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "can_run=false" >> $GITHUB_OUTPUT
+            echo "⏭️  Supabase credentials not configured — skipping E2E suite"
+          else
+            echo "can_run=true" >> $GITHUB_OUTPUT
+          fi
       # Playwright config starts the webServer by default on CI.
       - name: Run E2E tests
+        if: steps.e2e_prereqs.outputs.can_run == 'true'
         run: npm run test:e2e
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL || '' }}
@@ -177,7 +195,10 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || '' }}
       - run: npm run start &
       - run: npx wait-on http://localhost:3000
-      - run: npm run test:visual
+      - name: Run visual regression tests
+        run: npm run test:visual
+        env:
+          PW_SKIP_WEBSERVER: '1' # Server already running above — avoid port conflict
 
       - name: Upload Visual Verification Artifacts
         uses: actions/upload-artifact@v4
@@ -199,7 +220,13 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
-      # lighthouse-ci uses `.lighthouserc.json` startServerCommand; avoid port conflicts.
+      - name: Build application for Lighthouse
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL || '' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || '' }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || '' }}
+      # lighthouserc.js startServerCommand runs `npm run start` — .next build must exist first.
       - run: npm run test:lighthouse
 
       - name: Bundle size check
