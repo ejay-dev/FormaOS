@@ -37,17 +37,32 @@ interface CheckResult {
 const ROOT = process.cwd();
 const IS_VERCEL = Boolean(process.env.VERCEL);
 
-function fileExists(rel: string): boolean {
-  try {
-    return fs.existsSync(path.join(ROOT, rel));
-  } catch {
-    return false;
+/** Resolve a file path, trying .ts → .js fallback for Vercel compiled bundles. */
+function resolveFile(rel: string): string | null {
+  const full = path.join(ROOT, rel);
+  if (fs.existsSync(full)) return full;
+  // On Vercel, .ts files are compiled to .js
+  if (rel.endsWith('.ts') || rel.endsWith('.tsx')) {
+    const jsPath = full.replace(/\.tsx?$/, '.js');
+    if (fs.existsSync(jsPath)) return jsPath;
   }
+  // Also check .next/server for config files
+  if (IS_VERCEL) {
+    const nextServer = path.join(ROOT, '.next', 'server', rel);
+    if (fs.existsSync(nextServer)) return nextServer;
+  }
+  return null;
+}
+
+function fileExists(rel: string): boolean {
+  return resolveFile(rel) !== null;
 }
 
 function readFile(rel: string): string | null {
+  const resolved = resolveFile(rel);
+  if (!resolved) return null;
   try {
-    return fs.readFileSync(path.join(ROOT, rel), 'utf-8');
+    return fs.readFileSync(resolved, 'utf-8');
   } catch {
     return null;
   }

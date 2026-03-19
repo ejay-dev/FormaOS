@@ -30,6 +30,26 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: path.join(__dirname),
   outputFileTracingIncludes: {
     '*': ['framework-packs/*.json'],
+    // Include source files so the QA audit runner can inspect them with fs at runtime
+    '/api/admin/audit/run': [
+      'lib/**/*.ts',
+      'lib/**/*.tsx',
+      'app/**/*.ts',
+      'app/**/*.tsx',
+      'components/**/*.tsx',
+      'next.config.ts',
+      'proxy.ts',
+      'tsconfig.json',
+      '.env.example',
+      'sentry.client.config.ts',
+      'sentry.server.config.ts',
+      'sentry.edge.config.ts',
+      'eslint.config.mjs',
+      '.github/workflows/*.yml',
+      'supabase/migrations/*.sql',
+      'openapi.json',
+      'package.json',
+    ],
   },
   async redirects() {
     return [
