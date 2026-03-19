@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import Script from 'next/script';
 import { OAuthRedirectWrapper } from './components/oauth-redirect-wrapper';
 import { NavLinks } from './components/NavLinks';
 import { MobileNav } from './components/MobileNav';
@@ -73,8 +72,12 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        {/* Scrolled state for header glass enhancement — external script for CSP compliance */}
-        <Script src="/marketing/header-scroll.js" strategy="afterInteractive" />
+        {/* Scrolled state for header glass enhancement */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var h=document.querySelector('.mk-header-premium');if(!h)return;var c='scrolled';function u(){h.classList.toggle(c,window.scrollY>10)}window.addEventListener('scroll',u,{passive:true});u()})();`,
+          }}
+        />
 
         <main
           id="main-content"

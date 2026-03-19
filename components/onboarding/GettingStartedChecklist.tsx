@@ -29,7 +29,7 @@ function ConfettiBurst() {
           style={{
             left: `${(index / pieces.length) * 100}%`,
             animationDelay: `${index * 0.05}s`,
-            background: index % 2 === 0 ? 'var(--color-sky-400)' : 'var(--color-violet-400)',
+            background: index % 2 === 0 ? '#38bdf8' : '#a78bfa',
           }}
         />
       ))}
