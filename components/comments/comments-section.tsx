@@ -15,6 +15,11 @@ import {
   Trash2,
   Reply,
 } from 'lucide-react';
+import { z } from 'zod';
+
+const commentSchema = z.object({
+  content: z.string().min(1, 'Comment cannot be empty').max(5000, 'Comment must be under 5000 characters'),
+});
 
 interface Comment {
   id: string;
@@ -78,7 +83,8 @@ export default function Comments({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim()) return;
+    const parsed = commentSchema.safeParse({ content: newComment.trim() });
+    if (!parsed.success) return;
 
     try {
       await fetch('/api/comments', {
@@ -102,7 +108,8 @@ export default function Comments({
   };
 
   const handleEdit = async (commentId: string) => {
-    if (!editContent.trim()) return;
+    const parsed = commentSchema.safeParse({ content: editContent.trim() });
+    if (!parsed.success) return;
 
     try {
       await fetch(`/api/comments/${commentId}`, {

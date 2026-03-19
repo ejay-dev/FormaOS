@@ -12,7 +12,7 @@ const DEFAULT_SCIM_RATE_LIMIT = {
   windowMs: 60_000,
   maxRequests: 120,
   keyPrefix: 'rl:scim',
-  failClosed: false,
+  failClosed: true,
 } as const;
 
 export interface ScimAuthContext {

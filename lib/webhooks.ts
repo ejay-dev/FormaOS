@@ -350,7 +350,7 @@ export async function testWebhook(webhookId: string): Promise<{
     .from('webhook_configs')
     .select('*')
     .eq('id', webhookId)
-    .single();
+    .maybeSingle();
 
   if (!webhook) {
     return {
@@ -492,7 +492,7 @@ export async function retryFailedDelivery(deliveryId: string): Promise<void> {
     .from('webhook_deliveries')
     .select('*, webhook_configs!webhook_id(*)')
     .eq('id', deliveryId)
-    .single();
+    .maybeSingle();
 
   if (!delivery || !delivery.webhook_configs) {
     throw new Error('Delivery or webhook not found');

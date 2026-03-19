@@ -198,7 +198,7 @@ export async function HEAD() {
     }
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
-    await supabase.from('organizations').select('id').limit(1).single();
+    await supabase.from('organizations').select('id').limit(1).maybeSingle();
 
     return new Response(null, {
       status: 200,

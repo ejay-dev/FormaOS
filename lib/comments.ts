@@ -199,7 +199,7 @@ export async function updateComment(
     .from('comments')
     .select('user_id, organization_id')
     .eq('id', commentId)
-    .single();
+    .maybeSingle();
 
   if (!existing || existing.user_id !== userId) {
     throw new Error('Unauthorized to edit this comment');
@@ -251,7 +251,7 @@ export async function deleteComment(
     .from('comments')
     .select('user_id, organization_id')
     .eq('id', commentId)
-    .single();
+    .maybeSingle();
 
   if (!existing || existing.user_id !== userId) {
     throw new Error('Unauthorized to delete this comment');
@@ -290,7 +290,7 @@ export async function addReaction(
     .eq('comment_id', commentId)
     .eq('user_id', userId)
     .eq('emoji', emoji)
-    .single();
+    .maybeSingle();
 
   if (existing) {
     throw new Error('Already reacted with this emoji');

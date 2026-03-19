@@ -178,7 +178,7 @@ export async function validateSession(
     .select('*')
     .eq('session_token_hash', tokenHash)
     .is('revoked_at', null)
-    .single();
+    .maybeSingle();
 
   if (error || !session) {
     return { valid: false, reason: 'Session not found or revoked' };
@@ -267,7 +267,8 @@ export async function revokeAllUserSessions(userId: string): Promise<number> {
     .update({ revoked_at: new Date().toISOString() })
     .eq('user_id', userId)
     .is('revoked_at', null)
-    .select('id');
+    .select('id')
+    .limit(1000);
 
   if (error) {
     console.error('[Session] Failed to revoke user sessions:', error);

@@ -213,7 +213,7 @@ export async function createAuditBundleAction() {
       .from('organizations')
       .select('name')
       .eq('id', orgId)
-      .single();
+      .maybeSingle();
 
     if (orgError) throw orgError;
 
@@ -261,7 +261,7 @@ export async function createAuditBundleAction() {
         .from('compliance_frameworks')
         .select('code')
         .eq('id', latestEval.framework_id)
-        .single();
+        .maybeSingle();
       if (fwError) throw fwError;
       frameworkCode = fw?.code ?? null;
     }

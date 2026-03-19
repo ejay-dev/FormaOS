@@ -53,7 +53,7 @@ export async function createNotification(input: CreateNotificationInput) {
     .select('role')
     .eq('user_id', user.id)
     .eq('organization_id', input.organizationId)
-    .single();
+    .maybeSingle();
 
   if (membershipError || !membership) {
     throw new Error('Access denied: not a member of this organization');

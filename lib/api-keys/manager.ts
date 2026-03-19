@@ -269,7 +269,7 @@ export async function validateApiKey(
     .select('*')
     .eq('key_hash', keyHash)
     .is('revoked_at', null)
-    .single();
+    .maybeSingle();
 
   if (error || !data) {
     return { ok: false, error: 'Invalid API key', status: 401 };

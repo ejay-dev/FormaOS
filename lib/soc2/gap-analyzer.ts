@@ -128,7 +128,8 @@ export async function analyzeSoc2Gaps(
     const { data: inserted } = await supabase
       .from('soc2_remediation_actions')
       .insert(rowsToInsert)
-      .select('*');
+      .select('*')
+      .limit(1000);
 
     for (const row of (inserted ?? []) as Record<string, unknown>[]) {
       newActions.push({

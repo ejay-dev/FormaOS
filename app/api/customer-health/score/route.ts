@@ -103,7 +103,7 @@ export async function GET() {
         .from('organizations')
         .select('id, name, industry, created_at')
         .eq('id', orgId)
-        .single(),
+        .maybeSingle(),
       supabase
         .from('org_subscriptions')
         .select('plan_key, status, trial_expires_at')

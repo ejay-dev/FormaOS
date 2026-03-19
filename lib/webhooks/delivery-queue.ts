@@ -5,6 +5,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { logActivity } from '@/lib/audit-trail';
 import { triggerTaskIfConfigured } from '@/lib/trigger/client';
 import type { WebhookConfig, WebhookDelivery, WebhookEvent, WebhookPayload } from '@/lib/webhooks';
+import { validateWebhookUrl } from '@/lib/security/url-validator';
 
 const SIGNATURE_HEADER = 'X-FormaOS-Signature';
 const EVENT_HEADER = 'X-FormaOS-Event';
@@ -165,7 +166,7 @@ export async function processWebhookDelivery(deliveryId: string) {
     .from('webhook_deliveries')
     .select('*, webhook_configs(*)')
     .eq('id', deliveryId)
-    .single();
+    .maybeSingle();
 
   if (error || !delivery?.webhook_configs) {
     throw new Error(`Webhook delivery ${deliveryId} not found`);
@@ -200,6 +201,8 @@ export async function processWebhookDelivery(deliveryId: string) {
     .eq('id', deliveryId);
 
   try {
+    await validateWebhookUrl(webhook.url);
+
     const response = await fetch(webhook.url, {
       method: 'POST',
       headers: {
@@ -433,7 +436,7 @@ export async function sendTestWebhookEvent(args: {
     .select('*')
     .eq('id', args.webhookId)
     .eq('organization_id', args.orgId)
-    .single();
+    .maybeSingle();
 
   if (error || !webhook) {
     throw new Error('Webhook not found');

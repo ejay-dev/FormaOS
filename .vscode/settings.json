@@ -18,10 +18,26 @@
   },
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.tsdk": "node_modules/typescript/lib",
+  "files.watcherExclude": {
+    "**/.next/**": true,
+    "**/node_modules/**": true
+  },
   "search.exclude": {
     "**/node_modules": true,
     "**/.next": true,
-    "**/dist": true
+    "**/dist": true,
+    "**/.next/**": true,
+    "**/node_modules/**": true
   },
+  "files.exclude": {
+    "**/.next": true
+  },
+  "typescript.tsserver.exclude": [
+    ".next/**",
+    "node_modules/**"
+  ],
+  "eslint.workingDirectories": [
+    { "mode": "auto" }
+  ],
   "CodeGPT.apiKey": "Ollama"
 }

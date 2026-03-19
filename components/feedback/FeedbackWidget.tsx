@@ -3,6 +3,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { MessageSquarePlus, X, Send, ThumbsUp, ThumbsDown, Meh } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { z } from 'zod';
+
+const feedbackSchema = z.object({
+  sentiment: z.enum(['positive', 'neutral', 'negative'], { error: 'Please select a sentiment' }),
+  message: z.string().max(2000, 'Message must be under 2000 characters').optional(),
+});
 
 type Sentiment = 'positive' | 'neutral' | 'negative';
 type State = 'idle' | 'open' | 'submitting' | 'done';
@@ -41,13 +47,14 @@ export function FeedbackWidget() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!sentiment) return;
+    const result = feedbackSchema.safeParse({ sentiment, message: message.trim() || undefined });
+    if (!result.success) return;
     setState('submitting');
     try {
       await fetch('/api/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sentiment, message: message.trim() }),
+        body: JSON.stringify({ sentiment: result.data.sentiment, message: result.data.message ?? '' }),
       });
     } catch {
       // Fail silently — feedback is best-effort

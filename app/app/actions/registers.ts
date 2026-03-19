@@ -13,7 +13,7 @@ async function getOrgContextOrThrow(supabase: any, userId: string) {
     .from("org_members")
     .select("organization_id")
     .eq("user_id", userId)
-    .single();
+    .maybeSingle();
 
   if (error || !membership) throw new Error("Access Denied");
   return membership as { organization_id: string };

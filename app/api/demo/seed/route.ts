@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
       .from('organizations')
       .select('id, name')
       .eq('id', organizationId)
-      .single();
+      .maybeSingle();
 
     if (orgError || !org) {
       return NextResponse.json(
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
       .select('id')
       .eq('organization_id', organizationId)
       .eq('name', 'Demo Automation Workflow')
-      .single();
+      .maybeSingle();
 
     if (existingWorkflow) {
       workflowId = existingWorkflow.id;

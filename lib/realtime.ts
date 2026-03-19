@@ -53,7 +53,7 @@ export function useRealtimeTable<T>(
 
     // Initial fetch
     const fetchData = async () => {
-      let query = supabase.from(table).select('*');
+      let query = supabase.from(table).select('*').limit(500);
 
       if (filter) {
         query = query.eq(filter.column, filter.value);

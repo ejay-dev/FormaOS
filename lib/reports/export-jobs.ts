@@ -99,7 +99,7 @@ export async function processReportExportJob(
       .from('report_export_jobs')
       .select('*')
       .eq('id', jobId)
-      .single()
+      .maybeSingle()
 
     if (!job) {
       throw new Error('Report job not found')

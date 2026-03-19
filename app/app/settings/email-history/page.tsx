@@ -25,7 +25,7 @@ export default async function EmailHistoryPage() {
     .from("org_members")
     .select("organization_id")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (!membership) return (
     <div className="p-12 text-center text-slate-400">

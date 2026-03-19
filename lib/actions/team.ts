@@ -14,7 +14,7 @@ export async function inviteMember(email: string, role: string) {
     .from("org_members")
     .select("organization_id")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (!membership) throw new Error("No organization found");
 

@@ -263,7 +263,7 @@ async function analyzeWorkflowRisks(
         .from('workflow_configs')
         .select('name')
         .eq('id', workflowId)
-        .single();
+        .maybeSingle();
 
       risks.push({
         category: 'incomplete_workflows',
@@ -537,7 +537,7 @@ export async function performRiskAnalysis(
     .eq('organization_id', organizationId)
     .order('created_at', { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
   const previousScore =
     previousAnalysis?.overall_risk_score || overallRiskScore;
@@ -661,7 +661,7 @@ export async function getAIInsights(
     .eq('organization_id', organizationId)
     .order('created_at', { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
   return data?.ai_insights || [];
 }

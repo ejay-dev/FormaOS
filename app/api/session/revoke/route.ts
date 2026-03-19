@@ -95,7 +95,7 @@ export async function POST(request: Request) {
       .select('session_id, user_id, org_id')
       .eq('session_id', body.sessionId)
       .is('revoked_at', null)
-      .single();
+      .maybeSingle();
 
     // Revoke the session
     const { error: revokeError } = await admin

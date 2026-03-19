@@ -228,9 +228,7 @@ export async function getWorkflowDefinition(
     query = query.limit(1);
   }
 
-  const { data, error } = version === undefined
-    ? await query.maybeSingle()
-    : await query.single();
+  const { data, error } = await query.maybeSingle();
 
   if (error || !data) {
     return null;
@@ -351,7 +349,7 @@ export async function getExecutionDetail(
     .from('workflow_executions')
     .select('*')
     .eq('id', executionId)
-    .single();
+    .maybeSingle();
 
   if (error || !data) {
     return null;

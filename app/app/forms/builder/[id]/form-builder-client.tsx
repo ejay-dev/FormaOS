@@ -64,7 +64,7 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
         .select("*")
         .eq("id", formId)
         .eq("organization_id", membership.organization_id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       if (data) {

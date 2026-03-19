@@ -145,7 +145,7 @@ export async function processExportJob(
       .from('compliance_export_jobs')
       .select('*')
       .eq('id', jobId)
-      .single()
+      .maybeSingle()
 
     if (!job) {
       throw new Error('Export job not found')

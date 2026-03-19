@@ -233,7 +233,7 @@ export async function getComplianceSummary(): Promise<{
     .from('org_control_evaluations')
     .select('compliance_score, status, details, last_evaluated_at')
     .eq('organization_id', orgId)
-    .single();
+    .maybeSingle();
 
   if (!data) {
     // If no evaluation exists, calculate it
@@ -316,7 +316,7 @@ export async function getAutomationStats(): Promise<{
     .eq('organization_id', orgId)
     .order('executed_at', { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
   return {
     totalWorkflows: totalWorkflows || 0,

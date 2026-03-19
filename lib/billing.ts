@@ -140,9 +140,13 @@ export async function createCheckoutSession(
     .from('organizations')
     .select('stripe_customer_id, name')
     .eq('id', organizationId)
-    .single();
+    .maybeSingle();
 
-  let customerId = org?.stripe_customer_id;
+  if (!org) {
+    throw new Error('Organization not found');
+  }
+
+  let customerId = org.stripe_customer_id;
 
   if (!customerId) {
     customerId = await createStripeCustomer(
@@ -235,7 +239,7 @@ export async function cancelSubscription(
     .from('organizations')
     .select('stripe_subscription_id')
     .eq('id', organizationId)
-    .single();
+    .maybeSingle();
 
   if (!org?.stripe_subscription_id) {
     throw new Error('No active subscription found');
@@ -274,7 +278,7 @@ export async function resumeSubscription(
     .from('organizations')
     .select('stripe_subscription_id')
     .eq('id', organizationId)
-    .single();
+    .maybeSingle();
 
   if (!org?.stripe_subscription_id) {
     throw new Error('No subscription found');
@@ -313,7 +317,7 @@ export async function updateSubscriptionTier(
     .from('organizations')
     .select('stripe_subscription_id')
     .eq('id', organizationId)
-    .single();
+    .maybeSingle();
 
   if (!org?.stripe_subscription_id) {
     throw new Error('No active subscription');
@@ -365,7 +369,7 @@ export async function createBillingPortalSession(
     .from('organizations')
     .select('stripe_customer_id')
     .eq('id', organizationId)
-    .single();
+    .maybeSingle();
 
   if (!org?.stripe_customer_id) {
     throw new Error('No Stripe customer found');
@@ -396,7 +400,7 @@ export async function getCurrentUsage(organizationId: string): Promise<{
     .from('organizations')
     .select('subscription_updated_at')
     .eq('id', organizationId)
-    .single();
+    .maybeSingle();
 
   const periodStart = org?.subscription_updated_at || new Date().toISOString();
 
@@ -457,7 +461,7 @@ export async function checkUsageLimits(organizationId: string): Promise<{
     .from('organizations')
     .select('subscription_tier')
     .eq('id', organizationId)
-    .single();
+    .maybeSingle();
 
   const tier = (org?.subscription_tier || 'free') as SubscriptionTier;
   const plan = SUBSCRIPTION_PLANS[tier];
@@ -539,7 +543,7 @@ export async function handleStripeWebhook(event: Stripe.Event): Promise<void> {
         .from('organizations')
         .select('id')
         .eq('stripe_customer_id', customerId)
-        .single();
+        .maybeSingle();
 
       if (org) {
         await supabase

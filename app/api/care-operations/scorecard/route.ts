@@ -79,7 +79,7 @@ export async function GET() {
       .from('organizations')
       .select('industry')
       .eq('id', orgId)
-      .single();
+      .maybeSingle();
 
     if (orgError || !org?.industry) {
       return NextResponse.json(

@@ -19,7 +19,7 @@ export async function createPolicy(formData: FormData) {
     .from("org_members")
     .select("organization_id")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (!membership) throw new Error("No organization found");
   if (membership.organization_id !== permissionCtx.orgId) {
@@ -69,7 +69,7 @@ export async function deletePolicy(policyId: string) {
       .select("id, title, organization_id, status")
       .eq("id", policyId)
       .eq("organization_id", permissionCtx.orgId)
-      .single();
+      .maybeSingle();
     if (!policy) throw new Error("Policy not found");
     if (policy.organization_id !== permissionCtx.orgId) {
       throw new Error("Organization mismatch.");
@@ -115,7 +115,7 @@ export async function updatePolicyContent(policyId: string, content: string) {
     .select("id, organization_id")
     .eq("id", policyId)
     .eq("organization_id", permissionCtx.orgId)
-    .single();
+    .maybeSingle();
   if (!policy) throw new Error("Policy not found");
   if (policy.organization_id !== permissionCtx.orgId) {
     throw new Error("Organization mismatch.");
@@ -160,7 +160,7 @@ export async function publishPolicy(policyId: string) {
       .select("id, title, organization_id, status")
       .eq("id", policyId)
       .eq("organization_id", permissionCtx.orgId)
-      .single();
+      .maybeSingle();
     if (!policy) throw new Error("Policy not found");
     if (policy.organization_id !== permissionCtx.orgId) {
       throw new Error("Organization mismatch.");

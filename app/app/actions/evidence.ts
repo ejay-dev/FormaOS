@@ -23,6 +23,52 @@ const ALLOWED_EVIDENCE_TYPES = new Set([
 ]);
 
 /**
+ * Validates that the file's leading bytes (magic bytes) match the declared MIME type.
+ * Prevents spoofed Content-Type headers from bypassing the allow-list.
+ */
+function validateMagicBytes(header: Uint8Array, declaredType: string): boolean {
+  // PDF: starts with %PDF (0x25 0x50 0x44 0x46)
+  if (declaredType === "application/pdf") {
+    return header[0] === 0x25 && header[1] === 0x50 && header[2] === 0x44 && header[3] === 0x46;
+  }
+
+  // PNG: starts with 0x89 P N G (0x89 0x50 0x4E 0x47)
+  if (declaredType === "image/png") {
+    return header[0] === 0x89 && header[1] === 0x50 && header[2] === 0x4E && header[3] === 0x47;
+  }
+
+  // JPEG: starts with 0xFF 0xD8 0xFF
+  if (declaredType === "image/jpeg") {
+    return header[0] === 0xFF && header[1] === 0xD8 && header[2] === 0xFF;
+  }
+
+  // WebP: starts with RIFF....WEBP (bytes 0-3 = RIFF, bytes 8-11 = WEBP)
+  if (declaredType === "image/webp") {
+    return (
+      header[0] === 0x52 && header[1] === 0x49 && header[2] === 0x46 && header[3] === 0x46 &&
+      header[8] === 0x57 && header[9] === 0x45 && header[10] === 0x42 && header[11] === 0x50
+    );
+  }
+
+  // ZIP-based formats (docx, xlsx, legacy doc): PK header (0x50 0x4B 0x03 0x04)
+  const ZIP_TYPES = new Set([
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  ]);
+  if (ZIP_TYPES.has(declaredType)) {
+    return header[0] === 0x50 && header[1] === 0x4B && header[2] === 0x03 && header[3] === 0x04;
+  }
+
+  // text/plain: no reliable magic bytes — allow through
+  if (declaredType === "text/plain") {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * ✅ EVIDENCE UPLOAD ACTION
  * Securely handles file storage, database linking, and compliance logging.
  */
@@ -51,6 +97,13 @@ export async function uploadEvidence(formData: FormData) {
     throw new Error("Unsupported file type.");
   }
 
+  // Magic-byte validation: verify file content matches declared MIME type
+  const fileBuffer = await file.arrayBuffer();
+  const header = new Uint8Array(fileBuffer).slice(0, 12);
+  if (!validateMagicBytes(header, file.type)) {
+    throw new Error("File content does not match declared type");
+  }
+
   // 2. Pre-Flight Check: Verify Task & Get Organization ID
   // We fetch this FIRST to ensure we don't upload files for non-existent tasks.
   const { data: task, error: taskError } = await supabase
@@ -58,7 +111,7 @@ export async function uploadEvidence(formData: FormData) {
     .select('organization_id, title, entity_id, patient_id, assigned_to')
     .eq('id', taskId)
     .eq('organization_id', membership.orgId)
-    .single();
+    .maybeSingle();
 
   if (taskError || !task) {
     throw new Error("Target task not found. Upload aborted.");
@@ -76,8 +129,8 @@ export async function uploadEvidence(formData: FormData) {
 
   const { error: uploadError } = await supabase
     .storage
-    .from('evidence') 
-    .upload(filePath, file, {
+    .from('evidence')
+    .upload(filePath, fileBuffer, {
       upsert: false,
       contentType: file.type
     });
@@ -195,7 +248,7 @@ export async function verifyEvidence(
     .select("file_name, task_id, organization_id, uploaded_by, verification_status")
     .eq("id", evidenceId)
     .eq("organization_id", membership.orgId)
-    .single();
+    .maybeSingle();
 
   if (evidenceError || !evidence) throw new Error("Evidence artifact not found.");
   if (evidence.organization_id !== membership.orgId) {

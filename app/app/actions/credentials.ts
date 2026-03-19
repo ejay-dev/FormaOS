@@ -17,7 +17,7 @@ export async function runGapAnalysis(frameworkCode: string) {
     .from("org_members")
     .select("organization_id")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (memErr || !membership) throw new Error("Organization context lost");
   const orgId = membership.organization_id as string;

@@ -12,7 +12,7 @@ async function requireUserOrganization(
     .from("org_members")
     .select("organization_id")
     .eq("user_id", userId)
-    .single();
+    .maybeSingle();
 
   if (!membership?.organization_id) {
     throw new Error("No organization found");
@@ -38,7 +38,7 @@ export async function createParticipant(formData: FormData) {
     .from("org_members")
     .select("organization_id")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (!membership) throw new Error("No organization found");
 
@@ -139,7 +139,7 @@ export async function createVisit(formData: FormData) {
     .from("org_members")
     .select("organization_id")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (!membership) throw new Error("No organization found");
 
@@ -220,7 +220,7 @@ export async function createIncident(formData: FormData) {
     .from("org_members")
     .select("organization_id")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (!membership) throw new Error("No organization found");
 
@@ -309,7 +309,7 @@ export async function createStaffCredential(formData: FormData) {
     .from("org_members")
     .select("organization_id")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (!membership) throw new Error("No organization found");
 
@@ -396,7 +396,7 @@ export async function createCarePlan(formData: FormData) {
     .from("org_members")
     .select("organization_id")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (!membership) throw new Error("No organization found");
 

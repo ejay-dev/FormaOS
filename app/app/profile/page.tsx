@@ -20,7 +20,7 @@ export default async function EmployeeProfilePage() {
     .from("org_members")
     .select("*, organizations(name, domain, registration_number)")
     .eq("user_id", user?.id)
-    .single();
+    .maybeSingle();
 
   const { data: userProfile } = await supabase
     .from("user_profiles")

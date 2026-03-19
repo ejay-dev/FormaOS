@@ -19,7 +19,7 @@ export async function GET(request: Request, context: RouteContext) {
       .from('compliance_controls')
       .select('*')
       .eq('id', controlId)
-      .single(),
+      .maybeSingle(),
     auth.context.db
       .from('control_evidence')
       .select('id, evidence_id, status, created_at')

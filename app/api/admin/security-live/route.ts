@@ -388,7 +388,7 @@ export async function PATCH(request: Request) {
       .update(updateData)
       .eq('id', body.alertId)
       .select('id, event_id')
-      .single();
+      .maybeSingle();
 
     if (alertError || !alert) {
       log.error({ err: alertError }, '[SecurityLive] Failed to update alert:');
@@ -402,7 +402,7 @@ export async function PATCH(request: Request) {
       .from('security_events')
       .select('org_id')
       .eq('id', alert.event_id)
-      .single();
+      .maybeSingle();
 
     logUserActivity({
       userId: user.id,

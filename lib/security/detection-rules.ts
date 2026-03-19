@@ -205,7 +205,7 @@ export async function detectSessionAnomaly(
     .select('device_fingerprint, user_agent')
     .eq('session_id', sessionId)
     .is('revoked_at', null)
-    .single();
+    .maybeSingle();
 
   if (error || !data) {
     return { triggered: false, severity: 'info' };

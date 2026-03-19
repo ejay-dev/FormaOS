@@ -40,7 +40,7 @@ export default async function PolicyDetailPage({
     `)
     .eq("id", policyId)
     .eq("organization_id", membership.organization_id)
-    .single();
+    .maybeSingle();
 
   if (!policy) notFound();
 

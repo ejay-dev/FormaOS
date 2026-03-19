@@ -23,7 +23,7 @@ export async function updateOrganization(data: {
     .from("org_members")
     .select("organization_id")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (!membership || membership.organization_id !== permissionCtx.orgId) {
     throw new Error("Security Violation: Only authorized users can modify organization settings.");

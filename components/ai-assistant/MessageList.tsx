@@ -14,8 +14,18 @@ interface MessageListProps {
   isLoading: boolean;
 }
 
-function renderMarkdown(text: string): string {
+function escapeHtml(text: string): string {
   return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function renderMarkdown(text: string): string {
+  // Escape all HTML entities first to prevent XSS, then apply markdown formatting
+  return escapeHtml(text)
     .replace(/```([\s\S]*?)```/g, '<pre class="my-2 rounded-lg bg-black/30 p-3 text-xs overflow-x-auto"><code>$1</code></pre>')
     .replace(/`([^`]+)`/g, '<code class="rounded bg-white/10 px-1.5 py-0.5 text-xs font-mono">$1</code>')
     .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-slate-200">$1</strong>')

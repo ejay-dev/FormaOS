@@ -60,7 +60,7 @@ export async function generateComplianceReport(
     .from('organizations')
     .select('*')
     .eq('id', organizationId)
-    .single();
+    .maybeSingle();
 
   // Get compliance metrics
   const metrics = await getComplianceMetrics(organizationId);
@@ -331,7 +331,7 @@ export async function generateCertificateReport(
     .from('organizations')
     .select('*')
     .eq('id', organizationId)
-    .single();
+    .maybeSingle();
 
   let query = supabase
     .from('certifications')
@@ -435,7 +435,7 @@ export async function generateAuditReport(
     .from('organizations')
     .select('*')
     .eq('id', organizationId)
-    .single();
+    .maybeSingle();
 
   const { data: activities } = await supabase
     .from('activity_logs')

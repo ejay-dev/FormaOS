@@ -173,7 +173,7 @@ export async function processEnterpriseExportJob(
     // NOTE: Do not select storage_* columns. Production schema may not include them yet.
     .select('organization_id, requested_by, options, status, file_url, expires_at')
     .eq('id', jobId)
-    .single();
+    .maybeSingle();
 
   if (enterpriseError && enterpriseError.message.includes('does not exist')) {
     // Fallback to compliance_export_jobs
@@ -181,7 +181,7 @@ export async function processEnterpriseExportJob(
       .from('compliance_export_jobs')
       .select('organization_id, requested_by')
       .eq('id', jobId)
-      .single();
+      .maybeSingle();
 
     if (fallbackJob) {
       job = { ...fallbackJob, options: null };
@@ -348,7 +348,7 @@ export async function getExportJobStatus(jobId: string): Promise<ExportJobResult
     // NOTE: Do not select storage_* columns. Production schema may not include them yet.
     .select('id, organization_id, status, progress, file_url, file_size, expires_at, error_message')
     .eq('id', jobId)
-    .single();
+    .maybeSingle();
 
   if (error && error.message.includes('does not exist')) {
     // Fallback to compliance table
@@ -356,7 +356,7 @@ export async function getExportJobStatus(jobId: string): Promise<ExportJobResult
       .from('compliance_export_jobs')
       .select('id, status, progress, file_url, file_size, expires_at, error_message')
       .eq('id', jobId)
-      .single();
+      .maybeSingle();
 
     if (!fallbackJob) return null;
 

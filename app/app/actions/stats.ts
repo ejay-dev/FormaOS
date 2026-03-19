@@ -17,7 +17,7 @@ export async function getComplianceStats() {
     .from("org_members")
     .select("organization_id")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (!membership) return null;
   const orgId = membership.organization_id;

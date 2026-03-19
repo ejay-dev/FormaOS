@@ -132,7 +132,7 @@ export async function getCurrentOrganization(
     .from('user_preferences')
     .select('current_organization_id')
     .eq('user_id', userId)
-    .single();
+    .maybeSingle();
 
   let orgId = preference?.current_organization_id;
 
@@ -154,7 +154,7 @@ export async function getCurrentOrganization(
     .from('organizations')
     .select('*')
     .eq('id', orgId)
-    .single();
+    .maybeSingle();
 
   return org;
 }
@@ -211,7 +211,7 @@ export async function createOrganization(
     .from('organizations')
     .select('id')
     .eq('slug', data.slug)
-    .single();
+    .maybeSingle();
 
   if (existing) {
     throw new Error('Organization slug already taken');
@@ -270,7 +270,7 @@ export async function updateOrganization(
     .select('role')
     .eq('organization_id', organizationId)
     .eq('user_id', userId)
-    .single();
+    .maybeSingle();
 
   if (!membership || !['owner', 'admin'].includes(membership.role)) {
     throw new Error('Insufficient permissions');
@@ -319,7 +319,7 @@ export async function deleteOrganization(
     .from('organizations')
     .select('owner_id')
     .eq('id', organizationId)
-    .single();
+    .maybeSingle();
 
   if (!org || org.owner_id !== userId) {
     throw new Error('Only the organization owner can delete the organization');
@@ -356,7 +356,7 @@ export async function inviteToOrganization(
     .select('role')
     .eq('organization_id', organizationId)
     .eq('user_id', invitedBy)
-    .single();
+    .maybeSingle();
 
   if (!inviter || !['owner', 'admin'].includes(inviter.role)) {
     throw new Error('Insufficient permissions');
@@ -367,7 +367,7 @@ export async function inviteToOrganization(
     .from('profiles')
     .select('id')
     .eq('email', email)
-    .single();
+    .maybeSingle();
 
   if (!user) {
     const invitation = await createInvitation({
@@ -415,7 +415,7 @@ export async function inviteToOrganization(
     .select('id')
     .eq('organization_id', organizationId)
     .eq('user_id', user.id)
-    .single();
+    .maybeSingle();
 
   if (existing) {
     throw new Error('User is already a member of this organization');
@@ -545,7 +545,7 @@ export async function removeMember(
     .select('role')
     .eq('organization_id', organizationId)
     .eq('user_id', removedBy)
-    .single();
+    .maybeSingle();
 
   if (!remover || !['owner', 'admin'].includes(remover.role)) {
     throw new Error('Insufficient permissions');
@@ -556,7 +556,7 @@ export async function removeMember(
     .from('team_members')
     .select('role, user_id')
     .eq('id', memberId)
-    .single();
+    .maybeSingle();
 
   if (member?.role === 'owner') {
     throw new Error('Cannot remove organization owner');

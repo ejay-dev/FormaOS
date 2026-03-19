@@ -11,7 +11,7 @@ export async function getNotificationPreferences() {
     .from("org_notification_prefs")
     .select("*")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (error) throw error;
   return data;

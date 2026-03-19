@@ -50,7 +50,7 @@ async function buildTrustPacketReport(orgId: string): Promise<BaseReportPayload>
     .from('organizations')
     .select('name')
     .eq('id', orgId)
-    .single();
+    .maybeSingle();
 
   const readinessData = await calculateFrameworkReadiness(orgId);
   const readinessScore = readinessData.length
@@ -148,7 +148,7 @@ async function buildBaseReport(
     .from('organizations')
     .select('name')
     .eq('id', orgId)
-    .single();
+    .maybeSingle();
 
   // Get framework readiness
   const readinessData = await calculateFrameworkReadiness(orgId);

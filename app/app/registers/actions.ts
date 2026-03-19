@@ -18,7 +18,7 @@ export async function createAsset(formData: FormData) {
     .from("org_members")
     .select("organization_id")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (!membership) throw new Error("No organization found");
   if (membership.organization_id !== permissionCtx.orgId) {
@@ -74,7 +74,7 @@ export async function deleteAsset(assetId: string) {
       .select("id, organization_id, name")
       .eq("id", assetId)
       .eq("organization_id", permissionCtx.orgId)
-      .single();
+      .maybeSingle();
     if (!asset) throw new Error("Asset not found");
     if (asset.organization_id !== permissionCtx.orgId) {
       throw new Error("Organization mismatch.");

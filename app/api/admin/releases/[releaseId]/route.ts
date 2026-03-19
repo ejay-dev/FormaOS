@@ -34,7 +34,7 @@ export async function GET(_request: Request, { params }: Params) {
       .from('product_releases')
       .select('*')
       .eq('id', releaseId)
-      .single();
+      .maybeSingle();
 
     if (error || !data) {
       return NextResponse.json({ error: 'Release not found' }, { status: 404 });
@@ -66,7 +66,7 @@ export async function PATCH(request: Request, { params }: Params) {
       .from('product_releases')
       .select('*')
       .eq('id', releaseId)
-      .single();
+      .maybeSingle();
 
     if (fetchError || !current) {
       return NextResponse.json({ error: 'Release not found' }, { status: 404 });

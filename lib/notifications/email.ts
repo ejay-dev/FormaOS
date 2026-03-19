@@ -496,7 +496,7 @@ export async function getEmailPreferences(
     .select('*')
     .eq('user_id', userId)
     .eq('organization_id', organizationId)
-    .single();
+    .maybeSingle();
 
   if (error) return null;
 
@@ -518,7 +518,7 @@ export async function updateEmailPreferences(
     .select('id')
     .eq('user_id', userId)
     .eq('organization_id', organizationId)
-    .single();
+    .maybeSingle();
 
   if (existing) {
     await supabase
@@ -558,7 +558,7 @@ export async function scheduleWeeklyDigest(
     .from('organizations')
     .select('name')
     .eq('id', organizationId)
-    .single();
+    .maybeSingle();
 
   // Calculate weekly stats
   const weekStart = new Date();
@@ -587,7 +587,7 @@ export async function scheduleWeeklyDigest(
       .eq('organization_id', organizationId)
       .order('created_at', { ascending: false })
       .limit(1)
-      .single(),
+      .maybeSingle(),
   ]);
 
   const stats = {

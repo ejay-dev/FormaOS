@@ -391,7 +391,7 @@ export async function getSlackConfig(
     .select('*')
     .eq('organization_id', organizationId)
     .eq('provider', 'slack')
-    .single();
+    .maybeSingle();
 
   if (error || !data) return null;
 

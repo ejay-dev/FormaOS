@@ -12,6 +12,12 @@ import {
   Eye,
   AlertCircle,
 } from 'lucide-react';
+import { z } from 'zod';
+
+const inviteSchema = z.object({
+  email: z.string().min(1, 'Email is required').email('Please enter a valid email address'),
+  role: z.enum(['admin', 'member', 'viewer']),
+});
 
 export function InviteModal({
   isOpen,
@@ -36,8 +42,15 @@ export function InviteModal({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
     setError(null);
+
+    const parsed = inviteSchema.safeParse({ email, role });
+    if (!parsed.success) {
+      setError(parsed.error.issues[0]?.message ?? 'Invalid input');
+      return;
+    }
+
+    setLoading(true);
 
     try {
       // ✅ Upgrade: Handle the structured response from our server action

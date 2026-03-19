@@ -31,14 +31,14 @@ const customJestConfig = {
     '!**/coverage/**',
     '!**/e2e/**',
   ],
-  // Coverage thresholds – ratcheted to current actuals (2026-03-13).
-  // Bump these each time you add tests. Target: 20%+.
+  // Coverage thresholds – ratcheted to current actuals (2026-03-19).
+  // Baseline after adding 127 tests (77 security + 50 auth). Target: 15%+.
   coverageThreshold: {
     global: {
-      branches: 3.3,
-      functions: 4,
-      lines: 4.7,
-      statements: 4.6,
+      branches: 4,
+      functions: 4.7,
+      lines: 5.6,
+      statements: 5.8,
     },
   },
   testMatch: [

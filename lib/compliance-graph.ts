@@ -67,7 +67,7 @@ export async function initializeComplianceGraph(
       .select('id, role')
       .eq('organization_id', organizationId)
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
 
     if (!membershipData) {
       throw new Error(
@@ -240,7 +240,7 @@ export async function validateComplianceGraph(organizationId: string): Promise<{
       .from('organizations')
       .select('id')
       .eq('id', organizationId)
-      .single();
+      .maybeSingle();
 
     if (!org) {
       issues.push('Organization node missing');
@@ -383,7 +383,7 @@ export async function repairComplianceGraph(
         .select('id')
         .eq('organization_id', organizationId)
         .limit(1)
-        .single();
+        .maybeSingle();
 
       if (firstPolicy) {
         await admin

@@ -26,7 +26,7 @@ async function getAuthContext() {
     .from('org_members')
     .select('organization_id, role')
     .eq('user_id', user.id)
-    .single();
+    .maybeSingle();
 
   if (!membership) return null;
 

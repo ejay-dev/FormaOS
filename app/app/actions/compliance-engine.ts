@@ -530,7 +530,7 @@ export async function evaluateFrameworkControls(orgId: string, frameworkCode: st
     .from("compliance_frameworks")
     .select("id, code, title")
     .eq("code", frameworkCode)
-    .single();
+    .maybeSingle();
 
   if (fwErr || !framework?.id) return null;
 

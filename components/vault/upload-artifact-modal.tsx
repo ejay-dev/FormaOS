@@ -13,6 +13,13 @@ import {
 } from 'lucide-react';
 import { useComplianceAction } from '@/components/compliance-system';
 import { useAppStore } from '@/lib/stores/app';
+import { z } from 'zod';
+
+const uploadArtifactSchema = z.object({
+  title: z.string().max(300, 'Title must be under 300 characters').optional(),
+  fileSize: z.number().max(10 * 1024 * 1024, 'File must be under 10MB'),
+  fileName: z.string().min(1, 'A file is required'),
+});
 
 /**
  * =========================================================
@@ -34,6 +41,7 @@ export function UploadArtifactModal({
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [success, setSuccess] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
   const supabase = createSupabaseClient();
   const { evidenceAdded, reportError } = useComplianceAction();
   const orgId = useAppStore((state) => state.organization?.id ?? null);
@@ -45,6 +53,7 @@ export function UploadArtifactModal({
       setTitle('');
       setSuccess(false);
       setUploadProgress(0);
+      setValidationError(null);
     }
   }, [isOpen]);
 
@@ -53,6 +62,19 @@ export function UploadArtifactModal({
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file) return;
+
+    setValidationError(null);
+
+    const parsed = uploadArtifactSchema.safeParse({
+      title: title || undefined,
+      fileSize: file.size,
+      fileName: file.name,
+    });
+
+    if (!parsed.success) {
+      setValidationError(parsed.error.issues[0]?.message ?? 'Invalid input');
+      return;
+    }
 
     setUploading(true);
     setUploadProgress(0);
@@ -166,6 +188,11 @@ export function UploadArtifactModal({
         </div>
 
         <form onSubmit={handleUpload} className="p-6 space-y-6">
+          {validationError && (
+            <div className="p-3 rounded-xl border border-red-400/30 bg-red-400/10 text-sm text-red-400">
+              {validationError}
+            </div>
+          )}
           {/* File Dropzone */}
           <div className="group relative border-2 border-dashed border-violet-400/30 rounded-2xl p-8 transition-all hover:border-violet-400/50 hover:bg-violet-400/5 flex flex-col items-center justify-center text-center">
             <input

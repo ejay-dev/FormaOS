@@ -13,6 +13,14 @@ import {
   SheetFooter,
 } from "@/components/ui/sheet"
 import { useComplianceAction } from "@/components/compliance-system"
+import { z } from "zod"
+
+const createAssetSchema = z.object({
+  name: z.string().min(1, "Asset name is required").max(200, "Asset name must be under 200 characters"),
+  type: z.enum(["hardware", "software", "data", "people"]),
+  owner: z.string().min(1, "Owner is required").max(200, "Owner must be under 200 characters"),
+  criticality: z.enum(["low", "medium", "high", "critical"]),
+})
 
 /**
  * =========================================================
@@ -26,11 +34,26 @@ export function CreateAssetSheet() {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [validationError, setValidationError] = useState<string | null>(null)
   const { nodeCreated, reportError } = useComplianceAction()
 
   async function handleSubmit(formData: FormData) {
     setLoading(true)
-    
+    setValidationError(null)
+
+    const parsed = createAssetSchema.safeParse({
+      name: formData.get("name"),
+      type: formData.get("type"),
+      owner: formData.get("owner"),
+      criticality: formData.get("criticality"),
+    })
+
+    if (!parsed.success) {
+      setValidationError(parsed.error.issues[0]?.message ?? "Invalid input")
+      setLoading(false)
+      return
+    }
+
     try {
       // The Server Action handles Auth, Validation, and DB Insertion
       await createAsset(formData) 
@@ -95,7 +118,12 @@ export function CreateAssetSheet() {
             </SheetHeader>
             
             <div className="flex-1 space-y-6">
-              
+              {validationError && (
+                <div className="p-3 rounded-xl border border-red-400/30 bg-red-400/10 text-sm text-red-400">
+                  {validationError}
+                </div>
+              )}
+
               {/* 1. Asset Name */}
               <div className="space-y-2">
                 <label htmlFor="field-89" className="text-xs font-bold uppercase text-slate-400 tracking-wider">Asset Name</label>

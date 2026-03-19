@@ -1,0 +1,1 @@
+(function(){var h=document.querySelector('.mk-header-premium');if(!h)return;var c='scrolled';function u(){h.classList.toggle(c,window.scrollY>10)}window.addEventListener('scroll',u,{passive:true});u()})();

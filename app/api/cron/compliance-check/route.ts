@@ -7,7 +7,7 @@ export const maxDuration = 60;
 
 /**
  * Scheduled compliance posture check.
- * Runs every 6 hours via Vercel cron to:
+ * Runs daily at 6 AM UTC via Vercel cron to:
  * 1. Detect expiring credentials (certificates, registrations)
  * 2. Flag overdue compliance tasks
  * 3. Check evidence gaps against active framework controls
@@ -46,15 +46,30 @@ export async function GET(request: Request) {
   };
 
   try {
-    // 1. Find all active organizations
-    const { data: orgs } = await admin.from('organizations').select('id, name');
+    // 1. Find all active organizations in batches of 100
+    const BATCH_SIZE = 100;
+    let offset = 0;
+    let hasMore = true;
 
-    if (!orgs?.length) {
-      return NextResponse.json({
-        ...results,
-        message: 'No organizations to check',
-      });
-    }
+    while (hasMore) {
+      const { data: orgs } = await admin
+        .from('organizations')
+        .select('id, name')
+        .range(offset, offset + BATCH_SIZE - 1)
+        .limit(BATCH_SIZE);
+
+      if (!orgs?.length) {
+        if (offset === 0) {
+          return NextResponse.json({
+            ...results,
+            message: 'No organizations to check',
+          });
+        }
+        break;
+      }
+
+      hasMore = orgs.length === BATCH_SIZE;
+      offset += orgs.length;
 
     for (const org of orgs) {
       results.orgsChecked++;
@@ -144,6 +159,7 @@ export async function GET(request: Request) {
         { onConflict: 'organization_id' },
       );
     }
+    } // end while (hasMore)
 
     return NextResponse.json({
       ok: true,

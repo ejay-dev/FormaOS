@@ -37,6 +37,7 @@ interface MockInsertData {
 interface SelectChain<T> {
   eq: (column: string, value: string) => SelectChain<T>;
   single: () => Promise<SupabaseResponse<T>>;
+  maybeSingle: () => Promise<SupabaseResponse<T>>;
 }
 
 // UpdateChain intentionally not defined - using inline types where needed
@@ -64,6 +65,7 @@ jest.mock('@/lib/supabase/admin', () => {
         select: mockSupabaseSelect.mockImplementation(() => ({
           eq: jest.fn(() => ({
             single: jest.fn(() => Promise.resolve({ data: null, error: null })),
+            maybeSingle: jest.fn(() => Promise.resolve({ data: null, error: null })),
           })),
         })),
         update: mockSupabaseUpdate.mockImplementation(() => ({
@@ -101,14 +103,14 @@ jest.mock('@/lib/observability/structured-logger', () => ({
 // =============================================================================
 
 function createSelectMock(data: OrgData): SelectChain<OrgData> {
+  const resolvedValue = Promise.resolve({
+    data,
+    error: null,
+  } satisfies SupabaseOk<OrgData>);
   const chain: SelectChain<OrgData> = {
     eq: jest.fn(() => chain),
-    single: jest.fn(() =>
-      Promise.resolve({
-        data,
-        error: null,
-      } satisfies SupabaseOk<OrgData>),
-    ),
+    single: jest.fn(() => resolvedValue),
+    maybeSingle: jest.fn(() => resolvedValue),
   };
   return chain;
 }

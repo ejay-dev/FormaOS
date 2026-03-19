@@ -158,7 +158,7 @@ export async function enable2FA(
     .from('user_security')
     .select('two_factor_secret')
     .eq('user_id', userId)
-    .single();
+    .maybeSingle();
 
   if (!security?.two_factor_secret) {
     throw new Error('2FA secret not found. Please generate a new secret.');
@@ -206,7 +206,7 @@ export async function verify2FAToken(
     .select('two_factor_secret, backup_codes')
     .eq('user_id', userId)
     .eq('two_factor_enabled', true)
-    .single();
+    .maybeSingle();
 
   if (!security) {
     return false;
@@ -291,7 +291,7 @@ export async function getSecuritySettings(
     .from('user_security')
     .select('*')
     .eq('user_id', userId)
-    .single();
+    .maybeSingle();
 
   return {
     twoFactorEnabled: security?.two_factor_enabled || false,
@@ -458,7 +458,7 @@ export async function isSessionExpired(sessionId: string): Promise<boolean> {
     .from('user_sessions')
     .select('expires_at')
     .eq('id', sessionId)
-    .single();
+    .maybeSingle();
 
   if (!session) return true;
 

@@ -555,7 +555,7 @@ export async function generateReport(
     .from('report_templates')
     .select('*')
     .eq('id', templateId)
-    .single();
+    .maybeSingle();
 
   if (!template) {
     throw new Error('Report template not found');
@@ -745,7 +745,7 @@ export async function duplicateReportTemplate(
     .from('report_templates')
     .select('*')
     .eq('id', templateId)
-    .single();
+    .maybeSingle();
 
   if (!original) {
     throw new Error('Template not found');

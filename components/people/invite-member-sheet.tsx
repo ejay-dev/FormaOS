@@ -13,6 +13,12 @@ import {
   SheetFooter,
 } from "@/components/ui/sheet"
 import { useComplianceAction } from "@/components/compliance-system"
+import { z } from "zod"
+
+const inviteMemberSchema = z.object({
+  email: z.string().min(1, "Email is required").email("Please enter a valid email address"),
+  role: z.enum(["member", "admin"]),
+})
 
 /**
  * =========================================================
@@ -27,15 +33,24 @@ export function InviteMemberSheet() {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [invitedEmail, setInvitedEmail] = useState("")
+  const [validationError, setValidationError] = useState<string | null>(null)
   const { nodeCreated, reportError, reportInfo } = useComplianceAction()
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setLoading(true)
+    setValidationError(null)
 
     const formData = new FormData(e.currentTarget)
     const email = formData.get("email") as string
     const role = formData.get("role") as string
+
+    const parsed = inviteMemberSchema.safeParse({ email, role })
+    if (!parsed.success) {
+      setValidationError(parsed.error.issues[0]?.message ?? "Invalid input")
+      return
+    }
+
+    setLoading(true)
 
     try {
       const supabase = createSupabaseClient()
@@ -119,6 +134,11 @@ export function InviteMemberSheet() {
             </SheetHeader>
 
             <div className="flex-1 py-8 space-y-4">
+              {validationError && (
+                <div className="p-3 rounded-xl border border-red-400/30 bg-red-400/10 text-sm text-red-400">
+                  {validationError}
+                </div>
+              )}
               <div className="space-y-2">
                 <label htmlFor="field-76" className="text-sm font-semibold">Email Address</label>
                 <div className="relative">

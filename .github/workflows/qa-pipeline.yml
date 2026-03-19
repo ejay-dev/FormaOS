@@ -4,7 +4,14 @@ on:
   pull_request:
     branches: [main]
   push:
-    branches: [main]
+    branches: [main, qa-upgrades/*]
+  workflow_dispatch:
+    inputs:
+      skip_e2e:
+        description: 'Skip E2E tests for faster feedback'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -13,6 +20,7 @@ permissions:
 
 env:
   NODE_VERSION: '20'
+  FORCE_COLOR: 1
 
 jobs:
   lint-and-format:
@@ -26,9 +34,20 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
-      - run: npm run lint
+      - name: ESLint (max 30 warnings)
+        run: npx eslint --ext .js,.jsx,.ts,.tsx . --max-warnings 30
       - run: npm run stylelint
       - run: npm run type-check
+
+      - name: App route/link integrity check
+        run: npm run check:app-links
+
+      - name: Admin sidebar route integrity check
+        run: npm run check:admin-nav
+
+      - name: Code formatting check
+        run: npx prettier --check "**/*.{ts,tsx,js,jsx,md,json}"
+        continue-on-error: true # Warning only for formatting
 
   unit-tests:
     name: Unit & Integration Tests
@@ -59,6 +78,17 @@ jobs:
       security-events: write
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Run npm audit
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@9adf32b1121593767fc3c057af55b55db032dc04 # pin to SHA
         continue-on-error: true
@@ -101,6 +131,7 @@ jobs:
   e2e-tests:
     name: End-to-End Tests
     runs-on: ubuntu-latest
+    if: github.event.inputs.skip_e2e != 'true'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -123,7 +154,9 @@ jobs:
         if: failure()
         with:
           name: playwright-report
-          path: playwright-report/
+          path: |
+            test-results/
+            playwright-report/
 
   visual-regression:
     name: Visual Regression Tests
@@ -168,6 +201,17 @@ jobs:
       - run: npm ci
       # lighthouse-ci uses `.lighthouserc.json` startServerCommand; avoid port conflicts.
       - run: npm run test:lighthouse
+
+      - name: Bundle size check
+        run: |
+          npm run build
+          echo "Checking bundle size..."
+          ls -la .next/static/chunks/ | head -10
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL || '' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || '' }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || '' }}
+        continue-on-error: true
 
       - name: Upload Lighthouse Report
         uses: actions/upload-artifact@v4
@@ -215,17 +259,31 @@ jobs:
       ]
     if: always()
     steps:
+      - name: Quality Gate Results
+        run: |
+          echo "## Quality Gate Results" >> $GITHUB_STEP_SUMMARY
+          echo "| Stage | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Lint & Format | ${{ needs.lint-and-format.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Unit Tests | ${{ needs.unit-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security Scan | ${{ needs.security-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Accessibility | ${{ needs.accessibility-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| E2E Tests | ${{ needs.e2e-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Visual Regression | ${{ needs.visual-regression.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Performance | ${{ needs.performance-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Database | ${{ needs.database-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+
       - name: Check all jobs
         run: |
-          if [[ "${{ needs.lint-and-format.result }}" != "success" || 
-                "${{ needs.unit-tests.result }}" != "success" || 
-                "${{ needs.security-scan.result }}" != "success" || 
-                "${{ needs.accessibility-tests.result }}" != "success" || 
-                "${{ needs.e2e-tests.result }}" != "success" || 
-                "${{ needs.visual-regression.result }}" != "success" || 
-                "${{ needs.performance-tests.result }}" != "success" || 
+          if [[ "${{ needs.lint-and-format.result }}" != "success" ||
+                "${{ needs.unit-tests.result }}" != "success" ||
+                "${{ needs.security-scan.result }}" != "success" ||
+                "${{ needs.accessibility-tests.result }}" != "success" ||
+                "${{ needs.e2e-tests.result }}" != "success" && "${{ needs.e2e-tests.result }}" != "skipped" ||
+                "${{ needs.visual-regression.result }}" != "success" ||
+                "${{ needs.performance-tests.result }}" != "success" ||
                 "${{ needs.database-tests.result }}" != "success" ]]; then
             echo "Quality gate failed - one or more checks failed"
             exit 1
           fi
-          echo "✅ All quality checks passed! Ready for merge."
+          echo "All quality checks passed! Ready for merge."

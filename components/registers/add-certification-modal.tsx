@@ -4,6 +4,14 @@ import { useState } from "react"
 import { addTrainingRecord } from "@/app/app/actions/registers"
 import { GraduationCap, Loader2, X, User, CheckCircle2 } from "lucide-react"
 import { useComplianceAction } from "@/components/compliance-system"
+import { z } from "zod"
+
+const certificationSchema = z.object({
+  userId: z.string().min(1, "Please select a staff member"),
+  title: z.string().min(1, "Certification title is required").max(300, "Title must be under 300 characters"),
+  completionDate: z.string().min(1, "Completion date is required"),
+  expiryDate: z.string().optional(),
+})
 
 /**
  * =========================================================
@@ -24,7 +32,8 @@ export function AddCertificationModal({
 }) {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
-  
+  const [validationError, setValidationError] = useState<string | null>(null)
+
   const [userId, setUserId] = useState("")
   const [title, setTitle] = useState("")
   const [completionDate, setCompletionDate] = useState("")
@@ -35,6 +44,20 @@ export function AddCertificationModal({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    setValidationError(null)
+
+    const parsed = certificationSchema.safeParse({
+      userId,
+      title,
+      completionDate,
+      expiryDate: expiryDate || undefined,
+    })
+
+    if (!parsed.success) {
+      setValidationError(parsed.error.issues[0]?.message ?? "Invalid input")
+      return
+    }
+
     setLoading(true)
     try {
       await addTrainingRecord({
@@ -86,6 +109,11 @@ export function AddCertificationModal({
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-8 space-y-6">
+            {validationError && (
+              <div className="p-3 rounded-2xl border border-red-400/30 bg-red-400/10 text-xs font-bold text-red-400">
+                {validationError}
+              </div>
+            )}
             {/* Select Member */}
             <div className="space-y-2">
               <label htmlFor="field-85" className="text-xs font-black uppercase text-slate-400 tracking-widest ml-1">Personnel</label>

@@ -204,7 +204,7 @@ export function AiAssistantPanel() {
 
       {/* Panel */}
       <div
-        className={`fixed right-0 top-0 z-50 flex h-full w-full max-w-[800px] flex-col bg-[#0a0f1c] border-l border-white/10 shadow-2xl transition-transform duration-300 ease-in-out ${
+        className={`fixed right-0 top-0 z-50 flex h-full w-full max-w-[800px] flex-col bg-background border-l border-white/10 shadow-2xl transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >

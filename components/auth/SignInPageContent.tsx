@@ -7,6 +7,12 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
 import { Logo } from '@/components/brand/Logo';
+import { z } from 'zod';
+
+const signInSchema = z.object({
+  email: z.string().min(1, 'Email is required').email('Please enter a valid email address'),
+  password: z.string().min(1, 'Password is required'),
+});
 // OAuth consent branding can be further customized via Supabase Auth custom domains.
 // See: https://supabase.com/docs/guides/auth/custom-domains
 
@@ -363,6 +369,13 @@ function SignInContent() {
     e.preventDefault();
     setErrorMessage(null);
     setSessionTimeout(false);
+
+    const parsed = signInSchema.safeParse({ email, password });
+    if (!parsed.success) {
+      setErrorMessage(parsed.error.issues[0]?.message ?? 'Invalid input');
+      return;
+    }
+
     setIsLoading(true);
 
     // Hard enforcement: if this domain requires SSO, block password sign-in.

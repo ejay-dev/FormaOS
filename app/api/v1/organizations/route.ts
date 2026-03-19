@@ -18,7 +18,7 @@ export async function GET(request: Request) {
       .from('organizations')
       .select('*')
       .eq('id', auth.context.orgId)
-      .single(),
+      .maybeSingle(),
     countRows('org_members', (query) => query.eq('organization_id', auth.context.orgId)),
     countRows('org_frameworks', (query) => query.eq('organization_id', auth.context.orgId)),
     countRows('api_keys', (query) => query.eq('org_id', auth.context.orgId).is('revoked_at', null)),

@@ -1,3 +1,5 @@
+import { isIPv4, isIPv6 } from 'node:net';
+
 export interface GeoLookupResult {
   country?: string;
   region?: string;
@@ -26,6 +28,7 @@ class IpApiGeoProvider implements GeoIpProvider {
   async lookup(ip: string): Promise<GeoLookupResult | null> {
     const safeIp = ip.trim();
     if (!safeIp) return null;
+    if (!isIPv4(safeIp) && !isIPv6(safeIp)) return null;
 
     const url = new URL(`${this.endpoint.replace(/\/$/, '')}/${safeIp}/json/`);
     if (this.apiKey) {

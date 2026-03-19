@@ -502,7 +502,7 @@ export async function getTeamsConfig(
     .eq('organization_id', organizationId)
     .eq('provider', 'teams')
     .eq('enabled', true)
-    .single();
+    .maybeSingle();
 
   if (error || !data) {
     return null;
@@ -536,7 +536,7 @@ export async function saveTeamsConfig(
     .select('id')
     .eq('organization_id', organizationId)
     .eq('provider', 'teams')
-    .single();
+    .maybeSingle();
 
   if (existing) {
     await supabase

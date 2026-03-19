@@ -85,7 +85,7 @@ async function handleEvidenceUploaded(
     .from('org_evidence')
     .select('*, org_tasks(*)')
     .eq('id', event.entityId)
-    .single();
+    .maybeSingle();
 
   if (evidence?.org_tasks && evidence.org_tasks.status !== 'completed') {
     // Auto-complete evidence upload tasks
@@ -139,7 +139,7 @@ async function handleEvidenceStatusChange(
       .from('org_evidence')
       .select('*')
       .eq('id', event.entityId)
-      .single();
+      .maybeSingle();
 
     if (evidence) {
       const triggerEvent: TriggerEvent = {
@@ -230,7 +230,7 @@ async function handleTaskCompleted(
     .from('org_tasks')
     .select('*')
     .eq('id', event.entityId)
-    .single();
+    .maybeSingle();
 
   if (!task) {
     return { triggered: false };
@@ -271,7 +271,7 @@ async function handleTaskCompleted(
       .from('org_policies')
       .select('*')
       .eq('id', task.linked_policy_id)
-      .single();
+      .maybeSingle();
 
     if (policy && task.title.includes('Review Policy')) {
       // Update policy last_updated_at
@@ -333,7 +333,7 @@ export async function monitorComplianceScoreChanges(
     .from('org_control_evaluations')
     .select('compliance_score, details')
     .eq('organization_id', organizationId)
-    .single();
+    .maybeSingle();
 
   if (!currentEval || !previousScore) {
     return;

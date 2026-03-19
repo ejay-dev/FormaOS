@@ -408,7 +408,7 @@ async function updateAllComplianceScores(): Promise<{
             .from('org_control_evaluations')
             .select('compliance_score, details')
             .eq('organization_id', org.id)
-            .single();
+            .maybeSingle();
 
           // Update score
           await updateComplianceScore(org.id);
@@ -420,7 +420,7 @@ async function updateAllComplianceScores(): Promise<{
               .from('org_control_evaluations')
               .select('details, compliance_score')
               .eq('organization_id', org.id)
-              .single();
+              .maybeSingle();
 
             if (
               currentEval &&

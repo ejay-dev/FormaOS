@@ -19,7 +19,7 @@ export default async function WorkflowsPage() {
     .from('org_members')
     .select('organization_id')
     .eq('user_id', user.id)
-    .single();
+    .maybeSingle();
 
   if (!membership?.organization_id) {
     return null;

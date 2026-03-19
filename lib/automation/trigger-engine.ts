@@ -138,7 +138,7 @@ async function handleEvidenceExpiry(
     .from('org_evidence')
     .select('*, org_tasks(*)')
     .eq('id', evidenceId)
-    .single();
+    .maybeSingle();
 
   if (!evidence) {
     result.errors.push('Evidence not found');
@@ -210,7 +210,7 @@ async function handlePolicyReviewDue(
     .from('org_policies')
     .select('*')
     .eq('id', policyId)
-    .single();
+    .maybeSingle();
 
   if (!policy) {
     result.errors.push('Policy not found');
@@ -282,7 +282,7 @@ async function handleControlIssue(
     .from('compliance_controls')
     .select('*')
     .eq('id', controlId)
-    .single();
+    .maybeSingle();
 
   if (!control) {
     result.errors.push('Control not found');
@@ -356,7 +356,7 @@ async function handleOrgOnboarding(
     .from('organizations')
     .select('industry, name')
     .eq('id', event.organizationId)
-    .single();
+    .maybeSingle();
 
   const industry = org?.industry || 'other';
 
@@ -418,7 +418,7 @@ async function handleOrgOnboarding(
     .select('user_id')
     .eq('organization_id', event.organizationId)
     .eq('role', 'owner')
-    .single();
+    .maybeSingle();
 
   if (owner) {
     await supabase.from('org_notifications').insert({
@@ -486,7 +486,7 @@ async function handleIndustryConfigured(
     .from('organizations')
     .select('industry')
     .eq('id', event.organizationId)
-    .single();
+    .maybeSingle();
 
   if (org?.industry && org.industry !== 'other') {
     // Industry pack should trigger compliance scoring
@@ -536,7 +536,7 @@ async function handleFrameworksProvisioned(
     .select('user_id')
     .eq('organization_id', event.organizationId)
     .eq('role', 'owner')
-    .single();
+    .maybeSingle();
 
   if (owner) {
     await supabase.from('org_notifications').insert({
@@ -579,7 +579,7 @@ async function handleIndustryPackApplied(
     .select('user_id')
     .eq('organization_id', event.organizationId)
     .eq('role', 'owner')
-    .single();
+    .maybeSingle();
 
   if (owner) {
     await supabase.from('org_notifications').insert({
@@ -685,7 +685,7 @@ async function handleTaskOverdue(
     .from('org_tasks')
     .select('*')
     .eq('id', taskId)
-    .single();
+    .maybeSingle();
 
   if (!task || task.status === 'completed') {
     return;
@@ -763,7 +763,7 @@ async function handleCertificationExpiring(
     .from('org_certifications')
     .select('*')
     .eq('id', certificationId)
-    .single();
+    .maybeSingle();
 
   if (!cert) {
     result.errors.push('Certification not found');

@@ -3,6 +3,7 @@ import { logActivity } from '@/lib/activity/feed';
 import { notify } from '@/lib/notifications/engine';
 import { triggerTaskIfConfigured } from '@/lib/trigger/client';
 import { automationLogger } from '@/lib/observability/structured-logger';
+import { validateWebhookUrl } from '@/lib/security/url-validator';
 import {
   WorkflowContext,
   durationToMs,
@@ -249,6 +250,7 @@ async function performAction(
     }
 
     case 'webhook': {
+      await validateWebhookUrl(String(config.url));
       const response = await fetch(String(config.url), {
         method: String(config.method ?? 'POST'),
         headers: {

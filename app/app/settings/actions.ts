@@ -15,7 +15,7 @@ export async function updateOrgName(orgId: string, newName: string) {
     .select("role")
     .eq("organization_id", orgId)
     .eq("user_id", (await supabase.auth.getUser()).data.user?.id)
-    .single();
+    .maybeSingle();
 
   if (!membership || permissionCtx.orgId !== orgId) {
     throw new Error("Unauthorized: Only authorized users can update settings.");

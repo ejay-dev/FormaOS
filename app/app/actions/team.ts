@@ -52,7 +52,7 @@ export async function inviteMember(email: string, role: string): Promise<InviteM
     .from("org_members")
     .select("organization_id")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (!membership || membership.organization_id !== permissionCtx.orgId) {
     throw new Error("Organization context lost.");
@@ -235,7 +235,7 @@ export async function removeTeamMember(targetUserId: string) {
     .from("org_members")
     .select("organization_id")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (!membership || membership.organization_id !== permissionCtx.orgId) {
     throw new Error("Access Denied");
@@ -247,7 +247,7 @@ export async function removeTeamMember(targetUserId: string) {
     .select("role") 
     .eq("user_id", targetUserId)
     .eq("organization_id", membership.organization_id)
-    .single();
+    .maybeSingle();
 
   if (!targetMember) return { success: false, error: "User not found" };
 

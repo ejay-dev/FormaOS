@@ -825,7 +825,7 @@ async function appendJobLog(
   message: string,
 ) {
   const admin = createSupabaseAdminClient();
-  const { data } = await admin.from('admin_jobs').select('logs').eq('id', jobId).single();
+  const { data } = await admin.from('admin_jobs').select('logs').eq('id', jobId).maybeSingle();
   const previous = Array.isArray(data?.logs) ? data.logs : [];
   const next = [...previous, { at: nowIso(), level, message }].slice(-120);
   await admin.from('admin_jobs').update({ logs: next }).eq('id', jobId);
@@ -1019,7 +1019,7 @@ export async function runAdminJob(jobId: string, environment: string) {
     .from('admin_jobs')
     .select('*')
     .eq('id', jobId)
-    .single();
+    .maybeSingle();
 
   if (error || !data) {
     throw new Error('Job not found');
@@ -1090,7 +1090,11 @@ export async function runAdminJob(jobId: string, environment: string) {
     .from('admin_jobs')
     .select('*')
     .eq('id', jobId)
-    .single();
+    .maybeSingle();
+
+  if (!finalRow) {
+    throw new Error(`Job ${jobId} not found after execution`);
+  }
 
   return normalizeJob(finalRow);
 }

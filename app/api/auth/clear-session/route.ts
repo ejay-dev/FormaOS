@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('/api/auth/clear-session');
 
@@ -26,7 +27,11 @@ function getProjectRef(url: string): string {
   }
 }
 
-export async function POST() {
+export async function POST(request: Request) {
+  // CSRF: reject cross-origin requests to prevent forced-logout attacks
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   const cookieStore = await cookies();
   const allCookies = cookieStore.getAll();
 
@@ -112,7 +117,26 @@ export async function POST() {
 }
 
 // GET endpoint redirects to clear and then to signin
+// Note: although GET is normally safe, this endpoint mutates state (clears
+// session cookies), so we apply the same origin check to prevent cross-site
+// forced logouts via <img src="..."> or link prefetching.
 export async function GET(request: Request) {
+  // Re-use the CSRF utility's origin logic, but since it skips GET by design
+  // we perform a manual origin/referer check here.
+  const origin = request.headers.get('origin');
+  const referer = request.headers.get('referer');
+  if (!origin && !referer) {
+    // Allow direct navigation (browser address bar) — no origin/referer is
+    // sent for top-level navigations, which is the expected use-case.
+  } else {
+    // If an origin or referer IS present, validate it by re-wrapping as POST
+    // so validateCsrfOrigin applies its trusted-origin logic.
+    const csrfError = validateCsrfOrigin(
+      new Request(request.url, { method: 'POST', headers: request.headers }),
+    );
+    if (csrfError) return csrfError;
+  }
+
   const cookieStore = await cookies();
   const allCookies = cookieStore.getAll();
 

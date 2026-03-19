@@ -388,7 +388,7 @@ export async function getRelayWebhook(
     .from('webhook_configs')
     .select('*')
     .eq('id', webhookId)
-    .single();
+    .maybeSingle();
 
   if (error || !data) return null;
 

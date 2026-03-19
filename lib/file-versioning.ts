@@ -132,7 +132,7 @@ export async function uploadNewVersion(
     .from('file_metadata')
     .select('*')
     .eq('id', fileId)
-    .single();
+    .maybeSingle();
 
   if (!fileMetadata) {
     throw new Error('File not found');
@@ -230,7 +230,7 @@ export async function getFileVersion(
     .select('*')
     .eq('file_id', fileId)
     .eq('version_number', versionNumber)
-    .single();
+    .maybeSingle();
 
   if (error) return null;
 
@@ -259,7 +259,7 @@ export async function restoreVersion(
     .from('file_metadata')
     .select('*')
     .eq('id', fileId)
-    .single();
+    .maybeSingle();
 
   if (!fileMetadata) {
     throw new Error('File not found');
@@ -545,7 +545,7 @@ export async function hasFileChanged(
     .from('file_metadata')
     .select('current_version')
     .eq('id', fileId)
-    .single();
+    .maybeSingle();
 
   if (!fileMetadata) {
     return false;

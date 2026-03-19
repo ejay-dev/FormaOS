@@ -18,7 +18,7 @@ export async function createTask(formData: FormData) {
     .from("org_members")
     .select("organization_id")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (!membership) throw new Error("Organization membership not found");
   if (membership.organization_id !== permissionCtx.orgId) {
@@ -129,7 +129,7 @@ async function _completeTaskCore(supabase: any, taskId: string, user: any) {
     .select("*")
     .eq("id", taskId)
     .eq("organization_id", permissionCtx.orgId)
-    .single();
+    .maybeSingle();
 
   if (!task) throw new Error("Task not found");
   if (task.organization_id !== permissionCtx.orgId) {

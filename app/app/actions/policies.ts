@@ -17,7 +17,7 @@ export async function createPolicy(formData: FormData) {
     .from("org_members")
     .select("organization_id")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (!membership) throw new Error("Organization context lost");
   if (membership.organization_id !== permissionCtx.orgId) {
@@ -98,7 +98,7 @@ export async function updatePolicy(formData: FormData) {
     .select("organization_id, title")
     .eq("id", policyId)
     .eq("organization_id", permissionCtx.orgId)
-    .single();
+    .maybeSingle();
 
   if (!oldPolicy) throw new Error("Policy not found");
   if (oldPolicy.organization_id !== permissionCtx.orgId) {
@@ -166,7 +166,7 @@ export async function linkArtifactToPolicy(policyId: string, evidenceId: string)
     .select("organization_id, title")
     .eq("id", policyId)
     .eq("organization_id", permissionCtx.orgId)
-    .single();
+    .maybeSingle();
 
   if (!policy) throw new Error("Policy not found");
 

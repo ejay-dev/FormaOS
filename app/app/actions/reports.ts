@@ -202,7 +202,7 @@ export async function generateAuditSummary() {
     .from('org_members')
     .select('organization_id')
     .eq('user_id', user.id)
-    .single();
+    .maybeSingle();
 
   if (!membership) throw new Error('No organization found');
   const orgId = membership.organization_id;
@@ -280,7 +280,7 @@ export async function generateAuditBundlePdf(
     .from('organizations')
     .select('name')
     .eq('id', orgId)
-    .single();
+    .maybeSingle();
 
   const orgName = orgRow?.name || 'FormaOS Client';
 

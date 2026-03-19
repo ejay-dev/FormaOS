@@ -78,7 +78,7 @@ export default async function TeamPage() {
     .from("org_members")
     .select("organization_id")
     .eq("user_id", user?.id)
-    .single();
+    .maybeSingle();
 
   const orgId = membership?.organization_id;
 

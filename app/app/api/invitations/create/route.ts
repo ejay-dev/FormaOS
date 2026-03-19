@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
       .select('role')
       .eq('organization_id', organizationId)
       .eq('user_id', data.user.id)
-      .single();
+      .maybeSingle();
 
     const roleKey = normalizeRole(membership?.role ?? null);
     if (!membership || !hasPermission(roleKey, 'MANAGE_USERS')) {
@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
       .eq('organization_id', organizationId)
       .eq('email', email)
       .eq('status', 'pending')
-      .single();
+      .maybeSingle();
 
     if (existingInvite) {
       return NextResponse.json(
@@ -153,7 +153,7 @@ export async function POST(request: NextRequest) {
       .from('organizations')
       .select('name')
       .eq('id', organizationId)
-      .single();
+      .maybeSingle();
 
     const inviterName =
       data.user.user_metadata?.full_name ||

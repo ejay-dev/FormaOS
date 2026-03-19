@@ -21,7 +21,7 @@ export default async function PublicFormPage({
     .from('forms')
     .select('*')
     .eq('id', formId)
-    .single();
+    .maybeSingle();
 
   if (!form || form.status === 'archived') return notFound();
 

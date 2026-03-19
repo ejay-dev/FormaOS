@@ -4,6 +4,12 @@ import { useState } from "react"
 import { Plus, Loader2, Mail, Shield, Eye, CheckCircle2, UserPlus } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useComplianceAction } from "@/components/compliance-system"
+import { z } from "zod"
+
+const inviteButtonSchema = z.object({
+  email: z.string().min(1, "Email is required").email("Please enter a valid email address"),
+  role: z.enum(["member", "viewer"]),
+})
 
 /**
  * =========================================================
@@ -25,10 +31,20 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
   const router = useRouter()
   const { nodeCreated, reportError, reportInfo } = useComplianceAction()
 
+  const [validationError, setValidationError] = useState<string | null>(null)
+
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault()
+    setValidationError(null)
+
+    const parsed = inviteButtonSchema.safeParse({ email, role })
+    if (!parsed.success) {
+      setValidationError(parsed.error.issues[0]?.message ?? "Invalid input")
+      return
+    }
+
     setLoading(true)
-    
+
     const response = await fetch("/app/api/invitations/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -179,6 +195,11 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                     </div>
                     
                     <form onSubmit={handleInvite} className="p-6 space-y-5">
+                        {validationError && (
+                          <div className="p-3 rounded-xl border border-red-400/30 bg-red-400/10 text-sm text-red-400">
+                            {validationError}
+                          </div>
+                        )}
                         {/* Email Input */}
                         <div className="space-y-2">
                             <label htmlFor="field-100" className="text-xs font-bold uppercase text-slate-400 tracking-wider">Email Address</label>
