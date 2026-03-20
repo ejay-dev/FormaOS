@@ -271,7 +271,9 @@ async function getOnboardingStatus(
     };
   }
 
-  const { data: created } = await supabase
+  // Use admin client for insert to bypass RLS
+  const admin = createSupabaseAdminClient();
+  const { data: created } = await admin
     .from('org_onboarding_status')
     .insert({ organization_id: orgId, current_step: 1, completed_steps: [] })
     .select(
@@ -290,9 +292,12 @@ async function getOnboardingStatus(
 
 async function markStepComplete(orgId: string, step: number, nextStep: number) {
   'use server';
-  const { supabase } = await getOrgContext();
+  // Use admin client to bypass RLS — the user-scoped client may be blocked
+  // by row-level security on org_onboarding_status, causing silent upsert
+  // failures that leave users stuck on the current step.
+  const admin = createSupabaseAdminClient();
 
-  const { data: existing } = await supabase
+  const { data: existing } = await admin
     .from('org_onboarding_status')
     .select('completed_steps')
     .eq('organization_id', orgId)
@@ -301,13 +306,18 @@ async function markStepComplete(orgId: string, step: number, nextStep: number) {
   const completed = new Set<number>(existing?.completed_steps ?? []);
   completed.add(step);
 
-  await supabase.from('org_onboarding_status').upsert({
+  const { error } = await admin.from('org_onboarding_status').upsert({
     organization_id: orgId,
     current_step: nextStep,
     completed_steps: Array.from(completed).sort((a, b) => a - b),
     last_completed_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   });
+
+  if (error) {
+    console.error('[onboarding] markStepComplete failed', { orgId, step, nextStep, error: error.message });
+    throw new Error(`Failed to advance onboarding from step ${step} to ${nextStep}`);
+  }
 }
 
 async function upsertSelectedFrameworks(
@@ -574,21 +584,25 @@ async function saveFrameworkSelection(formData: FormData) {
         console.warn('[onboarding] frameworks automation hook failed', error);
       }
 
-      await logProductActivity(
-        orgId,
-        user.id,
-        'created',
-        {
-          type: 'framework',
-          id: selectedFrameworks.join(','),
-          name: selectedFrameworks.join(', '),
-          path: '/app/compliance/frameworks',
-        },
-        {
-          frameworks: selectedFrameworks,
-          source: 'onboarding',
-        },
-      );
+      try {
+        await logProductActivity(
+          orgId,
+          user.id,
+          'created',
+          {
+            type: 'framework',
+            id: selectedFrameworks.join(','),
+            name: selectedFrameworks.join(', '),
+            path: '/app/compliance/frameworks',
+          },
+          {
+            frameworks: selectedFrameworks,
+            source: 'onboarding',
+          },
+        );
+      } catch (activityErr) {
+        console.warn('[onboarding] activity log failed (non-blocking)', activityErr);
+      }
     }
 
     await markStepComplete(orgId, 5, 6);
@@ -712,7 +726,7 @@ async function completeFirstAction(formData: FormData) {
       })
       .eq('id', orgId);
 
-    const { data: existing } = await supabase
+    const { data: existing } = await admin
       .from('org_onboarding_status')
       .select('completed_steps')
       .eq('organization_id', orgId)
@@ -721,7 +735,7 @@ async function completeFirstAction(formData: FormData) {
     const completed = new Set<number>(existing?.completed_steps ?? []);
     completed.add(7);
 
-    await supabase.from('org_onboarding_status').upsert({
+    await admin.from('org_onboarding_status').upsert({
       organization_id: orgId,
       current_step: 7,
       completed_steps: Array.from(completed).sort((a, b) => a - b),

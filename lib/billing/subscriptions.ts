@@ -35,16 +35,32 @@ export async function ensureSubscription(
   const admin = createSupabaseAdminClient();
   const { data: existing } = await admin
     .from('org_subscriptions')
-    .select('status, plan_key')
+    .select('status, plan_key, trial_expires_at')
     .eq('organization_id', orgId)
     .maybeSingle();
 
-  // If subscription exists with valid status, just ensure entitlements
+  // If subscription exists with valid status, check if trial is still active
   if (existing?.status && ['active', 'trialing'].includes(existing.status)) {
-    // BACKFILL: Ensure entitlements exist even for existing subscriptions
-    const existingPlan = resolvePlanKey(existing.plan_key) || resolvedPlan;
-    await syncEntitlementsForPlan(orgId, existingPlan);
-    return;
+    // Check for EXPIRED trials — a 'trialing' status with a past expiration date
+    // means the user's free trial has ended. Reset to a fresh trial so returning
+    // users aren't permanently locked out of the app.
+    const isExpiredTrial =
+      existing.status === 'trialing' &&
+      existing.trial_expires_at &&
+      Date.now() > new Date(existing.trial_expires_at).getTime();
+
+    if (!isExpiredTrial) {
+      // Active subscription or active trial — just ensure entitlements
+      const existingPlan = resolvePlanKey(existing.plan_key) || resolvedPlan;
+      await syncEntitlementsForPlan(orgId, existingPlan);
+      return;
+    }
+
+    // Expired trial: fall through to create a fresh trial subscription below
+    billingLogger.info('expired_trial_detected_refreshing', {
+      orgId,
+      previousExpiry: existing.trial_expires_at,
+    });
   }
 
   const isTrialEligible = isTrialEligiblePlan(resolvedPlan);
