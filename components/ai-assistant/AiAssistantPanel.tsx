@@ -198,7 +198,11 @@ export function AiAssistantPanel() {
       {isOpen && (
         <div
           className="fixed inset-0 z-[49] bg-black/50 md:bg-black/30 transition-opacity"
+          role="button"
+          tabIndex={0}
+          aria-label="Close assistant panel"
           onClick={close}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') close(); }}
         />
       )}
 

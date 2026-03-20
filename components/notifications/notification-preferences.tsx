@@ -329,6 +329,7 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
                                     event.target.checked,
                                   )
                                 }
+                                aria-label={`${eventType} via ${channel}`}
                                 className="h-4 w-4 rounded border-white/10 bg-slate-900 text-sky-400 focus:ring-sky-500/30"
                               />
                             </label>

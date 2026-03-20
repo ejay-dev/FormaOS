@@ -12,7 +12,6 @@ import {
   createApprovalRequest,
   createExecution,
   createWorkflowExecution,
-  updateExecution,
   updateWorkflowExecution,
 } from './workflow-store';
 import type {
@@ -476,7 +475,7 @@ async function executeStep(
         });
 
         execution.status = 'waiting_approval';
-        const result = finalize({
+        finalize({
           ...baseResult,
           status: 'waiting_approval',
           output: { approvers, timeoutAt },
@@ -561,7 +560,7 @@ async function executeStep(
 
         const resumeAt = new Date(Date.now() + delayMs);
         execution.status = 'waiting_delay';
-        const result = finalize({
+        finalize({
           ...baseResult,
           status: 'waiting_delay',
           output: { resumeAt: resumeAt.toISOString() },

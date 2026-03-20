@@ -140,8 +140,9 @@ export default function AdminBulkPage() {
       <div className="rounded-lg border border-border bg-card p-6 space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="block text-xs font-semibold text-muted-foreground mb-1.5">Action</label>
+            <label htmlFor="bulk-action" className="block text-xs font-semibold text-muted-foreground mb-1.5">Action</label>
             <select
+              id="bulk-action"
               value={action}
               onChange={(e) => { setAction(e.target.value); setResult(null); setConfirmed(false) }}
               className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
@@ -153,8 +154,9 @@ export default function AdminBulkPage() {
           </div>
           {action === "tag" && (
             <div>
-              <label className="block text-xs font-semibold text-muted-foreground mb-1.5">Tag value</label>
+              <label htmlFor="bulk-tag" className="block text-xs font-semibold text-muted-foreground mb-1.5">Tag value</label>
               <input
+                id="bulk-tag"
                 type="text"
                 value={tag}
                 onChange={(e) => setTag(e.target.value)}
@@ -166,10 +168,11 @@ export default function AdminBulkPage() {
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
+          <label htmlFor="bulk-org-ids" className="block text-xs font-semibold text-muted-foreground mb-1.5">
             Org IDs <span className="text-slate-500">(one per line, comma, or space separated — max 100)</span>
           </label>
           <textarea
+            id="bulk-org-ids"
             value={orgIdsInput}
             onChange={(e) => { setOrgIdsInput(e.target.value); setResult(null); setConfirmed(false) }}
             placeholder="Paste org UUIDs here..."
@@ -254,10 +257,11 @@ export default function AdminBulkPage() {
           {result.dryRun && (result.willAffect ?? 0) > 0 && (
             <div className="p-4 border-t border-border space-y-3">
               <div>
-                <label className="block text-xs font-semibold text-muted-foreground mb-1.5">
+                <label htmlFor="bulk-reason" className="block text-xs font-semibold text-muted-foreground mb-1.5">
                   Reason for this bulk action <span className="text-rose-400">*</span>
                 </label>
                 <input
+                  id="bulk-reason"
                   type="text"
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}

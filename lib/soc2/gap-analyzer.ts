@@ -83,7 +83,7 @@ export async function analyzeSoc2Gaps(
     // Generate evidence-related remediation actions
     for (const evidenceType of pack.suggested_evidence_types) {
       const actionType = 'collect_evidence';
-      const key = `${control.controlCode}::${actionType}::${evidenceType}`;
+      const _key = `${control.controlCode}::${actionType}::${evidenceType}`;
 
       if (existingSet.has(`${control.controlCode}::${actionType}`)) continue;
 

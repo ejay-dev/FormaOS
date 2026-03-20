@@ -205,9 +205,9 @@ function ScopeSelector({
 }) {
   return (
     <div>
-      <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+      <span className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
         Audit Scope
-      </label>
+      </span>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
         {SCOPE_OPTIONS.map((option) => {
           const Icon = option.icon;

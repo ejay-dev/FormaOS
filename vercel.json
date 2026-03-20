@@ -8,6 +8,12 @@
     }
   ],
   "functions": {
+    "app/api/billing/webhook/route.ts": {
+      "maxDuration": 60
+    },
+    "app/auth/callback/route.ts": {
+      "maxDuration": 60
+    },
     "app/**/*.ts": {
       "maxDuration": 30
     },

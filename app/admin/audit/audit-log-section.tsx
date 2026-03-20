@@ -33,11 +33,9 @@ function getActionIcon(targetType: string) {
 export function AuditLogSection({
   entries,
   pagination,
-  currentPage,
 }: {
   entries: AuditEntry[];
   pagination?: { page: number; totalPages: number; total: number };
-  currentPage?: string;
 }) {
   return (
     <div className="space-y-4">

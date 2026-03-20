@@ -41,7 +41,7 @@ async function sendPaymentFailedNotification(
   supabase: Awaited<ReturnType<typeof createClient>>,
   organizationId: string,
 ): Promise<void> {
-  const [{ data: organization }, { data: memberships }] = await Promise.all([
+  const [{ data: _organization }, { data: memberships }] = await Promise.all([
     supabase
       .from('organizations')
       .select('name')

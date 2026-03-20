@@ -31,16 +31,6 @@ interface EvaluationRow {
   status: string | null;
 }
 
-interface EvidenceCountRow {
-  control_id: string;
-  count: number;
-}
-
-interface TaskRow {
-  control_id: string;
-  task_status: string | null;
-}
-
 // ---------------------------------------------------------------------------
 // Domain weight configuration
 // ---------------------------------------------------------------------------
@@ -98,7 +88,7 @@ export async function calculateSoc2Readiness(
   const controlIds = Array.from(controlIdMap.values());
 
   // Evidence counts
-  let evidenceCounts = new Map<string, number>();
+  const evidenceCounts = new Map<string, number>();
   if (controlIds.length > 0) {
     const { data: evidenceRows } = await supabase
       .from('control_evidence')
@@ -120,7 +110,7 @@ export async function calculateSoc2Readiness(
   }
 
   // 3. Load task counts via control_tasks + org_tasks
-  let taskCountMap = new Map<string, { total: number; completed: number }>();
+  const taskCountMap = new Map<string, { total: number; completed: number }>();
   if (controlIds.length > 0) {
     const { data: taskLinks } = await supabase
       .from('control_tasks')
@@ -136,7 +126,7 @@ export async function calculateSoc2Readiness(
       ),
     );
 
-    let taskStatusMap = new Map<string, string>();
+    const taskStatusMap = new Map<string, string>();
     if (taskIds.length > 0) {
       const { data: tasks } = await supabase
         .from('org_tasks')

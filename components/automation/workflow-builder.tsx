@@ -317,6 +317,7 @@ export function WorkflowBuilder({
             Drag a step here or click a palette item to add one
           </div>
           <div
+            role="list"
             className={cn(
               'min-h-[640px] rounded-[24px] border border-white/10 bg-slate-950/70 p-4 transition',
               draggingType ? 'border-cyan-400/50 bg-cyan-500/5' : '',
