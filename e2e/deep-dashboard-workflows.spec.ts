@@ -474,12 +474,17 @@ test.describe.serial('Deep dashboard workflows', () => {
         });
       await page.locator('input[type="email"]').fill(inviteEmail);
       await page
-        .locator('form')
-        .filter({ has: page.locator('input[type="email"]') })
-        .evaluate((form) => {
-          if (form instanceof HTMLFormElement) {
-            form.requestSubmit();
-          }
+        .getByRole('button', { name: 'Send Invite' })
+        .click({ timeout: 3_000 })
+        .catch(async () => {
+          await page
+            .locator('form')
+            .filter({ has: page.locator('input[type="email"]') })
+            .evaluate((form) => {
+              if (form instanceof HTMLFormElement) {
+                form.requestSubmit();
+              }
+            });
         });
       let inviteSuccessVisible = true;
       try {
