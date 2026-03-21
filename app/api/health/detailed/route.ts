@@ -3,6 +3,7 @@ import { timingSafeEqual } from 'crypto';
 import { createClient } from '@supabase/supabase-js';
 import { checkRedisHealth } from '@/lib/redis/health';
 import { getSupabaseServiceRoleKey, getSupabaseUrl } from '@/lib/supabase/env';
+import { getAdminProfileDirectoryEntries } from '@/lib/users/admin-profile-directory';
 
 interface DetailedCheck {
   name: string;
@@ -184,10 +185,14 @@ async function testDatabase(checks: DetailedCheck[]) {
     }
 
     // Test RLS policies
-    const { error: profilesError } = await supabase
-      .from('profiles')
-      .select('id')
-      .limit(1);
+    let profilesError: Error | null = null;
+
+    try {
+      await getAdminProfileDirectoryEntries(['00000000-0000-0000-0000-000000000000']);
+    } catch (error) {
+      profilesError =
+        error instanceof Error ? error : new Error(String(error));
+    }
 
     checks.push({
       name: 'database_connection',

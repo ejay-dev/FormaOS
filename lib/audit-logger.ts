@@ -1,5 +1,6 @@
 // FIXED: Import your specific function name
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
 
 interface LogActivityParams {
   orgId: string;
@@ -24,11 +25,12 @@ export async function logActivity({ orgId, action, targetId, diff, metadata }: L
       return;
     }
 
-    const { error } = await supabase.from("org_audit_logs").insert({
+    const { error } = await insertOrgAuditLog(supabase, {
       organization_id: orgId,
       actor_id: user.id,
+      actor_email: user.email ?? null,
       action: action.toUpperCase(),
-      target_resource: targetId,
+      target: targetId,
       diff: diff || {},
       metadata: metadata || {},
     });

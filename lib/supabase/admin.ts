@@ -93,6 +93,7 @@ function createFallbackAdminClient() {
         listUsers: async () => ({ data: { users: [], total: 0 }, error }),
         getUserById: async () => ({ data: { user: null }, error }),
         createUser: async () => ({ data: { user: null }, error }),
+        deleteUser: async () => ({ data: { user: null }, error }),
         updateUserById: async () => ({ data: { user: null }, error }),
         inviteUserByEmail: async () => ({ data: { user: null }, error }),
         generateLink: async () => ({ data: null, error }),

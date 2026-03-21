@@ -1,6 +1,7 @@
 "use server";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
 import { requireEntitlement } from "@/lib/billing/entitlements";
 import { logActivity as logger } from "@/lib/logger";
 import { logActivity as logProductActivity } from "@/lib/activity/feed";
@@ -210,7 +211,7 @@ async function safeLogActivity(orgId: string, action: string, description: strin
 
   try {
     const supabase = await createSupabaseServerClient();
-    await supabase.from("org_audit_logs").insert({
+    await insertOrgAuditLog(supabase, {
       organization_id: orgId,
       action,
       target: description,
@@ -407,7 +408,7 @@ async function logEvaluationAudit(supabase: any, orgId: string, rows: Evaluation
       created_at: row.last_evaluated_at,
       metadata: row.details || null,
     }));
-    await supabase.from("org_audit_logs").insert(logs);
+    await insertOrgAuditLog(supabase, logs);
   } catch {
     // swallow to avoid blocking page render
   }

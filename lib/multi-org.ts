@@ -9,6 +9,10 @@ import { createSupabaseServerClient as createClient } from '@/lib/supabase/serve
 import { getCached, invalidateCache } from './cache';
 import { sendAuthEmail } from '@/lib/email/send-auth-email';
 import { createInvitation } from '@/lib/invitations/create-invitation';
+import {
+  findAuthUserByEmail,
+  getAdminProfileDirectoryEntries,
+} from '@/lib/users/admin-profile-directory';
 
 export interface Organization {
   id: string;
@@ -363,11 +367,7 @@ export async function inviteToOrganization(
   }
 
   // Check if user exists
-  const { data: user } = await supabase
-    .from('profiles')
-    .select('id')
-    .eq('email', email)
-    .maybeSingle();
+  const user = await findAuthUserByEmail(email);
 
   if (!user) {
     const invitation = await createInvitation({
@@ -381,21 +381,17 @@ export async function inviteToOrganization(
       throw new Error('Failed to create organization invitation');
     }
 
-    const [{ data: organization }, { data: inviterProfile }] = await Promise.all([
+    const [{ data: organization }, [inviterProfile]] = await Promise.all([
       supabase
         .from('organizations')
         .select('name')
         .eq('id', organizationId)
         .maybeSingle(),
-      supabase
-        .from('profiles')
-        .select('full_name, email')
-        .eq('id', invitedBy)
-        .maybeSingle(),
+      getAdminProfileDirectoryEntries([invitedBy]),
     ]);
 
     const invitedByName =
-      inviterProfile?.full_name ||
+      inviterProfile?.fullName ||
       inviterProfile?.email?.split('@')[0] ||
       'a team administrator';
 
@@ -440,21 +436,17 @@ export async function inviteToOrganization(
     );
   }
 
-  const [{ data: organization }, { data: inviterProfile }] = await Promise.all([
+  const [{ data: organization }, [inviterProfile]] = await Promise.all([
     supabase
       .from('organizations')
       .select('name')
       .eq('id', organizationId)
       .maybeSingle(),
-    supabase
-      .from('profiles')
-      .select('full_name, email')
-      .eq('id', invitedBy)
-      .maybeSingle(),
+    getAdminProfileDirectoryEntries([invitedBy]),
   ]);
 
   const invitedByName =
-    inviterProfile?.full_name ||
+    inviterProfile?.fullName ||
     inviterProfile?.email?.split('@')[0] ||
     'a team administrator';
 
@@ -481,23 +473,19 @@ export async function getPendingInvitation(
     return null;
   }
 
-  const [{ data: organization }, { data: userProfile }] = await Promise.all([
+  const [{ data: organization }, [userProfile]] = await Promise.all([
     supabase
       .from('organizations')
       .select('name')
       .eq('id', membership.organization_id)
       .maybeSingle(),
-    supabase
-      .from('profiles')
-      .select('email')
-      .eq('id', membership.user_id)
-      .maybeSingle(),
+    getAdminProfileDirectoryEntries([membership.user_id]),
   ]);
 
   return {
     ...(membership as PendingOrganizationInvitation),
     organization_name: organization?.name,
-    user_email: userProfile?.email,
+    user_email: userProfile?.email ?? undefined,
   };
 }
 

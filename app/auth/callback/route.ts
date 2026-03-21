@@ -28,6 +28,7 @@ import {
   validateComplianceGraph,
 } from '@/lib/compliance-graph';
 import { authLogger } from '@/lib/observability/structured-logger';
+import { OAUTH_STATE_COOKIE_NAME } from '@/lib/auth/oauth-state';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -96,6 +97,14 @@ export async function GET(request: Request) {
 
   const redirectWithCookies = (destination: string) => {
     const response = NextResponse.redirect(destination);
+    response.cookies.set({
+      name: OAUTH_STATE_COOKIE_NAME,
+      value: '',
+      path: '/',
+      maxAge: 0,
+      sameSite: 'lax',
+      secure: isHttps,
+    });
     cookieChanges.forEach(({ name, value, options }) => {
       response.cookies.set(name, value, options);
     });
@@ -120,6 +129,28 @@ export async function GET(request: Request) {
       ? requestedNextRaw
       : null;
   const ssoOrgId = searchParams.get('sso_org');
+  const authProvider = searchParams.get('provider');
+  const oauthState = searchParams.get('state');
+  const storedOAuthState = cookieStore.get(OAUTH_STATE_COOKIE_NAME)?.value ?? null;
+
+  if (authProvider === 'google') {
+    const hasValidState =
+      Boolean(oauthState) &&
+      Boolean(storedOAuthState) &&
+      oauthState === storedOAuthState;
+
+    if (!hasValidState) {
+      authLogger.warn('oauth_state_validation_failed', {
+        hasState: Boolean(oauthState),
+        hasStoredState: Boolean(storedOAuthState),
+      });
+      return redirectWithCookies(
+        `${appBase}/auth/signin?error=oauth_state_invalid&message=${encodeURIComponent(
+          'Sign-in verification failed. Please try again.',
+        )}`,
+      );
+    }
+  }
 
   // Handle OAuth errors (user denied permission, etc.)
   if (oauthError) {

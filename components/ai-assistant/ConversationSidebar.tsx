@@ -40,7 +40,15 @@ export function ConversationSidebar({ activeId, onSelect, onNew, onDelete }: Con
       const res = await fetch('/api/v1/ai/conversations');
       if (!res.ok) return;
       const data = await res.json();
-      const items = (data.conversations ?? data ?? []) as Array<Record<string, unknown>>;
+      const items = (
+        Array.isArray(data?.items)
+          ? data.items
+          : Array.isArray(data?.conversations)
+            ? data.conversations
+            : Array.isArray(data)
+              ? data
+              : []
+      ) as Array<Record<string, unknown>>;
       setConversations(
         items.map((c) => ({
           id: c.id as string,

@@ -96,6 +96,10 @@ const memoryStore = new Map<string, { count: number; resetAt: number }>();
 const failOpenWarningAtByScope = new Map<string, number>();
 const FAIL_OPEN_WARNING_COOLDOWN_MS = 60 * 1000;
 
+function shouldFailClosed(config: RateLimitConfig): boolean {
+  return Boolean(config.failClosed) && process.env.NODE_ENV === 'production';
+}
+
 function cleanExpiredEntries(): void {
   const now = Date.now();
   for (const [key, value] of memoryStore.entries()) {
@@ -350,13 +354,13 @@ export async function checkRateLimit(
         keyPrefix: config.keyPrefix,
         identifier,
         userId,
-        fallbackMode: config.failClosed ? 'fail_closed' : 'in_memory',
+        fallbackMode: shouldFailClosed(config) ? 'fail_closed' : 'in_memory',
       });
     }
 
     // Fail-closed: for security-critical endpoints (e.g. AUTH), deny the request
     // rather than fall back to per-process in-memory state that is not distributed.
-    if (config.failClosed) {
+    if (shouldFailClosed(config)) {
       const windowMs = config.windowMs;
       return {
         success: false,

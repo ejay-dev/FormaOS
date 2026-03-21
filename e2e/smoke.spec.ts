@@ -8,6 +8,27 @@ import { test, expect } from '@playwright/test';
 const TEST_EMAIL = `smoke-${Date.now()}@qa.formaos.test`;
 const TEST_PASSWORD = 'SmokeTest123!@#';
 
+function isPlaceholderValue(value: string | undefined) {
+  const normalized = (value ?? '').trim().toLowerCase();
+  return (
+    !normalized ||
+    normalized.startsWith('your-') ||
+    normalized.includes('your-project') ||
+    normalized.includes('example.com') ||
+    normalized.startsWith('placeholder') ||
+    normalized.startsWith('changeme')
+  );
+}
+
+function hasEmailSignupEnv() {
+  return ![
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+    process.env.RESEND_API_KEY,
+  ].some((value) => isPlaceholderValue(value));
+}
+
 test('Protected route redirects without loop (>2 repeats fails)', async ({
   request,
   baseURL,
@@ -52,6 +73,11 @@ test('Protected route redirects without loop (>2 repeats fails)', async ({
 });
 
 test('Critical user journey smoke test', async ({ page }) => {
+  test.skip(
+    !hasEmailSignupEnv(),
+    'Skipping: real Supabase and email delivery env are required for signup smoke.',
+  );
+
   // 1. Home page loads
   await page.goto('/');
   await expect(page.locator('h1').first()).toBeVisible();

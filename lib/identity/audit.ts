@@ -1,5 +1,6 @@
 import { jsPDF } from 'jspdf';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
 
 export type IdentityEventType =
   | 'scim.user.create'
@@ -106,7 +107,7 @@ export async function logIdentityEvent(
       metadata,
     });
 
-    await admin.from('org_audit_logs').insert({
+    await insertOrgAuditLog(admin, {
       organization_id: input.orgId,
       actor_id: input.actorId ?? null,
       actor_email: input.actorLabel ?? input.targetUserEmail ?? 'system',

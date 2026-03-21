@@ -4,6 +4,8 @@
  */
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { getAdminProfileDirectoryEntries } from '@/lib/users/admin-profile-directory';
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Plus, Shield, AlertTriangle, CheckCircle, Clock, User, Calendar, Download } from "lucide-react";
@@ -64,12 +66,14 @@ export default async function StaffCompliancePage() {
   const { organization } = systemState;
   const label = getCredentialLabel(organization.industry);
   const supabase = await createSupabaseServerClient();
+  const admin = createSupabaseAdminClient();
 
   // Fetch staff credentials
   const { data: credentials, error } = await supabase
     .from("org_staff_credentials")
     .select(`
       id,
+      user_id,
       credential_type,
       credential_name,
       credential_number,
@@ -78,11 +82,7 @@ export default async function StaffCompliancePage() {
       expiry_date,
       status,
       verified_at,
-      created_at,
-      staff:user_id (
-        id,
-        email
-      )
+      created_at
     `)
     .eq("organization_id", organization.id)
     .order("expiry_date", { ascending: true })
@@ -93,21 +93,45 @@ export default async function StaffCompliancePage() {
   }
 
   // Calculate stats
-  type Credential = NonNullable<typeof credentials>[number];
+  type CredentialRow = NonNullable<typeof credentials>[number];
+  type Credential = CredentialRow & {
+    staff: { email?: string | null } | null;
+  };
+
+  const credentialRows = (credentials ?? []) as CredentialRow[];
+  const staffIds = Array.from(
+    new Set(
+      credentialRows
+        .map((credential) => credential.user_id as string | null | undefined)
+        .filter((value): value is string => Boolean(value)),
+    ),
+  );
+  const staffProfiles = staffIds.length
+    ? await getAdminProfileDirectoryEntries(staffIds, admin)
+    : [];
+  const staffEmailById = new Map(
+    staffProfiles.map((profile) => [profile.userId, profile.email ?? null]),
+  );
+  const enrichedCredentials: Credential[] = credentialRows.map((credential) => ({
+    ...credential,
+    staff: credential.user_id
+      ? { email: staffEmailById.get(credential.user_id as string) ?? null }
+      : null,
+  }));
   const now = new Date();
   const stats = {
-    total: credentials?.length ?? 0,
-    verified: credentials?.filter((c: Credential) => c.status === "verified").length ?? 0,
-    expiringSoon: credentials?.filter((c: Credential) => {
+    total: enrichedCredentials.length,
+    verified: enrichedCredentials.filter((c: Credential) => c.status === "verified").length,
+    expiringSoon: enrichedCredentials.filter((c: Credential) => {
       if (!c.expiry_date) return false;
       const expiry = new Date(c.expiry_date);
       const daysUntil = Math.ceil((expiry.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
       return daysUntil > 0 && daysUntil <= 30;
-    }).length ?? 0,
-    expired: credentials?.filter((c: Credential) => {
+    }).length,
+    expired: enrichedCredentials.filter((c: Credential) => {
       if (!c.expiry_date) return false;
       return new Date(c.expiry_date) < now;
-    }).length ?? 0,
+    }).length,
   };
 
   return (
@@ -212,7 +236,7 @@ export default async function StaffCompliancePage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {credentials?.map((credential: Credential) => {
+            {enrichedCredentials.map((credential: Credential) => {
               const expiryStatus = getExpiryStatus(credential.expiry_date);
               return (
                 <tr
@@ -267,7 +291,7 @@ export default async function StaffCompliancePage() {
                 </tr>
               );
             })}
-            {(!credentials || credentials.length === 0) && (
+            {enrichedCredentials.length === 0 && (
               <tr>
                 <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">
                   <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />

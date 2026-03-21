@@ -5,6 +5,7 @@ import {
   getActivationStatus,
 } from '@/lib/analytics/activation-telemetry';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { isMissingSupabaseColumnError } from '@/lib/supabase/schema-compat';
 
 type RiskLevel = 'low' | 'watch' | 'high';
 
@@ -65,9 +66,14 @@ export async function getAdminOrgHealthSnapshot(
   orgId: string,
 ): Promise<AdminOrgHealthSnapshot> {
   const admin = createSupabaseAdminClient();
+  const organizationQuery = admin
+    .from('organizations')
+    .select('id, created_at, frameworks, onboarding_completed, lifecycle_status')
+    .eq('id', orgId)
+    .maybeSingle();
 
   const [
-    { data: organization },
+    organizationResult,
     { data: subscription },
     { data: cachedHealth },
     { count: memberCount },
@@ -77,11 +83,7 @@ export async function getAdminOrgHealthSnapshot(
     { count: reportExportCount },
     { count: complianceExportCount },
   ] = await Promise.all([
-    admin
-      .from('organizations')
-      .select('id, created_at, frameworks, onboarding_completed, lifecycle_status')
-      .eq('id', orgId)
-      .maybeSingle(),
+    organizationQuery,
     admin
       .from('org_subscriptions')
       .select(
@@ -121,6 +123,30 @@ export async function getAdminOrgHealthSnapshot(
       .select('id', { count: 'exact', head: true })
       .eq('organization_id', orgId),
   ]);
+
+  const organization = (
+    isMissingSupabaseColumnError(
+      organizationResult.error,
+      'organizations',
+      'lifecycle_status',
+    )
+      ? (
+          await admin
+            .from('organizations')
+            .select('id, created_at, frameworks, onboarding_completed')
+            .eq('id', orgId)
+            .maybeSingle()
+        ).data
+      : organizationResult.data
+  ) as
+    | {
+        id?: string;
+        created_at?: string | null;
+        frameworks?: unknown;
+        onboarding_completed?: boolean | null;
+        lifecycle_status?: string | null;
+      }
+    | null;
 
   const milestones = {
     frameworkEnabled: asArray(organization?.frameworks).length > 0,

@@ -3,6 +3,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { createSupabaseClient } from '@/lib/supabase/client';
+import {
+  buildGoogleOAuthRedirect,
+  persistOAuthStateCookie,
+} from '@/lib/auth/oauth-state';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
@@ -332,11 +336,13 @@ function SignInContent() {
     try {
       const base = resolveAppBase();
       const supabase = createSupabaseClient();
+      const oauthRedirect = buildGoogleOAuthRedirect(`${base}/auth/callback`);
+      persistOAuthStateCookie(oauthRedirect.state);
       const oauthResult = (await withTimeout(
         supabase.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: `${base}/auth/callback`,
+            redirectTo: oauthRedirect.redirectTo,
           },
         }),
         SESSION_TIMEOUT_MS,

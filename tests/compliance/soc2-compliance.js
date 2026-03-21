@@ -4,6 +4,7 @@
  */
 
 const playwright = require('playwright');
+const fs = require('fs');
 class SOC2ComplianceTest {
   constructor(baseUrl = 'http://localhost:3000') {
     this.baseUrl = baseUrl;
@@ -18,7 +19,48 @@ class SOC2ComplianceTest {
       },
       violations: [],
       recommendations: [],
+      environment: {
+        baseUrl,
+        available: true,
+        error: null,
+      },
     };
+  }
+
+  async ensureBaseUrlReachable(page) {
+    try {
+      await page.goto(this.baseUrl, {
+        waitUntil: 'domcontentloaded',
+        timeout: 15000,
+      });
+      this.results.environment.available = true;
+      this.results.environment.error = null;
+      return true;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.results.environment.available = false;
+      this.results.environment.error = message;
+      this.results.violations.push({
+        category: 'Environment',
+        control: 'INFRA',
+        test: 'Application Availability',
+        error: `Unable to reach ${this.baseUrl}: ${message}`,
+      });
+      return false;
+    }
+  }
+
+  async seedAuthenticatedSession(page, accessToken) {
+    await page.goto(this.baseUrl, { waitUntil: 'domcontentloaded' });
+    await page.evaluate((token) => {
+      localStorage.setItem(
+        'supabase.auth.token',
+        JSON.stringify({
+          access_token: token,
+          user: { id: 'test-user-id', email: 'test@formaos.com' },
+        }),
+      );
+    }, accessToken);
   }
 
   /**
@@ -227,15 +269,7 @@ class SOC2ComplianceTest {
         control: 'PI1.1',
         test: async () => {
           // Setup authenticated session
-          await page.evaluate(() => {
-            localStorage.setItem(
-              'supabase.auth.token',
-              JSON.stringify({
-                access_token: 'mock_token_for_soc2_testing',
-                user: { id: 'test-user-id', email: 'test@formaos.com' },
-              }),
-            );
-          });
+          await this.seedAuthenticatedSession(page, 'mock_token_for_soc2_testing');
 
           await page.goto(`${this.baseUrl}/app/policies`);
           const createForm = await page.$('form, [data-testid="create-form"]');
@@ -400,6 +434,9 @@ class SOC2ComplianceTest {
       passedControls: allTests.filter((test) => test.passed).length,
       failedControls: allTests.filter((test) => !test.passed).length,
       violations: this.results.violations.length,
+      environmentStatus: this.results.environment.available
+        ? 'available'
+        : 'unavailable',
     };
 
     // Generate recommendations
@@ -456,6 +493,14 @@ class SOC2ComplianceTest {
     const page = await browser.newPage();
 
     try {
+      const appAvailable = await this.ensureBaseUrlReachable(page);
+      if (!appAvailable) {
+        this.results.recommendations.push(
+          `Start the app at ${this.baseUrl} before running SOC2 compliance tests.`,
+        );
+        return this.generateReport();
+      }
+
       await this.testSecurityControls(page);
       await this.testAvailabilityControls(page);
       await this.testProcessingControls(page);
@@ -491,7 +536,8 @@ if (require.main === module) {
     .runSOC2Compliance()
     .then((results) => {
       console.log('SOC2 Compliance test completed');
-      require('fs').writeFileSync(
+      fs.mkdirSync('tests/compliance/reports', { recursive: true });
+      fs.writeFileSync(
         'tests/compliance/reports/soc2-compliance-report.json',
         JSON.stringify(results, null, 2),
       );

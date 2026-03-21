@@ -6,6 +6,7 @@
  */
 
 import { z } from 'zod';
+import { NextResponse } from 'next/server';
 
 // ============================================
 // Common validation patterns
@@ -218,6 +219,18 @@ export const uploadEvidenceSchema = z.object({
     .min(1)
     .max(50 * 1024 * 1024), // Max 50MB
 });
+
+export function requireJsonContentType(request: Request) {
+  const contentType = request.headers.get('content-type') ?? '';
+  if (contentType.toLowerCase().includes('application/json')) {
+    return null;
+  }
+
+  return NextResponse.json(
+    { ok: false, error: 'unsupported_media_type' },
+    { status: 415 },
+  );
+}
 
 /**
  * Report generation request

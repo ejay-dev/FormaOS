@@ -1,6 +1,7 @@
 "use server"
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
 
 export async function logActivity({
   type,
@@ -26,7 +27,7 @@ export async function logActivity({
   if (!membership) return;
 
   // 2. Insert into Audit Log
-  await supabase.from("org_audit_logs").insert({
+  await insertOrgAuditLog(supabase, {
     organization_id: membership.organization_id,
     actor_id: user.id,
     actor_email: user.email ?? null,

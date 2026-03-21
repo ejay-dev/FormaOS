@@ -136,9 +136,9 @@ export const getSubscriptionData = cache(async (orgId: string) =>
 async function getSubscriptionDataFresh(
   orgId: string,
 ): Promise<SubscriptionData | null> {
-  const supabase = await createSupabaseServerClient();
+  const admin = createSupabaseAdminClient();
 
-  let { data, error } = await supabase
+  const { data, error } = await admin
     .from('org_subscriptions')
     .select(
       `
@@ -153,27 +153,6 @@ async function getSubscriptionDataFresh(
     )
     .eq('organization_id', orgId)
     .maybeSingle();
-
-  if (error || !data) {
-    const admin = createSupabaseAdminClient();
-    const fallback = await admin
-      .from('org_subscriptions')
-      .select(
-        `
-      plan_key,
-      status,
-      stripe_customer_id,
-      stripe_subscription_id,
-      current_period_end,
-      trial_started_at,
-      trial_expires_at
-    `,
-      )
-      .eq('organization_id', orgId)
-      .maybeSingle();
-    data = fallback.data;
-    error = fallback.error;
-  }
 
   if (error || !data) {
     return null;
@@ -235,22 +214,12 @@ export const getEntitlements = cache(async (orgId: string) =>
 );
 
 async function getEntitlementsFresh(orgId: string): Promise<EntitlementData[]> {
-  const supabase = await createSupabaseServerClient();
+  const admin = createSupabaseAdminClient();
 
-  let { data, error } = await supabase
+  const { data, error } = await admin
     .from('org_entitlements')
     .select('feature_key, enabled, limit_value')
     .eq('organization_id', orgId);
-
-  if (error || !data || data.length === 0) {
-    const admin = createSupabaseAdminClient();
-    const fallback = await admin
-      .from('org_entitlements')
-      .select('feature_key, enabled, limit_value')
-      .eq('organization_id', orgId);
-    data = fallback.data;
-    error = fallback.error;
-  }
 
   if (error || !data) {
     return [];

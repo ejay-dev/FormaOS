@@ -2,6 +2,7 @@
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rbacLogger } from '@/lib/observability/structured-logger';
+import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
 
 export type AuditAction =
   | 'CREATE_ORGANIZATION'
@@ -43,17 +44,18 @@ export async function logActivity(
     }
 
     // Insert into the ledger
-    const { error } = await supabase.from('org_audit_logs').insert({
+    const { error } = await insertOrgAuditLog(supabase, {
       organization_id: organizationId,
       actor_id: user.id,
+      actor_email: user.email ?? null,
       action: action,
       // Smart resource labeling based on details
-      target_resource:
+      target:
         details.resourceName ||
         details.documentName ||
         details.email ||
         'System',
-      details: details,
+      details,
     });
 
     if (error) {

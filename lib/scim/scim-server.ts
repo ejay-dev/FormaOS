@@ -1,7 +1,6 @@
 import { createHash } from 'crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import {
-  getGroupById,
   getGroupMembers,
   inferRoleMapping,
   syncGroupMembership,

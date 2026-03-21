@@ -57,7 +57,13 @@ export function AiAssistantPanel() {
         const res = await fetch(`/api/v1/ai/conversations/${activeConversationId}`);
         if (!res.ok || cancelled) return;
         const data = await res.json();
-        const msgs = (data.messages ?? []) as Array<Record<string, unknown>>;
+        const msgs = (
+          Array.isArray(data?.messages?.items)
+            ? data.messages.items
+            : Array.isArray(data?.messages)
+              ? data.messages
+              : []
+        ) as Array<Record<string, unknown>>;
         if (cancelled) return;
         setMessages(
           msgs

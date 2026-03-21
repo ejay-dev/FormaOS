@@ -1,4 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { getAdminProfileDirectoryEntries } from '@/lib/users/admin-profile-directory';
 import { notFound, redirect } from "next/navigation";
 import { ShieldCheck, FileText, User, Calendar } from "lucide-react";
 import { requirePermission } from "@/app/app/actions/rbac";
@@ -13,6 +15,7 @@ export default async function AuditExportPage({
   const userId = resolvedParams?.userId ?? "";
   if (!userId) return notFound();
   const supabase = await createSupabaseServerClient();
+  const admin = createSupabaseAdminClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) redirect("/auth/signin");
@@ -20,16 +23,18 @@ export default async function AuditExportPage({
 
   // 1. Fetch Target Personnel Data
   // We use maybeSingle() to prevent crashing if the user doesn't exist
-  const { data: staffMember, error } = await supabase
+  const [{ data: staffMember, error }, [profile]] = await Promise.all([
+    supabase
     .from("org_members")
     .select(`
         *,
-        org_credentials (*),
-        org_audit_logs!actor_id (*)
+        org_credentials (*)
     `)
     .eq("organization_id", permissionCtx.orgId)
     .eq("user_id", userId)
-    .maybeSingle();
+    .maybeSingle(),
+    getAdminProfileDirectoryEntries([userId], admin),
+  ]);
 
   if (error || !staffMember) {
       console.error("Export Error:", error);
@@ -38,8 +43,16 @@ export default async function AuditExportPage({
 
   // Safe extraction of arrays
   const credentials = staffMember.org_credentials || [];
+  const { data: auditRows } = profile?.email
+    ? await supabase
+        .from('org_audit_logs')
+        .select('*')
+        .eq('organization_id', permissionCtx.orgId)
+        .eq('actor_email', profile.email)
+        .order('created_at', { ascending: false })
+    : { data: [] as any[] };
   // Sort logs by date desc
-  const logs = (staffMember.org_audit_logs || []).sort(
+  const logs = ((auditRows || []) as any[]).sort(
     (a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
   );
 

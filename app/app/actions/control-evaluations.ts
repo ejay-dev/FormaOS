@@ -1,6 +1,7 @@
 "use server";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
 
 type ControlStatus = "compliant" | "non_compliant" | "at_risk";
 
@@ -189,7 +190,7 @@ async function logEvaluationAudit(supabase: any, orgId: string, rows: any[]) {
       created_at: row.last_evaluated_at,
       metadata: row.details || null,
     }));
-    await supabase.from("org_audit_logs").insert(logs);
+    await insertOrgAuditLog(supabase, logs);
   } catch {
     // swallow to avoid blocking page render
   }

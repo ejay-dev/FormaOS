@@ -15,6 +15,7 @@ import { generateReportPdf } from '@/lib/audit-reports/pdf-generator';
 import type { ReportType } from '@/lib/audit-reports/types';
 import { getQueueClient } from '@/lib/queue';
 import { triggerTaskIfConfigured } from '@/lib/trigger/client';
+import { getAdminProfileDirectoryEntries } from '@/lib/users/admin-profile-directory';
 
 export interface EnterpriseExportOptions {
   includeCompliance: boolean;
@@ -573,18 +574,15 @@ async function getTeamData(orgId: string): Promise<Record<string, unknown>> {
   // Best-effort enrichment via profiles (if present).
   if (userIds.length > 0) {
     try {
-      const { data: profiles } = await admin
-        .from('profiles')
-        .select('id, full_name, avatar_url')
-        .in('id', userIds);
+      const profiles = await getAdminProfileDirectoryEntries(userIds, admin);
 
       return {
         members: (members || []).map((m: { user_id: string }) => {
-          const p = (profiles ?? []).find((u: any) => u.id === m.user_id);
+          const p = profiles.find((u) => u.userId === m.user_id);
           return {
             ...m,
-            fullName: p?.full_name ?? null,
-            avatarUrl: p?.avatar_url ?? null,
+            fullName: p?.fullName ?? null,
+            avatarUrl: p?.avatarPath ?? null,
           };
         }),
       };

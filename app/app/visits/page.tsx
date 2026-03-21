@@ -4,6 +4,8 @@
  */
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { getAdminProfileDirectoryEntries } from '@/lib/users/admin-profile-directory';
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Plus, Calendar, Clock, MapPin, CheckCircle, XCircle, AlertCircle, Search, Filter } from "lucide-react";
@@ -66,12 +68,16 @@ export default async function VisitsPage({
   const { organization } = systemState;
   const label = getVisitLabel(organization.industry);
   const supabase = await createSupabaseServerClient();
+  const admin = createSupabaseAdminClient();
 
-  // Fetch visits with client info
+  // Fetch visits and resolve related labels explicitly so schema-cache FK drift
+  // does not break the whole page.
   const { data: visits, error } = await supabase
     .from("org_visits")
     .select(`
       id,
+      client_id,
+      staff_id,
       visit_type,
       service_category,
       scheduled_start,
@@ -82,15 +88,7 @@ export default async function VisitsPage({
       notes,
       location_type,
       address,
-      created_at,
-      client:client_id (
-        id,
-        full_name
-      ),
-      staff:staff_id (
-        id,
-        email
-      )
+      created_at
     `)
     .eq("organization_id", organization.id)
     .order("scheduled_start", { ascending: false })
@@ -100,9 +98,58 @@ export default async function VisitsPage({
     console.error("[VisitsPage] Error fetching visits:", error);
   }
 
-  type Visit = NonNullable<typeof visits>[number];
-  const visitRows = (visits ?? []) as Visit[];
-  const filteredVisits = visitRows.filter((visit: Visit) => {
+  type VisitRow = NonNullable<typeof visits>[number];
+  type Visit = VisitRow & {
+    client: { full_name?: string | null } | null;
+    staff: { email?: string | null } | null;
+  };
+
+  const visitRows = (visits ?? []) as VisitRow[];
+  const clientIds = Array.from(
+    new Set(
+      visitRows
+        .map((visit) => visit.client_id as string | null | undefined)
+        .filter((value): value is string => Boolean(value)),
+    ),
+  );
+  const staffIds = Array.from(
+    new Set(
+      visitRows
+        .map((visit) => visit.staff_id as string | null | undefined)
+        .filter((value): value is string => Boolean(value)),
+    ),
+  );
+
+  const [{ data: clients }, staffProfiles] = await Promise.all([
+    clientIds.length
+      ? supabase.from('org_patients').select('id, full_name').in('id', clientIds)
+      : Promise.resolve({ data: [] as Array<{ id: string; full_name: string | null }> }),
+    staffIds.length
+      ? getAdminProfileDirectoryEntries(staffIds, admin)
+      : Promise.resolve([]),
+  ]);
+
+  const clientNameById = new Map(
+    (clients ?? []).map((client) => [
+      client.id as string,
+      (client.full_name as string | null | undefined) ?? null,
+    ]),
+  );
+  const staffEmailById = new Map(
+    staffProfiles.map((profile) => [profile.userId, profile.email ?? null]),
+  );
+
+  const enrichedVisits: Visit[] = visitRows.map((visit) => ({
+    ...visit,
+    client: visit.client_id
+      ? { full_name: clientNameById.get(visit.client_id as string) ?? null }
+      : null,
+    staff: visit.staff_id
+      ? { email: staffEmailById.get(visit.staff_id as string) ?? null }
+      : null,
+  }));
+
+  const filteredVisits = enrichedVisits.filter((visit: Visit) => {
     if (statusFilter && visit.status.toLowerCase() !== statusFilter) return false;
     if (!qLower) return true;
 

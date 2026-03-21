@@ -3,6 +3,7 @@ import 'server-only';
 import { unstable_cache } from 'next/cache';
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { isMissingSupabaseColumnError } from '@/lib/supabase/schema-compat';
 
 export type AdminOverviewMetrics = {
   totalOrgs: number;
@@ -39,6 +40,10 @@ async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
     Date.now() - 7 * 24 * 60 * 60 * 1000,
   ).toISOString();
 
+  const orgsPromise = admin
+    .from('organizations')
+    .select('id, name, created_at, onboarding_completed, lifecycle_status');
+
   const [
     orgsResult,
     subsResult,
@@ -50,9 +55,7 @@ async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
     failedReportExportsResult,
     highRiskActionsResult,
   ] = await Promise.all([
-    admin
-      .from('organizations')
-      .select('id, name, created_at, onboarding_completed, lifecycle_status'),
+    orgsPromise,
     admin
       .from('org_subscriptions')
       .select(
@@ -90,14 +93,24 @@ async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
       ]),
   ]);
 
-  if (orgsResult.error || subsResult.error) {
+  const normalizedOrgsResult =
+    isMissingSupabaseColumnError(orgsResult.error, 'organizations', 'lifecycle_status')
+      ? await admin
+          .from('organizations')
+          .select('id, name, created_at, onboarding_completed')
+      : orgsResult;
+
+  if (normalizedOrgsResult.error || subsResult.error) {
     console.error('[admin/metrics] DB query error', {
-      organizations: orgsResult.error?.message,
+      organizations: normalizedOrgsResult.error?.message,
       subscriptions: subsResult.error?.message,
     });
   }
 
-  const organizations = orgsResult.data ?? [];
+  const organizations = (normalizedOrgsResult.data ?? []).map((org: any) => ({
+    ...org,
+    lifecycle_status: org.lifecycle_status ?? null,
+  }));
   const filteredOrgs = organizations.filter(
     (org: any) => !isSyntheticOrgName(org.name),
   );

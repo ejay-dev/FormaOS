@@ -2,6 +2,9 @@ import 'server-only';
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import type { ActivityFeedRecord } from '@/lib/notifications/types';
+import {
+  isMissingSupabaseTableError,
+} from '@/lib/supabase/schema-compat';
 
 export interface ActivityResourceInput {
   type: string;
@@ -99,6 +102,9 @@ export async function logActivity(
     .single();
 
   if (error) {
+    if (isMissingSupabaseTableError(error, 'activity_feed')) {
+      return null;
+    }
     throw new Error(error.message);
   }
 
@@ -141,6 +147,12 @@ export async function getActivityFeed(orgId: string, options: ActivityFeedQuery 
 
   const { data, error } = await query;
   if (error) {
+    if (isMissingSupabaseTableError(error, 'activity_feed')) {
+      return {
+        items: [],
+        nextCursor: null,
+      };
+    }
     throw new Error(error.message);
   }
 
@@ -172,6 +184,9 @@ export async function getResourceActivity(
     .limit(50);
 
   if (error) {
+    if (isMissingSupabaseTableError(error, 'activity_feed')) {
+      return [];
+    }
     throw new Error(error.message);
   }
 
@@ -191,6 +206,9 @@ export async function getUserActivity(orgId: string, userId: string) {
     .limit(100);
 
   if (error) {
+    if (isMissingSupabaseTableError(error, 'activity_feed')) {
+      return [];
+    }
     throw new Error(error.message);
   }
 

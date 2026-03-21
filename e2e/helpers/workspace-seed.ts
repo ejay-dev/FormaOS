@@ -46,6 +46,19 @@ type SecondaryUserOptions = {
   addMembership?: boolean;
 };
 
+type WorkspaceStateInput = {
+  role?: 'owner' | 'admin' | 'member' | 'viewer';
+  industry?: string | null;
+  frameworks?: string[];
+  onboardingCompleted?: boolean;
+  currentStep?: number;
+  completedSteps?: number[];
+  organizationName?: string;
+  planKey?: string;
+  teamSize?: string;
+  firstAction?: string | null;
+};
+
 const createdUserIds = new Set<string>();
 
 function getFrameworkCodeForSlug(slug: string) {
@@ -747,6 +760,139 @@ export async function getMemberByUserId(
   }
 
   return data as Record<string, any>;
+}
+
+export async function configureWorkspaceState(
+  context: WorkspaceSeedContext,
+  input: WorkspaceStateInput,
+) {
+  const now = new Date().toISOString();
+  const completedSteps = Array.from(
+    new Set((input.completedSteps ?? []).filter((step) => Number.isInteger(step))),
+  ).sort((a, b) => a - b);
+  const frameworks = Array.isArray(input.frameworks)
+    ? Array.from(
+        new Set(
+          input.frameworks
+            .map((value) => (typeof value === 'string' ? value.trim() : ''))
+            .filter(Boolean),
+        ),
+      )
+    : undefined;
+
+  if (input.role) {
+    const { error: membershipError } = await context.admin
+      .from('org_members')
+      .update({ role: input.role })
+      .eq('organization_id', context.orgId)
+      .eq('user_id', context.userId);
+
+    if (membershipError) {
+      throw new Error(`Failed to update workspace role: ${membershipError.message}`);
+    }
+  }
+
+  const organizationPatch: Record<string, any> = {
+    updated_at: now,
+  };
+
+  if (input.organizationName !== undefined) {
+    organizationPatch.name = input.organizationName;
+  }
+  if (input.industry !== undefined) {
+    organizationPatch.industry = input.industry;
+  }
+  if (input.planKey !== undefined) {
+    organizationPatch.plan_key = input.planKey;
+  }
+  if (input.teamSize !== undefined) {
+    organizationPatch.team_size = input.teamSize;
+  }
+  if (frameworks !== undefined) {
+    organizationPatch.frameworks = frameworks;
+  }
+  if (input.onboardingCompleted !== undefined) {
+    organizationPatch.onboarding_completed = input.onboardingCompleted;
+    organizationPatch.onboarding_completed_at = input.onboardingCompleted
+      ? now
+      : null;
+  }
+
+  await updateWithSchemaTolerance(
+    context.admin,
+    'organizations',
+    { id: context.orgId },
+    organizationPatch,
+  );
+
+  if (frameworks !== undefined) {
+    const { error: deleteFrameworkError } = await context.admin
+      .from('org_frameworks')
+      .delete()
+      .eq('organization_id', context.orgId);
+
+    if (deleteFrameworkError) {
+      throw new Error(
+        `Failed to reset organization frameworks: ${deleteFrameworkError.message}`,
+      );
+    }
+
+    if (frameworks.length > 0) {
+      const { error: insertFrameworkError } = await context.admin
+        .from('org_frameworks')
+        .insert(
+          frameworks.map((frameworkSlug) => ({
+            organization_id: context.orgId,
+            framework_slug: frameworkSlug,
+            enabled_at: now,
+          })),
+        );
+
+      if (insertFrameworkError) {
+        throw new Error(
+          `Failed to seed organization frameworks: ${insertFrameworkError.message}`,
+        );
+      }
+    }
+  }
+
+  if (
+    input.currentStep !== undefined ||
+    input.completedSteps !== undefined ||
+    input.firstAction !== undefined ||
+    input.onboardingCompleted !== undefined
+  ) {
+    const onboardingPatch = {
+      organization_id: context.orgId,
+      current_step: input.currentStep ?? 1,
+      completed_steps: completedSteps,
+      first_action:
+        input.firstAction === undefined ? null : input.firstAction,
+      completed_at: input.onboardingCompleted ? now : null,
+      updated_at: now,
+    };
+
+    const { data: existingStatus } = await context.admin
+      .from('org_onboarding_status')
+      .select('organization_id')
+      .eq('organization_id', context.orgId)
+      .maybeSingle();
+
+    if (existingStatus?.organization_id) {
+      await updateWithSchemaTolerance(
+        context.admin,
+        'org_onboarding_status',
+        { organization_id: context.orgId },
+        onboardingPatch,
+      );
+    } else {
+      await insertWithSchemaTolerance(
+        context.admin,
+        'org_onboarding_status',
+        onboardingPatch,
+      );
+    }
+  }
 }
 
 export async function cleanupSecondaryUsers() {

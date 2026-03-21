@@ -7,6 +7,10 @@ import { PLAN_CATALOG, resolvePlanKey } from '@/lib/plans';
 import Link from 'next/link';
 import { CheckCircle2, ArrowRight, Star } from 'lucide-react';
 import { Logo } from '@/components/brand/Logo';
+import {
+  buildGoogleOAuthRedirect,
+  persistOAuthStateCookie,
+} from '@/lib/auth/oauth-state';
 // OAuth consent branding can be further customized via Supabase Auth custom domains.
 // See: https://supabase.com/docs/guides/auth/custom-domains
 
@@ -103,10 +107,12 @@ function SignUpContent() {
       : `${appBase}/auth/callback${journeyParam ? `?journey=${encodeURIComponent(journeyParam)}` : ''}`;
     const supabase = createSupabaseClient();
     try {
+      const oauthRedirect = buildGoogleOAuthRedirect(redirectTo);
+      persistOAuthStateCookie(oauthRedirect.state);
       const oauthResult = (await withTimeout(
         supabase.auth.signInWithOAuth({
           provider: 'google',
-          options: { redirectTo },
+          options: { redirectTo: oauthRedirect.redirectTo },
         }),
         SESSION_TIMEOUT_MS,
         'oauth',

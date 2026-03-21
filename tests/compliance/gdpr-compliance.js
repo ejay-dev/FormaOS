@@ -4,6 +4,7 @@
  */
 
 const playwright = require('playwright');
+const fs = require('fs');
 
 class GDPRComplianceTest {
   constructor(baseUrl = 'http://localhost:3000') {
@@ -18,7 +19,50 @@ class GDPRComplianceTest {
       },
       violations: [],
       recommendations: [],
+      environment: {
+        baseUrl,
+        available: true,
+        error: null,
+      },
     };
+  }
+
+  async ensureBaseUrlReachable(page) {
+    try {
+      await page.goto(this.baseUrl, {
+        waitUntil: 'domcontentloaded',
+        timeout: 15000,
+      });
+      this.results.environment.available = true;
+      this.results.environment.error = null;
+      return true;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.results.environment.available = false;
+      this.results.environment.error = message;
+      this.results.violations.push({
+        category: 'Environment',
+        test: 'Application Availability',
+        error: `Unable to reach ${this.baseUrl}: ${message}`,
+      });
+      return false;
+    }
+  }
+
+  async seedAuthenticatedSession(page, accessToken) {
+    await page.goto(this.baseUrl, { waitUntil: 'domcontentloaded' });
+    await page.evaluate((token) => {
+      localStorage.setItem(
+        'supabase.auth.token',
+        JSON.stringify({
+          access_token: token,
+          user: {
+            id: 'test-user-id',
+            email: 'test@formaos.com',
+          },
+        }),
+      );
+    }, accessToken);
   }
 
   /**
@@ -164,18 +208,7 @@ class GDPRComplianceTest {
     ];
 
     // Setup authentication
-    await page.evaluate(() => {
-      localStorage.setItem(
-        'supabase.auth.token',
-        JSON.stringify({
-          access_token: 'mock_token_for_gdpr_testing',
-          user: {
-            id: 'test-user-id',
-            email: 'test@formaos.com',
-          },
-        }),
-      );
-    });
+    await this.seedAuthenticatedSession(page, 'mock_token_for_gdpr_testing');
 
     for (const test of tests) {
       try {
@@ -414,6 +447,14 @@ class GDPRComplianceTest {
     const page = await browser.newPage();
 
     try {
+      const appAvailable = await this.ensureBaseUrlReachable(page);
+      if (!appAvailable) {
+        this.results.recommendations.push(
+          `Start the app at ${this.baseUrl} before running GDPR compliance tests.`,
+        );
+        return this.results;
+      }
+
       await this.testDataProtection(page);
       await this.testUserRights(page);
       await this.testConsent(page);
@@ -460,7 +501,8 @@ if (require.main === module) {
     .runGDPRCompliance()
     .then((results) => {
       console.log('GDPR Compliance test completed');
-      require('fs').writeFileSync(
+      fs.mkdirSync('tests/compliance/reports', { recursive: true });
+      fs.writeFileSync(
         'tests/compliance/reports/gdpr-compliance-report.json',
         JSON.stringify(results, null, 2),
       );

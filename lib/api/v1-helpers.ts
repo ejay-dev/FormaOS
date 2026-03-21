@@ -46,7 +46,7 @@ export function buildIlikePattern(value: string): string {
   return `%${sanitizeLikeQuery(value)}%`;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic filter builder
+ 
 type FilterBuilder = { eq: (...args: any[]) => any; is: (...args: any[]) => any };
 
 export async function countRows(

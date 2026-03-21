@@ -9,6 +9,7 @@ import { logAuditEvent } from "@/app/app/actions/audit-events";
 import { getEntitlementLimit } from "@/lib/billing/entitlements";
 import { createInvitation } from "@/lib/invitations/create-invitation";
 import { sendEmail } from "@/lib/email/send-email";
+import { findAuthUserByEmail } from "@/lib/users/admin-profile-directory";
 
 const VALID_INVITE_ROLES = new Set(["admin", "member", "viewer"]);
 
@@ -93,11 +94,7 @@ export async function inviteMember(email: string, role: string): Promise<InviteM
     return { success: false, error: "Invitation already sent to this email." };
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("id")
-    .eq("email", normalizedEmail)
-    .maybeSingle();
+  const profile = await findAuthUserByEmail(normalizedEmail);
 
   if (profile?.id) {
     const { data: existingMember } = await supabase

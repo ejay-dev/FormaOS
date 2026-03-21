@@ -6,6 +6,7 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
+import { getAdminProfileDirectoryEntries } from '@/lib/users/admin-profile-directory';
 
 export type WidgetType =
   | 'risk_score'
@@ -299,17 +300,14 @@ export async function getTeamActivityWidgetData(
     .slice(0, 5)
     .map(([userId]) => userId);
 
-  const { data: users } = await supabase
-    .from('profiles')
-    .select('id, full_name, avatar_url')
-    .in('id', topUserIds);
+  const users = await getAdminProfileDirectoryEntries(topUserIds);
 
   const topContributors = topUserIds.map((userId) => {
-    const user = users?.find((u: any) => u.id === userId);
+    const user = users.find((entry) => entry.userId === userId);
     return {
       userId,
-      name: user?.full_name || 'Unknown User',
-      avatar: user?.avatar_url,
+      name: user?.fullName || 'Unknown User',
+      avatar: user?.avatarPath,
       activityCount: userActivityMap.get(userId) || 0,
     };
   });

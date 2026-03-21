@@ -6,6 +6,7 @@ import { createComplianceStream, isAIConfigured } from '@/lib/ai/streaming';
 import { PROMPT_TEMPLATES } from '@/lib/ai/prompt-templates';
 import { hasPermission, normalizeRole } from '@/app/app/actions/rbac';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
+import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 
 /**
  * =========================================================
@@ -105,6 +106,7 @@ export async function POST(request: Request) {
     }
 
     const admin = createSupabaseAdminClient();
+    let persistenceAvailable = true;
 
     // 7. Create conversation if none provided
     if (!conversationId) {
@@ -118,16 +120,19 @@ export async function POST(request: Request) {
         .select('id')
         .single();
 
-      if (convError || !newConversation) {
+      if (isMissingSupabaseTableError(convError, 'ai_chat_conversations')) {
+        persistenceAvailable = false;
+      } else if (convError || !newConversation) {
         return NextResponse.json(
           { error: 'Failed to create conversation' },
           { status: 500 },
         );
+      } else {
+        conversationId = (newConversation as Record<string, unknown>).id as string;
       }
-      conversationId = (newConversation as Record<string, unknown>).id as string;
     } else {
       // Verify conversation belongs to user
-      const { data: existingConv } = await admin
+      const { data: existingConv, error: existingConvError } = await admin
         .from('ai_chat_conversations')
         .select('id, user_id')
         .eq('id', conversationId)
@@ -135,7 +140,9 @@ export async function POST(request: Request) {
         .eq('organization_id', orgId)
         .maybeSingle();
 
-      if (!existingConv) {
+      if (isMissingSupabaseTableError(existingConvError, 'ai_chat_conversations')) {
+        persistenceAvailable = false;
+      } else if (existingConvError || !existingConv) {
         return NextResponse.json(
           { error: 'Conversation not found' },
           { status: 404 },
@@ -144,26 +151,38 @@ export async function POST(request: Request) {
     }
 
     // 8. Save user message
-    await admin.from('ai_chat_messages').insert({
-      conversation_id: conversationId,
-      role: 'user',
-      content: message,
-    });
+    if (persistenceAvailable && conversationId) {
+      const { error: userMessageError } = await admin.from('ai_chat_messages').insert({
+        conversation_id: conversationId,
+        role: 'user',
+        content: message,
+      });
+      if (isMissingSupabaseTableError(userMessageError, 'ai_chat_messages')) {
+        persistenceAvailable = false;
+      }
+    }
 
     // 9. Load conversation history (last 20 messages)
-    const { data: historyRows } = await admin
-      .from('ai_chat_messages')
-      .select('role, content')
-      .eq('conversation_id', conversationId)
-      .order('created_at', { ascending: true })
-      .limit(20);
+    let history: Array<{ role: 'user' | 'assistant'; content: string }> = [];
+    if (persistenceAvailable && conversationId) {
+      const { data: historyRows, error: historyError } = await admin
+        .from('ai_chat_messages')
+        .select('role, content')
+        .eq('conversation_id', conversationId)
+        .order('created_at', { ascending: true })
+        .limit(20);
 
-    const history = ((historyRows ?? []) as Array<Record<string, unknown>>)
-      .filter((m) => m.role === 'user' || m.role === 'assistant')
-      .map((m) => ({
-        role: m.role as 'user' | 'assistant',
-        content: m.content as string,
-      }));
+      if (isMissingSupabaseTableError(historyError, 'ai_chat_messages')) {
+        persistenceAvailable = false;
+      } else {
+        history = ((historyRows ?? []) as Array<Record<string, unknown>>)
+          .filter((m) => m.role === 'user' || m.role === 'assistant')
+          .map((m) => ({
+            role: m.role as 'user' | 'assistant',
+            content: m.content as string,
+          }));
+      }
+    }
 
     // 10. Build system prompt
     const complianceContext = await buildComplianceContext(orgId);
@@ -174,8 +193,12 @@ export async function POST(request: Request) {
       systemPrompt,
       messages: history,
       onFinish: async (finished) => {
+        if (!persistenceAvailable || !conversationId) {
+          return;
+        }
+
         // Save assistant message
-        await admin.from('ai_chat_messages').insert({
+        const { error: assistantMessageError } = await admin.from('ai_chat_messages').insert({
           conversation_id: conversationId,
           role: 'assistant',
           content: finished.text,
@@ -184,13 +207,19 @@ export async function POST(request: Request) {
             templateId: templateId ?? null,
           },
         });
+        if (isMissingSupabaseTableError(assistantMessageError, 'ai_chat_messages')) {
+          return;
+        }
 
         // Update conversation title from first user message if still default
-        const { data: conv } = await admin
+        const { data: conv, error: conversationFetchError } = await admin
           .from('ai_chat_conversations')
           .select('title')
           .eq('id', conversationId!)
           .maybeSingle();
+        if (isMissingSupabaseTableError(conversationFetchError, 'ai_chat_conversations')) {
+          return;
+        }
 
         const convTitle = (conv as Record<string, unknown> | null)?.title;
         if (convTitle === 'New conversation') {
@@ -212,7 +241,9 @@ export async function POST(request: Request) {
 
     // 12. Return streaming response with conversationId header
     const response = result.toTextStreamResponse();
-    response.headers.set('X-Conversation-Id', conversationId);
+    if (conversationId) {
+      response.headers.set('X-Conversation-Id', conversationId);
+    }
     return response;
   } catch (error: unknown) {
     console.error('[API v1 /ai/chat] Unexpected error:', error);

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
+import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 
 /**
  * =========================================================
@@ -81,6 +82,13 @@ export async function GET(request: Request) {
     const { data, count, error } = await query;
 
     if (error) {
+      if (isMissingSupabaseTableError(error, 'ai_chat_conversations')) {
+        return NextResponse.json({
+          items: [],
+          total: 0,
+          persistenceAvailable: false,
+        });
+      }
       console.error('[API v1 /ai/conversations] Query error:', error);
       return NextResponse.json(
         { error: 'Failed to fetch conversations' },
@@ -91,6 +99,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       items: data ?? [],
       total: count ?? 0,
+      persistenceAvailable: true,
     });
   } catch (error: unknown) {
     console.error('[API v1 /ai/conversations] Unexpected error:', error);
@@ -169,6 +178,12 @@ export async function POST(request: Request) {
       .single();
 
     if (error || !conversation) {
+      if (isMissingSupabaseTableError(error, 'ai_chat_conversations')) {
+        return NextResponse.json(
+          { error: 'AI conversation history is unavailable for this workspace' },
+          { status: 503 },
+        );
+      }
       console.error('[API v1 /ai/conversations] Insert error:', error);
       return NextResponse.json(
         { error: 'Failed to create conversation' },

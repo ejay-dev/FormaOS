@@ -27,6 +27,12 @@ import { provisionFrameworkControls } from '@/lib/frameworks/provisioning';
 import { getProvisioningFrameworkSlugs } from '@/lib/onboarding/framework-selection';
 import { isProvisioningRole } from '@/lib/onboarding/roles';
 import {
+  ROLE_OPTIONS,
+  getDefaultRoleOptionId,
+  isReadOnlyPersonaRole,
+  resolveRoleSelectionOutcome,
+} from '@/lib/onboarding/journey';
+import {
   onOnboardingCompleted,
   updateComplianceScoreAndCheckRisk,
   onIndustryConfigured,
@@ -46,48 +52,6 @@ const PLAN_CHOICES = [
   PLAN_CATALOG.pro,
   PLAN_CATALOG.enterprise,
 ];
-
-type OnboardingRole = 'owner' | 'admin' | 'member' | 'viewer';
-type JourneyType = 'full' | 'fast-track' | 'read-only';
-
-type RoleOption = {
-  id: string;
-  label: string;
-  role: OnboardingRole;
-  description: string;
-  journey: JourneyType;
-};
-
-const ROLE_OPTIONS = [
-  {
-    id: 'employer',
-    label: 'Employer / Organization owner',
-    role: 'owner',
-    description: 'Full governance setup, framework provisioning, and team activation.',
-    journey: 'full',
-  },
-  {
-    id: 'compliance_lead',
-    label: 'Compliance lead / Admin',
-    role: 'admin',
-    description: 'Configure controls and readiness workflows without billing ownership.',
-    journey: 'full',
-  },
-  {
-    id: 'employee',
-    label: 'Employee / Field staff',
-    role: 'member',
-    description: 'Fast-track to assigned tasks, evidence, and day-to-day execution.',
-    journey: 'fast-track',
-  },
-  {
-    id: 'external_auditor',
-    label: 'External auditor / Viewer',
-    role: 'viewer',
-    description: 'Read-only trust and readiness visibility with guided first review.',
-    journey: 'read-only',
-  },
-] as const satisfies readonly RoleOption[];
 
 const ONBOARDING_MILESTONES = [
   { id: 'foundation', label: 'Foundation', steps: [1, 2, 3] },
@@ -473,41 +437,29 @@ async function saveRoleSelection(formData: FormData) {
   try {
     const { supabase, orgId, user, orgRecord } = await getOrgContext();
     const roleSelection = (formData.get('role') as string | null) ?? '';
-
-    const match = ROLE_OPTIONS.find((option) => option.id === roleSelection);
-    if (!match) {
+    const outcome = resolveRoleSelectionOutcome(roleSelection, orgRecord?.frameworks);
+    if (!outcome) {
       redirect('/onboarding?step=4&error=1');
     }
 
     await supabase
       .from('org_members')
-      .update({ role: match.role })
+      .update({ role: outcome.option.role })
       .eq('organization_id', orgId)
       .eq('user_id', user.id);
 
-    // Fast-track non-provisioning personas to first proof with defaults already
-    // managed by the organization profile.
-    if (!isProvisioningRole(match.role)) {
-      const defaultFrameworks =
-        Array.isArray(orgRecord?.frameworks) && orgRecord.frameworks.length > 0
-          ? orgRecord.frameworks
-          : ['iso27001'];
-
+    if (outcome.frameworksToPersist) {
       await createSupabaseAdminClient()
         .from('organizations')
-        .update({ frameworks: defaultFrameworks })
+        .update({ frameworks: outcome.frameworksToPersist })
         .eq('id', orgId);
-
-      await markStepComplete(orgId, 4, 5);
-      await markStepComplete(orgId, 5, 6);
-      await markStepComplete(orgId, 6, 7);
-      redirect(
-        `/onboarding?step=7&fast_track=1&persona=${encodeURIComponent(match.role)}`,
-      );
     }
 
-    await markStepComplete(orgId, 4, 5);
-    redirect('/onboarding?step=5');
+    for (const step of outcome.completedSteps) {
+      await markStepComplete(orgId, step, step + 1);
+    }
+
+    redirect(outcome.redirectPath);
   } catch (error) {
     handleOnboardingActionFailure('saveRoleSelection', 4, error);
   }
@@ -850,9 +802,8 @@ export default async function OnboardingPage({
   const errorState = Boolean(resolvedSearchParams?.error);
   const fastTrack = resolvedSearchParams?.fast_track === '1';
   const persona = resolvedSearchParams?.persona ?? '';
-  const isReadOnlyPersona = role === 'viewer' || persona === 'viewer';
-  const defaultRoleOptionId =
-    ROLE_OPTIONS.find((option) => option.role === role)?.id ?? 'employer';
+  const isReadOnlyPersona = isReadOnlyPersonaRole(role, persona);
+  const defaultRoleOptionId = getDefaultRoleOptionId(role);
   const planLabel = planKey ? PLAN_CATALOG[planKey].name : 'Plan not selected';
   const completedRatio = (safeStep / TOTAL_STEPS) * 100;
   const journey = resolvedSearchParams?.journey ?? '';

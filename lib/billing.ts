@@ -12,6 +12,7 @@ import {
   type SubscriptionTier,
 } from '@/lib/billing/plans';
 import { sendEmail } from '@/lib/email/send-email';
+import { getAdminProfileDirectoryEntries } from '@/lib/users/admin-profile-directory';
 
 // Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
@@ -62,22 +63,19 @@ async function sendPaymentFailedNotification(
     return;
   }
 
-  const { data: profiles } = await supabase
-    .from('profiles')
-    .select('id, email, full_name')
-    .in('id', userIds);
-
   const appBase = getBillingAppBase();
-  const recipients = (profiles ?? []).filter((profile: any) => profile.email);
+  const recipients = (await getAdminProfileDirectoryEntries(userIds)).filter(
+    (profile) => profile.email,
+  );
 
   await Promise.allSettled(
-    recipients.map((profile: any) =>
+    recipients.map((profile) =>
       sendEmail({
         type: 'alert',
-        to: profile.email,
+        to: profile.email!,
         userName:
-          profile.full_name ||
-          profile.email.split('@')[0] ||
+          profile.fullName ||
+          profile.email!.split('@')[0] ||
           'team member',
         alertType: 'warning',
         alertTitle: 'Payment failed',
@@ -86,7 +84,7 @@ async function sendPaymentFailedNotification(
         actionUrl: `${appBase}/app/billing`,
         actionText: 'Review billing',
         organizationId,
-        userId: profile.id,
+        userId: profile.userId,
       }),
     ),
   );

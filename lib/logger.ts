@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
 
 /**
  * Audit domain categories (for filtering, dashboards, alerts)
@@ -69,7 +70,7 @@ export async function logActivity(
       created_at: new Date().toISOString(),
     };
 
-    const { error } = await supabase.from("org_audit_logs").insert(payload);
+    const { error } = await insertOrgAuditLog(supabase, payload);
 
     if (error) {
       console.error("[AUDIT ERROR] Insert failed:", error.message);

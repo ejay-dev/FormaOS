@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { resolvePlanKey } from '@/lib/plans';
 import { validatePassword } from '@/lib/security/password-security';
-import { emailSchema } from '@/lib/security/api-validation';
+import { emailSchema, requireJsonContentType } from '@/lib/security/api-validation';
 import { rateLimitAuth } from '@/lib/security/rate-limiter';
 import { sendAuthEmail } from '@/lib/email/send-auth-email';
 import { buildHostedAuthConfirmLink } from '@/lib/auth/hosted-auth-link';
@@ -57,6 +57,11 @@ export async function POST(request: Request) {
       { ok: false, error: error ?? 'too_many_requests' },
       { status: 429, headers },
     );
+  }
+
+  const contentTypeError = requireJsonContentType(request);
+  if (contentTypeError) {
+    return contentTypeError;
   }
 
   try {

@@ -1,6 +1,6 @@
 'use server';
 
-import { requirePermission, getUserOrgMembership } from '@/app/app/actions/rbac';
+import { requirePermission } from '@/app/app/actions/rbac';
 import { calculateSoc2Readiness, getLatestAssessment } from '@/lib/soc2/readiness-engine';
 import { runAutomatedChecks } from '@/lib/soc2/evidence-collector';
 import { analyzeSoc2Gaps } from '@/lib/soc2/gap-analyzer';

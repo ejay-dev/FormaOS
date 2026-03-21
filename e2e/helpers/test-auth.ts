@@ -22,6 +22,46 @@ type SupabaseEnv = {
   serviceRoleKey: string;
 };
 
+function isPlaceholderValue(value: string) {
+  const normalized = value.trim().toLowerCase();
+  return (
+    normalized.startsWith('your-') ||
+    normalized.includes('your-project') ||
+    normalized.includes('example.com') ||
+    normalized.startsWith('placeholder') ||
+    normalized.startsWith('changeme') ||
+    /^<.*>$/.test(normalized)
+  );
+}
+
+function isResolvableSupabaseUrl(value: string) {
+  try {
+    const parsed = new URL(value);
+    const host = parsed.hostname.toLowerCase();
+    return !host.startsWith('your-') && !host.includes('your-project');
+  } catch {
+    return false;
+  }
+}
+
+function toBootstrapErrorMessage(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+  if (
+    message.includes('ENOTFOUND') ||
+    message.includes('fetch failed') ||
+    message.includes('Invalid API key') ||
+    message.includes('invalid api key') ||
+    message.includes('invalid jwt') ||
+    message.includes('unauthorized')
+  ) {
+    return (
+      'E2E auth bootstrap unavailable: provide real Supabase env values or ' +
+      'set E2E_TEST_EMAIL/E2E_TEST_PASSWORD.'
+    );
+  }
+  return null;
+}
+
 export class E2EAuthBootstrapError extends Error {
   constructor(message: string) {
     super(message);
@@ -54,6 +94,13 @@ export async function getTestCredentials(): Promise<{
     };
   }
 
+  if (createdTestUser) {
+    return {
+      email: createdTestUser.email,
+      password: createdTestUser.password,
+    };
+  }
+
   // Create temporary test user
   const testUser = await createTemporaryTestUser();
   return {
@@ -70,6 +117,17 @@ function resolveSupabaseEnv(): SupabaseEnv {
   if (!supabaseUrl || !anonKey || !serviceRoleKey) {
     throw new E2EAuthBootstrapError(
       'Supabase env missing: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY are required',
+    );
+  }
+
+  if (
+    isPlaceholderValue(supabaseUrl) ||
+    isPlaceholderValue(anonKey) ||
+    isPlaceholderValue(serviceRoleKey) ||
+    !isResolvableSupabaseUrl(supabaseUrl)
+  ) {
+    throw new E2EAuthBootstrapError(
+      'Supabase env is configured with placeholder values. Provide real Supabase credentials or set E2E_TEST_EMAIL/E2E_TEST_PASSWORD.',
     );
   }
 
@@ -134,36 +192,43 @@ function getStorageKey(supabaseUrl: string) {
 
 export async function createMagicLinkSession(email: string): Promise<Session> {
   const { url, anonKey, serviceRoleKey } = resolveSupabaseEnv();
-
-  const adminClient = createClient(url, serviceRoleKey, {
-    auth: { persistSession: false },
-  });
-
-  const { data: linkData, error: linkError } =
-    await adminClient.auth.admin.generateLink({
-      type: 'magiclink',
-      email,
+  try {
+    const adminClient = createClient(url, serviceRoleKey, {
+      auth: { persistSession: false },
     });
 
-  if (linkError || !linkData?.properties?.hashed_token) {
-    throw new Error(`Failed to generate magic link: ${linkError?.message}`);
-  }
+    const { data: linkData, error: linkError } =
+      await adminClient.auth.admin.generateLink({
+        type: 'magiclink',
+        email,
+      });
 
-  const userClient = createClient(url, anonKey, {
-    auth: { persistSession: false },
-  });
+    if (linkError || !linkData?.properties?.hashed_token) {
+      throw new Error(`Failed to generate magic link: ${linkError?.message}`);
+    }
 
-  const { data: verifyData, error: verifyError } =
-    await userClient.auth.verifyOtp({
-      type: 'magiclink',
-      token_hash: linkData.properties.hashed_token,
+    const userClient = createClient(url, anonKey, {
+      auth: { persistSession: false },
     });
 
-  if (verifyError || !verifyData?.session) {
-    throw new Error(`Failed to verify magic link: ${verifyError?.message}`);
-  }
+    const { data: verifyData, error: verifyError } =
+      await userClient.auth.verifyOtp({
+        type: 'magiclink',
+        token_hash: linkData.properties.hashed_token,
+      });
 
-  return verifyData.session;
+    if (verifyError || !verifyData?.session) {
+      throw new Error(`Failed to verify magic link: ${verifyError?.message}`);
+    }
+
+    return verifyData.session;
+  } catch (error) {
+    const bootstrapMessage = toBootstrapErrorMessage(error);
+    if (bootstrapMessage) {
+      throw new E2EAuthBootstrapError(bootstrapMessage);
+    }
+    throw error;
+  }
 }
 
 export async function setPlaywrightSession(
@@ -195,130 +260,128 @@ export async function setPlaywrightSession(
  * Create a temporary test user via Supabase Admin API
  */
 async function createTemporaryTestUser(): Promise<TestUser> {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!supabaseUrl || !serviceRoleKey) {
-    throw new E2EAuthBootstrapError(
-      'E2E tests require either E2E_TEST_EMAIL/PASSWORD or SUPABASE_SERVICE_ROLE_KEY',
-    );
+  if (createdTestUser) {
+    return createdTestUser;
   }
 
-  const adminClient = createClient(supabaseUrl, serviceRoleKey, {
-    auth: { persistSession: false },
-  });
+  const { url: supabaseUrl, serviceRoleKey } = resolveSupabaseEnv();
 
-  // Generate unique test email
-  const testId = `e2e_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-  const email = `${testId}@test.formaos.local`;
-  const password = `TestPass${testId}!`;
-
-  // Create user with admin API (auto-confirms email)
-  const { data: userData, error: userError } =
-    await adminClient.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true, // Auto-confirm for testing
-      user_metadata: {
-        is_e2e_test: true,
-        created_at: new Date().toISOString(),
-      },
+  try {
+    const adminClient = createClient(supabaseUrl, serviceRoleKey, {
+      auth: { persistSession: false },
     });
 
-  if (userError || !userData.user) {
-    const message = userError?.message ?? 'unknown_error';
-    if (
-      message.toLowerCase().includes('invalid api key') ||
-      message.toLowerCase().includes('invalid jwt') ||
-      message.toLowerCase().includes('unauthorized')
-    ) {
-      throw new E2EAuthBootstrapError(
-        'E2E auth bootstrap unavailable: set E2E_TEST_EMAIL/E2E_TEST_PASSWORD or a valid SUPABASE_SERVICE_ROLE_KEY.',
-      );
+    // Generate unique test email
+    const testId = `e2e_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const email = `${testId}@test.formaos.local`;
+    const password = `TestPass${testId}!`;
+
+    // Create user with admin API (auto-confirms email)
+    const { data: userData, error: userError } =
+      await adminClient.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true, // Auto-confirm for testing
+        user_metadata: {
+          is_e2e_test: true,
+          created_at: new Date().toISOString(),
+        },
+      });
+
+    if (userError || !userData.user) {
+      const message = userError?.message ?? 'unknown_error';
+      if (
+        message.toLowerCase().includes('invalid api key') ||
+        message.toLowerCase().includes('invalid jwt') ||
+        message.toLowerCase().includes('unauthorized')
+      ) {
+        throw new E2EAuthBootstrapError(
+          'E2E auth bootstrap unavailable: set E2E_TEST_EMAIL/E2E_TEST_PASSWORD or a valid SUPABASE_SERVICE_ROLE_KEY.',
+        );
+      }
+      throw new Error(`Failed to create test user: ${message}`);
     }
-    throw new Error(`Failed to create test user: ${message}`);
-  }
 
-  // Create test organization
-  const { data: orgData, error: orgError } = await adminClient
-    .from('organizations')
-    .insert({
-      name: `E2E Test Org ${testId}`,
-      industry: 'healthcare',
-      team_size: '1-10',
-      plan_key: 'pro',
-      frameworks: ['soc2'],
-      onboarding_completed: true, // Skip onboarding for tests
-    })
-    .select('id')
-    .single();
-
-  if (orgError) {
-    // Cleanup user if org creation fails
-    await adminClient.auth.admin.deleteUser(userData.user.id);
-    throw new Error(`Failed to create test org: ${orgError.message}`);
-  }
-
-  const nowIso = new Date().toISOString();
-  // Backfill legacy orgs table for org_subscriptions.org_id FK
-  try {
-    await adminClient.from('orgs').upsert(
-      {
-        id: orgData.id,
+    // Create test organization
+    const { data: orgData, error: orgError } = await adminClient
+      .from('organizations')
+      .insert({
         name: `E2E Test Org ${testId}`,
-        created_by: userData.user.id,
-        created_at: nowIso,
-        updated_at: nowIso,
-      },
-      { onConflict: 'id' },
-    );
-  } catch (error) {
-    console.warn('[E2E] Failed to backfill orgs table:', error);
-  }
+        industry: 'healthcare',
+        team_size: '1-10',
+        plan_key: 'pro',
+        frameworks: ['soc2'],
+        onboarding_completed: true, // Skip onboarding for tests
+      })
+      .select('id')
+      .single();
 
-  // Add user as org owner
-  const { error: memberError } = await adminClient.from('org_members').insert({
-    user_id: userData.user.id,
-    organization_id: orgData.id,
-    role: 'owner',
-  });
+    if (orgError) {
+      // Cleanup user if org creation fails
+      await adminClient.auth.admin.deleteUser(userData.user.id);
+      throw new Error(`Failed to create test org: ${orgError.message}`);
+    }
 
-  if (memberError) {
-    // Cleanup
-    await adminClient.from('organizations').delete().eq('id', orgData.id);
-    await adminClient.auth.admin.deleteUser(userData.user.id);
-    throw new Error(`Failed to add user to org: ${memberError.message}`);
-  }
+    const nowIso = new Date().toISOString();
+    // Backfill legacy orgs table for org_subscriptions.org_id FK
+    try {
+      await adminClient.from('orgs').upsert(
+        {
+          id: orgData.id,
+          name: `E2E Test Org ${testId}`,
+          created_by: userData.user.id,
+          created_at: nowIso,
+          updated_at: nowIso,
+        },
+        { onConflict: 'id' },
+      );
+    } catch (error) {
+      console.warn('[E2E] Failed to backfill orgs table:', error);
+    }
 
-  // Ensure onboarding framework prerequisites are present so auth callback
-  // never routes this test user back into onboarding step loops.
-  try {
-    await adminClient.from('org_frameworks').upsert(
-      {
-        organization_id: orgData.id,
-        framework_slug: 'soc2',
-        enabled_at: nowIso,
-      },
-      { onConflict: 'organization_id,framework_slug' },
-    );
-  } catch (error) {
-    console.warn('[E2E] Failed to seed org_frameworks:', error);
-  }
+    // Add user as org owner
+    const { error: memberError } = await adminClient.from('org_members').insert({
+      user_id: userData.user.id,
+      organization_id: orgData.id,
+      role: 'owner',
+    });
 
-  try {
-    await adminClient.from('org_onboarding_status').upsert(
-      {
-        organization_id: orgData.id,
-        current_step: 7,
-        completed_steps: [1, 2, 3, 4, 5, 6, 7],
-        completed_at: nowIso,
-        updated_at: nowIso,
-      },
-      { onConflict: 'organization_id' },
-    );
-  } catch (error) {
-    console.warn('[E2E] Failed to seed org_onboarding_status:', error);
-  }
+    if (memberError) {
+      // Cleanup
+      await adminClient.from('organizations').delete().eq('id', orgData.id);
+      await adminClient.auth.admin.deleteUser(userData.user.id);
+      throw new Error(`Failed to add user to org: ${memberError.message}`);
+    }
+
+    // Ensure onboarding framework prerequisites are present so auth callback
+    // never routes this test user back into onboarding step loops.
+    try {
+      await adminClient.from('org_frameworks').upsert(
+        {
+          organization_id: orgData.id,
+          framework_slug: 'soc2',
+          enabled_at: nowIso,
+        },
+        { onConflict: 'organization_id,framework_slug' },
+      );
+    } catch (error) {
+      console.warn('[E2E] Failed to seed org_frameworks:', error);
+    }
+
+    try {
+      await adminClient.from('org_onboarding_status').upsert(
+        {
+          organization_id: orgData.id,
+          current_step: 7,
+          completed_steps: [1, 2, 3, 4, 5, 6, 7],
+          completed_at: nowIso,
+          updated_at: nowIso,
+        },
+        { onConflict: 'organization_id' },
+      );
+    } catch (error) {
+      console.warn('[E2E] Failed to seed org_onboarding_status:', error);
+    }
 
   // Ensure MFA is enabled for privileged test users to satisfy enforcement
   try {
@@ -360,14 +423,21 @@ async function createTemporaryTestUser(): Promise<TestUser> {
     // Don't fail - subscription might already exist or be optional
   }
 
-  createdTestUser = {
-    id: userData.user.id,
-    email,
-    password,
-    orgId: orgData.id,
-  };
+    createdTestUser = {
+      id: userData.user.id,
+      email,
+      password,
+      orgId: orgData.id,
+    };
 
-  return createdTestUser;
+    return createdTestUser;
+  } catch (error) {
+    const bootstrapMessage = toBootstrapErrorMessage(error);
+    if (bootstrapMessage) {
+      throw new E2EAuthBootstrapError(bootstrapMessage);
+    }
+    throw error;
+  }
 }
 
 /**

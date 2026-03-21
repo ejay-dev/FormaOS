@@ -74,10 +74,6 @@ export default async function IncidentsPage({
       patient:patient_id (
         id,
         full_name
-      ),
-      reporter:reported_by (
-        id,
-        email
       )
     `)
     .eq("organization_id", organization.id)

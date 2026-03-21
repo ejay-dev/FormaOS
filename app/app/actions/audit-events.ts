@@ -1,6 +1,7 @@
 "use server";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
 
 type AuditEventInput = {
   organizationId: string;
@@ -21,7 +22,7 @@ export async function logAuditEvent(payload: AuditEventInput) {
       ? `${payload.entityType}${payload.entityId ? `:${payload.entityId}` : ""}`
       : "system";
 
-    await supabase.from("org_audit_logs").insert({
+    await insertOrgAuditLog(supabase, {
       organization_id: payload.organizationId,
       actor_id: payload.actorUserId,
       actor_email: null,

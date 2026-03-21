@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
+import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 
 /**
  * =========================================================
@@ -68,7 +69,7 @@ async function authenticateAndGetConversation(request: Request, conversationId: 
   const admin = createSupabaseAdminClient();
 
   // Verify conversation belongs to user and org
-  const { data: conversation } = await admin
+  const { data: conversation, error: conversationError } = await admin
     .from('ai_chat_conversations')
     .select('*')
     .eq('id', conversationId)
@@ -76,7 +77,16 @@ async function authenticateAndGetConversation(request: Request, conversationId: 
     .eq('organization_id', orgId)
     .maybeSingle();
 
-  if (!conversation) {
+  if (isMissingSupabaseTableError(conversationError, 'ai_chat_conversations')) {
+    return {
+      error: NextResponse.json(
+        { error: 'Conversation history is unavailable for this workspace' },
+        { status: 404 },
+      ),
+    };
+  }
+
+  if (conversationError || !conversation) {
     return {
       error: NextResponse.json(
         { error: 'Conversation not found' },
@@ -109,12 +119,23 @@ export async function GET(request: Request, context: RouteContext) {
     const offset = Math.max(parseInt(searchParams.get('offset') || '0', 10) || 0, 0);
 
     // Fetch messages
-    const { data: messages, count } = await admin
+    const { data: messages, count, error } = await admin
       .from('ai_chat_messages')
       .select('*', { count: 'exact' })
       .eq('conversation_id', id)
       .order('created_at', { ascending: true })
       .range(offset, offset + limit - 1);
+
+    if (isMissingSupabaseTableError(error, 'ai_chat_messages')) {
+      return NextResponse.json({
+        conversation,
+        messages: {
+          items: [],
+          total: 0,
+        },
+        persistenceAvailable: false,
+      });
+    }
 
     return NextResponse.json({
       conversation,
@@ -122,6 +143,7 @@ export async function GET(request: Request, context: RouteContext) {
         items: messages ?? [],
         total: count ?? 0,
       },
+      persistenceAvailable: true,
     });
   } catch (error: unknown) {
     console.error('[API v1 /ai/conversations/:id] GET error:', error);
@@ -186,6 +208,12 @@ export async function PATCH(request: Request, context: RouteContext) {
       .single();
 
     if (error || !updated) {
+      if (isMissingSupabaseTableError(error, 'ai_chat_conversations')) {
+        return NextResponse.json(
+          { error: 'Conversation history is unavailable for this workspace' },
+          { status: 404 },
+        );
+      }
       console.error('[API v1 /ai/conversations/:id] PATCH error:', error);
       return NextResponse.json(
         { error: 'Failed to update conversation' },
@@ -225,6 +253,12 @@ export async function DELETE(request: Request, context: RouteContext) {
       .eq('id', id);
 
     if (error) {
+      if (isMissingSupabaseTableError(error, 'ai_chat_conversations')) {
+        return NextResponse.json(
+          { message: 'Conversation history is unavailable for this workspace', id },
+          { status: 200 },
+        );
+      }
       console.error('[API v1 /ai/conversations/:id] DELETE error:', error);
       return NextResponse.json(
         { error: 'Failed to delete conversation' },

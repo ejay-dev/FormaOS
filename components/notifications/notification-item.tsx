@@ -9,7 +9,6 @@ import {
   ChevronRight,
   FileCheck2,
   FileWarning,
-  ShieldAlert,
   Siren,
   Users,
   Workflow,

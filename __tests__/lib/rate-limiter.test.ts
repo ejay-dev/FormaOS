@@ -137,6 +137,13 @@ describe('rate-limiter', () => {
       expect(result1.success).toBe(true);
       expect(result2.success).toBe(true);
     });
+
+    it('allows AUTH fallback to in-memory outside production when Redis is unavailable', async () => {
+      const result = await checkRateLimit(RATE_LIMITS.AUTH, 'auth-fallback-ip');
+
+      expect(result.success).toBe(true);
+      expect(result.remaining).toBe(RATE_LIMITS.AUTH.maxRequests - 1);
+    });
   });
 
   // -----------------------------------------------------------------------
@@ -189,6 +196,25 @@ describe('rate-limiter', () => {
       const result = await checkRateLimit(testConfig, 'fallback-ip');
       // Should still succeed via in-memory fallback
       expect(result.success).toBe(true);
+    });
+  });
+
+  describe('production fail-closed behavior', () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+
+    afterEach(() => {
+      process.env.NODE_ENV = originalNodeEnv;
+    });
+
+    it('keeps AUTH fail-closed in production when Redis is unavailable', async () => {
+      process.env.NODE_ENV = 'production';
+      mockedGetRedis.mockReturnValue(null);
+
+      const result = await checkRateLimit(RATE_LIMITS.AUTH, 'auth-prod-ip');
+
+      expect(result.success).toBe(false);
+      expect(result.degradedReason).toBe('redis_unavailable');
+      expect(result.remaining).toBe(0);
     });
   });
 
