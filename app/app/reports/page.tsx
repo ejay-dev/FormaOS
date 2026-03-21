@@ -357,7 +357,7 @@ export default async function ReportsPage() {
       </div>
 
       {/* Compliance score — streams when gap analysis completes */}
-      {ctx?.orgId ? (
+      {ctx?.orgId && hasAdminAccess ? (
         <Suspense fallback={<ComplianceScoreFallback />}>
           <ComplianceScoreSection
             orgId={ctx.orgId}

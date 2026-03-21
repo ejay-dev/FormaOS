@@ -6,6 +6,7 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { updateComplianceScore } from './compliance-score-engine';
 import { automationLogger } from '@/lib/observability/structured-logger';
+import { insertOrgTaskCompat } from '@/lib/tasks/persistence';
 
 // Maximum recursion depth for trigger chains
 const MAX_TRIGGER_DEPTH = 5;
@@ -146,22 +147,31 @@ async function handleEvidenceExpiry(
   }
 
   // Create renewal task
-  const { data: task, error } = await supabase
-    .from('org_tasks')
-    .insert({
-      organization_id: event.organizationId,
-      title: `Renew Evidence: ${evidence.file_name}`,
-      description: `Evidence "${evidence.file_name}" has expired and needs to be renewed.`,
-      priority: 'high',
-      status: 'pending',
-      due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
-      linked_policy_id: evidence.org_tasks?.linked_policy_id,
-    })
-    .select()
-    .single();
+  let task: { id: string } | null = null;
+  try {
+    const inserted = await insertOrgTaskCompat(
+      supabase,
+      {
+        organization_id: event.organizationId,
+        title: `Renew Evidence: ${evidence.file_name}`,
+        description: `Evidence "${evidence.file_name}" has expired and needs to be renewed.`,
+        priority: 'high',
+        status: 'pending',
+        due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
+        linked_policy_id: evidence.org_tasks?.linked_policy_id,
+      },
+      { returning: 'single' },
+    );
+    task = inserted.data as { id: string } | null;
+  } catch (error) {
+    result.errors.push(
+      `Failed to create renewal task: ${error instanceof Error ? error.message : 'unknown error'}`,
+    );
+    return;
+  }
 
-  if (error) {
-    result.errors.push(`Failed to create renewal task: ${error.message}`);
+  if (!task?.id) {
+    result.errors.push('Failed to create renewal task: task row was not returned');
     return;
   }
 
@@ -218,22 +228,31 @@ async function handlePolicyReviewDue(
   }
 
   // Create review task
-  const { data: task, error } = await supabase
-    .from('org_tasks')
-    .insert({
-      organization_id: event.organizationId,
-      title: `Review Policy: ${policy.title}`,
-      description: `Policy "${policy.title}" is due for scheduled review.`,
-      priority: 'standard',
-      status: 'pending',
-      due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 14 days
-      linked_policy_id: policyId,
-    })
-    .select()
-    .single();
+  let task: { id: string } | null = null;
+  try {
+    const inserted = await insertOrgTaskCompat(
+      supabase,
+      {
+        organization_id: event.organizationId,
+        title: `Review Policy: ${policy.title}`,
+        description: `Policy "${policy.title}" is due for scheduled review.`,
+        priority: 'medium',
+        status: 'pending',
+        due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 14 days
+        linked_policy_id: policyId,
+      },
+      { returning: 'single' },
+    );
+    task = inserted.data as { id: string } | null;
+  } catch (error) {
+    result.errors.push(
+      `Failed to create review task: ${error instanceof Error ? error.message : 'unknown error'}`,
+    );
+    return;
+  }
 
-  if (error) {
-    result.errors.push(`Failed to create review task: ${error.message}`);
+  if (!task?.id) {
+    result.errors.push('Failed to create review task: task row was not returned');
     return;
   }
 
@@ -379,36 +398,37 @@ async function handleOrgOnboarding(
       title: 'Review Pre-loaded Policies',
       description:
         'Review and approve the policies that were pre-loaded for your industry.',
-      priority: 'standard',
+      priority: 'medium',
       due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     },
     {
       title: 'Invite Team Members',
       description:
         'Invite your compliance and operations team members to collaborate.',
-      priority: 'standard',
+      priority: 'medium',
       due_date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
     },
     {
       title: 'Upload Initial Evidence',
       description:
         'Upload your existing compliance evidence and documentation.',
-      priority: 'standard',
+      priority: 'medium',
       due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
     },
   ];
 
   for (const taskData of onboardingTasks) {
-    const { error } = await supabase.from('org_tasks').insert({
-      organization_id: event.organizationId,
-      ...taskData,
-      status: 'pending',
-    });
-
-    if (error) {
-      result.errors.push(`Failed to create onboarding task: ${error.message}`);
-    } else {
+    try {
+      await insertOrgTaskCompat(supabase, {
+        organization_id: event.organizationId,
+        ...taskData,
+        status: 'pending',
+      });
       result.tasksCreated++;
+    } catch (error) {
+      result.errors.push(
+        `Failed to create onboarding task: ${error instanceof Error ? error.message : 'unknown error'}`,
+      );
     }
   }
 
@@ -513,17 +533,18 @@ async function handleFrameworksProvisioned(
   });
 
   // Create reminder task for control completion
-  const { error } = await supabase.from('org_tasks').insert({
-    organization_id: event.organizationId,
-    title: 'Complete Framework Controls',
-    description: `Your ${frameworks.length} framework(s) have been provisioned. Start completing controls to improve your compliance score.`,
-    priority: 'high',
-    status: 'pending',
-    due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-  });
-
-  if (!error) {
+  try {
+    await insertOrgTaskCompat(supabase, {
+      organization_id: event.organizationId,
+      title: 'Complete Framework Controls',
+      description: `Your ${frameworks.length} framework(s) have been provisioned. Start completing controls to improve your compliance score.`,
+      priority: 'high',
+      status: 'pending',
+      due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    });
     result.tasksCreated++;
+  } catch {
+    // Best-effort task creation; scoring and notifications continue.
   }
 
   // Trigger initial compliance scoring
@@ -619,9 +640,8 @@ async function handleRiskScoreChange(
 
   // Create escalation task for high/critical risk
   if (newRisk === 'high' || newRisk === 'critical') {
-    const { data: _task, error } = await supabase
-      .from('org_tasks')
-      .insert({
+    try {
+      await insertOrgTaskCompat(supabase, {
         organization_id: event.organizationId,
         title: `${newRisk === 'critical' ? 'URGENT: ' : ''}Address Compliance Risk`,
         description: `Your compliance risk level has increased to ${newRisk.toUpperCase()} (score: ${score}). Immediate action is required to address compliance gaps.`,
@@ -630,16 +650,12 @@ async function handleRiskScoreChange(
         due_date: new Date(
           Date.now() + (newRisk === 'critical' ? 1 : 3) * 24 * 60 * 60 * 1000,
         ).toISOString(),
-      })
-      .select()
-      .single();
-
-    if (error) {
-      result.errors.push(
-        `Failed to create risk escalation task: ${error.message}`,
-      );
-    } else {
+      });
       result.tasksCreated++;
+    } catch (error) {
+      result.errors.push(
+        `Failed to create risk escalation task: ${error instanceof Error ? error.message : 'unknown error'}`,
+      );
     }
   }
 

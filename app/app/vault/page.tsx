@@ -30,11 +30,34 @@ function getFileSizeKB(item: any) {
   return (bytes / 1024).toFixed(0);
 }
 
+function getVerificationStatus(item: any) {
+  return item?.verification_status || 'pending';
+}
+
 type VaultPageProps = {
   searchParams?: Promise<{
     q?: string | string[];
     status?: string | string[];
   }>;
+};
+
+type ArtifactRow = {
+  id: string;
+  title?: string | null;
+  file_name?: string | null;
+  file_type?: string | null;
+  file_size?: number | string | null;
+  name?: string | null;
+  verification_status?: string | null;
+  quality_score?: number | null;
+  risk_flag?: string | null;
+  verified_at?: string | null;
+  created_at?: string | null;
+  file_path?: string | null;
+  task_id?: string | null;
+  policy_id?: string | null;
+  task?: { title?: string | null } | null;
+  policy?: { title?: string | null } | null;
 };
 
 function parseSingleValue(input: string | string[] | undefined): string {
@@ -61,26 +84,59 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
   const orgId = systemState.organization.id;
   const isAuditor = systemState.role === 'owner' || systemState.role === 'admin';
 
-  // 2) Fetch Evidence with joins (limited to 100 for performance)
-  const { data: artifacts } = await supabase
+  const { data: rawArtifacts } = await supabase
     .from('org_evidence')
-    .select(
-      `
-      id, title, file_name, file_type, file_size, name,
-      verification_status, quality_score, risk_flag,
-      verified_at, created_at, file_path,
-      task:task_id (title),
-      policy:policy_id (title)
-    `,
-    )
+    .select('*')
     .eq('organization_id', orgId)
     .order('created_at', { ascending: false })
     .limit(100);
 
-  const allArtifacts = artifacts || [];
+  const baseArtifacts = (rawArtifacts ?? []) as ArtifactRow[];
+  const taskIds = Array.from(
+    new Set(
+      baseArtifacts
+        .map((artifact) => artifact.task_id)
+        .filter((value): value is string => typeof value === 'string' && value.length > 0),
+    ),
+  );
+  const policyIds = Array.from(
+    new Set(
+      baseArtifacts
+        .map((artifact) => artifact.policy_id)
+        .filter((value): value is string => typeof value === 'string' && value.length > 0),
+    ),
+  );
+
+  const [{ data: taskRows }, { data: policyRows }] = await Promise.all([
+    taskIds.length
+      ? supabase.from('org_tasks').select('id, title').in('id', taskIds)
+      : Promise.resolve({ data: [] as Array<{ id: string; title: string | null }> }),
+    policyIds.length
+      ? supabase.from('org_policies').select('id, title').in('id', policyIds)
+      : Promise.resolve({ data: [] as Array<{ id: string; title: string | null }> }),
+  ]);
+
+  const taskTitleById = new Map(
+    (taskRows ?? []).map((row: { id: string; title: string | null }) => [row.id, row.title]),
+  );
+  const policyTitleById = new Map(
+    (policyRows ?? []).map((row: { id: string; title: string | null }) => [row.id, row.title]),
+  );
+
+  const allArtifacts: ArtifactRow[] = baseArtifacts.map((artifact) => ({
+    ...artifact,
+    task:
+      artifact.task_id && taskTitleById.has(artifact.task_id)
+        ? { title: taskTitleById.get(artifact.task_id) ?? null }
+        : null,
+    policy:
+      artifact.policy_id && policyTitleById.has(artifact.policy_id)
+        ? { title: policyTitleById.get(artifact.policy_id) ?? null }
+        : null,
+  }));
   const filteredArtifacts = allArtifacts.filter((artifact: any) => {
     const statusMatches =
-      statusFilter === 'all' || artifact.verification_status === statusFilter;
+      statusFilter === 'all' || getVerificationStatus(artifact) === statusFilter;
     if (!statusMatches) return false;
 
     if (!searchQuery) return true;
@@ -107,10 +163,10 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
 
   // Split (upgrade feature)
   const pending = filteredArtifacts.filter(
-    (a: any) => a.verification_status === 'pending',
+    (a: any) => getVerificationStatus(a) !== 'verified',
   );
   const verified = filteredArtifacts.filter(
-    (a: any) => a.verification_status === 'verified',
+    (a: any) => getVerificationStatus(a) === 'verified',
   );
 
   return (

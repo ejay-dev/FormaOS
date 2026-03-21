@@ -5,6 +5,7 @@
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { calculateFrameworkReadiness } from '@/lib/audit/readiness-calculator';
+import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 import type {
   ExecutivePosture,
   CriticalControl,
@@ -194,7 +195,7 @@ async function getUpcomingDeadlines(
   const ninetyDaysFromNow = new Date();
   ninetyDaysFromNow.setDate(ninetyDaysFromNow.getDate() + 90);
 
-  const { data: deadlines } = await admin
+  const { data: deadlines, error } = await admin
     .from('org_compliance_deadlines')
     .select('*')
     .eq('organization_id', orgId)
@@ -202,6 +203,15 @@ async function getUpcomingDeadlines(
     .lte('due_date', ninetyDaysFromNow.toISOString().split('T')[0])
     .order('due_date', { ascending: true })
     .limit(10);
+
+  if (error) {
+    if (isMissingSupabaseTableError(error, 'org_compliance_deadlines')) {
+      return [];
+    }
+
+    console.error('[ExecutivePosture] Failed to fetch upcoming deadlines:', error);
+    return [];
+  }
 
   return (deadlines || []).map((d: { id: string; title: string; description?: string | null; framework_slug?: string | null; due_date: string; reminder_date?: string | null; deadline_type: string }) => {
     const dueDate = new Date(d.due_date);

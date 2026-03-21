@@ -4,6 +4,7 @@
  */
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 import type {
   ComplianceDeadline,
   DeadlineType,
@@ -57,6 +58,10 @@ export async function getDeadlines(
   const { data, error, count } = await query;
 
   if (error) {
+    if (isMissingSupabaseTableError(error, 'org_compliance_deadlines')) {
+      return { deadlines: [], total: 0 };
+    }
+
     console.error('[DeadlineTracker] Failed to fetch deadlines:', error);
     return { deadlines: [], total: 0 };
   }
@@ -192,11 +197,32 @@ export async function getDeadlineSummary(
   const sevenDaysFromNow = new Date();
   sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
 
-  const { data: deadlines } = await admin
+  const { data: deadlines, error } = await admin
     .from('org_compliance_deadlines')
     .select('due_date, deadline_type, status')
     .eq('organization_id', orgId)
     .not('status', 'in', '("completed","cancelled")');
+
+  if (error) {
+    if (isMissingSupabaseTableError(error, 'org_compliance_deadlines')) {
+      return {
+        total: 0,
+        overdue: 0,
+        dueSoon: 0,
+        upcoming: 0,
+        byType: {
+          audit: 0,
+          renewal: 0,
+          review: 0,
+          submission: 0,
+          certification: 0,
+          other: 0,
+        },
+      };
+    }
+
+    console.error('[DeadlineTracker] Failed to summarize deadlines:', error);
+  }
 
   if (!deadlines?.length) {
     return {

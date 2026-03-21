@@ -4,14 +4,14 @@ import { redirect } from "next/navigation";
 
 type EmailLog = {
   id: string;
-  email_type: string;
-  recipient_email: string;
+  emailType: string;
+  recipientEmail: string;
   subject: string;
   status: string;
-  error_message: string | null;
-  created_at: string;
-  resend_id: string | null;
-  user_id: string | null;
+  errorMessage: string | null;
+  createdAt: string;
+  resendId: string | null;
+  userId: string | null;
 };
 
 export default async function EmailHistoryPage() {
@@ -74,15 +74,15 @@ export default async function EmailHistoryPage() {
                 <tr key={log.id} className="hover:bg-white/5 transition-colors group">
                   <td className="px-4 sm:px-6 py-4 font-medium text-slate-100">
                     <div className="flex flex-col">
-                      <span>{log.recipient_email}</span>
+                      <span>{log.recipientEmail}</span>
                       <span className="text-xs text-slate-400 font-mono uppercase tracking-tighter">
-                        Ref: {log.resend_id ? log.resend_id.split('-').pop() : 'N/A'}
+                        Ref: {log.resendId ? log.resendId.split('-').pop() : 'N/A'}
                       </span>
                     </div>
                   </td>
                   <td className="px-4 sm:px-6 py-4">
                     <span className="capitalize px-2 py-1 rounded bg-white/10 text-slate-400 text-xs font-semibold">
-                      {log.email_type.replace('_', ' ')}
+                      {log.emailType.replace('_', ' ')}
                     </span>
                   </td>
                   <td className="px-4 sm:px-6 py-4 text-slate-400">
@@ -100,15 +100,15 @@ export default async function EmailHistoryPage() {
                       </span>
                       
                       {/* FORENSIC ERROR MESSAGE: Only shows if the email failed */}
-                      {log.status === 'failed' && log.error_message && (
+                      {log.status === 'failed' && log.errorMessage && (
                         <span className="text-xs text-red-500 font-medium leading-tight max-w-[180px]">
-                          Reason: {log.error_message}
+                          Reason: {log.errorMessage}
                         </span>
                       )}
                     </div>
                   </td>
                   <td className="px-4 sm:px-6 py-4 text-slate-400 tabular-nums">
-                    {new Date(log.created_at).toLocaleString('en-GB', {
+                    {new Date(log.createdAt).toLocaleString('en-GB', {
                       day: '2-digit',
                       month: 'short',
                       hour: '2-digit',

@@ -3,6 +3,7 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { insertOrgTaskCompat } from "@/lib/tasks/persistence";
 
 async function requireUserOrganization(
   supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
@@ -249,11 +250,16 @@ export async function createIncident(formData: FormData) {
 
   // Create follow-up task if required
   if (incident.follow_up_required) {
-    await supabase.from("org_tasks").insert({
+    await insertOrgTaskCompat(supabase, {
       organization_id: membership.organization_id,
       title: `Follow-up: Incident - ${incident.incident_type}`,
       description: `Follow up on incident: ${incident.description?.substring(0, 100)}...`,
-      priority: incident.severity === "critical" ? "urgent" : incident.severity === "high" ? "high" : "medium",
+      priority:
+        incident.severity === "critical"
+          ? "critical"
+          : incident.severity === "high"
+            ? "high"
+            : "medium",
       due_date: incident.follow_up_due_date,
       status: "pending",
       created_by: user.id,
@@ -341,7 +347,7 @@ export async function createStaffCredential(formData: FormData) {
     const reminderDate = new Date(expiryDate);
     reminderDate.setDate(reminderDate.getDate() - 30); // 30 days before expiry
 
-    await supabase.from("org_tasks").insert({
+    await insertOrgTaskCompat(supabase, {
       organization_id: membership.organization_id,
       title: `Credential Expiring: ${credential.credential_name}`,
       description: `${credential.credential_type} credential expires on ${expiryDate.toLocaleDateString()}`,

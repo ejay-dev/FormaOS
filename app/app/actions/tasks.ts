@@ -7,6 +7,8 @@ import { revalidatePath } from "next/cache";
 import { notifySelf, createNotification } from "@/app/app/actions/notifications";
 import { requirePermission } from "@/app/app/actions/rbac";
 import { logAuditEvent } from "@/app/app/actions/audit-events";
+import { normalizeTaskPriority } from "@/lib/tasks/priority";
+import { insertOrgTaskCompat } from "@/lib/tasks/persistence";
 
 export async function createTask(formData: FormData) {
   const supabase = await createSupabaseServerClient();
@@ -26,7 +28,7 @@ export async function createTask(formData: FormData) {
   }
 
   const title = (formData.get("title") as string) || "";
-  const priority = (formData.get("priority") as string) || "standard";
+  const priority = normalizeTaskPriority(formData.get("priority") as string | null);
   const dueDateRaw = (formData.get("dueDate") as string) || "";
   const dueDate = dueDateRaw.trim() === "" ? null : dueDateRaw;
   const recurrenceDays = parseInt(formData.get("recurrenceDays") as string) || 0;
@@ -45,9 +47,9 @@ export async function createTask(formData: FormData) {
     }
   }
 
-  const { error, data: newTask } = await supabase
-    .from("org_tasks")
-    .insert({
+  const { data: newTask, payload: insertedTask } = await insertOrgTaskCompat(
+    supabase,
+    {
       organization_id: membership.organization_id,
       title,
       priority,
@@ -57,11 +59,17 @@ export async function createTask(formData: FormData) {
       is_recurring: recurrenceDays > 0,
       recurrence_days: recurrenceDays,
       patient_id: patientId,
-    })
-    .select()
-    .single();
+    },
+    { returning: "single" },
+  );
 
-  if (error) throw new Error(`Task Creation Failed: ${error.message}`);
+  if (!newTask) throw new Error("Task Creation Failed: task row was not returned");
+
+  const storedRecurrenceDays =
+    typeof insertedTask.recurrence_days === "number"
+      ? insertedTask.recurrence_days
+      : 0;
+  const recurrenceEnabled = insertedTask.is_recurring === true;
 
   await logActivity(membership.organization_id, "CREATE_TASK", {
     resourceName: title,
@@ -83,7 +91,7 @@ export async function createTask(formData: FormData) {
     {
       priority,
       dueDate,
-      recurrenceDays,
+      recurrenceDays: storedRecurrenceDays,
     },
   );
 
@@ -113,8 +121,8 @@ export async function createTask(formData: FormData) {
       taskId: newTask.id,
       priority,
       dueDate,
-      isRecurring: recurrenceDays > 0,
-      recurrenceDays,
+      isRecurring: recurrenceEnabled,
+      recurrenceDays: storedRecurrenceDays,
     },
   });
 
@@ -191,9 +199,9 @@ async function _completeTaskCore(supabase: any, taskId: string, user: any) {
     const nextDueDate = new Date();
     nextDueDate.setDate(nextDueDate.getDate() + task.recurrence_days);
 
-    const { data: nextTask } = await supabase
-      .from("org_tasks")
-      .insert({
+    const { data: nextTask } = await insertOrgTaskCompat(
+      supabase,
+      {
         organization_id: task.organization_id,
         title: task.title,
         priority: task.priority,
@@ -204,9 +212,9 @@ async function _completeTaskCore(supabase: any, taskId: string, user: any) {
         recurrence_days: task.recurrence_days,
         linked_policy_id: task.linked_policy_id,
         linked_asset_id: task.linked_asset_id,
-      })
-      .select()
-      .single();
+      },
+      { returning: "single" },
+    );
 
     if (nextTask) {
       await logActivity(task.organization_id, "CREATE_TASK", {

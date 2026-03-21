@@ -29,6 +29,64 @@ type SeedTaskInput = {
   dueDate?: string | null;
 };
 
+type SeedParticipantInput = {
+  fullName: string;
+  preferredName?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  externalId?: string | null;
+  ndisNumber?: string | null;
+  fundingType?: string | null;
+  careStatus?: string;
+  riskLevel?: string;
+  emergencyFlag?: boolean;
+  primaryDiagnosis?: string | null;
+};
+
+type SeedVisitInput = {
+  clientId: string;
+  staffId?: string | null;
+  visitType?: string;
+  serviceCategory?: string | null;
+  scheduledStart?: string;
+  scheduledEnd?: string | null;
+  status?: string;
+  locationType?: string | null;
+  address?: string | null;
+  notes?: string | null;
+};
+
+type SeedIncidentInput = {
+  patientId?: string | null;
+  severity?: string;
+  status?: string;
+  incidentType?: string;
+  description: string;
+  occurredAt?: string;
+  location?: string | null;
+  followUpRequired?: boolean;
+  followUpDueDate?: string | null;
+};
+
+type SeedStaffCredentialInput = {
+  userId?: string | null;
+  credentialType?: string;
+  credentialName: string;
+  credentialNumber?: string | null;
+  issuingAuthority?: string | null;
+  issueDate?: string | null;
+  expiryDate?: string | null;
+  status?: string;
+};
+
+type SeedPolicyInput = {
+  title: string;
+  description?: string | null;
+  content: string;
+  frameworkTag?: string;
+  status?: string;
+};
+
 type SeedEvidenceInput = {
   fileName: string;
   title?: string;
@@ -339,6 +397,203 @@ export async function seedTask(
   }
 
   return data as Record<string, any>;
+}
+
+export async function seedParticipant(
+  context: WorkspaceSeedContext,
+  input: SeedParticipantInput,
+) {
+  const now = new Date().toISOString();
+  const row = {
+    organization_id: context.orgId,
+    full_name: input.fullName,
+    preferred_name: input.preferredName ?? null,
+    email: input.email ?? null,
+    phone: input.phone ?? null,
+    external_id: input.externalId ?? `E2E-${Date.now()}`,
+    ndis_number: input.ndisNumber ?? null,
+    funding_type: input.fundingType ?? 'private',
+    care_status: input.careStatus ?? 'active',
+    risk_level: input.riskLevel ?? 'medium',
+    emergency_flag: input.emergencyFlag ?? false,
+    primary_diagnosis: input.primaryDiagnosis ?? null,
+    created_by: context.userId,
+    created_at: now,
+    updated_at: now,
+  };
+
+  const { data, row: insertedRow } = await insertWithSchemaTolerance(
+    context.admin,
+    'org_patients',
+    row,
+  );
+
+  return {
+    ...insertedRow,
+    ...((data as Record<string, any>) ?? {}),
+  };
+}
+
+export async function seedVisit(
+  context: WorkspaceSeedContext,
+  input: SeedVisitInput,
+) {
+  const now = new Date();
+  const scheduledStart =
+    input.scheduledStart ?? new Date(now.getTime() + 60 * 60 * 1000).toISOString();
+  const row = {
+    organization_id: context.orgId,
+    client_id: input.clientId,
+    staff_id: input.staffId ?? context.userId,
+    visit_type: input.visitType ?? 'service',
+    service_category: input.serviceCategory ?? 'community_access',
+    scheduled_start: scheduledStart,
+    scheduled_end:
+      input.scheduledEnd ??
+      new Date(new Date(scheduledStart).getTime() + 60 * 60 * 1000).toISOString(),
+    status: input.status ?? 'scheduled',
+    location_type: input.locationType ?? 'client_home',
+    address: input.address ?? '123 E2E Test Street',
+    notes: input.notes ?? null,
+    created_by: context.userId,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  };
+
+  const { data, row: insertedRow } = await insertWithSchemaTolerance(
+    context.admin,
+    'org_visits',
+    row,
+  );
+
+  return {
+    ...insertedRow,
+    ...((data as Record<string, any>) ?? {}),
+  };
+}
+
+export async function seedIncident(
+  context: WorkspaceSeedContext,
+  input: SeedIncidentInput,
+) {
+  const now = new Date().toISOString();
+  const row = {
+    organization_id: context.orgId,
+    patient_id: input.patientId ?? null,
+    reported_by: context.userId,
+    incident_type: input.incidentType ?? 'general',
+    severity: input.severity ?? 'medium',
+    status: input.status ?? 'open',
+    description: input.description,
+    occurred_at: input.occurredAt ?? now,
+    location: input.location ?? 'Main facility',
+    follow_up_required: input.followUpRequired ?? false,
+    follow_up_due_date: input.followUpDueDate ?? null,
+    created_at: now,
+    updated_at: now,
+  };
+
+  const { data, row: insertedRow } = await insertWithSchemaTolerance(
+    context.admin,
+    'org_incidents',
+    row,
+  );
+
+  return {
+    ...insertedRow,
+    ...((data as Record<string, any>) ?? {}),
+  };
+}
+
+export async function seedStaffCredential(
+  context: WorkspaceSeedContext,
+  input: SeedStaffCredentialInput,
+) {
+  const now = new Date().toISOString();
+  const row = {
+    organization_id: context.orgId,
+    user_id: input.userId ?? context.userId,
+    credential_type: input.credentialType ?? 'first_aid',
+    credential_name: input.credentialName,
+    credential_number: input.credentialNumber ?? null,
+    issuing_authority: input.issuingAuthority ?? 'FormaOS Test Authority',
+    issue_date: input.issueDate ?? now.slice(0, 10),
+    expiry_date: input.expiryDate ?? new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
+    status: input.status ?? 'verified',
+    verified_at: input.status === 'verified' || !input.status ? now : null,
+    created_at: now,
+    updated_at: now,
+  };
+
+  const { data, row: insertedRow } = await insertWithSchemaTolerance(
+    context.admin,
+    'org_staff_credentials',
+    row,
+  );
+
+  return {
+    ...insertedRow,
+    ...((data as Record<string, any>) ?? {}),
+  };
+}
+
+export async function seedPolicy(
+  context: WorkspaceSeedContext,
+  input: SeedPolicyInput,
+) {
+  const now = new Date().toISOString();
+  const row = {
+    organization_id: context.orgId,
+    title: input.title,
+    description: input.description ?? null,
+    content: input.content,
+    framework_tag: input.frameworkTag ?? 'General',
+    status: input.status ?? 'draft',
+    created_by: context.userId,
+    created_at: now,
+    updated_at: now,
+  };
+
+  const { data, row: insertedRow } = await insertWithSchemaTolerance(
+    context.admin,
+    'org_policies',
+    row,
+  );
+
+  return {
+    ...insertedRow,
+    ...((data as Record<string, any>) ?? {}),
+  };
+}
+
+export async function seedPendingInvitation(
+  context: WorkspaceSeedContext,
+  email: string,
+  role: 'admin' | 'member' | 'viewer' = 'member',
+) {
+  const now = new Date().toISOString();
+  const row = {
+    organization_id: context.orgId,
+    email: email.toLowerCase(),
+    role,
+    status: 'pending',
+    token: randomUUID(),
+    invited_by: context.userId,
+    expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    created_at: now,
+    updated_at: now,
+  };
+
+  const { data, row: insertedRow } = await insertWithSchemaTolerance(
+    context.admin,
+    'team_invitations',
+    row,
+  );
+
+  return {
+    ...insertedRow,
+    ...((data as Record<string, any>) ?? {}),
+  };
 }
 
 export async function seedEvidence(

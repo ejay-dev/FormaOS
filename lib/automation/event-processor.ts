@@ -7,6 +7,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { processTrigger, type TriggerEvent } from './trigger-engine';
 import { updateComplianceScore } from './compliance-score-engine';
 import { automationLogger } from '@/lib/observability/structured-logger';
+import { insertOrgTaskCompat } from '@/lib/tasks/persistence';
 
 export type EventType =
   | 'evidence_uploaded'
@@ -242,7 +243,7 @@ async function handleTaskCompleted(
       Date.now() + task.recurrence_days * 24 * 60 * 60 * 1000
     );
 
-    const { error } = await supabase.from('org_tasks').insert({
+    const { data: nextTask } = await insertOrgTaskCompat(supabase, {
       organization_id: event.organizationId,
       title: task.title,
       description: task.description,
@@ -257,7 +258,7 @@ async function handleTaskCompleted(
       entity_id: task.entity_id,
     });
 
-    if (!error) {
+    if (nextTask) {
       automationLogger.info('automation_recurring_task_generated', {
         organizationId: event.organizationId,
         taskTitle: task.title,

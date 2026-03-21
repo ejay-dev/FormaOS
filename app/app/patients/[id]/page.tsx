@@ -589,9 +589,9 @@ export default async function PatientDetailPage({
             <select
               name="priority"
               className="rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-sm text-slate-100 outline-none"
-              defaultValue="standard"
+              defaultValue="medium"
             >
-              <option value="standard">Standard</option>
+              <option value="medium">Medium</option>
               <option value="high">High</option>
               <option value="critical">Critical</option>
             </select>

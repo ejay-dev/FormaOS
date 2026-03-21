@@ -16,6 +16,10 @@ import { EvidenceButton } from "@/components/tasks/evidence-button";
 import { createTask } from "@/app/app/actions/tasks";
 import { fetchSystemState } from "@/lib/system-state/server";
 import { redirect } from "next/navigation";
+import {
+  normalizeTaskPriority,
+  taskPriorityLabel,
+} from "@/lib/tasks/priority";
 
 type TaskRow = {
   id: string;
@@ -45,7 +49,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
   const query = queryRaw.toLowerCase();
   const priorityFilterRaw = parseSingleValue(resolvedSearchParams.priority).trim().toLowerCase();
   const statusFilterRaw = parseSingleValue(resolvedSearchParams.status).trim().toLowerCase();
-  const priorityFilter = ["all", "critical", "high", "standard"].includes(priorityFilterRaw)
+  const priorityFilter = ["all", "critical", "high", "medium", "low"].includes(priorityFilterRaw)
     ? priorityFilterRaw
     : "all";
   const statusFilter = ["all", "open", "in_progress", "completed"].includes(statusFilterRaw)
@@ -73,7 +77,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
 
   const allTasks: TaskRow[] = tasks || [];
   const filteredTasks = allTasks.filter((task) => {
-    const normalizedPriority = (task.priority ?? "standard").toLowerCase();
+    const normalizedPriority = normalizeTaskPriority(task.priority);
     const normalizedStatus = (task.status ?? "").toLowerCase();
 
     const matchesPriority =
@@ -138,12 +142,12 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                       </label>
                       <select
                         name="priority"
-                        defaultValue="standard"
+                        defaultValue="medium"
                         className="w-full rounded-xl border border-white/10 bg-[hsl(var(--card))] px-4 py-2.5 text-sm text-slate-100 focus:outline-white/20"
                       >
                         <option value="critical">Critical</option>
                         <option value="high">High</option>
-                        <option value="standard">Standard</option>
+                        <option value="medium">Medium</option>
                       </select>
                     </div>
                     <div className="space-y-2">
@@ -204,7 +208,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
             <option value="all">Priority: All</option>
             <option value="critical">Priority: Critical</option>
             <option value="high">Priority: High</option>
-            <option value="standard">Priority: Standard</option>
+            <option value="medium">Priority: Medium</option>
           </select>
           <select
             name="status"
@@ -272,11 +276,11 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
 
                 <td className="px-4 sm:px-6 py-4">
                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-tighter ${
-                       task.priority === 'critical' ? 'bg-rose-500/15 text-rose-200' : 
-                       task.priority === 'high' ? 'bg-amber-400/15 text-amber-200' : 
+                       normalizeTaskPriority(task.priority) === 'critical' ? 'bg-rose-500/15 text-rose-200' : 
+                       normalizeTaskPriority(task.priority) === 'high' ? 'bg-amber-400/15 text-amber-200' : 
                        'bg-sky-500/15 text-sky-200'
                    }`}>
-                       {task.priority || 'standard'}
+                       {taskPriorityLabel(task.priority)}
                    </span>
                 </td>
 

@@ -5,6 +5,7 @@ import { createInAppNotification } from './channels/in-app';
 import { deliverEmailNotification } from './channels/email';
 import { deliverSlackNotification } from './channels/slack';
 import { deliverTeamsNotification } from './channels/teams';
+import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 import {
   getDefaultDigestFrequency,
   type NotificationChannelRow,
@@ -15,6 +16,20 @@ import {
 } from './types';
 
 const DEFAULT_DEDUPE_WINDOW_MINUTES = 20;
+
+function logNotificationDeliveryFailure(
+  channel: string,
+  userId: string,
+  orgId: string,
+  error: unknown,
+) {
+  console.warn('[Notifications] delivery failed', {
+    channel,
+    userId,
+    orgId,
+    error: error instanceof Error ? error.message : 'unknown error',
+  });
+}
 
 async function resolveRecipientIds(
   orgId: string,
@@ -203,6 +218,9 @@ async function isDuplicateNotification(
     .maybeSingle();
 
   if (error) {
+    if (isMissingSupabaseTableError(error, 'notifications')) {
+      return false;
+    }
     throw new Error(error.message);
   }
 
@@ -248,58 +266,84 @@ export async function notify(
 
     const { preferences, channels } = await loadPreferences(orgId, userId, event.type);
     const deliveredChannels: string[] = [];
+    let deliveryFailed = false;
 
     const inAppPreference = getPreferenceForChannel(preferences, event, 'in_app');
     if (inAppPreference.enabled) {
-      const notification = await createInAppNotification(recipient, event);
-      deliveredChannels.push('in_app');
+      try {
+        const notification = await createInAppNotification(recipient, event);
+        deliveredChannels.push('in_app');
 
-      const emailPreference = getPreferenceForChannel(preferences, event, 'email');
-      if (emailPreference.enabled && !isWithinQuietHours(emailPreference.quiet_hours, recipient.timezone || 'UTC')) {
-        await deliverEmailNotification({
-          recipient,
-          event,
-          notification,
-          digestFrequency:
-            event.priority === 'critical'
-              ? 'instant'
-              : emailPreference.digest_frequency,
-        });
-        deliveredChannels.push('email');
-      } else if (emailPreference.enabled && event.priority === 'critical') {
-        await deliverEmailNotification({
-          recipient,
-          event,
-          notification,
-          digestFrequency: 'instant',
-        });
-        deliveredChannels.push('email');
-      }
+        const emailPreference = getPreferenceForChannel(preferences, event, 'email');
+        if (emailPreference.enabled && !isWithinQuietHours(emailPreference.quiet_hours, recipient.timezone || 'UTC')) {
+          try {
+            await deliverEmailNotification({
+              recipient,
+              event,
+              notification,
+              digestFrequency:
+                event.priority === 'critical'
+                  ? 'instant'
+                  : emailPreference.digest_frequency,
+            });
+            deliveredChannels.push('email');
+          } catch (error) {
+            deliveryFailed = true;
+            logNotificationDeliveryFailure('email', userId, orgId, error);
+          }
+        } else if (emailPreference.enabled && event.priority === 'critical') {
+          try {
+            await deliverEmailNotification({
+              recipient,
+              event,
+              notification,
+              digestFrequency: 'instant',
+            });
+            deliveredChannels.push('email');
+          } catch (error) {
+            deliveryFailed = true;
+            logNotificationDeliveryFailure('email', userId, orgId, error);
+          }
+        }
 
-      const slackPreference = getPreferenceForChannel(preferences, event, 'slack');
-      if (slackPreference.enabled) {
-        const slackChannel =
-          channels.find((channel) => channel.channel_type === 'slack') ?? null;
-        await deliverSlackNotification({
-          recipient,
-          channel: slackChannel,
-          notification,
-          event,
-        });
-        deliveredChannels.push('slack');
-      }
+        const slackPreference = getPreferenceForChannel(preferences, event, 'slack');
+        if (slackPreference.enabled) {
+          const slackChannel =
+            channels.find((channel) => channel.channel_type === 'slack') ?? null;
+          try {
+            await deliverSlackNotification({
+              recipient,
+              channel: slackChannel,
+              notification,
+              event,
+            });
+            deliveredChannels.push('slack');
+          } catch (error) {
+            deliveryFailed = true;
+            logNotificationDeliveryFailure('slack', userId, orgId, error);
+          }
+        }
 
-      const teamsPreference = getPreferenceForChannel(preferences, event, 'teams');
-      if (teamsPreference.enabled) {
-        const teamsChannel =
-          channels.find((channel) => channel.channel_type === 'teams') ?? null;
-        await deliverTeamsNotification({
-          recipient,
-          channel: teamsChannel,
-          notification,
-          event,
-        });
-        deliveredChannels.push('teams');
+        const teamsPreference = getPreferenceForChannel(preferences, event, 'teams');
+        if (teamsPreference.enabled) {
+          const teamsChannel =
+            channels.find((channel) => channel.channel_type === 'teams') ?? null;
+          try {
+            await deliverTeamsNotification({
+              recipient,
+              channel: teamsChannel,
+              notification,
+              event,
+            });
+            deliveredChannels.push('teams');
+          } catch (error) {
+            deliveryFailed = true;
+            logNotificationDeliveryFailure('teams', userId, orgId, error);
+          }
+        }
+      } catch (error) {
+        deliveryFailed = true;
+        logNotificationDeliveryFailure('in_app', userId, orgId, error);
       }
     }
 
@@ -307,7 +351,13 @@ export async function notify(
       userId,
       status: deliveredChannels.length ? 'delivered' : 'skipped',
       channels: deliveredChannels,
-      reason: deliveredChannels.length ? undefined : 'all_channels_disabled',
+      reason: deliveredChannels.length
+        ? deliveryFailed
+          ? 'partial_delivery_failure'
+          : undefined
+        : deliveryFailed
+          ? 'delivery_failed'
+          : 'all_channels_disabled',
     });
   }
 
