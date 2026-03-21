@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 import {
   createMagicLinkSession,
+  getSupabaseAuthWriteAvailability,
   setPlaywrightSession,
 } from './helpers/test-auth';
 
@@ -50,6 +51,13 @@ test.describe('Admin founder smoke', () => {
     test.skip(
       !hasMagicLinkEnv(),
       'Skipping: Supabase env missing for founder auth bootstrap',
+    );
+
+    const authAvailability = await getSupabaseAuthWriteAvailability();
+    test.skip(
+      !authAvailability.available,
+      authAvailability.reason ??
+        'Skipping: Supabase Auth write endpoints are unavailable for founder auth bootstrap.',
     );
 
     const founderEmail = resolveFounderEmail();

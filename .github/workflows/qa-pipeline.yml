@@ -201,6 +201,10 @@ jobs:
       - run: npm ci
       # lighthouse-ci uses `.lighthouserc.json` startServerCommand; avoid port conflicts.
       - run: npm run test:lighthouse
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL || '' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || '' }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || '' }}
 
       - name: Bundle size check
         run: |
@@ -217,7 +221,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lighthouse-report
-          path: lighthouse-reports/
+          path: .lighthouseci/
 
   database-tests:
     name: Database & Backend Tests

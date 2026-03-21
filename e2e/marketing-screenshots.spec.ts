@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -75,6 +75,31 @@ function routeSlug(route: string): string {
   return route.replace(/^\//, '').replace(/\//g, '--');
 }
 
+async function gotoForCapture(page: Page, route: string) {
+  const response = await page.goto(route, {
+    waitUntil: 'domcontentloaded',
+    timeout: 45000,
+  });
+
+  await page.waitForSelector('main', { timeout: 15000 });
+
+  // Marketing pages use rich motion and client-side hydration; `networkidle`
+  // is too strict and causes false negatives when background work continues.
+  await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {});
+
+  await page
+    .evaluate(async () => {
+      if ('fonts' in document) {
+        await document.fonts.ready;
+      }
+    })
+    .catch(() => {});
+
+  await page.waitForTimeout(1200);
+
+  return response;
+}
+
 test.describe('Marketing screenshot capture', () => {
   test.beforeAll(async () => {
     fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
@@ -85,10 +110,8 @@ test.describe('Marketing screenshot capture', () => {
 
     test(`desktop ${route}`, async ({ page }) => {
       await page.setViewportSize({ width: 1440, height: 900 });
-      const resp = await page.goto(route, { waitUntil: 'networkidle', timeout: 30000 });
+      const resp = await gotoForCapture(page, route);
       expect(resp?.status()).toBeLessThan(400);
-      // Wait for hero animations to settle
-      await page.waitForTimeout(1500);
       await page.screenshot({
         path: path.join(SCREENSHOT_DIR, `${slug}-desktop.png`),
         fullPage: false,
@@ -97,9 +120,8 @@ test.describe('Marketing screenshot capture', () => {
 
     test(`mobile ${route}`, async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 844 });
-      const resp = await page.goto(route, { waitUntil: 'networkidle', timeout: 30000 });
+      const resp = await gotoForCapture(page, route);
       expect(resp?.status()).toBeLessThan(400);
-      await page.waitForTimeout(1500);
       await page.screenshot({
         path: path.join(SCREENSHOT_DIR, `${slug}-mobile.png`),
         fullPage: false,
@@ -117,8 +139,8 @@ test.describe('Interaction traces (3 flagship pages)', () => {
     test(`trace ${route}`, async ({ page, context }) => {
       await context.tracing.start({ screenshots: true, snapshots: true });
       await page.setViewportSize({ width: 1440, height: 900 });
-      await page.goto(route, { waitUntil: 'networkidle', timeout: 30000 });
-      await page.waitForTimeout(1000);
+      const resp = await gotoForCapture(page, route);
+      expect(resp?.status()).toBeLessThan(400);
 
       // Move cursor across hero area to trigger 3D effects
       await page.mouse.move(720, 300);

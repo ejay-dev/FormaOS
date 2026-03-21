@@ -5,7 +5,6 @@
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { getAdminProfileDirectoryEntries } from '@/lib/users/admin-profile-directory';
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Plus, Shield, AlertTriangle, CheckCircle, Clock, User, Calendar, Download } from "lucide-react";
@@ -95,7 +94,7 @@ export default async function StaffCompliancePage() {
   // Calculate stats
   type CredentialRow = NonNullable<typeof credentials>[number];
   type Credential = CredentialRow & {
-    staff: { email?: string | null } | null;
+    staff: { displayName?: string | null } | null;
   };
 
   const credentialRows = (credentials ?? []) as CredentialRow[];
@@ -106,16 +105,28 @@ export default async function StaffCompliancePage() {
         .filter((value): value is string => Boolean(value)),
     ),
   );
-  const staffProfiles = staffIds.length
-    ? await getAdminProfileDirectoryEntries(staffIds, admin)
-    : [];
-  const staffEmailById = new Map(
-    staffProfiles.map((profile) => [profile.userId, profile.email ?? null]),
+  const { data: staffProfiles } = staffIds.length
+    ? await admin
+        .from('user_profiles')
+        .select('user_id, full_name')
+        .in('user_id', staffIds)
+    : { data: [] as { user_id?: string | null; full_name?: string | null }[] };
+  const staffDisplayNameById = new Map(
+    ((staffProfiles as
+      | { user_id?: string | null; full_name?: string | null }[]
+      | null) ?? []
+    ).map((profile) => [
+      profile.user_id ?? '',
+      profile.full_name?.trim() || null,
+    ]),
   );
   const enrichedCredentials: Credential[] = credentialRows.map((credential) => ({
     ...credential,
     staff: credential.user_id
-      ? { email: staffEmailById.get(credential.user_id as string) ?? null }
+      ? {
+          displayName:
+            staffDisplayNameById.get(credential.user_id as string) ?? null,
+        }
       : null,
   }));
   const now = new Date();
@@ -249,7 +260,7 @@ export default async function StaffCompliancePage() {
                     <div className="flex items-center gap-2">
                       <User className="h-4 w-4 text-muted-foreground" />
                       <span className="font-medium">
-                        {(credential.staff as { email?: string } | null)?.email?.split("@")[0] || "-"}
+                        {(credential.staff as { displayName?: string } | null)?.displayName || "-"}
                       </span>
                     </div>
                   </td>

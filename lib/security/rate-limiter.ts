@@ -49,6 +49,15 @@ const RATE_LIMITS = {
     failClosed: true,
   } as RateLimitConfig,
 
+  SIGNUP: {
+    windowMs: 15 * 60 * 1000,
+    maxRequests: 10,
+    keyPrefix: 'rl:signup',
+    // Signup should degrade to in-memory if Redis is down; otherwise a cache
+    // outage becomes a user-facing availability incident.
+    failClosed: false,
+  } as RateLimitConfig,
+
   API: {
     windowMs: 60 * 1000,
     maxRequests: 100,
@@ -433,6 +442,51 @@ export async function rateLimitAuth(request: Request): Promise<{
       endpoint,
       requestCount: RATE_LIMITS.AUTH.maxRequests,
       windowStart: result.resetAt - RATE_LIMITS.AUTH.windowMs,
+      blocked: true,
+      ipAddress,
+      userAgent,
+    });
+  }
+
+  return {
+    allowed: result.success,
+    headers,
+    ...(result.success
+      ? {}
+      : {
+          error: result.degradedReason
+            ? 'backend_unavailable'
+            : 'too_many_requests',
+        }),
+  };
+}
+
+export async function rateLimitSignup(request: Request): Promise<{
+  allowed: boolean;
+  headers: Record<string, string>;
+  error?: 'too_many_requests' | 'backend_unavailable';
+}> {
+  if (isNonProductionE2EBypass(request)) {
+    const result = createBypassResult(RATE_LIMITS.SIGNUP);
+    return {
+      allowed: true,
+      headers: createRateLimitHeaders(result),
+    };
+  }
+
+  const identifier = await getClientIdentifier();
+  const result = await checkRateLimit(RATE_LIMITS.SIGNUP, identifier);
+  const headers = createRateLimitHeaders(result);
+
+  if (!result.success) {
+    const endpoint = new URL(request.url).pathname;
+    const ipAddress = extractClientIP(request.headers);
+    const userAgent = request.headers.get('user-agent');
+    void logRateLimitEvent({
+      identifier,
+      endpoint,
+      requestCount: RATE_LIMITS.SIGNUP.maxRequests,
+      windowStart: result.resetAt - RATE_LIMITS.SIGNUP.windowMs,
       blocked: true,
       ipAddress,
       userAgent,

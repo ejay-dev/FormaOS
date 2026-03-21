@@ -3,6 +3,8 @@
  * Provides self-contained auth for Playwright tests
  */
 
+import fs from 'fs';
+import path from 'path';
 import { createClient, type Session } from '@supabase/supabase-js';
 import { config } from 'dotenv';
 
@@ -22,6 +24,13 @@ type SupabaseEnv = {
   serviceRoleKey: string;
 };
 
+type AuthWriteAvailability = {
+  available: boolean;
+  reason: string | null;
+};
+
+const AUTH_BOOTSTRAP_TIMEOUT_MS = 5_000;
+
 function isPlaceholderValue(value: string) {
   const normalized = value.trim().toLowerCase();
   return (
@@ -32,6 +41,10 @@ function isPlaceholderValue(value: string) {
     normalized.startsWith('changeme') ||
     /^<.*>$/.test(normalized)
   );
+}
+
+function sanitizeEnvValue(value: string | undefined) {
+  return (value ?? '').trim().replace(/^['"]|['"]$/g, '');
 }
 
 function isResolvableSupabaseUrl(value: string) {
@@ -49,6 +62,10 @@ function toBootstrapErrorMessage(error: unknown) {
   if (
     message.includes('ENOTFOUND') ||
     message.includes('fetch failed') ||
+    message.includes('TimeoutError') ||
+    message.includes('timeout') ||
+    message.includes('upstream connect error') ||
+    message.includes("Unexpected token '<'") ||
     message.includes('Invalid API key') ||
     message.includes('invalid api key') ||
     message.includes('invalid jwt') ||
@@ -77,6 +94,44 @@ export function isE2EAuthBootstrapError(
 
 // Test user state (module-level for cleanup)
 let createdTestUser: TestUser | null = null;
+const E2E_CACHE_DIR = path.join(process.cwd(), 'test-results');
+const E2E_AUTH_CACHE_PATH = path.join(E2E_CACHE_DIR, 'e2e-auth-user.json');
+let cachedAuthWriteAvailability: AuthWriteAvailability | null = null;
+
+function loadCachedTestUser(): TestUser | null {
+  try {
+    if (!fs.existsSync(E2E_AUTH_CACHE_PATH)) {
+      return null;
+    }
+
+    const parsed = JSON.parse(
+      fs.readFileSync(E2E_AUTH_CACHE_PATH, 'utf8'),
+    ) as TestUser;
+
+    if (!parsed?.id || !parsed?.email || !parsed?.password) {
+      return null;
+    }
+
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function persistCachedTestUser(user: TestUser) {
+  fs.mkdirSync(E2E_CACHE_DIR, { recursive: true });
+  fs.writeFileSync(E2E_AUTH_CACHE_PATH, JSON.stringify(user, null, 2));
+}
+
+function clearCachedTestUser() {
+  try {
+    if (fs.existsSync(E2E_AUTH_CACHE_PATH)) {
+      fs.unlinkSync(E2E_AUTH_CACHE_PATH);
+    }
+  } catch (error) {
+    console.warn('[E2E] Failed to clear cached auth user:', error);
+  }
+}
 
 /**
  * Get or create test credentials
@@ -101,6 +156,15 @@ export async function getTestCredentials(): Promise<{
     };
   }
 
+  const cachedTestUser = loadCachedTestUser();
+  if (cachedTestUser) {
+    createdTestUser = cachedTestUser;
+    return {
+      email: cachedTestUser.email,
+      password: cachedTestUser.password,
+    };
+  }
+
   // Create temporary test user
   const testUser = await createTemporaryTestUser();
   return {
@@ -110,9 +174,9 @@ export async function getTestCredentials(): Promise<{
 }
 
 function resolveSupabaseEnv(): SupabaseEnv {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseUrl = sanitizeEnvValue(process.env.NEXT_PUBLIC_SUPABASE_URL);
+  const anonKey = sanitizeEnvValue(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+  const serviceRoleKey = sanitizeEnvValue(process.env.SUPABASE_SERVICE_ROLE_KEY);
 
   if (!supabaseUrl || !anonKey || !serviceRoleKey) {
     throw new E2EAuthBootstrapError(
@@ -132,6 +196,60 @@ function resolveSupabaseEnv(): SupabaseEnv {
   }
 
   return { url: supabaseUrl, anonKey, serviceRoleKey };
+}
+
+export async function getSupabaseAuthWriteAvailability(): Promise<AuthWriteAvailability> {
+  if (cachedAuthWriteAvailability) {
+    return cachedAuthWriteAvailability;
+  }
+
+  try {
+    const { url, anonKey } = resolveSupabaseEnv();
+    const response = await fetch(`${url}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: anonKey,
+      },
+      body: JSON.stringify({
+        email: `auth-probe-${Date.now()}@test.formaos.local`,
+        password: 'invalid-password',
+      }),
+      signal: AbortSignal.timeout(AUTH_BOOTSTRAP_TIMEOUT_MS),
+    });
+
+    if ([400, 401, 422, 429].includes(response.status)) {
+      cachedAuthWriteAvailability = {
+        available: true,
+        reason: null,
+      };
+      return cachedAuthWriteAvailability;
+    }
+
+    const responseText = await response.text().catch(() => '');
+    cachedAuthWriteAvailability = {
+      available: false,
+      reason: `Supabase Auth returned ${response.status}${responseText ? `: ${responseText.slice(0, 120)}` : ''}`,
+    };
+    return cachedAuthWriteAvailability;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    cachedAuthWriteAvailability = {
+      available: false,
+      reason: `Supabase Auth write endpoints are unavailable: ${message}`,
+    };
+    return cachedAuthWriteAvailability;
+  }
+}
+
+async function assertSupabaseAuthWriteAvailability() {
+  const availability = await getSupabaseAuthWriteAvailability();
+  if (!availability.available) {
+    throw new E2EAuthBootstrapError(
+      availability.reason ??
+        'Supabase Auth write endpoints are unavailable for E2E bootstrap.',
+    );
+  }
 }
 
 function toBase64Url(value: string) {
@@ -193,6 +311,7 @@ function getStorageKey(supabaseUrl: string) {
 export async function createMagicLinkSession(email: string): Promise<Session> {
   const { url, anonKey, serviceRoleKey } = resolveSupabaseEnv();
   try {
+    await assertSupabaseAuthWriteAvailability();
     const adminClient = createClient(url, serviceRoleKey, {
       auth: { persistSession: false },
     });
@@ -267,6 +386,7 @@ async function createTemporaryTestUser(): Promise<TestUser> {
   const { url: supabaseUrl, serviceRoleKey } = resolveSupabaseEnv();
 
   try {
+    await assertSupabaseAuthWriteAvailability();
     const adminClient = createClient(supabaseUrl, serviceRoleKey, {
       auth: { persistSession: false },
     });
@@ -277,8 +397,15 @@ async function createTemporaryTestUser(): Promise<TestUser> {
     const password = `TestPass${testId}!`;
 
     // Create user with admin API (auto-confirms email)
-    const { data: userData, error: userError } =
-      await adminClient.auth.admin.createUser({
+    let userData: Awaited<
+      ReturnType<typeof adminClient.auth.admin.createUser>
+    >['data'] | null = null;
+    let userError: Awaited<
+      ReturnType<typeof adminClient.auth.admin.createUser>
+    >['error'] | null = null;
+
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      const response = await adminClient.auth.admin.createUser({
         email,
         password,
         email_confirm: true, // Auto-confirm for testing
@@ -287,6 +414,18 @@ async function createTemporaryTestUser(): Promise<TestUser> {
           created_at: new Date().toISOString(),
         },
       });
+
+      userData = response.data;
+      userError = response.error;
+
+      if (!userError && userData?.user) {
+        break;
+      }
+
+      if (attempt < 3) {
+        await new Promise((resolve) => setTimeout(resolve, attempt * 500));
+      }
+    }
 
     if (userError || !userData.user) {
       const message = userError?.message ?? 'unknown_error';
@@ -429,6 +568,7 @@ async function createTemporaryTestUser(): Promise<TestUser> {
       password,
       orgId: orgData.id,
     };
+    persistCachedTestUser(createdTestUser);
 
     return createdTestUser;
   } catch (error) {
@@ -445,6 +585,10 @@ async function createTemporaryTestUser(): Promise<TestUser> {
  * Call this in globalTeardown or afterAll
  */
 export async function cleanupTestUser(): Promise<void> {
+  if (!createdTestUser) {
+    createdTestUser = loadCachedTestUser();
+  }
+
   if (!createdTestUser) return;
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -483,6 +627,7 @@ export async function cleanupTestUser(): Promise<void> {
     await adminClient.auth.admin.deleteUser(createdTestUser.id);
 
     createdTestUser = null;
+    clearCachedTestUser();
   } catch (error) {
     console.error('[E2E Cleanup] Failed to cleanup test user:', error);
   }

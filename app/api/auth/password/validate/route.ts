@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import { validatePassword } from '@/lib/security/password-security';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import {
-  rateLimitAuth,
-
+  rateLimitApi,
+  createRateLimitHeaders,
 } from '@/lib/security/rate-limiter';
 
 const log = routeLog('/api/auth/password/validate');
@@ -11,20 +11,21 @@ const log = routeLog('/api/auth/password/validate');
 export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
-  // Rate limiting: Prevent brute force password validation attempts
-  const { allowed, headers, error } = await rateLimitAuth(request);
-  if (!allowed) {
+  // Password strength checks should degrade gracefully if Redis is unavailable;
+  // blocking signup because the limiter backend is down is worse than using the
+  // shared API fallback path.
+  const rateLimitResult = await rateLimitApi(request);
+  if (!rateLimitResult.success) {
     return NextResponse.json(
       {
         ok: false,
-        error: error ?? 'too_many_requests',
-        errors: [
-          error === 'backend_unavailable'
-            ? 'Secure password checks are temporarily unavailable. Please try again shortly.'
-            : 'Too many requests. Please try again later.',
-        ],
+        error: 'too_many_requests',
+        errors: ['Too many requests. Please try again later.'],
       },
-      { status: 429, headers },
+      {
+        status: 429,
+        headers: createRateLimitHeaders(rateLimitResult),
+      },
     );
   }
 

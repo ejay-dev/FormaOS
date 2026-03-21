@@ -4,7 +4,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { resolvePlanKey } from '@/lib/plans';
 import { validatePassword } from '@/lib/security/password-security';
 import { emailSchema, requireJsonContentType } from '@/lib/security/api-validation';
-import { rateLimitAuth } from '@/lib/security/rate-limiter';
+import { rateLimitSignup } from '@/lib/security/rate-limiter';
 import { sendAuthEmail } from '@/lib/email/send-auth-email';
 import { buildHostedAuthConfirmLink } from '@/lib/auth/hosted-auth-link';
 import { routeLog } from '@/lib/monitoring/server-logger';
@@ -14,6 +14,7 @@ const log = routeLog('/api/auth/email-signup');
 export const runtime = 'nodejs';
 
 const DEFAULT_APP_BASE = 'https://app.formaos.com.au';
+const EXTERNAL_STEP_TIMEOUT_MS = 8_000;
 
 const signupSchema = z.object({
   email: emailSchema,
@@ -47,11 +48,37 @@ function mapSignupError(message: string): {
     return { status: 429, error: 'rate_limited' };
   }
 
+  if (
+    normalized.includes('service unavailable') ||
+    normalized.includes('connection timeout') ||
+    normalized.includes('upstream connect error')
+  ) {
+    return { status: 503, error: 'backend_unavailable' };
+  }
+
   return { status: 400, error: 'signup_failed' };
 }
 
+async function withTimeout<T>(promise: Promise<T>, label: string): Promise<T> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(
+      () => reject(new Error(`${label}_timeout`)),
+      EXTERNAL_STEP_TIMEOUT_MS,
+    );
+  });
+
+  try {
+    return await Promise.race([promise, timeout]);
+  } finally {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+  }
+}
+
 export async function POST(request: Request) {
-  const { allowed, headers, error } = await rateLimitAuth(request);
+  const { allowed, headers, error } = await rateLimitSignup(request);
   if (!allowed) {
     return NextResponse.json(
       { ok: false, error: error ?? 'too_many_requests' },
@@ -76,6 +103,7 @@ export async function POST(request: Request) {
 
     const { email, password } = parsed.data;
     const plan = resolvePlanKey(parsed.data.plan ?? null);
+    log.info({ plan: plan ?? null }, '[auth/email-signup] request received');
 
     const validation = await validatePassword(password);
     if (!validation.valid) {
@@ -97,19 +125,24 @@ export async function POST(request: Request) {
       : '/auth/callback';
     const redirectTo = `${appBase}${callbackPath}`;
     const admin = createSupabaseAdminClient();
+    log.info({ plan: plan ?? null }, '[auth/email-signup] generating confirmation link');
 
-    const { data, error } = await admin.auth.admin.generateLink({
-      type: 'signup',
-      email,
-      password,
-      options: {
-        redirectTo,
-        data: plan ? { selected_plan: plan } : undefined,
-      },
-    });
+    const { data, error } = await withTimeout(
+      admin.auth.admin.generateLink({
+        type: 'signup',
+        email,
+        password,
+        options: {
+          redirectTo,
+          data: plan ? { selected_plan: plan } : undefined,
+        },
+      }),
+      'generate_link',
+    );
 
     if (error) {
       const mapped = mapSignupError(error.message || 'signup_failed');
+      log.warn({ err: error, mapped }, '[auth/email-signup] generateLink failed');
       return NextResponse.json(
         { ok: false, error: mapped.error },
         { status: mapped.status, headers },
@@ -123,17 +156,22 @@ export async function POST(request: Request) {
       fallbackRedirectTo: redirectTo,
     });
     if (!actionLink) {
+      log.error('[auth/email-signup] missing confirmation link');
       return NextResponse.json(
         { ok: false, error: 'missing_confirmation_link' },
         { status: 500, headers },
       );
     }
 
-    const emailResult = await sendAuthEmail({
-      to: email,
-      template: 'confirm-signup',
-      actionLink,
-    });
+    log.info('[auth/email-signup] sending confirmation email');
+    const emailResult = await withTimeout(
+      sendAuthEmail({
+        to: email,
+        template: 'confirm-signup',
+        actionLink,
+      }),
+      'send_auth_email',
+    );
 
     if (!emailResult.success) {
       log.error({ err: {
@@ -155,6 +193,18 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     log.error({ err: error }, "[auth/email-signup] unexpected error:");
+    if (error instanceof Error && error.message === 'generate_link_timeout') {
+      return NextResponse.json(
+        { ok: false, error: 'backend_unavailable' },
+        { status: 503, headers },
+      );
+    }
+    if (error instanceof Error && error.message === 'send_auth_email_timeout') {
+      return NextResponse.json(
+        { ok: false, error: 'email_delivery_failed' },
+        { status: 502, headers },
+      );
+    }
     return NextResponse.json(
       { ok: false, error: 'signup_failed' },
       { status: 500, headers },

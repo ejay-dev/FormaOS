@@ -201,7 +201,9 @@ function SignUpContent() {
           payload?.error === 'account_already_exists'
             ? 'An account with this email already exists. Please sign in instead.'
             : payload?.error === 'backend_unavailable'
-              ? 'Secure sign up is temporarily unavailable while background services reconnect. Please try again shortly.'
+              ? 'Email/password sign up is temporarily unavailable right now. Please continue with Google or try again shortly.'
+            : payload?.error === 'signup_timeout'
+              ? 'Email/password sign up is temporarily unavailable right now. Please continue with Google or try again shortly.'
               : payload?.error === 'too_many_requests'
                 ? 'Too many requests. Please wait a few minutes and try again.'
             : payload?.error === 'email_delivery_failed'
@@ -222,7 +224,7 @@ function SignUpContent() {
     } catch (err) {
       if (err instanceof Error && err.message.includes('timeout')) {
         setErrorMessage(
-          'Having trouble creating your account. Please refresh and try again.',
+          'Email/password sign up is temporarily unavailable right now. Please continue with Google or try again shortly.',
         );
       } else {
         setErrorMessage('An unexpected error occurred. Please try again.');

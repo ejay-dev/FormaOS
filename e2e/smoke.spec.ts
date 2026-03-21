@@ -4,6 +4,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { getSupabaseAuthWriteAvailability } from './helpers/test-auth';
 
 const TEST_EMAIL = `smoke-${Date.now()}@qa.formaos.test`;
 const TEST_PASSWORD = 'SmokeTest123!@#';
@@ -73,9 +74,18 @@ test('Protected route redirects without loop (>2 repeats fails)', async ({
 });
 
 test('Critical user journey smoke test', async ({ page }) => {
+  if (!hasEmailSignupEnv()) {
+    test.skip(
+      true,
+      'Skipping: real Supabase and email delivery env are required for signup smoke.',
+    );
+  }
+
+  const authAvailability = await getSupabaseAuthWriteAvailability();
   test.skip(
-    !hasEmailSignupEnv(),
-    'Skipping: real Supabase and email delivery env are required for signup smoke.',
+    !authAvailability.available,
+    authAvailability.reason ??
+      'Skipping: Supabase Auth write endpoints are unavailable for signup smoke.',
   );
 
   // 1. Home page loads
@@ -89,7 +99,15 @@ test('Critical user journey smoke test', async ({ page }) => {
   // 3. Click a visible Start Free CTA (desktop/mobile resilient)
   const startFreeCta = page.locator('a:has-text("Start Free"):visible').first();
   if ((await startFreeCta.count()) > 0) {
-    await startFreeCta.click();
+    const href = await startFreeCta.getAttribute('href');
+    if (href) {
+      const target = new URL(href, page.url());
+      await page.goto(`${target.pathname}${target.search}`, {
+        waitUntil: 'networkidle',
+      });
+    } else {
+      await startFreeCta.click();
+    }
   } else {
     await page.goto('/auth/signup', { waitUntil: 'networkidle' });
   }
