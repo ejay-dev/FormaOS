@@ -53,7 +53,8 @@ const RATE_LIMITS = {
     windowMs: 60 * 1000,
     maxRequests: 100,
     keyPrefix: 'rl:api',
-    failClosed: true,
+    // Keep the product available if Redis flakes out; auth remains fail-closed.
+    failClosed: false,
   } as RateLimitConfig,
 
   GENERAL: {
