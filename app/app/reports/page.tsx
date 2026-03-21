@@ -230,6 +230,7 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
           <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
             <Link
               href="/api/reports/export?type=trust&format=pdf&mode=sync"
+              prefetch={false}
               className={`inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold ${
                 disableExports
                   ? 'pointer-events-none border border-white/10 bg-white/5 text-slate-500'
@@ -283,6 +284,7 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
               <p className="mt-2 text-xs leading-relaxed text-slate-300">{card.description}</p>
               <Link
                 href={`/api/reports/export?type=${card.type}&format=pdf&mode=sync`}
+                prefetch={false}
                 className={`mt-4 inline-flex items-center gap-1.5 text-xs font-semibold ${disableExports ? 'pointer-events-none text-slate-500' : 'text-cyan-200 hover:text-cyan-100'}`}
               >
                 Generate report

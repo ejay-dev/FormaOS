@@ -36,7 +36,8 @@ const VALID_REPORT_TYPES: ReportType[] = [
 export async function GET(request: NextRequest) {
   const rlUserId = await getUserIdentifier();
   const rlIdentifier = rlUserId ?? (await getClientIdentifier());
-  const rl = await checkRateLimit(RATE_LIMITS.EXPORT, rlIdentifier, rlUserId);
+  const exportRateLimit = { ...RATE_LIMITS.EXPORT, failClosed: false };
+  const rl = await checkRateLimit(exportRateLimit, rlIdentifier, rlUserId);
   if (!rl.success) {
     return NextResponse.json(
       { error: 'Rate limit exceeded', code: 'RATE_LIMIT_EXCEEDED' },
