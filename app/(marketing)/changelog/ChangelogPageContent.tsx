@@ -144,6 +144,138 @@ interface ChangelogRelease {
 
 const releases: ChangelogRelease[] = [
   {
+    version: 'v2.2.3',
+    codename: 'Horizon',
+    date: '2026-03-22',
+    summary:
+      'QA stability hardening for signup, smoke checks, release verification, and dashboard pages still touching fragile auth-admin paths.',
+    isMajor: false,
+    changes: [
+      {
+        text: 'Email signup now fails fast and degrades cleanly during auth outages',
+        tag: 'security',
+        detail:
+          'Hardened the email signup API with tighter external timeouts, clearer backend-unavailable handling, and safer rate limiting so users no longer sit on long hangs when Supabase Auth write endpoints are degraded.',
+      },
+      {
+        text: 'Signup UI now steers users toward a safe fallback path',
+        tag: 'improvement',
+        detail:
+          'Updated the signup experience to surface a clear email-password outage message and guide users toward Google sign-in or a later retry instead of leaving them with an ambiguous timeout failure.',
+      },
+      {
+        text: 'Smoke and founder QA flows now preflight auth write availability',
+        tag: 'fix',
+        detail:
+          'Added explicit Supabase Auth bootstrap checks in the Playwright helpers so smoke and founder validation skip with a real reason when upstream auth write APIs are unavailable instead of failing with HTML parsing noise or hanging sessions.',
+      },
+      {
+        text: 'Staff compliance page no longer depends on auth-admin profile lookups',
+        tag: 'fix',
+        detail:
+          'Removed a fragile auth-admin user lookup from the staff compliance dashboard and replaced it with database-backed profile reads from user_profiles, eliminating one of the route timeouts surfaced by the QA sweep.',
+      },
+      {
+        text: 'QA pipeline audit coverage tightened for security and visual checks',
+        tag: 'improvement',
+        detail:
+          'Shipped the Lighthouse workflow env/artifact fix, stabilized the built-app marketing screenshot suite, and added route-level regression coverage for degraded signup behavior so release signals stay trustworthy.',
+      },
+      {
+        text: 'Dependency audit blocker cleared in the release gate',
+        tag: 'fix',
+        detail:
+          'Upgraded the vulnerable flatted dependency and refreshed the lockfile so the GitHub dependency security scan returns zero moderate-or-higher production vulnerabilities.',
+      },
+    ],
+  },
+  {
+    version: 'v2.2.2',
+    codename: 'Sentinel',
+    date: '2026-03-21',
+    summary:
+      'Production hardening for onboarding, invitations, report exports, and live validation across roles, industries, and dashboard states.',
+    isMajor: false,
+    changes: [
+      {
+        text: 'Live production verification for onboarding, dashboard access, and invitations',
+        tag: 'improvement',
+        detail:
+          'Ran targeted live checks across owner, member, and viewer flows on the production domain. Verified owner navigation through tasks, policies, vault, team, reports, billing, and executive views, plus confirmed invitation persistence and delivery.',
+      },
+      {
+        text: 'Industry and role matrix coverage expanded across the platform',
+        tag: 'feature',
+        detail:
+          'Extended browser validation to cover all supported industries, plan tiers, framework-library states, dashboard shells, marketing CTA routes, and real sign-in handoff behavior so regressions are caught across the full persona matrix.',
+      },
+      {
+        text: 'Auth bootstrap and invitation APIs now survive Redis degradation',
+        tag: 'security',
+        detail:
+          'Moved post-login bootstrap and authenticated invitation flows onto resilient API rate limiting so production users are not locked out when the Upstash Redis backend is degraded. Enforcement remains active with safe in-memory fallback.',
+      },
+      {
+        text: 'Report export endpoints hardened for degraded infrastructure',
+        tag: 'fix',
+        detail:
+          'Export generation now avoids fail-closed behavior during Redis outages for authenticated admin flows, and report export links no longer prefetch in the background. This removes a class of noisy 429s while preserving export quotas.',
+      },
+      {
+        text: 'Schema-drift fallbacks added for audit, activity, and AI support tables',
+        tag: 'fix',
+        detail:
+          'Optional or partially migrated tables such as AI conversation history, activity feed, and older org audit log shapes now degrade cleanly instead of surfacing runtime failures during onboarding, dashboard, and admin workflows.',
+      },
+      {
+        text: 'Founder email and audit test surfaces polished',
+        tag: 'improvement',
+        detail:
+          'Refined the founder-only test email template into a more polished branded format, confirmed live delivery through Resend, and tightened quality gates around app links, admin navigation, and dashboard regression checks.',
+      },
+    ],
+  },
+  {
+    version: 'v2.2.1',
+    codename: 'Keystone',
+    date: '2026-03-20',
+    summary:
+      'Enterprise audit remediation focused on auth correctness, schema migration cleanup, test coverage, and non-mutating quality gates.',
+    isMajor: false,
+    changes: [
+      {
+        text: 'Production signup and auth callback flows hardened',
+        tag: 'security',
+        detail:
+          'Converted signup into a real production bootstrap route, added app-level OAuth state validation, and enforced JSON content types on sensitive auth endpoints to reduce redirect, CSRF, and malformed-request risk.',
+      },
+      {
+        text: 'Critical-path unit coverage expanded for audit-sensitive modules',
+        tag: 'improvement',
+        detail:
+          'Added focused tests for trial access verification, auth callback logic, activity feed behavior, invitation creation, system state calculation, framework provisioning, onboarding branching, dashboard rendering, and sidebar selection.',
+      },
+      {
+        text: 'Legacy profile access moved toward schema-safe reads',
+        tag: 'fix',
+        detail:
+          'Replaced direct reads against the removed profiles table with shared user-profile lookup helpers and compatibility paths, reducing drift-related failures during admin, reporting, and dashboard flows.',
+      },
+      {
+        text: 'Lint, style, and design governance checks restored as safe quality gates',
+        tag: 'improvement',
+        detail:
+          'Updated linting to run without mutating files during verification and restored missing stylelint and design-check coverage so release gates better reflect actual repo quality without altering the worktree.',
+      },
+      {
+        text: 'Compliance harnesses and build verification unblocked',
+        tag: 'fix',
+        detail:
+          'Repaired GDPR and SOC 2 automation harness failures tied to originless browser storage, then reran build, accessibility, smoke, and Lighthouse checks under real environment configuration to turn previously blocked audit phases into actionable signals.',
+      },
+    ],
+  },
+  {
     version: 'v2.2.0',
     codename: 'Vanguard',
     date: '2026-03-16',
