@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
-import { rateLimitAuth } from '@/lib/security/rate-limiter';
+import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   createTrackedSession,
@@ -24,14 +24,6 @@ import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
-  const { allowed, headers: rlHeaders, error } = await rateLimitAuth(request);
-  if (!allowed) {
-    return NextResponse.json(
-      { ok: false, error: error ?? 'too_many_requests' },
-      { status: 429, headers: rlHeaders },
-    );
-  }
-
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -42,6 +34,24 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { ok: false, error: 'unauthorized' },
       { status: 401 },
+    );
+  }
+
+  const rateLimit = await rateLimitApi(request, user.id);
+  if (!rateLimit.success) {
+    return NextResponse.json(
+      { ok: false, error: 'too_many_requests' },
+      {
+        status: 429,
+        headers: {
+          'X-RateLimit-Limit': String(rateLimit.limit),
+          'X-RateLimit-Remaining': String(rateLimit.remaining),
+          'X-RateLimit-Reset': String(Math.ceil(rateLimit.resetAt / 1000)),
+          ...(rateLimit.retryAfter
+            ? { 'Retry-After': String(rateLimit.retryAfter) }
+            : {}),
+        },
+      },
     );
   }
 

@@ -53,15 +53,20 @@ describe('API rate limit behavior', () => {
     jest.clearAllMocks();
   });
 
-  test('auth bootstrap returns 429 with limiter headers when auth limiter blocks', async () => {
-    mockRateLimitAuth.mockResolvedValue({
-      allowed: false,
-      headers: {
-        'X-RateLimit-Limit': '10',
-        'X-RateLimit-Remaining': '0',
-        'Retry-After': '60',
+  test('auth bootstrap returns 429 with limiter headers when API limiter blocks', async () => {
+    mockCreateSupabaseServerClient.mockResolvedValue({
+      auth: {
+        getUser: jest.fn().mockResolvedValue({
+          data: { user: { id: 'user-123' } },
+        }),
       },
-      error: 'too_many_requests',
+    });
+    mockRateLimitApi.mockResolvedValue({
+      success: false,
+      limit: 100,
+      remaining: 0,
+      resetAt: new Date('2026-03-21T12:00:00Z').getTime(),
+      retryAfter: 60,
     });
 
     const response = await bootstrapPost(
@@ -73,10 +78,14 @@ describe('API rate limit behavior', () => {
       ok: false,
       error: 'too_many_requests',
     });
-    expect(response.headers.get('X-RateLimit-Limit')).toBe('10');
+    expect(response.headers.get('X-RateLimit-Limit')).toBe('100');
     expect(response.headers.get('X-RateLimit-Remaining')).toBe('0');
     expect(response.headers.get('Retry-After')).toBe('60');
-    expect(mockCreateSupabaseServerClient).not.toHaveBeenCalled();
+    expect(response.headers.get('X-RateLimit-Reset')).toBe('1774094400');
+    expect(mockRateLimitApi).toHaveBeenCalledWith(
+      expect.any(Request),
+      'user-123',
+    );
   });
 
   test('onboarding checklist returns 429 before auth lookup when API limiter blocks', async () => {
