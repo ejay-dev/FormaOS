@@ -95,9 +95,27 @@ const RATE_LIMITS = {
 const memoryStore = new Map<string, { count: number; resetAt: number }>();
 const failOpenWarningAtByScope = new Map<string, number>();
 const FAIL_OPEN_WARNING_COOLDOWN_MS = 60 * 1000;
+const E2E_RATE_LIMIT_BYPASS_HEADER = 'x-formaos-e2e';
 
 function shouldFailClosed(config: RateLimitConfig): boolean {
   return Boolean(config.failClosed) && process.env.NODE_ENV === 'production';
+}
+
+function isNonProductionE2EBypass(request: Request): boolean {
+  return (
+    process.env.NODE_ENV !== 'production' &&
+    request.headers.get(E2E_RATE_LIMIT_BYPASS_HEADER) === '1'
+  );
+}
+
+function createBypassResult(config: RateLimitConfig): RateLimitResult {
+  const resetAt = Date.now() + config.windowMs;
+  return {
+    success: true,
+    limit: config.maxRequests,
+    remaining: config.maxRequests,
+    resetAt,
+  };
 }
 
 function cleanExpiredEntries(): void {
@@ -393,6 +411,14 @@ export async function rateLimitAuth(request: Request): Promise<{
   headers: Record<string, string>;
   error?: 'too_many_requests' | 'backend_unavailable';
 }> {
+  if (isNonProductionE2EBypass(request)) {
+    const result = createBypassResult(RATE_LIMITS.AUTH);
+    return {
+      allowed: true,
+      headers: createRateLimitHeaders(result),
+    };
+  }
+
   const identifier = await getClientIdentifier();
   const result = await checkRateLimit(RATE_LIMITS.AUTH, identifier);
   const headers = createRateLimitHeaders(result);
@@ -429,6 +455,10 @@ export async function rateLimitApi(
   request: Request,
   userId?: string | null,
 ): Promise<RateLimitResult> {
+  if (isNonProductionE2EBypass(request)) {
+    return createBypassResult(RATE_LIMITS.API);
+  }
+
   const identifier = await getClientIdentifier();
   const result = await checkRateLimit(RATE_LIMITS.API, identifier, userId);
 

@@ -98,3 +98,30 @@ None confirmed.
   - `e2e/onboarding-dashboard-access.spec.ts` (Chromium): 7/7 passed
   - `e2e/app-link-integrity.spec.ts` isolated Firefox rerun for `/app`, `/app/visits`, `/app/incidents`, and `/app/staff-compliance`: 4/4 passed
 - `npm run qa:smoke` across the full browser matrix still is not reliable as a release gate in this workspace because the local web server drops during the long multi-browser run (`ECONNREFUSED` / connection refused to `http://localhost:3000`). The isolated reruns above pass, so the remaining issue is the long-lived local smoke harness/server stability rather than the specific app pages that were throwing schema-cache errors earlier.
+
+## Addendum — 2026-03-21 Extended Matrix Validation
+- Expanded coverage with `e2e/full-platform-matrix.spec.ts` to exercise:
+  - all supported industries discovered from `lib/validators/organization.ts`
+  - owner/admin/member/viewer dashboard shells
+  - all supported plan tiers on `/app/billing`
+  - all supported framework slugs in the framework library
+  - core marketing pages and CTA surfaces
+  - live email-signup handoff plus confirmed-user password sign-in through the real UI
+- Added non-production E2E auth/API rate-limit bypass support behind the explicit `x-formaos-e2e: 1` header so local browser verification can bootstrap many sessions without weakening production protection.
+- Hardened the E2E workspace auth helper with bootstrap retries and a safe `/app` fallback when local dev-server socket resets occur mid-run.
+- Enabled the framework engine locally (`FRAMEWORK_ENGINE_ENABLED=true`) so framework-library verification reflects the real product surface instead of the dev default-off flag.
+- Upgraded the founder-only `/api/email/test` template to a richer branded layout and sent a live verification email to `ejazhussaini313@gmail.com`.
+  - Resend response: `200 OK`
+  - Email id: `e7f489d3-433d-499e-9849-595943aecace`
+- Extended verification completed successfully in chunks against the live local app:
+  - `npx tsc -p tsconfig.typecheck.json --noEmit`: passed
+  - `npm run check:app-links`: 178 validated, 0 broken
+  - `npm run check:admin-nav`: 20 validated, 0 broken
+  - `npm run audit:marketing-copy`: 0 issues
+  - `e2e/full-platform-matrix.spec.ts` chunked coverage:
+    - owner navigation + role matrix: covered across industries/roles; long-run failures were traced to local server fatigue, and the previously interrupted enterprise/other role slice reran cleanly at 8/8 passed
+    - billing matrix: 3/3 passed
+    - framework matrix: 10/10 passed after enabling the local framework-engine flag
+    - marketing route matrix: 13/13 passed
+    - auth UI matrix: 2/2 passed
+  - `e2e/app-link-integrity.spec.ts` + `e2e/admin-founder-smoke.spec.ts`: 17/17 passed

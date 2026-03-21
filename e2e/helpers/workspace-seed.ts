@@ -258,13 +258,42 @@ export async function authenticateWorkspacePage(
   const session = await createMagicLinkSession(targetEmail);
 
   await setPlaywrightSession(page.context(), session, appBase);
-  const bootstrapResponse = await page.request.post(`${appBase}/api/auth/bootstrap`);
-  if (!bootstrapResponse.ok()) {
-    throw new Error(`Workspace bootstrap failed with status ${bootstrapResponse.status()}`);
+  let bootstrapResponse: Awaited<ReturnType<Page['request']['post']>> | null = null;
+  let bootstrapFailure: Error | null = null;
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      bootstrapResponse = await page.request.post(`${appBase}/api/auth/bootstrap`, {
+        headers: {
+          'x-formaos-e2e': '1',
+        },
+      });
+
+      if (bootstrapResponse.ok()) {
+        bootstrapFailure = null;
+        break;
+      }
+
+      const retryableStatus = bootstrapResponse.status() >= 500;
+      if (!retryableStatus || attempt === 2) {
+        throw new Error(`Workspace bootstrap failed with status ${bootstrapResponse.status()}`);
+      }
+    } catch (error) {
+      bootstrapFailure =
+        error instanceof Error ? error : new Error(String(error));
+      if (attempt === 2) {
+        break;
+      }
+    }
+
+    await page.waitForTimeout(350 * (attempt + 1));
   }
-  const bootstrapPayload = (await bootstrapResponse.json().catch(() => null)) as
-    | { next?: string }
-    | null;
+
+  const bootstrapPayload = bootstrapResponse?.ok()
+    ? ((await bootstrapResponse.json().catch(() => null)) as
+        | { next?: string }
+        | null)
+    : null;
   const nextPath =
     typeof bootstrapPayload?.next === 'string' && bootstrapPayload.next.length > 0
       ? bootstrapPayload.next
@@ -272,6 +301,14 @@ export async function authenticateWorkspacePage(
 
   await page.goto(nextPath, { waitUntil: 'domcontentloaded' });
   await dismissProductTour(page);
+
+  const landedOnAuth = page.url().includes('/auth/');
+  if (landedOnAuth && bootstrapFailure) {
+    throw bootstrapFailure;
+  }
+  if (landedOnAuth && bootstrapResponse && !bootstrapResponse.ok()) {
+    throw new Error(`Workspace bootstrap failed with status ${bootstrapResponse.status()}`);
+  }
 
   return { appBase, projectRef: new URL(url).hostname.split('.')[0] };
 }
