@@ -12,19 +12,9 @@ const SERVICE_ROLE_KEY =
   process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE;
 
 // Fail fast if required environment variables are not set
-if (!SUPABASE_URL) {
-  throw new Error(
-    'NEXT_PUBLIC_SUPABASE_URL environment variable is required for E2E tests. ' +
-      'Set it in your .env.test file or via environment.',
-  );
-}
-
-if (!SERVICE_ROLE_KEY) {
-  throw new Error(
-    'SUPABASE_SERVICE_ROLE_KEY environment variable is required for E2E tests. ' +
-      'Set it in your .env.test file or via environment.',
-  );
-}
+// Use test.describe-level skip so the file loads cleanly without throwing,
+// allowing other spec files in the same run to proceed normally.
+const credentialsAvailable = !!(SUPABASE_URL && SERVICE_ROLE_KEY);
 
 const PASSWORD = 'QaE2EAuth123!Secure';
 const timestamp = Date.now();
@@ -128,10 +118,14 @@ async function waitForFrameworkProvisioning(
 }
 
 test.describe('Auth provisioning invariant', () => {
+  test.skip(
+    !credentialsAvailable,
+    'Skipped: NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY not configured',
+  );
   test.describe.configure({ mode: 'serial' });
 
   test.beforeAll(() => {
-    admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
+    admin = createClient(SUPABASE_URL!, SERVICE_ROLE_KEY!, {
       auth: { autoRefreshToken: false, persistSession: false },
     });
   });
