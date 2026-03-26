@@ -26,7 +26,7 @@ const MARKETING_ROUTES = [
   '/our-story',
   '/blog',
   // Resources
-  '/docs',
+  '/documentation',
   '/frameworks',
   '/faq',
   '/customer-stories',
@@ -170,7 +170,7 @@ test('generate checklist table', async () => {
   // Tier 1 pages with full 3D hero visuals
   const tier1 = ['/', '/product', '/security', '/trust', '/pricing', '/industries'];
   // Tier 2 pages with hero visuals
-  const tier2 = ['/about', '/blog', '/contact', '/docs', '/frameworks', '/our-story', '/customer-stories', '/faq', '/security-review'];
+  const tier2 = ['/about', '/blog', '/contact', '/documentation', '/frameworks', '/our-story', '/customer-stories', '/faq', '/security-review'];
   // Tier 3 pages with templated hero visuals
   const tier3 = ['/compare', '/compare/vanta', '/compare/drata', '/compare/secureframe', '/use-cases/healthcare', '/use-cases/incident-management', '/use-cases/workforce-credentials', '/use-cases/ndis-aged-care', '/evaluate', '/prove', '/operate', '/govern'];
   // Tier 4 compact hero with icon

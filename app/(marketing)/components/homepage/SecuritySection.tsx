@@ -23,7 +23,7 @@ const securityFeatures = [
   {
     icon: Lock,
     title: 'AES-256 + TLS 1.3 encryption',
-    description: 'Data encrypted at rest with AES-256, in transit with TLS 1.3 - no exceptions',
+    description: 'Primary platform data encrypted at rest with AES-256 and in transit with TLS 1.3',
     badge: 'AES-256',
   },
   {
@@ -47,7 +47,7 @@ const securityFeatures = [
   {
     icon: BadgeCheck,
     title: 'Data residency controls',
-    description: 'AU-based hosting by default; US and EU residency options for enterprise deployments',
+    description: 'AU-hosted by default, with additional residency requirements reviewed during buyer evaluation',
     badge: 'Sovereignty',
   },
 ];
@@ -94,7 +94,7 @@ const SECURITY_STATS = [
   { label: 'Audit events logged', value: '100%' },
   { label: 'Evidence with chain-of-custody', value: '100%' },
   { label: 'Data encrypted at rest', value: 'AES-256' },
-  { label: 'Average audit packet export', value: '< 2 min' },
+  { label: 'Audit packet workflow', value: 'Export-ready' },
 ] as const;
 
 export function SecuritySection() {
@@ -122,7 +122,7 @@ export function SecuritySection() {
                 Controls are enforced, not just recorded. Security is embedded at the operating layer - where compliance evidence is generated automatically and audit trails are always complete.
               </p>
               <p className="text-xs sm:text-sm text-slate-500 mb-8 leading-relaxed">
-                FormaOS ships with enterprise security controls as infrastructure: encryption, identity governance, immutable audit logs, and data residency - ready for your procurement team before the first question is asked.
+                FormaOS ships with enterprise security controls as infrastructure: encryption, identity governance, immutable audit logs, and data handling posture documented for early buyer review.
               </p>
 
               <SectionChoreography pattern="depth-reveal" stagger={0.04} className="grid grid-cols-1 sm:grid-cols-2 gap-3">

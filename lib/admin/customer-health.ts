@@ -170,7 +170,15 @@ export async function getAdminOrgHealthSnapshot(
   );
   let billingRisk: RiskLevel = 'low';
 
-  if ((organization?.lifecycle_status ?? 'active') === 'suspended') {
+  const lifecycleStatus = organization?.lifecycle_status ?? 'active';
+
+  if (lifecycleStatus === 'retired') {
+    billingRisk = 'high';
+    uniquePush(
+      billingReasons,
+      'Organization is retired and requires explicit restore before access can resume.',
+    );
+  } else if (lifecycleStatus === 'suspended') {
     billingRisk = 'high';
     uniquePush(
       billingReasons,
@@ -239,6 +247,17 @@ export async function getAdminOrgHealthSnapshot(
     uniquePush(
       nextBestActions,
       'Generate a compliance or executive report to prove first value.',
+    );
+  }
+  if (lifecycleStatus === 'retired') {
+    uniquePush(
+      nextBestActions,
+      'Confirm the retirement decision and restore only if reactivation is approved.',
+    );
+  } else if (lifecycleStatus === 'suspended') {
+    uniquePush(
+      nextBestActions,
+      'Review the suspension reason and restore access when the incident is resolved.',
     );
   }
   if (billingRisk !== 'low') {

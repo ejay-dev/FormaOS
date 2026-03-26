@@ -260,7 +260,7 @@ const integrations: Integration[] = [
   {
     name: 'Okta',
     description:
-      'SAML SSO, SCIM provisioning, and access review automation through Okta directory.',
+      'SAML SSO, directory-driven access reviews, and identity governance support through Okta.',
     complianceUseCase:
       'Automate user access reviews by pulling Okta group memberships and application assignments.',
     category: 'Identity & Access',
@@ -269,7 +269,7 @@ const integrations: Integration[] = [
     color: '#007DC1',
     features: [
       'SAML 2.0 SSO',
-      'SCIM provisioning',
+      'Directory sync inputs',
       'Access review automation',
       'Group sync',
     ],

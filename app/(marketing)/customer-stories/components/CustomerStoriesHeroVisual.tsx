@@ -36,7 +36,7 @@ const CARDS = [
     blur: 2,
     accent: 'violet',
     accentColor: 'rgb(139 92 246)',
-    metric: '99.9% uptime',
+    metric: 'Audit-ready',
     lines: 0,
     showLogo: true,
   },

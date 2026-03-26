@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  ArrowRight,
   CheckCircle2,
   ShieldCheck,
   Sparkles,
@@ -21,8 +22,19 @@ type JourneyPageProps = {
   description: string;
   proofLabel: string;
   proofValue: string;
+  proofNote?: string;
   workflow: string[];
   outcomes: string[];
+  pillarsEyebrow: string;
+  pillarsTitle: string;
+  pillarsDescription: string;
+  pillars: Array<{
+    title: string;
+    detail: string;
+    href: string;
+    cta: string;
+  }>;
+  trustArtifacts?: string[];
   journeyKey: 'evaluate' | 'prove' | 'operate' | 'govern';
 };
 
@@ -41,10 +53,18 @@ export function OutcomeJourneyPage({
   description,
   proofLabel,
   proofValue,
+  proofNote,
   workflow,
   outcomes,
+  pillarsEyebrow,
+  pillarsTitle,
+  pillarsDescription,
+  pillars,
+  trustArtifacts,
   journeyKey,
 }: JourneyPageProps) {
+  const resolvedTrustArtifacts = trustArtifacts ?? TRUST_ARTIFACTS;
+
   return (
     <MarketingPageShell>
       {/* Hero */}
@@ -67,8 +87,8 @@ export function OutcomeJourneyPage({
                 {proofValue}
               </div>
               <p className="mt-2 text-sm text-slate-400">
-                Benchmarked from live compliance workflows in regulated
-                environments.
+                {proofNote ??
+                  'Used by regulated teams that need clearer accountability, earlier risk visibility, and stronger review readiness.'}
               </p>
               <div className="mt-6 space-y-3">
                 {workflow.map((step, idx) => (
@@ -91,13 +111,59 @@ export function OutcomeJourneyPage({
         }
         primaryCta={{
           href: `${appBase}/auth/signup?journey=${journeyKey}`,
-          label: 'Start Guided Activation',
+          label: 'Start Free Trial',
         }}
         secondaryCta={{
           href: '/contact',
-          label: 'Request Enterprise Demo',
+          label: 'Book Enterprise Demo',
         }}
       />
+
+      <VisualDivider />
+
+      <DeferredSection minHeight={320}>
+        <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Reveal variant="fadeInUp">
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200">
+                {pillarsEyebrow}
+              </p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                {pillarsTitle}
+              </h2>
+              <p className="mt-4 text-sm leading-7 text-slate-300 sm:text-base">
+                {pillarsDescription}
+              </p>
+            </div>
+          </Reveal>
+
+          <SectionChoreography
+            pattern="stagger-wave"
+            className="mt-10 grid gap-4 lg:grid-cols-3"
+          >
+            {pillars.map((pillar) => (
+              <div
+                key={pillar.title}
+                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 backdrop-blur-sm"
+              >
+                <h3 className="text-lg font-semibold text-white">
+                  {pillar.title}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                  {pillar.detail}
+                </p>
+                <a
+                  href={pillar.href}
+                  className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200 transition-colors hover:text-white"
+                >
+                  {pillar.cta}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </a>
+              </div>
+            ))}
+          </SectionChoreography>
+        </section>
+      </DeferredSection>
 
       <VisualDivider />
 
@@ -124,7 +190,7 @@ export function OutcomeJourneyPage({
                 Enterprise Trust Layer
               </div>
               <div className="flex flex-wrap gap-3">
-                {TRUST_ARTIFACTS.map((artifact) => (
+                {resolvedTrustArtifacts.map((artifact) => (
                   <div
                     key={artifact}
                     className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1.5 text-xs text-emerald-100"

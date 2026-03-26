@@ -30,7 +30,7 @@ const template = [
       'Industry: (NDIS / aged care / healthcare / other)',
       'Size: (sites, staff, clients/participants)',
       'Frameworks/regulators: (NDIS, ISO, SOC 2, internal)',
-      'Time to first proof: (14 days / 30 days)',
+      'Time to first proof: (buyer-validated range based on scope)',
     ],
   },
   {

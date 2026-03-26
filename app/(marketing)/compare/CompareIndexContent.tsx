@@ -84,7 +84,10 @@ export default function CompareIndexContent() {
           </>
         }
         subheadline="Compare platforms by execution depth: workflow-enforced controls, accountable ownership, and defensible evidence."
-        primaryCta={{ href: '/contact', label: 'Book Evaluation Demo' }}
+        primaryCta={{
+          href: '/contact?type=procurement&source=compare_index',
+          label: 'Start Buyer Review',
+        }}
         secondaryCta={{ href: `${appBase}/auth/signup?source=compare`, label: 'Start Free Trial' }}
       />
 

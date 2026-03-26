@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRef, ReactNode } from "react";
 
 // Premium section wrapper with multi-layer backgrounds
@@ -17,6 +17,7 @@ export function CinematicSection({
   backgroundType = "grid",
   ambientColor = "primary"
 }: CinematicSectionProps) {
+  const shouldReduceMotion = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -61,7 +62,7 @@ export function CinematicSection({
   return (
     <motion.section 
       ref={ref}
-      style={{ opacity, scale, y }}
+      style={shouldReduceMotion ? undefined : { opacity, scale, y }}
       className={`relative overflow-hidden ${className}`}
     >
       {/* Background layer with subtle animation */}
@@ -88,12 +89,14 @@ export function CinematicSection({
 
 // Thin, elegant visual separator - premium minimal design
 export function VisualDivider({ gradient = true }: { gradient?: boolean }) {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <motion.div 
-      initial={{ opacity: 0, scaleX: 0 }}
-      whileInView={{ opacity: 1, scaleX: 1 }}
+      initial={shouldReduceMotion ? false : { opacity: 0, scaleX: 0 }}
+      whileInView={shouldReduceMotion ? undefined : { opacity: 1, scaleX: 1 }}
       viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.6, ease: "easeOut" }}
       className="relative w-full my-12 sm:my-16"
     >
       {gradient ? (
@@ -129,29 +132,30 @@ export function SectionHeader({
   subtitle,
   alignment = "center"
 }: SectionHeaderProps) {
+  const shouldReduceMotion = useReducedMotion();
   const alignmentClasses = alignment === "center" ? "text-center items-center" : "text-left items-start";
   const maxWidthClass = alignment === "center" ? "mx-auto" : "";
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 30 }}
+      whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.7 }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.7 }}
       className={`flex flex-col ${alignmentClasses} mb-16 lg:mb-24`}
     >
       {badge && (
         <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+          initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.9 }}
+          whileInView={shouldReduceMotion ? undefined : { opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.5, delay: shouldReduceMotion ? 0 : 0.1 }}
           className="inline-flex items-center gap-2.5 glass-panel-strong rounded-full px-5 py-2.5 text-xs font-semibold uppercase tracking-wider mb-8 border border-primary/20 shadow-lg"
         >
           {badgeIcon && (
             <motion.div
-              animate={{ rotate: [0, 5, -5, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              animate={shouldReduceMotion ? undefined : { rotate: [0, 5, -5, 0] }}
+              transition={shouldReduceMotion ? undefined : { duration: 4, repeat: Infinity, ease: "easeInOut" }}
             >
               {badgeIcon}
             </motion.div>
@@ -166,10 +170,10 @@ export function SectionHeader({
       
       {subtitle && (
         <motion.p 
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
+          whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.6, delay: shouldReduceMotion ? 0 : 0.2 }}
           className={`text-lg sm:text-xl text-foreground/70 leading-relaxed max-w-3xl ${maxWidthClass}`}
         >
           {subtitle}
@@ -178,10 +182,10 @@ export function SectionHeader({
 
       {/* Animated underline with glow */}
       <motion.div
-        initial={{ scaleX: 0, opacity: 0 }}
-        whileInView={{ scaleX: 1, opacity: 1 }}
+        initial={shouldReduceMotion ? false : { scaleX: 0, opacity: 0 }}
+        whileInView={shouldReduceMotion ? undefined : { scaleX: 1, opacity: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8, delay: 0.3 }}
+        transition={{ duration: shouldReduceMotion ? 0 : 0.8, delay: shouldReduceMotion ? 0 : 0.3 }}
         className="relative h-1 w-28 mt-8"
         style={{ originX: alignment === "center" ? 0.5 : 0 }}
       >

@@ -37,6 +37,7 @@ export async function GET() {
     const HIGH_SEVERITY_ACTIONS = new Set([
       'org_lock',
       'org_suspend',
+      'org_retire',
       'user_lock',
       'delete_org',
       'trial_reset',

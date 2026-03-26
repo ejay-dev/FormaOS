@@ -11,7 +11,10 @@ interface MarketingCtaClickDetails {
     | 'compare'
     | 'use_case'
     | 'homepage'
-    | 'enterprise';
+    | 'enterprise'
+    | 'navigation'
+    | 'footer'
+    | 'docs';
   section?: string;
   location?: string;
   ctaLabel: string;

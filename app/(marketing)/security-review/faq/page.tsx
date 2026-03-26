@@ -51,7 +51,7 @@ const faqs = [
   },
   {
     q: 'Do you provide a vendor assurance artifact (pen test / independent assessment)?',
-    a: 'We provide a vendor assurance process and can share independent assessment artifacts under NDA when available. See the Vendor Assurance page in the Trust Center for scope, cadence, and request process. We avoid public certification claims unless an independent audit report exists for FormaOS as a vendor.',
+    a: 'We provide a vendor assurance process and can share current independent assessment artifacts during buyer review when available and appropriate. See the Vendor Assurance page in the Trust Center for scope, cadence, and request process. We avoid public certification claims unless an independent audit report exists for FormaOS as a vendor.',
   },
   {
     q: 'Do your infrastructure providers have compliance reports?',

@@ -72,15 +72,15 @@ const faqCategories = [
       },
       {
         q: 'How is data encrypted?',
-        a: 'All data is encrypted at rest using AES-256 and in transit using TLS 1.3 - no exceptions. Encryption key management follows enterprise cloud-provider best practices. Sensitive compliance evidence and audit trail data receive additional protection layers. Encryption controls are documented in our security review packet.',
+        a: 'Primary platform data is encrypted at rest using AES-256 and in transit using TLS 1.3. Encryption key management follows enterprise cloud-provider best practices, and encryption controls are documented in our security review packet.',
       },
       {
         q: 'Does FormaOS support SSO and MFA?',
-        a: 'FormaOS supports Google OAuth on all plans. Enterprise plans include SAML 2.0 SSO for Okta, Azure AD, and Google Workspace. SCIM provisioning is available on Enterprise plans for automated user lifecycle management. MFA policy enforcement is supported across all SSO providers. Session duration controls and access governance policies are configurable at the organizational level.',
+        a: 'FormaOS supports Google OAuth on all plans. Enterprise plans include SAML 2.0 SSO for Okta, Azure AD, and Google Workspace. MFA policy enforcement is supported across supported identity flows, and session duration controls plus access governance policies are configurable at the organizational level. Additional identity-lifecycle requirements are reviewed during enterprise deployment.',
       },
       {
         q: 'Where is data stored and what residency options exist?',
-        a: 'FormaOS is AU-based hosted by default, designed for Australian-regulated organizations. US and EU data residency are on our roadmap for international regulatory requirements. A Data Processing Agreement (DPA) is available for enterprise sign-off, covering GDPR, Privacy Act 1988, and cross-border transfer requirements.',
+        a: 'FormaOS is AU-hosted by default, designed for Australian-regulated organizations. Additional residency and cross-border handling requirements are reviewed during procurement. A Data Processing Agreement (DPA) is available for enterprise review, covering privacy and transfer considerations relevant to your deployment.',
       },
       {
         q: 'How do you handle data privacy and the Australian Privacy Principles?',
@@ -176,23 +176,23 @@ const faqCategories = [
     questions: [
       {
         q: 'What procurement documentation is available for enterprise sign-off?',
-        a: 'FormaOS ships with a full enterprise procurement package: Data Processing Agreement (DPA), vendor assurance questionnaire, SLA documentation, and security review packet covering architecture, encryption, identity governance, penetration testing, and data residency. These are available before the first procurement question is asked - request them via the security review page or contact sales engineering.',
+        a: 'FormaOS provides a core enterprise review pack that includes a Data Processing Agreement (DPA), vendor assurance materials, SLA review documentation, and a security review packet covering architecture, encryption, identity governance, and data handling. These materials are shared during evaluation and procurement review, with additional artifacts handled case by case.',
       },
       {
         q: 'What are the SLA commitments for Enterprise customers?',
-        a: 'Enterprise plans include a documented Service Level Agreement with a 99.9% monthly uptime target for the production environment. SLA terms cover incident response times, maintenance windows, and escalation paths. Dedicated support with priority response times is included. Contact our sales engineering team for the full Enterprise SLA documentation.',
+        a: 'Enterprise agreements can include documented availability expectations, incident handling processes, maintenance communications, and escalation paths. Exact support and service terms depend on the plan and executed commercial agreement.',
       },
       {
         q: 'What are our options if we need to exit the platform?',
-        a: 'FormaOS is built with no lock-in on exit. All compliance data, evidence, audit trails, and control records are exportable in portable formats (CSV, JSON, ZIP). Upon subscription cancellation, data export is available for 30 days before secure deletion. We provide export tooling and support to ensure a clean transition. Data portability is a first-class commitment, not a negotiated term.',
+        a: 'Compliance data, evidence, audit trails, and control records can be exported in portable formats such as CSV, JSON, and ZIP. Export support and deletion timing are handled under your plan and commercial agreement so teams can complete an orderly transition.',
       },
       {
         q: 'Can FormaOS support multi-entity or multi-site deployments?',
-        a: 'Yes. Enterprise plans support multi-entity and multi-site deployments with separate organizational boundaries, role-based access governance per entity, and consolidated compliance posture reporting across the group. SAML SSO and SCIM provisioning ensure identity governance scales with your organizational structure.',
+        a: 'Yes. Enterprise plans support multi-entity and multi-site deployments with separate organizational boundaries, role-based access governance per entity, and consolidated compliance posture reporting across the group. Identity requirements are reviewed during deployment planning so governance can scale with your structure.',
       },
       {
         q: 'Does FormaOS conduct penetration testing?',
-        a: 'FormaOS plans to conduct independent penetration tests against the production environment. Penetration test summaries will be available to Enterprise customers under NDA as part of the security review packet. Our vulnerability disclosure policy and remediation timelines are documented and available for enterprise procurement review.',
+        a: 'FormaOS uses independent security review processes and documents its vulnerability disclosure and remediation approach. Current assessment artifacts may be shared with enterprise buyers during security review when available and appropriate.',
       },
     ],
   },
@@ -204,15 +204,15 @@ const faqCategories = [
     questions: [
       {
         q: 'What onboarding is provided?',
-        a: 'All paid plans include structured onboarding delivered over 2–3 weeks. Week 1: platform configuration, user provisioning, and first framework setup. Week 2: workflow modeling, evidence structure design, and control ownership assignment. Week 3: first audit readiness review and posture baseline. Enterprise plans include a dedicated implementation manager, custom framework configuration, and extended onboarding with multi-site deployment support. Onboarding is not self-serve - every customer works with our team to ensure the platform matches their regulatory environment.',
+        a: 'All paid plans include structured onboarding covering platform configuration, first framework setup, workflow design, evidence structure, and control ownership. Enterprise onboarding can include additional implementation support for more complex deployments. Timing depends on scope, data readiness, and the number of teams involved.',
       },
       {
         q: 'Is enterprise support available?',
-        a: 'Yes. Enterprise plans include a dedicated Slack channel with your support team, priority email support with a 4-hour response SLA during business hours (AEST), and a named customer success manager. Enterprise support also includes quarterly compliance posture reviews, proactive framework update notifications, and direct escalation paths to engineering for platform issues. Support coverage and response commitments are documented in the Enterprise SLA.',
+        a: 'Yes. Enterprise plans can include shared support channels, priority email handling, named contacts, and review cadences aligned to the deployment. Support coverage and response expectations are documented in the applicable agreement.',
       },
       {
         q: 'How do I get help if I have an issue?',
-        a: 'All customers have access to the in-app help center, the FormaOS knowledge base, and email support at Formaos.team@gmail.com. Professional plans include priority email with an 8-hour response window during business hours. Enterprise plans add a dedicated Slack channel and a 4-hour response SLA. For platform-critical issues (data access, authentication, evidence integrity), all plans receive expedited response regardless of tier.',
+        a: 'All customers have access to the in-app help center, the FormaOS knowledge base, and email support at Formaos.team@gmail.com. Professional and Enterprise plans include higher-touch support options, and critical platform issues are prioritized under the applicable support process.',
       },
       {
         q: 'Do you provide training for our team?',
@@ -220,11 +220,11 @@ const faqCategories = [
       },
       {
         q: 'What is your support response time?',
-        a: 'Starter plans: email support with a 2-business-day response window. Professional plans: priority email with an 8-hour response window during business hours (AEST, Mon–Fri). Enterprise plans: dedicated Slack channel and priority email with a 4-hour response SLA during business hours. Platform-critical issues (authentication failures, data access, evidence integrity) are treated as P1 across all tiers with same-day acknowledgement. Response time commitments are documented in the SLA available during procurement review.',
+        a: 'Support response expectations vary by plan and, for Enterprise, by executed agreement. If your team requires documented response commitments, we review those during procurement and include them in the relevant service terms.',
       },
       {
         q: 'What happens during an audit if we need urgent help?',
-        a: 'Enterprise customers have access to audit-support escalation - a direct path to our team during active audits or regulator visits. This includes help with evidence export, posture snapshot generation, and auditor read-only access configuration. Professional plan customers can request audit-period support as an add-on. We understand that audit timelines are not flexible - our support commitments reflect that reality.',
+        a: 'Enterprise customers can scope audit-period support for evidence export, posture snapshots, and reviewer access configuration during active audits or regulator visits. Additional assistance for other plans can be discussed based on the engagement and timing.',
       },
     ],
   },

@@ -2,58 +2,44 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Quote } from 'lucide-react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 
-const TESTIMONIALS = [
+const PROOF_PATTERNS = [
   {
-    quote:
-      'FormaOS eliminated three weeks of scramble before every NDIS audit. Our team maintains continuous readiness instead of firefighting once a year.',
-    name: 'Sarah M.',
-    role: 'Operations Manager',
-    org: 'Disability Services Provider',
-    sector: 'NDIS',
+    sector: 'Healthcare operators',
+    title: 'Keep evidence close to the work that created it',
+    detail:
+      'Progress notes, approvals, and follow-up tasks stay linked to the workflow that generated them.',
+    proof: 'Evidence stays attached to care delivery',
     accentClass: 'from-cyan-500/20 to-blue-500/20',
     borderClass: 'border-cyan-500/20',
   },
   {
-    quote:
-      'The evidence chain reduced our SOC 2 audit cycle from six months to six weeks. Auditors now have everything they need in a single defensible package.',
-    name: 'James T.',
-    role: 'Chief Information Security Officer',
-    org: 'Healthcare Technology Platform',
-    sector: 'Healthcare',
+    sector: 'NDIS and social care teams',
+    title: 'Standardize incidents, credentials, and approvals',
+    detail:
+      'Critical records move through one governed process instead of separate folders, inboxes, and spreadsheets.',
+    proof: 'Operational records stay review-ready',
     accentClass: 'from-blue-500/20 to-violet-500/20',
     borderClass: 'border-blue-500/20',
   },
   {
-    quote:
-      'Finally, a compliance platform designed for operations teams, not just IT. Our frontline staff actually use it - because the workflows make sense to them.',
-    name: 'Rachel K.',
-    role: 'Head of Governance & Risk',
-    org: 'Regional Financial Services Group',
-    sector: 'Financial Services',
+    sector: 'Financial and governance teams',
+    title: 'Replace stitched-together status updates with one posture view',
+    detail:
+      'Leaders can review control ownership, exceptions, and evidence readiness without waiting for manual rollups.',
+    proof: 'Governance reporting becomes a live operating view',
     accentClass: 'from-violet-500/20 to-indigo-500/20',
     borderClass: 'border-violet-500/20',
   },
   {
-    quote:
-      'Standard 8 reporting used to consume two full weeks per quarter. With FormaOS we close the same governance cycle in under two days - with a traceable evidence trail the Commission accepts without question.',
-    name: 'Michael D.',
-    role: 'Quality & Compliance Lead',
-    org: 'Residential Aged Care Group',
-    sector: 'Aged Care',
+    sector: 'Multi-site regulated groups',
+    title: 'Run one compliance model across teams and locations',
+    detail:
+      'Shared controls, assigned ownership, and exportable history make multi-entity oversight easier to defend.',
+    proof: 'Shared operating model with local accountability',
     accentClass: 'from-emerald-500/20 to-teal-500/20',
     borderClass: 'border-emerald-500/20',
-  },
-  {
-    quote:
-      'Our SafeWork audit was the first one where we walked in with a complete digital evidence package. Incident logs, corrective actions, worker credential records - all exportable in under five minutes.',
-    name: 'Priya N.',
-    role: 'WHS & Compliance Manager',
-    org: 'Construction & Infrastructure Group',
-    sector: 'Construction',
-    accentClass: 'from-amber-500/20 to-orange-500/20',
-    borderClass: 'border-amber-500/20',
   },
 ] as const;
 
@@ -71,23 +57,22 @@ export function TestimonialsSection() {
         className="mx-auto mb-16 max-w-2xl text-center"
       >
         <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-cyan-400">
-          From the teams using FormaOS
+          Operating Proof
         </p>
         <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
-          Proof from regulated operations
+          Proof patterns from regulated operations
         </h2>
         <p className="mt-4 text-base text-slate-400">
-          Healthcare, disability services, and financial teams running
-          compliance as governance - not guesswork.
+          The strongest FormaOS signal is not a slogan. It is a clearer
+          operating model for teams that need accountable workflows and
+          review-ready evidence.
         </p>
       </motion.div>
 
-      {/* Cards */}
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {/* Note: 5 items - last card spans full width on tablet to avoid orphan */}
-        {TESTIMONIALS.map((t, i) => (
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2">
+        {PROOF_PATTERNS.map((pattern, i) => (
           <motion.article
-            key={t.name}
+            key={pattern.title}
             initial={{ opacity: 0, y: 32 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{
@@ -95,42 +80,31 @@ export function TestimonialsSection() {
               delay: i * 0.12,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className={`relative flex flex-col rounded-2xl border bg-white/[0.03] p-5 sm:p-8 backdrop-blur-sm ${t.borderClass} ${i === TESTIMONIALS.length - 1 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
+            className={`relative flex flex-col rounded-2xl border bg-white/[0.03] p-5 sm:p-8 backdrop-blur-sm ${pattern.borderClass}`}
           >
-            {/* Gradient tint */}
             <div
-              className={`pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br ${t.accentClass} opacity-40`}
+              className={`pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br ${pattern.accentClass} opacity-40`}
             />
 
-            {/* Quote icon */}
-            <Quote
-              className="relative mb-5 h-6 w-6 text-slate-500"
-              aria-hidden="true"
-            />
+            <div className="relative inline-flex items-center gap-2 self-start rounded-full border border-white/[0.08] bg-white/[0.05] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-300">
+              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-300" />
+              {pattern.sector}
+            </div>
 
-            {/* Quote text */}
-            <blockquote className="relative flex-1 text-base leading-relaxed text-slate-200">
-              &ldquo;{t.quote}&rdquo;
-            </blockquote>
+            <div className="relative mt-5 flex-1">
+              <h3 className="text-xl font-semibold text-white">
+                {pattern.title}
+              </h3>
+              <p className="mt-3 text-base leading-relaxed text-slate-300">
+                {pattern.detail}
+              </p>
+            </div>
 
-            {/* Attribution */}
-            <div className="relative mt-8 border-t border-white/[0.06] pt-6">
-              <div className="flex items-start gap-4">
-                {/* Avatar placeholder */}
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-sm font-bold text-slate-300">
-                  {t.name.charAt(0)}
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-white">
-                    {t.name}
-                  </div>
-                  <div className="mt-0.5 text-xs text-slate-400">{t.role}</div>
-                  <div className="mt-0.5 text-xs text-slate-500">{t.org}</div>
-                </div>
-              </div>
-              <span className="mt-4 inline-block rounded-full bg-white/[0.06] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">
-                {t.sector}
-              </span>
+            <div className="relative mt-6 border-t border-white/[0.06] pt-5">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan-200">
+                Enterprise signal
+              </p>
+              <p className="mt-2 text-sm text-slate-200">{pattern.proof}</p>
             </div>
           </motion.article>
         ))}
@@ -144,10 +118,10 @@ export function TestimonialsSection() {
         className="mt-12 text-center"
       >
         <a
-          href="/customer-stories"
+          href="/use-cases/healthcare"
           className="text-sm font-semibold text-cyan-400 underline-offset-4 hover:underline"
         >
-          Read full customer stories →
+          Explore regulated use cases <ArrowRight className="ml-1 inline h-4 w-4" />
         </a>
       </motion.div>
     </section>

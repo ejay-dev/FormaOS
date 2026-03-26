@@ -19,12 +19,12 @@ import { siteUrl } from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'FormaOS | Vendor Trust Packet',
   description:
-    'Procurement-ready vendor trust packet covering architecture, encryption, identity governance, data residency, and assurance commitments. Download for enterprise security review.',
+    'Vendor trust packet covering architecture, encryption, identity governance, data handling, and assurance review materials for enterprise buyers.',
   alternates: { canonical: `${siteUrl}/trust/packet` },
   openGraph: {
     title: 'FormaOS | Vendor Trust Packet',
     description:
-      'Procurement-ready vendor trust packet covering architecture, encryption, identity governance, data residency, and assurance commitments.',
+      'Vendor trust packet covering architecture, encryption, identity governance, data handling, and assurance review materials.',
     type: 'website',
     url: `${siteUrl}/trust/packet`,
   },
@@ -37,7 +37,7 @@ const sections = [
     items: [
       'Application security architecture and threat model summary',
       'OWASP Top 10 coverage and mitigation approach',
-      'Penetration testing planned - findings classification and remediation tracking policy',
+      'Security review approach, findings classification, and remediation tracking policy',
       'Vulnerability disclosure and remediation tracking policy',
     ],
   },
@@ -57,7 +57,7 @@ const sections = [
     title: 'Data Residency & Subprocessors',
     items: [
       'Default hosting: Australia (AU region)',
-      'Enterprise residency options: AU default (US / EU on roadmap) - configurable at onboarding',
+      'AU-hosted by default, with additional residency requirements reviewed during procurement',
       'Subprocessor list with hosting regions and data processing purposes',
       'Standard Contractual Clauses (SCCs) for international transfers',
       'Data flow diagram from collection to storage to deletion',
@@ -69,9 +69,9 @@ const sections = [
     items: [
       'Hosting provider SOC 2 reports available on request',
       'Automated backup and point-in-time recovery',
-      'Enterprise uptime target: 99.9% monthly - incorporated in MSA/SOW',
+      'Availability expectations and support terms reviewed during the contract process',
       'Incident response process and breach notification timelines',
-      'Planned maintenance window notification policy (48 hours minimum)',
+      'Maintenance communication and change management policy',
     ],
   },
   {
@@ -82,7 +82,7 @@ const sections = [
       'Vendor assurance questionnaire pre-filled responses',
       'Privacy Act 1988 (Australian Privacy Principles) alignment summary',
       'GDPR data subject rights support overview',
-      'Penetration test executive summary (NDA required)',
+      'Current third-party assessment or review artifacts, when available, may be shared during review',
     ],
   },
   {
@@ -91,7 +91,7 @@ const sections = [
     items: [
       'Aligned vs certified: honest positioning of our current assurance posture',
       'What "aligned to SOC 2" means and what it does not claim',
-      'Third-party assessment approach and artifact sharing under NDA',
+      'Third-party assessment approach and artifact sharing during buyer review when appropriate',
       'How to escalate procurement questions to the FormaOS security team',
     ],
   },
@@ -102,7 +102,7 @@ export default function TrustPacketPage() {
     <MarketingPageShell>
       <CompactHero
         title="Vendor Trust Packet"
-        description="A procurement-ready PDF from current system status. Covers architecture, encryption, identity, data residency, subprocessors, and assurance commitments."
+        description="A downloadable PDF built from current review materials. Covers architecture, encryption, identity, data handling, subprocessors, and assurance context."
         topColor="emerald"
         bottomColor="cyan"
         visualContent={
@@ -183,11 +183,11 @@ export default function TrustPacketPage() {
           </h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
             The Trust Packet is designed to answer the first wave of questions
-            from your security team, legal counsel, and procurement reviewers -
-            before a formal vendor questionnaire arrives. It uses intentional
-            "aligned vs certified" language so your team knows exactly what we
-            are claiming and what we are not. For NDA-gated artifacts
-            (penetration test executive summary), use the request form below.
+            from your security team, legal counsel, and procurement reviewers
+            during early evaluation. It uses intentional "aligned vs
+            certified" language so your team knows exactly what we are
+            claiming and what we are not. For additional restricted artifacts,
+            use the request form below.
           </p>
         </div>
 

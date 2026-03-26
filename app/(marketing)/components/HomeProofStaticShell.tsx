@@ -4,30 +4,30 @@ import { ArrowRight, ShieldCheck, Building2, FileCheck2 } from 'lucide-react';
 const PROOF_BLOCKS = [
   {
     icon: FileCheck2,
-    eyebrow: 'Operational Proof',
-    title: 'Controls become owned work, not passive documentation',
+    eyebrow: 'Operational System',
+    title: 'Controls become accountable execution, not passive documentation',
     body:
-      'Turn control requirements into named tasks, approval checkpoints, and timestamped evidence chains your operators can actually run.',
+      'Turn control requirements into named tasks, approval checkpoints, and evidence chains that teams can run inside daily operations.',
     href: '/product',
-    cta: 'See product workflow',
+    cta: 'Explore product workflow',
   },
   {
     icon: Building2,
     eyebrow: 'Enterprise Buying',
-    title: 'Procurement, security review, and rollout are first-class paths',
+    title: 'Security review, procurement, and rollout stay in one narrative',
     body:
-      'Show SAML SSO readiness, audit-ready exports, residency posture, and buyer-facing assurance without building a separate trust process by hand.',
+      'Show identity controls, audit-ready exports, hosting posture, and buyer-facing assurance without inventing a separate trust story by hand.',
     href: '/enterprise',
-    cta: 'Review enterprise fit',
+    cta: 'See enterprise path',
   },
   {
     icon: ShieldCheck,
-    eyebrow: 'Trust Posture',
-    title: 'Evidence integrity and buyer assurance are visible before the demo',
+    eyebrow: 'Trust Review',
+    title: 'Buyer assurance is visible before the first sales call',
     body:
-      'Surface trust documentation, audit defensibility, and security posture early so serious buyers can verify substance before they talk to sales.',
+      'Surface trust documentation, evidence defensibility, and review-ready context early so serious buyers can verify substance before they book a demo.',
     href: '/trust',
-    cta: 'Open trust center',
+    cta: 'Visit trust center',
   },
 ] as const;
 
@@ -37,15 +37,15 @@ export function HomeProofStaticShell() {
       <div className="mx-auto max-w-7xl">
         <div className="max-w-3xl">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200">
-            Buyer Verification
+            Why Buyers Stay
           </p>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            Verify the product story before the interactive experience loads
+            Product story, proof path, and trust path in the first scroll
           </h2>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">
-            FormaOS sells better when operators, procurement, and security can
-            all see a concrete proof path immediately. This section keeps that
-            substance in the initial HTML.
+            FormaOS is strongest when operators, security reviewers, and
+            procurement teams can each see how the platform works without
+            waiting for a fully interactive demo.
           </p>
         </div>
 

@@ -19,7 +19,7 @@ const proofScenarios = [
     before:
       'Evidence hunted across email threads, shared drives, and spreadsheets - days before auditor arrives.',
     after:
-      'Framework-mapped evidence bundles exported in under 2 minutes. Every control linked to its proof.',
+      'Framework-mapped evidence bundles exported with reviewer-ready context. Every control linked to its proof.',
     impact: 'Audit prep: days → hours',
     metric: { before: 'Days', after: '< 2 hrs', improvement: '~90%' },
   },
@@ -44,7 +44,7 @@ const proofScenarios = [
 ] as const;
 
 const outcomeStats = [
-  { value: '< 2 min', label: 'Audit packet export time', icon: TimerReset },
+  { value: 'Export-ready', label: 'Audit packet workflows', icon: TimerReset },
   {
     value: 'Continuous',
     label: 'Compliance posture monitoring',
@@ -61,8 +61,8 @@ const outcomeStats = [
     icon: GitBranch,
   },
   {
-    value: '< 7 days',
-    label: 'Typical security review cycle',
+    value: 'Buyer-led',
+    label: 'Security review timeline',
     icon: CalendarCheck,
   },
 ] as const;

@@ -11,7 +11,7 @@ const navCards = [
     icon: ShieldCheck,
     title: 'Security Review Packet',
     description:
-      'Architecture, AES-256 encryption, SAML 2.0 SSO, penetration testing summary, data residency options, and DPA - before your security team asks the first question.',
+      'Architecture, encryption, SAML 2.0 SSO, data handling posture, and DPA details shared early in security review.',
     linkText: 'Review packet',
   },
   {
@@ -35,7 +35,7 @@ const navCards = [
     icon: FileLock2,
     title: 'Download Trust Packet',
     description:
-      'Vendor trust packet covering architecture, encryption, identity governance, data residency, and assurance commitments - procurement-ready PDF.',
+      'Vendor trust packet covering architecture, encryption, identity governance, data handling, and review expectations in a downloadable PDF.',
     linkText: 'Download PDF',
   },
   {
@@ -43,7 +43,7 @@ const navCards = [
     icon: ShieldCheck,
     title: 'Vendor Assurance',
     description:
-      'DPA, vendor assurance questionnaire, SLA documentation, and independent assessment artifacts - ready for legal, risk, and procurement sign-off.',
+      'DPA, vendor assurance questionnaire, SLA review materials, and current assessment artifacts for legal, risk, and procurement review.',
     linkText: 'View process',
   },
 ] as const;
@@ -57,7 +57,7 @@ const assuranceModules = [
   {
     title: 'Security questionnaire acceleration',
     detail:
-      'Respond to due-diligence requests using pre-built control-and-evidence mappings. AES-256, SAML 2.0, DPA, and data residency answers ready to share.',
+      'Respond to due-diligence requests using pre-built control-and-evidence mappings and documented answers on architecture, identity, encryption, and data handling.',
   },
   {
     title: 'Controlled document access',

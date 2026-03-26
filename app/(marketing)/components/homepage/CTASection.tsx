@@ -6,19 +6,21 @@ import { ArrowRight, Sparkles, CheckCircle } from 'lucide-react';
 import { brand } from '@/config/brand';
 import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
+import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 const TRUST_BADGES = [
   { label: 'SOC 2-aligned', detail: 'Trust framework' },
   { label: 'Audit-ready', detail: 'Continuous posture' },
-  { label: 'AU-hosted', detail: 'US / EU residency on roadmap' },
+  { label: 'AU-hosted', detail: 'Additional residency reviewed' },
   { label: 'Enterprise SSO', detail: 'SAML 2.0 + MFA' },
-  { label: 'Full data export', detail: 'No lock-in on exit' },
+  { label: 'Full data export', detail: 'Portable exit support' },
 ] as const;
 
 export function CTASection() {
   const shouldReduceMotion = useReducedMotion();
+  const { trackCtaClick } = useMarketingTelemetry();
   const { snapshot } = useControlPlaneRuntime();
   const runtime =
     snapshot?.marketing.runtime ?? DEFAULT_RUNTIME_MARKETING.runtime;
@@ -69,21 +71,41 @@ export function CTASection() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto">
             <motion.a
               href={`${appBase}/auth/signup?plan=pro`}
+              onClick={() =>
+                trackCtaClick({
+                  surface: 'homepage',
+                  section: 'final_cta',
+                  location: 'final_primary',
+                  ctaLabel: 'Start Free Trial',
+                  ctaHref: `${appBase}/auth/signup?plan=pro`,
+                  variant: 'primary',
+                })
+              }
               whileHover={shouldReduceMotion ? undefined : { scale: 1.02 }}
               whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
               className="mk-btn mk-btn-primary px-8 py-4 min-h-[48px] text-base sm:text-lg w-full sm:w-auto justify-center"
             >
-              Get Started Free
+              Start Free Trial
               <ArrowRight className="w-5 h-5" />
             </motion.a>
 
             <motion.a
               href="/contact"
+              onClick={() =>
+                trackCtaClick({
+                  surface: 'homepage',
+                  section: 'final_cta',
+                  location: 'final_secondary',
+                  ctaLabel: 'Book Enterprise Demo',
+                  ctaHref: '/contact',
+                  variant: 'secondary',
+                })
+              }
               whileHover={shouldReduceMotion ? undefined : { scale: 1.02 }}
               whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
               className="mk-btn mk-btn-secondary px-8 py-4 min-h-[48px] text-base sm:text-lg w-full sm:w-auto justify-center"
             >
-              Schedule Enterprise Demo
+              Book Enterprise Demo
             </motion.a>
           </div>
         </ScrollReveal>

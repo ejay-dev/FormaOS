@@ -7,24 +7,24 @@ import { breadcrumbSchema,
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
-  title: 'Pricing - Compliance Management Software | FormaOS',
+  title: 'Pricing | Compliance Operating System Plans | FormaOS',
   description:
-    'Simple, transparent pricing for compliance teams. Start with a free 14-day trial, scale as you grow. No setup fees, cancel anytime.',
+    'Starter and Professional plans are self-serve. Enterprise buyers can run security review, procurement, and guided rollout with FormaOS.',
   alternates: {
     canonical: `${siteUrl}/pricing`,
   },
   openGraph: {
     title: 'Pricing | FormaOS',
     description:
-      'Transparent pricing for compliance management. Free trial, no setup fees, cancel anytime.',
+      'Self-serve plans for regulated teams, with guided enterprise evaluation and procurement support when needed.',
     type: 'website',
     url: `${siteUrl}/pricing`,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Pricing - Compliance Management Software | FormaOS',
+    title: 'Pricing | Compliance Operating System Plans | FormaOS',
     description:
-      'Transparent pricing for compliance management. Free 14-day trial, no setup fees, cancel anytime.',
+      'Self-serve plans for regulated teams, with guided enterprise evaluation and procurement support when needed.',
   },
 };
 

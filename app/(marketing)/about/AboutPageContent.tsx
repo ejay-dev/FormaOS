@@ -104,7 +104,7 @@ const milestones = [
     year: '2025',
     title: 'Enterprise-grade infrastructure',
     detail:
-      'Data residency AU default (US/EU on roadmap), SCIM provisioning, APRA CPS 234 framework support, and the full enterprise procurement package - DPA, vendor assurance, SLA, and security review packet.',
+      'AU-hosted deployment by default, APRA CPS 234 framework support, SAML 2.0 SSO, and a more mature enterprise review pack covering DPA, vendor assurance materials, SLA review, and security documentation.',
   },
 ] as const;
 
@@ -113,7 +113,7 @@ const values = [
     icon: Eye,
     title: 'Transparency over promises',
     detail:
-      'We ship the security review packet before your procurement team asks for it. Our architecture, encryption, and controls are documented and available - not hidden behind an NDA wall.',
+      'We make security review material available early in evaluation. Our architecture, encryption, and operating controls are documented clearly, and any restricted artifacts are handled deliberately rather than oversold in public copy.',
   },
   {
     icon: Layers,

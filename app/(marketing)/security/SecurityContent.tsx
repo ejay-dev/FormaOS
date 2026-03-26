@@ -48,13 +48,13 @@ const safeguards = [
     icon: FileCheck,
     title: 'Regulator-ready audit bundles',
     description:
-      'Generate framework-mapped evidence bundles with control snapshots, verification records, and audit trail exports - ready for external audit or regulator review in under 2 minutes.',
+      'Generate framework-mapped evidence bundles with control snapshots, verification records, and audit trail exports without reconstructing the evidence chain by hand.',
   },
   {
     icon: Shield,
     title: 'Compliance workflow gates',
     description:
-      'Critical actions are blocked when required controls are unresolved or evidence is missing. Accountability is enforced by the system - before work proceeds, not after.',
+      'Workflow gates and approval steps can be configured to prevent high-risk actions from moving forward when required controls or evidence are unresolved.',
   },
 ];
 
@@ -64,11 +64,11 @@ const securityLayers = {
     'Role-based access control (RBAC) with segregation of duties',
     'SAML 2.0 SSO - Okta, Azure AD, Google Workspace (Enterprise)',
     'MFA policy enforcement and session duration controls',
-    'SCIM provisioning for automated user lifecycle management (Enterprise plan)',
+    'Centralized identity requirements reviewed during enterprise deployment',
   ],
   'Data Protection': [
     'AES-256 encryption at rest - evidence, controls, and audit logs',
-    'TLS 1.3 encryption in transit - no exceptions',
+    'TLS 1.3 encryption in transit for primary platform traffic',
     'Immutable audit log storage - tamper-evident by design',
     'Backup, disaster recovery, and business continuity controls',
   ],
@@ -76,13 +76,13 @@ const securityLayers = {
     'Evidence approval workflows with sign-off chain',
     'Change tracking, versioning, and before/after audit capture',
     'Audit trail completeness - every compliance action recorded',
-    'Penetration testing - annual independent security review',
+    'Independent security review and remediation process',
   ],
   'Infrastructure & Residency': [
     'AU-based hosting by default - aligned for Australian-regulated orgs',
-    'US and EU data residency options for international requirements',
+    'Additional residency requirements reviewed during procurement',
     'Private storage buckets with network isolation',
-    'DDoS protection and cloud-native availability controls',
+    'Provider-managed network and availability controls',
   ],
 };
 

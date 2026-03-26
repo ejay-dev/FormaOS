@@ -17,6 +17,7 @@ interface DeferredSectionProps {
   /** Reserve layout to avoid jump before mount */
   minHeight?: number;
   rootMargin?: string;
+  fallback?: ReactNode;
 }
 
 export function DeferredSection({
@@ -24,6 +25,7 @@ export function DeferredSection({
   className,
   minHeight = 0,
   rootMargin = '300px 0px',
+  fallback,
 }: DeferredSectionProps) {
   const anchorRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
@@ -47,20 +49,15 @@ export function DeferredSection({
   useEffect(() => {
     const anchor = anchorRef.current;
     if (!anchor) return;
-    let idleId: number | null = null;
+    if (typeof IntersectionObserver === 'undefined') {
+      setMounted(true);
+      return;
+    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
-        if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-          idleId = (
-            window as Window & {
-              requestIdleCallback: (cb: () => void, options?: { timeout: number }) => number;
-            }
-          ).requestIdleCallback(() => setMounted(true), { timeout: 650 });
-        } else {
-          setMounted(true);
-        }
+        setMounted(true);
         observer.disconnect();
       },
       { rootMargin: resolvedRootMargin },
@@ -69,13 +66,6 @@ export function DeferredSection({
     observer.observe(anchor);
     return () => {
       observer.disconnect();
-      if (idleId !== null && typeof window !== 'undefined' && 'cancelIdleCallback' in window) {
-        (
-          window as Window & {
-            cancelIdleCallback: (id: number) => void;
-          }
-        ).cancelIdleCallback(idleId);
-      }
     };
   }, [resolvedRootMargin]);
 
@@ -96,7 +86,21 @@ export function DeferredSection({
       className={['mk-deferred-section', className].filter(Boolean).join(' ')}
       style={deferredStyle}
     >
-      {mounted ? children : null}
+      {mounted
+        ? children
+        : (fallback ?? (
+            reservedMinHeight > 0 ? (
+              <div
+                aria-hidden="true"
+                className="mk-deferred-section__placeholder flex min-h-[inherit] items-end rounded-[1.25rem] border border-white/[0.05] bg-gradient-to-b from-white/[0.035] via-white/[0.02] to-transparent px-5 py-6"
+              >
+                <div className="w-full space-y-3 opacity-80">
+                  <div className="h-px w-full bg-gradient-to-r from-transparent via-white/[0.12] to-transparent" />
+                  <div className="mx-auto h-2 w-32 rounded-full bg-white/[0.07]" />
+                </div>
+              </div>
+            ) : null
+          ))}
     </div>
   );
 }

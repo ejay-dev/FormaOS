@@ -101,8 +101,8 @@ export default function DPAPage() {
               >
                 formaos.com.au/trust/subprocessors
               </Link>
-              . We provide 30 days advance notice before engaging new
-              sub-processors.
+              . Advance notice for new sub-processors is provided in accordance
+              with the applicable customer agreement.
             </p>
           </Section>
 
@@ -127,11 +127,10 @@ export default function DPAPage() {
               Data retention periods are configurable and may be tailored to your
               specific regulatory obligations (e.g., 7-year ASIC record retention,
               NDIS evidence retention requirements). Upon termination or plan
-              cancellation, customers have 30 days to export all compliance data,
-              evidence artifacts, and audit trail records in portable formats
-              (CSV, JSON, ZIP). After the export window, data is securely deleted
-              and written confirmation is available on request. No lock-in penalty
-              applies to data portability.
+              cancellation, customers can export compliance data, evidence
+              artifacts, and audit trail records in portable formats (CSV, JSON,
+              ZIP). Export windows, deletion timing, and written confirmation are
+              handled in accordance with the applicable agreement.
             </p>
           </Section>
 

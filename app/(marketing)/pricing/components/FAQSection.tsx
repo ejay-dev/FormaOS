@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { ChevronDown, HelpCircle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { duration } from '@/config/motion';
@@ -10,21 +10,30 @@ import { PRICING_FAQS } from './faq-data';
 
 export function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const shouldReduceMotion = useReducedMotion();
 
   return (
     <section className="relative py-32 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]">
         <motion.div
-          animate={{
-            scale: [1, 1.15, 1],
-            opacity: [0.1, 0.2, 0.1],
-          }}
-          transition={{
-            duration: 14,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          animate={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  scale: [1, 1.15, 1],
+                  opacity: [0.1, 0.2, 0.1],
+                }
+          }
+          transition={
+            shouldReduceMotion
+              ? undefined
+              : {
+                  duration: 14,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }
+          }
           className="absolute bottom-1/4 right-1/3 w-1/3 h-1/3 rounded-full bg-gradient-to-br from-purple-500/15 to-transparent blur-3xl"
         />
       </div>
@@ -65,7 +74,10 @@ export function FAQSection() {
         >
           {PRICING_FAQS.map((faq, idx) => (
             <button
+              key={faq.question}
               onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
+              aria-expanded={openIndex === idx}
+              aria-controls={`pricing-faq-panel-${idx}`}
               className={`w-full text-left backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl p-6 border transition-all duration-300 ${
                 openIndex === idx
                   ? 'border-purple-500/30'
@@ -78,7 +90,7 @@ export function FAQSection() {
                 </h3>
                 <motion.div
                   animate={{ rotate: openIndex === idx ? 180 : 0 }}
-                  transition={{ duration: duration.fast }}
+                  transition={{ duration: shouldReduceMotion ? 0 : duration.fast }}
                   className="flex-shrink-0"
                 >
                   <ChevronDown className="w-5 h-5 text-gray-400" />
@@ -88,10 +100,11 @@ export function FAQSection() {
               <AnimatePresence>
                 {openIndex === idx && (
                   <motion.div
+                    id={`pricing-faq-panel-${idx}`}
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: duration.fast }}
+                    transition={{ duration: shouldReduceMotion ? 0 : duration.fast }}
                     className="overflow-hidden"
                   >
                     <p className="text-gray-400 mt-4 leading-relaxed">

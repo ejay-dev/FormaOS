@@ -124,6 +124,7 @@ const pricingTiers = [
     ],
     useCase:
       'You need structured processes, traceable ownership, and defensible records - without enterprise overhead.',
+    buyingMotion: 'Self-serve monthly plan',
     cta: 'Start Free Trial',
     href: `${appBase}/auth/signup?plan=basic`,
     featured: false,
@@ -153,11 +154,12 @@ const pricingTiers = [
       'Shift tracking, staff workflows, and visit logs',
       'Real-time activity feed and compliance alerts',
       'AI Compliance Assistant with streaming chat',
-      'SOC 2 self-certification readiness engine',
-      'Priority support with SLA acknowledgement',
+      'SOC 2 workflow support and evidence exports',
+      'Priority support and guided review',
     ],
     useCase:
       'You must reduce audit effort, enforce control ownership, and manage compliance obligations across teams or jurisdictions.',
+    buyingMotion: 'Self-serve monthly plan',
     cta: 'Start Free Trial',
     href: `${appBase}/auth/signup?plan=pro`,
     featured: true,
@@ -175,27 +177,28 @@ const pricingTiers = [
     tagline:
       'For organizations where compliance is mission-critical and non-negotiable',
     description:
-      'Governance at scale for healthcare providers, NDIS operators, financial institutions, and government bodies - with enterprise security and procurement controls.',
+      'Governance at scale for healthcare providers, NDIS operators, financial institutions, and government bodies - with guided enterprise review and rollout support.',
     professionalPlus: true,
     features: [
-      'Enterprise SSO (SAML 2.0 - Okta, Azure AD, Google Workspace)',
-      'MFA enforcement and session policy management',
+      'SAML SSO and MFA controls for enterprise deployments',
+      'Session policy controls and access governance',
       'Executive risk dashboard with trend analytics',
-      'Compliance Gate Enforcement: audit-blocking control enforcement',
+      'Workflow gating for high-assurance compliance steps',
       'Cross-framework control mappings (SOC 2, NIST CSF, CIS, HIPAA)',
-      'Data residency: AU default (US / EU on roadmap)',
+      'AU-hosted by default with additional residency needs reviewed during procurement',
       'Custom regulatory export bundles and evidence packages',
       'Compliance score engine with historical trending',
       'AI-powered gap analysis and policy drafting',
-      'Automated SOC 2 evidence collection and certification reports',
-      'Dedicated implementation and onboarding engineer',
-      'Vendor assurance packet, DPA, and SLA documentation',
-      'Invoice-based procurement available',
+      'SOC 2 workflow support and audit-ready exports',
+      'Guided implementation and onboarding support',
+      'Vendor assurance packet, DPA, and enterprise service terms',
+      'Invoice-based procurement and rollout planning',
     ],
     useCase:
       'Compliance is mission-critical, audits are frequent and high-stakes, and regulatory defensibility is non-negotiable.',
-    cta: 'Start Free Trial',
-    href: `${appBase}/auth/signup?plan=enterprise`,
+    buyingMotion: 'Guided review, procurement, or invoiced rollout',
+    cta: 'Talk to Sales',
+    href: '/contact?type=enterprise&plan=enterprise&source=pricing_enterprise',
     featured: false,
     color: 'purple',
     gradientFrom: 'from-purple-500/20',
@@ -385,10 +388,16 @@ export function PricingTiers() {
                 {/* Use When */}
                 <div className="mb-8 p-4 rounded-2xl bg-white/[0.04] border border-white/[0.08]">
                   <p className="text-xs text-gray-500 uppercase tracking-wider mb-2 font-semibold">
-                    Use when:
+                    Best fit:
                   </p>
                   <p className="text-sm text-gray-400 leading-relaxed">
                     {tier.useCase}
+                  </p>
+                  <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                    Buying path
+                  </p>
+                  <p className="mt-2 text-sm text-slate-300">
+                    {tier.buyingMotion}
                   </p>
                 </div>
 

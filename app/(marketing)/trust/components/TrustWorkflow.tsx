@@ -104,9 +104,9 @@ const trustWorkflow = [
       'Security and procurement teams review architecture, data handling, and governance posture before engaging further.',
     subpoints: [
       'Multi-tenant architecture with Row-Level Security - strict org boundary enforcement reviewed upfront',
-      'AES-256 encryption at rest, TLS 1.3 in transit - no exceptions across all data types and environments',
-      'Data residency: AU default (US and EU on roadmap) documented with Privacy Act 1988 and GDPR alignment',
-      'Independent penetration testing planned - summary will be available under NDA for Enterprise security reviewers',
+      'AES-256 encryption at rest and TLS 1.3 in transit documented in review materials',
+      'AU-hosted deployment by default, with additional residency requirements reviewed during procurement',
+      'Security review approach, remediation process, and current assessment artifacts shared when available and appropriate',
     ],
   },
   {
@@ -114,10 +114,10 @@ const trustWorkflow = [
     detail:
       'Buyer stakeholders verify control ownership, evidence traceability, and operational accountability against their internal requirements.',
     subpoints: [
-      'SAML 2.0 SSO integration with Okta, Azure AD, and Google Workspace - verified during trial setup',
-      'SCIM provisioning for automated user lifecycle management and role-based access control validation (Enterprise plan)',
+      'SAML 2.0 SSO integration with Okta, Azure AD, and Google Workspace reviewed during implementation planning',
+      'Role-based access control, session settings, and identity-lifecycle requirements reviewed during enterprise deployment',
       'Tamper-evident audit logs reviewed: every compliance action timestamped, immutable, and exportable',
-      'DPA, vendor assurance questionnaire, and SLA documentation provided for legal and risk sign-off',
+      'DPA, vendor assurance materials, and SLA review documentation shared for legal and risk review',
     ],
   },
   {
@@ -125,10 +125,10 @@ const trustWorkflow = [
     detail:
       'Teams move into trial or procurement with fewer blockers, reusable trust artifacts, and pre-answered security questionnaires.',
     subpoints: [
-      'Pre-built security review packet covers 90%+ of standard procurement questionnaire items',
+      'Pre-built security review packet covers common procurement and security-review topics',
       'Trust Center with public documentation: architecture overview, encryption posture, and data handling',
-      'Dedicated implementation support with named CSM for Enterprise onboarding and integration',
-      'Framework-mapped evidence bundles and compliance posture snapshots available from day one of trial',
+      'Guided implementation support available for enterprise onboarding and buyer review',
+      'Framework-mapped evidence bundles and compliance posture snapshots available during evaluation',
     ],
   },
 ] as const;

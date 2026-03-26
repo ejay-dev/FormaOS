@@ -22,29 +22,29 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 const SIGNAL_CARDS = [
   {
-    label: 'Framework Coverage',
-    value: '7 framework packs',
-    detail: '70+ pre-built controls',
+    label: 'Operating Model',
+    value: 'Controls become live workflows',
+    detail: 'Tasks, approvals, and evidence stay connected',
   },
   {
-    label: 'Evidence Chain',
-    value: 'Full chain-of-custody',
-    detail: 'Every artifact tracked',
+    label: 'Audit Readiness',
+    value: 'Evidence stays source-linked',
+    detail: 'Export-ready context without reconstruction',
   },
   {
-    label: 'Audit Export',
-    value: 'Minutes, not weeks',
-    detail: 'Framework-mapped bundles',
+    label: 'Enterprise Path',
+    value: 'Buyers get a real review flow',
+    detail: 'Trust documents and procurement context stay visible',
   },
 ] as const;
 
 const TRUST_PILLS = [
-  'ISO 27001',
-  'SOC 2',
-  'NDIS',
-  'HIPAA',
-  'GDPR',
-  'Essential Eight',
+  'SOC 2 workflows',
+  'ISO 27001 mapping',
+  'NDIS operations',
+  'HIPAA-ready teams',
+  'SAML + MFA',
+  'AU-hosted by default',
 ] as const;
 
 function isExternalHref(href: string) {
@@ -321,7 +321,7 @@ export function HeroSection() {
           ))}
           <span className="inline-flex items-center gap-1 rounded-full border border-cyan-300/25 bg-cyan-500/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-cyan-100">
             <Sparkles className="h-3 w-3" />
-            Live Governance Fabric
+            Enterprise-ready workflow layer
           </span>
         </motion.div>
       </div>

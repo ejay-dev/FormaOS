@@ -47,12 +47,12 @@ const points = [
   {
     title: 'Named accountability at every level',
     detail:
-      'Every control and evidence item has a named owner. Workflow escalations, SLA acknowledgements, and approval histories are all recorded - never assumed.',
+      'Every control and evidence item has a named owner. Workflow escalations and approval histories are recorded instead of left to manual follow-up.',
   },
   {
-    title: 'Enterprise procurement artifacts included',
+    title: 'Buyer review path is visible',
     detail:
-      'FormaOS ships with DPA, vendor assurance questionnaire, SAML 2.0 SSO, MFA enforcement, and AU data residency (US/EU on roadmap) - accelerating enterprise procurement.',
+      'FormaOS links buyer-facing trust materials, security review, and procurement context earlier in the evaluation path instead of treating them as an afterthought.',
   },
 ] as const;
 
@@ -108,7 +108,7 @@ const featureComparison = [
   },
   {
     feature: 'AU-first data residency',
-    formaos: 'AU (US/EU on roadmap)',
+    formaos: 'AU-hosted by default',
     competitor: 'US-first, AU on request',
   },
   {
@@ -118,7 +118,7 @@ const featureComparison = [
   },
   {
     feature: 'SCIM user provisioning',
-    formaos: 'Enterprise plan',
+    formaos: 'Reviewed during procurement',
     competitor: 'yes',
   },
   {
@@ -148,17 +148,17 @@ const procurementChecks = [
   {
     title: 'Security review packet',
     detail:
-      'Architecture, identity governance, AES-256 encryption, penetration testing, and SOC 2-aligned controls documented before your security team asks the first question.',
+      'Architecture, identity governance, encryption posture, and assurance context documented for early buyer review.',
   },
   {
     title: 'DPA and vendor assurance',
     detail:
-      'Data processing agreement, vendor assurance questionnaire, and SLA documentation available for legal, risk, and procurement sign-off - no delays.',
+      'Data processing agreement, vendor assurance materials, and enterprise service terms are available for legal, risk, and procurement review.',
   },
   {
     title: 'Enterprise identity controls',
     detail:
-      'SAML 2.0 SSO (Okta, Azure AD, Google Workspace) and MFA policy enforcement ready for enterprise identity requirements. SCIM provisioning available on Enterprise plan.',
+      'SAML SSO and MFA controls are part of enterprise evaluation. Additional identity-lifecycle requirements are confirmed during procurement review.',
   },
 ] as const;
 

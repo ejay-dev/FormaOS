@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Loader2, Lock, Unlock, Calendar, CreditCard } from "lucide-react"
+import { Archive, Calendar, CreditCard, Loader2, Lock, Unlock } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useComplianceAction } from "@/components/compliance-system"
 
@@ -127,9 +127,10 @@ export function OrgActionButtons({
   }
 
   async function handleToggleLifecycle() {
-    const isSuspendedNow = currentLifecycleStatus === "suspended"
-    const targetStatus = isSuspendedNow ? "active" : "suspended"
-    const actionLabel = isSuspendedNow ? "restore" : "suspend"
+    const canRestoreNow =
+      currentLifecycleStatus === "suspended" || currentLifecycleStatus === "retired"
+    const targetStatus = canRestoreNow ? "active" : "suspended"
+    const actionLabel = canRestoreNow ? "restore" : "suspend"
     const reason = promptReason(`Reason to ${actionLabel} organization lifecycle`)
     if (!reason) return
 
@@ -162,8 +163,51 @@ export function OrgActionButtons({
     }
   }
 
+  async function handleRetireLifecycle() {
+    const reason = promptReason("Reason to retire organization lifecycle")
+    if (!reason) return
+
+    const confirmed = window.confirm(
+      "Retire this organization? Access will remain blocked until it is explicitly restored."
+    )
+    if (!confirmed) return
+
+    setLoading("retire")
+
+    try {
+      const res = await fetch(`/api/admin/orgs/${orgId}/lifecycle`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-reason": reason,
+        },
+        body: JSON.stringify({ status: "retired", reason }),
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || "Failed to retire organization")
+      }
+
+      reportSuccess({
+        title: "Organization retired",
+        message: "Lifecycle moved to retired and access remains blocked.",
+      })
+      window.location.reload()
+    } catch (error: any) {
+      reportError({
+        title: "Retirement failed",
+        message: error.message || "Failed to retire organization",
+      })
+    } finally {
+      setLoading(null)
+    }
+  }
+
   const isBlocked = currentSubscriptionStatus === "blocked"
-  const isSuspended = currentLifecycleStatus === "suspended"
+  const canRestoreLifecycle =
+    currentLifecycleStatus === "suspended" || currentLifecycleStatus === "retired"
+  const isRetired = currentLifecycleStatus === "retired"
 
   return (
     <div className="flex flex-col gap-2">
@@ -268,20 +312,41 @@ export function OrgActionButtons({
           "transition-all flex items-center gap-2",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           "active:scale-95 disabled:active:scale-100",
-          isSuspended
+          canRestoreLifecycle
             ? "border-cyan-400/30 text-cyan-200 hover:bg-cyan-500/20"
             : "border-amber-400/30 text-amber-200 hover:bg-amber-500/20"
         )}
       >
         {loading === "lifecycle" ? (
           <Loader2 className="h-3 w-3 animate-spin" />
-        ) : isSuspended ? (
+        ) : canRestoreLifecycle ? (
           <Unlock className="h-3 w-3" />
         ) : (
           <Lock className="h-3 w-3" />
         )}
-        {isSuspended ? "Restore" : "Suspend"}
+        {canRestoreLifecycle ? "Restore" : "Suspend"}
       </button>
+
+      {!isRetired ? (
+        <button
+          onClick={handleRetireLifecycle}
+          disabled={loading !== null}
+          className={cn(
+            "rounded-lg border border-rose-400/30 px-3 py-1.5 text-xs font-bold",
+            "text-rose-200 hover:bg-rose-500/20 transition-all",
+            "flex items-center gap-2",
+            "disabled:opacity-50 disabled:cursor-not-allowed",
+            "active:scale-95 disabled:active:scale-100"
+          )}
+        >
+          {loading === "retire" ? (
+            <Loader2 className="h-3 w-3 animate-spin" />
+          ) : (
+            <Archive className="h-3 w-3" />
+          )}
+          Retire
+        </button>
+      ) : null}
     </div>
   )
 }

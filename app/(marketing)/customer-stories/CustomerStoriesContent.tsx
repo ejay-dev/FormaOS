@@ -105,7 +105,7 @@ export default function CustomerStoriesContent() {
             </span>
           </>
         }
-        subheadline="These examples are anonymized by default. If you're evaluating FormaOS for procurement, we can share deeper walkthroughs under NDA."
+        subheadline="Examples are anonymized by default. We can discuss deeper walkthroughs and review materials during evaluation."
         primaryCta={{ href: '/contact', label: 'Request a Guided Demo' }}
         secondaryCta={{
           href: `${appBase}/auth/signup?source=customer_stories`,

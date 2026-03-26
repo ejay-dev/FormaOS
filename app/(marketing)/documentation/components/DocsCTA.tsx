@@ -2,17 +2,29 @@
 
 import Link from 'next/link';
 import { ArrowRight, ExternalLink } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 
 export function DocsCTA() {
+  const shouldReduceMotion = useReducedMotion();
+  const { trackCtaClick } = useMarketingTelemetry();
+
   return (
     <section className="relative py-24 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421]">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-cyan-500/5 blur-3xl"
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+          animate={
+            shouldReduceMotion
+              ? undefined
+              : { scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }
+          }
+          transition={
+            shouldReduceMotion
+              ? undefined
+              : { duration: 10, repeat: Infinity, ease: 'easeInOut' }
+          }
         />
       </div>
 
@@ -33,8 +45,22 @@ export function DocsCTA() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <motion.a
                   href="/contact"
-                  whileHover={{ scale: 1.03, boxShadow: '0 0 30px rgba(6, 182, 212, 0.3)' }}
-                  whileTap={{ scale: 0.98 }}
+                  onClick={() =>
+                    trackCtaClick({
+                      surface: 'docs',
+                      section: 'docs_cta',
+                      location: 'docs_primary',
+                      ctaLabel: 'Contact Support',
+                      ctaHref: '/contact',
+                      variant: 'primary',
+                    })
+                  }
+                  whileHover={
+                    shouldReduceMotion
+                      ? undefined
+                      : { scale: 1.03, boxShadow: '0 0 30px rgba(6, 182, 212, 0.3)' }
+                  }
+                  whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
                   className="mk-btn mk-btn-primary group px-8 py-4 text-lg"
                 >
                   <span>Contact Support</span>
@@ -43,6 +69,16 @@ export function DocsCTA() {
 
                 <Link
                   href="/faq"
+                  onClick={() =>
+                    trackCtaClick({
+                      surface: 'docs',
+                      section: 'docs_cta',
+                      location: 'docs_secondary',
+                      ctaLabel: 'Browse FAQ',
+                      ctaHref: '/faq',
+                      variant: 'secondary',
+                    })
+                  }
                   className="mk-btn mk-btn-secondary group px-8 py-4 text-lg"
                 >
                   <span>Browse FAQ</span>

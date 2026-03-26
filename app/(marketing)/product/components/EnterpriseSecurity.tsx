@@ -17,8 +17,14 @@ const securityFeatures = [
     label: 'Session management, rate limiting, and IP controls',
     icon: Database,
   },
-  { label: 'Data residency: AU default (US / EU on roadmap)', icon: Shield },
-  { label: 'Independent penetration testing (planned)', icon: Lock },
+  {
+    label: 'AU-hosted deployment by default; additional residency needs reviewed during procurement',
+    icon: Shield,
+  },
+  {
+    label: 'Independent security review approach and available assessment artifacts',
+    icon: Lock,
+  },
   { label: 'Vendor assurance packet and DPA available', icon: Database },
 ] as const;
 

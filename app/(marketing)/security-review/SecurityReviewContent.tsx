@@ -40,7 +40,7 @@ const sections = [
     points: [
       'Google OAuth on all plans; SAML 2.0 SSO for Okta, Azure AD, Google Workspace on Enterprise plan',
       'MFA policy enforcement with configurable session duration and idle timeout controls',
-      'SCIM provisioning for automated user lifecycle management - onboarding, role changes, and offboarding (Enterprise plan)',
+      'Enterprise identity reviews cover lifecycle-management requirements, including joiner/mover/leaver workflows and provisioning expectations',
       'Role-based access control with granular permissions: admin, compliance lead, reviewer, auditor, read-only',
       'Session management with forced re-authentication for sensitive operations (evidence approval, user management)',
       'SSO enforcement mode: block password login when SSO is configured to prevent shadow authentication',
@@ -50,10 +50,10 @@ const sections = [
     icon: Lock,
     title: 'Data handling and encryption',
     points: [
-      'AES-256 encryption at rest; TLS 1.3 in transit - no exceptions across all data types and environments',
+      'AES-256 encryption at rest and TLS 1.3 in transit across production data flows',
       'Evidence chain-of-custody metadata: uploader identity, verifier, timestamps, and control linkage preserved',
       'Retention policies aligned to your regulatory requirements with configurable retention periods per data type',
-      'Full data portability on exit: structured export of all data, evidence, and audit history within 30 days',
+      'Structured export and data portability workflows are available, with exact exit timelines handled contractually',
       'Backup encryption with separate key management - backups are encrypted independently of primary storage',
       'No data sharing with third parties beyond documented subprocessors; subprocessor list publicly available',
     ],
@@ -64,22 +64,22 @@ const sections = [
     points: [
       'Tamper-evident, immutable audit logs for every compliance action - timestamped, uneditable, and append-only',
       'Evidence verification workflow with approval, rejection, and segregation controls fully documented',
-      'Framework-mapped audit bundles exportable in under 2 minutes for regulator, auditor, or board review',
+      'Framework-mapped audit bundles are exportable for regulator, auditor, or board review',
       'User activity logs: login history, permission changes, evidence access, and administrative actions recorded',
       'Evidence versioning: superseded artifacts are retained with full version history and reason-for-change',
-      'Audit log retention: minimum 7 years with configurable extension for long-tail regulatory obligations',
+      'Audit log retention is configurable according to contractual and regulatory requirements',
     ],
   },
   {
     icon: ClipboardCheck,
     title: 'Operational assurance and residency',
     points: [
-      'AU-based hosting by default; US and EU data residency options on roadmap for international regulatory obligations',
-      'Independent penetration testing planned - summary report will be available under NDA for Enterprise',
+      'AU-based hosting by default, with additional residency requirements reviewed during procurement',
+      'Independent security review approach and current assessment artifacts shared during enterprise review when available and appropriate',
       'DPA (Data Processing Agreement) covering GDPR and Privacy Act 1988 obligations, available pre-signature',
-      'Vendor assurance questionnaire (CAIQ-aligned) pre-completed and available for procurement review',
-      'SLA documentation with uptime commitments, incident response targets, and escalation procedures',
-      '99.9% uptime SLA on Enterprise plan with credit-backed guarantees and monthly availability reporting',
+      'Vendor assurance materials are available during procurement review as applicable',
+      'SLA and incident-response commitments are documented in enterprise agreements where applicable',
+      'Public status visibility and contractual service commitments are handled separately and described conservatively',
     ],
   },
 ] as const;
@@ -90,10 +90,10 @@ const checklist = [
   'AES-256 at rest + TLS 1.3 in transit encryption confirmation',
   'Evidence storage approach, access controls, and chain-of-custody metadata',
   'Audit logging coverage, tamper-evident history, and export capabilities',
-  'Data residency (AU default; US/EU on roadmap) and DPA documentation',
-  'Penetration test summary (available under NDA when completed)',
+  'AU-hosted deployment posture and DPA documentation',
+  'Current assessment and remediation materials, when available for buyer review',
   'Incident response posture and operational escalation contacts',
-  'Data portability confirmation - portable export, 30-day deletion on exit',
+  'Data portability confirmation - portable export and contract-defined deletion timelines',
   'Subprocessor list with data categories, locations, and processing purposes',
   'Business continuity and disaster recovery posture (RPO/RTO targets)',
   'Vendor risk management - third-party dependency governance and review cadence',
@@ -108,10 +108,10 @@ export default function SecurityReviewContent() {
         visualContent={<SecurityReviewHeroVisual />}
         badge={{
           icon: <ShieldCheck className="h-4 w-4" />,
-          text: 'Procurement Ready',
+          text: 'Enterprise Review',
         }}
         headline="Security Review Packet for Enterprise Buyers"
-        subheadline="Everything your security, legal, and procurement teams will ask - documented before they ask it. Encryption, SSO, pen testing, data residency, and DPA."
+        subheadline="The core materials enterprise security, legal, and procurement teams usually review first: encryption, SSO, data handling, assurance posture, and DPA context."
         primaryCta={{ href: '/contact', label: 'Security Walkthrough' }}
         secondaryCta={{
           href: `${appBase}/auth/signup?source=security_review`,

@@ -54,7 +54,7 @@ const audiences = [
     icon: Users,
     role: 'IT / Infrastructure Lead',
     label: 'IT teams implementing identity governance and access controls',
-    detail: 'SAML SSO, RBAC, MFA enforcement (SCIM on roadmap)',
+    detail: 'SAML SSO, RBAC, MFA enforcement, and deployment planning',
   },
   {
     icon: FileCheck,

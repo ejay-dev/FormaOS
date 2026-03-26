@@ -7,14 +7,14 @@ const objectionCards = [
   {
     objection: '"How do we complete security review before procurement sign-off?"',
     response:
-      'FormaOS ships with a pre-built security review packet: architecture overview, penetration test summary, vendor assurance questionnaire, and DPA - pre-answering 90% of procurement questions.',
+      'FormaOS provides a security review packet with architecture overview, assurance context, vendor questionnaire material, and DPA support so buyer teams can start from current documentation.',
     icon: ShieldAlert,
     proof: 'Security packet included',
   },
   {
     objection: '"Where is our data stored, and do we control residency?"',
     response:
-      'AU-based hosting by default. Enterprise plans include data residency controls for AU, US, or EU. Full Data Processing Agreement available for GDPR and Privacy Act 1988 obligations.',
+      'AU-based hosting is the default posture. Additional residency requirements are reviewed during procurement, and a Data Processing Agreement is available for privacy and legal review.',
     icon: Globe,
     proof: 'Data sovereignty controls',
   },
@@ -28,7 +28,7 @@ const objectionCards = [
   {
     objection: '"Can we get our data out if we leave?"',
     response:
-      'Full data portability on exit. Evidence, controls, audit trails, and framework mappings export in portable formats (CSV, ZIP, PDF). Data purged within 30 days of termination per retention policy.',
+      'Evidence, controls, audit trails, and framework mappings export in portable formats. Exit windows and deletion handling follow the applicable agreement and documented retention policy.',
     icon: ArrowUpRight,
     proof: 'Full data portability',
   },
@@ -65,7 +65,7 @@ export function ObjectionHandlingSection() {
             Answer every procurement and security objection - before they slow you down
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-slate-400 sm:text-base">
-            FormaOS ships with the artifacts, controls, and documentation to satisfy security teams, legal, procurement, and regulators - without a multi-week review process.
+            FormaOS ships with the artifacts, controls, and documentation buyer teams usually need first, without leaning on inflated public promises.
           </p>
         </ScrollReveal>
 

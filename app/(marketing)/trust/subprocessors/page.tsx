@@ -29,7 +29,7 @@ export default function SubprocessorsPage() {
     <MarketingPageShell>
       <CompactHero
         title="Subprocessors"
-        description="Third-party providers used to deliver FormaOS. Enterprise customers receive 30 days advance notice before new subprocessor engagement."
+        description="Third-party providers used to deliver FormaOS. Change notifications follow the applicable customer agreement."
         topColor="emerald"
         bottomColor="cyan"
         visualContent={<CompactHeroIcon icon={<Users className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
@@ -75,8 +75,9 @@ export default function SubprocessorsPage() {
             Change notifications
           </h3>
           <p className="text-sm text-muted-foreground">
-            Enterprise customers on paid plans receive 30 days advance email
-            notification before any new sub-processor is engaged. Contact{' '}
+            Enterprise customers on paid plans receive change notifications for
+            new sub-processors in accordance with the applicable agreement.
+            Contact{' '}
             <a
               href="mailto:Formaos.team@gmail.com"
               className="text-primary hover:underline"

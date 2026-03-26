@@ -16,7 +16,7 @@ export function PricingHero() {
       visualContent={<PricingHeroVisual />}
       badge={{
         icon: <DollarSign className="w-4 h-4 text-violet-400" />,
-        text: 'Transparent Pricing',
+        text: 'Pricing & Procurement Path',
         colorClass: 'violet',
       }}
       headline={
@@ -41,7 +41,10 @@ export function PricingHero() {
         label: 'Start Free Trial',
         testId: 'pricing-hero-start-trial',
       }}
-      secondaryCta={{ href: '/contact', label: 'Contact Sales' }}
+      secondaryCta={{
+        href: '/contact?type=pricing&source=pricing_hero',
+        label: 'Talk to Sales',
+      }}
       onPrimaryCtaClick={() =>
         trackCtaClick({
           surface: 'pricing',
@@ -57,8 +60,8 @@ export function PricingHero() {
           surface: 'pricing',
           section: 'hero',
           location: 'hero_secondary',
-          ctaLabel: 'Contact Sales',
-          ctaHref: '/contact',
+          ctaLabel: 'Talk to Sales',
+          ctaHref: '/contact?type=pricing&source=pricing_hero',
           variant: 'secondary',
         })
       }
@@ -89,10 +92,10 @@ function PricingExtras({
           <Check className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
           <div>
             <span className="block font-semibold text-white text-sm">
-              Enterprise-ready
+              Clear buying path
             </span>
             <span className="text-xs text-slate-400">
-              SSO, SAML, audit export, and data residency (AU default)
+              Self-serve for smaller teams, guided review for enterprise buyers
             </span>
           </div>
         </div>
@@ -103,7 +106,7 @@ function PricingExtras({
               Procurement support
             </span>
             <span className="text-xs text-slate-400">
-              Security review packet, DPA, and vendor assurance docs
+              Security review packet, DPA, and enterprise review materials
             </span>
           </div>
         </div>
@@ -130,14 +133,14 @@ function PricingExtras({
               surface: 'pricing',
               section: 'hero',
               location: 'security_review',
-              ctaLabel: 'Review procurement and security packet',
+              ctaLabel: 'Review security and procurement path',
               ctaHref: '/security-review',
               variant: 'resource',
             })
           }
           className="font-medium text-cyan-300 underline decoration-cyan-500/60 underline-offset-4 hover:text-cyan-200"
         >
-          Review procurement and security packet
+          Review security and procurement path
         </Link>
         <Link
           href="/compare"

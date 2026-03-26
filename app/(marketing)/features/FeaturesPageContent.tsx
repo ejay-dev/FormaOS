@@ -194,16 +194,16 @@ const features: PlatformFeature[] = [
   },
   {
     icon: Lock,
-    title: 'SAML 2.0 SSO & SCIM Provisioning',
+    title: 'SAML 2.0 SSO & Identity Lifecycle Controls',
     description:
-      'Enterprise identity governance with Okta, Azure AD, and Google Workspace. SCIM 2.0 for automated user lifecycle management.',
+      'Enterprise identity governance with Okta, Azure AD, and Google Workspace, plus deployment planning for centralized access control requirements.',
     longDescription:
-      'Enterprise identity governance supporting SAML 2.0 single sign-on with Okta, Azure Active Directory, Google Workspace, and any SAML 2.0-compliant identity provider. SCIM 2.0 provisioning automates user lifecycle management — onboarding, role changes, team transfers, and offboarding — with real-time sync and JIT (Just-In-Time) provisioning.',
+      'Enterprise identity governance supporting SAML 2.0 single sign-on with Okta, Azure Active Directory, Google Workspace, and any SAML 2.0-compliant identity provider. Additional provisioning, onboarding, team-transfer, and offboarding requirements are reviewed during enterprise deployment so identity controls match the operating model.',
     category: 'Identity & Security',
     highlight: 'Enterprise',
     capabilities: [
       'SAML 2.0 with any IdP',
-      'SCIM 2.0 auto-provisioning',
+      'Centralized identity planning',
       'JIT user provisioning',
       'Role-based access control',
     ],
@@ -507,7 +507,7 @@ const comparisonItems = [
   },
   {
     legacy: 'Manual audit preparation over weeks',
-    formaos: 'One-click audit packet export in under 2 minutes',
+    formaos: 'Mapped audit packet export without rebuilding evidence manually',
     icon: Clock,
   },
   {
@@ -517,7 +517,7 @@ const comparisonItems = [
   },
   {
     legacy: 'Disconnected identity management',
-    formaos: 'SAML 2.0 SSO + SCIM 2.0 automated provisioning',
+    formaos: 'SAML 2.0 SSO + centralized access controls',
     icon: Key,
   },
   {
@@ -589,8 +589,8 @@ const platformStats = [
   { value: '7', label: 'Framework Packs', suffix: '+' },
   { value: '12', label: 'Automation Triggers', suffix: '+' },
   { value: '5', label: 'Security Layers', suffix: '' },
-  { value: '99.9', label: 'Uptime SLA', suffix: '%' },
-  { value: '<2', label: 'Min Audit Export', suffix: 'min' },
+  { value: 'AU', label: 'Default Hosting Region', suffix: '' },
+  { value: 'Audit', label: 'Evidence Export', suffix: '-ready' },
 ];
 
 /* ─── Animated Counter ──────────────────────────────────── */
@@ -1314,15 +1314,15 @@ const capabilityTabs = [
     accentRgb: '139,92,246',
     heading: 'Enterprise identity governance built in',
     description:
-      'SAML 2.0 SSO, SCIM provisioning, and role-based access control for organizations that require centralized identity management.',
+      'SAML 2.0 SSO, role-based access control, and deployment planning for organizations that require centralized identity management.',
     details: [
       {
         label: 'SAML 2.0 SSO',
         text: 'Single sign-on with Okta, Azure AD, Google Workspace, and any SAML 2.0-compliant identity provider.',
       },
       {
-        label: 'SCIM 2.0',
-        text: 'Automated user provisioning, role updates, and deprovisioning synced from your identity provider in real-time.',
+        label: 'Identity Lifecycle',
+        text: 'Provisioning, role-change, and deprovisioning requirements are reviewed during deployment so access controls match your identity model.',
       },
       {
         label: 'JIT Provisioning',
@@ -1551,7 +1551,7 @@ const workflowSteps = [
     step: '06',
     title: 'Export Audit Packets',
     description:
-      'One-click export of framework-mapped evidence bundles with verification metadata. Audit-ready in under 2 minutes.',
+      'Export framework-mapped evidence bundles with verification metadata and reviewer-ready context.',
     accentRgb: '245,158,11',
     icon: ExternalLink,
   },
@@ -1747,9 +1747,9 @@ function EnterpriseCTA() {
 
                 <div className="flex flex-wrap justify-center gap-6 mt-10 text-xs text-slate-500">
                   {[
-                    'SOC 2 Ready',
-                    'GDPR Compliant',
-                    '99.9% SLA',
+                    'SOC 2-aligned workflows',
+                    'Privacy review support',
+                    'Enterprise review support',
                     'No Credit Card Required',
                   ].map((signal) => (
                     <div key={signal} className="flex items-center gap-1.5">

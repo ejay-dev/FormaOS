@@ -6,6 +6,7 @@ import { Logo } from '@/components/brand/Logo';
 import { easing, duration } from '@/config/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { CURRENT_RELEASE_DISPLAY, CURRENT_RELEASE_TAG } from '@/config/release';
+import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 import { getSignUpUrl } from '@/lib/urls';
 import { footerLinks as navFooterLinks } from '@/config/navigation';
 import {
@@ -57,6 +58,7 @@ function AnimatedFooterLink({
 
 function FooterCTA() {
   const prefersReducedMotion = useReducedMotion();
+  const { trackCtaClick } = useMarketingTelemetry();
 
   return (
     <ScrollReveal
@@ -106,6 +108,16 @@ function FooterCTA() {
           >
             <Link
               href={signUpUrl}
+              onClick={() =>
+                trackCtaClick({
+                  surface: 'footer',
+                  section: 'footer_cta',
+                  location: 'footer_primary',
+                  ctaLabel: 'Start Free Trial',
+                  ctaHref: signUpUrl,
+                  variant: 'primary',
+                })
+              }
               className="mk-btn mk-btn-primary rounded-xl px-6 py-3"
             >
               Start Free Trial
@@ -118,9 +130,19 @@ function FooterCTA() {
           >
             <Link
               href="/contact"
+              onClick={() =>
+                trackCtaClick({
+                  surface: 'footer',
+                  section: 'footer_cta',
+                  location: 'footer_secondary',
+                  ctaLabel: 'Book Enterprise Demo',
+                  ctaHref: '/contact',
+                  variant: 'secondary',
+                })
+              }
               className="mk-btn mk-btn-secondary rounded-xl px-6 py-3"
             >
-              Request Demo
+              Book Enterprise Demo
             </Link>
           </motion.div>
         </div>
@@ -159,6 +181,8 @@ function TrustBadge({
 }
 
 export function Footer() {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <footer className="mk-footer-premium mk-page-bg-alt relative overflow-hidden border-t border-white/10">
       {/* Background */}
@@ -204,14 +228,22 @@ export function Footer() {
             >
               <motion.span
                 className="h-2 w-2 rounded-full bg-green-500"
-                animate={{
-                  boxShadow: [
-                    '0 0 0 0 rgba(34, 197, 94, 0.4)',
-                    '0 0 0 8px rgba(34, 197, 94, 0)',
-                    '0 0 0 0 rgba(34, 197, 94, 0)',
-                  ],
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
+                animate={
+                  prefersReducedMotion
+                    ? undefined
+                    : {
+                        boxShadow: [
+                          '0 0 0 0 rgba(34, 197, 94, 0.4)',
+                          '0 0 0 8px rgba(34, 197, 94, 0)',
+                          '0 0 0 0 rgba(34, 197, 94, 0)',
+                        ],
+                      }
+                }
+                transition={
+                  prefersReducedMotion
+                    ? undefined
+                    : { duration: 2, repeat: Infinity }
+                }
               />
               <span className="text-xs font-medium text-green-400">
                 All systems operational

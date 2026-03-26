@@ -42,7 +42,7 @@ const points = [
   {
     title: 'Data sovereignty by default',
     detail:
-      'AU-based hosting by default with US and EU residency options. DPA and data handling controls included - essential for organizations under Privacy Act or GDPR obligations.',
+      'FormaOS is AU-hosted by default. Additional residency requirements, DPA details, and data-handling posture are reviewed explicitly during enterprise evaluation.',
   },
   {
     title: 'Incident management with audit trail',
@@ -108,7 +108,7 @@ const featureComparison = [
   },
   {
     feature: 'AU-first data residency',
-    formaos: 'AU (US/EU on roadmap)',
+    formaos: 'AU-hosted by default',
     competitor: 'US-first, limited AU',
   },
   {
@@ -118,7 +118,7 @@ const featureComparison = [
   },
   {
     feature: 'SCIM user provisioning',
-    formaos: 'Enterprise plan',
+    formaos: 'Reviewed during procurement',
     competitor: 'yes',
   },
   {
@@ -148,7 +148,7 @@ const procurementChecks = [
   {
     title: 'Data residency documentation',
     detail:
-      'AU-based hosting by default. US and EU residency options on the roadmap. GDPR and Privacy Act 1988 data handling controls documented and ready for your legal team.',
+      'AU-hosted by default. Current hosting posture, DPA details, and additional residency requirements are reviewed with legal and procurement teams.',
   },
   {
     title: 'Security review packet',
@@ -158,7 +158,7 @@ const procurementChecks = [
   {
     title: 'Enterprise SSO and identity governance',
     detail:
-      'SAML 2.0 SSO (Okta, Azure AD, Google Workspace) and MFA policy enforcement - ready for enterprise identity requirements. SCIM provisioning available on Enterprise plan.',
+      'SAML SSO and MFA controls are available for enterprise deployments. Additional identity-lifecycle requirements are confirmed during procurement.',
   },
 ] as const;
 

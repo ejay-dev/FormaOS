@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { Menu, X, ChevronRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { easing } from '@/config/motion';
+import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 import { NavLinks } from './NavLinks';
 
 const appBase = (
@@ -28,6 +29,8 @@ export function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const shouldReduceMotion = useReducedMotion();
+  const { trackCtaClick } = useMarketingTelemetry();
 
   const trapFocus = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -137,20 +140,20 @@ export function MobileNav() {
           {isOpen ? (
             <motion.div
               key="close"
-              initial={{ opacity: 0, rotate: -90 }}
+              initial={shouldReduceMotion ? false : { opacity: 0, rotate: -90 }}
               animate={{ opacity: 1, rotate: 0 }}
-              exit={{ opacity: 0, rotate: 90 }}
-              transition={{ duration: 0.15 }}
+              exit={shouldReduceMotion ? undefined : { opacity: 0, rotate: 90 }}
+              transition={{ duration: shouldReduceMotion ? 0 : 0.15 }}
             >
               <X className="h-5 w-5" />
             </motion.div>
           ) : (
             <motion.div
               key="menu"
-              initial={{ opacity: 0, rotate: 90 }}
+              initial={shouldReduceMotion ? false : { opacity: 0, rotate: 90 }}
               animate={{ opacity: 1, rotate: 0 }}
-              exit={{ opacity: 0, rotate: -90 }}
-              transition={{ duration: 0.15 }}
+              exit={shouldReduceMotion ? undefined : { opacity: 0, rotate: -90 }}
+              transition={{ duration: shouldReduceMotion ? 0 : 0.15 }}
             >
               <Menu className="h-5 w-5" />
             </motion.div>
@@ -162,10 +165,10 @@ export function MobileNav() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={shouldReduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            exit={shouldReduceMotion ? undefined : { opacity: 0 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.2 }}
             className="fixed inset-0 z-[9999]"
             onClick={handleBackdropClick}
             id="mobile-menu"
@@ -175,19 +178,30 @@ export function MobileNav() {
           >
             {/* Backdrop with blur */}
             <motion.div
-              initial={{ opacity: 0 }}
+              initial={shouldReduceMotion ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              exit={shouldReduceMotion ? undefined : { opacity: 0 }}
               className="absolute inset-0 bg-black/80 backdrop-blur-md"
             />
 
             {/* Menu panel - positioned below header */}
             <motion.div
               ref={menuRef}
-              initial={{ opacity: 0, y: -20, scale: 0.95 }}
+              initial={
+                shouldReduceMotion
+                  ? false
+                  : { opacity: 0, y: -20, scale: 0.95 }
+              }
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -20, scale: 0.95 }}
-              transition={{ duration: 0.25, ease: [...easing.signature] }}
+              exit={
+                shouldReduceMotion
+                  ? undefined
+                  : { opacity: 0, y: -20, scale: 0.95 }
+              }
+              transition={{
+                duration: shouldReduceMotion ? 0 : 0.25,
+                ease: [...easing.signature],
+              }}
               className="mk-mobile-sheet absolute left-3 right-3 top-[calc(env(safe-area-inset-top)+4.25rem)] max-h-[calc(100dvh-5.25rem)] rounded-2xl overflow-hidden"
               onClick={(e) => e.stopPropagation()}
               onKeyDown={trapFocus}
@@ -222,7 +236,17 @@ export function MobileNav() {
                 <div className="p-4 space-y-3">
                   <Link
                     href={`${appBase}/auth/signin`}
-                    onClick={handleLinkClick}
+                    onClick={() => {
+                      trackCtaClick({
+                        surface: 'navigation',
+                        section: 'mobile_nav',
+                        location: 'mobile_login',
+                        ctaLabel: 'Login',
+                        ctaHref: `${appBase}/auth/signin`,
+                        variant: 'secondary',
+                      });
+                      handleLinkClick();
+                    }}
                     className="mk-btn mk-btn-secondary flex items-center justify-between w-full rounded-xl px-4 py-3.5 text-sm"
                   >
                     <span>Login</span>
@@ -230,15 +254,35 @@ export function MobileNav() {
                   </Link>
                   <Link
                     href="/contact"
-                    onClick={handleLinkClick}
+                    onClick={() => {
+                      trackCtaClick({
+                        surface: 'navigation',
+                        section: 'mobile_nav',
+                        location: 'mobile_contact',
+                        ctaLabel: 'Talk to Sales',
+                        ctaHref: '/contact',
+                        variant: 'secondary',
+                      });
+                      handleLinkClick();
+                    }}
                     className="mk-btn mk-btn-secondary flex items-center justify-between w-full rounded-xl px-4 py-3.5 text-sm"
                   >
-                    <span>Contact Sales</span>
+                    <span>Talk to Sales</span>
                     <ChevronRight className="h-4 w-4 text-white/50" />
                   </Link>
                   <Link
                     href={`${appBase}/auth/signup?plan=pro&source=mobile_nav`}
-                    onClick={handleLinkClick}
+                    onClick={() => {
+                      trackCtaClick({
+                        surface: 'navigation',
+                        section: 'mobile_nav',
+                        location: 'mobile_primary',
+                        ctaLabel: 'Start Free Trial',
+                        ctaHref: `${appBase}/auth/signup?plan=pro&source=mobile_nav`,
+                        variant: 'primary',
+                      });
+                      handleLinkClick();
+                    }}
                     className="mk-btn mk-btn-primary flex items-center justify-center w-full rounded-xl px-4 py-3.5 text-sm font-bold"
                   >
                     Start Free Trial

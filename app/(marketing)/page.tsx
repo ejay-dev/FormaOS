@@ -7,24 +7,24 @@ import { siteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
-  title: 'Turn Process Into Provable Truth',
+  title: 'Compliance Operating System for Regulated Teams | FormaOS',
   description:
-    'Model workflows. Execute with precision. Verify in real-time. Prove compliance. Enterprise-grade process evidence platform for regulated industries.',
+    'FormaOS turns obligations into governed workflows, owned evidence, and enterprise-ready assurance for regulated teams.',
   alternates: {
     canonical: `${siteUrl.replace(/\/$/, '')}/`,
   },
   openGraph: {
-    title: 'FormaOS | Turn Process Into Provable Truth',
+    title: 'Compliance Operating System for Regulated Teams | FormaOS',
     description:
-      'Enterprise-grade process evidence platform for regulated industries. Model workflows, execute with precision, verify in real-time, prove compliance.',
+      'FormaOS turns obligations into governed workflows, owned evidence, and enterprise-ready assurance for regulated teams.',
     type: 'website',
     url: `${siteUrl.replace(/\/$/, '')}/`,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FormaOS | Turn Process Into Provable Truth',
+    title: 'Compliance Operating System for Regulated Teams | FormaOS',
     description:
-      'Enterprise-grade process evidence platform for regulated industries. Model workflows, execute with precision, verify in real-time, prove compliance.',
+      'FormaOS turns obligations into governed workflows, owned evidence, and enterprise-ready assurance for regulated teams.',
   },
 };
 

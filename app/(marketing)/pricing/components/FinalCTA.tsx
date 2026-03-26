@@ -100,7 +100,7 @@ export function FinalCTA() {
                     <div className="flex items-center gap-3 justify-center lg:justify-start">
                       <div className="w-2 h-2 rounded-full bg-blue-400" />
                       <span className="text-sm text-gray-400">
-                        Security review packet and DPA available immediately
+                        Security review packet and DPA available during evaluation
                       </span>
                     </div>
                     <div className="flex items-center gap-3 justify-center lg:justify-start">
@@ -112,7 +112,7 @@ export function FinalCTA() {
                   </div>
 
                   <p className="text-base text-gray-500 leading-relaxed">
-                    Trusted by regulated teams in healthcare, NDIS, financial services, and government.
+                    Built for regulated teams that need a clearer buying path from trial through procurement.
                   </p>
                 </ScrollReveal>
 
@@ -137,14 +137,14 @@ export function FinalCTA() {
                     </Link>
 
                     <Link
-                      href="/contact"
+                      href="/contact?type=pricing&source=pricing_final_cta"
                       onClick={() =>
                         trackCtaClick({
                           surface: 'pricing',
                           section: 'final_cta',
                           location: 'final_secondary',
                           ctaLabel: 'Talk to Sales',
-                          ctaHref: '/contact',
+                          ctaHref: '/contact?type=pricing&source=pricing_final_cta',
                           variant: 'final',
                         })
                       }
@@ -156,7 +156,7 @@ export function FinalCTA() {
                   </div>
 
                   <div className="text-xs text-gray-500">
-                    AU-based hosting • GDPR & Privacy Act 1988 ready • SOC 2 aligned • Enterprise SSO
+                    AU-hosted by default • DPA available • SOC 2-aligned workflows • SAML SSO
                   </div>
                 </ScrollReveal>
               </div>

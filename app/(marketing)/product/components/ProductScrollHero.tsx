@@ -12,19 +12,19 @@ import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 
 const OUTCOME_METRICS = [
   {
-    label: 'Live Control Coverage',
-    value: '70+ controls',
-    trend: 'Across 7 frameworks',
+    label: 'Operating Model',
+    value: 'Cross-framework alignment',
+    trend: 'One system for tasks, evidence, and review',
   },
   {
     label: 'Evidence Continuity',
-    value: 'Full chain',
+    value: 'Source-linked history',
     trend: 'Chain-of-custody tracked',
   },
   {
-    label: 'Audit Packet Delivery',
-    value: 'Minutes',
-    trend: 'Not weeks',
+    label: 'Buyer Readiness',
+    value: 'Trust path visible',
+    trend: 'Security review and enterprise context included',
   },
 ] as const;
 
@@ -53,25 +53,25 @@ const WORKFLOW_STAGES = [
   {
     stage: 'Detect Drift',
     owner: 'Control Ops',
-    sla: '9 min',
+    sla: 'Continuous',
     status: 'Stable',
   },
   {
     stage: 'Assign & Escalate',
     owner: 'Risk Lead',
-    sla: '14 min',
+    sla: 'Owned',
     status: 'Healthy',
   },
   {
     stage: 'Verify Resolution',
     owner: 'Assurance',
-    sla: '31 min',
+    sla: 'Review-ready',
     status: 'Tracked',
   },
   {
     stage: 'Export Audit Packet',
     owner: 'Reporting',
-    sla: 'Minutes',
+    sla: 'On demand',
     status: 'Ready',
   },
 ] as const;
@@ -177,17 +177,17 @@ export function ProductScrollHero() {
       }}
       headline={
         <>
-          Run Compliance Like
+          Run Compliance as
           <br />
           <span className="bg-gradient-to-r from-violet-300 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">
-            Mission-Critical Operations
+            a Governed System
           </span>
         </>
       }
-      subheadline="FormaOS turns obligations into governed execution loops with owned evidence, real-time posture visibility, and audit packets leadership can defend."
+      subheadline="FormaOS turns obligations into governed execution loops with owned evidence, shared posture visibility, and buyer-ready assurance across regulated operations."
       extras={<ProductHeroExtras />}
       primaryCta={{ href: '/auth/signup', label: 'Start Free Trial' }}
-      secondaryCta={{ href: '/contact', label: 'Request Demo' }}
+      secondaryCta={{ href: '/contact', label: 'Book Enterprise Demo' }}
     />
   );
 }

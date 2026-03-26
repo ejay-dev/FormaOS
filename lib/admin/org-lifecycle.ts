@@ -121,6 +121,30 @@ export async function suspendOrganizationLifecycle(args: {
   await lockOrganizationAccess(args.admin, args.orgId);
 }
 
+export async function retireOrganizationLifecycle(args: {
+  admin: AdminClient;
+  orgId: string;
+  actorUserId: string;
+  reason: string;
+}) {
+  const nowIso = new Date().toISOString();
+
+  await args.admin
+    .from('organizations')
+    .update({
+      lifecycle_status: 'retired',
+      lifecycle_reason: args.reason,
+      is_active: false,
+      retired_at: nowIso,
+      retired_by: args.actorUserId,
+      restored_at: null,
+      restored_by: null,
+    })
+    .eq('id', args.orgId);
+
+  await lockOrganizationAccess(args.admin, args.orgId);
+}
+
 export async function restoreOrganizationLifecycle(args: {
   admin: AdminClient;
   orgId: string;

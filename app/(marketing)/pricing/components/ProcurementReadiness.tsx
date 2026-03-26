@@ -10,13 +10,13 @@ const assurancePillars = [
     icon: ClipboardCheck,
     title: 'Security review packet',
     detail:
-      'Structured packet covering architecture, identity, encryption, data handling, penetration testing, and audit defensibility - ready for your security team.',
+      'Structured packet covering architecture, identity, encryption, data handling, and audit defensibility for buyer review.',
   },
   {
     icon: FileCheck2,
     title: 'Procurement artifacts',
     detail:
-      'DPA, vendor assurance questionnaire, SLA documentation, and trust-center links to accelerate legal, risk, and procurement sign-off.',
+      'DPA, vendor assurance materials, enterprise service terms, and trust-center links for legal, risk, and procurement review.',
   },
   {
     icon: ShieldCheck,
@@ -28,7 +28,7 @@ const assurancePillars = [
     icon: Lock,
     title: 'Enterprise identity controls',
     detail:
-      'SAML 2.0 SSO, MFA enforcement, role-based access by organizational boundary, and session policy management for enterprise identity standards.',
+      'SAML SSO, MFA controls, role-based access by organizational boundary, and session policy management reviewed during enterprise evaluation.',
   },
 ] as const;
 
@@ -49,7 +49,7 @@ export function ProcurementReadiness() {
             Built to survive security and procurement scrutiny
           </h2>
           <p className="mt-4 text-base leading-relaxed text-slate-300">
-            Enterprise procurement teams have rigorous requirements. FormaOS ships with the artifacts, controls, and documentation to meet them - before the first question is asked.
+            Enterprise buyers need a clear review path. FormaOS surfaces the materials, controls, and operating context early so security and procurement teams can evaluate with less back-and-forth.
           </p>
         </ScrollReveal>
 
@@ -78,7 +78,7 @@ export function ProcurementReadiness() {
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link
-            href="/contact"
+            href="/contact?type=procurement&source=pricing_procurement"
             className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-6 py-3 text-sm font-semibold text-white hover:bg-white/[0.08]"
           >
             Talk with Sales Engineering

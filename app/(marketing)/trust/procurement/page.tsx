@@ -28,12 +28,12 @@ const faqs = [
   {
     question: 'Where is customer data stored?',
     answer:
-      'Customer data is hosted in Australia by default (AU region). US and EU data residency options are on our roadmap for Enterprise customers. All data is encrypted at rest (AES-256) and in transit (TLS 1.3). A full subprocessor list with hosting regions is available at formaos.com.au/trust/subprocessors.',
+      'Customer data is hosted in Australia by default (AU region). Additional residency or transfer requirements are reviewed during procurement. Data is encrypted at rest (AES-256) and in transit (TLS 1.3). A full subprocessor list with hosting regions is available at formaos.com.au/trust/subprocessors.',
   },
   {
     question: 'Do you have a SOC 2 report?',
     answer:
-      'FormaOS is built on infrastructure providers that maintain their own SOC 2 reports (e.g., hosting). FormaOS provides a procurement-ready security packet describing our application controls and data handling. If you require a vendor attestation beyond “aligned”, we can share current third-party assessment artifacts available under NDA.',
+      'FormaOS is built on infrastructure providers that maintain their own SOC 2 reports (for example, hosting). FormaOS provides a security packet describing our application controls and data handling. If you require vendor assessment material beyond public positioning, we can discuss current third-party review artifacts during procurement when available and appropriate.',
   },
   {
     question: 'Can we sign a DPA?',
@@ -43,7 +43,7 @@ const faqs = [
   {
     question: 'What are your data retention policies?',
     answer:
-      'Retention periods are configurable and can be tailored to your regulatory obligations - for example, 7-year ASIC record retention or NDIS evidence retention requirements. On termination or plan cancellation, customers have 30 days to export all compliance data, evidence artifacts, and audit trail records in portable formats (CSV, JSON, ZIP). After the export window, data is securely deleted and written confirmation is available on request. No lock-in penalty applies to data portability.',
+      'Retention periods are configurable and can be tailored to your regulatory obligations. Compliance data, evidence artifacts, and audit trail records are exportable in portable formats such as CSV, JSON, and ZIP. Export windows and deletion timing are handled under your plan and commercial agreement.',
   },
   {
     question: 'Do you support SSO/SAML?',
@@ -58,17 +58,17 @@ const faqs = [
   {
     question: 'What is your uptime SLA?',
     answer:
-      'Enterprise plans include a 99.9% monthly uptime SLA target incorporated into your executed MSA/SOW. P1 critical incidents receive an acknowledgement within 1 business hour; P2 high-priority incidents within 4 business hours. Planned maintenance is communicated a minimum of 48 hours in advance. Starter and Professional plans operate on a best-effort basis with public status reporting at formaos.com.au/status.',
+      'Enterprise agreements can include documented availability expectations, incident handling, maintenance communications, and escalation paths in the executed MSA/SOW. Starter and Professional plans operate on a best-effort basis with public status reporting at formaos.com.au/status.',
   },
   {
     question: 'How long does security review take?',
     answer:
-      'Most security reviews can be completed within 5-7 business days. We provide a pre-built Trust Packet with security overview, compliance mappings, and policy summaries to accelerate the process.',
+      'Security review timelines depend on the scope of your questionnaire, legal process, and requested artifacts. We provide a pre-built Trust Packet with security overview, compliance mappings, and policy summaries to help teams start from current materials.',
   },
   {
-    question: 'What can I prove to my auditor in 14 days?',
+    question: 'What can teams usually stand up during early evaluation?',
     answer:
-      'Within 14 days on FormaOS, most organizations can: enable their primary framework, map existing evidence to controls, generate a compliance posture report, and export an audit-ready evidence package.',
+      'During early evaluation, teams can usually enable a primary framework, map existing evidence to controls, generate a posture snapshot, and review export-ready evidence packages. The exact pace depends on implementation scope and the quality of source material.',
   },
 ];
 
@@ -109,32 +109,35 @@ export default function ProcurementFAQPage() {
           ))}
         </div>
 
-        {/* What you can prove in 14 days */}
+        {/* Early evaluation outcomes */}
         <div className="mt-16 p-8 rounded-2xl border border-border bg-card">
           <div className="flex items-center gap-3 mb-4">
             <Clock className="h-6 w-6 text-primary" aria-hidden="true" />
             <h2 className="text-xl font-semibold text-foreground">
-              What you can prove in 14 days
+              What teams usually stand up during early evaluation
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
             {[
               {
-                day: 'Day 1-2',
+                day: 'Initial setup',
                 action: 'Enable framework + import existing evidence',
               },
               {
-                day: 'Day 3-5',
+                day: 'Framework mapping',
                 action: 'Map controls to evidence + create core policies',
               },
               {
-                day: 'Day 6-8',
+                day: 'Ownership design',
                 action: 'Assign owners + set up automation triggers',
               },
-              { day: 'Day 9-11', action: 'Generate compliance posture report' },
               {
-                day: 'Day 12-14',
-                action: 'Export audit-ready trust packet for stakeholders',
+                day: 'Posture review',
+                action: 'Generate compliance posture report',
+              },
+              {
+                day: 'Buyer review',
+                action: 'Review export-ready evidence packages for stakeholders',
               },
             ].map(({ day, action }) => (
               <div

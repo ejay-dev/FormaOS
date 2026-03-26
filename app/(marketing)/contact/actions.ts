@@ -35,6 +35,11 @@ export async function submitMarketingLead(formData: FormData) {
   const organization = safeValue(formData.get('organization'), 200);
   const industry = safeValue(formData.get('industry'), 100);
   const message = safeValue(formData.get('message'), 2000);
+  const inquiryType = safeValue(formData.get('inquiryType'), 80);
+  const source = safeValue(formData.get('source'), 120);
+  const plan = safeValue(formData.get('plan'), 80);
+  const primaryNeed = safeValue(formData.get('primaryNeed'), 120);
+  const timeline = safeValue(formData.get('timeline'), 120);
 
   // ── Honeypot: reject submissions that fill the bot trap field ─────────────
   const honeypot = safeValue(formData.get('_honey'), 10);
@@ -53,6 +58,19 @@ export async function submitMarketingLead(formData: FormData) {
     redirect('/contact?error=invalid_email');
   }
 
+  const contextParts = [
+    inquiryType ? `inquiry:${inquiryType}` : null,
+    plan ? `plan:${plan}` : null,
+    primaryNeed ? `need:${primaryNeed}` : null,
+    timeline ? `timeline:${timeline}` : null,
+    source ? `source:${source}` : null,
+  ].filter(Boolean);
+
+  const normalizedMessage =
+    contextParts.length > 0
+      ? `[${contextParts.join(' | ')}]\n\n${message}`
+      : message;
+
   // ── Persist lead ──────────────────────────────────────────────────────────
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.from('marketing_leads').insert({
@@ -60,7 +78,7 @@ export async function submitMarketingLead(formData: FormData) {
     email,
     organization,
     industry: industry || null,
-    message,
+    message: normalizedMessage,
   });
 
   if (error) {

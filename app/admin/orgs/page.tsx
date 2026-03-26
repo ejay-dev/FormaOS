@@ -69,6 +69,8 @@ function getStatusColor(status?: string) {
       return 'bg-amber-500/10 text-amber-300';
     case 'suspended':
       return 'bg-red-500/10 text-red-300';
+    case 'retired':
+      return 'bg-slate-500/20 text-slate-200';
     default:
       return 'bg-muted/40 text-muted-foreground';
   }

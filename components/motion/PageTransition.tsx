@@ -1,7 +1,7 @@
 'use client';
 
 import { type ReactNode } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import { easing } from '@/config/motion';
 
@@ -37,6 +37,11 @@ const variants = {
 
 export function PageTransition({ children }: PageTransitionProps) {
   const pathname = usePathname();
+  const shouldReduceMotion = useReducedMotion();
+
+  if (shouldReduceMotion) {
+    return <div key={pathname}>{children}</div>;
+  }
 
   return (
     <AnimatePresence mode="wait" initial={false}>

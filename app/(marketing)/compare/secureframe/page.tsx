@@ -37,7 +37,7 @@ const points = [
   {
     title: 'Execution visibility for leadership',
     detail:
-      'FormaOS communicates readiness as operational truth: named owners, live deadlines, control gaps, and posture snapshots - real-time and always current for board and executive reporting.',
+      'FormaOS communicates readiness through named owners, live deadlines, control gaps, and posture snapshots that are closer to daily operating reality.',
   },
   {
     title: 'Non-security regulated industries',
@@ -47,12 +47,12 @@ const points = [
   {
     title: 'Workflow enforcement, not just documentation',
     detail:
-      'Controls in FormaOS block non-compliant work from proceeding. Accountability is structural, not cultural - the system enforces it, not a spreadsheet or a reminder email.',
+      'FormaOS can use workflow gates, approvals, and accountable handoffs to enforce high-assurance compliance steps instead of relying only on reminders and documentation.',
   },
   {
     title: 'Audit-ready posture - always',
     detail:
-      'FormaOS maintains continuous compliance posture with real-time control drift alerts. No more "sprint to audit" - evidence is generated as teams operate, every day.',
+      'FormaOS keeps readiness closer to daily operations with control drift visibility and evidence generated as teams work, reducing the need for last-minute reconstruction.',
   },
 ] as const;
 
@@ -108,7 +108,7 @@ const featureComparison = [
   },
   {
     feature: 'AU-first data residency',
-    formaos: 'AU (US/EU on roadmap)',
+    formaos: 'AU-hosted by default',
     competitor: 'US-first, AU on request',
   },
   {
@@ -118,7 +118,7 @@ const featureComparison = [
   },
   {
     feature: 'SCIM user provisioning',
-    formaos: 'Enterprise plan',
+    formaos: 'Reviewed during procurement',
     competitor: 'yes',
   },
   {
@@ -153,7 +153,7 @@ const procurementChecks = [
   {
     title: 'Vendor assurance and DPA',
     detail:
-      'Data processing agreement, vendor assurance questionnaire, and SLA documentation ready for legal, risk, and procurement sign-off - no delays.',
+      'Data processing agreement, vendor assurance materials, and enterprise service terms are available for legal, risk, and procurement review.',
   },
   {
     title: 'Framework coverage documentation',

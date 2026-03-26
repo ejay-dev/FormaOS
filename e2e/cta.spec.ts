@@ -18,7 +18,7 @@ const marketingPages = [
   { name: 'Pricing', path: '/pricing' },
   { name: 'Story', path: '/our-story' },
   { name: 'Contact', path: '/contact' },
-  { name: 'Docs', path: '/docs' },
+  { name: 'Docs', path: '/documentation' },
   { name: 'Blog', path: '/blog' },
   { name: 'FAQ', path: '/faq' },
 ];
@@ -128,7 +128,7 @@ test.describe('Marketing CTA wiring', () => {
     expect(startHref.startsWith(APP_BASE)).toBe(true);
 
     const requestDemo = page
-      .getByRole('link', { name: /request demo/i })
+      .getByRole('link', { name: /book enterprise demo/i })
       .first();
     await requestDemo.scrollIntoViewIfNeeded();
     await expect(requestDemo).toBeVisible();
@@ -157,7 +157,7 @@ test.describe('Marketing CTA wiring', () => {
       expect(href).toContain('/auth');
     }
 
-    const contactSales = page.getByRole('link', { name: /contact sales/i });
+    const contactSales = page.getByRole('link', { name: /talk to sales/i });
     if (await contactSales.count()) {
       const href = normalizeHref(await contactSales.first().getAttribute('href'));
       expect(href).toContain(`${SITE_BASE}/contact`);

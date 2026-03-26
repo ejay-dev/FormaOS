@@ -5,14 +5,38 @@ import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const outcomes = [
-  { outcome: 'Continuous compliance posture - not periodic audit scrambles', stat: '24/7' },
-  { outcome: 'Audit preparation reduced from weeks to hours', stat: '~90%' },
-  { outcome: 'Every control has a named owner, status, and evidence trail', stat: '100%' },
-  { outcome: 'Regulator-ready evidence packages exportable in minutes', stat: '< 2 min' },
-  { outcome: 'Cross-framework coverage without duplicating work', stat: '9 packs' },
-  { outcome: 'A governance layer that runs while your teams operate', stat: 'Always-on' },
-  { outcome: 'Real-time drift alerts before auditors find gaps', stat: 'Live' },
-  { outcome: 'Compliance history preserved for multi-year audit cycles', stat: 'Immutable' },
+  {
+    outcome: 'Continuous posture instead of periodic audit scramble',
+    stat: 'Continuous',
+  },
+  {
+    outcome: 'Audit exports start from live records instead of reconstruction',
+    stat: 'Export-ready',
+  },
+  {
+    outcome: 'Every control can be assigned to a named owner and team',
+    stat: 'Named owner',
+  },
+  {
+    outcome: 'Evidence stays linked to tasks, controls, and approvals',
+    stat: 'Source-linked',
+  },
+  {
+    outcome: 'Cross-framework work stays reusable across obligations',
+    stat: 'Reusable',
+  },
+  {
+    outcome: 'Governance continues while teams deliver operational work',
+    stat: 'Always-on',
+  },
+  {
+    outcome: 'Drift and exceptions surface earlier for review',
+    stat: 'Early signal',
+  },
+  {
+    outcome: 'History remains reviewable over time with chain of custody',
+    stat: 'Traceable',
+  },
 ] as const;
 
 export function TheOutcome() {
@@ -34,7 +58,8 @@ export function TheOutcome() {
               What regulated organizations achieve with FormaOS
             </h2>
             <p className="text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              Not promises. These are the operational outcomes teams reach when compliance is a system, not a spreadsheet.
+              These are the operating conditions teams can standardize when
+              compliance runs as a system instead of a periodic project.
             </p>
           </div>
         </ScrollReveal>

@@ -7,22 +7,22 @@ export const PRICING_FAQS = [
   {
     question: 'Do you support enterprise identity and access requirements?',
     answer:
-      'Google OAuth and MFA enforcement are available on all plans. Enterprise plans include SAML 2.0 SSO with support for Okta, Azure AD, and Google Workspace. Session policy management, IP restrictions, and SCIM provisioning are available on Enterprise plans.',
+      'Google OAuth and MFA controls are available on current plans. Enterprise deployments can use SAML SSO with major identity providers, and additional identity-lifecycle requirements are reviewed during procurement so public pricing copy stays aligned with implemented controls.',
   },
   {
     question: 'Where is data stored, and can we select our region?',
     answer:
-      'FormaOS stores data on infrastructure based in Australia by default. US and EU data residency options are on our roadmap for Enterprise plans. All data is encrypted at rest (AES-256) and in transit (TLS 1.3). A full Data Processing Agreement (DPA) is available on request.',
+      'FormaOS stores data on infrastructure based in Australia by default. Additional residency and transfer requirements are reviewed during enterprise procurement. Data is encrypted at rest (AES-256) and in transit (TLS 1.3), and a Data Processing Agreement (DPA) is available on request.',
   },
   {
     question: 'What are your uptime and SLA commitments?',
     answer:
-      'FormaOS targets 99.9% monthly uptime for production services. Enterprise plans include a formal SLA with defined incident response, escalation paths, and remediation credits. Our status page provides real-time availability and incident history.',
+      'FormaOS publishes platform availability and incident history on the status page. Enterprise agreements can define service commitments, escalation expectations, and maintenance communication during contract review.',
   },
   {
     question: 'How does procurement and billing work?',
     answer:
-      'Starter and Professional plans are self-serve with monthly card billing. Enterprise can also be activated with self-serve monthly checkout, while invoice-based procurement, multi-year agreements, and purchase-order workflows remain available for larger deployments. All plans include the security and vendor assurance documentation required for enterprise procurement.',
+      'Starter and Professional are self-serve monthly plans. Enterprise buyers can run a guided security review, procurement workflow, and invoiced rollout where required. Buyer-facing materials such as the security review packet, DPA summary, and trust resources are available early in the process.',
   },
   {
     question: 'Can we pilot one team first and expand later?',
@@ -32,7 +32,7 @@ export const PRICING_FAQS = [
   {
     question: 'What happens to our data if we leave?',
     answer:
-      'Your compliance data belongs to you. On exit, we provide a full data export (evidence, audit trails, control mappings) in portable formats (CSV, ZIP, PDF). Data is purged from our systems within 30 days of account termination, per our retention policy.',
+      'Your compliance data belongs to you. On exit, we can provide data exports covering evidence, audit history, and control mappings in portable formats. Final retention and deletion handling follows the applicable agreement and documented policy.',
   },
   {
     question: 'Do you provide onboarding and implementation support?',

@@ -77,6 +77,14 @@
   );
 }
 
+.mk-page-shell {
+  position: relative;
+}
+
+.mk-page-shell__content {
+  min-height: inherit;
+}
+
 /* Canonical visual primitives */
 .mk-gradient-text,
 .text-gradient {
@@ -229,6 +237,14 @@
   position: relative;
   padding-top: var(--mk-section-y);
   padding-bottom: var(--mk-section-y);
+}
+
+.mk-deferred-section {
+  position: relative;
+}
+
+.mk-deferred-section__placeholder {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 /* Keep marketing sections on one rhythm scale without changing structure */

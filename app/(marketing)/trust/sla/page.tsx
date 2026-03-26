@@ -8,12 +8,12 @@ import { siteUrl } from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'FormaOS | SLA',
   description:
-    'SLA and availability expectations for FormaOS enterprise plans.',
+    'Service levels, support expectations, and availability review guidance for FormaOS plans.',
   alternates: { canonical: `${siteUrl}/trust/sla` },
   openGraph: {
     title: 'FormaOS | SLA',
     description:
-      'SLA and availability expectations for FormaOS enterprise plans.',
+      'Service levels, support expectations, and availability review guidance for FormaOS plans.',
     type: 'website',
     url: `${siteUrl}/trust/sla`,
   },
@@ -32,8 +32,8 @@ const tiers = [
   {
     tier: 'Professional',
     points: [
-      'No contractual SLA by default; best-effort 99.9% uptime target.',
-      'Priority email support with faster response commitments vs Starter.',
+      'No contractual SLA by default; best-effort service model.',
+      'Priority email support with faster handling than Starter.',
       'Public status page, incident history, and uptime reports available.',
       'Security review artifacts available via Trust Center for procurement.',
     ],
@@ -41,14 +41,12 @@ const tiers = [
   {
     tier: 'Enterprise',
     points: [
-      '99.9% monthly uptime SLA target - included in executed MSA/SOW.',
-      'P1 critical incident response: acknowledgement within 1 business hour.',
-      'P2 high priority: acknowledgement within 4 business hours.',
+      'Executed agreements can define availability targets and support expectations.',
+      'Incident handling, escalation paths, and reporting cadence are documented during contracting.',
       'Dedicated success support and named escalation path.',
-      'Planned maintenance communicated minimum 48 hours in advance.',
-      'SAML 2.0 SSO, MFA enforcement, and data residency controls (AU default; US/EU on roadmap).',
-      ,
-      'Annual uptime reports and SLA credit calculation available on request.',
+      'Maintenance communications and planned change notices follow the agreed service terms.',
+      'SAML 2.0 SSO, MFA enforcement, and AU-hosted deployment options are reviewed during solution design.',
+      'Service reporting and any contractual remedies are handled through the executed agreement.',
     ],
   },
 ] as const;
@@ -58,7 +56,7 @@ export default function SlaPage() {
     <MarketingPageShell>
       <CompactHero
         title="SLA"
-        description="Enterprise plans include a 99.9% monthly uptime SLA with documented incident response tiers. Contract terms defined in your MSA/SOW. Other plans are best-effort."
+        description="Enterprise plans can include documented service levels and support expectations in the executed agreement. Other plans operate on a best-effort basis."
         topColor="emerald"
         bottomColor="cyan"
         visualContent={
@@ -117,8 +115,8 @@ export default function SlaPage() {
         </div>
 
         <p className="mt-8 text-xs text-muted-foreground">
-          Need a signed SLA addendum? Use the security review walkthrough to
-          align on procurement requirements.
+          Need a signed service schedule or support addendum? Use the security
+          review walkthrough to align on procurement requirements.
         </p>
       </div>
     </MarketingPageShell>

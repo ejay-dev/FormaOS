@@ -11,12 +11,12 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 export const metadata: Metadata = {
   title: 'FormaOS | Vendor Assurance',
   description:
-    'Vendor assurance process, independent assessment approach, and procurement-ready artifacts for enterprise review.',
+    'Vendor assurance process, independent assessment approach, and enterprise review materials for buyers evaluating FormaOS.',
   alternates: { canonical: `${siteUrl}/trust/vendor-assurance` },
   openGraph: {
     title: 'FormaOS | Vendor Assurance',
     description:
-      'Vendor assurance process, independent assessment approach, and procurement-ready artifacts for enterprise review.',
+      'Vendor assurance process, independent assessment approach, and enterprise review materials for buyers evaluating FormaOS.',
     type: 'website',
     url: `${siteUrl}/trust/vendor-assurance`,
   },
@@ -27,7 +27,7 @@ export default function VendorAssurancePage() {
     <MarketingPageShell>
       <CompactHero
         title="Vendor Assurance"
-        description="Enterprise-grade vendor assurance artifacts - DPA, questionnaire, security review packet, subprocessor disclosures, and pen test summary. Procurement-ready."
+        description="Vendor assurance materials for enterprise review: DPA, questionnaire responses, security review packet, subprocessor disclosures, and current assessment context."
         topColor="emerald"
         bottomColor="cyan"
         visualContent={
@@ -51,7 +51,8 @@ export default function VendorAssurancePage() {
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                 Enterprise customers often require independent assurance beyond
                 internal documentation. Our approach is to provide a scoped,
-                repeatable assessment cadence and share artifacts under NDA.
+                repeatable assessment process and share current artifacts during
+                buyer review when available and appropriate.
               </p>
 
               <div className="mt-5 grid gap-4 md:grid-cols-3">
@@ -71,10 +72,10 @@ export default function VendorAssurancePage() {
                     Cadence
                   </div>
                   <ul className="mt-2 space-y-2 text-sm text-foreground/90">
-                    <li>Independent penetration testing planned</li>
+                    <li>Independent security review process</li>
                     <li>Re-assessment after major platform changes</li>
                     <li>Remediation tracking and verified fix documentation</li>
-                    <li>Summary available to Enterprise customers under NDA</li>
+                    <li>Current summaries shared during review when appropriate</li>
                   </ul>
                 </div>
                 <div className="rounded-xl border border-border bg-background/40 p-4">
@@ -82,7 +83,7 @@ export default function VendorAssurancePage() {
                     Artifacts Available
                   </div>
                   <ul className="mt-2 space-y-2 text-sm text-foreground/90">
-                    <li>Penetration test executive summary (NDA required)</li>
+                    <li>Current assessment summary when available</li>
                     <li>DPA (signed on request for Enterprise)</li>
                     <li>Vendor assurance questionnaire responses</li>
                     <li>Subprocessor list + data flow diagram</li>
@@ -113,7 +114,7 @@ export default function VendorAssurancePage() {
                 During procurement, send your questionnaire and required
                 artifact list. We can provide a Trust Packet PDF, subprocessor
                 disclosures, DPA summary, and independent assessment artifacts
-                (under NDA when applicable).
+                when applicable to the review.
               </p>
 
               <div className="mt-5 flex flex-col gap-3 sm:flex-row">

@@ -86,6 +86,7 @@ async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
       .in('action', [
         'org_lock',
         'org_suspend',
+        'org_retire',
         'trial_reset',
         'user_lock',
         'session_revoke',

@@ -65,38 +65,38 @@ interface TrustBadge {
 const trustBadges: TrustBadge[] = [
   {
     icon: ShieldCheck,
-    label: 'SOC 2 Type II',
-    detail: 'Audited annually by independent assessors',
+    label: 'Security review ready',
+    detail: 'Procurement materials available on request',
     colorRgb: '52,211,153',
   },
   {
     icon: Scale,
-    label: 'ISO 27001',
-    detail: 'Certified information security management',
+    label: 'Audit-ready exports',
+    detail: 'Evidence and control context preserved',
     colorRgb: '59,130,246',
   },
   {
     icon: Globe,
-    label: 'GDPR Compliant',
-    detail: 'EU data protection regulation adherence',
+    label: 'AU-hosted by default',
+    detail: 'Additional residency needs reviewed during procurement',
     colorRgb: '139,92,246',
   },
   {
     icon: HeartPulse,
-    label: 'HIPAA Ready',
-    detail: 'Healthcare data handling compliance',
+    label: 'Public status visibility',
+    detail: 'Operational updates and uptime checks published',
     colorRgb: '251,113,133',
   },
   {
     icon: Building2,
-    label: 'NDIS Practice Standards',
-    detail: 'Disability services compliance support',
+    label: 'SAML + MFA',
+    detail: 'Enterprise identity controls supported',
     colorRgb: '34,211,238',
   },
   {
     icon: Lock,
-    label: 'Privacy Act 1988',
-    detail: 'Australian privacy principles compliance',
+    label: 'DPA and subprocessor docs',
+    detail: 'Available for enterprise review',
     colorRgb: '245,158,11',
   },
 ];
@@ -116,12 +116,12 @@ const securityLayers: SecurityLayer[] = [
     name: 'Application Security',
     icon: Monitor,
     description:
-      'WAF, CSP headers, input sanitization, and automated SAST/DAST scanning on every deployment.',
+      'Security headers, input validation, dependency review, and controlled release practices across the platform.',
     controls: [
-      'Web Application Firewall (WAF)',
       'Content Security Policy (CSP)',
-      'OWASP Top 10 mitigation',
-      'Automated vulnerability scanning',
+      'Input validation and sanitization',
+      'Dependency and vulnerability review',
+      'Controlled release and rollback procedures',
     ],
     colorRgb: '52,211,153',
   },
@@ -129,12 +129,12 @@ const securityLayers: SecurityLayer[] = [
     name: 'Authentication & Identity',
     icon: Fingerprint,
     description:
-      'SAML 2.0, OIDC, SCIM 2.0, MFA enforcement, and session management with configurable policies.',
+      'Enterprise identity controls centered on SAML SSO, MFA enforcement, session policy, and audited role changes.',
     controls: [
-      'SAML 2.0 / OIDC SSO',
-      'SCIM 2.0 provisioning',
-      'Hardware MFA (FIDO2)',
-      'Session policy management',
+      'SAML 2.0 SSO',
+      'MFA enforcement',
+      'Session policy controls',
+      'Audited role and access changes',
     ],
     colorRgb: '139,92,246',
   },
@@ -142,12 +142,12 @@ const securityLayers: SecurityLayer[] = [
     name: 'Data Protection',
     icon: Database,
     description:
-      'AES-256 encryption at rest, TLS 1.3 in transit, field-level encryption for sensitive data.',
+      'AES-256 encryption at rest, TLS 1.3 in transit, export controls, and encrypted backup workflows.',
     controls: [
       'AES-256 encryption at rest',
       'TLS 1.3 in transit',
-      'Field-level encryption',
-      'Key rotation automation',
+      'Controlled export workflows',
+      'Encrypted backup handling',
     ],
     colorRgb: '59,130,246',
   },
@@ -155,12 +155,12 @@ const securityLayers: SecurityLayer[] = [
     name: 'Infrastructure Security',
     icon: CloudCog,
     description:
-      'Multi-region isolation, VPC peering, DDoS protection, and immutable infrastructure deployments.',
+      'Enterprise cloud hosting with environment separation, backup procedures, and documented operational recovery planning.',
     controls: [
-      'Multi-region data residency',
-      'VPC network isolation',
-      'DDoS protection (L3/L4/L7)',
-      'Immutable deployments',
+      'AU-hosted default deployment',
+      'Environment separation',
+      'Backup and recovery procedures',
+      'Operational change controls',
     ],
     colorRgb: '34,211,238',
   },
@@ -168,12 +168,12 @@ const securityLayers: SecurityLayer[] = [
     name: 'Governance & Logging',
     icon: BookOpen,
     description:
-      'Immutable audit logs, SIEM integration, retention policies, and real-time security alerting.',
+      'Immutable audit logs, exportable evidence history, retention controls, and documented incident handling.',
     controls: [
       'Immutable audit trail',
-      'SIEM integration (Splunk, Datadog)',
-      'Configurable log retention',
-      'Real-time security alerts',
+      'Exportable audit history',
+      'Configurable retention controls',
+      'Documented incident handling',
     ],
     colorRgb: '245,158,11',
   },
@@ -197,38 +197,38 @@ const enterpriseFeatures: EnterpriseFeature[] = [
     description:
       'Metadata-based SAML 2.0 configuration with major identity providers.',
     longDescription:
-      'Full SAML 2.0 integration with Okta, Microsoft Entra ID (Azure AD), and Google Workspace. MFA enforcement with hardware token support (FIDO2/WebAuthn). Configurable session policies including idle timeout, maximum session duration, and re-authentication triggers for sensitive operations. SCIM 2.0 provisioning for automated user lifecycle management.',
-    highlights: ['Okta', 'Entra ID', 'Google Workspace', 'SCIM 2.0', 'FIDO2/WebAuthn'],
+      'SAML 2.0 integration supports major identity providers including Okta, Microsoft Entra ID, and Google Workspace. MFA enforcement and session policies can be applied for higher-assurance deployments, with identity-lifecycle requirements reviewed during procurement.',
+    highlights: ['Okta', 'Entra ID', 'Google Workspace', 'MFA', 'Session policies'],
     colorRgb: '139,92,246',
   },
   {
     icon: Database,
     title: 'Data Residency Controls',
     description:
-      'Choose where your data lives with per-workspace regional configuration.',
+      'AU-hosted by default with additional residency requirements reviewed during procurement.',
     longDescription:
-      'Deploy compliance data to US-East, EU-West, or APAC-Sydney regions with full jurisdictional isolation. Each region operates with independent encryption keys, isolated database clusters, and region-specific backup policies. Per-workspace residency configuration lets multi-national organizations distribute data according to local regulations.',
-    highlights: ['US/EU/APAC regions', 'Per-workspace config', 'Independent encryption', 'Regional backups'],
+      'FormaOS is hosted in Australia by default. For teams with additional data residency requirements, current deployment posture, subprocessor details, and any roadmap or contractual options are reviewed explicitly during procurement rather than implied in public copy.',
+    highlights: ['AU default hosting', 'Documented subprocessors', 'DPA review', 'Procurement review path'],
     colorRgb: '34,211,238',
   },
   {
     icon: HeartPulse,
-    title: '99.9% Uptime SLA',
+    title: 'Status Visibility & Service Commitments',
     description:
-      'Contractual uptime guarantee with financial remediation for SLA breaches.',
+      'Public status visibility with enterprise service commitments handled through contract review.',
     longDescription:
-      'Enterprise SLA with 99.9% availability commitment backed by financial credits. Transparent incident communication through a dedicated status page. Planned maintenance windows scheduled with 72-hour advance notice during off-peak hours. Redundant infrastructure across multiple availability zones with automatic failover.',
-    highlights: ['99.9% SLA', 'Financial credits', '72h maintenance notice', 'Multi-AZ redundancy'],
+      'The public status page provides current operational visibility and incident updates. Service commitments, response expectations, and any contractual remedies are handled during enterprise contracting so public materials stay aligned with the live platform and signed agreements.',
+    highlights: ['Public status page', 'Incident communication', 'Maintenance notice', 'Enterprise agreements'],
     colorRgb: '52,211,153',
   },
   {
     icon: UserCheck,
     title: 'Role-Based Access Control',
     description:
-      'Granular permissions with custom roles, attribute-based policies, and audit logging.',
+      'Granular permissions with role-based access controls and audit logging.',
     longDescription:
-      'Enterprise-grade RBAC with pre-built roles (Owner, Admin, Auditor, Viewer) and custom role builder. Attribute-based access control (ABAC) policies for complex permission requirements. Every permission change logged in the immutable audit trail. IP allowlist restrictions per role for network-level access control.',
-    highlights: ['Custom role builder', 'ABAC policies', 'IP allowlisting', 'Permission audit trail'],
+      'FormaOS uses role-based access controls with scoped permissions, immutable audit logging for access changes, and session controls for sensitive actions. Enterprise deployments can review role design and governance posture during implementation.',
+    highlights: ['Owner/Admin/Auditor roles', 'Scoped permissions', 'Permission audit trail', 'Session controls'],
     colorRgb: '59,130,246',
   },
   {
@@ -248,7 +248,7 @@ const enterpriseFeatures: EnterpriseFeature[] = [
       'Conditional notification routing with escalation chains, digest batching, and quiet hours.',
     longDescription:
       'Configure notification rules with multi-level escalation chains. If an alert is not acknowledged within the configured window, it automatically escalates to the next responsible party. Smart digest batching groups non-critical notifications into configurable summary windows. Quiet hours prevent non-urgent notifications during weekends and off-hours.',
-    highlights: ['Escalation chains', 'Smart batching', 'Quiet hours', 'PagerDuty integration'],
+    highlights: ['Escalation chains', 'Smart batching', 'Quiet hours', 'Notification routing'],
     colorRgb: '251,113,133',
   },
   {
@@ -343,31 +343,31 @@ const procurementItems: ProcurementItem[] = [
   {
     question: 'Is FormaOS SOC 2 certified?',
     answer:
-      'Yes. FormaOS maintains SOC 2 Type II certification with annual re-assessment. Our latest audit report is available under NDA upon request.',
+      'If you require a vendor SOC 2 report, confirm that during procurement. FormaOS supports SOC 2-aligned workflows and audit-ready exports, while vendor assurance artifacts are shared conservatively and only when available.',
     icon: ShieldCheck,
   },
   {
     question: 'Where is our data stored?',
     answer:
-      'Data is stored in your selected region (US-East, EU-West, or APAC-Sydney) with full jurisdictional isolation. Regional encryption keys, isolated clusters, and region-specific backup policies ensure compliance with local regulations.',
+      'FormaOS is hosted in Australia by default. If your review requires exact hosting, residency, or subprocessor details, we provide the current deployment posture during procurement and keep roadmap items separate from live commitments.',
     icon: Globe,
   },
   {
     question: 'Do you support SAML SSO?',
     answer:
-      'Yes. SAML 2.0 SSO with Okta, Microsoft Entra ID, Google Workspace, and any SAML 2.0 compliant IdP. SCIM 2.0 provisioning, MFA enforcement (including FIDO2 hardware tokens), and configurable session policies included.',
+      'Yes. Enterprise deployments can use SAML 2.0 SSO with major identity providers, plus MFA and session-policy controls. If you need additional provisioning or identity-lifecycle requirements, we confirm those during procurement.',
     icon: Lock,
   },
   {
     question: 'What is your SLA?',
     answer:
-      '99.9% availability SLA with financial credit remediation. Transparent incident communication via status page. Planned maintenance with 72-hour advance notice during off-peak windows.',
+      'The public status page provides operational visibility, and enterprise agreements can include defined service commitments, maintenance communication, and escalation expectations. We avoid overstating public SLA mechanics outside signed agreements.',
     icon: HeartPulse,
   },
   {
     question: 'How is data encrypted?',
     answer:
-      'AES-256 encryption at rest, TLS 1.3 in transit. Field-level encryption for sensitive data. Automated key rotation with configurable schedules. Customer-managed encryption keys (CMEK) available on Enterprise tier.',
+      'FormaOS uses AES-256 encryption at rest and TLS 1.3 in transit. Additional key-management or encryption requirements should be confirmed during procurement so public materials stay aligned with implemented controls.',
     icon: Key,
   },
   {
@@ -379,25 +379,25 @@ const procurementItems: ProcurementItem[] = [
   {
     question: 'What about penetration testing?',
     answer:
-      'Annual third-party penetration testing by certified CREST/OSCP assessors. Findings remediated within SLA timelines (Critical: 24h, High: 72h, Medium: 30 days). Executive summary available under NDA.',
+      'Vendor assurance and independent assessment artifacts can be shared during buyer review when available and appropriate. We keep public language conservative rather than implying a specific assessor, cadence, or remediation SLA without matching evidence.',
     icon: AlertTriangle,
   },
   {
     question: 'Can we audit FormaOS?',
     answer:
-      'Yes. Enterprise customers may conduct their own security assessment or request our completed security questionnaires (SIG, CAIQ, VSAQ). We support site visits with reasonable advance scheduling.',
+      'Enterprise customers can request security-review materials and questionnaires during procurement. Additional assessment needs are handled through the review process so the scope stays accurate to the engagement.',
     icon: Eye,
   },
   {
     question: 'What happens to our data if we leave?',
     answer:
-      'Full data export in standard formats (JSON, CSV) available at any time. Upon contract termination, data is retained for 30 days then permanently deleted with cryptographic verification of destruction.',
+      'FormaOS supports export and portability workflows. Exact retention, deletion timing, and confirmation steps are handled contractually so they match the signed engagement and regulatory context.',
     icon: Database,
   },
   {
     question: 'Do you have a business continuity plan?',
     answer:
-      'Yes. Documented BCP/DR plan tested semi-annually. RPO < 1 hour, RTO < 4 hours. Multi-AZ redundancy with automated failover. Geo-redundant backups with 90-day retention.',
+      'Business continuity, backup, and recovery procedures are reviewed during procurement. Public copy stays focused on the fact that these processes exist rather than publishing unsupported recovery metrics.',
     icon: Server,
   },
 ];
@@ -413,40 +413,40 @@ interface SLAItem {
 
 const slaItems: SLAItem[] = [
   {
-    metric: 'Platform Availability',
-    value: '99.9',
-    unit: '%',
-    detail: 'Monthly uptime with financial credit remediation',
+    metric: 'Status Visibility',
+    value: '24/7',
+    unit: '',
+    detail: 'Public uptime checks and operational updates',
   },
   {
-    metric: 'API Response Time',
-    value: '<200',
-    unit: 'ms',
-    detail: 'P95 response time for core API endpoints',
-  },
-  {
-    metric: 'Critical Security Fix',
-    value: '<24',
+    metric: 'Maintenance Notice',
+    value: '72',
     unit: 'h',
-    detail: 'Time to patch for critical severity CVEs',
+    detail: 'Advance notice target for planned maintenance',
   },
   {
-    metric: 'Support Response',
-    value: '<4',
-    unit: 'h',
-    detail: 'Initial response time for Severity 1 issues',
+    metric: 'Procurement Artifacts',
+    value: 'DPA',
+    unit: '+',
+    detail: 'Trust packet, subprocessor, and review materials',
   },
   {
-    metric: 'Data Recovery Point',
-    value: '<1',
-    unit: 'h',
-    detail: 'RPO with continuous database replication',
+    metric: 'Priority Support',
+    value: '1',
+    unit: 'path',
+    detail: 'Named enterprise escalation path for active reviews',
   },
   {
-    metric: 'Recovery Time',
-    value: '<4',
-    unit: 'h',
-    detail: 'RTO with automated failover and DR procedures',
+    metric: 'Data Export',
+    value: 'Self',
+    unit: '-serve',
+    detail: 'Audit-ready exports and portability workflows',
+  },
+  {
+    metric: 'Identity Controls',
+    value: 'SAML',
+    unit: '+',
+    detail: 'Enterprise SSO, MFA, and session controls',
   },
 ];
 
@@ -1267,11 +1267,11 @@ function EnterpriseCTA() {
 
                 <div className="flex flex-wrap justify-center gap-6 mt-10 text-xs text-slate-500">
                   {[
-                    'SOC 2 Type II Certified',
-                    '99.9% Uptime SLA',
-                    'Data Residency Controls',
-                    'Dedicated Account Manager',
-                    'Custom Terms Available',
+                    'Audit-ready exports',
+                    'AU-hosted by default',
+                    'SAML SSO + MFA',
+                    'Trust packet available',
+                    'Custom enterprise terms',
                   ].map((signal) => (
                     <div key={signal} className="flex items-center gap-1.5">
                       <CheckCircle2 className="w-3 h-3 text-emerald-400/50" />
@@ -1393,9 +1393,9 @@ function EnterpriseHero() {
           transition={{ duration: 0.7, delay: 0.2, ease: EASE_OUT_EXPO }}
           className="text-base sm:text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed"
         >
-          SAML SSO, data residency controls, 99.9% uptime SLA, and
-          audit-ready procurement artifacts. Built for organizations where
-          compliance isn&apos;t optional.
+          SAML SSO, audit-ready procurement materials, and enterprise
+          governance workflows for teams where compliance needs to stay
+          operational, visible, and defensible.
         </motion.p>
 
         <motion.div

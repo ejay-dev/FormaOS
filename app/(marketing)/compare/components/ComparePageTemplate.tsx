@@ -45,7 +45,7 @@ const relatedLinksBySource: Record<
     {
       href: '/trust',
       label: 'Trust Center',
-      description: 'Show buyers live assurance artifacts and procurement-ready posture.',
+      description: 'Show buyers live assurance artifacts and current review posture.',
     },
     {
       href: '/security',
@@ -147,6 +147,7 @@ export function ComparePageTemplate({
 }: ComparePageTemplateProps) {
   const { trackCtaClick } = useMarketingTelemetry();
   const relatedLinks = relatedLinksBySource[source] ?? relatedLinksBySource.compare_vanta;
+  const buyerReviewHref = `/contact?type=procurement&source=${source}`;
 
   return (
     <MarketingPageShell>
@@ -168,7 +169,7 @@ export function ComparePageTemplate({
             Back to Compare
           </Link>
         }
-        primaryCta={{ href: '/contact', label: 'Book Buyer Demo' }}
+        primaryCta={{ href: buyerReviewHref, label: 'Start Buyer Review' }}
         secondaryCta={{
           href: `${appBase}/auth/signup?source=${source}`,
           label: 'Start Free Trial',
@@ -178,8 +179,8 @@ export function ComparePageTemplate({
             surface: 'compare',
             section: 'hero',
             location: 'hero_primary',
-            ctaLabel: 'Book Buyer Demo',
-            ctaHref: '/contact',
+            ctaLabel: 'Start Buyer Review',
+            ctaHref: buyerReviewHref,
             variant: 'primary',
             competitor,
             compareSource: source,
@@ -346,7 +347,7 @@ export function ComparePageTemplate({
           <Reveal>
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7">
               <h2 className="text-lg font-semibold text-white">
-                Procurement Evaluation Focus
+                Evaluation and procurement checks
               </h2>
               <SectionChoreography pattern="alternating" className="mt-4 grid gap-3 md:grid-cols-3">
                 {procurementChecks.map((check) => (
@@ -360,6 +361,9 @@ export function ComparePageTemplate({
                     </article>
                 ))}
               </SectionChoreography>
+              <p className="mt-5 text-xs text-slate-500">
+                These checks reflect public materials and items typically confirmed during procurement review. They are not a promise of competitor feature parity or uncontracted commitments.
+              </p>
             </div>
           </Reveal>
         </section>
@@ -400,18 +404,18 @@ export function ComparePageTemplate({
                   }
                   className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/[0.04] px-6 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
                 >
-                  Security Review Packet
+                  Security Review Path
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
-                  href="/frameworks"
+                  href="/pricing"
                   onClick={() =>
                     trackCtaClick({
                       surface: 'compare',
                       section: 'resource_cta',
-                      location: 'frameworks',
-                      ctaLabel: 'Framework Coverage',
-                      ctaHref: '/frameworks',
+                      location: 'pricing',
+                      ctaLabel: 'Pricing and Rollout',
+                      ctaHref: '/pricing',
                       variant: 'resource',
                       competitor,
                       compareSource: source,
@@ -419,7 +423,7 @@ export function ComparePageTemplate({
                   }
                   className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/[0.04] px-6 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
                 >
-                  Framework Coverage
+                  Pricing and Rollout
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>

@@ -76,10 +76,10 @@ const infraComponents: InfraComponent[] = [
     icon: Server,
     colorRgb: '52,211,153',
     features: [
-      'Auto-scaling compute clusters',
-      'Multi-AZ redundancy',
-      'P95 latency < 200ms',
+      'Published uptime checks',
+      'Operational monitoring',
       'Rate limiting & circuit breakers',
+      'Change-management controls',
     ],
   },
   {
@@ -89,10 +89,10 @@ const infraComponents: InfraComponent[] = [
     icon: Lock,
     colorRgb: '139,92,246',
     features: [
-      'SAML 2.0 / OIDC integration',
-      'Hardware MFA support (FIDO2)',
-      'Session policy enforcement',
-      'SCIM provisioning',
+      'Google OAuth and SAML 2.0',
+      'TOTP MFA support',
+      'Session policy controls',
+      'Audited access changes',
     ],
   },
   {
@@ -103,9 +103,9 @@ const infraComponents: InfraComponent[] = [
     colorRgb: '59,130,246',
     features: [
       'AES-256 encryption at rest',
-      'Continuous replication (RPO < 1h)',
+      'Encrypted backup workflows',
       'Automated daily backups',
-      'Point-in-time recovery',
+      'Documented recovery procedures',
     ],
   },
   {
@@ -117,21 +117,21 @@ const infraComponents: InfraComponent[] = [
     features: [
       'SHA-256 integrity hashing',
       'Immutable versioning',
-      'Geo-redundant storage',
+      'Export support',
       'Configurable retention',
     ],
   },
   {
     name: 'CDN & Edge Network',
     description:
-      'Global content delivery with edge caching, WAF protection, and DDoS mitigation.',
+      'Global delivery and caching across the public web experience.',
     icon: Globe,
     colorRgb: '245,158,11',
     features: [
       'Global edge locations',
-      'DDoS protection (L3/L4/L7)',
-      'Web Application Firewall',
       'TLS 1.3 termination',
+      'Caching and delivery optimization',
+      'Operational delivery monitoring',
     ],
   },
   {
@@ -143,8 +143,8 @@ const infraComponents: InfraComponent[] = [
     features: [
       'Priority-based job queues',
       'Automatic retry with backoff',
-      'Dead letter queue handling',
-      'Real-time job monitoring',
+      'Export and notification jobs',
+      'Operational monitoring',
     ],
   },
 ];
@@ -929,9 +929,9 @@ function SubscribeCTA() {
                 <div className="flex flex-wrap justify-center gap-6 mt-10 text-xs text-slate-500">
                   {[
                     'Real-time monitoring',
-                    'Automated failover',
+                    'Published uptime checks',
                     'Transparent post-mortems',
-                    '99.9% uptime SLA',
+                    'Enterprise agreements available',
                   ].map((signal) => (
                     <div key={signal} className="flex items-center gap-1.5">
                       <CheckCircle2 className="w-3 h-3 text-emerald-400/50" />

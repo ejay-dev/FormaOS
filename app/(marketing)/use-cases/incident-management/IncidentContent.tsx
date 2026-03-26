@@ -87,7 +87,7 @@ const workflows: UseCaseWorkflow[] = [
       'Record resolution outcomes with verifier sign-off and segregation of duties enforcement',
       'Capture lessons learned and link to policy or procedure updates triggered by the incident',
       'Generate regulator-ready incident chronology: intake → investigation → actions → closure with full timestamps',
-      'Export complete evidence chain as a packaged audit bundle (PDF or structured data) in under 2 minutes',
+      'Export the complete evidence chain as a packaged audit bundle (PDF or structured data) with reviewer-ready context',
       'Update control registers and risk assessments to reflect incident outcomes and residual risk',
     ],
   },
