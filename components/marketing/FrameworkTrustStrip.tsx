@@ -8,16 +8,7 @@ import {
   Heart,
   CreditCard,
   Globe,
-  Scale,
-  Users,
-  ShieldAlert,
-  AlertTriangle,
-  Lock,
-  FileSearch,
-  Eye,
-  MonitorCheck,
-  HardDrive,
-  Wifi,
+  Layers,
 } from 'lucide-react';
 import LogoLoop from './LogoLoop';
 
@@ -28,21 +19,12 @@ interface FrameworkItem {
 
 const FRAMEWORK_ITEMS: FrameworkItem[] = [
   { icon: <Shield size={16} />, label: 'ISO 27001' },
-  { icon: <ShieldCheck size={16} />, label: 'SOC 2 Type II' },
-  { icon: <FileCheck size={16} />, label: 'NDIS Practice Standards' },
+  { icon: <ShieldCheck size={16} />, label: 'SOC 2' },
+  { icon: <Layers size={16} />, label: 'NIST CSF' },
   { icon: <Heart size={16} />, label: 'HIPAA' },
-  { icon: <CreditCard size={16} />, label: 'PCI DSS 4.0' },
   { icon: <Globe size={16} />, label: 'GDPR' },
-  { icon: <Scale size={16} />, label: 'Australian Privacy Act' },
-  { icon: <Users size={16} />, label: 'Aged Care Quality Standards' },
-  { icon: <ShieldAlert size={16} />, label: 'Child Safe Standards' },
-  { icon: <AlertTriangle size={16} />, label: 'Incident Management' },
-  { icon: <Lock size={16} />, label: 'Role-Based Access' },
-  { icon: <FileSearch size={16} />, label: 'Immutable Audit Trail' },
-  { icon: <Eye size={16} />, label: 'Evidence Integrity' },
-  { icon: <MonitorCheck size={16} />, label: 'Continuous Monitoring' },
-  { icon: <HardDrive size={16} />, label: 'Encryption at Rest' },
-  { icon: <Wifi size={16} />, label: 'Encryption in Transit' },
+  { icon: <CreditCard size={16} />, label: 'PCI DSS' },
+  { icon: <FileCheck size={16} />, label: 'CIS Controls' },
 ];
 
 const FrameworkBadge = memo(function FrameworkBadge({ icon, label }: FrameworkItem) {

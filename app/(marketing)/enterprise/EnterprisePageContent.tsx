@@ -34,10 +34,8 @@ import {
   UserCheck,
   Activity,
   AlertTriangle,
-  Bell,
   GitBranch,
   Layers,
-  Bot,
   type LucideIcon,
 } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
@@ -212,16 +210,6 @@ const enterpriseFeatures: EnterpriseFeature[] = [
     colorRgb: '34,211,238',
   },
   {
-    icon: HeartPulse,
-    title: 'Status Visibility & Service Commitments',
-    description:
-      'Public status visibility with enterprise service commitments handled through contract review.',
-    longDescription:
-      'The public status page provides current operational visibility and incident updates. Service commitments, response expectations, and any contractual remedies are handled during enterprise contracting so public materials stay aligned with the live platform and signed agreements.',
-    highlights: ['Public status page', 'Incident communication', 'Maintenance notice', 'Enterprise agreements'],
-    colorRgb: '52,211,153',
-  },
-  {
     icon: UserCheck,
     title: 'Role-Based Access Control',
     description:
@@ -237,23 +225,13 @@ const enterpriseFeatures: EnterpriseFeature[] = [
     description:
       'Export complete evidence packages formatted for SOC 2, ISO 27001, and NDIS audits.',
     longDescription:
-      'Generate audit-ready evidence bundles with one click. Packages include control matrices, evidence artifacts with SHA-256 verification hashes, review timelines, and stakeholder sign-offs. Templates aligned to SOC 2 Type II, ISO 27001 Annex A, NDIS Practice Standards, and custom frameworks. Evidence chain-of-custody with tamper-proof audit trail.',
+      'Generate audit-ready evidence bundles with one click. Packages include control matrices, evidence artifacts with SHA-256 verification hashes, review timelines, and stakeholder sign-offs. Templates aligned to SOC 2 Type II, ISO 27001 Annex A, NDIS Practice Standards, and custom frameworks.',
     highlights: ['SOC 2 bundles', 'ISO 27001 packages', 'SHA-256 verification', 'Chain of custody'],
     colorRgb: '245,158,11',
   },
   {
-    icon: Bell,
-    title: 'Advanced Alerting & Escalation',
-    description:
-      'Conditional notification routing with escalation chains, digest batching, and quiet hours.',
-    longDescription:
-      'Configure notification rules with multi-level escalation chains. If an alert is not acknowledged within the configured window, it automatically escalates to the next responsible party. Smart digest batching groups non-critical notifications into configurable summary windows. Quiet hours prevent non-urgent notifications during weekends and off-hours.',
-    highlights: ['Escalation chains', 'Smart batching', 'Quiet hours', 'Notification routing'],
-    colorRgb: '251,113,133',
-  },
-  {
     icon: GitBranch,
-    title: 'Version Control & Evidence Vault',
+    title: 'Evidence Vault & Version Control',
     description:
       'Immutable evidence storage with versioning, SHA-256 integrity verification, and retention policies.',
     longDescription:
@@ -262,28 +240,8 @@ const enterpriseFeatures: EnterpriseFeature[] = [
     colorRgb: '52,211,153',
   },
   {
-    icon: Activity,
-    title: 'Real-Time Compliance Monitoring',
-    description:
-      'Live compliance posture scoring with drift detection and automated remediation suggestions.',
-    longDescription:
-      'Continuous monitoring of your compliance posture across all active frameworks. Real-time scoring with configurable thresholds and rollback detection. Automated alerts when evidence expires, controls drift from compliant state, or review deadlines approach. Integration with infrastructure-as-code tools for automated configuration compliance.',
-    highlights: ['live scoring', 'Drift detection', 'Expiry alerts', 'IaC integration'],
-    colorRgb: '34,211,238',
-  },
-  {
-    icon: Bot,
-    title: 'AI Compliance Assistant',
-    description:
-      'Context-aware AI that understands your compliance posture and accelerates audit readiness.',
-    longDescription:
-      'The AI Compliance Assistant is powered by your live organization data — controls, evidence, frameworks, and compliance scores. Draft policies from templates, get evidence collection guidance, run AI-powered gap analysis, and receive prioritized implementation steps. Five built-in prompt templates cover the most common compliance workflows, with full conversation history for continuity.',
-    highlights: ['Streaming AI chat', 'Policy drafting', 'Gap analysis', 'Evidence guidance'],
-    colorRgb: '245,158,11',
-  },
-  {
     icon: ShieldCheck,
-    title: 'SOC 2 Self-Certification Engine',
+    title: 'SOC 2 Readiness Engine',
     description:
       'Automated readiness scoring with weighted domain analysis and one-click certification reports.',
     longDescription:
@@ -381,24 +339,6 @@ const procurementItems: ProcurementItem[] = [
     answer:
       'Vendor assurance and independent assessment artifacts can be shared during buyer review when available and appropriate. We keep public language conservative rather than implying a specific assessor, cadence, or remediation SLA without matching evidence.',
     icon: AlertTriangle,
-  },
-  {
-    question: 'Can we audit FormaOS?',
-    answer:
-      'Enterprise customers can request security-review materials and questionnaires during procurement. Additional assessment needs are handled through the review process so the scope stays accurate to the engagement.',
-    icon: Eye,
-  },
-  {
-    question: 'What happens to our data if we leave?',
-    answer:
-      'FormaOS supports export and portability workflows. Exact retention, deletion timing, and confirmation steps are handled contractually so they match the signed engagement and regulatory context.',
-    icon: Database,
-  },
-  {
-    question: 'Do you have a business continuity plan?',
-    answer:
-      'Business continuity, backup, and recovery procedures are reviewed during procurement. Public copy stays focused on the fact that these processes exist rather than publishing unsupported recovery metrics.',
-    icon: Server,
   },
 ];
 

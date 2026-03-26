@@ -29,36 +29,20 @@ export function HeaderCTA() {
         Login
       </Link>
       <Link
-        href="/contact"
-        onClick={() =>
-          trackCtaClick({
-            surface: 'navigation',
-            section: 'header',
-            location: 'header_contact',
-            ctaLabel: 'Talk to Sales',
-            ctaHref: '/contact',
-            variant: 'secondary',
-          })
-        }
-        className="mk-btn mk-btn-secondary px-4 py-1.5 whitespace-nowrap"
-      >
-        Talk to Sales
-      </Link>
-      <Link
         href={signUpUrl}
         onClick={() =>
           trackCtaClick({
             surface: 'navigation',
             section: 'header',
             location: 'header_primary',
-            ctaLabel: 'Start Free Trial',
+            ctaLabel: 'Get Started',
             ctaHref: signUpUrl,
             variant: 'primary',
           })
         }
         className="mk-btn mk-btn-primary px-5 py-1.5 whitespace-nowrap"
       >
-        <span>Start Free Trial</span>
+        <span>Get Started</span>
       </Link>
     </div>
   );

@@ -14,6 +14,7 @@ import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion
 import { useRef } from 'react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
+import { brand } from '@/config/brand';
 
 const securityLayers = [
   {
@@ -61,8 +62,8 @@ const certifications = [
     icon: Shield,
   },
   {
-    name: '7 Framework Packs',
-    description: 'ISO 27001, SOC 2, HIPAA, GDPR, PCI-DSS, NIST CSF, CIS',
+    name: `${brand.frameworks.count} Framework Packs`,
+    description: brand.frameworks.packs.join(', '),
     icon: Lock,
   },
   {

@@ -14,7 +14,8 @@
 
   --mk-cyan: #2dd4bf;
   --mk-blue: #14b8a6;
-  --mk-violet: #f59e0b;
+  --mk-amber: #f59e0b;
+  --mk-violet: var(--mk-amber); /* alias kept for backwards compat */
 
   --mk-gradient-brand: linear-gradient(
     135deg,
@@ -92,6 +93,48 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* ── Locked typography scale ───────────────────────── */
+/* Four canonical levels. Use these classes to avoid ad-hoc sizing drift. */
+
+.mk-eyebrow {
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--mk-muted, rgba(148, 163, 184, 1));
+}
+
+.mk-heading-display {
+  font-size: clamp(2.25rem, 5vw + 0.5rem, 4.5rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  text-wrap: balance;
+  color: #fff;
+}
+
+.mk-heading-section {
+  font-size: clamp(1.5rem, 3vw + 0.25rem, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  text-wrap: balance;
+  color: #fff;
+}
+
+.mk-body {
+  font-size: clamp(0.9375rem, 0.5vw + 0.85rem, 1.125rem);
+  line-height: 1.7;
+  color: rgba(203, 213, 225, 0.9); /* slate-300-ish */
+}
+
+.mk-body-sm {
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: rgba(148, 163, 184, 1); /* slate-400 */
 }
 
 /* Glass — canonical values from globals.css: blur(20px) saturate(150%) */

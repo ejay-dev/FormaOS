@@ -5,7 +5,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { ChevronDown } from 'lucide-react';
-import { primaryLinks, outcomeLinks, resourceLinks } from '@/config/navigation';
+import {
+  platformLinks,
+  solutionLinks,
+  trustLinks,
+  resourceLinks,
+  outcomeLinks,
+} from '@/config/navigation';
 
 /* ── Accessible dropdown ─────────────────────────────────── */
 
@@ -13,12 +19,10 @@ function NavDropdown({
   label,
   items,
   pathname,
-  wide,
 }: {
   label: string;
   items: readonly { href: string; label: string }[];
   pathname: string;
-  wide?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -87,8 +91,7 @@ function NavDropdown({
       {open && (
         <div
           className={clsx(
-            'mk-dropdown-panel mk-dropdown-surface absolute right-0 top-full mt-3 z-50 rounded-xl p-1.5',
-            wide ? 'min-w-[15rem]' : 'min-w-[11rem]',
+            'mk-dropdown-panel mk-dropdown-surface absolute left-1/2 -translate-x-1/2 top-full mt-3 z-50 rounded-xl p-1.5 min-w-[13rem]',
           )}
           role="menu"
           id={menuId}
@@ -137,6 +140,66 @@ function NavDropdown({
   );
 }
 
+/* ── Mobile collapsible section ──────────────────────────── */
+
+function MobileSection({
+  label,
+  items,
+  pathname,
+  open,
+  onToggle,
+  onLinkClick,
+}: {
+  label: string;
+  items: readonly { href: string; label: string }[];
+  pathname: string;
+  open: boolean;
+  onToggle: () => void;
+  onLinkClick?: () => void;
+}) {
+  return (
+    <>
+      <button
+        type="button"
+        onClick={onToggle}
+        className="w-full flex items-center justify-between px-4 py-2 text-[11px] uppercase tracking-wider text-slate-500 hover:text-slate-400 transition-colors"
+        aria-expanded={open}
+      >
+        {label}
+        <ChevronDown
+          className={clsx(
+            'h-3 w-3 transition-transform duration-200',
+            open && 'rotate-180',
+          )}
+        />
+      </button>
+      {open && (
+        <div className="space-y-1">
+          {items.map((l) => {
+            const isActive = pathname === l.href;
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                onClick={onLinkClick}
+                className={clsx(
+                  'block rounded-xl px-4 py-3 transition-all text-sm leading-relaxed break-words',
+                  isActive
+                    ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
+                    : 'hover:bg-white/5 text-slate-300 hover:text-white',
+                )}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                {l.label}
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </>
+  );
+}
+
 /* ── NavLinks ────────────────────────────────────────────── */
 
 interface NavLinksProps {
@@ -154,112 +217,52 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
 
   /* ── Mobile ──────────────────────────────────────────── */
   if (variant === 'mobile') {
+    const sections = [
+      { key: 'platform', label: 'Platform', items: platformLinks },
+      { key: 'solutions', label: 'Solutions', items: solutionLinks },
+      { key: 'trust', label: 'Trust & Security', items: trustLinks },
+      { key: 'resources', label: 'Resources', items: resourceLinks },
+      { key: 'outcomes', label: 'Outcome Journeys', items: outcomeLinks },
+    ];
+
     return (
       <div className="text-sm space-y-1">
+        {/* Pricing — always visible as a direct link */}
         <div className="px-4 py-2 text-[11px] uppercase tracking-wider text-slate-500">
           Pages
         </div>
-        {primaryLinks.map((l) => {
-          const isActive = pathname === l.href;
-          return (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={onLinkClick}
-              className={clsx(
-                'block rounded-xl px-4 py-3 transition-all text-sm leading-relaxed break-words',
-                isActive
-                  ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
-                  : 'hover:bg-white/5 text-slate-300 hover:text-white',
-              )}
-              aria-current={isActive ? 'page' : undefined}
-            >
-              {l.label}
-            </Link>
-          );
-        })}
-
-        <div className="mx-4 my-2 h-px bg-white/10" />
-
-        {/* Collapsible Outcome Journeys */}
-        <button
-          type="button"
-          onClick={() => toggleMobileSection('outcomes')}
-          className="w-full flex items-center justify-between px-4 py-2 text-[11px] uppercase tracking-wider text-slate-500 hover:text-slate-400 transition-colors"
-          aria-expanded={!!mobileOpen.outcomes}
+        <Link
+          href="/pricing"
+          onClick={onLinkClick}
+          className={clsx(
+            'block rounded-xl px-4 py-3 transition-all text-sm leading-relaxed',
+            pathname === '/pricing'
+              ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
+              : 'hover:bg-white/5 text-slate-300 hover:text-white',
+          )}
+          aria-current={pathname === '/pricing' ? 'page' : undefined}
         >
-          Outcome Journeys
-          <ChevronDown
-            className={clsx(
-              'h-3 w-3 transition-transform duration-200',
-              mobileOpen.outcomes && 'rotate-180',
-            )}
-          />
-        </button>
-        {mobileOpen.outcomes && (
-          <div className="space-y-1">
-            {outcomeLinks.map((l) => {
-              const isActive = pathname === l.href;
-              return (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  onClick={onLinkClick}
-                  className={clsx(
-                    'block rounded-xl px-4 py-3 transition-all text-sm leading-relaxed break-words',
-                    isActive
-                      ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
-                      : 'hover:bg-white/5 text-slate-300 hover:text-white',
-                  )}
-                  aria-current={isActive ? 'page' : undefined}
-                >
-                  {l.label}
-                </Link>
-              );
-            })}
-          </div>
-        )}
+          Pricing
+        </Link>
 
-        <div className="mx-4 my-2 h-px bg-white/10" />
-
-        {/* Collapsible Resources */}
-        <button
-          type="button"
-          onClick={() => toggleMobileSection('resources')}
-          className="w-full flex items-center justify-between px-4 py-2 text-[11px] uppercase tracking-wider text-slate-500 hover:text-slate-400 transition-colors"
-          aria-expanded={!!mobileOpen.resources}
-        >
-          Resources
-          <ChevronDown
-            className={clsx(
-              'h-3 w-3 transition-transform duration-200',
-              mobileOpen.resources && 'rotate-180',
+        {sections.map((section, i) => (
+          <div key={section.key}>
+            {i === 0 && (
+              <div className="mx-4 my-2 h-px bg-white/10" />
             )}
-          />
-        </button>
-        {mobileOpen.resources && (
-          <div className="space-y-1">
-            {resourceLinks.map((l) => {
-              const isActive = pathname === l.href;
-              return (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  onClick={onLinkClick}
-                  className={clsx(
-                    'block rounded-xl px-4 py-3 transition-all text-sm leading-relaxed break-words',
-                    isActive
-                      ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
-                      : 'hover:bg-white/5 text-slate-300 hover:text-white',
-                  )}
-                  aria-current={isActive ? 'page' : undefined}
-                >
-                  {l.label}
-                </Link>
-              );
-            })}
+            <MobileSection
+              label={section.label}
+              items={section.items}
+              pathname={pathname}
+              open={!!mobileOpen[section.key]}
+              onToggle={() => toggleMobileSection(section.key)}
+              onLinkClick={onLinkClick}
+            />
+            {i < sections.length - 1 && (
+              <div className="mx-4 my-2 h-px bg-white/10" />
+            )}
           </div>
-        )}
+        ))}
       </div>
     );
   }
@@ -267,34 +270,34 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
   /* ── Desktop ─────────────────────────────────────────── */
   return (
     <nav className="hidden md:flex flex-1 items-center justify-center gap-0.5 lg:gap-1 text-[13.5px] lg:text-[14px] font-medium tracking-[0.01em]">
-      {/* Primary links */}
-      {primaryLinks.map((l) => {
-        const isActive = pathname === l.href;
-        return (
-          <Link
-            key={l.href}
-            href={l.href}
-            className={clsx(
-              'mk-nav-item focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
-              isActive && 'mk-nav-item--active',
-            )}
-            aria-current={isActive ? 'page' : undefined}
-          >
-            {l.label}
-          </Link>
-        );
-      })}
+      <NavDropdown label="Platform" items={platformLinks} pathname={pathname} />
+      <NavDropdown
+        label="Solutions"
+        items={solutionLinks}
+        pathname={pathname}
+      />
+      <NavDropdown
+        label="Trust &amp; Security"
+        items={trustLinks}
+        pathname={pathname}
+      />
 
-      {/* Divider */}
-      <div className="mk-nav-divider" aria-hidden="true" />
+      {/* Pricing — direct link, no dropdown */}
+      <Link
+        href="/pricing"
+        className={clsx(
+          'mk-nav-item focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
+          pathname === '/pricing' && 'mk-nav-item--active',
+        )}
+        aria-current={pathname === '/pricing' ? 'page' : undefined}
+      >
+        Pricing
+      </Link>
 
-      {/* Dropdowns on the right */}
-      <NavDropdown label="Outcomes" items={outcomeLinks} pathname={pathname} />
       <NavDropdown
         label="Resources"
         items={resourceLinks}
         pathname={pathname}
-        wide
       />
     </nav>
   );

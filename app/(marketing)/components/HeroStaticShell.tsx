@@ -12,39 +12,12 @@
  */
 
 import Link from 'next/link';
-import { ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, ShieldCheck } from 'lucide-react';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 import { brand } from '@/config/brand';
 
 const heroCopy = DEFAULT_RUNTIME_MARKETING.hero;
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
-
-const SIGNAL_CARDS = [
-  {
-    label: 'Operating Model',
-    value: 'Controls become live workflows',
-    detail: 'Tasks, approvals, and evidence stay connected',
-  },
-  {
-    label: 'Audit Readiness',
-    value: 'Evidence stays source-linked',
-    detail: 'Export-ready context without reconstruction',
-  },
-  {
-    label: 'Enterprise Path',
-    value: 'Buyers get a real review flow',
-    detail: 'Trust documents and procurement context stay visible',
-  },
-] as const;
-
-const TRUST_PILLS = [
-  'SOC 2 workflows',
-  'ISO 27001 mapping',
-  'NDIS operations',
-  'HIPAA-ready teams',
-  'SAML + MFA',
-  'AU-hosted by default',
-] as const;
 
 export function HeroStaticShell() {
   const primaryHref = heroCopy.primaryCtaHref.startsWith('/')
@@ -119,39 +92,9 @@ export function HeroStaticShell() {
           )}
         </div>
 
-        {/* Signal cards */}
-        <div className="mt-6 grid w-full max-w-5xl gap-3 sm:grid-cols-3">
-          {SIGNAL_CARDS.map((card) => (
-            <div
-              key={card.label}
-              className="rounded-xl border border-cyan-200/10 bg-slate-950/55 px-4 py-3 text-left backdrop-blur-sm"
-            >
-              <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
-                {card.label}
-              </p>
-              <p className="mt-1 text-base font-semibold text-white">
-                {card.value}
-              </p>
-              <p className="mt-1 text-xs text-cyan-200/85">{card.detail}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Trust pills */}
-        <div className="mt-4 flex w-full max-w-5xl flex-wrap items-center justify-center gap-2">
-          {TRUST_PILLS.map((pill) => (
-            <span
-              key={pill}
-              className="rounded-full border border-white/15 bg-white/[0.05] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-200"
-            >
-              {pill}
-            </span>
-          ))}
-          <span className="inline-flex items-center gap-1 rounded-full border border-cyan-300/25 bg-cyan-500/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-cyan-100">
-            <Sparkles className="h-3 w-3" aria-hidden="true" />
-            Enterprise-ready workflow layer
-          </span>
-        </div>
+        <p className="mt-6 text-sm text-slate-400">
+          No credit card required &middot; 14-day free trial &middot; AU-hosted by default
+        </p>
       </div>
     </section>
   );

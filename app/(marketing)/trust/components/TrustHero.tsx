@@ -15,7 +15,7 @@ export function TrustHero() {
       visualContent={<TrustHeroVisual />}
       badge={{
         icon: <ShieldCheck className="w-4 h-4 text-emerald-400" />,
-        text: 'Trust-as-Revenue',
+        text: 'Trust Center',
         colorClass: 'emerald',
       }}
       headline={

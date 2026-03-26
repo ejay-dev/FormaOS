@@ -31,6 +31,20 @@ export const brand = {
     appUrl: process.env.NEXT_PUBLIC_APP_URL || 'https://app.formaos.com.au',
     ogImage: '/og-image.png',
   },
+  /** Framework packs shipped and mapped with live controls */
+  frameworks: {
+    count: 7,
+    controlCount: 70,
+    packs: [
+      'ISO 27001',
+      'SOC 2',
+      'NIST CSF',
+      'HIPAA',
+      'GDPR',
+      'PCI DSS',
+      'CIS Controls',
+    ] as const,
+  },
 } as const;
 
 // Hard lock: prevent unintended branding changes.

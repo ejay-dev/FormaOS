@@ -11,8 +11,11 @@
   --mk-rgb-cyan-alt: 20, 184, 166;
   --mk-rgb-blue: 45, 212, 191;
   --mk-rgb-blue-alt: 52, 211, 153;
-  --mk-rgb-violet: 245, 158, 11;
-  --mk-rgb-violet-alt: 251, 191, 36;
+  --mk-rgb-amber: 245, 158, 11;
+  --mk-rgb-amber-alt: 251, 191, 36;
+  /* Legacy aliases — some older rules still reference "violet" */
+  --mk-rgb-violet: var(--mk-rgb-amber);
+  --mk-rgb-violet-alt: var(--mk-rgb-amber-alt);
   --mk-rgb-emerald: 52, 211, 153;
   --mk-rgb-emerald-alt: 16, 185, 129;
   --mk-rgb-bg-dark: 3, 7, 18; /* --space-950 */

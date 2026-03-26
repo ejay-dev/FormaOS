@@ -1,6 +1,7 @@
 'use client';
 
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { brand } from '@/config/brand';
 import dynamic from 'next/dynamic';
 
 const FullControlMapViz = dynamic(
@@ -9,8 +10,8 @@ const FullControlMapViz = dynamic(
 );
 
 const CONTROL_MAP_STATS = {
-  frameworks: 7,
-  controls: 70,
+  frameworks: brand.frameworks.count,
+  controls: brand.frameworks.controlCount,
   crossEdges: 42,
 };
 
@@ -67,8 +68,8 @@ const frameworkChips = [
 ];
 
 const statBlocks = [
-  { label: 'Frameworks', value: '7', accent: 'text-teal-300/80' },
-  { label: 'Controls', value: '70+', accent: 'text-indigo-300/80' },
+  { label: 'Frameworks', value: String(brand.frameworks.count), accent: 'text-teal-300/80' },
+  { label: 'Controls', value: `${brand.frameworks.controlCount}+`, accent: 'text-indigo-300/80' },
   { label: 'Cross-Links', value: '42', accent: 'text-sky-300/80' },
   { label: 'Coverage', value: '100%', accent: 'text-emerald-300/80' },
 ];
@@ -179,7 +180,7 @@ export function FullControlMapSection() {
                   </p>
                 </div>
                 <p className="text-xs text-slate-300/80 leading-relaxed">
-                  All 70+ controls mapped across 7 frameworks with cross-linked
+                  All {brand.frameworks.controlCount}+ controls mapped across {brand.frameworks.count} frameworks with cross-linked
                   compliance chains.
                 </p>
               </div>

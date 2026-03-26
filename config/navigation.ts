@@ -1,10 +1,67 @@
 /**
  * Centralised navigation link definitions.
  * Imported by NavLinks, Footer, and any surface that renders site navigation.
+ *
+ * Header grouping strategy (5 items max):
+ *   Platform (dropdown) | Solutions (dropdown) | Trust & Security (dropdown) | Pricing (direct) | Resources (dropdown)
+ *
+ * "Home" removed — the logo handles that. "Enterprise" moved into Solutions
+ * since it's a buyer path, not a product section. "Product" and "Features"
+ * merged under Platform. "Security" and "Trust" merged under Trust & Security.
  */
 
+/* ── Header navigation ─────────────────────────────── */
+
+export const platformLinks = [
+  { href: '/product', label: 'How It Works' },
+  { href: '/features', label: 'Features' },
+  { href: '/frameworks', label: 'Framework Coverage' },
+  { href: '/integrations', label: 'Integrations' },
+] as const;
+
+export const solutionLinks = [
+  { href: '/industries', label: 'Industries' },
+  { href: '/enterprise', label: 'Enterprise' },
+  { href: '/use-cases/healthcare', label: 'Healthcare' },
+  { href: '/use-cases/ndis-aged-care', label: 'NDIS & Aged Care' },
+  { href: '/customer-stories', label: 'Customer Stories' },
+  { href: '/compare', label: 'Compare' },
+] as const;
+
+export const trustLinks = [
+  { href: '/security', label: 'Security' },
+  { href: '/trust', label: 'Trust Center' },
+  { href: '/security-review', label: 'Security Review Packet' },
+  { href: '/enterprise-proof', label: 'Enterprise Proof' },
+] as const;
+
+export const resourceLinks = [
+  { href: '/documentation', label: 'Documentation' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/about', label: 'About' },
+  { href: '/changelog', label: 'Changelog' },
+  { href: '/status', label: 'Status' },
+  { href: '/faq', label: 'FAQ' },
+] as const;
+
+/**
+ * Outcome journey links — used in mobile nav and footer.
+ * Kept as a separate group but not in the primary desktop nav bar.
+ */
+export const outcomeLinks = [
+  { href: '/evaluate', label: 'Evaluate' },
+  { href: '/prove', label: 'Prove' },
+  { href: '/operate', label: 'Operate' },
+  { href: '/govern', label: 'Govern' },
+] as const;
+
+/* ── Legacy re-exports ─────────────────────────────── */
+
+/**
+ * @deprecated Use platformLinks / solutionLinks / trustLinks instead.
+ * Kept so that any straggling import of `primaryLinks` still compiles.
+ */
 export const primaryLinks = [
-  { href: '/', label: 'Home' },
   { href: '/product', label: 'Product' },
   { href: '/features', label: 'Features' },
   { href: '/industries', label: 'Industries' },
@@ -14,69 +71,39 @@ export const primaryLinks = [
   { href: '/pricing', label: 'Pricing' },
 ] as const;
 
-export const outcomeLinks = [
-  { href: '/evaluate', label: 'Evaluate' },
-  { href: '/prove', label: 'Prove' },
-  { href: '/operate', label: 'Operate' },
-  { href: '/govern', label: 'Govern' },
-] as const;
-
-export const resourceLinks = [
-  { href: '/security-review', label: 'Security Review Packet' },
-  { href: '/security-review/faq', label: 'Security Review FAQ' },
-  { href: '/trust/packet', label: 'Trust Packet (PDF)' },
-  { href: '/frameworks', label: 'Framework Coverage' },
-  { href: '/integrations', label: 'Integrations' },
-  { href: '/customer-stories', label: 'Customer Stories' },
-  { href: '/compare', label: 'Compare' },
-  { href: '/changelog', label: 'Changelog' },
-  { href: '/roadmap', label: 'Roadmap' },
-  { href: '/status', label: 'Status' },
-  { href: '/documentation', label: 'Documentation' },
-  { href: '/about', label: 'About' },
-] as const;
+/* ── Footer navigation ─────────────────────────────── */
 
 export const footerLinks = {
   platform: [
-    { href: '/product', label: 'How it works' },
+    { href: '/product', label: 'How It Works' },
     { href: '/features', label: 'Features' },
-    { href: '/industries', label: 'Industries' },
-    { href: '/security', label: 'Security' },
     { href: '/frameworks', label: 'Framework Coverage' },
+    { href: '/integrations', label: 'Integrations' },
     { href: '/pricing', label: 'Pricing' },
   ],
-  useCases: [
+  solutions: [
+    { href: '/industries', label: 'Industries' },
+    { href: '/enterprise', label: 'Enterprise' },
     { href: '/use-cases/healthcare', label: 'Healthcare' },
     { href: '/use-cases/ndis-aged-care', label: 'NDIS & Aged Care' },
-    { href: '/use-cases/workforce-credentials', label: 'Workforce' },
-    { href: '/use-cases/incident-management', label: 'Incidents' },
+    { href: '/customer-stories', label: 'Customer Stories' },
+    { href: '/compare', label: 'Compare' },
   ],
   resources: [
     { href: '/documentation', label: 'Documentation' },
     { href: '/blog', label: 'Blog' },
     { href: '/trust', label: 'Trust Center' },
     { href: '/security-review', label: 'Security Review Packet' },
-    { href: '/trust/packet', label: 'Trust Packet (PDF)' },
     { href: '/status', label: 'Status' },
     { href: '/changelog', label: 'Changelog' },
-    { href: '/roadmap', label: 'Roadmap' },
-    { href: '/customer-stories', label: 'Customer Stories' },
-    { href: '/compare', label: 'Compare' },
     { href: '/faq', label: 'FAQ' },
   ],
   company: [
     { href: '/about', label: 'About' },
     { href: '/our-story', label: 'Our Story' },
     { href: '/contact', label: 'Contact' },
-  ],
-  legal: [
     { href: '/legal', label: 'Legal' },
-    {
-      href: '/legal/privacy',
-      label: 'Privacy Policy',
-    },
+    { href: '/legal/privacy', label: 'Privacy Policy' },
     { href: '/legal/terms', label: 'Terms of Service' },
-    { href: '/security', label: 'Security' },
-    { href: '/trust', label: 'Assurance Portal' },
   ],
 } as const;

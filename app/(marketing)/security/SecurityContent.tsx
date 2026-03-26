@@ -346,9 +346,9 @@ export function SecurityCTA() {
               </h2>
 
               <p className="text-lg sm:text-xl text-foreground/70 mb-8 sm:mb-10 max-w-2xl mx-auto">
-                Enterprise security review packet available now - architecture,
-                encryption, identity governance, penetration testing, data
-                residency, and DPA. No delays for your procurement team.
+                Enterprise security review packet available now — architecture,
+                encryption, identity governance, data residency, and DPA.
+                No delays for your procurement team.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
