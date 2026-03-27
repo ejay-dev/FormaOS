@@ -52,7 +52,7 @@ const faqCategories = [
       },
       {
         q: 'Can FormaOS handle multiple regulatory frameworks?',
-        a: 'Yes. FormaOS is framework-agnostic and supports multiple compliance frameworks simultaneously. Whether you need to comply with NDIS Practice Standards, ISO 27001, SOC 2, healthcare regulations, or industry-specific requirements, our platform adapts to your regulatory landscape.',
+        a: `Yes. FormaOS ships with ${brand.frameworks.count} pre-built framework packs (${brand.frameworks.packs.join(', ')}) and supports multiple frameworks simultaneously. The platform is designed to accommodate additional regulatory requirements beyond the included packs, so it adapts to your specific regulatory landscape.`,
       },
       {
         q: 'How does workflow modeling work?',

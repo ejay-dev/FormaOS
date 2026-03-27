@@ -130,6 +130,7 @@ export default function CompareAuditBoardPage() {
         featureComparison={featureComparison}
         competitorStrengths={competitorStrengths}
         source="compare_auditboard"
+        datePublished="2026-03-14"
       />
     </>
   );

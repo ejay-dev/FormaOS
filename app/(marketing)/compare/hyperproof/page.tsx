@@ -130,6 +130,7 @@ export default function CompareHyperproofPage() {
         featureComparison={featureComparison}
         competitorStrengths={competitorStrengths}
         source="compare_hyperproof"
+        datePublished="2026-03-14"
       />
     </>
   );

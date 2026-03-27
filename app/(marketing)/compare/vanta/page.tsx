@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { ComparePageTemplate } from '../components/ComparePageTemplate';
+import { brand } from '@/config/brand';
 import { siteUrl } from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'FormaOS | Compare: Vanta',
@@ -123,7 +124,7 @@ const featureComparison = [
   },
   {
     feature: 'Pre-built frameworks',
-    formaos: '7 frameworks',
+    formaos: `${brand.frameworks.count} frameworks`,
     competitor: '20+ frameworks',
   },
   {
@@ -173,6 +174,7 @@ export default function CompareVantaPage() {
       featureComparison={featureComparison}
       competitorStrengths={competitorStrengths}
       source="compare_vanta"
+      datePublished="2026-03-14"
     />
   );
 }

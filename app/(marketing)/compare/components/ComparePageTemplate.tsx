@@ -35,6 +35,7 @@ export interface ComparePageTemplateProps {
   featureComparison: readonly CompareFeatureRow[];
   competitorStrengths: readonly string[];
   source: string;
+  datePublished?: string;
 }
 
 const relatedLinksBySource: Record<
@@ -144,6 +145,7 @@ export function ComparePageTemplate({
   featureComparison,
   competitorStrengths,
   source,
+  datePublished,
 }: ComparePageTemplateProps) {
   const { trackCtaClick } = useMarketingTelemetry();
   const relatedLinks = relatedLinksBySource[source] ?? relatedLinksBySource.compare_vanta;
@@ -429,6 +431,9 @@ export function ComparePageTemplate({
               </div>
               <p className="mt-6 text-xs text-slate-500">
                 This page is an evaluation aid, not a claim of feature parity.
+                {datePublished && (
+                  <> Last updated <time dateTime={datePublished}>{new Date(datePublished + 'T00:00:00').toLocaleDateString('en-AU', { month: 'long', year: 'numeric' })}</time>.</>
+                )}
               </p>
             </div>
           </Reveal>

@@ -105,7 +105,7 @@ export default function CustomerStoriesContent() {
             </span>
           </>
         }
-        subheadline="Examples are anonymized by default. We can discuss deeper walkthroughs and review materials during evaluation."
+        subheadline="Anonymized scenarios from regulated organizations. Metrics reflect conditions at the time of deployment. We can discuss deeper walkthroughs during evaluation."
         primaryCta={{ href: '/contact', label: 'Request a Guided Demo' }}
         secondaryCta={{
           href: `${appBase}/auth/signup?source=customer_stories`,
@@ -360,7 +360,8 @@ export default function CustomerStoriesContent() {
               </SectionChoreography>
 
               <p className="mt-4 text-[10px] text-slate-500">
-                Illustrative example based on typical NDIS provider metrics.
+
+                Illustrative example based on typical NDIS provider metrics as of March 2026.
                 Actual savings vary by organization size, audit frequency, and
                 compliance team structure. We can model your specific scenario
                 during evaluation.
