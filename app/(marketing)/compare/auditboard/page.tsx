@@ -33,24 +33,24 @@ export const metadata: Metadata = {
 
 const points = [
   {
-    title: 'Execution stays connected to controls',
+    title: 'Controls execute inside daily operations',
     detail:
-      'FormaOS turns controls into owned work with evidence checkpoints, rather than treating compliance as a separate audit-management surface.',
+      'FormaOS turns controls into owned tasks with evidence checkpoints built into workflows — compliance runs as part of operations, not as a separate audit layer.',
   },
   {
-    title: 'Better fit for regulated operating teams',
+    title: 'Built for frontline operators, not just audit teams',
     detail:
-      'AuditBoard is strong for internal audit and risk organizations. FormaOS is built for operators who need frontline execution, reviewer sign-off, and evidence integrity in one system.',
+      'AuditBoard excels at internal audit and risk management. FormaOS is built for the teams doing the work — operators, compliance leads, and reviewers who need execution, sign-off, and evidence integrity in one system.',
   },
   {
-    title: 'Proof survives procurement pressure',
+    title: 'Evidence defensibility is structural',
     detail:
-      'Security review, export packages, and buyer-facing trust flows are designed into the product path instead of relying on manual audit preparation.',
+      'Every artifact carries actor attribution, approval lineage, and chain-of-custody context — so audit exports prove real work, not retroactive documentation.',
   },
   {
-    title: 'Continuous posture, not periodic collection',
+    title: 'Continuous readiness, not periodic reconstruction',
     detail:
-      'Named ownership, overdue actions, and control drift are visible continuously so readiness does not depend on a quarterly reconstruction exercise.',
+      'Named ownership, overdue escalation, and control drift surface continuously. Readiness is an always-current state, not a quarterly collection exercise.',
   },
 ] as const;
 
@@ -70,6 +70,8 @@ const featureComparison = [
   { feature: 'Regulated operator workflow coverage', formaos: 'yes', competitor: 'partial' },
   { feature: 'Incident and corrective-action chain', formaos: 'yes', competitor: 'partial' },
   { feature: 'Audit-ready export bundles', formaos: 'yes', competitor: 'yes' },
+  { feature: 'Multi-framework deduplication', formaos: 'yes', competitor: 'partial' },
+  { feature: 'Healthcare and NDIS workflow coverage', formaos: 'yes', competitor: 'no' },
 ];
 
 const competitorStrengths = [

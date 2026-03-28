@@ -1,33 +1,24 @@
 {
-  "timestamp": "2026-03-28T05:23:43.778Z",
-  "controls": {
-    "security": [],
-    "availability": [],
-    "processing": [],
-    "confidentiality": [],
-    "privacy": []
+  "timestamp": "2026-03-28T05:23:42.780Z",
+  "compliance": {
+    "dataProtection": [],
+    "userRights": [],
+    "consent": [],
+    "security": []
   },
   "violations": [
     {
       "category": "Environment",
-      "control": "INFRA",
       "test": "Application Availability",
       "error": "Unable to reach http://localhost:3000: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/\nCall log:\n  - navigating to \"http://localhost:3000/\", waiting until \"domcontentloaded\"\n"
     }
   ],
   "recommendations": [
-    "Start the app at http://localhost:3000 before running SOC2 compliance tests."
+    "Start the app at http://localhost:3000 before running GDPR compliance tests."
   ],
   "environment": {
     "baseUrl": "http://localhost:3000",
     "available": false,
     "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/\nCall log:\n  - navigating to \"http://localhost:3000/\", waiting until \"domcontentloaded\"\n"
-  },
-  "summary": {
-    "totalControls": 0,
-    "passedControls": 0,
-    "failedControls": 0,
-    "violations": 1,
-    "environmentStatus": "unavailable"
   }
 }

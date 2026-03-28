@@ -161,7 +161,7 @@ describe('bootstrapOrganizationAtomic', () => {
     expect(result.error!.message).toContain('Membership creation failed');
 
     // Rollback should delete in reverse order
-    const deletedTables = mockFrom.mock.calls
+    const _deletedTables = mockFrom.mock.calls
       .filter((_call: any, idx: number) => {
         const returnVal = mockFrom.mock.results[idx]?.value;
         return returnVal && typeof returnVal.delete === 'function' &&

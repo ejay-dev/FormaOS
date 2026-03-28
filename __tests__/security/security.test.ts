@@ -8,6 +8,17 @@
  * - API validation
  */
 
+// Mock next/server before any imports that depend on Web APIs
+jest.mock('next/server', () => ({
+  NextResponse: {
+    json: (body: unknown, init?: { status?: number; headers?: Record<string, string> }) => ({
+      body,
+      status: init?.status ?? 200,
+      headers: new Map(Object.entries(init?.headers ?? {})),
+    }),
+  },
+}));
+
 import crypto from 'crypto';
 import {
   validatePasswordStrength,

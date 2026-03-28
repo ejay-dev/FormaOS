@@ -1,6 +1,6 @@
 {
   "name": "formaos",
-  "version": "2.2.0",
+  "version": "2.2.4",
   "private": true,
   "engines": {
     "node": "20.x"
@@ -45,7 +45,7 @@
     "qa:a11y": "PLAYWRIGHT_REUSE_SERVER=true playwright test e2e/a11y-smoke.spec.ts --reporter=list --workers=1",
     "qa:enterprise": "playwright test e2e/enterprise-invariants.spec.ts e2e/security-invariants.spec.ts e2e/qa-enterprise-smoke.spec.ts --reporter=list",
     "qa:full": "npm run test:all && npm run test:supabase-health",
-    "ab-test": "ts-node tests/ab-testing/ab-test-cli.ts",
+    "ab-test": "tsx tests/ab-testing/ab-test-cli.ts",
     "ab-test:list": "npm run ab-test list",
     "ab-test:validate": "npm run ab-test validate",
     "test:ab-testing": "npm run ab-test list && npm run ab-test validate",

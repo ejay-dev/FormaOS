@@ -31,12 +31,28 @@ jest.mock('@/lib/email/send-auth-email', () => ({
   sendAuthEmail: (...args: unknown[]) => sendAuthEmail(...args),
 }));
 
+const findAuthUserByEmail = jest.fn();
+const getAdminProfileDirectoryEntries = jest.fn(async () => [
+  { fullName: 'Admin User', email: 'admin@example.com' },
+]);
+
+jest.mock('@/lib/users/admin-profile-directory', () => ({
+  findAuthUserByEmail: (...args: unknown[]) => findAuthUserByEmail(...args),
+  getAdminProfileDirectoryEntries: (...args: unknown[]) =>
+    getAdminProfileDirectoryEntries(...args),
+}));
+
 describe('multi-org', () => {
   beforeEach(() => {
     supabase.reset();
     getCached.mockClear();
     invalidateCache.mockClear();
     sendAuthEmail.mockClear();
+    findAuthUserByEmail.mockReset();
+    getAdminProfileDirectoryEntries.mockReset();
+    getAdminProfileDirectoryEntries.mockResolvedValue([
+      { fullName: 'Admin User', email: 'admin@example.com' },
+    ]);
     jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
@@ -234,6 +250,8 @@ describe('multi-org', () => {
   });
 
   it('creates invited memberships for known users and sends an invite email', async () => {
+    findAuthUserByEmail.mockResolvedValue({ id: 'user-2', email: 'user2@example.com' });
+
     supabase.setResolver((operation) => {
       if (operation.table === 'team_members' && operation.action === 'select') {
         if (
@@ -305,6 +323,8 @@ describe('multi-org', () => {
   });
 
   it('creates a token invitation for unknown users and emails the signup link', async () => {
+    findAuthUserByEmail.mockResolvedValue(null);
+
     supabase.setResolver((operation) => {
       if (operation.table === 'team_members' && operation.action === 'select') {
         if (

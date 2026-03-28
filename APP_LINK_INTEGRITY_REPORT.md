@@ -1,27 +1,37 @@
 # APP Link Integrity Report
 
-Generated: 2026-03-14T14:49:19.238Z
+Generated: 2026-03-28T10:56:29.242Z
 
 ## Summary
 
-- Total app internal links validated: 166
-- Valid links: 166
+- Total app internal links validated: 178
+- Valid links: 178
 - Broken links: 0
-- App routes discovered: 157
+- App routes discovered: 158
 
 ## Link Validation
 
 | Source | Target Route | Exists | Requires Auth | Requires Role | Matched Route |
 |---|---|---|---|---|---|
 | `app/(standalone)/accept-invite/[token]/page.tsx` | `/app` | YES | YES | auth | `/app` |
+| `app/(standalone)/accept-organization-invite/[membershipId]/page.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/admin/layout.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/app/audit/page.tsx` | `/app` | YES | YES | auth | `/app` |
+| `app/app/billing/error.tsx` | `/app` | YES | YES | auth | `/app` |
+| `app/app/compliance/error.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/app/dashboard/page.tsx` | `/app` | YES | YES | auth | `/app` |
+| `app/app/executive/error.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/app/executive/ExecutiveDashboardClient.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/app/executive/page.tsx` | `/app` | YES | YES | auth | `/app` |
+| `app/app/forms/builder/[id]/error.tsx` | `/app` | YES | YES | auth | `/app` |
+| `app/app/forms/builder/[id]/form-builder-client.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/app/governance/page.tsx` | `/app` | YES | YES | auth | `/app` |
+| `app/app/incidents/error.tsx` | `/app` | YES | YES | auth | `/app` |
+| `app/app/not-found.tsx` | `/app` | YES | YES | auth | `/app` |
+| `app/app/settings/error.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/app/staff/page.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/app/tasks/page.tsx` | `/app` | YES | YES | auth | `/app` |
+| `app/app/team/error.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/auth/reset-password/page.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/join/page.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/not-found.tsx` | `/app` | YES | YES | auth | `/app` |
@@ -65,6 +75,8 @@ Generated: 2026-03-14T14:49:19.238Z
 | `app/app/compliance/page.tsx` | `/app/compliance/frameworks` | YES | YES | auth | `/app/compliance/frameworks` |
 | `app/app/executive/ExecutiveDashboardClient.tsx` | `/app/compliance/frameworks` | YES | YES | auth | `/app/compliance/frameworks` |
 | `lib/onboarding/industry-checklists.ts` | `/app/compliance/frameworks` | YES | YES | auth | `/app/compliance/frameworks` |
+| `app/app/compliance/frameworks/page.tsx` | `/app/compliance/soc2` | YES | YES | auth | `/app/compliance/soc2` |
+| `lib/navigation/industry-sidebar.ts` | `/app/compliance/soc2` | YES | YES | auth | `/app/compliance/soc2` |
 | `components/demo/WatchDemoCTA.tsx` | `/app/dashboard` | YES | YES | auth | `/app/dashboard` |
 | `app/app/reports/page.tsx` | `/app/evidence` | YES | YES | auth | `/app/evidence` |
 | `components/empty-states/empty-state.tsx` | `/app/evidence` | YES | YES | auth | `/app/evidence` |
@@ -185,17 +197,17 @@ Generated: 2026-03-14T14:49:19.238Z
 - `/`
 - `/about`
 - `/accept-invite/:token`
+- `/accept-organization-invite/:membershipId`
 - `/admin`
 - `/admin/activity`
 - `/admin/audit`
 - `/admin/billing`
+- `/admin/bulk`
 - `/admin/control-plane`
 - `/admin/dashboard`
 - `/admin/exports`
 - `/admin/features`
 - `/admin/health`
-- `/admin/organisations`
-- `/admin/organizations`
 - `/admin/orgs`
 - `/admin/orgs/:orgId`
 - `/admin/releases`
@@ -221,6 +233,7 @@ Generated: 2026-03-14T14:49:19.238Z
 - `/app/certificates`
 - `/app/compliance`
 - `/app/compliance/frameworks`
+- `/app/compliance/soc2`
 - `/app/dashboard`
 - `/app/evidence`
 - `/app/executive`

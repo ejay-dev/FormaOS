@@ -7,24 +7,24 @@ import { siteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
-  title: 'Compliance Operating System for Regulated Teams | FormaOS',
+  title: 'FormaOS — Compliance That Runs Itself',
   description:
-    'FormaOS turns obligations into governed workflows, owned evidence, and enterprise-ready assurance for regulated teams.',
+    'FormaOS turns regulatory obligations into governed workflows with named owners, immutable evidence chains, and audit-ready assurance across every framework your team operates under.',
   alternates: {
     canonical: `${siteUrl.replace(/\/$/, '')}/`,
   },
   openGraph: {
-    title: 'Compliance Operating System for Regulated Teams | FormaOS',
+    title: 'FormaOS — Compliance That Runs Itself',
     description:
-      'FormaOS turns obligations into governed workflows, owned evidence, and enterprise-ready assurance for regulated teams.',
+      'FormaOS turns regulatory obligations into governed workflows with named owners, immutable evidence chains, and audit-ready assurance across every framework your team operates under.',
     type: 'website',
     url: `${siteUrl.replace(/\/$/, '')}/`,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Compliance Operating System for Regulated Teams | FormaOS',
+    title: 'FormaOS — Compliance That Runs Itself',
     description:
-      'FormaOS turns obligations into governed workflows, owned evidence, and enterprise-ready assurance for regulated teams.',
+      'FormaOS turns regulatory obligations into governed workflows with named owners, immutable evidence chains, and audit-ready assurance across every framework your team operates under.',
   },
 };
 

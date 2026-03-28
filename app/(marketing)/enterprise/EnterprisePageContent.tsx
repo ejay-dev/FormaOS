@@ -22,7 +22,6 @@ import {
   ChevronDown,
   ChevronRight,
   Shield,
-  Eye,
   Database,
   Key,
   HeartPulse,
@@ -765,14 +764,14 @@ function TrustBadgesSection() {
               </span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Certified for{' '}
+              Built for{' '}
               <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-300 bg-clip-text text-transparent">
-                regulated industries
+                enterprise review
               </span>
             </h2>
             <p className="text-sm text-slate-400 max-w-lg mx-auto">
-              Independent certifications and compliance programs that
-              procurement, legal, and security teams need to see.
+              Trust signals that procurement, legal, and security teams
+              expect to verify before signing.
             </p>
           </ScrollReveal>
 
@@ -840,14 +839,14 @@ function SLASection() {
               </span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Contractual{' '}
+              Enterprise{' '}
               <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent">
-                SLA guarantees
+                service commitments
               </span>
             </h2>
             <p className="text-sm text-slate-400 max-w-lg mx-auto">
-              Every commitment backed by measurable targets, transparent
-              reporting, and financial remediation for breaches.
+              Operational visibility, structured support paths, and enterprise
+              controls — with specific terms defined during procurement.
             </p>
           </ScrollReveal>
 
@@ -1143,15 +1142,15 @@ function EnterpriseCTA() {
                   </span>
                 </div>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-                  Ready to{' '}
+                  Start your{' '}
                   <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                    get started?
+                    enterprise evaluation
                   </span>
                 </h2>
                 <p className="text-base sm:text-lg text-slate-400 max-w-xl mx-auto mb-10">
-                  Schedule a security review, request our SOC 2 report, or
-                  start a proof-of-concept. Our enterprise team is ready to
-                  support your evaluation process.
+                  Request the security review packet, run a proof-of-concept,
+                  or bring your procurement team into a structured review.
+                  We support the process your organization already follows.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -1320,10 +1319,10 @@ function EnterpriseHero() {
           transition={{ duration: 0.7, delay: 0.1, ease: EASE_OUT_EXPO }}
           className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-[1.08] mb-6"
         >
-          Compliance at
+          One Evaluation Path from
           <br />
           <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
-            enterprise scale
+            Security Review to Rollout
           </span>
         </motion.h1>
 
@@ -1333,9 +1332,9 @@ function EnterpriseHero() {
           transition={{ duration: 0.7, delay: 0.2, ease: EASE_OUT_EXPO }}
           className="text-base sm:text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed"
         >
-          SAML SSO, audit-ready procurement materials, and enterprise
-          governance workflows for teams where compliance needs to stay
-          operational, visible, and defensible.
+          SAML SSO, audit-ready evidence exports, and structured procurement
+          materials for organizations where compliance is an operational
+          requirement — not a checkbox exercise.
         </motion.p>
 
         <motion.div

@@ -144,6 +144,76 @@ interface ChangelogRelease {
 
 const releases: ChangelogRelease[] = [
   {
+    version: 'v2.2.4',
+    codename: 'Meridian',
+    date: '2026-03-28',
+    summary:
+      'Full platform audit at extreme level, marketing homepage expansion from 6 to 11 visible sections, flagship page copy hardening, and comprehensive test suite fixes.',
+    isMajor: false,
+    changes: [
+      {
+        text: 'Homepage expanded from 6 to 11 visible sections for stronger buyer conversion',
+        tag: 'feature',
+        detail:
+          'Enabled five high-conversion homepage sections — industries, security, outcome proof, procurement flow, and trust — that were previously disabled. The homepage now presents a complete buyer narrative from problem through proof to CTA.',
+      },
+      {
+        text: 'Hero copy sharpened to lead with outcomes instead of product category',
+        tag: 'improvement',
+        detail:
+          'Rewrote the homepage hero from "Run Compliance as an Operating System" to "Compliance That Runs Itself / So Your Team Can Run the Business" with a subheadline emphasizing immutable evidence chains and named owners.',
+      },
+      {
+        text: 'Enterprise page hardened against overclaims for procurement safety',
+        tag: 'enterprise',
+        detail:
+          'Fixed four enterprise page issues: removed implied certification language, replaced "Contractual SLA guarantees with financial remediation" with accurate "Enterprise service commitments" language, updated trust badge copy, and sharpened the enterprise evaluation CTA.',
+      },
+      {
+        text: 'AuditBoard comparison page deepened with concrete differentiators',
+        tag: 'improvement',
+        detail:
+          'Added multi-framework deduplication and healthcare/NDIS coverage as comparison points, tightened positioning copy to emphasize execution-first operating system vs. audit management tooling.',
+      },
+      {
+        text: 'All npm dependency vulnerabilities resolved — zero remaining',
+        tag: 'security',
+        detail:
+          'Ran npm audit fix to patch four vulnerabilities including a critical handlebars JS injection, a high-severity picomatch method injection, and two moderate issues in yaml and brace-expansion. Production dependency scan now returns zero vulnerabilities.',
+      },
+      {
+        text: 'Security test suite fixed with proper Next.js Web API mocking',
+        tag: 'fix',
+        detail:
+          'Added jest.mock for next/server before imports in the security test suite to resolve "Request is not defined" error in the Node test environment. All 45 security tests now pass.',
+      },
+      {
+        text: 'Multi-org invitation test suite repaired with admin API mocks',
+        tag: 'fix',
+        detail:
+          'Added missing mocks for findAuthUserByEmail and getAdminProfileDirectoryEntries which switched from the profiles table to the Supabase admin API. Both known-user and unknown-user invitation flows now pass.',
+      },
+      {
+        text: 'Homepage experience test aligned with current section visibility defaults',
+        tag: 'fix',
+        detail:
+          'Updated the homepage section decision test to expect 11 visible sections (4 critical + 7 non-critical) matching the new default configuration after the marketing expansion.',
+      },
+      {
+        text: 'A/B test CLI runner fixed by switching from ts-node to tsx',
+        tag: 'fix',
+        detail:
+          'Replaced the missing ts-node dependency with tsx (already available) in the ab-test npm script. All 5 A/B test configurations now validate successfully.',
+      },
+      {
+        text: 'Marketing upgrade agent prompt authored for future marketing passes',
+        tag: 'improvement',
+        detail:
+          'Created a comprehensive 4-phase marketing upgrade agent prompt covering all 62 marketing pages with exact design system references, audit findings, execution plan, content rules, and validation checklist.',
+      },
+    ],
+  },
+  {
     version: 'v2.2.3',
     codename: 'Horizon',
     date: '2026-03-22',

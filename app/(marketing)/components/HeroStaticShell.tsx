@@ -51,7 +51,7 @@ export function HeroStaticShell() {
         <h1 className="max-w-5xl text-[clamp(1.75rem,5vw+0.5rem,2.35rem)] font-semibold leading-[1.04] tracking-tight text-white sm:text-5xl lg:text-7xl">
           <span>{heroCopy.headlinePrimary}</span>
           <br />
-          <span className="bg-gradient-to-r from-cyan-300 via-violet-300 to-emerald-300 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-cyan-300 via-teal-200 to-emerald-300 bg-clip-text text-transparent">
             {heroCopy.headlineAccent}
           </span>
         </h1>

@@ -8,6 +8,7 @@ Use these two files with the role prompts:
 
 - Shared contract: [`SHARED_OPERATING_CONTRACT.md`](/Users/ejaz/FormaOS/.github/agents/formaos-marketing-team/SHARED_OPERATING_CONTRACT.md)
 - Launch commands: [`LAUNCH_PLAYBOOK.md`](/Users/ejaz/FormaOS/.github/agents/formaos-marketing-team/LAUNCH_PLAYBOOK.md)
+- VS agent master prompt: [`VS_AGENT_MARKETING_MASTER_PROMPT.md`](/Users/ejaz/FormaOS/.github/agents/formaos-marketing-team/VS_AGENT_MARKETING_MASTER_PROMPT.md)
 
 ## Shared Context
 
