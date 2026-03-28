@@ -12,6 +12,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { SectionHeader, ArchitectureCard } from '@/components/motion';
+import { ShieldRings, ChainLinks } from '@/components/marketing/SectionBackgrounds';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import Link from 'next/link';
@@ -179,6 +180,7 @@ function LightCard({
 export function SecuritySafeguards() {
   return (
     <LightSection className="py-12 sm:py-16 lg:py-20">
+      <ShieldRings color="rgba(45, 212, 191, 0.03)" />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
         <SectionHeader
           badge="Security Safeguards"
@@ -272,6 +274,7 @@ export function SecurityArchitectureLayers() {
 export function SecurityEvidenceChain() {
   return (
     <LightSection className="py-12 sm:py-16 lg:py-20">
+      <ChainLinks />
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">
         <SectionHeader
           badge="Evidence Chain"

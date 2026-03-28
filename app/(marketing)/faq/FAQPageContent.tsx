@@ -24,6 +24,7 @@ import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { FAQHeroVisual } from './components/FAQHeroVisual';
 import { brand } from '@/config/brand';
+import { DotGrid } from '@/components/marketing/SectionBackgrounds';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -414,6 +415,7 @@ function FAQContent() {
     <section className="relative py-24 bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c]">
       {/* Animated background gradient orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <DotGrid />
         <motion.div
           className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-cyan-500/5 blur-3xl"
           animate={{

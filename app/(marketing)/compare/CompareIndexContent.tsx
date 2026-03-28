@@ -10,6 +10,7 @@ import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DeferredSection } from '../components/shared';
 import { motion } from 'framer-motion';
 import { CompareHeroVisual } from './components/CompareHeroVisual';
+import { DotGrid } from '@/components/marketing/SectionBackgrounds';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -96,6 +97,7 @@ export default function CompareIndexContent() {
       {/* Competitor Cards */}
       <DeferredSection minHeight={240}>
         <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <DotGrid />
           <SectionChoreography pattern="alternating" className="grid gap-4 lg:grid-cols-3">
             {comparisons.map((c) => (
                 <motion.div key={c.href} whileHover={{ y: -6 }}>

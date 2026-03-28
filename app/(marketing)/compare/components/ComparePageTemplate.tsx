@@ -12,6 +12,7 @@ import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
 import { DeferredSection } from '../../components/shared';
 import { motion } from 'framer-motion';
 import { CompareHeroVisual } from './CompareHeroVisual';
+import { DotGrid } from '@/components/marketing/SectionBackgrounds';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -207,6 +208,7 @@ export function ComparePageTemplate({
       {/* Feature Comparison Table */}
       <DeferredSection minHeight={400}>
         <section className="mk-section relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <DotGrid spacing={28} color="rgba(148, 163, 184, 0.03)" />
           <ScrollReveal variant="slideUp" range={[0, 0.3]}>
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm overflow-hidden">
               <div className="p-6 pb-4 border-b border-white/[0.06]">

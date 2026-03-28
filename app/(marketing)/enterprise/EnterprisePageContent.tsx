@@ -40,6 +40,7 @@ import {
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { VisualDivider } from '@/components/motion';
+import { ShieldRings, HexGrid } from '@/components/marketing/SectionBackgrounds';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { brand } from '@/config/brand';
@@ -628,6 +629,7 @@ function SecurityArchitecture() {
   return (
     <DeferredSection minHeight={500}>
       <section className="mk-section relative">
+        <ShieldRings />
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <ScrollReveal
             variant="depthScale"
@@ -751,6 +753,7 @@ function TrustBadgesSection() {
   return (
     <DeferredSection minHeight={250}>
       <section className="mk-section relative">
+        <HexGrid />
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <ScrollReveal
             variant="depthScale"

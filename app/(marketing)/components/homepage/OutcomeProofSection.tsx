@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { RadarPulse } from '@/components/marketing/SectionBackgrounds';
 import {
   ArrowRight,
   BarChart3,
@@ -70,6 +71,7 @@ const outcomeStats = [
 export function OutcomeProofSection() {
   return (
     <section className="mk-section home-section home-section--proof relative overflow-hidden">
+      <RadarPulse />
       {/* Data section treatment: dark inset panel */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#060a14] to-transparent" />
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />

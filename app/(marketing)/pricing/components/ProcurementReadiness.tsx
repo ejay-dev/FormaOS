@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ArrowRight, ClipboardCheck, FileCheck2, ShieldCheck, Lock, Sparkles } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
+import { StampPattern } from '@/components/marketing/SectionBackgrounds';
 
 const assurancePillars = [
   {
@@ -38,6 +39,7 @@ export function ProcurementReadiness() {
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(16,185,129,0.12),transparent_42%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_80%,rgba(56,189,248,0.12),transparent_40%)]" />
+      <StampPattern />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
         <ScrollReveal variant="depthScale" range={[0, 0.35]} className="mx-auto max-w-3xl text-center">

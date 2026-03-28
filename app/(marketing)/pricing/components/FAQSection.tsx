@@ -7,6 +7,7 @@ import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { duration } from '@/config/motion';
 import { PRICING_FAQS } from './faq-data';
+import { DotGrid } from '@/components/marketing/SectionBackgrounds';
 
 export function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -16,6 +17,7 @@ export function FAQSection() {
     <section className="relative py-32 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]">
+        <DotGrid />
         <motion.div
           animate={
             shouldReduceMotion

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
+import { ScanLine } from '@/components/marketing/SectionBackgrounds';
 
 const questionnaireFastLane = [
   {
@@ -41,6 +42,7 @@ export function QuestionnaireAccelerator() {
     <>
       {/* Security Questionnaire Fast-Lane */}
       <section className="relative mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+        <ScanLine />
         <ScrollReveal variant="depthScale" range={[0, 0.35]}>
           <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-7 backdrop-blur-sm lg:p-10">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">

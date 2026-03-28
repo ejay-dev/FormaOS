@@ -4,6 +4,7 @@ import { ArrowRight, CheckCircle, Activity, UserCheck } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import dynamic from 'next/dynamic';
+import { FlowPath } from '@/components/marketing/SectionBackgrounds';
 
 const DemoComplianceChain = dynamic(
   () => import('@/components/marketing/demo/DemoComplianceChain'),
@@ -36,6 +37,7 @@ const flow = [
 export function ObligationToExecution() {
   return (
     <section className="product-section product-section--process relative py-16 sm:py-24 lg:py-32 overflow-hidden">
+      <FlowPath />
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.35]}>
           <div className="text-center mb-16">

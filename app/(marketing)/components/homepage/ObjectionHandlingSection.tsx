@@ -1,6 +1,7 @@
 'use client';
 
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { DecisionTreePattern } from '@/components/marketing/SectionBackgrounds';
 import { CircleCheckBig, FileCheck2, HelpCircle, ShieldAlert, Quote, Globe, Lock, ArrowUpRight } from 'lucide-react';
 
 const objectionCards = [
@@ -51,6 +52,7 @@ const objectionCards = [
 export function ObjectionHandlingSection() {
   return (
     <section className="mk-section home-section home-section--proof relative overflow-hidden">
+      <DecisionTreePattern />
       {/* Proof section treatment: monochrome, high-contrast, badge-heavy */}
       <div className="absolute inset-x-0 top-0 h-px bg-white/[0.04]" />
       <div className="absolute inset-x-0 bottom-0 h-px bg-white/[0.04]" />
