@@ -121,11 +121,13 @@ export async function ensureSubscription(
 
   if (legacyError) {
     const message = legacyError.message?.toLowerCase() ?? '';
-    const missingLegacyColumn =
+    const legacySchemaIssue =
       message.includes('column "org_id" does not exist') ||
-      message.includes('column "plan_code" does not exist');
+      message.includes('column "plan_code" does not exist') ||
+      message.includes('foreign key constraint') ||
+      message.includes('plan_code_fkey');
 
-    if (missingLegacyColumn) {
+    if (legacySchemaIssue) {
       const { error: fallbackError } = await admin
         .from('org_subscriptions')
         .upsert(basePayload);
