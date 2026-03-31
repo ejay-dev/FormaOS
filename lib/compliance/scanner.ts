@@ -187,7 +187,7 @@ async function scanEvidenceCompleteness(
 
   for (const task of tasks) {
     const { data: evidence } = await supabase
-      .from('evidence')
+      .from('org_evidence')
       .select('id')
       .eq('task_id', task.id);
 
@@ -331,7 +331,7 @@ async function scanDataRetention(
   cutoffDate.setFullYear(cutoffDate.getFullYear() - retentionYears);
 
   const { data: oldEvidence } = await supabase
-    .from('evidence')
+    .from('org_evidence')
     .select('id, title, created_at')
     .eq('organization_id', organizationId)
     .lt('created_at', cutoffDate.toISOString());

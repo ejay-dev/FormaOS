@@ -71,17 +71,9 @@ export function SystemStatusPanel() {
         }
       }
 
-      // Get last automation run
-      const { data: lastRun } = await supabase
-        .from('automation_runs')
-        .select('created_at, status')
-        .eq('organization_id', orgId)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      const automationRunning = lastRun?.status === 'running' || lastRun?.status === 'pending';
-      const lastScanTime = lastRun?.created_at ?? null;
+      // automation_runs table is not yet provisioned — use defaults until migration is applied
+      const automationRunning = false;
+      const lastScanTime: string | null = null;
 
       setStatus({
         automationRunning,

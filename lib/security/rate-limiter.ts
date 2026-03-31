@@ -76,13 +76,17 @@ const RATE_LIMITS = {
     windowMs: 60 * 1000,
     maxRequests: 20,
     keyPrefix: 'rl:upload',
-    failClosed: true,
+    // Fail-open: uploads should degrade to in-memory rather than blocking
+    // users entirely when Redis is unavailable.
+    failClosed: false,
   } as RateLimitConfig,
   EXPORT: {
     windowMs: 10 * 60 * 1000,
     maxRequests: 5,
     keyPrefix: 'rl:export',
-    failClosed: true,
+    // Fail-open: export is not security-critical. Blocking exports when Redis
+    // is unavailable degrades the product for no security benefit.
+    failClosed: false,
   } as RateLimitConfig,
 
   HEARTBEAT: {

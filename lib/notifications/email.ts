@@ -577,7 +577,7 @@ export async function scheduleWeeklyDigest(
       .select('*')
       .eq('organization_id', organizationId),
     supabase
-      .from('evidence')
+      .from('org_evidence')
       .select('*')
       .eq('organization_id', organizationId)
       .gte('created_at', weekStart.toISOString()),

@@ -617,6 +617,11 @@ export async function proxy(request: NextRequest) {
     const scriptSrc = [
       "'self'",
       `'nonce-${nonce}'`,
+      // Next.js App Router injects an inline bootstrap script that doesn't
+      // receive the nonce. Allow its hash so CSP doesn't block hydration.
+      // If this hash changes after a Next.js upgrade, re-compute it from
+      // the CSP violation report in the browser console.
+      "'sha256-Cj8BJXnrVOWeUYbIViXJXLpLuu+o0yNHdVPNwivHvOw='",
       'https://*.sentry.io',
       'https://*.posthog.com',
       'https://js.stripe.com',

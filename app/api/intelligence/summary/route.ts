@@ -170,7 +170,7 @@ export async function GET() {
 
       // Evidence count - SCOPED by orgId
       supabase
-        .from('evidence')
+        .from('org_evidence')
         .select('id', { count: 'exact', head: true })
         .eq('organization_id', orgId),
 

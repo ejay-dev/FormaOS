@@ -1244,6 +1244,8 @@ test.describe('Enterprise Government Audit Readiness', () => {
       await loginAs(page, enterpriseEmail, PASSWORD);
 
       const consoleErrors: Array<{ route: string; message: string }> = [];
+      const networkFailures: Array<{ route: string; url: string; status: number }> = [];
+      let currentRoute = '';
 
       page.on('console', (msg) => {
         if (msg.type() === 'error') {
@@ -1256,8 +1258,15 @@ test.describe('Enterprise Government Audit Readiness', () => {
             !text.includes('ResizeObserver') &&
             !text.includes('net::ERR')
           ) {
-            consoleErrors.push({ route: page.url(), message: text });
+            consoleErrors.push({ route: currentRoute || page.url(), message: text });
           }
+        }
+      });
+
+      page.on('response', (response) => {
+        const status = response.status();
+        if (status >= 400) {
+          networkFailures.push({ route: currentRoute, url: response.url(), status });
         }
       });
 
@@ -1272,18 +1281,24 @@ test.describe('Enterprise Government Audit Readiness', () => {
       ];
 
       for (const route of criticalRoutes) {
+        currentRoute = route;
         await page.goto(route);
         await waitForPageContent(page);
         await page.waitForTimeout(1000);
       }
 
+      if (networkFailures.length > 0) {
+        console.warn(`[E2E] Network failures (${networkFailures.length}):`);
+        networkFailures.forEach((f) => console.warn(`  [${f.status}] ${f.route} → ${f.url}`));
+      }
+
       if (consoleErrors.length > 0) {
-        console.warn(`[E2E] Console errors detected (${consoleErrors.length}):`);
-        consoleErrors.forEach((e) => console.warn(`  ${e.route}: ${e.message}`));
+        console.warn(`[E2E] Console errors (${consoleErrors.length}):`);
+        consoleErrors.forEach((e) => console.warn(`  ${e.route}: ${e.message.slice(0, 150)}`));
       }
 
       // Log count for visibility — this is a monitoring metric, not a hard gate
-      console.log(`[Console Audit] ${consoleErrors.length} filtered console error(s) across ${criticalRoutes.length} routes`);
+      console.log(`[Console Audit] ${consoleErrors.length} filtered console error(s), ${networkFailures.length} network failure(s) across ${criticalRoutes.length} routes`);
       // Fail only if errors are truly excessive (> 50 per audit run)
       expect(consoleErrors.length).toBeLessThan(50);
     });

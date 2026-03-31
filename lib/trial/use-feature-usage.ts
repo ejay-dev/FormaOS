@@ -59,7 +59,7 @@ export function useFeatureUsage() {
           .select('id', { count: 'exact', head: true })
           .eq('organization_id', orgId),
         supabase
-          .from('evidence')
+          .from('org_evidence')
           .select('id', { count: 'exact', head: true })
           .eq('organization_id', orgId),
         supabase

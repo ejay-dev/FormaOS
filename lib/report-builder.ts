@@ -450,7 +450,7 @@ export async function fetchWidgetData(
 
     case 'evidence': {
       let query = supabase
-        .from('evidence')
+        .from('org_evidence')
         .select('*')
         .eq('organization_id', organizationId);
 
@@ -483,7 +483,7 @@ export async function fetchWidgetData(
           .select('id, status, framework_key, created_at, expires_at')
           .eq('organization_id', organizationId),
         supabase
-          .from('evidence')
+          .from('org_evidence')
           .select('id, status, control_id, created_at')
           .eq('organization_id', organizationId),
       ]);

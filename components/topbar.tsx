@@ -81,34 +81,18 @@ export function TopBar({
 
     const loadProfile = async () => {
       if (!userId) return;
+
+      // Query profiles table for display name and avatar
       const { data: profile } = await supabase
-        .from('user_profiles')
-        .select('full_name, avatar_path')
-        .eq('user_id', userId)
+        .from('profiles')
+        .select('full_name, avatar_url')
+        .eq('id', userId)
         .maybeSingle();
 
       if (!isMounted) return;
 
       setDisplayName(profile?.full_name ?? null);
-
-      if (!profile?.avatar_path) {
-        setAvatarUrl(null);
-        return;
-      }
-
-      const { data, error } = await supabase.storage
-        .from('user-avatars')
-        .createSignedUrl(profile.avatar_path, 60 * 60 * 12);
-
-      if (!isMounted) return;
-
-      if (error) {
-        console.error('Failed to load avatar:', error.message);
-        setAvatarUrl(null);
-        return;
-      }
-
-      setAvatarUrl(data?.signedUrl ?? null);
+      setAvatarUrl(profile?.avatar_url ?? null);
     };
 
     loadProfile();

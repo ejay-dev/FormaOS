@@ -151,7 +151,7 @@ async function analyzeEvidenceRisks(
 
   for (const task of tasks) {
     const { data: evidence } = await supabase
-      .from('evidence')
+      .from('org_evidence')
       .select('id')
       .eq('task_id', task.id);
 
