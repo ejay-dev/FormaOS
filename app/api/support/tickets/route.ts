@@ -8,10 +8,14 @@ import {
   RATE_LIMITS,
 
 } from '@/lib/security/rate-limiter';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('/api/support/tickets');
 
 export async function POST(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   try {
     // Rate limit ticket creation (5 req / 10 min per IP)
     const identifier = await getClientIdentifier();

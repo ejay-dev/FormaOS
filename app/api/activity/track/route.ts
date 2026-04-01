@@ -23,6 +23,7 @@ import {
   createRateLimitHeaders,
   createRateLimitedResponse,
 } from '@/lib/security/rate-limiter';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const RATE_LIMITS = {
   ACTIVITY: {
@@ -48,6 +49,9 @@ const ALLOWED_ACTIONS = [
 ] as const;
 
 export async function POST(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   if (!isSecurityMonitoringEnabled()) {
     return NextResponse.json({ ok: true, disabled: true });
   }

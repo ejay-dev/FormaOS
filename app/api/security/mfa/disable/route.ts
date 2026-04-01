@@ -7,6 +7,7 @@ import {
   SecurityEventTypes,
 
 } from '@/lib/security/session-security';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('/api/security/mfa/disable');
 import {
@@ -19,6 +20,9 @@ import {
 export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   try {
     const identifier = await getClientIdentifier();
     const rl = await checkRateLimit(RATE_LIMITS.AUTH, identifier);

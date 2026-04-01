@@ -12,6 +12,7 @@ import {
   encodeCursor,
   requireNotificationContext,
 } from '@/lib/notifications/server';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 function eventTypesForCategory(category?: string | null) {
   if (!category) return null;
@@ -136,6 +137,9 @@ export async function PATCH(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   try {
     const body = (await request.json().catch(() => null)) as
       | { orgId?: string; eventType?: NotificationEventType; priority?: string }

@@ -9,12 +9,16 @@ import {
   RATE_LIMITS,
 
 } from '@/lib/security/rate-limiter';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('/api/security/mfa/setup');
 
 export const runtime = 'nodejs';
 
-export async function POST() {
+export async function POST(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   try {
     const identifier = await getClientIdentifier();
     const rl = await checkRateLimit(RATE_LIMITS.AUTH, identifier);

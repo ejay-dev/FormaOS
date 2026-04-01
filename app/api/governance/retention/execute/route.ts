@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 import { requireOrgAdminContext } from '@/lib/identity/org-access';
 import { evaluateRetention, executeRetention } from '@/lib/data-governance/retention';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   try {
     const body = (await request.json()) as Record<string, unknown>;
     const context = await requireOrgAdminContext((body.orgId as string | undefined) ?? null);

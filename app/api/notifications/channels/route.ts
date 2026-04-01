@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireNotificationContext } from '@/lib/notifications/server';
 import type { NotificationChannelType } from '@/lib/notifications/types';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 export async function GET(request: Request) {
   try {
@@ -29,6 +30,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   try {
     const body = (await request.json()) as {
       orgId?: string;

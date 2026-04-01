@@ -42,13 +42,13 @@ export async function GET() {
     timestamp: new Date().toISOString(),
     checks: {
       supabase_url: {
-        status: supabaseUrl ? 'ok' : 'missing',
+        status: supabaseUrl ? 'ok' : 'not_configured',
       },
       anon_key: {
-        status: anonKey ? 'ok' : 'missing',
+        status: anonKey ? 'ok' : 'not_configured',
       },
       service_role_key: {
-        status: serviceRoleKey ? 'ok' : 'missing',
+        status: serviceRoleKey ? 'ok' : 'not_configured',
       },
       session: {
         status: 'checking',
@@ -71,18 +71,20 @@ export async function GET() {
 
     if (error) {
       response.checks.session.status = 'error';
-      response.checks.session.error = error.message;
+      // Do not expose raw error messages to unauthenticated callers
+      response.checks.session.error = 'session_check_failed';
 
       // Check if this is a JWT-related error (key rotation issue)
+      const msg = error.message || '';
       if (
-        error.message.includes('invalid JWT') ||
-        error.message.includes('JWT expired') ||
-        error.message.includes('token') ||
-        error.message.includes('signature')
+        msg.includes('invalid JWT') ||
+        msg.includes('JWT expired') ||
+        msg.includes('token') ||
+        msg.includes('signature')
       ) {
         response.checks.jwt_validity.status = 'invalid';
         response.checks.jwt_validity.message =
-          'Session token may be signed with old JWT key. User should sign out and sign in again.';
+          'Session token invalid. Sign out and sign in again.';
         response.status = 'degraded';
       } else {
         response.checks.jwt_validity.status = 'no_session';

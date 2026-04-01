@@ -53,10 +53,17 @@ function fallbackHash(input: string): string {
 
 /**
  * Generate a secure session token hash (for storage)
+ *
+ * Hard-fails if crypto.subtle is unavailable — all supported runtimes
+ * (Node 18+, Vercel Edge, Cloudflare Workers) provide it.
+ * A weak fallback would silently degrade session-token storage security.
  */
 export async function hashSessionToken(token: string): Promise<string> {
   if (!globalThis.crypto?.subtle) {
-    return fallbackHash(token);
+    throw new Error(
+      'crypto.subtle is not available — cannot securely hash session tokens. ' +
+        'All supported runtimes (Node 18+) provide this API.',
+    );
   }
 
   const data = textEncoder.encode(token);

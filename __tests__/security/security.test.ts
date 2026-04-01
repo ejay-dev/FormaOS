@@ -198,23 +198,33 @@ describe('MFA Enforcement', () => {
 
 describe('Session Security', () => {
   describe('hashSessionToken', () => {
-    it('produces consistent hashes', async () => {
-      const token = 'test-token-123';
-      const hash1 = await hashSessionToken(token);
-      const hash2 = await hashSessionToken(token);
-      expect(hash1).toBe(hash2);
-    });
+    const hasSubtle = !!globalThis.crypto?.subtle;
 
-    it('produces different hashes for different tokens', async () => {
-      const hash1 = await hashSessionToken('token-1');
-      const hash2 = await hashSessionToken('token-2');
-      expect(hash1).not.toBe(hash2);
-    });
+    if (hasSubtle) {
+      it('produces consistent hashes', async () => {
+        const token = 'test-token-123';
+        const hash1 = await hashSessionToken(token);
+        const hash2 = await hashSessionToken(token);
+        expect(hash1).toBe(hash2);
+      });
 
-    it('produces 64-character hex strings', async () => {
-      const hash = await hashSessionToken('any-token');
-      expect(hash).toMatch(/^[a-f0-9]{64}$/);
-    });
+      it('produces different hashes for different tokens', async () => {
+        const hash1 = await hashSessionToken('token-1');
+        const hash2 = await hashSessionToken('token-2');
+        expect(hash1).not.toBe(hash2);
+      });
+
+      it('produces 64-character hex strings', async () => {
+        const hash = await hashSessionToken('any-token');
+        expect(hash).toMatch(/^[a-f0-9]{64}$/);
+      });
+    } else {
+      it('throws when crypto.subtle is unavailable (SEC-2 hardening)', async () => {
+        await expect(hashSessionToken('any-token')).rejects.toThrow(
+          'crypto.subtle is not available',
+        );
+      });
+    }
   });
 
   describe('generateSessionToken', () => {

@@ -7,10 +7,14 @@ import {
   createRateLimitHeaders,
   RATE_LIMITS,
 } from '@/lib/security/rate-limiter';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('api/feedback');
 
 export async function POST(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   try {
     // Rate limit anonymous feedback to prevent spam (5 req / 10 min)
     const identifier = await getClientIdentifier();

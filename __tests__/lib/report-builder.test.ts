@@ -136,7 +136,7 @@ describe('report-builder', () => {
       if (operation.table === 'certifications') {
         return { data: [{ id: 'cert-1' }], error: null };
       }
-      if (operation.table === 'evidence') {
+      if (operation.table === 'org_evidence') {
         return { data: [{ id: 'evidence-1' }], error: null };
       }
       return { data: null, error: null };

@@ -6,6 +6,7 @@ import {
   SecurityEventTypes,
 
 } from '@/lib/security/session-security';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('/api/security/log');
 import { extractClientIP } from '@/lib/security/session-security';
@@ -35,6 +36,9 @@ const sanitizeMetadata = (meta: unknown) => {
 };
 
 export async function POST(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   try {
     // Rate limit to prevent log flooding (10 req / 15 min per IP)
     const identifier = await getClientIdentifier();

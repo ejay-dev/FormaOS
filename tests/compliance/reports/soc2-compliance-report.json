@@ -1,33 +1,124 @@
 {
-  "timestamp": "2026-03-28T05:23:43.778Z",
+  "timestamp": "2026-04-01T02:14:59.362Z",
   "controls": {
-    "security": [],
-    "availability": [],
-    "processing": [],
-    "confidentiality": [],
+    "security": [
+      {
+        "name": "Authentication Requirements",
+        "control": "CC6.1",
+        "passed": true,
+        "details": "Protected resources must require authentication"
+      },
+      {
+        "name": "Authorization Controls",
+        "control": "CC6.2",
+        "passed": false,
+        "details": "Admin resources must enforce proper authorization"
+      },
+      {
+        "name": "Session Management",
+        "control": "CC6.1",
+        "passed": false,
+        "details": "Must implement secure session management"
+      },
+      {
+        "name": "Encryption in Transit",
+        "control": "CC6.7",
+        "passed": false,
+        "details": "HTTPS must be properly configured"
+      }
+    ],
+    "availability": [
+      {
+        "name": "Backup and Recovery Indicators",
+        "control": "A1.3",
+        "passed": false,
+        "details": "Backup and recovery processes must be documented"
+      }
+    ],
+    "processing": [
+      {
+        "name": "Data Validation",
+        "control": "PI1.1",
+        "passed": true,
+        "details": "Data input must be validated"
+      },
+      {
+        "name": "Audit Trail",
+        "control": "PI1.2",
+        "passed": null,
+        "details": "Audit logging must be implemented"
+      },
+      {
+        "name": "Data Integrity Checks",
+        "control": "PI1.1",
+        "passed": false,
+        "details": "Unable to verify data integrity checks"
+      }
+    ],
+    "confidentiality": [
+      {
+        "name": "Data Classification",
+        "control": "C1.1",
+        "passed": true,
+        "details": "Data classification must be documented"
+      },
+      {
+        "name": "Access Controls",
+        "control": "C1.2",
+        "passed": false,
+        "details": "Role-based access controls must be implemented"
+      },
+      {
+        "name": "Data Encryption",
+        "control": "C1.1",
+        "passed": "max-age=31536000; includeSubDomains; preload",
+        "details": "Security headers must be implemented"
+      }
+    ],
     "privacy": []
   },
   "violations": [
     {
-      "category": "Environment",
-      "control": "INFRA",
-      "test": "Application Availability",
-      "error": "Unable to reach http://localhost:3000: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/\nCall log:\n  - navigating to \"http://localhost:3000/\", waiting until \"domcontentloaded\"\n"
+      "category": "Security",
+      "control": "CC6.6",
+      "test": "Input Validation",
+      "error": "page.goto: Navigation to \"http://localhost:3000/contact\" is interrupted by another navigation to \"chrome-error://chromewebdata/\"\nCall log:\n  - navigating to \"http://localhost:3000/contact\", waiting until \"load\"\n"
+    },
+    {
+      "category": "Availability",
+      "control": "A1.2",
+      "test": "System Health Monitoring",
+      "error": "page.goto: Navigation to \"http://localhost:3000/api/health\" is interrupted by another navigation to \"http://localhost:3000/contact\"\nCall log:\n  - navigating to \"http://localhost:3000/api/health\", waiting until \"load\"\n"
+    },
+    {
+      "category": "Availability",
+      "control": "A1.1",
+      "test": "Error Handling",
+      "error": "page.goto: Navigation to \"http://localhost:3000/nonexistent-page\" is interrupted by another navigation to \"http://localhost:3000/api/health\"\nCall log:\n  - navigating to \"http://localhost:3000/nonexistent-page\", waiting until \"load\"\n"
+    },
+    {
+      "category": "Availability",
+      "control": "A1.2",
+      "test": "Performance Monitoring",
+      "error": "page.goto: Navigation to \"http://localhost:3000/\" is interrupted by another navigation to \"http://localhost:3000/nonexistent-page\"\nCall log:\n  - navigating to \"http://localhost:3000/\", waiting until \"load\"\n"
     }
   ],
   "recommendations": [
-    "Start the app at http://localhost:3000 before running SOC2 compliance tests."
+    "7 control tests failed. Address these for SOC2 compliance.",
+    "Security controls need attention. Implement proper authentication and authorization.",
+    "Availability controls need improvement. Ensure proper monitoring and error handling.",
+    "Processing integrity controls missing. Implement audit trails and data validation."
   ],
   "environment": {
     "baseUrl": "http://localhost:3000",
-    "available": false,
-    "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/\nCall log:\n  - navigating to \"http://localhost:3000/\", waiting until \"domcontentloaded\"\n"
+    "available": true,
+    "error": null
   },
   "summary": {
-    "totalControls": 0,
-    "passedControls": 0,
-    "failedControls": 0,
-    "violations": 1,
-    "environmentStatus": "unavailable"
+    "totalControls": 11,
+    "passedControls": 4,
+    "failedControls": 7,
+    "violations": 4,
+    "environmentStatus": "available"
   }
 }

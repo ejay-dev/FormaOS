@@ -9,6 +9,7 @@ import {
   RATE_LIMITS,
 
 } from '@/lib/security/rate-limiter';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('/api/trust-packet/generate');
 
@@ -60,6 +61,9 @@ async function getMembershipOrganization(
  * Reduces enterprise sales friction by enabling self-service due diligence.
  */
 export async function POST(request: NextRequest) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   try {
     // Rate limit trust packet generation (5 req / 10 min per IP)
     const identifier = await getClientIdentifier();

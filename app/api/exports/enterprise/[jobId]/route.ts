@@ -12,6 +12,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { exportLogger } from '@/lib/observability/structured-logger';
 import { timingSafeEqual } from 'crypto';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { getSupabaseUrl } from '@/lib/supabase/env';
 
 export async function GET(
   request: NextRequest,
@@ -115,7 +116,28 @@ export async function GET(
     }
 
     const fileUrl = (legacy as { file_url?: string } | null)?.file_url as string | null | undefined;
-    if (fileUrl && typeof fileUrl === 'string' && fileUrl.startsWith('http')) {
+    if (fileUrl && typeof fileUrl === 'string') {
+      // SEC-4: Validate redirect URL against trusted Supabase storage domain
+      const supabaseUrl = getSupabaseUrl();
+      let parsedUrl: URL;
+      try {
+        parsedUrl = new URL(fileUrl);
+      } catch {
+        return NextResponse.json({ error: 'Invalid export file URL' }, { status: 500 });
+      }
+      const trustedHost = supabaseUrl ? new URL(supabaseUrl).hostname : null;
+      if (
+        !trustedHost ||
+        (parsedUrl.hostname !== trustedHost &&
+          !parsedUrl.hostname.endsWith('.supabase.co') &&
+          !parsedUrl.hostname.endsWith('.supabase.in'))
+      ) {
+        exportLogger.error('export_redirect_blocked', new Error('Untrusted redirect domain'), {
+          jobId,
+          domain: parsedUrl.hostname,
+        });
+        return NextResponse.json({ error: 'Export file URL not trusted' }, { status: 500 });
+      }
       return NextResponse.redirect(fileUrl);
     }
 

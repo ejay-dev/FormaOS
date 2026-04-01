@@ -4,10 +4,14 @@ import { resolvePlanKey } from '@/lib/plans';
 import { ensureSubscription } from '@/lib/billing/subscriptions';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('/api/onboarding/select-plan');
 
 export async function POST(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   const rlResult = await rateLimitApi(request);
   if (!rlResult.success) {
     return NextResponse.json(

@@ -5,6 +5,7 @@ import {
   listRetentionExecutions,
   listRetentionPolicies,
 } from '@/lib/data-governance/retention';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 export const runtime = 'nodejs';
 
@@ -26,6 +27,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   try {
     const body = (await request.json()) as Record<string, unknown>;
     const context = await requireOrgAdminContext((body.orgId as string | undefined) ?? null);

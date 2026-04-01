@@ -12,10 +12,14 @@ import {
   RATE_LIMITS,
 } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('/api/compliance/exports/create');
 
 export async function POST(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   const userId = await getUserIdentifier();
   const identifier = userId ?? (await getClientIdentifier());
   const rl = await checkRateLimit(RATE_LIMITS.EXPORT, identifier, userId);

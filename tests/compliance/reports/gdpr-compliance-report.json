@@ -1,24 +1,104 @@
 {
-  "timestamp": "2026-03-28T05:23:42.780Z",
+  "timestamp": "2026-04-01T02:14:55.501Z",
   "compliance": {
-    "dataProtection": [],
-    "userRights": [],
-    "consent": [],
+    "dataProtection": [
+      {
+        "name": "Privacy Policy Accessibility",
+        "passed": true,
+        "details": "Privacy policy must be easily accessible"
+      },
+      {
+        "name": "Data Processing Disclosure",
+        "passed": false,
+        "details": "Must disclose data processing activities"
+      },
+      {
+        "name": "Data Controller Information",
+        "passed": false,
+        "details": "Must identify data controller"
+      },
+      {
+        "name": "Legal Basis Declaration",
+        "passed": false,
+        "details": "Must declare legal basis for processing"
+      }
+    ],
+    "userRights": [
+      {
+        "name": "Data Access Request Process",
+        "passed": false,
+        "details": "Users must be able to access their personal data"
+      },
+      {
+        "name": "Data Deletion Process",
+        "passed": false,
+        "details": "Users must be able to delete their data"
+      },
+      {
+        "name": "Data Portability",
+        "passed": false,
+        "details": "Must provide data portability options"
+      },
+      {
+        "name": "Data Rectification",
+        "passed": true,
+        "details": "Users must be able to update their information"
+      }
+    ],
+    "consent": [
+      {
+        "name": "Cookie Consent Banner",
+        "passed": false,
+        "details": "Must display cookie consent banner"
+      },
+      {
+        "name": "Granular Consent Options",
+        "passed": false,
+        "details": "Must provide granular consent options"
+      },
+      {
+        "name": "Consent Withdrawal",
+        "passed": false,
+        "details": "Must allow consent withdrawal"
+      },
+      {
+        "name": "Marketing Consent Separate",
+        "passed": false,
+        "details": "Marketing consent must be separate and optional"
+      }
+    ],
     "security": []
   },
   "violations": [
     {
-      "category": "Environment",
-      "test": "Application Availability",
-      "error": "Unable to reach http://localhost:3000: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/\nCall log:\n  - navigating to \"http://localhost:3000/\", waiting until \"domcontentloaded\"\n"
+      "category": "Security",
+      "test": "HTTPS Enforcement",
+      "error": "page.goto: net::ERR_SSL_PROTOCOL_ERROR at https://localhost:3000/\nCall log:\n  - navigating to \"https://localhost:3000/\", waiting until \"load\"\n"
+    },
+    {
+      "category": "Security",
+      "test": "Secure Authentication",
+      "error": "page.goto: Navigation to \"http://localhost:3000/login\" is interrupted by another navigation to \"chrome-error://chromewebdata/\"\nCall log:\n  - navigating to \"http://localhost:3000/login\", waiting until \"load\"\n"
+    },
+    {
+      "category": "Security",
+      "test": "Session Security",
+      "error": "page.goto: Navigation to \"http://localhost:3000/\" is interrupted by another navigation to \"http://localhost:3000/login\"\nCall log:\n  - navigating to \"http://localhost:3000/\", waiting until \"load\"\n"
+    },
+    {
+      "category": "Security",
+      "test": "Data Breach Notification Process",
+      "error": "page.goto: Navigation to \"http://localhost:3000/privacy\" is interrupted by another navigation to \"http://localhost:3000/\"\nCall log:\n  - navigating to \"http://localhost:3000/privacy\", waiting until \"load\"\n"
     }
   ],
   "recommendations": [
-    "Start the app at http://localhost:3000 before running GDPR compliance tests."
+    "10 compliance tests failed. Review and implement missing requirements.",
+    "4 technical violations found. Address these for full compliance.",
+    "Implement proper consent mechanisms with granular options."
   ],
   "environment": {
     "baseUrl": "http://localhost:3000",
-    "available": false,
-    "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/\nCall log:\n  - navigating to \"http://localhost:3000/\", waiting until \"domcontentloaded\"\n"
+    "available": true,
+    "error": null
   }
 }
