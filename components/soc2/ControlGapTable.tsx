@@ -20,7 +20,7 @@ const STATUS_CONFIG = {
   satisfied: { label: 'Satisfied', color: 'bg-emerald-400/15 text-emerald-300 border-emerald-400/20', icon: ShieldCheck },
   partial: { label: 'Partial', color: 'bg-amber-400/15 text-amber-300 border-amber-400/20', icon: ShieldAlert },
   missing: { label: 'Missing', color: 'bg-rose-400/15 text-rose-300 border-rose-400/20', icon: ShieldX },
-  not_applicable: { label: 'N/A', color: 'bg-slate-400/15 text-slate-400 border-slate-400/20', icon: ShieldCheck },
+  not_applicable: { label: 'N/A', color: 'bg-slate-400/15 text-muted-foreground border-slate-400/20', icon: ShieldCheck },
 } as const;
 
 const DOMAINS = ['Security', 'Availability', 'Confidentiality', 'Processing Integrity', 'Privacy'];
@@ -38,14 +38,14 @@ export function ControlGapTable({ controls }: ControlGapTableProps) {
   });
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+    <div className="rounded-2xl border border-glass-border bg-glass-subtle p-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h3 className="text-lg font-semibold text-slate-100">Control Status</h3>
+        <h3 className="text-lg font-semibold text-foreground">Control Status</h3>
         <div className="flex gap-2">
           <select
             value={domainFilter}
             onChange={(e) => setDomainFilter(e.target.value)}
-            className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+            className="rounded-lg border border-glass-border bg-glass-subtle px-3 py-1.5 text-xs text-foreground/70 focus:outline-none focus:ring-1 focus:ring-cyan-500"
           >
             <option value="all">All Domains</option>
             {DOMAINS.map((d) => (
@@ -55,7 +55,7 @@ export function ControlGapTable({ controls }: ControlGapTableProps) {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+            className="rounded-lg border border-glass-border bg-glass-subtle px-3 py-1.5 text-xs text-foreground/70 focus:outline-none focus:ring-1 focus:ring-cyan-500"
           >
             {STATUSES.map((s) => (
               <option key={s} value={s}>{s === 'all' ? 'All Statuses' : STATUS_CONFIG[s as keyof typeof STATUS_CONFIG].label}</option>
@@ -66,7 +66,7 @@ export function ControlGapTable({ controls }: ControlGapTableProps) {
 
       <div className="mt-4 overflow-x-auto">
         <table className="w-full min-w-[700px] text-sm">
-          <thead className="border-b border-white/10 text-slate-400">
+          <thead className="border-b border-glass-border text-muted-foreground">
             <tr>
               <th className="px-3 py-2 text-left w-8" />
               <th className="px-3 py-2 text-left">Control</th>
@@ -99,7 +99,7 @@ export function ControlGapTable({ controls }: ControlGapTableProps) {
       </div>
 
       {filtered.length === 0 && (
-        <div className="py-8 text-center text-sm text-slate-500">
+        <div className="py-8 text-center text-sm text-muted-foreground/60">
           No controls match the selected filters.
         </div>
       )}
@@ -123,21 +123,21 @@ function ControlRow({
   return (
     <>
       <tr
-        className="cursor-pointer hover:bg-white/5 transition-colors"
+        className="cursor-pointer hover:bg-glass-subtle transition-colors"
         onClick={onToggle}
       >
         <td className="px-3 py-3">
           {isExpanded ? (
-            <ChevronDown className="h-4 w-4 text-slate-500" />
+            <ChevronDown className="h-4 w-4 text-muted-foreground/60" />
           ) : (
-            <ChevronRight className="h-4 w-4 text-slate-500" />
+            <ChevronRight className="h-4 w-4 text-muted-foreground/60" />
           )}
         </td>
         <td className="px-3 py-3">
-          <div className="font-semibold text-slate-100">{control.controlCode}</div>
-          <div className="text-xs text-slate-400 mt-0.5">{control.title}</div>
+          <div className="font-semibold text-foreground">{control.controlCode}</div>
+          <div className="text-xs text-muted-foreground mt-0.5">{control.title}</div>
         </td>
-        <td className="px-3 py-3 text-xs text-slate-400">{control.domain}</td>
+        <td className="px-3 py-3 text-xs text-muted-foreground">{control.domain}</td>
         <td className="px-3 py-3">
           <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${cfg.color}`}>
             <Icon className="h-3 w-3" />
@@ -145,16 +145,16 @@ function ControlRow({
           </span>
         </td>
         <td className="px-3 py-3 text-center">
-          <span className="text-sm font-semibold text-slate-200 tabular-nums">{Math.round(control.score)}%</span>
+          <span className="text-sm font-semibold text-foreground/90 tabular-nums">{Math.round(control.score)}%</span>
         </td>
         <td className="px-3 py-3 text-center">
-          <span className="inline-flex items-center gap-1 text-xs text-slate-400">
+          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
             <FileText className="h-3 w-3" />
             {control.evidenceCount}
           </span>
         </td>
         <td className="px-3 py-3 text-center">
-          <span className="inline-flex items-center gap-1 text-xs text-slate-400">
+          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
             <CheckSquare className="h-3 w-3" />
             {control.completedTaskCount}/{control.taskCount}
           </span>
@@ -175,7 +175,7 @@ function ControlRow({
                   <div className="text-xs font-semibold text-rose-300 uppercase tracking-wider mb-2">Gaps</div>
                   <ul className="space-y-1">
                     {control.gaps.map((gap, i) => (
-                      <li key={i} className="flex items-start gap-2 text-xs text-slate-400">
+                      <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
                         <span className="mt-1 h-1.5 w-1.5 rounded-full bg-rose-400 shrink-0" />
                         {gap}
                       </li>
@@ -185,14 +185,14 @@ function ControlRow({
               )}
               <div>
                 <div className="text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-2">Implementation Guidance</div>
-                <p className="text-xs text-slate-400 leading-relaxed">{control.implementationGuidance}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">{control.implementationGuidance}</p>
               </div>
               {control.suggestedEvidenceTypes.length > 0 && (
                 <div className="md:col-span-2">
-                  <div className="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Suggested Evidence</div>
+                  <div className="text-xs font-semibold text-foreground/70 uppercase tracking-wider mb-2">Suggested Evidence</div>
                   <div className="flex flex-wrap gap-2">
                     {control.suggestedEvidenceTypes.map((et) => (
-                      <span key={et} className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-slate-300">{et}</span>
+                      <span key={et} className="rounded-full border border-glass-border bg-glass-subtle px-2.5 py-1 text-xs text-foreground/70">{et}</span>
                     ))}
                   </div>
                 </div>

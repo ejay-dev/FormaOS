@@ -70,22 +70,22 @@ export function EvidencePackExport({ frameworkSlug, frameworkName }: Props) {
   }
 
   return (
-    <div className="rounded-xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] to-[hsl(var(--panel-2))] p-6">
+    <div className="rounded-xl border border-glass-border bg-gradient-to-br from-[hsl(var(--card))] to-[hsl(var(--panel-2))] p-6">
       <div className="flex items-start gap-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
             <FileArchive className="h-5 w-5 text-sky-400" />
-            <h3 className="text-lg font-semibold text-slate-100">Evidence Pack Export</h3>
+            <h3 className="text-lg font-semibold text-foreground">Evidence Pack Export</h3>
           </div>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted-foreground">
             Generate audit-ready evidence bundle for {frameworkName}
           </p>
 
           <div className="mt-4 space-y-3">
-            <div className="text-xs text-slate-400">
+            <div className="text-xs text-muted-foreground">
               Export includes:
             </div>
-            <ul className="text-xs text-slate-300 space-y-1 ml-4">
+            <ul className="text-xs text-foreground/70 space-y-1 ml-4">
               <li>• Controls list with status</li>
               <li>• Evidence attachments</li>
               <li>• Task audit trail</li>
@@ -95,13 +95,13 @@ export function EvidencePackExport({ frameworkSlug, frameworkName }: Props) {
               <li>• CSV summary for auditors</li>
             </ul>
 
-            <label className="flex items-center gap-2 text-sm text-slate-300">
+            <label className="flex items-center gap-2 text-sm text-foreground/70">
               <input
                 type="checkbox"
                 checked={passwordProtected}
                 onChange={(e) => setPasswordProtected(e.target.checked)}
                 disabled={exporting}
-                className="rounded border-white/20"
+                className="rounded border-glass-border-strong"
               />
               <Lock className="h-4 w-4" />
               Password protect export
@@ -110,11 +110,11 @@ export function EvidencePackExport({ frameworkSlug, frameworkName }: Props) {
 
           {exporting && (
             <div className="mt-4 space-y-2">
-              <div className="flex items-center gap-2 text-sm text-slate-300">
+              <div className="flex items-center gap-2 text-sm text-foreground/70">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 <span>Preparing export... {progress}%</span>
               </div>
-              <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-2 bg-glass-strong rounded-full overflow-hidden">
                 <div
                   className="h-full bg-sky-500 transition-all duration-300"
                   style={{ width: `${progress}%` }}

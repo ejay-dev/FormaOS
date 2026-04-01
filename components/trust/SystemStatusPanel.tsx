@@ -135,12 +135,12 @@ export function SystemStatusPanel() {
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
+      <div className="rounded-2xl border border-glass-border bg-glass-subtle p-6 backdrop-blur-sm">
         <div className="animate-pulse space-y-4">
-          <div className="h-4 w-32 rounded bg-white/10" />
+          <div className="h-4 w-32 rounded bg-glass-strong" />
           <div className="space-y-2">
-            <div className="h-3 w-full rounded bg-white/10" />
-            <div className="h-3 w-3/4 rounded bg-white/10" />
+            <div className="h-3 w-full rounded bg-glass-strong" />
+            <div className="h-3 w-3/4 rounded bg-glass-strong" />
           </div>
         </div>
       </div>
@@ -148,7 +148,7 @@ export function SystemStatusPanel() {
   }
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-slate-900/50 to-slate-800/50 p-6 backdrop-blur-sm">
+    <div className="rounded-2xl border border-glass-border bg-gradient-to-br from-slate-900/50 to-slate-800/50 p-6 backdrop-blur-sm">
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -161,7 +161,7 @@ export function SystemStatusPanel() {
       {/* Status Grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {/* Automation Status */}
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+        <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
           <div className="mb-2 flex items-center gap-2">
             <Zap className={`h-4 w-4 ${status.automationRunning ? 'text-emerald-400' : 'text-gray-500'}`} />
             <span className="text-xs font-medium text-gray-400">Automation</span>
@@ -172,7 +172,7 @@ export function SystemStatusPanel() {
         </div>
 
         {/* Last Scan */}
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+        <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
           <div className="mb-2 flex items-center gap-2">
             <Clock className="h-4 w-4 text-cyan-400" />
             <span className="text-xs font-medium text-gray-400">Last Scan</span>
@@ -181,7 +181,7 @@ export function SystemStatusPanel() {
         </div>
 
         {/* System Status */}
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+        <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
           <div className="mb-2 flex items-center gap-2">
             <Activity className="h-4 w-4 text-emerald-400" />
             <span className="text-xs font-medium text-gray-400">Status</span>
@@ -190,7 +190,7 @@ export function SystemStatusPanel() {
         </div>
 
         {/* Security Status */}
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+        <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
           <div className="mb-2 flex items-center gap-2">
             <Shield className="h-4 w-4 text-emerald-400" />
             <span className="text-xs font-medium text-gray-400">Security</span>
@@ -200,7 +200,7 @@ export function SystemStatusPanel() {
       </div>
 
       {/* Trust Badges */}
-      <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-white/10 pt-4">
+      <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-glass-border pt-4">
         <div className="flex items-center gap-2 text-xs text-gray-400">
           <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
           <span>Region-aware hosting</span>

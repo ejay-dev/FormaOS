@@ -119,8 +119,8 @@ export function NotificationItem({
   const touchStartX = useRef<number | null>(null);
   const meta = TYPE_META[notification.type] ?? {
     icon: BellRing,
-    tone: 'text-slate-200',
-    badge: 'bg-white/10 border-white/10',
+    tone: 'text-foreground/90',
+    badge: 'bg-glass-strong border-white/10',
   };
   const Icon = meta.icon;
 
@@ -149,7 +149,7 @@ export function NotificationItem({
       className={cn(
         'group rounded-2xl border px-4 py-3 transition-all focus:outline-none focus:ring-2 focus:ring-sky-400/40',
         notification.read_at
-          ? 'border-white/10 bg-white/[0.04]'
+          ? 'border-glass-border bg-white/[0.04]'
           : 'border-sky-400/25 bg-sky-500/10 shadow-[0_0_0_1px_rgba(56,189,248,0.08)]',
       )}
     >
@@ -167,23 +167,23 @@ export function NotificationItem({
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="truncate text-sm font-semibold text-slate-100">
+                <h3 className="truncate text-sm font-semibold text-foreground">
                   {notification.title}
                 </h3>
                 {!notification.read_at && (
                   <span className="h-2 w-2 shrink-0 rounded-full bg-sky-300" />
                 )}
               </div>
-              <p className="mt-1 line-clamp-2 text-sm leading-6 text-slate-400">
+              <p className="mt-1 line-clamp-2 text-sm leading-6 text-muted-foreground">
                 {notification.body}
               </p>
             </div>
 
-            <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5" />
+            <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5" />
           </div>
 
           <div className="mt-3 flex items-center justify-between gap-3">
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-muted-foreground/60">
               {formatTimestamp(notification.created_at)}
             </p>
 
@@ -195,7 +195,7 @@ export function NotificationItem({
                     event.stopPropagation();
                     onMarkRead(notification.id);
                   }}
-                  className="rounded-full border border-white/10 p-2 text-slate-300 transition hover:border-sky-400/30 hover:bg-sky-500/10 hover:text-sky-100"
+                  className="rounded-full border border-glass-border p-2 text-foreground/70 transition hover:border-sky-400/30 hover:bg-sky-500/10 hover:text-sky-100"
                   aria-label="Mark notification as read"
                 >
                   <Check className="h-3.5 w-3.5" />
@@ -208,7 +208,7 @@ export function NotificationItem({
                   event.stopPropagation();
                   onArchive(notification.id);
                 }}
-                className="rounded-full border border-white/10 p-2 text-slate-300 transition hover:border-rose-400/30 hover:bg-rose-500/10 hover:text-rose-100"
+                className="rounded-full border border-glass-border p-2 text-foreground/70 transition hover:border-rose-400/30 hover:bg-rose-500/10 hover:text-rose-100"
                 aria-label="Archive notification"
               >
                 <X className="h-3.5 w-3.5" />

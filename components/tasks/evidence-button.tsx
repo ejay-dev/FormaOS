@@ -116,7 +116,7 @@ export function EvidenceButton({ taskId, taskTitle }: { taskId: string, taskTitl
           <span className="text-xs font-bold text-violet-200">
             {uploadProgress < 100 ? 'Uploading...' : 'Processing...'}
           </span>
-          <span className="text-xs text-slate-400">{uploadProgress}%</span>
+          <span className="text-xs text-muted-foreground">{uploadProgress}%</span>
         </div>
       </div>
     )

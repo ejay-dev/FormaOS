@@ -50,10 +50,10 @@ export function ComplianceScoreHistory({ orgId, frameworkSlug, days = 30 }: Prop
 
   if (loading) {
     return (
-      <div className="rounded-xl border border-white/10 bg-white/5 p-6">
+      <div className="rounded-xl border border-glass-border bg-glass-subtle p-6">
         <div className="animate-pulse space-y-4">
-          <div className="h-4 bg-white/10 rounded w-1/4" />
-          <div className="h-32 bg-white/10 rounded" />
+          <div className="h-4 bg-glass-strong rounded w-1/4" />
+          <div className="h-32 bg-glass-strong rounded" />
         </div>
       </div>
     )
@@ -81,9 +81,9 @@ export function ComplianceScoreHistory({ orgId, frameworkSlug, days = 30 }: Prop
       )}
 
       {/* Score History Card */}
-      <div className="rounded-xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] to-[hsl(var(--panel-2))] p-6">
+      <div className="rounded-xl border border-glass-border bg-gradient-to-br from-[hsl(var(--card))] to-[hsl(var(--panel-2))] p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-slate-100">Compliance Score History</h3>
+          <h3 className="text-lg font-semibold text-foreground">Compliance Score History</h3>
           <div className="flex gap-2">
             {[30, 90, 365].map((period) => (
               <button
@@ -92,7 +92,7 @@ export function ComplianceScoreHistory({ orgId, frameworkSlug, days = 30 }: Prop
                 className={`px-3 py-1 text-xs rounded-lg transition-colors ${
                   selectedPeriod === period
                     ? 'bg-sky-500/20 text-sky-300 border border-sky-400/30'
-                    : 'bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10'
+                    : 'bg-glass-subtle text-muted-foreground border border-glass-border hover:bg-glass-strong'
                 }`}
               >
                 {period}d
@@ -103,7 +103,7 @@ export function ComplianceScoreHistory({ orgId, frameworkSlug, days = 30 }: Prop
 
         {/* Current Score with Trend */}
         <div className="flex items-baseline gap-3 mb-6">
-          <div className="text-4xl font-black text-slate-100">{currentScore}%</div>
+          <div className="text-4xl font-black text-foreground">{currentScore}%</div>
           {scoreTrend !== 0 && (
             <div className={`flex items-center gap-1 text-sm ${scoreTrend > 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
               {scoreTrend > 0 ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
@@ -133,7 +133,7 @@ export function ComplianceScoreHistory({ orgId, frameworkSlug, days = 30 }: Prop
         </div>
 
         {/* Date Range */}
-        <div className="flex justify-between text-xs text-slate-400 mt-2">
+        <div className="flex justify-between text-xs text-muted-foreground mt-2">
           <span>{snapshots[0]?.snapshot_date || '-'}</span>
           <span>{snapshots[snapshots.length - 1]?.snapshot_date || '-'}</span>
         </div>
@@ -141,8 +141,8 @@ export function ComplianceScoreHistory({ orgId, frameworkSlug, days = 30 }: Prop
 
       {/* Improvement Metric */}
       {snapshots.length >= 2 && (
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-          <div className="text-sm text-slate-400">Improvement Since Last Period</div>
+        <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+          <div className="text-sm text-muted-foreground">Improvement Since Last Period</div>
           <div className={`text-2xl font-bold mt-1 ${scoreTrend >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
             {scoreTrend >= 0 ? '+' : ''}{scoreTrend}%
           </div>

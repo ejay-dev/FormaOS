@@ -46,14 +46,14 @@ const VARIANT_STYLES = {
     error: "bg-rose-500 text-white shadow-[0_8px_24px_rgba(244,63,94,0.4)]",
   },
   secondary: {
-    idle: "bg-white/5 border border-white/20 text-slate-100 hover:bg-white/10 hover:border-white/30",
-    loading: "bg-white/5 border border-white/20 text-slate-300",
+    idle: "bg-glass-subtle border border-glass-border-strong text-foreground hover:bg-glass-strong hover:border-white/30",
+    loading: "bg-glass-subtle border border-glass-border-strong text-foreground/70",
     success: "bg-emerald-500/20 border border-emerald-400/40 text-emerald-300",
     error: "bg-rose-500/20 border border-rose-400/40 text-rose-300",
   },
   ghost: {
-    idle: "bg-transparent text-slate-300 hover:bg-white/5 hover:text-slate-100",
-    loading: "bg-white/5 text-slate-400",
+    idle: "bg-transparent text-foreground/70 hover:bg-glass-subtle hover:text-foreground",
+    loading: "bg-glass-subtle text-muted-foreground",
     success: "bg-emerald-500/10 text-emerald-300",
     error: "bg-rose-500/10 text-rose-300",
   },
@@ -169,7 +169,7 @@ export function ActionButton({
       {/* Ripple effect on click */}
       {state === "loading" && (
         <span className="absolute inset-0 rounded-inherit overflow-hidden">
-          <span className="absolute inset-0 animate-pulse bg-white/10" />
+          <span className="absolute inset-0 animate-pulse bg-glass-strong" />
         </span>
       )}
     </button>

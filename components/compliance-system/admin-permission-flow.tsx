@@ -129,7 +129,7 @@ function RoleCard({
         'group relative p-4 rounded-2xl border-2 transition-all duration-300 text-left',
         isCurrentRole
           ? `border-${config.color}-400/50 bg-gradient-to-br ${config.gradient}`
-          : 'border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10',
+          : 'border-glass-border bg-glass-subtle hover:border-glass-border-strong hover:bg-glass-strong',
         !isCurrentRole &&
           !isChanging &&
           'cursor-pointer hover:scale-[1.02] active:scale-[0.98]',
@@ -168,14 +168,14 @@ function RoleCard({
           >
             {config.name}
           </h4>
-          <p className="text-xs text-slate-400 mt-0.5">{config.description}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{config.description}</p>
           <p className={cn('text-xs mt-2', `text-${config.color}-400`)}>
             {permissionCount} permissions
           </p>
         </div>
 
         {!isCurrentRole && (
-          <ChevronRight className="h-5 w-5 text-slate-500 group-hover:text-white transition-colors" />
+          <ChevronRight className="h-5 w-5 text-muted-foreground/60 group-hover:text-white transition-colors" />
         )}
       </div>
     </button>
@@ -221,7 +221,7 @@ function PermissionMatrix({
               !isGaining &&
                 !isLosing &&
                 (hasCurrent
-                  ? 'border-white/10 bg-white/5'
+                  ? 'border-glass-border bg-white/5'
                   : 'border-slate-700/50 bg-slate-800/50'),
             )}
           >
@@ -235,19 +235,19 @@ function PermissionMatrix({
                 {hasCurrent ? (
                   <CheckCircle2 className="h-4 w-4 text-emerald-400" />
                 ) : (
-                  <Lock className="h-4 w-4 text-slate-500" />
+                  <Lock className="h-4 w-4 text-muted-foreground/60" />
                 )}
               </div>
               <div>
                 <p
                   className={cn(
                     'text-sm font-medium',
-                    hasCurrent ? 'text-white' : 'text-slate-500',
+                    hasCurrent ? 'text-white' : 'text-muted-foreground/60',
                   )}
                 >
                   {label.name}
                 </p>
-                <p className="text-xs text-slate-500">{label.description}</p>
+                <p className="text-xs text-muted-foreground/60">{label.description}</p>
               </div>
             </div>
 
@@ -362,7 +362,7 @@ export function AdminPermissionFlow({
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-lg font-bold text-white">Role Management</h3>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-muted-foreground">
               Select a role to view or change permissions
             </p>
           </div>
@@ -389,7 +389,7 @@ export function AdminPermissionFlow({
 
       {/* Permission Matrix */}
       <div>
-        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
+        <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground/60 mb-3">
           {selectedRole
             ? `Compare: ${ROLE_CONFIG[currentRole].name} → ${ROLE_CONFIG[selectedRole].name}`
             : 'Current Permissions'}
@@ -403,7 +403,7 @@ export function AdminPermissionFlow({
       {/* Confirmation Modal */}
       {showConfirm && selectedRole && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/80 backdrop-blur-sm animate-in fade-in duration-200 p-4">
-          <div className="bg-slate-800 border border-white/10 rounded-t-3xl sm:rounded-3xl p-6 max-w-md w-full mx-auto animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto">
+          <div className="bg-slate-800 border border-glass-border rounded-t-3xl sm:rounded-3xl p-6 max-w-md w-full mx-auto animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center gap-3 mb-4">
               <div className="h-12 w-12 rounded-xl bg-violet-500/20 flex items-center justify-center">
                 <Zap className="h-6 w-6 text-violet-400" />
@@ -412,23 +412,23 @@ export function AdminPermissionFlow({
                 <h3 className="text-lg font-bold text-white">
                   Confirm Role Change
                 </h3>
-                <p className="text-sm text-slate-400">
+                <p className="text-sm text-muted-foreground">
                   This will update permissions
                 </p>
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-white/5 border border-white/10 mb-6">
+            <div className="p-4 rounded-xl bg-glass-subtle border border-glass-border mb-6">
               <div className="flex items-center gap-3">
                 <div className="text-center flex-1">
-                  <p className="text-xs text-slate-500 mb-1">From</p>
+                  <p className="text-xs text-muted-foreground/60 mb-1">From</p>
                   <p className="font-bold text-white">
                     {ROLE_CONFIG[currentRole].name}
                   </p>
                 </div>
-                <ChevronRight className="h-5 w-5 text-slate-500" />
+                <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
                 <div className="text-center flex-1">
-                  <p className="text-xs text-slate-500 mb-1">To</p>
+                  <p className="text-xs text-muted-foreground/60 mb-1">To</p>
                   <p className="font-bold text-violet-300">
                     {ROLE_CONFIG[selectedRole].name}
                   </p>
@@ -439,7 +439,7 @@ export function AdminPermissionFlow({
             <div className="flex gap-3">
               <button
                 onClick={handleCancelChange}
-                className="flex-1 py-3 rounded-xl border border-white/10 text-white font-medium hover:bg-white/5 transition-colors"
+                className="flex-1 py-3 rounded-xl border border-glass-border text-white font-medium hover:bg-glass-subtle transition-colors"
               >
                 Cancel
               </button>
@@ -469,13 +469,13 @@ export function AdminPermissionFlow({
             <Shield className="h-5 w-5 text-violet-400" />
           </div>
           <div>
-            <p className="text-sm text-slate-400">Current Role</p>
+            <p className="text-sm text-muted-foreground">Current Role</p>
             <p className="font-bold text-white">
               {ROLE_CONFIG[currentRole].name}
             </p>
           </div>
           <div className="ml-auto text-right">
-            <p className="text-sm text-slate-400">Permissions</p>
+            <p className="text-sm text-muted-foreground">Permissions</p>
             <p className="font-bold text-emerald-400">
               {
                 Object.values(ROLE_PERMISSIONS[currentRole]).filter(Boolean)

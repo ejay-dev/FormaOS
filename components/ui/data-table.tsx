@@ -12,6 +12,8 @@ import {
 } from "@tanstack/react-table";
 import { useState } from "react";
 import { Search } from "lucide-react";
+import Button from "./button";
+import { Input } from "./input";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -48,12 +50,12 @@ export function DataTable<TData, TValue>({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         {searchKey && (
           <div className="relative w-full sm:w-64">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-slate-400" />
-            <input
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+            <Input
               placeholder="Search..."
               value={globalFilter ?? ""}
               onChange={(event) => setGlobalFilter(event.target.value)}
-              className="pl-8 h-9 w-full rounded-md border border-white/10 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950"
+              className="pl-8"
             />
           </div>
         )}
@@ -63,12 +65,12 @@ export function DataTable<TData, TValue>({
         <div className="rounded-md border border-card-foreground/8 bg-card p-0 shadow-sm overflow-hidden">
           <div className="w-full overflow-x-auto overscroll-x-contain">
             <table className="min-w-[560px] sm:min-w-[640px] w-full text-sm text-left">
-            <thead className="bg-card text-muted font-medium">
+            <thead className="bg-card text-muted-foreground font-medium">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b border-card-foreground/8">
                 {headerGroup.headers.map((header) => {
                   return (
-                    <th key={header.id} className="h-10 px-4 text-left align-middle font-medium text-muted">
+                    <th key={header.id} className="h-10 px-4 text-left align-middle font-medium text-muted-foreground">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -97,7 +99,7 @@ export function DataTable<TData, TValue>({
               ))
             ) : (
               <tr>
-                <td colSpan={columns.length} className="h-24 text-center text-muted">
+                <td colSpan={columns.length} className="h-24 text-center text-muted-foreground">
                   No results found.
                 </td>
               </tr>
@@ -109,20 +111,22 @@ export function DataTable<TData, TValue>({
 
       {/* Pagination */}
       <div className="flex flex-wrap items-center justify-end gap-2 py-4">
-        <button
-          className="px-3 py-1 border rounded text-sm disabled:opacity-50 w-full sm:w-auto"
+        <Button
+          variant="outline"
+          size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
           Previous
-        </button>
-        <button
-          className="px-3 py-1 border rounded text-sm disabled:opacity-50 w-full sm:w-auto"
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
           Next
-        </button>
+        </Button>
       </div>
     </div>
   );

@@ -49,11 +49,11 @@ export function PiiDashboard({
   };
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 space-y-5">
+    <section className="rounded-3xl border border-glass-border bg-glass-subtle p-6 space-y-5">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-black text-slate-100">PII Inventory</h2>
-          <p className="text-sm text-slate-400">
+          <h2 className="text-xl font-black text-foreground">PII Inventory</h2>
+          <p className="text-sm text-muted-foreground">
             Scan sampled records, classify exposure hotspots, and export inventory evidence.
           </p>
         </div>
@@ -69,9 +69,9 @@ export function PiiDashboard({
 
       <div className="grid gap-4 md:grid-cols-4">
         {Object.entries(initialClassificationReport.breakdown ?? {}).map(([key, value]) => (
-          <div key={key} className="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
-            <div className="text-xs uppercase tracking-[0.2em] text-slate-500">{key}</div>
-            <div className="mt-2 text-2xl font-black text-slate-100">{value}</div>
+          <div key={key} className="rounded-2xl border border-glass-border bg-slate-950/50 p-4">
+            <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground/60">{key}</div>
+            <div className="mt-2 text-2xl font-black text-foreground">{value}</div>
           </div>
         ))}
       </div>
@@ -81,15 +81,15 @@ export function PiiDashboard({
 
       <div className="grid gap-4 lg:grid-cols-2">
         {scans.map((scan) => (
-          <div key={scan.id} className="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
+          <div key={scan.id} className="rounded-2xl border border-glass-border bg-slate-950/50 p-4">
             <div className="flex items-center justify-between gap-3">
-              <div className="text-sm font-semibold text-slate-100">{scan.table_name}</div>
-              <div className="text-xs text-slate-400">{new Date(scan.created_at).toLocaleString()}</div>
+              <div className="text-sm font-semibold text-foreground">{scan.table_name}</div>
+              <div className="text-xs text-muted-foreground">{new Date(scan.created_at).toLocaleString()}</div>
             </div>
-            <div className="mt-2 text-xs text-slate-400">
+            <div className="mt-2 text-xs text-muted-foreground">
               Sample size {scan.sample_size} • Findings {(scan.findings ?? []).length}
             </div>
-            <pre className="mt-3 whitespace-pre-wrap rounded-xl bg-slate-950 p-3 text-[11px] text-slate-300">
+            <pre className="mt-3 whitespace-pre-wrap rounded-xl bg-slate-950 p-3 text-[11px] text-foreground/70">
               {JSON.stringify(scan.findings ?? [], null, 2)}
             </pre>
           </div>

@@ -78,21 +78,21 @@ export function CareOperationsScorecard() {
   const { scorecard, alerts, recommendations } = data;
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6">
+    <div className="rounded-2xl border border-glass-border bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-gradient-to-br from-pink-500/20 to-purple-500/20">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-glass-border bg-gradient-to-br from-pink-500/20 to-purple-500/20">
             <Heart className="h-5 w-5 text-pink-400" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-slate-100">Care Operations</h3>
-            <p className="text-xs text-slate-400 capitalize">
+            <h3 className="text-lg font-semibold text-foreground">Care Operations</h3>
+            <p className="text-xs text-muted-foreground capitalize">
               {scorecard.industry.replace('_', ' ')} Industry Metrics
             </p>
           </div>
         </div>
-        <span className="text-xs text-slate-500">
+        <span className="text-xs text-muted-foreground/60">
           Updated {new Date(scorecard.generatedAt).toLocaleTimeString()}
         </span>
       </div>
@@ -104,7 +104,7 @@ export function CareOperationsScorecard() {
             <AlertBanner key={index} alert={alert} />
           ))}
           {alerts.length > 3 && (
-            <p className="text-xs text-slate-500 text-center">
+            <p className="text-xs text-muted-foreground/60 text-center">
               +{alerts.length - 3} more alerts
             </p>
           )}
@@ -227,11 +227,11 @@ export function CareOperationsScorecard() {
 
       {/* Recommendations */}
       {recommendations.length > 0 && (
-        <div className="mt-6 border-t border-white/10 pt-4">
-          <h4 className="text-xs font-bold uppercase text-slate-400 mb-3">Recommendations</h4>
+        <div className="mt-6 border-t border-glass-border pt-4">
+          <h4 className="text-xs font-bold uppercase text-muted-foreground mb-3">Recommendations</h4>
           <ul className="space-y-2">
             {recommendations.map((rec, index) => (
-              <li key={index} className="text-sm text-slate-300 flex items-start gap-2">
+              <li key={index} className="text-sm text-foreground/70 flex items-start gap-2">
                 <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-pink-400 shrink-0" />
                 {rec}
               </li>
@@ -246,17 +246,17 @@ export function CareOperationsScorecard() {
 // Sub-components
 function ScorecardSkeleton() {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-6 animate-pulse">
+    <div className="rounded-2xl border border-glass-border bg-glass-subtle p-6 animate-pulse">
       <div className="flex items-center gap-3 mb-6">
-        <div className="h-10 w-10 rounded-xl bg-white/10" />
+        <div className="h-10 w-10 rounded-xl bg-glass-strong" />
         <div>
-          <div className="h-5 w-32 rounded bg-white/10 mb-1" />
-          <div className="h-3 w-24 rounded bg-white/10" />
+          <div className="h-5 w-32 rounded bg-glass-strong mb-1" />
+          <div className="h-3 w-24 rounded bg-glass-strong" />
         </div>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} className="h-24 rounded-xl bg-white/10" />
+          <div key={i} className="h-24 rounded-xl bg-glass-strong" />
         ))}
       </div>
     </div>
@@ -273,7 +273,7 @@ function AlertBanner({ alert }: { alert: CareScorecardAlert }) {
   return (
     <a
       href={alert.actionUrl}
-      className={`flex items-center gap-3 p-3 rounded-lg border ${colors[alert.type]} hover:bg-white/5 transition-colors`}
+      className={`flex items-center gap-3 p-3 rounded-lg border ${colors[alert.type]} hover:bg-glass-subtle transition-colors`}
     >
       <AlertTriangle className="h-4 w-4 shrink-0" />
       <span className="text-sm flex-1">{alert.message}</span>
@@ -313,7 +313,7 @@ function MetricCard({
   return (
     <div className={`rounded-xl border p-4 ${statusColors[status]}`}>
       <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2 text-xs text-slate-400">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <Icon className="h-4 w-4" />
           {title}
         </div>
@@ -324,8 +324,8 @@ function MetricCard({
           </div>
         )}
       </div>
-      <div className="text-2xl font-bold text-slate-100">{value}</div>
-      <div className="text-xs text-slate-400 mt-1">{details}</div>
+      <div className="text-2xl font-bold text-foreground">{value}</div>
+      <div className="text-xs text-muted-foreground mt-1">{details}</div>
     </div>
   );
 }
@@ -338,8 +338,8 @@ function CredentialList({
   credentials: Credential[];
 }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-      <h4 className="text-xs font-bold uppercase text-slate-400 mb-3">{title}</h4>
+    <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+      <h4 className="text-xs font-bold uppercase text-muted-foreground mb-3">{title}</h4>
       <div className="space-y-2">
         {credentials.map((cred) => (
           <div
@@ -347,8 +347,8 @@ function CredentialList({
             className="flex items-center justify-between p-2 rounded-lg bg-white/5"
           >
             <div>
-              <div className="text-sm text-slate-200">{cred.staffName}</div>
-              <div className="text-xs text-slate-400">{cred.name}</div>
+              <div className="text-sm text-foreground/90">{cred.staffName}</div>
+              <div className="text-xs text-muted-foreground">{cred.name}</div>
             </div>
             <div className="text-right">
               <div
@@ -358,7 +358,7 @@ function CredentialList({
               >
                 {cred.daysUntilExpiry}d
               </div>
-              <div className="text-xs text-slate-500">
+              <div className="text-xs text-muted-foreground/60">
                 <Clock className="h-3 w-3 inline mr-1" />
                 expires
               </div>
@@ -378,8 +378,8 @@ function ReviewList({
   reviews: CarePlanReview[];
 }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-      <h4 className="text-xs font-bold uppercase text-slate-400 mb-3">{title}</h4>
+    <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+      <h4 className="text-xs font-bold uppercase text-muted-foreground mb-3">{title}</h4>
       <div className="space-y-2">
         {reviews.map((review) => (
           <div
@@ -387,8 +387,8 @@ function ReviewList({
             className="flex items-center justify-between p-2 rounded-lg bg-white/5"
           >
             <div>
-              <div className="text-sm text-slate-200">{review.clientName}</div>
-              <div className="text-xs text-slate-400">{review.planTitle}</div>
+              <div className="text-sm text-foreground/90">{review.clientName}</div>
+              <div className="text-xs text-muted-foreground">{review.planTitle}</div>
             </div>
             <div className="text-right">
               <div
@@ -398,7 +398,7 @@ function ReviewList({
               >
                 {review.daysUntilReview}d
               </div>
-              <div className="text-xs text-slate-500">until review</div>
+              <div className="text-xs text-muted-foreground/60">until review</div>
             </div>
           </div>
         ))}

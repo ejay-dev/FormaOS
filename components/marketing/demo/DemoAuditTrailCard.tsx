@@ -24,7 +24,7 @@ const typeConfig: Record<string, { color: string; icon: React.ComponentType<{ cl
   evidence: { color: 'text-blue-400 bg-blue-500/15', icon: Upload },
   task: { color: 'text-emerald-400 bg-emerald-500/15', icon: CheckSquare },
   user: { color: 'text-purple-400 bg-purple-500/15', icon: Users },
-  system: { color: 'text-slate-400 bg-slate-500/15', icon: Settings },
+  system: { color: 'text-muted-foreground bg-slate-500/15', icon: Settings },
   compliance: { color: 'text-amber-400 bg-amber-500/15', icon: Shield },
 };
 
@@ -59,7 +59,7 @@ export default function DemoAuditTrailCard({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-1.5">
             <History className="h-3.5 w-3.5 text-cyan-400" />
-            <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-wider">Audit Trail</span>
+            <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Audit Trail</span>
           </div>
           <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[9px] text-emerald-400 font-medium">
             Immutable
@@ -85,12 +85,12 @@ export default function DemoAuditTrailCard({
                   <Icon className="h-2.5 w-2.5" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="text-[10px] text-slate-300 block truncate">{entry.action}</span>
-                  <span className="text-[9px] text-slate-500 block truncate">{entry.target}</span>
+                  <span className="text-[10px] text-foreground/70 block truncate">{entry.action}</span>
+                  <span className="text-[9px] text-muted-foreground/60 block truncate">{entry.target}</span>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <span className="text-[9px] text-slate-500 block">{entry.user.split(' ')[0]}</span>
-                  <span className="text-[8px] text-slate-600 block">{entry.time}</span>
+                  <span className="text-[9px] text-muted-foreground/60 block">{entry.user.split(' ')[0]}</span>
+                  <span className="text-[8px] text-muted-foreground/40 block">{entry.time}</span>
                 </div>
               </motion.div>
             );
@@ -100,7 +100,7 @@ export default function DemoAuditTrailCard({
         {/* Footer */}
         <div className="flex items-center gap-2 mt-3 pt-2 border-t border-white/[0.04]">
           <Shield className="h-3 w-3 text-emerald-400" />
-          <span className="text-[9px] text-slate-500">Cryptographically timestamped • Tamper-evident</span>
+          <span className="text-[9px] text-muted-foreground/60">Cryptographically timestamped • Tamper-evident</span>
         </div>
       </div>
     </div>

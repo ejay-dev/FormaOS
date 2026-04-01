@@ -107,14 +107,14 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
         data-tour="tasks-header"
       >
         <div>
-          <h1 className="text-3xl font-bold text-slate-100 tracking-tight">Compliance Roadmap</h1>
-          <p className="text-slate-400 mt-1">Execute mandatory controls and link evidence artifacts.</p>
+          <h1 className="text-3xl font-bold text-foreground tracking-tight">Compliance Roadmap</h1>
+          <p className="text-muted-foreground mt-1">Execute mandatory controls and link evidence artifacts.</p>
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-            <div className="px-4 py-2 bg-white/5 rounded-xl border border-white/10 text-xs font-bold text-slate-400 uppercase tracking-widest text-center sm:text-left">
+            <div className="px-4 py-2 bg-white/5 rounded-xl border border-glass-border text-xs font-bold text-muted-foreground uppercase tracking-widest text-center sm:text-left">
                 {completed.length} / {allTasks.length} Controls Verified
             </div>
-            <div className="px-4 py-2 bg-white/5 rounded-xl border border-white/10 text-xs font-bold text-slate-400 uppercase tracking-widest text-center sm:text-left">
+            <div className="px-4 py-2 bg-white/5 rounded-xl border border-glass-border text-xs font-bold text-muted-foreground uppercase tracking-widest text-center sm:text-left">
                 {filteredTasks.length} Showing{hasFilters ? " (Filtered)" : ""}
             </div>
             <details className="group">
@@ -122,28 +122,28 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                 <Plus className="h-4 w-4" />
                 Add Requirement
               </summary>
-              <div className="mt-4 bg-white/5 border border-white/10 rounded-2xl p-5 shadow-[0_16px_40px_rgba(0,0,0,0.35)] w-full sm:min-w-[320px]">
+              <div className="mt-4 bg-white/5 border border-glass-border rounded-2xl p-5 shadow-[0_16px_40px_rgba(0,0,0,0.35)] w-full sm:min-w-[320px]">
                 <form action={createTask} className="space-y-4">
                   <div className="space-y-2">
-                    <label htmlFor="field-216" className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                    <label htmlFor="field-216" className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
                       Requirement title
                     </label>
                     <input
                       name="title"
                       required
                       placeholder="e.g. Verify staff credential renewal"
-                      className="w-full rounded-xl border border-white/10 bg-[hsl(var(--card))] px-4 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-white/20"
+                      className="w-full rounded-xl border border-glass-border bg-[hsl(var(--card))] px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
                     />
                   </div>
                   <div className="grid gap-3 md:grid-cols-2">
                     <div className="space-y-2">
-                      <label htmlFor="field-215" className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                      <label htmlFor="field-215" className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
                         Priority
                       </label>
                       <select
                         name="priority"
                         defaultValue="medium"
-                        className="w-full rounded-xl border border-white/10 bg-[hsl(var(--card))] px-4 py-2.5 text-sm text-slate-100 focus:outline-white/20"
+                        className="w-full rounded-xl border border-glass-border bg-[hsl(var(--card))] px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
                       >
                         <option value="critical">Critical</option>
                         <option value="high">High</option>
@@ -151,35 +151,35 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                       </select>
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="field-214" className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                      <label htmlFor="field-214" className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
                         Due date (optional)
                       </label>
                       <div className="relative">
-                        <Calendar className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                        <Calendar className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                         <input
                           type="date"
                           name="dueDate"
-                          className="w-full rounded-xl border border-white/10 bg-[hsl(var(--card))] pl-9 pr-4 py-2.5 text-sm text-slate-100 focus:outline-white/20"
+                          className="w-full rounded-xl border border-glass-border bg-[hsl(var(--card))] pl-9 pr-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
                         />
                       </div>
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor="field-213" className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                    <label htmlFor="field-213" className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
                       Recurrence (days, optional)
                     </label>
                     <div className="relative">
-                      <RefreshCcw className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                      <RefreshCcw className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                       <input
                         type="number"
                         name="recurrenceDays"
                         min={0}
                         placeholder="0"
-                        className="w-full rounded-xl border border-white/10 bg-[hsl(var(--card))] pl-9 pr-4 py-2.5 text-sm text-slate-100 focus:outline-white/20"
+                        className="w-full rounded-xl border border-glass-border bg-[hsl(var(--card))] pl-9 pr-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
                       />
                     </div>
                   </div>
-                  <button className="w-full rounded-xl bg-sky-500/90 hover:bg-sky-400 text-slate-950 text-sm font-bold py-2.5 transition-all">
+                  <button className="w-full rounded-xl bg-sky-500/90 hover:bg-sky-400 text-background text-sm font-bold py-2.5 transition-all">
                     Save Requirement
                   </button>
                 </form>
@@ -189,21 +189,21 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
       </div>
 
       {/* 2. Control Filters */}
-      <div className="bg-white/5 p-2 rounded-2xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+      <div className="bg-white/5 p-2 rounded-2xl border border-glass-border shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
         <form method="get" className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <input
               name="q"
               defaultValue={queryRaw}
               placeholder="Search by control name or description..."
-              className="w-full pl-10 pr-4 py-2 text-sm outline-none bg-transparent text-slate-100 placeholder:text-slate-500"
+              className="w-full pl-10 pr-4 py-2 text-sm outline-none bg-transparent text-foreground placeholder:text-muted-foreground/60"
             />
           </div>
           <select
             name="priority"
             defaultValue={priorityFilter}
-            className="h-10 w-full sm:w-auto rounded-xl border border-white/10 bg-white/10 px-3 text-xs font-semibold uppercase tracking-wider text-slate-300"
+            className="h-10 w-full sm:w-auto rounded-xl border border-glass-border bg-glass-strong px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
           >
             <option value="all">Priority: All</option>
             <option value="critical">Priority: Critical</option>
@@ -213,7 +213,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
           <select
             name="status"
             defaultValue={statusFilter}
-            className="h-10 w-full sm:w-auto rounded-xl border border-white/10 bg-white/10 px-3 text-xs font-semibold uppercase tracking-wider text-slate-300"
+            className="h-10 w-full sm:w-auto rounded-xl border border-glass-border bg-glass-strong px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
           >
             <option value="all">Status: All</option>
             <option value="open">Status: Open</option>
@@ -222,7 +222,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
           </select>
           <button
             type="submit"
-            className="h-10 w-full sm:w-auto px-4 rounded-xl bg-white/10 text-xs font-semibold uppercase tracking-wider text-slate-100 hover:bg-white/20 transition-colors"
+            className="h-10 w-full sm:w-auto px-4 rounded-xl bg-glass-strong text-xs font-semibold uppercase tracking-wider text-foreground hover:bg-white/20 transition-colors"
           >
             <Filter className="h-3.5 w-3.5 inline mr-2" />
             Apply
@@ -230,7 +230,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
           {hasFilters ? (
             <Link
               href="/app/tasks"
-              className="h-10 w-full sm:w-auto px-4 rounded-xl border border-white/10 text-xs font-semibold uppercase tracking-wider text-slate-300 hover:bg-white/10 transition-colors inline-flex items-center justify-center"
+              className="h-10 w-full sm:w-auto px-4 rounded-xl border border-glass-border text-xs font-semibold uppercase tracking-wider text-foreground/70 hover:bg-glass-strong transition-colors inline-flex items-center justify-center"
             >
               Clear
             </Link>
@@ -239,11 +239,11 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
       </div>
 
       {/* 3. The Roadmap Master Table */}
-      <div className="bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] border border-white/10 rounded-3xl shadow-[0_24px_70px_rgba(0,0,0,0.45)] overflow-hidden">
+      <div className="bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] border border-glass-border rounded-3xl shadow-[0_24px_70px_rgba(0,0,0,0.45)] overflow-hidden">
         <div className="w-full overflow-x-auto overscroll-x-contain">
         <table className="min-w-[760px] sm:min-w-[860px] w-full text-left border-collapse">
           <thead>
-            <tr className="bg-white/5 border-b border-white/10 text-xs font-bold uppercase text-slate-400 tracking-widest">
+            <tr className="bg-white/5 border-b border-glass-border text-xs font-bold uppercase text-muted-foreground tracking-widest">
               <th className="px-4 sm:px-6 py-4">Status</th>
               <th className="px-4 sm:px-6 py-4">Control / Requirement</th>
               <th className="px-4 sm:px-6 py-4">Priority</th>
@@ -261,17 +261,17 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                         <CheckCircle2 className="h-5 w-5 text-emerald-300" />
                     </div>
                   ) : (
-                    <div className="h-8 w-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-white/20 transition-colors">
-                        <Circle className="h-5 w-5 text-slate-400" />
+                    <div className="h-8 w-8 rounded-full border border-glass-border flex items-center justify-center group-hover:border-glass-border-strong transition-colors">
+                        <Circle className="h-5 w-5 text-muted-foreground" />
                     </div>
                   )}
                 </td>
                 
                 <td className="px-4 sm:px-6 py-4">
-                   <p className="text-sm font-bold text-slate-100 group-hover:text-sky-300 transition-colors cursor-default">
+                   <p className="text-sm font-bold text-foreground group-hover:text-sky-300 transition-colors cursor-default">
                         {task.title}
                     </p>
-                   <p className="text-[11px] text-slate-400 mt-0.5 truncate max-w-xs">{task.description}</p>
+                   <p className="text-[11px] text-muted-foreground mt-0.5 truncate max-w-xs">{task.description}</p>
                 </td>
 
                 <td className="px-4 sm:px-6 py-4">
@@ -301,14 +301,14 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                 </td>
 
                 <td className="px-4 sm:px-6 py-4">
-                   <div className="flex items-center gap-2 text-[11px] font-medium text-slate-400">
-                      <Clock className="h-3.5 w-3.5 text-slate-400" />
+                   <div className="flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
+                      <Clock className="h-3.5 w-3.5 text-muted-foreground" />
                       {task.due_date ? new Date(task.due_date).toLocaleDateString() : 'No Deadline'}
                    </div>
                 </td>
 
                 <td className="px-4 sm:px-6 py-4 text-right">
-                    <button className="p-2 text-slate-400 hover:text-slate-100 transition-colors">
+                    <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">
                         <MoreVertical className="h-4 w-4" />
                     </button>
                 </td>
@@ -321,7 +321,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
         {/* ✅ FINAL CORRECTED EMPTY STATE BLOCK */}
         {filteredTasks.length === 0 && (
             <div className="flex flex-col items-center justify-center p-24 text-center">
-                <p className="text-sm text-slate-400 italic">
+                <p className="text-sm text-muted-foreground italic">
                     {allTasks.length === 0
                       ? "Your compliance roadmap is currently empty."
                       : "No requirements match the current filters."}

@@ -293,7 +293,7 @@ export function AddOnCard({ icon: Icon, name, price, description, delay = 0 }: A
       viewport={{ once: true, margin: "-30px" }}
       transition={{ duration: 0.5, delay }}
       whileHover={{ y: -8, scale: 1.02 }}
-      className="relative glass-panel rounded-2xl p-7 shadow-premium-md group cursor-pointer overflow-hidden border border-white/5"
+      className="relative glass-panel rounded-2xl p-7 shadow-premium group cursor-pointer overflow-hidden border border-white/5"
     >
       {/* Hover glow */}
       <div className="absolute inset-0 bg-gradient-to-br from-secondary/10 via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

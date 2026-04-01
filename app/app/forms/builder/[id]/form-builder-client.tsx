@@ -210,7 +210,7 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
             </button>
             <button
               onClick={() => router.push("/app")}
-              className="rounded-lg border border-rose-300/30 px-4 py-2 text-sm font-medium text-rose-100 hover:bg-white/10"
+              className="rounded-lg border border-rose-300/30 px-4 py-2 text-sm font-medium text-rose-100 hover:bg-glass-strong"
             >
               Back to dashboard
             </button>
@@ -221,7 +221,7 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
   }
 
   if (!form) {
-    return <div className="p-6 text-slate-400">Form not found.</div>;
+    return <div className="p-6 text-muted-foreground">Form not found.</div>;
   }
 
   return (

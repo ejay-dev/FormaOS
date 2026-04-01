@@ -25,6 +25,7 @@ import { useHelpAssistant } from '@/components/help/help-assistant-context';
 // import { useProductTour } from '@/lib/onboarding/product-tour';
 
 import Button from './ui/button';
+import { Badge } from './ui/badge';
 
 // ✅ Notification Center Component
 import { NotificationCenter } from '@/components/notifications/notification-center';
@@ -139,13 +140,13 @@ export function TopBar({
         <span className="hidden sm:inline font-semibold text-sidebar-primary-foreground uppercase text-[11px] tracking-[0.2em]">
           Organization
         </span>
-        <ChevronRight className="hidden sm:block h-4 w-4 text-slate-400" />
+        <ChevronRight className="hidden sm:block h-4 w-4 text-muted-foreground" />
         <span className="max-w-[110px] sm:max-w-[200px] truncate px-2 sm:px-3 py-1 rounded-md bg-card/70 text-card-foreground text-[11px] sm:text-sm font-semibold border border-card-foreground/8">
           {orgName}
         </span>
-        <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider border border-border bg-muted/50 text-muted-foreground">
+        <Badge variant="outline" className="hidden md:inline-flex uppercase tracking-wider font-bold">
           {role}
-        </span>
+        </Badge>
       </div>
 
       {/* Middle: Search */}
@@ -216,7 +217,7 @@ export function TopBar({
 
           {showUserMenu && (
             <div
-              className="absolute right-0 top-full mt-1 w-[min(16rem,calc(100vw-1.5rem))] rounded-2xl border border-card-foreground/8 bg-card p-2 shadow-xl z-50"
+              className="dropdown-enter absolute right-0 top-full mt-1 w-[min(16rem,calc(100vw-1.5rem))] rounded-2xl border border-card-foreground/8 bg-card p-2 shadow-xl z-50"
               role="menu"
               tabIndex={-1}
               onKeyDown={(event) => {
@@ -227,7 +228,7 @@ export function TopBar({
                 <p className="text-xs font-bold text-card-foreground">
                   Signed in as
                 </p>
-                <p className="text-xs text-muted truncate">{userEmail}</p>
+                <p className="text-xs text-muted-foreground truncate">{userEmail}</p>
               </div>
 
               <div className="space-y-1">

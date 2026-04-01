@@ -115,11 +115,11 @@ export function CompleteTaskButton({
         </div>
       ) : blocked ? (
         <div className="relative">
-          <Circle className="h-5 w-5 text-slate-500" />
+          <Circle className="h-5 w-5 text-muted-foreground/60" />
           <AlertTriangle className="absolute -top-1 -right-1 h-3 w-3 text-amber-400" />
         </div>
       ) : (
-        <Circle className="h-5 w-5 text-slate-400 group-hover:text-emerald-400 group-hover:drop-shadow-[0_0_4px_rgba(52,211,153,0.4)] transition-all" />
+        <Circle className="h-5 w-5 text-muted-foreground group-hover:text-emerald-400 group-hover:drop-shadow-[0_0_4px_rgba(52,211,153,0.4)] transition-all" />
       )}
     </button>
   )

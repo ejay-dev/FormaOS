@@ -162,7 +162,7 @@ export function GettingStartedChecklist({
 
   return (
     <div
-      className="relative rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-6"
+      className="relative rounded-2xl border border-glass-border bg-gradient-to-br from-white/5 to-transparent p-6"
       data-testid="getting-started-checklist"
     >
       {showConfetti && <ConfettiBurst />}
@@ -174,27 +174,27 @@ export function GettingStartedChecklist({
           aria-expanded={!isCollapsed}
         >
           <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               {industry ? 'Industry Onboarding' : 'Getting Started'}
             </p>
-            <h3 className="text-lg font-semibold text-slate-100">
+            <h3 className="text-lg font-semibold text-foreground">
               {industry
                 ? `${industry.toUpperCase().replace('_', ' ')} Activation Roadmap`
                 : 'Your first wins in FormaOS'}
             </h3>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-muted-foreground">
               {industry
                 ? 'Complete these steps to activate your compliance infrastructure'
                 : 'Complete these steps to activate your compliance workspace'}
             </p>
             {progress < 100 && progress > 0 && (
-              <div className="mt-2 flex items-center gap-2 text-xs text-slate-500">
+              <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground/60">
                 <Clock className="h-3.5 w-3.5" />
                 <span>~{timeRemaining} remaining</span>
               </div>
             )}
           </div>
-          <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-400 group-hover:bg-white/10 transition-colors">
+          <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-glass-border bg-glass-subtle text-muted-foreground group-hover:bg-glass-strong transition-colors">
             {isCollapsed ? (
               <ChevronRight className="h-4 w-4" />
             ) : (
@@ -206,7 +206,7 @@ export function GettingStartedChecklist({
           className="w-full sm:min-w-[180px]"
           data-testid="getting-started-progress"
         >
-          <div className="flex items-center justify-between text-xs text-slate-400">
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span>
               {completedCount} of {totalCount} done
             </span>
@@ -244,7 +244,7 @@ export function GettingStartedChecklist({
                 data-testid={`checklist-item-${item.id}`}
                 aria-label={`${isComplete ? 'Completed' : 'Pending'}: ${item.label}`}
                 aria-describedby={`desc-${item.id}`}
-                className={`flex items-start justify-between gap-3 rounded-xl border border-white/10 ${borderColor} border-l-2 bg-white/5 p-3 transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900`}
+                className={`flex items-start justify-between gap-3 rounded-xl border border-glass-border ${borderColor} border-l-2 bg-glass-subtle p-3 transition-colors hover:bg-glass-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900`}
               >
                 <div className="flex items-start gap-3 flex-1">
                   <div
@@ -259,19 +259,19 @@ export function GettingStartedChecklist({
                       />
                     ) : (
                       <Circle
-                        className="h-4 w-4 text-slate-500"
+                        className="h-4 w-4 text-muted-foreground/60"
                         aria-hidden="true"
                       />
                     )}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-sm font-semibold text-slate-100">
+                      <p className="text-sm font-semibold text-foreground">
                         {item.label}
                       </p>
                       {item.estimatedMinutes > 0 && (
                         <span
-                          className="text-xs text-slate-500"
+                          className="text-xs text-muted-foreground/60"
                           aria-label={`Estimated ${item.estimatedMinutes} minutes`}
                         >
                           ~{item.estimatedMinutes}min
@@ -292,7 +292,7 @@ export function GettingStartedChecklist({
                       )}
                     </div>
                     <p
-                      className="text-xs text-slate-400 mt-1"
+                      className="text-xs text-muted-foreground mt-1"
                       id={`desc-${item.id}`}
                     >
                       {item.description}
@@ -301,7 +301,7 @@ export function GettingStartedChecklist({
                 </div>
                 {!isComplete && (
                   <span
-                    className="text-slate-500 hover:text-slate-400 transition-colors"
+                    className="text-muted-foreground/60 hover:text-muted-foreground transition-colors"
                     aria-hidden="true"
                   >
                     <ArrowUpRight className="h-4 w-4" />
@@ -311,7 +311,7 @@ export function GettingStartedChecklist({
             );
           })}
           {isLoading ? (
-            <div className="text-xs text-slate-500">Refreshing progress...</div>
+            <div className="text-xs text-muted-foreground/60">Refreshing progress...</div>
           ) : null}
         </div>
       )}

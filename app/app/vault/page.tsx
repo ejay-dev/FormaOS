@@ -177,17 +177,17 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
         data-tour="vault-header"
       >
         <div>
-          <h1 className="text-4xl font-black text-slate-100 tracking-tight">
+          <h1 className="text-4xl font-black text-foreground tracking-tight">
             Evidence Vault
           </h1>
-          <p className="text-slate-400 mt-2 font-medium tracking-tight">
+          <p className="text-muted-foreground mt-2 font-medium tracking-tight">
             Encrypted repository for compliance artifacts. Review, verify, and
             archive evidence.
           </p>
         </div>
 
         <div className="flex flex-col md:flex-row items-start md:items-center gap-3">
-          <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-xl text-xs font-bold text-slate-400">
+          <div className="flex items-center gap-2 bg-glass-strong px-4 py-2 rounded-xl text-xs font-bold text-muted-foreground">
             <Filter className="h-4 w-4" />
             <span>
               {filteredArtifacts.length} Showing
@@ -200,10 +200,10 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
               <HardDrive className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
                 Vault Usage
               </p>
-              <p className="text-sm font-bold text-slate-100">
+              <p className="text-sm font-bold text-foreground">
                 {sizeInMB} MB / 500 MB
               </p>
             </div>
@@ -215,18 +215,18 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
       <div className="flex flex-col lg:flex-row lg:items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
         <form method="get" className="flex flex-1 flex-col sm:flex-row sm:items-center gap-2">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               name="q"
               defaultValue={searchQueryRaw}
               placeholder="Search artifacts by name, type, or context..."
-              className="w-full pl-10 pr-4 py-2 text-sm outline-none bg-transparent text-slate-100 placeholder:text-slate-500"
+              className="w-full pl-10 pr-4 py-2 text-sm outline-none bg-transparent text-foreground placeholder:text-muted-foreground/60"
             />
           </div>
           <select
             name="status"
             defaultValue={statusFilter}
-            className="h-10 rounded-xl border border-white/10 bg-white/10 px-3 text-xs font-semibold uppercase tracking-wider text-slate-300"
+            className="h-10 rounded-xl border border-white/10 bg-glass-strong px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
           >
             <option value="all">All Statuses</option>
             <option value="pending">Pending</option>
@@ -234,7 +234,7 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
           </select>
           <button
             type="submit"
-            className="h-10 px-4 rounded-xl bg-white/10 text-xs font-semibold uppercase tracking-wider text-slate-100 hover:bg-white/20 transition-colors"
+            className="h-10 px-4 rounded-xl bg-glass-strong text-xs font-semibold uppercase tracking-wider text-foreground hover:bg-white/20 transition-colors"
           >
             <ListFilter className="h-3.5 w-3.5 inline mr-2" />
             Apply
@@ -242,7 +242,7 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
           {hasFilters ? (
             <Link
               href="/app/vault"
-              className="h-10 px-4 rounded-xl border border-white/10 text-xs font-semibold uppercase tracking-wider text-slate-300 hover:bg-white/10 transition-colors inline-flex items-center justify-center"
+              className="h-10 px-4 rounded-xl border border-white/10 text-xs font-semibold uppercase tracking-wider text-foreground/70 hover:bg-glass-strong transition-colors inline-flex items-center justify-center"
             >
               Clear
             </Link>
@@ -278,19 +278,19 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                   </span>
                 </div>
 
-                <h3 className="font-bold text-slate-100 truncate pr-4">
+                <h3 className="font-bold text-foreground truncate pr-4">
                   {getFileName(item)}
                 </h3>
-                <p className="text-xs text-slate-400 mt-1 mb-6 truncate">
+                <p className="text-xs text-muted-foreground mt-1 mb-6 truncate">
                   Linked to:{' '}
                   {item.task?.title || item.policy?.title || 'General Upload'}
                 </p>
 
                 <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4">
-                  <p className="text-xs text-slate-400 font-bold uppercase tracking-tight">
+                  <p className="text-xs text-muted-foreground font-bold uppercase tracking-tight">
                     {getFileType(item)} • {getFileSizeKB(item)} KB
                   </p>
-                  <span className="text-xs text-slate-400 font-medium">
+                  <span className="text-xs text-muted-foreground font-medium">
                     {item.created_at
                       ? new Date(item.created_at).toLocaleDateString()
                       : 'N/A'}
@@ -313,7 +313,7 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                       <input
                         name="reason"
                         placeholder="Reason required"
-                        className="mb-3 w-full rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-xs font-bold uppercase tracking-widest text-slate-200 placeholder:text-slate-500"
+                        className="mb-3 w-full rounded-lg border border-white/10 bg-glass-strong px-3 py-2 text-xs font-bold uppercase tracking-widest text-foreground/90 placeholder:text-muted-foreground/60"
                         required
                       />
                       <button
@@ -343,13 +343,13 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
 
         <div className="bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] border border-white/10 rounded-[2.5rem] shadow-[0_24px_70px_rgba(0,0,0,0.45)] overflow-hidden">
           {verified.length === 0 ? (
-            <div className="p-12 text-center text-slate-400 text-sm font-bold">
+            <div className="p-12 text-center text-muted-foreground text-sm font-bold">
               No verified evidence yet.
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-[760px] w-full text-left">
-                <thead className="bg-white/5 border-b border-white/10 text-xs font-black uppercase text-slate-400 tracking-widest">
+                <thead className="bg-white/5 border-b border-white/10 text-xs font-black uppercase text-muted-foreground tracking-widest">
                   <tr>
                     <th className="px-8 py-6">Artifact</th>
                     <th className="px-8 py-6">Context</th>
@@ -367,16 +367,16 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                       <td className="px-8 py-4">
                         <div className="flex items-center gap-3">
                           <FileText className="h-4 w-4 text-emerald-300" />
-                          <span className="text-xs font-bold text-slate-100">
+                          <span className="text-xs font-bold text-foreground">
                             {getFileName(item)}
                           </span>
                         </div>
-                        <p className="text-xs text-slate-400 font-bold uppercase tracking-tight mt-1">
+                        <p className="text-xs text-muted-foreground font-bold uppercase tracking-tight mt-1">
                           {getFileType(item)} • {getFileSizeKB(item)} KB
                         </p>
                       </td>
 
-                      <td className="px-8 py-4 text-xs text-slate-400">
+                      <td className="px-8 py-4 text-xs text-muted-foreground">
                         {item.task?.title || item.policy?.title || 'N/A'}
                       </td>
 
@@ -399,7 +399,7 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                             </span>
                           </div>
                         ) : (
-                          <span className="text-xs text-slate-500">Not scored</span>
+                          <span className="text-xs text-muted-foreground/60">Not scored</span>
                         )}
                       </td>
 
@@ -409,10 +409,10 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                             <ShieldCheck className="h-3 w-3" />
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-xs font-bold text-slate-100">
+                            <span className="text-xs font-bold text-foreground">
                               Verified
                             </span>
-                            <span className="text-[9px] font-mono text-slate-400">
+                            <span className="text-[9px] font-mono text-muted-foreground">
                               {item.verified_at
                                 ? new Date(
                                     item.verified_at,
@@ -443,12 +443,12 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
       {filteredArtifacts.length === 0 && (
         <div className="py-20 border-2 border-dashed border-white/10 rounded-3xl flex flex-col items-center justify-center bg-white/5">
           <div className="h-16 w-16 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center mb-4 shadow-sm">
-            <FileUp className="h-8 w-8 text-slate-400" />
+            <FileUp className="h-8 w-8 text-muted-foreground" />
           </div>
-          <h3 className="text-lg font-bold text-slate-100">
+          <h3 className="text-lg font-bold text-foreground">
             {allArtifacts.length === 0 ? 'Vault is Empty' : 'No matching artifacts'}
           </h3>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             {allArtifacts.length === 0
               ? 'Upload your first compliance artifact to begin.'
               : 'Try adjusting your search and status filters.'}

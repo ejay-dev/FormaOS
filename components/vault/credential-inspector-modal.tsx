@@ -91,12 +91,12 @@ export function CredentialInspectorModal({
 
   return (
     <div className="fixed inset-0 z-[var(--z-tour)] flex items-end sm:items-center justify-center bg-black/70 sm:bg-gradient-to-r sm:from-blue-600 sm:via-indigo-600 sm:to-cyan-500/60 backdrop-blur-md p-4 animate-in fade-in duration-300">
-      <div className="w-full max-w-6xl h-[92vh] sm:h-[90vh] bg-white/10 rounded-t-[3rem] sm:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row">
+      <div className="w-full max-w-6xl h-[92vh] sm:h-[90vh] bg-glass-strong rounded-t-[3rem] sm:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row">
         
         {/* LEFT: Document Preview (The "Proof") */}
-        <div className="flex-1 bg-white/10 relative overflow-hidden flex items-center justify-center p-6 sm:p-8 border-b md:border-b-0 md:border-r border-white/10 min-h-[240px]">
+        <div className="flex-1 bg-glass-strong relative overflow-hidden flex items-center justify-center p-6 sm:p-8 border-b md:border-b-0 md:border-r border-glass-border min-h-[240px]">
             <div className="absolute top-6 left-6 z-10">
-                <span className="px-3 py-1.5 bg-white/10 backdrop-blur-md text-xs font-black uppercase tracking-widest rounded-lg border border-white/10 shadow-sm flex items-center gap-2">
+                <span className="px-3 py-1.5 bg-glass-strong backdrop-blur-md text-xs font-black uppercase tracking-widest rounded-lg border border-glass-border shadow-sm flex items-center gap-2">
                     <FileText className="h-3.5 w-3.5 text-blue-500" />
                     Evidence Preview
                 </span>
@@ -105,38 +105,38 @@ export function CredentialInspectorModal({
             {/* Direct embed of the credential file */}
             <iframe 
                 src={signedUrl || ""} 
-                className="w-full h-full rounded-2xl shadow-lg bg-white/10 border border-white/10"
+                className="w-full h-full rounded-2xl shadow-lg bg-glass-strong border border-white/10"
                 title="Credential Preview"
             />
         </div>
 
         {/* RIGHT: Metadata & Action Sidebar (The "Audit Control") */}
-        <div className="w-full md:w-[400px] flex flex-col justify-between p-6 sm:p-10 bg-white/10">
+        <div className="w-full md:w-[400px] flex flex-col justify-between p-6 sm:p-10 bg-glass-strong">
             <div className="space-y-10">
                 <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-black text-slate-100 tracking-tight">Audit Inspection</h3>
-                    <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-xl transition-all">
-                        <X className="h-5 w-5 text-slate-400" />
+                    <h3 className="text-sm font-black text-foreground tracking-tight">Audit Inspection</h3>
+                    <button onClick={onClose} className="p-2 hover:bg-glass-strong rounded-xl transition-all">
+                        <X className="h-5 w-5 text-muted-foreground" />
                     </button>
                 </div>
 
                 <div className="space-y-6">
                     <div className="space-y-1">
-                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Document Type</p>
-                        <p className="text-lg font-black text-slate-100">{credential.document_type}</p>
+                        <p className="text-xs font-black text-muted-foreground uppercase tracking-widest">Document Type</p>
+                        <p className="text-lg font-black text-foreground">{credential.document_type}</p>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-white/10">
                         <div className="space-y-1">
-                            <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Issue Date</p>
-                            <div className="flex items-center gap-2 text-xs font-bold text-slate-300">
+                            <p className="text-xs font-black text-muted-foreground uppercase tracking-widest">Issue Date</p>
+                            <div className="flex items-center gap-2 text-xs font-bold text-foreground/70">
                                 <Calendar className="h-3.5 w-3.5" />
                                 {credential.issue_date || "Not set"}
                             </div>
                         </div>
                         <div className="space-y-1">
-                            <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Expiry Date</p>
-                            <div className={`flex items-center gap-2 text-xs font-bold ${credential.expiry_date ? 'text-slate-300' : 'text-slate-400'}`}>
+                            <p className="text-xs font-black text-muted-foreground uppercase tracking-widest">Expiry Date</p>
+                            <div className={`flex items-center gap-2 text-xs font-bold ${credential.expiry_date ? 'text-foreground/70' : 'text-muted-foreground'}`}>
                                 <Calendar className="h-3.5 w-3.5" />
                                 {credential.expiry_date || "No expiry"}
                             </div>
@@ -144,8 +144,8 @@ export function CredentialInspectorModal({
                     </div>
 
                     <div className="space-y-1 pt-6 border-t border-white/10">
-                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Personnel ID</p>
-                        <div className="flex items-center gap-2 text-xs font-bold text-slate-300">
+                        <p className="text-xs font-black text-muted-foreground uppercase tracking-widest">Personnel ID</p>
+                        <div className="flex items-center gap-2 text-xs font-bold text-foreground/70">
                             <User className="h-3.5 w-3.5" />
                             USR-{credential.user_id.slice(0, 12).toUpperCase()}
                         </div>
@@ -165,13 +165,13 @@ export function CredentialInspectorModal({
 
             <div className="space-y-3 pt-10">
                 <div>
-                    <label htmlFor="field-229" className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">
+                    <label htmlFor="field-229" className="block text-xs font-black uppercase tracking-widest text-muted-foreground mb-2">
                         Approval Reason (required)
                     </label>
                     <textarea
                         value={reason}
                         onChange={(event) => setReason(event.target.value)}
-                        className="w-full min-h-[80px] rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500"
+                        className="w-full min-h-[80px] rounded-xl border border-glass-border bg-glass-strong px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground/60"
                         placeholder="Explain why this credential is approved or rejected."
                     />
                 </div>
@@ -187,7 +187,7 @@ export function CredentialInspectorModal({
                     <button 
                         onClick={() => handleVerify('verified')}
                         disabled={loading || blocked}
-                        className={`flex-[2] py-4 rounded-2xl text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-xl active:scale-95 ${blocked ? "bg-white/10 text-white/70 cursor-not-allowed" : "bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white hover:brightness-110"}`}
+                        className={`flex-[2] py-4 rounded-2xl text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-xl active:scale-95 ${blocked ? "bg-glass-strong text-white/70 cursor-not-allowed" : "bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white hover:brightness-110"}`}
                         title={blocked ? "Evidence approval blocked by non-compliant controls." : undefined}
                     >
                         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
@@ -197,7 +197,7 @@ export function CredentialInspectorModal({
                 <a 
                     href={publicUrl} 
                     target="_blank" 
-                    className="w-full flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest text-slate-400 py-2 hover:text-slate-100 transition-colors"
+                    className="w-full flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest text-muted-foreground py-2 hover:text-foreground transition-colors"
                 >
                     <ExternalLink className="h-3 w-3" />
                     Open Original File

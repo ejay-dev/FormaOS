@@ -90,7 +90,7 @@ export function DeleteButton({ id, tableName, itemTitle, onDelete }: DeleteButto
         </span>
         <button 
           onClick={() => setConfirm(false)}
-          className="p-1 text-slate-400 hover:text-slate-200 hover:bg-white/10 rounded transition-colors"
+          className="p-1 text-muted-foreground hover:text-foreground/90 hover:bg-glass-strong rounded transition-colors"
           title="Cancel"
         >
           <X className="h-3.5 w-3.5" />
@@ -115,7 +115,7 @@ export function DeleteButton({ id, tableName, itemTitle, onDelete }: DeleteButto
   return (
     <button 
       onClick={() => setConfirm(true)}
-      className="group p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg border border-transparent hover:border-rose-500/20 transition-all active:scale-95"
+      className="group p-2 text-muted-foreground hover:text-rose-400 hover:bg-rose-500/10 rounded-lg border border-transparent hover:border-rose-500/20 transition-all active:scale-95"
       title={`Delete ${nodeLabel.toLowerCase()}`}
     >
       <Trash2 className="h-4 w-4 group-hover:animate-pulse" />

@@ -19,7 +19,7 @@ const lifecycle = [
     border: 'border-blue-500/20',
     statusIcon: Clock,
     statusLabel: 'Pending',
-    statusColor: 'text-slate-400',
+    statusColor: 'text-muted-foreground',
   },
   {
     id: 'assign',
@@ -128,10 +128,10 @@ export default function TaskShowcase() {
                           {isPast ? (
                             <CheckCircle className="h-3.5 w-3.5 text-emerald-400" />
                           ) : (
-                            <step.icon className={`h-3.5 w-3.5 ${isActive ? step.color : 'text-slate-600'}`} />
+                            <step.icon className={`h-3.5 w-3.5 ${isActive ? step.color : 'text-muted-foreground/40'}`} />
                           )}
                         </div>
-                        <span className={`text-[9px] font-medium ${isActive ? step.color : isPast ? 'text-emerald-400/60' : 'text-slate-600'}`}>
+                        <span className={`text-[9px] font-medium ${isActive ? step.color : isPast ? 'text-emerald-400/60' : 'text-muted-foreground/40'}`}>
                           {step.label}
                         </span>
                         {/* Connector line */}
@@ -167,7 +167,7 @@ export default function TaskShowcase() {
                                 </div>
                                 <div>
                                   <p className={`text-xs font-semibold ${step.color}`}>{step.title}</p>
-                                  <p className="text-[11px] text-slate-400">{step.detail}</p>
+                                  <p className="text-[11px] text-muted-foreground">{step.detail}</p>
                                 </div>
                               </div>
                               <div className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-medium ${step.bg} ${step.statusColor}`}>
@@ -175,16 +175,16 @@ export default function TaskShowcase() {
                                 {step.statusLabel}
                               </div>
                             </div>
-                            <p className="text-[10px] text-slate-500 pl-10">{step.meta}</p>
+                            <p className="text-[10px] text-muted-foreground/60 pl-10">{step.meta}</p>
                           </div>
 
                           {/* Task preview card */}
                           <div className="rounded-lg bg-white/[0.02] border border-white/[0.06] p-3">
                             <div className="flex items-center gap-2 mb-2">
                               <CheckSquare className="h-3.5 w-3.5 text-blue-400" />
-                              <span className="text-[11px] font-medium text-slate-200">{step.task}</span>
+                              <span className="text-[11px] font-medium text-foreground/90">{step.task}</span>
                             </div>
-                            <div className="flex items-center gap-3 text-[9px] text-slate-500">
+                            <div className="flex items-center gap-3 text-[9px] text-muted-foreground/60">
                               <span className="flex items-center gap-1">
                                 <AlertTriangle className="h-2.5 w-2.5 text-red-400" />
                                 High Priority
@@ -201,7 +201,7 @@ export default function TaskShowcase() {
                                 <div className="h-4 w-4 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center">
                                   <span className="text-[6px] font-bold text-white">SC</span>
                                 </div>
-                                <span className="text-[10px] text-slate-400">Sarah Chen</span>
+                                <span className="text-[10px] text-muted-foreground">Sarah Chen</span>
                               </motion.div>
                             )}
                           </div>
@@ -234,7 +234,7 @@ export default function TaskShowcase() {
               </span>
             </h3>
 
-            <p className="text-base text-slate-400 mb-8 leading-relaxed">
+            <p className="text-base text-muted-foreground mb-8 leading-relaxed">
               Compliance tasks are auto-generated from framework controls, assigned by role, tracked with escalation timers,
               and completed with immutable logs. Nothing falls through the cracks.
             </p>
@@ -249,7 +249,7 @@ export default function TaskShowcase() {
                   <div className="h-8 w-8 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center flex-shrink-0">
                     <Icon className="h-4 w-4 text-blue-400" />
                   </div>
-                  <span className="text-sm text-slate-300">{text}</span>
+                  <span className="text-sm text-foreground/70">{text}</span>
                 </div>
               ))}
             </div>

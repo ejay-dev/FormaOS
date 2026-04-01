@@ -77,12 +77,12 @@ export function Soc2Dashboard({
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-100 tracking-tight">SOC 2 Readiness</h1>
-          <p className="text-slate-400 mt-1">
+          <h1 className="text-3xl font-black text-foreground tracking-tight">SOC 2 Readiness</h1>
+          <p className="text-muted-foreground mt-1">
             Automated evidence collection, gap analysis, and certification readiness tracking.
           </p>
           {assessment?.assessedAt && (
-            <p className="text-xs text-slate-500 mt-2">
+            <p className="text-xs text-muted-foreground/60 mt-2">
               Last assessed: {new Date(assessment.assessedAt).toLocaleString()}
             </p>
           )}
@@ -122,12 +122,12 @@ export function Soc2Dashboard({
       )}
 
       {!assessment ? (
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-12 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
+        <div className="rounded-2xl border border-glass-border bg-glass-subtle p-12 text-center">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-glass-border bg-white/5">
             <Play className="h-6 w-6 text-cyan-400" />
           </div>
-          <h2 className="mt-4 text-lg font-semibold text-slate-200">No Assessment Yet</h2>
-          <p className="mt-2 text-sm text-slate-400 max-w-md mx-auto">
+          <h2 className="mt-4 text-lg font-semibold text-foreground/90">No Assessment Yet</h2>
+          <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
             Run your first SOC 2 readiness assessment to see your compliance posture, identify gaps, and track remediation progress.
           </p>
           <button
@@ -143,12 +143,12 @@ export function Soc2Dashboard({
         <>
           {/* Score + Domains */}
           <div className="grid gap-6 lg:grid-cols-[auto_1fr]">
-            <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)] flex items-center justify-center">
+            <div className="rounded-2xl border border-glass-border bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)] flex items-center justify-center">
               <ReadinessScoreRing score={assessment.overallScore} />
             </div>
             <div className="space-y-4">
               <div className="flex items-center gap-4 text-sm">
-                <span className="text-slate-400">
+                <span className="text-muted-foreground">
                   {assessment.satisfiedControls}/{assessment.totalControls} controls satisfied
                 </span>
               </div>

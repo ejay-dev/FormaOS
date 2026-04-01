@@ -42,7 +42,7 @@ export default function VaultScreen() {
         <div className="flex items-center gap-2">
           <Lock className="h-4 w-4 text-purple-400" />
           <h2 className="text-sm font-semibold text-white">Evidence Vault</h2>
-          <span className="text-[10px] text-slate-500">{demoEvidence.length} items</span>
+          <span className="text-[10px] text-muted-foreground/60">{demoEvidence.length} items</span>
         </div>
         <button className="flex items-center gap-1 rounded-md bg-purple-500/20 px-2 py-1 text-[10px] text-purple-300 border border-purple-500/30">
           <Upload className="h-2.5 w-2.5" />
@@ -58,7 +58,7 @@ export default function VaultScreen() {
         {categories.map((cat) => (
           <span
             key={cat}
-            className="rounded-full bg-white/[0.03] px-2 py-0.5 text-[9px] text-slate-500 hover:text-slate-300 cursor-pointer transition-colors"
+            className="rounded-full bg-white/[0.03] px-2 py-0.5 text-[9px] text-muted-foreground/60 hover:text-foreground/70 cursor-pointer transition-colors"
           >
             {cat}
           </span>
@@ -79,12 +79,12 @@ export default function VaultScreen() {
           >
             <div className="flex items-start justify-between gap-2 mb-1.5">
               <div className="min-w-0">
-                <p className="text-[11px] font-medium text-slate-200 truncate">{item.name}</p>
-                <p className="text-[9px] text-slate-500">{item.category}</p>
+                <p className="text-[11px] font-medium text-foreground/90 truncate">{item.name}</p>
+                <p className="text-[9px] text-muted-foreground/60">{item.category}</p>
               </div>
               <EvidenceStatusBadge status={item.status} />
             </div>
-            <div className="flex items-center justify-between text-[9px] text-slate-500">
+            <div className="flex items-center justify-between text-[9px] text-muted-foreground/60">
               <span>{item.uploadedBy}</span>
               <div className="flex items-center gap-2">
                 <span>{item.size}</span>

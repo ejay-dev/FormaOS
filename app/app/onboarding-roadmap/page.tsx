@@ -41,11 +41,11 @@ export default async function OnboardingRoadmapPage() {
   return (
     <div className="space-y-6 pb-12" data-testid="onboarding-roadmap-page">
       <div className="space-y-2">
-        <p className="text-xs uppercase tracking-widest text-slate-400">Roadmap</p>
-        <h1 className="text-2xl font-bold text-slate-100">
+        <p className="text-xs uppercase tracking-widest text-muted-foreground">Roadmap</p>
+        <h1 className="text-2xl font-bold text-foreground">
           {roadmap.industryName} Roadmap
         </h1>
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-muted-foreground">
           {orgName} · Track progress across your onboarding journey.
         </p>
       </div>

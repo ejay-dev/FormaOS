@@ -12,10 +12,10 @@ export function DeadlineCalendar({ deadlines, isLoading = false }: DeadlineCalen
   if (isLoading) {
     return (
       <div className="rounded-2xl border border-white/10 bg-white/5 p-6 animate-pulse">
-        <div className="h-5 w-40 rounded bg-white/10 mb-6" />
+        <div className="h-5 w-40 rounded bg-glass-strong mb-6" />
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-14 rounded-lg bg-white/10" />
+            <div key={i} className="h-14 rounded-lg bg-glass-strong" />
           ))}
         </div>
       </div>
@@ -26,8 +26,8 @@ export function DeadlineCalendar({ deadlines, isLoading = false }: DeadlineCalen
     return (
       <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-center">
         <CheckCircle className="h-10 w-10 text-emerald-400 mx-auto mb-3" />
-        <p className="text-slate-200 font-medium">No Upcoming Deadlines</p>
-        <p className="text-sm text-slate-400 mt-1">
+        <p className="text-foreground/90 font-medium">No Upcoming Deadlines</p>
+        <p className="text-sm text-muted-foreground mt-1">
           All compliance deadlines are clear for the next 90 days.
         </p>
       </div>
@@ -46,28 +46,28 @@ export function DeadlineCalendar({ deadlines, isLoading = false }: DeadlineCalen
           <Calendar className="h-4 w-4 text-sky-300" />
         </div>
         <div>
-          <h3 className="text-sm font-semibold text-slate-100">Compliance Deadlines</h3>
-          <p className="text-xs text-slate-400">{deadlines.length} upcoming</p>
+          <h3 className="text-sm font-semibold text-foreground">Compliance Deadlines</h3>
+          <p className="text-xs text-muted-foreground">{deadlines.length} upcoming</p>
         </div>
       </div>
 
       {/* Summary Stats */}
       <div className="grid grid-cols-3 gap-2 mb-4">
         <div className={`rounded-lg p-2 text-center ${overdue.length > 0 ? 'bg-red-500/10' : 'bg-white/5'}`}>
-          <div className={`text-lg font-bold ${overdue.length > 0 ? 'text-red-400' : 'text-slate-400'}`}>
+          <div className={`text-lg font-bold ${overdue.length > 0 ? 'text-red-400' : 'text-muted-foreground'}`}>
             {overdue.length}
           </div>
-          <div className="text-xs text-slate-400 uppercase">Overdue</div>
+          <div className="text-xs text-muted-foreground uppercase">Overdue</div>
         </div>
         <div className={`rounded-lg p-2 text-center ${dueSoon.length > 0 ? 'bg-amber-500/10' : 'bg-white/5'}`}>
-          <div className={`text-lg font-bold ${dueSoon.length > 0 ? 'text-amber-400' : 'text-slate-400'}`}>
+          <div className={`text-lg font-bold ${dueSoon.length > 0 ? 'text-amber-400' : 'text-muted-foreground'}`}>
             {dueSoon.length}
           </div>
-          <div className="text-xs text-slate-400 uppercase">Due Soon</div>
+          <div className="text-xs text-muted-foreground uppercase">Due Soon</div>
         </div>
         <div className="rounded-lg bg-white/5 p-2 text-center">
-          <div className="text-lg font-bold text-slate-300">{upcoming.length}</div>
-          <div className="text-xs text-slate-400 uppercase">Upcoming</div>
+          <div className="text-lg font-bold text-foreground/70">{upcoming.length}</div>
+          <div className="text-xs text-muted-foreground uppercase">Upcoming</div>
         </div>
       </div>
 
@@ -88,7 +88,7 @@ export function DeadlineCalendar({ deadlines, isLoading = false }: DeadlineCalen
       </div>
 
       {upcoming.length > 3 && (
-        <p className="text-xs text-slate-500 text-center mt-3">
+        <p className="text-xs text-muted-foreground/60 text-center mt-3">
           +{upcoming.length - 3} more upcoming deadlines
         </p>
       )}
@@ -112,7 +112,7 @@ function DeadlineRow({ deadline }: { deadline: ComplianceDeadline }) {
     },
     upcoming: {
       icon: Calendar,
-      color: 'text-slate-400',
+      color: 'text-muted-foreground',
       bg: 'bg-white/5 border-white/10',
       label: `${deadline.daysRemaining}d`,
     },
@@ -124,7 +124,7 @@ function DeadlineRow({ deadline }: { deadline: ComplianceDeadline }) {
     },
     cancelled: {
       icon: Calendar,
-      color: 'text-slate-500',
+      color: 'text-muted-foreground/60',
       bg: 'bg-white/5 border-white/10',
       label: 'CANCELLED',
     },
@@ -148,14 +148,14 @@ function DeadlineRow({ deadline }: { deadline: ComplianceDeadline }) {
         <Icon className={`h-4 w-4 mt-0.5 shrink-0 ${config.color}`} />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-slate-200 font-medium line-clamp-1">
+            <span className="text-sm text-foreground/90 font-medium line-clamp-1">
               {deadline.title}
             </span>
-            <span className="text-xs text-slate-500 uppercase shrink-0">
+            <span className="text-xs text-muted-foreground/60 uppercase shrink-0">
               {typeLabels[deadline.type] || deadline.type}
             </span>
           </div>
-          <div className="flex items-center gap-2 mt-1 text-xs text-slate-400">
+          <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
             <span>Due: {new Date(deadline.dueDate).toLocaleDateString()}</span>
             {deadline.framework && (
               <>

@@ -30,7 +30,7 @@ export default function FormBuilderError({
           </button>
           <Link
             href="/app"
-            className="rounded-lg border border-rose-300/30 px-4 py-2 text-sm font-medium text-rose-100 hover:bg-white/10"
+            className="rounded-lg border border-rose-300/30 px-4 py-2 text-sm font-medium text-rose-100 hover:bg-glass-strong"
           >
             Back to dashboard
           </Link>

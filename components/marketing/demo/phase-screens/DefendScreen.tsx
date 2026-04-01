@@ -141,9 +141,9 @@ export default function DefendScreen() {
       <motion.div variants={fadeUp} className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3">
         <div className="flex items-center gap-1.5 mb-2.5">
           <FileText className="h-3 w-3 text-pink-400" />
-          <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-wider">Generating Report Pack</span>
+          <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Generating Report Pack</span>
           <motion.span
-            className="ml-auto text-[9px] text-slate-500"
+            className="ml-auto text-[9px] text-muted-foreground/60"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
@@ -191,8 +191,8 @@ export default function DefendScreen() {
                     <Check className="h-2.5 w-2.5 text-emerald-400" />
                   </motion.div>
                 </motion.div>
-                <span className="text-slate-200 truncate flex-1">{section.name}</span>
-                <span className="text-[9px] text-slate-500 flex-shrink-0">{section.pages} pages</span>
+                <span className="text-foreground/90 truncate flex-1">{section.name}</span>
+                <span className="text-[9px] text-muted-foreground/60 flex-shrink-0">{section.pages} pages</span>
               </motion.div>
             );
           })}
@@ -203,7 +203,7 @@ export default function DefendScreen() {
       <motion.div variants={fadeUp} className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3">
         <div className="flex items-center gap-1.5 mb-2">
           <TrendingUp className="h-3 w-3 text-cyan-400" />
-          <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-wider">Compliance Trend</span>
+          <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Compliance Trend</span>
           <motion.span
             className="ml-auto flex items-center gap-1 text-[9px] text-emerald-400"
             initial={{ opacity: 0 }}
@@ -240,7 +240,7 @@ export default function DefendScreen() {
                   Ready
                 </span>
               </div>
-              <p className="text-[9px] text-slate-400">4 reports · 27 pages · Generated 13 Feb 2026</p>
+              <p className="text-[9px] text-muted-foreground">4 reports · 27 pages · Generated 13 Feb 2026</p>
             </div>
             <motion.div
               className="flex-shrink-0 h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center cursor-pointer hover:bg-emerald-500/20 transition-colors"

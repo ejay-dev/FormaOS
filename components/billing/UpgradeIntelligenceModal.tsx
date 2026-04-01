@@ -111,7 +111,7 @@ export function UpgradeIntelligenceModal({
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-1 rounded-full hover:bg-white/10 transition-colors text-slate-400 hover:text-slate-200"
+          className="absolute top-4 right-4 z-10 p-1 rounded-full hover:bg-glass-strong transition-colors text-muted-foreground hover:text-foreground/90"
           aria-label="Close"
         >
           <X className="h-5 w-5" />
@@ -127,13 +127,13 @@ export function UpgradeIntelligenceModal({
                 <Zap className="h-5 w-5 text-sky-400" />
               )}
             </div>
-            <h2 className="text-xl font-bold text-slate-100">
+            <h2 className="text-xl font-bold text-foreground">
               {featureBenefit
                 ? `Unlock ${featureBenefit.title}`
                 : 'Choose Your Plan'}
             </h2>
           </div>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted-foreground">
             {featureBenefit?.description ??
               'Select the plan that fits your compliance needs.'}
           </p>
@@ -166,7 +166,7 @@ export function UpgradeIntelligenceModal({
                     isSelected
                       ? 'border-sky-400/50 bg-sky-500/5 ring-2 ring-sky-400/30'
                       : meetsRequirement
-                      ? 'border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10'
+                      ? 'border-glass-border bg-glass-subtle hover:border-glass-border-strong hover:bg-glass-strong'
                       : 'border-white/5 bg-white/[0.02] opacity-50 cursor-not-allowed'
                   }`}
                 >
@@ -188,29 +188,29 @@ export function UpgradeIntelligenceModal({
                           ? 'text-amber-400'
                           : key === 'pro'
                           ? 'text-sky-400'
-                          : 'text-slate-400'
+                          : 'text-muted-foreground'
                       }`}
                     />
-                    <span className="font-bold text-slate-100">{plan.name}</span>
+                    <span className="font-bold text-foreground">{plan.name}</span>
                   </div>
 
                   {/* Price */}
                   <div className="mb-4">
-                    <span className="text-3xl font-bold text-slate-100">
+                    <span className="text-3xl font-bold text-foreground">
                       ${key === 'basic' ? '29' : key === 'pro' ? '99' : '299'}
                     </span>
-                    <span className="text-sm text-slate-400">/month</span>
+                    <span className="text-sm text-muted-foreground">/month</span>
                   </div>
 
                   {/* Summary */}
-                  <p className="text-xs text-slate-400 mb-4">{plan.summary}</p>
+                  <p className="text-xs text-muted-foreground mb-4">{plan.summary}</p>
 
                   {/* Key features */}
                   <ul className="space-y-2 mb-4">
                     {plan.features.slice(0, 5).map((feature, idx) => (
                       <li
                         key={idx}
-                        className="flex items-start gap-2 text-xs text-slate-300"
+                        className="flex items-start gap-2 text-xs text-foreground/70"
                       >
                         <Check className="h-3 w-3 text-emerald-400 mt-0.5 shrink-0" />
                         {feature}
@@ -235,15 +235,15 @@ export function UpgradeIntelligenceModal({
         {/* Feature-specific benefits */}
         {featureBenefit && featureBenefit.useCases.length > 0 && (
           <div className="px-6 pb-4">
-            <div className="rounded-xl bg-white/5 p-4">
-              <h4 className="text-xs font-bold uppercase text-slate-400 mb-3">
+            <div className="rounded-xl bg-glass-subtle p-4">
+              <h4 className="text-xs font-bold uppercase text-muted-foreground mb-3">
                 Perfect for
               </h4>
               <div className="flex flex-wrap gap-2">
                 {featureBenefit.useCases.map((useCase, idx) => (
                   <span
                     key={idx}
-                    className="text-xs text-slate-300 bg-white/10 px-3 py-1 rounded-full"
+                    className="text-xs text-foreground/70 bg-glass-strong px-3 py-1 rounded-full"
                   >
                     {useCase}
                   </span>
@@ -254,7 +254,7 @@ export function UpgradeIntelligenceModal({
         )}
 
         {/* Actions */}
-        <div className="px-6 py-5 border-t border-white/10 flex flex-col sm:flex-row items-center gap-4">
+        <div className="px-6 py-5 border-t border-glass-border flex flex-col sm:flex-row items-center gap-4">
           <button
             onClick={() => handleUpgrade(selectedPlan)}
             disabled={loadingPlan !== null}
@@ -272,12 +272,12 @@ export function UpgradeIntelligenceModal({
 
           <button
             onClick={onClose}
-            className="w-full sm:w-auto px-6 py-3 text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors"
+            className="w-full sm:w-auto px-6 py-3 text-sm font-medium text-muted-foreground hover:text-foreground/90 transition-colors"
           >
             Maybe later
           </button>
 
-          <div className="flex items-center gap-4 text-xs text-slate-500">
+          <div className="flex items-center gap-4 text-xs text-muted-foreground/60">
             <span className="flex items-center gap-1">
               <Shield className="h-3 w-3" />
               Secure checkout

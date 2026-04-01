@@ -194,11 +194,11 @@ export function ProfileEditor({
   };
 
   return (
-    <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-10 shadow-sm space-y-8">
+    <div className="bg-glass-subtle border border-glass-border rounded-[2.5rem] p-10 shadow-sm space-y-8">
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-xl font-black text-slate-100 tracking-tight">Profile & Contact</h2>
-          <p className="text-sm text-slate-400">
+          <h2 className="text-xl font-black text-foreground tracking-tight">Profile & Contact</h2>
+          <p className="text-sm text-muted-foreground">
             Update your contact details and display preferences.
           </p>
         </div>
@@ -206,7 +206,7 @@ export function ProfileEditor({
           type="button"
           onClick={handleSave}
           disabled={saving}
-          className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 px-6 py-3 text-xs font-black uppercase tracking-[0.2em] text-slate-100 transition hover:bg-white/10 disabled:opacity-60"
+          className="inline-flex items-center justify-center gap-2 rounded-2xl border border-glass-border px-6 py-3 text-xs font-black uppercase tracking-[0.2em] text-foreground transition hover:bg-glass-strong disabled:opacity-60"
         >
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
           Save changes
@@ -214,8 +214,8 @@ export function ProfileEditor({
       </div>
 
       <div className="flex flex-col gap-8 lg:flex-row">
-        <div className="flex flex-col items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-6 text-center lg:w-[220px]">
-          <div className="relative h-24 w-24 overflow-hidden rounded-2xl border border-white/10 bg-white/10">
+        <div className="flex flex-col items-center gap-4 rounded-2xl border border-glass-border bg-glass-subtle p-6 text-center lg:w-[220px]">
+          <div className="relative h-24 w-24 overflow-hidden rounded-2xl border border-glass-border bg-glass-strong">
             {previewUrl || currentAvatarUrl ? (
               <img
                 src={previewUrl ?? currentAvatarUrl ?? ""}
@@ -224,14 +224,14 @@ export function ProfileEditor({
                 onError={() => setCurrentAvatarUrl(null)}
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center text-slate-300">
+              <div className="flex h-full w-full items-center justify-center text-foreground/70">
                 <UserIcon className="h-10 w-10" />
               </div>
             )}
           </div>
           <div className="space-y-2">
-            <div className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Profile Photo</div>
-            <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-slate-100 hover:bg-white/10">
+            <div className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Profile Photo</div>
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-glass-border bg-glass-subtle px-4 py-2 text-xs font-semibold text-foreground hover:bg-glass-strong">
               <Image className="h-4 w-4" />
               {previewUrl ? "Change" : "Upload"}
               <input
@@ -245,35 +245,35 @@ export function ProfileEditor({
               type="button"
               onClick={handleRemoveAvatar}
               disabled={!currentAvatarPath || removing}
-              className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-2 text-[11px] font-semibold text-slate-300 hover:bg-white/10 disabled:opacity-50"
+              className="w-full rounded-xl border border-glass-border bg-transparent px-4 py-2 text-[11px] font-semibold text-foreground/70 hover:bg-glass-strong disabled:opacity-50"
             >
               {removing ? "Removing..." : "Remove photo"}
             </button>
-            <p className="text-xs text-slate-500">JPG, PNG, or WebP up to 5MB.</p>
+            <p className="text-xs text-muted-foreground/60">JPG, PNG, or WebP up to 5MB.</p>
           </div>
         </div>
 
         <div className="flex-1 space-y-6">
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <label htmlFor="field-81" className="text-xs font-black uppercase text-slate-400 tracking-widest">Full name</label>
+              <label htmlFor="field-81" className="text-xs font-black uppercase text-muted-foreground tracking-widest">Full name</label>
               <div className="relative">
-                <UserIcon className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <UserIcon className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <input id="field-81"
                   value={fullName}
                   onChange={(event) => setFullName(event.target.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-white/10 py-3 pl-10 pr-4 text-sm font-semibold text-slate-100 focus:outline-white/20"
+                  className="w-full rounded-2xl border border-glass-border bg-glass-strong py-3 pl-10 pr-4 text-sm font-semibold text-foreground focus:outline-white/20"
                 />
               </div>
             </div>
             <div className="space-y-2">
-              <label htmlFor="field-80" className="text-xs font-black uppercase text-slate-400 tracking-widest">Phone number</label>
+              <label htmlFor="field-80" className="text-xs font-black uppercase text-muted-foreground tracking-widest">Phone number</label>
               <div className="relative">
-                <Phone className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Phone className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <input id="field-80"
                   value={phone}
                   onChange={(event) => setPhone(event.target.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-white/10 py-3 pl-10 pr-4 text-sm font-semibold text-slate-100 focus:outline-white/20"
+                  className="w-full rounded-2xl border border-glass-border bg-glass-strong py-3 pl-10 pr-4 text-sm font-semibold text-foreground focus:outline-white/20"
                 />
               </div>
             </div>
@@ -281,33 +281,33 @@ export function ProfileEditor({
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <label htmlFor="field-79" className="text-xs font-black uppercase text-slate-400 tracking-widest">Email</label>
+              <label htmlFor="field-79" className="text-xs font-black uppercase text-muted-foreground tracking-widest">Email</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <input id="field-79"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-white/10 py-3 pl-10 pr-4 text-sm font-semibold text-slate-100 focus:outline-white/20"
+                  className="w-full rounded-2xl border border-glass-border bg-glass-strong py-3 pl-10 pr-4 text-sm font-semibold text-foreground focus:outline-white/20"
                 />
               </div>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-muted-foreground/60">
                 Email updates require verification through your auth provider.
               </p>
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="field-78" className="text-xs font-black uppercase text-slate-400 tracking-widest">Organization name</label>
+              <label htmlFor="field-78" className="text-xs font-black uppercase text-muted-foreground tracking-widest">Organization name</label>
               <div className="relative">
-                <Building2 className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Building2 className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <input id="field-78"
                   value={organizationName}
                   onChange={(event) => setOrganizationName(event.target.value)}
                   disabled={!isAdmin}
-                  className="w-full rounded-2xl border border-white/10 bg-white/10 py-3 pl-10 pr-4 text-sm font-semibold text-slate-100 focus:outline-white/20 disabled:opacity-60"
+                  className="w-full rounded-2xl border border-glass-border bg-glass-strong py-3 pl-10 pr-4 text-sm font-semibold text-foreground focus:outline-white/20 disabled:opacity-60"
                 />
               </div>
               {!isAdmin ? (
-                <p className="text-xs text-slate-500">Only administrators can update org details.</p>
+                <p className="text-xs text-muted-foreground/60">Only administrators can update org details.</p>
               ) : null}
             </div>
           </div>

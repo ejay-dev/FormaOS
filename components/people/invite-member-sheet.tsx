@@ -114,8 +114,8 @@ export function InviteMemberSheet() {
             <div className="h-20 w-20 rounded-full bg-emerald-400/20 flex items-center justify-center mb-4 border-2 border-emerald-400/40">
               <CheckCircle2 className="h-10 w-10 text-emerald-400" />
             </div>
-            <h3 className="text-xl font-bold text-slate-100">Invitation Sent</h3>
-            <p className="text-sm text-slate-400 mt-2 text-center">
+            <h3 className="text-xl font-bold text-foreground">Invitation Sent</h3>
+            <p className="text-sm text-muted-foreground mt-2 text-center">
               {invitedEmail} will receive an email shortly
             </p>
           </div>
@@ -142,13 +142,13 @@ export function InviteMemberSheet() {
               <div className="space-y-2">
                 <label htmlFor="field-76" className="text-sm font-semibold">Email Address</label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <input id="field-76"
                     required
                     name="email"
                     type="email"
                     placeholder="teammate@company.com"
-                    className="w-full rounded-xl border border-white/10 p-2.5 pl-10 text-sm outline-none focus:border-blue-400/50 focus:ring-2 focus:ring-blue-400/20 transition-all bg-white/5"
+                    className="w-full rounded-xl border border-glass-border p-2.5 pl-10 text-sm outline-none focus:border-blue-400/50 focus:ring-2 focus:ring-blue-400/20 transition-all bg-white/5"
                   />
                 </div>
               </div>
@@ -157,7 +157,7 @@ export function InviteMemberSheet() {
                 <label htmlFor="field-75" className="text-sm font-semibold">Role</label>
                 <select id="field-75" 
                   name="role" 
-                  className="w-full rounded-xl border border-white/10 p-2.5 text-sm bg-white/5 outline-none focus:border-blue-400/50 focus:ring-2 focus:ring-blue-400/20 transition-all"
+                  className="w-full rounded-xl border border-glass-border p-2.5 text-sm bg-glass-subtle outline-none focus:border-blue-400/50 focus:ring-2 focus:ring-blue-400/20 transition-all"
                 >
                   <option value="member">Member</option>
                   <option value="admin">Admin</option>
@@ -165,7 +165,7 @@ export function InviteMemberSheet() {
               </div>
             </div>
 
-            <SheetFooter className="border-t border-white/10 pt-4">
+            <SheetFooter className="border-t border-glass-border pt-4">
               <button
                 disabled={loading}
                 type="submit"

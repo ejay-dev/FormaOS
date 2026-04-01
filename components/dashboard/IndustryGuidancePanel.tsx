@@ -188,20 +188,20 @@ export function IndustryGuidancePanel({
         role="status"
         aria-label="Loading industry guidance"
       >
-        <div className="animate-pulse rounded-2xl border border-white/10 bg-white/5 p-6">
+        <div className="animate-pulse rounded-2xl border border-glass-border bg-glass-subtle p-6">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-3 flex-1">
-              <div className="h-12 w-12 rounded-xl bg-white/10" />
+              <div className="h-12 w-12 rounded-xl bg-glass-strong" />
               <div className="flex-1 space-y-2">
-                <div className="h-4 w-32 rounded bg-white/10" />
-                <div className="h-3 w-24 rounded bg-white/10" />
+                <div className="h-4 w-32 rounded bg-glass-strong" />
+                <div className="h-3 w-24 rounded bg-glass-strong" />
               </div>
             </div>
-            <div className="h-16 w-16 rounded-full bg-white/10" />
+            <div className="h-16 w-16 rounded-full bg-glass-strong" />
           </div>
           <div className="mt-6 space-y-3">
             <div className="h-20 rounded-lg bg-white/5" />
-            <div className="h-4 w-48 rounded bg-white/10" />
+            <div className="h-4 w-48 rounded bg-glass-strong" />
           </div>
         </div>
       </div>
@@ -222,7 +222,7 @@ export function IndustryGuidancePanel({
         data-testid="industry-status-card"
       >
         {/* Background Glow */}
-        <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full bg-white/5 blur-2xl" />
+        <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full bg-glass-subtle blur-2xl" />
 
         <div className="relative z-10">
           <div className="flex items-start justify-between gap-4">
@@ -285,7 +285,7 @@ export function IndustryGuidancePanel({
               </span>
               <span>{progress.percentage}%</span>
             </div>
-            <div className="h-2 w-full rounded-full bg-white/10">
+            <div className="h-2 w-full rounded-full bg-glass-strong">
               <div
                 className={`h-2 rounded-full ${currentStatus.color} transition-all duration-500`}
                 style={{ width: `${progress.percentage}%` }}
@@ -298,7 +298,7 @@ export function IndustryGuidancePanel({
             {roadmap.keyFrameworks.map((framework) => (
               <span
                 key={framework}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-gray-400"
+                className="inline-flex items-center gap-1.5 rounded-full border border-glass-border bg-glass-subtle px-3 py-1 text-xs text-gray-400"
               >
                 {framework}
               </span>
@@ -321,7 +321,7 @@ export function IndustryGuidancePanel({
               onActionClickAction?.(nextAction.id, nextAction.label)
             }
           >
-            <div className="group rounded-xl border border-white/10 bg-white/5 p-5 transition-all hover:border-white/20 hover:bg-white/10">
+            <div className="group rounded-xl border border-glass-border bg-glass-subtle p-5 transition-all hover:border-glass-border-strong hover:bg-glass-strong">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-cyan-400 mb-2">
@@ -374,7 +374,7 @@ export function IndustryGuidancePanel({
           {insights.map((insight, index) => (
             <div
               key={index}
-              className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-gray-400"
+              className="rounded-lg border border-glass-border bg-glass-subtle px-4 py-3 text-sm text-gray-400"
             >
               {insight}
             </div>
@@ -453,7 +453,7 @@ export function IndustryGuidanceWidget({
 
   return (
     <Link href={nextAction.href}>
-      <div className="group rounded-lg border border-white/10 bg-white/5 p-4 transition-all hover:border-cyan-500/30 hover:bg-cyan-500/5">
+      <div className="group rounded-lg border border-glass-border bg-glass-subtle p-4 transition-all hover:border-cyan-500/30 hover:bg-cyan-500/5">
         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-cyan-400 mb-2">
           <Zap className="h-3 w-3" />
           <span>Next Step</span>

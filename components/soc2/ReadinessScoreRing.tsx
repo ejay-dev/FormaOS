@@ -70,13 +70,13 @@ export function ReadinessScoreRing({ score }: ReadinessScoreRingProps) {
           <span className={`text-5xl font-black tabular-nums tracking-tight ${colors.text}`}>
             {clamped}
           </span>
-          <span className="text-lg font-semibold text-slate-400">%</span>
+          <span className="text-lg font-semibold text-muted-foreground">%</span>
         </div>
       </div>
 
       <div className="flex items-center gap-2">
         <ShieldCheck className={`h-4 w-4 ${colors.label}`} />
-        <span className="text-sm font-semibold text-slate-300">Readiness Score</span>
+        <span className="text-sm font-semibold text-foreground/70">Readiness Score</span>
       </div>
     </div>
   );

@@ -85,7 +85,7 @@ export default function DemoComplianceScore({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-1.5">
             <BarChart3 className={`h-3.5 w-3.5 text-${accentColor}-400`} />
-            <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-wider">Compliance Score</span>
+            <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Compliance Score</span>
           </div>
           <div className="flex items-center gap-1 rounded-full bg-emerald-500/15 px-2 py-0.5 text-[9px] text-emerald-400 font-medium">
             <TrendingUp className="h-2.5 w-2.5" />
@@ -112,8 +112,8 @@ export default function DemoComplianceScore({
             }} />
           </motion.div>
           <div>
-            <p className="text-xs font-semibold text-slate-200">Overall Compliance</p>
-            <p className="text-[10px] text-slate-500">
+            <p className="text-xs font-semibold text-foreground/90">Overall Compliance</p>
+            <p className="text-[10px] text-muted-foreground/60">
               {categories.reduce((sum, c) => sum + c.items, 0)} items across {categories.length} categories
             </p>
             <p className={`text-[10px] font-medium mt-1 ${scoreColor(computedOverall)}`}>
@@ -136,9 +136,9 @@ export default function DemoComplianceScore({
               >
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-1.5">
-                    <Icon className="h-3 w-3 text-slate-500" />
-                    <span className="text-[10px] text-slate-400">{cat.label}</span>
-                    <span className="text-[8px] text-slate-600">({cat.items})</span>
+                    <Icon className="h-3 w-3 text-muted-foreground/60" />
+                    <span className="text-[10px] text-muted-foreground">{cat.label}</span>
+                    <span className="text-[8px] text-muted-foreground/40">({cat.items})</span>
                   </div>
                   <span className={`text-[10px] font-semibold ${scoreColor(cat.score)}`}>
                     {animated ? cat.score : 0}%

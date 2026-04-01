@@ -41,7 +41,7 @@ export function OperationalScenarioProof() {
           <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">
             Real workflows. Measurable compliance outcomes.
           </h2>
-          <p className="mx-auto mt-4 max-w-3xl text-sm text-slate-400 sm:text-base">
+          <p className="mx-auto mt-4 max-w-3xl text-sm text-muted-foreground sm:text-base">
             FormaOS demonstrates value through executable scenarios that map
             directly to audit, incident, and executive readiness workflows.
           </p>
@@ -53,7 +53,7 @@ export function OperationalScenarioProof() {
             return (
               <article
                 key={scenario.title}
-                className="rounded-2xl border border-white/10 bg-white/5 p-6"
+                className="rounded-2xl border border-glass-border bg-glass-subtle p-6"
               >
                 <div className="mb-5 flex items-center gap-3">
                   <div className="rounded-lg border border-teal-400/20 bg-teal-500/10 p-2.5">
@@ -91,7 +91,7 @@ export function OperationalScenarioProof() {
           </Link>
           <Link
             href="/contact"
-            className="inline-flex items-center justify-center rounded-xl border border-white/20 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10"
+            className="inline-flex items-center justify-center rounded-xl border border-glass-border-strong px-6 py-3 text-sm font-semibold text-white hover:bg-glass-strong"
           >
             See Live Enterprise Demo
           </Link>

@@ -63,8 +63,8 @@ export function SubmitButton({
       "disabled:opacity-70"
     ),
     secondary: cn(
-      "bg-transparent text-slate-200 border border-white/10",
-      "hover:bg-white/5 hover:border-white/20",
+      "bg-transparent text-foreground/90 border border-white/10",
+      "hover:bg-glass-subtle hover:border-glass-border-strong",
       "disabled:opacity-60"
     ),
     danger: cn(
@@ -73,8 +73,8 @@ export function SubmitButton({
       "disabled:opacity-60"
     ),
     ghost: cn(
-      "bg-transparent text-slate-400",
-      "hover:text-slate-200 hover:bg-white/5",
+      "bg-transparent text-muted-foreground",
+      "hover:text-foreground/90 hover:bg-white/5",
       "disabled:opacity-60"
     ),
   }
@@ -142,7 +142,7 @@ export function AdminActionButton({
   const isDisabled = disabled || pending
 
   const variantClasses: Record<string, string> = {
-    secondary: "border-white/10 text-slate-200 hover:bg-white/5",
+    secondary: "border-glass-border text-foreground/90 hover:bg-white/5",
     danger: "border-rose-400/30 text-rose-300 hover:bg-rose-500/20",
   }
 
@@ -188,10 +188,10 @@ export function SaveButton({ className, disabled = false }: SaveButtonProps) {
       type="submit"
       disabled={isDisabled}
       className={cn(
-        "w-full bg-white/5 text-slate-100 py-4 rounded-2xl",
+        "w-full bg-glass-subtle text-foreground py-4 rounded-2xl",
         "font-black text-xs uppercase tracking-[0.2em]",
         "flex items-center justify-center gap-3",
-        "hover:bg-white/10 transition-all shadow-xl",
+        "hover:bg-glass-strong transition-all shadow-xl",
         "active:scale-95 disabled:active:scale-100",
         "disabled:opacity-60 disabled:cursor-not-allowed",
         "relative z-10 group/btn",

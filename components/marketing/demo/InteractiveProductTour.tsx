@@ -271,7 +271,7 @@ export function InteractiveProductTour() {
               Continuous Compliance
             </span>
           </h2>
-          <p className="mx-auto max-w-2xl text-base text-slate-400">
+          <p className="mx-auto max-w-2xl text-base text-muted-foreground">
             See how FormaOS takes you from framework selection to audit-ready
             proof -- automatically and in real time.
           </p>
@@ -291,8 +291,8 @@ export function InteractiveProductTour() {
                   text-sm font-medium transition-all duration-300
                   ${
                     isActive
-                      ? 'bg-white/10 border border-white/20 text-white shadow-lg'
-                      : 'bg-white/[0.03] border border-white/[0.06] text-slate-500 hover:text-slate-300 hover:border-white/10'
+                      ? 'bg-glass-strong border border-glass-border-strong text-white shadow-lg'
+                      : 'bg-white/[0.03] border border-white/[0.06] text-muted-foreground/60 hover:text-foreground/70 hover:border-white/10'
                   }
                 `}
                 aria-current={isActive ? 'step' : undefined}
@@ -304,7 +304,7 @@ export function InteractiveProductTour() {
                     ${
                       isActive
                         ? `bg-gradient-to-br ${s.accent} text-white`
-                        : 'bg-white/10 text-slate-500 group-hover:text-slate-300'
+                        : 'bg-glass-strong text-muted-foreground/60 group-hover:text-foreground/70'
                     }
                   `}
                 >
@@ -312,7 +312,7 @@ export function InteractiveProductTour() {
                 </span>
                 <span className="hidden sm:inline">{s.label}</span>
                 <Icon
-                  className={`w-4 h-4 sm:hidden ${isActive ? 'text-white' : 'text-slate-500'}`}
+                  className={`w-4 h-4 sm:hidden ${isActive ? 'text-white' : 'text-muted-foreground/60'}`}
                 />
                 {/* Active underline */}
                 {isActive && (
@@ -360,14 +360,14 @@ export function InteractiveProductTour() {
                 />
 
                 {/* Browser chrome mockup */}
-                <div className="bg-[#111827] border-b border-white/10 px-4 py-2.5 flex items-center gap-2">
+                <div className="bg-[#111827] border-b border-glass-border px-4 py-2.5 flex items-center gap-2">
                   <div className="flex items-center gap-1.5">
                     <div className="w-3 h-3 rounded-full bg-red-500/70" />
                     <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
                     <div className="w-3 h-3 rounded-full bg-green-500/70" />
                   </div>
                   <div className="flex-1 mx-3">
-                    <div className="bg-white/[0.06] rounded-md px-3 py-1 text-xs text-slate-500 text-center truncate">
+                    <div className="bg-white/[0.06] rounded-md px-3 py-1 text-xs text-muted-foreground/60 text-center truncate">
                       app.formaos.com.au
                     </div>
                   </div>
@@ -401,14 +401,14 @@ export function InteractiveProductTour() {
               {/* Prev / Next arrows (overlaid on screenshot) */}
               <button
                 onClick={goPrev}
-                className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/60 border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-black/80 transition-all backdrop-blur-sm"
+                className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/60 border border-glass-border flex items-center justify-center text-white/70 hover:text-white hover:bg-black/80 transition-all backdrop-blur-sm"
                 aria-label="Previous step"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
                 onClick={goNext}
-                className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/60 border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-black/80 transition-all backdrop-blur-sm"
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/60 border border-glass-border flex items-center justify-center text-white/70 hover:text-white hover:bg-black/80 transition-all backdrop-blur-sm"
                 aria-label="Next step"
               >
                 <ChevronRight className="w-5 h-5" />
@@ -433,7 +433,7 @@ export function InteractiveProductTour() {
                     >
                       <step.icon className="w-5 h-5 text-white" />
                     </div>
-                    <span className="text-xs uppercase tracking-[0.2em] text-slate-500 font-medium">
+                    <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground/60 font-medium">
                       Step {step.id} of {TOUR_STEPS.length}
                     </span>
                   </div>
@@ -442,14 +442,14 @@ export function InteractiveProductTour() {
                     {step.title}
                   </h3>
 
-                  <p className="text-base text-slate-400 leading-relaxed">
+                  <p className="text-base text-muted-foreground leading-relaxed">
                     {step.description}
                   </p>
 
                   {/* Progress bar (auto-advance indicator) */}
                   <div className="pt-2">
                     <div className="flex items-center gap-3">
-                      <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
+                      <div className="flex-1 h-1 bg-glass-strong rounded-full overflow-hidden">
                         <motion.div
                           key={`progress-${step.id}-${isPaused}-${isHovered}`}
                           className={`h-full bg-gradient-to-r ${step.accent} rounded-full`}
@@ -470,7 +470,7 @@ export function InteractiveProductTour() {
                       </div>
                       <button
                         onClick={togglePause}
-                        className="flex items-center justify-center w-8 h-8 rounded-full bg-white/[0.06] border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+                        className="flex items-center justify-center w-8 h-8 rounded-full bg-white/[0.06] border border-glass-border text-muted-foreground hover:text-white hover:bg-glass-strong transition-all"
                         aria-label={isPaused ? 'Resume auto-advance' : 'Pause auto-advance'}
                       >
                         {isPaused ? (

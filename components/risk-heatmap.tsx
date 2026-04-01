@@ -22,12 +22,12 @@ export function RiskHeatmap({ data }: RiskHeatmapProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="font-bold text-slate-100">Security Risk Profile</h3>
-        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Live Distribution</span>
+        <h3 className="font-bold text-foreground">Security Risk Profile</h3>
+        <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Live Distribution</span>
       </div>
 
       {/* Visual Progress Bar */}
-      <div className="h-4 w-full flex rounded-full overflow-hidden bg-white/10">
+      <div className="h-4 w-full flex rounded-full overflow-hidden bg-glass-strong">
         {segments.map((s) => (
           <div 
             key={s.label}
@@ -40,10 +40,10 @@ export function RiskHeatmap({ data }: RiskHeatmapProps) {
       {/* Legend Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {segments.map((s) => (
-          <div key={s.label} className="p-3 rounded-xl border border-white/10 bg-white/10">
+          <div key={s.label} className="p-3 rounded-xl border border-glass-border bg-glass-strong">
             <div className="flex items-center gap-2 mb-1">
               <s.icon className={`h-3 w-3 ${s.text}`} />
-              <span className="text-xs font-bold text-slate-400 uppercase">{s.count} Assets</span>
+              <span className="text-xs font-bold text-muted-foreground uppercase">{s.count} Assets</span>
             </div>
             <p className={`text-xs font-bold ${s.text}`}>{s.label}</p>
           </div>

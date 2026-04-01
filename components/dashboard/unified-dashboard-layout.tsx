@@ -52,21 +52,21 @@ export function DashboardSectionCard({
       className={`rounded-xl border p-4 sm:p-6 transition-all ${
         locked
           ? 'border-slate-700/50 bg-slate-900/30 opacity-50'
-          : 'border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20'
+          : 'border-glass-border bg-glass-subtle hover:bg-glass-strong hover:border-white/20'
       }`}
     >
       <div className="flex items-start justify-between mb-4">
         <div>
           <h3 className="text-base sm:text-lg font-semibold">{title}</h3>
-          <p className="text-xs sm:text-sm text-slate-400">{description}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground">{description}</p>
         </div>
         <Icon
-          className={`h-6 w-6 ${locked ? 'text-slate-500' : 'text-white'}`}
+          className={`h-6 w-6 ${locked ? 'text-muted-foreground/60' : 'text-white'}`}
         />
       </div>
       {!locked && children}
       {locked && (
-        <p className="text-xs text-slate-400 flex items-center gap-2">
+        <p className="text-xs text-muted-foreground flex items-center gap-2">
           <Lock className="h-3 w-3" /> This feature is not available for your
           role.
         </p>

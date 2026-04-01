@@ -32,13 +32,13 @@ export function WorkflowExecutionViewer({
 
   return (
     <div className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
-      <div className="space-y-4 rounded-[28px] border border-white/10 bg-slate-950/70 p-5">
+      <div className="space-y-4 rounded-[28px] border border-glass-border bg-slate-950/70 p-5">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
               Execution Trace
             </p>
-            <h3 className="mt-2 text-xl font-semibold text-slate-100">
+            <h3 className="mt-2 text-xl font-semibold text-foreground">
               {execution ? execution.status.replace('_', ' ') : 'No execution selected'}
             </h3>
           </div>
@@ -67,27 +67,27 @@ export function WorkflowExecutionViewer({
           ))}
         </div>
       </div>
-      <div className="space-y-4 rounded-[28px] border border-white/10 bg-slate-950/70 p-5">
+      <div className="space-y-4 rounded-[28px] border border-glass-border bg-slate-950/70 p-5">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             Timeline
           </p>
-          <h3 className="mt-2 text-xl font-semibold text-slate-100">
+          <h3 className="mt-2 text-xl font-semibold text-foreground">
             {selectedStepId ?? 'Select a step'}
           </h3>
         </div>
         {selectedResult ? (
           <StepExecutionDetail result={selectedResult} />
         ) : (
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted-foreground">
             Click any step to inspect duration, output, and errors.
           </p>
         )}
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+        <div className="rounded-2xl border border-glass-border bg-white/[0.03] p-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
             Run Summary
           </p>
-          <dl className="mt-3 space-y-2 text-sm text-slate-300">
+          <dl className="mt-3 space-y-2 text-sm text-foreground/70">
             <div className="flex items-center justify-between">
               <dt>Status</dt>
               <dd>{execution?.status ?? 'n/a'}</dd>
@@ -114,7 +114,7 @@ export function WorkflowExecutionViewer({
 function StepExecutionDetail({ result }: { result: ExecutionResult }) {
   return (
     <div className="space-y-4">
-      <dl className="space-y-2 text-sm text-slate-300">
+      <dl className="space-y-2 text-sm text-foreground/70">
         <div className="flex items-center justify-between">
           <dt>Status</dt>
           <dd>{result.status}</dd>
@@ -124,9 +124,9 @@ function StepExecutionDetail({ result }: { result: ExecutionResult }) {
           <dd>{result.duration} ms</dd>
         </div>
       </dl>
-      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Output</p>
-        <pre className="mt-3 overflow-auto text-xs text-slate-200">
+      <div className="rounded-2xl border border-glass-border bg-white/[0.03] p-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Output</p>
+        <pre className="mt-3 overflow-auto text-xs text-foreground/90">
           {JSON.stringify(result.output ?? null, null, 2)}
         </pre>
       </div>

@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Command } from 'cmdk';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   LayoutDashboard,
   CheckSquare,
@@ -339,6 +339,12 @@ const dialogVariants = {
   },
 };
 
+const dialogVariantsReduced = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.1 } },
+  exit: { opacity: 0, transition: { duration: 0.1 } },
+};
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -351,6 +357,7 @@ export function CommandPalette() {
   const router = useRouter();
   const pathname = usePathname();
   const inputRef = useRef<HTMLInputElement>(null);
+  const prefersReducedMotion = useReducedMotion();
   const isAdminContext = pathname?.startsWith('/admin') ?? false;
   const commandGroups = useMemo(
     () => (isAdminContext ? ADMIN_COMMAND_GROUPS : APP_COMMAND_GROUPS),
@@ -388,12 +395,15 @@ export function CommandPalette() {
     return () => window.removeEventListener('open-command-menu', openHandler);
   }, []);
 
-  // Reset search when closing
+  // Reset search when closing; focus input when opening
   useEffect(() => {
     if (!open) {
       setSearch('');
       setRemoteResults([]);
       setRemoteLoading(false);
+    } else {
+      // Defer focus until after animation frame so cmdk is mounted
+      requestAnimationFrame(() => inputRef.current?.focus());
     }
   }, [open]);
 
@@ -485,21 +495,24 @@ export function CommandPalette() {
             {/* Dialog container */}
             <motion.div
               key="command-palette-dialog"
-              variants={dialogVariants}
+              variants={prefersReducedMotion ? dialogVariantsReduced : dialogVariants}
               initial="hidden"
               animate="visible"
               exit="exit"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Command palette"
               className="fixed inset-0 z-50 flex items-start justify-center px-4 pt-[15vh] sm:pt-[20vh]"
             >
               <Command
-                className="w-full max-w-[640px] overflow-hidden rounded-2xl border border-white/10 bg-background/95 shadow-[0_24px_80px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)] backdrop-blur-xl"
+                className="w-full max-w-[640px] overflow-hidden rounded-2xl border border-glass-border bg-background/95 shadow-[0_24px_80px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)] backdrop-blur-xl"
                 label="Command Palette"
                 loop
                 shouldFilter={true}
               >
                 {/* Search input */}
-                <div className="flex items-center gap-3 border-b border-white/[0.06] px-4">
-                  <Search className="h-4 w-4 shrink-0 text-slate-500" />
+                <div className="flex items-center gap-3 border-b border-glass-border/50 px-4">
+                  <Search className="h-4 w-4 shrink-0 text-muted-foreground/60" />
                   <Command.Input
                     ref={inputRef}
                     value={search}
@@ -509,13 +522,13 @@ export function CommandPalette() {
                         ? 'Type an admin command or route...'
                         : 'Type a command or search...'
                     }
-                    className="h-14 w-full border-none bg-transparent text-sm text-slate-200 outline-none placeholder:text-slate-500"
+                    className="h-14 w-full border-none bg-transparent text-sm text-foreground/90 outline-none placeholder:text-muted-foreground/60"
                   />
                   <div className="flex shrink-0 items-center gap-1.5">
-                    <kbd className="hidden select-none items-center rounded-md border border-white/10 bg-white/[0.06] px-1.5 py-0.5 font-mono text-[11px] font-medium text-slate-500 sm:inline-flex">
+                    <kbd className="hidden select-none items-center rounded-md border border-glass-border bg-glass-subtle px-1.5 py-0.5 font-mono text-[11px] font-medium text-muted-foreground/60 sm:inline-flex">
                       {isMac ? '\u2318' : 'Ctrl'}
                     </kbd>
-                    <kbd className="hidden select-none items-center rounded-md border border-white/10 bg-white/[0.06] px-1.5 py-0.5 font-mono text-[11px] font-medium text-slate-500 sm:inline-flex">
+                    <kbd className="hidden select-none items-center rounded-md border border-glass-border bg-glass-subtle px-1.5 py-0.5 font-mono text-[11px] font-medium text-muted-foreground/60 sm:inline-flex">
                       K
                     </kbd>
                   </div>
@@ -524,11 +537,11 @@ export function CommandPalette() {
                 {/* Results list */}
                 <Command.List className="max-h-[320px] overflow-y-auto overscroll-contain p-2 scrollbar-hide">
                   <Command.Empty className="flex flex-col items-center justify-center py-12 text-center">
-                    <Search className="mb-3 h-8 w-8 text-slate-600" />
-                    <p className="text-sm font-medium text-slate-400">
+                    <Search className="mb-3 h-8 w-8 text-muted-foreground/40" />
+                    <p className="text-sm font-medium text-muted-foreground">
                       No results found
                     </p>
-                    <p className="mt-1 text-xs text-slate-600">
+                    <p className="mt-1 text-xs text-muted-foreground/40">
                       Try a different search term
                     </p>
                   </Command.Empty>
@@ -540,7 +553,7 @@ export function CommandPalette() {
                         '[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-2',
                         '[&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-bold',
                         '[&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-widest',
-                        '[&_[cmdk-group-heading]]:text-slate-500',
+                        '[&_[cmdk-group-heading]]:text-muted-foreground/60',
                       )}
                     >
                       {remoteLoading ? (
@@ -549,13 +562,13 @@ export function CommandPalette() {
                           disabled
                           className={cn(
                             'flex cursor-default items-center gap-3 rounded-xl px-3 py-2.5',
-                            'text-sm font-medium text-slate-500',
+                            'text-sm font-medium text-muted-foreground/60',
                           )}
                         >
                           <div
                             className={cn(
                               'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
-                              'bg-white/[0.04] text-slate-600',
+                              'bg-glass-subtle/50 text-muted-foreground/40',
                             )}
                           >
                             <Search className="h-4 w-4" />
@@ -572,13 +585,13 @@ export function CommandPalette() {
                           disabled
                           className={cn(
                             'flex cursor-default items-center gap-3 rounded-xl px-3 py-2.5',
-                            'text-sm font-medium text-slate-600',
+                            'text-sm font-medium text-muted-foreground/40',
                           )}
                         >
                           <div
                             className={cn(
                               'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
-                              'bg-white/[0.04] text-slate-700',
+                              'bg-glass-subtle/50 text-muted-foreground/30',
                             )}
                           >
                             <Search className="h-4 w-4" />
@@ -618,15 +631,15 @@ export function CommandPalette() {
                                 }
                                 className={cn(
                                   'group flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5',
-                                  'text-sm font-medium text-slate-400',
+                                  'text-sm font-medium text-muted-foreground',
                                   'transition-colors duration-100',
-                                  'aria-selected:bg-white/[0.06] aria-selected:text-slate-100',
+                                  'aria-selected:bg-glass-subtle aria-selected:text-foreground',
                                 )}
                               >
                                 <div
                                   className={cn(
                                     'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
-                                    'bg-white/[0.04] text-slate-500',
+                                    'bg-glass-subtle/50 text-muted-foreground/60',
                                     'transition-colors duration-100',
                                     'group-aria-selected:bg-cyan-500/10 group-aria-selected:text-cyan-400',
                                   )}
@@ -638,10 +651,10 @@ export function CommandPalette() {
                                 <span className="flex-1 truncate">
                                   {r.title}
                                 </span>
-                                <span className="shrink-0 rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 text-xs font-medium text-slate-600">
+                                <span className="shrink-0 rounded-md border border-glass-border bg-glass-subtle/50 px-2 py-1 text-xs font-medium text-muted-foreground/40">
                                   {r.type}
                                 </span>
-                                <ArrowRight className="h-3 w-3 shrink-0 text-slate-600 opacity-0 transition-opacity group-aria-selected:opacity-100" />
+                                <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground/40 opacity-0 transition-opacity group-aria-selected:opacity-100" />
                               </Command.Item>
                             );
                           })
@@ -657,7 +670,7 @@ export function CommandPalette() {
                         '[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-2',
                         '[&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-bold',
                         '[&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-widest',
-                        '[&_[cmdk-group-heading]]:text-slate-500',
+                        '[&_[cmdk-group-heading]]:text-muted-foreground/60',
                       )}
                     >
                       {group.items.map((item) => (
@@ -669,15 +682,15 @@ export function CommandPalette() {
                           onSelect={() => runCommand(item)}
                           className={cn(
                             'group flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5',
-                            'text-sm font-medium text-slate-400',
+                            'text-sm font-medium text-muted-foreground',
                             'transition-colors duration-100',
-                            'aria-selected:bg-white/[0.06] aria-selected:text-slate-100',
+                            'aria-selected:bg-glass-subtle aria-selected:text-foreground',
                           )}
                         >
                           <div
                             className={cn(
                               'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
-                              'bg-white/[0.04] text-slate-500',
+                              'bg-glass-subtle/50 text-muted-foreground/60',
                               'transition-colors duration-100',
                               'group-aria-selected:bg-cyan-500/10 group-aria-selected:text-cyan-400',
                             )}
@@ -686,11 +699,11 @@ export function CommandPalette() {
                           </div>
                           <span className="flex-1 truncate">{item.label}</span>
                           {item.shortcut && (
-                            <kbd className="hidden select-none rounded-md border border-white/10 bg-white/[0.04] px-1.5 py-0.5 font-mono text-xs text-slate-600 sm:inline-flex">
+                            <kbd className="hidden select-none rounded-md border border-glass-border bg-glass-subtle/50 px-1.5 py-0.5 font-mono text-xs text-muted-foreground/40 sm:inline-flex">
                               {item.shortcut}
                             </kbd>
                           )}
-                          <ArrowRight className="h-3 w-3 shrink-0 text-slate-600 opacity-0 transition-opacity group-aria-selected:opacity-100" />
+                          <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground/40 opacity-0 transition-opacity group-aria-selected:opacity-100" />
                         </Command.Item>
                       ))}
                     </Command.Group>
@@ -698,31 +711,31 @@ export function CommandPalette() {
                 </Command.List>
 
                 {/* Footer */}
-                <div className="flex items-center justify-between border-t border-white/[0.06] px-4 py-2.5">
-                  <div className="flex items-center gap-3 text-[11px] text-slate-600">
+                <div className="flex items-center justify-between border-t border-glass-border/50 px-4 py-2.5">
+                  <div className="flex items-center gap-3 text-[11px] text-muted-foreground/40">
                     <span className="flex items-center gap-1">
-                      <kbd className="rounded border border-white/10 bg-white/[0.04] px-1 py-0.5 font-mono text-xs">
+                      <kbd className="rounded border border-glass-border bg-glass-subtle/50 px-1 py-0.5 font-mono text-xs">
                         &uarr;
                       </kbd>
-                      <kbd className="rounded border border-white/10 bg-white/[0.04] px-1 py-0.5 font-mono text-xs">
+                      <kbd className="rounded border border-glass-border bg-glass-subtle/50 px-1 py-0.5 font-mono text-xs">
                         &darr;
                       </kbd>
                       <span className="ml-0.5">Navigate</span>
                     </span>
                     <span className="flex items-center gap-1">
-                      <kbd className="rounded border border-white/10 bg-white/[0.04] px-1 py-0.5 font-mono text-xs">
+                      <kbd className="rounded border border-glass-border bg-glass-subtle/50 px-1 py-0.5 font-mono text-xs">
                         &crarr;
                       </kbd>
                       <span className="ml-0.5">Select</span>
                     </span>
                     <span className="flex items-center gap-1">
-                      <kbd className="rounded border border-white/10 bg-white/[0.04] px-1 py-0.5 font-mono text-xs">
+                      <kbd className="rounded border border-glass-border bg-glass-subtle/50 px-1 py-0.5 font-mono text-xs">
                         Esc
                       </kbd>
                       <span className="ml-0.5">Close</span>
                     </span>
                   </div>
-                  <span className="text-[11px] text-slate-600">
+                  <span className="text-[11px] text-muted-foreground/40">
                     FormaOS Command Palette
                   </span>
                 </div>

@@ -144,21 +144,21 @@ export default async function StaffDashboardPage() {
           <h1 className="text-3xl font-semibold tracking-tight text-slate-50">
             Field Operations
           </h1>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted-foreground">
             Your assigned work, patient updates, and required documentation.
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
           <Link
             href="/app/progress-notes"
-            className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-xs font-semibold text-slate-100 hover:bg-white/15"
+            className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
           >
             New Progress Note
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link
             href="/app/tasks"
-            className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-xs font-semibold text-slate-100 hover:bg-white/15"
+            className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
           >
             View Tasks
             <ArrowRight className="h-4 w-4" />
@@ -178,23 +178,23 @@ export default async function StaffDashboardPage() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-200">
+          <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
             <ClipboardCheck className="h-4 w-4 text-sky-300" />
             Assigned Tasks
           </div>
           <div className="mt-4 space-y-3">
             {(tasks ?? []).length === 0 ? (
-              <p className="text-xs text-slate-400">No tasks assigned.</p>
+              <p className="text-xs text-muted-foreground">No tasks assigned.</p>
             ) : (
               (tasks ?? []).map((task) => (
                 <div
                   key={task.id}
                   className="rounded-xl border border-white/10 bg-white/5 px-4 py-3"
                 >
-                  <div className="text-sm font-semibold text-slate-100">
+                  <div className="text-sm font-semibold text-foreground">
                     {task.title}
                   </div>
-                  <div className="text-xs text-slate-400">
+                  <div className="text-xs text-muted-foreground">
                     Due {fmtDate(task.due_date)} • {task.status}
                   </div>
                 </div>
@@ -204,22 +204,22 @@ export default async function StaffDashboardPage() {
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-200">
+          <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
             <Users className="h-4 w-4 text-emerald-300" />
             Patient Caseload
           </div>
           <div className="mt-4 space-y-3">
             {(patients ?? []).length === 0 ? (
-              <p className="text-xs text-slate-400">No patients assigned.</p>
+              <p className="text-xs text-muted-foreground">No patients assigned.</p>
             ) : (
               (patients ?? []).map((patient) => (
                 <Link
                   key={patient.id}
                   href={`/app/patients/${patient.id}`}
-                  className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-100 hover:bg-white/10"
+                  className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-foreground hover:bg-glass-strong"
                 >
                   <span>{patient.full_name}</span>
-                  <span className="text-xs uppercase tracking-widest text-slate-400">
+                  <span className="text-xs uppercase tracking-widest text-muted-foreground">
                     {patient.care_status}
                   </span>
                 </Link>
@@ -229,23 +229,23 @@ export default async function StaffDashboardPage() {
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-200">
+          <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
             <FileText className="h-4 w-4 text-indigo-300" />
             Recent Notes
           </div>
           <div className="mt-4 space-y-3">
             {(notes ?? []).length === 0 ? (
-              <p className="text-xs text-slate-400">No notes logged yet.</p>
+              <p className="text-xs text-muted-foreground">No notes logged yet.</p>
             ) : (
               (notes ?? []).map((note) => (
                 <div
                   key={note.id}
                   className="rounded-xl border border-white/10 bg-white/5 px-4 py-3"
                 >
-                  <div className="text-xs uppercase tracking-widest text-slate-400">
+                  <div className="text-xs uppercase tracking-widest text-muted-foreground">
                     {note.status_tag}
                   </div>
-                  <div className="text-xs text-slate-300">
+                  <div className="text-xs text-foreground/70">
                     Logged {fmtDate(note.created_at)}
                   </div>
                 </div>
@@ -257,13 +257,13 @@ export default async function StaffDashboardPage() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-200">
+          <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
             <AlertTriangle className="h-4 w-4 text-rose-300" />
             Open Incidents
           </div>
           <div className="mt-4 space-y-3">
             {(incidents ?? []).length === 0 ? (
-              <p className="text-xs text-slate-400">No active incidents.</p>
+              <p className="text-xs text-muted-foreground">No active incidents.</p>
             ) : (
               (incidents ?? []).map((incident) => (
                 <div
@@ -273,7 +273,7 @@ export default async function StaffDashboardPage() {
                   <div className="text-xs uppercase tracking-widest text-rose-300">
                     {incident.severity}
                   </div>
-                  <div className="text-xs text-slate-300">
+                  <div className="text-xs text-foreground/70">
                     Reported {fmtDate(incident.occurred_at)}
                   </div>
                 </div>
@@ -283,23 +283,23 @@ export default async function StaffDashboardPage() {
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-200">
+          <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
             <CalendarDays className="h-4 w-4 text-sky-300" />
             Recent Shifts
           </div>
           <div className="mt-4 space-y-3">
             {(shifts ?? []).length === 0 ? (
-              <p className="text-xs text-slate-400">No shifts logged.</p>
+              <p className="text-xs text-muted-foreground">No shifts logged.</p>
             ) : (
               (shifts ?? []).map((shift) => (
                 <div
                   key={shift.id}
                   className="rounded-xl border border-white/10 bg-white/5 px-4 py-3"
                 >
-                  <div className="text-xs uppercase tracking-widest text-slate-400">
+                  <div className="text-xs uppercase tracking-widest text-muted-foreground">
                     {shift.status}
                   </div>
-                  <div className="text-xs text-slate-300">
+                  <div className="text-xs text-foreground/70">
                     Started {fmtDate(shift.started_at)}
                   </div>
                 </div>

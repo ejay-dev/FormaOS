@@ -41,7 +41,7 @@ export default async function IntegrationSettingsPage() {
       <header className="flex flex-col gap-4">
         <Link
           href="/app/settings"
-          className="text-xs font-semibold text-slate-400 hover:text-slate-200"
+          className="text-xs font-semibold text-muted-foreground hover:text-foreground/90"
         >
           ← Back to Settings
         </Link>
@@ -50,10 +50,10 @@ export default async function IntegrationSettingsPage() {
             <PlugZap className="h-6 w-6" />
           </div>
           <div>
-            <h1 className="text-3xl font-black tracking-tight text-slate-100">
+            <h1 className="text-3xl font-black tracking-tight text-foreground">
               Integration Control Plane
             </h1>
-            <p className="mt-2 max-w-3xl text-sm text-slate-400">
+            <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
               Connect customer-facing channels, issue trackers, and evidence repositories.
               Every integration on this page flows through the same delivery, audit, and health model
               as the new v1 API.
@@ -67,7 +67,7 @@ export default async function IntegrationSettingsPage() {
           <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-300">
             Connected
           </p>
-          <p className="mt-3 text-3xl font-black text-slate-100">
+          <p className="mt-3 text-3xl font-black text-foreground">
             {items.filter((item) => item.connected).length}
           </p>
         </div>
@@ -75,7 +75,7 @@ export default async function IntegrationSettingsPage() {
           <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-300">
             Healthy
           </p>
-          <p className="mt-3 text-3xl font-black text-slate-100">
+          <p className="mt-3 text-3xl font-black text-foreground">
             {items.filter((item) => item.health === 'healthy').length}
           </p>
         </div>
@@ -83,7 +83,7 @@ export default async function IntegrationSettingsPage() {
           <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-300">
             Event Fanout
           </p>
-          <div className="mt-3 flex items-center gap-2 text-slate-100">
+          <div className="mt-3 flex items-center gap-2 text-foreground">
             <Workflow className="h-5 w-5 text-cyan-300" />
             <span className="text-sm font-semibold">
               Webhooks, notifications, and external systems share one delivery plane.

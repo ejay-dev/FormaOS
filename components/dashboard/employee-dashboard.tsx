@@ -58,7 +58,7 @@ export function MyComplianceStatus({
       case 'review_needed':
         return 'bg-red-500/20 border-red-400/30 text-red-300';
       default:
-        return 'bg-slate-500/20 border-slate-400/30 text-slate-300';
+        return 'bg-slate-500/20 border-slate-400/30 text-foreground/70';
     }
   };
 
@@ -72,10 +72,10 @@ export function MyComplianceStatus({
         {/* Score */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <p className="text-sm text-slate-400 mb-2">Your Score</p>
+            <p className="text-sm text-muted-foreground mb-2">Your Score</p>
             <div className="flex items-end gap-2">
               <p className="text-4xl font-bold">{complianceScore}%</p>
-              <p className="text-sm text-slate-400 pb-1">
+              <p className="text-sm text-muted-foreground pb-1">
                 vs org avg {orgAverage}%
               </p>
             </div>
@@ -85,7 +85,7 @@ export function MyComplianceStatus({
               className="w-12 bg-gradient-to-t from-green-500 to-green-400 rounded"
               style={{ height: `${complianceScore}%` }}
             />
-            <p className="absolute top-2 text-xs text-slate-400">
+            <p className="absolute top-2 text-xs text-muted-foreground">
               Your Progress
             </p>
           </div>
@@ -103,7 +103,7 @@ export function MyComplianceStatus({
                 : '⚠ Review Needed'}
           </span>
           {nextAuditDate && (
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-muted-foreground">
               Next audit:{' '}
               <span className="font-semibold text-white">{nextAuditDate}</span>
             </p>
@@ -111,11 +111,11 @@ export function MyComplianceStatus({
         </div>
 
         {/* Quick Actions */}
-        <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row gap-2">
+        <div className="pt-4 border-t border-glass-border flex flex-col sm:flex-row gap-2">
           <button className="w-full sm:flex-1 px-4 py-2 rounded-lg bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 transition-colors font-semibold text-sm">
             View Full Report
           </button>
-          <button className="w-full sm:flex-1 px-4 py-2 rounded-lg bg-slate-700/50 text-slate-300 hover:bg-slate-700 transition-colors font-semibold text-sm">
+          <button className="w-full sm:flex-1 px-4 py-2 rounded-lg bg-slate-700/50 text-foreground/70 hover:bg-slate-700 transition-colors font-semibold text-sm">
             Request Help
           </button>
         </div>
@@ -148,7 +148,7 @@ export function MyCertificates({
       case 'expired':
         return 'bg-red-500/20 text-red-300 border-red-400/30';
       default:
-        return 'bg-slate-500/20 text-slate-300';
+        return 'bg-slate-500/20 text-foreground/70';
     }
   };
 
@@ -160,12 +160,12 @@ export function MyCertificates({
     >
       <div className="space-y-3">
         {certificates.length === 0 ? (
-          <p className="text-sm text-slate-400">No certifications on file.</p>
+          <p className="text-sm text-muted-foreground">No certifications on file.</p>
         ) : (
           certificates.map((cert) => (
             <div
               key={cert.id}
-              className="p-4 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+              className="p-4 rounded-lg bg-glass-subtle border border-glass-border hover:bg-glass-strong transition-colors"
             >
               <div className="flex items-center justify-between mb-2">
                 <h4 className="font-semibold">{cert.title}</h4>
@@ -181,14 +181,14 @@ export function MyCertificates({
                       : 'Expired'}
                 </span>
               </div>
-              <div className="flex gap-8 text-xs text-slate-400">
+              <div className="flex gap-8 text-xs text-muted-foreground">
                 <p>
                   Issued:{' '}
-                  <span className="text-slate-300">{cert.issuedDate}</span>
+                  <span className="text-foreground/70">{cert.issuedDate}</span>
                 </p>
                 <p>
                   Expires:{' '}
-                  <span className="text-slate-300">{cert.expiresAt}</span>
+                  <span className="text-foreground/70">{cert.expiresAt}</span>
                 </p>
               </div>
             </div>
@@ -218,7 +218,7 @@ export function MyTasks({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'bg-slate-500/20 text-slate-300 border-slate-400/30';
+        return 'bg-slate-500/20 text-foreground/70 border-slate-400/30';
       case 'in_progress':
         return 'bg-blue-500/20 text-blue-300 border-blue-400/30';
       case 'completed':
@@ -226,7 +226,7 @@ export function MyTasks({
       case 'overdue':
         return 'bg-red-500/20 text-red-300 border-red-400/30';
       default:
-        return 'bg-slate-500/20 text-slate-300';
+        return 'bg-slate-500/20 text-foreground/70';
     }
   };
 
@@ -238,19 +238,19 @@ export function MyTasks({
     >
       <div className="space-y-3">
         {tasks.length === 0 ? (
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted-foreground">
             No active tasks assigned to you.
           </p>
         ) : (
           tasks.map((task) => (
             <div
               key={task.id}
-              className="p-4 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+              className="p-4 rounded-lg bg-glass-subtle border border-glass-border hover:bg-glass-strong transition-colors"
             >
               <div className="flex items-start justify-between mb-2">
                 <div className="flex-1">
                   <h4 className="font-semibold">{task.title}</h4>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     {task.description}
                   </p>
                 </div>
@@ -270,13 +270,13 @@ export function MyTasks({
               </div>
 
               <div className="flex items-end justify-between">
-                <div className="flex-1 text-xs text-slate-400">
+                <div className="flex-1 text-xs text-muted-foreground">
                   <p>
                     Assigned by:{' '}
-                    <span className="text-slate-300">{task.assignedBy}</span>
+                    <span className="text-foreground/70">{task.assignedBy}</span>
                   </p>
                   <p>
-                    Due: <span className="text-slate-300">{task.dueAt}</span>
+                    Due: <span className="text-foreground/70">{task.dueAt}</span>
                   </p>
                 </div>
 
@@ -324,11 +324,11 @@ export function UploadEvidence({
     >
       <div className="space-y-4">
         {/* Upload Area */}
-        <div className="border-2 border-dashed border-white/20 rounded-lg p-8 text-center hover:border-white/40 hover:bg-white/5 transition-all cursor-pointer">
-          <p className="text-sm text-slate-400 mb-2">
+        <div className="border-2 border-dashed border-glass-border-strong rounded-lg p-8 text-center hover:border-white/40 hover:bg-glass-subtle transition-all cursor-pointer">
+          <p className="text-sm text-muted-foreground mb-2">
             Click or drag files to upload
           </p>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-muted-foreground/60">
             Supported: PDF, DOC, DOCX, JPG, PNG (max 10MB)
           </p>
         </div>
@@ -348,7 +348,7 @@ export function UploadEvidence({
                     case 'rejected':
                       return 'bg-red-500/20 text-red-300 border-red-400/30';
                     default:
-                      return 'bg-slate-500/20 text-slate-300';
+                      return 'bg-slate-500/20 text-foreground/70';
                   }
                 };
 
@@ -359,11 +359,11 @@ export function UploadEvidence({
                   >
                     <div className="flex-1">
                       <p className="text-sm font-medium">{sub.title}</p>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-xs text-muted-foreground">
                         {sub.submittedAt}
                       </p>
                       {sub.feedback && (
-                        <p className="text-xs text-slate-500 mt-1">
+                        <p className="text-xs text-muted-foreground/60 mt-1">
                           Feedback: {sub.feedback}
                         </p>
                       )}
@@ -412,12 +412,12 @@ export function Training({
     >
       <div className="space-y-3">
         {courses.length === 0 ? (
-          <p className="text-sm text-slate-400">No training assigned.</p>
+          <p className="text-sm text-muted-foreground">No training assigned.</p>
         ) : (
           courses.map((course) => (
             <div
               key={course.id}
-              className="p-4 rounded-lg bg-white/5 border border-white/10"
+              className="p-4 rounded-lg bg-glass-subtle border border-white/10"
             >
               <div className="flex items-center justify-between mb-2">
                 <h4 className="font-semibold">{course.title}</h4>
@@ -425,7 +425,7 @@ export function Training({
                   {course.completionPercentage}%
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mb-3">
+              <p className="text-xs text-muted-foreground mb-3">
                 {course.description}
               </p>
               {course.requiredFor && (
@@ -529,21 +529,21 @@ function RoleWorkflowBoard({
       icon={Briefcase}
     >
       <div className="mb-4 grid grid-cols-3 gap-2">
-        <div className="rounded-lg border border-white/10 bg-white/5 p-3 text-center">
-          <p className="text-lg font-bold text-slate-100">{tasksAssigned}</p>
-          <p className="text-xs uppercase tracking-wide text-slate-400">
+        <div className="rounded-lg border border-glass-border bg-glass-subtle p-3 text-center">
+          <p className="text-lg font-bold text-foreground">{tasksAssigned}</p>
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">
             Assigned
           </p>
         </div>
-        <div className="rounded-lg border border-white/10 bg-white/5 p-3 text-center">
-          <p className="text-lg font-bold text-slate-100">{tasksPending}</p>
-          <p className="text-xs uppercase tracking-wide text-slate-400">
+        <div className="rounded-lg border border-glass-border bg-glass-subtle p-3 text-center">
+          <p className="text-lg font-bold text-foreground">{tasksPending}</p>
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">
             Pending
           </p>
         </div>
-        <div className="rounded-lg border border-white/10 bg-white/5 p-3 text-center">
-          <p className="text-lg font-bold text-slate-100">{complianceScore}%</p>
-          <p className="text-xs uppercase tracking-wide text-slate-400">
+        <div className="rounded-lg border border-glass-border bg-glass-subtle p-3 text-center">
+          <p className="text-lg font-bold text-foreground">{complianceScore}%</p>
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">
             Score
           </p>
         </div>
@@ -554,20 +554,20 @@ function RoleWorkflowBoard({
           <Link
             key={action.label}
             href={action.href}
-            className="group flex flex-col gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:bg-white/10 sm:flex-row sm:items-start sm:justify-between"
+            className="group flex flex-col gap-3 rounded-xl border border-glass-border bg-glass-subtle px-4 py-3 transition-colors hover:bg-glass-strong sm:flex-row sm:items-start sm:justify-between"
           >
             <div className="flex items-start gap-3">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5">
-                <action.icon className="h-4 w-4 text-slate-300" />
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-glass-border bg-white/5">
+                <action.icon className="h-4 w-4 text-foreground/70" />
               </span>
               <div>
-                <p className="text-sm font-semibold text-slate-100">
+                <p className="text-sm font-semibold text-foreground">
                   {action.label}
                 </p>
-                <p className="text-xs text-slate-400">{action.detail}</p>
+                <p className="text-xs text-muted-foreground">{action.detail}</p>
               </div>
             </div>
-            <CheckCircle2 className="mt-1 h-4 w-4 self-end text-slate-500 transition-transform group-hover:scale-110 sm:self-auto" />
+            <CheckCircle2 className="mt-1 h-4 w-4 self-end text-muted-foreground/60 transition-transform group-hover:scale-110 sm:self-auto" />
           </Link>
         ))}
       </div>
@@ -611,11 +611,11 @@ export function EmployeeDashboard({
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      <div className="rounded-2xl border border-white/10 bg-white/5 px-4 sm:px-5 py-4">
-        <p className="text-xs uppercase tracking-wider text-slate-400">
+      <div className="rounded-2xl border border-glass-border bg-glass-subtle px-4 sm:px-5 py-4">
+        <p className="text-xs uppercase tracking-wider text-muted-foreground">
           Workspace Context
         </p>
-        <p className="mt-1 text-sm text-slate-200">
+        <p className="mt-1 text-sm text-foreground/90">
           {employeeName} operating in {organizationName}
         </p>
       </div>

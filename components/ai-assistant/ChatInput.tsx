@@ -35,8 +35,8 @@ export function ChatInput({ value, onChange, onSubmit, isLoading, disabled }: Ch
   }, []);
 
   return (
-    <div className="border-t border-white/10 p-4">
-      <div className="flex items-end gap-2 rounded-xl border border-white/10 bg-white/5 p-2">
+    <div className="border-t border-glass-border p-4">
+      <div className="flex items-end gap-2 rounded-xl border border-glass-border bg-glass-subtle p-2">
         <textarea
           ref={textareaRef}
           value={value}
@@ -48,7 +48,7 @@ export function ChatInput({ value, onChange, onSubmit, isLoading, disabled }: Ch
           placeholder="Ask about compliance..."
           disabled={isLoading || disabled}
           rows={1}
-          className="flex-1 resize-none bg-transparent px-2 py-1.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none disabled:opacity-50"
+          className="flex-1 resize-none bg-transparent px-2 py-1.5 text-sm text-foreground/90 placeholder:text-muted-foreground/50 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary/30 disabled:opacity-50"
         />
         <button
           onClick={onSubmit}
@@ -59,8 +59,8 @@ export function ChatInput({ value, onChange, onSubmit, isLoading, disabled }: Ch
         </button>
       </div>
       <div className="mt-1 flex items-center justify-between px-1">
-        <span className="text-[10px] text-slate-600">Shift+Enter for new line</span>
-        <span className="text-[10px] text-slate-600 tabular-nums">{value.length}</span>
+        <span className="text-[10px] text-muted-foreground/40">Shift+Enter for new line</span>
+        <span className="text-[10px] text-muted-foreground/40 tabular-nums">{value.length}</span>
       </div>
     </div>
   );

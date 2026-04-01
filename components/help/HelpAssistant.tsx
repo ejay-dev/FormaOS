@@ -147,7 +147,7 @@ export function HelpAssistant() {
       <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+1rem)] right-4 z-[80]">
         <button
           onClick={toggle}
-          className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-gradient-to-br from-cyan-400/90 to-blue-500/90 text-slate-900 shadow-lg shadow-cyan-500/30 transition-transform hover:-translate-y-0.5"
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-glass-border bg-gradient-to-br from-cyan-400/90 to-blue-500/90 text-slate-900 shadow-lg shadow-cyan-500/30 transition-transform hover:-translate-y-0.5"
           aria-label="Open help assistant"
         >
           <LifeBuoy className="h-5 w-5" />
@@ -155,18 +155,18 @@ export function HelpAssistant() {
       </div>
 
       {isOpen ? (
-        <div className="fixed bottom-0 left-0 right-0 z-[var(--z-overlay)] max-h-[85vh] overflow-hidden rounded-t-3xl border-t border-white/10 bg-[hsl(var(--card))] shadow-2xl sm:bottom-6 sm:left-auto sm:right-6 sm:max-h-[80vh] sm:w-[380px] sm:rounded-2xl sm:border sm:border-white/10 pb-[env(safe-area-inset-bottom)]">
-          <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+        <div className="fixed bottom-0 left-0 right-0 z-[var(--z-overlay)] max-h-[85vh] overflow-hidden rounded-t-3xl border-t border-glass-border bg-[hsl(var(--card))] shadow-2xl sm:bottom-6 sm:left-auto sm:right-6 sm:max-h-[80vh] sm:w-[380px] sm:rounded-2xl sm:border sm:border-glass-border pb-[env(safe-area-inset-bottom)]">
+          <div className="flex items-center justify-between border-b border-glass-border px-5 py-4">
             <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-cyan-300" />
               <div>
-                <p className="text-sm font-semibold text-slate-100">Help Assistant</p>
-                <p className="text-xs text-slate-400">Find answers fast</p>
+                <p className="text-sm font-semibold text-foreground">Help Assistant</p>
+                <p className="text-xs text-muted-foreground">Find answers fast</p>
               </div>
             </div>
             <button
               onClick={close}
-              className="rounded-full border border-white/10 p-2 text-slate-400 hover:text-white"
+              className="rounded-full border border-glass-border p-2 text-muted-foreground hover:text-white"
               aria-label="Close"
             >
               <span className="sr-only">Close</span>
@@ -176,38 +176,38 @@ export function HelpAssistant() {
 
           <div className="max-h-[calc(85vh-64px)] overflow-y-auto px-5 py-4 sm:max-h-[calc(80vh-64px)]">
             <div className="flex items-center gap-2">
-              <Search className="h-4 w-4 text-slate-400" />
+              <Search className="h-4 w-4 text-muted-foreground" />
               <Input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search help articles"
-                className="h-9 bg-white/5 text-sm"
+                className="h-9 bg-glass-subtle text-sm"
               />
             </div>
 
             {panel === 'bug' ? (
               <div className="mt-5 space-y-3">
-                <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                  <p className="text-sm font-semibold text-slate-100">
+                <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+                  <p className="text-sm font-semibold text-foreground">
                     Report a bug
                   </p>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-muted-foreground">
                     Include what happened and what you expected to see.
                   </p>
                   <textarea
                     value={bugMessage}
                     onChange={(event) => setBugMessage(event.target.value)}
                     placeholder="Describe the issue..."
-                    className="mt-3 h-24 w-full rounded-xl border border-white/10 bg-transparent p-3 text-sm text-slate-100 focus:outline-none"
+                    className="mt-3 h-24 w-full rounded-xl border border-glass-border bg-transparent p-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-colors"
                   />
                   <div className="mt-3 flex items-center justify-between gap-3">
-                    <label className="text-xs text-slate-400">
+                    <label className="text-xs text-muted-foreground">
                       Optional screenshot
                       <input
                         type="file"
                         accept="image/*"
                         onChange={handleScreenshotChange}
-                        className="mt-2 block w-full text-xs text-slate-300"
+                        className="mt-2 block w-full text-xs text-foreground/70"
                       />
                     </label>
                     <Button
@@ -236,7 +236,7 @@ export function HelpAssistant() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setPanel('home')}
-                  className="text-slate-300"
+                  className="text-foreground/70"
                 >
                   Back to Help Center
                 </Button>
@@ -282,7 +282,7 @@ export function HelpAssistant() {
 
                 {suggestedArticles.length > 0 ? (
                   <div className="mt-6">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                       Suggested for this page
                     </p>
                     <div className="mt-3 space-y-2">
@@ -290,10 +290,10 @@ export function HelpAssistant() {
                         <button
                           key={article.id}
                           onClick={() => setActiveArticle(article)}
-                          className="w-full rounded-xl border border-white/10 bg-white/5 p-3 text-left text-sm text-slate-100 hover:bg-white/10"
+                          className="w-full rounded-xl border border-glass-border bg-glass-subtle p-3 text-left text-sm text-foreground hover:bg-glass-strong"
                         >
                           <div className="font-semibold">{article.title}</div>
-                          <div className="mt-1 text-xs text-slate-400">
+                          <div className="mt-1 text-xs text-muted-foreground">
                             {article.summary}
                           </div>
                         </button>
@@ -303,7 +303,7 @@ export function HelpAssistant() {
                 ) : null}
 
                 <div className="mt-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                     Help articles
                   </p>
                   <div className="mt-3 space-y-2">
@@ -312,10 +312,10 @@ export function HelpAssistant() {
                         <button
                           key={article.id}
                           onClick={() => setActiveArticle(article)}
-                          className="w-full rounded-xl border border-white/10 bg-white/5 p-3 text-left text-sm text-slate-100 hover:bg-white/10"
+                          className="w-full rounded-xl border border-glass-border bg-glass-subtle p-3 text-left text-sm text-foreground hover:bg-glass-strong"
                         >
                           <div className="font-semibold">{article.title}</div>
-                          <div className="mt-1 text-xs text-slate-400">
+                          <div className="mt-1 text-xs text-muted-foreground">
                             {article.summary}
                           </div>
                         </button>
@@ -327,31 +327,31 @@ export function HelpAssistant() {
             ) : null}
 
             {panel === 'home' && activeArticle ? (
-              <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-4">
+              <div className="mt-5 rounded-2xl border border-glass-border bg-glass-subtle p-4">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <p className="text-sm font-semibold text-slate-100">
+                    <p className="text-sm font-semibold text-foreground">
                       {activeArticle.title}
                     </p>
-                    <p className="mt-1 text-xs text-slate-400">
+                    <p className="mt-1 text-xs text-muted-foreground">
                       {activeArticle.summary}
                     </p>
                   </div>
                   <button
                     onClick={() => setActiveArticle(null)}
-                    className="rounded-full border border-white/10 px-2 py-1 text-xs text-slate-300"
+                    className="rounded-full border border-glass-border px-2 py-1 text-xs text-foreground/70"
                   >
                     Close
                   </button>
                 </div>
-                <p className="mt-3 text-sm text-slate-200">
+                <p className="mt-3 text-sm text-foreground/90">
                   {activeArticle.body}
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {activeArticle.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-full bg-white/10 px-2 py-1 text-xs text-slate-300"
+                      className="rounded-full bg-glass-strong px-2 py-1 text-xs text-foreground/70"
                     >
                       {tag}
                     </span>

@@ -28,7 +28,7 @@ export default async function EmailHistoryPage() {
     .maybeSingle();
 
   if (!membership) return (
-    <div className="p-12 text-center text-slate-400">
+    <div className="p-12 text-center text-muted-foreground">
       No organization membership found. Please contact your administrator.
     </div>
   );
@@ -40,12 +40,12 @@ export default async function EmailHistoryPage() {
     <div className="p-4 sm:p-6 max-w-6xl mx-auto">
       <div className="mb-8 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-100">Email Delivery History</h1>
-          <p className="text-slate-400">
+          <h1 className="text-2xl font-bold text-foreground">Email Delivery History</h1>
+          <p className="text-muted-foreground">
             A forensic record of all transactional communications sent to your team.
           </p>
         </div>
-        <div className="text-xs text-slate-400 font-mono bg-white/10 px-3 py-1 rounded border">
+        <div className="text-xs text-muted-foreground font-mono bg-glass-strong px-3 py-1 rounded border">
           Org ID: {membership.organization_id.split('-')[0]}...
         </div>
       </div>
@@ -53,7 +53,7 @@ export default async function EmailHistoryPage() {
       <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto overscroll-x-contain">
         <table className="min-w-[640px] sm:min-w-[760px] w-full text-left text-sm">
-          <thead className="bg-white/10 border-b border-white/10 text-slate-400 font-medium">
+          <thead className="bg-glass-strong border-b border-white/10 text-muted-foreground font-medium">
             <tr>
               <th className="px-4 sm:px-6 py-4">Recipient</th>
               <th className="px-4 sm:px-6 py-4">Type</th>
@@ -65,27 +65,27 @@ export default async function EmailHistoryPage() {
           <tbody className="divide-y divide-white/10">
             {logs.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 sm:px-6 py-12 text-center text-slate-400 italic">
+                <td colSpan={5} className="px-4 sm:px-6 py-12 text-center text-muted-foreground italic">
                   No emails have been sent yet.
                 </td>
               </tr>
             ) : (
               logs.map((log) => (
                 <tr key={log.id} className="hover:bg-white/5 transition-colors group">
-                  <td className="px-4 sm:px-6 py-4 font-medium text-slate-100">
+                  <td className="px-4 sm:px-6 py-4 font-medium text-foreground">
                     <div className="flex flex-col">
                       <span>{log.recipientEmail}</span>
-                      <span className="text-xs text-slate-400 font-mono uppercase tracking-tighter">
+                      <span className="text-xs text-muted-foreground font-mono uppercase tracking-tighter">
                         Ref: {log.resendId ? log.resendId.split('-').pop() : 'N/A'}
                       </span>
                     </div>
                   </td>
                   <td className="px-4 sm:px-6 py-4">
-                    <span className="capitalize px-2 py-1 rounded bg-white/10 text-slate-400 text-xs font-semibold">
+                    <span className="capitalize px-2 py-1 rounded bg-glass-strong text-muted-foreground text-xs font-semibold">
                       {log.emailType.replace('_', ' ')}
                     </span>
                   </td>
-                  <td className="px-4 sm:px-6 py-4 text-slate-400">
+                  <td className="px-4 sm:px-6 py-4 text-muted-foreground">
                     {log.subject}
                   </td>
                   <td className="px-4 sm:px-6 py-4">
@@ -107,7 +107,7 @@ export default async function EmailHistoryPage() {
                       )}
                     </div>
                   </td>
-                  <td className="px-4 sm:px-6 py-4 text-slate-400 tabular-nums">
+                  <td className="px-4 sm:px-6 py-4 text-muted-foreground tabular-nums">
                     {new Date(log.createdAt).toLocaleString('en-GB', {
                       day: '2-digit',
                       month: 'short',
@@ -122,7 +122,7 @@ export default async function EmailHistoryPage() {
         </table>
         </div>
       </div>
-      <div className="mt-4 text-xs text-slate-400 flex justify-between">
+      <div className="mt-4 text-xs text-muted-foreground flex justify-between">
         <span>Showing last {logs.length} events</span>
         <span>FormaOS Compliance Engine v1.0</span>
       </div>

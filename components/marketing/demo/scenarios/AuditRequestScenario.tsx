@@ -45,7 +45,7 @@ function MockNotification() {
         <ShieldCheck className="h-3.5 w-3.5" />
         New audit request from BDO Australia
       </div>
-      <p className="mt-1 text-slate-400">
+      <p className="mt-1 text-muted-foreground">
         ISO 27001 Surveillance Audit — 14 controls requested
       </p>
       <div className="mt-2 flex gap-2">
@@ -92,9 +92,9 @@ function MockEvidenceMap() {
           key={c.id}
           className="flex items-center gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] px-2.5 py-1.5"
         >
-          <span className="font-mono text-slate-500 w-10">{c.id}</span>
-          <span className="flex-1 text-slate-300 truncate">{c.name}</span>
-          <span className="flex items-center gap-1 text-slate-500">
+          <span className="font-mono text-muted-foreground/60 w-10">{c.id}</span>
+          <span className="flex-1 text-foreground/70 truncate">{c.name}</span>
+          <span className="flex items-center gap-1 text-muted-foreground/60">
             <Paperclip className="h-2.5 w-2.5" />
             {c.evidence}
           </span>
@@ -119,24 +119,24 @@ function MockBundlePreview() {
         </div>
         <div className="mt-2 grid grid-cols-2 gap-2 text-[10px]">
           <div className="rounded-lg bg-white/[0.04] px-2 py-1.5">
-            <span className="text-slate-500">Controls covered</span>
+            <span className="text-muted-foreground/60">Controls covered</span>
             <p className="font-semibold text-white">12 / 14</p>
           </div>
           <div className="rounded-lg bg-white/[0.04] px-2 py-1.5">
-            <span className="text-slate-500">Evidence items</span>
+            <span className="text-muted-foreground/60">Evidence items</span>
             <p className="font-semibold text-white">23 files</p>
           </div>
           <div className="rounded-lg bg-white/[0.04] px-2 py-1.5">
-            <span className="text-slate-500">Auto-linked</span>
+            <span className="text-muted-foreground/60">Auto-linked</span>
             <p className="font-semibold text-emerald-300">18 (78%)</p>
           </div>
           <div className="rounded-lg bg-white/[0.04] px-2 py-1.5">
-            <span className="text-slate-500">Gaps flagged</span>
+            <span className="text-muted-foreground/60">Gaps flagged</span>
             <p className="font-semibold text-amber-300">2 controls</p>
           </div>
         </div>
       </div>
-      <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
+      <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
         <Link2 className="h-3 w-3 text-cyan-400" />
         Secure share link generated — expires in 14 days
       </div>
@@ -155,25 +155,25 @@ function MockDelivery() {
           </div>
           <span className="text-[10px] text-emerald-400">Sent</span>
         </div>
-        <p className="mt-1.5 text-slate-400 text-[10px]">
+        <p className="mt-1.5 text-muted-foreground text-[10px]">
           Recipient: audit-team@bdo.com.au
         </p>
       </div>
       <div className="grid grid-cols-3 gap-2 text-center text-[10px]">
         <div className="rounded-lg bg-white/[0.04] px-2 py-2">
           <p className="text-lg font-bold text-cyan-300">4h</p>
-          <span className="text-slate-500">Prep time</span>
+          <span className="text-muted-foreground/60">Prep time</span>
         </div>
         <div className="rounded-lg bg-white/[0.04] px-2 py-2">
           <p className="text-lg font-bold text-emerald-300">86%</p>
-          <span className="text-slate-500">Coverage</span>
+          <span className="text-muted-foreground/60">Coverage</span>
         </div>
         <div className="rounded-lg bg-white/[0.04] px-2 py-2">
           <p className="text-lg font-bold text-purple-300">0</p>
-          <span className="text-slate-500">Follow-ups</span>
+          <span className="text-muted-foreground/60">Follow-ups</span>
         </div>
       </div>
-      <p className="text-[10px] text-slate-500 text-center">
+      <p className="text-[10px] text-muted-foreground/60 text-center">
         Traditional prep: ~3–5 days → FormaOS: under half a day
       </p>
     </div>
@@ -247,7 +247,7 @@ export default function AuditRequestScenario() {
   const Icon = step.icon;
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-5 sm:p-6">
+    <div className="rounded-2xl border border-glass-border bg-gradient-to-b from-white/[0.04] to-transparent p-5 sm:p-6">
       {/* Header */}
       <div className="mb-5 flex items-center gap-3">
         <div className="rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
@@ -257,7 +257,7 @@ export default function AuditRequestScenario() {
           <h3 className="text-base font-semibold text-white">
             Audit Request Lifecycle
           </h3>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-muted-foreground">
             From auditor request to evidence delivery
           </p>
         </div>
@@ -276,7 +276,7 @@ export default function AuditRequestScenario() {
             key={s.id}
             onClick={() => setCurrentStep(i)}
             className={`h-1.5 flex-1 rounded-full transition-colors ${
-              i <= currentStep ? 'bg-cyan-400' : 'bg-white/10'
+              i <= currentStep ? 'bg-cyan-400' : 'bg-glass-strong'
             }`}
             aria-label={`Go to ${s.phase}: ${s.title}`}
           />
@@ -304,7 +304,7 @@ export default function AuditRequestScenario() {
             <h4 className="text-sm font-semibold text-white">{step.title}</h4>
           </div>
 
-          <p className="mb-4 text-xs text-slate-400 leading-relaxed">
+          <p className="mb-4 text-xs text-muted-foreground leading-relaxed">
             {step.description}
           </p>
 
@@ -320,14 +320,14 @@ export default function AuditRequestScenario() {
         <button
           onClick={goPrev}
           disabled={currentStep === 0}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-xs text-slate-400 transition-colors hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-glass-border px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-glass-subtle disabled:opacity-30 disabled:cursor-not-allowed"
           aria-label="Previous step"
         >
           <ArrowLeft className="h-3 w-3" />
           Back
         </button>
 
-        <span className="text-[10px] text-slate-500">
+        <span className="text-[10px] text-muted-foreground/60">
           {currentStep + 1} / {STEPS.length}
         </span>
 

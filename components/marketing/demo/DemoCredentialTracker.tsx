@@ -111,7 +111,7 @@ export default function DemoCredentialTracker({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-1.5">
             <UserCheck className="h-3.5 w-3.5 text-emerald-400" />
-            <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-wider">Credential Monitor</span>
+            <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Credential Monitor</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="flex items-center gap-1 rounded-full bg-emerald-500/15 px-2 py-0.5 text-[9px] text-emerald-400 font-medium">
@@ -153,18 +153,18 @@ export default function DemoCredentialTracker({
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-medium text-slate-200 truncate">{cred.name}</span>
+                      <span className="text-[11px] font-medium text-foreground/90 truncate">{cred.name}</span>
                       <span className={`rounded-full px-1.5 py-0.5 text-[8px] font-medium ${config.bg} ${config.color}`}>
                         {config.label}
                       </span>
                     </div>
-                    <span className="text-[9px] text-slate-500 block truncate">{cred.holder} • {cred.type}</span>
+                    <span className="text-[9px] text-muted-foreground/60 block truncate">{cred.holder} • {cred.type}</span>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <span className={`text-[10px] block ${cred.status === 'expired' ? 'text-red-400' : cred.status === 'expiring' ? 'text-amber-400' : 'text-slate-400'}`}>
+                    <span className={`text-[10px] block ${cred.status === 'expired' ? 'text-red-400' : cred.status === 'expiring' ? 'text-amber-400' : 'text-muted-foreground'}`}>
                       {cred.expiryDate}
                     </span>
-                    <span className="text-[8px] text-slate-600 block">
+                    <span className="text-[8px] text-muted-foreground/40 block">
                       {cred.daysRemaining > 0 ? `${cred.daysRemaining}d remaining` : `${Math.abs(cred.daysRemaining)}d overdue`}
                     </span>
                   </div>
@@ -177,7 +177,7 @@ export default function DemoCredentialTracker({
         {/* Footer */}
         <div className="flex items-center gap-2 mt-3 pt-2 border-t border-white/[0.04]">
           <Shield className="h-3 w-3 text-emerald-400" />
-          <span className="text-[9px] text-slate-500">Auto-reminders at 90, 60, 30, 7 days before expiry</span>
+          <span className="text-[9px] text-muted-foreground/60">Auto-reminders at 90, 60, 30, 7 days before expiry</span>
         </div>
       </div>
     </div>

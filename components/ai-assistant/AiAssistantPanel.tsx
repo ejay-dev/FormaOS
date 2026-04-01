@@ -214,16 +214,16 @@ export function AiAssistantPanel() {
 
       {/* Panel */}
       <div
-        className={`fixed right-0 top-0 z-50 flex h-full w-full max-w-[800px] flex-col bg-background border-l border-white/10 shadow-2xl transition-transform duration-300 ease-in-out ${
+        className={`fixed right-0 top-0 z-50 flex h-full w-full max-w-[800px] flex-col bg-background border-l border-glass-border shadow-2xl transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         {/* Header */}
-        <div className="flex h-14 items-center justify-between border-b border-white/10 px-4">
+        <div className="flex h-14 items-center justify-between border-b border-glass-border px-4">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowSidebar(!showSidebar)}
-              className="hidden rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-slate-200 transition-colors md:inline-flex"
+              className="hidden rounded-lg p-1.5 text-muted-foreground hover:bg-glass-strong hover:text-foreground/90 transition-colors md:inline-flex"
             >
               {showSidebar ? (
                 <PanelLeftClose className="h-4 w-4" />
@@ -233,12 +233,12 @@ export function AiAssistantPanel() {
             </button>
             <div className="flex items-center gap-2">
               <Bot className="h-5 w-5 text-cyan-400" />
-              <span className="text-sm font-semibold text-slate-200">AI Compliance Assistant</span>
+              <span className="text-sm font-semibold text-foreground/90">AI Compliance Assistant</span>
             </div>
           </div>
           <button
             onClick={close}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-slate-200 transition-colors"
+            className="rounded-lg p-1.5 text-muted-foreground hover:bg-glass-strong hover:text-foreground/90 transition-colors"
           >
             <X className="h-5 w-5" />
           </button>

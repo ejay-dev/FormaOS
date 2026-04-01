@@ -75,14 +75,14 @@ export function WorkflowStepNode({
         onClick={() => onSelect?.(step.id)}
         className={cn(
           'group flex w-full items-start gap-3 rounded-2xl border px-4 py-4 text-left transition',
-          selected ? 'border-cyan-400/70 bg-cyan-500/10 shadow-[0_0_0_1px_rgba(34,211,238,0.25)]' : 'border-white/10 bg-slate-950/70 hover:border-white/20 hover:bg-white/[0.04]',
+          selected ? 'border-cyan-400/70 bg-cyan-500/10 shadow-[0_0_0_1px_rgba(34,211,238,0.25)]' : 'border-glass-border bg-slate-950/70 hover:border-glass-border-strong hover:bg-white/[0.04]',
           hasErrors ? 'border-rose-400/70 bg-rose-500/10' : '',
           execution ? executionTone[execution.status] ?? '' : '',
         )}
       >
         <div
           className={cn(
-            'mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border text-slate-100',
+            'mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border text-foreground',
             step.type === 'condition' ? 'rotate-45 rounded-[18px] bg-amber-500/20 border-amber-400/40' : '',
             step.type === 'approval' ? 'bg-rose-500/20 border-rose-400/40' : '',
             step.type === 'parallel' ? 'bg-sky-500/20 border-sky-400/40' : '',
@@ -95,20 +95,20 @@ export function WorkflowStepNode({
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
               {branchLabel ?? STEP_TYPE_LABELS[step.type]}
             </span>
             {execution ? (
-              <span className="rounded-full border border-white/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-300">
+              <span className="rounded-full border border-glass-border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-foreground/70">
                 {execution.status.replace('_', ' ')}
               </span>
             ) : null}
           </div>
           <div className="mt-1 flex items-center gap-2">
-            <p className="truncate text-sm font-semibold text-slate-100">{step.name}</p>
+            <p className="truncate text-sm font-semibold text-foreground">{step.name}</p>
             {hasErrors ? <AlertTriangle className="h-4 w-4 shrink-0 text-rose-300" /> : null}
           </div>
-          <p className="mt-1 text-sm text-slate-400">{stepSummary(step)}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{stepSummary(step)}</p>
           {validationErrors?.length ? (
             <p className="mt-2 text-xs text-rose-200">{validationErrors.join(' • ')}</p>
           ) : null}
@@ -120,7 +120,7 @@ export function WorkflowStepNode({
           <div className="flex shrink-0 items-center gap-1 opacity-0 transition group-hover:opacity-100">
             <button
               type="button"
-              className="rounded-lg border border-white/10 p-2 text-slate-300 hover:bg-white/10"
+              className="rounded-lg border border-glass-border p-2 text-foreground/70 hover:bg-glass-strong"
               onClick={(event) => {
                 event.stopPropagation();
                 onMove?.(step.id, 'up');
@@ -131,7 +131,7 @@ export function WorkflowStepNode({
             </button>
             <button
               type="button"
-              className="rounded-lg border border-white/10 p-2 text-slate-300 hover:bg-white/10"
+              className="rounded-lg border border-glass-border p-2 text-foreground/70 hover:bg-glass-strong"
               onClick={(event) => {
                 event.stopPropagation();
                 onMove?.(step.id, 'down');

@@ -138,7 +138,7 @@ export default function InteractiveDemo() {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight">
             See FormaOS in Action
           </h2>
-          <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
             Explore the platform that makes compliance operational. Click through real screens or sit back and watch.
           </p>
         </motion.div>
@@ -166,7 +166,7 @@ export default function InteractiveDemo() {
                   <div className="h-2.5 w-2.5 rounded-full bg-green-500/60" />
                 </div>
                 {/* URL bar */}
-                <div className="hidden sm:flex items-center gap-1.5 rounded-md bg-white/[0.04] px-3 py-1 text-[10px] text-slate-500">
+                <div className="hidden sm:flex items-center gap-1.5 rounded-md bg-white/[0.04] px-3 py-1 text-[10px] text-muted-foreground/60">
                   <span className="text-emerald-400">🔒</span>
                   <span>app.formaos.com.au</span>
                 </div>
@@ -191,7 +191,7 @@ export default function InteractiveDemo() {
                   type="button"
                   onClick={toggleAutoPlay}
                   aria-label={isAutoPlaying ? 'Pause auto-play demo' : 'Start auto-play demo'}
-                  className="flex items-center gap-1 rounded bg-white/[0.04] px-1.5 py-0.5 text-[10px] text-slate-400 hover:text-slate-200 transition-colors"
+                  className="flex items-center gap-1 rounded bg-white/[0.04] px-1.5 py-0.5 text-[10px] text-muted-foreground hover:text-foreground/90 transition-colors"
                 >
                   {isAutoPlaying ? <Pause className="h-2.5 w-2.5" /> : <Play className="h-2.5 w-2.5" />}
                   <span className="sr-only">{isAutoPlaying ? 'Pause' : 'Play'}</span>
@@ -218,7 +218,7 @@ export default function InteractiveDemo() {
                   className={`flex-shrink-0 px-3 py-2 text-[11px] font-medium border-b-2 transition-colors ${
                     activeScreen === id
                       ? 'text-cyan-300 border-cyan-400'
-                      : 'text-slate-500 border-transparent hover:text-slate-300'
+                      : 'text-muted-foreground/60 border-transparent hover:text-foreground/70'
                   }`}
                 >
                   {screenLabels[id]}
@@ -255,7 +255,7 @@ export default function InteractiveDemo() {
               className={`group flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium transition-all ${
                 activeScreen === id
                   ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/20'
-                  : 'text-slate-500 hover:text-slate-300 border border-transparent'
+                  : 'text-muted-foreground/60 hover:text-foreground/70 border border-transparent'
               }`}
             >
               {screenLabels[id]}

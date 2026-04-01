@@ -372,7 +372,7 @@ export default function PhaseDemo() {
               {' '}Complete Control.
             </span>
           </h2>
-          <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
             {isSimulation
               ? 'Watch each phase execute in real time. Click any step to explore, or sit back and watch the full cycle.'
               : 'Explore the platform yourself. Click tasks, open evidence, fire workflow triggers, and see real compliance workflows.'}
@@ -389,7 +389,7 @@ export default function PhaseDemo() {
               className={`flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-[11px] font-medium transition-all ${
                 isSimulation
                   ? 'bg-white/[0.08] text-white shadow-sm'
-                  : 'text-slate-500 hover:text-slate-300'
+                  : 'text-muted-foreground/60 hover:text-foreground/70'
               }`}
             >
               <MonitorPlay className="h-3.5 w-3.5" />
@@ -401,7 +401,7 @@ export default function PhaseDemo() {
               className={`flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-[11px] font-medium transition-all ${
                 !isSimulation
                   ? 'bg-white/[0.08] text-white shadow-sm'
-                  : 'text-slate-500 hover:text-slate-300'
+                  : 'text-muted-foreground/60 hover:text-foreground/70'
               }`}
             >
               <MousePointer className="h-3.5 w-3.5" />
@@ -414,7 +414,7 @@ export default function PhaseDemo() {
             <button
               type="button"
               onClick={handleStartTour}
-              className="flex items-center gap-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] px-3 py-2 text-[11px] font-medium text-slate-400 hover:text-slate-200 hover:bg-white/[0.06] transition-colors"
+              className="flex items-center gap-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] px-3 py-2 text-[11px] font-medium text-muted-foreground hover:text-foreground/90 hover:bg-white/[0.06] transition-colors"
             >
               <HelpCircle className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Guided Tour</span>
@@ -422,7 +422,7 @@ export default function PhaseDemo() {
             <button
               type="button"
               onClick={handleReset}
-              className="flex items-center gap-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] px-3 py-2 text-[11px] font-medium text-slate-400 hover:text-slate-200 hover:bg-white/[0.06] transition-colors"
+              className="flex items-center gap-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] px-3 py-2 text-[11px] font-medium text-muted-foreground hover:text-foreground/90 hover:bg-white/[0.06] transition-colors"
             >
               <RotateCcw className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Reset</span>
@@ -449,14 +449,14 @@ export default function PhaseDemo() {
                     isActive
                       ? colors.tab
                       : isPast
-                        ? 'bg-white/[0.03] text-slate-400 border-white/[0.08]'
-                        : 'bg-white/[0.02] text-slate-500 border-transparent hover:bg-white/[0.04] hover:text-slate-300'
+                        ? 'bg-white/[0.03] text-muted-foreground border-white/[0.08]'
+                        : 'bg-white/[0.02] text-muted-foreground/60 border-transparent hover:bg-white/[0.04] hover:text-foreground/70'
                   }`}
                 >
                   <div className={`h-6 w-6 rounded-lg flex items-center justify-center ${
                     isActive ? `bg-gradient-to-br ${config.accent}` : 'bg-white/[0.06]'
                   }`}>
-                    <Icon className={`h-3.5 w-3.5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                    <Icon className={`h-3.5 w-3.5 ${isActive ? 'text-white' : 'text-muted-foreground'}`} />
                   </div>
                   <div className="text-left">
                     <div className="text-[10px] uppercase tracking-wider opacity-60">Phase {config.number}</div>
@@ -503,7 +503,7 @@ export default function PhaseDemo() {
                   <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/60" />
                   <div className="h-2.5 w-2.5 rounded-full bg-green-500/60" />
                 </div>
-                <div className="hidden sm:flex items-center gap-1.5 rounded-md bg-white/[0.04] px-3 py-1 text-[10px] text-slate-500">
+                <div className="hidden sm:flex items-center gap-1.5 rounded-md bg-white/[0.04] px-3 py-1 text-[10px] text-muted-foreground/60">
                   <span className="text-emerald-400">🔒</span>
                   <span>app.formaos.com.au</span>
                 </div>
@@ -511,7 +511,7 @@ export default function PhaseDemo() {
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1.5 rounded-md bg-white/[0.03] px-2 py-0.5">
                   <div className={`h-1.5 w-1.5 rounded-full ${isSimulation ? 'bg-amber-400/60' : 'bg-emerald-400/60'}`} />
-                  <span className="text-[9px] text-slate-500">
+                  <span className="text-[9px] text-muted-foreground/60">
                     {isSimulation ? 'Simulated Demo' : 'Interactive Sandbox'}
                   </span>
                 </div>
@@ -520,7 +520,7 @@ export default function PhaseDemo() {
                     type="button"
                     onClick={toggleAutoPlay}
                     aria-label={isAutoPlaying ? 'Pause demo' : 'Play demo'}
-                    className="flex items-center gap-1 rounded bg-white/[0.04] px-1.5 py-0.5 text-[10px] text-slate-400 hover:text-slate-200 transition-colors"
+                    className="flex items-center gap-1 rounded bg-white/[0.04] px-1.5 py-0.5 text-[10px] text-muted-foreground hover:text-foreground/90 transition-colors"
                   >
                     {isAutoPlaying ? <Pause className="h-2.5 w-2.5" /> : <Play className="h-2.5 w-2.5" />}
                     <span className="hidden sm:inline">{isAutoPlaying ? 'Pause' : 'Play'}</span>
@@ -548,7 +548,7 @@ export default function PhaseDemo() {
                       className={`flex-shrink-0 px-3 py-2 text-[11px] font-medium border-b-2 transition-colors ${
                         activePhase === id
                           ? 'text-teal-300 border-teal-400'
-                          : 'text-slate-500 border-transparent hover:text-slate-300'
+                          : 'text-muted-foreground/60 border-transparent hover:text-foreground/70'
                       }`}
                     >
                       {config.verb}
@@ -563,7 +563,7 @@ export default function PhaseDemo() {
               {/* Phase sidebar (desktop, simulation mode) */}
               {isSimulation && (
                 <div className="hidden md:flex md:w-[180px] lg:w-[200px] flex-shrink-0 flex-col bg-[#080c18] border-r border-white/[0.05] p-3">
-                  <div className="text-[9px] text-slate-600 uppercase tracking-wider font-semibold mb-3 px-2">
+                  <div className="text-[9px] text-muted-foreground/40 uppercase tracking-wider font-semibold mb-3 px-2">
                     Operating Model
                   </div>
                   <div className="space-y-1">
@@ -595,15 +595,15 @@ export default function PhaseDemo() {
                               : isPast ? 'bg-emerald-500/15' : 'bg-white/[0.04]'
                           }`}>
                             <Icon className={`h-3.5 w-3.5 ${
-                              isActive ? 'text-white' : isPast ? 'text-emerald-400' : 'text-slate-500'
+                              isActive ? 'text-white' : isPast ? 'text-emerald-400' : 'text-muted-foreground/60'
                             }`} />
                           </div>
                           <div className="relative z-10 min-w-0">
-                            <div className={`text-[9px] uppercase tracking-wider ${isActive ? 'text-slate-400' : 'text-slate-600'}`}>
+                            <div className={`text-[9px] uppercase tracking-wider ${isActive ? 'text-muted-foreground' : 'text-muted-foreground/40'}`}>
                               Phase {config.number}
                             </div>
                             <div className={`text-[11px] font-medium truncate ${
-                              isActive ? 'text-white' : isPast ? 'text-slate-300' : 'text-slate-500'
+                              isActive ? 'text-white' : isPast ? 'text-foreground/70' : 'text-muted-foreground/60'
                             }`}>
                               {config.verb}
                             </div>
@@ -617,7 +617,7 @@ export default function PhaseDemo() {
                     <AnimatePresence mode="wait">
                       <motion.p
                         key={activePhase}
-                        className="text-[10px] text-slate-500 leading-relaxed px-2"
+                        className="text-[10px] text-muted-foreground/60 leading-relaxed px-2"
                         initial={{ opacity: 0, y: 4 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -4 }}
@@ -651,7 +651,7 @@ export default function PhaseDemo() {
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="flex flex-col items-center gap-2">
                           <div className="h-6 w-6 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" />
-                          <span className="text-[11px] text-slate-500">Loading sandbox...</span>
+                          <span className="text-[11px] text-muted-foreground/60">Loading sandbox...</span>
                         </div>
                       </div>
                     }>
@@ -701,7 +701,7 @@ export default function PhaseDemo() {
               <div className="flex items-center justify-between bg-[#0d1225] border-t border-white/[0.06] px-4 py-1.5">
                 <div className="flex items-center gap-1.5">
                   <MousePointer className="h-3 w-3 text-teal-400" />
-                  <span className="text-[9px] text-slate-500">Click any item to explore — open tasks, evidence, and audit trails</span>
+                  <span className="text-[9px] text-muted-foreground/60">Click any item to explore — open tasks, evidence, and audit trails</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -725,7 +725,7 @@ export default function PhaseDemo() {
                 className={`group flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium transition-all ${
                   activePhase === id
                     ? phaseActiveColors[config.color].tab
-                    : 'text-slate-500 hover:text-slate-300 border border-transparent'
+                    : 'text-muted-foreground/60 hover:text-foreground/70 border border-transparent'
                 }`}
               >
                 <span className="text-[10px] opacity-60">{config.number}</span>
@@ -736,7 +736,7 @@ export default function PhaseDemo() {
         </div>
 
         {/* Simulated demo note */}
-        <p className="text-center text-[11px] text-slate-600 mt-3">
+        <p className="text-center text-[11px] text-muted-foreground/40 mt-3">
           {isSimulation
             ? 'Simulated demo with sample data — no real systems connected'
             : 'Interactive sandbox with pre-seeded demo data — fully client-side, no API calls'}

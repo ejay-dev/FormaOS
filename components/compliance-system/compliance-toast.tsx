@@ -107,12 +107,12 @@ function ComplianceToast({
         </div>
 
         <div className="flex-1 min-w-0">
-          <h4 className="text-sm font-semibold text-slate-100">
+          <h4 className="text-sm font-semibold text-foreground">
             {data.title}
           </h4>
           
           {data.message && (
-            <p className="text-xs text-slate-400 mt-0.5">{data.message}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{data.message}</p>
           )}
 
           {/* Node change indicator */}
@@ -121,14 +121,14 @@ function ComplianceToast({
               <span className={cn("font-semibold capitalize", NODE_COLORS[data.nodeType])}>
                 {data.nodeType}
               </span>
-              <span className="text-slate-500">•</span>
-              <span className="text-slate-400">{data.nodeAction}</span>
+              <span className="text-muted-foreground/60">•</span>
+              <span className="text-muted-foreground">{data.nodeAction}</span>
             </div>
           )}
 
           {/* Wire update indicator */}
           {data.wireFrom && data.wireTo && (
-            <div className="flex items-center gap-1.5 mt-1.5 text-xs text-slate-400">
+            <div className="flex items-center gap-1.5 mt-1.5 text-xs text-muted-foreground">
               <span>{data.wireFrom}</span>
               <ArrowRight className="h-3 w-3 text-cyan-400" />
               <span>{data.wireTo}</span>
@@ -154,9 +154,9 @@ function ComplianceToast({
 
         <button
           onClick={onDismiss}
-          className="p-1 rounded hover:bg-white/10 transition-colors shrink-0"
+          className="p-1 rounded hover:bg-glass-strong transition-colors shrink-0"
         >
-          <X className="h-4 w-4 text-slate-400" />
+          <X className="h-4 w-4 text-muted-foreground" />
         </button>
       </div>
 

@@ -50,7 +50,7 @@ export default function ScenarioShowcase() {
           <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">
             Walk through real compliance workflows
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-sm text-slate-400 sm:text-base">
+          <p className="mx-auto mt-4 max-w-2xl text-sm text-muted-foreground sm:text-base">
             Step through the exact workflows your team will use — from audit
             request to board report, with real data and measurable outcomes.
           </p>
@@ -73,7 +73,7 @@ export default function ScenarioShowcase() {
                 className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-medium transition-all ${
                   active
                     ? `${tab.activeBg} ${tab.color}`
-                    : 'border-white/10 text-slate-400 hover:bg-white/5'
+                    : 'border-glass-border text-muted-foreground hover:bg-white/5'
                 }`}
               >
                 <Icon className="h-4 w-4" />

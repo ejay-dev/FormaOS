@@ -33,16 +33,16 @@ export function TaskList({ initialTasks }: { initialTasks: Task[] }) {
       critical: "bg-red-100 text-red-700 border-red-200",
       high: "bg-amber-400/10 text-amber-300 border-amber-400/30",
       medium: "bg-sky-500/10 text-sky-300 border-sky-400/30",
-      low: "bg-white/10 text-slate-400 border-white/10",
+      low: "bg-glass-strong text-muted-foreground border-white/10",
     };
     return styles[priority] || styles.low;
   };
 
   return (
-    <div className="bg-white/10 border border-white/10 rounded-2xl overflow-hidden shadow-sm">
+    <div className="bg-glass-strong border border-glass-border rounded-2xl overflow-hidden shadow-sm">
       <div className="overflow-x-auto">
         <table className="min-w-[520px] w-full text-left text-sm">
-          <thead className="bg-white/10 border-b border-white/10 text-slate-400">
+          <thead className="bg-glass-strong border-b border-glass-border text-muted-foreground">
             <tr>
               <th className="px-6 py-4 font-bold text-xs uppercase tracking-wider w-16">Done</th>
               <th className="px-6 py-4 font-bold text-xs uppercase tracking-wider">Task Name</th>
@@ -56,7 +56,7 @@ export function TaskList({ initialTasks }: { initialTasks: Task[] }) {
               return (
                 <tr 
                   key={task.id} 
-                  className={`group transition-all duration-200 ${isCompleted ? 'bg-white/10' : 'hover:bg-white/10'}`}
+                  className={`group transition-all duration-200 ${isCompleted ? 'bg-glass-strong' : 'hover:bg-glass-strong'}`}
                 >
                   <td className="px-6 py-4">
                     <button
@@ -64,7 +64,7 @@ export function TaskList({ initialTasks }: { initialTasks: Task[] }) {
                       className={`h-6 w-6 rounded-md border flex items-center justify-center transition-all duration-200
                         ${isCompleted 
                           ? 'bg-emerald-500 border-emerald-500 text-white shadow-sm' 
-                          : 'bg-white/10 border-white/10 text-transparent hover:border-white/20'
+                          : 'bg-glass-strong border-glass-border text-transparent hover:border-white/20'
                         }`}
                     >
                       <Check className="h-3.5 w-3.5" strokeWidth={3} />
@@ -72,7 +72,7 @@ export function TaskList({ initialTasks }: { initialTasks: Task[] }) {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-col">
-                      <span className={`font-medium transition-all ${isCompleted ? 'text-slate-400 line-through' : 'text-slate-100'}`}>
+                      <span className={`font-medium transition-all ${isCompleted ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
                         {task.title}
                       </span>
                       {task.is_recurring && (
@@ -89,14 +89,14 @@ export function TaskList({ initialTasks }: { initialTasks: Task[] }) {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
-                     <div className={`flex items-center justify-end gap-2 text-xs font-medium ${isCompleted ? 'text-slate-400' : 'text-slate-400'}`}>
+                     <div className={`flex items-center justify-end gap-2 text-xs font-medium ${isCompleted ? 'text-muted-foreground' : 'text-muted-foreground'}`}>
                        {task.due_date ? (
                          <>
                            <Calendar className="h-3 w-3" />
                            {new Date(task.due_date).toLocaleDateString()}
                          </>
                        ) : (
-                         <span className="text-slate-400">-</span>
+                         <span className="text-muted-foreground">-</span>
                        )}
                      </div>
                   </td>

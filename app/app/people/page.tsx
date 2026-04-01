@@ -113,12 +113,12 @@ export default function PeoplePage() {
 
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-black text-slate-100 tracking-tight">Personnel Oversight</h1>
-          <p className="mt-1 text-slate-400 font-medium tracking-tight">Workforce access, role, and compliance activity.</p>
+          <h1 className="text-3xl font-black text-foreground tracking-tight">Personnel Oversight</h1>
+          <p className="mt-1 text-muted-foreground font-medium tracking-tight">Workforce access, role, and compliance activity.</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 bg-white/10 text-slate-100 px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-white/20 transition-all shadow-xl active:scale-95"
+          className="flex items-center gap-2 bg-glass-strong text-foreground px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-white/20 transition-all shadow-xl active:scale-95"
         >
           <UserPlus className="h-4 w-4" />
           Provision Access
@@ -127,7 +127,7 @@ export default function PeoplePage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_auto] items-center gap-3 bg-white/5 p-2 rounded-2xl border border-white/10 shadow-sm">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -139,7 +139,7 @@ export default function PeoplePage() {
         <select
           value={roleFilter}
           onChange={(event) => setRoleFilter(event.target.value)}
-          className="h-10 rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-semibold uppercase tracking-wider text-slate-300"
+          className="h-10 rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
         >
           <option value={ALL_FILTER}>All Roles</option>
           {roleOptions.map((role) => (
@@ -152,7 +152,7 @@ export default function PeoplePage() {
         <select
           value={complianceFilter}
           onChange={(event) => setComplianceFilter(event.target.value)}
-          className="h-10 rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-semibold uppercase tracking-wider text-slate-300"
+          className="h-10 rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
         >
           <option value={ALL_FILTER}>All Statuses</option>
           {complianceOptions.map((status) => (
@@ -172,12 +172,12 @@ export default function PeoplePage() {
       <div className="grid grid-cols-1 gap-4">
         {loading ? (
           <div className="py-20 text-center animate-pulse">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Synchronizing Personnel Records...</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Synchronizing Personnel Records...</p>
           </div>
         ) : filteredMembers.length === 0 ? (
           <div className="rounded-3xl border border-white/10 bg-white/5 py-14 text-center">
-            <p className="text-sm font-semibold text-slate-200">No personnel match the current filters.</p>
-            <p className="mt-1 text-xs text-slate-400">Adjust search terms or filters and try again.</p>
+            <p className="text-sm font-semibold text-foreground/90">No personnel match the current filters.</p>
+            <p className="mt-1 text-xs text-muted-foreground">Adjust search terms or filters and try again.</p>
           </div>
         ) : filteredMembers.map((member) => {
           const complianceStatus = (member.compliance_status ?? "active").toLowerCase()
@@ -187,15 +187,15 @@ export default function PeoplePage() {
           return (
             <div
               key={member.user_id}
-              className="group bg-white/5 border border-white/10 rounded-[2.5rem] p-6 hover:border-white/20 transition-all shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-6"
+              className="group bg-white/5 border border-white/10 rounded-[2.5rem] p-6 hover:border-glass-border-strong transition-all shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-6"
             >
               <div className="flex items-center gap-4">
-                <div className="h-14 w-14 rounded-[1.25rem] bg-white/10 border border-white/10 flex items-center justify-center text-slate-400 group-hover:bg-white/20 group-hover:text-slate-100 transition-all duration-300">
+                <div className="h-14 w-14 rounded-[1.25rem] bg-glass-strong border border-white/10 flex items-center justify-center text-muted-foreground group-hover:bg-white/20 group-hover:text-foreground transition-all duration-300">
                   <User className="h-6 w-6" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-black text-slate-100 leading-none">Workspace Member</p>
+                    <p className="text-sm font-black text-foreground leading-none">Workspace Member</p>
 
                     <div
                       className={`px-2 py-0.5 rounded-md border text-xs font-semibold uppercase tracking-wide flex items-center gap-1 ${
@@ -208,7 +208,7 @@ export default function PeoplePage() {
                       {complianceStatus}
                     </div>
                   </div>
-                  <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider mt-2">
+                  <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mt-2">
                     {member.department || "General Staff"} • Joined {joinedDate}
                   </p>
                 </div>
@@ -216,24 +216,24 @@ export default function PeoplePage() {
 
               <div className="flex items-center gap-8 md:gap-16 border-t md:border-t-0 pt-6 md:pt-0 border-white/10">
                 <div className="text-center">
-                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Tasks</p>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Tasks</p>
                   <div className="flex items-center gap-2 justify-center">
                     <CheckSquare className="h-3.5 w-3.5 text-sky-300" />
-                    <span className="text-sm font-black text-slate-100">{member.taskCount}</span>
+                    <span className="text-sm font-black text-foreground">{member.taskCount}</span>
                   </div>
                 </div>
                 <div className="text-center">
-                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Evidence</p>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Evidence</p>
                   <div className="flex items-center gap-2 justify-center">
                     <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
-                    <span className="text-sm font-black text-slate-100">{member.evidenceCount}</span>
+                    <span className="text-sm font-black text-foreground">{member.evidenceCount}</span>
                   </div>
                 </div>
                 <div className="text-center">
-                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Role</p>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Role</p>
                   <div className="flex items-center gap-2 justify-center">
-                    <Shield className={`h-3.5 w-3.5 ${roleLabel === "ADMIN" ? "text-sky-300" : "text-slate-400"}`} />
-                    <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">{roleLabel}</span>
+                    <Shield className={`h-3.5 w-3.5 ${roleLabel === "ADMIN" ? "text-sky-300" : "text-muted-foreground"}`} />
+                    <span className="text-xs font-semibold text-foreground/70 uppercase tracking-wider">{roleLabel}</span>
                   </div>
                 </div>
               </div>
@@ -241,7 +241,7 @@ export default function PeoplePage() {
               <div className="flex items-center gap-3">
                 <Link
                   href={`/app/staff-compliance?member=${member.user_id}`}
-                  className="px-6 py-3 bg-white/10 text-slate-100 rounded-xl text-xs font-semibold uppercase tracking-wider hover:bg-white/20 transition-all"
+                  className="px-6 py-3 bg-glass-strong text-foreground rounded-xl text-xs font-semibold uppercase tracking-wider hover:bg-white/20 transition-all"
                 >
                   View Records
                 </Link>

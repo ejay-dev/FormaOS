@@ -25,7 +25,7 @@ interface ComplianceChartProps {
 export function ComplianceChart({ data, benchmark = 85 }: ComplianceChartProps) {
   return (
     <motion.div
-      className="h-[240px] sm:h-[320px] w-full rounded-2xl border border-white/10 bg-white/10 p-4 shadow-sm"
+      className="h-[240px] sm:h-[320px] w-full rounded-2xl border border-glass-border bg-glass-strong p-4 shadow-sm"
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
@@ -92,12 +92,12 @@ export function ComplianceChart({ data, benchmark = 85 }: ComplianceChartProps) 
               const value = payload[0].value as number;
 
               return (
-                <div className="rounded-xl border border-white/10 bg-white/10 px-3 py-2 shadow-xl">
-                  <p className="text-xs font-bold text-slate-100">{label}</p>
-                  <p className="text-sm font-black text-slate-100">
+                <div className="rounded-xl border border-glass-border bg-glass-strong px-3 py-2 shadow-xl">
+                  <p className="text-xs font-bold text-foreground">{label}</p>
+                  <p className="text-sm font-black text-foreground">
                     {value}%
                   </p>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-muted-foreground">
                     {value >= benchmark
                       ? "On target"
                       : value >= 70

@@ -126,21 +126,21 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                     <div className="h-20 w-20 rounded-full bg-emerald-400/20 flex items-center justify-center mb-4 border-2 border-emerald-400/40">
                       <CheckCircle2 className="h-10 w-10 text-emerald-400" />
                     </div>
-                    <h3 className="text-xl font-bold text-slate-100">
+                    <h3 className="text-xl font-bold text-foreground">
                       {delivery === "sent" ? "Invitation Sent" : "Invitation Created"}
                     </h3>
-                    <p className="text-sm text-slate-400 mt-2 text-center">
+                    <p className="text-sm text-muted-foreground mt-2 text-center">
                       {delivery === "sent"
                         ? `${email} will receive an invitation email`
                         : "Email delivery is unavailable. Share the secure invite link manually."}
                     </p>
                     {delivery === "manual_share_required" && manualShareUrl ? (
                       <>
-                        <div className="mt-5 w-full rounded-xl border border-white/10 bg-white/5 p-3 text-left">
-                          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                        <div className="mt-5 w-full rounded-xl border border-glass-border bg-glass-subtle p-3 text-left">
+                          <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                             Manual Share Link
                           </p>
-                          <p className="mt-2 break-all text-sm text-slate-200">
+                          <p className="mt-2 break-all text-sm text-foreground/90">
                             {manualShareUrl}
                           </p>
                         </div>
@@ -148,7 +148,7 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                           <button
                             type="button"
                             onClick={handleCopyLink}
-                            className="flex-1 rounded-xl bg-white/10 px-4 py-2 text-sm font-bold text-slate-100 transition-colors hover:bg-white/15"
+                            className="flex-1 rounded-xl bg-glass-strong px-4 py-2 text-sm font-bold text-foreground transition-colors hover:bg-white/15"
                           >
                             {copied ? "Copied" : "Copy Link"}
                           </button>
@@ -164,7 +164,7 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                               setCopied(false)
                               router.refresh()
                             }}
-                            className="flex-1 rounded-xl border border-white/10 px-4 py-2 text-sm font-bold text-slate-100 transition-colors hover:bg-white/5"
+                            className="flex-1 rounded-xl border border-glass-border px-4 py-2 text-sm font-bold text-foreground transition-colors hover:bg-white/5"
                           >
                             Close
                           </button>
@@ -181,13 +181,13 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                               <UserPlus className="h-5 w-5 text-blue-400" />
                             </div>
                             <div>
-                              <h3 className="text-lg font-bold text-slate-100">Invite User</h3>
-                              <p className="text-sm text-slate-400">Add a team member or external auditor.</p>
+                              <h3 className="text-lg font-bold text-foreground">Invite User</h3>
+                              <p className="text-sm text-muted-foreground">Add a team member or external auditor.</p>
                             </div>
                           </div>
                           <button 
                             onClick={() => setOpen(false)} 
-                            className="p-2 text-slate-400 hover:text-slate-100 hover:bg-white/10 rounded-lg transition-colors"
+                            className="p-2 text-muted-foreground hover:text-foreground hover:bg-glass-strong rounded-lg transition-colors"
                           >
                             ✕
                           </button>
@@ -202,15 +202,15 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                         )}
                         {/* Email Input */}
                         <div className="space-y-2">
-                            <label htmlFor="field-100" className="text-xs font-bold uppercase text-slate-400 tracking-wider">Email Address</label>
+                            <label htmlFor="field-100" className="text-xs font-bold uppercase text-muted-foreground tracking-wider">Email Address</label>
                             <div className="relative">
-                                <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                                 <input id="field-100" 
                                     type="email" 
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full pl-10 p-3 rounded-xl border border-white/10 bg-white/5 outline-none focus:border-blue-400/50 focus:ring-2 focus:ring-blue-400/20 transition-all text-sm"
+                                    className="w-full pl-10 p-3 rounded-xl border border-glass-border bg-glass-subtle outline-none focus:border-blue-400/50 focus:ring-2 focus:ring-blue-400/20 transition-all text-sm"
                                     placeholder="name@company.com"
                                 />
                             </div>
@@ -218,7 +218,7 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
 
                         {/* Role Selector */}
                         <div className="space-y-2">
-                            <label htmlFor="field-99" className="text-xs font-bold uppercase text-slate-400 tracking-wider">Access Level</label>
+                            <label htmlFor="field-99" className="text-xs font-bold uppercase text-muted-foreground tracking-wider">Access Level</label>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <button
                                     type="button"
@@ -226,13 +226,13 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                                     className={`p-3 rounded-xl border text-left flex flex-col gap-1 transition-all active:scale-[0.98] ${
                                       role === 'member' 
                                         ? 'border-blue-400/40 bg-blue-400/10 ring-1 ring-blue-400/30' 
-                                        : 'border-white/10 hover:border-white/20 hover:bg-white/5'
+                                        : 'border-glass-border hover:border-glass-border-strong hover:bg-white/5'
                                     }`}
                                 >
-                                    <span className="flex items-center gap-2 text-xs font-bold text-slate-100">
+                                    <span className="flex items-center gap-2 text-xs font-bold text-foreground">
                                         <Shield className={`h-3 w-3 ${role === 'member' ? 'text-blue-400' : ''}`} /> Member
                                     </span>
-                                    <span className="text-xs text-slate-400">Can view and edit documents.</span>
+                                    <span className="text-xs text-muted-foreground">Can view and edit documents.</span>
                                 </button>
 
                                 <button
@@ -241,13 +241,13 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                                     className={`p-3 rounded-xl border text-left flex flex-col gap-1 transition-all active:scale-[0.98] ${
                                       role === 'viewer' 
                                         ? 'border-blue-400/40 bg-blue-400/10 ring-1 ring-blue-400/30' 
-                                        : 'border-white/10 hover:border-white/20 hover:bg-white/5'
+                                        : 'border-glass-border hover:border-glass-border-strong hover:bg-white/5'
                                     }`}
                                 >
-                                    <span className="flex items-center gap-2 text-xs font-bold text-slate-100">
+                                    <span className="flex items-center gap-2 text-xs font-bold text-foreground">
                                         <Eye className={`h-3 w-3 ${role === 'viewer' ? 'text-blue-400' : ''}`} /> Viewer
                                     </span>
-                                    <span className="text-xs text-slate-400">Read-only access. No editing.</span>
+                                    <span className="text-xs text-muted-foreground">Read-only access. No editing.</span>
                                 </button>
                             </div>
                         </div>
@@ -256,7 +256,7 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                             <button 
                                 type="button" 
                                 onClick={() => setOpen(false)}
-                                className="flex-1 py-3 rounded-xl font-bold text-slate-400 bg-white/5 hover:bg-white/10 border border-white/10 transition-colors text-sm"
+                                className="flex-1 py-3 rounded-xl font-bold text-muted-foreground bg-glass-subtle hover:bg-glass-strong border border-glass-border transition-colors text-sm"
                             >
                                 Cancel
                             </button>

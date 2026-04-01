@@ -77,10 +77,10 @@ export default function DemoWorkflowTimeline({
                   {isPast ? (
                     <CheckCircle className="h-3.5 w-3.5 text-emerald-400" />
                   ) : (
-                    <step.icon className={`h-3.5 w-3.5 ${isActive ? step.color : 'text-slate-600'}`} />
+                    <step.icon className={`h-3.5 w-3.5 ${isActive ? step.color : 'text-muted-foreground/40'}`} />
                   )}
                 </div>
-                <span className={`text-[9px] font-medium ${isActive ? step.color : isPast ? 'text-emerald-400/60' : 'text-slate-600'}`}>
+                <span className={`text-[9px] font-medium ${isActive ? step.color : isPast ? 'text-emerald-400/60' : 'text-muted-foreground/40'}`}>
                   {step.label}
                 </span>
               </button>
@@ -108,11 +108,11 @@ export default function DemoWorkflowTimeline({
                       </div>
                       <div className="min-w-0">
                         <p className={`text-xs font-semibold ${step.color}`}>{step.title}</p>
-                        <p className="text-[11px] text-slate-400">{step.detail}</p>
+                        <p className="text-[11px] text-muted-foreground">{step.detail}</p>
                       </div>
                     </div>
                   </div>
-                  <p className="text-[10px] text-slate-500 pl-10">{step.meta}</p>
+                  <p className="text-[10px] text-muted-foreground/60 pl-10">{step.meta}</p>
                 </div>
               );
             })()}

@@ -148,16 +148,16 @@ async function ComplianceScoreSection({
               <ShieldCheck className="h-3.5 w-3.5" />
               Active Framework Snapshot
             </div>
-            <h2 className="text-2xl font-black text-slate-100">ISO 27001 Compliance</h2>
-            <p className="mt-2 max-w-lg text-sm text-slate-400">
+            <h2 className="text-2xl font-black text-foreground">ISO 27001 Compliance</h2>
+            <p className="mt-2 max-w-lg text-sm text-muted-foreground">
               Continuous control-to-evidence validation for enterprise audit readiness.
             </p>
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/5 px-6 py-5 text-center">
-            <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Compliance Score</p>
-            <div className="mt-2 text-4xl font-black text-slate-100">{complianceScore}%</div>
-            <div className="mt-3 flex items-center justify-center gap-4 text-xs text-slate-400">
+            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Compliance Score</p>
+            <div className="mt-2 text-4xl font-black text-foreground">{complianceScore}%</div>
+            <div className="mt-3 flex items-center justify-center gap-4 text-xs text-muted-foreground">
               <span>Missing: {missingCount}</span>
               <span>Total: {totalControls}</span>
             </div>
@@ -167,7 +167,7 @@ async function ComplianceScoreSection({
 
       {missingCount > 0 && (
         <div className="space-y-3">
-          <h3 className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-slate-400">
+          <h3 className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-muted-foreground">
             <AlertCircle className="h-4 w-4" /> Priority Gaps
           </h3>
           <div className="rounded-2xl border border-white/10 bg-white/5">
@@ -176,7 +176,7 @@ async function ComplianceScoreSection({
                 key={code}
                 className="flex items-center justify-between border-b border-white/10 px-4 py-3 last:border-b-0"
               >
-                <div className="flex items-center gap-3 text-sm text-slate-100">
+                <div className="flex items-center gap-3 text-sm text-foreground">
                   <XCircle className="h-4 w-4 text-rose-300" />
                   Control {code} missing approved evidence
                 </div>
@@ -203,10 +203,10 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
               <BadgeCheck className="h-3.5 w-3.5" />
               Trust Artifacts
             </div>
-            <h2 className="text-2xl font-black text-slate-100">
+            <h2 className="text-2xl font-black text-foreground">
               Buyer Trust Packet (PDF)
             </h2>
-            <p className="mt-2 max-w-2xl text-sm text-slate-400">
+            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
               A shareable, procurement-ready snapshot that summarizes readiness,
               control coverage, evidence verification posture, and critical gaps.
             </p>
@@ -219,7 +219,7 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
               ].map((badge) => (
                 <span
                   key={badge}
-                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] text-slate-200"
+                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] text-foreground/90"
                 >
                   {badge}
                 </span>
@@ -233,7 +233,7 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
               prefetch={false}
               className={`inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold ${
                 disableExports
-                  ? 'pointer-events-none border border-white/10 bg-white/5 text-slate-500'
+                  ? 'pointer-events-none border border-white/10 bg-white/5 text-muted-foreground/60'
                   : 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white'
               }`}
             >
@@ -242,14 +242,14 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
             </Link>
             <Link
               href="/app/governance"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 hover:bg-white/10"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-foreground hover:bg-glass-strong"
             >
               Open Governance Packs
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/trust"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 hover:bg-white/10"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-foreground hover:bg-glass-strong"
             >
               <Users className="h-4 w-4" />
               Open Trust Center
@@ -280,12 +280,12 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
               key={card.title}
               className={`rounded-2xl border bg-gradient-to-br p-5 ${card.color} ${disableExports ? 'opacity-50' : ''}`}
             >
-              <h4 className="text-lg font-bold text-slate-100">{card.title}</h4>
-              <p className="mt-2 text-xs leading-relaxed text-slate-300">{card.description}</p>
+              <h4 className="text-lg font-bold text-foreground">{card.title}</h4>
+              <p className="mt-2 text-xs leading-relaxed text-foreground/70">{card.description}</p>
               <Link
                 href={`/api/reports/export?type=${card.type}&format=pdf&mode=sync`}
                 prefetch={false}
-                className={`mt-4 inline-flex items-center gap-1.5 text-xs font-semibold ${disableExports ? 'pointer-events-none text-slate-500' : 'text-cyan-200 hover:text-cyan-100'}`}
+                className={`mt-4 inline-flex items-center gap-1.5 text-xs font-semibold ${disableExports ? 'pointer-events-none text-muted-foreground/60' : 'text-cyan-200 hover:text-cyan-100'}`}
               >
                 Generate report
                 <ArrowRight className="h-3.5 w-3.5" />
@@ -352,8 +352,8 @@ export default async function ReportsPage() {
 
       {/* Header — renders instantly */}
       <div>
-        <h1 className="text-3xl font-black text-slate-100 tracking-tight">Reports Center</h1>
-        <p className="mt-1 text-slate-400">
+        <h1 className="text-3xl font-black text-foreground tracking-tight">Reports Center</h1>
+        <p className="mt-1 text-muted-foreground">
           Generate audit-ready compliance artifacts and regulatory assessments.
         </p>
       </div>

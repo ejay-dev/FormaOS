@@ -39,18 +39,18 @@ export function IdentityAuditLog({ orgId }: Props) {
   }, [orgId]);
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 space-y-4">
+    <section className="rounded-3xl border border-glass-border bg-glass-subtle p-6 space-y-4">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-black text-slate-100">Identity Audit Trail</h2>
-          <p className="text-sm text-slate-400">
+          <h2 className="text-xl font-black text-foreground">Identity Audit Trail</h2>
+          <p className="text-sm text-muted-foreground">
             SCIM, SSO, directory sync, session, and MFA events.
           </p>
         </div>
         <div className="flex gap-2">
           <a
             href={`/api/identity/audit?orgId=${encodeURIComponent(orgId)}&format=csv`}
-            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200"
+            className="rounded-xl border border-glass-border bg-glass-subtle px-3 py-2 text-sm text-foreground/90"
           >
             Export CSV
           </a>
@@ -63,26 +63,26 @@ export function IdentityAuditLog({ orgId }: Props) {
         </div>
       </div>
 
-      {loading ? <div className="text-sm text-slate-500">Loading audit events…</div> : null}
+      {loading ? <div className="text-sm text-muted-foreground/60">Loading audit events…</div> : null}
       {error ? <div className="text-sm text-rose-300">{error}</div> : null}
 
       <div className="space-y-3">
         {events.map((event) => (
-          <details key={event.id} className="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
+          <details key={event.id} className="rounded-2xl border border-glass-border bg-slate-950/50 p-4">
             <summary className="cursor-pointer list-none">
               <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <div className="text-sm font-semibold text-slate-100">{event.event_type}</div>
-                  <div className="text-xs text-slate-400">
+                  <div className="text-sm font-semibold text-foreground">{event.event_type}</div>
+                  <div className="text-xs text-muted-foreground">
                     {new Date(event.created_at).toLocaleString()} • {event.result}
                   </div>
                 </div>
-                <div className="text-xs text-slate-400">
+                <div className="text-xs text-muted-foreground">
                   {event.target_user_email ?? event.actor_label ?? event.target_user_id ?? 'system'}
                 </div>
               </div>
             </summary>
-            <pre className="mt-4 whitespace-pre-wrap rounded-xl bg-slate-950 p-3 text-xs text-slate-300">
+            <pre className="mt-4 whitespace-pre-wrap rounded-xl bg-slate-950 p-3 text-xs text-foreground/70">
               {JSON.stringify(event.metadata ?? {}, null, 2)}
             </pre>
           </details>

@@ -117,7 +117,7 @@ export function ActivityFeed({ orgId }: { orgId: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-5">
+      <div className="rounded-[2rem] border border-glass-border bg-white/[0.04] p-5">
         <div className="grid gap-3 md:grid-cols-5">
           <input
             value={filters.action}
@@ -125,7 +125,7 @@ export function ActivityFeed({ orgId }: { orgId: string }) {
               setFilters((current) => ({ ...current, action: event.target.value }))
             }
             placeholder="Action"
-            className="rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-slate-200"
+            className="rounded-2xl border border-glass-border bg-slate-950/70 px-4 py-3 text-sm text-foreground/90"
           />
           <input
             value={filters.actorId}
@@ -133,7 +133,7 @@ export function ActivityFeed({ orgId }: { orgId: string }) {
               setFilters((current) => ({ ...current, actorId: event.target.value }))
             }
             placeholder="Actor ID"
-            className="rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-slate-200"
+            className="rounded-2xl border border-glass-border bg-slate-950/70 px-4 py-3 text-sm text-foreground/90"
           />
           <input
             value={filters.resourceType}
@@ -144,7 +144,7 @@ export function ActivityFeed({ orgId }: { orgId: string }) {
               }))
             }
             placeholder="Resource type"
-            className="rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-slate-200"
+            className="rounded-2xl border border-glass-border bg-slate-950/70 px-4 py-3 text-sm text-foreground/90"
           />
           <input
             type="date"
@@ -152,7 +152,7 @@ export function ActivityFeed({ orgId }: { orgId: string }) {
             onChange={(event) =>
               setFilters((current) => ({ ...current, dateFrom: event.target.value }))
             }
-            className="rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-slate-200"
+            className="rounded-2xl border border-glass-border bg-slate-950/70 px-4 py-3 text-sm text-foreground/90"
           />
           <input
             type="date"
@@ -160,7 +160,7 @@ export function ActivityFeed({ orgId }: { orgId: string }) {
             onChange={(event) =>
               setFilters((current) => ({ ...current, dateTo: event.target.value }))
             }
-            className="rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-slate-200"
+            className="rounded-2xl border border-glass-border bg-slate-950/70 px-4 py-3 text-sm text-foreground/90"
           />
         </div>
 
@@ -174,7 +174,7 @@ export function ActivityFeed({ orgId }: { orgId: string }) {
           </button>
           <a
             href={`/api/activity?orgId=${encodeURIComponent(orgId)}&format=csv`}
-            className="rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-slate-200"
+            className="rounded-full border border-glass-border bg-white/[0.05] px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-foreground/90"
           >
             <Download className="mr-2 inline h-3.5 w-3.5" />
             Export CSV
@@ -183,14 +183,14 @@ export function ActivityFeed({ orgId }: { orgId: string }) {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center gap-2 rounded-[2rem] border border-white/10 bg-white/[0.04] px-6 py-16 text-sm text-slate-400">
+        <div className="flex items-center justify-center gap-2 rounded-[2rem] border border-glass-border bg-white/[0.04] px-6 py-16 text-sm text-muted-foreground">
           <Loader2 className="h-4 w-4 animate-spin" />
           Loading activity feed
         </div>
       ) : !groups.length ? (
-        <div className="rounded-[2rem] border border-dashed border-white/10 bg-white/[0.04] px-6 py-16 text-center">
-          <Sparkles className="mx-auto h-8 w-8 text-slate-500" />
-          <p className="mt-4 text-sm font-semibold text-slate-200">
+        <div className="rounded-[2rem] border border-dashed border-glass-border bg-white/[0.04] px-6 py-16 text-center">
+          <Sparkles className="mx-auto h-8 w-8 text-muted-foreground/60" />
+          <p className="mt-4 text-sm font-semibold text-foreground/90">
             No activity matched the current filters.
           </p>
         </div>
@@ -236,7 +236,7 @@ export function ActivityFeed({ orgId }: { orgId: string }) {
           type="button"
           onClick={() => void load(nextCursor, true)}
           disabled={!nextCursor || loadingMore}
-          className="rounded-full border border-white/10 bg-white/[0.05] px-5 py-2 text-xs font-black uppercase tracking-[0.22em] text-slate-200 disabled:opacity-40"
+          className="rounded-full border border-glass-border bg-white/[0.05] px-5 py-2 text-xs font-black uppercase tracking-[0.22em] text-foreground/90 disabled:opacity-40"
         >
           {loadingMore ? 'Loading…' : nextCursor ? 'Load more' : 'End of feed'}
         </button>

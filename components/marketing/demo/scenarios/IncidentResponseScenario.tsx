@@ -52,22 +52,22 @@ function MockIncidentAlert() {
           <p className="font-medium text-red-200">
             Unauthorised access attempt detected
           </p>
-          <p className="text-slate-400 mt-0.5">
+          <p className="text-muted-foreground mt-0.5">
             3 failed logins to admin panel from unknown IP (203.0.113.42)
           </p>
         </div>
       </div>
       <div className="grid grid-cols-3 gap-2 text-[10px]">
         <div className="rounded-lg border border-white/[0.06] bg-white/[0.03] px-2 py-1.5 text-center">
-          <span className="text-slate-500">Severity</span>
+          <span className="text-muted-foreground/60">Severity</span>
           <p className="font-semibold text-red-400">High</p>
         </div>
         <div className="rounded-lg border border-white/[0.06] bg-white/[0.03] px-2 py-1.5 text-center">
-          <span className="text-slate-500">Source</span>
+          <span className="text-muted-foreground/60">Source</span>
           <p className="font-semibold text-white">Automated</p>
         </div>
         <div className="rounded-lg border border-white/[0.06] bg-white/[0.03] px-2 py-1.5 text-center">
-          <span className="text-slate-500">Status</span>
+          <span className="text-muted-foreground/60">Status</span>
           <p className="font-semibold text-amber-400">Open</p>
         </div>
       </div>
@@ -83,7 +83,7 @@ function MockTriage() {
           <Search className="h-3.5 w-3.5" />
           Triage Classification
         </div>
-        <div className="mt-2 space-y-1 text-[10px] text-slate-300">
+        <div className="mt-2 space-y-1 text-[10px] text-foreground/70">
           <p>
             <strong className="text-amber-300">Category:</strong> Unauthorised
             Access
@@ -100,7 +100,7 @@ function MockTriage() {
       </div>
       <div className="flex items-center gap-2 rounded-lg border border-white/[0.06] bg-white/[0.03] p-2 text-[10px]">
         <Users className="h-3 w-3 text-purple-400" />
-        <span className="text-slate-400">
+        <span className="text-muted-foreground">
           Assigned to: <strong className="text-white">Marcus Rivera</strong> (IT
           Security Lead)
         </span>
@@ -141,8 +141,8 @@ function MockInvestigation() {
           className="flex items-center gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] px-2.5 py-1.5"
         >
           <FileSearch className="h-3 w-3 text-blue-400 flex-shrink-0" />
-          <span className="w-28 text-slate-500">{f.label}</span>
-          <span className="flex-1 text-slate-300">{f.value}</span>
+          <span className="w-28 text-muted-foreground/60">{f.label}</span>
+          <span className="flex-1 text-foreground/70">{f.value}</span>
           <span
             className={`rounded-full px-1.5 py-0.5 text-[9px] font-medium ${
               f.status === 'flagged'
@@ -204,14 +204,14 @@ function MockCAPA() {
             <Clock className="h-3 w-3 text-amber-400 flex-shrink-0" />
           )}
           <span
-            className={`flex-1 ${a.done ? 'text-slate-500 line-through' : 'text-slate-300'}`}
+            className={`flex-1 ${a.done ? 'text-muted-foreground/60 line-through' : 'text-foreground/70'}`}
           >
             {a.task}
           </span>
-          <span className="text-slate-500 text-[9px] whitespace-nowrap">
+          <span className="text-muted-foreground/60 text-[9px] whitespace-nowrap">
             {a.owner}
           </span>
-          <span className="text-slate-500 text-[9px] whitespace-nowrap">
+          <span className="text-muted-foreground/60 text-[9px] whitespace-nowrap">
             {a.due}
           </span>
         </div>
@@ -228,22 +228,22 @@ function MockClosure() {
           <Shield className="h-3.5 w-3.5" />
           Incident Closed — No Data Breach
         </div>
-        <p className="mt-1 text-[10px] text-slate-400">
+        <p className="mt-1 text-[10px] text-muted-foreground">
           All corrective actions verified. Audit trail sealed.
         </p>
       </div>
       <div className="grid grid-cols-3 gap-2 text-center text-[10px]">
         <div className="rounded-lg bg-white/[0.04] px-2 py-2">
           <p className="text-lg font-bold text-cyan-300">2.4h</p>
-          <span className="text-slate-500">Response time</span>
+          <span className="text-muted-foreground/60">Response time</span>
         </div>
         <div className="rounded-lg bg-white/[0.04] px-2 py-2">
           <p className="text-lg font-bold text-emerald-300">4</p>
-          <span className="text-slate-500">CAPA items</span>
+          <span className="text-muted-foreground/60">CAPA items</span>
         </div>
         <div className="rounded-lg bg-white/[0.04] px-2 py-2">
           <p className="text-lg font-bold text-purple-300">100%</p>
-          <span className="text-slate-500">Resolved</span>
+          <span className="text-muted-foreground/60">Resolved</span>
         </div>
       </div>
     </div>
@@ -378,7 +378,7 @@ export default function IncidentResponseScenario() {
   const Icon = step.icon;
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-5 sm:p-6">
+    <div className="rounded-2xl border border-glass-border bg-gradient-to-b from-white/[0.04] to-transparent p-5 sm:p-6">
       {/* Header */}
       <div className="mb-5 flex items-center gap-3">
         <div className="rounded-lg border border-red-400/20 bg-red-500/10 p-2">
@@ -388,7 +388,7 @@ export default function IncidentResponseScenario() {
           <h3 className="text-base font-semibold text-white">
             Incident Response Workflow
           </h3>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-muted-foreground">
             From detection to closure with full audit trail
           </p>
         </div>
@@ -411,7 +411,7 @@ export default function IncidentResponseScenario() {
                   ? `${s.bg} border ${s.border} ${s.color}`
                   : completed
                     ? 'bg-emerald-500/10 border border-emerald-400/20 text-emerald-300'
-                    : 'bg-white/[0.04] border border-white/[0.08] text-slate-500'
+                    : 'bg-white/[0.04] border border-white/[0.08] text-muted-foreground/60'
               }`}
             >
               {completed ? (
@@ -445,13 +445,13 @@ export default function IncidentResponseScenario() {
               </span>
               <h4 className="text-sm font-semibold text-white">{step.title}</h4>
             </div>
-            <span className="flex items-center gap-1 text-[10px] text-slate-500">
+            <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60">
               <Clock className="h-3 w-3" />
               {step.elapsed}
             </span>
           </div>
 
-          <p className="mb-4 text-xs text-slate-400 leading-relaxed">
+          <p className="mb-4 text-xs text-muted-foreground leading-relaxed">
             {step.description}
           </p>
 
@@ -466,14 +466,14 @@ export default function IncidentResponseScenario() {
         <button
           onClick={goPrev}
           disabled={currentStep === 0}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-xs text-slate-400 transition-colors hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-glass-border px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-glass-subtle disabled:opacity-30 disabled:cursor-not-allowed"
           aria-label="Previous step"
         >
           <ArrowLeft className="h-3 w-3" />
           Back
         </button>
 
-        <span className="text-[10px] text-slate-500">
+        <span className="text-[10px] text-muted-foreground/60">
           {currentStep + 1} / {STEPS.length}
         </span>
 

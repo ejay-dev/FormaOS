@@ -25,7 +25,7 @@ function AvatarBadge({ name }: { name: string }) {
   const initials = name.split(' ').map((n) => n[0]).join('');
   return (
     <div className="h-5 w-5 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center flex-shrink-0">
-      <span className="text-[7px] font-bold text-slate-200">{initials}</span>
+      <span className="text-[7px] font-bold text-foreground/90">{initials}</span>
     </div>
   );
 }
@@ -37,7 +37,7 @@ export default function OperationalizeScreen() {
       <motion.div variants={fadeUp} className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3">
         <div className="flex items-center gap-1.5 mb-2.5">
           <Zap className="h-3 w-3 text-blue-400" />
-          <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-wider">Workflow Triggers</span>
+          <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Workflow Triggers</span>
           <motion.span
             className="ml-auto text-[9px] text-emerald-400 font-medium"
             initial={{ opacity: 0 }}
@@ -67,9 +67,9 @@ export default function OperationalizeScreen() {
                   <Icon className="h-3 w-3" />
                 </motion.div>
                 <div className="flex-1 min-w-0">
-                  <span className="text-slate-300 font-medium">{trigger.trigger}</span>
-                  <span className="text-slate-500 mx-1">→</span>
-                  <span className="text-slate-400 truncate">{trigger.target}</span>
+                  <span className="text-foreground/70 font-medium">{trigger.trigger}</span>
+                  <span className="text-muted-foreground/60 mx-1">→</span>
+                  <span className="text-muted-foreground truncate">{trigger.target}</span>
                 </div>
                 <motion.span
                   className="flex items-center gap-0.5 text-[9px] text-emerald-400 flex-shrink-0"
@@ -89,7 +89,7 @@ export default function OperationalizeScreen() {
       {/* Task Auto-Assignment */}
       <motion.div variants={fadeUp} className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3">
         <div className="flex items-center gap-1.5 mb-2.5">
-          <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-wider">Task Assignments</span>
+          <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Task Assignments</span>
           <motion.span
             className="ml-auto text-[9px] text-blue-400"
             initial={{ opacity: 0 }}
@@ -118,7 +118,7 @@ export default function OperationalizeScreen() {
                   animate={{ backgroundColor: ['rgb(71,85,105)', 'rgb(71,85,105)', 'rgb(59,130,246)'] }}
                   transition={{ delay: 3.4 + i * 0.7, duration: 0.4 }}
                 />
-                <span className="text-slate-200 truncate flex-1">{task.title}</span>
+                <span className="text-foreground/90 truncate flex-1">{task.title}</span>
                 <span className={`hidden sm:inline-flex items-center rounded px-1 py-0.5 text-[8px] font-medium uppercase ${priorityStyles[task.priority]}`}>
                   {task.priority}
                 </span>
@@ -142,12 +142,12 @@ export default function OperationalizeScreen() {
       >
         <div className="flex items-center gap-1.5 mb-2.5">
           <Upload className="h-3 w-3 text-purple-400" />
-          <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-wider">Evidence Upload</span>
+          <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Evidence Upload</span>
         </div>
         <div className="flex items-start gap-3">
           <div className="flex-1 min-w-0">
             <p className="text-[11px] font-medium text-white truncate">{operationalizeEvidenceUpload.name}</p>
-            <p className="text-[9px] text-slate-500">{operationalizeEvidenceUpload.category} · {operationalizeEvidenceUpload.size}</p>
+            <p className="text-[9px] text-muted-foreground/60">{operationalizeEvidenceUpload.category} · {operationalizeEvidenceUpload.size}</p>
             {/* Progress bar */}
             <div className="mt-2 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
               <motion.div

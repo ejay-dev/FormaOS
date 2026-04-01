@@ -97,10 +97,10 @@ export function NotificationToast({
               <p className="text-xs font-black uppercase tracking-[0.22em] text-rose-200">
                 {toast.priority} priority
               </p>
-              <h3 className="mt-1 text-sm font-semibold text-slate-100">
+              <h3 className="mt-1 text-sm font-semibold text-foreground">
                 {toast.title}
               </h3>
-              <p className="mt-1 text-sm leading-6 text-slate-400">{toast.body}</p>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">{toast.body}</p>
             </div>
 
             <button
@@ -111,7 +111,7 @@ export function NotificationToast({
                   current.filter((item) => item.id !== toast.id),
                 );
               }}
-              className="pointer-events-auto rounded-full p-1 text-slate-400 transition hover:bg-white/10 hover:text-slate-200"
+              className="pointer-events-auto rounded-full p-1 text-muted-foreground transition hover:bg-glass-strong hover:text-foreground/90"
               aria-label="Dismiss notification toast"
             >
               <X className="h-4 w-4" />

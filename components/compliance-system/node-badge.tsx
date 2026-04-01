@@ -95,7 +95,7 @@ const NODE_CONFIG: Record<
     icon: Building2,
     label: 'Entity',
     bgClass: 'bg-slate-500/10',
-    textClass: 'text-slate-300',
+    textClass: 'text-foreground/70',
     borderClass: 'border-slate-400/30',
   },
 };
@@ -188,13 +188,13 @@ export function StatusBadge({
     },
     draft: {
       bg: 'bg-slate-500/10',
-      text: 'text-slate-300',
+      text: 'text-foreground/70',
       border: 'border-slate-400/30',
       label: 'Draft',
     },
     archived: {
       bg: 'bg-slate-500/10',
-      text: 'text-slate-400',
+      text: 'text-muted-foreground',
       border: 'border-slate-400/20',
       label: 'Archived',
     },

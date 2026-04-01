@@ -127,7 +127,7 @@ export default function RegistersPage() {
   if (loading)
     return (
       <div className="flex h-64 items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
 
@@ -135,10 +135,10 @@ export default function RegistersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-100" data-testid="registers-title">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground" data-testid="registers-title">
             Registers
           </h1>
-          <p className="text-slate-400 text-sm">
+          <p className="text-muted-foreground text-sm">
             {isCareIndustry
               ? "Access client, incident, service, and compliance registers"
               : "Monitor asset health and security risk levels."}
@@ -148,7 +148,7 @@ export default function RegistersPage() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => exportRegistersToPDF(registers, "FormaOS Organization")}
-              className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-100 hover:bg-white/10 transition-all"
+              className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-foreground hover:bg-glass-strong transition-all"
             >
               <Download className="h-4 w-4" />
               Export PDF
@@ -202,7 +202,7 @@ export default function RegistersPage() {
                     <register.icon className="h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-slate-100 group-hover:text-primary transition-colors">
+                    <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
                       {register.title}
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1">{register.description}</p>
@@ -222,8 +222,8 @@ export default function RegistersPage() {
 
           {registers.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-xl border border-dashed bg-white/5 p-20 text-center shadow-sm">
-              <Database className="h-10 w-10 text-slate-400 mb-4" />
-              <h3 className="text-lg font-semibold text-slate-100">No assets registered</h3>
+              <Database className="h-10 w-10 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold text-foreground">No assets registered</h3>
               <p className="text-sm text-muted-foreground mt-1">Add your first asset to start tracking</p>
             </div>
           ) : (
@@ -235,7 +235,7 @@ export default function RegistersPage() {
                 >
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <div className="h-9 w-9 rounded-lg bg-white/10 flex items-center justify-center text-slate-400 group-hover:bg-white/10 group-hover:text-slate-100 transition-colors">
+                      <div className="h-9 w-9 rounded-lg bg-glass-strong flex items-center justify-center text-muted-foreground group-hover:bg-glass-strong group-hover:text-foreground transition-colors">
                         {getIcon(item.type || item.category)}
                       </div>
                       <div className="flex items-center gap-2">
@@ -250,7 +250,7 @@ export default function RegistersPage() {
                       </div>
                     </div>
 
-                    <h3 className="font-semibold text-slate-100 text-base mb-2">{item.name}</h3>
+                    <h3 className="font-semibold text-foreground text-base mb-2">{item.name}</h3>
                     <p className="text-xs text-muted-foreground line-clamp-2">{item.description}</p>
                   </div>
 

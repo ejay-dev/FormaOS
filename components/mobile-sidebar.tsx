@@ -96,6 +96,9 @@ export function MobileSidebar({ role }: { role: UserRole }) {
           />
           {/* Panel */}
           <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation"
             className={clsx(
               "absolute left-0 top-0 h-full w-[88vw] max-w-[340px] sm:w-80 shadow-2xl overflow-y-auto overscroll-y-contain bg-[hsl(var(--sidebar))] glass-panel-strong pt-[max(env(safe-area-inset-top),0.75rem)] pb-[max(env(safe-area-inset-bottom),0.75rem)]",
               "transition-transform duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
@@ -106,7 +109,8 @@ export function MobileSidebar({ role }: { role: UserRole }) {
             <Button
               variant="ghost"
               onClick={handleClose}
-              className="absolute right-3 top-3 rounded-full p-2 bg-black/50 border border-white/10"
+              aria-label="Close navigation"
+              className="absolute right-3 top-3 rounded-full p-2 bg-black/30 border border-glass-border"
             >
               <X className="h-4 w-4" />
             </Button>

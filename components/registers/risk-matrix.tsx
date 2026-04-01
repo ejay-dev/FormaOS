@@ -31,8 +31,8 @@ export function RiskMatrix({ risks }: { risks: Risk[] }) {
   };
 
   return (
-    <div className="p-6 bg-white/10 rounded-2xl border shadow-sm">
-      <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 mb-6">Risk Heatmap</h3>
+    <div className="p-6 bg-glass-strong rounded-2xl border shadow-sm">
+      <h3 className="text-sm font-black uppercase tracking-widest text-muted-foreground mb-6">Risk Heatmap</h3>
 
       <div className="grid grid-cols-5 gap-1">
         {[4,3,2,1,0].map(l =>

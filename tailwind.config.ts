@@ -108,6 +108,7 @@ const config: Config = {
         premium: 'var(--shadow-md)',
         'premium-lg': 'var(--shadow-lg)',
         'premium-xl': 'var(--shadow-xl)',
+        'premium-2xl': 'var(--shadow-2xl)',
       },
     },
   },

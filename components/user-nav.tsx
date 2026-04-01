@@ -45,7 +45,7 @@ export function UserNav({ userEmail }: { userEmail: string }) {
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-xl border border-card-foreground/8 bg-card p-2 shadow-lg ring-1 ring-card-foreground/12 focus:outline-none z-50">
-          <div className="px-3 py-2 border-b border-white/10 mb-1">
+          <div className="px-3 py-2 border-b border-glass-border mb-1">
             <p className="text-xs font-semibold text-card-foreground">Account</p>
             <p className="text-xs text-muted truncate">{userEmail}</p>
           </div>

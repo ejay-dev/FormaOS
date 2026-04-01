@@ -57,16 +57,16 @@ export default async function PolicyDetailPage({
       
       {/* Navigation Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <Link href="/app/policies" className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-slate-100 transition-all group">
+        <Link href="/app/policies" className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-all group">
             <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
             Policy Library
         </Link>
         <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+            <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-widest">
                 <History className="h-3 w-3" />
                 <span>Last modified: {new Date(policy.last_updated_at || policy.created_at).toLocaleDateString()}</span>
             </div>
-            <div className="h-4 w-px bg-white/10" />
+            <div className="h-4 w-px bg-glass-strong" />
             <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-400/10 text-emerald-700 rounded-full text-xs font-black uppercase tracking-widest border border-emerald-400/30">
                 <ShieldCheck className="h-3.5 w-3.5" />
                 Verified Template
@@ -98,7 +98,7 @@ export default async function PolicyDetailPage({
                     defaultValue={policy.title}
                     disabled={!isAdmin}
                     placeholder="Policy Title..."
-                    className="w-full bg-transparent text-2xl sm:text-3xl font-black text-slate-100 outline-none placeholder:text-slate-400 tracking-tight disabled:opacity-50"
+                    className="w-full bg-transparent text-2xl sm:text-3xl font-black text-foreground outline-none placeholder:text-muted-foreground tracking-tight disabled:opacity-50"
                   />
                </div>
                <div className="p-6 sm:p-8 flex-1">
@@ -107,7 +107,7 @@ export default async function PolicyDetailPage({
                     defaultValue={policy.content}
                     disabled={!isAdmin}
                     placeholder="# Write your policy content here..."
-                    className="w-full h-full bg-transparent text-sm leading-relaxed text-slate-400 outline-none resize-none font-mono disabled:opacity-50"
+                    className="w-full h-full bg-transparent text-sm leading-relaxed text-muted-foreground outline-none resize-none font-mono disabled:opacity-50"
                   />
                </div>
             </div>
@@ -127,7 +127,7 @@ export default async function PolicyDetailPage({
             {/* Document Controls */}
             <div className="bg-white/5 border border-white/10 rounded-[2rem] p-6 sm:p-8 shadow-sm space-y-8 md:sticky md:top-6">
                 <div className="space-y-3">
-                    <label htmlFor="field-206" className="text-xs font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
+                    <label htmlFor="field-206" className="text-xs font-black uppercase text-muted-foreground tracking-[0.2em] ml-1">
                         Lifecycle Stage
                     </label>
                     <div className="relative">
@@ -135,27 +135,27 @@ export default async function PolicyDetailPage({
                             name="status" // Ensure our Server Action handles 'status' update if intended
                             defaultValue={policy.status}
                             disabled={!isAdmin}
-                            className="w-full p-4 rounded-2xl border border-white/10 text-xs font-black bg-white/10 cursor-pointer outline-none focus:bg-white/5 focus:ring-2 focus:ring-sky-500/20 transition-all appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full p-4 rounded-2xl border border-white/10 text-xs font-black bg-glass-strong cursor-pointer outline-none focus:bg-white/5 focus:ring-2 focus:ring-sky-500/20 transition-all appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <option value="draft">Drafting Mode</option>
                             <option value="review">Under Review</option>
                             <option value="published">Active & Enforced</option>
                             <option value="archived">Archived</option>
                         </select>
-                        <ShieldCheck className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                        <ShieldCheck className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                     </div>
                 </div>
 
                 <div className="flex flex-col gap-4 py-6 border-y border-white/10">
                     <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest">
-                        <span className="text-slate-400">Version</span>
-                        <span className="text-slate-100 bg-white/10 px-2 py-1 rounded-lg">
+                        <span className="text-muted-foreground">Version</span>
+                        <span className="text-foreground bg-glass-strong px-2 py-1 rounded-lg">
                             {policy.version || 'v1.0'}
                         </span>
                     </div>
                     <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest">
-                        <span className="text-slate-400">Governance ID</span>
-                        <span className="font-mono text-slate-400">
+                        <span className="text-muted-foreground">Governance ID</span>
+                        <span className="font-mono text-muted-foreground">
                             POL-{policy.id.slice(0, 4).toUpperCase()}
                         </span>
                     </div>
@@ -164,13 +164,13 @@ export default async function PolicyDetailPage({
                 {isAdmin ? (
                     <button 
                         type="submit" 
-                        className="w-full bg-white/10 text-slate-100 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-white/10 transition-all shadow-xl active:scale-95 group"
+                        className="w-full bg-glass-strong text-foreground py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-glass-strong transition-all shadow-xl active:scale-95 group"
                     >
                         <Save className="h-4 w-4 transition-transform group-hover:scale-110" />
                         Commit Changes
                     </button>
                 ) : (
-                    <div className="p-4 bg-white/10 rounded-2xl border border-white/10 text-xs font-black text-slate-400 text-center uppercase tracking-widest flex items-center justify-center gap-2">
+                    <div className="p-4 bg-glass-strong rounded-2xl border border-white/10 text-xs font-black text-muted-foreground text-center uppercase tracking-widest flex items-center justify-center gap-2">
                         <ShieldCheck className="h-4 w-4" />
                         Read Only Mode
                     </div>

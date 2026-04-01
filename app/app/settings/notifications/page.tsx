@@ -15,10 +15,10 @@ export default async function NotificationSettingsPage() {
         <p className="text-xs font-black uppercase tracking-[0.26em] text-sky-200">
           Notifications
         </p>
-        <h1 className="mt-2 text-4xl font-black tracking-tight text-slate-100">
+        <h1 className="mt-2 text-4xl font-black tracking-tight text-foreground">
           Delivery Preferences
         </h1>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-400">
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
           Control in-app alerts, digests, Slack and Teams routing, plus quiet hours.
         </p>
       </header>

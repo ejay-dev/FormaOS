@@ -53,7 +53,7 @@ const B = {
   done: 'bg-emerald-400/15 text-emerald-300',
   rev: 'bg-blue-400/15 text-blue-300',
   over: 'bg-red-400/15 text-red-300',
-  draft: 'bg-slate-400/15 text-slate-300',
+  draft: 'bg-slate-400/15 text-foreground/70',
   crit: 'bg-red-400/15 text-red-300',
   high: 'bg-orange-400/15 text-orange-300',
   med: 'bg-amber-400/15 text-amber-300',

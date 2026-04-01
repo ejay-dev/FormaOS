@@ -99,7 +99,7 @@ const INDUSTRY_CARDS: IndustryCard[] = [
     description: 'General compliance framework for regulated services.',
     icon: HelpCircle,
     bgColor: 'bg-slate-500/10',
-    textColor: 'text-slate-300',
+    textColor: 'text-foreground/70',
   },
 ];
 
@@ -114,7 +114,7 @@ export function IndustrySelector() {
         return (
           <div
             key={card.id}
-            className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-white/10 p-6 shadow-sm transition-all hover:border-white/10 hover:shadow-md"
+            className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-glass-border bg-glass-strong p-6 shadow-sm transition-all hover:border-glass-border hover:shadow-md"
           >
             <div>
               <div
@@ -122,8 +122,8 @@ export function IndustrySelector() {
               >
                 <Icon className="h-5 w-5" />
               </div>
-              <h3 className="font-bold text-slate-100">{card.name}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-400">
+              <h3 className="font-bold text-foreground">{card.name}</h3>
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
                 {card.description}
               </p>
             </div>
@@ -136,9 +136,9 @@ export function IndustrySelector() {
               <button
                 type="submit"
                 data-testid={`apply-pack-${card.id}`}
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/10 py-3 text-xs font-bold text-slate-100 transition-colors hover:bg-white/10"
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass-strong py-3 text-xs font-bold text-foreground transition-colors hover:bg-glass-strong"
               >
-                <CheckCircle2 className="h-4 w-4 text-slate-400" />
+                <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
                 APPLY PACK
               </button>
             </form>

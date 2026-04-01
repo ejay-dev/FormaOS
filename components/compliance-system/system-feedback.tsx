@@ -136,7 +136,7 @@ const NODE_COLORS: Record<string, string> = {
   audit: 'text-amber-300',
   risk: 'text-rose-300',
   task: 'text-emerald-300',
-  entity: 'text-slate-300',
+  entity: 'text-foreground/70',
 };
 
 export function SystemFeedback({
@@ -180,9 +180,9 @@ export function SystemFeedback({
         {onDismiss && (
           <button
             onClick={onDismiss}
-            className="ml-auto p-1 rounded-lg hover:bg-white/10 transition-colors"
+            className="ml-auto p-1 rounded-lg hover:bg-glass-strong transition-colors"
           >
-            <X className="h-4 w-4 text-slate-400" />
+            <X className="h-4 w-4 text-muted-foreground" />
           </button>
         )}
       </div>
@@ -216,15 +216,15 @@ export function SystemFeedback({
           <h4 className={cn('text-sm font-semibold', config.titleClass)}>
             {title}
           </h4>
-          {message && <p className="text-xs text-slate-400 mt-1">{message}</p>}
+          {message && <p className="text-xs text-muted-foreground mt-1">{message}</p>}
         </div>
 
         {onDismiss && (
           <button
             onClick={onDismiss}
-            className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+            className="p-1.5 rounded-lg hover:bg-glass-strong transition-colors"
           >
-            <X className="h-4 w-4 text-slate-400" />
+            <X className="h-4 w-4 text-muted-foreground" />
           </button>
         )}
       </div>
@@ -232,7 +232,7 @@ export function SystemFeedback({
       {/* Node Changes */}
       {nodeChanges && nodeChanges.length > 0 && (
         <div className="px-4 py-3 border-b border-white/10">
-          <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+          <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground/60 mb-2">
             Node Changes
           </div>
           <div className="space-y-1.5">
@@ -243,10 +243,10 @@ export function SystemFeedback({
                   <NodeIcon
                     className={cn('h-3.5 w-3.5', NODE_COLORS[change.type])}
                   />
-                  <span className="text-slate-300 font-medium">
+                  <span className="text-foreground/70 font-medium">
                     {change.name}
                   </span>
-                  <span className="text-slate-500">•</span>
+                  <span className="text-muted-foreground/60">•</span>
                   <span
                     className={cn(
                       'text-xs font-bold uppercase',
@@ -269,13 +269,13 @@ export function SystemFeedback({
       {/* Wire Changes */}
       {wireChanges && wireChanges.length > 0 && (
         <div className="px-4 py-3 border-b border-white/10">
-          <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+          <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground/60 mb-2">
             Connections Updated
           </div>
           <div className="space-y-1.5">
             {wireChanges.map((change, i) => (
               <div key={i} className="flex items-center gap-2 text-xs">
-                <span className="text-slate-300">{change.from}</span>
+                <span className="text-foreground/70">{change.from}</span>
                 <ArrowRight
                   className={cn(
                     'h-3 w-3',
@@ -284,7 +284,7 @@ export function SystemFeedback({
                     change.action === 'broken' && 'text-rose-400',
                   )}
                 />
-                <span className="text-slate-300">{change.to}</span>
+                <span className="text-foreground/70">{change.to}</span>
               </div>
             ))}
           </div>
@@ -294,7 +294,7 @@ export function SystemFeedback({
       {/* Compliance Impact */}
       {complianceImpact && complianceImpact.length > 0 && (
         <div className="px-4 py-3">
-          <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+          <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground/60 mb-2">
             Compliance Impact
           </div>
           <div className="flex flex-wrap gap-2">
@@ -308,7 +308,7 @@ export function SystemFeedback({
                   impact.change === 'degraded' &&
                     'bg-rose-500/10 text-rose-300 border border-rose-400/30',
                   impact.change === 'unchanged' &&
-                    'bg-slate-500/10 text-slate-400 border border-slate-400/30',
+                    'bg-slate-500/10 text-muted-foreground border border-slate-400/30',
                 )}
               >
                 {impact.change === 'improved' && <Zap className="h-3 w-3" />}

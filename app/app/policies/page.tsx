@@ -72,7 +72,7 @@ export default function PoliciesPage() {
   }, [orgId, supabase]);
 
   if (!orgId) {
-    return <div className="text-center text-slate-400">Loading organization...</div>;
+    return <div className="text-center text-muted-foreground">Loading organization...</div>;
   }
 
   if (error) {
@@ -84,8 +84,8 @@ export default function PoliciesPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-100">Policy Library</h1>
-          <p className="text-slate-400 mt-1">Manage your organization's governance framework.</p>
+          <h1 className="text-3xl font-bold text-foreground">Policy Library</h1>
+          <p className="text-muted-foreground mt-1">Manage your organization's governance framework.</p>
         </div>
         <Link 
             href="/app/policies/new" 
@@ -103,8 +103,8 @@ export default function PoliciesPage() {
                  <FileText className="h-5 w-5" />
              </div>
              <div>
-                 <p className="text-2xl font-bold text-slate-100">{allPolicies.length}</p>
-                 <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Total Policies</p>
+                 <p className="text-2xl font-bold text-foreground">{allPolicies.length}</p>
+                 <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Total Policies</p>
              </div>
          </div>
          <div className="p-4 rounded-2xl border border-white/10 bg-white/5 flex items-center gap-4 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
@@ -112,8 +112,8 @@ export default function PoliciesPage() {
                  <ShieldCheck className="h-5 w-5" />
              </div>
              <div>
-                 <p className="text-2xl font-bold text-slate-100">{publishedCount}</p>
-                 <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Active & Enforced</p>
+                 <p className="text-2xl font-bold text-foreground">{publishedCount}</p>
+                 <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Active & Enforced</p>
              </div>
          </div>
          <div className="p-4 rounded-2xl border border-white/10 bg-white/5 flex items-center gap-4 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
@@ -121,8 +121,8 @@ export default function PoliciesPage() {
                  <Clock className="h-5 w-5" />
              </div>
              <div>
-                 <p className="text-2xl font-bold text-slate-100">{allPolicies.length - publishedCount}</p>
-                 <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Drafts / Review</p>
+                 <p className="text-2xl font-bold text-foreground">{allPolicies.length - publishedCount}</p>
+                 <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Drafts / Review</p>
              </div>
          </div>
       </div>
@@ -132,13 +132,13 @@ export default function PoliciesPage() {
          {/* Simple Toolbar */}
          <div className="p-4 border-b border-white/10 flex items-center gap-3 bg-white/5">
             <div className="relative flex-1 max-w-sm">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <input 
                     placeholder="Filter policies..." 
-                    className="w-full pl-9 pr-4 py-2 rounded-lg border border-white/10 text-sm focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all bg-white/5 text-slate-100 placeholder:text-slate-500"
+                    className="w-full pl-9 pr-4 py-2 rounded-lg border border-white/10 text-sm focus:outline-none focus:border-glass-border-strong focus:bg-glass-strong transition-all bg-white/5 text-foreground placeholder:text-muted-foreground/60"
                 />
             </div>
-            <button className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-xs font-bold text-slate-400 hover:bg-white/10">
+            <button className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-xs font-bold text-muted-foreground hover:bg-glass-strong">
                 <Filter className="h-3 w-3" />
                 Filter
             </button>
@@ -148,7 +148,7 @@ export default function PoliciesPage() {
          <div className="divide-y divide-white/10">
             {allPolicies.length === 0 ? (
                 <div className="p-12 text-center">
-                    <p className="text-sm text-slate-400">No policies found. Create one or use an Industry Pack.</p>
+                    <p className="text-sm text-muted-foreground">No policies found. Create one or use an Industry Pack.</p>
                 </div>
             ) : (
                 allPolicies.map((policy) => (
@@ -158,17 +158,17 @@ export default function PoliciesPage() {
                         className="group flex items-center justify-between p-4 hover:bg-white/5 transition-colors"
                     >
                         <div className="flex items-center gap-4">
-                            <div className="h-10 w-10 rounded-xl bg-white/10 text-slate-400 flex items-center justify-center group-hover:bg-white/5 group-hover:shadow-[0_0_18px_rgba(59,130,246,0.12)] transition-all">
+                            <div className="h-10 w-10 rounded-xl bg-glass-strong text-muted-foreground flex items-center justify-center group-hover:bg-white/5 group-hover:shadow-[0_0_18px_rgba(59,130,246,0.12)] transition-all">
                                 <FileText className="h-5 w-5" />
                             </div>
                             <div>
-                                <h4 className="text-sm font-bold text-slate-100 group-hover:text-sky-300 transition-colors">
+                                <h4 className="text-sm font-bold text-foreground group-hover:text-sky-300 transition-colors">
                                     {policy.title}
                                 </h4>
                                 <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-xs text-slate-400">{policy.version || 'v0.1'}</span>
+                                    <span className="text-xs text-muted-foreground">{policy.version || 'v0.1'}</span>
                                     <span className="h-1 w-1 rounded-full bg-white/20" />
-                                    <span className="text-xs text-slate-400">Updated {new Date(policy.created_at).toLocaleDateString()}</span>
+                                    <span className="text-xs text-muted-foreground">Updated {new Date(policy.created_at).toLocaleDateString()}</span>
                                 </div>
                             </div>
                         </div>
@@ -181,7 +181,7 @@ export default function PoliciesPage() {
                             }`}>
                                 {policy.status}
                             </span>
-                            <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-slate-300" />
+                            <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground/70" />
                         </div>
                     </Link>
                 ))

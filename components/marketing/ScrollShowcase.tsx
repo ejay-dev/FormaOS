@@ -73,7 +73,7 @@ function SceneTab({
           className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0 mt-0.5 transition-colors duration-300 ${
             isActive
               ? 'bg-cyan-500 text-white'
-              : 'bg-white/[0.06] text-slate-500 group-hover:text-slate-400'
+              : 'bg-white/[0.06] text-muted-foreground/60 group-hover:text-muted-foreground'
           }`}
         >
           {index + 1}
@@ -81,7 +81,7 @@ function SceneTab({
         <div className="min-w-0">
           <h3
             className={`font-semibold transition-colors duration-300 ${
-              isActive ? 'text-white' : 'text-slate-300 group-hover:text-white'
+              isActive ? 'text-white' : 'text-foreground/70 group-hover:text-white'
             }`}
           >
             {scene.title}
@@ -89,8 +89,8 @@ function SceneTab({
           <p
             className={`text-sm mt-1 leading-relaxed transition-all duration-300 ${
               isActive
-                ? 'text-slate-400 max-h-20 opacity-100'
-                : 'text-slate-500 max-h-0 opacity-0 overflow-hidden'
+                ? 'text-muted-foreground max-h-20 opacity-100'
+                : 'text-muted-foreground/60 max-h-0 opacity-0 overflow-hidden'
             }`}
           >
             {scene.description}
@@ -205,7 +205,7 @@ function FeatureStrip({ features }: { features: string[] }) {
           className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${depth.glass.normal} ${depth.border.subtle}`}
         >
           <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-          <span className="text-sm text-slate-300">{feature}</span>
+          <span className="text-sm text-foreground/70">{feature}</span>
         </div>
       ))}
     </div>
@@ -240,7 +240,7 @@ function MobileShowcase({
             className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
               i === activeIndex
                 ? 'bg-cyan-500 text-white'
-                : 'bg-white/[0.05] text-slate-400 border border-white/[0.08]'
+                : 'bg-white/[0.05] text-muted-foreground border border-white/[0.08]'
             }`}
           >
             {s.title}
@@ -253,13 +253,13 @@ function MobileShowcase({
 
       {/* Description */}
       <div>
-        <p className="text-slate-400 leading-relaxed">{scene.description}</p>
+        <p className="text-muted-foreground leading-relaxed">{scene.description}</p>
         {scene.features && scene.features.length > 0 && (
           <ul className="mt-4 space-y-2">
             {scene.features.map((feature, i) => (
               <li key={i} className="flex items-center gap-2 text-sm">
                 <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 flex-shrink-0" />
-                <span className="text-slate-300">{feature}</span>
+                <span className="text-foreground/70">{feature}</span>
               </li>
             ))}
           </ul>
@@ -346,7 +346,7 @@ export function ScrollShowcase({
                 ease: easing.signature,
                 delay: 0.1,
               }}
-              className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto"
+              className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto"
             >
               {sectionSubtitle}
             </motion.p>

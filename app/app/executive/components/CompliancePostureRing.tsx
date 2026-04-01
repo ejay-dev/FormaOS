@@ -37,13 +37,13 @@ export function CompliancePostureRing({
   const offset = circumference - (score / 100) * circumference;
 
   const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus;
-  const trendColor = trend === 'up' ? 'text-emerald-400' : trend === 'down' ? 'text-red-400' : 'text-slate-400';
+  const trendColor = trend === 'up' ? 'text-emerald-400' : trend === 'down' ? 'text-red-400' : 'text-muted-foreground';
 
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center p-8 animate-pulse">
-        <div className="w-48 h-48 rounded-full bg-white/10" />
-        <div className="mt-4 h-6 w-32 rounded bg-white/10" />
+        <div className="w-48 h-48 rounded-full bg-glass-strong" />
+        <div className="mt-4 h-6 w-32 rounded bg-glass-strong" />
       </div>
     );
   }
@@ -81,7 +81,7 @@ export function CompliancePostureRing({
         {/* Center Content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className={`text-5xl font-black ${colors.ring}`}>{Math.round(score)}%</span>
-          <span className="text-sm font-semibold text-slate-400 mt-1">Compliance</span>
+          <span className="text-sm font-semibold text-muted-foreground mt-1">Compliance</span>
         </div>
       </div>
 
@@ -96,11 +96,11 @@ export function CompliancePostureRing({
         <span className={`text-sm font-medium ${trendColor}`}>
           {trend === 'stable' ? 'Stable' : `${trendPercentage}% ${trend === 'up' ? 'increase' : 'decrease'}`}
         </span>
-        <span className="text-xs text-slate-500">vs 30 days ago</span>
+        <span className="text-xs text-muted-foreground/60">vs 30 days ago</span>
       </div>
 
       {/* Previous Score */}
-      <div className="mt-2 text-xs text-slate-500">
+      <div className="mt-2 text-xs text-muted-foreground/60">
         Previous: {previousScore}%
       </div>
     </div>

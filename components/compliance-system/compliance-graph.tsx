@@ -325,7 +325,7 @@ export function LifecycleMini({
                 'h-px w-2',
                 activeTypes.includes(type) && activeTypes.includes(types[i + 1])
                   ? 'bg-white/40'
-                  : 'bg-white/10',
+                  : 'bg-glass-strong',
               )}
             />
           )}

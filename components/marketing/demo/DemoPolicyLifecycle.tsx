@@ -34,7 +34,7 @@ const defaultSteps: LifecycleStep[] = [
     title: 'Policy Drafted',
     detail: 'Clinical Governance Policy v3.2',
     meta: 'Author: Dr Sarah Chen • Created 14 Jan 2026',
-    color: 'text-slate-400',
+    color: 'text-muted-foreground',
     bg: 'bg-slate-500/15',
     border: 'border-slate-500/20',
   },
@@ -117,7 +117,7 @@ export default function DemoPolicyLifecycle({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-1.5">
             <FileText className="h-3.5 w-3.5 text-blue-400" />
-            <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-wider">Policy Lifecycle</span>
+            <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Policy Lifecycle</span>
           </div>
           <span className="rounded-full bg-blue-500/15 px-2 py-0.5 text-[9px] text-blue-400 font-medium">
             Version Controlled
@@ -140,7 +140,7 @@ export default function DemoPolicyLifecycle({
                   className={`
                     flex items-center gap-1 sm:gap-1.5 rounded-full px-1.5 sm:px-2.5 py-1 text-[9px] sm:text-[10px] font-medium transition-all w-full justify-center
                     ${isActive ? `${step.bg} ${step.color} border ${step.border}` :
-                      isPast ? 'bg-white/[0.04] text-emerald-400' : 'bg-white/[0.02] text-slate-600'}
+                      isPast ? 'bg-white/[0.04] text-emerald-400' : 'bg-white/[0.02] text-muted-foreground/40'}
                   `}
                 >
                   <Icon className="h-3 w-3 flex-shrink-0" />
@@ -176,7 +176,7 @@ export default function DemoPolicyLifecycle({
                       </div>
                       <div className="min-w-0">
                         <p className={`text-[11px] sm:text-xs font-semibold ${step.color}`}>{step.title}</p>
-                        <p className="text-[10px] sm:text-[11px] text-slate-400 truncate">{step.detail}</p>
+                        <p className="text-[10px] sm:text-[11px] text-muted-foreground truncate">{step.detail}</p>
                       </div>
                     </div>
                     <div className={`hidden sm:flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-medium ${step.bg} ${step.color}`}>
@@ -184,7 +184,7 @@ export default function DemoPolicyLifecycle({
                       {activeStep === steps.length - 1 ? 'Complete' : `${activeStep + 1}/${steps.length}`}
                     </div>
                   </div>
-                  <p className="text-[9px] sm:text-[10px] text-slate-500 pl-9 sm:pl-10">{step.meta}</p>
+                  <p className="text-[9px] sm:text-[10px] text-muted-foreground/60 pl-9 sm:pl-10">{step.meta}</p>
                 </div>
               );
             })()}

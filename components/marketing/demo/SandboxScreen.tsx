@@ -45,7 +45,7 @@ function AvatarBadge({ name }: { name: string }) {
   const initials = name.split(' ').map((n) => n[0]).join('');
   return (
     <div className="h-5 w-5 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center flex-shrink-0">
-      <span className="text-[7px] font-bold text-slate-200">{initials}</span>
+      <span className="text-[7px] font-bold text-foreground/90">{initials}</span>
     </div>
   );
 }
@@ -55,7 +55,7 @@ function TaskStatusIcon({ status }: { status: string }) {
     case 'completed': return <Check className="h-2.5 w-2.5 text-emerald-400" />;
     case 'in-progress': return <Clock className="h-2.5 w-2.5 text-blue-400" />;
     case 'overdue': return <AlertTriangle className="h-2.5 w-2.5 text-red-400" />;
-    default: return <Circle className="h-2.5 w-2.5 text-slate-500" />;
+    default: return <Circle className="h-2.5 w-2.5 text-muted-foreground/60" />;
   }
 }
 
@@ -122,7 +122,7 @@ export default function SandboxScreen({ activePhase }: SandboxScreenProps) {
               className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[10px] font-medium transition-all ${
                 activeTab === tab.id
                   ? 'bg-white/[0.06] text-white'
-                  : 'text-slate-500 hover:text-slate-300 hover:bg-white/[0.03]'
+                  : 'text-muted-foreground/60 hover:text-foreground/70 hover:bg-white/[0.03]'
               }`}
             >
               <Icon className="h-3 w-3" />
@@ -149,7 +149,7 @@ export default function SandboxScreen({ activePhase }: SandboxScreenProps) {
               trackDemoEvent({ type: 'demo_drawer_opened', drawer: 'audit', itemId: '' });
               setDrawer({ type: 'audit' });
             }}
-            className="flex items-center gap-1 rounded-md bg-white/[0.04] border border-white/[0.06] px-2 py-1 text-[9px] text-slate-400 font-medium hover:text-slate-200 transition-colors"
+            className="flex items-center gap-1 rounded-md bg-white/[0.04] border border-white/[0.06] px-2 py-1 text-[9px] text-muted-foreground font-medium hover:text-foreground/90 transition-colors"
           >
             <Activity className="h-2.5 w-2.5" /> Audit Log
           </button>
@@ -258,11 +258,11 @@ function OverviewPanel({ onOpenTask, completedTasks }: { onOpenTask: (t: TenantT
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className="text-base font-bold text-white">{score}%</span>
-              <span className="text-[7px] text-slate-500 uppercase">Score</span>
+              <span className="text-[7px] text-muted-foreground/60 uppercase">Score</span>
             </div>
           </div>
           <div>
-            <p className="text-[10px] text-slate-500 uppercase tracking-wider">Compliance</p>
+            <p className="text-[10px] text-muted-foreground/60 uppercase tracking-wider">Compliance</p>
             <p className="text-[10px] font-medium text-white">124/142 controls</p>
           </div>
         </motion.div>
@@ -270,7 +270,7 @@ function OverviewPanel({ onOpenTask, completedTasks }: { onOpenTask: (t: TenantT
         <div className="flex-1 grid grid-cols-2 gap-2">
           {kpis.map((kpi) => (
             <motion.div key={kpi.id} variants={fadeUp} className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-2.5">
-              <p className="text-[9px] text-slate-500 uppercase tracking-wider truncate">{kpi.label}</p>
+              <p className="text-[9px] text-muted-foreground/60 uppercase tracking-wider truncate">{kpi.label}</p>
               <div className="flex items-baseline gap-1.5 mt-1">
                 <span className="text-lg font-bold text-white">{kpi.value}</span>
                 {kpi.trend !== 'neutral' && (
@@ -286,16 +286,16 @@ function OverviewPanel({ onOpenTask, completedTasks }: { onOpenTask: (t: TenantT
       <motion.div variants={fadeUp} className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3">
         <div className="flex items-center gap-1.5 mb-2.5">
           <Shield className="h-3 w-3 text-cyan-400" />
-          <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-wider">Framework Health</span>
+          <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Framework Health</span>
         </div>
         <div className="space-y-2">
           {frameworks.map((fw) => (
             <div key={fw.id} className="flex items-center gap-2.5">
-              <span className="text-[10px] text-slate-400 w-16 truncate">{fw.shortName}</span>
+              <span className="text-[10px] text-muted-foreground w-16 truncate">{fw.shortName}</span>
               <div className="flex-1 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
                 <div className="h-full rounded-full" style={{ backgroundColor: fw.color, width: `${fw.score}%` }} />
               </div>
-              <span className="text-[10px] font-medium text-slate-300 w-8 text-right">{fw.score}%</span>
+              <span className="text-[10px] font-medium text-foreground/70 w-8 text-right">{fw.score}%</span>
             </div>
           ))}
         </div>
@@ -306,7 +306,7 @@ function OverviewPanel({ onOpenTask, completedTasks }: { onOpenTask: (t: TenantT
         <motion.div variants={fadeUp} className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3">
           <div className="flex items-center gap-1.5 mb-2.5">
             <AlertTriangle className="h-3 w-3 text-amber-400" />
-            <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-wider">Needs Attention</span>
+            <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Needs Attention</span>
           </div>
           <div className="space-y-1.5">
             {urgentTasks.map((task) => (
@@ -317,8 +317,8 @@ function OverviewPanel({ onOpenTask, completedTasks }: { onOpenTask: (t: TenantT
                 className="w-full flex items-center gap-2 rounded-lg bg-white/[0.02] border border-white/[0.04] px-2.5 py-1.5 text-[10px] text-left hover:bg-white/[0.04] hover:border-white/[0.08] transition-all cursor-pointer"
               >
                 <TaskStatusIcon status={task.status} />
-                <span className="text-slate-200 truncate flex-1">{task.title}</span>
-                <span className={`text-[9px] ${task.status === 'overdue' ? 'text-red-400' : 'text-slate-500'}`}>{task.due}</span>
+                <span className="text-foreground/90 truncate flex-1">{task.title}</span>
+                <span className={`text-[9px] ${task.status === 'overdue' ? 'text-red-400' : 'text-muted-foreground/60'}`}>{task.due}</span>
               </button>
             ))}
           </div>
@@ -344,7 +344,7 @@ function TasksPanel({ onOpenTask, completedTasks }: { onOpenTask: (t: TenantTask
         <div className="flex items-center gap-2">
           <CheckSquare className="h-4 w-4 text-blue-400" />
           <h2 className="text-sm font-semibold text-white">Tasks</h2>
-          <span className="text-[10px] text-slate-500">{tasks.length} total</span>
+          <span className="text-[10px] text-muted-foreground/60">{tasks.length} total</span>
         </div>
       </motion.div>
 
@@ -355,8 +355,8 @@ function TasksPanel({ onOpenTask, completedTasks }: { onOpenTask: (t: TenantTask
           return (
             <div key={status} className="flex items-center gap-1.5 text-[10px]">
               <TaskStatusIcon status={status} />
-              <span className="text-slate-400">{count}</span>
-              <span className="text-slate-600 hidden sm:inline">{status.replace('-', ' ')}</span>
+              <span className="text-muted-foreground">{count}</span>
+              <span className="text-muted-foreground/40 hidden sm:inline">{status.replace('-', ' ')}</span>
             </div>
           );
         })}
@@ -374,11 +374,11 @@ function TasksPanel({ onOpenTask, completedTasks }: { onOpenTask: (t: TenantTask
             }`}
           >
             <TaskStatusIcon status={task.status} />
-            <span className={`truncate flex-1 font-medium ${task.status === 'completed' ? 'text-slate-500 line-through' : 'text-slate-200'}`}>
+            <span className={`truncate flex-1 font-medium ${task.status === 'completed' ? 'text-muted-foreground/60 line-through' : 'text-foreground/90'}`}>
               {task.title}
             </span>
             <AvatarBadge name={resolveUserName(task.assigneeId)} />
-            <span className={`text-[9px] flex-shrink-0 ${task.status === 'overdue' ? 'text-red-400' : 'text-slate-500'}`}>{task.due}</span>
+            <span className={`text-[9px] flex-shrink-0 ${task.status === 'overdue' ? 'text-red-400' : 'text-muted-foreground/60'}`}>{task.due}</span>
           </button>
         ))}
       </motion.div>
@@ -398,7 +398,7 @@ function EvidencePanel({ onOpenEvidence }: { onOpenEvidence: (e: TenantEvidence)
     approved: 'bg-emerald-500/15 text-emerald-400',
     'pending-review': 'bg-amber-500/15 text-amber-400',
     rejected: 'bg-red-500/15 text-red-400',
-    expired: 'bg-slate-500/15 text-slate-400',
+    expired: 'bg-slate-500/15 text-muted-foreground',
   };
 
   return (
@@ -407,7 +407,7 @@ function EvidencePanel({ onOpenEvidence }: { onOpenEvidence: (e: TenantEvidence)
         <div className="flex items-center gap-2">
           <Lock className="h-4 w-4 text-purple-400" />
           <h2 className="text-sm font-semibold text-white">Evidence Vault</h2>
-          <span className="text-[10px] text-slate-500">{items.length} items</span>
+          <span className="text-[10px] text-muted-foreground/60">{items.length} items</span>
         </div>
         <button
           type="button"
@@ -420,7 +420,7 @@ function EvidencePanel({ onOpenEvidence }: { onOpenEvidence: (e: TenantEvidence)
       <motion.div variants={fadeUp} className="flex gap-1.5 flex-wrap">
         <span className="rounded-full bg-white/[0.08] px-2 py-0.5 text-[9px] text-white font-medium">All</span>
         {categories.map((cat) => (
-          <span key={cat} className="rounded-full bg-white/[0.03] px-2 py-0.5 text-[9px] text-slate-500 cursor-pointer hover:text-slate-300 transition-colors">
+          <span key={cat} className="rounded-full bg-white/[0.03] px-2 py-0.5 text-[9px] text-muted-foreground/60 cursor-pointer hover:text-foreground/70 transition-colors">
             {cat}
           </span>
         ))}
@@ -437,14 +437,14 @@ function EvidencePanel({ onOpenEvidence }: { onOpenEvidence: (e: TenantEvidence)
           >
             <div className="flex items-start justify-between gap-2 mb-1.5">
               <div className="min-w-0">
-                <p className="text-[11px] font-medium text-slate-200 truncate">{item.name}</p>
-                <p className="text-[9px] text-slate-500">{item.category}</p>
+                <p className="text-[11px] font-medium text-foreground/90 truncate">{item.name}</p>
+                <p className="text-[9px] text-muted-foreground/60">{item.category}</p>
               </div>
               <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[9px] font-medium flex-shrink-0 ${statusStyles[item.status] || ''}`}>
                 {item.status.replace('-', ' ')}
               </span>
             </div>
-            <div className="flex items-center justify-between text-[9px] text-slate-500">
+            <div className="flex items-center justify-between text-[9px] text-muted-foreground/60">
               <span>{resolveUserName(item.uploadedById)}</span>
               <span>{item.size} · {item.date}</span>
             </div>
@@ -466,7 +466,7 @@ function ControlsPanel() {
     compliant: { color: 'text-emerald-400', bg: 'bg-emerald-400/10', label: 'Compliant' },
     'non-compliant': { color: 'text-red-400', bg: 'bg-red-400/10', label: 'Non-compliant' },
     partial: { color: 'text-amber-400', bg: 'bg-amber-400/10', label: 'Partial' },
-    'not-assessed': { color: 'text-slate-400', bg: 'bg-slate-400/10', label: 'Not Assessed' },
+    'not-assessed': { color: 'text-muted-foreground', bg: 'bg-slate-400/10', label: 'Not Assessed' },
   };
 
   return (
@@ -474,7 +474,7 @@ function ControlsPanel() {
       <motion.div variants={fadeUp} className="flex items-center gap-2">
         <Eye className="h-4 w-4 text-purple-400" />
         <h2 className="text-sm font-semibold text-white">Control Register</h2>
-        <span className="text-[10px] text-slate-500">{controls.length} controls</span>
+        <span className="text-[10px] text-muted-foreground/60">{controls.length} controls</span>
       </motion.div>
 
       <motion.div variants={fadeUp} className="rounded-xl bg-white/[0.02] border border-white/[0.06] overflow-hidden">
@@ -492,10 +492,10 @@ function ControlsPanel() {
                 <Shield className={`h-2.5 w-2.5 ${cfg.color}`} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-slate-200 truncate font-medium">{ctrl.code} {ctrl.title}</p>
+                <p className="text-foreground/90 truncate font-medium">{ctrl.code} {ctrl.title}</p>
               </div>
-              <span className="text-[9px] text-slate-500 hidden sm:block">{fw?.shortName}</span>
-              <span className="text-[9px] text-slate-600">{ctrl.evidenceCount} evidence</span>
+              <span className="text-[9px] text-muted-foreground/60 hidden sm:block">{fw?.shortName}</span>
+              <span className="text-[9px] text-muted-foreground/40">{ctrl.evidenceCount} evidence</span>
               <span className={`text-[9px] font-medium ${cfg.color}`}>{cfg.label}</span>
             </motion.div>
           );
@@ -515,7 +515,7 @@ function ReportsPanel() {
   const statusConfig: Record<string, { color: string; icon: React.ReactNode }> = {
     ready: { color: 'text-emerald-400', icon: <Check className="h-2.5 w-2.5 text-emerald-400" /> },
     generating: { color: 'text-amber-400', icon: <Clock className="h-2.5 w-2.5 text-amber-400 animate-spin" /> },
-    draft: { color: 'text-slate-400', icon: <FileText className="h-2.5 w-2.5 text-slate-400" /> },
+    draft: { color: 'text-muted-foreground', icon: <FileText className="h-2.5 w-2.5 text-muted-foreground" /> },
     exported: { color: 'text-blue-400', icon: <Check className="h-2.5 w-2.5 text-blue-400" /> },
   };
 
@@ -524,7 +524,7 @@ function ReportsPanel() {
       <motion.div variants={fadeUp} className="flex items-center gap-2">
         <BarChart3 className="h-4 w-4 text-pink-400" />
         <h2 className="text-sm font-semibold text-white">Reports</h2>
-        <span className="text-[10px] text-slate-500">{reports.length} reports</span>
+        <span className="text-[10px] text-muted-foreground/60">{reports.length} reports</span>
       </motion.div>
 
       <div className="space-y-2">
@@ -542,7 +542,7 @@ function ReportsPanel() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[11px] font-medium text-white truncate">{report.name}</p>
-                  <p className="text-[9px] text-slate-500">
+                  <p className="text-[9px] text-muted-foreground/60">
                     {report.pages > 0 ? `${report.pages} pages` : 'Not generated'}{' '}
                     {report.generatedAt && `· ${report.generatedAt}`}
                   </p>

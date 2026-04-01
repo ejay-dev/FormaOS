@@ -111,10 +111,10 @@ export function PlanComparisonTable() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-slate-100">
+        <h2 className="text-2xl font-bold text-foreground">
           {isExpired ? 'Reactivate Your Account' : 'Choose Your Plan'}
         </h2>
-        <p className="mt-2 text-sm text-slate-400 max-w-lg mx-auto">
+        <p className="mt-2 text-sm text-muted-foreground max-w-lg mx-auto">
           {isExpired
             ? 'Your trial has ended. Pick a plan to continue with full access.'
             : 'Upgrade anytime — your data is always preserved.'}
@@ -146,7 +146,7 @@ export function PlanComparisonTable() {
                   ? 'border-sky-400/50 bg-sky-500/5 ring-1 ring-sky-400/20'
                   : isCurrent
                     ? 'border-emerald-400/30 bg-emerald-500/5'
-                    : 'border-white/10 bg-white/5'
+                    : 'border-glass-border bg-white/5'
               }`}
             >
               {/* Recommended badge */}
@@ -167,26 +167,26 @@ export function PlanComparisonTable() {
               <div className="text-center space-y-3 pt-2">
                 <PlanIcon
                   className={`h-8 w-8 mx-auto ${
-                    isRecommended ? 'text-sky-400' : 'text-slate-400'
+                    isRecommended ? 'text-sky-400' : 'text-muted-foreground'
                   }`}
                 />
 
                 <div>
-                  <h3 className="text-lg font-bold text-slate-100">
+                  <h3 className="text-lg font-bold text-foreground">
                     {catalog.name}
                   </h3>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     {catalog.summary}
                   </p>
                 </div>
 
-                <div className="text-slate-100">
+                <div className="text-foreground">
                   {price.monthly > 0 ? (
                     <>
                       <span className="text-3xl font-bold">
                         ${price.monthly}
                       </span>
-                      <span className="text-sm text-slate-400">
+                      <span className="text-sm text-muted-foreground">
                         {price.label}
                       </span>
                     </>
@@ -207,7 +207,7 @@ export function PlanComparisonTable() {
                     className={`w-full rounded-lg px-4 py-2.5 text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
                       isRecommended
                         ? 'bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 text-slate-950 hover:scale-[1.02] hover:shadow-lg hover:shadow-sky-500/20'
-                        : 'bg-white/10 text-slate-100 hover:bg-white/15'
+                        : 'bg-glass-strong text-foreground hover:bg-white/15'
                     } disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
                     {isLoading ? (
@@ -225,7 +225,7 @@ export function PlanComparisonTable() {
                 {catalog.features.map((feature) => (
                   <li
                     key={feature}
-                    className="flex items-start gap-2 text-xs text-slate-300"
+                    className="flex items-start gap-2 text-xs text-foreground/70"
                   >
                     <Check className="h-3.5 w-3.5 flex-shrink-0 text-emerald-400 mt-0.5" />
                     {feature}
@@ -238,17 +238,17 @@ export function PlanComparisonTable() {
       </div>
 
       {/* Detailed comparison table (desktop) */}
-      <div className="hidden lg:block overflow-x-auto rounded-2xl border border-white/10 bg-white/5">
+      <div className="hidden lg:block overflow-x-auto rounded-2xl border border-glass-border bg-white/5">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-white/10">
-              <th className="text-left px-6 py-4 text-slate-400 font-medium">
+              <th className="text-left px-6 py-4 text-muted-foreground font-medium">
                 Feature
               </th>
               {plans.map((p) => (
                 <th
                   key={p}
-                  className="text-center px-6 py-4 text-slate-200 font-semibold"
+                  className="text-center px-6 py-4 text-foreground/90 font-semibold"
                 >
                   {PLAN_CATALOG[p].name}
                 </th>
@@ -261,7 +261,7 @@ export function PlanComparisonTable() {
                 key={row.label}
                 className={i % 2 === 0 ? 'bg-white/[0.02]' : ''}
               >
-                <td className="px-6 py-3 text-slate-300">{row.label}</td>
+                <td className="px-6 py-3 text-foreground/70">{row.label}</td>
                 {plans.map((p) => {
                   const value = row[p];
                   const isCheck = value === '✓';
@@ -271,9 +271,9 @@ export function PlanComparisonTable() {
                       {isCheck ? (
                         <Check className="h-4 w-4 text-emerald-400 mx-auto" />
                       ) : isDash ? (
-                        <X className="h-4 w-4 text-slate-600 mx-auto" />
+                        <X className="h-4 w-4 text-muted-foreground/40 mx-auto" />
                       ) : (
-                        <span className="text-slate-300">{value}</span>
+                        <span className="text-foreground/70">{value}</span>
                       )}
                     </td>
                   );

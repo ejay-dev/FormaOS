@@ -146,9 +146,9 @@ export function ComplianceIntelligenceSummary() {
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-purple-500/5 via-blue-500/5 to-cyan-500/5 p-6 backdrop-blur-sm" style={{ minHeight: '400px' }}>
+      <div className="rounded-2xl border border-glass-border bg-gradient-to-br from-purple-500/5 via-blue-500/5 to-cyan-500/5 p-6 backdrop-blur-sm" style={{ minHeight: '400px' }}>
         <div className="animate-pulse space-y-4">
-          <div className="h-6 w-48 rounded bg-white/10" />
+          <div className="h-6 w-48 rounded bg-glass-strong" />
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             <div className="h-24 rounded-xl bg-white/5" />
             <div className="h-24 rounded-xl bg-white/5" />
@@ -212,7 +212,7 @@ export function ComplianceIntelligenceSummary() {
   const scoreHistory = data.complianceScore.history.map((h) => h.score);
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-purple-500/5 via-blue-500/5 to-cyan-500/5 p-6 backdrop-blur-sm" style={{ minHeight: '400px' }}>
+    <div className="rounded-2xl border border-glass-border bg-gradient-to-br from-purple-500/5 via-blue-500/5 to-cyan-500/5 p-6 backdrop-blur-sm" style={{ minHeight: '400px' }}>
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -229,7 +229,7 @@ export function ComplianceIntelligenceSummary() {
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         {/* Compliance Score */}
-        <div className="group rounded-xl border border-white/10 bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 p-4 transition-all hover:border-emerald-500/30">
+        <div className="group rounded-xl border border-glass-border bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 p-4 transition-all hover:border-emerald-500/30">
           <div className="mb-2 flex items-center justify-between">
             <span className="text-xs font-medium uppercase tracking-wider text-gray-400">
               Compliance Score
@@ -246,7 +246,7 @@ export function ComplianceIntelligenceSummary() {
         </div>
 
         {/* Automation Performance */}
-        <div className="group rounded-xl border border-white/10 bg-gradient-to-br from-blue-500/10 to-purple-500/10 p-4 transition-all hover:border-blue-500/30">
+        <div className="group rounded-xl border border-glass-border bg-gradient-to-br from-blue-500/10 to-purple-500/10 p-4 transition-all hover:border-blue-500/30">
           <div className="mb-2 flex items-center justify-between">
             <span className="text-xs font-medium uppercase tracking-wider text-gray-400">
               Automation
@@ -265,7 +265,7 @@ export function ComplianceIntelligenceSummary() {
         </div>
 
         {/* Risk Reduction */}
-        <div className="group rounded-xl border border-white/10 bg-gradient-to-br from-amber-500/10 to-orange-500/10 p-4 transition-all hover:border-amber-500/30">
+        <div className="group rounded-xl border border-glass-border bg-gradient-to-br from-amber-500/10 to-orange-500/10 p-4 transition-all hover:border-amber-500/30">
           <div className="mb-2 flex items-center justify-between">
             <span className="text-xs font-medium uppercase tracking-wider text-gray-400">
               Risk Reduction
@@ -286,7 +286,7 @@ export function ComplianceIntelligenceSummary() {
         </div>
 
         {/* Audit Readiness */}
-        <div className="group rounded-xl border border-white/10 bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-4 transition-all hover:border-purple-500/30">
+        <div className="group rounded-xl border border-glass-border bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-4 transition-all hover:border-purple-500/30">
           <div className="mb-2 flex items-center justify-between">
             <span className="text-xs font-medium uppercase tracking-wider text-gray-400">
               Audit Readiness
@@ -309,7 +309,7 @@ export function ComplianceIntelligenceSummary() {
 
       {/* Upcoming Deadlines */}
       {data.upcomingDeadlines.length > 0 && (
-        <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4">
+        <div className="mt-4 rounded-xl border border-glass-border bg-glass-subtle p-4">
           <div className="mb-3 flex items-center gap-2">
             <Calendar className="h-4 w-4 text-cyan-400" />
             <h4 className="text-sm font-semibold text-white">Upcoming Deadlines</h4>
@@ -318,7 +318,7 @@ export function ComplianceIntelligenceSummary() {
             {data.upcomingDeadlines.slice(0, 3).map((deadline, idx) => (
               <div
                 key={idx}
-                className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2"
+                className="flex items-center justify-between rounded-lg bg-glass-subtle px-3 py-2"
               >
                 <span className="text-sm text-gray-300">{deadline.title}</span>
                 <span className="text-xs text-gray-400">

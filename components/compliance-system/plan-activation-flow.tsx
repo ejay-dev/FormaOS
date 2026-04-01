@@ -60,12 +60,12 @@ function PlanCard({
         'relative rounded-3xl border-2 p-6 transition-all duration-300',
         recommended
           ? 'border-cyan-400/50 bg-gradient-to-br from-cyan-500/10 to-teal-500/10 shadow-[0_0_30px_rgba(34,211,238,0.2)]'
-          : 'border-white/10 bg-white/5',
+          : 'border-glass-border bg-white/5',
         current &&
           'border-emerald-400/50 bg-gradient-to-br from-emerald-500/10 to-teal-500/10',
         !current &&
           !isUpgrading &&
-          'hover:border-white/20 hover:bg-white/10 cursor-pointer',
+          'hover:border-glass-border-strong hover:bg-glass-strong cursor-pointer',
       )}
       onClick={() => !current && !isUpgrading && onSelect()}
     >
@@ -87,16 +87,16 @@ function PlanCard({
       )}
 
       <div className="text-center mb-6">
-        <h3 className="text-xl font-black text-slate-100">{name}</h3>
+        <h3 className="text-xl font-black text-foreground">{name}</h3>
         <p className="text-3xl font-black text-white mt-2">{price}</p>
-        <p className="text-xs text-slate-400 mt-1">per month</p>
+        <p className="text-xs text-muted-foreground mt-1">per month</p>
       </div>
 
       <ul className="space-y-3 mb-6">
         {features.map((feature, i) => (
           <li
             key={i}
-            className="flex items-center gap-2 text-sm text-slate-300"
+            className="flex items-center gap-2 text-sm text-foreground/70"
           >
             <Check className="h-4 w-4 text-emerald-400 shrink-0" />
             {feature}
@@ -113,7 +113,7 @@ function PlanCard({
             ? 'bg-emerald-500/20 text-emerald-300 cursor-default'
             : recommended
               ? 'bg-gradient-to-r from-cyan-500 to-teal-500 text-white hover:brightness-110 active:scale-95'
-              : 'bg-white/10 text-white hover:bg-white/20 active:scale-95',
+              : 'bg-glass-strong text-white hover:bg-white/20 active:scale-95',
           isUpgrading && 'opacity-50 cursor-not-allowed',
         )}
       >
@@ -157,7 +157,7 @@ function ModuleActivationDisplay({
               ? 'border-emerald-400/50 bg-emerald-500/20 text-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.3)]'
               : isActivating
                 ? 'border-cyan-400/50 bg-cyan-500/20 text-cyan-400 animate-pulse'
-                : 'border-white/10 bg-white/5 text-slate-500',
+                : 'border-glass-border bg-glass-subtle text-muted-foreground/60',
           )}
           style={{
             transitionDelay: `${i * 100}ms`,
@@ -277,7 +277,7 @@ export function PlanActivationFlow() {
             <h2 className="text-3xl font-black text-white">
               Compliance Engine Activated
             </h2>
-            <p className="text-slate-400 mt-2">All modules are now online</p>
+            <p className="text-muted-foreground mt-2">All modules are now online</p>
 
             {/* Module activation visualization */}
             <ModuleActivationDisplay

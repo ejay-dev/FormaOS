@@ -15,10 +15,10 @@ export function FrameworkRollupWidget({
   if (isLoading) {
     return (
       <div className="rounded-2xl border border-white/10 bg-white/5 p-6 animate-pulse">
-        <div className="h-5 w-40 rounded bg-white/10 mb-6" />
+        <div className="h-5 w-40 rounded bg-glass-strong mb-6" />
         <div className="grid gap-4 md:grid-cols-2">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-28 rounded-xl bg-white/10" />
+            <div key={i} className="h-28 rounded-xl bg-glass-strong" />
           ))}
         </div>
       </div>
@@ -28,9 +28,9 @@ export function FrameworkRollupWidget({
   if (frameworks.length === 0) {
     return (
       <div className="rounded-2xl border border-white/10 bg-white/5 p-8 text-center">
-        <ShieldCheck className="h-12 w-12 text-slate-500 mx-auto mb-4" />
-        <p className="text-slate-400">No compliance frameworks enabled.</p>
-        <p className="text-sm text-slate-500 mt-2">
+        <ShieldCheck className="h-12 w-12 text-muted-foreground/60 mx-auto mb-4" />
+        <p className="text-muted-foreground">No compliance frameworks enabled.</p>
+        <p className="text-sm text-muted-foreground/60 mt-2">
           Enable frameworks in Settings to track compliance posture.
         </p>
       </div>
@@ -44,8 +44,8 @@ export function FrameworkRollupWidget({
           <ShieldCheck className="h-4 w-4 text-emerald-300" />
         </div>
         <div>
-          <h3 className="text-sm font-semibold text-slate-100">Framework Coverage</h3>
-          <p className="text-xs text-slate-400">{frameworks.length} frameworks tracked</p>
+          <h3 className="text-sm font-semibold text-foreground">Framework Coverage</h3>
+          <p className="text-xs text-muted-foreground">{frameworks.length} frameworks tracked</p>
         </div>
       </div>
 
@@ -81,22 +81,22 @@ function FrameworkCard({ framework }: { framework: FrameworkRollupItem }) {
       ? 'text-emerald-400'
       : framework.trendDirection === 'down'
       ? 'text-red-400'
-      : 'text-slate-400';
+      : 'text-muted-foreground';
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/5 p-4 hover:bg-white/10 transition-colors">
+    <div className="rounded-xl border border-white/10 bg-white/5 p-4 hover:bg-glass-strong transition-colors">
       <div className="flex items-start justify-between">
         <div>
-          <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+          <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
             {framework.code}
           </div>
-          <div className="text-sm text-slate-300 mt-0.5 line-clamp-1">{framework.title}</div>
+          <div className="text-sm text-foreground/70 mt-0.5 line-clamp-1">{framework.title}</div>
         </div>
         <div className={`text-2xl font-bold ${textColor}`}>{framework.readinessScore}%</div>
       </div>
 
       {/* Progress Bar */}
-      <div className="mt-3 h-2 w-full rounded-full bg-white/10">
+      <div className="mt-3 h-2 w-full rounded-full bg-glass-strong">
         <div
           className={`h-2 rounded-full ${bgColor}`}
           style={{ width: `${framework.readinessScore}%` }}
@@ -104,7 +104,7 @@ function FrameworkCard({ framework }: { framework: FrameworkRollupItem }) {
       </div>
 
       {/* Stats Row */}
-      <div className="mt-3 flex items-center justify-between text-xs text-slate-400">
+      <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
         <div className="flex items-center gap-3">
           <span>
             <span className="text-emerald-400">{framework.controlsSatisfied}</span>/

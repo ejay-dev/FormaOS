@@ -79,11 +79,11 @@ export function ConversationSidebar({ activeId, onSelect, onNew, onDelete }: Con
   };
 
   return (
-    <div className="flex h-full w-56 shrink-0 flex-col border-r border-white/10 bg-black/20">
-      <div className="border-b border-white/10 p-3">
+    <div className="flex h-full w-56 shrink-0 flex-col border-r border-glass-border bg-black/20">
+      <div className="border-b border-glass-border p-3">
         <button
           onClick={onNew}
-          className="flex w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-slate-300 hover:bg-white/10 transition-colors"
+          className="flex w-full items-center justify-center gap-2 rounded-lg border border-glass-border bg-glass-subtle px-3 py-2 text-xs font-medium text-foreground/70 hover:bg-glass-strong transition-colors"
         >
           <Plus className="h-3.5 w-3.5" />
           New Chat
@@ -94,11 +94,11 @@ export function ConversationSidebar({ activeId, onSelect, onNew, onDelete }: Con
         {isLoading ? (
           <div className="space-y-2 p-2">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-10 rounded-lg bg-white/5 animate-pulse" />
+              <div key={i} className="h-10 rounded-lg bg-glass-subtle animate-pulse" />
             ))}
           </div>
         ) : conversations.length === 0 ? (
-          <div className="px-3 py-6 text-center text-xs text-slate-600">
+          <div className="px-3 py-6 text-center text-xs text-muted-foreground/40">
             No conversations yet
           </div>
         ) : (
@@ -109,15 +109,15 @@ export function ConversationSidebar({ activeId, onSelect, onNew, onDelete }: Con
               className={`group flex w-full items-start gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
                 activeId === conv.id
                   ? 'bg-cyan-400/10 border border-cyan-400/20'
-                  : 'hover:bg-white/5 border border-transparent'
+                  : 'hover:bg-glass-subtle border border-transparent'
               }`}
             >
-              <MessageSquare className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-500" />
+              <MessageSquare className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground/60" />
               <div className="min-w-0 flex-1">
-                <div className="truncate text-xs font-medium text-slate-300">
+                <div className="truncate text-xs font-medium text-foreground/70">
                   {conv.title}
                 </div>
-                <div className="text-[10px] text-slate-600">
+                <div className="text-[10px] text-muted-foreground/40">
                   {formatRelativeDate(conv.updatedAt)}
                 </div>
               </div>

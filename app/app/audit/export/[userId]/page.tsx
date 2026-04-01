@@ -57,13 +57,13 @@ export default async function AuditExportPage({
   );
 
   return (
-    <div className="p-12 md:p-20 bg-white/5 min-h-screen text-slate-100 print:p-0 animate-in slide-in-from-bottom-4 duration-700">
+    <div className="p-12 md:p-20 bg-white/5 min-h-screen text-foreground print:p-0 animate-in slide-in-from-bottom-4 duration-700">
         
         {/* Compliance Header */}
         <header className="border-b-4 border-white/10 pb-8 flex flex-col md:flex-row md:justify-between md:items-end gap-6">
             <div>
                 <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-2">Compliance Pack</h1>
-                <div className="flex items-center gap-3 text-slate-400">
+                <div className="flex items-center gap-3 text-muted-foreground">
                     <User className="h-4 w-4" />
                     <p className="font-bold uppercase tracking-widest text-xs">
                         ID: {userId}
@@ -75,7 +75,7 @@ export default async function AuditExportPage({
                     <ShieldCheck className="h-4 w-4" />
                     <span className="text-xs font-black uppercase tracking-widest">Audit Verified</span>
                 </div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
                     Generated: {new Date().toLocaleDateString()}
                 </p>
             </div>
@@ -84,25 +84,25 @@ export default async function AuditExportPage({
         {/* Evidence Vault Section */}
         <section className="mt-16 space-y-8">
             <div className="flex items-center gap-3 mb-8">
-                <FileText className="h-5 w-5 text-slate-400" />
-                <h2 className="text-xs font-black uppercase tracking-[0.3em] text-slate-400">Verified Evidence Vault</h2>
+                <FileText className="h-5 w-5 text-muted-foreground" />
+                <h2 className="text-xs font-black uppercase tracking-[0.3em] text-muted-foreground">Verified Evidence Vault</h2>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {credentials.length === 0 ? (
-                    <div className="col-span-2 p-8 border-2 border-dashed border-white/10 rounded-2xl text-center text-slate-400 text-sm font-bold">
+                    <div className="col-span-2 p-8 border-2 border-dashed border-white/10 rounded-2xl text-center text-muted-foreground text-sm font-bold">
                         No verified documents on file.
                     </div>
                 ) : credentials.map((doc: any) => (
                     <div key={doc.id} className="border border-white/10 p-8 rounded-[2rem] flex items-center justify-between shadow-sm hover:shadow-md transition-shadow">
                         <div>
-                            <h3 className="font-black uppercase tracking-widest text-sm text-slate-100">{doc.document_type}</h3>
+                            <h3 className="font-black uppercase tracking-widest text-sm text-foreground">{doc.document_type}</h3>
                             <div className="flex items-center gap-4 mt-3">
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-tight flex items-center gap-1">
+                                <p className="text-xs font-bold text-muted-foreground uppercase tracking-tight flex items-center gap-1">
                                     <Calendar className="h-3 w-3" />
                                     Issued: {doc.issue_date || 'N/A'}
                                 </p>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-tight">
+                                <p className="text-xs font-bold text-muted-foreground uppercase tracking-tight">
                                     Expires: {doc.expiry_date || 'Continuous'}
                                 </p>
                             </div>
@@ -117,19 +117,19 @@ export default async function AuditExportPage({
 
         {/* Individual Audit Trail */}
         <section className="mt-20 pt-12 border-t border-white/10">
-            <h2 className="text-xs font-black uppercase tracking-[0.3em] text-slate-400 mb-10">Personnel Activity Log</h2>
+            <h2 className="text-xs font-black uppercase tracking-[0.3em] text-muted-foreground mb-10">Personnel Activity Log</h2>
             <div className="space-y-0">
                 {logs.length === 0 ? (
-                    <p className="text-sm font-bold text-slate-400 italic">No activity recorded for this user.</p>
+                    <p className="text-sm font-bold text-muted-foreground italic">No activity recorded for this user.</p>
                 ) : logs.slice(0, 15).map((log: any) => (
                     <div key={log.id} className="flex flex-col md:flex-row md:items-center justify-between py-4 border-b border-white/10 hover:bg-white/5 px-4 -mx-4 rounded-xl transition-colors">
                         <div className="flex items-center gap-3">
-                            <div className="h-2 w-2 rounded-full bg-white/10" />
-                            <span className="text-xs font-black uppercase tracking-wide text-slate-100">
+                            <div className="h-2 w-2 rounded-full bg-glass-strong" />
+                            <span className="text-xs font-black uppercase tracking-wide text-foreground">
                                 {log.action.replace(/_/g, ' ')}
                             </span>
                         </div>
-                        <span className="text-xs font-mono font-bold text-slate-400 mt-1 md:mt-0">
+                        <span className="text-xs font-mono font-bold text-muted-foreground mt-1 md:mt-0">
                             {new Date(log.created_at).toLocaleString()}
                         </span>
                     </div>
@@ -139,7 +139,7 @@ export default async function AuditExportPage({
         
         {/* Print Footer */}
         <div className="mt-20 pt-8 border-t-2 border-white/10 flex justify-between items-center print:hidden">
-            <p className="text-xs font-black uppercase tracking-widest text-slate-400">
+            <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">
                 FormaOS Governance Engine
             </p>
             <PrintPackButton />

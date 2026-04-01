@@ -101,14 +101,14 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
   };
 
   return (
-    <section className="rounded-[2rem] border border-white/10 bg-white/5 p-8 shadow-sm">
+    <section className="rounded-[2rem] border border-glass-border bg-glass-subtle p-8 shadow-sm">
       <div className="flex items-center gap-4">
         <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 text-emerald-300 flex items-center justify-center">
           <ShieldCheck className="h-6 w-6" />
         </div>
         <div>
           <div className="flex items-center gap-3">
-            <h3 className="text-lg font-black text-slate-100 tracking-tight">
+            <h3 className="text-lg font-black text-foreground tracking-tight">
               Multi-Factor Authentication
             </h3>
             {required && (
@@ -117,7 +117,7 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
               </span>
             )}
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             Protect privileged access with time-based one-time codes.
           </p>
         </div>
@@ -136,12 +136,12 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
       )}
 
       <div className="mt-6 flex flex-col gap-4">
-        <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+        <div className="flex items-center justify-between rounded-xl border border-glass-border bg-glass-subtle px-4 py-3">
           <div className="flex items-center gap-3">
             <CheckCircle2
-              className={`h-5 w-5 ${enabled ? 'text-emerald-400' : 'text-slate-500'}`}
+              className={`h-5 w-5 ${enabled ? 'text-emerald-400' : 'text-muted-foreground/60'}`}
             />
-            <span className="text-sm font-semibold text-slate-100">
+            <span className="text-sm font-semibold text-foreground">
               {enabled ? 'MFA Enabled' : 'MFA Not Enabled'}
             </span>
           </div>
@@ -150,7 +150,7 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
               type="button"
               onClick={disableMFA}
               disabled={loading}
-              className="text-xs font-semibold text-slate-300 hover:text-white"
+              className="text-xs font-semibold text-foreground/70 hover:text-white"
             >
               Disable
             </button>
@@ -167,23 +167,23 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
         </div>
 
         {!enabled && qrCode && (
-          <div className="grid grid-cols-1 lg:grid-cols-[200px,1fr] gap-6 rounded-xl border border-white/10 bg-white/5 p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-[200px,1fr] gap-6 rounded-xl border border-glass-border bg-glass-subtle p-6">
             <div className="flex flex-col items-center gap-3">
-              <div className="h-40 w-40 rounded-xl border border-white/10 bg-white p-3">
+              <div className="h-40 w-40 rounded-xl border border-glass-border bg-white p-3">
                 <img src={qrCode} alt="MFA QR Code" className="h-full w-full" />
               </div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-widest">
+              <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-widest">
                 <QrCode className="h-3 w-3" />
                 Scan with Authenticator
               </div>
             </div>
             <div className="space-y-4">
-              <div className="rounded-lg border border-white/10 bg-slate-900/40 px-4 py-3 text-xs text-slate-300">
-                <div className="flex items-center gap-2 font-semibold text-slate-200">
+              <div className="rounded-lg border border-glass-border bg-slate-900/40 px-4 py-3 text-xs text-foreground/70">
+                <div className="flex items-center gap-2 font-semibold text-foreground/90">
                   <KeyRound className="h-3 w-3" />
                   Backup Codes
                 </div>
-                <p className="mt-2 text-[11px] text-slate-400">
+                <p className="mt-2 text-[11px] text-muted-foreground">
                   Store these codes safely. Each code can be used once.
                 </p>
                 <div className="mt-3 grid grid-cols-2 gap-2 font-mono text-[11px] text-emerald-200">
@@ -194,14 +194,14 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="field-226" className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+                <label htmlFor="field-226" className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
                   Verification Code
                 </label>
                 <input
                   value={token}
                   onChange={(event) => setToken(event.target.value)}
                   placeholder="123456"
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-emerald-400/60 focus:outline-none focus:ring-2 focus:ring-emerald-400/20"
+                  className="w-full rounded-lg border border-glass-border bg-glass-subtle px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-emerald-400/60 focus:outline-none focus:ring-2 focus:ring-emerald-400/20"
                 />
               </div>
 

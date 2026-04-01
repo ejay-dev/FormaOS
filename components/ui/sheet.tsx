@@ -51,22 +51,22 @@ function SheetContent({
       <SheetPrimitive.Content
         data-slot="sheet-content"
         className={cn(
-          "fixed z-50 flex flex-col gap-4 bg-white/10 shadow-xl transition ease-in-out overflow-y-auto",
+          "fixed z-50 flex flex-col gap-4 bg-glass-strong shadow-xl transition ease-in-out overflow-y-auto",
           side === "right" &&
-            "inset-y-0 right-0 h-full w-[90vw] max-w-[360px] border-l border-white/10 sm:w-3/4 sm:max-w-sm",
+            "inset-y-0 right-0 h-full w-[90vw] max-w-[360px] border-l border-glass-border sm:w-3/4 sm:max-w-sm",
           side === "left" &&
-            "inset-y-0 left-0 h-full w-[90vw] max-w-[360px] border-r border-white/10 sm:w-3/4 sm:max-w-sm",
+            "inset-y-0 left-0 h-full w-[90vw] max-w-[360px] border-r border-glass-border sm:w-3/4 sm:max-w-sm",
           side === "top" &&
             "inset-x-0 top-0 h-auto max-h-[90vh] border-b border-white/10",
           side === "bottom" &&
-            "inset-x-0 bottom-0 h-auto max-h-[90vh] border-t border-white/10 rounded-t-2xl",
+            "inset-x-0 bottom-0 h-auto max-h-[90vh] border-t border-glass-border rounded-t-2xl",
           className
         )}
         {...props}
       >
         {children}
         <SheetPrimitive.Close aria-label="Close" className="absolute top-4 right-4 rounded-md p-1 opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
-          <XIcon className="h-4 w-4 text-slate-400" />
+          <XIcon className="h-4 w-4 text-muted-foreground" />
           <span className="sr-only">Close</span>
         </SheetPrimitive.Close>
       </SheetPrimitive.Content>
@@ -101,7 +101,7 @@ function SheetTitle({
   return (
     <SheetPrimitive.Title
       data-slot="sheet-title"
-      className={cn("text-slate-100 font-semibold", className)}
+      className={cn("text-foreground font-semibold", className)}
       {...props}
     />
   );
@@ -114,7 +114,7 @@ function SheetDescription({
   return (
     <SheetPrimitive.Description
       data-slot="sheet-description"
-      className={cn("text-slate-400 text-sm", className)}
+      className={cn("text-muted-foreground text-sm", className)}
       {...props}
     />
   );

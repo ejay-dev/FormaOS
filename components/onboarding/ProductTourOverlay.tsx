@@ -200,7 +200,7 @@ export function ProductTourOverlay() {
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       {highlightStyle ? (
         <div
-          className="absolute rounded-2xl border border-white/20 shadow-[0_0_0_9999px_rgba(0,0,0,0.6)] transition-all duration-200"
+          className="absolute rounded-2xl border border-glass-border-strong shadow-[0_0_0_9999px_rgba(0,0,0,0.6)] transition-all duration-200"
           style={highlightStyle}
         />
       ) : null}
@@ -208,8 +208,8 @@ export function ProductTourOverlay() {
       <div
         className={`absolute z-[var(--z-tour)] w-full sm:w-[min(420px,calc(100vw-2rem))] ${
           isMobile
-            ? 'bottom-0 left-0 right-0 rounded-t-3xl border-t border-white/10 bg-[hsl(var(--card))] p-6'
-            : 'rounded-2xl border border-white/10 bg-[hsl(var(--card))] p-6 shadow-2xl'
+            ? 'bottom-0 left-0 right-0 rounded-t-3xl border-t border-glass-border bg-[hsl(var(--card))] p-6'
+            : 'rounded-2xl border border-glass-border bg-[hsl(var(--card))] p-6 shadow-2xl'
         }`}
         style={
           isMobile
@@ -222,24 +222,24 @@ export function ProductTourOverlay() {
       >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
               Product Tour
             </p>
-            <h3 className="text-lg font-semibold text-slate-100">
+            <h3 className="text-lg font-semibold text-foreground">
               {step.title}
             </h3>
-            <p className="mt-2 text-sm text-slate-300">{step.description}</p>
+            <p className="mt-2 text-sm text-foreground/70">{step.description}</p>
           </div>
           <button
             onClick={skipTour}
             aria-label="Close tour"
-            className="rounded-full border border-white/10 p-2 text-slate-400 hover:text-white"
+            className="rounded-full border border-glass-border p-2 text-muted-foreground hover:text-white"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="mt-4 flex items-center justify-between text-xs text-slate-400">
+        <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
           <span>
             Step {currentStep + 1} of {totalSteps}
           </span>
@@ -252,7 +252,7 @@ export function ProductTourOverlay() {
                     ? 'w-8 bg-cyan-400'
                     : index < currentStep
                       ? 'w-4 bg-white/30'
-                      : 'w-4 bg-white/10'
+                      : 'w-4 bg-glass-strong'
                 }`}
               />
             ))}
@@ -264,7 +264,7 @@ export function ProductTourOverlay() {
             variant="ghost"
             size="sm"
             onClick={skipTour}
-            className="text-slate-300"
+            className="text-foreground/70"
           >
             Skip Tour
           </Button>

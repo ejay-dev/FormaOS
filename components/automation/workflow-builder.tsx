@@ -216,10 +216,10 @@ export function WorkflowBuilder({
 
   return (
     <div className="grid gap-6 xl:grid-cols-[280px_minmax(0,1fr)_360px]">
-      <aside className="space-y-4 rounded-[28px] border border-white/10 bg-slate-950/70 p-5">
+      <aside className="space-y-4 rounded-[28px] border border-glass-border bg-slate-950/70 p-5">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Palette</p>
-          <h3 className="mt-2 text-lg font-semibold text-slate-100">Drag Step Types</h3>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Palette</p>
+          <h3 className="mt-2 text-lg font-semibold text-foreground">Drag Step Types</h3>
         </div>
         <div className="space-y-3">
           {palette.map((type) => (
@@ -230,29 +230,29 @@ export function WorkflowBuilder({
               onDragStart={() => setDraggingType(type)}
               onDragEnd={() => setDraggingType(null)}
               onClick={() => !readOnly && addStep(type)}
-              className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left text-sm text-slate-200 transition hover:border-white/20 hover:bg-white/[0.06]"
+              className="flex w-full items-center justify-between rounded-2xl border border-glass-border bg-white/[0.03] px-4 py-3 text-left text-sm text-foreground/90 transition hover:border-glass-border-strong hover:bg-white/[0.06]"
             >
               <span>{STEP_TYPE_LABELS[type]}</span>
-              <Plus className="h-4 w-4 text-slate-400" />
+              <Plus className="h-4 w-4 text-muted-foreground" />
             </button>
           ))}
         </div>
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
-          <p className="font-semibold text-slate-200">Validation</p>
+        <div className="rounded-2xl border border-glass-border bg-white/[0.03] p-4 text-sm text-muted-foreground">
+          <p className="font-semibold text-foreground/90">Validation</p>
           <p className="mt-2">{Object.keys(validationErrors).length} issues detected</p>
         </div>
       </aside>
 
-      <section className="space-y-4 rounded-[28px] border border-white/10 bg-slate-950/70 p-5">
+      <section className="space-y-4 rounded-[28px] border border-glass-border bg-slate-950/70 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Canvas</p>
-            <h3 className="mt-2 text-lg font-semibold text-slate-100">Visual Workflow Builder</h3>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Canvas</p>
+            <h3 className="mt-2 text-lg font-semibold text-foreground">Visual Workflow Builder</h3>
           </div>
           <div className="flex items-center gap-2">
             <button
               type="button"
-              className="rounded-xl border border-white/10 p-2 text-slate-200 hover:bg-white/10 disabled:opacity-40"
+              className="rounded-xl border border-glass-border p-2 text-foreground/90 hover:bg-glass-strong disabled:opacity-40"
               onClick={() =>
                 setHistory((currentHistory) => {
                   const previous = currentHistory[currentHistory.length - 1];
@@ -269,7 +269,7 @@ export function WorkflowBuilder({
             </button>
             <button
               type="button"
-              className="rounded-xl border border-white/10 p-2 text-slate-200 hover:bg-white/10 disabled:opacity-40"
+              className="rounded-xl border border-glass-border p-2 text-foreground/90 hover:bg-glass-strong disabled:opacity-40"
               onClick={() =>
                 setFuture((currentFuture) => {
                   const next = currentFuture[0];
@@ -286,14 +286,14 @@ export function WorkflowBuilder({
             </button>
             <button
               type="button"
-              className="rounded-xl border border-white/10 p-2 text-slate-200 hover:bg-white/10"
+              className="rounded-xl border border-glass-border p-2 text-foreground/90 hover:bg-glass-strong"
               onClick={() => setZoom((current) => Math.max(0.7, current - 0.1))}
             >
               <Minus className="h-4 w-4" />
             </button>
             <button
               type="button"
-              className="rounded-xl border border-white/10 p-2 text-slate-200 hover:bg-white/10"
+              className="rounded-xl border border-glass-border p-2 text-foreground/90 hover:bg-glass-strong"
               onClick={() => setZoom((current) => Math.min(1.6, current + 0.1))}
             >
               <Plus className="h-4 w-4" />
@@ -311,15 +311,15 @@ export function WorkflowBuilder({
           </div>
         </div>
 
-        <div className="rounded-[24px] border border-dashed border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.14),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.14),transparent_30%)] p-5">
-          <div className="mb-4 flex items-center gap-2 text-xs uppercase tracking-[0.16em] text-slate-400">
+        <div className="rounded-[24px] border border-dashed border-glass-border bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.14),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.14),transparent_30%)] p-5">
+          <div className="mb-4 flex items-center gap-2 text-xs uppercase tracking-[0.16em] text-muted-foreground">
             <MousePointer2 className="h-3.5 w-3.5" />
             Drag a step here or click a palette item to add one
           </div>
           <div
             role="list"
             className={cn(
-              'min-h-[640px] rounded-[24px] border border-white/10 bg-slate-950/70 p-4 transition',
+              'min-h-[640px] rounded-[24px] border border-glass-border bg-slate-950/70 p-4 transition',
               draggingType ? 'border-cyan-400/50 bg-cyan-500/5' : '',
             )}
             onDragOver={(event) => {
@@ -340,7 +340,7 @@ export function WorkflowBuilder({
               }}
             >
               {flattened.length === 0 ? (
-                <div className="flex min-h-[480px] items-center justify-center rounded-[20px] border border-white/10 bg-white/[0.02] text-sm text-slate-400">
+                <div className="flex min-h-[480px] items-center justify-center rounded-[20px] border border-glass-border bg-white/[0.02] text-sm text-muted-foreground">
                   No steps yet.
                 </div>
               ) : (
@@ -379,10 +379,10 @@ export function WorkflowBuilder({
                     />
                     {index < flattened.length - 1 ? (
                       <div
-                        className="flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-slate-500"
+                        className="flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-muted-foreground/60"
                         style={{ marginLeft: depth * 28 + 16 }}
                       >
-                        <div className="h-6 w-px bg-white/10" />
+                        <div className="h-6 w-px bg-glass-strong" />
                         <ArrowDown className="h-3.5 w-3.5" />
                         <span>Flow</span>
                       </div>
@@ -402,7 +402,7 @@ export function WorkflowBuilder({
               <button
                 type="button"
                 key={label}
-                className="rounded-xl border border-white/10 px-3 py-2 text-sm text-slate-300 hover:bg-white/10"
+                className="rounded-xl border border-glass-border px-3 py-2 text-sm text-foreground/70 hover:bg-glass-strong"
                 onClick={() =>
                   setPan((current) => ({
                     x: current.x + Number(x),
@@ -428,8 +428,8 @@ export function WorkflowBuilder({
           }
         />
         {!readOnly && selectedStep ? (
-          <div className="space-y-3 rounded-[28px] border border-white/10 bg-slate-950/70 p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+          <div className="space-y-3 rounded-[28px] border border-glass-border bg-slate-950/70 p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
               Structure
             </p>
             <div className="space-y-2">
@@ -437,14 +437,14 @@ export function WorkflowBuilder({
                 <>
                   <button
                     type="button"
-                    className="w-full rounded-xl border border-white/10 px-3 py-2 text-left text-sm text-slate-200 hover:bg-white/10"
+                    className="w-full rounded-xl border border-glass-border px-3 py-2 text-left text-sm text-foreground/90 hover:bg-glass-strong"
                     onClick={() => addNestedStep(selectedStep, 'then')}
                   >
                     Add step to THEN branch
                   </button>
                   <button
                     type="button"
-                    className="w-full rounded-xl border border-white/10 px-3 py-2 text-left text-sm text-slate-200 hover:bg-white/10"
+                    className="w-full rounded-xl border border-glass-border px-3 py-2 text-left text-sm text-foreground/90 hover:bg-glass-strong"
                     onClick={() => addNestedStep(selectedStep, 'else')}
                   >
                     Add step to ELSE branch
@@ -454,7 +454,7 @@ export function WorkflowBuilder({
               {selectedStep.type === 'loop' ? (
                 <button
                   type="button"
-                  className="w-full rounded-xl border border-white/10 px-3 py-2 text-left text-sm text-slate-200 hover:bg-white/10"
+                  className="w-full rounded-xl border border-glass-border px-3 py-2 text-left text-sm text-foreground/90 hover:bg-glass-strong"
                   onClick={() => addNestedStep(selectedStep, 'loop')}
                 >
                   Add loop child step
@@ -463,7 +463,7 @@ export function WorkflowBuilder({
               {selectedStep.type === 'parallel' ? (
                 <button
                   type="button"
-                  className="w-full rounded-xl border border-white/10 px-3 py-2 text-left text-sm text-slate-200 hover:bg-white/10"
+                  className="w-full rounded-xl border border-glass-border px-3 py-2 text-left text-sm text-foreground/90 hover:bg-glass-strong"
                   onClick={() => addNestedStep(selectedStep, 'parallel')}
                 >
                   Add to first branch

@@ -15,10 +15,10 @@ export default async function ActivityPage() {
         <p className="text-xs font-black uppercase tracking-[0.26em] text-sky-200">
           Activity Intelligence
         </p>
-        <h1 className="text-4xl font-black tracking-tight text-slate-100">
+        <h1 className="text-4xl font-black tracking-tight text-foreground">
           Organization Activity Feed
         </h1>
-        <p className="max-w-3xl text-sm leading-7 text-slate-400">
+        <p className="max-w-3xl text-sm leading-7 text-muted-foreground">
           Live audit-style activity for tasks, evidence, framework operations,
           team changes, workflow executions, and settings mutations.
         </p>

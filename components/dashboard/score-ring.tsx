@@ -22,7 +22,7 @@ export function ScoreRing({ score }: { score: number }) {
           stroke="currentColor"
           strokeWidth="8"
           fill="transparent"
-          className="text-slate-100"
+          className="text-foreground"
         />
         {/* Progress Circle */}
         <circle
@@ -41,7 +41,7 @@ export function ScoreRing({ score }: { score: number }) {
       {/* Center Text */}
       <div className="absolute flex flex-col items-center">
         <span className={`text-4xl font-bold ${getColor(score)}`}>{Math.round(score)}%</span>
-        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Health</span>
+        <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Health</span>
       </div>
     </div>
   );

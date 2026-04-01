@@ -118,10 +118,10 @@ export default function SecurityWorkflowCard() {
                   {isPast ? (
                     <CheckCircle className="h-3.5 w-3.5 text-emerald-400" />
                   ) : (
-                    <step.icon className={`h-3.5 w-3.5 ${isActive ? step.color : 'text-slate-600'}`} />
+                    <step.icon className={`h-3.5 w-3.5 ${isActive ? step.color : 'text-muted-foreground/40'}`} />
                   )}
                 </div>
-                <span className={`text-[9px] font-medium ${isActive ? step.color : isPast ? 'text-emerald-400/60' : 'text-slate-600'}`}>
+                <span className={`text-[9px] font-medium ${isActive ? step.color : isPast ? 'text-emerald-400/60' : 'text-muted-foreground/40'}`}>
                   {step.label}
                 </span>
               </button>
@@ -152,7 +152,7 @@ export default function SecurityWorkflowCard() {
                         </div>
                         <div>
                           <p className={`text-xs font-semibold ${step.color}`}>{step.title}</p>
-                          <p className="text-[11px] text-slate-400">{step.detail}</p>
+                          <p className="text-[11px] text-muted-foreground">{step.detail}</p>
                         </div>
                       </div>
                       <div className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-medium ${step.bg} ${step.statusColor}`}>
@@ -160,16 +160,16 @@ export default function SecurityWorkflowCard() {
                         {step.statusLabel}
                       </div>
                     </div>
-                    <p className="text-[10px] text-slate-500 pl-10">{step.meta}</p>
+                    <p className="text-[10px] text-muted-foreground/60 pl-10">{step.meta}</p>
                   </div>
 
                   {/* Evidence preview card */}
                   <div className="rounded-lg bg-white/[0.02] border border-white/[0.06] p-3">
                     <div className="flex items-center gap-2 mb-2">
                       <Shield className="h-3.5 w-3.5 text-cyan-400" />
-                      <span className="text-[11px] font-medium text-slate-200">{step.task}</span>
+                      <span className="text-[11px] font-medium text-foreground/90">{step.task}</span>
                     </div>
-                    <div className="flex items-center gap-3 text-[9px] text-slate-500">
+                    <div className="flex items-center gap-3 text-[9px] text-muted-foreground/60">
                       <span className="flex items-center gap-1">
                         <Lock className="h-2.5 w-2.5 text-blue-400" />
                         SOC 2 CC6.1

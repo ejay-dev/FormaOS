@@ -419,7 +419,7 @@ export function EnterpriseShaderHero({
               </span>
             </h2>
 
-            <p className="mt-6 max-w-3xl text-base leading-relaxed text-slate-200 sm:text-lg lg:text-xl">
+            <p className="mt-6 max-w-3xl text-base leading-relaxed text-foreground/90 sm:text-lg lg:text-xl">
               {subtitle}
             </p>
 
@@ -453,7 +453,7 @@ export function EnterpriseShaderHero({
                     key={card.label}
                     className="rounded-xl border border-cyan-200/10 bg-slate-950/55 px-4 py-3 text-left backdrop-blur-sm"
                   >
-                    <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">{card.label}</p>
+                    <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{card.label}</p>
                     <p className="mt-1 text-base font-semibold text-white">{card.value}</p>
                     {card.detail ? (
                       <p className="mt-1 text-xs text-cyan-200/80">{card.detail}</p>
@@ -468,7 +468,7 @@ export function EnterpriseShaderHero({
                 {footerPills.map((pill) => (
                   <span
                     key={pill}
-                    className="rounded-full border border-white/15 bg-white/[0.05] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-200"
+                    className="rounded-full border border-white/15 bg-white/[0.05] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-foreground/90"
                   >
                     {pill}
                   </span>

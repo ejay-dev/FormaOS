@@ -77,11 +77,11 @@ export function RetentionPolicies({
   };
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 space-y-5">
+    <section className="rounded-3xl border border-glass-border bg-glass-subtle p-6 space-y-5">
       <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
         <div>
-          <h2 className="text-xl font-black text-slate-100">Retention Policies</h2>
-          <p className="text-sm text-slate-400">
+          <h2 className="text-xl font-black text-foreground">Retention Policies</h2>
+          <p className="text-sm text-muted-foreground">
             Configure record lifecycles, preview impact, and execute dry-runs.
           </p>
         </div>
@@ -90,7 +90,7 @@ export function RetentionPolicies({
             type="button"
             onClick={() => runRetention(true)}
             disabled={isPending}
-            className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200 disabled:opacity-50"
+            className="rounded-xl border border-glass-border bg-glass-subtle px-4 py-2 text-sm text-foreground/90 disabled:opacity-50"
           >
             Dry Run
           </button>
@@ -109,19 +109,19 @@ export function RetentionPolicies({
         <input
           value={resourceType}
           onChange={(event) => setResourceType(event.target.value)}
-          className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+          className="rounded-xl border border-glass-border bg-slate-950 px-3 py-2 text-sm text-foreground"
           placeholder="resource_type"
         />
         <input
           type="number"
           value={retentionDays}
           onChange={(event) => setRetentionDays(Number(event.target.value || 365))}
-          className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+          className="rounded-xl border border-glass-border bg-slate-950 px-3 py-2 text-sm text-foreground"
         />
         <select
           value={action}
           onChange={(event) => setAction(event.target.value as typeof action)}
-          className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+          className="rounded-xl border border-glass-border bg-slate-950 px-3 py-2 text-sm text-foreground"
         >
           <option value="archive">archive</option>
           <option value="delete">delete</option>
@@ -145,26 +145,26 @@ export function RetentionPolicies({
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
-          <div className="mb-3 text-sm font-semibold text-slate-100">Configured Policies</div>
-          <div className="space-y-3 text-sm text-slate-300">
+        <div className="rounded-2xl border border-glass-border bg-slate-950/50 p-4">
+          <div className="mb-3 text-sm font-semibold text-foreground">Configured Policies</div>
+          <div className="space-y-3 text-sm text-foreground/70">
             {policies.map((policy) => (
-              <div key={policy.id} className="rounded-xl border border-white/10 bg-white/5 p-3">
-                <div className="font-semibold text-slate-100">{policy.resource_type}</div>
-                <div className="text-xs text-slate-400">
+              <div key={policy.id} className="rounded-xl border border-glass-border bg-glass-subtle p-3">
+                <div className="font-semibold text-foreground">{policy.resource_type}</div>
+                <div className="text-xs text-muted-foreground">
                   {policy.retention_days} days • {policy.action}
                 </div>
               </div>
             ))}
           </div>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
-          <div className="mb-3 text-sm font-semibold text-slate-100">Execution History</div>
-          <div className="space-y-3 text-sm text-slate-300">
+        <div className="rounded-2xl border border-glass-border bg-slate-950/50 p-4">
+          <div className="mb-3 text-sm font-semibold text-foreground">Execution History</div>
+          <div className="space-y-3 text-sm text-foreground/70">
             {executions.map((execution) => (
-              <div key={execution.id} className="rounded-xl border border-white/10 bg-white/5 p-3">
-                <div className="font-semibold text-slate-100">{execution.resource_type}</div>
-                <div className="text-xs text-slate-400">
+              <div key={execution.id} className="rounded-xl border border-glass-border bg-glass-subtle p-3">
+                <div className="font-semibold text-foreground">{execution.resource_type}</div>
+                <div className="text-xs text-muted-foreground">
                   {execution.action} • {execution.affected_count} records •{' '}
                   {new Date(execution.executed_at).toLocaleString()}
                 </div>

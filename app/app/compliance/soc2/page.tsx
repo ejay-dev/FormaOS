@@ -26,7 +26,7 @@ export default async function Soc2ReadinessPage() {
       fallback={
         <div className="space-y-8 animate-in fade-in duration-500">
           <div>
-            <div className="h-8 w-48 rounded-lg bg-white/10 animate-pulse" />
+            <div className="h-8 w-48 rounded-lg bg-glass-strong animate-pulse" />
             <div className="mt-2 h-4 w-96 rounded-lg bg-white/5 animate-pulse" />
           </div>
           <div className="grid gap-6 lg:grid-cols-[auto_1fr]">

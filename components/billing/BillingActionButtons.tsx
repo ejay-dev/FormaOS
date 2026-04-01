@@ -91,7 +91,7 @@ export function BillingActionButtons({
           <button
             onClick={handleManagePortal}
             disabled={isPending}
-            className="group relative overflow-hidden rounded-lg border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-slate-100 transition-all duration-300 hover:bg-white/10 hover:border-white/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="group relative overflow-hidden rounded-lg border border-white/15 bg-glass-subtle px-6 py-3 text-sm font-semibold text-foreground transition-all duration-300 hover:bg-glass-strong hover:border-white/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {isPending ? (
               <Loader2 className="h-4 w-4 animate-spin" />

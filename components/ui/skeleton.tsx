@@ -37,7 +37,7 @@ export function SkeletonText({ lines = 3, className }: { lines?: number; classNa
 
 export function SkeletonCard({ className }: { className?: string }) {
   return (
-    <div className={cn('rounded-2xl border border-white/10 bg-white/5 p-6 space-y-4', className)}>
+    <div className={cn('rounded-2xl border border-glass-border bg-glass-subtle p-6 space-y-4', className)}>
       <Skeleton className="h-4 w-1/3" />
       <SkeletonText lines={2} />
     </div>
@@ -46,7 +46,7 @@ export function SkeletonCard({ className }: { className?: string }) {
 
 export function SkeletonTable({ rows = 5 }: { rows?: number }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
+    <div className="rounded-2xl border border-glass-border bg-glass-subtle overflow-hidden">
       {/* Header */}
       <div className="flex gap-6 px-6 py-4 border-b border-white/10">
         <Skeleton className="h-3 w-20" />
@@ -84,7 +84,7 @@ export function PageSkeleton({
       {/* Page header */}
       <div className="space-y-2">
         {title ? (
-          <h1 className="text-3xl font-bold text-slate-100/50 tracking-tight">{title}</h1>
+          <h1 className="text-3xl font-bold text-foreground/50 tracking-tight">{title}</h1>
         ) : (
           <Skeleton className="h-8 w-48" />
         )}

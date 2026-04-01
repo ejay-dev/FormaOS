@@ -133,7 +133,7 @@ export function IndustryRoadmapEngine({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 sm:p-8"
+          className="relative overflow-hidden rounded-2xl border border-glass-border bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 sm:p-8"
           data-testid="industry-roadmap-header"
         >
           {/* Background Glow */}
@@ -143,7 +143,7 @@ export function IndustryRoadmapEngine({
           <div className="relative z-10">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-start gap-4">
-                <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-white/20 bg-white/5">
+                <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-glass-border-strong bg-white/5">
                   <IndustryIcon className="h-7 w-7 text-cyan-400" />
                 </div>
                 <div>
@@ -224,7 +224,7 @@ export function IndustryRoadmapEngine({
                   </span>
                   <span>{progressStats.progress}%</span>
                 </div>
-                <div className="h-2 w-full rounded-full bg-white/10">
+                <div className="h-2 w-full rounded-full bg-glass-strong">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progressStats.progress}%` }}
@@ -328,7 +328,7 @@ function RoadmapPhaseCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="overflow-hidden rounded-xl border border-white/10 bg-white/5"
+      className="overflow-hidden rounded-xl border border-glass-border bg-white/5"
       data-testid={`industry-roadmap-phase-${phase.id}`}
     >
       {/* Phase Header */}
@@ -343,7 +343,7 @@ function RoadmapPhaseCard({
               className={`flex h-10 w-10 items-center justify-center rounded-lg border text-sm font-bold ${
                 isComplete
                   ? 'border-green-500/30 bg-green-500/10 text-green-400'
-                  : 'border-white/20 bg-white/5 text-gray-400'
+                  : 'border-glass-border-strong bg-glass-subtle text-gray-400'
               }`}
             >
               {isComplete ? <CheckCircle2 className="h-5 w-5" /> : phaseNumber}
@@ -459,7 +459,7 @@ function RoadmapStepCard({
         className={`group rounded-lg border p-4 transition-all ${
           isCompleted
             ? 'border-green-500/20 bg-green-500/5'
-            : 'border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10'
+            : 'border-glass-border bg-glass-subtle hover:border-glass-border-strong hover:bg-glass-strong'
         }`}
       >
         <div className="flex items-start gap-4">

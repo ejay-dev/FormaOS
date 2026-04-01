@@ -404,55 +404,6 @@
     box-shadow: var(--shadow-lg);
   }
 
-  /* Premium buttons */
-  .btn {
-    @apply inline-flex items-center justify-center gap-2;
-    padding: 0.625rem 1.25rem;
-    border-radius: calc(var(--radius) - 4px);
-    font-weight: 600;
-    font-size: 0.9375rem;
-    font-family: var(--font-body);
-    transition: all var(--motion-instant) var(--ease-smooth);
-    cursor: pointer;
-    border: 1px solid transparent;
-  }
-
-  .btn:active {
-    transform: scale(0.98);
-  }
-  .btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .btn-primary {
-    @apply bg-primary text-primary-foreground;
-    box-shadow: 0 4px 14px rgba(0, 212, 251, 0.25);
-  }
-
-  .btn-primary:hover {
-    box-shadow: 0 6px 20px rgba(0, 212, 251, 0.35);
-  }
-
-  .btn-secondary {
-    @apply bg-transparent text-foreground;
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(8px);
-  }
-
-  .btn-secondary:hover {
-    background: var(--glass-bg);
-    border-color: var(--glass-border-strong);
-  }
-
-  .btn-ghost {
-    @apply bg-transparent text-foreground;
-  }
-
-  .btn-ghost:hover {
-    background: var(--glass-bg);
-  }
-
   /* Premium inputs */
   input[type='text'],
   input[type='email'],
@@ -615,8 +566,7 @@
     font-size: 1rem;
   }
 
-  [data-slot='button'],
-  .btn {
+  [data-slot='button'] {
     min-height: 44px;
     min-width: 44px;
   }
@@ -1504,6 +1454,32 @@
   .fo-logo-motion .fo-logo-sweep {
     opacity: 0 !important;
     transform: none !important;
+  }
+}
+
+/* ── App dropdown / popover entrance ──────────────────────
+ * Apply .dropdown-enter to any popover/menu that appears on click.
+ * GPU-only (opacity + transform). Reduced motion: instant show.
+ * ───────────────────────────────────────────────────────── */
+@keyframes dropdown-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.dropdown-enter {
+  animation: dropdown-enter var(--motion-fast) var(--ease-signature) both;
+  transform-origin: top center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dropdown-enter {
+    animation: none;
   }
 }
 

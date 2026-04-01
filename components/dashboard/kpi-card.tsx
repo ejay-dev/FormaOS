@@ -56,11 +56,11 @@ export function KPICard({
       <div
         role="status"
         aria-label={`Loading ${title}`}
-        className="rounded-2xl border border-white/10 bg-white/10 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.35)] animate-pulse"
+        className="rounded-2xl border border-glass-border bg-glass-strong p-5 shadow-[0_20px_50px_rgba(0,0,0,0.35)] animate-pulse"
       >
-        <div className="h-5 w-1/3 bg-white/10 rounded mb-4" />
-        <div className="h-8 w-1/2 bg-white/10 rounded mb-2" />
-        <div className="h-4 w-2/3 bg-white/10 rounded" />
+        <div className="h-5 w-1/3 bg-glass-strong rounded mb-4" />
+        <div className="h-8 w-1/2 bg-glass-strong rounded mb-2" />
+        <div className="h-4 w-2/3 bg-glass-strong rounded" />
       </div>
     );
   }
@@ -81,7 +81,7 @@ export function KPICard({
       tabIndex={onClick ? 0 : undefined}
       aria-label={onClick ? `${title}: ${value}` : undefined}
       className={clsx(
-        "rounded-2xl border border-white/10 bg-white/10 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.35)] transition-all duration-200",
+        "rounded-2xl border border-glass-border bg-glass-strong p-5 shadow-[0_20px_50px_rgba(0,0,0,0.35)] transition-all duration-200",
         "hover:shadow-[0_24px_70px_rgba(0,0,0,0.45)] hover:-translate-y-0.5",
         onClick && "cursor-pointer",
         status ? statusStyles[status] : "border-white/10",
@@ -91,10 +91,10 @@ export function KPICard({
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl border border-white/10 bg-white/10 shadow-[0_0_18px_rgba(59,130,246,0.2)]">
+          <div className="p-2 rounded-xl border border-glass-border bg-glass-strong shadow-[0_0_18px_rgba(59,130,246,0.2)]">
             <Icon className="h-5 w-5 text-sky-300" aria-hidden="true" />
           </div>
-          <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
             {title}
           </h3>
         </div>
@@ -116,11 +116,11 @@ export function KPICard({
       <div className="flex items-end justify-between">
         <div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black tracking-tight text-slate-100">
+            <span className="text-3xl font-black tracking-tight text-foreground">
               {value}
             </span>
             {description && (
-              <span className="text-sm text-slate-400 font-medium">
+              <span className="text-sm text-muted-foreground font-medium">
                 {description}
               </span>
             )}
@@ -165,7 +165,7 @@ export function KPICard({
             ? "bg-amber-400"
             : status === "HIGH" || status === "DANGER"
             ? "bg-red-400"
-            : "bg-white/10"
+            : "bg-glass-strong"
         )}
       />
     </div>

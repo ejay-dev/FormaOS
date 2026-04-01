@@ -121,7 +121,7 @@ const NODE_CONFIG: Record<NodeType, {
     shape: "rounded-3xl", // Large container
     borderColor: "border-slate-400/60",
     bgGradient: "bg-gradient-to-br from-slate-500/20 via-slate-500/10 to-transparent",
-    iconColor: "text-slate-300",
+    iconColor: "text-foreground/70",
   },
 };
 
@@ -214,14 +214,14 @@ export function ComplianceNode({
       {/* Content */}
       <div className="flex-1 min-w-0">
         <div className={cn(
-          "font-semibold text-slate-100 truncate",
+          "font-semibold text-foreground truncate",
           sizeConfig.label
         )}>
           {label}
         </div>
         {sublabel && (
           <div className={cn(
-            "text-slate-400 truncate mt-0.5",
+            "text-muted-foreground truncate mt-0.5",
             sizeConfig.sublabel
           )}>
             {sublabel}

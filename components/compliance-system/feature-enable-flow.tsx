@@ -125,7 +125,7 @@ const STATE_COLORS: Record<
   locked: {
     border: 'border-slate-600/50',
     bg: 'bg-slate-800/50',
-    text: 'text-slate-500',
+    text: 'text-muted-foreground/60',
     glow: '',
   },
   activating: {
@@ -203,7 +203,7 @@ function ModuleNode({
       {/* Lock overlay for locked modules */}
       {state === 'locked' && (
         <div className="absolute inset-0 flex items-center justify-center bg-slate-900/60 rounded-2xl backdrop-blur-[1px]">
-          <Lock className="h-6 w-6 text-slate-500" />
+          <Lock className="h-6 w-6 text-muted-foreground/60" />
         </div>
       )}
 
@@ -233,13 +233,13 @@ function ModuleNode({
 
       <div>
         <p className={cn('font-bold text-sm', colors.text)}>{config.name}</p>
-        <p className="text-xs text-slate-500 mt-0.5">{config.description}</p>
+        <p className="text-xs text-muted-foreground/60 mt-0.5">{config.description}</p>
       </div>
 
       {/* Hover tooltip for locked modules */}
       {state === 'locked' && (
         <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-          <div className="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-300 whitespace-nowrap">
+          <div className="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-xs text-foreground/70 whitespace-nowrap">
             Upgrade to unlock
           </div>
         </div>
@@ -332,7 +332,7 @@ export function FeatureEnableFlow({ onModuleSelect }: FeatureEnableFlowProps) {
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-bold text-white">System Modules</h3>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted-foreground">
             {enabledModules.length} modules enabled on {plan} plan
           </p>
         </div>
@@ -355,7 +355,7 @@ export function FeatureEnableFlow({ onModuleSelect }: FeatureEnableFlowProps) {
 
       {/* Primary Modules */}
       <div>
-        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
+        <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground/60 mb-3">
           Core Modules
         </h4>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -377,7 +377,7 @@ export function FeatureEnableFlow({ onModuleSelect }: FeatureEnableFlowProps) {
 
       {/* Advanced Modules */}
       <div>
-        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
+        <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground/60 mb-3">
           Advanced Modules
         </h4>
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
@@ -399,7 +399,7 @@ export function FeatureEnableFlow({ onModuleSelect }: FeatureEnableFlowProps) {
 
       {/* Admin Modules */}
       <div>
-        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
+        <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground/60 mb-3">
           Administration
         </h4>
         <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 max-w-sm">
@@ -423,19 +423,19 @@ export function FeatureEnableFlow({ onModuleSelect }: FeatureEnableFlowProps) {
       <div className="flex items-center gap-6 pt-4 border-t border-white/5">
         <div className="flex items-center gap-2">
           <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-          <span className="text-xs text-slate-400">
+          <span className="text-xs text-muted-foreground">
             {enabledModules.length} Active
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <Lock className="h-4 w-4 text-slate-500" />
-          <span className="text-xs text-slate-400">
+          <Lock className="h-4 w-4 text-muted-foreground/60" />
+          <span className="text-xs text-muted-foreground">
             {Object.keys(MODULE_CONFIG).length - enabledModules.length} Locked
           </span>
         </div>
         <div className="flex items-center gap-2">
           <AlertTriangle className="h-4 w-4 text-amber-400" />
-          <span className="text-xs text-slate-400">
+          <span className="text-xs text-muted-foreground">
             {plan === 'trial' ? 'Trial limits apply' : 'Full access'}
           </span>
         </div>

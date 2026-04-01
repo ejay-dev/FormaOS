@@ -35,14 +35,14 @@ export function PolicyEditor({ policy }: { policy: any }) {
   return (
     <div className="max-w-4xl mx-auto">
       {/* Toolbar */}
-      <div className="sticky top-0 z-10 bg-white/10 backdrop-blur-md border-b border-white/10 pb-4 mb-8 flex items-center justify-between">
+      <div className="sticky top-0 z-10 bg-glass-strong backdrop-blur-md border-b border-glass-border pb-4 mb-8 flex items-center justify-between">
          <div className="flex items-center gap-4">
-            <button onClick={() => router.back()} className="p-2 hover:bg-white/10 rounded-full transition-colors">
-                <ArrowLeft className="h-5 w-5 text-slate-400" />
+            <button onClick={() => router.back()} className="p-2 hover:bg-glass-strong rounded-full transition-colors">
+                <ArrowLeft className="h-5 w-5 text-muted-foreground" />
             </button>
             <div>
-                <h1 className="text-xl font-bold text-slate-100">{policy.title}</h1>
-                <div className="flex items-center gap-2 text-xs text-slate-400 font-mono">
+                <h1 className="text-xl font-bold text-foreground">{policy.title}</h1>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
                     <span>{policy.version}</span>
                     <span>•</span>
                     <span className="capitalize">{policy.status}</span>
@@ -53,7 +53,7 @@ export function PolicyEditor({ policy }: { policy: any }) {
          </div>
 
          <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-400 mr-2 hidden sm:inline-block">
+            <span className="text-xs text-muted-foreground mr-2 hidden sm:inline-block">
                 Markdown Supported
             </span>
             {policy.status !== 'published' && (
@@ -70,12 +70,12 @@ export function PolicyEditor({ policy }: { policy: any }) {
       </div>
 
       {/* The Writing Area */}
-      <div className="min-h-[60vh] md:min-h-screen bg-white/10 rounded-2xl border border-white/10 shadow-sm p-4 sm:p-6 md:p-12">
+      <div className="min-h-[60vh] md:min-h-screen bg-glass-strong rounded-2xl border border-glass-border shadow-sm p-4 sm:p-6 md:p-12">
         <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="# Write your policy here..."
-            className="w-full h-[60vh] md:h-[80vh] resize-none outline-none text-slate-100 leading-relaxed font-serif text-base md:text-lg placeholder:text-slate-400"
+            className="w-full h-[60vh] md:h-[80vh] resize-none outline-none text-foreground leading-relaxed font-serif text-base md:text-lg placeholder:text-muted-foreground"
             spellCheck={false}
         />
       </div>

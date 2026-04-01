@@ -68,7 +68,7 @@ export function InteractiveButton({
 
   const variantStyles = {
     primary: "bg-primary text-primary-foreground shadow-[0_4px_14px_rgba(0,212,251,0.25)] hover:shadow-[0_6px_20px_rgba(0,212,251,0.35)]",
-    secondary: "bg-transparent border border-white/10 text-foreground hover:bg-white/5",
+    secondary: "bg-transparent border border-glass-border text-foreground hover:bg-white/5",
     ghost: "bg-transparent text-foreground hover:bg-white/5",
     destructive: "bg-rose-500 text-white hover:bg-rose-600",
   };
@@ -185,7 +185,7 @@ export function ProgressWire({
           )}
         </div>
       )}
-      <div className="relative h-2 rounded-full bg-white/5 overflow-hidden">
+      <div className="relative h-2 rounded-full bg-glass-subtle overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}
@@ -253,7 +253,7 @@ export function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: () =>
       <span className="flex-1 text-sm font-medium">{toast.message}</span>
       <button
         onClick={onDismiss}
-        className="p-1 rounded-lg hover:bg-white/10 transition-colors"
+        className="p-1 rounded-lg hover:bg-glass-strong transition-colors"
       >
         <X className="h-3 w-3" />
       </button>

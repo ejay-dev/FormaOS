@@ -374,7 +374,7 @@ export function ImmersiveHero({
                 initial={sa ? { opacity: 0, y: 20 } : false}
                 animate={{ opacity: 1, y: 0 }}
                 transition={sa ? staggerTransition(delays.subheadline) : { duration: 0 }}
-                className="text-base sm:text-lg md:text-xl text-slate-300 mb-4 max-w-3xl mx-auto text-center leading-relaxed"
+                className="text-base sm:text-lg md:text-xl text-foreground/70 mb-4 max-w-3xl mx-auto text-center leading-relaxed"
               >
                 {subheadline}
               </motion.p>
@@ -441,7 +441,7 @@ export function ImmersiveHero({
           <h1 className="text-[2.5rem] sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.08] text-white">
             {headline}
           </h1>
-          <p className="text-base sm:text-lg md:text-xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-foreground/70 mb-8 max-w-3xl mx-auto leading-relaxed">
             {subheadline}
           </p>
         </div>

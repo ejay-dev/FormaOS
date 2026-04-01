@@ -25,11 +25,11 @@ export function ManageBillingButton() {
       <button
         onClick={handleManageBilling}
         disabled={isPending}
-        className="relative overflow-hidden rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-slate-100 transition-all hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed group"
+        className="relative overflow-hidden rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-foreground transition-all hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed group"
       >
         {/* Loading overlay */}
         {isPending && (
-          <div className="absolute inset-0 bg-white/10 flex items-center justify-center">
+          <div className="absolute inset-0 bg-glass-strong flex items-center justify-center">
             <Loader2 className="h-4 w-4 animate-spin" />
           </div>
         )}

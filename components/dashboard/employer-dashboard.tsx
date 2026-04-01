@@ -69,7 +69,7 @@ const INDUSTRY_QUICK_ACTIONS: Record<string, QuickAction[]> = {
     { label: 'Progress Notes', description: 'Participant progress', href: '/app/progress-notes', icon: NotebookPen, color: 'text-blue-400' },
     { label: 'Evidence Vault', description: 'Evidence submissions', href: '/app/vault', icon: Lock, color: 'text-amber-400' },
     { label: 'Reports', description: 'Compliance reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
-    { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-slate-400' },
+    { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-muted-foreground' },
   ],
   healthcare: [
     { label: 'Patients', description: 'Patient records & status', href: '/app/participants', icon: HeartPulse, color: 'text-rose-400' },
@@ -79,7 +79,7 @@ const INDUSTRY_QUICK_ACTIONS: Record<string, QuickAction[]> = {
     { label: 'Incidents', description: 'Clinical incidents', href: '/app/incidents', icon: AlertTriangle, color: 'text-amber-400' },
     { label: 'Evidence Vault', description: 'Evidence & artifacts', href: '/app/vault', icon: Lock, color: 'text-purple-400' },
     { label: 'Reports', description: 'Accreditation reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
-    { label: 'Settings', description: 'Practice settings', href: '/app/settings', icon: Settings, color: 'text-slate-400' },
+    { label: 'Settings', description: 'Practice settings', href: '/app/settings', icon: Settings, color: 'text-muted-foreground' },
   ],
   aged_care: [
     { label: 'Residents', description: 'Resident records', href: '/app/participants', icon: Home, color: 'text-rose-400' },
@@ -89,7 +89,7 @@ const INDUSTRY_QUICK_ACTIONS: Record<string, QuickAction[]> = {
     { label: 'Staff Compliance', description: 'Staff credentials', href: '/app/staff-compliance', icon: UserCheck, color: 'text-emerald-400' },
     { label: 'Progress Notes', description: 'Resident notes', href: '/app/progress-notes', icon: NotebookPen, color: 'text-purple-400' },
     { label: 'Evidence Vault', description: 'Audit evidence', href: '/app/vault', icon: Lock, color: 'text-sky-400' },
-    { label: 'Settings', description: 'Facility settings', href: '/app/settings', icon: Settings, color: 'text-slate-400' },
+    { label: 'Settings', description: 'Facility settings', href: '/app/settings', icon: Settings, color: 'text-muted-foreground' },
   ],
   childcare: [
     { label: 'Children', description: 'Enrollment & records', href: '/app/participants', icon: Baby, color: 'text-amber-400' },
@@ -99,7 +99,7 @@ const INDUSTRY_QUICK_ACTIONS: Record<string, QuickAction[]> = {
     { label: 'Progress Notes', description: 'Developmental notes', href: '/app/progress-notes', icon: NotebookPen, color: 'text-blue-400' },
     { label: 'Evidence Vault', description: 'NQF evidence', href: '/app/vault', icon: Lock, color: 'text-cyan-400' },
     { label: 'Reports', description: 'Quality reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
-    { label: 'Settings', description: 'Center settings', href: '/app/settings', icon: Settings, color: 'text-slate-400' },
+    { label: 'Settings', description: 'Center settings', href: '/app/settings', icon: Settings, color: 'text-muted-foreground' },
   ],
   community_services: [
     { label: 'Clients', description: 'Client records', href: '/app/participants', icon: Users, color: 'text-purple-400' },
@@ -109,7 +109,7 @@ const INDUSTRY_QUICK_ACTIONS: Record<string, QuickAction[]> = {
     { label: 'Evidence Vault', description: 'Compliance evidence', href: '/app/vault', icon: Lock, color: 'text-amber-400' },
     { label: 'Tasks', description: 'Compliance tasks', href: '/app/tasks', icon: CheckSquare, color: 'text-blue-400' },
     { label: 'Reports', description: 'Funding reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
-    { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-slate-400' },
+    { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-muted-foreground' },
   ],
   financial_services: [
     { label: 'Organization', description: 'Overview & KPIs', href: '/app/executive', icon: Landmark, color: 'text-blue-400' },
@@ -119,7 +119,7 @@ const INDUSTRY_QUICK_ACTIONS: Record<string, QuickAction[]> = {
     { label: 'Evidence Vault', description: 'Audit evidence', href: '/app/vault', icon: Lock, color: 'text-purple-400' },
     { label: 'Team', description: 'Manage team', href: '/app/team', icon: Users, color: 'text-rose-400' },
     { label: 'Reports', description: 'Compliance reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
-    { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-slate-400' },
+    { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-muted-foreground' },
   ],
   saas_technology: [
     { label: 'Organization', description: 'Overview & KPIs', href: '/app/executive', icon: Building2, color: 'text-blue-400' },
@@ -129,7 +129,7 @@ const INDUSTRY_QUICK_ACTIONS: Record<string, QuickAction[]> = {
     { label: 'Evidence Vault', description: 'Audit artifacts', href: '/app/vault', icon: Lock, color: 'text-purple-400' },
     { label: 'Team', description: 'Manage team', href: '/app/team', icon: Users, color: 'text-rose-400' },
     { label: 'Reports', description: 'Framework reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
-    { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-slate-400' },
+    { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-muted-foreground' },
   ],
   enterprise: [
     { label: 'Organization', description: 'Multi-site overview', href: '/app/executive', icon: Building2, color: 'text-blue-400' },
@@ -139,7 +139,7 @@ const INDUSTRY_QUICK_ACTIONS: Record<string, QuickAction[]> = {
     { label: 'Evidence Vault', description: 'Evidence chain', href: '/app/vault', icon: Lock, color: 'text-purple-400' },
     { label: 'Team', description: 'Workforce management', href: '/app/team', icon: Users, color: 'text-rose-400' },
     { label: 'Reports', description: 'Executive reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
-    { label: 'Settings', description: 'Enterprise settings', href: '/app/settings', icon: Settings, color: 'text-slate-400' },
+    { label: 'Settings', description: 'Enterprise settings', href: '/app/settings', icon: Settings, color: 'text-muted-foreground' },
   ],
 };
 
@@ -151,7 +151,7 @@ const DEFAULT_QUICK_ACTIONS: QuickAction[] = [
   { label: 'Tasks', description: 'Create & assign', href: '/app/tasks', icon: Briefcase, color: 'text-amber-400' },
   { label: 'Audit Logs', description: 'Activity history', href: '/app/audit', icon: Shield, color: 'text-rose-400' },
   { label: 'Billing', description: 'Plan & subscription', href: '/app/billing', icon: CreditCard, color: 'text-sky-400' },
-  { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-slate-400' },
+  { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-muted-foreground' },
 ];
 
 function QuickActions({ industry }: { industry?: string | null }) {
@@ -168,18 +168,18 @@ function QuickActions({ industry }: { industry?: string | null }) {
           <Link
             key={a.href}
             href={a.href}
-            className="group flex flex-col gap-2 rounded-xl border border-white/10 bg-white/5 p-3.5 sm:p-4 transition-all hover:bg-white/10 hover:border-white/20"
+            className="group flex flex-col gap-2 rounded-xl border border-glass-border bg-glass-subtle p-3.5 sm:p-4 transition-all hover:bg-glass-strong hover:border-glass-border-strong"
           >
             <Icon
               className={`h-5 w-5 ${a.color} transition-transform group-hover:scale-110`}
             />
             <div>
-              <p className="text-sm font-semibold text-slate-100">{a.label}</p>
-              <p className="text-[11px] text-slate-400 leading-tight">
+              <p className="text-sm font-semibold text-foreground">{a.label}</p>
+              <p className="text-[11px] text-muted-foreground leading-tight">
                 {a.description}
               </p>
             </div>
-            <ArrowRight className="h-3.5 w-3.5 text-slate-500 ml-auto mt-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/60 ml-auto mt-auto opacity-0 group-hover:opacity-100 transition-opacity" />
           </Link>
         );
       })}
@@ -203,7 +203,7 @@ function MobileReadinessCheckpoint({
           <p className="text-[11px] font-semibold uppercase tracking-wider text-cyan-200">
             Readiness Checkpoint
           </p>
-          <p className="mt-1 text-sm text-slate-100">
+          <p className="mt-1 text-sm text-foreground">
             One-screen status before you dive into workflows.
           </p>
         </div>
@@ -211,21 +211,21 @@ function MobileReadinessCheckpoint({
       </div>
 
       <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-        <div className="rounded-lg border border-white/10 bg-white/5 px-2 py-3">
-          <p className="text-lg font-bold text-slate-100">{complianceScore}%</p>
-          <p className="text-xs uppercase tracking-wide text-slate-400">
+        <div className="rounded-lg border border-glass-border bg-glass-subtle px-2 py-3">
+          <p className="text-lg font-bold text-foreground">{complianceScore}%</p>
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">
             Score
           </p>
         </div>
-        <div className="rounded-lg border border-white/10 bg-white/5 px-2 py-3">
-          <p className="text-lg font-bold text-slate-100">{openTasksCount}</p>
-          <p className="text-xs uppercase tracking-wide text-slate-400">
+        <div className="rounded-lg border border-glass-border bg-glass-subtle px-2 py-3">
+          <p className="text-lg font-bold text-foreground">{openTasksCount}</p>
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">
             Open Tasks
           </p>
         </div>
-        <div className="rounded-lg border border-white/10 bg-white/5 px-2 py-3">
-          <p className="text-lg font-bold text-slate-100">{expiringCertsCount}</p>
-          <p className="text-xs uppercase tracking-wide text-slate-400">
+        <div className="rounded-lg border border-glass-border bg-glass-subtle px-2 py-3">
+          <p className="text-lg font-bold text-foreground">{expiringCertsCount}</p>
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">
             Expiring
           </p>
         </div>
@@ -234,19 +234,19 @@ function MobileReadinessCheckpoint({
       <div className="mt-3 flex flex-wrap gap-2">
         <Link
           href="/app/tasks"
-          className="rounded-lg border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-200"
+          className="rounded-lg border border-glass-border-strong bg-glass-subtle px-3 py-1.5 text-xs font-medium text-foreground/90"
         >
           Tasks
         </Link>
         <Link
           href="/app/vault/review"
-          className="rounded-lg border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-200"
+          className="rounded-lg border border-glass-border-strong bg-glass-subtle px-3 py-1.5 text-xs font-medium text-foreground/90"
         >
           Evidence Review
         </Link>
         <Link
           href="/app/audit"
-          className="rounded-lg border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-200"
+          className="rounded-lg border border-glass-border-strong bg-glass-subtle px-3 py-1.5 text-xs font-medium text-foreground/90"
         >
           Audit Stream
         </Link>
@@ -322,26 +322,26 @@ function PriorityActionQueue({
           <Link
             key={item.id}
             href={item.href}
-            className="group flex flex-col gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:bg-white/10 sm:flex-row sm:items-center sm:justify-between"
+            className="group flex flex-col gap-3 rounded-xl border border-glass-border bg-glass-subtle px-4 py-3 transition-colors hover:bg-glass-strong sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="flex items-start gap-3">
-              <div className="mt-0.5 inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5">
-                <item.icon className="h-4 w-4 text-slate-300" />
+              <div className="mt-0.5 inline-flex h-8 w-8 items-center justify-center rounded-lg border border-glass-border bg-white/5">
+                <item.icon className="h-4 w-4 text-foreground/70" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-100">
+                <p className="text-sm font-semibold text-foreground">
                   {item.title}
                 </p>
-                <p className="text-xs text-slate-400">{item.detail}</p>
+                <p className="text-xs text-muted-foreground">{item.detail}</p>
                 {(item.ownerLabel || item.slaLabel) && (
                   <div className="mt-2 flex flex-wrap items-center gap-2">
                     {item.ownerLabel && (
-                      <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-slate-300">
+                      <span className="rounded-full border border-glass-border bg-glass-subtle px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-foreground/70">
                         Owner: {item.ownerLabel}
                       </span>
                     )}
                     {item.slaLabel && (
-                      <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-slate-300">
+                      <span className="rounded-full border border-glass-border bg-glass-subtle px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-foreground/70">
                         SLA: {item.slaLabel}
                       </span>
                     )}
@@ -355,7 +355,7 @@ function PriorityActionQueue({
               >
                 {label[item.priority]}
               </span>
-              <ArrowRight className="h-4 w-4 text-slate-500 transition-transform group-hover:translate-x-0.5" />
+              <ArrowRight className="h-4 w-4 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5" />
             </div>
           </Link>
         ))}
@@ -387,7 +387,7 @@ function ActivationMilestones({
           {Array.from({ length: 4 }).map((_, idx) => (
             <div
               key={`loading-${idx}`}
-              className="h-16 animate-pulse rounded-xl border border-white/10 bg-white/5"
+              className="h-16 animate-pulse rounded-xl border border-glass-border bg-white/5"
             />
           ))}
         </div>
@@ -397,13 +397,13 @@ function ActivationMilestones({
             <p className="text-[11px] font-semibold uppercase tracking-wider text-cyan-200">
               Time-To-First-Proof Tracker
             </p>
-            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/10">
+            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-glass-strong">
               <div
                 className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
                 style={{ width: `${progress}%` }}
               />
             </div>
-            <p className="mt-2 text-xs text-slate-300">
+            <p className="mt-2 text-xs text-foreground/70">
               {completed} of {milestones.length} milestones completed
             </p>
           </div>
@@ -413,26 +413,26 @@ function ActivationMilestones({
               <Link
                 key={milestone.id}
                 href={milestone.href}
-                className="group flex items-start justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:bg-white/10"
+                className="group flex items-start justify-between gap-3 rounded-xl border border-glass-border bg-glass-subtle px-4 py-3 transition-colors hover:bg-glass-strong"
               >
                 <div className="flex items-start gap-3">
                   <span
                     className={`mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full border ${
                       milestone.done
                         ? 'border-emerald-400/40 bg-emerald-500/20 text-emerald-200'
-                        : 'border-slate-500/40 bg-slate-700/20 text-slate-300'
+                        : 'border-slate-500/40 bg-slate-700/20 text-foreground/70'
                     }`}
                   >
                     <CheckCircle2 className="h-3.5 w-3.5" />
                   </span>
                   <div>
-                    <p className="text-sm font-semibold text-slate-100">
+                    <p className="text-sm font-semibold text-foreground">
                       {milestone.title}
                     </p>
-                    <p className="text-xs text-slate-400">{milestone.detail}</p>
+                    <p className="text-xs text-muted-foreground">{milestone.detail}</p>
                   </div>
                 </div>
-                <ArrowRight className="mt-1 h-4 w-4 text-slate-500 transition-transform group-hover:translate-x-0.5" />
+                <ArrowRight className="mt-1 h-4 w-4 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5" />
               </Link>
             ))}
           </div>
@@ -505,40 +505,40 @@ export function OrgHealthOverview({
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
-      <div className="rounded-xl border border-white/10 bg-white/5 p-4 sm:p-6">
+      <div className="rounded-xl border border-glass-border bg-glass-subtle p-4 sm:p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-slate-400">Team Members</p>
+            <p className="text-sm text-muted-foreground">Team Members</p>
             <p className="text-2xl sm:text-3xl font-bold">{teamMemberCount}</p>
           </div>
           <Users className="h-8 w-8 text-blue-400" />
         </div>
       </div>
 
-      <div className="rounded-xl border border-white/10 bg-white/5 p-4 sm:p-6">
+      <div className="rounded-xl border border-glass-border bg-glass-subtle p-4 sm:p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-slate-400">Compliance Score</p>
+            <p className="text-sm text-muted-foreground">Compliance Score</p>
             <p className="text-2xl sm:text-3xl font-bold">{complianceScore}%</p>
           </div>
           <TrendingUp className="h-8 w-8 text-green-400" />
         </div>
       </div>
 
-      <div className="rounded-xl border border-white/10 bg-white/5 p-4 sm:p-6">
+      <div className="rounded-xl border border-glass-border bg-glass-subtle p-4 sm:p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-slate-400">{expiryLabel}</p>
+            <p className="text-sm text-muted-foreground">{expiryLabel}</p>
             <p className="text-2xl sm:text-3xl font-bold">{expiringCertsCount}</p>
           </div>
           <AlertCircle className="h-8 w-8 text-amber-400" />
         </div>
       </div>
 
-      <div className="rounded-xl border border-white/10 bg-white/5 p-4 sm:p-6">
+      <div className="rounded-xl border border-glass-border bg-glass-subtle p-4 sm:p-6">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-slate-400">{tasksLabel}</p>
+            <p className="text-sm text-muted-foreground">{tasksLabel}</p>
             <p className="text-2xl sm:text-3xl font-bold">{openTasksCount}</p>
           </div>
           <CheckCircle2 className="h-8 w-8 text-purple-400" />
@@ -586,7 +586,7 @@ export function TeamComplianceTable({
               <tr>
                 <td
                   colSpan={4}
-                  className="px-4 py-4 text-center text-slate-400"
+                  className="px-4 py-4 text-center text-muted-foreground"
                 >
                   No team members yet. Invite your first employee.
                 </td>
@@ -595,12 +595,12 @@ export function TeamComplianceTable({
               members.map((member) => (
                 <tr
                   key={member.id}
-                  className="hover:bg-white/5 transition-colors"
+                  className="hover:bg-glass-subtle transition-colors"
                 >
                   <td className="px-4 py-2">
                     <div>
                       <p className="font-medium">{member.name}</p>
-                      <p className="text-xs text-slate-400">{member.email}</p>
+                      <p className="text-xs text-muted-foreground">{member.email}</p>
                     </div>
                   </td>
                   <td className="px-4 py-2 capitalize">
@@ -621,7 +621,7 @@ export function TeamComplianceTable({
                       </span>
                     </div>
                   </td>
-                  <td className="px-4 py-2 text-slate-400">
+                  <td className="px-4 py-2 text-muted-foreground">
                     {member.lastAction || 'Never'}
                   </td>
                 </tr>
@@ -657,7 +657,7 @@ export function CertificatesExpiry({
       case 'expired':
         return 'bg-red-500/20 text-red-300 border-red-400/30';
       default:
-        return 'bg-slate-500/20 text-slate-300';
+        return 'bg-slate-500/20 text-foreground/70';
     }
   };
 
@@ -669,16 +669,16 @@ export function CertificatesExpiry({
     >
       <div className="space-y-3">
         {certificates.length === 0 ? (
-          <p className="text-sm text-slate-400">No certificates tracked yet.</p>
+          <p className="text-sm text-muted-foreground">No certificates tracked yet.</p>
         ) : (
           certificates.map((cert) => (
             <div
               key={cert.id}
-              className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10"
+              className="flex items-center justify-between p-3 rounded-lg bg-glass-subtle border border-white/10"
             >
               <div className="flex-1">
                 <p className="font-medium">{cert.title}</p>
-                <p className="text-xs text-slate-400">{cert.employee}</p>
+                <p className="text-xs text-muted-foreground">{cert.employee}</p>
               </div>
               <div className="flex items-center gap-3">
                 <p className="text-sm">{cert.expiresAt}</p>
@@ -725,7 +725,7 @@ export function EvidenceReview({
       case 'rejected':
         return 'bg-red-500/20 text-red-300 border-red-400/30';
       default:
-        return 'bg-slate-500/20 text-slate-300';
+        return 'bg-slate-500/20 text-foreground/70';
     }
   };
 
@@ -737,16 +737,16 @@ export function EvidenceReview({
     >
       <div className="space-y-3">
         {submissions.length === 0 ? (
-          <p className="text-sm text-slate-400">No pending submissions.</p>
+          <p className="text-sm text-muted-foreground">No pending submissions.</p>
         ) : (
           submissions.map((sub) => (
             <div
               key={sub.id}
-              className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10"
+              className="flex items-center justify-between p-3 rounded-lg bg-glass-subtle border border-white/10"
             >
               <div className="flex-1">
                 <p className="font-medium">{sub.title}</p>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-muted-foreground">
                   {sub.submittedBy} • {sub.submittedAt}
                 </p>
               </div>
@@ -801,16 +801,16 @@ export function TaskManagement({
     >
       <div className="space-y-3">
         {tasks.length === 0 ? (
-          <p className="text-sm text-slate-400">No active tasks.</p>
+          <p className="text-sm text-muted-foreground">No active tasks.</p>
         ) : (
           tasks.map((task) => (
             <div
               key={task.id}
-              className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10"
+              className="flex items-center justify-between p-3 rounded-lg bg-glass-subtle border border-white/10"
             >
               <div className="flex-1">
                 <p className="font-medium">{task.title}</p>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-muted-foreground">
                   Assigned to: {task.assignedTo} • Due: {task.dueAt}
                 </p>
               </div>
@@ -855,21 +855,21 @@ export function AuditActivityLog({
     >
       <div className="space-y-3 max-h-64 overflow-y-auto">
         {activities.length === 0 ? (
-          <p className="text-sm text-slate-400">No recent activity.</p>
+          <p className="text-sm text-muted-foreground">No recent activity.</p>
         ) : (
           activities.map((activity) => (
             <div
               key={activity.id}
-              className="flex gap-3 pb-3 border-b border-white/10 last:border-0"
+              className="flex gap-3 pb-3 border-b border-glass-border last:border-0"
             >
               <div className="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-blue-400" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm">
                   <span className="font-medium">{activity.actor}</span>{' '}
                   {activity.action}{' '}
-                  <span className="text-slate-400">{activity.target}</span>
+                  <span className="text-muted-foreground">{activity.target}</span>
                 </p>
-                <p className="text-xs text-slate-500">{activity.timestamp}</p>
+                <p className="text-xs text-muted-foreground/60">{activity.timestamp}</p>
               </div>
             </div>
           ))

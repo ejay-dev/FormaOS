@@ -443,7 +443,7 @@ function SignInContent() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-6">
         <Logo variant="mark" size={44} />
-        <div className="text-xs sm:text-sm text-slate-400 text-center sm:text-left">
+        <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
           Secure · Compliance-First · Enterprise-Ready
         </div>
       </div>
@@ -451,12 +451,12 @@ function SignInContent() {
       <div className="flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-md">
           {/* Welcome Card */}
-          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-8">
+          <div className="rounded-2xl border border-glass-border bg-glass-subtle backdrop-blur-sm p-8">
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold text-white mb-2">
                 Welcome to FormaOS
               </h1>
-              <p className="text-slate-400">
+              <p className="text-muted-foreground">
                 The compliance-first operating system for modern enterprises
               </p>
             </div>
@@ -538,9 +538,9 @@ function SignInContent() {
 
             {/* Divider */}
             <div className="flex items-center gap-4 mb-6">
-              <div className="flex-1 border-t border-white/20" />
-              <span className="text-xs text-slate-400">or use email</span>
-              <div className="flex-1 border-t border-white/20" />
+              <div className="flex-1 border-t border-glass-border-strong" />
+              <span className="text-xs text-muted-foreground">or use email</span>
+              <div className="flex-1 border-t border-glass-border-strong" />
             </div>
 
             {/* Email/Password Form */}
@@ -548,7 +548,7 @@ function SignInContent() {
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-xs font-semibold text-slate-300 mb-2"
+                  className="block text-xs font-semibold text-foreground/70 mb-2"
                 >
                   Email Address
                 </label>
@@ -558,20 +558,20 @@ function SignInContent() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@company.com"
-                  className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
+                  className="w-full rounded-lg border border-glass-border-strong bg-glass-strong px-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
                   required
                   disabled={isLoading}
                 />
               </div>
 
               {ssoOrgId ? (
-                <div className="rounded-lg border border-white/10 bg-white/5 p-4">
+                <div className="rounded-lg border border-glass-border bg-glass-subtle p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <div className="text-sm font-semibold text-white">
                         Enterprise SSO detected
                       </div>
-                      <div className="text-xs text-slate-400 mt-1">
+                      <div className="text-xs text-muted-foreground mt-1">
                         {ssoRequired
                           ? 'This organization requires SSO for sign-in.'
                           : 'You can sign in with SSO for faster enterprise access.'}
@@ -581,7 +581,7 @@ function SignInContent() {
                       type="button"
                       onClick={() => startSsoLogin('/app')}
                       disabled={isLoading}
-                      className="shrink-0 rounded-lg bg-white/10 hover:bg-white/15 border border-white/10 px-3 py-2 text-xs font-semibold text-white transition-colors disabled:opacity-50"
+                      className="shrink-0 rounded-lg bg-glass-strong hover:bg-white/15 border border-glass-border px-3 py-2 text-xs font-semibold text-white transition-colors disabled:opacity-50"
                     >
                       Continue with SSO
                     </button>
@@ -593,7 +593,7 @@ function SignInContent() {
                 <div className="flex items-center justify-between mb-2">
                   <label
                     htmlFor="password"
-                    className="block text-xs font-semibold text-slate-300"
+                    className="block text-xs font-semibold text-foreground/70"
                   >
                     Password
                   </label>
@@ -610,7 +610,7 @@ function SignInContent() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
+                  className="w-full rounded-lg border border-glass-border-strong bg-glass-strong px-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
                   required={!ssoRequired}
                   disabled={isLoading}
                 />
@@ -634,7 +634,7 @@ function SignInContent() {
 
             {/* Sign Up Link */}
             <div className="mt-8 pt-6 border-t border-white/10">
-              <p className="text-center text-sm text-slate-400">
+              <p className="text-center text-sm text-muted-foreground">
                 New to FormaOS?{' '}
                 <Link
                   href={`${RENDER_APP_BASE}/auth/signup`}
@@ -647,7 +647,7 @@ function SignInContent() {
           </div>
 
           {/* Security Notice */}
-          <div className="mt-6 text-center text-xs text-slate-500">
+          <div className="mt-6 text-center text-xs text-muted-foreground/60">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Logo variant="mark" size={14} />
               <span>Enterprise-grade security</span>
@@ -668,7 +668,7 @@ export default function SignInPage() {
     <Suspense
       fallback={
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-          <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm px-6 py-4 text-sm text-slate-300">
+          <div className="flex items-center gap-3 rounded-2xl border border-glass-border bg-glass-subtle backdrop-blur-sm px-6 py-4 text-sm text-foreground/70">
             <Logo variant="mark" size={18} />
             <span>Loading FormaOS...</span>
           </div>

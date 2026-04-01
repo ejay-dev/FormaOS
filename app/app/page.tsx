@@ -46,8 +46,8 @@ function EmptyState({
           {icon}
         </div>
       ) : null}
-      <div className="text-sm font-semibold text-slate-100">{title}</div>
-      <div className="max-w-md text-xs leading-5 text-slate-400">
+      <div className="text-sm font-semibold text-foreground">{title}</div>
+      <div className="max-w-md text-xs leading-5 text-muted-foreground">
         {description}
       </div>
     </div>
@@ -68,7 +68,7 @@ export default async function DashboardPage() {
       <EmptyState
         title="Session expired"
         description="Please sign in again to continue."
-        icon={<ShieldCheck className="h-5 w-5 text-slate-300" />}
+        icon={<ShieldCheck className="h-5 w-5 text-foreground/70" />}
       />
     );
   }

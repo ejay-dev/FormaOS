@@ -78,7 +78,7 @@ export function ProgressIndicator({
     <div
       className={cn(
         "flex flex-col items-center justify-center gap-3 rounded-xl",
-        "bg-white/5 border border-white/10 backdrop-blur-sm",
+        "bg-glass-subtle border border-glass-border backdrop-blur-sm",
         styles.container,
         className
       )}
@@ -86,7 +86,7 @@ export function ProgressIndicator({
       {/* Spinner */}
       <div className="relative">
         <div className={cn(
-          "border-2 border-white/20 border-t-cyan-400 rounded-full animate-spin",
+          "border-2 border-glass-border-strong border-t-cyan-400 rounded-full animate-spin",
           styles.spinner
         )} />
         {/* Glow effect */}
@@ -97,14 +97,14 @@ export function ProgressIndicator({
       </div>
 
       {/* Message */}
-      <p className={cn("text-slate-300 font-medium text-center", styles.text)}>
+      <p className={cn("text-foreground/70 font-medium text-center", styles.text)}>
         {displayMessage}
       </p>
 
       {/* Progress bar (if percentage provided) */}
       {progress !== undefined && (
         <div className={cn(
-          "w-full max-w-[200px] bg-white/10 rounded-full overflow-hidden",
+          "w-full max-w-[200px] bg-glass-strong rounded-full overflow-hidden",
           styles.bar
         )}>
           <div
@@ -132,7 +132,7 @@ export function InlineProgress({
   const displayMessage = message || OPERATION_MESSAGES[operation as keyof typeof OPERATION_MESSAGES] || "Processing…";
 
   return (
-    <div className={cn("inline-flex items-center gap-2 text-sm text-slate-400", className)}>
+    <div className={cn("inline-flex items-center gap-2 text-sm text-muted-foreground", className)}>
       <div className="h-3.5 w-3.5 border-2 border-slate-500 border-t-cyan-400 rounded-full animate-spin" />
       <span>{displayMessage}</span>
     </div>
@@ -153,19 +153,19 @@ export function LoadingOverlay({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-      <div className="flex flex-col items-center gap-4 p-8 rounded-2xl bg-card border border-white/10 shadow-2xl">
+      <div className="flex flex-col items-center gap-4 p-8 rounded-2xl bg-card border border-glass-border shadow-2xl">
         {/* Animated spinner */}
         <div className="relative h-12 w-12">
-          <div className="absolute inset-0 border-3 border-white/10 rounded-full" />
+          <div className="absolute inset-0 border-3 border-glass-border rounded-full" />
           <div className="absolute inset-0 border-3 border-transparent border-t-cyan-400 rounded-full animate-spin" />
           <div className="absolute inset-1 border-2 border-transparent border-t-blue-400 rounded-full animate-spin" style={{ animationDuration: "1.5s" }} />
         </div>
         
         {/* Message */}
-        <p className="text-lg font-medium text-slate-200">{displayMessage}</p>
+        <p className="text-lg font-medium text-foreground/90">{displayMessage}</p>
         
         {/* Shimmer bar */}
-        <div className="w-48 h-1 bg-white/10 rounded-full overflow-hidden">
+        <div className="w-48 h-1 bg-glass-strong rounded-full overflow-hidden">
           <div className="h-full w-1/3 bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-[shimmer_1.5s_ease-in-out_infinite]" />
         </div>
       </div>
@@ -186,13 +186,13 @@ export function ComplianceSkeleton({
   if (variant === "node") {
     return (
       <div className={cn(
-        "flex items-center gap-3 px-4 py-3 rounded-xl border border-white/10 bg-white/5 animate-pulse",
+        "flex items-center gap-3 px-4 py-3 rounded-xl border border-glass-border bg-glass-subtle animate-pulse",
         className
       )}>
-        <div className="h-8 w-8 rounded-lg bg-white/10" />
+        <div className="h-8 w-8 rounded-lg bg-glass-strong" />
         <div className="flex-1 space-y-2">
-          <div className="h-3 w-24 bg-white/10 rounded" />
-          <div className="h-2 w-16 bg-white/5 rounded" />
+          <div className="h-3 w-24 bg-glass-strong rounded" />
+          <div className="h-2 w-16 bg-glass-subtle rounded" />
         </div>
       </div>
     );
@@ -204,9 +204,9 @@ export function ComplianceSkeleton({
         "flex items-center gap-4 px-4 py-3 animate-pulse",
         className
       )}>
-        <div className="h-6 w-6 rounded bg-white/10" />
-        <div className="flex-1 h-4 bg-white/10 rounded" />
-        <div className="h-4 w-16 bg-white/5 rounded" />
+        <div className="h-6 w-6 rounded bg-glass-strong" />
+        <div className="flex-1 h-4 bg-glass-strong rounded" />
+        <div className="h-4 w-16 bg-glass-subtle rounded" />
       </div>
     );
   }
@@ -214,12 +214,12 @@ export function ComplianceSkeleton({
   if (variant === "stat") {
     return (
       <div className={cn(
-        "p-5 rounded-2xl border border-white/10 bg-white/5 animate-pulse",
+        "p-5 rounded-2xl border border-glass-border bg-glass-subtle animate-pulse",
         className
       )}>
-        <div className="h-3 w-20 bg-white/10 rounded mb-3" />
-        <div className="h-8 w-16 bg-white/10 rounded mb-2" />
-        <div className="h-2 w-24 bg-white/5 rounded" />
+        <div className="h-3 w-20 bg-glass-strong rounded mb-3" />
+        <div className="h-8 w-16 bg-glass-strong rounded mb-2" />
+        <div className="h-2 w-24 bg-glass-subtle rounded" />
       </div>
     );
   }
@@ -227,19 +227,19 @@ export function ComplianceSkeleton({
   // Default card
   return (
     <div className={cn(
-      "p-6 rounded-2xl border border-white/10 bg-white/5 animate-pulse",
+      "p-6 rounded-2xl border border-glass-border bg-glass-subtle animate-pulse",
       className
     )}>
       <div className="flex items-center gap-4 mb-4">
-        <div className="h-10 w-10 rounded-xl bg-white/10" />
+        <div className="h-10 w-10 rounded-xl bg-glass-strong" />
         <div className="flex-1 space-y-2">
-          <div className="h-4 w-32 bg-white/10 rounded" />
-          <div className="h-3 w-24 bg-white/5 rounded" />
+          <div className="h-4 w-32 bg-glass-strong rounded" />
+          <div className="h-3 w-24 bg-glass-subtle rounded" />
         </div>
       </div>
       <div className="space-y-2">
-        <div className="h-3 bg-white/10 rounded" />
-        <div className="h-3 w-3/4 bg-white/5 rounded" />
+        <div className="h-3 bg-glass-strong rounded" />
+        <div className="h-3 w-3/4 bg-glass-subtle rounded" />
       </div>
     </div>
   );

@@ -100,7 +100,7 @@ export function CompactHero({
               initial={sa ? { opacity: 0, y: 16 } : false}
               animate={{ opacity: 1, y: 0 }}
               transition={sa ? { duration: duration.slow, ease: signatureEase, delay: 0.35 } : { duration: 0 }}
-              className="mt-4 text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed"
+              className="mt-4 text-base sm:text-lg text-foreground/70 max-w-2xl leading-relaxed"
             >
               {description}
             </motion.p>
@@ -117,7 +117,7 @@ export function CompactHero({
       <noscript>
         <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12 text-center">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.08] text-white">{title}</h1>
-          {description && <p className="mt-4 text-base sm:text-lg text-slate-300 max-w-2xl mx-auto">{description}</p>}
+          {description && <p className="mt-4 text-base sm:text-lg text-foreground/70 max-w-2xl mx-auto">{description}</p>}
         </div>
       </noscript>
     </section>

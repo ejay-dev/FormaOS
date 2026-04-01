@@ -126,7 +126,7 @@ export function GuidedTourOverlay({
                     <Icon className="h-4 w-4 text-cyan-400" />
                   </div>
                   <div>
-                    <div className="text-[10px] text-slate-500 uppercase tracking-wider">
+                    <div className="text-[10px] text-muted-foreground/60 uppercase tracking-wider">
                       Step {currentStep + 1} of {TOUR_STEPS.length}
                     </div>
                     <h4 className="text-sm font-semibold text-white">{step.title}</h4>
@@ -140,12 +140,12 @@ export function GuidedTourOverlay({
                   }}
                   className="h-6 w-6 rounded-md flex items-center justify-center bg-white/[0.04] hover:bg-white/[0.08] transition-colors"
                 >
-                  <X className="h-3 w-3 text-slate-400" />
+                  <X className="h-3 w-3 text-muted-foreground" />
                 </button>
               </div>
 
               {/* Description */}
-              <p className="text-[12px] text-slate-400 leading-relaxed mb-3">{step.description}</p>
+              <p className="text-[12px] text-muted-foreground leading-relaxed mb-3">{step.description}</p>
 
               {/* Outcome */}
               <div className="rounded-lg bg-gradient-to-r from-cyan-500/[0.06] to-blue-500/[0.04] border border-cyan-500/10 p-3 mb-4">
@@ -153,7 +153,7 @@ export function GuidedTourOverlay({
                   <Sparkles className="h-3 w-3 text-cyan-400" />
                   <span className="text-[10px] font-semibold text-cyan-400 uppercase tracking-wider">Outcome</span>
                 </div>
-                <p className="text-[11px] text-slate-300">{step.outcome}</p>
+                <p className="text-[11px] text-foreground/70">{step.outcome}</p>
               </div>
 
               {/* Navigation */}
@@ -163,7 +163,7 @@ export function GuidedTourOverlay({
                   onClick={onPrev}
                   disabled={isFirst}
                   className={`flex items-center gap-1 text-[11px] font-medium transition-colors ${
-                    isFirst ? 'text-slate-600 cursor-not-allowed' : 'text-slate-400 hover:text-slate-200'
+                    isFirst ? 'text-muted-foreground/40 cursor-not-allowed' : 'text-muted-foreground hover:text-foreground/90'
                   }`}
                 >
                   <ArrowLeft className="h-3 w-3" /> Previous

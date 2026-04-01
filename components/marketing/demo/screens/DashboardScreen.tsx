@@ -49,7 +49,7 @@ function ComplianceRing({ score }: { score: number }) {
         >
           {score}%
         </motion.span>
-        <span className="text-[8px] text-slate-500 uppercase tracking-wider">Score</span>
+        <span className="text-[8px] text-muted-foreground/60 uppercase tracking-wider">Score</span>
       </div>
     </div>
   );
@@ -58,7 +58,7 @@ function ComplianceRing({ score }: { score: number }) {
 export default function DashboardScreen() {
   const trendIcons = {
     up: <TrendingUp className="h-2.5 w-2.5 text-emerald-400" />,
-    neutral: <Minus className="h-2.5 w-2.5 text-slate-500" />,
+    neutral: <Minus className="h-2.5 w-2.5 text-muted-foreground/60" />,
   };
 
   return (
@@ -72,7 +72,7 @@ export default function DashboardScreen() {
         >
           <ComplianceRing score={demoOrg.complianceScore} />
           <div className="min-w-0">
-            <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-0.5">Compliance</p>
+            <p className="text-[10px] text-muted-foreground/60 uppercase tracking-wider mb-0.5">Compliance</p>
             <p className="text-xs font-semibold text-white">
               {demoOrg.compliantControls}/{demoOrg.totalControls} controls
             </p>
@@ -88,12 +88,12 @@ export default function DashboardScreen() {
               variants={fadeUp}
               className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-2.5"
             >
-              <p className="text-[9px] text-slate-500 uppercase tracking-wider truncate">{kpi.label}</p>
+              <p className="text-[9px] text-muted-foreground/60 uppercase tracking-wider truncate">{kpi.label}</p>
               <div className="flex items-baseline gap-1.5 mt-1">
                 <span className="text-lg font-bold text-white">{kpi.value}</span>
                 <span className="flex items-center gap-0.5 text-[9px]">
                   {trendIcons[kpi.trend]}
-                  <span className={kpi.trend === 'up' ? 'text-emerald-400' : 'text-slate-500'}>
+                  <span className={kpi.trend === 'up' ? 'text-emerald-400' : 'text-muted-foreground/60'}>
                     {kpi.change}
                   </span>
                 </span>
@@ -110,12 +110,12 @@ export default function DashboardScreen() {
       >
         <div className="flex items-center gap-1.5 mb-2.5">
           <Shield className="h-3 w-3 text-cyan-400" />
-          <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-wider">Framework Health</span>
+          <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Framework Health</span>
         </div>
         <div className="space-y-2">
           {demoFrameworks.map((fw, i) => (
             <div key={fw.name} className="flex items-center gap-2.5">
-              <span className="text-[10px] text-slate-400 w-16 truncate">{fw.name}</span>
+              <span className="text-[10px] text-muted-foreground w-16 truncate">{fw.name}</span>
               <div className="flex-1 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
                 <motion.div
                   className="h-full rounded-full"
@@ -125,7 +125,7 @@ export default function DashboardScreen() {
                   transition={{ duration: 0.8, ease: easing.signature, delay: 0.4 + i * 0.1 }}
                 />
               </div>
-              <span className="text-[10px] font-medium text-slate-300 w-8 text-right">{fw.score}%</span>
+              <span className="text-[10px] font-medium text-foreground/70 w-8 text-right">{fw.score}%</span>
             </div>
           ))}
         </div>
@@ -138,7 +138,7 @@ export default function DashboardScreen() {
       >
         <div className="flex items-center gap-1.5 mb-2.5">
           <Activity className="h-3 w-3 text-cyan-400" />
-          <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-wider">Recent Activity</span>
+          <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Recent Activity</span>
         </div>
         <div className="space-y-1.5">
           {demoAuditLog.slice(0, 5).map((entry) => {
@@ -147,19 +147,19 @@ export default function DashboardScreen() {
               evidence: 'text-blue-400',
               task: 'text-emerald-400',
               user: 'text-purple-400',
-              system: 'text-slate-400',
+              system: 'text-muted-foreground',
               compliance: 'text-amber-400',
             }[entry.type];
 
             return (
               <div key={entry.id} className="flex items-center gap-2 text-[10px]">
                 <span className={`flex-shrink-0 ${typeColor}`}>●</span>
-                <span className="text-slate-300 truncate flex-1">
+                <span className="text-foreground/70 truncate flex-1">
                   <span className="font-medium text-white">{entry.user}</span>{' '}
                   {entry.action.toLowerCase()}{' '}
-                  <span className="text-slate-400">{entry.target}</span>
+                  <span className="text-muted-foreground">{entry.target}</span>
                 </span>
-                <span className="text-slate-600 flex-shrink-0 text-[9px]">{entry.timestamp}</span>
+                <span className="text-muted-foreground/40 flex-shrink-0 text-[9px]">{entry.timestamp}</span>
               </div>
             );
           })}

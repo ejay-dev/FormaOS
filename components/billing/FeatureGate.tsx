@@ -48,15 +48,15 @@ export function FeatureGate({
       {/* Lock overlay */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-6">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-700 to-slate-800 border border-white/10 shadow-xl">
-            <Lock className="h-7 w-7 text-slate-300" />
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-700 to-slate-800 border border-glass-border shadow-xl">
+            <Lock className="h-7 w-7 text-foreground/70" />
           </div>
 
-          <h3 className="text-lg font-bold text-slate-100 mb-2">
+          <h3 className="text-lg font-bold text-foreground mb-2">
             Feature Locked
           </h3>
 
-          <p className="text-sm text-slate-400 mb-6">
+          <p className="text-sm text-muted-foreground mb-6">
             {fallbackMessage ??
               'Your trial has ended. Upgrade your plan to unlock this feature and regain full access.'}
           </p>
@@ -72,14 +72,14 @@ export function FeatureGate({
               </Link>
               <Link
                 href="/app/billing"
-                className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 transition-colors"
+                className="text-xs text-muted-foreground hover:text-foreground/90 flex items-center gap-1 transition-colors"
               >
                 Compare plans
                 <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
           ) : (
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-muted-foreground/60">
               Contact your organization admin to upgrade the plan.
             </p>
           )}

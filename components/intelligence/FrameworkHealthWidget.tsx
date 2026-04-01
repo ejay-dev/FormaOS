@@ -60,11 +60,11 @@ export function FrameworkHealthWidget() {
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6 animate-pulse">
-        <div className="h-5 w-40 rounded bg-white/10" />
+      <div className="rounded-2xl border border-glass-border bg-glass-subtle p-6 animate-pulse">
+        <div className="h-5 w-40 rounded bg-glass-strong" />
         <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <div className="h-20 rounded-xl bg-white/10" />
-          <div className="h-20 rounded-xl bg-white/10" />
+          <div className="h-20 rounded-xl bg-glass-strong" />
+          <div className="h-20 rounded-xl bg-glass-strong" />
         </div>
       </div>
     )
@@ -76,17 +76,17 @@ export function FrameworkHealthWidget() {
   const TrendIcon = trendPositive ? TrendingUp : TrendingDown
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6">
+    <div className="rounded-2xl border border-glass-border bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-glass-border bg-white/5">
             <ShieldCheck className="h-4 w-4 text-emerald-300" />
           </div>
           <div>
-            <div className="text-xs uppercase tracking-widest text-slate-400 font-semibold">
+            <div className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">
               Framework Health
             </div>
-            <div className="text-lg font-semibold text-slate-100">{data.combinedScore}% readiness</div>
+            <div className="text-lg font-semibold text-foreground">{data.combinedScore}% readiness</div>
           </div>
         </div>
         {data.readinessTrend !== null ? (
@@ -99,13 +99,13 @@ export function FrameworkHealthWidget() {
 
       <div className="mt-5 grid gap-3 md:grid-cols-2">
         {data.frameworks.slice(0, 4).map((framework) => (
-          <div key={framework.frameworkId} className="rounded-xl border border-white/10 bg-white/5 p-4">
-            <div className="text-xs text-slate-400">{framework.frameworkTitle}</div>
+          <div key={framework.frameworkId} className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+            <div className="text-xs text-muted-foreground">{framework.frameworkTitle}</div>
             <div className="mt-1 flex items-center justify-between">
-              <div className="text-lg font-semibold text-slate-100">{framework.readinessScore}%</div>
-              <div className="text-xs text-slate-400">{framework.totalControls} controls</div>
+              <div className="text-lg font-semibold text-foreground">{framework.readinessScore}%</div>
+              <div className="text-xs text-muted-foreground">{framework.totalControls} controls</div>
             </div>
-            <div className="mt-2 h-2 w-full rounded-full bg-white/10">
+            <div className="mt-2 h-2 w-full rounded-full bg-glass-strong">
               <div
                 className="h-2 rounded-full bg-emerald-400"
                 style={{ width: `${framework.readinessScore}%` }}
@@ -116,9 +116,9 @@ export function FrameworkHealthWidget() {
       </div>
 
       <div className="mt-5 grid gap-3 md:grid-cols-2">
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-          <div className="text-xs font-semibold text-slate-400 uppercase">Top Gaps</div>
-          <ul className="mt-2 space-y-2 text-sm text-slate-300">
+        <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+          <div className="text-xs font-semibold text-muted-foreground uppercase">Top Gaps</div>
+          <ul className="mt-2 space-y-2 text-sm text-foreground/70">
             {data.gaps.missingEvidence.slice(0, 2).map((gap) => (
               <li key={gap.controlKey} className="flex items-start gap-2">
                 <AlertTriangle className="mt-0.5 h-4 w-4 text-amber-300" />
@@ -126,13 +126,13 @@ export function FrameworkHealthWidget() {
               </li>
             ))}
             {data.gaps.missingEvidence.length === 0 ? (
-              <li className="text-xs text-slate-500">No critical evidence gaps detected.</li>
+              <li className="text-xs text-muted-foreground/60">No critical evidence gaps detected.</li>
             ) : null}
           </ul>
         </div>
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-          <div className="text-xs font-semibold text-slate-400 uppercase">Next Actions</div>
-          <ul className="mt-2 space-y-2 text-sm text-slate-300">
+        <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+          <div className="text-xs font-semibold text-muted-foreground uppercase">Next Actions</div>
+          <ul className="mt-2 space-y-2 text-sm text-foreground/70">
             {data.recommendations.nextActions.slice(0, 2).map((action, index) => (
               <li key={`${action}-${index}`} className="flex items-start gap-2">
                 <span className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-400" />
@@ -143,21 +143,21 @@ export function FrameworkHealthWidget() {
         </div>
       </div>
 
-      <div className="mt-5 rounded-xl border border-white/10 bg-white/5 p-4">
-        <div className="text-xs font-semibold text-slate-400 uppercase">Risk heatmap</div>
+      <div className="mt-5 rounded-xl border border-glass-border bg-glass-subtle p-4">
+        <div className="text-xs font-semibold text-muted-foreground uppercase">Risk heatmap</div>
         <div className="mt-3 grid gap-2">
           {['critical', 'high', 'medium', 'low'].map((level) => (
-            <div key={level} className="grid grid-cols-[80px_repeat(3,1fr)] items-center gap-2 text-xs text-slate-300">
-              <div className="capitalize text-slate-400">{level}</div>
+            <div key={level} className="grid grid-cols-[80px_repeat(3,1fr)] items-center gap-2 text-xs text-foreground/70">
+              <div className="capitalize text-muted-foreground">{level}</div>
               {['compliant', 'at_risk', 'non_compliant'].map((status) => {
                 const count = data.riskHeatmap?.[level]?.[status] ?? 0
                 return (
                   <div
                     key={`${level}-${status}`}
-                    className="rounded-md border border-white/10 bg-black/20 px-2 py-1 text-center"
+                    className="rounded-md border border-glass-border bg-black/20 px-2 py-1 text-center"
                   >
-                    <span className="text-slate-200">{count}</span>
-                    <span className="ml-1 text-xs uppercase text-slate-500">{status.replace('_', ' ')}</span>
+                    <span className="text-foreground/90">{count}</span>
+                    <span className="ml-1 text-xs uppercase text-muted-foreground/60">{status.replace('_', ' ')}</span>
                   </div>
                 )
               })}

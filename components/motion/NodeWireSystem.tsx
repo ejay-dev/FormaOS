@@ -180,7 +180,7 @@ function AnimatedNode({
 
   const statusStyles = {
     active: 'border-2 border-current shadow-[0_0_20px_currentColor]',
-    locked: 'opacity-40 border border-white/10 grayscale',
+    locked: 'opacity-40 border border-glass-border grayscale',
     preview: 'border border-dashed border-current opacity-70',
     processing: 'border-2 border-current animate-pulse',
     restricted: 'border border-rose-500/50 opacity-50',

@@ -158,8 +158,8 @@ export function UploadArtifactModal({
           <div className="h-20 w-20 rounded-full bg-violet-400/20 flex items-center justify-center mb-4 border-2 border-violet-400/40">
             <CheckCircle2 className="h-10 w-10 text-violet-400" />
           </div>
-          <h3 className="text-xl font-bold text-slate-100">Evidence Secured</h3>
-          <p className="text-sm text-slate-400 mt-2 text-center">
+          <h3 className="text-xl font-bold text-foreground">Evidence Secured</h3>
+          <p className="text-sm text-muted-foreground mt-2 text-center">
             New evidence node added to your compliance graph
           </p>
         </div>
@@ -170,20 +170,20 @@ export function UploadArtifactModal({
   return (
     <div className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
       <div className="w-full max-w-md bg-gradient-to-br from-slate-900 to-slate-800 rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden max-h-[92vh] overflow-y-auto">
-        <div className="p-6 border-b border-white/10 flex items-center justify-between">
+        <div className="p-6 border-b border-glass-border flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 rounded-full bg-violet-400/20 flex items-center justify-center">
               <div className="h-2 w-2 rounded-full bg-violet-400" />
             </div>
-            <h3 className="font-bold text-slate-100">
+            <h3 className="font-bold text-foreground">
               Upload Evidence Artifact
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white/10 rounded-xl transition-colors"
+            className="p-2 hover:bg-glass-strong rounded-xl transition-colors"
           >
-            <X className="h-4 w-4 text-slate-400" />
+            <X className="h-4 w-4 text-muted-foreground" />
           </button>
         </div>
 
@@ -205,7 +205,7 @@ export function UploadArtifactModal({
                 <div className="h-12 w-12 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center mb-2 border border-violet-400/30">
                   <FileText className="h-6 w-6" />
                 </div>
-                <p className="text-sm font-bold text-slate-100 truncate max-w-[200px]">
+                <p className="text-sm font-bold text-foreground truncate max-w-[200px]">
                   {file.name}
                 </p>
                 <p className="text-xs text-violet-300 uppercase font-bold mt-1">
@@ -215,10 +215,10 @@ export function UploadArtifactModal({
             ) : (
               <>
                 <FileUp className="h-8 w-8 text-violet-400/50 mb-3 group-hover:text-violet-400 transition-colors" />
-                <p className="text-sm font-bold text-slate-100">
+                <p className="text-sm font-bold text-foreground">
                   Drop artifact here
                 </p>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   PDF, JPG, PNG, DOC, XLS (Max 10MB)
                 </p>
               </>
@@ -228,7 +228,7 @@ export function UploadArtifactModal({
           <div className="space-y-2">
             <label
               htmlFor="field-104"
-              className="text-xs font-bold uppercase text-slate-400 tracking-widest ml-1"
+              className="text-xs font-bold uppercase text-muted-foreground tracking-widest ml-1"
             >
               Artifact Label
             </label>
@@ -237,7 +237,7 @@ export function UploadArtifactModal({
               placeholder="e.g. Annual Fire Safety Certificate 2025"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full p-4 rounded-xl border border-white/10 bg-white/5 focus:border-violet-400/50 focus:ring-2 focus:ring-violet-400/20 text-sm transition-all outline-none"
+              className="w-full p-4 rounded-xl border border-glass-border bg-glass-subtle focus:border-violet-400/50 focus:ring-2 focus:ring-violet-400/20 text-sm transition-all outline-none"
             />
           </div>
 
@@ -248,9 +248,9 @@ export function UploadArtifactModal({
                 <span className="text-violet-300 font-medium">
                   Securing artifact...
                 </span>
-                <span className="text-slate-400">{uploadProgress}%</span>
+                <span className="text-muted-foreground">{uploadProgress}%</span>
               </div>
-              <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-2 bg-glass-strong rounded-full overflow-hidden">
                 <div
                   className="h-full bg-gradient-to-r from-violet-500 to-purple-500 rounded-full transition-all duration-300"
                   style={{ width: `${uploadProgress}%` }}

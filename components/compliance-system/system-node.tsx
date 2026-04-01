@@ -57,8 +57,8 @@ const STATE_STYLES: Record<
 > = {
   locked: {
     container: 'bg-slate-800/30 border-slate-700/50 opacity-50',
-    icon: 'text-slate-500',
-    label: 'text-slate-500',
+    icon: 'text-muted-foreground/60',
+    label: 'text-muted-foreground/60',
     glow: '',
     pulse: false,
   },
@@ -200,7 +200,7 @@ export function SystemNode({
         {/* Lock Overlay */}
         {isLocked && (
           <div className="absolute inset-0 flex items-center justify-center bg-slate-900/60 rounded-2xl">
-            <LockIcon className="h-4 w-4 text-slate-500" />
+            <LockIcon className="h-4 w-4 text-muted-foreground/60" />
           </div>
         )}
 
@@ -237,7 +237,7 @@ export function SystemNode({
           <div className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 shadow-xl whitespace-nowrap">
             <div className="flex items-center gap-2">
               <Zap className="h-3 w-3 text-amber-400" />
-              <span className="text-xs font-bold text-slate-200">
+              <span className="text-xs font-bold text-foreground/90">
                 Upgrade to unlock
               </span>
             </div>
@@ -250,7 +250,7 @@ export function SystemNode({
       {isHovered && !isLocked && showTooltip && (
         <div className="absolute -top-12 left-1/2 -translate-x-1/2 z-50 animate-in fade-in zoom-in-95 duration-200">
           <div className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 shadow-xl whitespace-nowrap">
-            <p className="text-xs font-medium text-slate-200">
+            <p className="text-xs font-medium text-foreground/90">
               {moduleConfig.description}
             </p>
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rotate-45 h-2 w-2 bg-slate-800 border-r border-b border-slate-600" />

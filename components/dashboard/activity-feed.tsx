@@ -35,7 +35,7 @@ function getSeverityMeta(severity?: string) {
     case "medium":
       return { label: "Medium", color: "text-amber-300", bg: "bg-amber-400/10", border: "border-amber-400/30" };
     case "low":
-      return { label: "Low", color: "text-slate-400", bg: "bg-white/10", border: "border-white/10" };
+      return { label: "Low", color: "text-muted-foreground", bg: "bg-glass-strong", border: "border-white/10" };
     default:
       return null;
   }
@@ -70,8 +70,8 @@ function getTypeMeta(type: ActivityItem["type"]) {
     default:
       return {
         icon: User,
-        color: "text-slate-400",
-        bg: "bg-white/10",
+        color: "text-muted-foreground",
+        bg: "bg-glass-strong",
         border: "border-white/10",
         label: "System",
       };
@@ -83,8 +83,8 @@ function getTypeMeta(type: ActivityItem["type"]) {
 export function ActivityFeed({ items }: { items: ActivityItem[] }) {
   if (!items || items.length === 0) {
     return (
-      <div className="p-12 text-center rounded-2xl border border-white/10 bg-white/10 shadow-sm">
-        <p className="text-sm text-slate-400 font-medium">
+      <div className="p-12 text-center rounded-2xl border border-glass-border bg-glass-strong shadow-sm">
+        <p className="text-sm text-muted-foreground font-medium">
           No governance activity recorded yet.
         </p>
       </div>
@@ -94,7 +94,7 @@ export function ActivityFeed({ items }: { items: ActivityItem[] }) {
   return (
     <div className="relative space-y-6">
       {/* Timeline Line */}
-      <div className="absolute left-[18px] top-2 bottom-2 w-px bg-white/10" />
+      <div className="absolute left-[18px] top-2 bottom-2 w-px bg-glass-strong" />
 
       {items.map((item, index) => {
         const meta = getTypeMeta(item.type);
@@ -125,14 +125,14 @@ export function ActivityFeed({ items }: { items: ActivityItem[] }) {
             {/* Content */}
             <div
               className="flex-1 rounded-xl border border-transparent 
-              group-hover:border-white/10 bg-white/10 px-4 py-3 
+              group-hover:border-glass-border bg-glass-strong px-4 py-3 
               transition-all shadow-sm group-hover:shadow-md"
             >
               {/* Header */}
               <div className="flex justify-between items-start gap-3">
                 <div className="flex items-center gap-2 flex-wrap">
                   {/* Domain Label */}
-                  <span className="text-xs font-black uppercase tracking-widest text-slate-400">
+                  <span className="text-xs font-black uppercase tracking-widest text-muted-foreground">
                     {meta.label}
                   </span>
 
@@ -155,19 +155,19 @@ export function ActivityFeed({ items }: { items: ActivityItem[] }) {
                   )}
                 </div>
 
-                <span className="text-xs text-slate-400 font-mono whitespace-nowrap">
+                <span className="text-xs text-muted-foreground font-mono whitespace-nowrap">
                   {timeAgo(item.timestamp)}
                 </span>
               </div>
 
               {/* Main Message */}
-              <p className="text-sm font-semibold text-slate-100 mt-1 leading-snug">
+              <p className="text-sm font-semibold text-foreground mt-1 leading-snug">
                 <span className="font-black">{item.user}</span>{" "}
                 {normalizeAction(item.action)}
               </p>
 
               {/* Target / Description */}
-              <p className="text-xs text-slate-400 mt-1 leading-relaxed line-clamp-1 group-hover:line-clamp-none transition-all">
+              <p className="text-xs text-muted-foreground mt-1 leading-relaxed line-clamp-1 group-hover:line-clamp-none transition-all">
                 {item.target}
               </p>
 
@@ -175,7 +175,7 @@ export function ActivityFeed({ items }: { items: ActivityItem[] }) {
               {(actionUrl || domain) && (
                 <div className="mt-2 flex items-center gap-3">
                   {domain && (
-                    <span className="text-xs font-mono uppercase text-slate-400">
+                    <span className="text-xs font-mono uppercase text-muted-foreground">
                       {domain}
                     </span>
                   )}

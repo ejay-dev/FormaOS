@@ -30,6 +30,8 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
+        premium: "bg-primary text-primary-foreground shadow-[0_4px_14px_rgba(0,212,251,0.25)] hover:shadow-[0_6px_20px_rgba(0,212,251,0.35)]",
+        glass: "bg-transparent text-foreground border border-glass-border backdrop-blur-sm hover:bg-glass-bg hover:border-glass-border-strong",
         // New: Gradient primary for CTAs
         gradient: "bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white shadow-[0_8px_24px_rgba(0,212,251,0.3)] hover:shadow-[0_12px_32px_rgba(0,212,251,0.4)] hover:brightness-110",
       },

@@ -110,16 +110,16 @@ export function CertificationReportCard({
       onClick={handleDownload}
     >
       <div className="flex items-start justify-between mb-4">
-        <div className="p-2 rounded-xl bg-white/10">
+        <div className="p-2 rounded-xl bg-glass-strong">
           <ShieldCheck className="h-5 w-5" />
         </div>
         <div className="flex items-center gap-1">
-          <Download className="h-4 w-4 text-slate-400" />
-          <span className="text-xs text-slate-400 uppercase font-bold">PDF</span>
+          <Download className="h-4 w-4 text-muted-foreground" />
+          <span className="text-xs text-muted-foreground uppercase font-bold">PDF</span>
         </div>
       </div>
-      <h4 className="text-lg font-bold text-slate-100 mb-1">{title}</h4>
-      <p className="text-xs text-slate-400 leading-relaxed">{description}</p>
+      <h4 className="text-lg font-bold text-foreground mb-1">{title}</h4>
+      <p className="text-xs text-muted-foreground leading-relaxed">{description}</p>
 
       {disabled && (
         <div className="mt-3 text-xs text-amber-400 flex items-center gap-1">
@@ -129,7 +129,7 @@ export function CertificationReportCard({
       )}
 
       {!disabled && status === 'waiting' && (
-        <div className="mt-3 text-xs text-slate-300">
+        <div className="mt-3 text-xs text-foreground/70">
           Preparing export…
         </div>
       )}

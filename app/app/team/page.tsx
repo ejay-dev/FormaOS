@@ -110,8 +110,8 @@ export default async function TeamPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-100">Team Management</h1>
-          <p className="text-slate-400 font-medium">Manage access, roles, and pending invitations.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Team Management</h1>
+          <p className="text-muted-foreground font-medium">Manage access, roles, and pending invitations.</p>
         </div>
         {/* The New Invite Button */}
         {orgId && <InviteButton orgId={orgId} disabled={!hasSubscription || reachedLimit} />}
@@ -138,12 +138,12 @@ export default async function TeamPage() {
              <div className="h-8 w-8 rounded-full bg-sky-500/10 text-sky-300 flex items-center justify-center">
                 <Users className="h-4 w-4" />
              </div>
-             <h3 className="font-bold text-slate-100">Active Members</h3>
+             <h3 className="font-bold text-foreground">Active Members</h3>
           </div>
           
           <div className="overflow-x-auto overscroll-x-contain">
             <table className="min-w-[560px] sm:min-w-[640px] w-full text-left text-sm">
-                <thead className="bg-white/10 text-slate-400 font-bold text-xs uppercase tracking-wider">
+                <thead className="bg-glass-strong text-muted-foreground font-bold text-xs uppercase tracking-wider">
                     <tr>
                         <th className="px-4 sm:px-6 py-4">User</th>
                         <th className="px-4 sm:px-6 py-4">Role</th>
@@ -155,19 +155,19 @@ export default async function TeamPage() {
                     <tr key={member.id} className="hover:bg-white/5 transition-colors group">
                     <td className="px-4 sm:px-6 py-4">
                         <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 rounded-full bg-white/10 text-slate-100 flex items-center justify-center text-xs font-bold uppercase ring-2 ring-white shadow-sm">
+                        <div className="h-9 w-9 rounded-full bg-glass-strong text-foreground flex items-center justify-center text-xs font-bold uppercase ring-2 ring-white shadow-sm">
                             {member.user_id?.slice(0, 2) || "??"}
                         </div>
                         <div className="flex flex-col">
-                            <span className="font-bold text-slate-100 text-xs">
+                            <span className="font-bold text-foreground text-xs">
                                 {member.user_id}
                             </span>
-                            <span className="text-xs text-slate-400">ID: {member.id.slice(0, 8)}...</span>
+                            <span className="text-xs text-muted-foreground">ID: {member.id.slice(0, 8)}...</span>
                         </div>
                         </div>
                     </td>
                     <td className="px-4 sm:px-6 py-4">
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-slate-100 text-xs font-bold uppercase tracking-wider shadow-sm">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-foreground text-xs font-bold uppercase tracking-wider shadow-sm">
                         <ShieldCheck className="h-3 w-3 text-emerald-500" />
                         {member.role || 'MEMBER'}
                         </span>
@@ -193,8 +193,8 @@ export default async function TeamPage() {
                   <Clock className="h-4 w-4" />
                </div>
                <div>
-                   <h3 className="font-bold text-slate-100">Pending Invitations</h3>
-                   <p className="text-xs text-slate-400">These users have not accepted yet.</p>
+                   <h3 className="font-bold text-foreground">Pending Invitations</h3>
+                   <p className="text-xs text-muted-foreground">These users have not accepted yet.</p>
                </div>
             </div>
             
@@ -205,14 +205,14 @@ export default async function TeamPage() {
                     <tr key={invite.id} className="group hover:bg-amber-400/10 transition-colors">
                       <td className="px-4 sm:px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-400">
+                          <div className="h-8 w-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-muted-foreground">
                               <Mail className="h-4 w-4" />
                           </div>
-                          <span className="text-slate-100 font-bold">{invite.email}</span>
+                          <span className="text-foreground font-bold">{invite.email}</span>
                         </div>
                       </td>
                       <td className="px-4 sm:px-6 py-4">
-                        <span className="px-2 py-1 rounded-md bg-white/10 text-slate-400 text-xs font-bold uppercase border border-white/10">
+                        <span className="px-2 py-1 rounded-md bg-glass-strong text-muted-foreground text-xs font-bold uppercase border border-white/10">
                           {invite.role}
                         </span>
                       </td>

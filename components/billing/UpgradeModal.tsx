@@ -158,7 +158,7 @@ export function UpgradeModal() {
         {/* Close */}
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 p-1 rounded-full hover:bg-white/10 transition-colors text-slate-400 hover:text-slate-200"
+          className="absolute top-4 right-4 p-1 rounded-full hover:bg-glass-strong transition-colors text-muted-foreground hover:text-foreground/90"
           aria-label="Close"
         >
           <X className="h-5 w-5" />
@@ -180,11 +180,11 @@ export function UpgradeModal() {
                 <TrendingUp className="h-5 w-5 text-sky-400" />
               </div>
             )}
-            <h2 className="text-xl font-bold text-slate-100">
+            <h2 className="text-xl font-bold text-foreground">
               {titles[variant]}
             </h2>
           </div>
-          <p className="text-sm text-slate-400">{descriptions[variant]}</p>
+          <p className="text-sm text-muted-foreground">{descriptions[variant]}</p>
         </div>
 
         {error && (
@@ -200,7 +200,7 @@ export function UpgradeModal() {
               <Crown className="h-5 w-5 text-sky-400" />
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-slate-100">
+                  <span className="font-bold text-foreground">
                     {catalog.name}
                   </span>
                   <span className="text-xs font-bold text-sky-300 bg-sky-500/15 px-2 py-0.5 rounded-full flex items-center gap-1">
@@ -208,14 +208,14 @@ export function UpgradeModal() {
                     RECOMMENDED
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {catalog.summary}
                 </p>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-slate-100">$99</div>
-              <div className="text-xs text-slate-400">/month</div>
+              <div className="text-2xl font-bold text-foreground">$99</div>
+              <div className="text-xs text-muted-foreground">/month</div>
             </div>
           </div>
 
@@ -223,7 +223,7 @@ export function UpgradeModal() {
             {catalog.features.slice(0, 6).map((feature) => (
               <li
                 key={feature}
-                className="flex items-center gap-1.5 text-xs text-slate-300"
+                className="flex items-center gap-1.5 text-xs text-foreground/70"
               >
                 <Check className="h-3 w-3 text-emerald-400 flex-shrink-0" />
                 {feature}
@@ -253,7 +253,7 @@ export function UpgradeModal() {
             <button
               onClick={() => handleUpgrade('basic')}
               disabled={loadingPlan !== null}
-              className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-slate-200 hover:bg-white/10 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+              className="flex-1 rounded-xl border border-glass-border bg-glass-subtle px-4 py-2.5 text-sm font-semibold text-foreground/90 hover:bg-glass-strong transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {loadingPlan === 'basic' ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -263,7 +263,7 @@ export function UpgradeModal() {
             <button
               onClick={() => handleUpgrade('enterprise')}
               disabled={loadingPlan !== null}
-              className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-slate-200 hover:bg-white/10 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+              className="flex-1 rounded-xl border border-glass-border bg-glass-subtle px-4 py-2.5 text-sm font-semibold text-foreground/90 hover:bg-glass-strong transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {loadingPlan === 'enterprise' ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -275,13 +275,13 @@ export function UpgradeModal() {
           <div className="flex justify-center">
             <button
               onClick={handleClose}
-              className="rounded-xl border border-white/10 px-6 py-2.5 text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-white/5 transition-all"
+              className="rounded-xl border border-glass-border px-6 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground/90 hover:bg-glass-subtle transition-all"
             >
               Maybe later
             </button>
           </div>
 
-          <p className="text-xs text-center text-slate-500">
+          <p className="text-xs text-center text-muted-foreground/60">
             14-day free trial on Starter &amp; Pro · Cancel anytime · Your data
             is safe
           </p>

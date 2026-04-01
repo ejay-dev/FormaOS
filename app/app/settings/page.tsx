@@ -72,14 +72,14 @@ export default async function SettingsPage() {
       'No organization record was returned for the active membership.';
     return (
       <div className="flex items-center justify-center p-12 min-h-[60vh]">
-        <div className="max-w-2xl bg-white/5 rounded-[2.5rem] border border-white/10 p-12 shadow-2xl text-center animate-in fade-in zoom-in duration-500">
+        <div className="max-w-2xl bg-white/5 rounded-[2.5rem] border border-glass-border p-12 shadow-2xl text-center animate-in fade-in zoom-in duration-500">
           <div className="h-20 w-20 bg-rose-500/10 rounded-[1.5rem] flex items-center justify-center mx-auto mb-8 border border-rose-400/30 shadow-inner">
             <ShieldCheck className="h-10 w-10 text-rose-300" />
           </div>
-          <h1 className="text-2xl font-black text-slate-100 tracking-tight flex items-center justify-center gap-3">
+          <h1 className="text-2xl font-black text-foreground tracking-tight flex items-center justify-center gap-3">
             Configuration Access Denied
           </h1>
-          <p className="text-slate-400 mt-4 text-sm font-medium leading-relaxed max-w-lg mx-auto">
+          <p className="text-muted-foreground mt-4 text-sm font-medium leading-relaxed max-w-lg mx-auto">
             We could not verify your organization details. This usually
             indicates a <strong>Row-Level Security (RLS)</strong> policy
             restriction or a missing membership record.
@@ -98,11 +98,11 @@ export default async function SettingsPage() {
               Cause: {diagnosticReason}
             </p>
           </div>
-          <div className="mt-10 pt-8 border-t border-white/10 flex flex-col gap-3">
-            <p className="text-xs font-black text-slate-400 uppercase tracking-widest text-left ml-1">
+          <div className="mt-10 pt-8 border-t border-glass-border flex flex-col gap-3">
+            <p className="text-xs font-black text-muted-foreground uppercase tracking-widest text-left ml-1">
               Diagnostic Identity
             </p>
-            <code className="text-xs font-mono bg-white/10 text-emerald-400 p-4 rounded-xl break-all select-all text-left shadow-lg">
+            <code className="text-xs font-mono bg-glass-strong text-emerald-400 p-4 rounded-xl break-all select-all text-left shadow-lg">
               UID: {systemState.user.id}
             </code>
           </div>
@@ -134,15 +134,15 @@ export default async function SettingsPage() {
       {/* HEADER SECTION */}
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-4xl font-black text-slate-100 tracking-tighter">
+          <h1 className="text-4xl font-black text-foreground tracking-tighter">
             Organization Governance
           </h1>
-          <p className="text-slate-400 mt-2 font-medium tracking-tight max-w-xl">
+          <p className="text-muted-foreground mt-2 font-medium tracking-tight max-w-xl">
             Manage workspace identity, domain binding, and security
             infrastructure.
           </p>
         </div>
-        <div className="hidden md:flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full border border-white/10 shadow-sm">
+        <div className="hidden md:flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full border border-glass-border shadow-sm">
           <Activity
             className={`h-4 w-4 ${
               healthState === 'healthy'
@@ -170,7 +170,7 @@ export default async function SettingsPage() {
         </div>
         <Link
           href="/app/settings/notifications"
-          className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-slate-200"
+          className="inline-flex items-center justify-center rounded-full border border-glass-border bg-white/[0.04] px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-foreground/90"
         >
           Notification Settings
         </Link>
@@ -183,13 +183,13 @@ export default async function SettingsPage() {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           {/* LEFT COLUMN: Main Workspace Identity */}
           <div className="xl:col-span-2 space-y-8">
-            <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-10 shadow-sm space-y-10 relative overflow-hidden">
-              <div className="flex items-center gap-6 border-b border-white/10 pb-8">
-                <div className="h-20 w-20 rounded-[1.5rem] bg-white/10 text-slate-100 flex items-center justify-center shadow-2xl shadow-black/40">
+            <div className="bg-white/5 border border-glass-border rounded-[2.5rem] p-10 shadow-sm space-y-10 relative overflow-hidden">
+              <div className="flex items-center gap-6 border-b border-glass-border pb-8">
+                <div className="h-20 w-20 rounded-[1.5rem] bg-glass-strong text-foreground flex items-center justify-center shadow-2xl shadow-black/40">
                   <Building2 className="h-9 w-9" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-black text-slate-100 tracking-tight">
+                  <h3 className="text-xl font-black text-foreground tracking-tight">
                     {activeOrganization.name}
                   </h3>
                   <div className="flex items-center gap-2 mt-2">
@@ -203,18 +203,18 @@ export default async function SettingsPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-3">
-                  <label htmlFor="field-212" className="text-xs font-black uppercase text-slate-400 tracking-widest ml-1">
+                  <label htmlFor="field-212" className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1">
                     Legal Entity Name
                   </label>
                   <input
                     name="name"
                     defaultValue={activeOrganization.name}
                     disabled={!isAdmin}
-                    className="w-full p-5 rounded-2xl border border-white/10 bg-white/10 focus:bg-white/5 focus:outline-white/20 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
+                    className="w-full p-5 rounded-2xl border border-glass-border bg-glass-strong focus:bg-white/5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
                   />
                 </div>
                 <div className="space-y-3">
-                  <label htmlFor="field-211" className="text-xs font-black uppercase text-slate-400 tracking-widest ml-1">
+                  <label htmlFor="field-211" className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1">
                     Registration (ABN/ACN)
                   </label>
                   <input
@@ -222,51 +222,51 @@ export default async function SettingsPage() {
                     defaultValue={activeOrganization.registration_number || ''}
                     placeholder="e.g. 12 345 678 901"
                     disabled={!isAdmin}
-                    className="w-full p-5 rounded-2xl border border-white/10 bg-white/10 focus:bg-white/5 focus:outline-white/20 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
+                    className="w-full p-5 rounded-2xl border border-glass-border bg-glass-strong focus:bg-white/5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
                   />
                 </div>
               </div>
 
               <div className="space-y-3 pt-2">
-                <label htmlFor="field-210" className="text-xs font-black uppercase text-slate-400 tracking-widest ml-1">
+                <label htmlFor="field-210" className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1">
                   Authorized Email Domain
                 </label>
                 <div className="relative group">
-                  <Globe className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-slate-100 transition-colors" />
+                  <Globe className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-foreground transition-colors" />
                   <input
                     name="domain"
                     placeholder="company.com"
                     defaultValue={activeOrganization.domain || ''}
                     disabled={!isAdmin}
-                    className="w-full pl-14 pr-4 py-5 rounded-2xl border border-white/10 bg-white/10 focus:bg-white/5 focus:outline-white/20 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
+                    className="w-full pl-14 pr-4 py-5 rounded-2xl border border-glass-border bg-glass-strong focus:bg-white/5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
                   />
                 </div>
               </div>
             </div>
 
             {/* Subscription & Billing Tier */}
-            <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-8 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-6 group hover:border-white/10 transition-all duration-500">
+            <div className="bg-white/5 border border-glass-border rounded-[2.5rem] p-8 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-6 group hover:border-glass-border transition-all duration-500">
               <div className="flex items-center gap-6">
-                <div className="h-14 w-14 rounded-2xl bg-purple-500/10 text-purple-300 flex items-center justify-center border border-purple-400/30 shadow-sm group-hover:bg-purple-600 group-hover:text-slate-100 transition-all duration-300">
+                <div className="h-14 w-14 rounded-2xl bg-purple-500/10 text-purple-300 flex items-center justify-center border border-purple-400/30 shadow-sm group-hover:bg-purple-600 group-hover:text-foreground transition-all duration-300">
                   <CreditCard className="h-7 w-7" />
                 </div>
                 <div>
                   <div className="flex items-center gap-3">
-                    <span className="text-base font-black text-slate-100 tracking-tight">
+                    <span className="text-base font-black text-foreground tracking-tight">
                       Enterprise Pilot
                     </span>
                     <span className="px-2.5 py-1 bg-emerald-400/10 text-emerald-700 text-[9px] font-black uppercase rounded-full tracking-widest border border-emerald-400/30 shadow-sm">
                       Active
                     </span>
                   </div>
-                  <p className="text-xs text-slate-400 font-bold mt-1.5 uppercase tracking-widest">
+                  <p className="text-xs text-muted-foreground font-bold mt-1.5 uppercase tracking-widest">
                     Full Evidence Vault & Governance Enabled
                   </p>
                 </div>
               </div>
               <Link
                 href="/app/billing"
-                className="px-8 py-4 border border-white/10 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all active:scale-95 whitespace-nowrap inline-flex items-center justify-center"
+                className="px-8 py-4 border border-glass-border rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-glass-strong transition-all active:scale-95 whitespace-nowrap inline-flex items-center justify-center"
               >
                 Manage Node
               </Link>
@@ -276,30 +276,30 @@ export default async function SettingsPage() {
           {/* RIGHT COLUMN: Security Node Sidebar */}
           <div className="space-y-6">
             {/* Identity Card (Black) */}
-            <div className="bg-white/10 rounded-[2.5rem] p-10 text-slate-100 space-y-10 shadow-2xl relative overflow-hidden group">
+            <div className="bg-glass-strong rounded-[2.5rem] p-10 text-foreground space-y-10 shadow-2xl relative overflow-hidden group">
               {/* Background Blur Effect */}
-              <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full blur-3xl -mr-24 -mt-24 group-hover:bg-white/10 transition-all duration-1000" />
+              <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full blur-3xl -mr-24 -mt-24 group-hover:bg-glass-strong transition-all duration-1000" />
 
               <div className="flex items-center gap-3 relative z-10">
                 <Fingerprint className="h-6 w-6 text-blue-400" />
-                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">
+                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">
                   Security Identity
                 </h3>
               </div>
 
               <div className="space-y-2 relative z-10">
-                <p className="text-[9px] text-slate-400 font-black uppercase tracking-[0.2em]">
+                <p className="text-[9px] text-muted-foreground font-black uppercase tracking-[0.2em]">
                   Workspace GUID
                 </p>
-                <p className="text-xs font-mono text-slate-100 break-all select-all bg-white/10 p-3 rounded-lg border border-white/5">
+                <p className="text-xs font-mono text-foreground break-all select-all bg-glass-strong p-3 rounded-lg border border-white/5">
                   {activeOrganization.id}
                 </p>
               </div>
 
-              <div className="pt-6 border-t border-white/10 space-y-4 relative z-10">
+              <div className="pt-6 border-t border-glass-border space-y-4 relative z-10">
                 <div className="flex items-start gap-4">
                   <Lock className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <p className="text-xs text-slate-400 leading-relaxed font-bold uppercase tracking-widest">
+                  <p className="text-xs text-muted-foreground leading-relaxed font-bold uppercase tracking-widest">
                     Isolation enforced via Hardware-Level Row Security.
                   </p>
                 </div>
@@ -309,16 +309,16 @@ export default async function SettingsPage() {
             </div>
 
             {/* Access Level Indicator */}
-            <div className="bg-white/5 border border-white/10 rounded-[2.25rem] p-8 shadow-sm flex items-center justify-between">
+            <div className="bg-white/5 border border-glass-border rounded-[2.25rem] p-8 shadow-sm flex items-center justify-between">
               <div className="flex items-center gap-5">
-                <div className="h-12 w-12 rounded-2xl bg-white/10 flex items-center justify-center text-slate-400 border border-white/10">
+                <div className="h-12 w-12 rounded-2xl bg-glass-strong flex items-center justify-center text-muted-foreground border border-glass-border">
                   <UserCircle className="h-6 w-6" />
                 </div>
                 <div>
-                  <p className="text-[9px] font-black uppercase text-slate-400 tracking-[0.2em]">
+                  <p className="text-[9px] font-black uppercase text-muted-foreground tracking-[0.2em]">
                     Authorized As
                   </p>
-                  <p className="text-sm font-black text-slate-100 capitalize tracking-tight mt-0.5">
+                  <p className="text-sm font-black text-foreground capitalize tracking-tight mt-0.5">
                     {role}
                   </p>
                 </div>

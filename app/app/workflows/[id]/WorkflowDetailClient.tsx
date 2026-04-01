@@ -77,14 +77,14 @@ export function WorkflowDetailClient({
     <div className="space-y-6 pb-24">
       <div className="flex flex-wrap items-start justify-between gap-4 rounded-[32px] border border-white/10 bg-slate-950/70 p-8">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             Workflow Detail
           </p>
-          <h1 className="mt-3 text-3xl font-black tracking-tight text-slate-100">
+          <h1 className="mt-3 text-3xl font-black tracking-tight text-foreground">
             {currentWorkflow.name}
           </h1>
-          <p className="mt-2 text-sm text-slate-400">
-            Triggered by <span className="text-slate-200">{currentWorkflow.trigger.type}</span> with{' '}
+          <p className="mt-2 text-sm text-muted-foreground">
+            Triggered by <span className="text-foreground/90">{currentWorkflow.trigger.type}</span> with{' '}
             {currentWorkflow.steps.length} configured steps.
           </p>
         </div>
@@ -119,7 +119,7 @@ export function WorkflowDetailClient({
             className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
               activeTab === tab
                 ? 'bg-cyan-500/15 text-cyan-100'
-                : 'bg-slate-950/70 text-slate-300 hover:bg-white/[0.06]'
+                : 'bg-slate-950/70 text-foreground/70 hover:bg-white/[0.06]'
             }`}
             onClick={() => setActiveTab(tab as Tab)}
           >
@@ -144,12 +144,12 @@ export function WorkflowDetailClient({
             onRerun={runWorkflow}
           />
           <div className="rounded-[28px] border border-white/10 bg-slate-950/70 p-5">
-            <h2 className="text-lg font-semibold text-slate-100">Execution History</h2>
+            <h2 className="text-lg font-semibold text-foreground">Execution History</h2>
             <div className="mt-4 space-y-3">
               {executions.map((execution) => (
                 <div
                   key={execution.id}
-                  className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-300"
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-foreground/70"
                 >
                   <span>{execution.status}</span>
                   <span>{new Date(execution.startedAt).toLocaleString()}</span>
@@ -166,7 +166,7 @@ export function WorkflowDetailClient({
           <div className="grid gap-4 md:grid-cols-2">
             <SettingField label="Name">
               <input
-                className="w-full rounded-xl border border-white/10 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-cyan-400/60"
+                className="w-full rounded-xl border border-white/10 bg-slate-950/80 px-3 py-2 text-sm text-foreground outline-none transition focus:border-cyan-400/60"
                 value={currentWorkflow.name}
                 onChange={(event) =>
                   setCurrentWorkflow((current) => ({
@@ -178,7 +178,7 @@ export function WorkflowDetailClient({
             </SettingField>
             <SettingField label="Trigger Type">
               <input
-                className="w-full rounded-xl border border-white/10 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-cyan-400/60"
+                className="w-full rounded-xl border border-white/10 bg-slate-950/80 px-3 py-2 text-sm text-foreground outline-none transition focus:border-cyan-400/60"
                 value={currentWorkflow.trigger.type}
                 onChange={(event) =>
                   setCurrentWorkflow((current) => ({
@@ -192,7 +192,7 @@ export function WorkflowDetailClient({
               />
             </SettingField>
             <SettingField label="Enabled">
-              <label className="inline-flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-slate-200">
+              <label className="inline-flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-foreground/90">
                 <input
                   type="checkbox"
                   checked={currentWorkflow.enabled}
@@ -208,17 +208,17 @@ export function WorkflowDetailClient({
               </label>
             </SettingField>
             <SettingField label="Updated">
-              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-slate-300">
+              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-foreground/70">
                 {new Date(currentWorkflow.updated_at).toLocaleString()}
               </div>
             </SettingField>
           </div>
           <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
               Description
             </p>
             <textarea
-              className="mt-3 min-h-28 w-full rounded-xl border border-white/10 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-cyan-400/60"
+              className="mt-3 min-h-28 w-full rounded-xl border border-white/10 bg-slate-950/80 px-3 py-2 text-sm text-foreground outline-none transition focus:border-cyan-400/60"
               value={currentWorkflow.description}
               onChange={(event) =>
                 setCurrentWorkflow((current) => ({
@@ -257,8 +257,8 @@ function MetricCard({
       <div className="flex items-center gap-3">
         {icon}
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">{label}</p>
-          <p className="mt-2 text-2xl font-semibold text-slate-100">{value}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">{label}</p>
+          <p className="mt-2 text-2xl font-semibold text-foreground">{value}</p>
         </div>
       </div>
     </div>
@@ -274,8 +274,8 @@ function SettingField({
 }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-      <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">{label}</dt>
-      <dd className="mt-2 text-sm text-slate-200">{children}</dd>
+      <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">{label}</dt>
+      <dd className="mt-2 text-sm text-foreground/90">{children}</dd>
     </div>
   );
 }

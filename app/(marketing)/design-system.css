@@ -603,7 +603,9 @@
 @media (prefers-reduced-motion: reduce) {
   .mk-btn,
   .mk-btn:hover,
-  .mk-btn:active {
+  .mk-btn:active,
+  .mk-btn > svg,
+  .mk-btn:hover > svg {
     transition: none;
     transform: none;
   }

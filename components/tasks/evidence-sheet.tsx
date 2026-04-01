@@ -55,7 +55,7 @@ export function EvidenceSheet({ task, evidenceCount = 0 }: { task: any, evidence
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <button className={`flex items-center gap-1.5 text-xs font-bold uppercase px-2 py-1 rounded-md transition-all active:scale-95 ${evidenceCount > 0 ? 'bg-violet-500/10 text-violet-300 hover:bg-violet-500/20' : 'text-slate-400 hover:text-violet-300 hover:bg-violet-500/10'}`}>
+        <button className={`flex items-center gap-1.5 text-xs font-bold uppercase px-2 py-1 rounded-md transition-all active:scale-95 ${evidenceCount > 0 ? 'bg-violet-500/10 text-violet-300 hover:bg-violet-500/20' : 'text-muted-foreground hover:text-violet-300 hover:bg-violet-500/10'}`}>
           <Paperclip className="h-3 w-3" />
           {evidenceCount > 0 ? `${evidenceCount} Files` : 'Attach'}
         </button>
@@ -97,20 +97,20 @@ export function EvidenceSheet({ task, evidenceCount = 0 }: { task: any, evidence
             ) : (
               <>
                 <UploadCloud className="h-8 w-8 text-violet-400/50 group-hover:text-violet-300 transition-colors mb-2" />
-                <p className="text-sm font-medium text-slate-100">Click to Upload Evidence</p>
-                <p className="text-xs text-slate-400 mt-1">Supports PDF, JPG, PNG (Max 10MB)</p>
+                <p className="text-sm font-medium text-foreground">Click to Upload Evidence</p>
+                <p className="text-xs text-muted-foreground mt-1">Supports PDF, JPG, PNG (Max 10MB)</p>
               </>
             )}
           </div>
 
           {/* List of Files */}
           <div className="space-y-3">
-             <h4 className="text-xs font-bold uppercase text-slate-400 tracking-wider flex items-center gap-2">
+             <h4 className="text-xs font-bold uppercase text-muted-foreground tracking-wider flex items-center gap-2">
                <div className="h-1.5 w-1.5 rounded-full bg-violet-400" />
                Attached Evidence
              </h4>
              {evidenceCount === 0 && (
-                <div className="text-center py-8 text-slate-400 text-sm border border-dashed border-violet-400/20 rounded-xl bg-violet-400/5">
+                <div className="text-center py-8 text-muted-foreground text-sm border border-dashed border-violet-400/20 rounded-xl bg-violet-400/5">
                     No evidence attached yet.
                 </div>
              )}

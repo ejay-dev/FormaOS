@@ -44,11 +44,11 @@ export function IsolationStatus({ orgId, initialReport }: Props) {
   const latest = results[0];
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 space-y-5">
+    <section className="rounded-3xl border border-glass-border bg-glass-subtle p-6 space-y-5">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-black text-slate-100">Tenant Isolation</h2>
-          <p className="text-sm text-slate-400">
+          <h2 className="text-xl font-black text-foreground">Tenant Isolation</h2>
+          <p className="text-sm text-muted-foreground">
             Verify tenant-scoped tables, migration policy evidence, and cross-org exposure heuristics.
           </p>
         </div>
@@ -66,30 +66,30 @@ export function IsolationStatus({ orgId, initialReport }: Props) {
       {message ? <div className="text-sm text-emerald-300">{message}</div> : null}
 
       {latest ? (
-        <div className="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
-          <div className="text-sm font-semibold text-slate-100">
+        <div className="rounded-2xl border border-glass-border bg-slate-950/50 p-4">
+          <div className="text-sm font-semibold text-foreground">
             Last verification {new Date(latest.created_at).toLocaleString()}
           </div>
-          <div className="mt-1 text-xs text-slate-400">
+          <div className="mt-1 text-xs text-muted-foreground">
             Passed {latest.summary?.passed ?? 0} • Warnings {latest.summary?.warnings ?? 0}
           </div>
           <div className="mt-4 space-y-3">
             {(latest.checks ?? []).map((check: Record<string, any>) => (
-              <div key={check.table} className="rounded-xl border border-white/10 bg-white/5 p-3">
+              <div key={check.table} className="rounded-xl border border-glass-border bg-glass-subtle p-3">
                 <div className="flex items-center justify-between gap-3">
-                  <div className="font-semibold text-slate-100">{check.table}</div>
-                  <div className="text-xs uppercase tracking-[0.2em] text-slate-400">{check.status}</div>
+                  <div className="font-semibold text-foreground">{check.table}</div>
+                  <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{check.status}</div>
                 </div>
-                <div className="mt-1 text-xs text-slate-400">
+                <div className="mt-1 text-xs text-muted-foreground">
                   org column {check.orgColumn} • cross-org rows {check.crossOrgRows}
                 </div>
-                <div className="mt-2 text-xs text-slate-300">{check.notes}</div>
+                <div className="mt-2 text-xs text-foreground/70">{check.notes}</div>
               </div>
             ))}
           </div>
         </div>
       ) : (
-        <div className="text-sm text-slate-500">No isolation verification has been recorded yet.</div>
+        <div className="text-sm text-muted-foreground/60">No isolation verification has been recorded yet.</div>
       )}
     </section>
   );

@@ -109,7 +109,7 @@ export function TrialExpirationBanner() {
     : {
         bg: 'bg-sky-500/5',
         border: 'border-sky-400/10',
-        text: 'text-slate-300',
+        text: 'text-foreground/70',
         accent: 'text-sky-300',
         button:
           'bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-400 hover:to-indigo-400 text-white',
@@ -194,7 +194,7 @@ export function TrialExpirationBanner() {
             {daysRemaining > 3 && !isExpired && (
               <button
                 onClick={() => setIsDismissed(true)}
-                className="p-1 rounded hover:bg-white/10 text-slate-400 hover:text-slate-200"
+                className="p-1 rounded hover:bg-glass-strong text-muted-foreground hover:text-foreground/90"
                 aria-label="Dismiss"
               >
                 <X className="h-4 w-4" />
@@ -207,7 +207,7 @@ export function TrialExpirationBanner() {
         {hasValue && (isUrgent || isLastDay || isExpired) && !isLoading && (
           <div className="mt-3 pt-3 border-t border-white/10">
             <div className="flex flex-wrap items-center gap-4">
-              <span className="text-xs text-slate-400 flex items-center gap-1">
+              <span className="text-xs text-muted-foreground flex items-center gap-1">
                 <Sparkles className="h-3 w-3" />
                 Your progress so far:
               </span>
@@ -266,12 +266,12 @@ function ValueBadge({ highlight }: { highlight: ValueHighlight }) {
       className={`inline-flex items-center gap-1.5 text-xs px-2 py-1 rounded-full ${
         highlight.emphasis
           ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-400/20'
-          : 'bg-white/10 text-slate-300'
+          : 'bg-glass-strong text-foreground/70'
       }`}
     >
       <IconComponent className="h-3 w-3" />
       <span className="font-medium">{highlight.value}</span>
-      <span className="text-slate-400">{highlight.label}</span>
+      <span className="text-muted-foreground">{highlight.label}</span>
     </span>
   );
 }

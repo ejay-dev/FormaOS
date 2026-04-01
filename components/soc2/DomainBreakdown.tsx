@@ -24,9 +24,9 @@ export function DomainBreakdown({ domains }: DomainBreakdownProps) {
       {domains.map((domain) => (
         <div
           key={domain.key}
-          className="rounded-2xl border border-white/10 bg-white/5 p-5"
+          className="rounded-2xl border border-glass-border bg-glass-subtle p-5"
         >
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
             {domain.domain}
           </div>
           <div className={`mt-2 text-2xl font-black tabular-nums ${getScoreTextColor(domain.score)}`}>
@@ -34,7 +34,7 @@ export function DomainBreakdown({ domains }: DomainBreakdownProps) {
           </div>
 
           {/* Progress bar */}
-          <div className="mt-3 h-1.5 w-full rounded-full bg-white/10">
+          <div className="mt-3 h-1.5 w-full rounded-full bg-glass-strong">
             <div
               className={`h-1.5 rounded-full transition-all duration-700 ${getScoreColor(domain.score)}`}
               style={{ width: `${Math.min(100, domain.score)}%` }}
@@ -45,19 +45,19 @@ export function DomainBreakdown({ domains }: DomainBreakdownProps) {
           <div className="mt-4 flex items-center gap-3 text-xs">
             <span className="flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-emerald-400" />
-              <span className="text-slate-400">{domain.satisfiedControls}</span>
+              <span className="text-muted-foreground">{domain.satisfiedControls}</span>
             </span>
             <span className="flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-amber-400" />
-              <span className="text-slate-400">{domain.partialControls}</span>
+              <span className="text-muted-foreground">{domain.partialControls}</span>
             </span>
             <span className="flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-rose-400" />
-              <span className="text-slate-400">{domain.missingControls}</span>
+              <span className="text-muted-foreground">{domain.missingControls}</span>
             </span>
           </div>
 
-          <div className="mt-2 text-[10px] text-slate-600">
+          <div className="mt-2 text-[10px] text-muted-foreground/40">
             {domain.totalControls} control{domain.totalControls !== 1 ? 's' : ''}
           </div>
         </div>

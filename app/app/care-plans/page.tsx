@@ -58,7 +58,7 @@ function getClientLabel(industry: string | null): string {
 }
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  draft: { label: "Draft", color: "text-slate-600 bg-slate-500/10" },
+  draft: { label: "Draft", color: "text-muted-foreground/40 bg-slate-500/10" },
   active: { label: "Active", color: "text-green-600 bg-green-500/10" },
   under_review: { label: "Under Review", color: "text-blue-600 bg-blue-500/10" },
   expired: { label: "Expired", color: "text-red-600 bg-red-500/10" },
@@ -170,7 +170,7 @@ export default async function CarePlansPage() {
         </div>
         <div className="p-4 rounded-xl bg-card border border-border">
           <div className="flex items-center gap-3">
-            <Clock className="h-5 w-5 text-slate-500" />
+            <Clock className="h-5 w-5 text-muted-foreground/60" />
             <div>
               <p className="text-2xl font-bold">{stats.drafts}</p>
               <p className="text-sm text-muted-foreground">Drafts</p>

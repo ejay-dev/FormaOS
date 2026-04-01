@@ -59,7 +59,7 @@ export default function DemoSidebar({ activeScreen, onNavigate }: DemoSidebarPro
 
           return (
             <div key={cat} className="space-y-0.5">
-              <h3 className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+              <h3 className="px-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 mb-1.5">
                 {cat}
               </h3>
               {items.map((item) => {
@@ -76,8 +76,8 @@ export default function DemoSidebar({ activeScreen, onNavigate }: DemoSidebarPro
                       ${isActive
                         ? 'bg-cyan-500/15 text-cyan-300'
                         : isClickable
-                          ? 'text-slate-400 hover:bg-white/[0.04] hover:text-slate-200'
-                          : 'text-slate-500 cursor-default'
+                          ? 'text-muted-foreground hover:bg-white/[0.04] hover:text-foreground/90'
+                          : 'text-muted-foreground/60 cursor-default'
                       }
                     `}
                     whileHover={isClickable ? { x: 2 } : undefined}

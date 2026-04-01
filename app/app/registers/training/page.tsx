@@ -122,12 +122,12 @@ export default function TrainingRegisterPage() {
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-black text-slate-100 tracking-tight">Staff Training Register</h1>
-          <p className="text-slate-400 mt-1 font-medium">Monitor mandatory certifications and worker screening.</p>
+          <h1 className="text-3xl font-black text-foreground tracking-tight">Staff Training Register</h1>
+          <p className="text-muted-foreground mt-1 font-medium">Monitor mandatory certifications and worker screening.</p>
         </div>
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 bg-white/10 text-slate-100 px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-white/20 transition-all shadow-xl active:scale-95"
+          className="flex items-center gap-2 bg-glass-strong text-foreground px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-white/20 transition-all shadow-xl active:scale-95"
         >
           <Plus className="h-4 w-4" />
           Add Certification
@@ -136,7 +136,7 @@ export default function TrainingRegisterPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] md:grid-cols-[1fr_auto] items-center gap-3 bg-white/5 p-2 rounded-2xl border border-white/10 shadow-sm">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
@@ -147,7 +147,7 @@ export default function TrainingRegisterPage() {
         <select
           value={statusFilter}
           onChange={(event) => setStatusFilter(event.target.value)}
-          className="h-10 rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-semibold uppercase tracking-wider text-slate-300"
+          className="h-10 rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
         >
           <option value={ALL_FILTER}>All Statuses</option>
           <option value="active">Active</option>
@@ -165,7 +165,7 @@ export default function TrainingRegisterPage() {
         <div className="w-full overflow-x-auto">
           <table className="min-w-[860px] w-full text-left border-collapse">
             <thead>
-              <tr className="bg-white/5 border-b border-white/10 text-xs font-semibold uppercase text-slate-400 tracking-wider">
+              <tr className="bg-white/5 border-b border-white/10 text-xs font-semibold uppercase text-muted-foreground tracking-wider">
                 <th className="px-8 py-6">Personnel</th>
                 <th className="px-8 py-6">Certification / Training</th>
                 <th className="px-8 py-6">Completion</th>
@@ -177,17 +177,17 @@ export default function TrainingRegisterPage() {
               {loading ? (
                 <tr>
                   <td colSpan={5} className="px-8 py-20 text-center animate-pulse">
-                    <p className="text-sm font-semibold text-slate-400 uppercase tracking-widest">Synchronizing Registry...</p>
+                    <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest">Synchronizing Registry...</p>
                   </td>
                 </tr>
               ) : filteredRecords.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-8 py-24 text-center">
-                    <div className="h-16 w-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/10">
-                      <GraduationCap className="h-8 w-8 text-slate-400" />
+                    <div className="h-16 w-16 bg-glass-strong rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/10">
+                      <GraduationCap className="h-8 w-8 text-muted-foreground" />
                     </div>
-                    <p className="text-sm font-black text-slate-100 tracking-tight">No matching records found</p>
-                    <p className="text-xs text-slate-400 mt-1">Adjust your search or add a new certification.</p>
+                    <p className="text-sm font-black text-foreground tracking-tight">No matching records found</p>
+                    <p className="text-xs text-muted-foreground mt-1">Adjust your search or add a new certification.</p>
                   </td>
                 </tr>
               ) : (
@@ -197,21 +197,21 @@ export default function TrainingRegisterPage() {
                     <tr key={record.id} className="group hover:bg-white/5 transition-colors">
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-xl bg-white/10 flex items-center justify-center text-slate-400 border border-white/10 group-hover:bg-white/20 transition-colors">
+                          <div className="h-10 w-10 rounded-xl bg-glass-strong flex items-center justify-center text-muted-foreground border border-white/10 group-hover:bg-white/20 transition-colors">
                             <User className="h-5 w-5" />
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-sm font-semibold text-slate-100">Workspace Member</span>
-                            <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">ID: {record.user_id.slice(0, 8)}</span>
+                            <span className="text-sm font-semibold text-foreground">Workspace Member</span>
+                            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">ID: {record.user_id.slice(0, 8)}</span>
                           </div>
                         </div>
                       </td>
                       <td className="px-8 py-6">
-                        <p className="text-sm font-semibold text-slate-100 tracking-tight">{record.title}</p>
+                        <p className="text-sm font-semibold text-foreground tracking-tight">{record.title}</p>
                       </td>
                       <td className="px-8 py-6">
-                        <div className="flex items-center gap-2 text-slate-400 font-medium text-sm">
-                          <Calendar className="h-3.5 w-3.5 text-slate-400" />
+                        <div className="flex items-center gap-2 text-muted-foreground font-medium text-sm">
+                          <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
                           {new Date(record.completion_date).toLocaleDateString()}
                         </div>
                       </td>
@@ -233,7 +233,7 @@ export default function TrainingRegisterPage() {
                         </div>
                       </td>
                       <td className="px-8 py-6 text-right">
-                        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                           Internal Record
                         </span>
                       </td>

@@ -32,7 +32,7 @@ function ProductShowcaseLite({
       <div className="grid h-full gap-4 rounded-2xl border border-white/[0.08] bg-slate-900/60 p-4 sm:p-5">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
-            <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
+            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
               Platform Snapshot
             </p>
             <p className="text-sm font-semibold text-white/90">
@@ -59,7 +59,7 @@ function ProductShowcaseLite({
               <div className="text-sm font-bold text-teal-400">
                 {metric.value}
               </div>
-              <div className="text-[10px] uppercase tracking-[0.14em] text-slate-500">
+              <div className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground/60">
                 {metric.label}
               </div>
             </div>
@@ -110,7 +110,7 @@ export function ProductShowcaseSection() {
         <h2 className="text-lg font-semibold text-white/75 sm:text-xl">
           Experience the full platform
         </h2>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-muted-foreground/60">
           {interactiveCapable
             ? 'Interactive demo streams in as you reach this section'
             : 'Optimized preview for smoother mobile performance'}

@@ -83,11 +83,11 @@ export function SsoConfigPanel({ orgId, initial, sp }: Props) {
   };
 
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/5 p-6 space-y-5">
+    <section className="rounded-3xl border border-glass-border bg-glass-subtle p-6 space-y-5">
       <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
         <div>
-          <h2 className="text-xl font-black text-slate-100">SSO Configuration</h2>
-          <p className="text-sm text-slate-400">
+          <h2 className="text-xl font-black text-foreground">SSO Configuration</h2>
+          <p className="text-sm text-muted-foreground">
             Upload IdP metadata, enforce SSO by domain, and enable JIT provisioning.
           </p>
         </div>
@@ -102,12 +102,12 @@ export function SsoConfigPanel({ orgId, initial, sp }: Props) {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-white/10 bg-slate-950/50 p-4 space-y-4">
-          <label className="flex items-center justify-between text-sm text-slate-200">
+        <div className="rounded-2xl border border-glass-border bg-slate-950/50 p-4 space-y-4">
+          <label className="flex items-center justify-between text-sm text-foreground/90">
             Enable SAML SSO
             <input type="checkbox" checked={enabled} onChange={(event) => setEnabled(event.target.checked)} />
           </label>
-          <label className="flex items-center justify-between text-sm text-slate-200">
+          <label className="flex items-center justify-between text-sm text-foreground/90">
             Enforce SSO for allowed domains
             <input
               type="checkbox"
@@ -116,7 +116,7 @@ export function SsoConfigPanel({ orgId, initial, sp }: Props) {
               disabled={!enabled}
             />
           </label>
-          <label className="flex items-center justify-between text-sm text-slate-200">
+          <label className="flex items-center justify-between text-sm text-foreground/90">
             Enable JIT provisioning
             <input
               type="checkbox"
@@ -126,13 +126,13 @@ export function SsoConfigPanel({ orgId, initial, sp }: Props) {
             />
           </label>
           <div>
-            <div className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
               Default JIT Role
             </div>
             <select
               value={jitDefaultRole}
               onChange={(event) => setJitDefaultRole(event.target.value as Props['initial']['jitDefaultRole'])}
-              className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+              className="w-full rounded-xl border border-glass-border bg-slate-950 px-3 py-2 text-sm text-foreground"
             >
               {['member', 'viewer', 'auditor', 'admin', 'owner'].map((role) => (
                 <option key={role} value={role}>
@@ -142,49 +142,49 @@ export function SsoConfigPanel({ orgId, initial, sp }: Props) {
             </select>
           </div>
           <div>
-            <div className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
               Allowed Domains
             </div>
             <textarea
               value={domains}
               onChange={(event) => setDomains(event.target.value)}
               rows={5}
-              className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+              className="w-full rounded-xl border border-glass-border bg-slate-950 px-3 py-2 text-sm text-foreground"
               placeholder={'example.com\nsubsidiary.example.com'}
             />
           </div>
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-slate-950/50 p-4 space-y-4">
+        <div className="rounded-2xl border border-glass-border bg-slate-950/50 p-4 space-y-4">
           <div className="grid gap-3 text-sm">
             <div>
-              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
                 Metadata URL
               </div>
-              <code className="block break-all text-slate-200">{sp.metadataUrl}</code>
+              <code className="block break-all text-foreground/90">{sp.metadataUrl}</code>
             </div>
             <div>
-              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
                 ACS URL
               </div>
-              <code className="block break-all text-slate-200">{sp.acsUrl}</code>
+              <code className="block break-all text-foreground/90">{sp.acsUrl}</code>
             </div>
             <div>
-              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
                 Entity ID
               </div>
-              <code className="block break-all text-slate-200">{sp.entityId}</code>
+              <code className="block break-all text-foreground/90">{sp.entityId}</code>
             </div>
           </div>
           <div>
-            <div className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
               IdP Metadata XML
             </div>
             <textarea
               value={metadataXml}
               onChange={(event) => setMetadataXml(event.target.value)}
               rows={11}
-              className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 font-mono text-xs text-slate-100"
+              className="w-full rounded-xl border border-glass-border bg-slate-950 px-3 py-2 font-mono text-xs text-foreground"
               placeholder="<EntityDescriptor>...</EntityDescriptor>"
             />
           </div>

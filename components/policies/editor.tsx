@@ -91,9 +91,9 @@ export function PolicyEditor({
   if (!editor) return null
 
   return (
-    <div className="flex flex-col h-full bg-white/10 rounded-3xl border border-white/10 shadow-sm overflow-hidden">
+    <div className="flex flex-col h-full bg-glass-strong rounded-3xl border border-glass-border shadow-sm overflow-hidden">
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-white/10 bg-white/10 p-3">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-glass-border bg-glass-strong p-3">
         <div className="flex flex-wrap items-center gap-1">
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleBold().run()}
@@ -107,7 +107,7 @@ export function PolicyEditor({
             icon={<Italic className="h-4 w-4" />}
             label="Italic"
           />
-          <div className="w-[1px] h-4 bg-white/10 mx-1" />
+          <div className="w-[1px] h-4 bg-glass-strong mx-1" />
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
             active={editor.isActive("heading", { level: 1 })}
@@ -149,7 +149,7 @@ export function PolicyEditor({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto bg-white/10 p-6 md:p-12">
+      <div className="flex-1 overflow-y-auto bg-glass-strong p-6 md:p-12">
         <EditorContent editor={editor} />
       </div>
     </div>
@@ -174,7 +174,7 @@ function ToolbarButton({
       className={`p-2 rounded-lg transition-all flex items-center justify-center ${
         active
           ? "bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white shadow-inner scale-95"
-          : "text-slate-400 hover:bg-white/10 hover:text-slate-100"
+          : "text-muted-foreground hover:bg-glass-strong hover:text-foreground"
       }`}
     >
       {icon}

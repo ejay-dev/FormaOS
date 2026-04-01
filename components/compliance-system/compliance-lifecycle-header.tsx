@@ -195,10 +195,10 @@ export function ComplianceLifecycleHeader({
       <div className="relative px-6 py-5 border-b border-white/10">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-sm font-bold tracking-tight text-slate-100">
+            <h2 className="text-sm font-bold tracking-tight text-foreground">
               Compliance Lifecycle
             </h2>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Real-time view of your compliance graph
             </p>
           </div>
@@ -261,13 +261,13 @@ export function ComplianceLifecycleHeader({
 
                   {/* Stats */}
                   <div className="text-center">
-                    <div className="text-lg font-bold text-slate-100">
+                    <div className="text-lg font-bold text-foreground">
                       {nodeStats.primary}
                     </div>
                     <div className={cn("text-xs font-bold uppercase tracking-wider", colors.text)}>
                       {node.label}
                     </div>
-                    <div className="text-[9px] text-slate-400 mt-0.5">
+                    <div className="text-[9px] text-muted-foreground mt-0.5">
                       {nodeStats.label}
                     </div>
                   </div>
@@ -290,7 +290,7 @@ export function ComplianceLifecycleHeader({
                       <ArrowRight className="absolute top-1/2 right-0 -translate-y-1/2 h-3 w-3 text-white/40" />
                       
                       {/* Label */}
-                      <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[8px] text-slate-500 font-medium whitespace-nowrap">
+                      <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[8px] text-muted-foreground/60 font-medium whitespace-nowrap">
                         {WIRE_LABELS[i]}
                       </div>
                     </div>
@@ -327,7 +327,7 @@ export function ComplianceLifecycleHeader({
                   <Icon className={cn("h-5 w-5", colors.text)} />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-lg font-bold text-slate-100">
+                  <div className="text-lg font-bold text-foreground">
                     {nodeStats.primary}
                   </div>
                   <div className={cn("text-xs font-bold uppercase tracking-wider truncate", colors.text)}>

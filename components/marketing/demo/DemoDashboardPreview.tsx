@@ -51,7 +51,7 @@ export default function DemoDashboardPreview({
             <div className="h-5 w-5 rounded bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center">
               <span className="text-[7px] font-bold text-white">F</span>
             </div>
-            <span className="text-[10px] font-medium text-slate-400">Compliance Dashboard</span>
+            <span className="text-[10px] font-medium text-muted-foreground">Compliance Dashboard</span>
           </div>
           <div className="flex items-center gap-1">
             <Activity className="h-3 w-3 text-emerald-400" />
@@ -85,7 +85,7 @@ export default function DemoDashboardPreview({
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className="text-lg font-bold text-white">{complianceScore}%</span>
-              <span className="text-[7px] text-slate-500 uppercase">Score</span>
+              <span className="text-[7px] text-muted-foreground/60 uppercase">Score</span>
             </div>
           </div>
 
@@ -93,7 +93,7 @@ export default function DemoDashboardPreview({
           <div className="flex-1 grid grid-cols-2 gap-1.5">
             {kpis.map((kpi) => (
               <div key={kpi.label} className="rounded-lg bg-white/[0.03] border border-white/[0.06] px-2 py-1.5">
-                <p className="text-[8px] text-slate-500 uppercase">{kpi.label}</p>
+                <p className="text-[8px] text-muted-foreground/60 uppercase">{kpi.label}</p>
                 <div className="flex items-baseline gap-1">
                   <span className="text-sm font-bold text-white">{kpi.value}</span>
                   {kpi.trend === 'up' && <TrendingUp className="h-2 w-2 text-emerald-400" />}
@@ -107,11 +107,11 @@ export default function DemoDashboardPreview({
         <div className="space-y-2">
           <div className="flex items-center gap-1.5 mb-1">
             <Shield className="h-3 w-3 text-cyan-400" />
-            <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Frameworks</span>
+            <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Frameworks</span>
           </div>
           {frameworks.map((fw, i) => (
             <div key={fw.name} className="flex items-center gap-2">
-              <span className="text-[9px] text-slate-400 w-14 truncate">{fw.name}</span>
+              <span className="text-[9px] text-muted-foreground w-14 truncate">{fw.name}</span>
               <div className="flex-1 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
                 <motion.div
                   className="h-full rounded-full"
@@ -122,7 +122,7 @@ export default function DemoDashboardPreview({
                   transition={{ duration: 0.8, ease: easing.signature, delay: 0.3 + i * 0.1 }}
                 />
               </div>
-              <span className="text-[9px] font-medium text-slate-300 w-7 text-right">{fw.score}%</span>
+              <span className="text-[9px] font-medium text-foreground/70 w-7 text-right">{fw.score}%</span>
             </div>
           ))}
         </div>

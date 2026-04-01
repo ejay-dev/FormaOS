@@ -10,10 +10,10 @@ export function CredentialStatusWidget({ credentials }: { credentials: any[] }) 
   }
 
   return (
-    <div className="bg-white/10 border border-white/10 rounded-[2.5rem] p-8 shadow-sm space-y-8">
+    <div className="bg-glass-strong border border-glass-border rounded-[2.5rem] p-8 shadow-sm space-y-8">
       <div className="flex items-center justify-between">
-        <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Credential Integrity</h3>
-        <span className="text-xs font-black text-slate-100 uppercase tracking-widest bg-white/10 px-3 py-1 rounded-full">
+        <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">Credential Integrity</h3>
+        <span className="text-xs font-black text-foreground uppercase tracking-widest bg-glass-strong px-3 py-1 rounded-full">
             {credentials.length} Total Files
         </span>
       </div>

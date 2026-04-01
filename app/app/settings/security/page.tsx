@@ -48,17 +48,17 @@ export default async function SecuritySettingsPage() {
             <ShieldCheck className="h-5 w-5" />
           </div>
           <div>
-            <h1 className="text-3xl font-black text-slate-100 tracking-tight">
+            <h1 className="text-3xl font-black text-foreground tracking-tight">
               Security Controls
             </h1>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-muted-foreground">
               Configure enterprise authentication and access protections.
             </p>
           </div>
         </div>
         <Link
           href="/app/settings"
-          className="text-xs font-semibold text-slate-400 hover:text-slate-200"
+          className="text-xs font-semibold text-muted-foreground hover:text-foreground/90"
         >
           ← Back to Settings
         </Link>

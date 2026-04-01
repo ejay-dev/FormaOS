@@ -310,7 +310,7 @@ export function ComplianceCoreVisualization() {
             />
 
             {/* Core gradient orb - soft glass with cyan→purple */}
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400/40 via-blue-500/35 to-purple-600/40 backdrop-blur-sm shadow-[0_0_30px_rgba(34,211,238,0.35)] border border-white/20" />
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400/40 via-blue-500/35 to-purple-600/40 backdrop-blur-sm shadow-[0_0_30px_rgba(34,211,238,0.35)] border border-glass-border-strong" />
             
             {/* Soft internal light sweep - minimal */}
             <motion.div
@@ -416,7 +416,7 @@ export function ComplianceCoreVisualization() {
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0.8, opacity: 0 }}
-                      className="absolute inset-1 rounded-full border border-white/20"
+                      className="absolute inset-1 rounded-full border border-glass-border-strong"
                     />
                   )}
                 </motion.div>

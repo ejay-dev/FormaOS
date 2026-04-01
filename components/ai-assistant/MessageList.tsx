@@ -27,14 +27,14 @@ function renderMarkdown(text: string): string {
   // Escape all HTML entities first to prevent XSS, then apply markdown formatting
   return escapeHtml(text)
     .replace(/```([\s\S]*?)```/g, '<pre class="my-2 rounded-lg bg-black/30 p-3 text-xs overflow-x-auto"><code>$1</code></pre>')
-    .replace(/`([^`]+)`/g, '<code class="rounded bg-white/10 px-1.5 py-0.5 text-xs font-mono">$1</code>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-slate-200">$1</strong>')
+    .replace(/`([^`]+)`/g, '<code class="rounded bg-glass-strong px-1.5 py-0.5 text-xs font-mono">$1</code>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-foreground/90">$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/^### (.+)$/gm, '<h3 class="mt-3 mb-1 text-sm font-semibold text-slate-200">$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2 class="mt-3 mb-1 text-base font-semibold text-slate-200">$1</h2>')
-    .replace(/^# (.+)$/gm, '<h1 class="mt-3 mb-1 text-lg font-bold text-slate-100">$1</h1>')
-    .replace(/^- (.+)$/gm, '<li class="ml-4 list-disc text-slate-400">$1</li>')
-    .replace(/^\d+\. (.+)$/gm, '<li class="ml-4 list-decimal text-slate-400">$1</li>')
+    .replace(/^### (.+)$/gm, '<h3 class="mt-3 mb-1 text-sm font-semibold text-foreground/90">$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2 class="mt-3 mb-1 text-base font-semibold text-foreground/90">$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1 class="mt-3 mb-1 text-lg font-bold text-foreground">$1</h1>')
+    .replace(/^- (.+)$/gm, '<li class="ml-4 list-disc text-muted-foreground">$1</li>')
+    .replace(/^\d+\. (.+)$/gm, '<li class="ml-4 list-decimal text-muted-foreground">$1</li>')
     .replace(/\n/g, '<br/>');
 }
 
@@ -54,8 +54,8 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-cyan-400/20 bg-cyan-400/10">
             <Bot className="h-7 w-7 text-cyan-400" />
           </div>
-          <h3 className="mt-4 text-lg font-semibold text-slate-200">AI Compliance Assistant</h3>
-          <p className="mt-2 max-w-sm text-sm text-slate-400">
+          <h3 className="mt-4 text-lg font-semibold text-foreground/90">AI Compliance Assistant</h3>
+          <p className="mt-2 max-w-sm text-sm text-muted-foreground">
             Ask about controls, draft policies, get evidence guidance, or analyze compliance gaps.
           </p>
         </div>
@@ -73,20 +73,20 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
           <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
             message.role === 'user'
               ? 'bg-cyan-400/20'
-              : 'border border-white/10 bg-white/5'
+              : 'border border-glass-border bg-white/5'
           }`}>
             {message.role === 'user' ? (
               <User className="h-4 w-4 text-cyan-300" />
             ) : (
-              <Bot className="h-4 w-4 text-slate-400" />
+              <Bot className="h-4 w-4 text-muted-foreground" />
             )}
           </div>
 
           <div
             className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
               message.role === 'user'
-                ? 'bg-cyan-500/20 text-slate-200 border border-cyan-400/20'
-                : 'bg-white/5 text-slate-300 border border-white/10'
+                ? 'bg-cyan-500/20 text-foreground/90 border border-cyan-400/20'
+                : 'bg-glass-subtle text-foreground/70 border border-white/10'
             }`}
           >
             {message.role === 'assistant' ? (
@@ -103,10 +103,10 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
 
       {isLoading && (
         <div className="flex gap-3">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5">
-            <Bot className="h-4 w-4 text-slate-400" />
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-glass-border bg-white/5">
+            <Bot className="h-4 w-4 text-muted-foreground" />
           </div>
-          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+          <div className="rounded-2xl border border-glass-border bg-glass-subtle px-4 py-3">
             <div className="flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
               <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse [animation-delay:0.2s]" />

@@ -19,19 +19,19 @@ export function AutomatedChecks({ checks }: AutomatedChecksProps) {
   const total = checks.length;
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+    <div className="rounded-2xl border border-glass-border bg-glass-subtle p-6">
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
             <Cpu className="h-4 w-4 text-cyan-400" />
-            <h3 className="text-lg font-semibold text-slate-100">Automated Checks</h3>
+            <h3 className="text-lg font-semibold text-foreground">Automated Checks</h3>
           </div>
-          <p className="mt-1 text-xs text-slate-500">System-verified compliance evidence.</p>
+          <p className="mt-1 text-xs text-muted-foreground/60">System-verified compliance evidence.</p>
         </div>
-        <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-right">
-          <div className="text-xs text-slate-400">Passing</div>
-          <div className="text-lg font-semibold text-slate-100 tabular-nums">
-            {totalPassed}<span className="text-slate-500">/{total}</span>
+        <div className="rounded-xl border border-glass-border bg-glass-subtle px-3 py-2 text-right">
+          <div className="text-xs text-muted-foreground">Passing</div>
+          <div className="text-lg font-semibold text-foreground tabular-nums">
+            {totalPassed}<span className="text-muted-foreground/60">/{total}</span>
           </div>
         </div>
       </div>
@@ -39,7 +39,7 @@ export function AutomatedChecks({ checks }: AutomatedChecksProps) {
       <div className="mt-5 space-y-5">
         {Array.from(grouped.entries()).map(([category, categoryChecks]) => (
           <div key={category}>
-            <div className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">{category}</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/60 mb-2">{category}</div>
             <div className="space-y-2">
               {categoryChecks.map((check) => (
                 <div
@@ -57,12 +57,12 @@ export function AutomatedChecks({ checks }: AutomatedChecksProps) {
                   )}
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-slate-200">{check.checkName}</span>
-                      <span className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-[10px] font-mono text-slate-500">
+                      <span className="text-sm font-medium text-foreground/90">{check.checkName}</span>
+                      <span className="rounded border border-glass-border bg-glass-subtle px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground/60">
                         {check.controlCode}
                       </span>
                     </div>
-                    <p className="mt-0.5 text-xs text-slate-400 leading-relaxed">{check.detail}</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">{check.detail}</p>
                   </div>
                 </div>
               ))}

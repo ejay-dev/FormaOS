@@ -98,8 +98,8 @@ export function CreateAssetSheet() {
             <div className="h-20 w-20 rounded-full bg-teal-400/20 flex items-center justify-center mb-4 border-2 border-teal-400/40">
               <CheckCircle2 className="h-10 w-10 text-teal-400" />
             </div>
-            <h3 className="text-xl font-bold text-slate-100">Asset Registered</h3>
-            <p className="text-sm text-slate-400 mt-2 text-center">
+            <h3 className="text-xl font-bold text-foreground">Asset Registered</h3>
+            <p className="text-sm text-muted-foreground mt-2 text-center">
               New control node added to your compliance graph
             </p>
           </div>
@@ -126,24 +126,24 @@ export function CreateAssetSheet() {
 
               {/* 1. Asset Name */}
               <div className="space-y-2">
-                <label htmlFor="field-89" className="text-xs font-bold uppercase text-slate-400 tracking-wider">Asset Name</label>
+                <label htmlFor="field-89" className="text-xs font-bold uppercase text-muted-foreground tracking-wider">Asset Name</label>
                 <div className="relative">
-                  <Laptop className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                  <Laptop className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <input id="field-89"
                       required
                       name="name"
                       placeholder="e.g. AWS Production Cluster"
-                      className="w-full rounded-xl border border-white/10 pl-10 p-3 text-sm outline-none focus:border-teal-400/50 focus:ring-2 focus:ring-teal-400/20 transition-all"
+                      className="w-full rounded-xl border border-glass-border pl-10 p-3 text-sm outline-none focus:border-teal-400/50 focus:ring-2 focus:ring-teal-400/20 transition-all"
                   />
                 </div>
               </div>
 
               {/* 2. Asset Type */}
               <div className="space-y-2">
-                <label htmlFor="field-88" className="text-xs font-bold uppercase text-slate-400 tracking-wider">Category</label>
+                <label htmlFor="field-88" className="text-xs font-bold uppercase text-muted-foreground tracking-wider">Category</label>
                 <select id="field-88" 
                   name="type" 
-                  className="w-full rounded-xl border border-white/10 p-3 text-sm outline-none focus:border-teal-400/50 bg-white/5"
+                  className="w-full rounded-xl border border-glass-border p-3 text-sm outline-none focus:border-teal-400/50 bg-white/5"
                 >
                   <option value="hardware">Hardware (Laptops, Servers)</option>
                   <option value="software">Software (SaaS, Apps)</option>
@@ -154,7 +154,7 @@ export function CreateAssetSheet() {
 
               {/* 3. Owner (New Requirement) */}
               <div className="space-y-2">
-                <label htmlFor="field-87" className="text-xs font-bold uppercase text-slate-400 tracking-wider flex items-center gap-1">
+                <label htmlFor="field-87" className="text-xs font-bold uppercase text-muted-foreground tracking-wider flex items-center gap-1">
                   <User className="h-3 w-3" />
                   Owner
                 </label>
@@ -162,21 +162,21 @@ export function CreateAssetSheet() {
                   required
                   name="owner"
                   placeholder="e.g. DevOps Team or CTO"
-                  className="w-full rounded-xl border border-white/10 p-3 text-sm outline-none focus:border-teal-400/50 transition-colors"
+                  className="w-full rounded-xl border border-glass-border p-3 text-sm outline-none focus:border-teal-400/50 transition-colors"
                 />
-                <p className="text-xs text-slate-400">The person or team responsible for this asset.</p>
+                <p className="text-xs text-muted-foreground">The person or team responsible for this asset.</p>
               </div>
 
               {/* 4. Criticality */}
               <div className="space-y-2 pt-2">
-                <label htmlFor="field-86" className="text-xs font-bold uppercase text-slate-400 tracking-wider flex items-center gap-1">
+                <label htmlFor="field-86" className="text-xs font-bold uppercase text-muted-foreground tracking-wider flex items-center gap-1">
                   <ShieldAlert className="h-3 w-3 text-amber-500" />
                   Risk Level
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                    <select 
                       name="criticality" 
-                      className="col-span-2 w-full rounded-xl border border-white/10 p-3 text-sm outline-none focus:border-teal-400/50 bg-white/5"
+                      className="col-span-2 w-full rounded-xl border border-glass-border p-3 text-sm outline-none focus:border-teal-400/50 bg-white/5"
                     >
                       <option value="low">Low - Internal Data</option>
                       <option value="medium">Medium - Operational</option>
@@ -188,7 +188,7 @@ export function CreateAssetSheet() {
 
             </div>
 
-            <SheetFooter className="border-t border-white/10 pt-4 mt-auto">
+            <SheetFooter className="border-t border-glass-border pt-4 mt-auto">
               <button
                 disabled={loading}
                 type="submit"

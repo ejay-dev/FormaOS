@@ -49,7 +49,7 @@ function ComplianceBaselineRing({ score }: { score: number }) {
         >
           {score}%
         </motion.span>
-        <span className="text-[7px] text-slate-500 uppercase tracking-wider">Baseline</span>
+        <span className="text-[7px] text-muted-foreground/60 uppercase tracking-wider">Baseline</span>
       </div>
     </div>
   );
@@ -62,7 +62,7 @@ export default function StructureScreen() {
       <motion.div variants={fadeUp}>
         <div className="flex items-center gap-1.5 mb-2">
           <Building2 className="h-3 w-3 text-cyan-400" />
-          <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-wider">Framework Selection</span>
+          <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Framework Selection</span>
         </div>
         <div className="grid grid-cols-3 gap-2">
           {structureFrameworks.map((fw, i) => (
@@ -76,7 +76,7 @@ export default function StructureScreen() {
               transition={{ duration: 0.5, delay: 0.8 + i * 0.6, times: [0, 0.6, 1] }}
             >
               <p className="text-[11px] font-medium text-white truncate">{fw.name}</p>
-              <p className="text-[9px] text-slate-500">{fw.controls} controls</p>
+              <p className="text-[9px] text-muted-foreground/60">{fw.controls} controls</p>
               <motion.div
                 className="absolute top-1.5 right-1.5"
                 initial={{ opacity: 0, scale: 0 }}
@@ -96,7 +96,7 @@ export default function StructureScreen() {
       <motion.div variants={fadeUp} className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3">
         <div className="flex items-center gap-1.5 mb-2">
           <GitBranch className="h-3 w-3 text-blue-400" />
-          <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-wider">Control Mapping</span>
+          <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Control Mapping</span>
         </div>
         <div className="space-y-1.5">
           {structureControlMappings.map((mapping, i) => {
@@ -122,9 +122,9 @@ export default function StructureScreen() {
                 >
                   {mapping.status !== 'pending' && <div className={`h-1.5 w-1.5 rounded-full ${statusColor}`} />}
                 </motion.div>
-                <span className="text-slate-300 truncate flex-1">{mapping.control}</span>
-                <span className="text-[9px] text-slate-500 flex-shrink-0 hidden sm:block">{mapping.framework}</span>
-                <span className="text-[9px] text-slate-600 flex-shrink-0">{mapping.owner.split(' ')[0]}</span>
+                <span className="text-foreground/70 truncate flex-1">{mapping.control}</span>
+                <span className="text-[9px] text-muted-foreground/60 flex-shrink-0 hidden sm:block">{mapping.framework}</span>
+                <span className="text-[9px] text-muted-foreground/40 flex-shrink-0">{mapping.owner.split(' ')[0]}</span>
               </motion.div>
             );
           })}
@@ -140,7 +140,7 @@ export default function StructureScreen() {
         >
           <ComplianceBaselineRing score={62} />
           <div>
-            <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-0.5">Compliance</p>
+            <p className="text-[10px] text-muted-foreground/60 uppercase tracking-wider mb-0.5">Compliance</p>
             <p className="text-[10px] font-medium text-white">Baseline Score</p>
             <motion.p
               className="text-[9px] text-cyan-400 mt-0.5"
@@ -157,7 +157,7 @@ export default function StructureScreen() {
         <motion.div variants={fadeUp} className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3">
           <div className="flex items-center gap-1.5 mb-2.5">
             <Target className="h-3 w-3 text-cyan-400" />
-            <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-wider">Roadmap</span>
+            <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Roadmap</span>
           </div>
           <div className="flex items-center gap-2">
             {structureRoadmapItems.map((item, i) => {
@@ -191,8 +191,8 @@ export default function StructureScreen() {
                       <div className="flex-1 h-px bg-white/[0.08]" />
                     )}
                   </motion.div>
-                  <p className="text-[8px] text-slate-500 leading-tight">{item.phase}</p>
-                  <p className="text-[8px] text-slate-400 leading-tight hidden sm:block">{item.task}</p>
+                  <p className="text-[8px] text-muted-foreground/60 leading-tight">{item.phase}</p>
+                  <p className="text-[8px] text-muted-foreground leading-tight hidden sm:block">{item.task}</p>
                 </div>
               );
             })}

@@ -49,7 +49,7 @@ export function EvidenceFileActions({
         type="button"
         disabled={!filePath || loading}
         onClick={() => openFile("view")}
-        className="flex-1 py-3 flex items-center justify-center gap-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-slate-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex-1 py-3 flex items-center justify-center gap-2 rounded-xl bg-glass-strong hover:bg-white/20 text-xs font-bold text-foreground/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Eye className="h-4 w-4" />}
         View
@@ -63,7 +63,7 @@ export function EvidenceFileActions({
         type="button"
         disabled={!filePath || loading}
         onClick={() => openFile("view")}
-        className="p-2 hover:bg-white/10 text-slate-400 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="p-2 hover:bg-glass-strong text-muted-foreground rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         title="Open file"
       >
         <ExternalLink className="h-4 w-4" />
@@ -72,7 +72,7 @@ export function EvidenceFileActions({
         type="button"
         disabled={!filePath || loading}
         onClick={() => openFile("download")}
-        className="p-2 hover:bg-white/10 rounded-lg text-slate-400 hover:text-slate-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="p-2 hover:bg-glass-strong rounded-lg text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         title="Download file"
       >
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}

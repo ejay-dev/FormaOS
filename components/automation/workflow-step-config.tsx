@@ -62,7 +62,7 @@ function Field({
 }) {
   return (
     <label className="block space-y-2">
-      <span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+      <span className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
         {label}
       </span>
       {children}
@@ -71,7 +71,7 @@ function Field({
 }
 
 function inputClassName() {
-  return 'w-full rounded-xl border border-white/10 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-cyan-400/60';
+  return 'w-full rounded-xl border border-glass-border bg-slate-950/80 px-3 py-2 text-sm text-foreground outline-none transition focus:border-cyan-400/60';
 }
 
 export function WorkflowStepConfig({ step, onChange }: WorkflowStepConfigProps) {
@@ -82,7 +82,7 @@ export function WorkflowStepConfig({ step, onChange }: WorkflowStepConfigProps) 
 
   if (!step) {
     return (
-      <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-6 text-sm text-slate-400">
+      <div className="rounded-3xl border border-glass-border bg-slate-950/70 p-6 text-sm text-muted-foreground">
         Select a step to configure it.
       </div>
     );
@@ -91,7 +91,7 @@ export function WorkflowStepConfig({ step, onChange }: WorkflowStepConfigProps) 
   const updateStep = (next: WorkflowStep) => onChange(next);
 
   return (
-    <div className="space-y-5 rounded-3xl border border-white/10 bg-slate-950/70 p-6">
+    <div className="space-y-5 rounded-3xl border border-glass-border bg-slate-950/70 p-6">
       <div className="space-y-3">
         <Field label="Step Name">
           <input
@@ -166,8 +166,8 @@ export function WorkflowStepConfig({ step, onChange }: WorkflowStepConfigProps) 
         </div>
       ) : null}
 
-      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+      <div className="rounded-2xl border border-glass-border bg-white/[0.03] p-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
           Variable Tokens
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
@@ -175,7 +175,7 @@ export function WorkflowStepConfig({ step, onChange }: WorkflowStepConfigProps) 
             <button
               type="button"
               key={suggestion}
-              className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300 hover:bg-white/10"
+              className="rounded-full border border-glass-border px-3 py-1 text-xs text-foreground/70 hover:bg-glass-strong"
               onClick={async () => {
                 try {
                   await navigator.clipboard.writeText(suggestion);
@@ -364,7 +364,7 @@ function ConditionConfig({
       </div>
       <button
         type="button"
-        className="rounded-xl border border-white/10 px-3 py-2 text-sm text-slate-200 hover:bg-white/10"
+        className="rounded-xl border border-glass-border px-3 py-2 text-sm text-foreground/90 hover:bg-glass-strong"
         onClick={() =>
           onChange({
             ...step,

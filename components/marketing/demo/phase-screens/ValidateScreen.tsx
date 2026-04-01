@@ -55,7 +55,7 @@ export default function ValidateScreen() {
               variants={fadeUp}
               className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-2.5"
             >
-              <p className="text-[9px] text-slate-500 uppercase tracking-wider truncate">{indicator.label}</p>
+              <p className="text-[9px] text-muted-foreground/60 uppercase tracking-wider truncate">{indicator.label}</p>
               <div className="flex items-baseline gap-1.5 mt-1">
                 <AnimatedNumber value={indicator.value} delay={0.6 + i * 0.2} />
                 <span className={`flex items-center gap-0.5 text-[9px] ${trendColor}`}>
@@ -85,7 +85,7 @@ export default function ValidateScreen() {
       <motion.div variants={fadeUp} className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3">
         <div className="flex items-center gap-1.5 mb-2.5">
           <Eye className="h-3 w-3 text-purple-400" />
-          <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-wider">Control Verification</span>
+          <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Control Verification</span>
         </div>
         <div className="space-y-1.5">
           {validateControlChecks.map((check, i) => {
@@ -107,9 +107,9 @@ export default function ValidateScreen() {
                 >
                   <StatusIcon className={`h-2.5 w-2.5 ${config.color}`} />
                 </motion.div>
-                <span className="text-slate-300 truncate flex-1">{check.control}</span>
-                <span className="text-[9px] text-slate-500 flex-shrink-0 hidden sm:block">{check.framework}</span>
-                <span className="text-[9px] text-slate-500 flex-shrink-0">
+                <span className="text-foreground/70 truncate flex-1">{check.control}</span>
+                <span className="text-[9px] text-muted-foreground/60 flex-shrink-0 hidden sm:block">{check.framework}</span>
+                <span className="text-[9px] text-muted-foreground/60 flex-shrink-0">
                   {check.evidenceCount} evidence
                 </span>
                 <span className={`text-[9px] font-medium ${config.color} flex-shrink-0`}>{config.label}</span>
@@ -123,7 +123,7 @@ export default function ValidateScreen() {
       <motion.div variants={fadeUp} className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3">
         <div className="flex items-center gap-1.5 mb-2.5">
           <Activity className="h-3 w-3 text-cyan-400" />
-          <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-wider">Live Audit Trail</span>
+          <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Live Audit Trail</span>
           <motion.div
             className="ml-auto flex items-center gap-1"
             animate={{ opacity: [0.5, 1, 0.5] }}
@@ -148,13 +148,13 @@ export default function ValidateScreen() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 3.5 + i * 0.3, duration: 0.4, ease: easing.signature }}
               >
-                <span className={`flex-shrink-0 ${typeColor[entry.type] || 'text-slate-400'}`}>●</span>
-                <span className="text-slate-300 truncate flex-1">
+                <span className={`flex-shrink-0 ${typeColor[entry.type] || 'text-muted-foreground'}`}>●</span>
+                <span className="text-foreground/70 truncate flex-1">
                   <span className="font-medium text-white">{entry.user}</span>{' '}
                   {entry.action.toLowerCase()}{' '}
-                  <span className="text-slate-400">{entry.target}</span>
+                  <span className="text-muted-foreground">{entry.target}</span>
                 </span>
-                <span className="text-slate-600 flex-shrink-0 text-[9px]">{entry.timestamp}</span>
+                <span className="text-muted-foreground/40 flex-shrink-0 text-[9px]">{entry.timestamp}</span>
               </motion.div>
             );
           })}

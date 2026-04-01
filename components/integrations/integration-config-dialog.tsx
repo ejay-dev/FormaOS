@@ -149,23 +149,23 @@ export function IntegrationConfigDialog({
 
       {open ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-2xl rounded-3xl border border-white/10 bg-slate-950 shadow-2xl">
-            <div className="flex items-start justify-between border-b border-white/10 p-6">
+          <div className="w-full max-w-2xl rounded-3xl border border-glass-border bg-slate-950 shadow-2xl">
+            <div className="flex items-start justify-between border-b border-glass-border p-6">
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.24em] text-cyan-300">
                   Integration Config
                 </p>
-                <h2 className="mt-2 text-2xl font-black text-slate-100">
+                <h2 className="mt-2 text-2xl font-black text-foreground">
                   {integrationName}
                 </h2>
-                <p className="mt-2 text-sm text-slate-400">
+                <p className="mt-2 text-sm text-muted-foreground">
                   Configure credentials, test health, and manage the current connection.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="rounded-full border border-white/10 p-2 text-slate-400 transition hover:border-white/20 hover:text-slate-100"
+                className="rounded-full border border-glass-border p-2 text-muted-foreground transition hover:border-glass-border-strong hover:text-foreground"
                 aria-label="Close integration dialog"
               >
                 <X className="h-4 w-4" />
@@ -176,7 +176,7 @@ export function IntegrationConfigDialog({
               <div className="grid gap-4 md:grid-cols-2">
                 {fields.map((field) => (
                   <label key={field.key} className="space-y-2">
-                    <span className="text-xs font-black uppercase tracking-[0.18em] text-slate-400">
+                    <span className="text-xs font-black uppercase tracking-[0.18em] text-muted-foreground">
                       {field.label}
                     </span>
                     <Input
@@ -193,18 +193,18 @@ export function IntegrationConfigDialog({
                 ))}
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-400">
-                <div className="flex items-center gap-2 font-semibold text-slate-200">
+              <div className="rounded-2xl border border-glass-border bg-glass-subtle p-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2 font-semibold text-foreground/90">
                   <Link2 className="h-4 w-4 text-cyan-300" />
                   Connection metadata
                 </div>
                 <p className="mt-2">
-                  Provider key: <span className="font-mono text-slate-200">{integrationId}</span>
+                  Provider key: <span className="font-mono text-foreground/90">{integrationId}</span>
                 </p>
                 {connectedId ? (
                   <p className="mt-1">
                     Connected row id:{' '}
-                    <span className="font-mono text-slate-200">{connectedId}</span>
+                    <span className="font-mono text-foreground/90">{connectedId}</span>
                   </p>
                 ) : null}
               </div>
@@ -216,7 +216,7 @@ export function IntegrationConfigDialog({
               ) : null}
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 p-6">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-glass-border p-6">
               <div className="flex gap-2">
                 <Button variant="outline" onClick={() => setOpen(false)}>
                   Close

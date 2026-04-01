@@ -68,12 +68,12 @@ function MockFrameworkSelector() {
           </div>
           <span
             className={
-              fw.selected ? 'text-white font-medium' : 'text-slate-400'
+              fw.selected ? 'text-white font-medium' : 'text-muted-foreground'
             }
           >
             {fw.name}
           </span>
-          <span className="ml-auto text-slate-500">
+          <span className="ml-auto text-muted-foreground/60">
             {fw.compliant}/{fw.controls} controls
           </span>
           <span
@@ -87,7 +87,7 @@ function MockFrameworkSelector() {
           </span>
         </div>
       ))}
-      <p className="text-[10px] text-slate-500 mt-2">
+      <p className="text-[10px] text-muted-foreground/60 mt-2">
         2 frameworks selected for board report
       </p>
     </div>
@@ -124,23 +124,23 @@ function MockPostureSummary() {
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-lg font-bold text-white">87%</span>
-            <span className="text-[8px] text-slate-500">Overall</span>
+            <span className="text-[8px] text-muted-foreground/60">Overall</span>
           </div>
         </div>
         <div className="space-y-1 text-[10px]">
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-emerald-400" />
-            <span className="text-slate-300">Compliant controls</span>
+            <span className="text-foreground/70">Compliant controls</span>
             <span className="text-white font-medium">156</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-amber-400" />
-            <span className="text-slate-300">Partially compliant</span>
+            <span className="text-foreground/70">Partially compliant</span>
             <span className="text-white font-medium">16</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-red-400" />
-            <span className="text-slate-300">Non-compliant</span>
+            <span className="text-foreground/70">Non-compliant</span>
             <span className="text-white font-medium">6</span>
           </div>
         </div>
@@ -180,7 +180,7 @@ function MockRiskHeatmap() {
           key={r.category}
           className="flex items-center gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] px-2.5 py-1.5"
         >
-          <span className="flex-1 text-slate-300">{r.category}</span>
+          <span className="flex-1 text-foreground/70">{r.category}</span>
           <div className="w-24 h-1.5 rounded-full bg-white/[0.06]">
             <div
               className={`h-full rounded-full ${
@@ -200,7 +200,7 @@ function MockRiskHeatmap() {
           </span>
         </div>
       ))}
-      <div className="flex items-center gap-2 text-[10px] text-slate-500 mt-2">
+      <div className="flex items-center gap-2 text-[10px] text-muted-foreground/60 mt-2">
         <AlertTriangle className="h-3 w-3 text-amber-400" />1 risk area flagged
         for board attention: Vendor Management
       </div>
@@ -216,26 +216,26 @@ function MockBoardExport() {
           <BarChart3 className="h-3.5 w-3.5" />
           Board Report — Q1 FY26
         </div>
-        <p className="mt-1 text-[10px] text-slate-400">
+        <p className="mt-1 text-[10px] text-muted-foreground">
           Executive summary generated with live data as of 12 Feb 2026
         </p>
       </div>
 
       <div className="grid grid-cols-2 gap-2 text-[10px]">
         <div className="rounded-lg bg-white/[0.04] px-2 py-2">
-          <span className="text-slate-500">Pages</span>
+          <span className="text-muted-foreground/60">Pages</span>
           <p className="font-semibold text-white">12</p>
         </div>
         <div className="rounded-lg bg-white/[0.04] px-2 py-2">
-          <span className="text-slate-500">Frameworks</span>
+          <span className="text-muted-foreground/60">Frameworks</span>
           <p className="font-semibold text-white">ISO + SOC 2</p>
         </div>
         <div className="rounded-lg bg-white/[0.04] px-2 py-2">
-          <span className="text-slate-500">Format</span>
+          <span className="text-muted-foreground/60">Format</span>
           <p className="font-semibold text-cyan-300">PDF + slides</p>
         </div>
         <div className="rounded-lg bg-white/[0.04] px-2 py-2">
-          <span className="text-slate-500">Generated in</span>
+          <span className="text-muted-foreground/60">Generated in</span>
           <p className="font-semibold text-emerald-300">4.2 sec</p>
         </div>
       </div>
@@ -244,12 +244,12 @@ function MockBoardExport() {
         <button className="flex-1 rounded-lg bg-cyan-500/20 border border-cyan-400/30 px-3 py-1.5 text-[10px] text-cyan-200 font-medium">
           Download PDF
         </button>
-        <button className="flex-1 rounded-lg bg-white/[0.04] border border-white/[0.08] px-3 py-1.5 text-[10px] text-slate-300 font-medium">
+        <button className="flex-1 rounded-lg bg-white/[0.04] border border-white/[0.08] px-3 py-1.5 text-[10px] text-foreground/70 font-medium">
           Export Slides
         </button>
       </div>
 
-      <p className="text-[10px] text-slate-500 text-center">
+      <p className="text-[10px] text-muted-foreground/60 text-center">
         Traditional board prep: 2–3 days → FormaOS: under 5 minutes
       </p>
     </div>
@@ -325,7 +325,7 @@ export default function BoardReportScenario() {
   const Icon = step.icon;
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-5 sm:p-6">
+    <div className="rounded-2xl border border-glass-border bg-gradient-to-b from-white/[0.04] to-transparent p-5 sm:p-6">
       {/* Header */}
       <div className="mb-5 flex items-center gap-3">
         <div className="rounded-lg border border-purple-400/20 bg-purple-500/10 p-2">
@@ -335,7 +335,7 @@ export default function BoardReportScenario() {
           <h3 className="text-base font-semibold text-white">
             Board Report Generation
           </h3>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-muted-foreground">
             From live data to executive-ready report
           </p>
         </div>
@@ -354,7 +354,7 @@ export default function BoardReportScenario() {
             key={s.id}
             onClick={() => setCurrentStep(i)}
             className={`h-1.5 flex-1 rounded-full transition-colors ${
-              i <= currentStep ? 'bg-purple-400' : 'bg-white/10'
+              i <= currentStep ? 'bg-purple-400' : 'bg-glass-strong'
             }`}
             aria-label={`Go to ${s.phase}: ${s.title}`}
           />
@@ -381,7 +381,7 @@ export default function BoardReportScenario() {
             <h4 className="text-sm font-semibold text-white">{step.title}</h4>
           </div>
 
-          <p className="mb-4 text-xs text-slate-400 leading-relaxed">
+          <p className="mb-4 text-xs text-muted-foreground leading-relaxed">
             {step.description}
           </p>
 
@@ -396,14 +396,14 @@ export default function BoardReportScenario() {
         <button
           onClick={goPrev}
           disabled={currentStep === 0}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-xs text-slate-400 transition-colors hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-glass-border px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-glass-subtle disabled:opacity-30 disabled:cursor-not-allowed"
           aria-label="Previous step"
         >
           <ArrowLeft className="h-3 w-3" />
           Back
         </button>
 
-        <span className="text-[10px] text-slate-500">
+        <span className="text-[10px] text-muted-foreground/60">
           {currentStep + 1} / {STEPS.length}
         </span>
 

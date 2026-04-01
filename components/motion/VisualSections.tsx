@@ -110,7 +110,7 @@ export function VisualDivider({ gradient = true }: { gradient?: boolean }) {
         </>
       ) : (
         /* Simple minimal line */
-        <div className="h-px bg-white/10 backdrop-blur-sm" />
+        <div className="h-px bg-glass-strong backdrop-blur-sm" />
       )}
     </motion.div>
   );

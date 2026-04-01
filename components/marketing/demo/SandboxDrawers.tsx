@@ -56,7 +56,7 @@ function DrawerShell({ isOpen, onClose, title, icon, children }: DrawerProps) {
                 onClick={onClose}
                 className="h-6 w-6 rounded-md flex items-center justify-center bg-white/[0.04] hover:bg-white/[0.08] transition-colors"
               >
-                <X className="h-3.5 w-3.5 text-slate-400" />
+                <X className="h-3.5 w-3.5 text-muted-foreground" />
               </button>
             </div>
             {/* Content */}
@@ -79,7 +79,7 @@ function _AvatarBadge({ name, size = 'sm' }: { name: string; size?: 'sm' | 'md' 
   const sizeClass = size === 'md' ? 'h-8 w-8 text-[10px]' : 'h-5 w-5 text-[7px]';
   return (
     <div className={`${sizeClass} rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center flex-shrink-0`}>
-      <span className="font-bold text-slate-200">{initials}</span>
+      <span className="font-bold text-foreground/90">{initials}</span>
     </div>
   );
 }
@@ -89,14 +89,14 @@ function StatusBadge({ status }: { status: string }) {
     completed: 'bg-emerald-500/15 text-emerald-400',
     'in-progress': 'bg-blue-500/15 text-blue-400',
     overdue: 'bg-red-500/15 text-red-400',
-    pending: 'bg-slate-500/15 text-slate-400',
+    pending: 'bg-slate-500/15 text-muted-foreground',
     approved: 'bg-emerald-500/15 text-emerald-400',
     'pending-review': 'bg-amber-500/15 text-amber-400',
     rejected: 'bg-red-500/15 text-red-400',
-    expired: 'bg-slate-500/15 text-slate-400',
+    expired: 'bg-slate-500/15 text-muted-foreground',
   };
   return (
-    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${styles[status] || 'bg-slate-500/15 text-slate-400'}`}>
+    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${styles[status] || 'bg-slate-500/15 text-muted-foreground'}`}>
       {status.replace('-', ' ')}
     </span>
   );
@@ -105,11 +105,11 @@ function StatusBadge({ status }: { status: string }) {
 function InfoRow({ label, value, icon }: { label: string; value: string; icon?: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between text-[11px]">
-      <span className="flex items-center gap-1.5 text-slate-500">
+      <span className="flex items-center gap-1.5 text-muted-foreground/60">
         {icon}
         {label}
       </span>
-      <span className="text-slate-300">{value}</span>
+      <span className="text-foreground/70">{value}</span>
     </div>
   );
 }
@@ -143,7 +143,7 @@ export function TaskDetailDrawer({
       case 'completed': return <Check className="h-3 w-3 text-emerald-400" />;
       case 'in-progress': return <Clock className="h-3 w-3 text-blue-400" />;
       case 'overdue': return <AlertTriangle className="h-3 w-3 text-red-400" />;
-      default: return <Circle className="h-3 w-3 text-slate-500" />;
+      default: return <Circle className="h-3 w-3 text-muted-foreground/60" />;
     }
   };
 
@@ -163,7 +163,7 @@ export function TaskDetailDrawer({
             <StatusBadge status={task.status} />
           </div>
         </div>
-        <p className="text-[11px] text-slate-400 leading-relaxed">{task.description}</p>
+        <p className="text-[11px] text-muted-foreground leading-relaxed">{task.description}</p>
       </div>
 
       {/* Metadata */}
@@ -178,12 +178,12 @@ export function TaskDetailDrawer({
       {/* Linked Evidence */}
       {linkedEvidence.length > 0 && (
         <div>
-          <h5 className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Linked Evidence</h5>
+          <h5 className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Linked Evidence</h5>
           <div className="space-y-1.5">
             {linkedEvidence.map((ev) => (
               <div key={ev.id} className="flex items-center gap-2 rounded-lg bg-white/[0.02] border border-white/[0.04] px-3 py-2 text-[11px]">
                 <FileText className="h-3 w-3 text-purple-400 flex-shrink-0" />
-                <span className="text-slate-300 truncate flex-1">{ev.name}</span>
+                <span className="text-foreground/70 truncate flex-1">{ev.name}</span>
                 <StatusBadge status={ev.status} />
               </div>
             ))}
@@ -223,7 +223,7 @@ export function TaskDetailDrawer({
         <button
           type="button"
           onClick={() => onAction('upload-evidence')}
-          className="flex items-center justify-center gap-1.5 rounded-lg bg-white/[0.04] border border-white/[0.06] px-3 py-2 text-[11px] font-medium text-slate-400 hover:text-slate-200 hover:bg-white/[0.06] transition-colors"
+          className="flex items-center justify-center gap-1.5 rounded-lg bg-white/[0.04] border border-white/[0.06] px-3 py-2 text-[11px] font-medium text-muted-foreground hover:text-foreground/90 hover:bg-white/[0.06] transition-colors"
         >
           <Upload className="h-3 w-3" /> Attach Evidence
         </button>
@@ -272,7 +272,7 @@ export function EvidenceDetailDrawer({
             <StatusBadge status={evidence.status} />
           </div>
         </div>
-        <p className="text-[11px] text-slate-400 leading-relaxed">{evidence.description}</p>
+        <p className="text-[11px] text-muted-foreground leading-relaxed">{evidence.description}</p>
       </div>
 
       {/* Metadata */}
@@ -287,7 +287,7 @@ export function EvidenceDetailDrawer({
       {/* Linked Controls */}
       {linkedControls.length > 0 && (
         <div>
-          <h5 className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Linked Controls</h5>
+          <h5 className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Linked Controls</h5>
           <div className="space-y-1.5">
             {linkedControls.map((ctrl) => {
               const fw = resolveFramework(ctrl.frameworkId);
@@ -299,8 +299,8 @@ export function EvidenceDetailDrawer({
               return (
                 <div key={ctrl.id} className="flex items-center gap-2 rounded-lg bg-white/[0.02] border border-white/[0.04] px-3 py-2 text-[11px]">
                   <Shield className={`h-3 w-3 ${statusColor} flex-shrink-0`} />
-                  <span className="text-slate-300 truncate flex-1">{ctrl.code} {ctrl.title}</span>
-                  <span className="text-[9px] text-slate-500">{fw?.shortName}</span>
+                  <span className="text-foreground/70 truncate flex-1">{ctrl.code} {ctrl.title}</span>
+                  <span className="text-[9px] text-muted-foreground/60">{fw?.shortName}</span>
                 </div>
               );
             })}
@@ -314,7 +314,7 @@ export function EvidenceDetailDrawer({
           <FileCheck className="h-3 w-3 text-emerald-400" />
           <span className="text-[10px] font-semibold text-emerald-400">Chain of Custody Verified</span>
         </div>
-        <p className="text-[10px] text-slate-500">
+        <p className="text-[10px] text-muted-foreground/60">
           Immutable record stored. Timestamp, uploader, hash, and linked controls logged to audit trail.
         </p>
       </div>
@@ -342,7 +342,7 @@ export function EvidenceDetailDrawer({
         <button
           type="button"
           onClick={() => onAction('view-audit-trail')}
-          className="flex items-center justify-center gap-1.5 rounded-lg bg-white/[0.04] border border-white/[0.06] px-3 py-2 text-[11px] font-medium text-slate-400 hover:text-slate-200 hover:bg-white/[0.06] transition-colors"
+          className="flex items-center justify-center gap-1.5 rounded-lg bg-white/[0.04] border border-white/[0.06] px-3 py-2 text-[11px] font-medium text-muted-foreground hover:text-foreground/90 hover:bg-white/[0.06] transition-colors"
         >
           <ExternalLink className="h-3 w-3" /> Audit Trail
         </button>
@@ -374,7 +374,7 @@ export function AuditTimelineDrawer({
     task: 'text-emerald-400 bg-emerald-400/10',
     user: 'text-purple-400 bg-purple-400/10',
     framework: 'text-amber-400 bg-amber-400/10',
-    system: 'text-slate-400 bg-slate-400/10',
+    system: 'text-muted-foreground bg-slate-400/10',
     control: 'text-pink-400 bg-pink-400/10',
     report: 'text-indigo-400 bg-indigo-400/10',
   };
@@ -403,7 +403,7 @@ export function AuditTimelineDrawer({
             className={`rounded-full px-2 py-0.5 text-[9px] font-medium cursor-pointer transition-colors ${
               (filter ?? 'all') === f
                 ? 'bg-white/[0.08] text-white'
-                : 'bg-white/[0.03] text-slate-500 hover:text-slate-300'
+                : 'bg-white/[0.03] text-muted-foreground/60 hover:text-foreground/70'
             }`}
           >
             {f === 'all' ? 'All' : f.charAt(0).toUpperCase() + f.slice(1)}
@@ -437,12 +437,12 @@ export function AuditTimelineDrawer({
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <div className="text-[11px] text-slate-300">
+                  <div className="text-[11px] text-foreground/70">
                     <span className="font-medium text-white">{resolveUserName(entry.userId)}</span>{' '}
                     {entry.action.toLowerCase()}
                   </div>
-                  <div className="text-[10px] text-slate-500 truncate">{entry.targetName}</div>
-                  <div className="text-[9px] text-slate-600 mt-0.5">{entry.timestamp}</div>
+                  <div className="text-[10px] text-muted-foreground/60 truncate">{entry.targetName}</div>
+                  <div className="text-[9px] text-muted-foreground/40 mt-0.5">{entry.timestamp}</div>
                 </div>
               </motion.div>
             );
@@ -456,7 +456,7 @@ export function AuditTimelineDrawer({
           <Shield className="h-3 w-3 text-emerald-400" />
           <span className="text-[10px] font-semibold text-emerald-400">Immutable Audit Log</span>
         </div>
-        <p className="text-[9px] text-slate-500">
+        <p className="text-[9px] text-muted-foreground/60">
           All entries are tamper-proof, timestamped, and cryptographically linked. Full chain of custody maintained.
         </p>
       </div>
@@ -494,7 +494,7 @@ export function WorkflowActionDrawer({
       title="Workflow Triggers"
       icon={<Zap className="h-4 w-4 text-blue-400" />}
     >
-      <p className="text-[11px] text-slate-400">
+      <p className="text-[11px] text-muted-foreground">
         Manually fire workflow triggers to see how FormaOS automates compliance responses.
       </p>
 
@@ -513,13 +513,13 @@ export function WorkflowActionDrawer({
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[11px] font-medium text-white">{trigger.name}</p>
-                <p className="text-[10px] text-slate-500">{trigger.targetName}</p>
+                <p className="text-[10px] text-muted-foreground/60">{trigger.targetName}</p>
               </div>
               <div className={`h-2 w-2 rounded-full flex-shrink-0 mt-1.5 ${trigger.isActive ? 'bg-emerald-400' : 'bg-slate-600'}`} />
             </div>
-            <p className="text-[10px] text-slate-400 mb-2.5">{trigger.action}</p>
+            <p className="text-[10px] text-muted-foreground mb-2.5">{trigger.action}</p>
             <div className="flex items-center justify-between">
-              <span className="text-[9px] text-slate-600">
+              <span className="text-[9px] text-muted-foreground/40">
                 {trigger.lastFired ? `Last fired: ${trigger.lastFired}` : 'Never fired'}
               </span>
               <button

@@ -920,8 +920,8 @@ export function AdminCommandCenter() {
       <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-100">Admin Control Plane</h1>
-            <p className="mt-1 text-sm text-slate-400">
+            <h1 className="text-3xl font-bold text-foreground">Admin Control Plane</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
               Founder-only command center with live runtime control and immutable audit.
             </p>
           </div>
@@ -940,7 +940,7 @@ export function AdminCommandCenter() {
             <button
               type="button"
               onClick={() => void refresh()}
-              className="inline-flex items-center gap-1 rounded border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs text-slate-200 hover:bg-slate-700"
+              className="inline-flex items-center gap-1 rounded border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs text-foreground/90 hover:bg-slate-700"
             >
               <RefreshCcw className="h-3.5 w-3.5" />
               Refresh
@@ -948,7 +948,7 @@ export function AdminCommandCenter() {
             <button
               type="button"
               onClick={exportConfig}
-              className="inline-flex items-center gap-1 rounded border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs text-slate-200 hover:bg-slate-700"
+              className="inline-flex items-center gap-1 rounded border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs text-foreground/90 hover:bg-slate-700"
             >
               <Download className="h-3.5 w-3.5" />
               Export Config
@@ -957,7 +957,7 @@ export function AdminCommandCenter() {
         </div>
 
         {latestAudit ? (
-          <div className="mt-3 rounded border border-slate-800 bg-slate-950/40 px-3 py-2 text-xs text-slate-400">
+          <div className="mt-3 rounded border border-slate-800 bg-slate-950/40 px-3 py-2 text-xs text-muted-foreground">
             Last updated by {latestAudit.actor_user_id ?? 'system'} at{' '}
             {new Date(latestAudit.created_at).toLocaleString()} ({latestAudit.event_type})
           </div>
@@ -995,24 +995,24 @@ export function AdminCommandCenter() {
 
         <div className="mt-5 grid gap-3 md:grid-cols-4">
           <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
-            <p className="text-xs text-slate-500">Feature flags</p>
-            <p className="mt-1 text-2xl font-semibold text-slate-100">
+            <p className="text-xs text-muted-foreground/60">Feature flags</p>
+            <p className="mt-1 text-2xl font-semibold text-foreground">
               {snapshot.featureFlags.length}
             </p>
           </div>
           <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
-            <p className="text-xs text-slate-500">Rollout flags</p>
-            <p className="mt-1 text-2xl font-semibold text-slate-100">{rolloutFlags}</p>
+            <p className="text-xs text-muted-foreground/60">Rollout flags</p>
+            <p className="mt-1 text-2xl font-semibold text-foreground">{rolloutFlags}</p>
           </div>
           <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
-            <p className="text-xs text-slate-500">Queued jobs</p>
-            <p className="mt-1 text-2xl font-semibold text-slate-100">
+            <p className="text-xs text-muted-foreground/60">Queued jobs</p>
+            <p className="mt-1 text-2xl font-semibold text-foreground">
               {snapshot.health.queue.queued}
             </p>
           </div>
           <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
-            <p className="text-xs text-slate-500">DB latency</p>
-            <p className="mt-1 text-2xl font-semibold text-slate-100">
+            <p className="text-xs text-muted-foreground/60">DB latency</p>
+            <p className="mt-1 text-2xl font-semibold text-foreground">
               {snapshot.health.databaseLatencyMs}ms
             </p>
           </div>
@@ -1032,7 +1032,7 @@ export function AdminCommandCenter() {
             className={`rounded border px-3 py-2 text-left text-xs ${
               maintenanceMode
                 ? 'border-amber-600/50 bg-amber-900/30 text-amber-100'
-                : 'border-slate-700 bg-slate-900/60 text-slate-200 hover:bg-slate-800'
+                : 'border-slate-700 bg-slate-900/60 text-foreground/90 hover:bg-slate-800'
             }`}
           >
             <div className="font-medium">Maintenance mode</div>
@@ -1048,7 +1048,7 @@ export function AdminCommandCenter() {
             className={`rounded border px-3 py-2 text-left text-xs ${
               readOnlyMode
                 ? 'border-cyan-600/50 bg-cyan-900/30 text-cyan-100'
-                : 'border-slate-700 bg-slate-900/60 text-slate-200 hover:bg-slate-800'
+                : 'border-slate-700 bg-slate-900/60 text-foreground/90 hover:bg-slate-800'
             }`}
           >
             <div className="font-medium">Read-only mode</div>
@@ -1093,7 +1093,7 @@ export function AdminCommandCenter() {
       <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
         <div className="mb-4 flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-cyan-300" />
-          <h2 className="text-lg font-semibold text-slate-100">Feature Flags & Experiments</h2>
+          <h2 className="text-lg font-semibold text-foreground">Feature Flags & Experiments</h2>
         </div>
 
         <div className="grid gap-3 md:grid-cols-3">
@@ -1103,7 +1103,7 @@ export function AdminCommandCenter() {
               setFlagDraft((prev) => ({ ...prev, flagKey: event.target.value }))
             }
             placeholder="flag key (e.g. marketing_new_hero)"
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
           />
           <select
             value={flagDraft.scopeType}
@@ -1113,7 +1113,7 @@ export function AdminCommandCenter() {
                 scopeType: event.target.value as FeatureFlagDraft['scopeType'],
               }))
             }
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
           >
             <option value="global">Global</option>
             <option value="organization">Organization</option>
@@ -1126,7 +1126,7 @@ export function AdminCommandCenter() {
             }
             disabled={flagDraft.scopeType === 'global'}
             placeholder={flagDraft.scopeType === 'global' ? 'N/A for global' : 'org/user id'}
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 disabled:opacity-50"
+            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground disabled:opacity-50"
           />
           <input
             value={flagDraft.description}
@@ -1134,7 +1134,7 @@ export function AdminCommandCenter() {
               setFlagDraft((prev) => ({ ...prev, description: event.target.value }))
             }
             placeholder="description"
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 md:col-span-2"
+            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground md:col-span-2"
           />
           <input
             type="number"
@@ -1148,7 +1148,7 @@ export function AdminCommandCenter() {
               }))
             }
             placeholder="rollout %"
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
           />
           <textarea
             value={flagDraft.variantsText}
@@ -1156,7 +1156,7 @@ export function AdminCommandCenter() {
               setFlagDraft((prev) => ({ ...prev, variantsText: event.target.value }))
             }
             placeholder='{"control": 50, "variant": 50}'
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 md:col-span-2"
+            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground md:col-span-2"
           />
           <input
             value={flagDraft.defaultVariant}
@@ -1164,9 +1164,9 @@ export function AdminCommandCenter() {
               setFlagDraft((prev) => ({ ...prev, defaultVariant: event.target.value }))
             }
             placeholder="default variant"
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
           />
-          <label className="flex items-center gap-2 text-sm text-slate-300">
+          <label className="flex items-center gap-2 text-sm text-foreground/70">
             <input
               type="checkbox"
               checked={flagDraft.enabled}
@@ -1176,7 +1176,7 @@ export function AdminCommandCenter() {
             />
             Enabled
           </label>
-          <label className="flex items-center gap-2 text-sm text-slate-300">
+          <label className="flex items-center gap-2 text-sm text-foreground/70">
             <input
               type="checkbox"
               checked={flagDraft.killSwitch}
@@ -1186,7 +1186,7 @@ export function AdminCommandCenter() {
             />
             Kill switch
           </label>
-          <label className="flex items-center gap-2 text-sm text-slate-300">
+          <label className="flex items-center gap-2 text-sm text-foreground/70">
             <input
               type="checkbox"
               checked={flagDraft.isPublic}
@@ -1202,7 +1202,7 @@ export function AdminCommandCenter() {
             onChange={(event) =>
               setFlagDraft((prev) => ({ ...prev, startAt: event.target.value }))
             }
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
           />
           <input
             type="datetime-local"
@@ -1210,7 +1210,7 @@ export function AdminCommandCenter() {
             onChange={(event) =>
               setFlagDraft((prev) => ({ ...prev, endAt: event.target.value }))
             }
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
           />
           <button
             type="button"
@@ -1230,8 +1230,8 @@ export function AdminCommandCenter() {
                 key={flag.id}
                 className="rounded-lg border border-slate-800 bg-slate-950/40 p-3"
               >
-                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
-                  <span className="rounded border border-slate-700 px-2 py-0.5 text-slate-200">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                  <span className="rounded border border-slate-700 px-2 py-0.5 text-foreground/90">
                     {flag.flag_key}
                   </span>
                   <span>{flag.scope_type}</span>
@@ -1287,12 +1287,12 @@ export function AdminCommandCenter() {
                         },
                       );
                     }}
-                    className="inline-flex items-center gap-1 rounded border border-slate-700 px-2 py-1 text-xs text-slate-200 hover:bg-slate-800"
+                    className="inline-flex items-center gap-1 rounded border border-slate-700 px-2 py-1 text-xs text-foreground/90 hover:bg-slate-800"
                   >
                     {flag.enabled ? (
                       <ToggleRight className="h-4 w-4 text-emerald-400" />
                     ) : (
-                      <ToggleLeft className="h-4 w-4 text-slate-500" />
+                      <ToggleLeft className="h-4 w-4 text-muted-foreground/60" />
                     )}
                     {flag.enabled ? 'Enabled' : 'Disabled'}
                   </button>
@@ -1348,7 +1348,7 @@ export function AdminCommandCenter() {
                     className={`inline-flex items-center gap-1 rounded border px-2 py-1 text-xs ${
                       flag.kill_switch
                         ? 'border-rose-700/50 bg-rose-900/20 text-rose-200'
-                        : 'border-slate-700 text-slate-300 hover:bg-slate-800'
+                        : 'border-slate-700 text-foreground/70 hover:bg-slate-800'
                     }`}
                   >
                     <ShieldAlert className="h-3.5 w-3.5" />
@@ -1364,118 +1364,118 @@ export function AdminCommandCenter() {
       <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
         <div className="mb-4 flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-indigo-300" />
-          <h2 className="text-lg font-semibold text-slate-100">Site / Marketing Controls</h2>
+          <h2 className="text-lg font-semibold text-foreground">Site / Marketing Controls</h2>
         </div>
 
         <div className="grid gap-3 md:grid-cols-2">
-          <label className="text-sm text-slate-300">
+          <label className="text-sm text-foreground/70">
             Hero badge
             <input
               value={marketingForm.badgeText}
               onChange={(event) =>
                 setMarketingForm((prev) => ({ ...prev, badgeText: event.target.value }))
               }
-              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
             />
           </label>
 
-          <label className="text-sm text-slate-300">
+          <label className="text-sm text-foreground/70">
             Hero headline (primary)
             <input
               value={marketingForm.headlinePrimary}
               onChange={(event) =>
                 setMarketingForm((prev) => ({ ...prev, headlinePrimary: event.target.value }))
               }
-              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
             />
           </label>
 
-          <label className="text-sm text-slate-300">
+          <label className="text-sm text-foreground/70">
             Hero headline (accent)
             <input
               value={marketingForm.headlineAccent}
               onChange={(event) =>
                 setMarketingForm((prev) => ({ ...prev, headlineAccent: event.target.value }))
               }
-              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
             />
           </label>
 
-          <label className="text-sm text-slate-300">
+          <label className="text-sm text-foreground/70">
             Hero subheadline
             <textarea
               value={marketingForm.subheadline}
               onChange={(event) =>
                 setMarketingForm((prev) => ({ ...prev, subheadline: event.target.value }))
               }
-              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
             />
           </label>
 
-          <label className="text-sm text-slate-300">
+          <label className="text-sm text-foreground/70">
             Primary CTA label
             <input
               value={marketingForm.primaryCtaLabel}
               onChange={(event) =>
                 setMarketingForm((prev) => ({ ...prev, primaryCtaLabel: event.target.value }))
               }
-              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
             />
           </label>
-          <label className="text-sm text-slate-300">
+          <label className="text-sm text-foreground/70">
             Primary CTA link
             <input
               value={marketingForm.primaryCtaHref}
               onChange={(event) =>
                 setMarketingForm((prev) => ({ ...prev, primaryCtaHref: event.target.value }))
               }
-              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
             />
           </label>
 
-          <label className="text-sm text-slate-300">
+          <label className="text-sm text-foreground/70">
             Secondary CTA label
             <input
               value={marketingForm.secondaryCtaLabel}
               onChange={(event) =>
                 setMarketingForm((prev) => ({ ...prev, secondaryCtaLabel: event.target.value }))
               }
-              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
             />
           </label>
-          <label className="text-sm text-slate-300">
+          <label className="text-sm text-foreground/70">
             Secondary CTA link
             <input
               value={marketingForm.secondaryCtaHref}
               onChange={(event) =>
                 setMarketingForm((prev) => ({ ...prev, secondaryCtaHref: event.target.value }))
               }
-              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
             />
           </label>
 
-          <label className="text-sm text-slate-300">
+          <label className="text-sm text-foreground/70">
             Theme variant
             <input
               value={marketingForm.themeVariant}
               onChange={(event) =>
                 setMarketingForm((prev) => ({ ...prev, themeVariant: event.target.value }))
               }
-              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
             />
           </label>
-          <label className="text-sm text-slate-300">
+          <label className="text-sm text-foreground/70">
             Background variant
             <input
               value={marketingForm.backgroundVariant}
               onChange={(event) =>
                 setMarketingForm((prev) => ({ ...prev, backgroundVariant: event.target.value }))
               }
-              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
             />
           </label>
 
-          <label className="text-sm text-slate-300">
+          <label className="text-sm text-foreground/70">
             Active showcase module
             <select
               value={marketingForm.activeShowcaseModule}
@@ -1485,7 +1485,7 @@ export function AdminCommandCenter() {
                   activeShowcaseModule: event.target.value,
                 }))
               }
-              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+              className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
             >
               {Object.keys(marketingRuntime.runtime.showcaseModules).map((key) => (
                 <option key={key} value={key}>
@@ -1500,7 +1500,7 @@ export function AdminCommandCenter() {
               type="button"
               disabled={!marketingDirty || pendingAction !== null}
               onClick={() => setMarketingForm(marketingBaseline)}
-              className="rounded border border-slate-700 px-3 py-1.5 text-xs text-slate-200 hover:bg-slate-800 disabled:opacity-50"
+              className="rounded border border-slate-700 px-3 py-1.5 text-xs text-foreground/90 hover:bg-slate-800 disabled:opacity-50"
             >
               Revert
             </button>
@@ -1517,7 +1517,7 @@ export function AdminCommandCenter() {
 
         <div className="mt-5 grid gap-3 md:grid-cols-2">
           <div className="rounded border border-slate-800 bg-slate-950/50 p-3">
-            <p className="text-sm text-slate-100">Section visibility</p>
+            <p className="text-sm text-foreground">Section visibility</p>
             <div className="mt-2 grid gap-1">
               {Object.entries(marketingRuntime.runtime.sectionVisibility).map(
                 ([section, visible]) => (
@@ -1550,13 +1550,13 @@ export function AdminCommandCenter() {
                         },
                       );
                     }}
-                    className="flex items-center justify-between rounded border border-slate-800 px-2 py-1 text-xs text-slate-200 hover:bg-slate-800"
+                    className="flex items-center justify-between rounded border border-slate-800 px-2 py-1 text-xs text-foreground/90 hover:bg-slate-800"
                   >
                     <span>{section}</span>
                     {visible ? (
                       <ToggleRight className="h-3.5 w-3.5 text-emerald-400" />
                     ) : (
-                      <ToggleLeft className="h-3.5 w-3.5 text-slate-500" />
+                      <ToggleLeft className="h-3.5 w-3.5 text-muted-foreground/60" />
                     )}
                   </button>
                 ),
@@ -1565,7 +1565,7 @@ export function AdminCommandCenter() {
           </div>
 
           <div className="rounded border border-slate-800 bg-slate-950/50 p-3">
-            <p className="text-sm text-slate-100">Showcase modules</p>
+            <p className="text-sm text-foreground">Showcase modules</p>
             <div className="mt-2 grid gap-1">
               {Object.entries(marketingRuntime.runtime.showcaseModules).map(
                 ([moduleKey, enabled]) => (
@@ -1598,13 +1598,13 @@ export function AdminCommandCenter() {
                         },
                       );
                     }}
-                    className="flex items-center justify-between rounded border border-slate-800 px-2 py-1 text-xs text-slate-200 hover:bg-slate-800"
+                    className="flex items-center justify-between rounded border border-slate-800 px-2 py-1 text-xs text-foreground/90 hover:bg-slate-800"
                   >
                     <span>{moduleKey}</span>
                     {enabled ? (
                       <ToggleRight className="h-3.5 w-3.5 text-emerald-400" />
                     ) : (
-                      <ToggleLeft className="h-3.5 w-3.5 text-slate-500" />
+                      <ToggleLeft className="h-3.5 w-3.5 text-muted-foreground/60" />
                     )}
                   </button>
                 ),
@@ -1617,7 +1617,7 @@ export function AdminCommandCenter() {
       <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
         <div className="mb-4 flex items-center gap-2">
           <Wrench className="h-4 w-4 text-amber-300" />
-          <h2 className="text-lg font-semibold text-slate-100">Integrations Control</h2>
+          <h2 className="text-lg font-semibold text-foreground">Integrations Control</h2>
         </div>
 
         <div className="space-y-3">
@@ -1628,8 +1628,8 @@ export function AdminCommandCenter() {
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <p className="text-sm font-medium text-slate-100">{integration.key}</p>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-sm font-medium text-foreground">{integration.key}</p>
+                  <p className="text-xs text-muted-foreground/60">
                     Status: {integration.value.connection_status} · Last sync:{' '}
                     {integration.value.last_sync_at
                       ? new Date(integration.value.last_sync_at).toLocaleString()
@@ -1644,19 +1644,19 @@ export function AdminCommandCenter() {
                         enabled: !integration.value.enabled,
                       })
                     }
-                    className="inline-flex items-center gap-1 rounded border border-slate-700 px-2 py-1 text-xs text-slate-200 hover:bg-slate-800"
+                    className="inline-flex items-center gap-1 rounded border border-slate-700 px-2 py-1 text-xs text-foreground/90 hover:bg-slate-800"
                   >
                     {integration.value.enabled ? (
                       <ToggleRight className="h-4 w-4 text-emerald-400" />
                     ) : (
-                      <ToggleLeft className="h-4 w-4 text-slate-500" />
+                      <ToggleLeft className="h-4 w-4 text-muted-foreground/60" />
                     )}
                     {integration.value.enabled ? 'Enabled' : 'Disabled'}
                   </button>
                   <button
                     type="button"
                     onClick={() => requestIntegrationRetry(integration.key)}
-                    className="inline-flex items-center gap-1 rounded border border-slate-700 px-2 py-1 text-xs text-slate-200 hover:bg-slate-800"
+                    className="inline-flex items-center gap-1 rounded border border-slate-700 px-2 py-1 text-xs text-foreground/90 hover:bg-slate-800"
                   >
                     <RefreshCcw className="h-3.5 w-3.5" />
                     Retry
@@ -1690,7 +1690,7 @@ export function AdminCommandCenter() {
                       className={`rounded border px-2 py-0.5 text-[11px] ${
                         enabled
                           ? 'border-emerald-700/50 bg-emerald-900/20 text-emerald-200'
-                          : 'border-slate-700 text-slate-400'
+                          : 'border-slate-700 text-muted-foreground'
                       }`}
                     >
                       {scope}
@@ -1706,7 +1706,7 @@ export function AdminCommandCenter() {
       <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
         <div className="mb-4 flex items-center gap-2">
           <Shield className="h-4 w-4 text-rose-300" />
-          <h2 className="text-lg font-semibold text-slate-100">Ops & Security</h2>
+          <h2 className="text-lg font-semibold text-foreground">Ops & Security</h2>
         </div>
 
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
@@ -1719,8 +1719,8 @@ export function AdminCommandCenter() {
                 : 'border-slate-800 bg-slate-950/50'
             }`}
           >
-            <div className="text-sm text-slate-100">Maintenance mode</div>
-            <div className="mt-1 text-xs text-slate-400">
+            <div className="text-sm text-foreground">Maintenance mode</div>
+            <div className="mt-1 text-xs text-muted-foreground">
               Block customer operations during controlled maintenance windows.
             </div>
             <div className="mt-2 text-xs text-amber-200">
@@ -1737,8 +1737,8 @@ export function AdminCommandCenter() {
                 : 'border-slate-800 bg-slate-950/50'
             }`}
           >
-            <div className="text-sm text-slate-100">Read-only mode</div>
-            <div className="mt-1 text-xs text-slate-400">
+            <div className="text-sm text-foreground">Read-only mode</div>
+            <div className="mt-1 text-xs text-muted-foreground">
               Freeze mutating writes while preserving read access.
             </div>
             <div className="mt-2 text-xs text-cyan-200">
@@ -1757,8 +1757,8 @@ export function AdminCommandCenter() {
                 : 'border-slate-800 bg-slate-950/50'
             }`}
           >
-            <div className="text-sm text-slate-100">Emergency lock-down</div>
-            <div className="mt-1 text-xs text-slate-400">
+            <div className="text-sm text-foreground">Emergency lock-down</div>
+            <div className="mt-1 text-xs text-muted-foreground">
               Immediate incident response gate across app and marketing surfaces.
             </div>
             <div className="mt-2 text-xs text-rose-200">
@@ -1767,8 +1767,8 @@ export function AdminCommandCenter() {
           </button>
 
           <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
-            <div className="text-sm text-slate-100">Rate limit multiplier</div>
-            <div className="mt-1 text-xs text-slate-400">
+            <div className="text-sm text-foreground">Rate limit multiplier</div>
+            <div className="mt-1 text-xs text-muted-foreground">
               Increase or reduce API throttle globally.
             </div>
             <input
@@ -1777,36 +1777,36 @@ export function AdminCommandCenter() {
               min="0.1"
               defaultValue={rateLimitMultiplier}
               onBlur={(event) => updateRateLimitMultiplier(Number(event.target.value || 1))}
-              className="mt-2 w-full rounded border border-slate-700 bg-slate-900 px-2 py-1 text-xs text-slate-100"
+              className="mt-2 w-full rounded border border-slate-700 bg-slate-900 px-2 py-1 text-xs text-foreground"
             />
           </div>
         </div>
 
         <div className="mt-4 grid gap-3 md:grid-cols-3">
           <div className="rounded border border-slate-800 bg-slate-950/50 p-3">
-            <div className="flex items-center gap-2 text-sm text-slate-200">
+            <div className="flex items-center gap-2 text-sm text-foreground/90">
               <Database className="h-4 w-4 text-cyan-300" />
               DB Latency
             </div>
-            <p className="mt-2 text-2xl font-semibold text-slate-100">
+            <p className="mt-2 text-2xl font-semibold text-foreground">
               {snapshot.health.databaseLatencyMs}ms
             </p>
           </div>
           <div className="rounded border border-slate-800 bg-slate-950/50 p-3">
-            <div className="flex items-center gap-2 text-sm text-slate-200">
+            <div className="flex items-center gap-2 text-sm text-foreground/90">
               <Gauge className="h-4 w-4 text-emerald-300" />
               API Health
             </div>
-            <p className="mt-2 text-2xl font-semibold text-slate-100">
+            <p className="mt-2 text-2xl font-semibold text-foreground">
               {snapshot.health.apiHealthy ? 'Healthy' : 'Degraded'}
             </p>
           </div>
           <div className="rounded border border-slate-800 bg-slate-950/50 p-3">
-            <div className="flex items-center gap-2 text-sm text-slate-200">
+            <div className="flex items-center gap-2 text-sm text-foreground/90">
               <Shield className="h-4 w-4 text-amber-300" />
               Queue status
             </div>
-            <p className="mt-2 text-sm text-slate-300">
+            <p className="mt-2 text-sm text-foreground/70">
               queued: {snapshot.health.queue.queued} · running: {snapshot.health.queue.running} ·
               failed: {snapshot.health.queue.failed}
             </p>
@@ -1817,7 +1817,7 @@ export function AdminCommandCenter() {
       <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
         <div className="mb-4 flex items-center gap-2">
           <PlayCircle className="h-4 w-4 text-emerald-300" />
-          <h2 className="text-lg font-semibold text-slate-100">Admin Automation</h2>
+          <h2 className="text-lg font-semibold text-foreground">Admin Automation</h2>
         </div>
 
         <div className="mb-4 flex flex-wrap gap-2">
@@ -1827,7 +1827,7 @@ export function AdminCommandCenter() {
               type="button"
               disabled={pendingAction !== null}
               onClick={() => enqueueJob(action)}
-              className="rounded border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-slate-200 hover:bg-slate-800 disabled:opacity-60"
+              className="rounded border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-foreground/90 hover:bg-slate-800 disabled:opacity-60"
             >
               {labelFromJobType(action)}
             </button>
@@ -1841,7 +1841,7 @@ export function AdminCommandCenter() {
           getKey={(item) => item.id}
           renderItem={(job) => (
             <div className="rounded border border-slate-800 bg-slate-950/40 p-3">
-              <div className="flex items-center justify-between text-xs text-slate-400">
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
                 <span>{labelFromJobType(job.job_type)}</span>
                 <span>
                   {job.status} • {job.progress}%
@@ -1853,7 +1853,7 @@ export function AdminCommandCenter() {
                   style={{ width: `${job.progress}%` }}
                 />
               </div>
-              <div className="mt-2 truncate text-xs text-slate-300">
+              <div className="mt-2 truncate text-xs text-foreground/70">
                 {job.logs[job.logs.length - 1]?.message || 'No logs yet'}
               </div>
               {job.status === 'failed' && job.error_message ? (
@@ -1866,8 +1866,8 @@ export function AdminCommandCenter() {
 
       <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
         <div className="mb-4 flex items-center gap-2">
-          <Lock className="h-4 w-4 text-slate-200" />
-          <h2 className="text-lg font-semibold text-slate-100">Live Audit Stream</h2>
+          <Lock className="h-4 w-4 text-foreground/90" />
+          <h2 className="text-lg font-semibold text-foreground">Live Audit Stream</h2>
         </div>
 
         <VirtualizedList
@@ -1877,15 +1877,15 @@ export function AdminCommandCenter() {
           getKey={(item) => item.id}
           renderItem={(entry) => (
             <div className="rounded border border-slate-800 bg-slate-950/40 p-3">
-              <div className="flex items-center justify-between text-xs text-slate-400">
-                <span className="font-mono text-slate-200">{entry.event_type}</span>
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <span className="font-mono text-foreground/90">{entry.event_type}</span>
                 <span>{new Date(entry.created_at).toLocaleString()}</span>
               </div>
-              <div className="mt-1 text-xs text-slate-400">
+              <div className="mt-1 text-xs text-muted-foreground">
                 {entry.target_type}
                 {entry.target_id ? `:${entry.target_id}` : ''}
               </div>
-              <div className="mt-1 truncate text-xs text-slate-500">
+              <div className="mt-1 truncate text-xs text-muted-foreground/60">
                 actor: {entry.actor_user_id ?? 'system'}
               </div>
             </div>
@@ -1893,7 +1893,7 @@ export function AdminCommandCenter() {
         />
       </section>
 
-      <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-xs text-slate-400">
+      <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-xs text-muted-foreground">
         <div className="flex flex-wrap items-center gap-2">
           <CheckCircle2 className="h-3.5 w-3.5 text-emerald-300" />
           Every write is persisted to Supabase and appended to immutable `audit_log`.

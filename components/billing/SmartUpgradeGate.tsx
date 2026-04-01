@@ -53,28 +53,28 @@ export function SmartUpgradeGate({
               {featureBenefit ? (
                 <featureBenefit.icon className="h-7 w-7 text-sky-400" />
               ) : (
-                <Lock className="h-7 w-7 text-slate-300" />
+                <Lock className="h-7 w-7 text-foreground/70" />
               )}
             </div>
 
             {/* Feature-specific title */}
-            <h3 className="text-lg font-bold text-slate-100 mb-2">
+            <h3 className="text-lg font-bold text-foreground mb-2">
               {featureBenefit?.title ?? 'Premium Feature'}
             </h3>
 
             {/* Feature-specific description */}
-            <p className="text-sm text-slate-400 mb-4">
+            <p className="text-sm text-muted-foreground mb-4">
               {featureBenefit?.description ??
                 'Upgrade your plan to unlock this feature and access advanced capabilities.'}
             </p>
 
             {/* Benefits preview */}
             {featureBenefit && featureBenefit.benefits.length > 0 && (
-              <ul className="text-left bg-white/5 rounded-xl p-4 mb-6 space-y-2">
+              <ul className="text-left bg-glass-subtle rounded-xl p-4 mb-6 space-y-2">
                 {featureBenefit.benefits.slice(0, 3).map((benefit, index) => (
                   <li
                     key={index}
-                    className="flex items-start gap-2 text-sm text-slate-300"
+                    className="flex items-start gap-2 text-sm text-foreground/70"
                   >
                     <Check className="h-4 w-4 text-emerald-400 mt-0.5 shrink-0" />
                     {benefit}
@@ -86,7 +86,7 @@ export function SmartUpgradeGate({
             {/* Plan badge */}
             {featureBenefit && (
               <div className="mb-6 flex items-center justify-center gap-2">
-                <span className="text-xs text-slate-500">Available on</span>
+                <span className="text-xs text-muted-foreground/60">Available on</span>
                 <span className="inline-flex items-center gap-1 text-xs font-bold text-sky-300 bg-sky-500/15 px-2 py-1 rounded-full">
                   <Crown className="h-3 w-3" />
                   {featureBenefit.requiredPlan.toUpperCase()}
@@ -105,14 +105,14 @@ export function SmartUpgradeGate({
                 </button>
                 <button
                   onClick={() => setShowModal(true)}
-                  className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 transition-colors"
+                  className="text-xs text-muted-foreground hover:text-foreground/90 flex items-center gap-1 transition-colors"
                 >
                   Compare all plans
                   <ArrowRight className="h-3 w-3" />
                 </button>
               </div>
             ) : (
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-muted-foreground/60">
                 Contact your organization admin to upgrade the plan.
               </p>
             )}
@@ -164,10 +164,10 @@ export function SmartFeatureTeaser({
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-slate-200 truncate">
+            <p className="text-sm font-medium text-foreground/90 truncate">
               {featureBenefit?.title ?? 'Premium Feature'}
             </p>
-            <p className="text-xs text-slate-400 truncate">
+            <p className="text-xs text-muted-foreground truncate">
               Upgrade to unlock
             </p>
           </div>

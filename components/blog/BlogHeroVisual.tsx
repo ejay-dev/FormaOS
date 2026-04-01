@@ -226,7 +226,7 @@ export function BlogHeroVisual({
           initial={{ opacity: 0, scale: 0.8, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className={`mb-6 p-6 rounded-2xl bg-gradient-to-br ${config.gradient} border border-white/10 backdrop-blur-xl`}
+          className={`mb-6 p-6 rounded-2xl bg-gradient-to-br ${config.gradient} border border-glass-border backdrop-blur-xl`}
           style={{
             boxShadow: `0 0 60px ${config.glowColor}`,
           }}

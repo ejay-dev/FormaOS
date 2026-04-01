@@ -39,10 +39,10 @@ export default async function GovernancePage() {
   if (!isAdmin) {
     return (
       <div className="space-y-4 pb-24">
-        <h1 className="text-3xl font-black text-slate-100 tracking-tight">
+        <h1 className="text-3xl font-black text-foreground tracking-tight">
           Data Governance
         </h1>
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-muted-foreground">
           Admin access is required to manage retention, classification, residency, and identity audit controls.
         </p>
         <Link href="/app" className="text-sm text-cyan-300 hover:underline">
@@ -105,10 +105,10 @@ export default async function GovernancePage() {
             <ShieldCheck className="h-6 w-6" />
           </div>
           <div>
-            <h1 className="text-3xl font-black tracking-tight text-slate-100">
+            <h1 className="text-3xl font-black tracking-tight text-foreground">
               Data Governance
             </h1>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-muted-foreground">
               Retention, classification, tenant isolation, residency, and identity-aware audit evidence.
             </p>
           </div>
@@ -119,11 +119,11 @@ export default async function GovernancePage() {
         {cards.map((card) => (
           <div key={card.title} className="rounded-3xl border border-white/10 bg-white/5 p-5">
             <div className="flex items-center justify-between">
-              <div className="text-xs uppercase tracking-[0.24em] text-slate-500">{card.title}</div>
-              <card.icon className="h-5 w-5 text-slate-400" />
+              <div className="text-xs uppercase tracking-[0.24em] text-muted-foreground/60">{card.title}</div>
+              <card.icon className="h-5 w-5 text-muted-foreground" />
             </div>
-            <div className="mt-4 text-3xl font-black text-slate-100">{card.value}</div>
-            <div className="mt-2 text-sm text-slate-400">{card.description}</div>
+            <div className="mt-4 text-3xl font-black text-foreground">{card.value}</div>
+            <div className="mt-2 text-sm text-muted-foreground">{card.description}</div>
           </div>
         ))}
       </section>
@@ -137,9 +137,9 @@ export default async function GovernancePage() {
         <div className="space-y-6">
           <section className="rounded-3xl border border-white/10 bg-white/5 p-6 space-y-4">
             <div>
-              <h2 className="text-xl font-black text-slate-100">Residency Compliance</h2>
-              <p className="text-sm text-slate-400">
-                Current org region is <span className="font-semibold text-slate-200">{region.toUpperCase()}</span>.
+              <h2 className="text-xl font-black text-foreground">Residency Compliance</h2>
+              <p className="text-sm text-muted-foreground">
+                Current org region is <span className="font-semibold text-foreground/90">{region.toUpperCase()}</span>.
               </p>
             </div>
             <div className="space-y-3">
@@ -150,8 +150,8 @@ export default async function GovernancePage() {
               ) : (
                 violations.slice(0, 5).map((violation: any) => (
                   <div key={violation.id} className="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
-                    <div className="text-sm font-semibold text-slate-100">{violation.operation}</div>
-                    <div className="text-xs text-slate-400">
+                    <div className="text-sm font-semibold text-foreground">{violation.operation}</div>
+                    <div className="text-xs text-muted-foreground">
                       {violation.source_region ?? region} → {violation.destination_region ?? region}
                     </div>
                     <div className="mt-2 text-xs text-rose-300">{violation.reason}</div>
@@ -162,12 +162,12 @@ export default async function GovernancePage() {
           </section>
 
           <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
-            <div className="text-xl font-black text-slate-100">Classification Breakdown</div>
+            <div className="text-xl font-black text-foreground">Classification Breakdown</div>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {Object.entries(classificationReport.breakdown ?? {}).map(([key, value]) => (
                 <div key={key} className="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
-                  <div className="text-xs uppercase tracking-[0.2em] text-slate-500">{key}</div>
-                  <div className="mt-2 text-2xl font-black text-slate-100">{String(value)}</div>
+                  <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground/60">{key}</div>
+                  <div className="mt-2 text-2xl font-black text-foreground">{String(value)}</div>
                 </div>
               ))}
             </div>

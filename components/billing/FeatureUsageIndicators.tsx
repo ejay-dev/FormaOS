@@ -24,8 +24,8 @@ export function FeatureUsageIndicators() {
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-5 animate-pulse">
-        <div className="flex items-center gap-2 text-sm text-slate-400">
+      <div className="rounded-2xl border border-glass-border bg-glass-subtle p-5 animate-pulse">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="h-4 w-4 animate-spin" />
           Loading usage data...
         </div>
@@ -39,11 +39,11 @@ export function FeatureUsageIndicators() {
   if (limitedItems.length === 0) return null;
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-4">
+    <div className="rounded-2xl border border-glass-border bg-glass-subtle p-5 space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <TrendingUp className="h-4 w-4 text-sky-400" />
-          <h3 className="text-sm font-semibold text-slate-200">
+          <h3 className="text-sm font-semibold text-foreground/90">
             Feature Usage
           </h3>
         </div>
@@ -65,7 +65,7 @@ export function FeatureUsageIndicators() {
 
 function UsageBar({ item }: { item: FeatureUsageItem }) {
   const statusColors = {
-    ok: { bar: 'bg-sky-400', text: 'text-slate-400' },
+    ok: { bar: 'bg-sky-400', text: 'text-muted-foreground' },
     nudge: { bar: 'bg-amber-400', text: 'text-amber-300' },
     warning: { bar: 'bg-orange-400', text: 'text-orange-300' },
     exceeded: { bar: 'bg-rose-400', text: 'text-rose-300' },
@@ -76,7 +76,7 @@ function UsageBar({ item }: { item: FeatureUsageItem }) {
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between text-xs">
-        <span className="text-slate-300 font-medium">{item.label}</span>
+        <span className="text-foreground/70 font-medium">{item.label}</span>
         <span className={`tabular-nums ${colors.text}`}>
           {item.current}
           {item.limit !== -1 && ` / ${item.limit}`}

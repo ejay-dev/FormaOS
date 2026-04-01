@@ -68,7 +68,7 @@ export function PerformanceDashboard() {
             <h3 className="font-bold text-lg">Performance Monitor</h3>
             <button
               onClick={() => setIsVisible(false)}
-              className="text-slate-400 hover:text-white"
+              className="text-muted-foreground hover:text-white"
             >
               ✕
             </button>
@@ -175,7 +175,7 @@ export function PerformanceDashboard() {
 
           {/* No Data */}
           {Object.keys(metrics).length === 0 && (
-            <p className="text-slate-400 text-sm text-center">
+            <p className="text-muted-foreground text-sm text-center">
               Collecting metrics...
             </p>
           )}
@@ -203,7 +203,7 @@ function MetricRow({ label, value, unit, threshold }: MetricRowProps) {
 
   return (
     <div className="flex justify-between items-center text-sm">
-      <span className="text-slate-300">{label}</span>
+      <span className="text-foreground/70">{label}</span>
       <span className={`font-mono font-semibold ${getColor()}`}>
         {displayValue}
         {unit}

@@ -20,7 +20,7 @@ const typeConfig: Record<string, { color: string; icon: React.ComponentType<{ cl
   evidence: { color: 'text-blue-400 bg-blue-500/15', icon: Upload },
   task: { color: 'text-emerald-400 bg-emerald-500/15', icon: CheckSquare },
   user: { color: 'text-purple-400 bg-purple-500/15', icon: Users },
-  system: { color: 'text-slate-400 bg-slate-500/15', icon: Settings },
+  system: { color: 'text-muted-foreground bg-slate-500/15', icon: Settings },
   compliance: { color: 'text-amber-400 bg-amber-500/15', icon: Shield },
 };
 
@@ -32,13 +32,13 @@ export default function AuditScreen() {
         <div className="flex items-center gap-2">
           <History className="h-4 w-4 text-cyan-400" />
           <h2 className="text-sm font-semibold text-white">Audit Trail</h2>
-          <span className="text-[10px] text-slate-500">{demoAuditLog.length} entries</span>
+          <span className="text-[10px] text-muted-foreground/60">{demoAuditLog.length} entries</span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[9px] text-emerald-400 font-medium">
             Immutable
           </span>
-          <span className="rounded-full bg-white/[0.04] px-2 py-0.5 text-[9px] text-slate-400">
+          <span className="rounded-full bg-white/[0.04] px-2 py-0.5 text-[9px] text-muted-foreground">
             Export CSV
           </span>
         </div>
@@ -50,7 +50,7 @@ export default function AuditScreen() {
         className="rounded-xl bg-white/[0.02] border border-white/[0.06] overflow-hidden"
       >
         {/* Header */}
-        <div className="grid grid-cols-[28px_1fr_100px_70px] gap-2 px-3 py-2 bg-white/[0.02] border-b border-white/[0.06] text-[9px] font-semibold text-slate-500 uppercase tracking-wider">
+        <div className="grid grid-cols-[28px_1fr_100px_70px] gap-2 px-3 py-2 bg-white/[0.02] border-b border-white/[0.06] text-[9px] font-semibold text-muted-foreground/60 uppercase tracking-wider">
           <span></span>
           <span>Event</span>
           <span>User</span>
@@ -72,13 +72,13 @@ export default function AuditScreen() {
                 <Icon className="h-2.5 w-2.5" />
               </div>
               <div className="min-w-0">
-                <span className="text-slate-300 truncate block">
+                <span className="text-foreground/70 truncate block">
                   {entry.action}
                 </span>
-                <span className="text-[9px] text-slate-500 truncate block">{entry.target}</span>
+                <span className="text-[9px] text-muted-foreground/60 truncate block">{entry.target}</span>
               </div>
-              <span className="text-slate-400 truncate">{entry.user}</span>
-              <span className="text-slate-500 text-[9px]">{entry.timestamp}</span>
+              <span className="text-muted-foreground truncate">{entry.user}</span>
+              <span className="text-muted-foreground/60 text-[9px]">{entry.timestamp}</span>
             </motion.div>
           );
         })}
@@ -90,7 +90,7 @@ export default function AuditScreen() {
         className="flex items-center gap-2 rounded-xl bg-white/[0.02] border border-white/[0.06] px-3 py-2"
       >
         <Shield className="h-3 w-3 text-emerald-400 flex-shrink-0" />
-        <span className="text-[10px] text-slate-400">
+        <span className="text-[10px] text-muted-foreground">
           All entries are cryptographically timestamped and tamper-evident. Audit trail cannot be modified or deleted.
         </span>
       </motion.div>

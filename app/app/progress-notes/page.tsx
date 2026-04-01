@@ -91,7 +91,7 @@ export default async function ProgressNotesPage() {
           <h1 className="text-3xl font-semibold tracking-tight text-slate-50">
             Progress Notes
           </h1>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted-foreground">
             Capture care updates, follow-ups, and compliance-relevant notes.
           </p>
         </div>
@@ -99,7 +99,7 @@ export default async function ProgressNotesPage() {
 
       {canWrite && (
         <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-200">
+          <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
             <NotebookPen className="h-4 w-4 text-indigo-300" />
             New Progress Note
           </div>
@@ -108,12 +108,12 @@ export default async function ProgressNotesPage() {
             className="mt-4 grid gap-4 md:grid-cols-3"
           >
             <div className="md:col-span-1">
-              <label htmlFor="field-209" className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+              <label htmlFor="field-209" className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
                 Patient
               </label>
               <select
                 name="patientId"
-                className="mt-2 w-full rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-sm text-slate-100 outline-none"
+                className="mt-2 w-full rounded-xl border border-white/10 bg-glass-strong px-3 py-2 text-sm text-foreground outline-none"
                 required
                 defaultValue=""
                 disabled={(patients ?? []).length === 0}
@@ -129,12 +129,12 @@ export default async function ProgressNotesPage() {
               </select>
             </div>
             <div>
-              <label htmlFor="field-208" className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+              <label htmlFor="field-208" className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
                 Status Tag
               </label>
               <select
                 name="statusTag"
-                className="mt-2 w-full rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-sm text-slate-100 outline-none"
+                className="mt-2 w-full rounded-xl border border-white/10 bg-glass-strong px-3 py-2 text-sm text-foreground outline-none"
                 defaultValue="routine"
               >
                 {NOTE_TAGS.map((tag) => (
@@ -145,13 +145,13 @@ export default async function ProgressNotesPage() {
               </select>
             </div>
             <div className="md:col-span-3">
-              <label htmlFor="field-207" className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+              <label htmlFor="field-207" className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
                 Note
               </label>
               <textarea
                 name="noteText"
                 rows={4}
-                className="mt-2 w-full rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-sm text-slate-100 outline-none"
+                className="mt-2 w-full rounded-xl border border-white/10 bg-glass-strong px-3 py-2 text-sm text-foreground outline-none"
                 placeholder="Document the interaction, outcome, or required follow-up."
                 required
               />
@@ -159,7 +159,7 @@ export default async function ProgressNotesPage() {
             <div className="md:col-span-3">
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-xs font-semibold text-slate-100 hover:bg-white/15"
+                className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
                 disabled={(patients ?? []).length === 0}
               >
                 Save Note
@@ -175,13 +175,13 @@ export default async function ProgressNotesPage() {
       )}
 
       <section className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
-        <div className="flex items-center gap-2 border-b border-white/10 px-6 py-4 text-xs font-semibold text-slate-200">
+        <div className="flex items-center gap-2 border-b border-white/10 px-6 py-4 text-xs font-semibold text-foreground/90">
           <UserCircle2 className="h-4 w-4 text-emerald-300" />
           Recent Notes
         </div>
         <div className="divide-y divide-white/10">
           {(notes ?? []).length === 0 ? (
-            <div className="px-6 py-10 text-sm text-slate-400">
+            <div className="px-6 py-10 text-sm text-muted-foreground">
               No notes recorded yet.
             </div>
           ) : (
@@ -192,15 +192,15 @@ export default async function ProgressNotesPage() {
                 <div key={note.id} className="px-6 py-4">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                      <div className="text-sm font-semibold text-slate-100">
+                      <div className="text-sm font-semibold text-foreground">
                         {patientName}
                       </div>
-                      <div className="text-xs text-slate-400">
+                      <div className="text-xs text-muted-foreground">
                         {fmtDate(note.created_at)}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="rounded-full border border-white/10 bg-white/10 px-2 py-1 text-xs font-semibold uppercase tracking-widest text-slate-300">
+                      <span className="rounded-full border border-white/10 bg-glass-strong px-2 py-1 text-xs font-semibold uppercase tracking-widest text-foreground/70">
                         {note.status_tag}
                       </span>
                       {note.signed_off_by ? (
@@ -211,7 +211,7 @@ export default async function ProgressNotesPage() {
                       ) : null}
                     </div>
                   </div>
-                  <p className="mt-3 text-sm text-slate-300">
+                  <p className="mt-3 text-sm text-foreground/70">
                     {note.note_text}
                   </p>
                   <div className="mt-3 flex flex-wrap items-center gap-3 text-xs">
@@ -226,7 +226,7 @@ export default async function ProgressNotesPage() {
                         <input type="hidden" name="noteId" value={note.id} />
                         <button
                           type="submit"
-                          className="rounded-lg border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-semibold text-slate-100 hover:bg-white/15"
+                          className="rounded-lg border border-white/10 bg-glass-strong px-3 py-1 text-[11px] font-semibold text-foreground hover:bg-white/15"
                         >
                           Sign off
                         </button>

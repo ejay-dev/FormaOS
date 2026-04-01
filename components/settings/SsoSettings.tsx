@@ -65,8 +65,8 @@ export function SsoSettings(props: Props) {
   return (
     <section className="rounded-2xl border border-slate-800 bg-slate-950/40 p-6 space-y-4">
       <header className="space-y-1">
-        <h2 className="text-lg font-bold text-slate-100">Enterprise SSO (SAML)</h2>
-        <p className="text-sm text-slate-400">
+        <h2 className="text-lg font-bold text-foreground">Enterprise SSO (SAML)</h2>
+        <p className="text-sm text-muted-foreground">
           Configure SAML SSO for your organization. This is a real Service Provider (SP) flow: metadata, login, ACS, and signed assertion validation.
         </p>
       </header>
@@ -75,8 +75,8 @@ export function SsoSettings(props: Props) {
         <div className="rounded-xl border border-slate-800 bg-slate-950/30 p-4 space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-sm font-semibold text-slate-200">Enable SAML SSO</div>
-              <div className="text-xs text-slate-500">
+              <div className="text-sm font-semibold text-foreground/90">Enable SAML SSO</div>
+              <div className="text-xs text-muted-foreground/60">
                 Turns on SSO endpoints for this org.
               </div>
             </div>
@@ -99,8 +99,8 @@ export function SsoSettings(props: Props) {
 
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-sm font-semibold text-slate-200">Enforce SSO</div>
-              <div className="text-xs text-slate-500">
+              <div className="text-sm font-semibold text-foreground/90">Enforce SSO</div>
+              <div className="text-xs text-muted-foreground/60">
                 When enabled, users on allowed domains should sign in via SSO instead of passwords.
               </div>
             </div>
@@ -123,18 +123,18 @@ export function SsoSettings(props: Props) {
           </div>
 
           <div>
-            <label htmlFor="field-225" className="block text-xs font-semibold text-slate-300 mb-2">
+            <label htmlFor="field-225" className="block text-xs font-semibold text-foreground/70 mb-2">
               Allowed email domains (one per line)
             </label>
             <textarea
               value={domainsText}
               onChange={(e) => setDomainsText(e.target.value)}
               rows={4}
-              className="w-full rounded-lg bg-slate-950 border border-slate-800 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600"
+              className="w-full rounded-lg bg-slate-950 border border-slate-800 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/40"
               placeholder={`example.com\nexample.org`}
               disabled={isPending}
             />
-            <p className="mt-2 text-xs text-slate-500">
+            <p className="mt-2 text-xs text-muted-foreground/60">
               If empty, domain checks are not enforced. Recommended: lock this to your corporate domains.
             </p>
           </div>
@@ -142,22 +142,22 @@ export function SsoSettings(props: Props) {
 
         <div className="rounded-xl border border-slate-800 bg-slate-950/30 p-4 space-y-3">
           <div>
-            <div className="text-xs font-semibold text-slate-300 mb-2">SP Endpoints (give these to your IdP admin)</div>
+            <div className="text-xs font-semibold text-foreground/70 mb-2">SP Endpoints (give these to your IdP admin)</div>
             <div className="space-y-2 text-sm">
               <div className="flex items-center justify-between gap-3">
-                <span className="text-slate-400">Metadata</span>
-                <code className="text-xs text-slate-200 break-all">{props.sp.metadataUrl}</code>
+                <span className="text-muted-foreground">Metadata</span>
+                <code className="text-xs text-foreground/90 break-all">{props.sp.metadataUrl}</code>
               </div>
               <div className="flex items-center justify-between gap-3">
-                <span className="text-slate-400">ACS</span>
-                <code className="text-xs text-slate-200 break-all">{props.sp.acsUrl}</code>
+                <span className="text-muted-foreground">ACS</span>
+                <code className="text-xs text-foreground/90 break-all">{props.sp.acsUrl}</code>
               </div>
             </div>
           </div>
 
           <div className="rounded-lg border border-slate-800 bg-slate-950/40 p-3">
-            <div className="text-xs font-semibold text-slate-300">Signing</div>
-            <div className="text-xs text-slate-500 mt-1">
+            <div className="text-xs font-semibold text-foreground/70">Signing</div>
+            <div className="text-xs text-muted-foreground/60 mt-1">
               {props.spSigningAvailable
                 ? 'AuthnRequest signing is available (SP key configured).'
                 : 'AuthnRequest signing is not configured. Assertions are still required to be signed by the IdP.'}
@@ -165,18 +165,18 @@ export function SsoSettings(props: Props) {
           </div>
 
           <div>
-            <label htmlFor="field-224" className="block text-xs font-semibold text-slate-300 mb-2">
+            <label htmlFor="field-224" className="block text-xs font-semibold text-foreground/70 mb-2">
               IdP metadata XML
             </label>
             <textarea
               value={metadataXml}
               onChange={(e) => setMetadataXml(e.target.value)}
               rows={8}
-              className="w-full rounded-lg bg-slate-950 border border-slate-800 px-3 py-2 text-xs text-slate-100 font-mono"
+              className="w-full rounded-lg bg-slate-950 border border-slate-800 px-3 py-2 text-xs text-foreground font-mono"
               placeholder="<EntityDescriptor ...>...</EntityDescriptor>"
               disabled={isPending}
             />
-            <p className="mt-2 text-xs text-slate-500">
+            <p className="mt-2 text-xs text-muted-foreground/60">
               Paste the IdP metadata XML. FormaOS extracts issuer, SSO URL, and signing certificate from this document.
             </p>
           </div>

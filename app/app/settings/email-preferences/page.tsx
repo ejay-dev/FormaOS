@@ -107,7 +107,7 @@ export default function EmailPreferencesPage() {
   if (loading) {
     return (
       <div className="p-6">
-        <div className="animate-pulse text-sm text-slate-400">Loading preferences...</div>
+        <div className="animate-pulse text-sm text-muted-foreground">Loading preferences...</div>
       </div>
     );
   }
@@ -122,8 +122,8 @@ export default function EmailPreferencesPage() {
 
   return (
     <div className="p-6 max-w-2xl">
-      <h1 className="text-2xl font-bold mb-2 text-slate-100">Email Preferences</h1>
-      <p className="text-slate-400 mb-6">
+      <h1 className="text-2xl font-bold mb-2 text-foreground">Email Preferences</h1>
+      <p className="text-muted-foreground mb-6">
         Manage which emails you receive from FormaOS
       </p>
 
@@ -136,11 +136,11 @@ export default function EmailPreferencesPage() {
               onChange={(e) =>
                 setPreferences({ ...preferences, unsubscribed_all: e.target.checked })
               }
-              className="mt-1 h-4 w-4 rounded border-white/10 text-slate-100 focus:ring-sky-500/20"
+              className="mt-1 h-4 w-4 rounded border-white/10 text-foreground focus:ring-sky-500/20"
             />
             <div>
               <div className="font-semibold text-rose-300 group-hover:text-rose-200">Unsubscribe from all emails</div>
-              <div className="text-sm text-slate-400 mt-1">
+              <div className="text-sm text-muted-foreground mt-1">
                 You will not receive any emails from FormaOS (including critical account notifications)
               </div>
             </div>
@@ -156,11 +156,11 @@ export default function EmailPreferencesPage() {
                 setPreferences({ ...preferences, welcome_emails: e.target.checked })
               }
               disabled={preferences.unsubscribed_all}
-              className="mt-1 h-4 w-4 rounded border-white/10 text-slate-100 focus:ring-sky-500/20"
+              className="mt-1 h-4 w-4 rounded border-white/10 text-foreground focus:ring-sky-500/20"
             />
             <div>
-              <div className="font-medium text-slate-100 group-hover:text-slate-200">Welcome emails</div>
-              <div className="text-sm text-slate-400 mt-1">
+              <div className="font-medium text-foreground group-hover:text-foreground/90">Welcome emails</div>
+              <div className="text-sm text-muted-foreground mt-1">
                 Receive welcome emails when you join FormaOS
               </div>
             </div>
@@ -174,11 +174,11 @@ export default function EmailPreferencesPage() {
                 setPreferences({ ...preferences, invitation_emails: e.target.checked })
               }
               disabled={preferences.unsubscribed_all}
-              className="mt-1 h-4 w-4 rounded border-white/10 text-slate-100 focus:ring-sky-500/20"
+              className="mt-1 h-4 w-4 rounded border-white/10 text-foreground focus:ring-sky-500/20"
             />
             <div>
-              <div className="font-medium text-slate-100 group-hover:text-slate-200">Team invitations</div>
-              <div className="text-sm text-slate-400 mt-1">
+              <div className="font-medium text-foreground group-hover:text-foreground/90">Team invitations</div>
+              <div className="text-sm text-muted-foreground mt-1">
                 Receive emails when you're invited to join an organization
               </div>
             </div>
@@ -192,11 +192,11 @@ export default function EmailPreferencesPage() {
                 setPreferences({ ...preferences, alert_emails: e.target.checked })
               }
               disabled={preferences.unsubscribed_all}
-              className="mt-1 h-4 w-4 rounded border-white/10 text-slate-100 focus:ring-sky-500/20"
+              className="mt-1 h-4 w-4 rounded border-white/10 text-foreground focus:ring-sky-500/20"
             />
             <div>
-              <div className="font-medium text-slate-100 group-hover:text-slate-200">Alerts and notifications</div>
-              <div className="text-sm text-slate-400 mt-1">
+              <div className="font-medium text-foreground group-hover:text-foreground/90">Alerts and notifications</div>
+              <div className="text-sm text-muted-foreground mt-1">
                 Receive important alerts about your compliance activities
               </div>
             </div>
@@ -210,11 +210,11 @@ export default function EmailPreferencesPage() {
                 setPreferences({ ...preferences, weekly_digest: e.target.checked })
               }
               disabled={preferences.unsubscribed_all}
-              className="mt-1 h-4 w-4 rounded border-white/10 text-slate-100 focus:ring-sky-500/20"
+              className="mt-1 h-4 w-4 rounded border-white/10 text-foreground focus:ring-sky-500/20"
             />
             <div>
-              <div className="font-medium text-slate-100 group-hover:text-slate-200">Weekly digest</div>
-              <div className="text-sm text-slate-400 mt-1">
+              <div className="font-medium text-foreground group-hover:text-foreground/90">Weekly digest</div>
+              <div className="text-sm text-muted-foreground mt-1">
                 Receive a weekly summary of your organization's activities
               </div>
             </div>
@@ -228,11 +228,11 @@ export default function EmailPreferencesPage() {
                 setPreferences({ ...preferences, marketing_emails: e.target.checked })
               }
               disabled={preferences.unsubscribed_all}
-              className="mt-1 h-4 w-4 rounded border-white/10 text-slate-100 focus:ring-sky-500/20"
+              className="mt-1 h-4 w-4 rounded border-white/10 text-foreground focus:ring-sky-500/20"
             />
             <div>
-              <div className="font-medium text-slate-100 group-hover:text-slate-200">Marketing and product updates</div>
-              <div className="text-sm text-slate-400 mt-1">
+              <div className="font-medium text-foreground group-hover:text-foreground/90">Marketing and product updates</div>
+              <div className="text-sm text-muted-foreground mt-1">
                 Receive news about new features, tips, and FormaOS updates
               </div>
             </div>
@@ -243,7 +243,7 @@ export default function EmailPreferencesPage() {
           <button
             onClick={savePreferences}
             disabled={saving}
-            className="px-6 py-2 bg-white/10 text-slate-100 rounded-lg font-medium hover:bg-white/20 disabled:bg-white/10 transition-all active:scale-95"
+            className="px-6 py-2 bg-glass-strong text-foreground rounded-lg font-medium hover:bg-white/20 disabled:bg-glass-strong transition-all active:scale-95"
           >
             {saving ? 'Saving...' : 'Save Preferences'}
           </button>

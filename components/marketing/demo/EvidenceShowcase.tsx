@@ -96,7 +96,7 @@ export default function EvidenceShowcase() {
               </span>
             </h3>
 
-            <p className="text-base text-slate-400 mb-8 leading-relaxed">
+            <p className="text-base text-muted-foreground mb-8 leading-relaxed">
               Every document timestamped. Every chain of custody preserved. Every export defensible.
               FormaOS transforms evidence management from a scramble into a system.
             </p>
@@ -111,7 +111,7 @@ export default function EvidenceShowcase() {
                   <div className="h-8 w-8 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center flex-shrink-0">
                     <Icon className="h-4 w-4 text-purple-400" />
                   </div>
-                  <span className="text-sm text-slate-300">{text}</span>
+                  <span className="text-sm text-foreground/70">{text}</span>
                 </div>
               ))}
             </div>
@@ -145,7 +145,7 @@ export default function EvidenceShowcase() {
                           className={`
                             relative flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-medium transition-all w-full justify-center
                             ${isActive ? `${step.bg} ${step.color} border ${step.border}` :
-                              isPast ? 'bg-white/[0.04] text-emerald-400' : 'bg-white/[0.02] text-slate-600'}
+                              isPast ? 'bg-white/[0.04] text-emerald-400' : 'bg-white/[0.02] text-muted-foreground/40'}
                           `}
                         >
                           <Icon className="h-3 w-3" />
@@ -181,10 +181,10 @@ export default function EvidenceShowcase() {
                             </div>
                             <div>
                               <p className={`text-sm font-semibold ${step.color}`}>{step.title}</p>
-                              <p className="text-xs text-slate-400">{step.detail}</p>
+                              <p className="text-xs text-muted-foreground">{step.detail}</p>
                             </div>
                           </div>
-                          <p className="text-[11px] text-slate-500 pl-12">{step.meta}</p>
+                          <p className="text-[11px] text-muted-foreground/60 pl-12">{step.meta}</p>
                         </div>
                       );
                     })()}
@@ -195,8 +195,8 @@ export default function EvidenceShowcase() {
                         <span className="text-[9px] font-bold text-red-400">PDF</span>
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-[11px] font-medium text-slate-300 truncate">SOC_2_Type_II_Report_Q1_2026.pdf</p>
-                        <p className="text-[9px] text-slate-500">2.4 MB • Uploaded 10 Feb 2026 16:42</p>
+                        <p className="text-[11px] font-medium text-foreground/70 truncate">SOC_2_Type_II_Report_Q1_2026.pdf</p>
+                        <p className="text-[9px] text-muted-foreground/60">2.4 MB • Uploaded 10 Feb 2026 16:42</p>
                       </div>
                       {activeStep >= 2 && (
                         <motion.div

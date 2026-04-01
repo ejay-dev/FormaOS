@@ -78,11 +78,11 @@ export function ArtifactSidebar({
   );
 
   return (
-    <div className="bg-white/5 border border-white/10 rounded-[2rem] p-6 shadow-sm space-y-8 md:sticky md:top-6">
+    <div className="bg-glass-subtle border border-glass-border rounded-[2rem] p-6 shadow-sm space-y-8 md:sticky md:top-6">
       {/* SECTION 1: LINKED EVIDENCE */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+          <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] flex items-center gap-2">
             <LinkIcon className="h-3 w-3 text-violet-400" />
             <span>Linked Evidence</span>
           </h3>
@@ -98,7 +98,7 @@ export function ArtifactSidebar({
               <p className="text-xs text-violet-300/70 font-bold uppercase">
                 No Evidence Linked
               </p>
-              <p className="text-[9px] text-slate-400 mt-1">
+              <p className="text-[9px] text-muted-foreground mt-1">
                 Link artifacts to strengthen audit defensibility
               </p>
             </div>
@@ -123,10 +123,10 @@ export function ArtifactSidebar({
                       <FileText className="h-4 w-4" />
                     </div>
                     <div className="flex flex-col min-w-0">
-                      <span className="text-xs font-bold text-slate-100 truncate block">
+                      <span className="text-xs font-bold text-foreground truncate block">
                         {fileName}
                       </span>
-                      <span className="text-[9px] text-slate-400 uppercase font-black tracking-widest truncate">
+                      <span className="text-[9px] text-muted-foreground uppercase font-black tracking-widest truncate">
                         {typeLabel} • {sizeKb}KB
                       </span>
                     </div>
@@ -141,19 +141,19 @@ export function ArtifactSidebar({
 
       {/* SECTION 2: VAULT BROWSER */}
       {!readOnly && (
-        <div className="pt-6 border-t border-white/10 space-y-4">
+        <div className="pt-6 border-t border-glass-border space-y-4">
           <div className="flex items-center justify-between">
-            <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">
+            <h4 className="text-xs font-black text-muted-foreground uppercase tracking-widest">
               Vault Browser
             </h4>
-            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+            <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
               {availableItems.length} Available
             </span>
           </div>
 
           <div className="max-h-[240px] overflow-y-auto space-y-2 pr-1 custom-scrollbar">
             {availableItems.length === 0 ? (
-              <p className="text-xs text-slate-400 italic py-2">
+              <p className="text-xs text-muted-foreground italic py-2">
                 No unlinked items found in Vault.
               </p>
             ) : (
@@ -176,7 +176,7 @@ export function ArtifactSidebar({
                             ? 'bg-emerald-400/20 border-emerald-400/40'
                             : isCurrentlyLinking
                               ? 'bg-violet-400/20 border-violet-400/40'
-                              : 'bg-white/5 border-white/10 group-hover:bg-violet-400/10 group-hover:border-violet-400/30'
+                              : 'bg-glass-subtle border-glass-border group-hover:bg-violet-400/10 group-hover:border-violet-400/30'
                         }`}
                       >
                         {wasJustLinked ? (
@@ -184,14 +184,14 @@ export function ArtifactSidebar({
                         ) : isCurrentlyLinking ? (
                           <Loader2 className="h-3.5 w-3.5 text-violet-400 animate-spin" />
                         ) : (
-                          <Plus className="h-3.5 w-3.5 text-slate-400 group-hover:text-violet-300 transition-colors" />
+                          <Plus className="h-3.5 w-3.5 text-muted-foreground group-hover:text-violet-300 transition-colors" />
                         )}
                       </div>
                       <span
                         className={`text-[11px] font-bold truncate transition-colors ${
                           wasJustLinked
                             ? 'text-emerald-300'
-                            : 'text-slate-400 group-hover:text-slate-100'
+                            : 'text-muted-foreground group-hover:text-foreground'
                         }`}
                       >
                         {wasJustLinked ? 'Linked!' : itemName}
@@ -207,7 +207,7 @@ export function ArtifactSidebar({
 
       {/* INFO CARD - Updated with node language */}
       <div className="relative overflow-hidden rounded-[1.25rem] p-5 text-white shadow-xl bg-gradient-to-br from-violet-600/80 via-indigo-600/80 to-cyan-600/80 border border-violet-400/20">
-        <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -mr-12 -mt-12" />
+        <div className="absolute top-0 right-0 w-24 h-24 bg-glass-strong rounded-full blur-2xl -mr-12 -mt-12" />
         <div className="flex items-center gap-2 mb-3 relative z-10">
           <ShieldCheck className="h-4 w-4 text-emerald-400" />
           <span className="text-xs font-black uppercase tracking-widest text-emerald-200">

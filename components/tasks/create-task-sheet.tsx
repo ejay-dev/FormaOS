@@ -78,8 +78,8 @@ export function CreateTaskSheet() {
             <div className="h-20 w-20 rounded-lg bg-emerald-400/20 flex items-center justify-center mb-4 border-2 border-emerald-400/40">
               <CheckCircle2 className="h-10 w-10 text-emerald-400" />
             </div>
-            <h3 className="text-xl font-bold text-slate-100">Task Created</h3>
-            <p className="text-sm text-slate-400 mt-2 text-center">
+            <h3 className="text-xl font-bold text-foreground">Task Created</h3>
+            <p className="text-sm text-muted-foreground mt-2 text-center">
               New task node added to your compliance roadmap
             </p>
           </div>
@@ -99,21 +99,21 @@ export function CreateTaskSheet() {
               
               {/* Title */}
               <div className="space-y-2">
-                <label htmlFor="field-98" className="text-xs font-bold uppercase text-slate-400 tracking-wider">Task Title</label>
+                <label htmlFor="field-98" className="text-xs font-bold uppercase text-muted-foreground tracking-wider">Task Title</label>
                 <input id="field-98" 
                     {...register("title", { required: true })} 
                     placeholder="e.g. Review Firewall Logs" 
-                    className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-sm outline-none focus:border-emerald-400/50 focus:ring-2 focus:ring-emerald-400/20 transition-all" 
+                    className="w-full p-3 bg-glass-subtle border border-glass-border rounded-xl text-sm outline-none focus:border-emerald-400/50 focus:ring-2 focus:ring-emerald-400/20 transition-all" 
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                  {/* Priority */}
                  <div className="space-y-2">
-                    <label htmlFor="field-97" className="text-xs font-bold uppercase text-slate-400 tracking-wider">Priority Level</label>
+                    <label htmlFor="field-97" className="text-xs font-bold uppercase text-muted-foreground tracking-wider">Priority Level</label>
                     <select id="field-97" 
                         {...register("priority")} 
-                        className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-sm outline-none focus:border-emerald-400/50 focus:ring-2 focus:ring-emerald-400/20"
+                        className="w-full p-3 bg-glass-subtle border border-glass-border rounded-xl text-sm outline-none focus:border-emerald-400/50 focus:ring-2 focus:ring-emerald-400/20"
                     >
                         <option value="low">Low</option>
                         <option value="medium">Medium</option>
@@ -124,13 +124,13 @@ export function CreateTaskSheet() {
 
                  {/* Due Date */}
                  <div className="space-y-2">
-                    <label htmlFor="field-96" className="text-xs font-bold uppercase text-slate-400 tracking-wider flex items-center gap-1">
+                    <label htmlFor="field-96" className="text-xs font-bold uppercase text-muted-foreground tracking-wider flex items-center gap-1">
                         <Calendar className="h-3 w-3" /> Due Date
                     </label>
                     <input 
                         type="date"
                         {...register("dueDate")} 
-                        className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-sm outline-none focus:border-emerald-400/50 focus:ring-2 focus:ring-emerald-400/20"
+                        className="w-full p-3 bg-glass-subtle border border-glass-border rounded-xl text-sm outline-none focus:border-emerald-400/50 focus:ring-2 focus:ring-emerald-400/20"
                     />
                  </div>
               </div>
@@ -142,7 +142,7 @@ export function CreateTaskSheet() {
                         type="checkbox" 
                         id="rec"
                         {...register("isRecurring")}
-                        className="h-4 w-4 rounded border-white/10 text-purple-300 focus:ring-purple-400/40"
+                        className="h-4 w-4 rounded border-glass-border text-purple-300 focus:ring-purple-400/40"
                     />
                     <label htmlFor="rec" className="text-sm font-bold text-purple-200 flex items-center gap-2 cursor-pointer select-none">
                         <RefreshCw className="h-3.5 w-3.5" />
@@ -158,7 +158,7 @@ export function CreateTaskSheet() {
                                 type="number" 
                                 {...register("recurrenceDays")}
                                 defaultValue={30}
-                                className="flex-1 p-2 bg-white/5 border border-purple-400/30 rounded-lg text-sm text-center outline-none focus:border-purple-400/50"
+                                className="flex-1 p-2 bg-glass-subtle border border-purple-400/30 rounded-lg text-sm text-center outline-none focus:border-purple-400/50"
                             />
                             <div className="flex items-center text-xs font-medium text-purple-300">Days</div>
                         </div>

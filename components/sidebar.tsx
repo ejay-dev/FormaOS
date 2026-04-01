@@ -7,6 +7,7 @@ import { signOut } from '@/app/app/actions/logout';
 import { LogOut, Command } from 'lucide-react';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import Button from './ui/button';
+import { Badge } from './ui/badge';
 import { useAppStore } from '@/lib/stores/app';
 import { markSidebarRouteTransition } from '@/lib/monitoring/route-transition';
 import {
@@ -96,9 +97,9 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
       {/* Industry Badge */}
       {industry && (
         <div className="mb-4 px-3">
-          <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary">
+          <Badge variant="default" className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/15">
             {getIndustryLabel(industry)}
-          </span>
+          </Badge>
         </div>
       )}
 
@@ -158,14 +159,14 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
                       }}
                       onMouseEnter={() => prefetchRoute(item.href)}
                       onFocus={() => prefetchRoute(item.href)}
-                      className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium transition-all ${
+                      className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium transition-all duration-200 ${
                         isActive
-                          ? 'bg-primary text-primary-foreground shadow-premium-md'
+                          ? 'bg-primary/90 text-primary-foreground shadow-premium ring-1 ring-primary/30'
                           : 'text-foreground/70 hover:bg-muted/50 hover:text-foreground'
                       }`}
                     >
                       <item.icon
-                        className={`h-4 w-4 ${isActive ? '' : 'text-foreground/50'}`}
+                        className={`h-4 w-4 shrink-0 transition-colors duration-200 ${isActive ? 'text-primary-foreground' : 'text-foreground/50 group-hover:text-foreground/80'}`}
                       />
                       {item.name}
                     </Link>

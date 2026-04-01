@@ -40,7 +40,7 @@ export default async function PatientsPage() {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight text-slate-50">Patients & Clients</h1>
-          <p className="text-sm text-slate-400">Track care status, risks, and documentation.</p>
+          <p className="text-sm text-muted-foreground">Track care status, risks, and documentation.</p>
         </div>
         {canWrite && (
           <form action={createPatient} className="flex flex-wrap items-center gap-3">
@@ -49,11 +49,11 @@ export default async function PatientsPage() {
             <input
               name="fullName"
               placeholder="New patient name"
-              className="w-56 rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-sm text-slate-100 outline-none"
+              className="w-56 rounded-xl border border-white/10 bg-glass-strong px-3 py-2 text-sm text-foreground outline-none"
             />
             <button
               type="submit"
-              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-xs font-semibold text-slate-100 hover:bg-white/15"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
             >
               <Plus className="h-4 w-4" />
               Add
@@ -63,19 +63,19 @@ export default async function PatientsPage() {
       </div>
 
       <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
-        <div className="flex items-center gap-2 border-b border-white/10 px-6 py-4 text-xs font-semibold text-slate-200">
+        <div className="flex items-center gap-2 border-b border-white/10 px-6 py-4 text-xs font-semibold text-foreground/90">
           <Users className="h-4 w-4 text-emerald-300" />
           Active Patients
         </div>
         <div className="divide-y divide-white/10">
           {patientRows.length === 0 ? (
-            <div className="px-6 py-10 text-sm text-slate-400">No patients created yet.</div>
+            <div className="px-6 py-10 text-sm text-muted-foreground">No patients created yet.</div>
           ) : (
             patientRows.map((patient) => (
               <Link
                 key={patient.id}
                 href={`/app/patients/${patient.id}`}
-                className="flex items-center justify-between px-6 py-4 text-sm text-slate-100 hover:bg-white/10"
+                className="flex items-center justify-between px-6 py-4 text-sm text-foreground hover:bg-glass-strong"
               >
                 <div className="flex items-center gap-3">
                   <span className="font-semibold">{patient.full_name}</span>
@@ -86,7 +86,7 @@ export default async function PatientsPage() {
                     </span>
                   ) : null}
                 </div>
-                <div className="text-xs uppercase tracking-widest text-slate-400">
+                <div className="text-xs uppercase tracking-widest text-muted-foreground">
                   {patient.care_status} • {patient.risk_level}
                 </div>
               </Link>

@@ -8,7 +8,7 @@ export default function SecuritySettingsLoading() {
         <div className="flex items-start gap-4">
           <Skeleton className="h-10 w-10 rounded-xl" />
           <div className="space-y-2">
-            <h1 className="text-3xl font-black tracking-tight text-slate-100/50">
+            <h1 className="text-3xl font-black tracking-tight text-foreground/50">
               Security Controls
             </h1>
             <Skeleton className="h-4 w-80" />

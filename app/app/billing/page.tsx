@@ -143,7 +143,7 @@ export default function BillingPage() {
 
   if (!orgId) {
     return (
-      <div className="text-center text-slate-400">Loading organization...</div>
+      <div className="text-center text-muted-foreground">Loading organization...</div>
     );
   }
 
@@ -159,12 +159,12 @@ export default function BillingPage() {
     <div className="space-y-8">
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-100">Billing & Plan</h1>
-          <p className="text-sm text-slate-400">
+          <h1 className="text-3xl font-bold text-foreground">Billing & Plan</h1>
+          <p className="text-sm text-muted-foreground">
             Manage subscription status and entitlements.
           </p>
         </div>
-        <div className="flex items-center gap-2 text-xs text-slate-400">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <ShieldCheck className="h-4 w-4" />
           {subscription?.status ?? 'not active'}
         </div>
@@ -205,10 +205,10 @@ export default function BillingPage() {
       ) : null}
 
       <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-        <div className="flex items-center gap-3 text-slate-100">
+        <div className="flex items-center gap-3 text-foreground">
           <CreditCard className="h-5 w-5 text-sky-300" />
           <div>
-            <div className="text-sm uppercase tracking-[0.3em] text-slate-400">
+            <div className="text-sm uppercase tracking-[0.3em] text-muted-foreground">
               Current plan
             </div>
             <div className="text-xl font-semibold">
@@ -216,7 +216,7 @@ export default function BillingPage() {
             </div>
           </div>
         </div>
-        <p className="mt-4 text-sm text-slate-400">
+        <p className="mt-4 text-sm text-muted-foreground">
           {plan?.summary ?? 'Select a plan to activate billing.'}
         </p>
         <BillingActionButtons
@@ -225,31 +225,31 @@ export default function BillingPage() {
           canManagePortal={canManagePortal}
         />
         {planKey === 'enterprise' ? (
-          <div className="mt-4 text-xs text-slate-400">
+          <div className="mt-4 text-xs text-muted-foreground">
             Enterprise customers can self-serve checkout or coordinate
             invoiced procurement, security review, and onboarding with
             Formaos.team@gmail.com.
           </div>
         ) : null}
         {trialEndsAt && !trialExpired ? (
-          <div className="mt-4 text-xs text-slate-400">
+          <div className="mt-4 text-xs text-muted-foreground">
             Trial active until {new Date(trialEndsAt).toLocaleDateString()}.
           </div>
         ) : null}
       </div>
 
       <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-        <div className="text-sm uppercase tracking-[0.3em] text-slate-400">
+        <div className="text-sm uppercase tracking-[0.3em] text-muted-foreground">
           Entitlements
         </div>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {entitlements.map((entitlement) => (
             <div
               key={entitlement.feature_key}
-              className="rounded-xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
+              className="rounded-xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-foreground/90"
             >
               <div className="font-semibold">{entitlement.feature_key}</div>
-              <div className="text-xs text-slate-400">
+              <div className="text-xs text-muted-foreground">
                 {entitlement.enabled ? 'Enabled' : 'Disabled'}
                 {entitlement.limit_value
                   ? ` · Limit ${entitlement.limit_value}`
@@ -258,7 +258,7 @@ export default function BillingPage() {
             </div>
           ))}
           {entitlements.length === 0 ? (
-            <div className="text-sm text-slate-400">
+            <div className="text-sm text-muted-foreground">
               No entitlements active yet.
             </div>
           ) : null}

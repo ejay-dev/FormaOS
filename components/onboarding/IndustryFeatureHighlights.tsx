@@ -281,7 +281,7 @@ export function IndustryOnboardingFeatures({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r ${config.gradient} border border-white/10 mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r ${config.gradient} border border-glass-border mb-4">
             <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
             <span className="text-sm font-medium text-white">
               {config.displayName}
@@ -317,10 +317,10 @@ export function IndustryOnboardingFeatures({
                   onFeatureClick(feature.route);
                 }
               }}
-              className="group p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 hover:border-indigo-500/30 transition-all cursor-pointer"
+              className="group p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-glass-border hover:border-indigo-500/30 transition-all cursor-pointer"
             >
               <div
-                className={`w-12 h-12 rounded-xl bg-gradient-to-br ${config.gradient} border border-white/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
+                className={`w-12 h-12 rounded-xl bg-gradient-to-br ${config.gradient} border border-glass-border flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
               >
                 <Icon className="h-6 w-6 text-white" />
               </div>
@@ -390,11 +390,11 @@ export function IndustryFeatureSpotlight({
           <a
             key={feature.title}
             href={feature.route}
-            className="group block p-3 rounded-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 hover:border-indigo-500/30 transition-all hover:scale-102"
+            className="group block p-3 rounded-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-glass-border hover:border-indigo-500/30 transition-all hover:scale-102"
           >
             <div className="flex items-start gap-3">
               <div
-                className={`flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br ${config.gradient} border border-white/10 flex items-center justify-center`}
+                className={`flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br ${config.gradient} border border-glass-border flex items-center justify-center`}
               >
                 <Icon className="h-4 w-4 text-white" />
               </div>

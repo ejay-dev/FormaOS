@@ -33,7 +33,7 @@ const FrameworkBadge = memo(function FrameworkBadge({ icon, label }: FrameworkIt
       <span className="flex-shrink-0 text-cyan-400/70 transition-colors duration-300 group-hover:text-cyan-400/90">
         {icon}
       </span>
-      <span className="whitespace-nowrap text-[13px] font-medium leading-none tracking-wide text-slate-300/80 transition-colors duration-300 group-hover:text-slate-200">
+      <span className="whitespace-nowrap text-[13px] font-medium leading-none tracking-wide text-foreground/70/80 transition-colors duration-300 group-hover:text-foreground/90">
         {label}
       </span>
     </span>
