@@ -1169,13 +1169,24 @@ const totalFixes = releases.reduce(
 );
 const majorReleases = releases.filter((r) => r.isMajor).length;
 
+const monthsActive = (() => {
+  const start = new Date(releases[releases.length - 1].date);
+  const end = new Date(releases[0].date);
+  return Math.max(
+    1,
+    Math.round(
+      (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24 * 30.44),
+    ) + 1,
+  );
+})();
+
 const changelogStats = [
   { value: String(releases.length), label: 'Releases Shipped', suffix: '' },
   { value: String(totalChanges), label: 'Total Changes', suffix: '+' },
   { value: String(totalFeatures), label: 'Features Added', suffix: '' },
   { value: String(majorReleases), label: 'Major Releases', suffix: '' },
   { value: String(totalFixes), label: 'Bugs Fixed', suffix: '' },
-  { value: '16', label: 'Months Active', suffix: '' },
+  { value: String(monthsActive), label: 'Months Active', suffix: '' },
 ];
 
 /* ─── Animated Stat ───────────────────────────────────────── */
@@ -1630,7 +1641,7 @@ function ReleaseTimelineVisual() {
       data: (typeof releasesByMonth)[string] | null;
     }[] = [];
     for (let y = 2025; y <= 2026; y++) {
-      for (let m = y === 2025 ? 0 : 0; m < (y === 2026 ? 3 : 12); m++) {
+      for (let m = 0; m < (y === 2026 ? 4 : 12); m++) {
         const key = `${y}-${String(m).padStart(2, '0')}`;
         result.push({
           key,
@@ -1658,20 +1669,21 @@ function ReleaseTimelineVisual() {
                 Release Cadence
               </span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-5">
               Shipping{' '}
               <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-violet-400 bg-clip-text text-transparent">
                 every month
               </span>
             </h2>
-            <p className="text-base text-slate-400 max-w-xl mx-auto">
+            <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
               Consistent delivery cadence with monthly releases, quarterly major
-              versions, and continuous security patches.
+              versions, and continuous security patches — {releases.length}{' '}
+              releases across {monthsActive} months.
             </p>
           </ScrollReveal>
 
           <SectionChoreography pattern="stagger-wave" stagger={0.03}>
-            <div className="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-15 gap-1.5 sm:gap-2">
+            <div className="grid grid-cols-4 sm:grid-cols-8 gap-3 sm:gap-4">
               {timelineMonths.map((tm, i) => (
                 <motion.div
                   key={tm.key}
@@ -1679,55 +1691,59 @@ function ReleaseTimelineVisual() {
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.02, duration: 0.3 }}
+                  transition={{ delay: i * 0.025, duration: 0.35 }}
                 >
                   <div
-                    className={`relative h-16 sm:h-20 rounded-lg border flex items-end justify-center pb-1 transition-all duration-300
+                    className={`relative rounded-xl border flex flex-col items-center justify-center transition-all duration-300
                       ${
                         tm.data
                           ? tm.data.hasMajor
-                            ? 'border-emerald-400/30 bg-emerald-500/10 hover:bg-emerald-500/15'
-                            : 'border-cyan-400/20 bg-cyan-500/5 hover:bg-cyan-500/10'
-                          : 'border-white/[0.04] bg-white/[0.01]'
-                      }`}
+                            ? 'border-emerald-400/30 bg-emerald-500/10 hover:bg-emerald-500/15 hover:border-emerald-400/40 shadow-[0_0_20px_rgba(52,211,153,0.06)]'
+                            : 'border-cyan-400/20 bg-cyan-500/5 hover:bg-cyan-500/10 hover:border-cyan-400/30'
+                          : 'border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04]'
+                      } ${tm.data && tm.data.versions.length > 3 ? 'py-3 min-h-[7rem] sm:min-h-[8rem]' : 'py-3 min-h-[5.5rem] sm:min-h-[6.5rem]'}`}
                   >
-                    {tm.data && (
-                      <div className="absolute inset-x-0 top-2 flex flex-col items-center gap-0.5">
+                    {tm.data ? (
+                      <div className="flex flex-col items-center gap-0.5 px-1">
                         {tm.data.versions.map((v) => (
                           <span
                             key={v}
-                            className={`text-[8px] font-bold ${tm.data!.hasMajor ? 'text-emerald-400' : 'text-cyan-400/70'}`}
+                            className={`text-[10px] sm:text-xs font-bold leading-tight ${tm.data!.hasMajor ? 'text-emerald-400' : 'text-cyan-400/80'}`}
                           >
                             {v}
                           </span>
                         ))}
                       </div>
+                    ) : (
+                      <span className="text-[10px] text-slate-600">—</span>
                     )}
                   </div>
-                  <span className="text-[9px] text-slate-500 mt-1 block">
-                    {tm.month}
-                  </span>
-                  {parseInt(tm.key.split('-')[1]) === 0 && (
-                    <span className="text-[8px] text-slate-600 block">
-                      {tm.year}
+                  <div className="mt-2">
+                    <span className="text-[11px] sm:text-xs text-slate-400 font-medium block">
+                      {tm.month}
                     </span>
-                  )}
+                    {parseInt(tm.key.split('-')[1]) === 0 && (
+                      <span className="text-[10px] text-slate-600 block">
+                        {tm.year}
+                      </span>
+                    )}
+                  </div>
                 </motion.div>
               ))}
             </div>
           </SectionChoreography>
 
-          <div className="flex flex-wrap justify-center gap-4 mt-6 text-xs text-slate-500">
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded border border-emerald-400/30 bg-emerald-500/10" />
+          <div className="flex flex-wrap justify-center gap-6 mt-8 text-xs sm:text-sm text-slate-500">
+            <div className="flex items-center gap-2">
+              <div className="w-3.5 h-3.5 rounded-md border border-emerald-400/30 bg-emerald-500/10" />
               Major release
             </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded border border-cyan-400/20 bg-cyan-500/5" />
+            <div className="flex items-center gap-2">
+              <div className="w-3.5 h-3.5 rounded-md border border-cyan-400/20 bg-cyan-500/5" />
               Minor release
             </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded border border-white/[0.04] bg-white/[0.01]" />
+            <div className="flex items-center gap-2">
+              <div className="w-3.5 h-3.5 rounded-md border border-white/[0.06] bg-white/[0.02]" />
               No release
             </div>
           </div>
@@ -1968,18 +1984,18 @@ const milestones = [
   },
   {
     icon: Workflow,
-    title: 'Automation Engine',
-    date: 'February 2026',
+    title: 'Platform Infrastructure Overhaul',
+    date: 'April 2026',
     description:
-      'Event-driven workflow automation with 12+ trigger types, conditional branching, and scheduled execution.',
+      'v3.0 Nexus: integrations engine, REST API v1, report generator, webhook relay, AI insights, and scheduled tasks.',
     accentRgb: '59,130,246',
   },
   {
     icon: Eye,
-    title: 'Real-Time Collaboration',
-    date: 'March 2026',
+    title: 'Enterprise Governance Expansion',
+    date: 'April 2026',
     description:
-      'Live presence indicators, real-time sync, and conflict resolution for team-based compliance work.',
+      'v3.1 Citadel: framework cross-mapping, task management, permissions matrix, policy lifecycle, dashboard builder, and integration marketplace.',
     accentRgb: '245,158,11',
   },
 ];
@@ -2003,12 +2019,12 @@ function MilestonesSection() {
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               The journey from{' '}
               <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-violet-400 bg-clip-text text-transparent">
-                Genesis to Aurora
+                Genesis to Citadel
               </span>
             </h2>
             <p className="text-base text-slate-400 max-w-xl mx-auto">
-              14 months of continuous development — from single-framework launch
-              to enterprise compliance operating system.
+              {monthsActive} months of continuous development — from
+              single-framework launch to enterprise compliance operating system.
             </p>
           </ScrollReveal>
 
@@ -2102,8 +2118,8 @@ function StatsSection() {
                 Development velocity
               </h2>
               <p className="text-sm text-slate-400 max-w-lg mx-auto">
-                14 months of continuous shipping — features, fixes, and
-                enterprise capabilities delivered every month.
+                {monthsActive} months of continuous shipping — features, fixes,
+                and enterprise capabilities delivered every month.
               </p>
             </ScrollReveal>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
@@ -2213,7 +2229,7 @@ function SubscribeCTA() {
                     `${releases.length} releases shipped`,
                     `${totalChanges}+ changes delivered`,
                     'Monthly release cadence',
-                    '14 months of development',
+                    `${monthsActive} months of development`,
                   ].map((signal) => (
                     <div key={signal} className="flex items-center gap-1.5">
                       <CheckCircle2 className="w-3 h-3 text-emerald-400/50" />
@@ -2334,8 +2350,9 @@ function ChangelogHero() {
           transition={{ duration: 0.7, delay: 0.2, ease: EASE_OUT_EXPO }}
           className="text-base sm:text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed"
         >
-          {releases.length} releases, {totalChanges}+ changes, and 14 months of
-          continuous development. See exactly what we shipped and when.
+          {releases.length} releases, {totalChanges}+ changes, and{' '}
+          {monthsActive} months of continuous development. See exactly what we
+          shipped and when.
         </motion.p>
 
         <motion.div
