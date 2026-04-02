@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FormaOS Clean Reset Concepts</title>
+    <style>
+      :root {
+        --bg: #ebe6de;
+        --ink: #121212;
+        --muted: #4f4a44;
+        --panel: #f7f3ec;
+        --line: rgba(18, 18, 18, 0.08);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Helvetica Neue", Arial, sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+      }
+
+      .frame {
+        width: 1480px;
+        margin: 0 auto;
+        padding: 34px;
+      }
+
+      .hero {
+        padding: 28px 30px;
+        border-radius: 28px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+      }
+
+      .eyebrow {
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #676057;
+      }
+
+      h1 {
+        margin: 10px 0 12px;
+        font-size: 56px;
+        line-height: 0.98;
+        letter-spacing: -0.05em;
+      }
+
+      .hero p {
+        margin: 0;
+        max-width: 920px;
+        color: var(--muted);
+        font-size: 20px;
+        line-height: 1.55;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        overflow: hidden;
+      }
+
+      .copy {
+        padding: 22px 24px 14px;
+      }
+
+      .meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 16px;
+      }
+
+      .kicker {
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #6d655c;
+      }
+
+      .tag {
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #3d3934;
+      }
+
+      h2 {
+        margin: 10px 0 8px;
+        font-size: 34px;
+        letter-spacing: -0.03em;
+      }
+
+      .copy p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.55;
+      }
+
+      .stage {
+        margin: 0 18px 18px;
+        min-height: 300px;
+        border-radius: 24px;
+        border: 1px solid var(--line);
+        display: grid;
+        place-items: center;
+        background: #efeae2;
+      }
+
+      .stage.dark {
+        background: #141414;
+      }
+
+      .stage img {
+        width: 220px;
+        height: 220px;
+      }
+
+      .stage.wordmark img {
+        width: 540px;
+        height: auto;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 0 24px 20px;
+      }
+
+      .chip {
+        font-size: 13px;
+        color: #3f3a34;
+      }
+
+      .footer {
+        margin-top: 20px;
+        padding: 20px 24px;
+        border-radius: 24px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.55;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="frame">
+      <section class="hero">
+        <div class="eyebrow">Reset round</div>
+        <h1>Cleaner, flatter, and actually relevant.</h1>
+        <p>
+          This pass drops gradients, glow, symbolic clutter, and fake “futuristic” detail. These are simple marks built around the actual product: forms, structure, operating frames, and legibility.
+        </p>
+      </section>
+
+      <section class="grid">
+        <article class="card">
+          <div class="copy">
+            <div class="meta">
+              <div class="kicker">Option H</div>
+              <div class="tag">wordmark-first</div>
+            </div>
+            <h2>Minimal Wordmark</h2>
+            <p>A very simple logotype approach. Cleaner, more grown-up, and maybe the most useful if the current issue is that the icon is trying too hard.</p>
+          </div>
+          <div class="stage wordmark">
+            <img src="./formaos-logo-concept-wordmark-minimal.svg" alt="Minimal wordmark concept" />
+          </div>
+          <div class="chips">
+            <span class="chip">Best for trust</span>
+            <span class="chip">Least gimmicky</span>
+            <span class="chip">Can pair with a tiny icon later</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="copy">
+            <div class="meta">
+              <div class="kicker">Option I</div>
+              <div class="tag">icon-first</div>
+            </div>
+            <h2>Grid Cut</h2>
+            <p>A reduced icon built from structural strokes. Feels like a product tile, not a security badge, and stays readable at small size.</p>
+          </div>
+          <div class="stage">
+            <img src="./formaos-logo-concept-grid-cut.svg" alt="Grid Cut concept" />
+          </div>
+          <div class="chips">
+            <span class="chip">Simple</span>
+            <span class="chip">Bold</span>
+            <span class="chip">App-friendly</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="copy">
+            <div class="meta">
+              <div class="kicker">Option J</div>
+              <div class="tag">product metaphor</div>
+            </div>
+            <h2>Forms Stack</h2>
+            <p>Built from stacked record lines and one strong circle. More obviously connected to governance, evidence, and workflows than the earlier abstract concepts.</p>
+          </div>
+          <div class="stage">
+            <img src="./formaos-logo-concept-forms-stack.svg" alt="Forms Stack concept" />
+          </div>
+          <div class="chips">
+            <span class="chip">Most relevant</span>
+            <span class="chip">Less decorative</span>
+            <span class="chip">Operational feel</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="copy">
+            <div class="meta">
+              <div class="kicker">Option K</div>
+              <div class="tag">dark-brand route</div>
+            </div>
+            <h2>Frame One</h2>
+            <p>The same simplification mindset, but inverted for a stronger premium app-brand look. Still flat, still restrained, just heavier.</p>
+          </div>
+          <div class="stage dark">
+            <img src="./formaos-logo-concept-frame-one.svg" alt="Frame One concept" />
+          </div>
+          <div class="chips">
+            <span class="chip">Premium</span>
+            <span class="chip">Simple silhouette</span>
+            <span class="chip">Still restrained</span>
+          </div>
+        </article>
+      </section>
+
+      <section class="footer">
+        The honest correction here is that FormaOS probably wants less “logo concept energy” and more confidence. If none of these land either, I’d stop exploring icon tricks and design a serious wordmark system first.
+      </section>
+    </main>
+  </body>
+</html>

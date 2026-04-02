@@ -1,0 +1,22 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "TEAMID.com.formaos.app"
+        ],
+        "components": [
+          {
+            "/": "/app/*",
+            "comment": "Match all app routes"
+          }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "TEAMID.com.formaos.app"
+    ]
+  }
+}

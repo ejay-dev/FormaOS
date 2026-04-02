@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="96" y1="72" x2="416" y2="440" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#07111d"/>
+      <stop offset="1" stop-color="#10243c"/>
+    </linearGradient>
+    <linearGradient id="frame" x1="120" y1="92" x2="404" y2="412" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7af0ff"/>
+      <stop offset="0.52" stop-color="#3ec0ff"/>
+      <stop offset="1" stop-color="#1394ff"/>
+    </linearGradient>
+    <linearGradient id="core" x1="154" y1="132" x2="350" y2="350" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#dffbff"/>
+      <stop offset="0.55" stop-color="#8de8ff"/>
+      <stop offset="1" stop-color="#4ec9ff"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="248" y1="162" x2="360" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c8fbff"/>
+      <stop offset="1" stop-color="#33b7ff"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0.08 0 1 0 0 0.76 0 0 1 0 1 0 0 0 0.34 0"/>
+    </filter>
+  </defs>
+
+  <rect x="56" y="56" width="400" height="400" rx="120" fill="url(#bg)"/>
+  <rect x="56" y="56" width="400" height="400" rx="120" stroke="url(#frame)" stroke-width="10"/>
+
+  <path
+    d="M256 92L390 144V248C390 313 341 370 256 406C171 370 122 313 122 248V144L256 92Z"
+    fill="#0c1828"
+    filter="url(#glow)"
+    opacity="0.9"
+  />
+
+  <path
+    d="M256 100L384 150V248C384 309 338 362 256 396C174 362 128 309 128 248V150L256 100Z"
+    fill="rgba(17, 33, 53, 0.94)"
+  />
+  <path
+    d="M256 100L384 150V248C384 309 338 362 256 396C174 362 128 309 128 248V150L256 100Z"
+    stroke="url(#frame)"
+    stroke-width="10"
+  />
+  <path
+    d="M256 124L360 164V246C360 292 326 333 256 363C186 333 152 292 152 246V164L256 124Z"
+    fill="#0d1d31"
+    stroke="#89ecff"
+    stroke-opacity="0.16"
+    stroke-width="4"
+  />
+
+  <path
+    d="M184 174C184 165.164 191.164 158 200 158H286V186H216V238H279V266H216V338H184V174Z"
+    fill="url(#core)"
+  />
+  <path
+    d="M184 174C184 165.164 191.164 158 200 158H286V174H200V338H184V174Z"
+    fill="#0a2740"
+    opacity="0.24"
+  />
+
+  <path
+    d="M314 178C354.869 178 388 211.131 388 252C388 292.869 354.869 326 314 326C273.131 326 240 292.869 240 252C240 211.131 273.131 178 314 178ZM314 208C289.7 208 270 227.7 270 252C270 276.3 289.7 296 314 296C338.3 296 358 276.3 358 252C358 227.7 338.3 208 314 208Z"
+    fill="url(#ring)"
+  />
+
+  <path
+    d="M216 250H262"
+    stroke="#7fefff"
+    stroke-width="16"
+    stroke-linecap="round"
+    opacity="0.92"
+  />
+  <path
+    d="M232 306L287 278"
+    stroke="#32c2ff"
+    stroke-width="7"
+    stroke-linecap="round"
+    opacity="0.55"
+  />
+</svg>

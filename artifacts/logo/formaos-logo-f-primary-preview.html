@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forma Operating System - F vs FOS</title>
+    <style>
+      :root {
+        --ink: #ebf2fb;
+        --muted: #97a9bf;
+        --panel: rgba(9, 18, 31, 0.78);
+        --line: rgba(141, 173, 207, 0.14);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "SF Pro Display", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(54, 197, 255, 0.16), transparent 24%),
+          radial-gradient(circle at top right, rgba(20, 151, 220, 0.14), transparent 20%),
+          linear-gradient(180deg, #07111c 0%, #0b1420 44%, #0d1824 100%);
+      }
+
+      .frame {
+        width: 1480px;
+        margin: 0 auto;
+        padding: 46px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.25fr 0.9fr;
+        gap: 26px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 30px;
+        backdrop-filter: blur(18px);
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+      }
+
+      .intro {
+        padding: 34px 36px 28px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        padding: 8px 14px;
+        border-radius: 999px;
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #99eeff;
+        background: rgba(84, 212, 255, 0.1);
+        border: 1px solid rgba(122, 231, 255, 0.14);
+      }
+
+      h1 {
+        margin: 18px 0 12px;
+        font-size: 64px;
+        line-height: 0.96;
+        letter-spacing: -0.05em;
+      }
+
+      p {
+        margin: 0;
+        max-width: 28em;
+        color: var(--muted);
+        font-size: 20px;
+        line-height: 1.55;
+      }
+
+      .chips {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 26px;
+      }
+
+      .chip {
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-size: 14px;
+        color: #dcecf8;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(148, 177, 205, 0.12);
+      }
+
+      .showcase {
+        padding: 28px;
+        display: grid;
+        place-items: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .showcase::before {
+        content: "";
+        position: absolute;
+        inset: 18px;
+        border-radius: 24px;
+        background:
+          radial-gradient(circle at top, rgba(109, 237, 255, 0.1), transparent 38%),
+          linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
+        box-shadow: inset 0 0 0 1px rgba(142, 173, 207, 0.08);
+      }
+
+      .mark-wrap {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        gap: 20px;
+        justify-items: center;
+      }
+
+      .mark {
+        width: 288px;
+        height: 288px;
+        filter: drop-shadow(0 18px 44px rgba(33, 181, 255, 0.22));
+      }
+
+      .wordmark {
+        display: grid;
+        justify-items: center;
+        gap: 4px;
+      }
+
+      .name {
+        font-size: 60px;
+        font-weight: 720;
+        letter-spacing: -0.05em;
+      }
+
+      .descriptor {
+        font-size: 17px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #86a2c0;
+      }
+
+      .grid {
+        margin-top: 22px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+      }
+
+      .card {
+        padding: 22px;
+      }
+
+      .card h2 {
+        margin: 0 0 8px;
+        font-size: 15px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #89a3bf;
+      }
+
+      .card p {
+        font-size: 15px;
+        line-height: 1.52;
+        color: #9aaec4;
+        max-width: none;
+      }
+
+      .comparison {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .mini-stage {
+        min-height: 204px;
+        border-radius: 22px;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(147, 176, 203, 0.12);
+      }
+
+      .mini-stage.dark {
+        background:
+          radial-gradient(circle at top, rgba(92, 220, 255, 0.1), transparent 38%),
+          #0a1320;
+      }
+
+      .mini-stage.light {
+        background:
+          radial-gradient(circle at top, rgba(61, 179, 255, 0.12), transparent 40%),
+          #edf3f9;
+      }
+
+      .mini-stage img {
+        width: 108px;
+        height: 108px;
+      }
+
+      .caption {
+        margin-top: 10px;
+        text-align: center;
+        font-size: 13px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #8198b3;
+      }
+
+      .sizes {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 16px;
+        margin-top: 16px;
+      }
+
+      .size {
+        display: grid;
+        gap: 10px;
+        justify-items: center;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #9fb1c7;
+      }
+
+      .chip-dark,
+      .chip-light {
+        min-width: 90px;
+        padding: 14px 12px;
+        border-radius: 20px;
+      }
+
+      .chip-dark { background: #0a1320; }
+      .chip-light {
+        background: #edf3f9;
+        color: #12263a;
+      }
+
+      .size img { display: block; }
+
+      .note {
+        margin-top: 12px;
+        font-size: 14px;
+        line-height: 1.5;
+        color: #96aabd;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="frame">
+      <section class="hero">
+        <div class="panel intro">
+          <span class="eyebrow">Forma operating system logo direction</span>
+          <h1>Use `F` for the icon. Keep the full name in the wordmark.</h1>
+          <p>
+            For this product, the cleanest system is a strong single-letter icon plus the full product name alongside it. `FOS` works better as shorthand in decks, docs, or internal references than as the primary mark.
+          </p>
+          <div class="chips">
+            <span class="chip">Stronger at favicon size</span>
+            <span class="chip">Less acronym-y</span>
+            <span class="chip">More premium brand behavior</span>
+            <span class="chip">Still scalable across product UI</span>
+          </div>
+        </div>
+
+        <div class="panel showcase">
+          <div class="mark-wrap">
+            <img class="mark" src="./formaos-logo-concept-f-primary.svg" alt="Forma Operating System F-primary concept" />
+            <div class="wordmark">
+              <div class="name">FormaOS</div>
+              <div class="descriptor">Forma Operating System</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid">
+        <div class="panel card">
+          <h2>F Primary</h2>
+          <p>The icon becomes a real monogram instead of trying to spell everything inside the badge. That is usually the better logo behavior.</p>
+          <div class="comparison">
+            <div>
+              <div class="mini-stage dark">
+                <img src="./formaos-logo-concept-f-primary.svg" alt="F primary on dark" />
+              </div>
+              <div class="caption">Recommended</div>
+            </div>
+            <div>
+              <div class="mini-stage light">
+                <img src="./formaos-logo-concept-f-primary.svg" alt="F primary on light" />
+              </div>
+              <div class="caption">Light Surface</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel card">
+          <h2>FOS Alternative</h2>
+          <p>`FOS` can work, but it starts to feel more like an acronym lockup than a clean icon. Better as a secondary shorthand than the main mark.</p>
+          <div class="comparison">
+            <div>
+              <div class="mini-stage dark">
+                <img src="./formaos-logo-concept-fos-compact.svg" alt="FOS compact on dark" />
+              </div>
+              <div class="caption">FOS Dark</div>
+            </div>
+            <div>
+              <div class="mini-stage light">
+                <img src="./formaos-logo-concept-fos-compact.svg" alt="FOS compact on light" />
+              </div>
+              <div class="caption">FOS Light</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel card">
+          <h2>Small-Size Check</h2>
+          <p>This is where the decision usually gets made. Single-letter marks nearly always stay cleaner once the icon gets tiny.</p>
+          <div class="sizes">
+            <div class="size chip-dark">
+              <img src="./formaos-logo-concept-f-primary.svg" width="64" height="64" alt="64px F" />
+              <span>64px F</span>
+            </div>
+            <div class="size chip-dark">
+              <img src="./formaos-logo-concept-f-primary.svg" width="40" height="40" alt="40px F" />
+              <span>40px F</span>
+            </div>
+            <div class="size chip-light">
+              <img src="./formaos-logo-concept-fos-compact.svg" width="32" height="32" alt="32px FOS" />
+              <span>32px FOS</span>
+            </div>
+            <div class="size chip-light">
+              <img src="./formaos-logo-concept-fos-compact.svg" width="24" height="24" alt="24px FOS" />
+              <span>24px FOS</span>
+            </div>
+          </div>
+          <div class="note">My recommendation: use `F` as the icon, `FormaOS` as the everyday wordmark, and keep `Forma Operating System` as the full-form descriptor.</div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

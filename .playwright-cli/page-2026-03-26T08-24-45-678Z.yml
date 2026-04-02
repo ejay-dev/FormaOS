@@ -1,0 +1,572 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - link "Skip to main content" [ref=e3] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e4]:
+      - banner [ref=e5]:
+        - generic [ref=e7]:
+          - link "FormaOS" [ref=e9] [cursor=pointer]:
+            - /url: /
+            - img "FormaOS" [ref=e11]
+          - navigation [ref=e23]:
+            - link "Home" [ref=e24] [cursor=pointer]:
+              - /url: /
+            - link "Product" [ref=e25] [cursor=pointer]:
+              - /url: /product
+            - link "Features" [ref=e26] [cursor=pointer]:
+              - /url: /features
+            - link "Industries" [ref=e27] [cursor=pointer]:
+              - /url: /industries
+            - link "Security" [ref=e28] [cursor=pointer]:
+              - /url: /security
+            - link "Enterprise" [ref=e29] [cursor=pointer]:
+              - /url: /enterprise
+            - link "Trust" [ref=e30] [cursor=pointer]:
+              - /url: /trust
+            - link "Pricing" [ref=e31] [cursor=pointer]:
+              - /url: /pricing
+            - button "Outcomes" [ref=e34] [cursor=pointer]: Outcomes
+            - button "Resources" [ref=e37] [cursor=pointer]: Resources
+          - generic [ref=e41]:
+            - link "Login" [ref=e42] [cursor=pointer]:
+              - /url: http://localhost:3000/auth/signin
+            - link "Contact" [ref=e43] [cursor=pointer]:
+              - /url: /contact
+            - link "Start Free" [ref=e44] [cursor=pointer]:
+              - /url: http://localhost:3000/auth/signup?plan=pro&source=header_cta
+              - generic [ref=e45]: Start Free
+      - main [ref=e46]:
+        - generic [ref=e50]:
+          - generic [ref=e57]:
+            - generic [ref=e58]:
+              - img [ref=e59]
+              - generic [ref=e62]: Compliance Operating System
+            - heading "Run Compliance Like Mission-Critical Operations" [level=1] [ref=e63]:
+              - text: Run Compliance Like
+              - text: Mission-Critical Operations
+            - paragraph [ref=e64]: FormaOS turns obligations into governed execution loops with owned evidence, real-time posture visibility, and audit packets leadership can defend.
+            - generic [ref=e66]:
+              - generic [ref=e67]:
+                - generic [ref=e68]:
+                  - paragraph [ref=e69]: Live Control Coverage
+                  - paragraph [ref=e70]: 70+ controls
+                  - paragraph [ref=e71]: Across 7 frameworks
+                - generic [ref=e72]:
+                  - paragraph [ref=e73]: Evidence Continuity
+                  - paragraph [ref=e74]: Full chain
+                  - paragraph [ref=e75]: Chain-of-custody tracked
+                - generic [ref=e76]:
+                  - paragraph [ref=e77]: Audit Packet Delivery
+                  - paragraph [ref=e78]: Minutes
+                  - paragraph [ref=e79]: Not weeks
+              - generic [ref=e80]:
+                - generic [ref=e81]:
+                  - img [ref=e83]
+                  - paragraph [ref=e86]: System-Enforced Controls
+                  - paragraph [ref=e87]: Convert obligations into enforceable workflows with named ownership.
+                - generic [ref=e88]:
+                  - img [ref=e90]
+                  - paragraph [ref=e94]: Defensible Evidence Chain
+                  - paragraph [ref=e95]: Capture immutable artifacts with actor attribution and approval lineage.
+                - generic [ref=e96]:
+                  - img [ref=e98]
+                  - paragraph [ref=e100]: Executive Readiness Reporting
+                  - paragraph [ref=e101]: Give leadership always-current posture, findings, and board-ready packets.
+              - generic [ref=e102]:
+                - generic [ref=e103]:
+                  - img [ref=e104]
+                  - paragraph [ref=e108]: Governance Workflow Snapshot
+                - generic [ref=e109]:
+                  - generic [ref=e110]:
+                    - generic [ref=e111]:
+                      - paragraph [ref=e112]: Detect Drift
+                      - paragraph [ref=e113]: Control Ops
+                    - generic [ref=e114]:
+                      - paragraph [ref=e115]: 9 min
+                      - paragraph [ref=e116]: Stable
+                  - generic [ref=e117]:
+                    - generic [ref=e118]:
+                      - paragraph [ref=e119]: Assign & Escalate
+                      - paragraph [ref=e120]: Risk Lead
+                    - generic [ref=e121]:
+                      - paragraph [ref=e122]: 14 min
+                      - paragraph [ref=e123]: Healthy
+                  - generic [ref=e124]:
+                    - generic [ref=e125]:
+                      - paragraph [ref=e126]: Verify Resolution
+                      - paragraph [ref=e127]: Assurance
+                    - generic [ref=e128]:
+                      - paragraph [ref=e129]: 31 min
+                      - paragraph [ref=e130]: Tracked
+                  - generic [ref=e131]:
+                    - generic [ref=e132]:
+                      - paragraph [ref=e133]: Export Audit Packet
+                      - paragraph [ref=e134]: Reporting
+                    - generic [ref=e135]:
+                      - paragraph [ref=e136]: Minutes
+                      - paragraph [ref=e137]: Ready
+              - generic [ref=e139]:
+                - generic [ref=e140]:
+                  - img [ref=e141]
+                  - text: SOC 2
+                - generic [ref=e144]:
+                  - img [ref=e145]
+                  - text: ISO 27001
+                - generic [ref=e148]:
+                  - img [ref=e149]
+                  - text: HIPAA
+                - generic [ref=e152]:
+                  - img [ref=e153]
+                  - text: GDPR
+                - generic [ref=e156]:
+                  - img [ref=e157]
+                  - text: NDIS
+            - generic [ref=e160]:
+              - link "Start Free Trial" [ref=e161] [cursor=pointer]:
+                - /url: /auth/signup
+                - generic [ref=e162]: Start Free Trial
+                - img [ref=e163]
+              - link "Request Demo" [ref=e165] [cursor=pointer]:
+                - /url: /contact
+          - region "Supported compliance frameworks" [ref=e167]:
+            - generic:
+              - region "Supported compliance frameworks":
+                - button "ISO 27001 SOC 2 Type II NDIS Practice Standards HIPAA PCI DSS 4.0 GDPR Australian Privacy Act Aged Care Quality Standards Child Safe Standards Incident Management Role-Based Access Immutable Audit Trail Evidence Integrity Continuous Monitoring Encryption at Rest Encryption in Transit":
+                  - list:
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: ISO 27001
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: SOC 2 Type II
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: NDIS Practice Standards
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: HIPAA
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: PCI DSS 4.0
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: GDPR
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Australian Privacy Act
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Aged Care Quality Standards
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Child Safe Standards
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Incident Management
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Role-Based Access
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Immutable Audit Trail
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Evidence Integrity
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Continuous Monitoring
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Encryption at Rest
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Encryption in Transit
+                  - list:
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: ISO 27001
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: SOC 2 Type II
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: NDIS Practice Standards
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: HIPAA
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: PCI DSS 4.0
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: GDPR
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Australian Privacy Act
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Aged Care Quality Standards
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Child Safe Standards
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Incident Management
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Role-Based Access
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Immutable Audit Trail
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Evidence Integrity
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Continuous Monitoring
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Encryption at Rest
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Encryption in Transit
+                  - list:
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: ISO 27001
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: SOC 2 Type II
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: NDIS Practice Standards
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: HIPAA
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: PCI DSS 4.0
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: GDPR
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Australian Privacy Act
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Aged Care Quality Standards
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Child Safe Standards
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Incident Management
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Role-Based Access
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Immutable Audit Trail
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Evidence Integrity
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Continuous Monitoring
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Encryption at Rest
+                    - listitem:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - generic: Encryption in Transit
+      - contentinfo [ref=e212]:
+        - generic [ref=e215]:
+          - generic [ref=e221]:
+            - heading "Ready to transform your compliance?" [level=3] [ref=e222]
+            - paragraph [ref=e223]: Start your 14-day free trial. No credit card required. Full platform access.
+            - generic [ref=e224]:
+              - link "Start Free Trial" [ref=e226] [cursor=pointer]:
+                - /url: http://localhost:3000/auth/signup
+              - link "Request Demo" [ref=e228] [cursor=pointer]:
+                - /url: /contact
+          - generic [ref=e229]:
+            - generic [ref=e230]:
+              - link "FormaOS" [ref=e233] [cursor=pointer]:
+                - /url: /
+                - img "FormaOS" [ref=e235]
+              - paragraph [ref=e247]: The compliance operating system for regulated industries. Govern, execute, and prove audit readiness.
+              - generic [ref=e249]: All systems operational
+            - generic [ref=e250]:
+              - heading "Platform" [level=4] [ref=e251]
+              - generic [ref=e252]:
+                - link "How it works" [ref=e254] [cursor=pointer]:
+                  - /url: /product
+                  - generic [ref=e255]: How it works
+                - link "Features" [ref=e257] [cursor=pointer]:
+                  - /url: /features
+                  - generic [ref=e258]: Features
+                - link "Industries" [ref=e260] [cursor=pointer]:
+                  - /url: /industries
+                  - generic [ref=e261]: Industries
+                - link "Security" [ref=e263] [cursor=pointer]:
+                  - /url: /security
+                  - generic [ref=e264]: Security
+                - link "Framework Coverage" [ref=e266] [cursor=pointer]:
+                  - /url: /frameworks
+                  - generic [ref=e267]: Framework Coverage
+                - link "Pricing" [ref=e269] [cursor=pointer]:
+                  - /url: /pricing
+                  - generic [ref=e270]: Pricing
+            - generic [ref=e271]:
+              - heading "Use Cases" [level=4] [ref=e272]
+              - generic [ref=e273]:
+                - link "Healthcare" [ref=e275] [cursor=pointer]:
+                  - /url: /use-cases/healthcare
+                  - generic [ref=e276]: Healthcare
+                - link "NDIS & Aged Care" [ref=e278] [cursor=pointer]:
+                  - /url: /use-cases/ndis-aged-care
+                  - generic [ref=e279]: NDIS & Aged Care
+                - link "Workforce" [ref=e281] [cursor=pointer]:
+                  - /url: /use-cases/workforce-credentials
+                  - generic [ref=e282]: Workforce
+                - link "Incidents" [ref=e284] [cursor=pointer]:
+                  - /url: /use-cases/incident-management
+                  - generic [ref=e285]: Incidents
+            - generic [ref=e286]:
+              - heading "Resources" [level=4] [ref=e287]
+              - generic [ref=e288]:
+                - link "Documentation" [ref=e290] [cursor=pointer]:
+                  - /url: /documentation
+                  - generic [ref=e291]: Documentation
+                - link "Blog" [ref=e293] [cursor=pointer]:
+                  - /url: /blog
+                  - generic [ref=e294]: Blog
+                - link "Trust Center" [ref=e296] [cursor=pointer]:
+                  - /url: /trust
+                  - generic [ref=e297]: Trust Center
+                - link "Security Review Packet" [ref=e299] [cursor=pointer]:
+                  - /url: /security-review
+                  - generic [ref=e300]: Security Review Packet
+                - link "Trust Packet (PDF)" [ref=e302] [cursor=pointer]:
+                  - /url: /trust/packet
+                  - generic [ref=e303]: Trust Packet (PDF)
+                - link "Status" [ref=e305] [cursor=pointer]:
+                  - /url: /status
+                  - generic [ref=e306]: Status
+                - link "Changelog" [ref=e308] [cursor=pointer]:
+                  - /url: /changelog
+                  - generic [ref=e309]: Changelog
+                - link "Roadmap" [ref=e311] [cursor=pointer]:
+                  - /url: /roadmap
+                  - generic [ref=e312]: Roadmap
+                - link "Customer Stories" [ref=e314] [cursor=pointer]:
+                  - /url: /customer-stories
+                  - generic [ref=e315]: Customer Stories
+                - link "Compare" [ref=e317] [cursor=pointer]:
+                  - /url: /compare
+                  - generic [ref=e318]: Compare
+                - link "FAQ" [ref=e320] [cursor=pointer]:
+                  - /url: /faq
+                  - generic [ref=e321]: FAQ
+            - generic [ref=e322]:
+              - heading "Company" [level=4] [ref=e323]
+              - generic [ref=e324]:
+                - link "About" [ref=e326] [cursor=pointer]:
+                  - /url: /about
+                  - generic [ref=e327]: About
+                - link "Our Story" [ref=e329] [cursor=pointer]:
+                  - /url: /our-story
+                  - generic [ref=e330]: Our Story
+                - link "Contact" [ref=e332] [cursor=pointer]:
+                  - /url: /contact
+                  - generic [ref=e333]: Contact
+            - generic [ref=e334]:
+              - heading "Legal" [level=4] [ref=e335]
+              - generic [ref=e336]:
+                - link "Legal" [ref=e338] [cursor=pointer]:
+                  - /url: /legal
+                  - generic [ref=e339]: Legal
+                - link "Privacy Policy" [ref=e341] [cursor=pointer]:
+                  - /url: /legal/privacy
+                  - generic [ref=e342]: Privacy Policy
+                - link "Terms of Service" [ref=e344] [cursor=pointer]:
+                  - /url: /legal/terms
+                  - generic [ref=e345]: Terms of Service
+                - link "Security" [ref=e347] [cursor=pointer]:
+                  - /url: /security
+                  - generic [ref=e348]: Security
+                - link "Assurance Portal" [ref=e350] [cursor=pointer]:
+                  - /url: /trust
+                  - generic [ref=e351]: Assurance Portal
+          - generic [ref=e353]:
+            - generic [ref=e355]:
+              - img [ref=e357]
+              - text: Security-first controls
+            - generic [ref=e360]:
+              - img [ref=e362]
+              - text: Encrypted data flows
+            - generic [ref=e366]:
+              - img [ref=e368]
+              - text: Audit-ready logs
+          - generic [ref=e373]:
+            - paragraph [ref=e374]: © 2026 FormaOS. All rights reserved.
+            - generic [ref=e375]:
+              - generic [ref=e376]: FormaOS Horizon — v2.2.3
+              - generic [ref=e377]: "|"
+              - generic [ref=e378]: QA Stability & Auth Resilience Release
+            - generic [ref=e379]:
+              - link "Formaos.team@gmail.com" [ref=e380] [cursor=pointer]:
+                - /url: mailto:Formaos.team@gmail.com
+                - img [ref=e381]
+                - generic [ref=e384]: Formaos.team@gmail.com
+              - generic [ref=e385]: "|"
+              - generic [ref=e386]:
+                - img [ref=e387]
+                - generic [ref=e390]: Sydney, Australia
+  - button "Open Next.js Dev Tools" [ref=e396] [cursor=pointer]:
+    - img [ref=e397]
+  - alert [ref=e400]

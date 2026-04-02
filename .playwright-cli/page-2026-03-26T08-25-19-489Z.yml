@@ -1,0 +1,270 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - link "Skip to main content" [ref=e3] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e4]:
+      - banner [ref=e5]:
+        - generic [ref=e7]:
+          - link "FormaOS" [ref=e9] [cursor=pointer]:
+            - /url: /
+            - img "FormaOS" [ref=e11]
+          - navigation [ref=e23]:
+            - link "Home" [ref=e24] [cursor=pointer]:
+              - /url: /
+            - link "Product" [ref=e25] [cursor=pointer]:
+              - /url: /product
+            - link "Features" [ref=e26] [cursor=pointer]:
+              - /url: /features
+            - link "Industries" [ref=e27] [cursor=pointer]:
+              - /url: /industries
+            - link "Security" [ref=e28] [cursor=pointer]:
+              - /url: /security
+            - link "Enterprise" [ref=e29] [cursor=pointer]:
+              - /url: /enterprise
+            - link "Trust" [ref=e30] [cursor=pointer]:
+              - /url: /trust
+            - link "Pricing" [ref=e31] [cursor=pointer]:
+              - /url: /pricing
+            - button "Outcomes" [ref=e34] [cursor=pointer]: Outcomes
+            - button "Resources" [ref=e37] [cursor=pointer]: Resources
+          - generic [ref=e41]:
+            - link "Login" [ref=e42] [cursor=pointer]:
+              - /url: http://localhost:3000/auth/signin
+            - link "Contact" [ref=e43] [cursor=pointer]:
+              - /url: /contact
+            - link "Start Free" [ref=e44] [cursor=pointer]:
+              - /url: http://localhost:3000/auth/signup?plan=pro&source=header_cta
+              - generic [ref=e45]: Start Free
+      - main [ref=e46]:
+        - generic [ref=e50]:
+          - generic [ref=e52]:
+            - generic [ref=e53]:
+              - heading "Procurement" [level=1] [ref=e54]
+              - paragraph [ref=e55]: Common questions from procurement, security, and legal teams evaluating FormaOS.
+            - img [ref=e60]
+          - generic [ref=e63]:
+            - generic [ref=e64]:
+              - group [ref=e65]:
+                - generic "What compliance frameworks does FormaOS support? ▾" [ref=e66] [cursor=pointer]:
+                  - generic [ref=e67]: What compliance frameworks does FormaOS support?
+                  - generic [ref=e68]: ▾
+              - group [ref=e69]:
+                - generic "Where is customer data stored? ▾" [ref=e70] [cursor=pointer]:
+                  - generic [ref=e71]: Where is customer data stored?
+                  - generic [ref=e72]: ▾
+              - group [ref=e73]:
+                - generic "Do you have a SOC 2 report? ▾" [ref=e74] [cursor=pointer]:
+                  - generic [ref=e75]: Do you have a SOC 2 report?
+                  - generic [ref=e76]: ▾
+              - group [ref=e77]:
+                - generic "Can we sign a DPA? ▾" [ref=e78] [cursor=pointer]:
+                  - generic [ref=e79]: Can we sign a DPA?
+                  - generic [ref=e80]: ▾
+              - group [ref=e81]:
+                - generic "What are your data retention policies? ▾" [ref=e82] [cursor=pointer]:
+                  - generic [ref=e83]: What are your data retention policies?
+                  - generic [ref=e84]: ▾
+              - group [ref=e85]:
+                - generic "Do you support SSO/SAML? ▾" [ref=e86] [cursor=pointer]:
+                  - generic [ref=e87]: Do you support SSO/SAML?
+                  - generic [ref=e88]: ▾
+              - group [ref=e89]:
+                - generic "How do you handle security incidents? ▾" [ref=e90] [cursor=pointer]:
+                  - generic [ref=e91]: How do you handle security incidents?
+                  - generic [ref=e92]: ▾
+              - group [ref=e93]:
+                - generic "What is your uptime SLA? ▾" [ref=e94] [cursor=pointer]:
+                  - generic [ref=e95]: What is your uptime SLA?
+                  - generic [ref=e96]: ▾
+              - group [ref=e97]:
+                - generic "How long does security review take? ▾" [ref=e98] [cursor=pointer]:
+                  - generic [ref=e99]: How long does security review take?
+                  - generic [ref=e100]: ▾
+              - group [ref=e101]:
+                - generic "What can I prove to my auditor in 14 days? ▾" [ref=e102] [cursor=pointer]:
+                  - generic [ref=e103]: What can I prove to my auditor in 14 days?
+                  - generic [ref=e104]: ▾
+            - generic [ref=e105]:
+              - generic [ref=e106]:
+                - img [ref=e107]
+                - heading "What you can prove in 14 days" [level=2] [ref=e110]
+              - generic [ref=e111]:
+                - generic [ref=e112]:
+                  - img [ref=e113]
+                  - generic [ref=e116]:
+                    - paragraph [ref=e117]: Day 1-2
+                    - paragraph [ref=e118]: Enable framework + import existing evidence
+                - generic [ref=e119]:
+                  - img [ref=e120]
+                  - generic [ref=e123]:
+                    - paragraph [ref=e124]: Day 3-5
+                    - paragraph [ref=e125]: Map controls to evidence + create core policies
+                - generic [ref=e126]:
+                  - img [ref=e127]
+                  - generic [ref=e130]:
+                    - paragraph [ref=e131]: Day 6-8
+                    - paragraph [ref=e132]: Assign owners + set up automation triggers
+                - generic [ref=e133]:
+                  - img [ref=e134]
+                  - generic [ref=e137]:
+                    - paragraph [ref=e138]: Day 9-11
+                    - paragraph [ref=e139]: Generate compliance posture report
+                - generic [ref=e140]:
+                  - img [ref=e141]
+                  - generic [ref=e144]:
+                    - paragraph [ref=e145]: Day 12-14
+                    - paragraph [ref=e146]: Export audit-ready trust packet for stakeholders
+            - generic [ref=e147]:
+              - link "← Back to Trust Center" [ref=e148] [cursor=pointer]:
+                - /url: /trust
+              - link "Open enterprise operations proof →" [ref=e149] [cursor=pointer]:
+                - /url: /enterprise-proof
+              - link "Contact for custom security review →" [ref=e150] [cursor=pointer]:
+                - /url: /contact
+      - contentinfo [ref=e151]:
+        - generic [ref=e154]:
+          - generic [ref=e160]:
+            - heading "Ready to transform your compliance?" [level=3] [ref=e161]
+            - paragraph [ref=e162]: Start your 14-day free trial. No credit card required. Full platform access.
+            - generic [ref=e163]:
+              - link "Start Free Trial" [ref=e165] [cursor=pointer]:
+                - /url: http://localhost:3000/auth/signup
+              - link "Request Demo" [ref=e167] [cursor=pointer]:
+                - /url: /contact
+          - generic [ref=e168]:
+            - generic [ref=e169]:
+              - link "FormaOS" [ref=e172] [cursor=pointer]:
+                - /url: /
+                - img "FormaOS" [ref=e174]
+              - paragraph [ref=e186]: The compliance operating system for regulated industries. Govern, execute, and prove audit readiness.
+              - generic [ref=e188]: All systems operational
+            - generic [ref=e189]:
+              - heading "Platform" [level=4] [ref=e190]
+              - generic [ref=e191]:
+                - link "How it works" [ref=e193] [cursor=pointer]:
+                  - /url: /product
+                  - generic [ref=e194]: How it works
+                - link "Features" [ref=e196] [cursor=pointer]:
+                  - /url: /features
+                  - generic [ref=e197]: Features
+                - link "Industries" [ref=e199] [cursor=pointer]:
+                  - /url: /industries
+                  - generic [ref=e200]: Industries
+                - link "Security" [ref=e202] [cursor=pointer]:
+                  - /url: /security
+                  - generic [ref=e203]: Security
+                - link "Framework Coverage" [ref=e205] [cursor=pointer]:
+                  - /url: /frameworks
+                  - generic [ref=e206]: Framework Coverage
+                - link "Pricing" [ref=e208] [cursor=pointer]:
+                  - /url: /pricing
+                  - generic [ref=e209]: Pricing
+            - generic [ref=e210]:
+              - heading "Use Cases" [level=4] [ref=e211]
+              - generic [ref=e212]:
+                - link "Healthcare" [ref=e214] [cursor=pointer]:
+                  - /url: /use-cases/healthcare
+                  - generic [ref=e215]: Healthcare
+                - link "NDIS & Aged Care" [ref=e217] [cursor=pointer]:
+                  - /url: /use-cases/ndis-aged-care
+                  - generic [ref=e218]: NDIS & Aged Care
+                - link "Workforce" [ref=e220] [cursor=pointer]:
+                  - /url: /use-cases/workforce-credentials
+                  - generic [ref=e221]: Workforce
+                - link "Incidents" [ref=e223] [cursor=pointer]:
+                  - /url: /use-cases/incident-management
+                  - generic [ref=e224]: Incidents
+            - generic [ref=e225]:
+              - heading "Resources" [level=4] [ref=e226]
+              - generic [ref=e227]:
+                - link "Documentation" [ref=e229] [cursor=pointer]:
+                  - /url: /documentation
+                  - generic [ref=e230]: Documentation
+                - link "Blog" [ref=e232] [cursor=pointer]:
+                  - /url: /blog
+                  - generic [ref=e233]: Blog
+                - link "Trust Center" [ref=e235] [cursor=pointer]:
+                  - /url: /trust
+                  - generic [ref=e236]: Trust Center
+                - link "Security Review Packet" [ref=e238] [cursor=pointer]:
+                  - /url: /security-review
+                  - generic [ref=e239]: Security Review Packet
+                - link "Trust Packet (PDF)" [ref=e241] [cursor=pointer]:
+                  - /url: /trust/packet
+                  - generic [ref=e242]: Trust Packet (PDF)
+                - link "Status" [ref=e244] [cursor=pointer]:
+                  - /url: /status
+                  - generic [ref=e245]: Status
+                - link "Changelog" [ref=e247] [cursor=pointer]:
+                  - /url: /changelog
+                  - generic [ref=e248]: Changelog
+                - link "Roadmap" [ref=e250] [cursor=pointer]:
+                  - /url: /roadmap
+                  - generic [ref=e251]: Roadmap
+                - link "Customer Stories" [ref=e253] [cursor=pointer]:
+                  - /url: /customer-stories
+                  - generic [ref=e254]: Customer Stories
+                - link "Compare" [ref=e256] [cursor=pointer]:
+                  - /url: /compare
+                  - generic [ref=e257]: Compare
+                - link "FAQ" [ref=e259] [cursor=pointer]:
+                  - /url: /faq
+                  - generic [ref=e260]: FAQ
+            - generic [ref=e261]:
+              - heading "Company" [level=4] [ref=e262]
+              - generic [ref=e263]:
+                - link "About" [ref=e265] [cursor=pointer]:
+                  - /url: /about
+                  - generic [ref=e266]: About
+                - link "Our Story" [ref=e268] [cursor=pointer]:
+                  - /url: /our-story
+                  - generic [ref=e269]: Our Story
+                - link "Contact" [ref=e271] [cursor=pointer]:
+                  - /url: /contact
+                  - generic [ref=e272]: Contact
+            - generic [ref=e273]:
+              - heading "Legal" [level=4] [ref=e274]
+              - generic [ref=e275]:
+                - link "Legal" [ref=e277] [cursor=pointer]:
+                  - /url: /legal
+                  - generic [ref=e278]: Legal
+                - link "Privacy Policy" [ref=e280] [cursor=pointer]:
+                  - /url: /legal/privacy
+                  - generic [ref=e281]: Privacy Policy
+                - link "Terms of Service" [ref=e283] [cursor=pointer]:
+                  - /url: /legal/terms
+                  - generic [ref=e284]: Terms of Service
+                - link "Security" [ref=e286] [cursor=pointer]:
+                  - /url: /security
+                  - generic [ref=e287]: Security
+                - link "Assurance Portal" [ref=e289] [cursor=pointer]:
+                  - /url: /trust
+                  - generic [ref=e290]: Assurance Portal
+          - generic [ref=e292]:
+            - generic [ref=e294]:
+              - img [ref=e296]
+              - text: Security-first controls
+            - generic [ref=e299]:
+              - img [ref=e301]
+              - text: Encrypted data flows
+            - generic [ref=e305]:
+              - img [ref=e307]
+              - text: Audit-ready logs
+          - generic [ref=e312]:
+            - paragraph [ref=e313]: © 2026 FormaOS. All rights reserved.
+            - generic [ref=e314]:
+              - generic [ref=e315]: FormaOS Horizon — v2.2.3
+              - generic [ref=e316]: "|"
+              - generic [ref=e317]: QA Stability & Auth Resilience Release
+            - generic [ref=e318]:
+              - link "Formaos.team@gmail.com" [ref=e319] [cursor=pointer]:
+                - /url: mailto:Formaos.team@gmail.com
+                - img [ref=e320]
+                - generic [ref=e323]: Formaos.team@gmail.com
+              - generic [ref=e324]: "|"
+              - generic [ref=e325]:
+                - img [ref=e326]
+                - generic [ref=e329]: Sydney, Australia
+  - button "Open Next.js Dev Tools" [ref=e335] [cursor=pointer]:
+    - img [ref=e336]
+  - alert [ref=e339]

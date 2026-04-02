@@ -30,6 +30,7 @@ import {
   Building2,
   ShieldCheck,
   Bot,
+  FormInput,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -126,6 +127,13 @@ export const NDIS_NAV: NavItem[] = [
     icon: Lock,
     category: 'Registers',
     testId: 'nav-vault',
+  },
+  {
+    name: 'Forms',
+    href: '/app/forms',
+    icon: FormInput,
+    category: 'Registers',
+    testId: 'nav-forms',
   },
   {
     name: 'Reports',
@@ -225,6 +233,13 @@ export const HEALTHCARE_NAV: NavItem[] = [
     icon: Lock,
     category: 'Compliance',
     testId: 'nav-vault',
+  },
+  {
+    name: 'Forms',
+    href: '/app/forms',
+    icon: FormInput,
+    category: 'Compliance',
+    testId: 'nav-forms',
   },
   {
     name: 'Reports',
@@ -333,6 +348,13 @@ export const AGED_CARE_NAV: NavItem[] = [
     testId: 'nav-vault',
   },
   {
+    name: 'Forms',
+    href: '/app/forms',
+    icon: FormInput,
+    category: 'Registers',
+    testId: 'nav-forms',
+  },
+  {
     name: 'Reports',
     href: '/app/reports',
     icon: BarChart3,
@@ -423,6 +445,13 @@ export const CHILDCARE_NAV: NavItem[] = [
     icon: Lock,
     category: 'Compliance',
     testId: 'nav-vault',
+  },
+  {
+    name: 'Forms',
+    href: '/app/forms',
+    icon: FormInput,
+    category: 'Compliance',
+    testId: 'nav-forms',
   },
   {
     name: 'Reports',
@@ -524,6 +553,13 @@ export const COMMUNITY_SERVICES_NAV: NavItem[] = [
     testId: 'nav-vault',
   },
   {
+    name: 'Forms',
+    href: '/app/forms',
+    icon: FormInput,
+    category: 'Compliance',
+    testId: 'nav-forms',
+  },
+  {
     name: 'Reports',
     href: '/app/reports',
     icon: BarChart3,
@@ -597,6 +633,13 @@ export const FINANCIAL_SERVICES_NAV: NavItem[] = [
     icon: Lock,
     category: 'Operations',
     testId: 'nav-vault',
+  },
+  {
+    name: 'Forms',
+    href: '/app/forms',
+    icon: FormInput,
+    category: 'Operations',
+    testId: 'nav-forms',
   },
 
   // Intelligence
@@ -681,6 +724,13 @@ export const SAAS_TECHNOLOGY_NAV: NavItem[] = [
     icon: Lock,
     category: 'Operations',
     testId: 'nav-vault',
+  },
+  {
+    name: 'Forms',
+    href: '/app/forms',
+    icon: FormInput,
+    category: 'Operations',
+    testId: 'nav-forms',
   },
 
   // Intelligence
@@ -788,6 +838,13 @@ export const ENTERPRISE_NAV: NavItem[] = [
     icon: Lock,
     category: 'Operations',
     testId: 'nav-vault',
+  },
+  {
+    name: 'Forms',
+    href: '/app/forms',
+    icon: FormInput,
+    category: 'Operations',
+    testId: 'nav-forms',
   },
 
   // Intelligence
@@ -898,6 +955,13 @@ export const DEFAULT_ADMIN_NAV: NavItem[] = [
     icon: Lock,
     category: 'Operations',
     testId: 'nav-vault',
+  },
+  {
+    name: 'Forms',
+    href: '/app/forms',
+    icon: FormInput,
+    category: 'Operations',
+    testId: 'nav-forms',
   },
   {
     name: 'Reports',

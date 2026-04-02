@@ -104,7 +104,9 @@ async function ComplianceScoreSection({
   hasFrameworkEval: boolean;
 }) {
   const isoResult =
-    hasSubscription && hasFrameworkEval ? await runGapAnalysis('ISO27001') : null;
+    hasSubscription && hasFrameworkEval
+      ? await runGapAnalysis('ISO27001')
+      : null;
   const complianceScore = isoResult?.score ?? 0;
   const missingCount = isoResult?.missing ?? 0;
   const totalControls = isoResult?.total ?? 0;
@@ -122,7 +124,9 @@ async function ComplianceScoreSection({
     requiredNonCompliantCount = 0;
   }
 
-  const isExportBlocked = Boolean(complianceBlocks && complianceBlocks.length > 0);
+  const isExportBlocked = Boolean(
+    complianceBlocks && complianceBlocks.length > 0,
+  );
   const isControlBlocked = requiredNonCompliantCount > 0;
 
   return (
@@ -132,7 +136,9 @@ async function ComplianceScoreSection({
           <div className="flex items-start gap-3 text-rose-200">
             <AlertTriangle className="mt-0.5 h-5 w-5" />
             <div>
-              <div className="text-sm font-semibold">Export blocked by compliance requirements</div>
+              <div className="text-sm font-semibold">
+                Export blocked by compliance requirements
+              </div>
               <div className="text-xs text-rose-300">
                 Resolve unresolved controls before generating audit exports.
               </div>
@@ -148,15 +154,22 @@ async function ComplianceScoreSection({
               <ShieldCheck className="h-3.5 w-3.5" />
               Active Framework Snapshot
             </div>
-            <h2 className="text-2xl font-black text-foreground">ISO 27001 Compliance</h2>
+            <h2 className="text-2xl font-black text-foreground">
+              ISO 27001 Compliance
+            </h2>
             <p className="mt-2 max-w-lg text-sm text-muted-foreground">
-              Continuous control-to-evidence validation for enterprise audit readiness.
+              Continuous control-to-evidence validation for enterprise audit
+              readiness.
             </p>
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/5 px-6 py-5 text-center">
-            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Compliance Score</p>
-            <div className="mt-2 text-4xl font-black text-foreground">{complianceScore}%</div>
+            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+              Compliance Score
+            </p>
+            <div className="mt-2 text-4xl font-black text-foreground">
+              {complianceScore}%
+            </div>
             <div className="mt-3 flex items-center justify-center gap-4 text-xs text-muted-foreground">
               <span>Missing: {missingCount}</span>
               <span>Total: {totalControls}</span>
@@ -180,7 +193,10 @@ async function ComplianceScoreSection({
                   <XCircle className="h-4 w-4 text-rose-300" />
                   Control {code} missing approved evidence
                 </div>
-                <Link href="/app/evidence" className="text-xs font-semibold text-cyan-300 hover:text-cyan-200">
+                <Link
+                  href="/app/evidence"
+                  className="text-xs font-semibold text-cyan-300 hover:text-cyan-200"
+                >
                   Resolve
                 </Link>
               </div>
@@ -208,7 +224,8 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
               A shareable, procurement-ready snapshot that summarizes readiness,
-              control coverage, evidence verification posture, and critical gaps.
+              control coverage, evidence verification posture, and critical
+              gaps.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {[
@@ -259,8 +276,9 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
 
         {disableExports ? (
           <div className="mt-4 text-xs text-amber-300">
-            Trust exports require an active subscription, audit export entitlement,
-            owner/admin access, and no unresolved compliance blocks.
+            Trust exports require an active subscription, audit export
+            entitlement, owner/admin access, and no unresolved compliance
+            blocks.
           </div>
         ) : (
           <div className="mt-4 text-xs text-emerald-300 flex items-center gap-2">
@@ -272,7 +290,9 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
       <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-8">
         <div className="mb-4 flex items-center gap-2 text-sky-300">
           <FileText className="h-5 w-5" />
-          <span className="text-xs font-bold uppercase tracking-widest">Certification Reports</span>
+          <span className="text-xs font-bold uppercase tracking-widest">
+            Certification Reports
+          </span>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {EXPORT_CARDS.map((card) => (
@@ -280,8 +300,12 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
               key={card.title}
               className={`rounded-2xl border bg-gradient-to-br p-5 ${card.color} ${disableExports ? 'opacity-50' : ''}`}
             >
-              <h4 className="text-lg font-bold text-foreground">{card.title}</h4>
-              <p className="mt-2 text-xs leading-relaxed text-foreground/70">{card.description}</p>
+              <h4 className="text-lg font-bold text-foreground">
+                {card.title}
+              </h4>
+              <p className="mt-2 text-xs leading-relaxed text-foreground/70">
+                {card.description}
+              </p>
               <Link
                 href={`/api/reports/export?type=${card.type}&format=pdf&mode=sync`}
                 prefetch={false}
@@ -295,7 +319,8 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
         </div>
         {disableExports ? (
           <div className="mt-4 text-xs text-amber-300">
-            Export actions are disabled until subscription, entitlement, and compliance requirements are satisfied.
+            Export actions are disabled until subscription, entitlement, and
+            compliance requirements are satisfied.
           </div>
         ) : (
           <div className="mt-4 text-xs text-emerald-300 flex items-center gap-2">
@@ -330,9 +355,13 @@ export default async function ReportsPage() {
         <div className="rounded-xl border border-amber-400/30 bg-amber-500/10 px-6 py-4 text-amber-100">
           <div className="text-sm font-semibold">Subscription required</div>
           <div className="mt-1 text-xs text-amber-200">
-            Activate your plan to unlock report exports and framework evaluations.
+            Activate your plan to unlock report exports and framework
+            evaluations.
           </div>
-          <Link href="/app/billing" className="mt-3 inline-flex text-xs font-semibold underline">
+          <Link
+            href="/app/billing"
+            className="mt-3 inline-flex text-xs font-semibold underline"
+          >
             Go to billing
           </Link>
         </div>
@@ -342,9 +371,13 @@ export default async function ReportsPage() {
         <div className="rounded-xl border border-sky-400/30 bg-sky-500/10 px-6 py-4 text-sky-100">
           <div className="text-sm font-semibold">Admin access required</div>
           <div className="mt-1 text-xs text-sky-200">
-            Reports and trust exports are restricted to organization owners and admins.
+            Reports and trust exports are restricted to organization owners and
+            admins.
           </div>
-          <Link href="/app/team" className="mt-3 inline-flex text-xs font-semibold underline">
+          <Link
+            href="/app/team"
+            className="mt-3 inline-flex text-xs font-semibold underline"
+          >
             Review team roles
           </Link>
         </div>
@@ -352,10 +385,31 @@ export default async function ReportsPage() {
 
       {/* Header — renders instantly */}
       <div>
-        <h1 className="text-3xl font-black text-foreground tracking-tight">Reports Center</h1>
+        <h1 className="text-3xl font-black text-foreground tracking-tight">
+          Reports Center
+        </h1>
         <p className="mt-1 text-muted-foreground">
           Generate audit-ready compliance artifacts and regulatory assessments.
         </p>
+      </div>
+
+      {/* Sub-navigation */}
+      <div className="flex gap-2">
+        <span className="rounded-lg bg-white/10 px-3 py-1.5 text-sm font-semibold text-foreground">
+          Standard Reports
+        </span>
+        <Link
+          href="/app/reports/custom"
+          className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-white/5 hover:text-foreground"
+        >
+          My Reports
+        </Link>
+        <Link
+          href="/app/reports/trends"
+          className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-white/5 hover:text-foreground"
+        >
+          Trends
+        </Link>
       </div>
 
       {/* Compliance score — streams when gap analysis completes */}

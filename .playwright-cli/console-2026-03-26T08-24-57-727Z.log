@@ -1,0 +1,22 @@
+[   17353ms] [WARNING] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  100633ms] [WARNING] [Fast Refresh] performing full reload
+
+Fast Refresh will perform a full reload when you edit a file that's imported by modules outside of the React rendering tree.
+You might have a file which exports a React component but also exports a value that is imported by a non-React component file.
+Consider migrating the non-React component export to a separate file and importing it into both files.
+
+It is also possible the parent component of the component you edited is a class component, which disables Fast Refresh.
+Fast Refresh requires at least one parent function component in your React tree. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  127408ms] [WARNING] Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  238989ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=vaWzFFPplJro7o7n6l-Ep' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[  239994ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=vaWzFFPplJro7o7n6l-Ep' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[  240996ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=vaWzFFPplJro7o7n6l-Ep' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[  241997ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=vaWzFFPplJro7o7n6l-Ep' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[  242998ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=vaWzFFPplJro7o7n6l-Ep' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[  248000ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=vaWzFFPplJro7o7n6l-Ep' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[  253005ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=vaWzFFPplJro7o7n6l-Ep' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[  258008ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=vaWzFFPplJro7o7n6l-Ep' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[  263017ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=vaWzFFPplJro7o7n6l-Ep' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[  268021ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=vaWzFFPplJro7o7n6l-Ep' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[  273024ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=vaWzFFPplJro7o7n6l-Ep' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[  278032ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=vaWzFFPplJro7o7n6l-Ep' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878

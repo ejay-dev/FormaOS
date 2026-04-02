@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="al-bg" x1="78" y1="72" x2="434" y2="442" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#101513"/>
+      <stop offset="1" stop-color="#182722"/>
+    </linearGradient>
+    <linearGradient id="al-edge" x1="108" y1="90" x2="404" y2="422" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#E6FF9B"/>
+      <stop offset="0.42" stop-color="#9FE870"/>
+      <stop offset="1" stop-color="#39C46A"/>
+    </linearGradient>
+    <linearGradient id="al-core" x1="164" y1="152" x2="344" y2="340" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F5FFE0"/>
+      <stop offset="0.52" stop-color="#C8F59A"/>
+      <stop offset="1" stop-color="#76DC7B"/>
+    </linearGradient>
+    <filter id="al-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0.5 0 1 0 0 0.9 0 0 1 0 0.45 0 0 0 0.22 0"/>
+    </filter>
+  </defs>
+
+  <rect x="56" y="56" width="400" height="400" rx="112" fill="url(#al-bg)"/>
+  <rect x="56" y="56" width="400" height="400" rx="112" stroke="url(#al-edge)" stroke-width="8"/>
+
+  <path d="M160 160C160 148.954 168.954 140 180 140H338V176H196V336H160V160Z" fill="url(#al-core)" filter="url(#al-glow)"/>
+  <path d="M160 232H286V266H160V232Z" fill="url(#al-core)"/>
+
+  <path d="M230 186C230 171.641 241.641 160 256 160H314C368.124 160 412 203.876 412 258C412 312.124 368.124 356 314 356H260V320H314C348.301 320 376 292.301 376 258C376 223.699 348.301 196 314 196H266V266H230V186Z" fill="url(#al-edge)"/>
+  <path d="M314 196C348.301 196 376 223.699 376 258C376 292.301 348.301 320 314 320H260V356H224V258C224 243.641 235.641 232 250 232H314V268H260V320H314C331.673 320 346 305.673 346 288C346 270.327 331.673 256 314 256H278V196H314Z" fill="#173325" opacity="0.28"/>
+  <circle cx="314" cy="258" r="16" fill="#122319" opacity="0.46"/>
+</svg>

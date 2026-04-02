@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="sa-bg" x1="76" y1="70" x2="434" y2="442" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#12121B"/>
+      <stop offset="1" stop-color="#261825"/>
+    </linearGradient>
+    <linearGradient id="sa-edge" x1="104" y1="90" x2="406" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFD29A"/>
+      <stop offset="0.46" stop-color="#FF8F66"/>
+      <stop offset="1" stop-color="#FF4D6D"/>
+    </linearGradient>
+    <linearGradient id="sa-core" x1="164" y1="150" x2="364" y2="344" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFF1D8"/>
+      <stop offset="0.5" stop-color="#FFBF88"/>
+      <stop offset="1" stop-color="#FF7B7B"/>
+    </linearGradient>
+    <filter id="sa-glow" x="-24%" y="-24%" width="148%" height="148%">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0.98 0 1 0 0 0.54 0 0 1 0 0.38 0 0 0 0.26 0"/>
+    </filter>
+  </defs>
+
+  <rect x="56" y="56" width="400" height="400" rx="128" fill="url(#sa-bg)"/>
+  <rect x="56" y="56" width="400" height="400" rx="128" stroke="url(#sa-edge)" stroke-width="8"/>
+
+  <path d="M154 334C154 272.144 204.144 222 266 222H372V262H266C226.235 262 194 294.235 194 334V358H154V334Z" fill="url(#sa-core)" filter="url(#sa-glow)"/>
+  <path d="M172 146C172 134.954 180.954 126 192 126H366V166H212V390H172V146Z" fill="url(#sa-core)"/>
+  <path d="M188 202H364V240H188V202Z" fill="#40232E" opacity="0.44"/>
+  <path d="M246 334C246 287.608 283.608 250 330 250C376.392 250 414 287.608 414 334C414 380.392 376.392 418 330 418H246V378H330C354.301 378 374 358.301 374 334C374 309.699 354.301 290 330 290C305.699 290 286 309.699 286 334H246Z" fill="url(#sa-edge)"/>
+  <circle cx="330" cy="334" r="18" fill="#2B1821" opacity="0.6"/>
+</svg>

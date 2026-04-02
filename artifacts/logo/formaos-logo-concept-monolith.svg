@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="mono-bg" x1="90" y1="70" x2="432" y2="444" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#141018"/>
+      <stop offset="1" stop-color="#251833"/>
+    </linearGradient>
+    <linearGradient id="mono-edge" x1="118" y1="100" x2="392" y2="408" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffb6db"/>
+      <stop offset="0.45" stop-color="#ff7ab9"/>
+      <stop offset="1" stop-color="#ec57ff"/>
+    </linearGradient>
+    <linearGradient id="mono-bar" x1="158" y1="140" x2="330" y2="356" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffe1f0"/>
+      <stop offset="0.52" stop-color="#ff9acf"/>
+      <stop offset="1" stop-color="#ff69db"/>
+    </linearGradient>
+    <linearGradient id="mono-ring" x1="252" y1="154" x2="378" y2="328" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffe7fb"/>
+      <stop offset="1" stop-color="#d974ff"/>
+    </linearGradient>
+    <filter id="mono-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 1 0 1 0 0 0.43 0 0 1 0 0.88 0 0 0 0.18 0"/>
+    </filter>
+  </defs>
+
+  <rect x="56" y="56" width="400" height="400" rx="66" fill="url(#mono-bg)"/>
+  <rect x="56" y="56" width="400" height="400" rx="66" stroke="url(#mono-edge)" stroke-width="8"/>
+
+  <rect x="112" y="110" width="288" height="292" rx="42" fill="#170f1d" stroke="rgba(255, 186, 230, 0.12)" stroke-width="4"/>
+
+  <rect x="160" y="142" width="38" height="228" rx="19" fill="url(#mono-bar)" filter="url(#mono-glow)"/>
+  <rect x="160" y="142" width="142" height="34" rx="17" fill="url(#mono-bar)"/>
+  <rect x="160" y="236" width="122" height="28" rx="14" fill="url(#mono-bar)"/>
+
+  <path
+    d="M318 156C365.496 156 404 194.504 404 242C404 289.496 365.496 328 318 328C270.504 328 232 289.496 232 242C232 194.504 270.504 156 318 156ZM318 188C288.177 188 264 212.177 264 242C264 271.823 288.177 296 318 296C347.823 296 372 271.823 372 242C372 212.177 347.823 188 318 188Z"
+    fill="url(#mono-ring)"
+  />
+
+  <rect x="140" y="384" width="232" height="18" rx="9" fill="url(#mono-edge)" opacity="0.82"/>
+  <path d="M218 297L282 264" stroke="#f97fcd" stroke-width="8" stroke-linecap="round" opacity="0.52"/>
+</svg>

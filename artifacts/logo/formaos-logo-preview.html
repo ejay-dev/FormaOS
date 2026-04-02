@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FormaOS Logo Concept Preview</title>
+    <style>
+      :root {
+        --ink: #e7eef8;
+        --muted: #98a8bf;
+        --panel: rgba(12, 20, 32, 0.74);
+        --line: rgba(154, 183, 214, 0.16);
+        --glow: rgba(91, 221, 255, 0.28);
+        --paper: #edf3f9;
+        --paper-ink: #102136;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "SF Pro Display", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(39, 181, 255, 0.22), transparent 28%),
+          radial-gradient(circle at top right, rgba(53, 226, 190, 0.16), transparent 24%),
+          linear-gradient(180deg, #06101b 0%, #091421 46%, #0c1827 100%);
+      }
+
+      .frame {
+        width: 1480px;
+        margin: 0 auto;
+        padding: 48px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.3fr 0.9fr;
+        gap: 28px;
+        align-items: stretch;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 30px;
+        backdrop-filter: blur(18px);
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+      }
+
+      .intro {
+        padding: 34px 36px 30px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        padding: 8px 14px;
+        border-radius: 999px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-size: 12px;
+        color: #98eeff;
+        background: rgba(90, 212, 255, 0.1);
+        border: 1px solid rgba(139, 237, 255, 0.16);
+      }
+
+      h1 {
+        margin: 18px 0 12px;
+        font-size: 62px;
+        line-height: 0.96;
+        letter-spacing: -0.05em;
+      }
+
+      p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 20px;
+        line-height: 1.55;
+        max-width: 22em;
+      }
+
+      .traits {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 28px;
+      }
+
+      .trait {
+        padding: 11px 14px;
+        border-radius: 999px;
+        font-size: 14px;
+        color: #d9f8ff;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(151, 181, 210, 0.12);
+      }
+
+      .showcase {
+        display: grid;
+        place-items: center;
+        padding: 30px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .showcase::before {
+        content: "";
+        position: absolute;
+        inset: 24px;
+        border-radius: 26px;
+        background:
+          radial-gradient(circle at 50% 24%, rgba(111, 243, 255, 0.12), transparent 34%),
+          linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
+        box-shadow: inset 0 0 0 1px rgba(145, 192, 221, 0.1);
+      }
+
+      .mark-wrap {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        gap: 22px;
+        justify-items: center;
+      }
+
+      .mark {
+        width: 320px;
+        height: 320px;
+        filter: drop-shadow(0 20px 44px rgba(36, 185, 255, 0.25));
+      }
+
+      .wordmark {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        letter-spacing: -0.05em;
+      }
+
+      .wordmark .name {
+        font-size: 68px;
+        font-weight: 720;
+      }
+
+      .wordmark .descriptor {
+        font-size: 18px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #86a4c5;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 22px;
+        margin-top: 24px;
+      }
+
+      .card {
+        padding: 22px;
+      }
+
+      .card h2 {
+        margin: 0 0 8px;
+        font-size: 15px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #8ba4c2;
+      }
+
+      .card p {
+        font-size: 15px;
+        line-height: 1.5;
+        color: #9fb1c8;
+        max-width: none;
+      }
+
+      .comparison {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .mini-stage {
+        border-radius: 22px;
+        min-height: 210px;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(146, 176, 206, 0.12);
+      }
+
+      .mini-stage.dark {
+        background:
+          radial-gradient(circle at top, rgba(95, 221, 255, 0.1), transparent 40%),
+          #0a1321;
+      }
+
+      .mini-stage.light {
+        background:
+          radial-gradient(circle at top, rgba(0, 162, 255, 0.12), transparent 44%),
+          var(--paper);
+      }
+
+      .mini-stage img {
+        width: 112px;
+        height: 112px;
+      }
+
+      .mini-stage.light img.current {
+        filter: saturate(1.1) contrast(1.04);
+      }
+
+      .caption {
+        margin-top: 10px;
+        text-align: center;
+        font-size: 13px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #8298b5;
+      }
+
+      .sizes {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 18px;
+        margin-top: 12px;
+      }
+
+      .size {
+        display: grid;
+        gap: 10px;
+        justify-items: center;
+        color: #9db0c7;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .size.dark-chip,
+      .size.light-chip {
+        padding: 16px 14px;
+        border-radius: 20px;
+        min-width: 96px;
+      }
+
+      .dark-chip {
+        background: #0a1321;
+      }
+
+      .light-chip {
+        background: #edf3f9;
+        color: var(--paper-ink);
+      }
+
+      .size img {
+        display: block;
+      }
+
+      .footer-note {
+        margin-top: 22px;
+        font-size: 15px;
+        color: #9ab0c8;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="frame">
+      <section class="hero">
+        <div class="panel intro">
+          <span class="eyebrow">FormaOS logo concept</span>
+          <h1>Cleaner. Stronger. More premium at small sizes.</h1>
+          <p>
+            This direction keeps the trust and governance feel, but replaces the busy shield-orbit combination with a sharper FO monogram inside a disciplined audit-grade crest.
+          </p>
+          <div class="traits">
+            <span class="trait">More distinctive silhouette</span>
+            <span class="trait">Sharper favicon readability</span>
+            <span class="trait">Still enterprise-safe</span>
+            <span class="trait">Less visually busy</span>
+          </div>
+        </div>
+
+        <div class="panel showcase">
+          <div class="mark-wrap">
+            <img class="mark" src="./formaos-logo-concept-v1.svg" alt="New FormaOS logo concept" />
+            <div class="wordmark">
+              <span class="name">FormaOS</span>
+              <span class="descriptor">Compliance Operating System</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid">
+        <div class="panel card">
+          <h2>Current mark</h2>
+          <p>The existing shield has good intent, but the separate F + orbit + connector creates too much detail when it shrinks.</p>
+          <div class="comparison">
+            <div>
+              <div class="mini-stage dark">
+                <img class="current" src="../../public/brand/formaos-mark.svg" alt="Current FormaOS mark on dark" />
+              </div>
+              <div class="caption">Current</div>
+            </div>
+            <div>
+              <div class="mini-stage dark">
+                <img src="./formaos-logo-concept-v1.svg" alt="Proposed FormaOS mark on dark" />
+              </div>
+              <div class="caption">Proposed</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel card">
+          <h2>Light surface check</h2>
+          <p>The new frame and monogram stay recognizable on procurement docs, PDFs, decks, and lighter marketing surfaces.</p>
+          <div class="comparison">
+            <div>
+              <div class="mini-stage light">
+                <img class="current" src="../../public/brand/formaos-mark.svg" alt="Current FormaOS mark on light" />
+              </div>
+              <div class="caption">Current</div>
+            </div>
+            <div>
+              <div class="mini-stage light">
+                <img src="./formaos-logo-concept-v1.svg" alt="Proposed FormaOS mark on light" />
+              </div>
+              <div class="caption">Proposed</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel card">
+          <h2>Small-size check</h2>
+          <p>The redesign is intentionally simpler so the monogram holds up as a favicon, app icon, or sidebar badge.</p>
+          <div class="sizes">
+            <div class="size dark-chip">
+              <img src="./formaos-logo-concept-v1.svg" width="64" height="64" alt="64px dark" />
+              <span>64px</span>
+            </div>
+            <div class="size dark-chip">
+              <img src="./formaos-logo-concept-v1.svg" width="40" height="40" alt="40px dark" />
+              <span>40px</span>
+            </div>
+            <div class="size light-chip">
+              <img src="./formaos-logo-concept-v1.svg" width="32" height="32" alt="32px light" />
+              <span>32px</span>
+            </div>
+            <div class="size light-chip">
+              <img src="./formaos-logo-concept-v1.svg" width="24" height="24" alt="24px light" />
+              <span>24px</span>
+            </div>
+          </div>
+          <div class="footer-note">Design intent: audit shield + operating frame + FO ligature, reduced to fewer stronger moves.</div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

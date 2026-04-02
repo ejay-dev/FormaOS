@@ -1,0 +1,120 @@
+{
+  "generatedAt": "2026-04-01T09:43:31.071Z",
+  "results": [
+    {
+      "id": "security_modules",
+      "title": "Core Security Modules",
+      "level": "pass",
+      "summary": "All 9 core security modules present.",
+      "details": [
+        "lib/security/detection-rules.ts",
+        "lib/security/event-logger.ts",
+        "lib/security/monitoring-flags.ts",
+        "lib/security/rate-limiter.ts",
+        "lib/security/csrf.ts",
+        "lib/security/session-rotator.ts",
+        "lib/security/session-security.ts",
+        "lib/security/mfa-enforcement.ts",
+        "lib/security/password-security.ts"
+      ]
+    },
+    {
+      "id": "detection_rules",
+      "title": "Threat Detection Rules",
+      "level": "pass",
+      "summary": "All 6 threat detectors present.",
+      "details": [
+        "detectBruteForce",
+        "detectImpossibleTravel",
+        "detectNewDevice",
+        "detectSessionAnomaly",
+        "detectPrivilegeEscalation",
+        "detectRateLimitViolation"
+      ]
+    },
+    {
+      "id": "monitoring_flags",
+      "title": "Security Monitoring Feature Flags",
+      "level": "pass",
+      "summary": "All 3 monitoring feature flags present.",
+      "details": [
+        "isSecurityMonitoringEnabled",
+        "isSecurityDashboardEnabled",
+        "isClientSecurityTrackingEnabled"
+      ]
+    },
+    {
+      "id": "sentry_pii",
+      "title": "Sentry PII Scrubbing",
+      "level": "pass",
+      "summary": "Sentry configured with PII scrubbing.",
+      "details": [
+        "lib/sentry/scrub-pii.ts",
+        "sentry.server.config.ts"
+      ]
+    },
+    {
+      "id": "health_endpoints",
+      "title": "Health Check Endpoints",
+      "level": "pass",
+      "summary": "Health endpoints present with token protection.",
+      "details": [
+        "app/api/health/route.ts",
+        "app/api/health/detailed/route.ts"
+      ]
+    },
+    {
+      "id": "structured_logging",
+      "title": "Structured Logging with Redaction",
+      "level": "pass",
+      "summary": "Structured logger with field redaction configured.",
+      "details": [
+        "lib/monitoring/server-logger.ts"
+      ]
+    },
+    {
+      "id": "observability",
+      "title": "OpenTelemetry / Observability",
+      "level": "pass",
+      "summary": "2 observability module(s) present.",
+      "details": [
+        "lib/observability/opentelemetry.ts",
+        "lib/observability/enterprise-monitor.ts"
+      ]
+    },
+    {
+      "id": "admin_audit",
+      "title": "Admin Security Audit Endpoint",
+      "level": "pass",
+      "summary": "Admin audit endpoint present.",
+      "details": [
+        "app/api/admin/audit/run/route.ts"
+      ]
+    },
+    {
+      "id": "security_env_docs",
+      "title": "Security Environment Documentation",
+      "level": "pass",
+      "summary": "All critical security env vars documented.",
+      "details": [
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "STRIPE_WEBHOOK_SECRET",
+        "HEALTH_DETAILED_FOUNDER_TOKEN"
+      ]
+    },
+    {
+      "id": "api_key_middleware",
+      "title": "API Key Authentication Middleware",
+      "level": "pass",
+      "summary": "API key authentication middleware present.",
+      "details": [
+        "lib/api-keys/middleware.ts"
+      ]
+    }
+  ],
+  "summary": {
+    "pass": 10,
+    "warn": 0,
+    "fail": 0
+  }
+}

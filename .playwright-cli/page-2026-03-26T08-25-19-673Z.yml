@@ -1,0 +1,1061 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e6] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e7]:
+      - img [ref=e8]
+    - generic [ref=e11]:
+      - button "Open issues overlay" [ref=e12]:
+        - generic [ref=e13]:
+          - generic [ref=e14]: "0"
+          - generic [ref=e15]: "1"
+        - generic [ref=e16]: Issue
+      - button "Collapse issues badge" [ref=e17]:
+        - img [ref=e18]
+  - generic [ref=e20]:
+    - link "Skip to main content" [ref=e21] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e22]:
+      - banner [ref=e23]:
+        - generic [ref=e25]:
+          - link "FormaOS" [ref=e27] [cursor=pointer]:
+            - /url: /
+            - img "FormaOS" [ref=e29]
+          - navigation [ref=e41]:
+            - link "Home" [ref=e42] [cursor=pointer]:
+              - /url: /
+            - link "Product" [ref=e43] [cursor=pointer]:
+              - /url: /product
+            - link "Features" [ref=e44] [cursor=pointer]:
+              - /url: /features
+            - link "Industries" [ref=e45] [cursor=pointer]:
+              - /url: /industries
+            - link "Security" [ref=e46] [cursor=pointer]:
+              - /url: /security
+            - link "Enterprise" [ref=e47] [cursor=pointer]:
+              - /url: /enterprise
+            - link "Trust" [ref=e48] [cursor=pointer]:
+              - /url: /trust
+            - link "Pricing" [ref=e49] [cursor=pointer]:
+              - /url: /pricing
+            - button "Outcomes" [ref=e52] [cursor=pointer]: Outcomes
+            - button "Resources" [ref=e55] [cursor=pointer]: Resources
+          - generic [ref=e59]:
+            - link "Login" [ref=e60] [cursor=pointer]:
+              - /url: http://localhost:3000/auth/signin
+            - link "Contact" [ref=e61] [cursor=pointer]:
+              - /url: /contact
+            - link "Start Free" [ref=e62] [cursor=pointer]:
+              - /url: http://localhost:3000/auth/signup?plan=pro&source=header_cta
+              - generic [ref=e63]: Start Free
+      - main [ref=e64]:
+        - generic [ref=e68]:
+          - region "Hero" [ref=e69]:
+            - generic [ref=e70]:
+              - generic [ref=e71]:
+                - img [ref=e72]
+                - generic [ref=e75]: Compliance Operating System
+              - heading "Compliance, Governed. Engineered for Regulated Teams" [level=1] [ref=e76]:
+                - text: Compliance, Governed.
+                - text: Engineered for Regulated Teams
+              - paragraph [ref=e77]: Structured controls, automated evidence, and audit-ready outcomes — for the teams regulators hold accountable.
+              - generic [ref=e78]:
+                - link "Start Free Trial" [ref=e79] [cursor=pointer]:
+                  - /url: http://localhost:3000/auth/signup?plan=pro
+                  - generic [ref=e80]: Start Free Trial
+                  - img [ref=e81]
+                - link "Request Demo" [ref=e83] [cursor=pointer]:
+                  - /url: /contact
+              - generic [ref=e84]:
+                - generic [ref=e85]:
+                  - paragraph [ref=e86]: Framework Coverage
+                  - paragraph [ref=e87]: 7 framework packs
+                  - paragraph [ref=e88]: 70+ pre-built controls
+                - generic [ref=e89]:
+                  - paragraph [ref=e90]: Evidence Chain
+                  - paragraph [ref=e91]: Full chain-of-custody
+                  - paragraph [ref=e92]: Every artifact tracked
+                - generic [ref=e93]:
+                  - paragraph [ref=e94]: Audit Export
+                  - paragraph [ref=e95]: Minutes, not weeks
+                  - paragraph [ref=e96]: Framework-mapped bundles
+              - generic [ref=e97]:
+                - generic [ref=e98]: ISO 27001
+                - generic [ref=e99]: SOC 2
+                - generic [ref=e100]: NDIS
+                - generic [ref=e101]: HIPAA
+                - generic [ref=e102]: GDPR
+                - generic [ref=e103]: Essential Eight
+                - generic [ref=e104]:
+                  - img [ref=e105]
+                  - text: Live Governance Fabric
+          - generic [ref=e109]:
+            - generic [ref=e110]:
+              - paragraph [ref=e111]: Buyer Verification
+              - heading "Verify the product story before the interactive experience loads" [level=2] [ref=e112]
+              - paragraph [ref=e113]: FormaOS sells better when operators, procurement, and security can all see a concrete proof path immediately. This section keeps that substance in the initial HTML.
+            - generic [ref=e114]:
+              - article [ref=e115]:
+                - img [ref=e117]
+                - paragraph [ref=e121]: Operational Proof
+                - heading "Controls become owned work, not passive documentation" [level=3] [ref=e122]
+                - paragraph [ref=e123]: Turn control requirements into named tasks, approval checkpoints, and timestamped evidence chains your operators can actually run.
+                - link "See product workflow" [ref=e124] [cursor=pointer]:
+                  - /url: /product
+                  - text: See product workflow
+                  - img [ref=e125]
+              - article [ref=e127]:
+                - img [ref=e129]
+                - paragraph [ref=e133]: Enterprise Buying
+                - heading "Procurement, security review, and rollout are first-class paths" [level=3] [ref=e134]
+                - paragraph [ref=e135]: Show SAML SSO readiness, audit-ready exports, residency posture, and buyer-facing assurance without building a separate trust process by hand.
+                - link "Review enterprise fit" [ref=e136] [cursor=pointer]:
+                  - /url: /enterprise
+                  - text: Review enterprise fit
+                  - img [ref=e137]
+              - article [ref=e139]:
+                - img [ref=e141]
+                - paragraph [ref=e144]: Trust Posture
+                - heading "Evidence integrity and buyer assurance are visible before the demo" [level=3] [ref=e145]
+                - paragraph [ref=e146]: Surface trust documentation, audit defensibility, and security posture early so serious buyers can verify substance before they talk to sales.
+                - link "Open trust center" [ref=e147] [cursor=pointer]:
+                  - /url: /trust
+                  - text: Open trust center
+                  - img [ref=e148]
+          - generic [ref=e151]:
+            - region "Supported compliance frameworks" [ref=e152]:
+              - generic:
+                - region "Supported compliance frameworks":
+                  - button "ISO 27001 SOC 2 Type II NDIS Practice Standards HIPAA PCI DSS 4.0 GDPR Australian Privacy Act Aged Care Quality Standards Child Safe Standards Incident Management Role-Based Access Immutable Audit Trail Evidence Integrity Continuous Monitoring Encryption at Rest Encryption in Transit":
+                    - list:
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: ISO 27001
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: SOC 2 Type II
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: NDIS Practice Standards
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: HIPAA
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: PCI DSS 4.0
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: GDPR
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Australian Privacy Act
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Aged Care Quality Standards
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Child Safe Standards
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Incident Management
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Role-Based Access
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Immutable Audit Trail
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Evidence Integrity
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Continuous Monitoring
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Encryption at Rest
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Encryption in Transit
+                    - list:
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: ISO 27001
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: SOC 2 Type II
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: NDIS Practice Standards
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: HIPAA
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: PCI DSS 4.0
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: GDPR
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Australian Privacy Act
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Aged Care Quality Standards
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Child Safe Standards
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Incident Management
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Role-Based Access
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Immutable Audit Trail
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Evidence Integrity
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Continuous Monitoring
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Encryption at Rest
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Encryption in Transit
+                    - list:
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: ISO 27001
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: SOC 2 Type II
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: NDIS Practice Standards
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: HIPAA
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: PCI DSS 4.0
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: GDPR
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Australian Privacy Act
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Aged Care Quality Standards
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Child Safe Standards
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Incident Management
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Role-Based Access
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Immutable Audit Trail
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Evidence Integrity
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Continuous Monitoring
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Encryption at Rest
+                      - listitem:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - img
+                            - generic: Encryption in Transit
+            - generic [ref=e156]:
+              - generic [ref=e159]:
+                - generic [ref=e160]: Operating System Architecture
+                - heading "Built different. Works different." [level=2] [ref=e162]
+                - paragraph [ref=e163]: FormaOS is the operating system that runs your compliance program. Not a repository. Not a checklist. A live system that enforces governance, tracks accountability, and produces defensible evidence.
+                - paragraph [ref=e164]: Real-time compliance state. Immutable evidence chains. System-enforced accountability, not spreadsheet-level tracking.
+              - generic [ref=e165]:
+                - generic [ref=e168]:
+                  - heading "Other tools store documents." [level=3] [ref=e170]:
+                    - img [ref=e172]
+                    - text: Other tools store documents.
+                  - paragraph [ref=e175]: Static repositories. Spreadsheets passed around. Evidence reconstructed days before audits. Ownership documented nowhere.
+                  - list [ref=e176]:
+                    - listitem [ref=e177]: No control enforcement - just documentation
+                    - listitem [ref=e179]: Point-in-time snapshots, not continuous posture
+                    - listitem [ref=e181]: Manual evidence collection before every audit
+                    - listitem [ref=e183]: Ownership is assumed, not assigned or enforced
+                    - listitem [ref=e185]: No single source of truth when regulators ask
+                - generic [ref=e189]:
+                  - heading "FormaOS runs your program." [level=3] [ref=e191]:
+                    - img [ref=e193]
+                    - text: FormaOS runs your program.
+                  - paragraph [ref=e196]: A live operating layer. Controls are enforced before work proceeds. Evidence is generated as teams operate. Accountability is structural - not cultural.
+                  - list [ref=e197]:
+                    - listitem [ref=e198]: Workflow enforcement - controls block non-compliance
+                    - listitem [ref=e200]: Real-time continuous compliance posture
+                    - listitem [ref=e202]: Immutable, timestamped audit trail
+                    - listitem [ref=e204]: Every control owned by a named person or team
+                    - listitem [ref=e206]: Audit packets ready to export in minutes
+            - generic [ref=e210]:
+              - generic [ref=e212]:
+                - generic [ref=e213]: Compliance Data Model
+                - heading "See How Everything Connects" [level=2] [ref=e217]:
+                  - text: See How Everything
+                  - generic [ref=e218]: Connects
+                - paragraph [ref=e219]: Frameworks map to controls. Controls generate tasks. Tasks produce evidence. Tap or hover any node to trace its compliance relationships.
+                - generic [ref=e220]:
+                  - generic [ref=e225]:
+                    - generic [ref=e226]: Frameworks
+                    - generic [ref=e227]:
+                      - generic [ref=e228]: 5 supported
+                      - generic [ref=e229]: •
+                      - generic [ref=e230]: Active
+                  - generic [ref=e235]:
+                    - generic [ref=e236]: Controls
+                    - generic [ref=e237]:
+                      - generic [ref=e238]: 6 mapped
+                      - generic [ref=e239]: •
+                      - generic [ref=e240]: Enforced
+                  - generic [ref=e245]:
+                    - generic [ref=e246]: Evidence
+                    - generic [ref=e247]:
+                      - generic [ref=e248]: 4 types
+                      - generic [ref=e249]: •
+                      - generic [ref=e250]: Verified
+                  - generic [ref=e255]:
+                    - generic [ref=e256]: Tasks
+                    - generic [ref=e257]:
+                      - generic [ref=e258]: 3 workflows
+                      - generic [ref=e259]: •
+                      - generic [ref=e260]: Running
+              - generic [ref=e262]:
+                - generic [ref=e263]:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - paragraph: Live Mapping
+                      - paragraph: Framework obligations connected to active controls.
+                    - generic:
+                      - generic:
+                        - paragraph: Audit Readiness
+                      - paragraph: Task and evidence chains remain continuously verifiable.
+                  - generic:
+                    - generic:
+                      - generic: Nodes
+                      - generic: "18"
+                      - generic: Edges
+                      - generic: "22"
+                      - generic: Coverage
+                      - generic: 100%
+                    - generic:
+                      - generic: All Systems Nominal
+                - paragraph [ref=e280]:
+                  - text: Trace dependencies from
+                  - generic [ref=e282]: Frameworks
+                  - text: to
+                  - generic [ref=e283]: Controls
+                  - text: to
+                  - generic [ref=e284]: Evidence
+                  - text: to
+                  - generic [ref=e285]: Tasks
+            - generic [ref=e296]:
+              - generic [ref=e299]:
+                - generic [ref=e300]:
+                  - img [ref=e301]
+                  - text: Enterprise Security
+                - heading "Security built into the operating layer" [level=2] [ref=e304]
+                - paragraph [ref=e305]: Controls are enforced, not just recorded. Security is embedded at the operating layer - where compliance evidence is generated automatically and audit trails are always complete.
+                - paragraph [ref=e306]: "FormaOS ships with enterprise security controls as infrastructure: encryption, identity governance, immutable audit logs, and data residency - ready for your procurement team before the first question is asked."
+                - generic [ref=e307]:
+                  - generic [ref=e310]:
+                    - img [ref=e312]
+                    - generic [ref=e314]:
+                      - generic [ref=e315]:
+                        - heading "SOC 2 Type II-aligned controls" [level=3] [ref=e316]
+                        - generic [ref=e317]: SOC 2
+                      - paragraph [ref=e318]: Security controls mapped to Common Criteria, Availability, and Confidentiality trust service categories
+                  - generic [ref=e321]:
+                    - img [ref=e323]
+                    - generic [ref=e326]:
+                      - generic [ref=e327]:
+                        - heading "AES-256 + TLS 1.3 encryption" [level=3] [ref=e328]
+                        - generic [ref=e329]: AES-256
+                      - paragraph [ref=e330]: Data encrypted at rest with AES-256, in transit with TLS 1.3 - no exceptions
+                  - generic [ref=e333]:
+                    - img [ref=e335]
+                    - generic [ref=e338]:
+                      - generic [ref=e339]:
+                        - heading "Tamper-evident audit logs" [level=3] [ref=e340]
+                        - generic [ref=e341]: Immutable
+                      - paragraph [ref=e342]: Immutable, timestamped action logs for every compliance event - ready for regulator review
+                  - generic [ref=e345]:
+                    - img [ref=e347]
+                    - generic [ref=e351]:
+                      - generic [ref=e352]:
+                        - heading "Evidence chain of custody" [level=3] [ref=e353]
+                        - generic [ref=e354]: Traceable
+                      - paragraph [ref=e355]: Every evidence item linked to its owner, workflow, approval, and timestamp - full defensibility trail
+                  - generic [ref=e358]:
+                    - img [ref=e360]
+                    - generic [ref=e364]:
+                      - generic [ref=e365]:
+                        - heading "SAML 2.0 SSO + MFA enforcement" [level=3] [ref=e366]
+                        - generic [ref=e367]: Enterprise
+                      - paragraph [ref=e368]: Google OAuth on all plans; SAML enterprise SSO for Okta and Azure AD; MFA policy enforcement
+                  - generic [ref=e371]:
+                    - img [ref=e373]
+                    - generic [ref=e376]:
+                      - generic [ref=e377]:
+                        - heading "Data residency controls" [level=3] [ref=e378]
+                        - generic [ref=e379]: Sovereignty
+                      - paragraph [ref=e380]: AU-based hosting by default; US and EU residency options for enterprise deployments
+              - generic [ref=e383]:
+                - generic [ref=e384]:
+                  - generic [ref=e387]: Live Audit Log
+                  - generic [ref=e388]: Immutable · Timestamped
+                - generic [ref=e389]:
+                  - generic [ref=e390]:
+                    - img [ref=e392]
+                    - generic [ref=e395]:
+                      - paragraph [ref=e396]: Evidence approved
+                      - paragraph [ref=e397]: CC6.1 – Logical access controls
+                      - generic [ref=e398]:
+                        - generic [ref=e399]: Sarah M.
+                        - generic [ref=e400]: ·
+                        - generic [ref=e401]: 2 min ago
+                  - generic [ref=e402]:
+                    - img [ref=e404]
+                    - generic [ref=e406]:
+                      - paragraph [ref=e407]: Control drift detected
+                      - paragraph [ref=e408]: A1.2 – Availability monitoring
+                      - generic [ref=e409]:
+                        - generic [ref=e410]: System
+                        - generic [ref=e411]: ·
+                        - generic [ref=e412]: 14 min ago
+                  - generic [ref=e413]:
+                    - img [ref=e415]
+                    - generic [ref=e418]:
+                      - paragraph [ref=e419]: Audit packet exported
+                      - paragraph [ref=e420]: SOC 2 Type II – Full pack
+                      - generic [ref=e421]:
+                        - generic [ref=e422]: James T.
+                        - generic [ref=e423]: ·
+                        - generic [ref=e424]: 1 hr ago
+                  - generic [ref=e425]:
+                    - img [ref=e427]
+                    - generic [ref=e430]:
+                      - paragraph [ref=e431]: Policy acknowledged
+                      - paragraph [ref=e432]: ISO 27001 – A.5.1 Policies
+                      - generic [ref=e433]:
+                        - generic [ref=e434]: Rachel K.
+                        - generic [ref=e435]: ·
+                        - generic [ref=e436]: 3 hr ago
+                  - generic [ref=e437]:
+                    - img [ref=e439]
+                    - generic [ref=e442]:
+                      - paragraph [ref=e443]: Worker credential updated
+                      - paragraph [ref=e444]: NDIS – Worker Screening
+                      - generic [ref=e445]:
+                        - generic [ref=e446]: Michael D.
+                        - generic [ref=e447]: ·
+                        - generic [ref=e448]: 5 hr ago
+                - generic [ref=e449]:
+                  - generic [ref=e450]:
+                    - paragraph [ref=e451]: 100%
+                    - paragraph [ref=e452]: Audit events logged
+                  - generic [ref=e453]:
+                    - paragraph [ref=e454]: 100%
+                    - paragraph [ref=e455]: Evidence with chain-of-custody
+                  - generic [ref=e456]:
+                    - paragraph [ref=e457]: AES-256
+                    - paragraph [ref=e458]: Data encrypted at rest
+                  - generic [ref=e459]:
+                    - paragraph [ref=e460]: < 2 min
+                    - paragraph [ref=e461]: Average audit packet export
+            - generic [ref=e465]:
+              - generic [ref=e467]:
+                - generic [ref=e468]:
+                  - img [ref=e469]
+                  - text: Outcome Proof
+                - heading "Real outcomes. Before and after FormaOS." [level=2] [ref=e471]
+                - paragraph [ref=e472]: Regulated teams don't need more features - they need fewer compliance crises. FormaOS connects governance to measurable operational outcomes that matter to regulators, executives, and operators.
+              - generic [ref=e473]:
+                - article [ref=e476]:
+                  - heading "Audit request lifecycle" [level=3] [ref=e478]
+                  - generic [ref=e479]:
+                    - generic [ref=e480]:
+                      - img [ref=e481]
+                      - generic [ref=e484]:
+                        - text: Before
+                        - paragraph [ref=e485]: Evidence hunted across email threads, shared drives, and spreadsheets - days before auditor arrives.
+                    - generic [ref=e486]:
+                      - img [ref=e487]
+                      - generic [ref=e490]:
+                        - text: After
+                        - paragraph [ref=e491]: Framework-mapped evidence bundles exported in under 2 minutes. Every control linked to its proof.
+                  - generic [ref=e492]:
+                    - generic [ref=e493]:
+                      - generic [ref=e494]: Days
+                      - generic [ref=e495]: Before
+                    - generic [ref=e497]: ~90%
+                    - generic [ref=e498]:
+                      - generic [ref=e499]: < 2 hrs
+                      - generic [ref=e500]: After
+                  - generic [ref=e501]: "Audit prep: days → hours"
+                - article [ref=e504]:
+                  - heading "Incident response workflow" [level=3] [ref=e506]
+                  - generic [ref=e507]:
+                    - generic [ref=e508]:
+                      - img [ref=e509]
+                      - generic [ref=e512]:
+                        - text: Before
+                        - paragraph [ref=e513]: Ownership unclear. Escalation inconsistent. Regulator asks for evidence trail - nothing exists.
+                    - generic [ref=e514]:
+                      - img [ref=e515]
+                      - generic [ref=e518]:
+                        - text: After
+                        - paragraph [ref=e519]: Routed triage with named owners, timestamped actions, and full audit trail from detection to resolution.
+                  - generic [ref=e520]:
+                    - generic [ref=e521]:
+                      - generic [ref=e522]: Ad-hoc
+                      - generic [ref=e523]: Before
+                    - generic [ref=e525]: Traceable
+                    - generic [ref=e526]:
+                      - generic [ref=e527]: Structured
+                      - generic [ref=e528]: After
+                  - generic [ref=e529]: From ad-hoc to defensible
+                - article [ref=e532]:
+                  - heading "Compliance posture reporting" [level=3] [ref=e534]
+                  - generic [ref=e535]:
+                    - generic [ref=e536]:
+                      - img [ref=e537]
+                      - generic [ref=e540]:
+                        - text: Before
+                        - paragraph [ref=e541]: Manual status reconciliation. Board gets a stale snapshot. Gaps discovered late.
+                    - generic [ref=e542]:
+                      - img [ref=e543]
+                      - generic [ref=e546]:
+                        - text: After
+                        - paragraph [ref=e547]: Live compliance score with framework coverage, control drift alerts, and board-ready posture view.
+                  - generic [ref=e548]:
+                    - generic [ref=e549]:
+                      - generic [ref=e550]: Weekly
+                      - generic [ref=e551]: Before
+                    - generic [ref=e553]: Live
+                    - generic [ref=e554]:
+                      - generic [ref=e555]: Real-time
+                      - generic [ref=e556]: After
+                  - generic [ref=e557]: "Decision confidence: weekly → live"
+              - generic [ref=e558]:
+                - generic [ref=e561]:
+                  - img [ref=e563]
+                  - paragraph [ref=e566]: < 2 min
+                  - paragraph [ref=e567]: Audit packet export time
+                - generic [ref=e570]:
+                  - img [ref=e572]
+                  - paragraph [ref=e575]: Continuous
+                  - paragraph [ref=e576]: Compliance posture monitoring
+                - generic [ref=e579]:
+                  - img [ref=e581]
+                  - paragraph [ref=e584]: Named owner
+                  - paragraph [ref=e585]: On every control and evidence item
+                - generic [ref=e588]:
+                  - img [ref=e590]
+                  - paragraph [ref=e594]: 7 frameworks
+                  - paragraph [ref=e595]: Pre-built, audit-ready out of the box
+                - generic [ref=e598]:
+                  - img [ref=e600]
+                  - paragraph [ref=e603]: < 7 days
+                  - paragraph [ref=e604]: Typical security review cycle
+              - generic [ref=e605]:
+                - link "Review Customer Outcomes" [ref=e606] [cursor=pointer]:
+                  - /url: /customer-stories
+                  - text: Review Customer Outcomes
+                  - img [ref=e607]
+                - link "Security Review Packet" [ref=e609] [cursor=pointer]:
+                  - /url: /security-review
+                  - img [ref=e610]
+                  - text: Security Review Packet
+                - link "Compare Platforms" [ref=e613] [cursor=pointer]:
+                  - /url: /compare
+                  - img [ref=e614]
+                  - text: Compare Platforms
+            - generic [ref=e621]:
+              - generic [ref=e623]:
+                - generic [ref=e624]:
+                  - img [ref=e625]
+                  - text: Buyer Objections
+                - heading "Answer every procurement and security objection - before they slow you down" [level=2] [ref=e628]
+                - paragraph [ref=e629]: FormaOS ships with the artifacts, controls, and documentation to satisfy security teams, legal, procurement, and regulators - without a multi-week review process.
+              - generic [ref=e630]:
+                - article [ref=e633]:
+                  - img [ref=e634]
+                  - paragraph [ref=e637]: "\"How do we complete security review before procurement sign-off?\""
+                  - paragraph [ref=e638]: "FormaOS ships with a pre-built security review packet: architecture overview, penetration test summary, vendor assurance questionnaire, and DPA - pre-answering 90% of procurement questions."
+                  - generic [ref=e639]:
+                    - img [ref=e640]
+                    - generic [ref=e642]: Security packet included
+                - article [ref=e645]:
+                  - img [ref=e646]
+                  - paragraph [ref=e649]: "\"Where is our data stored, and do we control residency?\""
+                  - paragraph [ref=e650]: AU-based hosting by default. Enterprise plans include data residency controls for AU, US, or EU. Full Data Processing Agreement available for GDPR and Privacy Act 1988 obligations.
+                  - generic [ref=e651]:
+                    - img [ref=e652]
+                    - generic [ref=e655]: Data sovereignty controls
+                - article [ref=e658]:
+                  - img [ref=e659]
+                  - paragraph [ref=e662]: "\"How do we know evidence is regulator-defensible?\""
+                  - paragraph [ref=e663]: Every evidence item is linked to its creator, workflow step, approver, control, and framework. Immutable audit logs preserve chain of custody - auditors can trace any action back to its origin.
+                  - generic [ref=e664]:
+                    - img [ref=e665]
+                    - generic [ref=e669]: Immutable audit trail
+                - article [ref=e672]:
+                  - img [ref=e673]
+                  - paragraph [ref=e676]: "\"Can we get our data out if we leave?\""
+                  - paragraph [ref=e677]: Full data portability on exit. Evidence, controls, audit trails, and framework mappings export in portable formats (CSV, ZIP, PDF). Data purged within 30 days of termination per retention policy.
+                  - generic [ref=e678]:
+                    - img [ref=e679]
+                    - generic [ref=e682]: Full data portability
+                - article [ref=e685]:
+                  - img [ref=e686]
+                  - paragraph [ref=e689]: "\"Will this work across multiple operating sites or entities?\""
+                  - paragraph [ref=e690]: Multi-entity and multi-site management is a core capability. Each entity has its own controls, evidence, and audit trail - with centralized oversight from the executive dashboard.
+                  - generic [ref=e691]:
+                    - img [ref=e692]
+                    - generic [ref=e695]: Multi-entity by design
+                - article [ref=e698]:
+                  - img [ref=e699]
+                  - paragraph [ref=e702]: "\"Is this only for compliance teams, or does it work for operators?\""
+                  - paragraph [ref=e703]: Execution is mapped to real operators - not just compliance teams. Task routing, shift tracking, incident workflows, and credential management work for frontline and operational staff.
+                  - generic [ref=e704]:
+                    - img [ref=e705]
+                    - generic [ref=e708]: Workflow-first design
+            - generic [ref=e712]:
+              - generic [ref=e714]:
+                - generic [ref=e715]:
+                  - img [ref=e716]
+                  - text: Procurement Workflow
+                - heading "From evaluation to procurement without narrative drift" [level=2] [ref=e719]
+                - paragraph [ref=e720]: FormaOS connects trust artifacts, product workflows, and buyer assurance so enterprise deals progress with fewer blockers.
+              - generic [ref=e721]:
+                - generic [ref=e724]:
+                  - img [ref=e726]
+                  - generic [ref=e728]:
+                    - generic [ref=e729]:
+                      - img [ref=e731]
+                      - generic [ref=e735]: Step 01
+                    - heading "Align stakeholders early" [level=3] [ref=e736]
+                    - paragraph [ref=e737]: Bring security, compliance, procurement, and operations into one evaluation flow from day one.
+                - generic [ref=e740]:
+                  - img [ref=e742]
+                  - generic [ref=e744]:
+                    - generic [ref=e745]:
+                      - img [ref=e747]
+                      - generic [ref=e750]: Step 02
+                    - heading "Run security review in parallel" [level=3] [ref=e751]
+                    - paragraph [ref=e752]: Use the security packet and trust center artifacts while teams validate workspace fit in trial.
+                - generic [ref=e756]:
+                  - generic [ref=e757]:
+                    - img [ref=e759]
+                    - generic [ref=e763]: Step 03
+                  - heading "Close with defensible proof" [level=3] [ref=e764]
+                  - paragraph [ref=e765]: Present ownership trails, evidence chains, and readiness posture for approval without rework.
+              - generic [ref=e768]:
+                - paragraph [ref=e770]: Buyer-Facing Artifacts - available from day one
+                - generic [ref=e771]:
+                  - generic [ref=e772]: Security review packet
+                  - generic [ref=e773]: Framework coverage mapping
+                  - generic [ref=e774]: Evidence chain posture
+                  - generic [ref=e775]: Role-based governance model
+                  - generic [ref=e776]: Audit-ready workflow history
+                  - generic [ref=e777]: DPA & data residency docs
+                  - generic [ref=e778]: Uptime SLA commitments
+              - generic [ref=e779]:
+                - link "Open Trust Center" [ref=e780] [cursor=pointer]:
+                  - /url: /trust
+                  - text: Open Trust Center
+                  - img [ref=e781]
+                - link "Review Security Packet" [ref=e783] [cursor=pointer]:
+                  - /url: /trust/packet
+            - generic [ref=e787]:
+              - generic [ref=e790]:
+                - img [ref=e791]
+                - generic [ref=e794]: Start Your Free Trial
+              - heading "Install the Operating System Your Compliance Deserves" [level=2] [ref=e797]:
+                - text: Install the Operating System
+                - text: Your Compliance Deserves
+              - paragraph [ref=e800]: Regulators don't accept "we were working on it." FormaOS enforces controls, captures evidence automatically, and keeps your organization audit-ready - every day, not just before the audit.
+              - generic [ref=e803]:
+                - link "Get Started Free" [ref=e804] [cursor=pointer]:
+                  - /url: http://localhost:3000/auth/signup?plan=pro
+                  - text: Get Started Free
+                  - img [ref=e805]
+                - link "Schedule Enterprise Demo" [ref=e807] [cursor=pointer]:
+                  - /url: /contact
+              - paragraph [ref=e810]: No credit card required • 14-day free trial • Security review packet included • Cancel anytime
+              - generic [ref=e813]:
+                - generic [ref=e814]:
+                  - img [ref=e815]
+                  - generic [ref=e818]:
+                    - generic [ref=e819]: SOC 2-aligned
+                    - generic [ref=e820]: Trust framework
+                - generic [ref=e821]:
+                  - img [ref=e822]
+                  - generic [ref=e825]:
+                    - generic [ref=e826]: Audit-ready
+                    - generic [ref=e827]: Continuous posture
+                - generic [ref=e828]:
+                  - img [ref=e829]
+                  - generic [ref=e832]:
+                    - generic [ref=e833]: AU-hosted
+                    - generic [ref=e834]: US / EU residency on roadmap
+                - generic [ref=e835]:
+                  - img [ref=e836]
+                  - generic [ref=e839]:
+                    - generic [ref=e840]: Enterprise SSO
+                    - generic [ref=e841]: SAML 2.0 + MFA
+                - generic [ref=e842]:
+                  - img [ref=e843]
+                  - generic [ref=e846]:
+                    - generic [ref=e847]: Full data export
+                    - generic [ref=e848]: No lock-in on exit
+            - generic [ref=e852]:
+              - generic [ref=e854]:
+                - paragraph [ref=e855]: Built for regulated teams and enterprise buyers
+                - heading "Trust architecture that holds up under review" [level=2] [ref=e856]
+                - paragraph [ref=e857]: Move from first conversation to procurement confidence with structure, evidence traceability, and review-ready context.
+              - generic [ref=e858]:
+                - generic [ref=e862]: Healthcare & NDIS teams
+                - generic [ref=e866]: Aged care operators
+                - generic [ref=e870]: Financial services teams
+                - generic [ref=e874]: Education & research
+                - generic [ref=e878]: Government programs
+                - generic [ref=e882]: Community services
+                - generic [ref=e886]: Enterprise compliance
+                - generic [ref=e890]: Multi-site operators
+              - generic [ref=e893]:
+                - generic [ref=e894]:
+                  - generic [ref=e896]: 0packs
+                  - generic [ref=e897]: Framework mappings available
+                - generic [ref=e898]:
+                  - generic [ref=e901]: 0%
+                  - generic [ref=e902]: Immutable audit event history
+                - generic [ref=e903]:
+                  - generic [ref=e905]: 0roles
+                  - generic [ref=e906]: Least-privilege access control
+                - generic [ref=e907]:
+                  - generic [ref=e909]: 0day
+                  - generic [ref=e910]: Free trial - no credit card
+              - generic [ref=e913]:
+                - link "Security Review Packet" [ref=e914] [cursor=pointer]:
+                  - /url: /trust/packet
+                  - generic [ref=e915]:
+                    - img [ref=e916]
+                    - text: Security Review Packet
+                  - img [ref=e921]
+                - link "Framework Coverage" [ref=e923] [cursor=pointer]:
+                  - /url: /frameworks
+                  - generic [ref=e924]:
+                    - img [ref=e925]
+                    - text: Framework Coverage
+                  - img [ref=e928]
+                - link "Outcome Stories" [ref=e930] [cursor=pointer]:
+                  - /url: /customer-stories
+                  - generic [ref=e931]:
+                    - img [ref=e932]
+                    - text: Outcome Stories
+                  - img [ref=e936]
+      - contentinfo [ref=e938]:
+        - generic [ref=e941]:
+          - generic [ref=e947]:
+            - heading "Ready to transform your compliance?" [level=3] [ref=e948]
+            - paragraph [ref=e949]: Start your 14-day free trial. No credit card required. Full platform access.
+            - generic [ref=e950]:
+              - link "Start Free Trial" [ref=e952] [cursor=pointer]:
+                - /url: http://localhost:3000/auth/signup
+              - link "Request Demo" [ref=e954] [cursor=pointer]:
+                - /url: /contact
+          - generic [ref=e955]:
+            - generic [ref=e956]:
+              - link "FormaOS" [ref=e959] [cursor=pointer]:
+                - /url: /
+                - img "FormaOS" [ref=e961]
+              - paragraph [ref=e973]: The compliance operating system for regulated industries. Govern, execute, and prove audit readiness.
+              - generic [ref=e975]: All systems operational
+            - generic [ref=e976]:
+              - heading "Platform" [level=4] [ref=e977]
+              - generic [ref=e978]:
+                - link "How it works" [ref=e980] [cursor=pointer]:
+                  - /url: /product
+                  - generic [ref=e981]: How it works
+                - link "Features" [ref=e983] [cursor=pointer]:
+                  - /url: /features
+                  - generic [ref=e984]: Features
+                - link "Industries" [ref=e986] [cursor=pointer]:
+                  - /url: /industries
+                  - generic [ref=e987]: Industries
+                - link "Security" [ref=e989] [cursor=pointer]:
+                  - /url: /security
+                  - generic [ref=e990]: Security
+                - link "Framework Coverage" [ref=e992] [cursor=pointer]:
+                  - /url: /frameworks
+                  - generic [ref=e993]: Framework Coverage
+                - link "Pricing" [ref=e995] [cursor=pointer]:
+                  - /url: /pricing
+                  - generic [ref=e996]: Pricing
+            - generic [ref=e997]:
+              - heading "Use Cases" [level=4] [ref=e998]
+              - generic [ref=e999]:
+                - link "Healthcare" [ref=e1001] [cursor=pointer]:
+                  - /url: /use-cases/healthcare
+                  - generic [ref=e1002]: Healthcare
+                - link "NDIS & Aged Care" [ref=e1004] [cursor=pointer]:
+                  - /url: /use-cases/ndis-aged-care
+                  - generic [ref=e1005]: NDIS & Aged Care
+                - link "Workforce" [ref=e1007] [cursor=pointer]:
+                  - /url: /use-cases/workforce-credentials
+                  - generic [ref=e1008]: Workforce
+                - link "Incidents" [ref=e1010] [cursor=pointer]:
+                  - /url: /use-cases/incident-management
+                  - generic [ref=e1011]: Incidents
+            - generic [ref=e1012]:
+              - heading "Resources" [level=4] [ref=e1013]
+              - generic [ref=e1014]:
+                - link "Documentation" [ref=e1016] [cursor=pointer]:
+                  - /url: /documentation
+                  - generic [ref=e1017]: Documentation
+                - link "Blog" [ref=e1019] [cursor=pointer]:
+                  - /url: /blog
+                  - generic [ref=e1020]: Blog
+                - link "Trust Center" [ref=e1022] [cursor=pointer]:
+                  - /url: /trust
+                  - generic [ref=e1023]: Trust Center
+                - link "Security Review Packet" [ref=e1025] [cursor=pointer]:
+                  - /url: /security-review
+                  - generic [ref=e1026]: Security Review Packet
+                - link "Trust Packet (PDF)" [ref=e1028] [cursor=pointer]:
+                  - /url: /trust/packet
+                  - generic [ref=e1029]: Trust Packet (PDF)
+                - link "Status" [ref=e1031] [cursor=pointer]:
+                  - /url: /status
+                  - generic [ref=e1032]: Status
+                - link "Changelog" [ref=e1034] [cursor=pointer]:
+                  - /url: /changelog
+                  - generic [ref=e1035]: Changelog
+                - link "Roadmap" [ref=e1037] [cursor=pointer]:
+                  - /url: /roadmap
+                  - generic [ref=e1038]: Roadmap
+                - link "Customer Stories" [ref=e1040] [cursor=pointer]:
+                  - /url: /customer-stories
+                  - generic [ref=e1041]: Customer Stories
+                - link "Compare" [ref=e1043] [cursor=pointer]:
+                  - /url: /compare
+                  - generic [ref=e1044]: Compare
+                - link "FAQ" [ref=e1046] [cursor=pointer]:
+                  - /url: /faq
+                  - generic [ref=e1047]: FAQ
+            - generic [ref=e1048]:
+              - heading "Company" [level=4] [ref=e1049]
+              - generic [ref=e1050]:
+                - link "About" [ref=e1052] [cursor=pointer]:
+                  - /url: /about
+                  - generic [ref=e1053]: About
+                - link "Our Story" [ref=e1055] [cursor=pointer]:
+                  - /url: /our-story
+                  - generic [ref=e1056]: Our Story
+                - link "Contact" [ref=e1058] [cursor=pointer]:
+                  - /url: /contact
+                  - generic [ref=e1059]: Contact
+            - generic [ref=e1060]:
+              - heading "Legal" [level=4] [ref=e1061]
+              - generic [ref=e1062]:
+                - link "Legal" [ref=e1064] [cursor=pointer]:
+                  - /url: /legal
+                  - generic [ref=e1065]: Legal
+                - link "Privacy Policy" [ref=e1067] [cursor=pointer]:
+                  - /url: /legal/privacy
+                  - generic [ref=e1068]: Privacy Policy
+                - link "Terms of Service" [ref=e1070] [cursor=pointer]:
+                  - /url: /legal/terms
+                  - generic [ref=e1071]: Terms of Service
+                - link "Security" [ref=e1073] [cursor=pointer]:
+                  - /url: /security
+                  - generic [ref=e1074]: Security
+                - link "Assurance Portal" [ref=e1076] [cursor=pointer]:
+                  - /url: /trust
+                  - generic [ref=e1077]: Assurance Portal
+          - generic [ref=e1079]:
+            - generic [ref=e1081]:
+              - img [ref=e1083]
+              - text: Security-first controls
+            - generic [ref=e1086]:
+              - img [ref=e1088]
+              - text: Encrypted data flows
+            - generic [ref=e1092]:
+              - img [ref=e1094]
+              - text: Audit-ready logs
+          - generic [ref=e1099]:
+            - paragraph [ref=e1100]: © 2026 FormaOS. All rights reserved.
+            - generic [ref=e1101]:
+              - generic [ref=e1102]: FormaOS Horizon — v2.2.3
+              - generic [ref=e1103]: "|"
+              - generic [ref=e1104]: QA Stability & Auth Resilience Release
+            - generic [ref=e1105]:
+              - link "Formaos.team@gmail.com" [ref=e1106] [cursor=pointer]:
+                - /url: mailto:Formaos.team@gmail.com
+                - img [ref=e1107]
+                - generic [ref=e1110]: Formaos.team@gmail.com
+              - generic [ref=e1111]: "|"
+              - generic [ref=e1112]:
+                - img [ref=e1113]
+                - generic [ref=e1116]: Sydney, Australia
+  - alert [ref=e1117]

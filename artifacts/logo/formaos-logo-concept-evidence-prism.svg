@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="ep-bg" x1="84" y1="70" x2="430" y2="440" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0C1221"/>
+      <stop offset="1" stop-color="#1A213B"/>
+    </linearGradient>
+    <linearGradient id="ep-edge" x1="110" y1="92" x2="404" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#BFD2FF"/>
+      <stop offset="0.4" stop-color="#78A1FF"/>
+      <stop offset="1" stop-color="#4C6FFF"/>
+    </linearGradient>
+    <linearGradient id="ep-plane-a" x1="162" y1="146" x2="314" y2="340" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#EEF3FF"/>
+      <stop offset="1" stop-color="#8EA9FF"/>
+    </linearGradient>
+    <linearGradient id="ep-plane-b" x1="238" y1="154" x2="382" y2="352" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#DBE7FF"/>
+      <stop offset="1" stop-color="#5C83FF"/>
+    </linearGradient>
+    <filter id="ep-glow" x="-18%" y="-18%" width="136%" height="136%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0.3 0 1 0 0 0.48 0 0 1 0 1 0 0 0 0.24 0"/>
+    </filter>
+  </defs>
+
+  <rect x="56" y="56" width="400" height="400" rx="96" fill="url(#ep-bg)"/>
+  <rect x="56" y="56" width="400" height="400" rx="96" stroke="url(#ep-edge)" stroke-width="8"/>
+
+  <path d="M150 176L254 128L362 178V304L258 356L150 304V176Z" fill="#111A2F" stroke="rgba(191,210,255,0.14)" stroke-width="4"/>
+  <path d="M150 176L258 230L362 178" stroke="#90ACFF" stroke-opacity="0.32" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M258 230V356" stroke="#90ACFF" stroke-opacity="0.32" stroke-width="8" stroke-linecap="round"/>
+
+  <path d="M166 186L254 144L254 338L166 292V186Z" fill="url(#ep-plane-a)" filter="url(#ep-glow)"/>
+  <path d="M254 144L346 190V292L254 338V144Z" fill="url(#ep-plane-b)"/>
+  <path d="M196 180H248V210H224V330H196V180Z" fill="#15203A" opacity="0.88"/>
+  <path d="M184 168H280V202H218V236H270V268H218V330H184V168Z" fill="#F6FAFF"/>
+  <path d="M266 206L320 234V286L266 314V206Z" fill="#2747CC" opacity="0.9"/>
+</svg>
